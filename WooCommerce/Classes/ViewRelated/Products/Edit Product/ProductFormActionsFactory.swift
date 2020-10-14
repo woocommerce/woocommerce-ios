@@ -1,41 +1,38 @@
 import Yosemite
 
 /// Edit actions in the product form. Each action allows the user to edit a subset of product properties.
-enum ProductFormEditAction {
-    case images
-    case name
-    case description
-    case priceSettings
+enum ProductFormEditAction: Equatable {
+    case images(editable: Bool)
+    case name(editable: Bool)
+    case description(editable: Bool)
+    case priceSettings(editable: Bool)
     case reviews
-    case productType
-    case inventorySettings
-    case shippingSettings
-    case categories
-    case tags
-    case briefDescription
+    case productType(editable: Bool)
+    case inventorySettings(editable: Bool)
+    case shippingSettings(editable: Bool)
+    case categories(editable: Bool)
+    case tags(editable: Bool)
+    case briefDescription(editable: Bool)
     // Affiliate products only
-    case sku
-    case externalURL
+    case sku(editable: Bool)
+    case externalURL(editable: Bool)
     // Grouped products only
-    case groupedProducts
+    case groupedProducts(editable: Bool)
     // Variable products only
-    case variations
+    case variations(editable: Bool)
     // Variation only
     case variationName
+    case noPriceWarning
+    case status(editable: Bool)
     // Downloadable products only
     case downloadableFiles
-    case noPriceWarning
-    case status
-    // Non-core products only (e.g. subscription products, booking products)
-    case readonlyPriceSettings
-    case readonlyInventorySettings
-    case readonlyProductType
 }
 
 /// Creates actions for different sections/UI on the product form.
 struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let product: EditableProductModel
     private let formType: ProductFormType
+    private let editable: Bool
     private let isEditProductsRelease3Enabled: Bool
     private let isEditProductsRelease5Enabled: Bool
 
@@ -45,6 +42,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          isEditProductsRelease5Enabled: Bool) {
         self.product = product
         self.formType = formType
+        self.editable = formType != .readonly
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
     }
@@ -52,9 +50,9 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     /// Returns an array of actions that are visible in the product form primary section.
     func primarySectionActions() -> [ProductFormEditAction] {
         return [
-            .images,
-            .name,
-            .description
+            .images(editable: editable),
+            .name(editable: editable),
+            .description(editable: editable)
         ]
     }
 
@@ -96,15 +94,15 @@ private extension ProductFormActionsFactory {
         let showDownloadableProduct = isEditProductsRelease5Enabled && product.downloadable
 
         let actions: [ProductFormEditAction?] = [
-            .priceSettings,
+            .priceSettings(editable: editable),
             shouldShowReviewsRow ? .reviews: nil,
-            shouldShowShippingSettingsRow ? .shippingSettings: nil,
-            .inventorySettings,
-            shouldShowCategoriesRow ? .categories: nil,
-            shouldShowTagsRow ? .tags: nil,
+            shouldShowShippingSettingsRow ? .shippingSettings(editable: editable): nil,
+            .inventorySettings(editable: editable),
+            shouldShowCategoriesRow ? .categories(editable: editable): nil,
+            shouldShowTagsRow ? .tags(editable: editable): nil,
             showDownloadableProduct ? .downloadableFiles: nil,
-            .briefDescription,
-            shouldShowProductTypeRow ? .productType : nil
+            .briefDescription(editable: editable),
+            shouldShowProductTypeRow ? .productType(editable: editable): nil
         ]
         return actions.compactMap { $0 }
     }
@@ -116,14 +114,14 @@ private extension ProductFormActionsFactory {
         let shouldShowTagsRow = isEditProductsRelease3Enabled
 
         let actions: [ProductFormEditAction?] = [
-            .priceSettings,
+            .priceSettings(editable: editable),
             shouldShowReviewsRow ? .reviews: nil,
-            .externalURL,
-            .sku,
-            shouldShowCategoriesRow ? .categories: nil,
-            shouldShowTagsRow ? .tags: nil,
-            .briefDescription,
-            shouldShowProductTypeRow ? .productType : nil
+            .externalURL(editable: editable),
+            .sku(editable: editable),
+            shouldShowCategoriesRow ? .categories(editable: editable): nil,
+            shouldShowTagsRow ? .tags(editable: editable): nil,
+            .briefDescription(editable: editable),
+            shouldShowProductTypeRow ? .productType(editable: editable): nil
         ]
         return actions.compactMap { $0 }
     }
@@ -135,13 +133,13 @@ private extension ProductFormActionsFactory {
         let shouldShowTagsRow = isEditProductsRelease3Enabled
 
         let actions: [ProductFormEditAction?] = [
-            .groupedProducts,
+            .groupedProducts(editable: editable),
             shouldShowReviewsRow ? .reviews: nil,
-            .sku,
-            shouldShowCategoriesRow ? .categories: nil,
-            shouldShowTagsRow ? .tags: nil,
-            .briefDescription,
-            shouldShowProductTypeRow ? .productType : nil
+            .sku(editable: editable),
+            shouldShowCategoriesRow ? .categories(editable: editable): nil,
+            shouldShowTagsRow ? .tags(editable: editable): nil,
+            .briefDescription(editable: editable),
+            shouldShowProductTypeRow ? .productType(editable: editable): nil
         ]
         return actions.compactMap { $0 }
     }
@@ -153,14 +151,14 @@ private extension ProductFormActionsFactory {
         let shouldShowTagsRow = isEditProductsRelease3Enabled
 
         let actions: [ProductFormEditAction?] = [
-            .variations,
+            .variations(editable: editable),
             shouldShowReviewsRow ? .reviews: nil,
-            .shippingSettings,
-            .inventorySettings,
-            shouldShowCategoriesRow ? .categories: nil,
-            shouldShowTagsRow ? .tags: nil,
-            .briefDescription,
-            shouldShowProductTypeRow ? .productType : nil
+            .shippingSettings(editable: editable),
+            .inventorySettings(editable: editable),
+            shouldShowCategoriesRow ? .categories(editable: editable): nil,
+            shouldShowTagsRow ? .tags(editable: editable): nil,
+            .briefDescription(editable: editable),
+            shouldShowProductTypeRow ? .productType(editable: editable): nil
         ]
         return actions.compactMap { $0 }
     }
@@ -173,13 +171,13 @@ private extension ProductFormActionsFactory {
         let shouldShowTagsRow = isEditProductsRelease3Enabled
 
         let actions: [ProductFormEditAction?] = [
-            shouldShowPriceSettingsRow ? .readonlyPriceSettings: nil,
+            shouldShowPriceSettingsRow ? .priceSettings(editable: false): nil,
             shouldShowReviewsRow ? .reviews: nil,
-            .readonlyInventorySettings,
-            shouldShowCategoriesRow ? .categories: nil,
-            shouldShowTagsRow ? .tags: nil,
-            .briefDescription,
-            shouldShowProductTypeRow ? .readonlyProductType : nil
+            .inventorySettings(editable: false),
+            shouldShowCategoriesRow ? .categories(editable: editable): nil,
+            shouldShowTagsRow ? .tags(editable: editable): nil,
+            .briefDescription(editable: editable),
+            shouldShowProductTypeRow ? .productType(editable: false): nil
         ]
         return actions.compactMap { $0 }
     }
@@ -201,7 +199,11 @@ private extension ProductFormActionsFactory {
         case .productType:
             // The product type action is always visible in the settings section.
             return true
-        case .inventorySettings:
+        case .inventorySettings(let editable):
+            guard editable else {
+                // The inventory row is always visible when readonly.
+                return true
+            }
             let hasStockData = product.manageStock ? product.stockQuantity != nil: true
             return product.sku != nil || hasStockData
         case .shippingSettings:
@@ -229,10 +231,6 @@ private extension ProductFormActionsFactory {
         // Variable products only.
         case .variations:
             // The variations row is always visible in the settings section for a variable product.
-            return true
-        // Non-core products only.
-        case .readonlyPriceSettings, .readonlyInventorySettings, .readonlyProductType:
-            // The readonly rows are always visible in the settings section for a non-core product.
             return true
         default:
             return false

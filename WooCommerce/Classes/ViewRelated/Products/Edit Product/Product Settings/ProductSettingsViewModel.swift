@@ -59,6 +59,8 @@ final class ProductSettingsViewModel {
                                                            isEditProductsRelease3Enabled: self.isEditProductsRelease3Enabled)
                 }
             }
+        case .readonly:
+            sections = Self.configureSections(productSettings, productType: product.productType, isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
         }
     }
 

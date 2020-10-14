@@ -15,28 +15,28 @@ enum ProductFormSection: Equatable {
     }
 
     enum PrimaryFieldRow: Equatable {
-        case images
-        case name(name: String?)
+        case images(isEditable: Bool)
+        case name(name: String?, isEditable: Bool)
         case variationName(name: String)
-        case description(description: String?)
+        case description(description: String?, isEditable: Bool)
     }
 
     enum SettingsRow: Equatable {
         case price(viewModel: ViewModel, isEditable: Bool)
         case reviews(viewModel: ViewModel, ratingCount: Int, averageRating: String)
         case productType(viewModel: ViewModel, isEditable: Bool)
-        case shipping(viewModel: ViewModel)
+        case shipping(viewModel: ViewModel, isEditable: Bool)
         case inventory(viewModel: ViewModel, isEditable: Bool)
-        case categories(viewModel: ViewModel)
-        case tags(viewModel: ViewModel)
-        case briefDescription(viewModel: ViewModel)
-        case externalURL(viewModel: ViewModel)
-        case sku(viewModel: ViewModel)
-        case groupedProducts(viewModel: ViewModel)
+        case categories(viewModel: ViewModel, isEditable: Bool)
+        case tags(viewModel: ViewModel, isEditable: Bool)
+        case briefDescription(viewModel: ViewModel, isEditable: Bool)
+        case externalURL(viewModel: ViewModel, isEditable: Bool)
+        case sku(viewModel: ViewModel, isEditable: Bool)
+        case groupedProducts(viewModel: ViewModel, isEditable: Bool)
         case variations(viewModel: ViewModel)
         case downloadableFiles(viewModel: ViewModel)
         case noPriceWarning(viewModel: WarningViewModel)
-        case status(viewModel: SwitchableViewModel)
+        case status(viewModel: SwitchableViewModel, isEditable: Bool)
 
         struct ViewModel {
             let icon: UIImage

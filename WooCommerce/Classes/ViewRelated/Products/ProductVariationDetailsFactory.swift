@@ -46,6 +46,7 @@ private extension ProductVariationDetailsFactory {
         let viewModel = ProductVariationFormViewModel(productVariation: productVariationModel,
                                                       allAttributes: parentProduct.attributes,
                                                       parentProductSKU: parentProduct.sku,
+                                                      formType: .edit,
                                                       productImageActionHandler: productImageActionHandler)
         vc = ProductFormViewController(viewModel: viewModel,
                                        eventLogger: ProductFormEventLogger(),

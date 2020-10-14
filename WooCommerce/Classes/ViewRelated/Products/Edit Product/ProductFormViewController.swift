@@ -74,8 +74,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                                                                currency: currency)
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
-                                                                  productUIImageLoader: productUIImageLoader,
-                                                                  canEditImages: true)
+                                                                  productUIImageLoader: productUIImageLoader)
         super.init(nibName: "ProductFormViewController", bundle: nil)
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
@@ -317,6 +316,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                     return
                 }
                 let variationsViewController = ProductVariationsViewController(product: product.product,
+                                                                               formType: viewModel.formType,
                                                                                isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
                 show(variationsViewController, sender: self)
             case .status, .noPriceWarning:
@@ -453,8 +453,7 @@ private extension ProductFormViewController {
                                                           currency: currency)
         tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                              productImageStatuses: productImageActionHandler.productImageStatuses,
-                                                             productUIImageLoader: productUIImageLoader,
-                                                             canEditImages: true)
+                                                             productUIImageLoader: productUIImageLoader)
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
         }, onStatusChange: { [weak self] isEnabled in
@@ -470,8 +469,7 @@ private extension ProductFormViewController {
     func onImageStatusesUpdated(statuses: [ProductImageStatus]) {
         tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                              productImageStatuses: statuses,
-                                                             productUIImageLoader: productUIImageLoader,
-                                                             canEditImages: true)
+                                                             productUIImageLoader: productUIImageLoader)
         tableViewDataSource.configureActions(onNameChange: { [weak self] name in
             self?.onEditProductNameCompletion(newName: name ?? "")
         }, onStatusChange: { [weak self] isEnabled in
@@ -722,6 +720,8 @@ private extension ProductFormViewController {
             if isUpdateEnabled {
                 rightBarButtonItems.append(createUpdateBarButtonItem())
             }
+        case .readonly:
+            break
         }
 
         if viewModel.canEditProductSettings() {
@@ -790,6 +790,8 @@ private extension ProductFormViewController {
             UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
                 self?.exitForm()
             })
+        case .readonly:
+            break
         }
     }
 }

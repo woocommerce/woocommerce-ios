@@ -16,17 +16,17 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                 isEditProductsRelease5Enabled: false)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings,
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
                                                                        .reviews,
-                                                                       .shippingSettings,
-                                                                       .inventorySettings,
-                                                                       .categories,
-                                                                       .tags,
-                                                                       .briefDescription,
-                                                                       .productType]
+                                                                       .shippingSettings(editable: true),
+                                                                       .inventorySettings(editable: true),
+                                                                       .categories(editable: true),
+                                                                       .tags(editable: true),
+                                                                       .briefDescription(editable: true),
+                                                                       .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
@@ -45,17 +45,17 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                 isEditProductsRelease5Enabled: false)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings,
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
                                                                        .reviews,
-                                                                       .shippingSettings,
-                                                                       .inventorySettings,
-                                                                       .categories,
-                                                                       .tags,
-                                                                       .briefDescription,
-                                                                       .productType]
+                                                                       .shippingSettings(editable: true),
+                                                                       .inventorySettings(editable: true),
+                                                                       .categories(editable: true),
+                                                                       .tags(editable: true),
+                                                                       .briefDescription(editable: true),
+                                                                       .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
@@ -74,16 +74,16 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                 isEditProductsRelease5Enabled: false)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings,
-                                                                       .shippingSettings,
-                                                                       .inventorySettings,
-                                                                       .categories,
-                                                                       .tags,
-                                                                       .briefDescription,
-                                                                       .productType]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
+                                                                       .shippingSettings(editable: true),
+                                                                       .inventorySettings(editable: true),
+                                                                       .categories(editable: true),
+                                                                       .tags(editable: true),
+                                                                       .briefDescription(editable: true),
+                                                                       .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
@@ -102,17 +102,17 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                 isEditProductsRelease5Enabled: true)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings,
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
                                                                        .reviews,
-                                                                       .inventorySettings,
-                                                                       .categories,
-                                                                       .tags,
+                                                                       .inventorySettings(editable: true),
+                                                                       .categories(editable: true),
+                                                                       .tags(editable: true),
                                                                        .downloadableFiles,
-                                                                       .briefDescription,
-                                                                       .productType]
+                                                                       .briefDescription(editable: true),
+                                                                       .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
@@ -131,16 +131,16 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                 isEditProductsRelease5Enabled: false)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings,
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
                                                                        .reviews,
-                                                                       .inventorySettings,
-                                                                       .categories,
-                                                                       .tags,
-                                                                       .briefDescription,
-                                                                       .productType]
+                                                                       .inventorySettings(editable: true),
+                                                                       .categories(editable: true),
+                                                                       .tags(editable: true),
+                                                                       .briefDescription(editable: true),
+                                                                       .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
@@ -159,13 +159,13 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                 isEditProductsRelease5Enabled: false)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings,
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
                                                                        .reviews,
-                                                                       .externalURL,
-                                                                       .productType]
+                                                                       .externalURL(editable: true),
+                                                                       .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editSKU, .editCategories, .editTags, .editBriefDescription]
@@ -184,10 +184,10 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                 isEditProductsRelease5Enabled: false)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.groupedProducts, .reviews, .productType]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.groupedProducts(editable: true), .reviews, .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editSKU, .editCategories, .editTags, .editBriefDescription]
@@ -206,10 +206,16 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                 isEditProductsRelease5Enabled: false)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.variations, .reviews, .shippingSettings, .inventorySettings, .productType]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [
+            .variations(editable: true),
+            .reviews,
+            .shippingSettings(editable: true),
+            .inventorySettings(editable: true),
+            .productType(editable: true)
+        ]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editBriefDescription]
@@ -228,10 +234,16 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                 isEditProductsRelease5Enabled: false)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.variations, .reviews, .shippingSettings, .inventorySettings, .productType]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [
+            .variations(editable: true),
+            .reviews,
+            .shippingSettings(editable: true),
+            .inventorySettings(editable: true),
+            .productType(editable: true)
+        ]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editBriefDescription]
@@ -250,10 +262,10 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                 isEditProductsRelease5Enabled: false)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.reviews, .readonlyInventorySettings, .readonlyProductType]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.reviews, .inventorySettings(editable: false), .productType(editable: false)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editBriefDescription]
@@ -272,10 +284,15 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                 isEditProductsRelease5Enabled: false)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .name, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.readonlyPriceSettings, .reviews, .readonlyInventorySettings, .readonlyProductType]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [
+            .priceSettings(editable: false),
+            .reviews,
+            .inventorySettings(editable: false),
+            .productType(editable: false)
+        ]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editBriefDescription]
@@ -303,21 +320,23 @@ private extension ProductFormActionsFactoryTests {
                                                                               images: [])
         // downloadable: false, virtual: true, with inventory/shipping/categories/tags/brief description
         static let physicalSimpleProductWithImages = MockProduct().product(downloadable: false, briefDescription: "desc", productType: .simple,
-                                                                              manageStock: true, sku: "uks", stockQuantity: nil,
-                                                                              dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "2",
-                                                                              virtual: false,
-                                                                              categories: [category],
-                                                                              tags: [tag],
-                                                                              images: [image])
+                                                                           manageStock: true, sku: "uks", stockQuantity: nil,
+                                                                           dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "2",
+                                                                           virtual: false,
+                                                                           categories: [category],
+                                                                           tags: [tag],
+                                                                           images: [image])
         // downloadable: false, virtual: true, reviews: false, with inventory/shipping/categories/tags/brief description
-        static let physicalSimpleProductWithReviewsDisabled = MockProduct().product(downloadable: false, briefDescription: "desc", productType: .simple,
-                                                                              manageStock: true, sku: "uks", stockQuantity: nil,
-                                                                              dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "2",
-                                                                              virtual: false,
-                                                                              reviewsAllowed: false,
-                                                                              categories: [category],
-                                                                              tags: [tag],
-                                                                              images: [image])
+        static let physicalSimpleProductWithReviewsDisabled = MockProduct().product(downloadable: false,
+                                                                                    briefDescription: "desc", productType: .simple,
+                                                                                    manageStock: true, sku: "uks", stockQuantity: nil,
+                                                                                    dimensions: ProductDimensions(length: "", width: "", height: ""),
+                                                                                    weight: "2",
+                                                                                    virtual: false,
+                                                                                    reviewsAllowed: false,
+                                                                                    categories: [category],
+                                                                                    tags: [tag],
+                                                                                    images: [image])
         // downloadable: false, virtual: true, with inventory/shipping/categories/tags/brief description
         static let virtualSimpleProduct = MockProduct().product(downloadable: false, briefDescription: "desc", productType: .simple,
                                                                 manageStock: true, sku: "uks", stockQuantity: nil,
@@ -345,12 +364,12 @@ private extension ProductFormActionsFactoryTests {
                                                           sku: "")
         // Variable product, missing variations/brief description/categories/tags
         static let variableProductWithoutVariations = MockProduct().product(briefDescription: "",
-                                                           productType: .variable,
-                                                           sku: "").copy(variations: [])
+                                                                            productType: .variable,
+                                                                            sku: "").copy(variations: [])
         // Variable product with one variation, missing brief description/categories/tags
         static let variableProductWithVariations = MockProduct().product(briefDescription: "",
-                                                           productType: .variable,
-                                                           sku: "").copy(variations: [123])
+                                                                         productType: .variable,
+                                                                         sku: "").copy(variations: [123])
         // Non-core product, missing price/brief description/categories/tags
         static let nonCoreProductWithoutPrice = MockProduct().product(briefDescription: "",
                                                                       productType: .custom("other")).copy(regularPrice: "")

@@ -127,7 +127,7 @@ extension ProductFormViewModel {
     }
 
     func canEditProductSettings() -> Bool {
-        return true
+        formType != .readonly
     }
 
     func canViewProductInStore() -> Bool {
@@ -298,6 +298,8 @@ extension ProductFormViewModel {
                                                     onCompletion(.failure(error))
                                                 }
             }
+        case .readonly:
+            assertionFailure("Trying to save a product remotely in readonly mode")
         }
     }
 

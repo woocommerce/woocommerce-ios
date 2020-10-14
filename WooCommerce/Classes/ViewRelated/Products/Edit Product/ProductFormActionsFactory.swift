@@ -24,6 +24,8 @@ enum ProductFormEditAction: Equatable {
     case variationName
     case noPriceWarning
     case status(editable: Bool)
+    // Downloadable products only
+    case downloadableFiles
 }
 
 /// Creates actions for different sections/UI on the product form.
@@ -32,14 +34,17 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let formType: ProductFormType
     private let editable: Bool
     private let isEditProductsRelease3Enabled: Bool
+    private let isEditProductsRelease5Enabled: Bool
 
     init(product: EditableProductModel,
          formType: ProductFormType,
-         isEditProductsRelease3Enabled: Bool) {
+         isEditProductsRelease3Enabled: Bool,
+         isEditProductsRelease5Enabled: Bool) {
         self.product = product
         self.formType = formType
         self.editable = formType != .readonly
         self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
+        self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -86,6 +91,7 @@ private extension ProductFormActionsFactory {
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
         let shouldShowCategoriesRow = isEditProductsRelease3Enabled
         let shouldShowTagsRow = isEditProductsRelease3Enabled
+        let showDownloadableProduct = isEditProductsRelease5Enabled && product.downloadable
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings(editable: editable),
@@ -94,6 +100,7 @@ private extension ProductFormActionsFactory {
             .inventorySettings(editable: editable),
             shouldShowCategoriesRow ? .categories(editable: editable): nil,
             shouldShowTagsRow ? .tags(editable: editable): nil,
+            showDownloadableProduct ? .downloadableFiles: nil,
             .briefDescription(editable: editable),
             shouldShowProductTypeRow ? .productType(editable: editable): nil
         ]
@@ -206,6 +213,9 @@ private extension ProductFormActionsFactory {
             return product.product.categories.isNotEmpty
         case .tags:
             return product.product.tags.isNotEmpty
+        // Downloadable files. Only core product types for downloadable files are able to handle downloadable files.
+        case .downloadableFiles:
+            return isEditProductsRelease5Enabled && product.downloadable
         case .briefDescription:
             return product.shortDescription.isNilOrEmpty == false
         // Affiliate products only.

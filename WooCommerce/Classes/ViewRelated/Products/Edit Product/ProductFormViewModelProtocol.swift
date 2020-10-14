@@ -91,6 +91,8 @@ protocol ProductFormViewModelProtocol {
 
     func updateStatus(_ isEnabled: Bool)
 
+    func updateDownloadableFiles(downloadableFiles: [ProductDownload], downloadLimit: Int64, downloadExpiry: Int64)
+
     // Remote action
 
     /// Creates/updates a product remotely given an optional product status to override.

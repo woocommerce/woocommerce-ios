@@ -4,7 +4,7 @@ import Yosemite
 final class OrderPaymentDetailsViewModel {
     private let order: Order
     private let refund: Refund?
-    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+    private let currencyFormatter: CurrencyFormatter
 
     var subtotal: Decimal {
         let subtotal = order.items.reduce(Decimal(0)) { (output, item) in
@@ -146,9 +146,10 @@ final class OrderPaymentDetailsViewModel {
         return order.coupons
     }
 
-    init(order: Order, refund: Refund? = nil) {
+    init(order: Order, refund: Refund? = nil, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.order = order
         self.refund = refund
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
     }
 
     private func summarizeCoupons(from lines: [OrderCouponLine]?) -> String? {
@@ -175,17 +176,8 @@ final class OrderPaymentDetailsViewModel {
             return .zero
         }
 
-        let refunds = order.refunds.map {
-            currencyFormatter.convertToDecimal(from: $0.total)
-        }
-
-        // Can't use .reduce(0,+) here because we're working with NSDecimalNumber.
-        var refundTotal: NSDecimalNumber = .zero
-        for r in refunds {
-            if let refund = r {
-                refundTotal = refundTotal.adding(refund)
-            }
-        }
+        let totalRefundedUseCase = TotalRefundedCalculationUseCase(order: order, currencyFormatter: currencyFormatter)
+        let refundTotal = totalRefundedUseCase.totalRefunded()
 
         return orderTotal.adding(refundTotal)
     }

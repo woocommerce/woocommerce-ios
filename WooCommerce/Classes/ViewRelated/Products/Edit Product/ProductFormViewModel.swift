@@ -59,7 +59,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
             actionsFactory = ProductFormActionsFactory(product: product,
                                                        formType: formType,
-                                                       isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+                                                       isEditProductsRelease3Enabled: isEditProductsRelease3Enabled,
+                                                       isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
             productSubject.send(product)
         }
     }
@@ -98,7 +99,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.product = product
         self.actionsFactory = ProductFormActionsFactory(product: product,
                                                         formType: formType,
-                                                        isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+                                                        isEditProductsRelease3Enabled: isEditProductsRelease3Enabled,
+                                                        isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
         self.isUpdateEnabledSubject = PublishSubject<Bool>()
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
@@ -242,6 +244,12 @@ extension ProductFormViewModel {
 
     func updateStatus(_ isEnabled: Bool) {
         // no-op: visibility is editable in product settings for `Product`
+    }
+
+    func updateDownloadableFiles(downloadableFiles: [ProductDownload], downloadLimit: Int64, downloadExpiry: Int64) {
+        product = EditableProductModel(product: product.product.copy(downloads: downloadableFiles,
+                                                                     downloadLimit: downloadLimit,
+                                                                     downloadExpiry: downloadExpiry))
     }
 }
 

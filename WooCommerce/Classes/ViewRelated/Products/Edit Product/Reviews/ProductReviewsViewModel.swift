@@ -20,7 +20,10 @@ final class ProductReviewsViewModel {
         return data
     }
 
-    init(data: ReviewsDataSource) {
+    private let siteID: Int64
+
+    init(siteID: Int64, data: ReviewsDataSource) {
+        self.siteID = siteID
         self.data = data
     }
 
@@ -77,10 +80,6 @@ extension ProductReviewsViewModel {
                             pageSize: Int,
                             productID: Int64,
                             onCompletion: (() -> Void)? = nil) {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return
-        }
-
         let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID,
                                                                    pageNumber: pageNumber,
                                                                    pageSize: pageSize,

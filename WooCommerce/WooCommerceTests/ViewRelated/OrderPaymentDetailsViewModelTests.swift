@@ -16,7 +16,7 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         order = MockOrders().sampleOrder()
-        viewModel = OrderPaymentDetailsViewModel(order: order!)
+        viewModel = OrderPaymentDetailsViewModel(order: order!, currencySettings: CurrencySettings())
 
         brokenOrder = MockOrders().brokenOrder()
         brokenOrderViewModel = OrderPaymentDetailsViewModel(order: brokenOrder)
@@ -40,7 +40,7 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     }
 
     func testSubtotalValueMatchesExpectation() {
-        let expectedValue = CurrencyFormatter(currencySettings: CurrencySettings()).formatAmount(0, with: order.currency) ?? String()
+        let expectedValue = CurrencyFormatter(currencySettings: CurrencySettings()).formatAmount(.zero, with: order.currency) ?? String()
         XCTAssertEqual(viewModel.subtotalValue, expectedValue)
     }
 

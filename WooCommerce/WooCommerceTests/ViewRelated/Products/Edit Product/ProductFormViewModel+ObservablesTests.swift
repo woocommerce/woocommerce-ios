@@ -24,7 +24,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
 
     func testObservablesFromEditActionsOfTheSameData() {
         // Arrange
-        let product = MockProduct().product()
+        let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -69,6 +69,9 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
                                          shippingClassID: product.shippingClassID)
         viewModel.updateProductCategories(product.categories)
         viewModel.updateProductTags(product.tags)
+        viewModel.updateDownloadableFiles(downloadableFiles: product.downloads,
+                                          downloadLimit: product.downloadLimit,
+                                          downloadExpiry: product.downloadExpiry)
     }
 
     /// When only product name is updated, the product name observable should be triggered but no the product observable.

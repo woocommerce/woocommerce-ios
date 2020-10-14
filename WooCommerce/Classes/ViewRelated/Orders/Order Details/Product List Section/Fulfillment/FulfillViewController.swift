@@ -247,10 +247,10 @@ private extension FulfillViewController {
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
-    /// Displays the product detail screen for the provided ProductID
+    /// Displays the product detail screen for the provided OrderItem
     ///
-    func productWasPressed(for productID: Int64) {
-        let loaderViewController = ProductLoaderViewController(productID: productID,
+    func productWasPressed(item: OrderItem) {
+        let loaderViewController = ProductLoaderViewController(model: .init(orderItem: item),
                                                                siteID: order.siteID,
                                                                forceReadOnly: true)
         let navController = WooNavigationController(rootViewController: loaderViewController)
@@ -450,8 +450,7 @@ extension FulfillViewController: UITableViewDelegate {
             present(navController, animated: true, completion: nil)
 
         case .product(let item):
-            let productIDToLoad = item.variationID == 0 ? item.productID : item.variationID
-            productWasPressed(for: productIDToLoad)
+            productWasPressed(item: item)
 
         case .tracking:
             break

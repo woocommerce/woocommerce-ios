@@ -29,15 +29,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     var window: UIWindow?
 
+    /// Coordinates app navigation based on authentication state.
+    ///
+    private var appCoordinator: AppCoordinator?
+
     /// Tab Bar Controller
     ///
     var tabBarController: MainTabBarController? {
         return window?.rootViewController as? MainTabBarController
     }
-
-    /// Store Picker Coordinator
-    ///
-    private var storePickerCoordinator: StorePickerCoordinator?
 
     /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
     ///
@@ -70,9 +70,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
         }
 
-        // Display the Authentication UI
-        displayAuthenticatorIfNeeded()
-        displayStorePickerIfNeeded()
+        // Start app navigation.
+        appCoordinator?.start()
 
         // Components that require prior Auth
         setupZendesk()
@@ -160,6 +159,12 @@ private extension AppDelegate {
         window = UIWindow()
         window?.rootViewController = storyboard.instantiateInitialViewController()
         window?.makeKeyAndVisible()
+
+        guard let tabBarController = tabBarController else {
+            assertionFailure("Unexpected root view controller: \(String(describing: window?.rootViewController))")
+            return
+        }
+        appCoordinator = AppCoordinator(tabBarController: tabBarController)
     }
 
     /// Sets up all of the component(s) Appearance.
@@ -352,49 +357,6 @@ private extension AppDelegate {
 // MARK: - Authentication Methods
 //
 extension AppDelegate {
-
-    /// Whenever there is no default WordPress.com Account, let's display the Authentication UI.
-    ///
-    private func displayAuthenticatorIfNeeded() {
-        guard ServiceLocator.stores.isAuthenticated == false else {
-            return
-        }
-
-        displayAuthenticator(animated: false)
-    }
-
-    /// Displays the WordPress.com Authentication UI.
-    ///
-    func displayAuthenticator(animated: Bool) {
-        guard let rootViewController = window?.rootViewController else {
-            fatalError()
-        }
-
-        ServiceLocator.authenticationManager.displayAuthentication(from: rootViewController, animated: animated) { [weak self] in
-            self?.tabBarController?.removeViewControllers()
-        }
-    }
-
-    /// Whenever the app is authenticated but there is no Default StoreID: Let's display the Store Picker.
-    ///
-    func displayStorePickerIfNeeded() {
-        guard ServiceLocator.stores.isAuthenticated, ServiceLocator.stores.needsDefaultStore else {
-            return
-        }
-        guard let tabBar = tabBarController,
-            let navigationController = tabBar.selectedViewController as? UINavigationController else {
-                DDLogError("⛔️ Unable to locate navigationController in order to launch the store picker.")
-            return
-        }
-
-        DDLogInfo("💬 Authenticated user does not have a Woo store selected — launching store picker.")
-        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .standard)
-        storePickerCoordinator?.start()
-        storePickerCoordinator?.onDismiss = { [weak self] in
-            self?.displayAuthenticator(animated: false)
-        }
-    }
-
     /// Whenever we're in an Authenticated state, let's Sync all of the WC-Y entities.
     ///
     private func synchronizeEntitiesIfPossible() {

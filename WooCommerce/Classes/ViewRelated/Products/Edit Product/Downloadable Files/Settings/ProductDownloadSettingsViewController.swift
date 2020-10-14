@@ -201,20 +201,11 @@ private extension ProductDownloadSettingsViewController {
         tableView.removeLastCellSeparator()
 
         registerTableViewCells()
-        registerTableViewHeaderFooters()
     }
 
     func registerTableViewCells() {
         for row in Row.allCases {
             tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
-        }
-    }
-
-    func registerTableViewHeaderFooters() {
-        let headersAndFooters = [ ErrorSectionHeaderView.self ]
-
-        for kind in headersAndFooters {
-            tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
         }
     }
 

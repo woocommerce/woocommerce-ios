@@ -2,12 +2,12 @@ import XCTest
 @testable import WooCommerce
 
 final class TitleAndEditableValueTableViewCellTests: XCTestCase {
-    private var cell: TitleAndEditableValueTableViewCell?
+    private var cell: TitleAndEditableValueTableViewCell!
 
-    override func setUp() {
-        super.setUp()
-        let nib = Bundle.main.loadNibNamed("TitleAndEditableValueTableViewCell", owner: self, options: nil)
-        cell = nib?.first as? TitleAndEditableValueTableViewCell
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        let nib = try XCTUnwrap(Bundle.main.loadNibNamed("TitleAndEditableValueTableViewCell", owner: self, options: nil))
+        cell = try XCTUnwrap(nib.first as? TitleAndEditableValueTableViewCell)
     }
 
     override func tearDown() {
@@ -16,20 +16,47 @@ final class TitleAndEditableValueTableViewCellTests: XCTestCase {
     }
 
     func testCellIsNonSelectable() {
-        XCTAssertEqual(cell?.selectionStyle, UITableViewCell.SelectionStyle.none)
+        XCTAssertEqual(cell.selectionStyle, UITableViewCell.SelectionStyle.none)
     }
 
-    func testTitleHasFootNoteStyleApplied() {
-        let title = cell?.title
+    func testTitleHasFootNoteStyleApplied() throws {
+        // Given
+        let mirror = try self.mirror(of: cell)
 
-        XCTAssertEqual(title?.font, UIFont.footnote)
-        XCTAssertEqual(title?.textColor, .systemColor(.secondaryLabel))
+        // When
+        let title = mirror.title
+
+        // Then
+        XCTAssertEqual(title.font, UIFont.footnote)
+        XCTAssertEqual(title.textColor, .systemColor(.secondaryLabel))
     }
 
-    func testValueHasBodyStyleApplied() {
-        let value = cell?.value
+    func testValueHasBodyStyleApplied() throws {
+        // Given
+        let mirror = try self.mirror(of: cell)
 
-        XCTAssertEqual(value?.font, UIFont.body)
-        XCTAssertEqual(value?.textColor, .text)
+        // When
+        let value = mirror.value
+
+        // Then
+        XCTAssertEqual(value.font, UIFont.body)
+        XCTAssertEqual(value.textColor, .text)
     }
+}
+
+private extension TitleAndEditableValueTableViewCellTests {
+    struct TitleAndEditableValueTableViewCellMirror {
+        let title: UILabel
+        let value: UITextField
+    }
+
+    func mirror(of cell: TitleAndEditableValueTableViewCell) throws -> TitleAndEditableValueTableViewCellMirror {
+        let mirror = Mirror(reflecting: cell)
+
+        return TitleAndEditableValueTableViewCellMirror(
+            title: try XCTUnwrap(mirror.descendant("title") as? UILabel),
+            value: try XCTUnwrap(mirror.descendant("value") as? UITextField)
+        )
+    }
+
 }

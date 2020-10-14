@@ -96,7 +96,8 @@ final class ProductListMultiSelectorSearchUICommand: NSObject, SearchUICommand {
 }
 
 extension ProductListMultiSelectorSearchUICommand {
-    /// Configures the given presenting view controller to present unsaved changes alert when the user attempts to dismiss the search modal with unsaved changes.
+    /// Configures the given presenting view controller to present unsaved changes alert when the user attempts to dismiss the search modal with
+    /// unsaved changes.
     func configurePresentingViewControllerForDiscardChangesAlert(presentingViewController: UIViewController) {
         self.presentingViewController = presentingViewController
         presentingViewController.presentationController?.delegate = self

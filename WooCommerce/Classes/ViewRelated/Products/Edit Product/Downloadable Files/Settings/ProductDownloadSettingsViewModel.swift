@@ -67,7 +67,7 @@ final class ProductDownloadSettingsViewModel: ProductDownloadSettingsViewModelOu
 extension ProductDownloadSettingsViewModel: ProductDownloadSettingsActionHandler {
     func handleDownloadLimitChange(_ downloadLimit: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void) {
         guard let downloadLimit = downloadLimit, let downloadLimit_unwrapped = Int64(downloadLimit), downloadLimit_unwrapped >= 0 else {
-            downloadLimitIsValid = false
+            downloadLimitIsValid = true
             self.downloadLimit = -1
             onValidation(isChangesValid(), true)
             return
@@ -87,7 +87,7 @@ extension ProductDownloadSettingsViewModel: ProductDownloadSettingsActionHandler
 
     func handleDownloadExpiryChange(_ downloadExpiry: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void) {
         guard let downloadExpiry = downloadExpiry, let downloadExpiry_unwrapped = Int64(downloadExpiry), downloadExpiry_unwrapped >= 0 else {
-            downloadExpiryIsValid = false
+            downloadExpiryIsValid = true
             self.downloadExpiry = -1
             onValidation(isChangesValid(), true)
             return

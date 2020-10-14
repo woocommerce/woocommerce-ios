@@ -45,7 +45,8 @@ final class ProductDownloadSettingsViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        configureTextFieldAsFirstResponder()
+        // The limit text field becomes the first responder immediately when the view did appear
+        getDownloadLimitCell()?.textFieldBecomeFirstResponder()
     }
 }
 
@@ -201,15 +202,6 @@ private extension ProductDownloadSettingsViewController {
 
         registerTableViewCells()
         registerTableViewHeaderFooters()
-    }
-
-    /// The limit text field becomes the first responder immediately when the view did appear
-    ///
-    func configureTextFieldAsFirstResponder() {
-        if let indexPath = sections.indexPathForRow(.limit) {
-            let cell = tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell
-            cell?.textFieldBecomeFirstResponder()
-        }
     }
 
     func registerTableViewCells() {

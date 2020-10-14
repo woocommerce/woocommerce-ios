@@ -205,7 +205,7 @@ private extension ProductDownloadSettingsViewController {
 
     func registerTableViewCells() {
         for row in Row.allCases {
-            tableView.register(row.type)
+            tableView.registerNib(for: row.type)
         }
     }
 
@@ -246,14 +246,14 @@ extension ProductDownloadSettingsViewController {
         case limit
         case expiry
 
-        fileprivate var type: UITableViewCell.Type {
+        var type: UITableViewCell.Type {
             switch self {
             case .limit, .expiry:
                 return TitleAndTextFieldTableViewCell.self
             }
         }
 
-        fileprivate var reuseIdentifier: String {
+        var reuseIdentifier: String {
             return type.reuseIdentifier
         }
     }

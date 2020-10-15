@@ -14,7 +14,6 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false,
                                              isEditProductsRelease5Enabled: false)
 
         // Action
@@ -33,7 +32,6 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false,
                                              isEditProductsRelease5Enabled: false)
 
         // Action
@@ -52,7 +50,6 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false,
                                              isEditProductsRelease5Enabled: false)
 
         // Action
@@ -87,7 +84,6 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false,
                                              isEditProductsRelease5Enabled: false)
 
         // Action
@@ -121,7 +117,6 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false,
                                              isEditProductsRelease5Enabled: false)
 
         // Action
@@ -155,7 +150,6 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false,
                                              isEditProductsRelease5Enabled: false)
 
         // Action
@@ -180,7 +174,6 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: true,
                                              isEditProductsRelease5Enabled: false)
 
         // Action
@@ -203,7 +196,6 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: true,
                                              isEditProductsRelease5Enabled: false)
 
         // Action
@@ -225,7 +217,6 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false,
                                              isEditProductsRelease5Enabled: false)
 
         // Action
@@ -244,7 +235,6 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false,
                                              isEditProductsRelease5Enabled: false)
 
         // Action
@@ -286,7 +276,6 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false,
                                              isEditProductsRelease5Enabled: false)
 
         // Action
@@ -305,7 +294,6 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false,
                                              isEditProductsRelease5Enabled: false)
 
         // Action
@@ -326,7 +314,6 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false,
                                              isEditProductsRelease5Enabled: false)
 
         // Action
@@ -345,7 +332,6 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: false,
                                              isEditProductsRelease5Enabled: false)
 
         // Action

@@ -10,10 +10,6 @@ enum FeatureFlag: Int {
     ///
     case barcodeScanner
 
-    /// Edit products - release 3
-    ///
-    case editProductsRelease3
-
     /// Edit products - release 4
     ///
     case editProductsRelease4

@@ -710,7 +710,7 @@ extension ProductDetailsViewModel {
         case .productVariants:
             ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
             let variationsViewController = ProductVariationsViewController(product: product,
-                                                                           isEditProductsRelease3Enabled: false)
+                                                                           formType: .readonly)
             sender.navigationController?.pushViewController(variationsViewController, animated: true)
         default:
             break

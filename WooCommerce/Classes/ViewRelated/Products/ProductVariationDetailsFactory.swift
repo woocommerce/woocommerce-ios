@@ -21,7 +21,6 @@ struct ProductVariationDetailsFactory {
                                          presentationStyle: presentationStyle,
                                          currencySettings: currencySettings,
                                          isEditProductsEnabled: forceReadOnly ? false: true,
-                                         isEditProductsRelease3Enabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease3),
                                          isEditProductsRelease5Enabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5))
         onCompletion(vc)
     }
@@ -33,7 +32,6 @@ private extension ProductVariationDetailsFactory {
                                         presentationStyle: ProductFormPresentationStyle,
                                         currencySettings: CurrencySettings,
                                         isEditProductsEnabled: Bool,
-                                        isEditProductsRelease3Enabled: Bool,
                                         isEditProductsRelease5Enabled: Bool) -> UIViewController {
         // TODO-2931: add support for readonly mode based on `isEditProductsEnabled`.
         let vc: UIViewController
@@ -46,12 +44,12 @@ private extension ProductVariationDetailsFactory {
         let viewModel = ProductVariationFormViewModel(productVariation: productVariationModel,
                                                       allAttributes: parentProduct.attributes,
                                                       parentProductSKU: parentProduct.sku,
+                                                      formType: .edit,
                                                       productImageActionHandler: productImageActionHandler)
         vc = ProductFormViewController(viewModel: viewModel,
                                        eventLogger: ProductFormEventLogger(),
                                        productImageActionHandler: productImageActionHandler,
-                                       presentationStyle: presentationStyle,
-                                       isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+                                       presentationStyle: presentationStyle)
         // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         vc.hidesBottomBarWhenPushed = true
         return vc

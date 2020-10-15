@@ -30,23 +30,23 @@ final class IssueRefundViewModel {
     private var state: State {
         didSet {
             sections = createSections()
+            title = calculateTitle()
             onChange?()
         }
     }
 
-    /// Title for the navigation bar
-    /// This is temporary data, will be removed after implementing https://github.com/woocommerce/woocommerce-ios/issues/2842
+    /// Closured to notify the `ViewController` when the view model properties change
     ///
-    let title: String = "$0.00"
+    var onChange: (() -> (Void))?
+
+    /// Title for the navigation bar
+    ///
+    private(set) var title: String = ""
 
     /// String indicating how many items the user has selected to refund
     /// This is temporary data, will be removed after implementing https://github.com/woocommerce/woocommerce-ios/issues/2842
     ///
     let selectedItemsTitle: String = "0 items selected"
-
-    /// Closured to notify the `ViewController` when the view model properties change
-    ///
-    var onChange: (() -> (Void))?
 
     /// The sections and rows to display in the `UITableView`.
     ///
@@ -63,6 +63,13 @@ final class IssueRefundViewModel {
     init(order: Order, currencySettings: CurrencySettings) {
         state = State(order: order, currencySettings: currencySettings)
         sections = createSections()
+        title = calculateTitle()
+    }
+
+    /// Creates the `ViewModel` to be used when navigating to the page where the user can
+    /// confirm and submit the refund.
+    func createRefundConfirmationViewModel() -> RefundConfirmationViewModel {
+        RefundConfirmationViewModel(order: state.order, currencySettings: state.currencySettings)
     }
 }
 
@@ -184,6 +191,30 @@ extension IssueRefundViewModel {
 
         let detailsRow = RefundShippingDetailsViewModel(shippingLine: shippingLine, currency: state.order.currency, currencySettings: state.currencySettings)
         return Section(rows: [switchRow, detailsRow])
+    }
+
+    /// Returns a string of the refund total formatted with the proper currency settings and store currency.
+    ///
+    private func calculateTitle() -> String {
+        let formatter = CurrencyFormatter(currencySettings: state.currencySettings)
+        let totalToRefund = calculateRefundTotal()
+        return formatter.formatAmount(totalToRefund, with: state.order.currency) ?? ""
+    }
+
+    /// Returns the total amount to refund. ProductsTotal + Shipping Total(If required)
+    ///
+    private func calculateRefundTotal() -> Decimal {
+        let formatter = CurrencyFormatter(currencySettings: state.currencySettings)
+        let refundItems = state.refundQuantityStore.map { RefundItemsValuesCalculationUseCase.RefundItem(item: $0, quantity: $1) }
+        let productsTotalUseCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter)
+
+        // If shipping is not enabled, return only the products value
+        guard let shippingLine = state.order.shippingLines.first, state.shouldRefundShipping else {
+            return productsTotalUseCase.calculateRefundValues().total
+        }
+
+        let shippingTotalUseCase = RefundShippingCalculationUseCase(shippingLine: shippingLine, currencyFormatter: formatter)
+        return productsTotalUseCase.calculateRefundValues().total + shippingTotalUseCase.calculateRefundValue()
     }
 }
 

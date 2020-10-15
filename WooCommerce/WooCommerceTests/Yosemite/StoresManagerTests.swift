@@ -80,12 +80,13 @@ class StoresManagerTests: XCTestCase {
     func testDeauthenticateEffectivelyTogglesStoreManagerToDeauthenticatedState() {
         // Arrange
         let mockAuthenticationManager = MockAuthenticationManager()
-        ServiceLocator.setAuthenticationManager(mockAuthenticationManager)
         let manager = DefaultStoresManager.testingInstance
         var isLoggedInValues = [Bool]()
         cancellable = manager.isLoggedIn.subscribe { isLoggedIn in
             isLoggedInValues.append(isLoggedIn)
         }
+        let appCoordinator = AppCoordinator(tabBarController: MainTabBarController(), stores: manager, authenticationManager: mockAuthenticationManager)
+        appCoordinator.start()
 
         // Action
         manager.authenticate(credentials: SessionSettings.credentials)

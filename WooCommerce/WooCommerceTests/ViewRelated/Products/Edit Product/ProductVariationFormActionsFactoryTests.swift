@@ -10,16 +10,16 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let model = EditableProductVariationModel(productVariation: productVariation)
 
         // Action
-        let factory = ProductVariationFormActionsFactory(productVariation: model)
+        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .variationName, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .variationName, .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings,
-                                                                       .status,
-                                                                       .shippingSettings,
-                                                                       .inventorySettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
+                                                                       .status(editable: true),
+                                                                       .shippingSettings(editable: true),
+                                                                       .inventorySettings(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
@@ -32,16 +32,16 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let model = EditableProductVariationModel(productVariation: productVariation)
 
         // Action
-        let factory = ProductVariationFormActionsFactory(productVariation: model)
+        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .variationName, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .variationName, .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings,
-                                                                       .status,
-                                                                       .shippingSettings,
-                                                                       .inventorySettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
+                                                                       .status(editable: true),
+                                                                       .shippingSettings(editable: true),
+                                                                       .inventorySettings(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
@@ -54,15 +54,15 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let model = EditableProductVariationModel(productVariation: productVariation)
 
         // Action
-        let factory = ProductVariationFormActionsFactory(productVariation: model)
+        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .variationName, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .variationName, .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings,
-                                                                       .status,
-                                                                       .inventorySettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
+                                                                       .status(editable: true),
+                                                                       .inventorySettings(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editShippingSettings]
@@ -75,13 +75,15 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let model = EditableProductVariationModel(productVariation: productVariation)
 
         // Action
-        let factory = ProductVariationFormActionsFactory(productVariation: model)
+        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .variationName, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .variationName, .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .status, .inventorySettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
+                                                                       .status(editable: true),
+                                                                       .inventorySettings(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
@@ -94,13 +96,17 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let model = EditableProductVariationModel(productVariation: productVariation)
 
         // Action
-        let factory = ProductVariationFormActionsFactory(productVariation: model)
+        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .variationName, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .variationName, .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .status, .inventorySettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [
+            .priceSettings(editable: true),
+            .status(editable: true),
+            .inventorySettings(editable: true)
+        ]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
@@ -113,13 +119,16 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let model = EditableProductVariationModel(productVariation: productVariation)
 
         // Action
-        let factory = ProductVariationFormActionsFactory(productVariation: model)
+        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images, .variationName, .description]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .variationName, .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings, .noPriceWarning, .status, .shippingSettings, .inventorySettings]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
+                                                                       .noPriceWarning, .status(editable: true),
+                                                                       .shippingSettings(editable: true),
+                                                                       .inventorySettings(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []

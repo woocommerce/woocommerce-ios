@@ -48,7 +48,8 @@ private extension ProductDetailsFactory {
             // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
             vc.hidesBottomBarWhenPushed = true
         } else {
-            let viewModel = ProductDetailsViewModel(product: product)
+            let viewModel = ProductDetailsViewModel(product: product,
+                                                    isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
             vc = ProductDetailsViewController(viewModel: viewModel)
         }
         return vc

@@ -204,8 +204,7 @@ private extension ProductDownloadListViewController {
 
         let cancelTitle = NSLocalizedString("Cancel",
                                             comment: "Button title Cancel in Downloadable Files More Options Action Sheet")
-        let cancelAction = UIAlertAction(title: cancelTitle, style: .cancel) { (action) in
-        }
+        let cancelAction = UIAlertAction(title: cancelTitle, style: .cancel)
         menuAlert.addAction(cancelAction)
 
         menuAlert.popoverPresentationController?.sourceView = view

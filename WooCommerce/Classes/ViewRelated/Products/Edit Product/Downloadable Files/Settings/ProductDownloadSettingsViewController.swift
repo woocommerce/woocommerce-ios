@@ -186,7 +186,7 @@ private extension ProductDownloadSettingsViewController {
                                                             target: self,
                                                             action: #selector(completeUpdating))
         removeNavigationBackBarButtonText()
-        self.enableDoneButton(false)
+        enableDoneButton(false)
     }
 
     func configureMainView() {

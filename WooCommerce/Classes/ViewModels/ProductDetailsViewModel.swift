@@ -709,8 +709,10 @@ extension ProductDetailsViewModel {
             WebviewHelper.launch(product.externalURL, with: sender)
         case .productVariants:
             ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
+            let isEditProductsRelease5Enabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5)
             let variationsViewController = ProductVariationsViewController(product: product,
-                                                                           formType: .readonly)
+                                                                           formType: .readonly,
+                                                                           isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
             sender.navigationController?.pushViewController(variationsViewController, animated: true)
         default:
             break

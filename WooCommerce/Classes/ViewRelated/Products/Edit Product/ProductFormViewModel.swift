@@ -80,7 +80,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     }
 
     private let productImageActionHandler: ProductImageActionHandler
-    private let isEditProductsRelease5Enabled: Bool
+    private (set) var isEditProductsRelease5Enabled: Bool
 
     private var cancellable: ObservationToken?
 

@@ -257,7 +257,8 @@ private extension ProductFormTableViewDataSource {
         }
 
         let switchableViewModel = ImageAndTitleAndTextTableViewCell.SwitchableViewModel(viewModel: viewModel.viewModel.toCellViewModel(),
-                                                                                        isSwitchOn: viewModel.isSwitchOn) { [weak self] isSwitchOn in
+                                                                                        isSwitchOn: viewModel.isSwitchOn,
+                                                                                        isActionable: viewModel.isActionable) { [weak self] isSwitchOn in
                                                                                             self?.onStatusChange?(isSwitchOn)
         }
         cell.updateUI(switchableViewModel: switchableViewModel)

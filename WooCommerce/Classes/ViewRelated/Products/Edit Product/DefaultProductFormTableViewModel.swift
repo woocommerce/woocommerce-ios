@@ -390,7 +390,7 @@ private extension DefaultProductFormTableViewModel {
                                                                  details: nil,
                                                                  isActionable: false)
         let isSwitchOn = productVariation.isEnabled
-        return ProductFormSection.SettingsRow.SwitchableViewModel(viewModel: viewModel, isSwitchOn: isSwitchOn)
+        return ProductFormSection.SettingsRow.SwitchableViewModel(viewModel: viewModel, isSwitchOn: isSwitchOn, isActionable: isEditable)
     }
 
     func noPriceWarningRow() -> ProductFormSection.SettingsRow.WarningViewModel {

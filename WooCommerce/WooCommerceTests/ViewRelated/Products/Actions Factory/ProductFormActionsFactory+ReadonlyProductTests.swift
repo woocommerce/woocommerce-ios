@@ -4,9 +4,9 @@ import XCTest
 @testable import Yosemite
 
 final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
-    func test_readonly_simple_product_without_an_image_does_not_have_images_row() {
+    func test_readonly_simple_product_without_images_and_description_does_not_have_these_two_rows() {
         // Arrange
-        let product = Fixtures.simpleProductWithoutImages
+        let product = Fixtures.simpleProductWithoutImagesAndDescription
         let model = EditableProductModel(product: product)
 
         // Action
@@ -15,22 +15,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
                                                 isEditProductsRelease5Enabled: false)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.name(editable: false), .description(editable: false)]
-        XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
-    }
-
-    func test_readonly_simple_product_without_a_description_does_not_have_description_row() {
-        // Arrange
-        let product = Fixtures.simpleProductWithoutDescription
-        let model = EditableProductModel(product: product)
-
-        // Action
-        let factory = ProductFormActionsFactory(product: model,
-                                                formType: .readonly,
-                                                isEditProductsRelease5Enabled: false)
-
-        // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: false), .name(editable: false)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.name(editable: false)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
     }
 
@@ -214,25 +199,22 @@ private extension ProductFormActionsFactory_ReadonlyProductTests {
                                         name: "Tshirt",
                                         alt: "")
         static let tag = ProductTag(siteID: 123, tagID: 1, name: "", slug: "")
-        // Simple product without an image
-        static let simpleProductWithoutImages = MockProduct().product().copy(productTypeKey: ProductType.simple.rawValue, images: [])
-        // Simple product without a description
-        static let simpleProductWithoutDescription = MockProduct().product().copy(productTypeKey: ProductType.simple.rawValue,
-                                                                                  fullDescription: "",
-                                                                                  images: [image])
+        // Simple product without an image and description
+        static let simpleProductWithoutImagesAndDescription = MockProduct().product()
+            .copy(productTypeKey: ProductType.simple.rawValue, fullDescription: "", images: [])
         // Simple product with data so that all rows are shown
         static let simpleProduct = MockProduct().product().copy(name: "Affiliate",
-                                                                                  productTypeKey: ProductType.simple.rawValue,
-                                                                                  fullDescription: "Woooooo0o",
-                                                                                  briefDescription: "Woo",
-                                                                                  sku: "woo",
-                                                                                  price: "",
-                                                                                  regularPrice: "12.6",
-                                                                                  manageStock: false,
-                                                                                  reviewsAllowed: true,
-                                                                                  categories: [category],
-                                                                                  tags: [tag],
-                                                                                  images: [image])
+                                                                productTypeKey: ProductType.simple.rawValue,
+                                                                fullDescription: "Woooooo0o",
+                                                                briefDescription: "Woo",
+                                                                sku: "woo",
+                                                                price: "",
+                                                                regularPrice: "12.6",
+                                                                manageStock: false,
+                                                                reviewsAllowed: true,
+                                                                categories: [category],
+                                                                tags: [tag],
+                                                                images: [image])
         // Affiliate product with data so that all rows are shown
         static let affiliateProduct = MockProduct().product().copy(name: "Affiliate",
                                                                    productTypeKey: ProductType.affiliate.rawValue,
@@ -266,15 +248,15 @@ private extension ProductFormActionsFactory_ReadonlyProductTests {
         static let groupedProductWithoutSKU = groupedProduct.copy(sku: "")
         // Variable product with data so that all rows are shown
         static let variableProduct = MockProduct().product().copy(name: "Grouped",
-                                                                 productTypeKey: ProductType.variable.rawValue,
-                                                                 fullDescription: "Woooooo0o",
-                                                                 briefDescription: "Woo",
-                                                                 price: "",
-                                                                 regularPrice: "12.6",
-                                                                 reviewsAllowed: true,
-                                                                 categories: [category],
-                                                                 tags: [tag],
-                                                                 images: [image],
-                                                                 variations: [12])
+                                                                  productTypeKey: ProductType.variable.rawValue,
+                                                                  fullDescription: "Woooooo0o",
+                                                                  briefDescription: "Woo",
+                                                                  price: "",
+                                                                  regularPrice: "12.6",
+                                                                  reviewsAllowed: true,
+                                                                  categories: [category],
+                                                                  tags: [tag],
+                                                                  images: [image],
+                                                                  variations: [12])
     }
 }

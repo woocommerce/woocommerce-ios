@@ -12,11 +12,14 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
 
     /// Returns an array of actions that are visible in the product form primary section.
     func primarySectionActions() -> [ProductFormEditAction] {
-        return [
-            .images(editable: editable),
+        let shouldShowImagesRow = editable || productVariation.images.isNotEmpty
+        let shouldShowDescriptionRow = editable || productVariation.description?.isNotEmpty == true
+        let actions: [ProductFormEditAction?] = [
+            shouldShowImagesRow ? .images(editable: editable): nil,
             .variationName,
-            .description(editable: editable)
+            shouldShowDescriptionRow ? .description(editable: editable): nil
         ]
+        return actions.compactMap { $0 }
     }
 
     /// Returns an array of actions that are visible in the product form settings section.
@@ -37,11 +40,12 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
 private extension ProductVariationFormActionsFactory {
     /// All the editable actions in the settings section given the product variation.
     func allSettingsSectionActions() -> [ProductFormEditAction] {
+        let shouldShowPriceSettingsRow = editable || productVariation.regularPrice?.isNotEmpty == true
         let shouldShowNoPriceWarningRow = productVariation.isEnabledAndMissingPrice
         let shouldShowShippingSettingsRow = productVariation.isShippingEnabled()
 
         let actions: [ProductFormEditAction?] = [
-            .priceSettings(editable: editable),
+            shouldShowPriceSettingsRow ? .priceSettings(editable: editable): nil,
             shouldShowNoPriceWarningRow ? .noPriceWarning: nil,
             .status(editable: editable),
             shouldShowShippingSettingsRow ? .shippingSettings(editable: editable): nil,

@@ -161,7 +161,11 @@ private extension DefaultProductFormTableViewModel {
     func variationPriceSettingsRow(productVariation: EditableProductVariationModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let priceViewModel = priceSettingsRow(product: productVariation, isEditable: isEditable)
         let tintColor = productVariation.isEnabledAndMissingPrice ? UIColor.warning: nil
-        return .init(icon: priceViewModel.icon, title: priceViewModel.title, details: priceViewModel.details, tintColor: tintColor)
+        return .init(icon: priceViewModel.icon,
+                     title: priceViewModel.title,
+                     details: priceViewModel.details,
+                     tintColor: tintColor,
+                     isActionable: priceViewModel.isActionable)
     }
 
     func reviewsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {

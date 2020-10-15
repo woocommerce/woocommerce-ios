@@ -8,7 +8,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
     func test_readonly_values_are_as_expected_after_initializing_download_settings() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = MockProduct().product(downloadable: true).copy(downloadLimit: 1, downloadExpiry: 1)
         let model = EditableProductModel(product: product)
 
         // Act
@@ -37,7 +37,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
     // MARK: - `handleDownloadLimitChange`
 
-    func test_handling_empty_downloadLimit_updates_with_default_value() {
+    func test_handling_empty_downloadLimit_updates_with_default_value() throws {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
@@ -45,11 +45,9 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         let defaultLimit: Int64 = -1
 
         // Act
-        var isValidResult: Bool?
-        waitForExpectation { exp in
+        let isValidResult = try waitFor { promise in
             viewModel.handleDownloadLimitChange("") { isValid in
-                isValidResult = isValid
-                exp.fulfill()
+                promise(isValid)
             }
         }
 
@@ -58,7 +56,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.downloadLimit, defaultLimit)
     }
 
-    func test_handling_non_empty_downloadLimit_updates_with_success() {
+    func test_handling_non_empty_downloadLimit_updates_with_success() throws {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
@@ -66,11 +64,9 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         let expectedLimit: Int64 = 100
 
         // Act
-        var isValidResult: Bool?
-        waitForExpectation { exp in
+        let isValidResult = try waitFor { promise in
             viewModel.handleDownloadLimitChange("100") { isValid in
-                isValidResult = isValid
-                exp.fulfill()
+                promise(isValid)
             }
         }
 
@@ -79,7 +75,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.downloadLimit, expectedLimit)
     }
 
-    func test_handling_invalid_downloadLimit_updates_with_default_value() {
+    func test_handling_invalid_downloadLimit_updates_with_default_value() throws {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
@@ -87,11 +83,9 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         let defaultLimit: Int64 = -2
 
         // Act
-        var isValidResult: Bool?
-        waitForExpectation { exp in
+        let isValidResult = try waitFor { promise in
             viewModel.handleDownloadLimitChange("-100") { isValid in
-                isValidResult = isValid
-                exp.fulfill()
+                promise(isValid)
             }
         }
 
@@ -102,7 +96,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
     // MARK: - `handleDownloadExpiryChange`
 
-    func test_handling_empty_downloadExpiry_updates_with_default_value() {
+    func test_handling_empty_downloadExpiry_updates_with_default_value() throws {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
@@ -110,11 +104,9 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         let defaultExpiry: Int64 = -1
 
         // Act
-        var isValidResult: Bool?
-        waitForExpectation { exp in
+        let isValidResult = try waitFor { promise in
             viewModel.handleDownloadExpiryChange("") { isValid in
-                isValidResult = isValid
-                exp.fulfill()
+                promise(isValid)
             }
         }
 
@@ -123,7 +115,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.downloadExpiry, defaultExpiry)
     }
 
-    func test_handling_non_empty_downloadExpiry_updates_with_success() {
+    func test_handling_non_empty_downloadExpiry_updates_with_success() throws {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
@@ -131,11 +123,9 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         let expectedExpiry: Int64 = 100
 
         // Act
-        var isValidResult: Bool?
-        waitForExpectation { exp in
+        let isValidResult = try waitFor { promise in
             viewModel.handleDownloadExpiryChange("100") { isValid in
-                isValidResult = isValid
-                exp.fulfill()
+                promise(isValid)
             }
         }
 
@@ -144,7 +134,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.downloadExpiry, expectedExpiry)
     }
 
-    func test_handling_invalid_downloadExpiry_updates_with_default_value() {
+    func test_handling_invalid_downloadExpiry_updates_with_default_value() throws {
         // Arrange
         let product = MockProduct().product(downloadable: true)
         let model = EditableProductModel(product: product)
@@ -152,11 +142,9 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         let defaultExpiry: Int64 = -2
 
         // Act
-        var isValidResult: Bool?
-        waitForExpectation { exp in
+        let isValidResult = try waitFor { promise in
             viewModel.handleDownloadExpiryChange("-100") { isValid in
-                isValidResult = isValid
-                exp.fulfill()
+                promise(isValid)
             }
         }
 

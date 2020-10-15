@@ -99,7 +99,6 @@ extension ProductDownloadSettingsViewModel: ProductDownloadSettingsActionHandler
         if areChangesValid() {
             onCompletion(downloadLimit, downloadExpiry, hasUnsavedChanges())
         }
-        return
     }
 
     func hasUnsavedChanges() -> Bool {

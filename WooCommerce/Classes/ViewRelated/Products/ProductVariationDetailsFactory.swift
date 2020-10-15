@@ -33,18 +33,17 @@ private extension ProductVariationDetailsFactory {
                                         currencySettings: CurrencySettings,
                                         isEditProductsEnabled: Bool,
                                         isEditProductsRelease5Enabled: Bool) -> UIViewController {
-        // TODO-2931: add support for readonly mode based on `isEditProductsEnabled`.
         let vc: UIViewController
         let productVariationModel = EditableProductVariationModel(productVariation: productVariation,
                                                                   allAttributes: parentProduct.attributes,
                                                                   parentProductSKU: parentProduct.sku)
         let productImageActionHandler = ProductImageActionHandler(siteID: productVariation.siteID,
                                                                   product: productVariationModel)
-
+        let formType: ProductFormType = isEditProductsEnabled ? .edit: .readonly
         let viewModel = ProductVariationFormViewModel(productVariation: productVariationModel,
                                                       allAttributes: parentProduct.attributes,
                                                       parentProductSKU: parentProduct.sku,
-                                                      formType: .edit,
+                                                      formType: formType,
                                                       productImageActionHandler: productImageActionHandler)
         vc = ProductFormViewController(viewModel: viewModel,
                                        eventLogger: ProductFormEventLogger(),

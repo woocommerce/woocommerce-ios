@@ -27,8 +27,8 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
         // Act
         let expectedSections: [ProductDownloadSettingsViewController.Section] = [
-            .init(footer: ProductDownloadSettingsViewModel.Strings.downloadLimitFooter, rows: [ProductDownloadSettingsViewController.Row.limit]),
-            .init(footer: ProductDownloadSettingsViewModel.Strings.downloadExpiryFooter, rows: [ProductDownloadSettingsViewController.Row.expiry])
+            .init(footer: ProductDownloadSettingsViewModel.Localization.downloadLimitFooter, rows: [ProductDownloadSettingsViewController.Row.limit]),
+            .init(footer: ProductDownloadSettingsViewModel.Localization.downloadExpiryFooter, rows: [ProductDownloadSettingsViewController.Row.expiry])
         ]
 
         // Assert

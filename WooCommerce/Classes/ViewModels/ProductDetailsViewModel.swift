@@ -56,7 +56,7 @@ final class ProductDetailsViewModel {
     var productID: Int64 {
         return product.productID
     }
-    
+
     let isEditProductsRelease5Enabled: Bool
 
     // MARK: - private variables
@@ -125,7 +125,7 @@ final class ProductDetailsViewModel {
     init(product: Product, isEditProductsRelease5Enabled: Bool) {
         self.product = product
         self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
-        
+
         refreshResultsController()
     }
 

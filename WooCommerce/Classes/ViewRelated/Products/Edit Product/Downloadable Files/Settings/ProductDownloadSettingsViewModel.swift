@@ -41,8 +41,8 @@ final class ProductDownloadSettingsViewModel: ProductDownloadSettingsViewModelOu
     }
 
     var sections: [Section] {
-        let limitSection = Section(footer: Strings.downloadLimitFooter, rows: [.limit])
-        let expirySection = Section(footer: Strings.downloadExpiryFooter, rows: [.expiry])
+        let limitSection = Section(footer: Localization.downloadLimitFooter, rows: [.limit])
+        let expirySection = Section(footer: Localization.downloadExpiryFooter, rows: [.expiry])
 
         switch product {
         case is EditableProductModel:
@@ -120,7 +120,7 @@ private extension ProductDownloadSettingsViewModel {
 }
 
 extension ProductDownloadSettingsViewModel {
-    enum Strings {
+    enum Localization {
         static let downloadLimitTitle = NSLocalizedString("Download limit",
                                                           comment: "Title of the cell in Product Download limit > Download limit")
         static let downloadLimitPlaceholder = NSLocalizedString("No limit",

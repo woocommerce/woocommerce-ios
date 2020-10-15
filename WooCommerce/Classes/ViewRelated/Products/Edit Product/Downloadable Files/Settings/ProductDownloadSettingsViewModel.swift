@@ -63,40 +63,40 @@ extension ProductDownloadSettingsViewModel: ProductDownloadSettingsActionHandler
 
         if downloadLimit?.isEmpty == true {
             self.downloadLimit = -1
-            onValidation(isChangesValid(), true)
+            onValidation(areChangesValid(), true)
             return
         }
 
         guard let downloadLimit = downloadLimit, let downloadLimit_unwrapped = Int64(downloadLimit), downloadLimit_unwrapped >= 0 else {
             self.downloadLimit = -2
-            onValidation(isChangesValid(), true)
+            onValidation(areChangesValid(), true)
             return
         }
         self.downloadLimit = downloadLimit_unwrapped
-        onValidation(isChangesValid(), false)
+        onValidation(areChangesValid(), false)
     }
 
     func handleDownloadExpiryChange(_ downloadExpiry: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void) {
         if downloadExpiry?.isEmpty == true {
             self.downloadExpiry = -1
-            onValidation(isChangesValid(), true)
+            onValidation(areChangesValid(), true)
             return
         }
 
         guard let downloadExpiry = downloadExpiry, let downloadExpiry_unwrapped = Int64(downloadExpiry), downloadExpiry_unwrapped >= 0 else {
             self.downloadExpiry = -2
-            onValidation(isChangesValid(), true)
+            onValidation(areChangesValid(), true)
             return
         }
 
         self.downloadExpiry = downloadExpiry_unwrapped
-        onValidation(isChangesValid(), false)
+        onValidation(areChangesValid(), false)
     }
 
     // MARK: - Navigation actions
 
     func completeUpdating(onCompletion: ProductDownloadSettingsViewController.Completion) {
-        if isChangesValid() {
+        if areChangesValid() {
             onCompletion(downloadLimit, downloadExpiry, hasUnsavedChanges())
         }
         return
@@ -110,7 +110,7 @@ extension ProductDownloadSettingsViewModel: ProductDownloadSettingsActionHandler
 // MARK: - Convenience Methods
 //
 private extension ProductDownloadSettingsViewModel {
-    func isChangesValid() -> Bool {
+    func areChangesValid() -> Bool {
         // We consider valid values: -1, positive numbers and if at least one new value is different from the previous one
         let downloadLimitIsValid = downloadLimit == -1 || downloadLimit >= 0
         let downloadExpiryIsValid = downloadExpiry == -1 || downloadExpiry >= 0

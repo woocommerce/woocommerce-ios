@@ -105,12 +105,12 @@ extension ProductListMultiSelectorSearchUICommand {
 }
 
 extension ProductListMultiSelectorSearchUICommand: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        !hasUnsavedChanges()
+    }
+
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
         guard let presentingViewController = presentingViewController else {
-            return
-        }
-        guard hasUnsavedChanges() else {
-            presentingViewController.dismiss(animated: true)
             return
         }
         UIAlertController.presentDiscardChangesActionSheet(viewController: presentingViewController,

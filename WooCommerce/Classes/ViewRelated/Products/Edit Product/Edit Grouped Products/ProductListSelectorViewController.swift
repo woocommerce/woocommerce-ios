@@ -71,10 +71,6 @@ private extension ProductListSelectorViewController {
         let searchViewController = SearchViewController(storeID: siteID,
                                                         command: searchProductsCommand,
                                                         cellType: ProductsTabProductTableViewCell.self)
-        // Disables interactive dismiss action so that we can prompt the discard changes alert.
-        if #available(iOS 13.0, *) {
-            searchViewController.isModalInPresentation = true
-        }
         let navigationController = WooNavigationController(rootViewController: searchViewController)
         searchProductsCommand.configurePresentingViewControllerForDiscardChangesAlert(presentingViewController: navigationController)
         present(navigationController, animated: true, completion: nil)

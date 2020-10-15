@@ -62,13 +62,13 @@ extension ProductDownloadSettingsViewModel: ProductDownloadSettingsActionHandler
     func handleDownloadLimitChange(_ downloadLimit: String?, onValidation: @escaping (_ isValid: Bool) -> Void) {
 
         if downloadLimit?.isEmpty == true {
-            self.downloadLimit = -1
+            self.downloadLimit = Constants.validValue
             onValidation(areChangesValid())
             return
         }
 
         guard let downloadLimit = downloadLimit, let downloadLimitUnwrapped = Int64(downloadLimit), downloadLimitUnwrapped >= 0 else {
-            self.downloadLimit = -2
+            self.downloadLimit = Constants.invalidValue
             onValidation(areChangesValid())
             return
         }
@@ -78,13 +78,13 @@ extension ProductDownloadSettingsViewModel: ProductDownloadSettingsActionHandler
 
     func handleDownloadExpiryChange(_ downloadExpiry: String?, onValidation: @escaping (_ isValid: Bool) -> Void) {
         if downloadExpiry?.isEmpty == true {
-            self.downloadExpiry = -1
+            self.downloadExpiry = Constants.validValue
             onValidation(areChangesValid())
             return
         }
 
         guard let downloadExpiry = downloadExpiry, let downloadExpiryUnwrapped = Int64(downloadExpiry), downloadExpiryUnwrapped >= 0 else {
-            self.downloadExpiry = -2
+            self.downloadExpiry = Constants.invalidValue
             onValidation(areChangesValid())
             return
         }
@@ -112,8 +112,8 @@ extension ProductDownloadSettingsViewModel: ProductDownloadSettingsActionHandler
 private extension ProductDownloadSettingsViewModel {
     func areChangesValid() -> Bool {
         // We consider valid values: -1, positive numbers and if at least one new value is different from the previous one
-        let downloadLimitIsValid = downloadLimit == -1 || downloadLimit >= 0
-        let downloadExpiryIsValid = downloadExpiry == -1 || downloadExpiry >= 0
+        let downloadLimitIsValid = downloadLimit == Constants.validValue || downloadLimit >= 0
+        let downloadExpiryIsValid = downloadExpiry == Constants.validValue || downloadExpiry >= 0
         let isDownloadLimitOrDownloadExpiryChanged = downloadLimit != product.downloadLimit || downloadExpiry != product.downloadExpiry
         return downloadLimitIsValid && downloadExpiryIsValid && isDownloadLimitOrDownloadExpiryChanged
     }
@@ -133,5 +133,10 @@ extension ProductDownloadSettingsViewModel {
                                                            comment: "Placeholder of the cell text field in Download expiration")
         static let downloadExpiryFooter = NSLocalizedString("Enter the number of days before a download link expires, or leave blank if never it expires",
                                                             comment: "Footer text for Download Expiration")
+    }
+
+    private enum Constants {
+        static let validValue: Int64 = -1
+        static let invalidValue: Int64 = -2
     }
 }

@@ -27,8 +27,8 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
         // Act
         let expectedSections: [ProductDownloadSettingsViewController.Section] = [
-            .init(footer: ProductDownloadSettingsViewModel.Strings.downloadLimitFooter, rows: [ProductDownloadSettingsViewController.Row.limit]),
-            .init(footer: ProductDownloadSettingsViewModel.Strings.downloadExpiryFooter, rows: [ProductDownloadSettingsViewController.Row.expiry])
+            .init(footer: ProductDownloadSettingsViewModel.Localization.downloadLimitFooter, rows: [ProductDownloadSettingsViewController.Row.limit]),
+            .init(footer: ProductDownloadSettingsViewModel.Localization.downloadExpiryFooter, rows: [ProductDownloadSettingsViewController.Row.expiry])
         ]
 
         // Assert
@@ -46,18 +46,15 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
         // Act
         var isValidResult: Bool?
-        var shouldBringUpKeyboard: Bool?
         waitForExpectation { exp in
-            viewModel.handleDownloadLimitChange("") { (isValid, shouldBringUpKeyboardValue) in
+            viewModel.handleDownloadLimitChange("") { isValid in
                 isValidResult = isValid
-                shouldBringUpKeyboard = shouldBringUpKeyboardValue
                 exp.fulfill()
             }
         }
 
         // Assert
         XCTAssertEqual(isValidResult, true)
-        XCTAssertEqual(shouldBringUpKeyboard, true)
         XCTAssertEqual(viewModel.downloadLimit, defaultLimit)
     }
 
@@ -70,18 +67,15 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
         // Act
         var isValidResult: Bool?
-        var shouldBringUpKeyboard: Bool?
         waitForExpectation { exp in
-            viewModel.handleDownloadLimitChange("100") { (isValid, shouldBringUpKeyboardValue) in
+            viewModel.handleDownloadLimitChange("100") { isValid in
                 isValidResult = isValid
-                shouldBringUpKeyboard = shouldBringUpKeyboardValue
                 exp.fulfill()
             }
         }
 
         // Assert
         XCTAssertEqual(isValidResult, true)
-        XCTAssertEqual(shouldBringUpKeyboard, false)
         XCTAssertEqual(viewModel.downloadLimit, expectedLimit)
     }
 
@@ -94,18 +88,15 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
         // Act
         var isValidResult: Bool?
-        var shouldBringUpKeyboard: Bool?
         waitForExpectation { exp in
-            viewModel.handleDownloadLimitChange("-100") { (isValid, shouldBringUpKeyboardValue) in
+            viewModel.handleDownloadLimitChange("-100") { isValid in
                 isValidResult = isValid
-                shouldBringUpKeyboard = shouldBringUpKeyboardValue
                 exp.fulfill()
             }
         }
 
         // Assert
         XCTAssertEqual(isValidResult, false)
-        XCTAssertEqual(shouldBringUpKeyboard, true)
         XCTAssertEqual(viewModel.downloadLimit, defaultLimit)
     }
 
@@ -120,18 +111,15 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
         // Act
         var isValidResult: Bool?
-        var shouldBringUpKeyboard: Bool?
         waitForExpectation { exp in
-            viewModel.handleDownloadExpiryChange("") { (isValid, shouldBringUpKeyboardValue) in
+            viewModel.handleDownloadExpiryChange("") { isValid in
                 isValidResult = isValid
-                shouldBringUpKeyboard = shouldBringUpKeyboardValue
                 exp.fulfill()
             }
         }
 
         // Assert
         XCTAssertEqual(isValidResult, true)
-        XCTAssertEqual(shouldBringUpKeyboard, true)
         XCTAssertEqual(viewModel.downloadExpiry, defaultExpiry)
     }
 
@@ -144,18 +132,15 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
         // Act
         var isValidResult: Bool?
-        var shouldBringUpKeyboard: Bool?
         waitForExpectation { exp in
-            viewModel.handleDownloadExpiryChange("100") { (isValid, shouldBringUpKeyboardValue) in
+            viewModel.handleDownloadExpiryChange("100") { isValid in
                 isValidResult = isValid
-                shouldBringUpKeyboard = shouldBringUpKeyboardValue
                 exp.fulfill()
             }
         }
 
         // Assert
         XCTAssertEqual(isValidResult, true)
-        XCTAssertEqual(shouldBringUpKeyboard, false)
         XCTAssertEqual(viewModel.downloadExpiry, expectedExpiry)
     }
 
@@ -168,18 +153,15 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
         // Act
         var isValidResult: Bool?
-        var shouldBringUpKeyboard: Bool?
         waitForExpectation { exp in
-            viewModel.handleDownloadExpiryChange("-100") { (isValid, shouldBringUpKeyboardValue) in
+            viewModel.handleDownloadExpiryChange("-100") { isValid in
                 isValidResult = isValid
-                shouldBringUpKeyboard = shouldBringUpKeyboardValue
                 exp.fulfill()
             }
         }
 
         // Assert
         XCTAssertEqual(isValidResult, false)
-        XCTAssertEqual(shouldBringUpKeyboard, true)
         XCTAssertEqual(viewModel.downloadExpiry, defaultExpiry)
     }
 
@@ -193,7 +175,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
         // Act
         let expected = "100"
-        viewModel.handleDownloadLimitChange(expected) { _, _ in }
+        viewModel.handleDownloadLimitChange(expected) { _ in }
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
@@ -208,7 +190,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
         // Act
         let expected = "-100"
-        viewModel.handleDownloadLimitChange(expected) { _, _ in }
+        viewModel.handleDownloadLimitChange(expected) { _ in }
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
@@ -222,7 +204,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
         // Act
         let expected = "100"
-        viewModel.handleDownloadExpiryChange(expected) { _, _ in }
+        viewModel.handleDownloadExpiryChange(expected) { _ in }
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
@@ -237,7 +219,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
         // Act
         let expected = "-100"
-        viewModel.handleDownloadExpiryChange(expected) { _, _ in }
+        viewModel.handleDownloadExpiryChange(expected) { _ in }
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
@@ -250,8 +232,8 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         let viewModel = ProductDownloadSettingsViewModel(product: model)
 
         // Act
-        viewModel.handleDownloadLimitChange("1") { _, _ in }
-        viewModel.handleDownloadExpiryChange("1") { _, _ in }
+        viewModel.handleDownloadLimitChange("1") { _ in }
+        viewModel.handleDownloadExpiryChange("1") { _ in }
 
         // Assert
         XCTAssertFalse(viewModel.hasUnsavedChanges())

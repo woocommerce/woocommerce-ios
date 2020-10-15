@@ -26,6 +26,9 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
 
     /// Returns an array of actions that are visible in the product form bottom sheet.
     func bottomSheetActions() -> [ProductFormBottomSheetAction] {
+        guard editable else {
+            return []
+        }
         return allSettingsSectionActions().filter { settingsSectionActions().contains($0) == false }
             .compactMap { ProductFormBottomSheetAction(productFormAction: $0) }
     }

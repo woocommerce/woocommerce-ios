@@ -82,8 +82,8 @@ private extension DefaultProductFormTableViewModel {
                 return .sku(viewModel: skuRow(product: product.product, isEditable: editable), isEditable: editable)
             case .groupedProducts(let editable):
                 return .groupedProducts(viewModel: groupedProductsRow(product: product.product, isEditable: editable), isEditable: editable)
-            case .variations(let editable):
-                return .variations(viewModel: variationsRow(product: product.product, isEditable: editable))
+            case .variations:
+                return .variations(viewModel: variationsRow(product: product.product))
             case .downloadableFiles:
                 return .downloadableFiles(viewModel: downloadsRow(product: product))
             default:
@@ -362,7 +362,7 @@ private extension DefaultProductFormTableViewModel {
 
     // MARK: Variable products only
 
-    func variationsRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+    func variationsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.variationsImage
         let title = Constants.variationsTitle
 
@@ -381,7 +381,7 @@ private extension DefaultProductFormTableViewModel {
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
                                                         details: details,
-                                                        isActionable: product.variations.isNotEmpty && isEditable)
+                                                        isActionable: product.variations.isNotEmpty)
     }
 
     // MARK: Product variation only

@@ -126,11 +126,11 @@ extension ProductFormViewModel {
     }
 
     func canViewProductInStore() -> Bool {
-        originalProduct.product.productStatus == .publish && formType == .edit
+        originalProduct.product.productStatus == .publish && formType != .add
     }
 
     func canShareProduct() -> Bool {
-        formType == .edit
+        formType != .add
     }
 
     func canDeleteProduct() -> Bool {

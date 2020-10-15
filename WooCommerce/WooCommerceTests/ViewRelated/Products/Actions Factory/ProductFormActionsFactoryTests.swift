@@ -202,7 +202,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [
-            .variations(editable: true),
+            .variations,
             .reviews,
             .shippingSettings(editable: true),
             .inventorySettings(editable: true),
@@ -229,7 +229,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [
-            .variations(editable: true),
+            .variations,
             .reviews,
             .shippingSettings(editable: true),
             .inventorySettings(editable: true),

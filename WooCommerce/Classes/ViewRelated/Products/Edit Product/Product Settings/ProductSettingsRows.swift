@@ -51,7 +51,7 @@ enum ProductSettingsRows {
                 cell.apply(style: .regular)
             }
 
-            cell.updateUI(title: NSLocalizedString("Status", comment: "Status label in Product Settings"), value: settings.status.description)
+            cell.updateUI(title: Localization.status, value: settings.status.description)
         }
 
         func handleTap(sourceViewController: UIViewController, onCompletion: @escaping (ProductSettings) -> Void) {
@@ -96,7 +96,7 @@ enum ProductSettingsRows {
                 return
             }
 
-            let title = NSLocalizedString("Visibility", comment: "Visibility label in Product Settings")
+            let title = Localization.visibility
             cell.updateUI(title: title, value: ProductVisibility(status: settings.status, password: settings.password).description)
             cell.accessoryType = .disclosureIndicator
         }
@@ -134,7 +134,7 @@ enum ProductSettingsRows {
                 return
             }
 
-            let title = NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings")
+            let title = Localization.catalogVisibility
             cell.updateUI(title: title, value: settings.catalogVisibility.description)
             cell.accessoryType = .disclosureIndicator
         }
@@ -166,8 +166,7 @@ enum ProductSettingsRows {
                 return
             }
 
-            let title = NSLocalizedString("Virtual Product", comment: "Virtual Product label in Product Settings")
-
+            let title = Localization.virtualProduct
             cell.title = title
             cell.isOn = settings.virtual
             cell.onChange = { newValue in
@@ -197,9 +196,8 @@ enum ProductSettingsRows {
                  return
              }
 
-              let title = NSLocalizedString("Downloadable Product", comment: "Downloadable Product label in Product Settings")
-
-              cell.title = title
+            let title = Localization.downloadableProduct
+             cell.title = title
              cell.isOn = settings.downloadable
              cell.onChange = { newValue in
                  //TODO: Add analytics M5
@@ -228,8 +226,7 @@ enum ProductSettingsRows {
                 return
             }
 
-            let title = NSLocalizedString("Enable Reviews", comment: "Enable Reviews label in Product Settings")
-
+            let title = Localization.enableReviews
             cell.title = title
             cell.isOn = settings.reviewsAllowed
             cell.onChange = { newValue in
@@ -259,7 +256,7 @@ enum ProductSettingsRows {
                 return
             }
 
-            let title = NSLocalizedString("Slug", comment: "Slug label in Product Settings")
+            let title = Localization.slug
             cell.updateUI(title: title, value: settings.slug)
             cell.accessoryType = .disclosureIndicator
         }
@@ -290,7 +287,7 @@ enum ProductSettingsRows {
                 return
             }
 
-            let title = NSLocalizedString("Purchase Note", comment: "Purchase note label in Product Settings")
+            let title = Localization.purchaseNote
             cell.updateUI(title: title, value: settings.purchaseNote?.strippedHTML)
             cell.accessoryType = .disclosureIndicator
         }
@@ -321,7 +318,7 @@ enum ProductSettingsRows {
                 return
             }
 
-            let title = NSLocalizedString("Menu Order", comment: "Menu order label in Product Settings")
+            let title = Localization.menuOrder
             cell.updateUI(title: title, value: String(settings.menuOrder))
             cell.accessoryType = .disclosureIndicator
         }
@@ -338,5 +335,19 @@ enum ProductSettingsRows {
         let reuseIdentifier: String = SettingTitleAndValueTableViewCell.reuseIdentifier
 
         let cellTypes: [UITableViewCell.Type] = [SettingTitleAndValueTableViewCell.self]
+    }
+}
+
+extension ProductSettingsRows {
+    enum Localization {
+        static let status = NSLocalizedString("Status", comment: "Status label in Product Settings")
+        static let visibility = NSLocalizedString("Visibility", comment: "Visibility label in Product Settings")
+        static let catalogVisibility = NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings")
+        static let virtualProduct = NSLocalizedString("Virtual Product", comment: "Virtual Product label in Product Settings")
+        static let downloadableProduct = NSLocalizedString("Downloadable Product", comment: "Downloadable Product label in Product Settings")
+        static let enableReviews = NSLocalizedString("Enable Reviews", comment: "Enable Reviews label in Product Settings")
+        static let slug = NSLocalizedString("Slug", comment: "Slug label in Product Settings")
+        static let purchaseNote = NSLocalizedString("Purchase Note", comment: "Purchase note label in Product Settings")
+        static let menuOrder = NSLocalizedString("Menu Order", comment: "Menu order label in Product Settings")
     }
 }

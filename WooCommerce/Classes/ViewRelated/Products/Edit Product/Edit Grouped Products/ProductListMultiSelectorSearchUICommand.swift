@@ -17,9 +17,6 @@ final class ProductListMultiSelectorSearchUICommand: NSObject, SearchUICommand {
     private let excludedProductIDs: [Int64]
     private var selectedProductIDs: [Int64] = []
 
-    /// Used for presenting discard changes action sheet.
-    private weak var presentingViewController: UIViewController?
-
     typealias Completion = (_ selectedProductIDs: [Int64]) -> Void
     private let onCompletion: Completion
 
@@ -99,7 +96,6 @@ extension ProductListMultiSelectorSearchUICommand {
     /// Configures the given presenting view controller to present unsaved changes alert when the user attempts to dismiss the search modal with
     /// unsaved changes.
     func configurePresentingViewControllerForDiscardChangesAlert(presentingViewController: UIViewController) {
-        self.presentingViewController = presentingViewController
         presentingViewController.presentationController?.delegate = self
     }
 }
@@ -110,12 +106,9 @@ extension ProductListMultiSelectorSearchUICommand: UIAdaptivePresentationControl
     }
 
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
-        guard let presentingViewController = presentingViewController else {
-            return
-        }
-        UIAlertController.presentDiscardChangesActionSheet(viewController: presentingViewController,
-                                                           onDiscard: { [weak self] in
-                                                            self?.presentingViewController?.dismiss(animated: true)
+        UIAlertController.presentDiscardChangesActionSheet(viewController: presentationController.presentedViewController,
+                                                           onDiscard: {
+                                                            presentationController.presentedViewController.dismiss(animated: true)
         })
     }
 }

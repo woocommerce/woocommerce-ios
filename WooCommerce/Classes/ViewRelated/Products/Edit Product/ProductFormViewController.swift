@@ -40,7 +40,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let productUIImageLoader: ProductUIImageLoader
 
     private let currency: String
-    private let isEditProductsRelease3Enabled: Bool
 
     private lazy var exitForm: () -> Void = {
         presentationStyle.createExitForm(viewController: self)
@@ -59,13 +58,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
-         presentationStyle: ProductFormPresentationStyle,
-         isEditProductsRelease3Enabled: Bool) {
+         presentationStyle: ProductFormPresentationStyle) {
         self.viewModel = viewModel
         self.eventLogger = eventLogger
         self.currency = currency
         self.presentationStyle = presentationStyle
-        self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
         self.productImageActionHandler = productImageActionHandler
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
@@ -316,8 +313,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                     return
                 }
                 let variationsViewController = ProductVariationsViewController(product: product.product,
-                                                                               formType: viewModel.formType,
-                                                                               isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
+                                                                               formType: viewModel.formType)
                 show(variationsViewController, sender: self)
             case .status, .noPriceWarning:
                 break
@@ -684,7 +680,6 @@ private extension ProductFormViewController {
         let viewController = ProductSettingsViewController(product: product.product,
                                                            password: password,
                                                            formType: viewModel.formType,
-                                                           isEditProductsRelease3Enabled: isEditProductsRelease3Enabled,
                                                            completion: { [weak self] (productSettings) in
             guard let self = self else {
                 return

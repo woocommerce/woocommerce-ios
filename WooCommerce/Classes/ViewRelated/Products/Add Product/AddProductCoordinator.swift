@@ -59,14 +59,12 @@ private extension AddProductCoordinator {
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .add,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease3Enabled: true,
                                              isEditProductsRelease5Enabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5))
         let viewController = ProductFormViewController(viewModel: viewModel,
                                                        eventLogger: ProductFormEventLogger(),
                                                        productImageActionHandler: productImageActionHandler,
                                                        currency: currency,
-                                                       presentationStyle: .navigationStack,
-                                                       isEditProductsRelease3Enabled: true)
+                                                       presentationStyle: .navigationStack)
         // Since the Add Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         viewController.hidesBottomBarWhenPushed = true
         navigationController.pushViewController(viewController, animated: true)

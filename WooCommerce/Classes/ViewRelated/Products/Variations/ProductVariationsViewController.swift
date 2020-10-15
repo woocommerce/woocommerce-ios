@@ -80,16 +80,16 @@ final class ProductVariationsViewController: UIViewController {
     private let productID: Int64
     private let allAttributes: [ProductAttribute]
     private let parentProductSKU: String?
+    private let formType: ProductFormType
 
     private let imageService: ImageService = ServiceLocator.imageService
-    private let isEditProductsRelease3Enabled: Bool
 
-    init(product: Product, isEditProductsRelease3Enabled: Bool) {
+    init(product: Product, formType: ProductFormType) {
         self.siteID = product.siteID
         self.productID = product.productID
         self.allAttributes = product.attributes
         self.parentProductSKU = product.sku
-        self.isEditProductsRelease3Enabled = isEditProductsRelease3Enabled
+        self.formType = formType
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -281,30 +281,28 @@ extension ProductVariationsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        if isEditProductsRelease3Enabled {
-            ServiceLocator.analytics.track(.productVariationListVariationTapped)
+        ServiceLocator.analytics.track(.productVariationListVariationTapped)
 
-            let productVariation = resultsController.object(at: indexPath)
-            let model = EditableProductVariationModel(productVariation: productVariation,
+        let productVariation = resultsController.object(at: indexPath)
+        let model = EditableProductVariationModel(productVariation: productVariation,
+                                                  allAttributes: allAttributes,
+                                                  parentProductSKU: parentProductSKU)
+
+        let currencyCode = ServiceLocator.currencySettings.currencyCode
+        let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
+        let productImageActionHandler = ProductImageActionHandler(siteID: productVariation.siteID,
+                                                                  product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                       allAttributes: allAttributes,
-                                                      parentProductSKU: parentProductSKU)
-
-            let currencyCode = ServiceLocator.currencySettings.currencyCode
-            let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
-            let productImageActionHandler = ProductImageActionHandler(siteID: productVariation.siteID,
-                                                                      product: model)
-            let viewModel = ProductVariationFormViewModel(productVariation: model,
-                                                          allAttributes: allAttributes,
-                                                          parentProductSKU: parentProductSKU,
-                                                          productImageActionHandler: productImageActionHandler)
-            let viewController = ProductFormViewController(viewModel: viewModel,
-                                                           eventLogger: ProductVariationFormEventLogger(),
-                                                           productImageActionHandler: productImageActionHandler,
-                                                           currency: currency,
-                                                           presentationStyle: .navigationStack,
-                                                           isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
-            navigationController?.pushViewController(viewController, animated: true)
-        }
+                                                      parentProductSKU: parentProductSKU,
+                                                      formType: formType,
+                                                      productImageActionHandler: productImageActionHandler)
+        let viewController = ProductFormViewController(viewModel: viewModel,
+                                                       eventLogger: ProductVariationFormEventLogger(),
+                                                       productImageActionHandler: productImageActionHandler,
+                                                       currency: currency,
+                                                       presentationStyle: .navigationStack)
+        navigationController?.pushViewController(viewController, animated: true)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

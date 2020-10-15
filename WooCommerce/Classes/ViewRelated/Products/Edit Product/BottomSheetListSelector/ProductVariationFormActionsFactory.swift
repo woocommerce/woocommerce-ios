@@ -3,17 +3,19 @@ import Yosemite
 /// Creates actions for different sections/UI on the product variation form.
 struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let productVariation: EditableProductVariationModel
+    private let editable: Bool
 
-    init(productVariation: EditableProductVariationModel) {
+    init(productVariation: EditableProductVariationModel, editable: Bool) {
         self.productVariation = productVariation
+        self.editable = editable
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
     func primarySectionActions() -> [ProductFormEditAction] {
         return [
-            .images,
+            .images(editable: editable),
             .variationName,
-            .description
+            .description(editable: editable)
         ]
     }
 
@@ -36,11 +38,11 @@ private extension ProductVariationFormActionsFactory {
         let shouldShowShippingSettingsRow = productVariation.isShippingEnabled()
 
         let actions: [ProductFormEditAction?] = [
-            .priceSettings,
+            .priceSettings(editable: editable),
             shouldShowNoPriceWarningRow ? .noPriceWarning: nil,
-            .status,
-            shouldShowShippingSettingsRow ? .shippingSettings: nil,
-            .inventorySettings,
+            .status(editable: editable),
+            shouldShowShippingSettingsRow ? .shippingSettings(editable: editable): nil,
+            .inventorySettings(editable: editable),
         ]
         return actions.compactMap { $0 }
     }

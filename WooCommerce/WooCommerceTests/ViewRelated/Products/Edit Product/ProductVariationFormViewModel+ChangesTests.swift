@@ -144,11 +144,13 @@ extension EditableProductVariationModel {
 // Helper in unit tests
 extension ProductVariationFormViewModel {
     convenience init(productVariation: EditableProductVariationModel,
+                     formType: ProductFormType = .edit,
                      productImageActionHandler: ProductImageActionHandler,
                      storesManager: StoresManager = ServiceLocator.stores) {
         self.init(productVariation: productVariation,
                   allAttributes: [],
                   parentProductSKU: nil,
+                  formType: formType,
                   productImageActionHandler: productImageActionHandler,
                   storesManager: storesManager)
     }

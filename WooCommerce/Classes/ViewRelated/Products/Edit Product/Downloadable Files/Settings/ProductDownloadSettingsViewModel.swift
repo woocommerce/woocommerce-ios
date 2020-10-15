@@ -67,12 +67,12 @@ extension ProductDownloadSettingsViewModel: ProductDownloadSettingsActionHandler
             return
         }
 
-        guard let downloadLimit = downloadLimit, let downloadLimit_unwrapped = Int64(downloadLimit), downloadLimit_unwrapped >= 0 else {
+        guard let downloadLimit = downloadLimit, let downloadLimitUnwrapped = Int64(downloadLimit), downloadLimitUnwrapped >= 0 else {
             self.downloadLimit = -2
             onValidation(areChangesValid(), true)
             return
         }
-        self.downloadLimit = downloadLimit_unwrapped
+        self.downloadLimit = downloadLimitUnwrapped
         onValidation(areChangesValid(), false)
     }
 
@@ -83,13 +83,13 @@ extension ProductDownloadSettingsViewModel: ProductDownloadSettingsActionHandler
             return
         }
 
-        guard let downloadExpiry = downloadExpiry, let downloadExpiry_unwrapped = Int64(downloadExpiry), downloadExpiry_unwrapped >= 0 else {
+        guard let downloadExpiry = downloadExpiry, let downloadExpiryUnwrapped = Int64(downloadExpiry), downloadExpiryUnwrapped >= 0 else {
             self.downloadExpiry = -2
             onValidation(areChangesValid(), true)
             return
         }
 
-        self.downloadExpiry = downloadExpiry_unwrapped
+        self.downloadExpiry = downloadExpiryUnwrapped
         onValidation(areChangesValid(), false)
     }
 

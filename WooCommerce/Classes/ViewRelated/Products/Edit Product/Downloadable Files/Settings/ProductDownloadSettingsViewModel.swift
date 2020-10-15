@@ -16,8 +16,8 @@ protocol ProductDownloadSettingsViewModelOutput {
 ///
 protocol ProductDownloadSettingsActionHandler {
     // Input fields actions
-    func handleDownloadLimitChange(_ downloadLimit: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
-    func handleDownloadExpiryChange(_ downloadExpiry: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
+    func handleDownloadLimitChange(_ downloadLimit: String?, onValidation: @escaping (_ isValid: Bool) -> Void)
+    func handleDownloadExpiryChange(_ downloadExpiry: String?, onValidation: @escaping (_ isValid: Bool) -> Void)
 
     // Navigation actions
     func completeUpdating(onCompletion: ProductDownloadSettingsViewController.Completion)
@@ -59,38 +59,38 @@ final class ProductDownloadSettingsViewModel: ProductDownloadSettingsViewModelOu
 // MARK: - UI changes
 //
 extension ProductDownloadSettingsViewModel: ProductDownloadSettingsActionHandler {
-    func handleDownloadLimitChange(_ downloadLimit: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void) {
+    func handleDownloadLimitChange(_ downloadLimit: String?, onValidation: @escaping (_ isValid: Bool) -> Void) {
 
         if downloadLimit?.isEmpty == true {
             self.downloadLimit = -1
-            onValidation(areChangesValid(), true)
+            onValidation(areChangesValid())
             return
         }
 
         guard let downloadLimit = downloadLimit, let downloadLimitUnwrapped = Int64(downloadLimit), downloadLimitUnwrapped >= 0 else {
             self.downloadLimit = -2
-            onValidation(areChangesValid(), true)
+            onValidation(areChangesValid())
             return
         }
         self.downloadLimit = downloadLimitUnwrapped
-        onValidation(areChangesValid(), false)
+        onValidation(areChangesValid())
     }
 
-    func handleDownloadExpiryChange(_ downloadExpiry: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void) {
+    func handleDownloadExpiryChange(_ downloadExpiry: String?, onValidation: @escaping (_ isValid: Bool) -> Void) {
         if downloadExpiry?.isEmpty == true {
             self.downloadExpiry = -1
-            onValidation(areChangesValid(), true)
+            onValidation(areChangesValid())
             return
         }
 
         guard let downloadExpiry = downloadExpiry, let downloadExpiryUnwrapped = Int64(downloadExpiry), downloadExpiryUnwrapped >= 0 else {
             self.downloadExpiry = -2
-            onValidation(areChangesValid(), true)
+            onValidation(areChangesValid())
             return
         }
 
         self.downloadExpiry = downloadExpiryUnwrapped
-        onValidation(areChangesValid(), false)
+        onValidation(areChangesValid())
     }
 
     // MARK: - Navigation actions

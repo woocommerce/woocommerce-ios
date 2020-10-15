@@ -151,11 +151,9 @@ private extension ProductDownloadSettingsViewController {
 
     func configureLimit(cell: TitleAndTextFieldTableViewCell) {
         let cellViewModel = Product.createDownloadLimitViewModel(downloadLimit: viewModel.downloadLimit) { [weak self] value in
-            self?.viewModel.handleDownloadLimitChange(value) { [weak self] (isValid, shouldBringUpKeyboard) in
+            self?.viewModel.handleDownloadLimitChange(value) { [weak self] (isValid) in
                 self?.enableDoneButton(isValid)
-                if shouldBringUpKeyboard {
-                    self?.getDownloadLimitCell()?.textFieldBecomeFirstResponder()
-                }
+                self?.getDownloadLimitCell()?.textFieldBecomeFirstResponder()
             }
         }
         cell.configure(viewModel: cellViewModel)
@@ -163,11 +161,9 @@ private extension ProductDownloadSettingsViewController {
 
     func configureExpiry(cell: TitleAndTextFieldTableViewCell) {
         let cellViewModel = Product.createDownloadExpiryViewModel(downloadExpiry: viewModel.downloadExpiry) { [weak self] value in
-            self?.viewModel.handleDownloadExpiryChange(value) { [weak self] (isValid, shouldBringUpKeyboard) in
+            self?.viewModel.handleDownloadExpiryChange(value) { [weak self] (isValid) in
                 self?.enableDoneButton(isValid)
-                if shouldBringUpKeyboard {
-                    self?.getDownloadExpiryCell()?.textFieldBecomeFirstResponder()
-                }
+                self?.getDownloadExpiryCell()?.textFieldBecomeFirstResponder()
             }
         }
         cell.configure(viewModel: cellViewModel)

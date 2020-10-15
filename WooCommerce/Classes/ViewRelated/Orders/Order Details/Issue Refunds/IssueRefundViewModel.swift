@@ -229,7 +229,7 @@ extension IssueRefundViewModel {
         return productsTotalUseCase.calculateRefundValues().total + shippingTotalUseCase.calculateRefundValue()
     }
 
-    /// Returns a string with the count ofhow many items are selected for refund.
+    /// Returns a string with the count of how many items are selected for refund.
     ///
     private func createSelectedItemsCount() -> String {
         let count = state.refundQuantityStore.count()

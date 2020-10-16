@@ -1,3 +1,0 @@
-- Prodotti: se l'opzione Prodotti è attiva in Impostazioni → Funzionalità in fase sperimentale per un prodotto variabile, lo stato del magazzino non viene più mostrato nei dettagli del prodotto se la gestione del magazzino è disattivata (poiché lo stato del magazzino è controllato a livello delle varianti).
-- Ordini: nell'elenco della ricerca verrà ora mostrato con il conteggio totale invece di "99+".
-- Recensioni: abbiamo risolto un problema a causa del quale le recensioni non venivano aggiornate correttamente. Ora, se elimini o contrassegni una recensione come spam, questa modifica si rifletterà nell'elenco delle recensioni del prodotto.

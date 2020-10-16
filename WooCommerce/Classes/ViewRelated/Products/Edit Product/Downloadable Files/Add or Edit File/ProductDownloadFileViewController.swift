@@ -53,6 +53,28 @@ final class ProductDownloadFileViewController: UIViewController {
 //
 extension ProductDownloadFileViewController {
 
+    @objc private func presentMoreActionSheetMenu() {
+        let menuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        menuAlert.view.tintColor = .text
+
+        let deleteTitle = NSLocalizedString("Delete",
+                                            comment: "Button title Delete in Downloadable File Options Action Sheet")
+        let deleteAction = UIAlertAction(title: deleteTitle, style: .destructive) { [weak self] (action) in
+            //TODO: add action
+        }
+        menuAlert.addAction(deleteAction)
+
+        let cancelTitle = NSLocalizedString("Cancel",
+                                            comment: "Button title Cancel in Downloadable File More Options Action Sheet")
+        let cancelAction = UIAlertAction(title: cancelTitle, style: .cancel)
+        menuAlert.addAction(cancelAction)
+
+        menuAlert.popoverPresentationController?.sourceView = view
+        menuAlert.popoverPresentationController?.sourceRect = view.bounds
+
+        present(menuAlert, animated: true)
+    }
+
     override func shouldPopOnBackButton() -> Bool {
         guard viewModel.hasUnsavedChanges() else {
             return true
@@ -69,10 +91,6 @@ extension ProductDownloadFileViewController {
         viewModel.completeUpdating { [weak self] (fileName, fileURL, fileID, hasUnsavedChanges) in
              self?.onCompletion(fileName, fileURL, fileID, hasUnsavedChanges)
         }
-    }
-
-    @objc private func deleteDownloadableFile() {
-        //TODO: - Handle the deletion of file properly
     }
 
     private func presentBackNavigationActionSheet() {
@@ -169,9 +187,9 @@ private extension ProductDownloadFileViewController {
             let button = UIBarButtonItem(image: .moreImage,
                                          style: .plain,
                                          target: self,
-                                         action: #selector(deleteDownloadableFile))
-            button.accessibilityLabel = NSLocalizedString("Show bottom action sheet to delete downloadable file from list",
-                                                          comment: "Accessibility label to show bottom action sheet to delete downloadable file from the list")
+                                         action: #selector(presentMoreActionSheetMenu))
+            button.accessibilityLabel = NSLocalizedString("Show bottom action sheet options for a downloadable file",
+                                                          comment: "Accessibility label to show bottom action sheet options for a downloadable file")
             return button
         }()
         rightBarButtonItems.append(moreBarButton)

@@ -3463,10 +3463,10 @@
 		773077E7251E943600178696 /* Add or Edit File */ = {
 			isa = PBXGroup;
 			children = (
-				773077E8251E943600178696 /* ProductDownloadFileViewModel.swift */,
-				773077E9251E943600178696 /* Product+DownloadFileViewModels.swift */,
 				773077EA251E943600178696 /* ProductDownloadFileViewController.swift */,
 				773077EB251E943600178696 /* ProductDownloadFileViewController.xib */,
+				773077E8251E943600178696 /* ProductDownloadFileViewModel.swift */,
+				773077E9251E943600178696 /* Product+DownloadFileViewModels.swift */,
 			);
 			path = "Add or Edit File";
 			sourceTree = "<group>";

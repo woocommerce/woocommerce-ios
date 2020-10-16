@@ -13,6 +13,7 @@ public final class ProductSettings {
     public var slug: String
     public var purchaseNote: String?
     public var menuOrder: Int
+    public var downloadable: Bool
 
     public init(status: ProductStatus,
                 featured: Bool,
@@ -22,7 +23,8 @@ public final class ProductSettings {
                 reviewsAllowed: Bool,
                 slug: String,
                 purchaseNote: String?,
-                menuOrder: Int) {
+                menuOrder: Int,
+                downloadable: Bool) {
         self.status = status
         self.featured = featured
         self.password = password
@@ -32,6 +34,7 @@ public final class ProductSettings {
         self.slug = slug
         self.purchaseNote = purchaseNote
         self.menuOrder = menuOrder
+        self.downloadable = downloadable
     }
 
     public convenience init(from product: Product, password: String?) {
@@ -43,7 +46,8 @@ public final class ProductSettings {
                   reviewsAllowed: product.reviewsAllowed,
                   slug: product.slug,
                   purchaseNote: product.purchaseNote,
-                  menuOrder: product.menuOrder)
+                  menuOrder: product.menuOrder,
+                  downloadable: product.downloadable)
     }
 }
 
@@ -59,6 +63,7 @@ extension ProductSettings: Equatable {
             lhs.reviewsAllowed == rhs.reviewsAllowed &&
             lhs.slug == rhs.slug &&
             lhs.purchaseNote == rhs.purchaseNote &&
-            lhs.menuOrder == rhs.menuOrder
+            lhs.menuOrder == rhs.menuOrder &&
+            lhs.downloadable == rhs.downloadable
     }
 }

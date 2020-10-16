@@ -3,7 +3,9 @@
 - [*] Opening a product variation from outside of the Products tab (e.g. order details, top performers) now shows editable product variation details and this product variation does not appear in the Products tab anymore.
 - [*] Enhancement: when not saving a product as "published", the in-progress modal now shows title and message like "saving your product" instead of "publishing your product".
 - [*] In product and variation list, the stock quantity is not shown anymore when stock management is disabled.
-- [internal] #2883 Renamed a product database table (Attribute) to GenericAttribute. This adds a new database migration. 
+- [*] Enhancement: when the user attempts to dismiss the product selector search modal while at least one product is selected for a grouped product's linked products, a discard changes action sheet is shown.
+- [internal] [https://github.com/woocommerce/woocommerce-ios/pull/2883] Renamed a product database table (Attribute) to GenericAttribute. This adds a new database migration. 
+- [internal] [https://github.com/woocommerce/woocommerce-ios/pull/2979] Refactored the text fields in the Manual Shipment Tracking page. 
 
  
 5.2

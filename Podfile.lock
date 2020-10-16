@@ -12,9 +12,9 @@ PODS:
     - Sentry (~> 4)
     - Sodium (~> 0.8.0)
     - UIDeviceIdentifier (~> 1)
-  - Charts (3.3.0):
-    - Charts/Core (= 3.3.0)
-  - Charts/Core (3.3.0)
+  - Charts (3.6.0):
+    - Charts/Core (= 3.6.0)
+  - Charts/Core (3.6.0)
   - CocoaLumberjack (3.5.3):
     - CocoaLumberjack/Core (= 3.5.3)
   - CocoaLumberjack/Core (3.5.3)
@@ -99,7 +99,7 @@ PODS:
 DEPENDENCIES:
   - Alamofire (~> 4.8)
   - Automattic-Tracks-iOS (~> 0.5.1)
-  - Charts (~> 3.3.0)
+  - Charts (~> 3.6.0)
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
   - Gridicons (~> 1.0)
@@ -162,7 +162,7 @@ SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   Automattic-Tracks-iOS: ac2cf9d8332fef72cf3e6de7b14012e7a0672676
-  Charts: e0dd4cd8f257bccf98407b58183ddca8e8d5b578
+  Charts: b1e3a1f5a1c9ba5394438ca3b91bd8c9076310af
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
   GoogleSignIn: 7137d297ddc022a7e0aa4619c86d72c909fa7213
@@ -198,6 +198,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: 09c7e0d844c2acc96e230e79c1f70581bb125ea3
+PODFILE CHECKSUM: f1c5af9560f5d9026cf428841eb3040c6e46f934
 
 COCOAPODS: 1.9.1

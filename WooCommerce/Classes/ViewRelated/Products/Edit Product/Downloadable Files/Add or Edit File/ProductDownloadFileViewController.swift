@@ -17,15 +17,22 @@ final class ProductDownloadFileViewController: UIViewController {
         _ hasUnsavedChanges: Bool) -> Void
     private let onCompletion: Completion
 
+    // Deletion callback
+    //
+    typealias Deletion = () -> Void
+    private let onDeletion: Deletion
+
+
     private lazy var keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
     }
 
     /// Init
     ///
-    init(productDownload: ProductDownload?, downloadFileIndex: Int?, formType: FormType, completion: @escaping Completion) {
+    init(productDownload: ProductDownload?, downloadFileIndex: Int?, formType: FormType, completion: @escaping Completion, deletion: @escaping Deletion) {
         viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: downloadFileIndex, formType: formType)
         onCompletion = completion
+        onDeletion = deletion
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -60,7 +67,7 @@ extension ProductDownloadFileViewController {
         let deleteTitle = NSLocalizedString("Delete",
                                             comment: "Button title Delete in Downloadable File Options Action Sheet")
         let deleteAction = UIAlertAction(title: deleteTitle, style: .destructive) { [weak self] (action) in
-            //TODO: add action
+            self?.onDeletion()
         }
         menuAlert.addAction(deleteAction)
 

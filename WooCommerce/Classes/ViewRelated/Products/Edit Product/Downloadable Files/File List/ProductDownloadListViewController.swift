@@ -147,15 +147,17 @@ extension ProductDownloadListViewController {
         let downloadableFile = viewModel.item(at: indexPath?.row ?? -1)?.downloadableFile
         let viewController = ProductDownloadFileViewController(productDownload: downloadableFile,
                                                                downloadFileIndex: indexPath?.row,
-                                                               formType: formType) { [weak self]
-            (fileName, fileURL, fileID, hasUnsavedChanges) in
+                                                               formType: formType) { [weak self] (fileName, fileURL, fileID, hasUnsavedChanges) in
             self?.onAddEditDownloadableFileCompletion(fileName: fileName,
                                                       fileURL: fileURL,
                                                       fileID: fileID,
                                                       hasUnsavedChanges: hasUnsavedChanges,
                                                       indexPath: indexPath,
                                                       formType: formType)
+        } deletion: { [weak self] in
+            self?.onDownloadableFileDeletion(indexPath: indexPath)
         }
+
         navigationController?.pushViewController(viewController, animated: true)
 
     }
@@ -183,6 +185,15 @@ extension ProductDownloadListViewController {
                                                                                                         fileURL: fileURL))))
             }
         }
+        viewModel.completeUpdating(onCompletion: onCompletion)
+        tableView.reloadData()
+    }
+
+    func onDownloadableFileDeletion(indexPath: IndexPath?) {
+        guard let indexPath = indexPath else {
+            return
+        }
+        viewModel.remove(at: indexPath.row)
         viewModel.completeUpdating(onCompletion: onCompletion)
         tableView.reloadData()
     }

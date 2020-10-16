@@ -63,9 +63,8 @@ private extension RefundConfirmationViewController {
     }
 
     func configureButtonTableFooterView() {
-        tableView.tableFooterView = ButtonTableFooterView(frame: .zero, title: Localization.refund) {
-            // TODO API calls and magic
-            print("button pressed")
+        tableView.tableFooterView = ButtonTableFooterView(frame: .zero, title: Localization.refund) { [weak self] in
+            self?.viewModel.submit()
         }
         tableView.updateFooterHeight()
     }
@@ -100,7 +99,7 @@ extension RefundConfirmationViewController: UITableViewDataSource {
             return cell
         case let row as RefundConfirmationViewModel.TitleAndEditableValueRow:
             let cell = tableView.dequeueReusableCell(TitleAndEditableValueTableViewCell.self, for: indexPath)
-            cell.update(style: .relaxed, title: row.title, placeholder: row.placeholder)
+            cell.update(style: .relaxed, viewModel: row.cellViewModel)
             return cell
         case let row as RefundConfirmationViewModel.TitleAndBodyRow:
             let cell = tableView.dequeueReusableCell(HeadlineLabelTableViewCell.self, for: indexPath)

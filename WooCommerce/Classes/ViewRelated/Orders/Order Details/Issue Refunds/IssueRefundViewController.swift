@@ -67,7 +67,7 @@ private extension IssueRefundViewController {
     }
 
     @IBAction func selectAllButtonWasPressed(_ sender: Any) {
-        print("Select All button pressed")
+        viewModel.selectAllOrderItems()
     }
 
     func shippingSwitchChanged() {

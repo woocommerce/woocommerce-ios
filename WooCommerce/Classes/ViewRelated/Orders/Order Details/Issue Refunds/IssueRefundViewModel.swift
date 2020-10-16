@@ -178,7 +178,7 @@ extension IssueRefundViewModel {
     private func createItemsToRefundSection() -> Section {
         let itemsRows = state.itemsToRefund.map { refundable -> RefundItemViewModel in
             let product = products.filter { $0.productID == refundable.item.productID }.first
-            return RefundItemViewModel(item: refundable.item,
+            return RefundItemViewModel(refundable: refundable,
                                        product: product,
                                        refundQuantity: state.refundQuantityStore.refundQuantity(for: refundable.item),
                                        currency: state.order.currency,
@@ -317,7 +317,7 @@ private extension IssueRefundViewModel {
 }
 
 // MARK: RefundableOrderItem
-private extension IssueRefundViewModel {
+extension IssueRefundViewModel {
     /// Groups an order item and its quantity available for refund
     ///
     struct RefundableOrderItem {

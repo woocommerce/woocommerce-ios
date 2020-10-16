@@ -236,7 +236,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedItemsTitle, selectedItemsTitle)
     }
 
-    func test_viewModel_correcly_reduces_refunded_items() {
+    func test_viewModel_correctly_reduces_refunded_items() {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
@@ -259,7 +259,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.quantityAvailableForRefundForItemAtIndex(2), 1)
     }
 
-    func test_viewModel_correcly_filters_items_already_refunded() {
+    func test_viewModel_correctly_filters_items_already_refunded() {
         // Given
         let currencySettings = CurrencySettings()
         let items = [

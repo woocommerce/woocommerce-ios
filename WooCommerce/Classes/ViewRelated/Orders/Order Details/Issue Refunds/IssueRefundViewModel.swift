@@ -246,7 +246,7 @@ extension IssueRefundViewModel {
         // Flattened array with all items refunded
         let allRefundedItems = refunds.flatMap { $0.items }
 
-        // Transform `order.items` by substracting the quantity left to refund and evicting those who were fully refunded.
+        // Transform `order.items` by subtracting the quantity left to refund and evicting those who were fully refunded.
         return order.items.compactMap { item -> RefundableOrderItem? in
 
             // Calculate how many times an item has been refunded. This number is negative.

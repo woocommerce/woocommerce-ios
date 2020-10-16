@@ -3484,8 +3484,8 @@
 		77E53EB5250E6972003D385F /* Downloadable Files */ = {
 			isa = PBXGroup;
 			children = (
-				773077E7251E943600178696 /* Add or Edit File */,
 				77E53EC62510C3F4003D385F /* File List */,
+				773077E7251E943600178696 /* Add or Edit File */,
 				45F627B12536037400894B86 /* Settings */,
 			);
 			path = "Downloadable Files";

@@ -195,7 +195,7 @@ private extension ProductDownloadFileViewController {
                 let button = UIBarButtonItem(image: .moreImage,
                                              style: .plain,
                                              target: self,
-                                             action: #selector(presentMoreActionSheetMenu))
+                                             action: #selector(presentMoreActionSheetMenu(_:)))
                 button.accessibilityLabel = NSLocalizedString("Show bottom action sheet options for a downloadable file",
                                                               comment: "Accessibility label to show bottom action sheet options for a downloadable file")
                 return button

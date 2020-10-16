@@ -304,4 +304,24 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertEqual(itemRows.count, 2) // One item left + summary row
         XCTAssertEqual(viewModel.quantityAvailableForRefundForItemAtIndex(0), 1)
     }
+
+    func test_viewModel_total_is_correctly_calculated_while_having_previous_refunds() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, productID: 1, quantity: 3, price: 11.50, totalTax: "2.97"),
+        ]
+        let order = MockOrders().makeOrder(items: items)
+        let refund = MockRefunds.sampleRefund(items: [
+            MockRefunds.sampleRefundItem(productID: 1, quantity: -1),
+        ])
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, refunds: [refund], currencySettings: currencySettings)
+        viewModel.updateRefundQuantity(quantity: 1, forItemAtIndex: 0)
+
+        // Then
+        // Price is 11.50 and tax is 0.99 (2.97 / 3(quantity))
+        XCTAssertEqual(viewModel.title, "$12.49")
+    }
 }

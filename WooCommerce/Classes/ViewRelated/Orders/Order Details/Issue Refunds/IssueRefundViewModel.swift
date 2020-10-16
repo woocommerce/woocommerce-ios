@@ -14,7 +14,7 @@ final class IssueRefundViewModel {
 
         /// Items to refund. Order Items - Refunded items
         ///
-        let itemsToRefund: [OrderItem]
+        let itemsToRefund: [RefundableOrderItem]
 
         /// Current currency settings
         ///
@@ -91,37 +91,36 @@ extension IssueRefundViewModel {
     /// Returns `nil` if the index is out of bounds
     ///
     func quantityAvailableForRefundForItemAtIndex(_ itemIndex: Int) -> Int? {
-        guard let item = state.itemsToRefund[safe: itemIndex] else {
+        guard let refundable = state.itemsToRefund[safe: itemIndex] else {
             return nil
         }
-        return Int(truncating: item.quantity as NSDecimalNumber)
+        return refundable.quantity
     }
 
     /// Returns the current quantlty set for refund for the provided item index.
     /// Returns `nil` if the index is out of bounds.
     ///
     func currentQuantityForItemAtIndex(_ itemIndex: Int) -> Int? {
-        guard let item = state.itemsToRefund[safe: itemIndex] else {
+        guard let refundable = state.itemsToRefund[safe: itemIndex] else {
             return nil
         }
-        return state.refundQuantityStore.refundQuantity(for: item)
+        return state.refundQuantityStore.refundQuantity(for: refundable.item)
     }
 
     /// Updates the quantity to be refunded for an item on the provided index.
     ///
     func updateRefundQuantity(quantity: Int, forItemAtIndex itemIndex: Int) {
-        guard let item = state.itemsToRefund[safe: itemIndex] else {
+        guard let refundable = state.itemsToRefund[safe: itemIndex] else {
             return
         }
-        state.refundQuantityStore.update(quantity: quantity, for: item)
+        state.refundQuantityStore.update(quantity: quantity, for: refundable.item)
     }
 
     /// Marks all items as to be refunded
     ///
     func selectAllOrderItems() {
-        state.itemsToRefund.forEach { item in
-            let quantity = Int(truncating: item.quantity as NSDecimalNumber)
-            state.refundQuantityStore.update(quantity: quantity, for: item)
+        state.itemsToRefund.forEach { refundable in
+            state.refundQuantityStore.update(quantity: refundable.quantity, for: refundable.item)
         }
     }
 }
@@ -132,7 +131,7 @@ private extension IssueRefundViewModel {
     /// Results controller that fetches the products related to this order
     ///
     func createProductsResultsController() -> ResultsController<StorageProduct> {
-        let itemsIDs = state.itemsToRefund.map { $0.productID }
+        let itemsIDs = state.itemsToRefund.map { $0.item.productID }
         let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", state.order.siteID, itemsIDs)
         return ResultsController<StorageProduct>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
     }
@@ -177,11 +176,11 @@ extension IssueRefundViewModel {
     /// Returns a section with the order items that can be refunded
     ///
     private func createItemsToRefundSection() -> Section {
-        let itemsRows = state.itemsToRefund.map { item -> RefundItemViewModel in
-            let product = products.filter { $0.productID == item.productID }.first
-            return RefundItemViewModel(item: item,
+        let itemsRows = state.itemsToRefund.map { refundable -> RefundItemViewModel in
+            let product = products.filter { $0.productID == refundable.item.productID }.first
+            return RefundItemViewModel(item: refundable.item,
                                        product: product,
-                                       refundQuantity: state.refundQuantityStore.refundQuantity(for: item),
+                                       refundQuantity: state.refundQuantityStore.refundQuantity(for: refundable.item),
                                        currency: state.order.currency,
                                        currencySettings: state.currencySettings)
         }
@@ -241,14 +240,14 @@ extension IssueRefundViewModel {
         return String.pluralize(count, singular: Localization.itemSingular, plural: Localization.itemsPlural)
     }
 
-    /// Return an array of `orderItems` by taking out all previously refunded items
+    /// Return an array of `RefundableOrderItems` by taking out all previously refunded items
     ///
-    private static func filterItems(from order: Order, with refunds: [Refund]) -> [OrderItem] {
+    private static func filterItems(from order: Order, with refunds: [Refund]) -> [RefundableOrderItem] {
         // Flattened array with all items refunded
         let allRefundedItems = refunds.flatMap { $0.items }
 
         // Transform `order.items` by substracting the quantity left to refund and evicting those who were fully refunded.
-        return order.items.compactMap { item -> OrderItem? in
+        return order.items.compactMap { item -> RefundableOrderItem? in
 
             // Calculate how many times an item has been refunded. This number is negative.
             let timesRefunded = allRefundedItems.reduce(0) { timesRefunded, refundedItem -> Decimal in
@@ -267,7 +266,7 @@ extension IssueRefundViewModel {
             }
 
             // Return the item with the updated quantity to refund
-            return item.copy(quantity: quantityLeftToRefund)
+            return RefundableOrderItem(item: item, quantity: quantityLeftToRefund)
         }
     }
 }
@@ -313,6 +312,26 @@ private extension IssueRefundViewModel {
         ///
         func count() -> Int {
             store.values.reduce(0) { $0 + $1 }
+        }
+    }
+}
+
+// MARK: RefundableOrderItem
+private extension IssueRefundViewModel {
+    /// Groups an order item and its quantity available for refund
+    ///
+    struct RefundableOrderItem {
+        /// Original purchased item
+        ///
+        let item: OrderItem
+
+        /// Current quantity available for refund
+        ///
+        let quantity: Int
+
+        init(item: OrderItem, quantity: Decimal) {
+            self.item = item
+            self.quantity = Int(truncating: quantity as NSNumber)
         }
     }
 }

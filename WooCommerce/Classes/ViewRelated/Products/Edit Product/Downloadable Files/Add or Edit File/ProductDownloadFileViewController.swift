@@ -190,16 +190,18 @@ private extension ProductDownloadFileViewController {
 
         var rightBarButtonItems = [UIBarButtonItem]()
 
-        let moreBarButton: UIBarButtonItem = {
-            let button = UIBarButtonItem(image: .moreImage,
-                                         style: .plain,
-                                         target: self,
-                                         action: #selector(presentMoreActionSheetMenu))
-            button.accessibilityLabel = NSLocalizedString("Show bottom action sheet options for a downloadable file",
-                                                          comment: "Accessibility label to show bottom action sheet options for a downloadable file")
-            return button
-        }()
-        rightBarButtonItems.append(moreBarButton)
+        if viewModel.formType == .edit {
+            let moreBarButton: UIBarButtonItem = {
+                let button = UIBarButtonItem(image: .moreImage,
+                                             style: .plain,
+                                             target: self,
+                                             action: #selector(presentMoreActionSheetMenu))
+                button.accessibilityLabel = NSLocalizedString("Show bottom action sheet options for a downloadable file",
+                                                              comment: "Accessibility label to show bottom action sheet options for a downloadable file")
+                return button
+            }()
+            rightBarButtonItems.append(moreBarButton)
+        }
 
         let updateButtonTitle = NSLocalizedString("Update",
                                                 comment: "Action for updating a Products' downloadable files' info remotely")

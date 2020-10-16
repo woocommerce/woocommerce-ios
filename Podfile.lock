@@ -36,7 +36,7 @@ PODS:
   - GTMSessionFetcher/Core (1.4.0)
   - GTMSessionFetcher/Full (1.4.0):
     - GTMSessionFetcher/Core (= 1.4.0)
-  - KeychainAccess (3.2.1)
+  - KeychainAccess (4.2.1)
   - Kingfisher (5.11.0):
     - Kingfisher/Core (= 5.11.0)
   - Kingfisher/Core (5.11.0)
@@ -103,7 +103,7 @@ DEPENDENCIES:
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
   - Gridicons (~> 1.0)
-  - KeychainAccess (~> 3.2)
+  - KeychainAccess (~> 4.2.1)
   - Kingfisher (~> 5.11.0)
   - Sourcery (~> 0.18)
   - WordPress-Editor-iOS (~> 1.11.0)
@@ -169,7 +169,7 @@ SPEC CHECKSUMS:
   Gridicons: f032dbc3350f8648e0fabe3e531b72cf97d428a9
   GTMAppAuth: 197a8dabfea5d665224aa00d17f164fc2248dab9
   GTMSessionFetcher: 6f5c8abbab8a9bce4bb3f057e317728ec6182b10
-  KeychainAccess: d5470352939ced6d6f7fb51cb2e67aae51fc294f
+  KeychainAccess: 9b07f665298d13c3a85881bd3171f6f49b8151c1
   Kingfisher: 4569606189149e19c7d9439f47e885d0679b7a90
   lottie-ios: 85ce835dd8c53e02509f20729fc7d6a4e6645a0a
   NSObject-SafeExpectations: ab8fe623d36b25aa1f150affa324e40a2f3c0374
@@ -198,6 +198,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: 09c7e0d844c2acc96e230e79c1f70581bb125ea3
+PODFILE CHECKSUM: 34709b029b9dd4193749c797f968693ec10e2826
 
 COCOAPODS: 1.9.1

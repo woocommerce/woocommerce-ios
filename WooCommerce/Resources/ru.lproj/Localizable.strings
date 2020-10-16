@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-10-01 10:54:48+0000 */
+/* Translation-Revision-Date: 2020-10-16 11:54:05+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -342,7 +342,7 @@
 "Can Not Request Link" = "Не удаётся запросить ссылку.";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
 "Cancel" = "Отмена";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -534,7 +534,8 @@
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "По умолчанию";
 
-/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
+/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen
+   Button title Delete in Edit Product More Options Action Sheet */
 "Delete" = "Удалить";
 
 /* Delete a Shipment Tracking
@@ -587,6 +588,9 @@
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "Запретить";
+
+/* Body of the alert when a user is moving a product to the trash */
+"Do you want to move this product to the Trash?" = "Вы уверены, что хотите переместить товар в корзину?";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Нет учетной записи? _Зарегистрироваться_";
@@ -940,6 +944,9 @@
    Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Наличие";
 
+/* Text on the button that starts a new refund process */
+"Issue Refund" = "Оформить возврат";
+
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Похоже, введённое имя пользователя или пароль не связаны с этим сайтом.";
 
@@ -1107,6 +1114,9 @@
 
 /* Accessibility label for the Edit Product More Options action sheet */
 "More options" = "Дополнительные параметры";
+
+/* Confirmation button on the alert when the user is moving a product to the trash */
+"Move to Trash" = "Удалить";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "Отправить комментарий в «Спам»";
@@ -1357,6 +1367,9 @@
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Выберите магазин для подключения";
 
+/* Title of the in-progress UI while deleting the Product remotely */
+"Placing your product in the trash..." = "Отправка товара в корзину...";
+
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "Введите URL-адрес";
 
@@ -1407,6 +1420,9 @@
 
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Подождите, пока мы не опубликуем этот продукт в вашем магазине";
+
+/* Message of the in-progress UI while deleting the Product remotely */
+"Please wait while we update your store details" = "Дождитесь окончания обновления сведений о магазине";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "При поддержке Automattic";
@@ -1476,13 +1492,14 @@
 "Product link" = "Ссылка на товар";
 
 /* Title of the Product Type row on Product main screen */
-"Product type" = "Product type";
+"Product type" = "Тип товара";
 
 /* Product section title if there is more than one product.
    Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Товары";
 
-/* Label for computed value `product refunds + taxes = subtotal`. */
+/* Label for computed value `product refunds + taxes = subtotal`.
+   Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "Возврат средств за продукты";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
@@ -1490,6 +1507,9 @@
 
 /* One of the possible options in Product Visibility */
 "Public" = "Общедоступный";
+
+/* Action for creating a new Product remotely */
+"Publish" = "Публикация";
 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "Настройки публикации";
@@ -1582,6 +1602,9 @@
 /* Label action for removing a link from the editor */
 "Remove end date" = "Удалить дату окончания";
 
+/* Title of the alert when a user is moving a product to the trash */
+"Remove product" = "Удалить товар";
+
 /* Action to replace one photo on the Product images screen */
 "Replace Photo" = "Заменить фотографию";
 
@@ -1656,6 +1679,12 @@
 /* Add Product Category. Save button title in navbar.
    Add Product Tags. Save button title in navbar. */
 "Save" = "Сохранить";
+
+/* Button title to save a product as draft in Discard Changes Action Sheet */
+"Save as Draft" = "Сохранить как черновик";
+
+/* Button title to save a product as draft in Product More Options Action Sheet */
+"Save as draft" = "Сохранить как черновик";
 
 /* Scan Products */
 "Scan products" = "Сканировать товары";
@@ -1747,6 +1776,9 @@
 
 /* Shipping method title for customer info cell */
 "Shipping Method" = "Способ доставки";
+
+/* Title on the refund screen that lists the shipping total cost */
+"Shipping Refund" = "Возврат средств за доставку";
 
 /* Add / Edit shipping carrier. Title of cell presenting name */
 "Shipping carrier" = "Перевозчик";
@@ -1942,7 +1974,8 @@
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Зачеркнутый";
 
-/* Subtotal label for a refund details view */
+/* Subtotal label for a refund details view
+   Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost */
 "Subtotal" = "Подытог";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
@@ -2033,7 +2066,8 @@
 /* Accessibility hint for selecting paragraph style button on formatting toolbar. */
 "Tap to toggle paragraph style" = "Нажмите, чтобы переключить стиль абзаца";
 
-/* Tax label for a refund details view */
+/* Tax label for a refund details view
+   Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "Налог";
 
 /* Section header title for product tax settings */
@@ -2632,6 +2666,9 @@
 
 /* Backorders status. Example: 'Backorders: not allowed' */
 "not allowed" = "запрещены";
+
+/* No comment provided by engineer. */
+"password" = "Пароль";
 
 /* Today */
 "today" = "сегодня";

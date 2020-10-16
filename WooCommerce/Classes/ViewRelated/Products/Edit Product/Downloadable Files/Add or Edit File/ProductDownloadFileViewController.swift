@@ -60,7 +60,7 @@ final class ProductDownloadFileViewController: UIViewController {
 //
 extension ProductDownloadFileViewController {
 
-    @objc private func presentMoreActionSheetMenu() {
+    @objc private func presentMoreActionSheetMenu(_ sender: UIBarButtonItem) {
         let menuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         menuAlert.view.tintColor = .text
 
@@ -76,8 +76,8 @@ extension ProductDownloadFileViewController {
         let cancelAction = UIAlertAction(title: cancelTitle, style: .cancel)
         menuAlert.addAction(cancelAction)
 
-        menuAlert.popoverPresentationController?.sourceView = view
-        menuAlert.popoverPresentationController?.sourceRect = view.bounds
+        let popoverController = menuAlert.popoverPresentationController
+        popoverController?.barButtonItem = sender
 
         present(menuAlert, animated: true)
     }

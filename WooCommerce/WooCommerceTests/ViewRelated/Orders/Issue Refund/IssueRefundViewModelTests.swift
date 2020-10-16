@@ -279,5 +279,6 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Then
         let itemRows = viewModel.sections[0].rows
         XCTAssertEqual(itemRows.count, 2) // One item left + summary row
+        XCTAssertEqual(viewModel.quantityAvailableForRefundForItemAtIndex(0), 1)
     }
 }

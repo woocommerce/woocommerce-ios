@@ -98,7 +98,7 @@ public struct OrderItemRefund: Codable {
         var container = encoder.container(keyedBy: EncodingKeys.self)
 
         try container.encode(quantity, forKey: .quantity)
-        try container.encode(total,  forKey: .total)
+        try container.encode(total, forKey: .total)
         try container.encode(taxesDictionary(), forKey: .taxes)
     }
 

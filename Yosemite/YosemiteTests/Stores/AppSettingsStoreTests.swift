@@ -352,7 +352,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(shouldBeVisibleResult).get())
     }
 
-    func test_loadFeedbackVisibility_for_productsM3_returns_true_after_marking_it_as_pending() throws {
+    func test_loadFeedbackVisibility_for_productsM4_returns_true_after_marking_it_as_pending() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
         let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsM4, status: .pending) { _ in }
@@ -372,7 +372,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
     }
 
-    func test_loadFeedbackVisibility_for_productsM3_returns_false_after_marking_it_as_dismissed() throws {
+    func test_loadFeedbackVisibility_for_productsM4_returns_false_after_marking_it_as_dismissed() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
         let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsM4, status: .dismissed) { _ in }
@@ -392,7 +392,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
     }
 
-    func test_loadFeedbackVisibility_for_productsM3_returns_false_after_marking_it_as_given() throws {
+    func test_loadFeedbackVisibility_for_productsM4_returns_false_after_marking_it_as_given() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
         let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsM4, status: .given(Date())) { _ in }

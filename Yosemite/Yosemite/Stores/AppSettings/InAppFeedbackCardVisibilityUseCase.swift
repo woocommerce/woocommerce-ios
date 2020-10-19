@@ -64,7 +64,7 @@ struct InAppFeedbackCardVisibilityUseCase {
         return true
     }
 
-    /// Returns whether the productsM3 feedback request should be displayed
+    /// Returns whether the productsM4 feedback request should be displayed
     ///
     private func shouldProductsFeedbackBeVisible() -> Bool {
         return settings.feedbackStatus(of: feedbackType) == .pending

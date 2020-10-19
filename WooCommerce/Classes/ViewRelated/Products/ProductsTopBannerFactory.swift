@@ -21,11 +21,11 @@ struct ProductsTopBannerFactory {
             let icon: UIImage = .megaphoneIcon
             let infoText = isFeatureSwitchOn ? Localization.infoWhenRelease4IsEnabled: Localization.info
             let giveFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.giveFeedback) {
-                analytics.track(event: .featureFeedbackBanner(context: .productsM3, action: .gaveFeedback))
+                analytics.track(event: .featureFeedbackBanner(context: .productsM4, action: .gaveFeedback))
                 onGiveFeedbackButtonPressed()
             }
             let dismissAction = TopBannerViewModel.ActionButton(title: Localization.dismiss) {
-                analytics.track(event: .featureFeedbackBanner(context: .productsM3, action: .dismissed))
+                analytics.track(event: .featureFeedbackBanner(context: .productsM4, action: .dismissed))
                 onDismissButtonPressed()
             }
             let actions = [giveFeedbackAction, dismissAction]

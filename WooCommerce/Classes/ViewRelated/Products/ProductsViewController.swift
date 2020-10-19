@@ -573,7 +573,7 @@ private extension ProductsViewController {
     ///
     func presentProductsFeedback() {
         // Present survey
-        let navigationController = SurveyCoordinatingController(survey: .productsM3Feedback)
+        let navigationController = SurveyCoordinatingController(survey: .productsM4Feedback)
         present(navigationController, animated: true) { [weak self] in
 
             // Mark survey as given and update top banner view

@@ -107,3 +107,9 @@ protocol ProductFormViewModelProtocol {
 
     func resetPassword(_ password: String?)
 }
+
+extension ProductFormViewModelProtocol {
+    func shouldShowMoreOptionsMenu() -> Bool {
+        canSaveAsDraft() || canEditProductSettings() || canViewProductInStore() || canShareProduct() || canDeleteProduct()
+    }
+}

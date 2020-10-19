@@ -33,11 +33,13 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
     struct SwitchableViewModel {
         let viewModel: ViewModel
         let isSwitchOn: Bool
+        let isActionable: Bool
         let onSwitchChange: (_ isOn: Bool) -> Void
 
-        init(viewModel: ViewModel, isSwitchOn: Bool, onSwitchChange: @escaping (_ isOn: Bool) -> Void) {
+        init(viewModel: ViewModel, isSwitchOn: Bool, isActionable: Bool, onSwitchChange: @escaping (_ isOn: Bool) -> Void) {
             self.viewModel = viewModel
             self.isSwitchOn = isSwitchOn
+            self.isActionable = isActionable
             self.onSwitchChange = onSwitchChange
         }
     }
@@ -97,10 +99,13 @@ extension ImageAndTitleAndTextTableViewCell {
         titleLabel.textColor = .text
 
         let toggleSwitch = UISwitch()
-        toggleSwitch.onTintColor = .primary
+        toggleSwitch.onTintColor = switchableViewModel.isActionable ? .primary: .switchDisabledColor
         toggleSwitch.isOn = switchableViewModel.isSwitchOn
-        toggleSwitch.on(.touchUpInside) { visibilitySwitch in
-            switchableViewModel.onSwitchChange(visibilitySwitch.isOn)
+        toggleSwitch.isUserInteractionEnabled = switchableViewModel.isActionable
+        if switchableViewModel.isActionable {
+            toggleSwitch.on(.touchUpInside) { visibilitySwitch in
+                switchableViewModel.onSwitchChange(visibilitySwitch.isOn)
+            }
         }
         accessoryView = toggleSwitch
         contentView.backgroundColor = nil

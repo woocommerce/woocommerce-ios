@@ -220,9 +220,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
-        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
-            ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
-            self?.displayProductSettings()
+        if viewModel.canEditProductSettings() {
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
+                ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
+                self?.displayProductSettings()
+            }
         }
 
         if viewModel.canDeleteProduct() {
@@ -252,7 +254,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         case .primaryFields(let rows):
             let row = rows[indexPath.row]
             switch row {
-            case .description:
+            case .description(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 eventLogger.logDescriptionTapped()
                 editProductDescription()
             default:
@@ -280,7 +285,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 ServiceLocator.analytics.track(.productDetailViewProductTypeTapped)
                 let cell = tableView.cellForRow(at: indexPath)
                 editProductType(cell: cell)
-            case .shipping:
+            case .shipping(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 eventLogger.logShippingSettingsTapped()
                 editShippingSettings()
             case .inventory(_, let isEditable):
@@ -289,24 +297,42 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 eventLogger.logInventorySettingsTapped()
                 editInventorySettings()
-            case .categories:
+            case .categories(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 ServiceLocator.analytics.track(.productDetailViewCategoriesTapped)
                 editCategories()
-            case .tags:
+            case .tags(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 ServiceLocator.analytics.track(.productDetailViewTagsTapped)
                 editTags()
-            case .briefDescription:
+            case .briefDescription(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
                 editShortDescription()
-            case .externalURL:
+            case .externalURL(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 ServiceLocator.analytics.track(.productDetailViewExternalProductLinkTapped)
                 editExternalLink()
                 break
-            case .sku:
+            case .sku(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 ServiceLocator.analytics.track(.productDetailViewSKUTapped)
                 editSKU()
                 break
-            case .groupedProducts:
+            case .groupedProducts(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 ServiceLocator.analytics.track(.productDetailViewGroupedProductsTapped)
                 editGroupedProducts()
                 break
@@ -724,7 +750,7 @@ private extension ProductFormViewController {
             break
         }
 
-        if viewModel.canEditProductSettings() {
+        if viewModel.shouldShowMoreOptionsMenu() {
             rightBarButtonItems.insert(createMoreOptionsBarButtonItem(), at: 0)
         }
 

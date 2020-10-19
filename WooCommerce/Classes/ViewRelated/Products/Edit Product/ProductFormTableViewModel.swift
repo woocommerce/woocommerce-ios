@@ -61,11 +61,14 @@ enum ProductFormSection: Equatable {
         struct SwitchableViewModel: Equatable {
             let viewModel: ViewModel
             let isSwitchOn: Bool
+            let isActionable: Bool
 
             init(viewModel: ViewModel,
-                 isSwitchOn: Bool) {
+                 isSwitchOn: Bool,
+                 isActionable: Bool) {
                 self.viewModel = viewModel
                 self.isSwitchOn = isSwitchOn
+                self.isActionable = isActionable
             }
         }
 

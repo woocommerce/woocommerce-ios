@@ -266,6 +266,12 @@ extension UIColor {
         return .systemColor(.systemGray3)
     }
 
+    /// Switch disabled color.
+    ///
+    static var switchDisabledColor: UIColor {
+        return .systemColor(.systemGray3)
+    }
+
     /// Ghost cell animation end color. `Gray-5` (Light Mode) and Gray-10 (Dark Mode)
     ///
     static var ghostCellAnimationEndColor: UIColor {

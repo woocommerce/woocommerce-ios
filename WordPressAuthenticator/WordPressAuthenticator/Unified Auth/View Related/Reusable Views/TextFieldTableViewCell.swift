@@ -89,13 +89,13 @@ private extension TextFieldTableViewCell {
             textField.returnKeyType = .continue
             registerTextFieldAction()
             textField.accessibilityLabel = Constants.siteAddress
-            textField.accessibilityIdentifier = Constants.siteAddress
+            textField.accessibilityIdentifier = Constants.siteAddressID
         case .username:
             textField.keyboardType = .default
             textField.returnKeyType = .next
             setupOnePasswordButtonIfNeeded()
             textField.accessibilityLabel = Constants.username
-            textField.accessibilityIdentifier = Constants.username
+            textField.accessibilityIdentifier = Constants.usernameID
         case .password:
             textField.keyboardType = .default
             textField.returnKeyType = .continue
@@ -103,19 +103,19 @@ private extension TextFieldTableViewCell {
             showSecureTextEntryToggle = true
             configureSecureTextEntryToggle()
             textField.accessibilityLabel = Constants.password
-            textField.accessibilityIdentifier = Constants.password
+            textField.accessibilityIdentifier = Constants.passwordID
         case .numericCode:
             textField.keyboardType = .numberPad
             textField.returnKeyType = .continue
             textField.accessibilityLabel = Constants.otp
-            textField.accessibilityIdentifier = Constants.otp
+            textField.accessibilityIdentifier = Constants.otpID
         case .email:
             textField.keyboardType = .emailAddress
             textField.returnKeyType = .continue
             textField.textContentType = .username // So the password autofill appears on the keyboard
             setupOnePasswordButtonIfNeeded()
             textField.accessibilityLabel = Constants.email
-            textField.accessibilityIdentifier = Constants.email
+            textField.accessibilityIdentifier = Constants.emailID
         }
     }
 
@@ -242,5 +242,10 @@ extension TextFieldTableViewCell {
                                            comment: "Accessibility label for the 2FA text field.")
         static let email = NSLocalizedString("Email address",
                                              comment: "Accessibility label for the email address text field.")
+        static let siteAddressID = "Site address"
+        static let usernameID = "Username"
+        static let passwordID = "Password"
+        static let otpID = "Authentication code"
+        static let emailID = "Email address"
     }
 }

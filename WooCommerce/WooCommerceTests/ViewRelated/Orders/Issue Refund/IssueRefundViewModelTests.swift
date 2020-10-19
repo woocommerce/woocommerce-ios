@@ -113,6 +113,27 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currentQuantityForItemAtIndex(3), nil)
     }
 
+    func test_viewModel_updates_refund_quantities_after_selecting_all() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3),
+            MockOrderItem.sampleItem(itemID: 2, quantity: 2),
+            MockOrderItem.sampleItem(itemID: 3, quantity: 1),
+        ]
+        let order = MockOrders().makeOrder(items: items)
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, currencySettings: currencySettings)
+        viewModel.selectAllOrderItems()
+
+        // Then
+        XCTAssertEqual(viewModel.currentQuantityForItemAtIndex(0), 3)
+        XCTAssertEqual(viewModel.currentQuantityForItemAtIndex(1), 2)
+        XCTAssertEqual(viewModel.currentQuantityForItemAtIndex(2), 1)
+        XCTAssertEqual(viewModel.currentQuantityForItemAtIndex(3), nil)
+    }
+
     func test_viewModel_correctly_adds_item_selections_to_title() {
         // Given
         let currencySettings = CurrencySettings()
@@ -157,5 +178,61 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Then
         // 23.00(current products) + 7.52 (shipping) = 30.62
         XCTAssertEqual(viewModel.title, "$30.62")
+    }
+
+    func test_viewModel_starts_with_zero_count_label() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
+            MockOrderItem.sampleItem(itemID: 2, quantity: 2, price: 12.50),
+            MockOrderItem.sampleItem(itemID: 3, quantity: 1, price: 13.50),
+        ]
+        let order = MockOrders().makeOrder(items: items)
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, currencySettings: currencySettings)
+
+        // Then
+        let selectedItemsTitle = String(format: NSLocalizedString("%d items selected", comment: ""), 0)
+        XCTAssertEqual(viewModel.selectedItemsTitle, selectedItemsTitle)
+    }
+
+    func test_viewModel_correctly_calculates_1_selected_item_title() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
+            MockOrderItem.sampleItem(itemID: 2, quantity: 2, price: 12.50),
+            MockOrderItem.sampleItem(itemID: 3, quantity: 1, price: 13.50),
+        ]
+        let order = MockOrders().makeOrder(items: items)
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, currencySettings: currencySettings)
+        viewModel.updateRefundQuantity(quantity: 1, forItemAtIndex: 2)
+
+        // Then
+        let selectedItemsTitle = NSLocalizedString("1 item selected", comment: "")
+        XCTAssertEqual(viewModel.selectedItemsTitle, selectedItemsTitle)
+    }
+
+    func test_viewModel_correctly_calculates_multitple_selected_item_title() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
+            MockOrderItem.sampleItem(itemID: 2, quantity: 2, price: 12.50),
+            MockOrderItem.sampleItem(itemID: 3, quantity: 1, price: 13.50),
+        ]
+        let order = MockOrders().makeOrder(items: items)
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, currencySettings: currencySettings)
+        viewModel.selectAllOrderItems()
+
+        // Then
+        let selectedItemsTitle = String(format: NSLocalizedString("%d items selected", comment: ""), 6)
+        XCTAssertEqual(viewModel.selectedItemsTitle, selectedItemsTitle)
     }
 }

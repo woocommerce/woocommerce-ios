@@ -43,7 +43,8 @@ private extension ProductDetailsFactory {
         vc = ProductFormViewController(viewModel: viewModel,
                                        eventLogger: ProductFormEventLogger(),
                                        productImageActionHandler: productImageActionHandler,
-                                       presentationStyle: presentationStyle)
+                                       presentationStyle: presentationStyle,
+                                       isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
         // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         vc.hidesBottomBarWhenPushed = true
         return vc

@@ -83,7 +83,7 @@ private extension ProductDownloadListViewController {
             let button = UIBarButtonItem(image: .moreImage,
                                          style: .plain,
                                          target: self,
-                                         action: #selector(settingsButtonTapped))
+                                         action: #selector(moreButtonTapped))
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("View downloadable file settings",
                                                           comment: "The action to update downloadable files settings for a product")
@@ -123,9 +123,9 @@ extension ProductDownloadListViewController {
         viewModel.completeUpdating(onCompletion: onCompletion)
     }
 
-    @objc private func settingsButtonTapped() {
+    @objc private func moreButtonTapped() {
         // TODO: - add analytics
-        showDownloadableFilesSettings()
+        presentMoreActionSheetMenu()
     }
 
     @objc private func addButtonTapped() {
@@ -190,14 +190,44 @@ extension ProductDownloadListViewController {
 
 // MARK: Action - Downloadable file settings
 //
-extension ProductDownloadListViewController {
-    func showDownloadableFilesSettings() {
+private extension ProductDownloadListViewController {
+    func presentMoreActionSheetMenu() {
+        let menuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        menuAlert.view.tintColor = .text
 
+        let downloadSettingsTitle = NSLocalizedString("Download Settings",
+                                                      comment: "Button title Download Settings in Downloadable Files More Options Action Sheet")
+        let downloadSettingsAction = UIAlertAction(title: downloadSettingsTitle, style: .default) { [weak self] (action) in
+            self?.showDownloadableFilesSettings()
+        }
+        menuAlert.addAction(downloadSettingsAction)
+
+        let cancelTitle = NSLocalizedString("Cancel",
+                                            comment: "Button title Cancel in Downloadable Files More Options Action Sheet")
+        let cancelAction = UIAlertAction(title: cancelTitle, style: .cancel)
+        menuAlert.addAction(cancelAction)
+
+        menuAlert.popoverPresentationController?.sourceView = view
+        menuAlert.popoverPresentationController?.sourceRect = view.bounds
+
+        present(menuAlert, animated: true)
+    }
+
+    func showDownloadableFilesSettings() {
+        // TODO: - add analytics
+        let viewController = ProductDownloadSettingsViewController(product: product) { [weak self]
+            (downloadLimit, downloadExpiry, hasUnsavedChanges) in
+            self?.onDownloadSettingsCompletion(downloadLimit: downloadLimit,
+                                               downloadExpiry: downloadExpiry,
+                                               hasUnsavedChanges: hasUnsavedChanges)
+        }
+        navigationController?.pushViewController(viewController, animated: true)
     }
 
     func onDownloadSettingsCompletion(downloadLimit: Int64,
                                       downloadExpiry: Int64,
                                       hasUnsavedChanges: Bool) {
+
         guard hasUnsavedChanges else {
             return
         }

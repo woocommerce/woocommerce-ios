@@ -2,10 +2,10 @@ import UIKit
 
 final class TitleAndEditableValueTableViewCell: UITableViewCell {
     @IBOutlet private weak var stackView: UIStackView!
-    // TODO Make this private and use `update()` instead.
-    @IBOutlet weak var title: UILabel!
-    // TODO Make this private and use `update()` instead.
-    @IBOutlet weak var value: UITextField!
+    @IBOutlet private weak var title: UILabel!
+    @IBOutlet private weak var value: UITextField!
+
+    private var viewModel: TitleAndEditableValueTableViewCellViewModel?
 
     enum Style {
         /// Small title. This is the default.
@@ -22,12 +22,17 @@ final class TitleAndEditableValueTableViewCell: UITableViewCell {
         configureAsNonSelectable()
         applyStyle(Style.default)
         configureStackView()
+        observeValueTextFieldChanges()
     }
 
-    /// Updates the values for the labels.
-    func update(style: Style = .condensed, title: String?, placeholder: String?) {
-        self.title.text = title
-        self.value.placeholder = placeholder
+    /// Change the style add the `viewModel` represented by this view.
+    func update(style: Style = .condensed, viewModel: TitleAndEditableValueTableViewCellViewModel?) {
+        title.text = viewModel?.title
+        value.placeholder = viewModel?.placeholder
+        value.text = viewModel?.currentValue
+        value.isEnabled = viewModel?.allowsEditing ?? false
+
+        self.viewModel = viewModel
 
         applyStyle(style)
     }
@@ -57,6 +62,14 @@ private extension TitleAndEditableValueTableViewCell {
         }
 
         value.applyBodyStyle()
+    }
+
+    func observeValueTextFieldChanges() {
+        value.addTarget(self, action: #selector(updateViewModelValue), for: .editingChanged)
+    }
+
+    @objc func updateViewModelValue(sender textField: UITextField) {
+        viewModel?.update(value: textField.text)
     }
 }
 

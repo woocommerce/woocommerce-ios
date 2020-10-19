@@ -57,6 +57,8 @@ final class ProductDetailsViewModel {
         return product.productID
     }
 
+    let isEditProductsRelease5Enabled: Bool
+
     // MARK: - private variables
 
     /// Sections to be rendered
@@ -120,8 +122,9 @@ final class ProductDetailsViewModel {
 
     /// Designated initializer.
     ///
-    init(product: Product) {
+    init(product: Product, isEditProductsRelease5Enabled: Bool) {
         self.product = product
+        self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
 
         refreshResultsController()
     }
@@ -710,7 +713,8 @@ extension ProductDetailsViewModel {
         case .productVariants:
             ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
             let variationsViewController = ProductVariationsViewController(product: product,
-                                                                           formType: .readonly)
+                                                                           formType: .readonly,
+                                                                           isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
             sender.navigationController?.pushViewController(variationsViewController, animated: true)
         default:
             break

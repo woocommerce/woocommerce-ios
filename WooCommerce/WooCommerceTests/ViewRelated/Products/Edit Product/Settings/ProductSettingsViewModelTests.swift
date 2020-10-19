@@ -6,7 +6,8 @@ final class ProductSettingsViewModelTests: XCTestCase {
 
     func testOnReloadClosure() {
 
-        let product = MockProduct().product(virtual: true,
+        let product = MockProduct().product(downloadable: false,
+                                            virtual: true,
                                             status: .publish,
                                             featured: true,
                                             catalogVisibility: .search,
@@ -31,7 +32,8 @@ final class ProductSettingsViewModelTests: XCTestCase {
                                                     reviewsAllowed: true,
                                                     slug: "this-is-a-slug",
                                                     purchaseNote: "This is a purchase note",
-                                                    menuOrder: 1)
+                                                    menuOrder: 1,
+                                                    downloadable: true)
 
         waitForExpectations(timeout: 1.5, handler: nil)
     }
@@ -66,6 +68,9 @@ final class ProductSettingsViewModelTests: XCTestCase {
 
 private extension ProductSettingsViewModel {
     convenience init(product: Product, password: String?) {
-        self.init(product: product, password: password, formType: .edit)
+        self.init(product: product,
+                  password: password,
+                  formType: .edit,
+                  isEditProductsRelease5Enabled: true)
     }
 }

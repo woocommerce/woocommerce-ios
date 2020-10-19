@@ -31,11 +31,12 @@ final class IssueRefundViewModel {
         didSet {
             sections = createSections()
             title = calculateTitle()
+            selectedItemsTitle = createSelectedItemsCount()
             onChange?()
         }
     }
 
-    /// Closured to notify the `ViewController` when the view model properties change
+    /// Closure to notify the `ViewController` when the view model properties change
     ///
     var onChange: (() -> (Void))?
 
@@ -44,9 +45,8 @@ final class IssueRefundViewModel {
     private(set) var title: String = ""
 
     /// String indicating how many items the user has selected to refund
-    /// This is temporary data, will be removed after implementing https://github.com/woocommerce/woocommerce-ios/issues/2842
     ///
-    let selectedItemsTitle: String = "0 items selected"
+    private(set) var selectedItemsTitle: String = ""
 
     /// The sections and rows to display in the `UITableView`.
     ///
@@ -64,6 +64,7 @@ final class IssueRefundViewModel {
         state = State(order: order, currencySettings: currencySettings)
         sections = createSections()
         title = calculateTitle()
+        selectedItemsTitle = createSelectedItemsCount()
     }
 
     /// Creates the `ViewModel` to be used when navigating to the page where the user can
@@ -109,6 +110,15 @@ extension IssueRefundViewModel {
         }
         state.refundQuantityStore.update(quantity: quantity, for: item)
     }
+
+    /// Marks all items as to be refunded
+    ///
+    func selectAllOrderItems() {
+        state.order.items.forEach { item in
+            let quantity = Int(truncating: item.quantity as NSDecimalNumber)
+            state.refundQuantityStore.update(quantity: quantity, for: item)
+        }
+    }
 }
 
 // MARK: Results Controller
@@ -127,6 +137,8 @@ private extension IssueRefundViewModel {
 private extension IssueRefundViewModel {
     enum Localization {
         static let refundShippingTitle = NSLocalizedString("Refund Shipping", comment: "Title of the switch in the IssueRefund screen to refund shipping")
+        static let itemSingular = NSLocalizedString("1 item selected", comment: "Title of the label indicating that there is 1 item to refund.")
+        static let itemsPlural = NSLocalizedString("%d items selected", comment: "Title of the label indicating that there are multiple items to refund.")
     }
 }
 
@@ -216,6 +228,13 @@ extension IssueRefundViewModel {
         let shippingTotalUseCase = RefundShippingCalculationUseCase(shippingLine: shippingLine, currencyFormatter: formatter)
         return productsTotalUseCase.calculateRefundValues().total + shippingTotalUseCase.calculateRefundValue()
     }
+
+    /// Returns a string with the count of how many items are selected for refund.
+    ///
+    private func createSelectedItemsCount() -> String {
+        let count = state.refundQuantityStore.count()
+        return String.pluralize(count, singular: Localization.itemSingular, plural: Localization.itemsPlural)
+    }
 }
 
 extension RefundItemViewModel: IssueRefundRow {}
@@ -252,6 +271,13 @@ private extension IssueRefundViewModel {
         ///
         func map<T>(transform: (_ item: OrderItem, _ quantity: Quantity) -> (T)) -> [T] {
             store.map(transform)
+        }
+
+        /// Returns the number of items referenced for refund.
+        /// Calculated by aggregating all stored quantities.
+        ///
+        func count() -> Int {
+            store.values.reduce(0) { $0 + $1 }
         }
     }
 }

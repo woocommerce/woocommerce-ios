@@ -1,7 +1,7 @@
 import Yosemite
 
 /// Implementation of `SearchUICommand` for selecting linked products to a grouped product from search UI.
-final class ProductListMultiSelectorSearchUICommand: SearchUICommand {
+final class ProductListMultiSelectorSearchUICommand: NSObject, SearchUICommand {
     typealias Model = Product
     typealias CellViewModel = ProductsTabProductViewModel
     typealias ResultsControllerModel = StorageProduct
@@ -48,7 +48,7 @@ final class ProductListMultiSelectorSearchUICommand: SearchUICommand {
     }
 
     func configureActionButton(_ button: UIButton, onDismiss: @escaping () -> Void) {
-        let hasUnsavedChanges = selectedProductIDs.isNotEmpty
+        let hasUnsavedChanges = self.hasUnsavedChanges()
         let title = hasUnsavedChanges ? Strings.done: Strings.cancel
 
         // The button title has to be updated without animation so that the title is not truncated when its width changes.
@@ -92,13 +92,39 @@ final class ProductListMultiSelectorSearchUICommand: SearchUICommand {
     }
 }
 
+extension ProductListMultiSelectorSearchUICommand {
+    /// Configures the given presenting view controller to present unsaved changes alert when the user attempts to dismiss the search modal with
+    /// unsaved changes.
+    func configurePresentingViewControllerForDiscardChangesAlert(presentingViewController: UIViewController) {
+        presentingViewController.presentationController?.delegate = self
+    }
+}
+
+extension ProductListMultiSelectorSearchUICommand: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        !hasUnsavedChanges()
+    }
+
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: presentationController.presentedViewController,
+                                                           onDiscard: {
+                                                            presentationController.presentedViewController.dismiss(animated: true)
+        })
+    }
+}
+
 private extension ProductListMultiSelectorSearchUICommand {
     @objc func completeSelectingProducts() {
         onCompletion(selectedProductIDs)
     }
 }
 
+// MARK: Private Helpers
 private extension ProductListMultiSelectorSearchUICommand {
+    func hasUnsavedChanges() -> Bool {
+        selectedProductIDs.isNotEmpty
+    }
+
     func isProductSelected(_ product: Product) -> Bool {
         return selectedProductIDs.contains(product.productID)
     }

@@ -99,7 +99,7 @@ extension ImageAndTitleAndTextTableViewCell {
         titleLabel.textColor = .text
 
         let toggleSwitch = UISwitch()
-        toggleSwitch.onTintColor = .primary
+        toggleSwitch.onTintColor = switchableViewModel.isActionable ? .primary: .switchDisabledColor
         toggleSwitch.isOn = switchableViewModel.isSwitchOn
         toggleSwitch.isUserInteractionEnabled = switchableViewModel.isActionable
         if switchableViewModel.isActionable {

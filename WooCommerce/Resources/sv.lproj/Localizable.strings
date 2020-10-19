@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-09-30 10:54:04+0000 */
+/* Translation-Revision-Date: 2020-10-14 13:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -43,10 +43,10 @@
 "%1$@-%2$@" = "%1$@-%2$@";
 
 /* 1 Item */
-"%@ Item" = "%@ artikel";
+"%@ Item" = "%@ vara";
 
 /* For example, '5 Items' */
-"%@ Items" = "%@ artiklar";
+"%@ Items" = "%@ varor";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%@ left a review on %@" = "%1$@ lämnade en recension om %2$@";
@@ -318,7 +318,7 @@
 "Block Quote" = "Citatblock";
 
 /* Accessibility label for bold button on formatting toolbar. */
-"Bold" = "Fetstil";
+"Bold" = "Fet";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "Knapptext";
@@ -342,7 +342,7 @@
 "Can Not Request Link" = "Kan inte begära länk";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
 "Cancel" = "Avbryt";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -412,7 +412,7 @@
 "Connect your store with Jetpack" = "Anslut din butik med Jetpack";
 
 /* Title shown when a user logs in with Google but no matching WordPress.com account is found */
-"Connected But…" = "Sammankopplat, men...";
+"Connected But…" = "Ansluten men …";
 
 /* Store Picker's Section Title: Displayed when there's a single pre-selected Store. */
 "Connected Store" = "Ansluten butik";
@@ -421,7 +421,7 @@
 "Connecting to WordPress.com" = "Ansluter till WordPress.com";
 
 /* Section header title for contact details in billing information */
-"Contact Details" = "Kontaktuppgifter";
+"Contact Details" = "Kontaktdetaljer";
 
 /* Contact Email title */
 "Contact Email" = "E-post för kontakt";
@@ -534,7 +534,8 @@
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Standard";
 
-/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
+/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen
+   Button title Delete in Edit Product More Options Action Sheet */
 "Delete" = "Ta bort";
 
 /* Delete a Shipment Tracking
@@ -570,7 +571,7 @@
 "Dimensions: %1$@%2$@" = "Dimensioner: %1$@%2$@";
 
 /* Shown in a Product Variation cell if the variation is disabled */
-"Disabled" = "Inaktiverad (originalstorlek)";
+"Disabled" = "Inaktiverad";
 
 /* Alert button title - dismisses alert, which discard changes on Product Visibility screen */
 "Discard" = "Kasta bort";
@@ -583,10 +584,13 @@
 
 /* A unit test string for a button title
    Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner on the products tab */
-"Dismiss" = "Stäng";
+"Dismiss" = "Avfärda";
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "Tillåt inte";
+
+/* Body of the alert when a user is moving a product to the trash */
+"Do you want to move this product to the Trash?" = "Vill du flytta denna produkt till papperskorgen?";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Har du inget konto? _Registrera dig_";
@@ -620,10 +624,10 @@
 "Dotcom Token Invalid" = "Dotcom-token ogiltig";
 
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
-"Double tap to dismiss" = "Dubbelknacka för att stänga";
+"Double tap to dismiss" = "Dubbeltryck för att avfärda";
 
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
-"Double tap to toggle setting." = "Dubbelpeka för att växla inställning.";
+"Double tap to toggle setting." = "Dubbeltryck för att slå på\/av inställning.";
 
 /* Product Details > Purchase Details > Downloads cell title */
 "Downloads" = "Nedladdningar";
@@ -654,7 +658,7 @@
 "Empty" = "Töm";
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
-"Empty URL" = "URL ej angiven";
+"Empty URL" = "Tom URL";
 
 /* Enable Reviews label in Product Settings */
 "Enable Reviews" = "Aktivera recensioner";
@@ -711,10 +715,10 @@
 "Experimental Features" = "Experimentella funktioner";
 
 /* Expiry: 1 day */
-"Expiry: %ld day" = "Går ut: %ld dag";
+"Expiry: %ld day" = "Löper ut: %ld dag";
 
 /* For example: 'Expiry: 30 days' */
-"Expiry: %ld days" = "Går ut: %ld dagar";
+"Expiry: %ld days" = "Löper ut: %ld dagar";
 
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "Extern produkt";
@@ -754,7 +758,7 @@
 "Filters (%ld)" = "Filter (%ld)";
 
 /* The hint button's title text to help users find their site address. */
-"Find your site address" = "Hitta adressen till din webbplats";
+"Find your site address" = "Hitta din webbplatsadress";
 
 /* User role badge */
 "Follower" = "Följare";
@@ -940,6 +944,9 @@
    Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Lagersaldo";
 
+/* Text on the button that starts a new refund process */
+"Issue Refund" = "Utfärda återbetalning";
+
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Detta användarnamn och lösenord verkar inte fungera på denna webbplats.";
 
@@ -1107,6 +1114,9 @@
 
 /* Accessibility label for the Edit Product More Options action sheet */
 "More options" = "Fler alternativ";
+
+/* Confirmation button on the alert when the user is moving a product to the trash */
+"Move to Trash" = "Flytta till papperskorgen";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "Markerar kommentaren som skräppost";
@@ -1357,6 +1367,9 @@
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Välj butik att ansluta";
 
+/* Title of the in-progress UI while deleting the Product remotely */
+"Placing your product in the trash..." = "Placerar din produkt i papperskorgen …";
+
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "Ange en URL";
 
@@ -1364,13 +1377,13 @@
 "Please enter a complete website address, like example.com." = "Ange en fullständig webbplatsadress som example.com.";
 
 /* No comment provided by engineer. */
-"Please enter a site address." = "Vänligen ange en adress till webbplatsen.";
+"Please enter a site address." = "Ange en webbplatsadress.";
 
 /* No comment provided by engineer. */
-"Please enter a username." = "Vänligen ange ett användarnamn.";
+"Please enter a username." = "Ange ett användarnamn.";
 
 /* Error message displayed when the user attempts use an invalid email address. */
-"Please enter a valid email address." = "Vänligen ange en giltig e-postadress.";
+"Please enter a valid email address." = "Ange en giltig e-postadress.";
 
 /* Placeholder for editing the text of a text link */
 "Please enter some text" = "Skriv in lite text";
@@ -1391,7 +1404,7 @@
 "Please enter your email address:" = "Skriv in din e-postadress.";
 
 /* A short prompt asking the user to properly fill out all login fields. */
-"Please fill out all the fields" = "Vänligen fyll i alla fält";
+"Please fill out all the fields" = "Fyll i alla fälten";
 
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "Logga ut innan du ansluter till någon annan webbplats på wordpress.com";
@@ -1407,6 +1420,9 @@
 
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Vänta tills vi publicerar den här produkten i din butik";
+
+/* Message of the in-progress UI while deleting the Product remotely */
+"Please wait while we update your store details" = "Vänta medan vi uppdaterar dina butiksdetaljer";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Drivs av Automattic";
@@ -1482,7 +1498,8 @@
    Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Produkter";
 
-/* Label for computed value `product refunds + taxes = subtotal`. */
+/* Label for computed value `product refunds + taxes = subtotal`.
+   Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "Produktåterbetalning";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
@@ -1490,6 +1507,9 @@
 
 /* One of the possible options in Product Visibility */
 "Public" = "Offentlig";
+
+/* Action for creating a new Product remotely */
+"Publish" = "Publicera";
 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "Inställningar för publicering";
@@ -1582,6 +1602,9 @@
 /* Label action for removing a link from the editor */
 "Remove end date" = "Ta bort slutdatum";
 
+/* Title of the alert when a user is moving a product to the trash */
+"Remove product" = "Ta bort produkt";
+
 /* Action to replace one photo on the Product images screen */
 "Replace Photo" = "Byt ut foto";
 
@@ -1657,6 +1680,12 @@
    Add Product Tags. Save button title in navbar. */
 "Save" = "Spara";
 
+/* Button title to save a product as draft in Discard Changes Action Sheet */
+"Save as Draft" = "Spara som utkast";
+
+/* Button title to save a product as draft in Product More Options Action Sheet */
+"Save as draft" = "Spara som utkast";
+
 /* Scan Products */
 "Scan products" = "Skanna produkter";
 
@@ -1706,7 +1735,7 @@
 "Selected Store" = "Vald butik";
 
 /* Presents a survey to gather feedback from the user. */
-"Send Feedback" = "Säg vad du tycker";
+"Send Feedback" = "Skicka feedback";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
 "Send Link" = "Skicka länk";
@@ -1747,6 +1776,9 @@
 
 /* Shipping method title for customer info cell */
 "Shipping Method" = "Fraktmetod";
+
+/* Title on the refund screen that lists the shipping total cost */
+"Shipping Refund" = "Fraktåterbetalning";
 
 /* Add / Edit shipping carrier. Title of cell presenting name */
 "Shipping carrier" = "Transportföretag";
@@ -1802,7 +1834,7 @@
 "Shows more options." = "Visa fler alternativ.";
 
 /* View title during the sign up process. */
-"Sign Up" = "Skapa konto";
+"Sign Up" = "Registrera";
 
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "Skapa konto";
@@ -1942,7 +1974,8 @@
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Genomstrykning";
 
-/* Subtotal label for a refund details view */
+/* Subtotal label for a refund details view
+   Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost */
 "Subtotal" = "Delsumma";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
@@ -2033,7 +2066,8 @@
 /* Accessibility hint for selecting paragraph style button on formatting toolbar. */
 "Tap to toggle paragraph style" = "Tryck för att ändra styckeformat";
 
-/* Tax label for a refund details view */
+/* Tax label for a refund details view
+   Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "Moms";
 
 /* Section header title for product tax settings */
@@ -2055,7 +2089,7 @@
 "Taxable" = "Momsbelagd";
 
 /* Taxes label for payment view */
-"Taxes" = "Skatter";
+"Taxes" = "Momser";
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Användarvillkor";
@@ -2594,7 +2628,7 @@
 "Yes, change" = "Ja, ändra";
 
 /* Yesterday Section Header */
-"Yesterday" = "I går";
+"Yesterday" = "Igår";
 
 /* The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
 "You can now edit grouped, external and variable products, change product type and update categories and tags" = "Du kan nu redigera grupperade, externa och variabla produkter, ändra produkttyp och uppdatera kategorier och etiketter";
@@ -2632,6 +2666,9 @@
 
 /* Backorders status. Example: 'Backorders: not allowed' */
 "not allowed" = "inte tillåtet";
+
+/* No comment provided by engineer. */
+"password" = "lösenord";
 
 /* Today */
 "today" = "idag";

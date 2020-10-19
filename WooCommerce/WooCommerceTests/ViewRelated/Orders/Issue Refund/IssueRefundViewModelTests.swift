@@ -154,7 +154,7 @@ final class IssueRefundViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.currentQuantityForItemAtIndex(0), 1) // Product 1
-        XCTAssertEqual(viewModel.currentQuantityForItemAtIndex(1), 1) // Product 3 is at index 2 because Product 2 was refunded
+        XCTAssertEqual(viewModel.currentQuantityForItemAtIndex(1), 1) // Product 3 is at index 1 because Product 2 was refunded
     }
 
     func test_viewModel_correctly_adds_item_selections_to_title() {

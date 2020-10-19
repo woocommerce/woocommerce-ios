@@ -37,7 +37,7 @@ struct InAppFeedbackCardVisibilityUseCase {
         switch feedbackType {
         case .general:
             return try shouldGeneralFeedbackBeVisible(currentDate: currentDate)
-        case .productsM3:
+        case .productsM4:
             return shouldProductsFeedbackBeVisible()
         }
     }

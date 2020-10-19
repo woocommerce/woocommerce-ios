@@ -25,6 +25,7 @@ private extension CrashLogging {
         let event = Event(level: level)
         event.message = message
         event.extra = properties
+        event.timestamp = Date()
 
         Client.shared?.snapshotStacktrace {
             Client.shared?.appendStacktrace(to: event)

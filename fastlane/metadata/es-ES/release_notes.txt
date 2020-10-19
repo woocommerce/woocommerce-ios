@@ -1,3 +1,9 @@
-- Productos: Si el interruptor Productos está activado en “Ajustes” → “Funciones experimentales” para un producto variable, el estado de las existencias ya no se muestra en los detalles del producto cuando la gestión de las existencias está desactivada (ya que el estado de las existencias se controla en la variación).
-- Pedidos: Ahora, la lista de búsqueda mostrará el recuento total en lugar de “+99”.
-- Reseñas: Hemos corregido un error que impedía que las reseñas se actualizaran correctamente. Ahora, si eliminas o marcas una reseña como spam, ese cambio se reflejará en la lista de reseñas del producto.
+En esta actualización, informamos de un montón de opciones nuevas para editar tus productos. 
+
+En el caso de los productos que no son principales (productos que WooCommerce no agrupa bajo simples, externos, variables o grupos), hay un sinfín de opciones de edición nuevas. Ahora puedes cambiar la imagen, el nombre, la descripción, el precio de solo lectura, el inventario de solo lectura, las etiquetas, la descripción corta y los ajustes del producto.
+
+Ahora también puedes editar los productos variables, y el estado de las existencias se incluye en la lista de variaciones.
+
+Nuestros productos principales también cuentan con campos adicionales que se pueden editar: etiquetas, categorías, tipo de producto, visibilidad y activación y desactivación de valoraciones.
+
+También se incluye una actualización para el inicio de sesión de Apple: si desconectas el ID Apple de la aplicación de ﻿﻿﻿WordPres﻿s (Ajustes > ID de Apple > Contraseña y seguridad > Aplicaciones que utilizan el ID de Apple), la aplicación cerrará la sesión al iniciarse o cuando cambies de una aplicación a otra. Por lo tanto, no tendrás que mantener la sesión iniciada si no lo deseas.

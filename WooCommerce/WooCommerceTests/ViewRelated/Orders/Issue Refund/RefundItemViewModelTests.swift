@@ -8,20 +8,20 @@ import Yosemite
 final class RefundItemViewModelTests: XCTestCase {
     func test_viewModel_is_created_with_correct_initial_values() {
         // Given
-        let item = sampleItem()
+        let refundable = IssueRefundViewModel.RefundableOrderItem(item: sampleItem(), quantity: 4)
         let product = sampleProduct()
         let currencySettings = CurrencySettings()
 
         // When
-        let viewModel = RefundItemViewModel(item: item, product: product, refundQuantity: 3, currency: "usd", currencySettings: currencySettings)
+        let viewModel = RefundItemViewModel(refundable: refundable, product: product, refundQuantity: 3, currency: "usd", currencySettings: currencySettings)
 
         // Then
         XCTAssertEqual(viewModel.productImage, product.images.first?.src)
-        XCTAssertEqual(viewModel.productTitle, item.name)
+        XCTAssertEqual(viewModel.productTitle, refundable.item.name)
         XCTAssertEqual(viewModel.quantityToRefund, "3")
 
-        let localizedFormat = NSLocalizedString("%@ x %@ each", comment: "")
-        XCTAssertEqual(viewModel.productQuantityAndPrice, String(format: localizedFormat, "\(item.quantity)", "$\(item.price)"))
+        let localizedFormat = NSLocalizedString("%d x %@ each", comment: "")
+        XCTAssertEqual(viewModel.productQuantityAndPrice, String(format: localizedFormat, refundable.quantity, "$\(refundable.item.price)"))
     }
 }
 

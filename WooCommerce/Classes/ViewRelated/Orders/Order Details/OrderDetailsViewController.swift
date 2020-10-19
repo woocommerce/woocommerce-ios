@@ -333,7 +333,7 @@ private extension OrderDetailsViewController {
 
     func issueRefundWasPressed() {
         // TODO: Migrate to a CoordinatingController https://github.com/woocommerce/woocommerce-ios/issues/2844
-        let issueRefundViewController = IssueRefundViewController(order: viewModel.order)
+        let issueRefundViewController = IssueRefundViewController(order: viewModel.order, refunds: viewModel.refunds)
         let navigationController = WooNavigationController(rootViewController: issueRefundViewController)
         present(navigationController, animated: true)
     }

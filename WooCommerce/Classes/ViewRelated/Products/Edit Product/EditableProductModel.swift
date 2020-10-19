@@ -28,7 +28,7 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
     }
 
     var shortDescription: String? {
-        product.briefDescription
+        product.shortDescription
     }
 
     var permalink: String {

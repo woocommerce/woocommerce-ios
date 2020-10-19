@@ -193,7 +193,7 @@ extension ProductVariationFormViewModel {
         // no-op
     }
 
-    func updateBriefDescription(_ briefDescription: String) {
+    func updateShortDescription(_ shortDescription: String) {
         // no-op
     }
 

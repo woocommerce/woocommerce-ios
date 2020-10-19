@@ -292,7 +292,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             case .tags:
                 ServiceLocator.analytics.track(.productDetailViewTagsTapped)
                 editTags()
-            case .briefDescription:
+            case .shortDescription:
                 ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
                 editShortDescription()
             case .externalURL:
@@ -501,7 +501,7 @@ private extension ProductFormViewController {
                                                                         case .editTags:
                                                                             ServiceLocator.analytics.track(.productDetailViewTagsTapped)
                                                                             self?.editTags()
-                                                                        case .editBriefDescription:
+                                                                        case .editShortDescription:
                                                                             ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
                                                                             self?.editShortDescription()
                                                                         case .editSKU:
@@ -996,11 +996,11 @@ private extension ProductFormViewController {
     }
 }
 
-// MARK: Action - Edit Product Brief Description (Short Description)
+// MARK: Action - Edit Product Short Description
 //
 private extension ProductFormViewController {
     func editShortDescription() {
-        let editorViewController = EditorFactory().productBriefDescriptionEditor(product: product) { [weak self] content in
+        let editorViewController = EditorFactory().productShortDescriptionEditor(product: product) { [weak self] content in
             self?.onEditShortDescriptionCompletion(newShortDescription: content)
         }
         navigationController?.pushViewController(editorViewController, animated: true)
@@ -1016,7 +1016,7 @@ private extension ProductFormViewController {
         guard hasChangedData else {
             return
         }
-        viewModel.updateBriefDescription(newShortDescription)
+        viewModel.updateShortDescription(newShortDescription)
     }
 }
 

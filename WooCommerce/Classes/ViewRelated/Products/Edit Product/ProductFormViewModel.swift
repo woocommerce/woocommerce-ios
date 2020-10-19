@@ -209,8 +209,8 @@ extension ProductFormViewModel {
         product = EditableProductModel(product: product.product.copy(tags: tags))
     }
 
-    func updateBriefDescription(_ briefDescription: String) {
-        product = EditableProductModel(product: product.product.copy(briefDescription: briefDescription))
+    func updateShortDescription(_ shortDescription: String) {
+        product = EditableProductModel(product: product.product.copy(shortDescription: shortDescription))
     }
 
     func updateSKU(_ sku: String?) {

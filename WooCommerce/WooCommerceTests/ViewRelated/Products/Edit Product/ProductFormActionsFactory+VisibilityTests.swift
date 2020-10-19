@@ -129,11 +129,11 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
         XCTAssertTrue(factory.bottomSheetActions().contains(.editCategories))
     }
 
-    // MARK: - Brief description
+    // MARK: - Short description
 
-    func testBriefDescriptionRowIsVisibleForProductWithNonEmptyBriefDescription() {
+    func testShortDescriptionRowIsVisibleForProductWithNonEmptyShortDescription() {
         // Arrange
-        let product = Fixtures.productWithNonEmptyBriefDescription
+        let product = Fixtures.productWithNonEmptyShortDescription
         let model = EditableProductModel(product: product)
 
         // Action
@@ -142,13 +142,13 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
                                                 isEditProductsRelease5Enabled: false)
 
         // Assert
-        XCTAssertTrue(factory.settingsSectionActions().contains(.briefDescription(editable: true)))
-        XCTAssertFalse(factory.bottomSheetActions().contains(.editBriefDescription))
+        XCTAssertTrue(factory.settingsSectionActions().contains(.shortDescription(editable: true)))
+        XCTAssertFalse(factory.bottomSheetActions().contains(.editShortDescription))
     }
 
-    func testBriefDescriptionRowIsInvisibleForProductWithoutBriefDescription() {
+    func testShortDescriptionRowIsInvisibleForProductWithoutShortDescription() {
         // Arrange
-        let product = Fixtures.productWithEmptyBriefDescription
+        let product = Fixtures.productWithEmptyShortDescription
         let model = EditableProductModel(product: product)
 
         // Action
@@ -157,8 +157,8 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
                                                 isEditProductsRelease5Enabled: false)
 
         // Assert
-        XCTAssertFalse(factory.settingsSectionActions().contains(.briefDescription(editable: true)))
-        XCTAssertTrue(factory.bottomSheetActions().contains(.editBriefDescription))
+        XCTAssertFalse(factory.settingsSectionActions().contains(.shortDescription(editable: true)))
+        XCTAssertTrue(factory.bottomSheetActions().contains(.editShortDescription))
     }
 
     // MARK: - Downloadable Files
@@ -211,9 +211,9 @@ private extension ProductFormActionsFactory_VisibilityTests {
         static let productWithOneCategory = MockProduct().product(productType: .simple,
                                                                     categories: [ProductCategory(categoryID: 0, siteID: 0, parentID: 0, name: "", slug: "")])
         static let productWithoutCategories = MockProduct().product(productType: .simple, categories: [])
-        // Brief description
-        static let productWithNonEmptyBriefDescription = MockProduct().product(briefDescription: "desc", productType: .simple)
-        static let productWithEmptyBriefDescription = MockProduct().product(briefDescription: "", productType: .simple)
+        // Short description
+        static let productWithNonEmptyShortDescription = MockProduct().product(shortDescription: "desc", productType: .simple)
+        static let productWithEmptyShortDescription = MockProduct().product(shortDescription: "", productType: .simple)
 
         // Downloadable Files
         static let downloadableProduct = MockProduct().product(downloadable: true)

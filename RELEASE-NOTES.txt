@@ -1,3 +1,6 @@
+5.4
+-----
+ 
 5.3
 -----
 - [*] Opening a product from order details now shows readonly product details of the same styles as in editable product details.

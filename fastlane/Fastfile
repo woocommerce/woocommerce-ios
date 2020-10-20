@@ -362,6 +362,26 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     File.write("comment.json", { body: comment_body }.to_json)
   end
 
+
+  #####################################################################################
+  # build_for_testing
+  # -----------------------------------------------------------------------------------
+  # This lane builds the app for testing
+  # -----------------------------------------------------------------------------------
+  # Usage:
+  # bundle exec fastlane build_for_testing 
+  #####################################################################################
+  desc "Build for Testing"
+  lane :build_for_testing do | options |
+    run_tests(
+      workspace: "WooCommerce.xcworkspace",
+      scheme: "WooCommerce",
+      derived_data_path: "DerivedData",
+      build_for_testing: true,
+    )
+  end
+
+
   ########################################################################
   # Screenshot Lanes
   ########################################################################  
@@ -668,16 +688,6 @@ end
     return '13.3'
   end
 
-  desc "Build for Testing"
-    lane :build_for_testing do | options |
-      run_tests(
-        workspace: "../WooCommerce.xcworkspace",
-        scheme: "WooCommerce",
-        derived_data_path: "../DerivedData",
-        build_for_testing: true,
-      )
-  end
-
 ########################################################################
 # Test Lanes
 ########################################################################
@@ -695,16 +705,15 @@ end
   #####################################################################################
   desc "Run tests without building"
   lane :test_without_building do | options |
-
     # Find the referenced .xctestrun file based on its name
-    buildProductsPath = File.expand_path("../DerivedData/Build/Products/", File.dirname(Dir.pwd))
+    buildProductsPath = File.expand_path("DerivedData/Build/Products/", File.dirname(Dir.pwd))
 
     testPlanPath = Dir.glob(File.join(buildProductsPath, '*.xctestrun') ).select { |e|
       e.include?(options[:name])
     }.first
 
     UI.user_error!("Unable to find .xctestrun file") unless testPlanPath != nil and File.exists? (testPlanPath)
-
+    
     multi_scan(
       workspace: "WooCommerce.xcworkspace",
       scheme: "WooCommerce",

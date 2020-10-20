@@ -198,4 +198,25 @@ post_install do |installer|
   installer.pods_project.build_configuration_list.build_configurations.each do |configuration|
     configuration.build_settings['VALID_ARCHS'] = '$(ARCHS_STANDARD_64_BIT)'
   end
+
+  # Hide Xcode 12 iPhone deployment warnings for now.
+  #
+  # Here's an example warning:
+  #
+  # ```
+  # The iOS Simulator deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 8.0,
+  # but the range of supported deployment target versions is 9.0 to 14.0.99.
+  # ```
+  #
+  # We can remove this once we've upgraded the Pod libraries that are causing the warnings.
+  #
+  # Ref: https://github.com/CocoaPods/CocoaPods/issues/9884#issuecomment-699828314
+  #
+  installer.pods_project.targets.each do |t|
+    t.build_configurations.each do |bc|
+        if bc.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] == '8.0'
+          bc.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0'
+        end
+    end
+  end
 end

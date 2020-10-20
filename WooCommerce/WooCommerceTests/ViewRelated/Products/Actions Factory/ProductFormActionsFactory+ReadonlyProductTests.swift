@@ -39,7 +39,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
                                                                        .inventorySettings(editable: false),
                                                                        .categories(editable: false),
                                                                        .tags(editable: false),
-                                                                       .briefDescription(editable: false),
+                                                                       .shortDescription(editable: false),
                                                                        .productType(editable: false)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
@@ -69,7 +69,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
                                                                        .sku(editable: false),
                                                                        .categories(editable: false),
                                                                        .tags(editable: false),
-                                                                       .briefDescription(editable: false),
+                                                                       .shortDescription(editable: false),
                                                                        .productType(editable: false)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
@@ -95,7 +95,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
                                                                        .reviews,
                                                                        .categories(editable: false),
                                                                        .tags(editable: false),
-                                                                       .briefDescription(editable: false),
+                                                                       .shortDescription(editable: false),
                                                                        .productType(editable: false)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
@@ -124,7 +124,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
                                                                        .sku(editable: false),
                                                                        .categories(editable: false),
                                                                        .tags(editable: false),
-                                                                       .briefDescription(editable: false),
+                                                                       .shortDescription(editable: false),
                                                                        .productType(editable: false)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
@@ -150,7 +150,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
                                                                        .reviews,
                                                                        .categories(editable: false),
                                                                        .tags(editable: false),
-                                                                       .briefDescription(editable: false),
+                                                                       .shortDescription(editable: false),
                                                                        .productType(editable: false)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
@@ -180,7 +180,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
                                                                        .inventorySettings(editable: false),
                                                                        .categories(editable: false),
                                                                        .tags(editable: false),
-                                                                       .briefDescription(editable: false),
+                                                                       .shortDescription(editable: false),
                                                                        .productType(editable: false)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
@@ -206,7 +206,7 @@ private extension ProductFormActionsFactory_ReadonlyProductTests {
         static let simpleProduct = MockProduct().product().copy(name: "Affiliate",
                                                                 productTypeKey: ProductType.simple.rawValue,
                                                                 fullDescription: "Woooooo0o",
-                                                                briefDescription: "Woo",
+                                                                shortDescription: "Woo",
                                                                 sku: "woo",
                                                                 price: "",
                                                                 regularPrice: "12.6",
@@ -219,7 +219,7 @@ private extension ProductFormActionsFactory_ReadonlyProductTests {
         static let affiliateProduct = MockProduct().product().copy(name: "Affiliate",
                                                                    productTypeKey: ProductType.affiliate.rawValue,
                                                                    fullDescription: "Woooooo0o",
-                                                                   briefDescription: "Woo",
+                                                                   shortDescription: "Woo",
                                                                    sku: "woo",
                                                                    price: "",
                                                                    regularPrice: "12.6",
@@ -235,7 +235,7 @@ private extension ProductFormActionsFactory_ReadonlyProductTests {
         static let groupedProduct = MockProduct().product().copy(name: "Grouped",
                                                                  productTypeKey: ProductType.grouped.rawValue,
                                                                  fullDescription: "Woooooo0o",
-                                                                 briefDescription: "Woo",
+                                                                 shortDescription: "Woo",
                                                                  sku: "woo",
                                                                  price: "",
                                                                  regularPrice: "12.6",
@@ -250,7 +250,7 @@ private extension ProductFormActionsFactory_ReadonlyProductTests {
         static let variableProduct = MockProduct().product().copy(name: "Grouped",
                                                                   productTypeKey: ProductType.variable.rawValue,
                                                                   fullDescription: "Woooooo0o",
-                                                                  briefDescription: "Woo",
+                                                                  shortDescription: "Woo",
                                                                   price: "",
                                                                   regularPrice: "12.6",
                                                                   reviewsAllowed: true,

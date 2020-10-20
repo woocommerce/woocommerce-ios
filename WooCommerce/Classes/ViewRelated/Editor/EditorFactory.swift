@@ -20,7 +20,7 @@ final class EditorFactory {
         return editor
     }
 
-    func productBriefDescriptionEditor(product: ProductFormDataModel,
+    func productShortDescriptionEditor(product: ProductFormDataModel,
                                        onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
         let navigationTitle = NSLocalizedString("Short description",
                                                 comment: "The navigation bar title of the edit short description screen.")

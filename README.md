@@ -14,12 +14,13 @@
 </p>
 
 <p align="center">
-    <a href="#-build-instructions">Build Instructions</a> • 
-    <a href="#-documentation">Documentation</a> • 
-    <a href="#-automation">Automation</a> • 
+    <a href="#-build-instructions">Build Instructions</a> •
+    <a href="#-documentation">Documentation</a> •
+    <a href="#-contributing">Contributing</a> •
+    <a href="#-automation">Automation</a> •
     <a href="#-security">Security</a> •
-    <a href="#-need-help">Need Help?</a> • 
-    <a href="#-resources">Resources</a> • 
+    <a href="#-need-help">Need Help?</a> •
+    <a href="#-resources">Resources</a> •
     <a href="#-license">License</a>
 </p>
 
@@ -101,6 +102,10 @@ Please, remember to not add this information on your commits and PRs.
     - [Beta Testing](https://woocommercehalo.wordpress.com/setup/join-ios-beta/)
 - Features
     - [In-app Feedback](docs/in-app-feedback.md)
+
+## 👏 Contributing
+
+Read our [Contributing Guide](CONTRIBUTING.md) to learn about reporting issues, contributing code, and more ways to contribute.
 
 ## 🤖 Automation
 

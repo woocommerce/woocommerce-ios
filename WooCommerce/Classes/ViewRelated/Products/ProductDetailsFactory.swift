@@ -35,21 +35,18 @@ private extension ProductDetailsFactory {
         let productModel = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
                                                                   product: productModel)
-        if isEditProductsEnabled {
-            let viewModel = ProductFormViewModel(product: productModel,
-                                                 formType: .edit,
-                                                 productImageActionHandler: productImageActionHandler,
-                                                 isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
-            vc = ProductFormViewController(viewModel: viewModel,
-                                           eventLogger: ProductFormEventLogger(),
-                                           productImageActionHandler: productImageActionHandler,
-                                           presentationStyle: presentationStyle)
-            // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
-            vc.hidesBottomBarWhenPushed = true
-        } else {
-            let viewModel = ProductDetailsViewModel(product: product)
-            vc = ProductDetailsViewController(viewModel: viewModel)
-        }
+        let formType: ProductFormType = isEditProductsEnabled ? .edit: .readonly
+        let viewModel = ProductFormViewModel(product: productModel,
+                                             formType: formType,
+                                             productImageActionHandler: productImageActionHandler,
+                                             isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
+        vc = ProductFormViewController(viewModel: viewModel,
+                                       eventLogger: ProductFormEventLogger(),
+                                       productImageActionHandler: productImageActionHandler,
+                                       presentationStyle: presentationStyle,
+                                       isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
+        // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
+        vc.hidesBottomBarWhenPushed = true
         return vc
     }
 }

@@ -20,14 +20,15 @@ final class ProductSettingsRowsTests: XCTestCase {
                                        reviewsAllowed: false,
                                        slug: "",
                                        purchaseNote: nil,
-                                       menuOrder: 0)
+                                       menuOrder: 0,
+                                       downloadable: false)
     }
 
     override func tearDown() {
         super.tearDown()
     }
 
-    func testVirtualProductRowChangedWhenUpdated() throws {
+    func test_virtual_product_row_changed_when_updated() throws {
         let settings = try XCTUnwrap(originalSettings)
 
         // Given
@@ -43,7 +44,7 @@ final class ProductSettingsRowsTests: XCTestCase {
         XCTAssertEqual(settings.virtual, true)
     }
 
-    func testReviewsAllowedRowChangedWhenUpdated() throws {
+    func test_reviewsAllowed_row_changed_when_updated() throws {
         let settings = try XCTUnwrap(originalSettings)
 
         // Given
@@ -58,4 +59,20 @@ final class ProductSettingsRowsTests: XCTestCase {
         // Then
         XCTAssertEqual(settings.reviewsAllowed, true)
     }
+
+    func test_downloadable_product_row_changed_when_updated() throws {
+         let settings = try XCTUnwrap(originalSettings)
+
+          // Given
+         let downloadableProduct = ProductSettingsRows.DownloadableProduct(settings)
+
+          let cell = SwitchTableViewCell()
+         downloadableProduct.configure(cell: cell)
+
+          // When
+         cell.onChange?(true)
+
+          // Then
+         XCTAssertEqual(settings.downloadable, true)
+     }
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-10-01 08:54:03+0000 */
+/* Translation-Revision-Date: 2020-10-16 11:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -342,7 +342,7 @@
 "Can Not Request Link" = "無法要求連結";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
 "Cancel" = "取消";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -534,7 +534,8 @@
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "預設";
 
-/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
+/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen
+   Button title Delete in Edit Product More Options Action Sheet */
 "Delete" = "刪除";
 
 /* Delete a Shipment Tracking
@@ -587,6 +588,9 @@
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "不允許";
+
+/* Body of the alert when a user is moving a product to the trash */
+"Do you want to move this product to the Trash?" = "你要將此商品移至垃圾桶嗎？";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "還沒有帳號？_註冊_";
@@ -940,6 +944,9 @@
    Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "庫存";
 
+/* Text on the button that starts a new refund process */
+"Issue Refund" = "核發退款";
+
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "使用者名稱\/密碼似乎不適用於這個網站。";
 
@@ -1107,6 +1114,9 @@
 
 /* Accessibility label for the Edit Product More Options action sheet */
 "More options" = "更多選項";
+
+/* Confirmation button on the alert when the user is moving a product to the trash */
+"Move to Trash" = "移至垃圾桶";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "將留言移至垃圾留言";
@@ -1357,6 +1367,9 @@
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "挑選要連結的商店";
 
+/* Title of the in-progress UI while deleting the Product remotely */
+"Placing your product in the trash..." = "正在將你的商品放入垃圾桶…";
+
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "請輸入 URL。";
 
@@ -1407,6 +1420,9 @@
 
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "請稍候，我們正在將此商品上架到你的商店";
+
+/* Message of the in-progress UI while deleting the Product remotely */
+"Please wait while we update your store details" = "請稍候，我們正在更新你的商店詳細資料";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "由 Automattic 提供技術";
@@ -1476,13 +1492,14 @@
 "Product link" = "產品連結";
 
 /* Title of the Product Type row on Product main screen */
-"Product type" = "Product type";
+"Product type" = "產品類型";
 
 /* Product section title if there is more than one product.
    Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "產品";
 
-/* Label for computed value `product refunds + taxes = subtotal`. */
+/* Label for computed value `product refunds + taxes = subtotal`.
+   Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "商品退款";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
@@ -1490,6 +1507,9 @@
 
 /* One of the possible options in Product Visibility */
 "Public" = "公開";
+
+/* Action for creating a new Product remotely */
+"Publish" = "發表";
 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "發表設定";
@@ -1582,6 +1602,9 @@
 /* Label action for removing a link from the editor */
 "Remove end date" = "移除結束日期";
 
+/* Title of the alert when a user is moving a product to the trash */
+"Remove product" = "移除商品";
+
 /* Action to replace one photo on the Product images screen */
 "Replace Photo" = "替換相片";
 
@@ -1656,6 +1679,12 @@
 /* Add Product Category. Save button title in navbar.
    Add Product Tags. Save button title in navbar. */
 "Save" = "儲存";
+
+/* Button title to save a product as draft in Discard Changes Action Sheet */
+"Save as Draft" = "儲存為草稿";
+
+/* Button title to save a product as draft in Product More Options Action Sheet */
+"Save as draft" = "儲存為草稿";
 
 /* Scan Products */
 "Scan products" = "掃描產品";
@@ -1747,6 +1776,9 @@
 
 /* Shipping method title for customer info cell */
 "Shipping Method" = "運送方式";
+
+/* Title on the refund screen that lists the shipping total cost */
+"Shipping Refund" = "運費退款";
 
 /* Add / Edit shipping carrier. Title of cell presenting name */
 "Shipping carrier" = "貨運業者";
@@ -1942,7 +1974,8 @@
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "刪除線";
 
-/* Subtotal label for a refund details view */
+/* Subtotal label for a refund details view
+   Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost */
 "Subtotal" = "小計";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
@@ -2033,7 +2066,8 @@
 /* Accessibility hint for selecting paragraph style button on formatting toolbar. */
 "Tap to toggle paragraph style" = "點選以切換段落風格";
 
-/* Tax label for a refund details view */
+/* Tax label for a refund details view
+   Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "稅金";
 
 /* Section header title for product tax settings */
@@ -2632,6 +2666,9 @@
 
 /* Backorders status. Example: 'Backorders: not allowed' */
 "not allowed" = "不允許";
+
+/* No comment provided by engineer. */
+"password" = "密碼";
 
 /* Today */
 "today" = "今天";

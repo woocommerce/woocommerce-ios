@@ -83,13 +83,15 @@ final class ProductVariationsViewController: UIViewController {
     private let formType: ProductFormType
 
     private let imageService: ImageService = ServiceLocator.imageService
+    private let isEditProductsRelease5Enabled: Bool
 
-    init(product: Product, formType: ProductFormType) {
+    init(product: Product, formType: ProductFormType, isEditProductsRelease5Enabled: Bool) {
         self.siteID = product.siteID
         self.productID = product.productID
         self.allAttributes = product.attributes
         self.parentProductSKU = product.sku
         self.formType = formType
+        self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -259,7 +261,7 @@ extension ProductVariationsViewController: UITableViewDataSource {
         let viewModel = ProductsTabProductViewModel(productVariationModel: model)
         cell.update(viewModel: viewModel, imageService: imageService)
         cell.selectionStyle = .none
-        cell.accessoryType = .none
+        cell.accessoryType = .disclosureIndicator
 
         return cell
     }
@@ -301,7 +303,8 @@ extension ProductVariationsViewController: UITableViewDelegate {
                                                        eventLogger: ProductVariationFormEventLogger(),
                                                        productImageActionHandler: productImageActionHandler,
                                                        currency: currency,
-                                                       presentationStyle: .navigationStack)
+                                                       presentationStyle: .navigationStack,
+                                                       isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
         navigationController?.pushViewController(viewController, animated: true)
     }
 

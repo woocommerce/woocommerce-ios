@@ -71,6 +71,22 @@ public class CurrencyFormatter {
         return numberFormatter.string(from: absoluteAmount)
     }
 
+    /// Returns a formatted string for the amount. Does not contain currency symbol.
+    /// - Parameters:
+    ///     - decimal: a valid Decimal number
+    ///     - decimalSeparator: a string representing the user's preferred decimal symbol
+    ///     - decimalPosition: an int for positioning the decimal symbol
+    ///     - thousandSeparator: a string representing the user's preferred thousand symbol*
+    ///       *Assumes thousands grouped by 3, because a user can't indicate a preference and it's a majority default.
+    ///       Note this assumption will be wrong for India.
+    ///
+    func localize(_ decimalAmount: Decimal,
+                  with decimalSeparator: String? = ".",
+                  in decimalPosition: Int = 2,
+                  including thousandSeparator: String? = ",") -> String? {
+        localize(decimalAmount as NSDecimalNumber, with: decimalSeparator, in: decimalPosition, including: thousandSeparator)
+    }
+
     /// Returns a string that displays the amount using all of the specified currency settings
     /// - Parameters:
     ///     - stringValue: a formatted string, preferably converted using `localize(_:in:with:including:)`.

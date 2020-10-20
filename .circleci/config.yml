@@ -14,14 +14,6 @@ commands:
           command: |
             # A placeholder command that fixes any issues present on the CircleCI box – there's often something wrong with it,
             # so preserving this step (even if empty) makes the diffs simpler.
-            
-            # Add `/usr/local/bin` to the Xcode 11.2 image's $PATH in order to be able to use dependencies
-            if [ $(echo $PATH | ruby -e "puts Kernel.gets.include?('/usr/local/bin')") != "true" ]; then
-              echo 'export PATH=/usr/local/bin:$PATH' >> $BASH_ENV
-              echo "Manually added `/usr/local/bin` to the $PATH:"
-              echo $PATH
-            fi
-
             chruby ruby-2.6.6
             gem install bundler
 jobs:

@@ -46,7 +46,7 @@ jobs:
       - git/shallow-checkout
       - ios/boot-simulator:
           xcode-version: "12.0.0"
-          device: iPhone 13
+          device: iPhone 11
       - attach_workspace:
           at: ./
       - run:
@@ -179,8 +179,8 @@ workflows:
           requires: [ "Build Tests" ]
       # Always run UI tests on develop and release branches
       - UI Tests:
-          name: UI Tests (iPhone 13)
-          device: iPhone 13
+          name: UI Tests (iPhone 11)
+          device: iPhone 11
           post-to-slack: true
           requires: [ "Build Tests" ]
           filters:
@@ -211,8 +211,8 @@ workflows:
       - Build Tests:
           requires: [ "Hold" ]
       - UI Tests:
-          name: Optional UI Tests (iPhone 13)
-          device: iPhone 13
+          name: Optional UI Tests (iPhone 11)
+          device: iPhone 11
           requires: [ "Build Tests" ]
       - UI Tests:
           name: Optional UI Tests (iPad Air 3rd generation)

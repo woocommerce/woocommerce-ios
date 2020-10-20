@@ -212,10 +212,10 @@ post_install do |installer|
   #
   # Ref: https://github.com/CocoaPods/CocoaPods/issues/9884#issuecomment-699828314
   #
-  installer.pods_project.targets.each do |t|
-    t.build_configurations.each do |bc|
-        if bc.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] == '8.0'
-          bc.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0'
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |configuration|
+        if configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] == '8.0'
+          configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0'
         end
     end
   end

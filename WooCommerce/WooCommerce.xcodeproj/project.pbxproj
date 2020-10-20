@@ -2887,6 +2887,17 @@
 			path = "Issue Refund";
 			sourceTree = "<group>";
 		};
+		26A630F8253F62AD00CBC3B1 /* UseCases */ = {
+			isa = PBXGroup;
+			children = (
+				57A5D8D22534F92D00AA54D6 /* TotalRefundedCalculationUseCase.swift */,
+				2667BFE42530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift */,
+				2667BFEA2535FF09008099D4 /* RefundShippingCalculationUseCase.swift */,
+				26A630EC253F3B5C00CBC3B1 /* RefundCreationUseCase.swift */,
+			);
+			path = UseCases;
+			sourceTree = "<group>";
+		};
 		26B119B524D0B36700FED5C7 /* Survey */ = {
 			isa = PBXGroup;
 			children = (
@@ -2920,10 +2931,7 @@
 				260C315F2524ECA900157BC2 /* IssueRefundViewController.swift */,
 				2667BFE0252FA117008099D4 /* RefundItemQuantityListSelectorCommand.swift */,
 				260C31612524EEB200157BC2 /* IssueRefundViewController.xib */,
-				57A5D8D22534F92D00AA54D6 /* TotalRefundedCalculationUseCase.swift */,
-				2667BFE42530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift */,
-				2667BFEA2535FF09008099D4 /* RefundShippingCalculationUseCase.swift */,
-				26A630EC253F3B5C00CBC3B1 /* RefundCreationUseCase.swift */,
+				26A630F8253F62AD00CBC3B1 /* UseCases */,
 			);
 			path = "Issue Refunds";
 			sourceTree = "<group>";

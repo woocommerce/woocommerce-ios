@@ -21,17 +21,17 @@ jobs:
       name: ios/default
       xcode-version: "12.0.0"
     steps:
-      - git/shallow-checkout
       - fix-circleci
+      - git/shallow-checkout
       - ios/install-dependencies:
             bundle-install: true
             pod-install: true
       - run:
           name: Copy Secrets
           command: bundle exec fastlane run configure_apply
-      - ios/xcodebuild:
-          command: build-for-testing
-          arguments: -workspace 'WooCommerce.xcworkspace' -scheme 'WooCommerce' -configuration 'Debug' -sdk iphonesimulator -derivedDataPath DerivedData
+      - run:
+          name: Build for Testing
+          command: cd ./Scripts && bundle exec fastlane build_for_testing
       - persist_to_workspace:
           root: ./
           paths:
@@ -43,6 +43,7 @@ jobs:
       name: ios/default
       xcode-version: "12.0.0"
     steps:
+      - fix-circleci
       - git/shallow-checkout
       - ios/boot-simulator:
           xcode-version: "12.0.0"
@@ -55,10 +56,7 @@ jobs:
       - ios/wait-for-simulator
       - run:
           name: Run Unit Tests
-          command: >
-            bundle exec fastlane test_without_building
-            xctestrun:DerivedData/Build/Products/WooCommerce_UnitTests_iphonesimulator14.0-x86_64.xctestrun
-            destination:"platform=iOS Simulator,id=$SIMULATOR_UDID" try_count:3
+          command: bundle exec fastlane test_without_building name:WooCommerce_UnitTests try_count:3
       - ios/save-xcodebuild-artifacts:
           result-bundle-path: build/results
   UI Tests:
@@ -73,6 +71,7 @@ jobs:
       name: ios/default
       xcode-version: "12.0.0"
     steps:
+      - fix-circleci
       - git/shallow-checkout
       - ios/boot-simulator:
           xcode-version: "12.0.0"
@@ -89,10 +88,7 @@ jobs:
       - ios/wait-for-simulator
       - run:
           name: Run UI Tests
-          command: >
-            bundle exec fastlane test_without_building
-            xctestrun:DerivedData/Build/Products/WooCommerce_UITests_iphonesimulator14.0-x86_64.xctestrun
-            destination:"platform=iOS Simulator,id=$SIMULATOR_UDID" try_count:3
+          command: bundle exec fastlane test_without_building name:WooCommerce_UITests try_count:3
       - ios/save-xcodebuild-artifacts:
           result-bundle-path: build/results
       - when:
@@ -115,8 +111,8 @@ jobs:
       name: ios/default
       xcode-version: "12.0.0"
     steps:
-      - git/shallow-checkout
       - fix-circleci
+      - git/shallow-checkout
       - ios/install-dependencies:
             bundle-install: true
             pod-install: true
@@ -141,8 +137,8 @@ jobs:
     environment:
       HOMEBREW_NO_AUTO_UPDATE: 1
     steps:
-      - git/shallow-checkout
       - fix-circleci
+      - git/shallow-checkout
       - ios/install-dependencies:
             bundle-install: true
             pod-install: true
@@ -189,8 +185,8 @@ workflows:
                 - develop
                 - /^release.*/
       - UI Tests:
-          name: UI Tests (iPad Air 3rd generation)
-          device: iPad Air \\(3rd generation\\)
+          name: UI Tests (iPad Air 4rd generation)
+          device: iPad Air \\(4rd generation\\)
           post-to-slack: true
           requires: [ "Build Tests" ]
           filters:
@@ -215,8 +211,8 @@ workflows:
           device: iPhone 11
           requires: [ "Build Tests" ]
       - UI Tests:
-          name: Optional UI Tests (iPad Air 3rd generation)
-          device: iPad Air \\(3rd generation\\)
+          name: Optional UI Tests (iPad Air 4rd generation)
+          device: iPad Air \\(4rd generation\\)
           requires: [ "Build Tests" ]
   Installable Build:
     jobs:

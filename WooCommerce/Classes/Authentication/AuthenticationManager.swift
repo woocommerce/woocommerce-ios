@@ -18,6 +18,10 @@ class AuthenticationManager: Authentication {
     ///
     private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
 
+    /// Apple ID is temporarily stored in memory until we can save it to Keychain when the authentication is complete.
+    ///
+    private var appleUserID: String?
+
     /// Initializes the WordPress Authenticator.
     ///
     func initialize() {
@@ -101,7 +105,11 @@ class AuthenticationManager: Authentication {
     /// Displays the Login Flow using the specified UIViewController as presenter.
     ///
     func displayAuthentication(from presenter: UIViewController, animated: Bool, onCompletion: @escaping () -> Void) {
-        WordPressAuthenticator.showLogin(from: presenter, animated: animated, onLoginButtonTapped: {
+        WordPressAuthenticator.showLogin(from: presenter, animated: animated, onLoginButtonTapped: { [weak self] in
+            guard let self = self else { return }
+            // Resets Apple ID at the beginning of the authentication.
+            self.appleUserID = nil
+
             ServiceLocator.analytics.track(.loginPrologueContinueTapped)
         }, onCompletion: onCompletion)
     }
@@ -130,7 +138,7 @@ class AuthenticationManager: Authentication {
 //
 extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func userAuthenticatedWithAppleUserID(_ appleUserID: String) {
-        keychain.wooAppleID = appleUserID
+        self.appleUserID = appleUserID
     }
 
     var allowWPComLogin: Bool {
@@ -258,6 +266,12 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         guard let wpcom = credentials.wpcom else {
             fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
         }
+
+        // If Apple ID is previously set, saves it to Keychain now that authentication is complete.
+        if let appleUserID = appleUserID {
+            keychain.wooAppleID = appleUserID
+        }
+        appleUserID = nil
 
         ServiceLocator.stores.authenticate(credentials: .init(authToken: wpcom.authToken))
         let action = AccountAction.synchronizeAccount { (account, error) in

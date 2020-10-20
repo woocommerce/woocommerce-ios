@@ -48,7 +48,7 @@ public struct Refund: Codable {
         self.items = items
     }
 
-    // The public initializer for a Refund
+    /// The public initializer for a Refund
     ///
     public init(from decoder: Decoder) throws {
         guard let orderID = decoder.userInfo[.orderID] as? Int64 else {
@@ -66,7 +66,7 @@ public struct Refund: Codable {
         let amount = try container.decode(String.self, forKey: .amount)
         let reason = try container.decode(String.self, forKey: .reason)
         let refundedByUserID = try container.decode(Int64.self, forKey: .refundedByUserID)
-        let isAutomated = try container.decode(Bool.self, forKey: .automatedRefund)
+        let isAutomated = try container.decodeIfPresent(Bool.self, forKey: .automatedRefund) ?? false
         let items = try container.decode([OrderItemRefund].self, forKey: .items)
 
         self.init(refundID: refundID,
@@ -81,19 +81,24 @@ public struct Refund: Codable {
                   items: items)
     }
 
-    // The public initializer for an encodable Refund
+    /// The public initializer for an encodable Refund
     ///
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: EncodingKeys.self)
 
         try container.encode(amount, forKey: .amount)
         try container.encode(reason, forKey: .reason)
-
-        // FIXME: What happens when you encode a struct that has a nested struct?
-        // `items` contains `taxes: [OrderItemTaxRefund]`.
-        try container.encode(items, forKey: .items)
-
         try container.encode(createAutomated, forKey: .createAutomatedRefund)
+        try container.encode(itemsDictionary(), forKey: .items)
+    }
+
+    /// Converts the items array to a dictionary as the API expects it.
+    /// {  "item_id_1" : item1, "item_id_2" : item2 }
+    ///
+    private func itemsDictionary() -> [String: OrderItemRefund] {
+        items.reduce(into: [:]) { dictionary, item in
+            dictionary[String(item.itemID)] = item
+        }
     }
 }
 

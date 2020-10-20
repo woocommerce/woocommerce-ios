@@ -212,11 +212,23 @@ post_install do |installer|
   #
   # Ref: https://github.com/CocoaPods/CocoaPods/issues/9884#issuecomment-699828314
   #
-  installer.pods_project.targets.each do |target|
-    target.build_configurations.each do |configuration|
-        if configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] == '8.0'
-          configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0'
-        end
+  targets_and_configs_to_fix = installer.pods_project.targets.reduce({}) do |result, target|
+    configs_to_fix = target.build_configurations.filter do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] == '8.0'
     end
+
+    result[target] = configs_to_fix unless configs_to_fix.empty?
+    result
+  end
+
+  targets_and_configs_to_fix.each do |target, configs|
+    configs.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0'
+    end
+  end
+
+  unless targets_and_configs_to_fix.empty?
+    target_names = targets_and_configs_to_fix.keys.map(&:name)
+    puts "\n⚠️  Changed deployment targets of these libraries to hide Xcode 12 build warnings: #{target_names.join(', ')}.\n\n"
   end
 end

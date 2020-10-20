@@ -28,44 +28,6 @@ struct RefundCreationUseCase {
     /// Creates a `Refund` object ready to be used  on `RefundStore.createRefund` action
     ///
     func createRefundObject() -> Refund {
-
-        let refundItems = items.map { refundableItem -> OrderItemRefund in
-
-            let taxes = refundableItem.item.taxes.map { tax -> OrderItemTaxRefund in
-                let taxLineToRefund: Decimal = {
-                    let totalTax = currencyFormatter.convertToDecimal(from: tax.total) ?? 0
-                    let itemTax = (totalTax as Decimal) / refundableItem.item.quantity
-                    return itemTax * Decimal(refundableItem.quantity)
-                }()
-                return OrderItemTaxRefund(taxID: tax.taxID,
-                                          subtotal: "",
-                                          total: currencyFormatter.localize(taxLineToRefund) ?? "\(taxLineToRefund)")
-            }
-
-            let total = refundableItem.item.price.multiplying(by: NSDecimalNumber(value: refundableItem.quantity))
-
-            // TODO: Calculate item total tax
-            let totalTax: Decimal = {
-                let totalItemTax = currencyFormatter.convertToDecimal(from: refundableItem.item.totalTax) ?? 0
-                let itemTax = (totalItemTax as Decimal) / refundableItem.item.quantity
-                return itemTax * Decimal(refundableItem.quantity)
-            }()
-
-            return OrderItemRefund(itemID: refundableItem.item.itemID,
-                                   name: "",
-                                   productID: .min,
-                                   variationID: .min,
-                                   quantity: Decimal(refundableItem.quantity),
-                                   price: .zero,
-                                   sku: nil,
-                                   subtotal: "",
-                                   subtotalTax: "",
-                                   taxClass: "",
-                                   taxes: taxes,
-                                   total: currencyFormatter.localize(total) ?? "\(total)",
-                                   totalTax: currencyFormatter.localize(totalTax) ?? "\(totalTax)")
-        }
-
         return Refund(refundID: .min,
                       orderID: .min,
                       siteID: .min,
@@ -75,7 +37,63 @@ struct RefundCreationUseCase {
                       refundedByUserID: .min,
                       isAutomated: nil,
                       createAutomated: automaticallyRefundsPayment,
-                      items: refundItems)
+                      items: createRefundItems())
     }
 
+    /// Retuns an array of `OrderItemRefund` based on the provided refundable items
+    ///
+    private func createRefundItems() -> [OrderItemRefund] {
+        items.map { refundable -> OrderItemRefund in
+            OrderItemRefund(itemID: refundable.item.itemID,
+                            name: "",
+                            productID: .min,
+                            variationID: .min,
+                            quantity: Decimal(refundable.quantity),
+                            price: .zero,
+                            sku: nil,
+                            subtotal: "",
+                            subtotalTax: "",
+                            taxClass: "",
+                            taxes: createTaxes(from: refundable),
+                            total: calculateTotal(of: refundable),
+                            totalTax: calculateTotalTax(of: refundable))
+        }
+    }
+
+    /// Creates an array of `OrderItemTaxRefund` from the tax lines in the provided `RefundableOrderItem`
+    ///
+    private func createTaxes(from refundable: RefundableOrderItem) -> [OrderItemTaxRefund] {
+        refundable.item.taxes.map { taxLine -> OrderItemTaxRefund in
+            OrderItemTaxRefund(taxID: taxLine.taxID,
+                               subtotal: "",
+                               total: calculateTax(of: taxLine, purchasedQuantity: refundable.item.quantity, refundQuantity: refundable.decimalQuantity))
+        }
+    }
+
+    /// Calculates the refundable tax from a tax line by diving its total tax value by the purchased quantity and mutiplying it by the refunded quantity.
+    ///
+    private func calculateTax(of taxLine: OrderItemTax, purchasedQuantity: Decimal, refundQuantity: Decimal) -> String {
+        let totalTax = currencyFormatter.convertToDecimal(from: taxLine.total) ?? 0
+        let itemTax = (totalTax as Decimal) / purchasedQuantity
+        let refundableTax = itemTax * refundQuantity
+        return currencyFormatter.localize(refundableTax) ?? "\(refundableTax)"
+    }
+
+    /// Calculates the refundable total price from a `RefundableOrderItem` by diving the item price value by the purchased quantity
+    /// and mutiplying it by the refunded quantity.
+    ///
+    private func calculateTotal(of refundable: RefundableOrderItem) -> String {
+        let total = (refundable.item.price as Decimal) * refundable.decimalQuantity
+        return currencyFormatter.localize(total) ?? "\(total)"
+    }
+
+    /// Calculates the refundable tax from a `RefundableOrderItem` by diving its total tax value by the purchased quantity
+    /// and mutiplying it by the refunded quantity.
+    ///
+    private func calculateTotalTax(of refundable: RefundableOrderItem) -> String {
+        let totalTax = currencyFormatter.convertToDecimal(from: refundable.item.totalTax) ?? 0
+        let itemTax = (totalTax as Decimal) / refundable.item.quantity
+        let refundableTotalTax = itemTax * refundable.decimalQuantity
+        return currencyFormatter.localize(refundableTotalTax) ?? "\(refundableTotalTax)"
+    }
 }

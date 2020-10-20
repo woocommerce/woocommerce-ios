@@ -11,6 +11,12 @@ struct RefundableOrderItem {
     /// Current quantity available for refund
     ///
     let quantity: Int
+
+    /// Quantity expressed as decimal
+    ///
+    var decimalQuantity: Decimal {
+        Decimal(quantity)
+    }
 }
 
 // MARK: Convenience Initializers

@@ -121,7 +121,7 @@ private extension BetaFeaturesViewController {
     func configureProductsSwitch(cell: SwitchTableViewCell) {
         configureCommonStylesForSwitchCell(cell)
 
-        let title = NSLocalizedString("Products",
+        let title = NSLocalizedString("Creating products",
                                       comment: "My Store > Settings > Experimental features > Products")
 
         cell.title = title
@@ -145,7 +145,7 @@ private extension BetaFeaturesViewController {
     func configureProductsDescription(cell: BasicTableViewCell) {
         configureCommonStylesForDescriptionCell(cell)
 
-        let description = NSLocalizedString("Test out the new products section as we get ready to launch them",
+        let description = NSLocalizedString("Test out the new product creation as we get ready to launch",
                                             comment: "My Store > Settings > Experimental features > Products")
         cell.textLabel?.text = description
     }

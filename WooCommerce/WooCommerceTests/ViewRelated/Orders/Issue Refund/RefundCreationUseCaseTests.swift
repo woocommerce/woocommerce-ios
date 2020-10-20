@@ -54,9 +54,6 @@ final class RefundCreationUseCaseTests: XCTestCase {
         XCTAssertEqual(refund.items[0].total, "5.10")
         XCTAssertEqual(refund.items[1].total, "12.60")
 
-        XCTAssertEqual(refund.items[0].totalTax, "0.00")
-        XCTAssertEqual(refund.items[1].totalTax, "0.00")
-
         XCTAssertEqual(refund.items[0].taxes, [])
         XCTAssertEqual(refund.items[0].taxes, [])
     }
@@ -84,7 +81,6 @@ final class RefundCreationUseCaseTests: XCTestCase {
         XCTAssertEqual(refund.items[0].itemID, 1)
         XCTAssertEqual(refund.items[0].quantity, 2)
         XCTAssertEqual(refund.items[0].total, "10.20")
-        XCTAssertEqual(refund.items[0].totalTax, "2.60")
         XCTAssertEqual(refund.items[0].taxes[0].taxID, 11)
         XCTAssertEqual(refund.items[0].taxes[0].total, "0.40")
         XCTAssertEqual(refund.items[0].taxes[1].taxID, 12)

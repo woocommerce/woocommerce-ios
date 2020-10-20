@@ -66,7 +66,7 @@ public struct Refund: Codable {
         let amount = try container.decode(String.self, forKey: .amount)
         let reason = try container.decode(String.self, forKey: .reason)
         let refundedByUserID = try container.decode(Int64.self, forKey: .refundedByUserID)
-        let isAutomated = try container.decode(Bool.self, forKey: .automatedRefund)
+        let isAutomated = try container.decodeIfPresent(Bool.self, forKey: .automatedRefund) ?? false
         let items = try container.decode([OrderItemRefund].self, forKey: .items)
 
         self.init(refundID: refundID,

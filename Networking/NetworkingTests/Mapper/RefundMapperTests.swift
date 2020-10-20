@@ -67,7 +67,7 @@ final class RefundMapperTests: XCTestCase {
         let refund = sampleRefund(includeTaxes: true)
         let mapper = RefundMapper(siteID: dummySiteID, orderID: 123)
 
-        // Ref: https://github.com/woocommerce/woocommerce/blob/0a81188e42fd3797ea2dd09f35c777e787801808/includes/wc-order-functions.php#L535-L573
+        // Ref:  https://git.io/JTRsF
         let expectedDictionary: [String: Any] = [
             "amount": refund.amount,
             "api_refund": refund.createAutomated ?? false,
@@ -97,7 +97,7 @@ final class RefundMapperTests: XCTestCase {
         let refund = sampleRefund(includeTaxes: false)
         let mapper = RefundMapper(siteID: dummySiteID, orderID: 123)
 
-        // Ref: https://github.com/woocommerce/woocommerce/blob/0a81188e42fd3797ea2dd09f35c777e787801808/includes/wc-order-functions.php#L535-L573
+        // Ref:  https://git.io/JTRsF
         let expectedDictionary: [String: Any] = [
             "amount": refund.amount,
             "api_refund": refund.createAutomated ?? false,

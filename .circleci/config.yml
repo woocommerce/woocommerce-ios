@@ -15,6 +15,8 @@ commands:
             # A placeholder command that fixes any issues present on the CircleCI box – there's often something wrong with it,
             # so preserving this step (even if empty) makes the diffs simpler.
             echo "No issues for this image – skipping".
+            chruby ruby-2.6.6
+            gem install bundler
 jobs:
   Build Tests:
     executor:

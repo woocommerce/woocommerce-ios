@@ -5,7 +5,7 @@ public enum FeedbackType: String, Codable {
     ///
     case general
 
-    /// identifier for the products m3 beta feedback survey
+    /// identifier for the products m4 beta feedback survey
     ///
-    case productsM3
+    case productsM4
 }

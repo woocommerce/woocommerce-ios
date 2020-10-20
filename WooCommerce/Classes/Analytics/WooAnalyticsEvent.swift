@@ -57,9 +57,9 @@ extension WooAnalyticsEvent {
     public enum FeedbackContext: String {
         /// Shown in Stats but is for asking general feedback.
         case general
-        /// Shown in products banner for Milestone 3 features. New product banners should have
+        /// Shown in products banner for Milestone 4 features. New product banners should have
         /// their own `FeedbackContext` option.
-        case productsM3 = "products_m3"
+        case productsM4 = "products_m4"
     }
 
     /// The action performed on the survey screen.

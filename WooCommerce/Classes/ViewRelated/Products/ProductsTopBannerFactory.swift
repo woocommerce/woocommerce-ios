@@ -16,16 +16,16 @@ struct ProductsTopBannerFactory {
                           onGiveFeedbackButtonPressed: @escaping () -> Void,
                           onDismissButtonPressed: @escaping () -> Void,
                           onCompletion: @escaping (TopBannerView) -> Void) {
-        let action = AppSettingsAction.loadProductsFeatureSwitch { _ in
-            let title = Strings.title
+        let action = AppSettingsAction.loadProductsFeatureSwitch { isFeatureSwitchOn in
+            let title = isFeatureSwitchOn ? Localization.titleWhenRelease4IsEnabled: Localization.title
             let icon: UIImage = .megaphoneIcon
-            let infoText = Strings.infoWhenRelease3IsEnabled
-            let giveFeedbackAction = TopBannerViewModel.ActionButton(title: Strings.giveFeedback) {
-                analytics.track(event: .featureFeedbackBanner(context: .productsM3, action: .gaveFeedback))
+            let infoText = isFeatureSwitchOn ? Localization.infoWhenRelease4IsEnabled: Localization.info
+            let giveFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.giveFeedback) {
+                analytics.track(event: .featureFeedbackBanner(context: .productsM4, action: .gaveFeedback))
                 onGiveFeedbackButtonPressed()
             }
-            let dismissAction = TopBannerViewModel.ActionButton(title: Strings.dismiss) {
-                analytics.track(event: .featureFeedbackBanner(context: .productsM3, action: .dismissed))
+            let dismissAction = TopBannerViewModel.ActionButton(title: Localization.dismiss) {
+                analytics.track(event: .featureFeedbackBanner(context: .productsM4, action: .dismissed))
                 onDismissButtonPressed()
             }
             let actions = [giveFeedbackAction, dismissAction]
@@ -44,16 +44,20 @@ struct ProductsTopBannerFactory {
 }
 
 private extension ProductsTopBannerFactory {
-    enum Strings {
+    enum Localization {
         static let title =
             NSLocalizedString("New editing options available",
-                              comment: "The title of the Work In Progress top banner on the Products tab.")
+                              comment: "The title of the Work In Progress top banner on the Products tab when Products feature switch is disabled.")
         static let info =
-            NSLocalizedString("We've added more editing functionalities to products! You can now update images, see previews and share your products.",
-                              comment: "The info of the Work In Progress top banner on the Products tab.")
-        static let infoWhenRelease3IsEnabled =
             NSLocalizedString("You can now edit grouped, external and variable products, change product type and update categories and tags",
-                              comment: "The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled.")
+                              comment: "The info of the Work In Progress top banner on the Products tab when Products feature switch is disabled.")
+        static let titleWhenRelease4IsEnabled =
+            NSLocalizedString("Create products from the app!",
+                              comment: "The title of the Work In Progress top banner on the Products tab when Products feature switch is enabled.")
+        static let infoWhenRelease4IsEnabled =
+            NSLocalizedString(
+                "It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!",
+                comment: "The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled.")
         static let giveFeedback =
             NSLocalizedString("Give feedback",
                               comment: "The title of the button to give feedback about products beta features on the banner on the products tab")

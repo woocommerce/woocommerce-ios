@@ -285,7 +285,7 @@ private extension SettingsViewController {
 
     /// This is false because there are no ongoing experiments
     func couldShowBetaFeaturesRow() -> Bool {
-        return false
+        true
     }
 }
 

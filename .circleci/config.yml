@@ -7,14 +7,20 @@ orbs:
   slack: circleci/slack@3.4.2
 
 commands:
-  fix-circleci:
+  fix-image:
     steps:
       - run:
-          name: Fix CircleCI
+          name: CI Image
           command: |
             # A placeholder command that fixes any issues present on the CircleCI box – there's often something wrong with it,
             # so preserving this step (even if empty) makes the diffs simpler.
-            echo "No issues for this image – skipping".
+            if [ $(echo $PATH | ruby -e "puts Kernel.gets.include?('/usr/local/bin')") != "true" ]; then
+              echo 'export PATH=/usr/local/bin:$PATH' >> $BASH_ENV
+              echo "Manually added `/usr/local/bin` to the $PATH:"
+              echo $PATH
+            fi
+            chruby ruby-2.6.6
+            gem install bundler
 jobs:
   Build Tests:
     executor:
@@ -22,16 +28,16 @@ jobs:
       xcode-version: "12.0.0"
     steps:
       - git/shallow-checkout
-      - fix-circleci
+      - fix-image
       - ios/install-dependencies:
             bundle-install: true
             pod-install: true
       - run:
           name: Copy Secrets
           command: bundle exec fastlane run configure_apply
-      - ios/xcodebuild:
-          command: build-for-testing
-          arguments: -workspace 'WooCommerce.xcworkspace' -scheme 'WooCommerce' -configuration 'Debug' -sdk iphonesimulator -derivedDataPath DerivedData
+      - run:
+          name: Build for Testing
+          command: bundle exec fastlane build_for_testing
       - persist_to_workspace:
           root: ./
           paths:
@@ -46,7 +52,7 @@ jobs:
       - git/shallow-checkout
       - ios/boot-simulator:
           xcode-version: "12.0.0"
-          device: iPhone 13
+          device: iPhone 11
       - attach_workspace:
           at: ./
       - run:
@@ -55,10 +61,7 @@ jobs:
       - ios/wait-for-simulator
       - run:
           name: Run Unit Tests
-          command: >
-            bundle exec fastlane test_without_building
-            xctestrun:DerivedData/Build/Products/WooCommerce_UnitTests_iphonesimulator14.0-x86_64.xctestrun
-            destination:"platform=iOS Simulator,id=$SIMULATOR_UDID" try_count:3
+          command: bundle exec fastlane test_without_building name:UnitTests try_count:3
       - ios/save-xcodebuild-artifacts:
           result-bundle-path: build/results
   UI Tests:
@@ -89,10 +92,7 @@ jobs:
       - ios/wait-for-simulator
       - run:
           name: Run UI Tests
-          command: >
-            bundle exec fastlane test_without_building
-            xctestrun:DerivedData/Build/Products/WooCommerce_UITests_iphonesimulator14.0-x86_64.xctestrun
-            destination:"platform=iOS Simulator,id=$SIMULATOR_UDID" try_count:3
+          command: bundle exec fastlane test_without_building name:UITests
       - ios/save-xcodebuild-artifacts:
           result-bundle-path: build/results
       - when:
@@ -116,7 +116,7 @@ jobs:
       xcode-version: "12.0.0"
     steps:
       - git/shallow-checkout
-      - fix-circleci
+      - fix-image
       - ios/install-dependencies:
             bundle-install: true
             pod-install: true
@@ -142,7 +142,7 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: 1
     steps:
       - git/shallow-checkout
-      - fix-circleci
+      - fix-image
       - ios/install-dependencies:
             bundle-install: true
             pod-install: true
@@ -179,8 +179,8 @@ workflows:
           requires: [ "Build Tests" ]
       # Always run UI tests on develop and release branches
       - UI Tests:
-          name: UI Tests (iPhone 13)
-          device: iPhone 13
+          name: UI Tests (iPhone 11)
+          device: iPhone 11
           post-to-slack: true
           requires: [ "Build Tests" ]
           filters:
@@ -189,8 +189,8 @@ workflows:
                 - develop
                 - /^release.*/
       - UI Tests:
-          name: UI Tests (iPad Air 3rd generation)
-          device: iPad Air \\(3rd generation\\)
+          name: UI Tests (iPad Air 4th generation)
+          device: iPad Air \\(4th generation\\)
           post-to-slack: true
           requires: [ "Build Tests" ]
           filters:
@@ -211,8 +211,8 @@ workflows:
       - Build Tests:
           requires: [ "Hold" ]
       - UI Tests:
-          name: Optional UI Tests (iPhone 13)
-          device: iPhone 13
+          name: Optional UI Tests (iPhone 11)
+          device: iPhone 11
           requires: [ "Build Tests" ]
       - UI Tests:
           name: Optional UI Tests (iPad Air 3rd generation)

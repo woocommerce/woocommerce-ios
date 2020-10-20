@@ -30,7 +30,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
 
     func test_refund_order_items_values_are_transformed_with_no_taxes() {
         // Given
-        let items: [IssueRefundViewModel.RefundableOrderItem] = [
+        let items: [RefundableOrderItem] = [
             .init(item: MockOrderItem.sampleItem(itemID: 1, quantity: 2, price: 5.1, totalTax: "0.0"), quantity: 1),
             .init(item: MockOrderItem.sampleItem(itemID: 2, quantity: 2, price: 6.3, totalTax: "0.0"), quantity: 2)
         ]
@@ -51,11 +51,11 @@ final class RefundCreationUseCaseTests: XCTestCase {
         XCTAssertEqual(refund.items[0].quantity, 1)
         XCTAssertEqual(refund.items[1].quantity, 2)
 
-        XCTAssertEqual(refund.items[0].total, "5.1")
-        XCTAssertEqual(refund.items[1].total, "12.6")
+        XCTAssertEqual(refund.items[0].total, "5.10")
+        XCTAssertEqual(refund.items[1].total, "12.60")
 
-        XCTAssertEqual(refund.items[0].totalTax, "0.0")
-        XCTAssertEqual(refund.items[1].totalTax, "0.0")
+        XCTAssertEqual(refund.items[0].totalTax, "0.00")
+        XCTAssertEqual(refund.items[1].totalTax, "0.00")
 
         XCTAssertEqual(refund.items[0].taxes, [])
         XCTAssertEqual(refund.items[0].taxes, [])
@@ -67,7 +67,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
             OrderItemTax(taxID: 11, subtotal: "", total: "0.60"),
             OrderItemTax(taxID: 12, subtotal: "", total: "3.30")
         ]
-        let items: [IssueRefundViewModel.RefundableOrderItem] = [
+        let items: [RefundableOrderItem] = [
             .init(item: MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 5.1, taxes: taxes, totalTax: "3.90"), quantity: 2)
         ]
         let useCase = RefundCreationUseCase(amount: "19.20",

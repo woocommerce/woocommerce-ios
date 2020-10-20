@@ -315,23 +315,3 @@ private extension IssueRefundViewModel {
         }
     }
 }
-
-// MARK: RefundableOrderItem
-extension IssueRefundViewModel {
-    /// Groups an order item and its quantity available for refund
-    ///
-    struct RefundableOrderItem {
-        /// Original purchased item
-        ///
-        let item: OrderItem
-
-        /// Current quantity available for refund
-        ///
-        let quantity: Int
-
-        init(item: OrderItem, quantity: Decimal) {
-            self.item = item
-            self.quantity = Int(truncating: quantity as NSNumber)
-        }
-    }
-}

@@ -19,7 +19,7 @@ struct RefundCreationUseCase {
 
     /// Line items to be refunded, currently only order items are suported
     ///
-    let items: [IssueRefundViewModel.RefundableOrderItem]
+    let items: [RefundableOrderItem]
 
     /// Currency formatted needed for decimal calculations
     ///

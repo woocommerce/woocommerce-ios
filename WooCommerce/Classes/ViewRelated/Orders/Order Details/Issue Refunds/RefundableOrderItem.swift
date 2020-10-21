@@ -11,7 +11,10 @@ struct RefundableOrderItem {
     /// Current quantity available for refund
     ///
     let quantity: Int
+}
 
+// MARK: Computed Properties
+extension RefundableOrderItem {
     /// Quantity expressed as decimal
     ///
     var decimalQuantity: Decimal {

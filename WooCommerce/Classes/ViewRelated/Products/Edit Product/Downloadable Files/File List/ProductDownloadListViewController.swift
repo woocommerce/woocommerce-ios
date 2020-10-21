@@ -313,8 +313,8 @@ private extension ProductDownloadListViewController {
         static let bottomSheetTitle = NSLocalizedString("Select upload method",
                                                         comment: "Title of the bottom sheet from the product downloadable file to add a new downloadable file.")
         static let downloadSettingsAction = NSLocalizedString("Download Settings",
-                                                                        comment: "Button title Download Settings in Downloadable Files More Options Action Sheet")
+                                                              comment: "Button title Download Settings in Downloadable Files More Options Action Sheet")
         static let cancelAction = NSLocalizedString("Cancel",
-                                                              comment: "Button title Cancel in Downloadable Files More Options Action Sheet")
+                                                    comment: "Button title Cancel in Downloadable Files More Options Action Sheet")
     }
 }

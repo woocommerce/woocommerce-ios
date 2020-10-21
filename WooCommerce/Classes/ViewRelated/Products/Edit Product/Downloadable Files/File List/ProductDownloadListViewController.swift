@@ -83,7 +83,7 @@ private extension ProductDownloadListViewController {
             let button = UIBarButtonItem(image: .moreImage,
                                          style: .plain,
                                          target: self,
-                                         action: #selector(moreButtonTapped))
+                                         action: #selector(presentMoreActionSheetMenu(_:)))
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("View downloadable file settings",
                                                           comment: "The action to update downloadable files settings for a product")
@@ -123,11 +123,6 @@ extension ProductDownloadListViewController {
         viewModel.completeUpdating(onCompletion: onCompletion)
     }
 
-    @objc private func moreButtonTapped() {
-        // TODO: - add analytics
-        presentMoreActionSheetMenu()
-    }
-
     @objc private func addButtonTapped() {
         // TODO: - add analytics
         addEditDownloadableFile(indexPath: nil, formType: .add)
@@ -147,15 +142,17 @@ extension ProductDownloadListViewController {
         let downloadableFile = viewModel.item(at: indexPath?.row ?? -1)?.downloadableFile
         let viewController = ProductDownloadFileViewController(productDownload: downloadableFile,
                                                                downloadFileIndex: indexPath?.row,
-                                                               formType: formType) { [weak self]
-            (fileName, fileURL, fileID, hasUnsavedChanges) in
+                                                               formType: formType) { [weak self] (fileName, fileURL, fileID, hasUnsavedChanges) in
             self?.onAddEditDownloadableFileCompletion(fileName: fileName,
                                                       fileURL: fileURL,
                                                       fileID: fileID,
                                                       hasUnsavedChanges: hasUnsavedChanges,
                                                       indexPath: indexPath,
                                                       formType: formType)
+        } deletion: { [weak self] in
+            self?.onDownloadableFileDeletion(indexPath: indexPath)
         }
+
         navigationController?.pushViewController(viewController, animated: true)
 
     }
@@ -186,12 +183,21 @@ extension ProductDownloadListViewController {
         viewModel.completeUpdating(onCompletion: onCompletion)
         tableView.reloadData()
     }
+
+    func onDownloadableFileDeletion(indexPath: IndexPath?) {
+        guard let indexPath = indexPath else {
+            return
+        }
+        viewModel.remove(at: indexPath.row)
+        viewModel.completeUpdating(onCompletion: onCompletion)
+        tableView.reloadData()
+    }
 }
 
 // MARK: Action - Downloadable file settings
 //
 private extension ProductDownloadListViewController {
-    func presentMoreActionSheetMenu() {
+    @objc func presentMoreActionSheetMenu(_ sender: UIBarButtonItem) {
         let menuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         menuAlert.view.tintColor = .text
 
@@ -207,8 +213,8 @@ private extension ProductDownloadListViewController {
         let cancelAction = UIAlertAction(title: cancelTitle, style: .cancel)
         menuAlert.addAction(cancelAction)
 
-        menuAlert.popoverPresentationController?.sourceView = view
-        menuAlert.popoverPresentationController?.sourceRect = view.bounds
+        let popoverController = menuAlert.popoverPresentationController
+        popoverController?.barButtonItem = sender
 
         present(menuAlert, animated: true)
     }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-09-25 08:54:03+0000 */
+/* Translation-Revision-Date: 2020-10-09 16:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -342,7 +342,7 @@
 "Can Not Request Link" = "يتعذر طلب رابط";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
 "Cancel" = "إلغاء";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -488,10 +488,10 @@
 "Couldn't load tags." = "تعذّر تحميل الوسوم.";
 
 /* The title for a menu that helps debug crashes in production builds */
-"Crash Debug Menu" = "Crash Debug Menu";
+"Crash Debug Menu" = "قائمة تصحيح الأعطال";
 
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
-"Crash Immediately" = "Crash Immediately";
+"Crash Immediately" = "عطل بشكل فوري";
 
 /* The button title text for creating a new account. */
 "Create Account" = "إنشاء حساب";
@@ -534,7 +534,8 @@
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "الافتراضي";
 
-/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
+/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen
+   Button title Delete in Edit Product More Options Action Sheet */
 "Delete" = "حذف";
 
 /* Delete a Shipment Tracking
@@ -587,6 +588,9 @@
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "لا تسمح بذلك";
+
+/* Body of the alert when a user is moving a product to the trash */
+"Do you want to move this product to the Trash?" = "Do you want to move this product to the Trash?";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "أليس لديك حساب؟ _Sign up_";
@@ -940,6 +944,9 @@
    Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "المخزون";
 
+/* Text on the button that starts a new refund process */
+"Issue Refund" = "Issue Refund";
+
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "يبدو أن اسم المستخدم هذا \/ كلمة المرور هذه غير مقترنين بهذه الموقع.";
 
@@ -1107,6 +1114,9 @@
 
 /* Accessibility label for the Edit Product More Options action sheet */
 "More options" = "مزيد من الخيارات";
+
+/* Confirmation button on the alert when the user is moving a product to the trash */
+"Move to Trash" = "نقل إلى سلة المهملات";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "ينقل تعليقًا إلى البريد المزعج";
@@ -1357,6 +1367,9 @@
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "اختر متجرًا للاتصال به";
 
+/* Title of the in-progress UI while deleting the Product remotely */
+"Placing your product in the trash..." = "Placing your product in the trash...";
+
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "يرجى إدخال عنوان URL";
 
@@ -1407,6 +1420,9 @@
 
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "يرجى الانتظار بينما ننشر هذا المنتج في المخزن الخاص بك";
+
+/* Message of the in-progress UI while deleting the Product remotely */
+"Please wait while we update your store details" = "Please wait while we update your store details";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "مدعوم من Automattic";
@@ -1476,13 +1492,14 @@
 "Product link" = "رابط المنتج";
 
 /* Title of the Product Type row on Product main screen */
-"Product type" = "Product type";
+"Product type" = "نوع المنتج";
 
 /* Product section title if there is more than one product.
    Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "المنتجات";
 
-/* Label for computed value `product refunds + taxes = subtotal`. */
+/* Label for computed value `product refunds + taxes = subtotal`.
+   Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "استرداد المنتجات";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
@@ -1490,6 +1507,9 @@
 
 /* One of the possible options in Product Visibility */
 "Public" = "عام";
+
+/* Action for creating a new Product remotely */
+"Publish" = "نشر";
 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "إعدادات النشر";
@@ -1582,6 +1602,9 @@
 /* Label action for removing a link from the editor */
 "Remove end date" = "إزالة تاريخ الانتهاء";
 
+/* Title of the alert when a user is moving a product to the trash */
+"Remove product" = "Remove product";
+
 /* Action to replace one photo on the Product images screen */
 "Replace Photo" = "استبدال صورة";
 
@@ -1657,6 +1680,12 @@
    Add Product Tags. Save button title in navbar. */
 "Save" = "حفظ";
 
+/* Button title to save a product as draft in Discard Changes Action Sheet */
+"Save as Draft" = "حفظ كمسودة";
+
+/* Button title to save a product as draft in Product More Options Action Sheet */
+"Save as draft" = "Save as draft";
+
 /* Scan Products */
 "Scan products" = "فحص المنتجات";
 
@@ -1688,7 +1717,7 @@
 "Select Store" = "تحديد المتجر";
 
 /* Message title of bottom sheet for selecting a product type to create a product */
-"Select a product type" = "Select a product type";
+"Select a product type" = "تحديد نوع المنتج";
 
 /* Add the shipping carrier. Placeholder of cell presenting carrier name */
 "Select carrier" = "تحديد شركة النقل";
@@ -1747,6 +1776,9 @@
 
 /* Shipping method title for customer info cell */
 "Shipping Method" = "طريقة الشحن";
+
+/* Title on the refund screen that lists the shipping total cost */
+"Shipping Refund" = "Shipping Refund";
 
 /* Add / Edit shipping carrier. Title of cell presenting name */
 "Shipping carrier" = "شركة نقل مخصصة للشحن";
@@ -1942,7 +1974,8 @@
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "يتوسطه خط";
 
-/* Subtotal label for a refund details view */
+/* Subtotal label for a refund details view
+   Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost */
 "Subtotal" = "الإجمالي الفرعي";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
@@ -2033,7 +2066,8 @@
 /* Accessibility hint for selecting paragraph style button on formatting toolbar. */
 "Tap to toggle paragraph style" = "الضغط لتبديل نمط الفقرة";
 
-/* Tax label for a refund details view */
+/* Tax label for a refund details view
+   Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "الضريبة";
 
 /* Section header title for product tax settings */
@@ -2344,7 +2378,7 @@
 "Undo" = "تراجع";
 
 /* The message of the alert when there is an unexpected error updating the product */
-"Unexpected error" = "Unexpected error";
+"Unexpected error" = "خطأ غير متوقع";
 
 /* Unknown Application State
    Unknown product name, displayed in a review - Unknown Tag Name */
@@ -2632,6 +2666,9 @@
 
 /* Backorders status. Example: 'Backorders: not allowed' */
 "not allowed" = "غير مسموح";
+
+/* No comment provided by engineer. */
+"password" = "password";
 
 /* Today */
 "today" = "اليوم";

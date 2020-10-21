@@ -48,7 +48,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         // Action
         viewModel.updateName(product.name)
         viewModel.updateDescription(product.fullDescription ?? "")
-        viewModel.updateBriefDescription(product.briefDescription ?? "")
+        viewModel.updateShortDescription(product.shortDescription ?? "")
         viewModel.updateProductSettings(ProductSettings(from: product, password: nil))
         viewModel.updatePriceSettings(regularPrice: product.regularPrice,
                                       salePrice: product.salePrice,

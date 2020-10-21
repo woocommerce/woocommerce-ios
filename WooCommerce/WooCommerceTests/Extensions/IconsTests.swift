@@ -19,8 +19,8 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.bellImage)
     }
 
-    func testBriefDescriptionImageIconIsNotNil() {
-        XCTAssertNotNil(UIImage.briefDescriptionImage)
+    func testShortDescriptionImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.shortDescriptionImage)
     }
 
     func testCameraIconIsNotNil() {

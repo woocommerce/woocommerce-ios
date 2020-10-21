@@ -1,9 +1,9 @@
 import Yosemite
 
 extension Product {
-    /// Returns the brief description (short description) without the HTML tags and leading/trailing white spaces and new lines.
-    var trimmedBriefDescription: String? {
-        guard let description = briefDescription else {
+    /// Returns the short description without the HTML tags and leading/trailing white spaces and new lines.
+    var trimmedShortDescription: String? {
+        guard let description = shortDescription else {
             return nil
         }
         return description.removedHTMLTags.trimmingCharacters(in: .whitespacesAndNewlines)

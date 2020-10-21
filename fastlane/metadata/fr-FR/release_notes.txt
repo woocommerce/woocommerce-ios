@@ -1,3 +1,9 @@
-- Produits : si le commutateur Produits est activé dans Paramètres → Fonctionnalités expérimentales pour un produit variable, l’état du stock n’apparaît plus dans les détails du produit lorsque la gestion du stock est désactivée (car l’état du stock est contrôlé au niveau des variations).
-- Commandes : la liste de recherche affiche désormais le nombre complet plutôt que « Plus de 99 ».
-- Avis : nous avons résolu un problème d’actualisation incorrecte des avis. Désormais, si vous supprimez un avis ou si vous le marquez comme indésirable, cette modification se reflète dans la liste des avis de produit.
+Dans cette mise à jour, nous avons ajouté de nombreuses nouvelles fonctionnalités pour modifier vos produits.
+
+Pour les produits non essentiels, qui sont les produits que WooCommerce ne regroupe pas sous simples, externes, variables ou groupes, il existe de nombreuses nouvelles options de modification ! Vous pouvez désormais modifier l’image, le nom, la description, le prix en lecture seule, l’inventaire en lecture seule, les étiquettes, la courte description et les paramètres de produit.
+
+Vous pouvez également modifier les produits variables, et l’état du stock est inclus dans la liste de variantes.
+
+De plus, nos produits essentiels intègrent des champs supplémentaires qui peuvent être modifiés : étiquettes, catégories, type de produit, activer/désactiver les avis et visibilité.
+
+Nous proposons également une mise à jour pour Apple Sign In. Si vous déconnectez l’identifiant Apple de l’application WordPress (Réglages > Identifiant Apple > Mot de passe et sécurité > Applications utilisant l’identifiant Apple), l’application se déconnectera au lancement ou si vous basculez entre les applications. Ainsi vous ne restez pas connecté si vous ne le souhaitez pas !

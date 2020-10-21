@@ -74,16 +74,16 @@ private extension DefaultProductFormTableViewModel {
                 return .categories(viewModel: categoriesRow(product: product.product, isEditable: editable), isEditable: editable)
             case .tags(let editable):
                 return .tags(viewModel: tagsRow(product: product.product, isEditable: editable), isEditable: editable)
-            case .briefDescription(let editable):
-                return .briefDescription(viewModel: briefDescriptionRow(product: product.product, isEditable: editable), isEditable: editable)
+            case .shortDescription(let editable):
+                return .shortDescription(viewModel: shortDescriptionRow(product: product.product, isEditable: editable), isEditable: editable)
             case .externalURL(let editable):
                 return .externalURL(viewModel: externalURLRow(product: product.product, isEditable: editable), isEditable: editable)
             case .sku(let editable):
                 return .sku(viewModel: skuRow(product: product.product, isEditable: editable), isEditable: editable)
             case .groupedProducts(let editable):
                 return .groupedProducts(viewModel: groupedProductsRow(product: product.product, isEditable: editable), isEditable: editable)
-            case .variations(let editable):
-                return .variations(viewModel: variationsRow(product: product.product, isEditable: editable))
+            case .variations:
+                return .variations(viewModel: variationsRow(product: product.product))
             case .downloadableFiles:
                 return .downloadableFiles(viewModel: downloadsRow(product: product))
             default:
@@ -161,7 +161,11 @@ private extension DefaultProductFormTableViewModel {
     func variationPriceSettingsRow(productVariation: EditableProductVariationModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let priceViewModel = priceSettingsRow(product: productVariation, isEditable: isEditable)
         let tintColor = productVariation.isEnabledAndMissingPrice ? UIColor.warning: nil
-        return .init(icon: priceViewModel.icon, title: priceViewModel.title, details: priceViewModel.details, tintColor: tintColor)
+        return .init(icon: priceViewModel.icon,
+                     title: priceViewModel.title,
+                     details: priceViewModel.details,
+                     tintColor: tintColor,
+                     isActionable: priceViewModel.isActionable)
     }
 
     func reviewsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
@@ -295,10 +299,10 @@ private extension DefaultProductFormTableViewModel {
         return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: details, isActionable: isEditable)
     }
 
-    func briefDescriptionRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.briefDescriptionImage
-        let title = Constants.briefDescriptionTitle
-        let details = product.trimmedBriefDescription?.isNotEmpty == true ? product.trimmedBriefDescription: Constants.briefDescriptionPlaceholder
+    func shortDescriptionRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.shortDescriptionImage
+        let title = Constants.shortDescriptionTitle
+        let details = product.trimmedShortDescription?.isNotEmpty == true ? product.trimmedShortDescription: Constants.shortDescriptionPlaceholder
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
@@ -358,7 +362,7 @@ private extension DefaultProductFormTableViewModel {
 
     // MARK: Variable products only
 
-    func variationsRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+    func variationsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.variationsImage
         let title = Constants.variationsTitle
 
@@ -377,7 +381,7 @@ private extension DefaultProductFormTableViewModel {
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
                                                         details: details,
-                                                        isActionable: product.variations.isNotEmpty && isEditable)
+                                                        isActionable: product.variations.isNotEmpty)
     }
 
     // MARK: Product variation only
@@ -390,7 +394,7 @@ private extension DefaultProductFormTableViewModel {
                                                                  details: nil,
                                                                  isActionable: false)
         let isSwitchOn = productVariation.isEnabled
-        return ProductFormSection.SettingsRow.SwitchableViewModel(viewModel: viewModel, isSwitchOn: isSwitchOn)
+        return ProductFormSection.SettingsRow.SwitchableViewModel(viewModel: viewModel, isSwitchOn: isSwitchOn, isActionable: isEditable)
     }
 
     func noPriceWarningRow() -> ProductFormSection.SettingsRow.WarningViewModel {
@@ -439,7 +443,7 @@ private extension DefaultProductFormTableViewModel {
                                                        comment: "Title of the Categories row on Product main screen")
         static let tagsTitle = NSLocalizedString("Tags",
                                                  comment: "Title of the Tags row on Product main screen")
-        static let briefDescriptionTitle = NSLocalizedString("Short description",
+        static let shortDescriptionTitle = NSLocalizedString("Short description",
                                                              comment: "Title of the Short Description row on Product main screen")
         static let skuTitle = NSLocalizedString("SKU",
                                                 comment: "Title of the SKU row on Product main screen")
@@ -497,7 +501,7 @@ private extension DefaultProductFormTableViewModel {
                                                             comment: "Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit]")
 
         // Short description
-        static let briefDescriptionPlaceholder = NSLocalizedString("A brief excerpt about the product",
+        static let shortDescriptionPlaceholder = NSLocalizedString("A brief excerpt about the product",
                                                                    comment: "Placeholder of the Product Short Description row on Product main screen")
 
         // Categories

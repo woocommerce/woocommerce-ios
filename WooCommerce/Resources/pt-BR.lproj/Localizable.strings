@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-09-30 08:54:03+0000 */
+/* Translation-Revision-Date: 2020-10-07 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -342,7 +342,7 @@
 "Can Not Request Link" = "Não pode requisitar link";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
 "Cancel" = "Cancelar";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -534,7 +534,8 @@
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Padrão";
 
-/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
+/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen
+   Button title Delete in Edit Product More Options Action Sheet */
 "Delete" = "Excluir";
 
 /* Delete a Shipment Tracking
@@ -587,6 +588,9 @@
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "Não permitir";
+
+/* Body of the alert when a user is moving a product to the trash */
+"Do you want to move this product to the Trash?" = "Do you want to move this product to the Trash?";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Não tem uma conta? _Cadastre-se_";
@@ -940,6 +944,9 @@
    Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Estoque";
 
+/* Text on the button that starts a new refund process */
+"Issue Refund" = "Issue Refund";
+
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Parece que esse usuário\/senha não está associado a esse site.";
 
@@ -1107,6 +1114,9 @@
 
 /* Accessibility label for the Edit Product More Options action sheet */
 "More options" = "Mais opções";
+
+/* Confirmation button on the alert when the user is moving a product to the trash */
+"Move to Trash" = "Mover para a lixeira";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "Define um comentário como spam";
@@ -1357,6 +1367,9 @@
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Escolha a loja a ser vinculada";
 
+/* Title of the in-progress UI while deleting the Product remotely */
+"Placing your product in the trash..." = "Placing your product in the trash...";
+
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "Insira uma URL";
 
@@ -1407,6 +1420,9 @@
 
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Aguarde enquanto publicamos o produto na sua loja";
+
+/* Message of the in-progress UI while deleting the Product remotely */
+"Please wait while we update your store details" = "Please wait while we update your store details";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Com tecnologia Automattic";
@@ -1476,13 +1492,14 @@
 "Product link" = "Link do produto";
 
 /* Title of the Product Type row on Product main screen */
-"Product type" = "Product type";
+"Product type" = "Tipo de produto";
 
 /* Product section title if there is more than one product.
    Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Produtos";
 
-/* Label for computed value `product refunds + taxes = subtotal`. */
+/* Label for computed value `product refunds + taxes = subtotal`.
+   Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "Reembolso de produtos";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
@@ -1490,6 +1507,9 @@
 
 /* One of the possible options in Product Visibility */
 "Public" = "Público";
+
+/* Action for creating a new Product remotely */
+"Publish" = "Publicar";
 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "Configurações de publicação";
@@ -1582,6 +1602,9 @@
 /* Label action for removing a link from the editor */
 "Remove end date" = "Remover data de término";
 
+/* Title of the alert when a user is moving a product to the trash */
+"Remove product" = "Remove product";
+
 /* Action to replace one photo on the Product images screen */
 "Replace Photo" = "Substituir foto";
 
@@ -1656,6 +1679,12 @@
 /* Add Product Category. Save button title in navbar.
    Add Product Tags. Save button title in navbar. */
 "Save" = "Salvar";
+
+/* Button title to save a product as draft in Discard Changes Action Sheet */
+"Save as Draft" = "Salvar como rascunho";
+
+/* Button title to save a product as draft in Product More Options Action Sheet */
+"Save as draft" = "Save as draft";
 
 /* Scan Products */
 "Scan products" = "Verificar produtos";
@@ -1747,6 +1776,9 @@
 
 /* Shipping method title for customer info cell */
 "Shipping Method" = "Método de envio";
+
+/* Title on the refund screen that lists the shipping total cost */
+"Shipping Refund" = "Shipping Refund";
 
 /* Add / Edit shipping carrier. Title of cell presenting name */
 "Shipping carrier" = "Transportadora";
@@ -1942,7 +1974,8 @@
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Tachado";
 
-/* Subtotal label for a refund details view */
+/* Subtotal label for a refund details view
+   Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost */
 "Subtotal" = "Subtotal";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
@@ -2033,7 +2066,8 @@
 /* Accessibility hint for selecting paragraph style button on formatting toolbar. */
 "Tap to toggle paragraph style" = "Toque para alternar Estilo do parágrafo";
 
-/* Tax label for a refund details view */
+/* Tax label for a refund details view
+   Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "Imposto";
 
 /* Section header title for product tax settings */
@@ -2632,6 +2666,9 @@
 
 /* Backorders status. Example: 'Backorders: not allowed' */
 "not allowed" = "não permitidos";
+
+/* No comment provided by engineer. */
+"password" = "password";
 
 /* Today */
 "today" = "hoje";

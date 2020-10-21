@@ -261,7 +261,7 @@ extension ProductVariationsViewController: UITableViewDataSource {
         let viewModel = ProductsTabProductViewModel(productVariationModel: model)
         cell.update(viewModel: viewModel, imageService: imageService)
         cell.selectionStyle = .none
-        cell.accessoryType = .none
+        cell.accessoryType = .disclosureIndicator
 
         return cell
     }

@@ -57,7 +57,7 @@ public struct OrderItemRefund: Codable {
     /// The public decoder for OrderItemRefund.
     ///
     public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let container = try decoder.container(keyedBy: DecodingKeys.self)
 
         let itemID = try container.decode(Int64.self, forKey: .itemID)
         let name = try container.decode(String.self, forKey: .name)
@@ -95,27 +95,20 @@ public struct OrderItemRefund: Codable {
     /// The public encoder for OrderItemRefund.
     ///
     public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
+        var container = encoder.container(keyedBy: EncodingKeys.self)
 
-        try container.encode(itemID, forKey: .itemID)
-        try container.encode(name, forKey: .name)
-        try container.encode(productID, forKey: .productID)
-        try container.encode(variationID, forKey: .variationID)
-
-        // Decimal does not play nice when encoding.
-        // Cast the Decimal to an NSNumber, then convert to a Double.
-        let doubleValue = Double(truncating: quantity as NSNumber)
-        try container.encode(doubleValue, forKey: .quantity)
-        try container.encode(price.stringValue, forKey: .price)
-
-        try container.encode(subtotal, forKey: .subtotal)
-        try container.encode(subtotalTax, forKey: .subtotalTax)
-        try container.encode(taxClass, forKey: .taxClass)
-
-        try container.encode(taxes, forKey: .taxes)
-
+        try container.encode(quantity, forKey: .quantity)
         try container.encode(total, forKey: .total)
-        try container.encode(totalTax, forKey: .totalTax)
+        try container.encode(taxesDictionary(), forKey: .taxes)
+    }
+
+    /// Converts the taxes array to a dictionary as the API expects it.
+    /// {  "tax_id_1" : "1.99", "tax_id_2" : "0.99" }
+    ///
+    private func taxesDictionary() -> [String: String] {
+        taxes.reduce(into: [:]) { dictionary, taxItem in
+            dictionary[String(taxItem.taxID)] = taxItem.total
+        }
     }
 }
 
@@ -124,7 +117,7 @@ public struct OrderItemRefund: Codable {
 ///
 private extension OrderItemRefund {
 
-    enum CodingKeys: String, CodingKey {
+    enum DecodingKeys: String, CodingKey {
         case itemID         = "id"
         case variationID    = "variation_id"
         case name
@@ -138,6 +131,12 @@ private extension OrderItemRefund {
         case total
         case totalTax       = "total_tax"
         case taxes
+    }
+
+    enum EncodingKeys: String, CodingKey {
+        case quantity = "qty"
+        case total = "refund_total"
+        case taxes = "refund_tax"
     }
 }
 

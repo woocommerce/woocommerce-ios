@@ -21,7 +21,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
     public let catalogVisibilityKey: String // visible, catalog, search, hidden
 
     public let fullDescription: String?
-    public let briefDescription: String?
+    public let shortDescription: String?
     public let sku: String?
 
     public let price: String
@@ -124,7 +124,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
                 featured: Bool,
                 catalogVisibilityKey: String,
                 fullDescription: String?,
-                briefDescription: String?,
+                shortDescription: String?,
                 sku: String?,
                 price: String,
                 regularPrice: String?,
@@ -185,7 +185,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         self.featured = featured
         self.catalogVisibilityKey = catalogVisibilityKey
         self.fullDescription = fullDescription
-        self.briefDescription = briefDescription
+        self.shortDescription = shortDescription
         self.sku = sku
         self.price = price
         self.regularPrice = regularPrice
@@ -259,7 +259,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         let catalogVisibilityKey = try container.decode(String.self, forKey: .catalogVisibilityKey)
 
         let fullDescription = try container.decodeIfPresent(String.self, forKey: .fullDescription)
-        let briefDescription = try container.decodeIfPresent(String.self, forKey: .briefDescription)
+        let shortDescription = try container.decodeIfPresent(String.self, forKey: .shortDescription)
         let sku = try container.decodeIfPresent(String.self, forKey: .sku)
 
         // Even though a plain install of WooCommerce Core provides string values,
@@ -363,7 +363,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
                   featured: featured,
                   catalogVisibilityKey: catalogVisibilityKey,
                   fullDescription: fullDescription,
-                  briefDescription: briefDescription,
+                  shortDescription: shortDescription,
                   sku: sku,
                   price: price,
                   regularPrice: regularPrice,
@@ -473,8 +473,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         // Tags
         try container.encode(tags, forKey: .tags)
 
-        // Brief description (short description).
-        try container.encode(briefDescription, forKey: .briefDescription)
+        // Short description.
+        try container.encode(shortDescription, forKey: .shortDescription)
 
         // Grouped products.
         try container.encode(groupedProducts, forKey: .groupedProducts)
@@ -522,7 +522,7 @@ private extension Product {
         case catalogVisibilityKey   = "catalog_visibility"
 
         case fullDescription        = "description"
-        case briefDescription       = "short_description"
+        case shortDescription       = "short_description"
 
         case sku            = "sku"
         case price          = "price"

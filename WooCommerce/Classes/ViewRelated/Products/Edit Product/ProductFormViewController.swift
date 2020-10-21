@@ -220,9 +220,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
-        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
-            ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
-            self?.displayProductSettings()
+        if viewModel.canEditProductSettings() {
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
+                ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
+                self?.displayProductSettings()
+            }
         }
 
         if viewModel.canDeleteProduct() {
@@ -252,7 +254,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         case .primaryFields(let rows):
             let row = rows[indexPath.row]
             switch row {
-            case .description:
+            case .description(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 eventLogger.logDescriptionTapped()
                 editProductDescription()
             default:
@@ -280,7 +285,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 ServiceLocator.analytics.track(.productDetailViewProductTypeTapped)
                 let cell = tableView.cellForRow(at: indexPath)
                 editProductType(cell: cell)
-            case .shipping:
+            case .shipping(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 eventLogger.logShippingSettingsTapped()
                 editShippingSettings()
             case .inventory(_, let isEditable):
@@ -289,24 +297,42 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 eventLogger.logInventorySettingsTapped()
                 editInventorySettings()
-            case .categories:
+            case .categories(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 ServiceLocator.analytics.track(.productDetailViewCategoriesTapped)
                 editCategories()
-            case .tags:
+            case .tags(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 ServiceLocator.analytics.track(.productDetailViewTagsTapped)
                 editTags()
-            case .briefDescription:
+            case .shortDescription(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
                 editShortDescription()
-            case .externalURL:
+            case .externalURL(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 ServiceLocator.analytics.track(.productDetailViewExternalProductLinkTapped)
                 editExternalLink()
                 break
-            case .sku:
+            case .sku(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 ServiceLocator.analytics.track(.productDetailViewSKUTapped)
                 editSKU()
                 break
-            case .groupedProducts:
+            case .groupedProducts(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 ServiceLocator.analytics.track(.productDetailViewGroupedProductsTapped)
                 editGroupedProducts()
                 break
@@ -505,7 +531,7 @@ private extension ProductFormViewController {
                                                                         case .editTags:
                                                                             ServiceLocator.analytics.track(.productDetailViewTagsTapped)
                                                                             self?.editTags()
-                                                                        case .editBriefDescription:
+                                                                        case .editShortDescription:
                                                                             ServiceLocator.analytics.track(.productDetailViewShortDescriptionTapped)
                                                                             self?.editShortDescription()
                                                                         case .editSKU:
@@ -724,7 +750,7 @@ private extension ProductFormViewController {
             break
         }
 
-        if viewModel.canEditProductSettings() {
+        if viewModel.shouldShowMoreOptionsMenu() {
             rightBarButtonItems.insert(createMoreOptionsBarButtonItem(), at: 0)
         }
 
@@ -1001,11 +1027,11 @@ private extension ProductFormViewController {
     }
 }
 
-// MARK: Action - Edit Product Brief Description (Short Description)
+// MARK: Action - Edit Product Short Description
 //
 private extension ProductFormViewController {
     func editShortDescription() {
-        let editorViewController = EditorFactory().productBriefDescriptionEditor(product: product) { [weak self] content in
+        let editorViewController = EditorFactory().productShortDescriptionEditor(product: product) { [weak self] content in
             self?.onEditShortDescriptionCompletion(newShortDescription: content)
         }
         navigationController?.pushViewController(editorViewController, animated: true)
@@ -1021,7 +1047,7 @@ private extension ProductFormViewController {
         guard hasChangedData else {
             return
         }
-        viewModel.updateBriefDescription(newShortDescription)
+        viewModel.updateShortDescription(newShortDescription)
     }
 }
 

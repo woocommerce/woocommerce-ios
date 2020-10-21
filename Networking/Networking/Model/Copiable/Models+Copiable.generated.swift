@@ -100,7 +100,7 @@ extension Product {
         featured: CopiableProp<Bool> = .copy,
         catalogVisibilityKey: CopiableProp<String> = .copy,
         fullDescription: NullableCopiableProp<String> = .copy,
-        briefDescription: NullableCopiableProp<String> = .copy,
+        shortDescription: NullableCopiableProp<String> = .copy,
         sku: NullableCopiableProp<String> = .copy,
         price: CopiableProp<String> = .copy,
         regularPrice: NullableCopiableProp<String> = .copy,
@@ -162,7 +162,7 @@ extension Product {
         let featured = featured ?? self.featured
         let catalogVisibilityKey = catalogVisibilityKey ?? self.catalogVisibilityKey
         let fullDescription = fullDescription ?? self.fullDescription
-        let briefDescription = briefDescription ?? self.briefDescription
+        let shortDescription = shortDescription ?? self.shortDescription
         let sku = sku ?? self.sku
         let price = price ?? self.price
         let regularPrice = regularPrice ?? self.regularPrice
@@ -225,7 +225,7 @@ extension Product {
             featured: featured,
             catalogVisibilityKey: catalogVisibilityKey,
             fullDescription: fullDescription,
-            briefDescription: briefDescription,
+            shortDescription: shortDescription,
             sku: sku,
             price: price,
             regularPrice: regularPrice,

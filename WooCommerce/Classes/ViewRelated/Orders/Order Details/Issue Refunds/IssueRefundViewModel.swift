@@ -185,7 +185,7 @@ extension IssueRefundViewModel {
                                        currencySettings: state.currencySettings)
         }
 
-        let refundItems = state.refundQuantityStore.map { RefundItemsValuesCalculationUseCase.RefundItem(item: $0, quantity: $1) }
+        let refundItems = state.refundQuantityStore.map { RefundableOrderItem(item: $0, quantity: $1) }
         let summaryRow = RefundProductsTotalViewModel(refundItems: refundItems, currency: state.order.currency, currencySettings: state.currencySettings)
 
         return Section(rows: itemsRows + [summaryRow])
@@ -221,7 +221,7 @@ extension IssueRefundViewModel {
     ///
     private func calculateRefundTotal() -> Decimal {
         let formatter = CurrencyFormatter(currencySettings: state.currencySettings)
-        let refundItems = state.refundQuantityStore.map { RefundItemsValuesCalculationUseCase.RefundItem(item: $0, quantity: $1) }
+        let refundItems = state.refundQuantityStore.map { RefundableOrderItem(item: $0, quantity: $1) }
         let productsTotalUseCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter)
 
         // If shipping is not enabled, return only the products value
@@ -312,26 +312,6 @@ private extension IssueRefundViewModel {
         ///
         func count() -> Int {
             store.values.reduce(0) { $0 + $1 }
-        }
-    }
-}
-
-// MARK: RefundableOrderItem
-extension IssueRefundViewModel {
-    /// Groups an order item and its quantity available for refund
-    ///
-    struct RefundableOrderItem {
-        /// Original purchased item
-        ///
-        let item: OrderItem
-
-        /// Current quantity available for refund
-        ///
-        let quantity: Int
-
-        init(item: OrderItem, quantity: Decimal) {
-            self.item = item
-            self.quantity = Int(truncating: quantity as NSNumber)
         }
     }
 }

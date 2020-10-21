@@ -16,7 +16,7 @@ extension RefundItemViewModel {
     /// Creates a `RefundItemViewModel` based on an `RefundableOrderItem`, it's related product and it's currency..
     /// `QuantityToRefund` is set to 0.
     ///
-    init(refundable: IssueRefundViewModel.RefundableOrderItem, product: Product?, refundQuantity: Int, currency: String, currencySettings: CurrencySettings) {
+    init(refundable: RefundableOrderItem, product: Product?, refundQuantity: Int, currency: String, currencySettings: CurrencySettings) {
         productImage = product?.images.first?.src
         productTitle = refundable.item.name
         quantityToRefund = String(refundQuantity)

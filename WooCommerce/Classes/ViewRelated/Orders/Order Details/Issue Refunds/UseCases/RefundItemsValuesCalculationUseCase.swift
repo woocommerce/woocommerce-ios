@@ -7,7 +7,7 @@ struct RefundItemsValuesCalculationUseCase {
 
     /// Items and their quantities to be refunded
     ///
-    let refundItems: [RefundItem]
+    let refundItems: [RefundableOrderItem]
 
     /// Formatter to convert string values to decimal values
     ///
@@ -39,13 +39,6 @@ struct RefundItemsValuesCalculationUseCase {
 
 // MARK: Helper types
 extension RefundItemsValuesCalculationUseCase {
-    /// Tuple to group an order item with its refund quantity
-    ///
-    struct RefundItem {
-        let item: OrderItem
-        let quantity: Int
-    }
-
     /// Tuple to return calculations results
     ///
     struct RefundValues {

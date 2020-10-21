@@ -9,7 +9,7 @@ final class RefundItemsValuesCalculationUseCaseTests: XCTestCase {
     func test_useCase_correctly_calculates_values_from_regular_items() {
         // Given
         let formatter = CurrencyFormatter(currencySettings: CurrencySettings())
-        let refundItems: [RefundItemsValuesCalculationUseCase.RefundItem] = [
+        let refundItems: [RefundableOrderItem] = [
             .init(item: MockOrderItem.sampleItem(quantity: 1, price: 10.50, totalTax: "1.20"), quantity: 1),
             .init(item: MockOrderItem.sampleItem(quantity: 2, price: 15.00, totalTax: "4.20"), quantity: 2),
             .init(item: MockOrderItem.sampleItem(quantity: 3, price: 7.99, totalTax: "3.30"), quantity: 2),
@@ -30,7 +30,7 @@ final class RefundItemsValuesCalculationUseCaseTests: XCTestCase {
     func test_useCase_correctly_ignores_0_quantity_values() {
         // Given
         let formatter = CurrencyFormatter(currencySettings: CurrencySettings())
-        let refundItems: [RefundItemsValuesCalculationUseCase.RefundItem] = [
+        let refundItems: [RefundableOrderItem] = [
             .init(item: MockOrderItem.sampleItem(quantity: 1, price: 10.50, totalTax: "1.20"), quantity: 1),
             .init(item: MockOrderItem.sampleItem(quantity: 2, price: 15.00, totalTax: "4.20"), quantity: 0),
             .init(item: MockOrderItem.sampleItem(quantity: 3, price: 7.99, totalTax: "3.30"), quantity: 0),
@@ -49,7 +49,7 @@ final class RefundItemsValuesCalculationUseCaseTests: XCTestCase {
     func test_useCase_correctly_calculates_no_items() {
         // Given
         let formatter = CurrencyFormatter(currencySettings: CurrencySettings())
-        let refundItems: [RefundItemsValuesCalculationUseCase.RefundItem] = []
+        let refundItems: [RefundableOrderItem] = []
 
         // When
         let useCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter)

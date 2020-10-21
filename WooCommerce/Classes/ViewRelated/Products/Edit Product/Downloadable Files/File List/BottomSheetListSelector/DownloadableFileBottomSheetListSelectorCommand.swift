@@ -21,7 +21,11 @@ final class DownloadableFileBottomSheetListSelectorCommand: BottomSheetListSelec
     func configureCell(cell: ImageAndTitleAndTextTableViewCell, model: DownloadableFileFormBottomSheetAction) {
         cell.selectionStyle = .none
         cell.accessoryType = .disclosureIndicator
-        let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: model.title, text: nil, image: UIImage.cloudImage, imageTintColor: nil, numberOfLinesForText: 0)
+        let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: model.title,
+                                                                    text: nil,
+                                                                    image: UIImage.cloudImage,
+                                                                    imageTintColor: nil,
+                                                                    numberOfLinesForText: 0)
         cell.updateUI(viewModel: viewModel)
     }
 

@@ -195,6 +195,31 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(genericAttribute.value, "veritatis")
     }
 
+    func test_migrating_from_32_to_33_sets_new_Product_attribute_date_to_dateCreated() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 32")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext)
+        let dateCreated = Date(timeIntervalSince1970: 1603250786)
+        product.setValue(dateCreated, forKey: "dateCreated")
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "Product"), 1)
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 33")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
+
+        let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
+        XCTAssertEqual(migratedProduct.value(forKey: "date") as? Date, dateCreated)
+        XCTAssertEqual(migratedProduct.value(forKey: "dateCreated") as? Date, dateCreated)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

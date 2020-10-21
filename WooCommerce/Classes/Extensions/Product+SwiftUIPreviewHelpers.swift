@@ -10,6 +10,7 @@ extension Product {
                   name: "Woo super cool shiny product",
                   slug: "",
                   permalink: "",
+                  date: Date(),
                   dateCreated: Date(),
                   dateModified: Date(),
                   dateOnSaleStart: Date(),

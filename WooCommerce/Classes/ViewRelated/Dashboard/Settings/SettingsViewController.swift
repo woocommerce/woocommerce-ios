@@ -117,6 +117,8 @@ private extension SettingsViewController {
 
         tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
+        footerView.translatesAutoresizingMaskIntoConstraints = false
+        footerContainer.pinSubviewToAllEdges(footerView)
     }
 
     func refreshViewContent() {

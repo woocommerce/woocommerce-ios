@@ -22,7 +22,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         // Action
         viewModel.updateName(product.name)
         viewModel.updateDescription(product.fullDescription ?? "")
-        viewModel.updateBriefDescription(product.briefDescription ?? "")
+        viewModel.updateShortDescription(product.shortDescription ?? "")
         viewModel.updateProductSettings(ProductSettings(from: product, password: nil))
         viewModel.updatePriceSettings(regularPrice: product.regularPrice,
                                       salePrice: product.salePrice,
@@ -189,7 +189,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
-    func testProductHasUnsavedChangesFromEditingProductBriefDescription() {
+    func testProductHasUnsavedChangesFromEditingProductShortDescription() {
         // Arrange
         let product = MockProduct().product()
         let model = EditableProductModel(product: product)
@@ -200,7 +200,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
                                              isEditProductsRelease5Enabled: false)
 
         // Action
-        viewModel.updateBriefDescription("A short one")
+        viewModel.updateShortDescription("A short one")
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())

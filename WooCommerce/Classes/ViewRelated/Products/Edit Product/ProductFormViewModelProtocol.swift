@@ -79,7 +79,7 @@ protocol ProductFormViewModelProtocol {
 
     func updateProductTags(_ tags: [ProductTag])
 
-    func updateBriefDescription(_ briefDescription: String)
+    func updateShortDescription(_ shortDescription: String)
 
     func updateSKU(_ sku: String?)
 

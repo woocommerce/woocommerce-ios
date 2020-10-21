@@ -209,7 +209,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         XCTAssertEqual(viewModel.productModel.product.tags, newTags)
     }
 
-    func testUpdatingBriefDescription() {
+    func testUpdatingShortDescription() {
         // Arrange
         let product = MockProduct().product()
         let model = EditableProductModel(product: product)
@@ -220,11 +220,11 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
                                              isEditProductsRelease5Enabled: false)
 
         // Action
-        let newBriefDescription = "<p> deal of the day! </p>"
-        viewModel.updateBriefDescription(newBriefDescription)
+        let newShortDescription = "<p> deal of the day! </p>"
+        viewModel.updateShortDescription(newShortDescription)
 
         // Assert
-        XCTAssertEqual(viewModel.productModel.shortDescription, newBriefDescription)
+        XCTAssertEqual(viewModel.productModel.shortDescription, newShortDescription)
     }
 
     func testUpdatingProductSettings() {

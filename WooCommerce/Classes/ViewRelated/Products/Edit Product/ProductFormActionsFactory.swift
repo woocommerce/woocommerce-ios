@@ -12,7 +12,7 @@ enum ProductFormEditAction: Equatable {
     case shippingSettings(editable: Bool)
     case categories(editable: Bool)
     case tags(editable: Bool)
-    case briefDescription(editable: Bool)
+    case shortDescription(editable: Bool)
     // Affiliate products only
     case sku(editable: Bool)
     case externalURL(editable: Bool)
@@ -102,7 +102,7 @@ private extension ProductFormActionsFactory {
             .categories(editable: editable),
             .tags(editable: editable),
             showDownloadableProduct ? .downloadableFiles: nil,
-            .briefDescription(editable: editable),
+            .shortDescription(editable: editable),
             shouldShowProductTypeRow ? .productType(editable: editable): nil
         ]
         return actions.compactMap { $0 }
@@ -121,7 +121,7 @@ private extension ProductFormActionsFactory {
             shouldShowSKURow ? .sku(editable: editable): nil,
             .categories(editable: editable),
             .tags(editable: editable),
-            .briefDescription(editable: editable),
+            .shortDescription(editable: editable),
             shouldShowProductTypeRow ? .productType(editable: editable): nil
         ]
         return actions.compactMap { $0 }
@@ -138,7 +138,7 @@ private extension ProductFormActionsFactory {
             shouldShowSKURow ? .sku(editable: editable): nil,
             .categories(editable: editable),
             .tags(editable: editable),
-            .briefDescription(editable: editable),
+            .shortDescription(editable: editable),
             shouldShowProductTypeRow ? .productType(editable: editable): nil
         ]
         return actions.compactMap { $0 }
@@ -155,7 +155,7 @@ private extension ProductFormActionsFactory {
             .inventorySettings(editable: editable),
             .categories(editable: editable),
             .tags(editable: editable),
-            .briefDescription(editable: editable),
+            .shortDescription(editable: editable),
             shouldShowProductTypeRow ? .productType(editable: editable): nil
         ]
         return actions.compactMap { $0 }
@@ -171,7 +171,7 @@ private extension ProductFormActionsFactory {
             .inventorySettings(editable: false),
             .categories(editable: editable),
             .tags(editable: editable),
-            .briefDescription(editable: editable),
+            .shortDescription(editable: editable),
             .productType(editable: false)
         ]
         return actions.compactMap { $0 }
@@ -211,7 +211,7 @@ private extension ProductFormActionsFactory {
         // Downloadable files. Only core product types for downloadable files are able to handle downloadable files.
         case .downloadableFiles:
             return isEditProductsRelease5Enabled && product.downloadable
-        case .briefDescription:
+        case .shortDescription:
             return product.shortDescription.isNilOrEmpty == false
         // Affiliate products only.
         case .externalURL:

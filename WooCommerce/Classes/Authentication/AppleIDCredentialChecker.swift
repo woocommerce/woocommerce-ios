@@ -33,6 +33,7 @@ final class AppleIDCredentialChecker {
             if isLoggedIn {
                 self?.startObservingAppleIDCredentialRevoked()
             } else {
+                self?.removeAppleIDFromKeychain()
                 self?.stopObservingAppleIDCredentialRevoked()
             }
         }
@@ -90,7 +91,9 @@ private extension AppleIDCredentialChecker {
             guard let self = self else {
                 return
             }
-            if self.isLoggedIn() {
+            // The user could have SIWA'ed earlier then changed to authenticate with another method, and thus the app still receives notifications on
+            // revoked Apple credentials. We only want to log out the app when the app is currently signed in with Apple (Apple ID saved in Keychain).
+            if self.isLoggedIn() && self.keychain.wooAppleID != nil {
                 DDLogInfo("Apple credentialRevokedNotification received. User signed out.")
                 self.logOutRevokedAppleAccount()
             }

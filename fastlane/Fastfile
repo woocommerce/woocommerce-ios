@@ -1,6 +1,10 @@
 default_platform(:ios)
 fastlane_require 'dotenv'
 
+unless FastlaneCore::Helper.bundler?
+  UI.user_error!('Please run fastlane via `bundle exec`')
+end
+
 USER_ENV_FILE_PATH = File.join(Dir.home, '.wcios-env.default')
 PROJECT_ENV_FILE_PATH = File.expand_path(File.join(Dir.pwd, '../.configure-files/project.env'))
 
@@ -362,6 +366,26 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     File.write("comment.json", { body: comment_body }.to_json)
   end
 
+
+  #####################################################################################
+  # build_for_testing
+  # -----------------------------------------------------------------------------------
+  # This lane builds the app for testing
+  # -----------------------------------------------------------------------------------
+  # Usage:
+  # bundle exec fastlane build_for_testing 
+  #####################################################################################
+  desc "Build for Testing"
+  lane :build_for_testing do | options |
+    run_tests(
+      workspace: "WooCommerce.xcworkspace",
+      scheme: "WooCommerce",
+      derived_data_path: "DerivedData",
+      build_for_testing: true,
+    )
+  end
+
+
   ########################################################################
   # Screenshot Lanes
   ########################################################################  
@@ -678,19 +702,27 @@ end
   # It requires a prebuilt xctestrun file and simulator destination where the tests will be run.
   # -----------------------------------------------------------------------------------
   # Usage:
-  # bundle exec fastlane test_without_building [xctestrun:<Path to xctestrun file>] [destination:<Simulator>] [try_count:<Number of times to try tests>]
+  # bundle exec fastlane test_without_building [name:<Partial name of the .xctestrun file>] [try_count:<Number of times to try tests>]
   #
   # Example:
-  # bundle exec fastlane test_without_building xctestrun:WooCommerce_UITests_iphonesimulator13.2-x86_64.xctestrun destination:"platform=iOS Simulator,id=$SIMULATOR_UDID" try_count:3
+  # bundle exec fastlane test_without_building name:UITests try_count:3
   #####################################################################################
   desc "Run tests without building"
   lane :test_without_building do | options |
+    # Find the referenced .xctestrun file based on its name
+    buildProductsPath = File.expand_path("DerivedData/Build/Products/", File.dirname(Dir.pwd))
+
+    testPlanPath = Dir.glob(File.join(buildProductsPath, '*.xctestrun') ).select { |e|
+      e.include?(options[:name])
+    }.first
+
+    UI.user_error!("Unable to find .xctestrun file") unless testPlanPath != nil and File.exists? (testPlanPath)
+    
     multi_scan(
       workspace: "WooCommerce.xcworkspace",
       scheme: "WooCommerce",
       test_without_building: true,
-      xctestrun: "#{options[:xctestrun]}",
-      destination: options[:destination],
+      xctestrun: testPlanPath,
       try_count: options[:try_count],
       output_directory: "build/results",
       result_bundle: true

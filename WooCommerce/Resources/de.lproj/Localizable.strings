@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-09-18 11:54:04+0000 */
+/* Translation-Revision-Date: 2020-10-07 13:59:55+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -13,7 +13,7 @@
 "%1$@ %2$@" = "%1$@ %2$@";
 
 /* Format for each Product attribute */
-"%1$@ (%2$ld options)" = "%1$@ (%2$l Optionen)";
+"%1$@ (%2$ld options)" = "%1$@ (%2$ld Optionen)";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
 "%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (privat)";
@@ -342,7 +342,7 @@
 "Can Not Request Link" = "Kann den Link nicht anfordern.";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
 "Cancel" = "Abbrechen";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -488,10 +488,10 @@
 "Couldn't load tags." = "Schlagwörter konnten nicht geladen werden.";
 
 /* The title for a menu that helps debug crashes in production builds */
-"Crash Debug Menu" = "Crash Debug Menu";
+"Crash Debug Menu" = "Debug-Menü für Absturz";
 
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
-"Crash Immediately" = "Crash Immediately";
+"Crash Immediately" = "Sofort abstürzen";
 
 /* The button title text for creating a new account. */
 "Create Account" = "Konto erstellen";
@@ -534,7 +534,8 @@
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Standard";
 
-/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
+/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen
+   Button title Delete in Edit Product More Options Action Sheet */
 "Delete" = "Löschen";
 
 /* Delete a Shipment Tracking
@@ -587,6 +588,9 @@
 
 /* Display label for the product's inventory backorders setting option */
 "Do not allow" = "Nicht zulassen";
+
+/* Body of the alert when a user is moving a product to the trash */
+"Do you want to move this product to the Trash?" = "Do you want to move this product to the Trash?";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Du hast noch kein Konto? _Registrieren_";
@@ -940,6 +944,9 @@
    Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Bestand";
 
+/* Text on the button that starts a new refund process */
+"Issue Refund" = "Issue Refund";
+
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Dieser Benutzername\/dieses Passwort ist anscheinend nicht mit dieser Website verknüpft.";
 
@@ -1107,6 +1114,9 @@
 
 /* Accessibility label for the Edit Product More Options action sheet */
 "More options" = "Weitere Optionen";
+
+/* Confirmation button on the alert when the user is moving a product to the trash */
+"Move to Trash" = "In Papierkorb verschieben";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "Verschiebt einen Kommentar in den Spam-Ordner";
@@ -1357,6 +1367,9 @@
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Shop zum Verbinden auswählen";
 
+/* Title of the in-progress UI while deleting the Product remotely */
+"Placing your product in the trash..." = "Placing your product in the trash...";
+
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "Bitte gib eine URL ein.";
 
@@ -1407,6 +1420,9 @@
 
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Bitte warte, während wir dieses Produkt in deinem Shop veröffentlichen.";
+
+/* Message of the in-progress UI while deleting the Product remotely */
+"Please wait while we update your store details" = "Please wait while we update your store details";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Bereitgestellt von Automattic";
@@ -1482,7 +1498,8 @@
    Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Produkte";
 
-/* Label for computed value `product refunds + taxes = subtotal`. */
+/* Label for computed value `product refunds + taxes = subtotal`.
+   Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "Rückerstattung für Produkte";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
@@ -1490,6 +1507,9 @@
 
 /* One of the possible options in Product Visibility */
 "Public" = "Öffentlich";
+
+/* Action for creating a new Product remotely */
+"Publish" = "Veröffentlichen";
 
 /* Title of the Publish Settings section on Product Settings screen */
 "Publish Settings" = "Veröffentlichen-Einstellungen";
@@ -1582,6 +1602,9 @@
 /* Label action for removing a link from the editor */
 "Remove end date" = "Enddatum entfernen";
 
+/* Title of the alert when a user is moving a product to the trash */
+"Remove product" = "Remove product";
+
 /* Action to replace one photo on the Product images screen */
 "Replace Photo" = "Foto ersetzen";
 
@@ -1657,6 +1680,12 @@
    Add Product Tags. Save button title in navbar. */
 "Save" = "Speichern";
 
+/* Button title to save a product as draft in Discard Changes Action Sheet */
+"Save as Draft" = "Als Entwurf speichern";
+
+/* Button title to save a product as draft in Product More Options Action Sheet */
+"Save as draft" = "Save as draft";
+
 /* Scan Products */
 "Scan products" = "Produkte scannen";
 
@@ -1688,7 +1717,7 @@
 "Select Store" = "Shop auswählen";
 
 /* Message title of bottom sheet for selecting a product type to create a product */
-"Select a product type" = "Select a product type";
+"Select a product type" = "Wähle einen Produkttyp aus";
 
 /* Add the shipping carrier. Placeholder of cell presenting carrier name */
 "Select carrier" = "Versanddienstleister auswählen";
@@ -1747,6 +1776,9 @@
 
 /* Shipping method title for customer info cell */
 "Shipping Method" = "Versandmethode";
+
+/* Title on the refund screen that lists the shipping total cost */
+"Shipping Refund" = "Shipping Refund";
 
 /* Add / Edit shipping carrier. Title of cell presenting name */
 "Shipping carrier" = "Versanddienstleister";
@@ -1942,7 +1974,8 @@
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Durchgestrichen";
 
-/* Subtotal label for a refund details view */
+/* Subtotal label for a refund details view
+   Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost */
 "Subtotal" = "Zwischensumme";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
@@ -2033,7 +2066,8 @@
 /* Accessibility hint for selecting paragraph style button on formatting toolbar. */
 "Tap to toggle paragraph style" = "Tippen, um zum Absatzformat zu wechseln";
 
-/* Tax label for a refund details view */
+/* Tax label for a refund details view
+   Title on the refunds screen that lists the products refund tax cost - Title on the refunds screen that lists the shipping tax cost */
 "Tax" = "Steuern";
 
 /* Section header title for product tax settings */
@@ -2344,7 +2378,7 @@
 "Undo" = "Rückgängig";
 
 /* The message of the alert when there is an unexpected error updating the product */
-"Unexpected error" = "Unexpected error";
+"Unexpected error" = "Unerwarteter Fehler";
 
 /* Unknown Application State
    Unknown product name, displayed in a review - Unknown Tag Name */
@@ -2632,6 +2666,9 @@
 
 /* Backorders status. Example: 'Backorders: not allowed' */
 "not allowed" = "nicht zulässig";
+
+/* No comment provided by engineer. */
+"password" = "password";
 
 /* Today */
 "today" = "heute";

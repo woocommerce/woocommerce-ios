@@ -19,7 +19,7 @@ extension Product {
                   featured: false,
                   catalogVisibilityKey: ProductCatalogVisibility.hidden.rawValue,
                   fullDescription: "",
-                  briefDescription: "",
+                  shortDescription: "",
                   sku: "sku",
                   price: "0",
                   regularPrice: "32.5",

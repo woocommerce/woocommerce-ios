@@ -34,7 +34,7 @@ private extension ProductFactory {
                 featured: false,
                 catalogVisibilityKey: ProductCatalogVisibility.visible.rawValue,
                 fullDescription: "",
-                briefDescription: "",
+                shortDescription: "",
                 sku: "",
                 price: "",
                 regularPrice: "",

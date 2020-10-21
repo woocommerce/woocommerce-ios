@@ -34,7 +34,7 @@ extension Storage.Product: ReadOnlyConvertible {
         featured = product.featured
         catalogVisibilityKey = product.catalogVisibilityKey
         fullDescription = product.fullDescription
-        briefDescription = product.briefDescription
+        briefDescription = product.shortDescription
         sku = product.sku
         price = product.price
         regularPrice = product.regularPrice
@@ -112,7 +112,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        featured: featured,
                        catalogVisibilityKey: catalogVisibilityKey,
                        fullDescription: fullDescription,
-                       briefDescription: briefDescription,
+                       shortDescription: briefDescription,
                        sku: sku,
                        price: price,
                        regularPrice: regularPrice,

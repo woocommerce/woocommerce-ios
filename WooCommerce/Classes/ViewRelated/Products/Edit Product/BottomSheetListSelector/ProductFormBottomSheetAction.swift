@@ -7,7 +7,7 @@ enum ProductFormBottomSheetAction {
     case editShippingSettings
     case editCategories
     case editTags
-    case editBriefDescription
+    case editShortDescription
     case editSKU
 
     init?(productFormAction: ProductFormEditAction) {
@@ -20,8 +20,8 @@ enum ProductFormBottomSheetAction {
             self = .editCategories
         case .tags:
             self = .editTags
-        case .briefDescription:
-            self = .editBriefDescription
+        case .shortDescription:
+            self = .editShortDescription
         case .sku:
             self = .editSKU
         default:
@@ -45,7 +45,7 @@ extension ProductFormBottomSheetAction {
         case .editTags:
             return NSLocalizedString("Tags",
                                      comment: "Title of the product form bottom sheet action for editing tags.")
-        case .editBriefDescription:
+        case .editShortDescription:
             return NSLocalizedString("Short description",
                                      comment: "Title of the product form bottom sheet action for editing short description.")
         case .editSKU:
@@ -68,7 +68,7 @@ extension ProductFormBottomSheetAction {
         case .editTags:
             return NSLocalizedString("Make your products easier to find with tags",
                                      comment: "Subtitle of the product form bottom sheet action for editing tags.")
-        case .editBriefDescription:
+        case .editShortDescription:
             return NSLocalizedString("A brief excerpt about your product",
                                      comment: "Subtitle of the product form bottom sheet action for editing short description.")
         case .editSKU:

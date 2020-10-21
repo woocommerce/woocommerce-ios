@@ -1,3 +1,0 @@
-- Produtos: se Produtos estiver ativado em Configurações → Recursos experimentais para um produto variável, o status do estoque não será mais exibido nos detalhes se o gerenciamento de estoque estiver desativado, já que o status é controlado no nível da variação.
-- Pedidos: a lista de pesquisa exibirá a contagem total em vez de "Mais de 99".
-- Avaliações: corrigimos uma falha de atualização das avaliações. Excluir ou marcar uma avaliação como spam será refletido na lista de avaliações do produto.

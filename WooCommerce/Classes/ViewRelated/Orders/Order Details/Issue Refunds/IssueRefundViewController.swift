@@ -18,10 +18,11 @@ final class IssueRefundViewController: UIViewController {
     private let viewModel: IssueRefundViewModel
 
     init(order: Order,
+         refunds: [Refund],
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          imageService: ImageService = ServiceLocator.imageService) {
         self.imageService = imageService
-        self.viewModel = IssueRefundViewModel(order: order, currencySettings: currencySettings)
+        self.viewModel = IssueRefundViewModel(order: order, refunds: refunds, currencySettings: currencySettings)
         super.init(nibName: nil, bundle: nil)
     }
 

@@ -24,7 +24,7 @@ final class ProductFormActionsFactory_AddProductTests: XCTestCase {
                                                                        .inventorySettings(editable: true),
                                                                        .categories(editable: true),
                                                                        .tags(editable: true),
-                                                                       .briefDescription(editable: true)]
+                                                                       .shortDescription(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
@@ -50,7 +50,7 @@ final class ProductFormActionsFactory_AddProductTests: XCTestCase {
                                                                        .externalURL(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editSKU, .editCategories, .editTags, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editSKU, .editCategories, .editTags, .editShortDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -71,7 +71,7 @@ final class ProductFormActionsFactory_AddProductTests: XCTestCase {
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.groupedProducts(editable: true), .reviews]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editSKU, .editCategories, .editTags, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editSKU, .editCategories, .editTags, .editShortDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 }
@@ -86,23 +86,23 @@ private extension ProductFormActionsFactory_AddProductTests {
                                         name: "Tshirt",
                                         alt: "")
         static let tag = ProductTag(siteID: 123, tagID: 1, name: "", slug: "")
-        // downloadable: false, virtual: false, with inventory/shipping/categories/tags/brief description
-        static let physicalSimpleProductWithoutImages = MockProduct().product(downloadable: false, briefDescription: "desc", productType: .simple,
+        // downloadable: false, virtual: false, with inventory/shipping/categories/tags/short description
+        static let physicalSimpleProductWithoutImages = MockProduct().product(downloadable: false, shortDescription: "desc", productType: .simple,
                                                                               manageStock: true, sku: "uks", stockQuantity: nil,
                                                                               dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "2",
                                                                               virtual: false,
                                                                               categories: [category],
                                                                               tags: [tag],
                                                                               images: [])
-        // Affiliate product, missing external URL/sku/inventory/brief description/categories/tags
-        static let affiliateProduct = MockProduct().product(briefDescription: "",
+        // Affiliate product, missing external URL/sku/inventory/short description/categories/tags
+        static let affiliateProduct = MockProduct().product(shortDescription: "",
                                                             externalURL: "",
                                                             productType: .affiliate,
                                                             sku: "",
                                                             categories: [],
                                                             tags: [])
-        // Grouped product, missing grouped products/sku/brief description/categories/tags
-        static let groupedProduct = MockProduct().product(briefDescription: "",
+        // Grouped product, missing grouped products/sku/short description/categories/tags
+        static let groupedProduct = MockProduct().product(shortDescription: "",
                                                           productType: .grouped,
                                                           sku: "")
     }

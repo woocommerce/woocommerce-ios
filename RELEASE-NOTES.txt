@@ -1,6 +1,12 @@
+5.4
+-----
+- [*] fix: the footer in app Settings is now correctly centered.
+
+
 5.3
 -----
-- [*] Opening a product variation from outside of the Products tab (e.g. order details, top performers) now shows editable product variation details and this product variation does not appear in the Products tab anymore.
+- [*] Opening a product from order details now shows readonly product details of the same styles as in editable product details.
+- [*] Opening a product variation from order details now shows readonly product variation details and this product variation does not appear in the Products tab anymore.
 - [*] Enhancement: when not saving a product as "published", the in-progress modal now shows title and message like "saving your product" instead of "publishing your product".
 - [*] In product and variation list, the stock quantity is not shown anymore when stock management is disabled.
 - [*] Enhancement: when the user attempts to dismiss the product selector search modal while at least one product is selected for a grouped product's linked products, a discard changes action sheet is shown.

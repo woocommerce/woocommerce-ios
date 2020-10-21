@@ -212,7 +212,7 @@ private extension ProductFormTableViewDataSource {
              .shipping(let viewModel, _),
              .categories(let viewModel, _),
              .tags(let viewModel, _),
-             .briefDescription(let viewModel, _),
+             .shortDescription(let viewModel, _),
              .externalURL(let viewModel, _),
              .sku(let viewModel, _),
              .groupedProducts(let viewModel, _),
@@ -257,7 +257,8 @@ private extension ProductFormTableViewDataSource {
         }
 
         let switchableViewModel = ImageAndTitleAndTextTableViewCell.SwitchableViewModel(viewModel: viewModel.viewModel.toCellViewModel(),
-                                                                                        isSwitchOn: viewModel.isSwitchOn) { [weak self] isSwitchOn in
+                                                                                        isSwitchOn: viewModel.isSwitchOn,
+                                                                                        isActionable: viewModel.isActionable) { [weak self] isSwitchOn in
                                                                                             self?.onStatusChange?(isSwitchOn)
         }
         cell.updateUI(switchableViewModel: switchableViewModel)

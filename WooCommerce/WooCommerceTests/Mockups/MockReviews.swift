@@ -65,7 +65,7 @@ extension MockReviews {
                        featured: false,
                        catalogVisibilityKey: "visible",
                        fullDescription: "<p>This is the party room!</p>\n",
-                       briefDescription: """
+                       shortDescription: """
                            [contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. \
                            We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let us \
                            know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests \
@@ -207,7 +207,7 @@ extension MockReviews {
                        featured: false,
                        catalogVisibilityKey: "visible",
                        fullDescription: "<p>This is the party room!</p>\n",
-                       briefDescription: """
+                       shortDescription: """
                            [contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. \
                            We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let us \
                            know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests \
@@ -330,7 +330,7 @@ extension MockReviews {
                        featured: false,
                        catalogVisibilityKey: "visible",
                        fullDescription: "<p>Long paper airplane. Color is black. </p>\n",
-                       briefDescription: "",
+                       shortDescription: "",
                        sku: "345345-2",
                        price: "22.72",
                        regularPrice: "22.72",

@@ -13,13 +13,24 @@ extension DownloadableFileFormBottomSheetAction {
         switch self {
         case .fromDevice:
             return NSLocalizedString("From device",
-                                     comment: "Title of the product form bottom sheet action for editing inventory settings.")
+                                     comment: "Title of the downloadable file bottom sheet action for adding file from device.")
         case .fromWordPressMediaLibrary:
             return NSLocalizedString("From WordPress Media Library",
-                                     comment: "Title of the product form bottom sheet action for editing shipping settings.")
+                                     comment: "Title of the downloadable file bottom sheet action for adding file from WordPress Media Library.")
         case .fromFileURL:
             return NSLocalizedString("Enter file URL",
-                                     comment: "Title of the product form bottom sheet action for editing categories.")
+                                     comment: "Title of the downloadable file bottom sheet action for adding file from an URL.")
+        }
+    }
+
+    var image: UIImage {
+        switch self {
+        case .fromDevice:
+            return .invisibleImage
+        case .fromWordPressMediaLibrary:
+            return .cameraImage
+        case .fromFileURL:
+            return .wordPressLogoImage
         }
     }
 }

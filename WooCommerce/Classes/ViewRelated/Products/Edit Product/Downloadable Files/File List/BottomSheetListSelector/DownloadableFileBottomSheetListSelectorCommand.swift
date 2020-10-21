@@ -23,8 +23,9 @@ final class DownloadableFileBottomSheetListSelectorCommand: BottomSheetListSelec
         cell.accessoryType = .disclosureIndicator
         let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: model.title,
                                                                     text: nil,
-                                                                    image: UIImage.cloudImage,
-                                                                    imageTintColor: nil,
+                                                                    textTintColor: .text,
+                                                                    image: model.image,
+                                                                    imageTintColor: .gray(.shade20),
                                                                     numberOfLinesForText: 0)
         cell.updateUI(viewModel: viewModel)
     }

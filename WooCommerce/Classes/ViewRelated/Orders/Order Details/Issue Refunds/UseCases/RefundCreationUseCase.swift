@@ -27,7 +27,7 @@ struct RefundCreationUseCase {
 
     /// Creates a `Refund` object ready to be used  on `RefundStore.createRefund` action
     ///
-    func createRefundObject() -> Refund {
+    func createRefund() -> Refund {
         return Refund(refundID: .min,
                       orderID: .min,
                       siteID: .min,

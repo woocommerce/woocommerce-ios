@@ -20,7 +20,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             currencyFormatter: formatter)
 
         // When
-        let refund = useCase.createRefundObject()
+        let refund = useCase.createRefund()
 
         // Then
         XCTAssertEqual(refund.amount, "10.0")
@@ -41,7 +41,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             currencyFormatter: formatter)
 
         // When
-        let refund = useCase.createRefundObject()
+        let refund = useCase.createRefund()
 
         // Then
         XCTAssertEqual(refund.items.count, items.count)
@@ -74,7 +74,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             currencyFormatter: formatter)
 
         // When
-        let refund = useCase.createRefundObject()
+        let refund = useCase.createRefund()
 
         // Then
         XCTAssertEqual(refund.items.count, items.count)

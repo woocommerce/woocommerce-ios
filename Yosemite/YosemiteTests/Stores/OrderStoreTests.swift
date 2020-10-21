@@ -781,7 +781,8 @@ private extension OrderStoreTests {
         methodTitle: "International Priority Mail Express Flat Rate",
         methodID: "usps",
         total: "133.00",
-        totalTax: "0.00")]
+        totalTax: "0.00",
+        taxes: [])]
     }
 
     func sampleCoupons() -> [Networking.OrderCouponLine] {

@@ -214,14 +214,12 @@ private extension ProductDownloadListViewController {
         let menuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         menuAlert.view.tintColor = .text
 
-        let downloadSettingsTitle = Localization.downloadSettingsActionSheetTitle
-        let downloadSettingsAction = UIAlertAction(title: downloadSettingsTitle, style: .default) { [weak self] (action) in
+        let downloadSettingsAction = UIAlertAction(title: Localization.downloadSettingsAction, style: .default) { [weak self] (action) in
             self?.showDownloadableFilesSettings()
         }
         menuAlert.addAction(downloadSettingsAction)
 
-        let cancelTitle = Localization.cancelActionSheetTitle
-        let cancelAction = UIAlertAction(title: cancelTitle, style: .cancel)
+        let cancelAction = UIAlertAction(title: Localization.cancelAction, style: .cancel)
         menuAlert.addAction(cancelAction)
 
         let popoverController = menuAlert.popoverPresentationController
@@ -314,9 +312,9 @@ private extension ProductDownloadListViewController {
                                                   comment: "Edit product downloadable files screen - button title to apply changes to downloadable files")
         static let bottomSheetTitle = NSLocalizedString("Select upload method",
                                                         comment: "Title of the bottom sheet from the product downloadable file to add a new downloadable file.")
-        static let downloadSettingsActionSheetTitle = NSLocalizedString("Download Settings",
+        static let downloadSettingsAction = NSLocalizedString("Download Settings",
                                                                         comment: "Button title Download Settings in Downloadable Files More Options Action Sheet")
-        static let cancelActionSheetTitle = NSLocalizedString("Cancel",
+        static let cancelAction = NSLocalizedString("Cancel",
                                                               comment: "Button title Cancel in Downloadable Files More Options Action Sheet")
     }
 }

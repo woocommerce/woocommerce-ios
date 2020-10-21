@@ -1,6 +1,7 @@
 5.4
 -----
 - [*] fix: the footer in app Settings is now correctly centered.
+- [*] fix: Products tab: earlier draft products now show up in the same order as in core when sorting by "Newest to Oldest".
 
 
 5.3

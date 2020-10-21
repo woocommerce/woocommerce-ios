@@ -61,6 +61,64 @@ final class RefundMapperTests: XCTestCase {
         XCTAssertEqual(item.sku, "HOODIE-SHIP-YOUR-IDEA-BLUE-XL")
         XCTAssertEqual(item.price, NSDecimalNumber(integerLiteral: 27))
     }
+
+    func test_refund_is_encoded_correctly_with_items_and_taxes() throws {
+        // Given
+        let refund = sampleRefund(includeTaxes: true)
+        let mapper = RefundMapper(siteID: dummySiteID, orderID: 123)
+
+        // Ref:  https://git.io/JTRsF
+        let expectedDictionary: [String: Any] = [
+            "amount": refund.amount,
+            "api_refund": refund.createAutomated ?? false,
+            "reason": refund.reason,
+            "line_items": [
+                "\(refund.items[0].itemID)": [
+                    "qty": refund.items[0].quantity,
+                    "refund_total": refund.items[0].total,
+                    "refund_tax": [
+                        "\(refund.items[0].taxes[0].taxID)": refund.items[0].taxes[0].total
+                    ]
+                ]
+            ]
+        ]
+
+        // When
+        let refundEncoded = try mapper.map(refund: refund)
+        let refundDictionary = try JSONSerialization.jsonObject(with: refundEncoded, options: []) as? [String: Any]
+
+        // Then
+        let dictionaryEquals = NSDictionary(dictionary: refundDictionary ?? [:]).isEqual(to: expectedDictionary)
+        XCTAssertTrue(dictionaryEquals)
+    }
+
+    func test_refund_is_encoded_correctly_with_items_and_no_taxes() throws {
+        // Given
+        let refund = sampleRefund(includeTaxes: false)
+        let mapper = RefundMapper(siteID: dummySiteID, orderID: 123)
+
+        // Ref:  https://git.io/JTRsF
+        let expectedDictionary: [String: Any] = [
+            "amount": refund.amount,
+            "api_refund": refund.createAutomated ?? false,
+            "reason": refund.reason,
+            "line_items": [
+                "\(refund.items[0].itemID)": [
+                    "qty": refund.items[0].quantity,
+                    "refund_total": refund.items[0].total,
+                    "refund_tax": [:]
+                ]
+            ]
+        ]
+
+        // When
+        let refundEncoded = try mapper.map(refund: refund)
+        let refundDictionary = try JSONSerialization.jsonObject(with: refundEncoded, options: []) as? [String: Any]
+
+        // Then
+        let dictionaryEquals = NSDictionary(dictionary: refundDictionary ?? [:]).isEqual(to: expectedDictionary)
+        XCTAssertTrue(dictionaryEquals)
+    }
 }
 
 
@@ -82,5 +140,39 @@ private extension RefundMapperTests {
     ///
     func mapLoadRefundResponse() -> Refund? {
         return mapRefund(from: "refund-single")
+    }
+
+    /// Creates a dummy refund with items and taxes
+    ///
+    func sampleRefund(includeTaxes: Bool) -> Refund {
+        Refund(refundID: 1,
+               orderID: 1,
+               siteID: dummySiteID,
+               dateCreated: Date(),
+               amount: "19.60",
+               reason: "Some Reason",
+               refundedByUserID: 1,
+               isAutomated: nil,
+               createAutomated: false,
+               items: [sampleItem(includeTaxes: includeTaxes)])
+    }
+
+    /// Creates a dummy refund items with taxes
+    ///
+    func sampleItem(includeTaxes: Bool) -> OrderItemRefund {
+        let taxes = includeTaxes ? [OrderItemTaxRefund(taxID: 1, subtotal: "1.60", total: "1.60")] : []
+        return OrderItemRefund(itemID: 19,
+                               name: "",
+                               productID: 1,
+                               variationID: 1,
+                               quantity: 1,
+                               price: 18.0,
+                               sku: nil,
+                               subtotal: "18.0",
+                               subtotalTax: "1.60",
+                               taxClass: "",
+                               taxes: taxes,
+                               total: "18.0",
+                               totalTax: "1.60")
     }
 }

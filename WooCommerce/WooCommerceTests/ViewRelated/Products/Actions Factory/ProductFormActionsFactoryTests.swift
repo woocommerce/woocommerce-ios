@@ -24,7 +24,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .inventorySettings(editable: true),
                                                                        .categories(editable: true),
                                                                        .tags(editable: true),
-                                                                       .briefDescription(editable: true),
+                                                                       .shortDescription(editable: true),
                                                                        .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
@@ -52,7 +52,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .inventorySettings(editable: true),
                                                                        .categories(editable: true),
                                                                        .tags(editable: true),
-                                                                       .briefDescription(editable: true),
+                                                                       .shortDescription(editable: true),
                                                                        .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
@@ -79,7 +79,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .inventorySettings(editable: true),
                                                                        .categories(editable: true),
                                                                        .tags(editable: true),
-                                                                       .briefDescription(editable: true),
+                                                                       .shortDescription(editable: true),
                                                                        .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
@@ -107,7 +107,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .categories(editable: true),
                                                                        .tags(editable: true),
                                                                        .downloadableFiles,
-                                                                       .briefDescription(editable: true),
+                                                                       .shortDescription(editable: true),
                                                                        .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
@@ -134,7 +134,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .inventorySettings(editable: true),
                                                                        .categories(editable: true),
                                                                        .tags(editable: true),
-                                                                       .briefDescription(editable: true),
+                                                                       .shortDescription(editable: true),
                                                                        .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
@@ -162,7 +162,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editSKU, .editCategories, .editTags, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editSKU, .editCategories, .editTags, .editShortDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -183,7 +183,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.groupedProducts(editable: true), .reviews, .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editSKU, .editCategories, .editTags, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editSKU, .editCategories, .editTags, .editShortDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -210,7 +210,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         ]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -237,7 +237,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         ]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -258,7 +258,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.reviews, .inventorySettings(editable: false), .productType(editable: false)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -284,7 +284,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         ]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editBriefDescription]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 }
@@ -299,25 +299,25 @@ private extension ProductFormActionsFactoryTests {
                                         name: "Tshirt",
                                         alt: "")
         static let tag = ProductTag(siteID: 123, tagID: 1, name: "", slug: "")
-        // downloadable: false, virtual: false, with inventory/shipping/categories/tags/brief description
-        static let physicalSimpleProductWithoutImages = MockProduct().product(downloadable: false, briefDescription: "desc", productType: .simple,
+        // downloadable: false, virtual: false, with inventory/shipping/categories/tags/short description
+        static let physicalSimpleProductWithoutImages = MockProduct().product(downloadable: false, shortDescription: "desc", productType: .simple,
                                                                               manageStock: true, sku: "uks", stockQuantity: nil,
                                                                               dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "2",
                                                                               virtual: false,
                                                                               categories: [category],
                                                                               tags: [tag],
                                                                               images: [])
-        // downloadable: false, virtual: true, with inventory/shipping/categories/tags/brief description
-        static let physicalSimpleProductWithImages = MockProduct().product(downloadable: false, briefDescription: "desc", productType: .simple,
+        // downloadable: false, virtual: true, with inventory/shipping/categories/tags/short description
+        static let physicalSimpleProductWithImages = MockProduct().product(downloadable: false, shortDescription: "desc", productType: .simple,
                                                                            manageStock: true, sku: "uks", stockQuantity: nil,
                                                                            dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "2",
                                                                            virtual: false,
                                                                            categories: [category],
                                                                            tags: [tag],
                                                                            images: [image])
-        // downloadable: false, virtual: true, reviews: false, with inventory/shipping/categories/tags/brief description
+        // downloadable: false, virtual: true, reviews: false, with inventory/shipping/categories/tags/short description
         static let physicalSimpleProductWithReviewsDisabled = MockProduct().product(downloadable: false,
-                                                                                    briefDescription: "desc", productType: .simple,
+                                                                                    shortDescription: "desc", productType: .simple,
                                                                                     manageStock: true, sku: "uks", stockQuantity: nil,
                                                                                     dimensions: ProductDimensions(length: "", width: "", height: ""),
                                                                                     weight: "2",
@@ -326,45 +326,45 @@ private extension ProductFormActionsFactoryTests {
                                                                                     categories: [category],
                                                                                     tags: [tag],
                                                                                     images: [image])
-        // downloadable: false, virtual: true, with inventory/shipping/categories/tags/brief description
-        static let virtualSimpleProduct = MockProduct().product(downloadable: false, briefDescription: "desc", productType: .simple,
+        // downloadable: false, virtual: true, with inventory/shipping/categories/tags/short description
+        static let virtualSimpleProduct = MockProduct().product(downloadable: false, shortDescription: "desc", productType: .simple,
                                                                 manageStock: true, sku: "uks", stockQuantity: nil,
                                                                 dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "2",
                                                                 virtual: true,
                                                                 categories: [category],
                                                                 tags: [tag])
-        // downloadable: true, virtual: true, missing inventory/shipping/categories/brief description
-        static let downloadableSimpleProduct = MockProduct().product(downloadable: true, briefDescription: "desc", productType: .simple,
+        // downloadable: true, virtual: true, missing inventory/shipping/categories/short description
+        static let downloadableSimpleProduct = MockProduct().product(downloadable: true, shortDescription: "desc", productType: .simple,
                                                                      manageStock: true, sku: "uks", stockQuantity: nil,
                                                                      dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "3",
                                                                      virtual: true,
                                                                      categories: [category],
                                                                      tags: [tag])
-        // Affiliate product, missing external URL/sku/inventory/brief description/categories/tags
-        static let affiliateProduct = MockProduct().product(briefDescription: "",
+        // Affiliate product, missing external URL/sku/inventory/short description/categories/tags
+        static let affiliateProduct = MockProduct().product(shortDescription: "",
                                                             externalURL: "",
                                                             productType: .affiliate,
                                                             sku: "",
                                                             categories: [],
                                                             tags: [])
-        // Grouped product, missing grouped products/sku/brief description/categories/tags
-        static let groupedProduct = MockProduct().product(briefDescription: "",
+        // Grouped product, missing grouped products/sku/short description/categories/tags
+        static let groupedProduct = MockProduct().product(shortDescription: "",
                                                           productType: .grouped,
                                                           sku: "")
-        // Variable product, missing variations/brief description/categories/tags
-        static let variableProductWithoutVariations = MockProduct().product(briefDescription: "",
+        // Variable product, missing variations/short description/categories/tags
+        static let variableProductWithoutVariations = MockProduct().product(shortDescription: "",
                                                                             productType: .variable,
                                                                             sku: "").copy(variations: [])
-        // Variable product with one variation, missing brief description/categories/tags
-        static let variableProductWithVariations = MockProduct().product(briefDescription: "",
+        // Variable product with one variation, missing short description/categories/tags
+        static let variableProductWithVariations = MockProduct().product(shortDescription: "",
                                                                          productType: .variable,
                                                                          sku: "").copy(variations: [123])
-        // Non-core product, missing price/brief description/categories/tags
-        static let nonCoreProductWithoutPrice = MockProduct().product(briefDescription: "",
+        // Non-core product, missing price/short description/categories/tags
+        static let nonCoreProductWithoutPrice = MockProduct().product(shortDescription: "",
                                                                       productType: .custom("other")).copy(regularPrice: "")
 
-        // Non-core product, missing brief description/categories/tags
-        static let nonCoreProductWithPrice = MockProduct().product(briefDescription: "",
+        // Non-core product, missing short description/categories/tags
+        static let nonCoreProductWithPrice = MockProduct().product(shortDescription: "",
                                                                    productType: .custom("other")).copy(regularPrice: "2")
     }
 }

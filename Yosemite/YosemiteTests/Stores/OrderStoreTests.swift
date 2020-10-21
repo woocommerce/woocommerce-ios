@@ -782,7 +782,7 @@ private extension OrderStoreTests {
         methodID: "usps",
         total: "133.00",
         totalTax: "0.00",
-        taxes: [])]
+        taxes: [.init(taxID: 1, subtotal: "", total: "0.62125")])]
     }
 
     func sampleCoupons() -> [Networking.OrderCouponLine] {

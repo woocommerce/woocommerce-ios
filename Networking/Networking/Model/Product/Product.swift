@@ -10,6 +10,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
     public let slug: String
     public let permalink: String
 
+    public let date: Date               // Calculated date based on `dateCreated`, `dateModified`, and `statusKey`
     public let dateCreated: Date        // gmt
     public let dateModified: Date?      // gmt
     public let dateOnSaleStart: Date?   // gmt
@@ -115,6 +116,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
                 name: String,
                 slug: String,
                 permalink: String,
+                date: Date,
                 dateCreated: Date,
                 dateModified: Date?,
                 dateOnSaleStart: Date?,
@@ -176,6 +178,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         self.name = name
         self.slug = slug
         self.permalink = permalink
+        self.date = date
         self.dateCreated = dateCreated
         self.dateModified = dateModified
         self.dateOnSaleStart = dateOnSaleStart
@@ -257,6 +260,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         let statusKey = try container.decode(String.self, forKey: .statusKey)
         let featured = try container.decode(Bool.self, forKey: .featured)
         let catalogVisibilityKey = try container.decode(String.self, forKey: .catalogVisibilityKey)
+
+        // Calculated date: `dateModified` for a draft product and `dateCreated` otherwise.
+        let date = statusKey == ProductStatus.draft.rawValue ? dateModified: dateCreated
 
         let fullDescription = try container.decodeIfPresent(String.self, forKey: .fullDescription)
         let shortDescription = try container.decodeIfPresent(String.self, forKey: .shortDescription)
@@ -354,6 +360,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
                   name: name,
                   slug: slug,
                   permalink: permalink,
+                  date: date,
                   dateCreated: dateCreated,
                   dateModified: dateModified,
                   dateOnSaleStart: dateOnSaleStart,

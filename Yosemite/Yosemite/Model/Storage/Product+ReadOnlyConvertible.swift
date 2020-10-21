@@ -26,6 +26,7 @@ extension Storage.Product: ReadOnlyConvertible {
         name = product.name
         slug = product.slug
         permalink = product.permalink
+        date = product.date
         dateCreated = product.dateCreated
         dateModified = product.dateModified
         dateOnSaleStart = product.dateOnSaleStart
@@ -103,6 +104,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        name: name,
                        slug: slug,
                        permalink: permalink,
+                       date: date,
                        dateCreated: dateCreated,
                        dateModified: dateModified,
                        dateOnSaleStart: dateOnSaleStart,

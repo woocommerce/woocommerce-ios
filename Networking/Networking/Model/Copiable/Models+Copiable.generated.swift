@@ -91,6 +91,7 @@ extension Product {
         name: CopiableProp<String> = .copy,
         slug: CopiableProp<String> = .copy,
         permalink: CopiableProp<String> = .copy,
+        date: CopiableProp<Date> = .copy,
         dateCreated: CopiableProp<Date> = .copy,
         dateModified: NullableCopiableProp<Date> = .copy,
         dateOnSaleStart: NullableCopiableProp<Date> = .copy,
@@ -153,6 +154,7 @@ extension Product {
         let name = name ?? self.name
         let slug = slug ?? self.slug
         let permalink = permalink ?? self.permalink
+        let date = date ?? self.date
         let dateCreated = dateCreated ?? self.dateCreated
         let dateModified = dateModified ?? self.dateModified
         let dateOnSaleStart = dateOnSaleStart ?? self.dateOnSaleStart
@@ -216,6 +218,7 @@ extension Product {
             name: name,
             slug: slug,
             permalink: permalink,
+            date: date,
             dateCreated: dateCreated,
             dateModified: dateModified,
             dateOnSaleStart: dateOnSaleStart,

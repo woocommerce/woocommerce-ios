@@ -46,7 +46,7 @@ private extension ProductDownloadListViewController {
 
     func configureAddButton() {
         addButton.setTitle(NSLocalizedString("Add File", comment: "Action to add downloadable file on the Product Downloadable Files screen"), for: .normal)
-        addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+        addButton.addTarget(self, action: #selector(addButtonTapped(_:)), for: .touchUpInside)
         addButton.applySecondaryButtonStyle()
     }
 
@@ -123,9 +123,27 @@ extension ProductDownloadListViewController {
         viewModel.completeUpdating(onCompletion: onCompletion)
     }
 
-    @objc private func addButtonTapped() {
-        // TODO: - add analytics
-        addEditDownloadableFile(indexPath: nil, formType: .add)
+    @objc private func addButtonTapped(_ sender: UIButton) {
+        // TODO: - add analytics M5
+
+        let title = NSLocalizedString("Select upload method",
+                                      comment: "Title of the bottom sheet from the product downloadable file to add a new downloadable file.")
+        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let actions = viewModel.bottomSheetActions
+        let dataSource = DownloadableFileBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
+            self?.dismiss(animated: true) { [weak self] in
+                switch action {
+                case .fromDevice:
+                    return
+                case .fromWordPressMediaLibrary:
+                    return
+                case .fromFileURL:
+                    self?.addEditDownloadableFile(indexPath: nil, formType: .add)
+                }
+            }
+        }
+        let listSelectorPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: dataSource)
+        listSelectorPresenter.show(from: self, sourceView: sender, arrowDirections: .down)
     }
 
     private func presentBackNavigationActionSheet() {

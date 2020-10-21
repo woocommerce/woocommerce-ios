@@ -423,7 +423,7 @@
         <relationship name="order" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="shippingLines" inverseEntity="Order"/>
         <relationship name="taxes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ShippingLineTax" inverseName="shipping" inverseEntity="ShippingLineTax"/>
     </entity>
-    <entity name="ShippingLineTax" representedClassName="ShippingLineTax" syncable="YES" codeGenerationType="class">
+    <entity name="ShippingLineTax" representedClassName="ShippingLineTax" syncable="YES">
         <attribute name="subtotal" optional="YES" attributeType="String"/>
         <attribute name="taxID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="total" optional="YES" attributeType="String"/>

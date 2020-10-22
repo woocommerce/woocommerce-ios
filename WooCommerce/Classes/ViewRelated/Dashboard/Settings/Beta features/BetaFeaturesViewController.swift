@@ -79,8 +79,9 @@ private extension BetaFeaturesViewController {
     /// Configure sections for table view.
     ///
     func configureSections() {
-        // This is empty because there aren't any ongoing experiments
-        self.sections = []
+        self.sections = [
+            productsSection()
+        ]
     }
 
     func productsSection() -> Section {
@@ -120,8 +121,8 @@ private extension BetaFeaturesViewController {
     func configureProductsSwitch(cell: SwitchTableViewCell) {
         configureCommonStylesForSwitchCell(cell)
 
-        let title = NSLocalizedString("Product editing",
-                                      comment: "My Store > Settings > Experimental features > Product editing")
+        let title = NSLocalizedString("Creating products",
+                                      comment: "My Store > Settings > Experimental features > Products")
 
         cell.title = title
 
@@ -144,8 +145,8 @@ private extension BetaFeaturesViewController {
     func configureProductsDescription(cell: BasicTableViewCell) {
         configureCommonStylesForDescriptionCell(cell)
 
-        let description = NSLocalizedString("Test out new product editing functionalities as we get ready to launch them",
-                                            comment: "My Store > Settings > Experimental features > Product editing")
+        let description = NSLocalizedString("Test out the new product creation as we get ready to launch",
+                                            comment: "My Store > Settings > Experimental features > Products")
         cell.textLabel?.text = description
     }
 }

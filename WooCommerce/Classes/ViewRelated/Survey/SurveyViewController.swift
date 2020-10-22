@@ -79,14 +79,14 @@ final class SurveyViewController: UIViewController, SurveyViewControllerOutputs 
 extension SurveyViewController {
     enum Source {
         case inAppFeedback
-        case productsM3Feedback
+        case productsM4Feedback
 
         fileprivate var url: URL {
             switch self {
             case .inAppFeedback:
                 return WooConstants.URLs.inAppFeedback.asURL()
-            case .productsM3Feedback:
-                return WooConstants.URLs.productsM3Feedback.asURL()
+            case .productsM4Feedback:
+                return WooConstants.URLs.productsM4Feedback.asURL()
             }
         }
 
@@ -94,7 +94,7 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return NSLocalizedString("How can we improve?", comment: "Title on the navigation bar for the in-app feedback survey")
-            case .productsM3Feedback:
+            case .productsM4Feedback:
                 return NSLocalizedString("Give feedback", comment: "Title on the navigation bar for the products feedback survey")
             }
         }
@@ -104,8 +104,8 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return .general
-            case .productsM3Feedback:
-                return .productsM3
+            case .productsM4Feedback:
+                return .productsM4
             }
         }
     }

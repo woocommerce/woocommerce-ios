@@ -234,8 +234,20 @@ private extension ProductsViewController {
             return button
         }()
 
+        updateNavigationBarRightButtonItems()
+    }
+
+    /// Fetches the feature switch value from app settings and updates its navigation bar right button items.
+    func updateNavigationBarRightButtonItems() {
+        let action = AppSettingsAction.loadProductsFeatureSwitch { [weak self] isFeatureSwitchOn in
+            self?.updateNavigationBarRightButtonItems(isProductsFeatureSwitchOn: isFeatureSwitchOn)
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func updateNavigationBarRightButtonItems(isProductsFeatureSwitchOn: Bool) {
         var rightBarButtonItems = [UIBarButtonItem]()
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease4) {
+        if isProductsFeatureSwitchOn {
             let buttonItem: UIBarButtonItem = {
                 let button = UIBarButtonItem(image: .plusImage,
                                              style: .plain,
@@ -357,14 +369,16 @@ private extension ProductsViewController {
 private extension ProductsViewController {
     func observeProductsFeatureSwitchChange() {
         NotificationCenter.default.addObserver(forName: .ProductsFeatureSwitchDidChange, object: nil, queue: nil) { [weak self] _ in
-            self?.updateTopBannerView()
+            guard let self = self else { return }
+            self.updateTopBannerView()
+            self.updateNavigationBarRightButtonItems()
         }
     }
 
     /// Fetches products feedback visibility from AppSettingsStore and update products top banner accordingly
     ///
     func updateTopBannerView() {
-        let action = AppSettingsAction.loadFeedbackVisibility(type: .productsM3) { [weak self] result in
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .productsM4) { [weak self] result in
             switch result {
             case .success(let visible):
                 if visible {
@@ -559,11 +573,11 @@ private extension ProductsViewController {
     ///
     func presentProductsFeedback() {
         // Present survey
-        let navigationController = SurveyCoordinatingController(survey: .productsM3Feedback)
+        let navigationController = SurveyCoordinatingController(survey: .productsM4Feedback)
         present(navigationController, animated: true) { [weak self] in
 
             // Mark survey as given and update top banner view
-            let action = AppSettingsAction.updateFeedbackStatus(type: .productsM3, status: .given(Date())) { result in
+            let action = AppSettingsAction.updateFeedbackStatus(type: .productsM4, status: .given(Date())) { result in
                 if let error = result.failure {
                     CrashLogging.logError(error)
                 }
@@ -576,7 +590,7 @@ private extension ProductsViewController {
     /// Mark feedback request as dismissed and update banner visibility
     ///
     func dismissProductsBanner() {
-        let action = AppSettingsAction.updateFeedbackStatus(type: .productsM3, status: .dismissed) { [weak self] result in
+        let action = AppSettingsAction.updateFeedbackStatus(type: .productsM4, status: .dismissed) { [weak self] result in
             if let error = result.failure {
                 CrashLogging.logError(error)
             }

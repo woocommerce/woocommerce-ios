@@ -28,9 +28,9 @@ final class AppSettingsStoreTests_ProductsFeatureSwitch: XCTestCase {
     }()
 
     // Current feature switch file URL
-    private lazy var productsRelease3FeatureSwitchURL: URL = {
+    private lazy var productsRelease4FeatureSwitchURL: URL = {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents!.appendingPathComponent("products-m3-feature-switch.plist")
+        return documents!.appendingPathComponent("products-m4-feature-switch.plist")
     }()
 
     override func setUp() {
@@ -102,7 +102,7 @@ final class AppSettingsStoreTests_ProductsFeatureSwitch: XCTestCase {
 
     func test_setting_current_file_URL_to_true_and_loading_products_feature_switch_returns_true() {
         // Arrange
-        try? fileStorage.write(ProductsFeatureSwitchPListWrapper(isEnabled: true), to: productsRelease3FeatureSwitchURL)
+        try? fileStorage.write(ProductsFeatureSwitchPListWrapper(isEnabled: true), to: productsRelease4FeatureSwitchURL)
 
         // Action
         var isFeatureSwitchEnabled: Bool?

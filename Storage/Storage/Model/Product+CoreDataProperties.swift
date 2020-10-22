@@ -15,6 +15,7 @@ extension Product {
     @NSManaged public var name: String
     @NSManaged public var slug: String
     @NSManaged public var permalink: String
+    @NSManaged public var date: Date
     @NSManaged public var dateCreated: Date
     @NSManaged public var dateModified: Date?
     @NSManaged public var dateOnSaleStart: Date?

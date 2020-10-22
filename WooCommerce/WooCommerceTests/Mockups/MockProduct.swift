@@ -49,6 +49,7 @@ final class MockProduct {
                    name: name,
                    slug: slug,
                    permalink: "https://example.com/product/book-the-green-room/",
+                   date: Date(),
                    dateCreated: Date(),
                    dateModified: Date(),
                    dateOnSaleStart: dateOnSaleStart,

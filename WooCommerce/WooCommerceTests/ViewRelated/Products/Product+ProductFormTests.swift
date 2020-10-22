@@ -104,6 +104,7 @@ private extension Product_ProductFormTests {
                        name: "Book the Green Room",
                        slug: "book-the-green-room",
                        permalink: "https://example.com/product/book-the-green-room/",
+                       date: Date(),
                        dateCreated: Date(),
                        dateModified: Date(),
                        dateOnSaleStart: date(with: "2019-10-15T21:30:00"),

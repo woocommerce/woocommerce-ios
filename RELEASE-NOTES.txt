@@ -2,7 +2,8 @@
 -----
 - [*] fix: the footer in app Settings is now correctly centered.
 - [*] fix: Products tab: earlier draft products now show up in the same order as in core when sorting by "Newest to Oldest".
-- [*] enhancement: in product details > price settings, the sale date pickers can be edited inline in iOS 14 now like in iOS 13 and before. Also, the sale end date picker editing does not automatically end on changes anymore.
+- [*] enhancement: in product details > price settings, the sale dates can be edited inline in iOS 14 using the new date picker. Also, the sale end date picker editing does not automatically end on changes anymore.
+- [*] enhancement: in order details > add tracking, the date shipped can be edited inline in iOS 14 using the new date picker.
 
 
 5.3

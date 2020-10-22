@@ -418,18 +418,19 @@ class RefundStoreTests: XCTestCase {
         wait(for: [backgroundSaveExpectation], timeout: Constants.expectationTimeout)
     }
 
-    func test_stale_refunds_are_deleted_when_retrieving_new_refunds() {
+    func test_stale_refunds_are_deleted_when_retrieving_new_refundswith_deleteStaleRefunds_flag() {
         // Given
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        refundStore.upsertStoredRefund(readOnlyRefund: self.sampleRefund(refundID: 999), in: self.viewStorage)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 1)
-
+        refundStore.upsertStoredRefund(readOnlyRefund: sampleRefund(refundID: 999), in: viewStorage)
         network.simulateResponse(requestUrlSuffix: "refunds", filename: "refunds-all")
 
         // When
         var retrieveError: Error?
         waitForExpectation { exp in
-            let action = RefundAction.retrieveRefunds(siteID: sampleSiteID, orderID: sampleOrderID, refundIDs: [sampleRefundID, refundID]) { error in
+            let action = RefundAction.retrieveRefunds(siteID: sampleSiteID,
+                                                      orderID: sampleOrderID,
+                                                      refundIDs: [sampleRefundID, refundID],
+                                                      deleteStaleRefunds: true) { error in
                 retrieveError = error
                 exp.fulfill()
             }
@@ -437,8 +438,31 @@ class RefundStoreTests: XCTestCase {
         }
 
         // Then
-        let storedRefunds = viewStorage.loadRefunds(siteID: sampleSiteID, orderID: sampleOrderID).map { $0.toReadOnly() }
-        XCTAssertEqual(storedRefunds, [sampleRefund(), sampleRefund2()])
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 2)
+        XCTAssertNil(retrieveError)
+    }
+
+    func test_stale_refunds_are_not_deleted_when_retrieving_new_refunds_without_deleteStaleRefunds_flag() {
+        // Given
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        refundStore.upsertStoredRefund(readOnlyRefund: sampleRefund(refundID: 999), in: viewStorage)
+        network.simulateResponse(requestUrlSuffix: "refunds", filename: "refunds-all")
+
+        // When
+        var retrieveError: Error?
+        waitForExpectation { exp in
+            let action = RefundAction.retrieveRefunds(siteID: sampleSiteID,
+                                                      orderID: sampleOrderID,
+                                                      refundIDs: [sampleRefundID, refundID],
+                                                      deleteStaleRefunds: false) { error in
+                retrieveError = error
+                exp.fulfill()
+            }
+            refundStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 3)
         XCTAssertNil(retrieveError)
     }
 }

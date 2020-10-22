@@ -9,7 +9,7 @@ protocol ProductDownloadListViewModelOutput {
     var downloadExpiry: Int64 { get }
 
     // Actions available on the bottom sheet
-    var bottomSheetActions: [DownloadableFileFormBottomSheetAction] { get }
+    var bottomSheetActions: [DownloadableFileSource] { get }
 
     // Convenience Methods
     @discardableResult
@@ -54,8 +54,8 @@ final class ProductDownloadListViewModel: ProductDownloadListViewModelOutput {
     private(set) var downloadLimit: Int64
     private(set) var downloadExpiry: Int64
 
-    var bottomSheetActions: [DownloadableFileFormBottomSheetAction] {
-        return [.fromDevice, .fromWordPressMediaLibrary, .fromFileURL]
+    var bottomSheetActions: [DownloadableFileSource] {
+        [.device, .wordPressMediaLibrary, .fileURL]
     }
 
     init(product: ProductFormDataModel) {

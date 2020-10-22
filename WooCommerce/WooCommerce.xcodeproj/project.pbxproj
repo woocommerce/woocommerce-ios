@@ -425,7 +425,7 @@
 		45912FE32526642200982948 /* ProductFormViewController+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45912FE22526642200982948 /* ProductFormViewController+Helpers.swift */; };
 		4592A54B24BF58DD00BC3DE0 /* ProductTagsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4592A54924BF58DD00BC3DE0 /* ProductTagsViewController.swift */; };
 		4592A54C24BF58DD00BC3DE0 /* ProductTagsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4592A54A24BF58DD00BC3DE0 /* ProductTagsViewController.xib */; };
-		4596853F2540669900D17B90 /* DownloadableFileFormBottomSheetAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4596853E2540669900D17B90 /* DownloadableFileFormBottomSheetAction.swift */; };
+		4596853F2540669900D17B90 /* DownloadableFileSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4596853E2540669900D17B90 /* DownloadableFileSource.swift */; };
 		45968545254069AE00D17B90 /* DownloadableFileBottomSheetListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45968544254069AE00D17B90 /* DownloadableFileBottomSheetListSelectorCommand.swift */; };
 		4596854B254071C000D17B90 /* DownloadableFileBottomSheetListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4596854A254071C000D17B90 /* DownloadableFileBottomSheetListSelectorCommandTests.swift */; };
 		45A24E5F2451DF1A0050606B /* ProductMenuOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A24E5D2451DF1A0050606B /* ProductMenuOrderViewController.swift */; };
@@ -1455,7 +1455,7 @@
 		45912FE22526642200982948 /* ProductFormViewController+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormViewController+Helpers.swift"; sourceTree = "<group>"; };
 		4592A54924BF58DD00BC3DE0 /* ProductTagsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagsViewController.swift; sourceTree = "<group>"; };
 		4592A54A24BF58DD00BC3DE0 /* ProductTagsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductTagsViewController.xib; sourceTree = "<group>"; };
-		4596853E2540669900D17B90 /* DownloadableFileFormBottomSheetAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadableFileFormBottomSheetAction.swift; sourceTree = "<group>"; };
+		4596853E2540669900D17B90 /* DownloadableFileSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadableFileSource.swift; sourceTree = "<group>"; };
 		45968544254069AE00D17B90 /* DownloadableFileBottomSheetListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadableFileBottomSheetListSelectorCommand.swift; sourceTree = "<group>"; };
 		4596854A254071C000D17B90 /* DownloadableFileBottomSheetListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadableFileBottomSheetListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		45A24E5D2451DF1A0050606B /* ProductMenuOrderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductMenuOrderViewController.swift; sourceTree = "<group>"; };
@@ -3077,7 +3077,7 @@
 		4596853D2540667700D17B90 /* BottomSheetListSelector */ = {
 			isa = PBXGroup;
 			children = (
-				4596853E2540669900D17B90 /* DownloadableFileFormBottomSheetAction.swift */,
+				4596853E2540669900D17B90 /* DownloadableFileSource.swift */,
 				45968544254069AE00D17B90 /* DownloadableFileBottomSheetListSelectorCommand.swift */,
 			);
 			path = BottomSheetListSelector;
@@ -5675,7 +5675,7 @@
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
 				B58B4AB62108F11C00076FDD /* Notice.swift in Sources */,
 				CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */,
-				4596853F2540669900D17B90 /* DownloadableFileFormBottomSheetAction.swift in Sources */,
+				4596853F2540669900D17B90 /* DownloadableFileSource.swift in Sources */,
 				0279F0E4252DC9670098D7DE /* ProductVariationLoadUseCase.swift in Sources */,
 				02CA63DC23D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift in Sources */,
 				02404EDA2314C36300FF1170 /* StatsVersionCoordinator.swift in Sources */,

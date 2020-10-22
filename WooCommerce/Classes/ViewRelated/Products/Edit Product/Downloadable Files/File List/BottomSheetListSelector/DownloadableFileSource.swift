@@ -2,22 +2,22 @@ import Foundation
 import Yosemite
 
 /// Actions in the downloadable file form bottom sheet to add a new downloadable file.
-enum DownloadableFileFormBottomSheetAction {
-    case fromDevice
-    case fromWordPressMediaLibrary
-    case fromFileURL
+enum DownloadableFileSource {
+    case device
+    case wordPressMediaLibrary
+    case fileURL
 }
 
-extension DownloadableFileFormBottomSheetAction {
+extension DownloadableFileSource {
     var title: String {
         switch self {
-        case .fromDevice:
+        case .device:
             return NSLocalizedString("From device",
                                      comment: "Title of the downloadable file bottom sheet action for adding file from device.")
-        case .fromWordPressMediaLibrary:
+        case .wordPressMediaLibrary:
             return NSLocalizedString("From WordPress Media Library",
                                      comment: "Title of the downloadable file bottom sheet action for adding file from WordPress Media Library.")
-        case .fromFileURL:
+        case .fileURL:
             return NSLocalizedString("Enter file URL",
                                      comment: "Title of the downloadable file bottom sheet action for adding file from an URL.")
         }
@@ -25,11 +25,11 @@ extension DownloadableFileFormBottomSheetAction {
 
     var image: UIImage {
         switch self {
-        case .fromDevice:
+        case .device:
             return .invisibleImage
-        case .fromWordPressMediaLibrary:
+        case .wordPressMediaLibrary:
             return .cameraImage
-        case .fromFileURL:
+        case .fileURL:
             return .wordPressLogoImage
         }
     }

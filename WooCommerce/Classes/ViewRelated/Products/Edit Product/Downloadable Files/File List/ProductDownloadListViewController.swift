@@ -128,17 +128,17 @@ extension ProductDownloadListViewController {
         let dataSource = DownloadableFileBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
             self?.dismiss(animated: true) { [weak self] in
                 switch action {
-                case .fromDevice:
+                case .device:
                     return
-                case .fromWordPressMediaLibrary:
+                case .wordPressMediaLibrary:
                     return
-                case .fromFileURL:
+                case .fileURL:
                     self?.addEditDownloadableFile(indexPath: nil, formType: .add)
                 }
             }
         }
         let listSelectorPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: dataSource)
-        listSelectorPresenter.show(from: self, sourceView: sender, arrowDirections: .down)
+        listSelectorPresenter.show(from: self, sourceView: sender, arrowDirections: .up)
     }
 
     private func presentBackNavigationActionSheet() {

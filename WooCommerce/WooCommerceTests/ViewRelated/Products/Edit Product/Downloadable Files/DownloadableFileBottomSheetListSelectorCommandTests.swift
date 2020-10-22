@@ -5,24 +5,24 @@ import XCTest
 final class DownloadableFileBottomSheetListSelectorCommandTests: XCTestCase {
     // MARK: - `handleSelectedChange`
 
-    func testCallbackIsCalledOnSelection() {
+    func test_callback_is_called_on_selection() {
         // Arrange
-        let actions: [DownloadableFileFormBottomSheetAction] = [.fromDevice, .fromWordPressMediaLibrary, .fromFileURL]
-        var selectedActions = [DownloadableFileFormBottomSheetAction]()
+        let actions: [DownloadableFileSource] = [.device, .wordPressMediaLibrary, .fileURL]
+        var selectedActions = [DownloadableFileSource]()
         let command = DownloadableFileBottomSheetListSelectorCommand(actions: actions) { selected in
                                                                     selectedActions.append(selected)
         }
 
         // Action
-        command.handleSelectedChange(selected: .fromFileURL)
-        command.handleSelectedChange(selected: .fromWordPressMediaLibrary)
-        command.handleSelectedChange(selected: .fromDevice)
+        command.handleSelectedChange(selected: .fileURL)
+        command.handleSelectedChange(selected: .wordPressMediaLibrary)
+        command.handleSelectedChange(selected: .device)
 
         // Assert
-        let expectedActions: [DownloadableFileFormBottomSheetAction] = [
-            .fromFileURL,
-            .fromWordPressMediaLibrary,
-            .fromDevice
+        let expectedActions: [DownloadableFileSource] = [
+            .fileURL,
+            .wordPressMediaLibrary,
+            .device
         ]
         XCTAssertEqual(selectedActions, expectedActions)
     }

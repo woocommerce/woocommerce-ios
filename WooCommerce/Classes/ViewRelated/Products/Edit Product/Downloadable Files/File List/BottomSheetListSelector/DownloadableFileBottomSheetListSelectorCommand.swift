@@ -3,22 +3,22 @@ import Yosemite
 /// `BottomSheetListSelectorCommand` for selecting a form action for adding a new Downloadable File.
 ///
 final class DownloadableFileBottomSheetListSelectorCommand: BottomSheetListSelectorCommand {
-    var data: [DownloadableFileFormBottomSheetAction]
+    let data: [DownloadableFileSource]
 
-    var selected: DownloadableFileFormBottomSheetAction?
+    var selected: DownloadableFileSource?
 
-    typealias Model = DownloadableFileFormBottomSheetAction
+    typealias Model = DownloadableFileSource
     typealias Cell = ImageAndTitleAndTextTableViewCell
 
-    private let onSelection: (DownloadableFileFormBottomSheetAction) -> Void
+    private let onSelection: (DownloadableFileSource) -> Void
 
-    init(actions: [DownloadableFileFormBottomSheetAction],
-         onSelection: @escaping (DownloadableFileFormBottomSheetAction) -> Void) {
+    init(actions: [DownloadableFileSource],
+         onSelection: @escaping (DownloadableFileSource) -> Void) {
         self.onSelection = onSelection
         self.data = actions
     }
 
-    func configureCell(cell: ImageAndTitleAndTextTableViewCell, model: DownloadableFileFormBottomSheetAction) {
+    func configureCell(cell: ImageAndTitleAndTextTableViewCell, model: DownloadableFileSource) {
         cell.selectionStyle = .none
         cell.accessoryType = .disclosureIndicator
         let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: model.title,
@@ -30,11 +30,11 @@ final class DownloadableFileBottomSheetListSelectorCommand: BottomSheetListSelec
         cell.updateUI(viewModel: viewModel)
     }
 
-    func handleSelectedChange(selected: DownloadableFileFormBottomSheetAction) {
+    func handleSelectedChange(selected: DownloadableFileSource) {
         onSelection(selected)
     }
 
-    func isSelected(model: DownloadableFileFormBottomSheetAction) -> Bool {
+    func isSelected(model: DownloadableFileSource) -> Bool {
         return model == selected
     }
 }

@@ -23,7 +23,7 @@ final class ProductDownloadListViewModelTests: XCTestCase {
         XCTAssertEqual(file.downloadableFile.name, "Song #1")
         XCTAssertEqual(file.downloadableFile.fileURL, "https://example.com/woo-single-1.ogg")
 
-        let expectedBottomSheetActions: [DownloadableFileFormBottomSheetAction] = [.fromDevice, .fromWordPressMediaLibrary, .fromFileURL]
+        let expectedBottomSheetActions: [DownloadableFileSource] = [.device, .wordPressMediaLibrary, .fileURL]
         XCTAssertEqual(viewModel.bottomSheetActions.count, 3)
         XCTAssertEqual(viewModel.bottomSheetActions, expectedBottomSheetActions)
     }
@@ -41,7 +41,7 @@ final class ProductDownloadListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.downloadLimit, -1)
         XCTAssertEqual(viewModel.downloadExpiry, -1)
 
-        let expectedBottomSheetActions: [DownloadableFileFormBottomSheetAction] = [.fromDevice, .fromWordPressMediaLibrary, .fromFileURL]
+        let expectedBottomSheetActions: [DownloadableFileSource] = [.device, .wordPressMediaLibrary, .fileURL]
         XCTAssertEqual(viewModel.bottomSheetActions.count, 3)
         XCTAssertEqual(viewModel.bottomSheetActions, expectedBottomSheetActions)
     }

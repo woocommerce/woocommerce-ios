@@ -84,9 +84,14 @@ extension SurveyViewController {
         fileprivate var url: URL {
             switch self {
             case .inAppFeedback:
-                return WooConstants.URLs.inAppFeedback.asURL()
+                return WooConstants.URLs.inAppFeedback
+                    .asURL()
+                    .tagPlatform()
             case .productsM3Feedback:
-                return WooConstants.URLs.productsM3Feedback.asURL()
+                return WooConstants.URLs.productsM3Feedback
+                    .asURL()
+                    .tagPlatform()
+                    .tagProductMilestone()
             }
         }
 
@@ -138,6 +143,33 @@ extension SurveyViewController: WKNavigationDelegate {
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {
         removeLoadingView()
+    }
+}
+// MARK: Survey Tags
+//
+private extension URL {
+    func tagPlatform() -> URL {
+        safeWrap(rawValue: "\(self.absoluteString)?\(Tags.surveyRequestPlatformTag)=\(Tags.surveyRequestPlatformValue)")
+    }
+
+    func tagProductMilestone() -> URL {
+        safeWrap(rawValue: "\(self.absoluteString)&\(Tags.surveyRequestProductMilestoneTag)=\(Tags.surveyRequestProductMilestoneValue)")
+    }
+
+    private func safeWrap(rawValue: String) -> URL {
+        if let url = URL(string: rawValue) {
+            return url
+        } else {
+            fatalError("Expected URL \(rawValue) to be a well-formed URL.")
+        }
+    }
+
+    private enum Tags {
+        static let surveyRequestPlatformValue = "ios"
+        static let surveyRequestPlatformTag = "woo-mobile-platform"
+
+        static let surveyRequestProductMilestoneValue = "3"
+        static let surveyRequestProductMilestoneTag = "milestone"
     }
 }
 

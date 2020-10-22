@@ -337,21 +337,7 @@ extension ManualTrackingViewController: UITableViewDelegate {
             return CGFloat.leastNonzeroMagnitude
         }
 
-        return Constants.pickerRowHeight
-    }
-
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        let row = rowAtIndexPath(indexPath)
-
-        guard row == .datePicker else {
-            return Constants.rowHeight
-        }
-
-        guard datePickerVisible else {
-            return CGFloat.leastNonzeroMagnitude
-        }
-
-        return Constants.pickerRowHeight
+        return DatePickerTableViewCell.getDefaultCellHeight()
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

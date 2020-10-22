@@ -418,7 +418,7 @@ class RefundStoreTests: XCTestCase {
         wait(for: [backgroundSaveExpectation], timeout: Constants.expectationTimeout)
     }
 
-    func test_stale_refunds_are_deleted_when_retrieving_new_refundswith_deleteStaleRefunds_flag() {
+    func test_stale_refunds_are_deleted_when_retrieving_new_refunds_with_deleteStaleRefunds_flag() {
         // Given
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         refundStore.upsertStoredRefund(readOnlyRefund: sampleRefund(refundID: 999), in: viewStorage)

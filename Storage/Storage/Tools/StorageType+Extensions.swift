@@ -387,7 +387,7 @@ public extension StorageType {
 
     // MARK: - Refunds
 
-    /// Retrieves all of the stored Refunds entities for the provided siteID and orderID.
+    /// Retrieves all of the stored Refund entities for the provided siteID and orderID.
     ///
     func loadRefunds(siteID: Int64, orderID: Int64) -> [Refund] {
         let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld", siteID, orderID)

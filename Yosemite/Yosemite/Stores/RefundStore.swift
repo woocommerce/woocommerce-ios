@@ -94,7 +94,7 @@ private extension RefundStore {
             }
 
             if deleteStaleRefunds {
-                self?.removeStaleRefunds(siteID: siteID, orderID: orderID, newRefundIDs: refundIDs)
+                self?.deleteStaleRefunds(siteID: siteID, orderID: orderID, newRefundIDs: refundIDs)
             }
             self?.upsertStoredRefundsInBackground(readOnlyRefunds: refunds) {
                 onCompletion(nil)
@@ -235,9 +235,9 @@ private extension RefundStore {
         }
     }
 
-    /// Remove all refunds from an order that whom IDs are not contained in the provided `newRefundIDs`array
+    /// Deletes all refunds from an order when their IDs are not contained in the provided `newRefundIDs`array.
     ///
-    private func removeStaleRefunds(siteID: Int64, orderID: Int64, newRefundIDs: [Int64]) {
+    private func deleteStaleRefunds(siteID: Int64, orderID: Int64, newRefundIDs: [Int64]) {
         let storage = storageManager.viewStorage
         let previousRefunds = storage.loadRefunds(siteID: siteID, orderID: orderID)
         let staleRefunds = previousRefunds.filter { !newRefundIDs.contains($0.refundID) }

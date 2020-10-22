@@ -444,7 +444,7 @@ private extension ProductPriceSettingsViewController {
 //
 extension ProductPriceSettingsViewController {
 
-    struct Section: RowIterable, Equatable {
+    struct Section: Equatable {
         let title: String?
         let rows: [Row]
     }

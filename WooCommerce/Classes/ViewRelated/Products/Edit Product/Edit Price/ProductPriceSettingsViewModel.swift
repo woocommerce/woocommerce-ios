@@ -222,8 +222,6 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
     }
 
     func handleSaleEndDateChange(_ date: Date?) {
-        datePickerSaleToVisible = false
-
         if let date = date, let dateOnSaleStart = dateOnSaleStart, date < dateOnSaleStart {
             return
         }

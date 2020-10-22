@@ -28,7 +28,7 @@
 
 1. Download Xcode
 
-    At the moment *WooCommerce for iOS* uses Swift 5 and requires Xcode 11.7 or newer. Previous versions of Xcode can be [downloaded from Apple](https://developer.apple.com/downloads/index.action).
+    At the moment *WooCommerce for iOS* uses Swift 5 and requires Xcode 12 or newer. Previous versions of Xcode can be [downloaded from Apple](https://developer.apple.com/downloads/index.action).
 
 2. Install Ruby. We recommend using [rbenv](https://github.com/rbenv/rbenv) to install it. Please refer to the [`.ruby-version` file](.ruby-version) for the required Ruby version.
 

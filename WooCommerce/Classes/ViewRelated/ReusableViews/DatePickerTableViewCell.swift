@@ -16,10 +16,7 @@ final class DatePickerTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBottomBorder()
-    }
-
-    private func configureBottomBorder() {
-        bottomBorder.backgroundColor = .clear
+        configureDatePicker()
     }
 }
 
@@ -27,5 +24,17 @@ final class DatePickerTableViewCell: UITableViewCell {
 extension DatePickerTableViewCell {
     func getPicker() -> UIDatePicker {
         return picker
+    }
+}
+
+private extension DatePickerTableViewCell {
+    func configureBottomBorder() {
+        bottomBorder.backgroundColor = .clear
+    }
+
+    func configureDatePicker() {
+        if #available(iOS 14, *) {
+            picker.preferredDatePickerStyle = .wheels
+        }
     }
 }

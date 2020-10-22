@@ -17,6 +17,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             reason: "Test Reason",
                                             automaticallyRefundsPayment: true,
                                             items: [],
+                                            shippingLine: nil,
                                             currencyFormatter: formatter)
 
         // When
@@ -38,6 +39,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             reason: nil,
                                             automaticallyRefundsPayment: false,
                                             items: items,
+                                            shippingLine: nil,
                                             currencyFormatter: formatter)
 
         // When
@@ -71,6 +73,7 @@ final class RefundCreationUseCaseTests: XCTestCase {
                                             reason: nil,
                                             automaticallyRefundsPayment: false,
                                             items: items,
+                                            shippingLine: nil,
                                             currencyFormatter: formatter)
 
         // When
@@ -85,5 +88,73 @@ final class RefundCreationUseCaseTests: XCTestCase {
         XCTAssertEqual(refund.items[0].taxes[0].total, "0.40")
         XCTAssertEqual(refund.items[0].taxes[1].taxID, 12)
         XCTAssertEqual(refund.items[0].taxes[1].total, "2.20")
+    }
+
+    func test_refund_shipping_values_with_no_items_are_transformed_correctly() {
+        // Given
+        let shippingTaxes = ShippingLineTax(taxID: 2, subtotal: "", total: "0.99")
+        let shippingLine = ShippingLine(shippingID: 5, methodTitle: "", methodID: "", total: "7.00", totalTax: "0.99", taxes: [shippingTaxes])
+        let useCase = RefundCreationUseCase(amount: "7.99",
+                                            reason: nil,
+                                            automaticallyRefundsPayment: false,
+                                            items: [],
+                                            shippingLine: shippingLine,
+                                            currencyFormatter: formatter)
+
+        // When
+        let refund = useCase.createRefund()
+
+        // Then
+        XCTAssertEqual(refund.items.count, 1)
+
+        // Shipping Line
+        XCTAssertEqual(refund.items[0].itemID, 5)
+        XCTAssertEqual(refund.items[0].quantity, 0)
+        XCTAssertEqual(refund.items[0].total, "7.00")
+
+        // Shipping Line taxes
+        XCTAssertEqual(refund.items[0].taxes[0].taxID, 2)
+        XCTAssertEqual(refund.items[0].taxes[0].total, "0.99")
+    }
+
+    func test_refund_shipping_values_with_order_items_are_transformed_correctly() {
+        // Given
+        let items: [RefundableOrderItem] = [
+            .init(item: MockOrderItem.sampleItem(itemID: 1, quantity: 2, price: 5.1, totalTax: "0.0"), quantity: 1),
+            .init(item: MockOrderItem.sampleItem(itemID: 2, quantity: 2, price: 6.3, totalTax: "0.0"), quantity: 2)
+        ]
+        let shippingTaxes = ShippingLineTax(taxID: 2, subtotal: "", total: "0.99")
+        let shippingLine = ShippingLine(shippingID: 5, methodTitle: "", methodID: "", total: "7.00", totalTax: "0.99", taxes: [shippingTaxes])
+        let useCase = RefundCreationUseCase(amount: "7.99",
+                                            reason: nil,
+                                            automaticallyRefundsPayment: false,
+                                            items: items,
+                                            shippingLine: shippingLine,
+                                            currencyFormatter: formatter)
+
+        // When
+        let refund = useCase.createRefund()
+
+        // Then
+        XCTAssertEqual(refund.items.count, items.count + 1) // 1 from the shipping line
+
+        // Fist Item
+        XCTAssertEqual(refund.items[0].itemID, 1)
+        XCTAssertEqual(refund.items[0].quantity, 1)
+        XCTAssertEqual(refund.items[0].total, "5.10")
+        XCTAssertEqual(refund.items[0].taxes, [])
+
+        // Second Item
+        XCTAssertEqual(refund.items[1].itemID, 2)
+        XCTAssertEqual(refund.items[1].quantity, 2)
+        XCTAssertEqual(refund.items[1].total, "12.60")
+        XCTAssertEqual(refund.items[0].taxes, [])
+
+        // Shipping Line
+        XCTAssertEqual(refund.items[2].itemID, 5)
+        XCTAssertEqual(refund.items[2].quantity, 0)
+        XCTAssertEqual(refund.items[2].total, "7.00")
+        XCTAssertEqual(refund.items[2].taxes[0].taxID, 2)
+        XCTAssertEqual(refund.items[2].taxes[0].total, "0.99")
     }
 }

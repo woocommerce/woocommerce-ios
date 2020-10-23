@@ -150,7 +150,7 @@ extension ProductDownloadListViewController {
                 case .wordPressMediaLibrary:
                     self.showSiteMediaPicker(origin: self)
                 case .fileURL:
-                    self.addEditDownloadableFile(indexPath: nil, formType: .add)
+                    self.addDownloadableFile(fileName: nil, fileURL: nil)
                 }
             }
         }
@@ -167,10 +167,19 @@ extension ProductDownloadListViewController {
 
 // MARK: Action - Add/Edit Product Downloadable File Settings
 //
-extension ProductDownloadListViewController {
-    func addEditDownloadableFile(indexPath: IndexPath?, formType: ProductDownloadFileViewController.FormType) {
-        let downloadableFile = viewModel.item(at: indexPath?.row ?? -1)?.downloadableFile
-        let viewController = ProductDownloadFileViewController(productDownload: downloadableFile,
+private extension ProductDownloadListViewController {
+    func addDownloadableFile(fileName: String?, fileURL: String?) {
+        let downloadableFile = ProductDownload(downloadID: Constants.defaultAddProductDownloadID, name: fileName, fileURL: fileURL)
+        openDownloadableFile(productDownload: downloadableFile, indexPath: nil, formType: .add)
+    }
+
+    func editDownloadableFile(indexPath: IndexPath) {
+        let downloadableFile = viewModel.item(at: indexPath.row)?.downloadableFile
+        openDownloadableFile(productDownload: downloadableFile, indexPath: indexPath, formType: .edit)
+    }
+
+    func openDownloadableFile(productDownload: ProductDownload?, indexPath: IndexPath?, formType: ProductDownloadFileViewController.FormType) {
+        let viewController = ProductDownloadFileViewController(productDownload: productDownload,
                                                                downloadFileIndex: indexPath?.row,
                                                                formType: formType) { [weak self] (fileName, fileURL, fileID, hasUnsavedChanges) in
             self?.onAddEditDownloadableFileCompletion(fileName: fileName,
@@ -291,10 +300,8 @@ private extension ProductDownloadListViewController {
     func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset]) {
         let shouldAnimateMediaLibraryDismissal = assets.isEmpty
         dismiss(animated: shouldAnimateMediaLibraryDismissal) {
-//            guard let self = self, assets.isNotEmpty else {
-//                return
-//            }
-
+            // TODO: to be implemented
+            //self?.addDownloadableFile(fileName: assets.first?.filename(), fileURL: assets.first?.)
         }
     }
 }
@@ -304,11 +311,11 @@ private extension ProductDownloadListViewController {
 private extension ProductDownloadListViewController {
     func onWPMediaPickerCompletion(mediaItems: [Media]) {
         let shouldAnimateWPMediaPickerDismissal = mediaItems.isEmpty
-        dismiss(animated: shouldAnimateWPMediaPickerDismissal) {
-//            guard let self = self, mediaItems.isNotEmpty else {
-//                return
-//            }
-
+        dismiss(animated: shouldAnimateWPMediaPickerDismissal) { [weak self] in
+            guard let self = self, mediaItems.isNotEmpty else {
+                return
+            }
+            self.addDownloadableFile(fileName: mediaItems.first?.name, fileURL: mediaItems.first?.src)
         }
     }
 }
@@ -334,7 +341,7 @@ extension ProductDownloadListViewController: UITableViewDataSource, UITableViewD
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        addEditDownloadableFile(indexPath: indexPath, formType: .edit)
+        editDownloadableFile(indexPath: indexPath)
         tableView.deselectRow(at: indexPath, animated: true)
     }
 
@@ -376,5 +383,11 @@ private extension ProductDownloadListViewController {
                                                               comment: "Button title Download Settings in Downloadable Files More Options Action Sheet")
         static let cancelAction = NSLocalizedString("Cancel",
                                                     comment: "Button title Cancel in Downloadable Files More Options Action Sheet")
+    }
+}
+
+extension ProductDownloadListViewController {
+    private enum Constants {
+        static let defaultAddProductDownloadID: String = ""
     }
 }

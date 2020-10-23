@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Photos
 
 final class ProductDownloadListViewController: UIViewController {
     private let product: ProductFormDataModel
@@ -15,11 +16,26 @@ final class ProductDownloadListViewController: UIViewController {
     typealias Completion = (_ data: ProductDownloadsEditableData, _ hasUnsavedChanges: Bool) -> Void
     private let onCompletion: Completion
 
+    // Device Media Library and Completion callbacks
+    //
+    private lazy var deviceMediaLibraryPicker: DeviceMediaLibraryPicker = {
+        return DeviceMediaLibraryPicker(allowsMultipleImages: false, onCompletion: onDeviceMediaLibraryPickerCompletion)
+    }()
+    private var onDeviceMediaLibraryPickerCompletion: DeviceMediaLibraryPicker.Completion?
+    private var onWPMediaPickerCompletion: WordPressMediaLibraryImagePickerViewController.Completion?
+
     init(product: ProductFormDataModel, completion: @escaping Completion) {
         self.product = product
         viewModel = ProductDownloadListViewModel(product: product)
         onCompletion = completion
         super.init(nibName: type(of: self).nibName, bundle: nil)
+
+        onDeviceMediaLibraryPickerCompletion = { [weak self] assets in
+            self?.onDeviceMediaLibraryPickerCompletion(assets: assets)
+        }
+        onWPMediaPickerCompletion = { [weak self] mediaItems in
+            self?.onWPMediaPickerCompletion(mediaItems: mediaItems)
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -127,13 +143,14 @@ extension ProductDownloadListViewController {
         let actions = viewModel.bottomSheetActions
         let dataSource = DownloadableFileBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
             self?.dismiss(animated: true) { [weak self] in
+                guard let self = self else { return }
                 switch action {
                 case .device:
-                    return
+                    self.showDeviceMediaLibraryPicker(origin: self)
                 case .wordPressMediaLibrary:
-                    return
+                    self.showSiteMediaPicker(origin: self)
                 case .fileURL:
-                    self?.addEditDownloadableFile(indexPath: nil, formType: .add)
+                    self.addEditDownloadableFile(indexPath: nil, formType: .add)
                 }
             }
         }
@@ -250,6 +267,49 @@ private extension ProductDownloadListViewController {
         viewModel.handleDownloadLimitChange(downloadLimit)
         viewModel.handleDownloadExpiryChange(downloadExpiry)
         viewModel.completeUpdating(onCompletion: onCompletion)
+    }
+}
+
+// MARK: Alert Action Handlers
+//
+private extension ProductDownloadListViewController {
+    func showDeviceMediaLibraryPicker(origin: UIViewController) {
+        deviceMediaLibraryPicker.presentPicker(origin: origin)
+    }
+
+    func showSiteMediaPicker(origin: UIViewController) {
+        let wordPressMediaPickerViewController = WordPressMediaLibraryImagePickerViewController(siteID: product.siteID,
+                                                                                                allowsMultipleImages: false,
+                                                                                                onCompletion: onWPMediaPickerCompletion)
+        origin.present(wordPressMediaPickerViewController, animated: true)
+    }
+}
+
+// MARK: Action handling for device media library picker
+//
+private extension ProductDownloadListViewController {
+    func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset]) {
+        let shouldAnimateMediaLibraryDismissal = assets.isEmpty
+        dismiss(animated: shouldAnimateMediaLibraryDismissal) { in
+//            guard let self = self, assets.isNotEmpty else {
+//                return
+//            }
+
+        }
+    }
+}
+
+// MARK: - Action handling for WordPress Media Library
+//
+private extension ProductDownloadListViewController {
+    func onWPMediaPickerCompletion(mediaItems: [Media]) {
+        let shouldAnimateWPMediaPickerDismissal = mediaItems.isEmpty
+        dismiss(animated: shouldAnimateWPMediaPickerDismissal) { in
+//            guard let self = self, mediaItems.isNotEmpty else {
+//                return
+//            }
+
+        }
     }
 }
 

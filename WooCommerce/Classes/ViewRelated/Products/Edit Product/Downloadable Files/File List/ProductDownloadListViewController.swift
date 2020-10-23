@@ -290,7 +290,7 @@ private extension ProductDownloadListViewController {
 private extension ProductDownloadListViewController {
     func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset]) {
         let shouldAnimateMediaLibraryDismissal = assets.isEmpty
-        dismiss(animated: shouldAnimateMediaLibraryDismissal) { in
+        dismiss(animated: shouldAnimateMediaLibraryDismissal) {
 //            guard let self = self, assets.isNotEmpty else {
 //                return
 //            }
@@ -304,7 +304,7 @@ private extension ProductDownloadListViewController {
 private extension ProductDownloadListViewController {
     func onWPMediaPickerCompletion(mediaItems: [Media]) {
         let shouldAnimateWPMediaPickerDismissal = mediaItems.isEmpty
-        dismiss(animated: shouldAnimateWPMediaPickerDismissal) { in
+        dismiss(animated: shouldAnimateWPMediaPickerDismissal) {
 //            guard let self = self, mediaItems.isNotEmpty else {
 //                return
 //            }

@@ -187,7 +187,7 @@ struct OrdersUpsertUseCase {
         }
     }
 
-    /// Updates, inserts, or prunes the provided StorageOrderItem's taxes using the provided read-only OrderItem
+    /// Updates, inserts, or prunes the provided StorageShippingLine's taxes using the provided read-only ShippingLine
     ///
     private func handleShippingLineTaxes(_ readOnlyItem: Networking.ShippingLine, _ storageItem: Storage.ShippingLine, _ storage: StorageType) {
         let shippingID = readOnlyItem.shippingID
@@ -203,7 +203,7 @@ struct OrdersUpsertUseCase {
             }
         }
 
-        // Now, remove any objects that exist in storageOrderItem.taxes but not in readOnlyOrderItem.taxes
+        // Now, remove any objects that exist in storageItem.taxes but not in readOnlyItem.taxes
         storageItem.taxes?.forEach { storageTax in
             if readOnlyItem.taxes.first(where: { $0.taxID == storageTax.taxID } ) == nil {
                 storageItem.removeFromTaxes(storageTax)

@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a Shipping Line Entity.
 ///
-public struct ShippingLine: Decodable {
+public struct ShippingLine: Decodable, Equatable {
     public let shippingID: Int64
     public let methodTitle: String
     public let methodID: String
@@ -48,15 +48,6 @@ private extension ShippingLine {
 // MARK: - Comparable Conformance
 //
 extension ShippingLine: Comparable {
-    public static func == (lhs: ShippingLine, rhs: ShippingLine) -> Bool {
-        return lhs.shippingID == rhs.shippingID &&
-            lhs.methodTitle == rhs.methodTitle &&
-            lhs.methodID == rhs.methodID &&
-            lhs.total == rhs.total &&
-            lhs.totalTax == rhs.totalTax &&
-            lhs.taxes == rhs.taxes
-    }
-
     public static func < (lhs: ShippingLine, rhs: ShippingLine) -> Bool {
         return lhs.shippingID == rhs.shippingID &&
             lhs.methodID == rhs.methodID &&

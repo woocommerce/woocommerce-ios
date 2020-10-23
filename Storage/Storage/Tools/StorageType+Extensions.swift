@@ -394,6 +394,14 @@ public extension StorageType {
 
     // MARK: - Refunds
 
+    /// Retrieves all of the stored Refund entities for the provided siteID and orderID.
+    ///
+    func loadRefunds(siteID: Int64, orderID: Int64) -> [Refund] {
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld", siteID, orderID)
+        let descriptor = NSSortDescriptor(keyPath: \Refund.dateCreated, ascending: false)
+        return allObjects(ofType: Refund.self, matching: predicate, sortedBy: [descriptor])
+    }
+
     /// Retrieves a stored Refund for the provided siteID, orderID, and refundID.
     ///
     func loadRefund(siteID: Int64, orderID: Int64, refundID: Int64) -> Refund? {

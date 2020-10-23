@@ -332,7 +332,7 @@ extension OrderDetailsViewModel {
 
     func syncRefunds(onCompletion: ((Error?) -> ())? = nil) {
         let refundIDs = order.refunds.map { $0.refundID }
-        let action = RefundAction.retrieveRefunds(siteID: order.siteID, orderID: order.orderID, refundIDs: refundIDs) { (error) in
+        let action = RefundAction.retrieveRefunds(siteID: order.siteID, orderID: order.orderID, refundIDs: refundIDs, deleteStaleRefunds: true) { (error) in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing detailed Refunds: \(error)")
                 onCompletion?(error)

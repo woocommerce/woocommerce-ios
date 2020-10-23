@@ -4,8 +4,8 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 
 ## Model 34 (Release 5.4.0.0)
 - @ecarrion 2020-10-21
-- Added `ShippingLineTax`  entity.
-- Added  `taxes` relationship to store `ShippingLine`.
+- Added `ShippingLineTax` entity.
+- Added  `taxes` relationship to `ShippingLine`.
 
 ## Model 33 (Release 5.4.0.0)
 - @jaclync 2020-10-22

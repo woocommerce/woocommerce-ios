@@ -147,7 +147,7 @@ extension SurveyViewController: WKNavigationDelegate {
 }
 // MARK: Survey Tags
 //
-private extension URL {
+internal extension URL {
     func tagPlatform() -> URL {
         safeWrap(rawValue: "\(self.absoluteString)?\(Tags.surveyRequestPlatformTag)=\(Tags.surveyRequestPlatformValue)")
     }

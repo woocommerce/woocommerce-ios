@@ -77,6 +77,13 @@ public extension StorageType {
         return firstObject(ofType: ShippingLine.self, matching: predicate)
     }
 
+    /// Retrieves the Stored Order Shipping Line Tax.
+    ///
+    func loadShippingLineTax(shippingID: Int64, taxID: Int64) -> ShippingLineTax? {
+        let predicate = NSPredicate(format: "shipping.shippingID = %ld AND taxID = %ld", shippingID, taxID)
+        return firstObject(ofType: ShippingLineTax.self, matching: predicate)
+    }
+
     /// Retrieves the Stored Order Note.
     ///
     func loadOrderNote(noteID: Int64) -> OrderNote? {

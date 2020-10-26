@@ -6,7 +6,14 @@ import XCTest
 
 final class SpyFileManager {
 
-    private let spiedFileManager: FileManager = .default
+    private let spiedFileManager: FileManager
+
+    /// Moved items. The key is the source path. The value is the destination path.
+    private(set) var movedItems = [String: String]()
+
+    init(_ fileManager: FileManager = .default) {
+        spiedFileManager = fileManager
+    }
 }
 
 extension SpyFileManager: FileManagerProtocol {
@@ -44,5 +51,6 @@ extension SpyFileManager: FileManagerProtocol {
 
     func moveItem(atPath srcPath: String, toPath dstPath: String) throws {
         try spiedFileManager.moveItem(atPath: srcPath, toPath: dstPath)
+        movedItems[srcPath] = dstPath
     }
 }

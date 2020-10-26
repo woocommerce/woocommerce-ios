@@ -11,6 +11,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let jetpackLoginInstructions: String
     public let siteLoginInstructions: String
 	public let siteCredentialInstructions: String
+    public let usernamePasswordInstructions: String
     public let twoFactorInstructions: String
     public let magicLinkSignupInstructions: String
     public let openMailSignupInstructions: String
@@ -58,6 +59,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 jetpackLoginInstructions: String = defaultStrings.jetpackLoginInstructions,
                 siteLoginInstructions: String = defaultStrings.siteLoginInstructions,
                 siteCredentialInstructions: String = defaultStrings.siteCredentialInstructions,
+                usernamePasswordInstructions: String = defaultStrings.usernamePasswordInstructions,
                 twoFactorInstructions: String = defaultStrings.twoFactorInstructions,
                 magicLinkSignupInstructions: String = defaultStrings.magicLinkSignupInstructions,
                 openMailSignupInstructions: String = defaultStrings.openMailSignupInstructions,
@@ -90,6 +92,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.jetpackLoginInstructions = jetpackLoginInstructions
         self.siteLoginInstructions = siteLoginInstructions
 		self.siteCredentialInstructions = siteCredentialInstructions
+        self.usernamePasswordInstructions = usernamePasswordInstructions
         self.twoFactorInstructions = twoFactorInstructions
         self.magicLinkSignupInstructions = magicLinkSignupInstructions
         self.openMailSignupInstructions = openMailSignupInstructions
@@ -133,6 +136,8 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                      comment: "Instruction text on the login's site addresss screen."),
             siteCredentialInstructions: NSLocalizedString("Enter your account information for %@.",
                                                           comment: "Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site."),
+            usernamePasswordInstructions: NSLocalizedString("Log in with your WordPress.com username and password.",
+                                                            comment: "Instructions on the WordPress.com username / password log in form."),
             twoFactorInstructions: NSLocalizedString("Please enter the verification code from your authenticator app, or tap the link below to receive a code via SMS.",
                                                      comment: "Instruction text on the two-factor screen."),
             magicLinkSignupInstructions: NSLocalizedString("We'll email you a signup link to create your new WordPress.com account.",

@@ -1371,6 +1371,7 @@
                         <outlet property="bottomContentConstraint" destination="RM5-Rp-H2z" id="LrI-5r-4sV"/>
                         <outlet property="errorLabel" destination="Vpd-vq-FQH" id="F3O-nu-HTr"/>
                         <outlet property="forgotPasswordButton" destination="XI0-rr-yUh" id="GPG-Np-wEi"/>
+                        <outlet property="instructionLabel" destination="au1-mY-r58" id="lXl-Oj-b3l"/>
                         <outlet property="passwordField" destination="pHh-Ma-Bb7" id="hW8-2o-n1g"/>
                         <outlet property="siteHeaderView" destination="vkO-HN-aFE" id="Eyg-MS-QDE"/>
                         <outlet property="submitButton" destination="YGE-OB-HmV" id="39T-xt-cuq"/>

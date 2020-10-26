@@ -76,6 +76,8 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
     /// Assigns localized strings to various UIControl defined in the storyboard.
     ///
     @objc func localizeControls() {
+        instructionLabel?.text = WordPressAuthenticator.shared.displayStrings.usernamePasswordInstructions
+
         usernameField.placeholder = NSLocalizedString("Username", comment: "Username placeholder")
         passwordField.placeholder = NSLocalizedString("Password", comment: "Password placeholder")
 

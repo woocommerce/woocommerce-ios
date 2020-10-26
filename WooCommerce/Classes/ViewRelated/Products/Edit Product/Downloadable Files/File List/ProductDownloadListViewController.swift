@@ -65,7 +65,6 @@ final class ProductDownloadListViewController: UIViewController {
 
     deinit {
         cancellable?.cancel()
-        print("DEALLOCATO")
     }
 }
 

@@ -5,6 +5,14 @@ import UIKit
 ///
 final class LoadingView: UIView {
 
+    /// The main view that will containt all the elements, and that will be sized to match the size of the superview that will present the LoadingView
+    ///
+    private let mainView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
     /// Main stack view to hold UI components vertically
     ///
     private let mainStackView: UIStackView = {
@@ -42,16 +50,18 @@ final class LoadingView: UIView {
     /// Adds and layouts components in the main view
     ///
     private func addComponents() {
-        addSubview(mainStackView)
+        addSubview(mainView)
+        mainView.addSubview(mainStackView)
         mainStackView.addArrangedSubviews([waitLabel, loadingIndicator])
-        pinSubviewToAllEdges(mainStackView, insets: Layout.stackViewEdges)
+        mainView.pinSubviewToAllEdges(mainStackView, insets: Layout.stackViewEdges)
+        pinSubviewAtCenter(mainView)
     }
 
     /// Applies custom styles to components
     ///
     private func styleComponents() {
-        backgroundColor = .listBackground
-        layer.cornerRadius = Layout.cornerRadius
+        mainView.backgroundColor = .listBackground
+        mainView.layer.cornerRadius = Layout.cornerRadius
         waitLabel.applyHeadlineStyle()
         loadingIndicator.color = .primary
     }
@@ -68,7 +78,7 @@ extension LoadingView {
         alpha = 1.0
         isHidden = false
         view.addSubview(self)
-        view.pinSubviewAtCenter(self)
+        view.pinSubviewToAllEdges(self)
     }
 
     func hideLoader() {

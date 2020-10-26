@@ -182,6 +182,47 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertNotNil(ps)
     }
 
+    func test_iterativeMigrate_creates_backups_of_the_SQLite_files() throws {
+        // Given
+        let storeType = NSSQLiteStoreType
+        let sourceModel = try managedObjectModel(for: "Model 30")
+        let targetModel = try managedObjectModel(for: "Model 31")
+
+        let storeFileName = "WooBackupUnitTest.sqlite"
+        let storeURL = try urlForStore(withName: storeFileName, deleteIfExists: true)
+        _ = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: sourceModel)
+
+        let fileManager = FileManager()
+        let spyFileManager = SpyFileManager(fileManager)
+        let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory, fileManager: spyFileManager)
+
+        // Create a file (e.g. WooCommerce.sqlite.~) that shouldn't be included in the backup.
+        let legacyBackupFileURL = storeURL.appendingPathExtension("~")
+        try fileManager.copyItem(at: storeURL, to: legacyBackupFileURL)
+
+        // When
+        let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
+                                                                 storeType: storeType,
+                                                                 to: targetModel)
+        // Then
+        XCTAssertTrue(result)
+        // There should be 6 move operations. Three for the backup and three for copying from
+        // the `migration` folder to the real folder.
+        XCTAssertEqual(spyFileManager.movedItems.count, 6)
+
+        let expectedBackupFolderURL = storeURL.deletingLastPathComponent().appendingPathComponent("backup")
+
+        // The expected SQLite files should be moved to the backup folder.
+        XCTAssertEqual(spyFileManager.movedItems[storeURL.path],
+                       expectedBackupFolderURL.appendingPathComponent(storeFileName).path)
+        XCTAssertEqual(spyFileManager.movedItems["\(storeURL.path)-wal"],
+                       expectedBackupFolderURL.appendingPathComponent("\(storeFileName)-wal").path)
+        XCTAssertEqual(spyFileManager.movedItems["\(storeURL.path)-shm"],
+                       expectedBackupFolderURL.appendingPathComponent("\(storeFileName)-shm").path)
+
+        // The legacy backup file URL with "~" shouldn't be included in the backup.
+        XCTAssertNil(spyFileManager.movedItems[legacyBackupFileURL.path])
+    }
 }
 
 /// Helpers for the Core Data migration tests
@@ -232,6 +273,20 @@ private extension CoreDataIterativeMigratorTests {
 
         let container = NSPersistentContainer(name: "ContainerName", managedObjectModel: model)
         container.persistentStoreDescriptions = [description]
+        return container
+    }
+
+    /// Creates an `NSPersistentContainer` and load the store. Returns the loaded `NSPersistentContainer`.
+    func startPersistentContainer(storeURL: URL, storeType: String, model: NSManagedObjectModel) throws -> NSPersistentContainer {
+        let container = makePersistentContainer(storeURL: storeURL, storeType: storeType, model: model)
+
+        let loadingError: Error? = try waitFor { promise in
+            container.loadPersistentStores { _, error in
+                promise(error)
+            }
+        }
+        XCTAssertNil(loadingError)
+
         return container
     }
 }

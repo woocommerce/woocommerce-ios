@@ -26,7 +26,9 @@ final class ProductDownloadListViewController: UIViewController {
     private let productImageActionHandler: ProductImageActionHandler?
     private var cancellable: ObservationToken?
 
-    private var loaderView: UIView?
+    /// Loading view displayed while an user is uploading a new image
+    ///
+    private let loadingView = LoadingView(waitMessage: Localization.loadingMessage)
 
     init(product: ProductFormDataModel, completion: @escaping Completion) {
         self.product = product
@@ -43,7 +45,7 @@ final class ProductDownloadListViewController: UIViewController {
         }
         cancellable = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, productImage in
             self?.addDownloadableFile(fileName: productImage.name, fileURL: productImage.src)
-            self?.hideLoader(loadingView: self?.loaderView)
+            self?.loadingView.hideLoader()
         }
     }
 
@@ -63,6 +65,7 @@ final class ProductDownloadListViewController: UIViewController {
 
     deinit {
         cancellable?.cancel()
+        print("DEALLOCATO")
     }
 }
 
@@ -317,7 +320,7 @@ private extension ProductDownloadListViewController {
                 return
             }
             self.productImageActionHandler?.uploadMediaAssetToSiteMediaLibrary(asset: asset)
-            self.loaderView = self.showLoader(view: self.view)
+            self.loadingView.showLoader(in: self.view)
         }
     }
 }
@@ -386,6 +389,8 @@ private extension ProductDownloadListViewController {
 
 private extension ProductDownloadListViewController {
     enum Localization {
+        static let loadingMessage = NSLocalizedString("Please wait...",
+                                                      comment: "Text on the loading view of the product downloadable file screen indicating the user to wait")
         static let addFileButton = NSLocalizedString("Add File", comment: "Action to add downloadable file on the Product Downloadable Files screen")
         static let title = NSLocalizedString("Downloadable Files",
                                              comment: "Edit product downloadable files screen - Screen title")

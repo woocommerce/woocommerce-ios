@@ -25,6 +25,7 @@ private extension ProductFactory {
                 name: "",
                 slug: "",
                 permalink: "",
+                date: Date(),
                 dateCreated: Date(),
                 dateModified: nil,
                 dateOnSaleStart: nil,

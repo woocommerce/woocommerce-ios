@@ -13,7 +13,7 @@ struct RefundProductsTotalViewModel {
 extension RefundProductsTotalViewModel {
     /// Creates a `RefundProductsTotalViewModel` based on a list of items to refund.
     ///
-    init(refundItems: [RefundItemsValuesCalculationUseCase.RefundItem], currency: String, currencySettings: CurrencySettings) {
+    init(refundItems: [RefundableOrderItem], currency: String, currencySettings: CurrencySettings) {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         let useCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: currencyFormatter)
         let values = useCase.calculateRefundValues()

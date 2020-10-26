@@ -2,6 +2,16 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 34 (Release 5.4.0.0)
+- @ecarrion 2020-10-21
+- Added `ShippingLineTax` entity.
+- Added  `taxes` relationship to `ShippingLine`.
+
+## Model 33 (Release 5.4.0.0)
+- @jaclync 2020-10-22
+- Add `date` attribute to `Product`.
+- Used mapping model: `WooCommerceModelV32toV33.xcmappingmodel` to set `Product.date` with `Product.dateCreated`.
+
 ## Model 32 (Release 5.2.0.0)
 - @shiki 2020-09-28
 - Rename `Attribute` to `GenericAttribute`. All existing data are kept.

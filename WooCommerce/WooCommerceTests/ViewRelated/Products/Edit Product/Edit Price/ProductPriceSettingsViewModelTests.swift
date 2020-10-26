@@ -717,6 +717,49 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
             Section(title: Strings.taxSectionTitle, rows: [.taxStatus, .taxClass])
         ])
     }
+
+    func test_handling_nonnil_sale_end_date_does_not_hide_date_editing_rows() {
+        // Arrange
+        let timezone = TimeZone(secondsFromGMT: 0)!
+        let originalSaleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-02T21:30:00")
+        let originalSaleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-27T21:30:00")
+        let product = MockProduct().product(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
+        let model = EditableProductModel(product: product)
+        let viewModel = ProductPriceSettingsViewModel(product: model, timezoneForScheduleSaleDates: timezone)
+
+        // Act
+        viewModel.didTapScheduleSaleToRow()
+        let saleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2020-09-20T21:30:00")!
+        viewModel.handleSaleEndDateChange(saleEndDate)
+
+        // Assert
+        XCTAssertEqual(viewModel.sections, [
+            Section(title: Strings.priceSectionTitle, rows: [.price, .salePrice]),
+            Section(title: nil, rows: [.scheduleSale, .scheduleSaleFrom, .scheduleSaleTo, .datePickerSaleTo, .removeSaleTo]),
+            Section(title: Strings.taxSectionTitle, rows: [.taxStatus, .taxClass])
+        ])
+    }
+
+    func test_handling_nil_sale_end_date_hides_date_editing_rows() {
+        // Arrange
+        let timezone = TimeZone(secondsFromGMT: 0)!
+        let originalSaleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-02T21:30:00")
+        let originalSaleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-09-27T21:30:00")
+        let product = MockProduct().product(dateOnSaleStart: originalSaleStartDate, dateOnSaleEnd: originalSaleEndDate)
+        let model = EditableProductModel(product: product)
+        let viewModel = ProductPriceSettingsViewModel(product: model, timezoneForScheduleSaleDates: timezone)
+
+        // Act
+        viewModel.didTapScheduleSaleToRow()
+        viewModel.handleSaleEndDateChange(nil)
+
+        // Assert
+        XCTAssertEqual(viewModel.sections, [
+            Section(title: Strings.priceSectionTitle, rows: [.price, .salePrice]),
+            Section(title: nil, rows: [.scheduleSale, .scheduleSaleFrom, .scheduleSaleTo]),
+            Section(title: Strings.taxSectionTitle, rows: [.taxStatus, .taxClass])
+        ])
+    }
 }
 
 private extension ProductPriceSettingsViewModelTests {

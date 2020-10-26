@@ -8,7 +8,7 @@ import Yosemite
 final class RefundItemViewModelTests: XCTestCase {
     func test_viewModel_is_created_with_correct_initial_values() {
         // Given
-        let refundable = IssueRefundViewModel.RefundableOrderItem(item: sampleItem(), quantity: 4)
+        let refundable = RefundableOrderItem(item: sampleItem(), quantity: 4)
         let product = sampleProduct()
         let currencySettings = CurrencySettings()
 

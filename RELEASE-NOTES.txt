@@ -1,10 +1,14 @@
 5.4
 -----
 - [*] fix: the footer in app Settings is now correctly centered.
+- [*] fix: Products tab: earlier draft products now show up in the same order as in core when sorting by "Newest to Oldest".
+- [*] enhancement: in product details > price settings, the sale date pickers can be edited inline in iOS 14 now like in iOS 13 and before. Also, the sale end date picker editing does not automatically end on changes anymore.
 
 
+ 
 5.3
 -----
+- [**] In Settings > Experimental Features, a Products switch is now available for turning Products M4 features on and off (default off). Products M4 features: add a simple/grouped/external product with actions to publish or save as draft.
 - [*] Opening a product from order details now shows readonly product details of the same styles as in editable product details.
 - [*] Opening a product variation from order details now shows readonly product variation details and this product variation does not appear in the Products tab anymore.
 - [*] Enhancement: when not saving a product as "published", the in-progress modal now shows title and message like "saving your product" instead of "publishing your product".

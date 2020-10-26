@@ -65,6 +65,13 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.productsRelease3FeatureSwitchFileName)
     }()
 
+    /// URL to the plist file that we use to determine the visibility for Product features M4.
+    ///
+    private lazy var productsRelease4FeatureSwitchURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.productsRelease4FeatureSwitchFileName)
+    }()
+
     private lazy var generalAppSettingsFileURL: URL! = {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         return documents!.appendingPathComponent(Constants.generalAppSettingsFileName)
@@ -430,7 +437,7 @@ private extension AppSettingsStore {
     }
 
     func loadProductsFeatureSwitch(onCompletion: (Bool) -> Void) {
-        guard let existingData: ProductsFeatureSwitchPListWrapper = try? fileStorage.data(for: productsRelease3FeatureSwitchURL) else {
+        guard let existingData: ProductsFeatureSwitchPListWrapper = try? fileStorage.data(for: productsRelease4FeatureSwitchURL) else {
             onCompletion(false)
             return
         }
@@ -438,7 +445,7 @@ private extension AppSettingsStore {
     }
 
     func setProductsFeatureSwitch(isEnabled: Bool, onCompletion: () -> Void) {
-        let fileURL = productsRelease3FeatureSwitchURL
+        let fileURL = productsRelease4FeatureSwitchURL
         let wrapper = ProductsFeatureSwitchPListWrapper(isEnabled: isEnabled)
         do {
             try fileStorage.write(wrapper, to: fileURL)
@@ -453,6 +460,7 @@ private extension AppSettingsStore {
         do {
             try fileStorage.deleteFile(at: productsFeatureSwitchURL)
             try fileStorage.deleteFile(at: productsRelease3FeatureSwitchURL)
+            try fileStorage.deleteFile(at: productsRelease4FeatureSwitchURL)
         } catch {
             DDLogError("⛔️ Deleting the product feature switch files failed. Error: \(error)")
         }
@@ -488,5 +496,6 @@ private enum Constants {
     static let statsVersionLastShownFileName = "stats-version-last-shown.plist"
     static let productsFeatureSwitchFileName = "products-feature-switch.plist"
     static let productsRelease3FeatureSwitchFileName = "products-m3-feature-switch.plist"
+    static let productsRelease4FeatureSwitchFileName = "products-m4-feature-switch.plist"
     static let generalAppSettingsFileName = "general-app-settings.plist"
 }

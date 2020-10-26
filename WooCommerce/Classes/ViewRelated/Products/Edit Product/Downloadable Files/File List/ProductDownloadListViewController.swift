@@ -45,8 +45,8 @@ private extension ProductDownloadListViewController {
     }
 
     func configureAddButton() {
-        addButton.setTitle(NSLocalizedString("Add File", comment: "Action to add downloadable file on the Product Downloadable Files screen"), for: .normal)
-        addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+        addButton.setTitle(Localization.addFileButton, for: .normal)
+        addButton.addTarget(self, action: #selector(addButtonTapped(_:)), for: .touchUpInside)
         addButton.applySecondaryButtonStyle()
     }
 
@@ -72,8 +72,7 @@ private extension ProductDownloadListViewController {
     }
 
     func configureTitle() {
-        title = NSLocalizedString("Downloadable Files",
-                                  comment: "Edit product downloadable files screen - Screen title")
+        title = Localization.title
     }
 
     func configureRightButtons() {
@@ -83,17 +82,14 @@ private extension ProductDownloadListViewController {
             let button = UIBarButtonItem(image: .moreImage,
                                          style: .plain,
                                          target: self,
-                                         action: #selector(moreButtonTapped))
+                                         action: #selector(presentMoreActionSheetMenu(_:)))
             button.accessibilityTraits = .button
-            button.accessibilityLabel = NSLocalizedString("View downloadable file settings",
-                                                          comment: "The action to update downloadable files settings for a product")
+            button.accessibilityLabel = Localization.moreBarButtonAccessibilityLabel
             return button
         }()
         rightBarButtonItems.append(downloadSettingsBarButton)
 
-        let doneButtonTitle = NSLocalizedString("Done",
-                                                comment: "Edit product downloadable files screen - button title to apply changes to downloadable files")
-        let doneBarButton = UIBarButtonItem(title: doneButtonTitle,
+        let doneBarButton = UIBarButtonItem(title: Localization.doneButton,
                                              style: .done,
                                              target: self,
                                              action: #selector(doneButtonTapped))
@@ -123,14 +119,26 @@ extension ProductDownloadListViewController {
         viewModel.completeUpdating(onCompletion: onCompletion)
     }
 
-    @objc private func moreButtonTapped() {
-        // TODO: - add analytics
-        presentMoreActionSheetMenu()
-    }
+    @objc private func addButtonTapped(_ sender: UIButton) {
+        // TODO: - add analytics M5
 
-    @objc private func addButtonTapped() {
-        // TODO: - add analytics
-        addEditDownloadableFile(indexPath: nil, formType: .add)
+        let title = Localization.bottomSheetTitle
+        let viewProperties = BottomSheetListSelectorViewProperties(title: title)
+        let actions = viewModel.bottomSheetActions
+        let dataSource = DownloadableFileBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
+            self?.dismiss(animated: true) { [weak self] in
+                switch action {
+                case .device:
+                    return
+                case .wordPressMediaLibrary:
+                    return
+                case .fileURL:
+                    self?.addEditDownloadableFile(indexPath: nil, formType: .add)
+                }
+            }
+        }
+        let listSelectorPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: dataSource)
+        listSelectorPresenter.show(from: self, sourceView: sender, arrowDirections: .up)
     }
 
     private func presentBackNavigationActionSheet() {
@@ -147,15 +155,17 @@ extension ProductDownloadListViewController {
         let downloadableFile = viewModel.item(at: indexPath?.row ?? -1)?.downloadableFile
         let viewController = ProductDownloadFileViewController(productDownload: downloadableFile,
                                                                downloadFileIndex: indexPath?.row,
-                                                               formType: formType) { [weak self]
-            (fileName, fileURL, fileID, hasUnsavedChanges) in
+                                                               formType: formType) { [weak self] (fileName, fileURL, fileID, hasUnsavedChanges) in
             self?.onAddEditDownloadableFileCompletion(fileName: fileName,
                                                       fileURL: fileURL,
                                                       fileID: fileID,
                                                       hasUnsavedChanges: hasUnsavedChanges,
                                                       indexPath: indexPath,
                                                       formType: formType)
+        } deletion: { [weak self] in
+            self?.onDownloadableFileDeletion(indexPath: indexPath)
         }
+
         navigationController?.pushViewController(viewController, animated: true)
 
     }
@@ -186,29 +196,34 @@ extension ProductDownloadListViewController {
         viewModel.completeUpdating(onCompletion: onCompletion)
         tableView.reloadData()
     }
+
+    func onDownloadableFileDeletion(indexPath: IndexPath?) {
+        guard let indexPath = indexPath else {
+            return
+        }
+        viewModel.remove(at: indexPath.row)
+        viewModel.completeUpdating(onCompletion: onCompletion)
+        tableView.reloadData()
+    }
 }
 
 // MARK: Action - Downloadable file settings
 //
 private extension ProductDownloadListViewController {
-    func presentMoreActionSheetMenu() {
+    @objc func presentMoreActionSheetMenu(_ sender: UIBarButtonItem) {
         let menuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         menuAlert.view.tintColor = .text
 
-        let downloadSettingsTitle = NSLocalizedString("Download Settings",
-                                                      comment: "Button title Download Settings in Downloadable Files More Options Action Sheet")
-        let downloadSettingsAction = UIAlertAction(title: downloadSettingsTitle, style: .default) { [weak self] (action) in
+        let downloadSettingsAction = UIAlertAction(title: Localization.downloadSettingsAction, style: .default) { [weak self] (action) in
             self?.showDownloadableFilesSettings()
         }
         menuAlert.addAction(downloadSettingsAction)
 
-        let cancelTitle = NSLocalizedString("Cancel",
-                                            comment: "Button title Cancel in Downloadable Files More Options Action Sheet")
-        let cancelAction = UIAlertAction(title: cancelTitle, style: .cancel)
+        let cancelAction = UIAlertAction(title: Localization.cancelAction, style: .cancel)
         menuAlert.addAction(cancelAction)
 
-        menuAlert.popoverPresentationController?.sourceView = view
-        menuAlert.popoverPresentationController?.sourceRect = view.bounds
+        let popoverController = menuAlert.popoverPresentationController
+        popoverController?.barButtonItem = sender
 
         present(menuAlert, animated: true)
     }
@@ -281,5 +296,25 @@ private extension ProductDownloadListViewController {
                                                                     imageTintColor: .gray(.shade20),
                                                                     numberOfLinesForText: 1)
         cell.updateUI(viewModel: viewModel)
+    }
+}
+
+// MARK: - Constants
+
+private extension ProductDownloadListViewController {
+    enum Localization {
+        static let addFileButton = NSLocalizedString("Add File", comment: "Action to add downloadable file on the Product Downloadable Files screen")
+        static let title = NSLocalizedString("Downloadable Files",
+                                             comment: "Edit product downloadable files screen - Screen title")
+        static let moreBarButtonAccessibilityLabel = NSLocalizedString("View downloadable file settings",
+                                                                       comment: "The action to update downloadable files settings for a product")
+        static let doneButton = NSLocalizedString("Done",
+                                                  comment: "Edit product downloadable files screen - button title to apply changes to downloadable files")
+        static let bottomSheetTitle = NSLocalizedString("Select upload method",
+                                                        comment: "Title of the bottom sheet from the product downloadable file to add a new downloadable file.")
+        static let downloadSettingsAction = NSLocalizedString("Download Settings",
+                                                              comment: "Button title Download Settings in Downloadable Files More Options Action Sheet")
+        static let cancelAction = NSLocalizedString("Cancel",
+                                                    comment: "Button title Cancel in Downloadable Files More Options Action Sheet")
     }
 }

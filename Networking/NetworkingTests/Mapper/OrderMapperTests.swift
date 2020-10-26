@@ -196,6 +196,16 @@ class OrderMapperTests: XCTestCase {
         XCTAssertEqual(partialRefund2.reason, "")
         XCTAssertEqual(partialRefund2.total, "-8.10")
     }
+
+    func test_taxes_are_parsed_correctly() throws {
+        // When
+        let order = try XCTUnwrap(mapLoadOrderResponse())
+        let shippingLine = try XCTUnwrap(order.shippingLines.first)
+
+        // Then
+        let expectedTax = ShippingLineTax(taxID: 1, subtotal: "", total: "0.62125")
+        XCTAssertEqual(shippingLine.taxes, [expectedTax])
+    }
 }
 
 

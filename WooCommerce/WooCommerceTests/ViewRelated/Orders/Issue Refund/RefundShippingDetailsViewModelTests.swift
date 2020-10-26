@@ -8,7 +8,7 @@ import Yosemite
 final class RefundShippingDetailsViewModelTests: XCTestCase {
     func test_viewModel_is_created_with_correct_initial_values() {
         // Given
-        let shippingLine = ShippingLine(shippingID: 0, methodTitle: "USPS Flat Rate", methodID: "USPS", total: "10.20", totalTax: "1.30")
+        let shippingLine = ShippingLine(shippingID: 0, methodTitle: "USPS Flat Rate", methodID: "USPS", total: "10.20", totalTax: "1.30", taxes: [])
         let currencySettings = CurrencySettings()
 
         // When

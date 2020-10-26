@@ -36,8 +36,8 @@ public class RefundStore: Store {
             createRefund(siteID: siteID, orderID: orderID, refund: refund, onCompletion: onCompletion)
         case .retrieveRefund(let siteID, let orderID, let refundID, let onCompletion):
             retrieveRefund(siteID: siteID, orderID: orderID, refundID: refundID, onCompletion: onCompletion)
-        case .retrieveRefunds(let siteID, let orderID, let refundIDs, let onCompletion):
-            retrieveRefunds(siteID: siteID, orderID: orderID, refundIDs: refundIDs, onCompletion: onCompletion)
+        case .retrieveRefunds(let siteID, let orderID, let refundIDs, let deleteStaleRefunds, let onCompletion):
+            retrieveRefunds(siteID: siteID, orderID: orderID, refundIDs: refundIDs, deleteStaleRefunds: deleteStaleRefunds, onCompletion: onCompletion)
         case .synchronizeRefunds(let siteID, let orderID, let pageNumber, let pageSize, let onCompletion):
             synchronizeRefunds(siteID: siteID, orderID: orderID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .resetStoredRefunds(let onCompletion):
@@ -86,13 +86,16 @@ private extension RefundStore {
 
     /// Retrieves all Refunds by an orderID.
     ///
-    func retrieveRefunds(siteID: Int64, orderID: Int64, refundIDs: [Int64], onCompletion: @escaping (Error?) -> Void) {
+    func retrieveRefunds(siteID: Int64, orderID: Int64, refundIDs: [Int64], deleteStaleRefunds: Bool, onCompletion: @escaping (Error?) -> Void) {
         remote.loadRefunds(for: siteID, by: orderID, with: refundIDs) { [weak self] (refunds, error) in
             guard let refunds = refunds else {
                 onCompletion(error)
                 return
             }
 
+            if deleteStaleRefunds {
+                self?.deleteStaleRefunds(siteID: siteID, orderID: orderID, newRefundIDs: refundIDs)
+            }
             self?.upsertStoredRefundsInBackground(readOnlyRefunds: refunds) {
                 onCompletion(nil)
             }
@@ -230,6 +233,18 @@ private extension RefundStore {
                 storage.deleteObject(storageTax)
             }
         }
+    }
+
+    /// Deletes all refunds from an order when their IDs are not contained in the provided `newRefundIDs`array.
+    ///
+    private func deleteStaleRefunds(siteID: Int64, orderID: Int64, newRefundIDs: [Int64]) {
+        let storage = storageManager.viewStorage
+        let previousRefunds = storage.loadRefunds(siteID: siteID, orderID: orderID)
+        let staleRefunds = previousRefunds.filter { !newRefundIDs.contains($0.refundID) }
+        staleRefunds.forEach { stale in
+            storage.deleteObject(stale)
+        }
+        storage.saveIfNeeded()
     }
 }
 

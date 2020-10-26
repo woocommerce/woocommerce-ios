@@ -22,6 +22,10 @@ final class ProductDownloadListViewModelTests: XCTestCase {
         XCTAssertEqual(file.downloadableFile.downloadID, "1f9c11f99ceba63d4403c03bd5391b11")
         XCTAssertEqual(file.downloadableFile.name, "Song #1")
         XCTAssertEqual(file.downloadableFile.fileURL, "https://example.com/woo-single-1.ogg")
+
+        let expectedBottomSheetActions: [DownloadableFileSource] = [.device, .wordPressMediaLibrary, .fileURL]
+        XCTAssertEqual(viewModel.bottomSheetActions.count, 3)
+        XCTAssertEqual(viewModel.bottomSheetActions, expectedBottomSheetActions)
     }
 
     func test_readonly_values_are_as_expected_after_initializing_a_product_with_empty_downloadable_files() {
@@ -36,6 +40,10 @@ final class ProductDownloadListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.count(), 0)
         XCTAssertEqual(viewModel.downloadLimit, -1)
         XCTAssertEqual(viewModel.downloadExpiry, -1)
+
+        let expectedBottomSheetActions: [DownloadableFileSource] = [.device, .wordPressMediaLibrary, .fileURL]
+        XCTAssertEqual(viewModel.bottomSheetActions.count, 3)
+        XCTAssertEqual(viewModel.bottomSheetActions, expectedBottomSheetActions)
     }
 
     // TODO: - test cases for `handleDownloadableFilesChange`

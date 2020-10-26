@@ -50,7 +50,13 @@
                 "instance_id": "5",
                 "total": "133.00",
                 "total_tax": "0.00",
-                "taxes": [],
+                "taxes": [
+                    {
+                        "id": 1,
+                        "total": "0.62125",
+                        "subtotal": ""
+                    }
+                ],
                 "meta_data": [
                     {
                         "id": 1307,
@@ -103,11 +109,11 @@
                        "total": "0.00",
                        "total_tax": "0.00",
                        "taxes": [
-                                 {
-                                 "id": 1,
-                                 "total": "0",
-                                 "subtotal": "0.4"
-                                 }
+                           {
+                               "id": 1,
+                               "total": "0",
+                               "subtotal": "0.4"
+                           }
                                  ],
                        "meta_data": [],
                        "sku": "5555-A",

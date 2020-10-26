@@ -17,15 +17,30 @@ final class ProductDownloadFileViewController: UIViewController {
         _ hasUnsavedChanges: Bool) -> Void
     private let onCompletion: Completion
 
+    // Deletion callback
+    //
+    typealias Deletion = () -> Void
+    private let onDeletion: Deletion
+
+
     private lazy var keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
     }
 
+    private let updateBarButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(title: nil,
+                                     style: .done,
+                                     target: self,
+                                     action: #selector(completeUpdating))
+        return button
+    }()
+
     /// Init
     ///
-    init(productDownload: ProductDownload?, downloadFileIndex: Int?, formType: FormType, completion: @escaping Completion) {
+    init(productDownload: ProductDownload?, downloadFileIndex: Int?, formType: FormType, completion: @escaping Completion, deletion: @escaping Deletion) {
         viewModel = ProductDownloadFileViewModel(productDownload: productDownload, downloadFileIndex: downloadFileIndex, formType: formType)
         onCompletion = completion
+        onDeletion = deletion
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -53,6 +68,26 @@ final class ProductDownloadFileViewController: UIViewController {
 //
 extension ProductDownloadFileViewController {
 
+    @objc private func presentMoreActionSheetMenu(_ sender: UIBarButtonItem) {
+        let menuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        menuAlert.view.tintColor = .text
+
+        let deleteTitle = Localization.actionSheetDeleteTitle
+        let deleteAction = UIAlertAction(title: deleteTitle, style: .destructive) { [weak self] (action) in
+            self?.onDeletion()
+        }
+        menuAlert.addAction(deleteAction)
+
+        let cancelTitle = Localization.actionSheetCancelTitle
+        let cancelAction = UIAlertAction(title: cancelTitle, style: .cancel)
+        menuAlert.addAction(cancelAction)
+
+        let popoverController = menuAlert.popoverPresentationController
+        popoverController?.barButtonItem = sender
+
+        present(menuAlert, animated: true)
+    }
+
     override func shouldPopOnBackButton() -> Bool {
         guard viewModel.hasUnsavedChanges() else {
             return true
@@ -69,10 +104,6 @@ extension ProductDownloadFileViewController {
         viewModel.completeUpdating { [weak self] (fileName, fileURL, fileID, hasUnsavedChanges) in
              self?.onCompletion(fileName, fileURL, fileID, hasUnsavedChanges)
         }
-    }
-
-    @objc private func deleteDownloadableFile() {
-        //TODO: - Handle the deletion of file properly
     }
 
     private func presentBackNavigationActionSheet() {
@@ -159,35 +190,25 @@ private extension ProductDownloadFileViewController {
         if let fileName = viewModel.fileName {
             title = fileName
         } else {
-            title = NSLocalizedString("Add Downloadable File",
-                                      comment: "Downloadable file screen navigation title")
+            title = Localization.navigationBarTitle
         }
 
         var rightBarButtonItems = [UIBarButtonItem]()
 
-        let moreBarButton: UIBarButtonItem = {
-            let button = UIBarButtonItem(image: .moreImage,
-                                         style: .plain,
-                                         target: self,
-                                         action: #selector(deleteDownloadableFile))
-            button.accessibilityLabel = NSLocalizedString("Show bottom action sheet to delete downloadable file from list",
-                                                          comment: "Accessibility label to show bottom action sheet to delete downloadable file from the list")
-            return button
-        }()
-        rightBarButtonItems.append(moreBarButton)
+        if viewModel.formType == .edit {
+            let moreBarButton: UIBarButtonItem = {
+                let button = UIBarButtonItem(image: .moreImage,
+                                             style: .plain,
+                                             target: self,
+                                             action: #selector(presentMoreActionSheetMenu(_:)))
+                button.accessibilityLabel = Localization.moreButtonAccessibilityLabel
+                return button
+            }()
+            rightBarButtonItems.append(moreBarButton)
+        }
 
-        let updateButtonTitle = NSLocalizedString("Update",
-                                                comment: "Action for updating a Products' downloadable files' info remotely")
-        let updateBarButton: UIBarButtonItem = {
-            let button = UIBarButtonItem(title: updateButtonTitle,
-                                         style: .done,
-                                         target: self,
-                                         action: #selector(completeUpdating))
-            button.accessibilityLabel = NSLocalizedString("Update products' downloadable files' info remotely",
-                                                          comment: "Accessibility label to update products' downloadable files' info remotely")
-            button.accessibilityIdentifier = ProductDownloadFileViewModel.Strings.updateBarButtonAccessibilityIdentifier
-            return button
-        }()
+        updateBarButton.title = viewModel.formType == .add ? Localization.addButton : Localization.updateButton
+        updateBarButton.accessibilityLabel = viewModel.formType == .add ? Localization.addButtonAccessibilityLabel : Localization.updateButtonAccessibilityLabel
         rightBarButtonItems.append(updateBarButton)
 
         navigationItem.rightBarButtonItems = rightBarButtonItems
@@ -230,11 +251,7 @@ private extension ProductDownloadFileViewController {
     }
 
     func enableDoneButton(_ enabled: Bool) {
-        navigationItem.rightBarButtonItems?.forEach({ (barButtonItem) in
-            if barButtonItem.accessibilityIdentifier == ProductDownloadFileViewModel.Strings.updateBarButtonAccessibilityIdentifier {
-                barButtonItem.isEnabled = enabled
-            }
-        })
+        updateBarButton.isEnabled = enabled
     }
 }
 
@@ -286,5 +303,28 @@ extension ProductDownloadFileViewController {
     enum FormType {
         case add
         case edit
+    }
+}
+
+// MARK: - Constants
+
+private extension ProductDownloadFileViewController {
+    enum Localization {
+        static let navigationBarTitle = NSLocalizedString("Add Downloadable File",
+                                                          comment: "Downloadable file screen navigation title")
+        static let moreButtonAccessibilityLabel = NSLocalizedString("Show bottom action sheet options for a downloadable file",
+                                                                    comment: "Accessibility label to show bottom action sheet options for a downloadable file")
+        static let addButton = NSLocalizedString("Add",
+                                                 comment: "Action for adding a Products' downloadable files' info remotely")
+        static let addButtonAccessibilityLabel = NSLocalizedString("Add products' downloadable files' info remotely",
+                                                                   comment: "Accessibility label to add products' downloadable files' info remotely")
+        static let updateButton = NSLocalizedString("Update",
+                                                    comment: "Action for updating a Products' downloadable files' info remotely")
+        static let updateButtonAccessibilityLabel = NSLocalizedString("Update products' downloadable files' info remotely",
+                                                                      comment: "Accessibility label to update products' downloadable files' info remotely")
+        static let actionSheetDeleteTitle = NSLocalizedString("Delete",
+                                                              comment: "Button title Delete in Downloadable File Options Action Sheet")
+        static let actionSheetCancelTitle = NSLocalizedString("Cancel",
+                                                              comment: "Button title Cancel in Downloadable File More Options Action Sheet")
     }
 }

@@ -1,9 +1,9 @@
 import Foundation
 import UIKit
 
-/// Loading view to show while the survey is loading
+/// Loading view to show a loader on top of a view
 ///
-final class SurveyLoadingView: UIView {
+final class LoadingView: UIView {
 
     /// Main stack view to hold UI components vertically
     ///
@@ -20,7 +20,6 @@ final class SurveyLoadingView: UIView {
     ///
     private let waitLabel: UILabel = {
         let label = UILabel()
-        label.text = Localization.wait
         return label
     }()
 
@@ -33,10 +32,11 @@ final class SurveyLoadingView: UIView {
         return indicator
     }()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(waitMessage: String) {
+        super.init(frame: CGRect.zero)
         addComponents()
         styleComponents()
+        waitLabel.text = waitMessage
     }
 
     /// Adds and layouts components in the main view
@@ -61,12 +61,21 @@ final class SurveyLoadingView: UIView {
     }
 }
 
-// MARK: Constants
-private extension SurveyLoadingView {
-    enum Localization {
-        static let wait = NSLocalizedString("Please wait", comment: "Text on the loading view of the survey screen indicating the user to wait")
+// MARK: Public Methods
+extension LoadingView {
+    func showLoader(in view: UIView) {
+        self.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(self)
+        view.pinSubviewAtCenter(self)
     }
 
+    func hideLoader() {
+        self.removeFromSuperview()
+    }
+}
+
+// MARK: Constants
+private extension LoadingView {
     enum Layout {
         static let stackViewEdges = UIEdgeInsets(top: 38, left: 54, bottom: 48, right: 54)
         static let stackViewSpacing = CGFloat(40)

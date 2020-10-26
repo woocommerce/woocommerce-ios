@@ -7,11 +7,11 @@ extension UIViewController {
         let loadingView = UIView(frame: view.bounds)
         let indicator: UIActivityIndicatorView = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.gray)
         indicator.center = loadingView.center
+        indicator.startAnimating()
         loadingView.addSubview(indicator)
         loadingView.pinSubviewAtCenter(indicator)
         view.addSubview(loadingView)
         view.pinSubviewToAllEdges(loadingView)
-        indicator.startAnimating()
         loadingView.bringSubviewToFront(view)
         return loadingView
     }

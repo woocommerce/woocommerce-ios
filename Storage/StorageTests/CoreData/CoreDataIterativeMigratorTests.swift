@@ -131,7 +131,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         let model1 = try managedObjectModel(for: "Model")
         let model10 = try managedObjectModel(for: "Model 10")
 
-        let storeURL = urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
+        let storeURL = try urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
         let options = [NSInferMappingModelAutomaticallyOption: false, NSMigratePersistentStoresAutomaticallyOption: false]
 
         // When
@@ -156,7 +156,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         let model1 = try managedObjectModel(for: "Model")
         let model10 = try managedObjectModel(for: "Model 10")
 
-        let storeURL = urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
+        let storeURL = try urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
         let options = [NSInferMappingModelAutomaticallyOption: false, NSMigratePersistentStoresAutomaticallyOption: false]
 
         var psc = NSPersistentStoreCoordinator(managedObjectModel: model1)
@@ -209,14 +209,14 @@ private extension CoreDataIterativeMigratorTests {
         return url
     }
 
-    func urlForStore(withName: String, deleteIfExists: Bool = false) -> URL {
+    func urlForStore(withName: String, deleteIfExists: Bool = false) throws -> URL {
         let storeURL = documentsDirectory.appendingPathComponent(withName)
 
         if deleteIfExists {
-            try? FileManager.default.removeItem(at: storeURL)
+            try FileManager.default.removeItem(at: storeURL)
         }
 
-        try? FileManager.default.createDirectory(at: documentsDirectory, withIntermediateDirectories: true, attributes: nil)
+        try FileManager.default.createDirectory(at: documentsDirectory, withIntermediateDirectories: true, attributes: nil)
 
         return storeURL
     }

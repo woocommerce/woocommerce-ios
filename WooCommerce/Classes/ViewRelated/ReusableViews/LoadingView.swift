@@ -64,13 +64,17 @@ final class LoadingView: UIView {
 // MARK: Public Methods
 extension LoadingView {
     func showLoader(in view: UIView) {
-        self.translatesAutoresizingMaskIntoConstraints = false
+        translatesAutoresizingMaskIntoConstraints = false
+        alpha = 1.0
+        isHidden = false
         view.addSubview(self)
         view.pinSubviewAtCenter(self)
     }
 
     func hideLoader() {
-        self.removeFromSuperview()
+        fadeOut { [weak self] _ in
+            self?.removeFromSuperview()
+        }
     }
 }
 

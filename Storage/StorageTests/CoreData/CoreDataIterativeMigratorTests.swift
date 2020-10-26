@@ -198,6 +198,9 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
         // Create a file (e.g. WooCommerce.sqlite.~) that shouldn't be included in the backup.
         let legacyBackupFileURL = storeURL.appendingPathExtension("~")
+        if fileManager.fileExists(atPath: legacyBackupFileURL.path) {
+            try fileManager.removeItem(at: legacyBackupFileURL)
+        }
         try fileManager.copyItem(at: storeURL, to: legacyBackupFileURL)
 
         // When

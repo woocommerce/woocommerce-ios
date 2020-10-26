@@ -160,10 +160,10 @@ private extension CoreDataIterativeMigrator {
 
         do {
             let files = try fileManager.contentsOfDirectory(atPath: storeURL.deletingLastPathComponent().path)
-            try files.forEach { (file) in
-                if file.hasPrefix(storeURL.lastPathComponent) {
-                    let fullPath = storeURL.deletingLastPathComponent().appendingPathComponent(file).path
-                    let toPath = URL(fileURLWithPath: backupURL.path).appendingPathComponent(file).path
+            try files.forEach { fileName in
+                if fileName.hasPrefix(storeURL.lastPathComponent) {
+                    let fullPath = storeURL.deletingLastPathComponent().appendingPathComponent(fileName).path
+                    let toPath = URL(fileURLWithPath: backupURL.path).appendingPathComponent(fileName).path
                     try fileManager.moveItem(atPath: fullPath, toPath: toPath)
                 }
             }

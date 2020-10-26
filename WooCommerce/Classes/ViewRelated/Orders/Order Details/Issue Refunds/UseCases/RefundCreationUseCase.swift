@@ -44,7 +44,7 @@ struct RefundCreationUseCase {
                       items: createRefundItems())
     }
 
-    /// Retuns an array of `OrderItemRefund` based on the provided refundable items and shipping line
+    /// Returns an array of `OrderItemRefund` based on the provided refundable items and shipping line
     ///
     private func createRefundItems() -> [OrderItemRefund] {
         var refundItems = items.map { refundable -> OrderItemRefund in

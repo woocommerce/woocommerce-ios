@@ -21,6 +21,10 @@ struct RefundCreationUseCase {
     ///
     let items: [RefundableOrderItem]
 
+    /// Shipping line to be refunded, `nil` if shipping will not be refunded.
+    ///
+    let shippingLine: ShippingLine?
+
     /// Currency formatted needed for decimal calculations
     ///
     let currencyFormatter: CurrencyFormatter
@@ -40,10 +44,10 @@ struct RefundCreationUseCase {
                       items: createRefundItems())
     }
 
-    /// Retuns an array of `OrderItemRefund` based on the provided refundable items
+    /// Returns an array of `OrderItemRefund` based on the provided refundable items and shipping line
     ///
     private func createRefundItems() -> [OrderItemRefund] {
-        items.map { refundable -> OrderItemRefund in
+        var refundItems = items.map { refundable -> OrderItemRefund in
             OrderItemRefund(itemID: refundable.item.itemID,
                             name: "",
                             productID: .min,
@@ -58,6 +62,30 @@ struct RefundCreationUseCase {
                             total: calculateTotal(of: refundable),
                             totalTax: "")
         }
+
+        if let shippingLine = shippingLine {
+            refundItems.append(createShippingItem(from: shippingLine))
+        }
+
+        return refundItems
+    }
+
+    /// Returns an `OrderItemRefund` based on the provided `ShippingLine`
+    ///
+    private func createShippingItem(from shippingLine: ShippingLine) -> OrderItemRefund {
+        OrderItemRefund(itemID: shippingLine.shippingID,
+                        name: "",
+                        productID: .min,
+                        variationID: .min,
+                        quantity: .zero,
+                        price: .zero,
+                        sku: nil,
+                        subtotal: "",
+                        subtotalTax: "",
+                        taxClass: "",
+                        taxes: createTaxes(from: shippingLine),
+                        total: shippingLine.total,
+                        totalTax: "")
     }
 
     /// Creates an array of `OrderItemTaxRefund` from the tax lines in the provided `RefundableOrderItem`
@@ -69,6 +97,16 @@ struct RefundCreationUseCase {
                                total: calculateTax(of: taxLine, purchasedQuantity: refundable.item.quantity, refundQuantity: refundable.decimalQuantity))
         }
     }
+
+    /// Creates an array of `OrderItemTaxRefund` from the tax lines in the provided `ShippingLine`
+    ///
+    private func createTaxes(from shippingLine: ShippingLine) -> [OrderItemTaxRefund] {
+        shippingLine.taxes.map { taxLine -> OrderItemTaxRefund in
+            OrderItemTaxRefund(taxID: taxLine.taxID, subtotal: "", total: taxLine.total)
+        }
+    }
+
+
 
     /// Calculates the refundable tax from a tax line by diving its total tax value by the purchased quantity and mutiplying it by the refunded quantity.
     ///

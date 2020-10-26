@@ -144,12 +144,20 @@ private extension CoreDataIterativeMigrator {
         return tempDestinationURL
     }
 
-    /// Move the original source store to a backup location.
+    /// Move the original source store files to a backup location (typically /Documents/backup).
     ///
-    func makeBackup(at storeURL: URL) throws -> URL {
+    /// The files that will be moved are:
+    ///
+    /// - WooCommerce.sqlite
+    /// - WooCommerce.sqlite-wal
+    /// - WooCommerce.sqlite-shm
+    ///
+    func moveStoreFilesToBackupFolder(storeURL: URL) throws -> URL {
         let backupURL = storeURL.deletingLastPathComponent().appendingPathComponent("backup")
+
         try? fileManager.removeItem(at: backupURL)
         try? fileManager.createDirectory(atPath: backupURL.path, withIntermediateDirectories: false, attributes: nil)
+
         do {
             let files = try fileManager.contentsOfDirectory(atPath: storeURL.deletingLastPathComponent().path)
             try files.forEach { (file) in
@@ -256,7 +264,7 @@ private extension CoreDataIterativeMigrator {
         }
 
         do {
-            let backupURL = try makeBackup(at: url)
+            let backupURL = try moveStoreFilesToBackupFolder(storeURL: url)
             try copyMigratedOverOriginal(from: tempDestinationURL, to: url)
             try deleteBackupCopies(at: backupURL)
         } catch {

@@ -76,7 +76,8 @@ class AuthenticationManager: Authentication {
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
                                                                   jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
-                                                                  siteLoginInstructions: AuthenticationConstants.siteInstructions)
+                                                                  siteLoginInstructions: AuthenticationConstants.siteInstructions,
+                                                                  usernamePasswordInstructions: AuthenticationConstants.usernamePasswordInstructions)
 
         let unifiedStyle = WordPressAuthenticatorUnifiedStyle(borderColor: .divider,
                                                               errorColor: .error,

@@ -212,7 +212,7 @@ private extension CoreDataIterativeMigratorTests {
     func urlForStore(withName: String, deleteIfExists: Bool = false) throws -> URL {
         let storeURL = documentsDirectory.appendingPathComponent(withName)
 
-        if deleteIfExists {
+        if deleteIfExists && FileManager.default.fileExists(atPath: storeURL.path) {
             try FileManager.default.removeItem(at: storeURL)
         }
 

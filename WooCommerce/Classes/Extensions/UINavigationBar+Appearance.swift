@@ -10,10 +10,10 @@ extension UINavigationBar {
     ///
     class func applyWooAppearance() {
         let appearance = UINavigationBar.appearance()
-        appearance.barTintColor = .appBar
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        appearance.barTintColor = .basicBackground
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.text]
         appearance.isTranslucent = false
-        appearance.tintColor = .white
+        appearance.tintColor = .accent
     }
 
     /// Applies UIKit's Default Appearance

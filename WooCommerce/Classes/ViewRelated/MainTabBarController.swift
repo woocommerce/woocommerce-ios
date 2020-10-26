@@ -335,6 +335,11 @@ extension MainTabBarController {
 //
 private extension MainTabBarController {
     func configureTabViewControllers() {
+        [dashboardNavigationController, ordersNavigationController, productsNavigationController, reviewsNavigationController].forEach { navigationController in
+            navigationController.navigationBar.prefersLargeTitles = true
+            navigationController.view.backgroundColor = .basicBackground
+        }
+
         viewControllers = {
             var controllers = [UIViewController]()
 

@@ -23,11 +23,16 @@ final class ProductDownloadListViewController: UIViewController {
     }()
     private var onDeviceMediaLibraryPickerCompletion: DeviceMediaLibraryPicker.Completion?
     private var onWPMediaPickerCompletion: WordPressMediaLibraryImagePickerViewController.Completion?
+    private let productImageActionHandler: ProductImageActionHandler?
+    private var cancellable: ObservationToken?
+
+    private var loaderView: UIView?
 
     init(product: ProductFormDataModel, completion: @escaping Completion) {
         self.product = product
         viewModel = ProductDownloadListViewModel(product: product)
         onCompletion = completion
+        productImageActionHandler = ProductImageActionHandler(siteID: product.siteID, product: product)
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
         onDeviceMediaLibraryPickerCompletion = { [weak self] assets in
@@ -35,6 +40,10 @@ final class ProductDownloadListViewController: UIViewController {
         }
         onWPMediaPickerCompletion = { [weak self] mediaItems in
             self?.onWPMediaPickerCompletion(mediaItems: mediaItems)
+        }
+        cancellable = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, productImage in
+            self?.addDownloadableFile(fileName: productImage.name, fileURL: productImage.src)
+            self?.hideLoader(loadingView: self?.loaderView)
         }
     }
 
@@ -50,6 +59,10 @@ final class ProductDownloadListViewController: UIViewController {
         configureTableView()
         configureNavigationBar()
         handleSwipeBackGesture()
+    }
+
+    deinit {
+        cancellable?.cancel()
     }
 }
 
@@ -299,9 +312,12 @@ private extension ProductDownloadListViewController {
 private extension ProductDownloadListViewController {
     func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset]) {
         let shouldAnimateMediaLibraryDismissal = assets.isEmpty
-        dismiss(animated: shouldAnimateMediaLibraryDismissal) {
-            // TODO: to be implemented
-            //self?.addDownloadableFile(fileName: assets.first?.filename(), fileURL: assets.first?.)
+        dismiss(animated: shouldAnimateMediaLibraryDismissal) { [weak self] in
+            guard let self = self, let asset = assets.first else {
+                return
+            }
+            self.productImageActionHandler?.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+            self.loaderView = self.showLoader(view: self.view)
         }
     }
 }

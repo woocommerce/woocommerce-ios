@@ -202,4 +202,14 @@ post_install do |installer|
   installer.pods_project.build_configuration_list.build_configurations.each do |configuration|
     configuration.build_settings['VALID_ARCHS'] = '$(ARCHS_STANDARD_64_BIT)'
   end
+
+  # Let Pods targets inherit deployment target from the app
+  # This solution is suggested here: https://github.com/CocoaPods/CocoaPods/issues/4859
+  # =====================================
+  #
+  installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |configuration|
+          configuration.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
+      end
+  end
 end

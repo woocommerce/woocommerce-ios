@@ -24,4 +24,9 @@ struct AuthenticationConstants {
         "Enter the address of your WooCommerce store you'd like to connect.",
         comment: "Sign in instructions for logging in with a URL."
     )
+
+    static let usernamePasswordInstructions = NSLocalizedString(
+        "Log in with your WordPress.com account to manage your WooCommerce stores.",
+        comment: "Sign in instructions for logging in with a username and password."
+    )
 }

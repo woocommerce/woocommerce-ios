@@ -105,7 +105,7 @@ final class CoreDataManagerTests: XCTestCase {
         XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 1)
     }
 
-    func test_when_models_are_incompatible_then_it_recovers_and_recreates_the_database() throws {
+    func test_when_the_model_is_incompatible_then_it_recovers_and_recreates_the_database() throws {
         // Given
         let packageName = "WooCommerce"
 

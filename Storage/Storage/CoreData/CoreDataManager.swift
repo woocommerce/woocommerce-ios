@@ -14,8 +14,6 @@ public final class CoreDataManager: StorageManagerType {
 
     private let modelsInventory: ManagedObjectModelsInventory
 
-    private let persistentContainerFactory: PersistentContainerFactoryProtocol
-
     /// Module-private designated Initializer.
     ///
     /// - Parameter name: Identifier to be used for: [database, data model, container].
@@ -48,7 +46,7 @@ public final class CoreDataManager: StorageManagerType {
     /// - Important: This should *match* with your actual Data Model file!.
     ///
     public convenience init(name: String, crashLogger: CrashLogger) {
-        self.init(name: name, crashLogger: crashLogger, persistentContainerFactory: PersistentContainerFactory())
+        self.init(name: name, crashLogger: crashLogger)
     }
 
     /// Returns the Storage associated with the View Thread.
@@ -62,11 +60,8 @@ public final class CoreDataManager: StorageManagerType {
     public lazy var persistentContainer: NSPersistentContainer = {
         let migrationDebugMessages = migrateDataModelIfNecessary()
 
-        let container = persistentContainerFactory.makePersistentContainer(
-            name: name,
-            managedObjectModel: modelsInventory.currentModel,
-            storeDescriptions: [storeDescription]
-        )
+        let container = NSPersistentContainer(name: name, managedObjectModel: modelsInventory.currentModel)
+        container.persistentStoreDescriptions = [storeDescription]
 
         container.loadPersistentStores { [weak self] (storeDescription, error) in
             guard let `self` = self, let persistentStoreLoadingError = error else {

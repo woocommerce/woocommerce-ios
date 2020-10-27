@@ -153,15 +153,17 @@ private extension CoreDataIterativeMigrator {
     /// - WooCommerce.sqlite-shm
     ///
     func moveStoreFilesToBackupFolder(storeURL: URL) throws -> URL {
-        let backupURL = storeURL.deletingLastPathComponent().appendingPathComponent("backup")
+        let storeFolderURL = storeURL.deletingLastPathComponent()
+
+        let backupURL = storeFolderURL.appendingPathComponent("backup")
 
         try? fileManager.removeItem(at: backupURL)
         try? fileManager.createDirectory(atPath: backupURL.path, withIntermediateDirectories: false, attributes: nil)
 
         do {
-            let files = try fileManager.contentsOfDirectory(atPath: storeURL.deletingLastPathComponent().path)
+            let files = try fileManager.contentsOfDirectory(atPath: storeFolderURL.path)
             try files.forEach { fileName in
-                let fileURL = storeURL.deletingLastPathComponent().appendingPathComponent(fileName)
+                let fileURL = storeFolderURL.appendingPathComponent(fileName)
                 if fileURL.deletingPathExtension() == storeURL.deletingPathExtension() {
                     let toPath = URL(fileURLWithPath: backupURL.path).appendingPathComponent(fileName).path
                     try fileManager.moveItem(atPath: fileURL.path, toPath: toPath)

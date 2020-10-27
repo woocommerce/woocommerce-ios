@@ -21,13 +21,18 @@ public final class CoreDataManager: StorageManagerType {
     ///
     /// - Important: This should *match* with your actual Data Model file!.
     ///
-    init(name: String, crashLogger: CrashLogger, persistentContainerFactory: PersistentContainerFactoryProtocol) {
+    init(name: String,
+         crashLogger: CrashLogger,
+         modelsInventory: ManagedObjectModelsInventory? = nil) {
         self.name = name
         self.crashLogger = crashLogger
-        self.persistentContainerFactory = persistentContainerFactory
 
         do {
-            self.modelsInventory = try .from(packageName: name, bundle: Bundle(for: type(of: self)))
+            if let modelsInventory = modelsInventory {
+                self.modelsInventory = modelsInventory
+            } else {
+                self.modelsInventory = try .from(packageName: name, bundle: Bundle(for: type(of: self)))
+            }
         } catch {
             // We'll throw a fatalError() because we can't really proceed without a
             // ManagedObjectModel.

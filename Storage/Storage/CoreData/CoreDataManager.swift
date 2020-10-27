@@ -23,7 +23,7 @@ public final class CoreDataManager: StorageManagerType {
     ///
     init(name: String,
          crashLogger: CrashLogger,
-         modelsInventory: ManagedObjectModelsInventory? = nil) {
+         modelsInventory: ManagedObjectModelsInventory?) {
         self.name = name
         self.crashLogger = crashLogger
 
@@ -51,7 +51,7 @@ public final class CoreDataManager: StorageManagerType {
     /// - Important: This should *match* with your actual Data Model file!.
     ///
     public convenience init(name: String, crashLogger: CrashLogger) {
-        self.init(name: name, crashLogger: crashLogger)
+        self.init(name: name, crashLogger: crashLogger, modelsInventory: nil)
     }
 
     /// Returns the Storage associated with the View Thread.

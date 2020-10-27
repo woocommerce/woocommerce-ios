@@ -14,16 +14,19 @@ public final class CoreDataManager: StorageManagerType {
 
     private let modelsInventory: ManagedObjectModelsInventory
 
-    /// Designated Initializer.
+    private let persistentContainerFactory: PersistentContainerFactoryProtocol
+
+    /// Module-private designated Initializer.
     ///
     /// - Parameter name: Identifier to be used for: [database, data model, container].
     /// - Parameter crashLogger: allows logging a message of any severity level
     ///
     /// - Important: This should *match* with your actual Data Model file!.
     ///
-    public init(name: String, crashLogger: CrashLogger) {
+    init(name: String, crashLogger: CrashLogger, persistentContainerFactory: PersistentContainerFactoryProtocol) {
         self.name = name
         self.crashLogger = crashLogger
+        self.persistentContainerFactory = persistentContainerFactory
 
         do {
             self.modelsInventory = try .from(packageName: name, bundle: Bundle(for: type(of: self)))
@@ -37,6 +40,17 @@ public final class CoreDataManager: StorageManagerType {
         }
     }
 
+    /// Public designated initializer.
+    ///
+    /// - Parameter name: Identifier to be used for: [database, data model, container].
+    /// - Parameter crashLogger: allows logging a message of any severity level
+    ///
+    /// - Important: This should *match* with your actual Data Model file!.
+    ///
+    public convenience init(name: String, crashLogger: CrashLogger) {
+        self.init(name: name, crashLogger: crashLogger, persistentContainerFactory: PersistentContainerFactory())
+    }
+
     /// Returns the Storage associated with the View Thread.
     ///
     public var viewStorage: StorageType {
@@ -48,8 +62,11 @@ public final class CoreDataManager: StorageManagerType {
     public lazy var persistentContainer: NSPersistentContainer = {
         let migrationDebugMessages = migrateDataModelIfNecessary()
 
-        let container = NSPersistentContainer(name: name, managedObjectModel: self.modelsInventory.currentModel)
-        container.persistentStoreDescriptions = [storeDescription]
+        let container = persistentContainerFactory.makePersistentContainer(
+            name: name,
+            managedObjectModel: modelsInventory.currentModel,
+            storeDescriptions: [storeDescription]
+        )
 
         container.loadPersistentStores { [weak self] (storeDescription, error) in
             guard let `self` = self, let persistentStoreLoadingError = error else {

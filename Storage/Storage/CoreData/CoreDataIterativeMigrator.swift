@@ -164,7 +164,7 @@ private extension CoreDataIterativeMigrator {
                 let fileURL = storeURL.deletingLastPathComponent().appendingPathComponent(fileName)
                 if fileURL.deletingPathExtension() == storeURL.deletingPathExtension() {
                     let toPath = URL(fileURLWithPath: backupURL.path).appendingPathComponent(fileName).path
-                    try fileManager.moveItem(atPath: fileURL, toPath: toPath)
+                    try fileManager.moveItem(atPath: fileURL.path, toPath: toPath)
                 }
             }
         } catch {

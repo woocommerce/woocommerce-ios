@@ -4,6 +4,9 @@ import XCTest
 
 @testable import Storage
 
+/// Unlike `MockFileManager`, this performs the actual `FileManager` operations but can also
+/// record or stub method calls if needed.
+///
 final class SpyFileManager {
 
     private let spiedFileManager: FileManager

@@ -8,6 +8,9 @@ protocol ProductDownloadListViewModelOutput {
     var downloadLimit: Int64 { get }
     var downloadExpiry: Int64 { get }
 
+    // Actions available on the bottom sheet
+    var bottomSheetActions: [DownloadableFileSource] { get }
+
     // Convenience Methods
     @discardableResult
     func remove(at index: Int) -> ProductDownloadDragAndDrop?
@@ -42,6 +45,7 @@ enum ProductDownloadListError: Error {
 /// Provides view data for downloadable files settings, and handles init/UI/navigation actions needed in product downloadable files settings.
 ///
 final class ProductDownloadListViewModel: ProductDownloadListViewModelOutput {
+
     private let product: ProductFormDataModel
 
     // Editable data
@@ -49,6 +53,10 @@ final class ProductDownloadListViewModel: ProductDownloadListViewModelOutput {
     private(set) var downloadableFiles = [ProductDownloadDragAndDrop]()
     private(set) var downloadLimit: Int64
     private(set) var downloadExpiry: Int64
+
+    var bottomSheetActions: [DownloadableFileSource] {
+        [.device, .wordPressMediaLibrary, .fileURL]
+    }
 
     init(product: ProductFormDataModel) {
         self.product = product
@@ -86,12 +94,6 @@ final class ProductDownloadListViewModel: ProductDownloadListViewModelOutput {
 }
 
 extension ProductDownloadListViewModel: ProductDownloadListActionHandler {
-
-    // MARK: - Tap actions
-
-    func didTapDownloadableFileFromRow(_ indexPath: IndexPath) {
-        //TODO: Show respective file in a new window
-    }
 
     // MARK: - UI changes
 

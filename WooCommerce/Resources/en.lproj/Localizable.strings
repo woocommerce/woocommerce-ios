@@ -49,6 +49,18 @@
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
 "%@ via %@" = "%1$@ via %2$@";
 
+/* Refund item price and quantity format. EG: 2 x $10.00 each */
+"%@ x %@ each" = "%1$@ x %2$@ each";
+
+/* Title of the label indicating that there are multiple items to refund. */
+"%d items selected" = "%d items selected";
+
+/* Format of the number of Downloadable Files row in the singular form. Reads, `1 file` */
+"%ld file" = "%ld file";
+
+/* Format of the number of Downloadable Files row in the plural form. Reads, `5 files` */
+"%ld files" = "%ld files";
+
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld in stock";
 
@@ -73,6 +85,9 @@
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld variants";
 
+/* Title of the label indicating that there is 1 item to refund. */
+"1 item selected" = "1 item selected";
+
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "1 Product Selected";
 
@@ -93,6 +108,9 @@
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "A product with variations like color or size" = "A product with variations like color or size";
+
+/* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
+"A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "A refund will not be issued to the customer. You will need to manually issue the refund through %1$@.";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "A unique item to sell";
@@ -141,6 +159,12 @@
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "Add Category";
+
+/* Downloadable file screen navigation title */
+"Add Downloadable File" = "Add Downloadable File";
+
+/* Action to add downloadable file on the Product Downloadable Files screen */
+"Add File" = "Add File";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -343,7 +367,7 @@
 "Can Not Request Link" = "Can Not Request Link";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
 "Cancel" = "Cancel";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -597,7 +621,7 @@
 "Don't have an account? _Sign up_" = "Don't have an account? _Sign up_";
 
 /* Action title to select products to add to a grouped product from search results
-   Edit product categories screen - button title to apply categories selection */
+   Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
 "Done" = "Done";
 
 /* WordPress.com (unmapped!) error */
@@ -629,6 +653,25 @@
 
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "Double tap to toggle setting.";
+
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "Download expiration";
+
+/* Title of the cell in Product Download limit > Download limit */
+"Download limit" = "Download limit";
+
+/* Button title Download Settings in Downloadable Files More Options Action Sheet
+   Download file settings navigation title */
+"Download Settings" = "Download Settings";
+
+/* Title of the Downloadable Files row on Product main screen */
+"Downloadable files" = "Downloadable files";
+
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "Downloadable Files";
+
+/* Downloadable Product label in Product Settings */
+"Downloadable Product" = "Downloadable Product";
 
 /* Product Details > Purchase Details > Downloads cell title */
 "Downloads" = "Downloads";
@@ -685,6 +728,12 @@
 
 /* Footer text for editing product external URL */
 "Enter the external URL to the product." = "Enter the external URL to the product.";
+
+/* Footer text for Download Expiration */
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
+
+/* Footer text for Downloadable Limit */
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Enter the password for your WordPress.com account.";
@@ -745,6 +794,14 @@
 
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "Feedback Sent!";
+
+/* Placeholder of the cell text field in Product Downloadable File
+   Title of the cell in Product Downloadable File > File Name */
+"File Name" = "File Name";
+
+/* Placeholder of the cell text field in Product Downloadable File URL
+   Title of the cell in Product Downloadable File URL > File URL */
+"File URL" = "File URL";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass).  */
 "Fill with password manager" = "Fill with password manager";
@@ -1079,6 +1136,9 @@
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "manual refund";
 
+/* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
+
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Mapped Domain";
 
@@ -1167,7 +1227,7 @@
 "New editing options available" = "New editing options available";
 
 /* Title of a button.
-   Title of a button. The text should be capitalized. */
+   Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "Next";
 
 /* Default text for Top Performers section when no data exists for a given period. */
@@ -1180,8 +1240,17 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "No data available";
 
+/* Placeholder of the cell text field in Download expiration */
+"No expiration" = "No expiration";
+
+/* Placeholder for empty Downloadable Files row on Product main screen */
+"No files yet" = "No files yet";
+
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "No images yet";
+
+/* Placeholder of the cell text field in Download limit */
+"No limit" = "No limit";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "No price set";
@@ -1435,11 +1504,17 @@
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Please wait while we publish this product to your store";
 
+/* Message of the in-progress UI while saving a Product as draft remotely */
+"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
+
 /* Message of the in-progress UI while deleting the Product remotely */
 "Please wait while we update your store details" = "Please wait while we update your store details";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Powered by Automattic";
+
+/* A label representing the amount that was previously refunded for the order. */
+"Previously Refunded" = "Previously Refunded";
 
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
    Product Price Settings navigation title - Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
@@ -1561,6 +1636,9 @@
 /* Title of the cell in Product Inventory Settings > Quantity */
 "Quantity" = "Quantity";
 
+/* Navigation title on the quantity item selector screen */
+"Quantity to refund" = "Quantity to refund";
+
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %ld" = "Quantity: %ld";
 
@@ -1576,14 +1654,30 @@
 /* Refund note section title */
 "Reason for Refund" = "Reason for Refund";
 
+/* A label for the text field that the user can edit to indicate why they are issuing a refund. */
+"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
+
+/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
+"Reason for refunding order" = "Reason for refunding order";
+
+/* The title of the button to confirm the refund. */
+"Refund" = "Refund";
+
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "Refund #%@";
 
-/* Refund Details page > Refund Details section > The label that marks the refunded amount */
+/* A label representing the amount that will be refunded if the user confirms to proceed with the refund.
+   Refund Details page > Refund Details section > The label that marks the refunded amount */
 "Refund Amount" = "Refund Amount";
 
 /* Refund Details section title */
 "Refund Details" = "Refund Details";
+
+/* Title of the switch in the IssueRefund screen to refund shipping */
+"Refund Shipping" = "Refund Shipping";
+
+/* The title of the section containing information about how the refund will be processed. */
+"Refund Via" = "Refund Via";
 
 /* The title for the refunded amount cell */
 "Refunded" = "Refunded";
@@ -1685,6 +1779,9 @@
 /* Button title to save a product as draft in Discard Changes Action Sheet */
 "Save as Draft" = "Save as Draft";
 
+/* Title of the in-progress UI while saving a Product as draft remotely */
+"Saving your product..." = "Saving your product...";
+
 /* Scan Products */
 "Scan products" = "Scan products";
 
@@ -1711,6 +1808,9 @@
 
 /* Message title of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "Select a product type";
+
+/* Select all button title in the issue refund screen */
+"Select All" = "Select All";
 
 /* Add the shipping carrier. Placeholder of cell presenting carrier name */
 "Select carrier" = "Select carrier";
@@ -1812,6 +1912,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show a list of refunded order items for this order." = "Show a list of refunded order items for this order.";
+
+/* Accessibility label to show bottom action sheet to delete downloadable file from the list */
+"Show bottom action sheet to delete downloadable file from list" = "Show bottom action sheet to delete downloadable file from list";
 
 /* Accessibility label for the 'Show password' button in the login page's password field.
    Accessibility label for the “Show password“ button in the login page's password field. */
@@ -2217,6 +2320,12 @@
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy.";
 
+/* Footer text for Downloadable File Name */
+"This is the name of the file shown to the customer." = "This is the name of the file shown to the customer.";
+
+/* Footer text for Downloadable File URL */
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
+
 /* Footer text in Product Slug screen */
 "This is the URL-friendly version of the product title" = "This is the URL-friendly version of the product title";
 
@@ -2425,7 +2534,7 @@
 "Upcoming" = "Upcoming";
 
 /* Action for updating a Product remotely
-   Label action for updating a link on the editor */
+   Action for updating a Products' downloadable files' info remotely - Label action for updating a link on the editor */
 "Update" = "Update";
 
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
@@ -2439,6 +2548,9 @@
 
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "Update product inventory and SKU";
+
+/* Accessibility label to update products' downloadable files' info remotely */
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "Update to WooCommerce 3.5 to keep using this app";
@@ -2508,6 +2620,9 @@
 /* Accessibility label for the 'View Billing Information' button
    Button on bottom of Customer's information to show the billing details */
 "View Billing Information" = "View Billing Information";
+
+/* The action to update downloadable files settings for a product */
+"View downloadable file settings" = "View downloadable file settings";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "View previously submitted support tickets";

@@ -79,7 +79,7 @@ final class SurveyViewController: UIViewController, SurveyViewControllerOutputs 
 extension SurveyViewController {
     enum Source {
         case inAppFeedback
-        case productsM3Feedback
+        case productsM4Feedback
 
         fileprivate var url: URL {
             switch self {
@@ -87,8 +87,9 @@ extension SurveyViewController {
                 return WooConstants.URLs.inAppFeedback
                     .asURL()
                     .tagPlatform()
-            case .productsM3Feedback:
-                return WooConstants.URLs.productsM3Feedback
+
+            case .productsM4Feedback:
+                return WooConstants.URLs.productsM4Feedback
                     .asURL()
                     .tagPlatform()
                     .tagProductMilestone()
@@ -99,7 +100,7 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return NSLocalizedString("How can we improve?", comment: "Title on the navigation bar for the in-app feedback survey")
-            case .productsM3Feedback:
+            case .productsM4Feedback:
                 return NSLocalizedString("Give feedback", comment: "Title on the navigation bar for the products feedback survey")
             }
         }
@@ -109,8 +110,8 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return .general
-            case .productsM3Feedback:
-                return .productsM3
+            case .productsM4Feedback:
+                return .productsM4
             }
         }
     }
@@ -168,7 +169,7 @@ internal extension URL {
         static let surveyRequestPlatformValue = "ios"
         static let surveyRequestPlatformTag = "woo-mobile-platform"
 
-        static let surveyRequestProductMilestoneValue = "3"
+        static let surveyRequestProductMilestoneValue = "4"
         static let surveyRequestProductMilestoneTag = "product_milestone"
     }
 }

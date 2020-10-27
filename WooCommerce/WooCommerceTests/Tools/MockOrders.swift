@@ -97,7 +97,8 @@ final class MockOrders {
         methodTitle: "International Priority Mail Express Flat Rate",
         methodID: "usps",
         total: cost,
-        totalTax: tax)]
+        totalTax: tax,
+        taxes: [])]
     }
 
     func sampleAddress() -> Address {
@@ -195,7 +196,8 @@ final class MockOrders {
                             methodTitle: "Shipping",
                             methodID: "",
                             total: "0.00",
-                            totalTax: "0.00")]
+                            totalTax: "0.00",
+                            taxes: [])]
     }
 
     /// Converts a date string to a date type

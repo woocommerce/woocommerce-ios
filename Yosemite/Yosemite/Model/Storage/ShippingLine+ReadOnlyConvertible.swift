@@ -19,10 +19,12 @@ extension Storage.ShippingLine: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.ShippingLine {
+        let lineTaxes = taxes?.map { $0.toReadOnly() } ?? []
         return ShippingLine(shippingID: shippingID,
                             methodTitle: methodTitle ?? "",
                             methodID: methodID ?? "",
                             total: total ?? "",
-                            totalTax: totalTax ?? "")
+                            totalTax: totalTax ?? "",
+                            taxes: lineTaxes)
     }
 }

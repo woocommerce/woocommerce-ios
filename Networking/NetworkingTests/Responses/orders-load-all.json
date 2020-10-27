@@ -51,7 +51,13 @@
                      "instance_id": "5",
                      "total": "133.00",
                      "total_tax": "0.00",
-                     "taxes": [],
+                     "taxes": [
+                         {
+                             "id": 1,
+                             "total": "0.62125",
+                             "subtotal": ""
+                         }
+                     ],
                      "meta_data": [
                          {
                              "id": 1307,

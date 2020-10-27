@@ -399,6 +399,12 @@ extension UIImage {
         return UIImage(named: "icon-scan")!
     }
 
+    /// WordPress Logo Icon
+    ///
+    static var wordPressLogoImage: UIImage {
+        return UIImage.gridicon(.mySites)
+    }
+
     /// Returns a star icon with the given size
     ///
     /// - Parameters:

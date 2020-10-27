@@ -417,6 +417,54 @@ class RefundStoreTests: XCTestCase {
 
         wait(for: [backgroundSaveExpectation], timeout: Constants.expectationTimeout)
     }
+
+    func test_stale_refunds_are_deleted_when_retrieving_new_refunds_with_deleteStaleRefunds_flag() {
+        // Given
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        refundStore.upsertStoredRefund(readOnlyRefund: sampleRefund(refundID: 999), in: viewStorage)
+        network.simulateResponse(requestUrlSuffix: "refunds", filename: "refunds-all")
+
+        // When
+        var retrieveError: Error?
+        waitForExpectation { exp in
+            let action = RefundAction.retrieveRefunds(siteID: sampleSiteID,
+                                                      orderID: sampleOrderID,
+                                                      refundIDs: [sampleRefundID, refundID],
+                                                      deleteStaleRefunds: true) { error in
+                retrieveError = error
+                exp.fulfill()
+            }
+            refundStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 2)
+        XCTAssertNil(retrieveError)
+    }
+
+    func test_stale_refunds_are_not_deleted_when_retrieving_new_refunds_without_deleteStaleRefunds_flag() {
+        // Given
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        refundStore.upsertStoredRefund(readOnlyRefund: sampleRefund(refundID: 999), in: viewStorage)
+        network.simulateResponse(requestUrlSuffix: "refunds", filename: "refunds-all")
+
+        // When
+        var retrieveError: Error?
+        waitForExpectation { exp in
+            let action = RefundAction.retrieveRefunds(siteID: sampleSiteID,
+                                                      orderID: sampleOrderID,
+                                                      refundIDs: [sampleRefundID, refundID],
+                                                      deleteStaleRefunds: false) { error in
+                retrieveError = error
+                exp.fulfill()
+            }
+            refundStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 3)
+        XCTAssertNil(retrieveError)
+    }
 }
 
 
@@ -426,10 +474,10 @@ private extension RefundStoreTests {
 
     /// Generate a sample Refund
     ///
-    func sampleRefund(_ siteID: Int64? = nil) -> Networking.Refund {
+    func sampleRefund(_ siteID: Int64? = nil, refundID: Int64? = nil) -> Networking.Refund {
         let testSiteID = siteID ?? sampleSiteID
         let testDate = date(with: "2019-10-09T16:18:23")
-        return Refund(refundID: sampleRefundID,
+        return Refund(refundID: refundID ?? sampleRefundID,
                       orderID: sampleOrderID,
                       siteID: testSiteID,
                       dateCreated: testDate,

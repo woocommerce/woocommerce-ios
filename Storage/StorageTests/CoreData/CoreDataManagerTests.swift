@@ -110,7 +110,10 @@ final class CoreDataManagerTests: XCTestCase {
         let packageName = "WooCommerce"
 
         var manager = CoreDataManager(name: packageName, crashLogger: MockCrashLogger())
+        manager.reset()
+
         insertAccount(to: manager.viewStorage)
+        manager.viewStorage.saveIfNeeded()
 
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
 

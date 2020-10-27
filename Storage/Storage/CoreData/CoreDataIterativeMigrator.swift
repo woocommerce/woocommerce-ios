@@ -154,20 +154,20 @@ private extension CoreDataIterativeMigrator {
     ///
     func moveStoreFilesToBackupFolder(storeURL: URL) throws -> URL {
         let storeFolderURL = storeURL.deletingLastPathComponent()
-
         let backupURL = storeFolderURL.appendingPathComponent("backup")
 
         try? fileManager.removeItem(at: backupURL)
         try? fileManager.createDirectory(atPath: backupURL.path, withIntermediateDirectories: false, attributes: nil)
 
         do {
-            let files = try fileManager.contentsOfDirectory(atPath: storeFolderURL.path)
-            try files.forEach { fileName in
-                let fileURL = storeFolderURL.appendingPathComponent(fileName)
-                if fileURL.deletingPathExtension() == storeURL.deletingPathExtension() {
-                    let toPath = URL(fileURLWithPath: backupURL.path).appendingPathComponent(fileName).path
-                    try fileManager.moveItem(atPath: fileURL.path, toPath: toPath)
-                }
+            try fileManager.contentsOfDirectory(atPath: storeFolderURL.path).map { fileName in
+                storeFolderURL.appendingPathComponent(fileName)
+            }.filter { fileURL in
+                // Only include files that have the same filename as the store (sqlite) filename.
+                fileURL.deletingPathExtension() == storeURL.deletingPathExtension()
+            }.forEach { fileURL in
+                let toPath = backupURL.appendingPathComponent(fileURL.lastPathComponent).path
+                try fileManager.moveItem(atPath: fileURL.path, toPath: toPath)
             }
         } catch {
             DDLogError("⛔️ Error while moving original source store to a backup location: \(error)")

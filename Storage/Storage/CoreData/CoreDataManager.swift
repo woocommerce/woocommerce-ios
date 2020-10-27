@@ -79,15 +79,7 @@ public final class CoreDataManager: StorageManagerType {
             ///
             var persistentStoreRemovalError: Error?
             do {
-                let fileManager = FileManager.default
-                let pathToStore = self.storeURL.deletingLastPathComponent().path
-                let files = try fileManager.contentsOfDirectory(atPath: pathToStore)
-                try files.forEach { (file) in
-                    if file.hasPrefix(self.storeURL.lastPathComponent) {
-                        let fullPath = URL(fileURLWithPath: pathToStore).appendingPathComponent(file).path
-                        try fileManager.removeItem(atPath: fullPath)
-                    }
-                }
+                try self.deleteStore(at: self.storeURL)
             } catch {
                 persistentStoreRemovalError = error
             }
@@ -236,6 +228,20 @@ public final class CoreDataManager: StorageManagerType {
             debugMessages.append(migrationErrorMessage)
             DDLogError(migrationErrorMessage)
             return debugMessages
+        }
+    }
+
+    /// Delete all the SQLite files at the given `storeURL`. This will include write-ahead log
+    /// (`*.sqlite-wal`) and the shared memory (`*.sqlite-shm`) files.
+    private func deleteStore(at storeURL: URL) throws {
+        let fileManager = FileManager.default
+        let pathToStore = storeURL.deletingLastPathComponent().path
+        let files = try fileManager.contentsOfDirectory(atPath: pathToStore)
+        try files.forEach { (file) in
+            if file.hasPrefix(storeURL.lastPathComponent) {
+                let fullPath = URL(fileURLWithPath: pathToStore).appendingPathComponent(file).path
+                try fileManager.removeItem(atPath: fullPath)
+            }
         }
     }
 }

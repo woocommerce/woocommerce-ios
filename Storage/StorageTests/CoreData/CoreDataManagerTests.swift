@@ -116,6 +116,8 @@ final class CoreDataManagerTests: XCTestCase {
         manager.viewStorage.saveIfNeeded()
 
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: Note.entityName,
+                                                   in: manager.viewStorage as! NSManagedObjectContext))
 
         // When
         // Use an invalid models inventory that will cause a loading error and make the
@@ -126,8 +128,8 @@ final class CoreDataManagerTests: XCTestCase {
 
             return ManagedObjectModelsInventory(
                 packageURL: inventory.packageURL,
-                currentModel: try XCTUnwrap(inventory.model(for: .init(name: "Model 13"))),
-                versions: [.init(name: "Model 12"), .init(name: "Model 13")]
+                currentModel: try XCTUnwrap(inventory.model(for: .init(name: "Model 2"))),
+                versions: [.init(name: "Model 2")]
             )
         }()
 
@@ -142,6 +144,10 @@ final class CoreDataManagerTests: XCTestCase {
         insertAccount(to: manager.viewStorage)
         insertAccount(to: manager.viewStorage)
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 2)
+
+        // The Note entity does not exist in Model 2. This proves that the store was reset to Model 2.
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: Note.entityName,
+                                                in: manager.viewStorage as! NSManagedObjectContext))
     }
 }
 

@@ -214,7 +214,7 @@ private extension ProductDownloadFileViewController {
         navigationItem.rightBarButtonItems = rightBarButtonItems
 
         removeNavigationBackBarButtonText()
-        enableDoneButton(false)
+        enableDoneButton(viewModel.hasUnsavedChanges())
     }
 
     func configureMainView() {

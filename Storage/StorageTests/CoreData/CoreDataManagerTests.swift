@@ -120,9 +120,9 @@ final class CoreDataManagerTests: XCTestCase {
                                                    in: manager.viewStorage as! NSManagedObjectContext))
 
         // When
-        // Use an invalid models inventory that will cause a loading error and make the
+        // Use a models inventory with an old model. this will cause a loading error and make the
         // `CoreDataManager` recover and recreate the database.
-        let invalidModelsInventory: ManagedObjectModelsInventory = try {
+        let olderModelsInventory: ManagedObjectModelsInventory = try {
             let inventory =
                 try ManagedObjectModelsInventory.from(packageName: packageName, bundle: .init(for: CoreDataManager.self))
 
@@ -135,7 +135,7 @@ final class CoreDataManagerTests: XCTestCase {
 
         manager = CoreDataManager(name: packageName,
                                   crashLogger: MockCrashLogger(),
-                                  modelsInventory: invalidModelsInventory)
+                                  modelsInventory: olderModelsInventory)
 
         // Then
         // The rows should have been deleted during the recovery.

@@ -157,4 +157,29 @@ final class RefundCreationUseCaseTests: XCTestCase {
         XCTAssertEqual(refund.items[2].taxes[0].taxID, 2)
         XCTAssertEqual(refund.items[2].taxes[0].total, "0.99")
     }
+
+    func test_refund_shipping_values_does_not_contain_thousands_separator_when_computing_big_amounts() {
+        // Given
+        let taxes = [
+            OrderItemTax(taxID: 11, subtotal: "", total: "1130.6"),
+        ]
+        let items: [RefundableOrderItem] = [
+            .init(item: MockOrderItem.sampleItem(itemID: 1, quantity: 2, price: 1200.0, totalTax: "0.0"), quantity: 1),
+            .init(item: MockOrderItem.sampleItem(itemID: 2, quantity: 2, price: 650.7, taxes: taxes, totalTax: "1130.6"), quantity: 2)
+        ]
+        let useCase = RefundCreationUseCase(amount: "17.60",
+                                            reason: nil,
+                                            automaticallyRefundsPayment: false,
+                                            items: items,
+                                            shippingLine: nil,
+                                            currencyFormatter: formatter)
+
+        // When
+        let refund = useCase.createRefund()
+
+        // Then
+        XCTAssertEqual(refund.items[0].total, "1200.00")
+        XCTAssertEqual(refund.items[1].total, "1301.40")
+        XCTAssertEqual(refund.items[1].taxes[0].total, "1130.60")
+    }
 }

@@ -156,8 +156,10 @@ private extension CoreDataIterativeMigrator {
         let storeFolderURL = storeURL.deletingLastPathComponent()
         let backupURL = storeFolderURL.appendingPathComponent("backup")
 
-        try? fileManager.removeItem(at: backupURL)
-        try? fileManager.createDirectory(atPath: backupURL.path, withIntermediateDirectories: false, attributes: nil)
+        if fileManager.fileExists(atPath: backupURL.path) {
+            try fileManager.removeItem(at: backupURL)
+        }
+        try fileManager.createDirectory(at: backupURL, withIntermediateDirectories: false, attributes: nil)
 
         do {
             try fileManager.contentsOfDirectory(atPath: storeFolderURL.path).map { fileName in

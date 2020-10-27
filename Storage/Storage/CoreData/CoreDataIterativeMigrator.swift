@@ -181,7 +181,8 @@ private extension CoreDataIterativeMigrator {
         return backupURL
     }
 
-    /// Copy migrated over the original files
+    /// Copy the store files that were migrated (using `NSMigrationManager`) migrated to where the
+    /// store files should be loaded by `CoreDataManager` later.
     ///
     func copyMigratedOverOriginal(from tempDestinationURL: URL, to storeURL: URL) throws {
         do {

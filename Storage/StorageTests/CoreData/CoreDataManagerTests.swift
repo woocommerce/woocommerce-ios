@@ -104,4 +104,52 @@ final class CoreDataManagerTests: XCTestCase {
         // Assert
         XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 1)
     }
+
+    func test_when_models_are_incompatible_then_it_recovers_and_recreates_the_database() throws {
+        // Given
+        let packageName = "WooCommerce"
+
+        var manager = CoreDataManager(name: packageName, crashLogger: MockCrashLogger())
+        insertAccount(to: manager.viewStorage)
+
+        XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
+
+        // When
+        // Use an invalid models inventory that will cause a loading error and make the
+        // `CoreDataManager` recover and recreate the database.
+        let invalidModelsInventory: ManagedObjectModelsInventory = try {
+            let inventory =
+                try ManagedObjectModelsInventory.from(packageName: packageName, bundle: .init(for: CoreDataManager.self))
+
+            return ManagedObjectModelsInventory(
+                packageURL: inventory.packageURL,
+                currentModel: try XCTUnwrap(inventory.model(for: .init(name: "Model 13"))),
+                versions: [.init(name: "Model 12"), .init(name: "Model 13")]
+            )
+        }()
+
+        manager = CoreDataManager(name: packageName,
+                                  crashLogger: MockCrashLogger(),
+                                  modelsInventory: invalidModelsInventory)
+
+        // Then
+        // The rows should have been deleted during the recovery.
+        XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 0)
+        // We should still be able to use the storage
+        insertAccount(to: manager.viewStorage)
+        insertAccount(to: manager.viewStorage)
+        XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 2)
+    }
+}
+
+// MARK: - Helpers
+
+private extension CoreDataManagerTests {
+    @discardableResult
+    func insertAccount(to storage: StorageType) -> Account {
+        let account = storage.insertNewObject(ofType: Account.self)
+        account.userID = 0
+        account.username = ""
+        return account
+    }
 }

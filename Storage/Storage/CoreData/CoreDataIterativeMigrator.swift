@@ -148,9 +148,11 @@ private extension CoreDataIterativeMigrator {
     ///
     /// The files that will be moved are:
     ///
-    /// - WooCommerce.sqlite
-    /// - WooCommerce.sqlite-wal
-    /// - WooCommerce.sqlite-shm
+    /// - {store_filename}.sqlite
+    /// - {store_filename}.sqlite-wal
+    /// - {store_filename}.sqlite-shm
+    ///
+    /// Where {store_filename} is most probably "WooCommerce".
     ///
     func moveStoreFilesToBackupFolder(storeURL: URL) throws -> URL {
         let storeFolderURL = storeURL.deletingLastPathComponent()
@@ -188,6 +190,8 @@ private extension CoreDataIterativeMigrator {
                 if file.hasPrefix(tempDestinationURL.lastPathComponent) {
                     let fullPath = tempDestinationURL.deletingLastPathComponent().appendingPathComponent(file).path
                     let toPath = storeURL.deletingLastPathComponent().appendingPathComponent(file).path
+                    // TODO This removeItem may not be necessary because we should have already
+                    // moved everything during `moveStoreFilesToBackupFolder`.
                     try? fileManager.removeItem(atPath: toPath)
                     try fileManager.moveItem(atPath: fullPath, toPath: toPath)
                 }

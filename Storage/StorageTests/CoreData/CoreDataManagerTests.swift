@@ -5,7 +5,7 @@ import CoreData
 
 /// CoreDataManager Unit Tests
 ///
-class CoreDataManagerTests: XCTestCase {
+final class CoreDataManagerTests: XCTestCase {
 
     /// Verifies that the Store URL contains the ContextIdentifier string.
     ///

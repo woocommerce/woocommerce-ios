@@ -110,7 +110,7 @@ final class CoreDataManagerTests: XCTestCase {
         let packageName = "WooCommerce"
 
         var manager = CoreDataManager(name: packageName, crashLogger: MockCrashLogger())
-        manager.reset()
+        try deleteStoreFiles(at: manager.storeURL)
 
         insertAccount(to: manager.viewStorage)
         manager.viewStorage.saveIfNeeded()
@@ -154,5 +154,17 @@ private extension CoreDataManagerTests {
         account.userID = 0
         account.username = ""
         return account
+    }
+
+    func deleteStoreFiles(at storeURL: URL) throws {
+        let fileManager = FileManager.default
+        let expectedExtensions = ["sqlite", "sqlite-wal", "sqlite-shm"]
+
+        try expectedExtensions.forEach { ext in
+            let fileURL = storeURL.deletingPathExtension().appendingPathExtension(ext)
+            if fileManager.fileExists(atPath: fileURL.path) {
+                try fileManager.removeItem(at: fileURL)
+            }
+        }
     }
 }

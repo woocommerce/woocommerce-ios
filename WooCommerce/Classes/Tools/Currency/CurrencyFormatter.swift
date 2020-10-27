@@ -81,9 +81,9 @@ public class CurrencyFormatter {
     ///       Note this assumption will be wrong for India.
     ///
     func localize(_ decimalAmount: Decimal,
-                  with decimalSeparator: String? = ".",
-                  in decimalPosition: Int = 2,
-                  including thousandSeparator: String? = ",") -> String? {
+                  decimalSeparator: String? = ".",
+                  decimalPosition: Int = 2,
+                  thousandSeparator: String? = ",") -> String? {
         localize(decimalAmount as NSDecimalNumber, with: decimalSeparator, in: decimalPosition, including: thousandSeparator)
     }
 

@@ -18,6 +18,9 @@ public final class CoreDataManager: StorageManagerType {
     ///
     /// - Parameter name: Identifier to be used for: [database, data model, container].
     /// - Parameter crashLogger: allows logging a message of any severity level
+    /// - Parameter modelsInventory: The models to load when spinning up the Core Data stack.
+    ///     This is automatically generated if `nil`. You would probably only specify this for
+    ///     unit tests to test migration and/or recovery scenarios.
     ///
     /// - Important: This should *match* with your actual Data Model file!.
     ///

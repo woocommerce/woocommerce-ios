@@ -185,14 +185,14 @@ private extension CoreDataIterativeMigrator {
             let files = try fileManager.contentsOfDirectory(atPath: tempDestinationURL.deletingLastPathComponent().path)
             try files.forEach { (file) in
                 if file.hasPrefix(tempDestinationURL.lastPathComponent) {
-                    let sourcePath = tempDestinationURL.deletingLastPathComponent().appendingPathComponent(file).path
-                    let targetPath = storeURL.deletingLastPathComponent().appendingPathComponent(file).path
+                    let sourceURL = tempDestinationURL.deletingLastPathComponent().appendingPathComponent(file)
+                    let targetURL = storeURL.deletingLastPathComponent().appendingPathComponent(file)
 
                     // TODO This removeItem may not be necessary because we should have already
                     // deleted everything during `deleteStoreFiles`.
-                    try? fileManager.removeItem(atPath: targetPath)
+                    try? fileManager.removeItem(at: targetURL)
 
-                    try fileManager.moveItem(atPath: sourcePath, toPath: targetPath)
+                    try fileManager.moveItem(at: sourceURL, to: targetURL)
                 }
             }
         } catch {

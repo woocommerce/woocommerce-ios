@@ -67,6 +67,7 @@ public class CurrencyFormatter {
         numberFormatter.generatesDecimalNumbers = true
         numberFormatter.minimumFractionDigits = decimalPosition
         numberFormatter.maximumFractionDigits = decimalPosition
+        numberFormatter.roundingMode = .halfUp
 
         return numberFormatter.string(from: absoluteAmount)
     }

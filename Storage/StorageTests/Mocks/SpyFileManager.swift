@@ -14,6 +14,9 @@ final class SpyFileManager {
     /// Moved items. The key is the source path. The value is the destination path.
     private(set) var movedItems = [String: String]()
 
+    /// File paths of deleted items.
+    private(set) var deletedItems = [String]()
+
     init(_ fileManager: FileManager = .default) {
         spiedFileManager = fileManager
     }
@@ -26,10 +29,12 @@ extension SpyFileManager: FileManagerProtocol {
 
     func removeItem(at URL: URL) throws {
         try spiedFileManager.removeItem(at: URL)
+        deletedItems.append(URL.path)
     }
 
     func removeItem(atPath path: String) throws {
         try spiedFileManager.removeItem(atPath: path)
+        deletedItems.append(path)
     }
 
     func createDirectory(at url: URL,

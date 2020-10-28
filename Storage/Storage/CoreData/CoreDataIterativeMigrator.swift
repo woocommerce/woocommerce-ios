@@ -170,8 +170,8 @@ private extension CoreDataIterativeMigrator {
                 // Only include files that have the same filename as the store (sqlite) filename.
                 fileURL.deletingPathExtension() == storeURL.deletingPathExtension()
             }.forEach { fileURL in
-                let toPath = backupURL.appendingPathComponent(fileURL.lastPathComponent).path
-                try fileManager.moveItem(atPath: fileURL.path, toPath: toPath)
+                let targetURL = backupURL.appendingPathComponent(fileURL.lastPathComponent)
+                try fileManager.moveItem(at: fileURL, to: targetURL)
             }
         } catch {
             DDLogError("⛔️ Error while moving original source store to a backup location: \(error)")

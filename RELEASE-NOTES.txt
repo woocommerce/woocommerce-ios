@@ -4,6 +4,7 @@
 - [*] fix: Products tab: earlier draft products now show up in the same order as in core when sorting by "Newest to Oldest".
 - [*] enhancement: in product details > price settings, the sale dates can be edited inline in iOS 14 using the new date picker. Also, the sale end date picker editing does not automatically end on changes anymore. [https://github.com/woocommerce/woocommerce-ios/pull/3044]
 - [*] enhancement: in order details > add tracking, the date shipped can be edited inline in iOS 14 using the new date picker. [https://github.com/woocommerce/woocommerce-ios/pull/3044]
+- [*] enhancement: in products list, the "(No Title)" placeholder will be showed when a product doesn't have the title set. [https://github.com/woocommerce/woocommerce-ios/pull/3068]
 - [*] fix: the placeholder views in the top dashboard chart and orders tab do not have unexpected white background color in Dark mode in iOS 14 anymore. [https://github.com/woocommerce/woocommerce-ios/pull/3063]
 
 

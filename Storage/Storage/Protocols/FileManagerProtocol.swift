@@ -27,4 +27,6 @@ protocol FileManagerProtocol {
     func contentsOfDirectory(atPath path: String) throws -> [String]
 
     func moveItem(atPath srcPath: String, toPath dstPath: String) throws
+
+    func moveItem(at srcURL: URL, to dstURL: URL) throws
 }

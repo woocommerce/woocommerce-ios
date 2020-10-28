@@ -56,4 +56,9 @@ extension SpyFileManager: FileManagerProtocol {
         try spiedFileManager.moveItem(atPath: srcPath, toPath: dstPath)
         movedItems[srcPath] = dstPath
     }
+
+    func moveItem(at srcURL: URL, to dstURL: URL) throws {
+        try spiedFileManager.moveItem(at: srcURL, to: dstURL)
+        movedItems[srcURL.path] = dstURL.path
+    }
 }

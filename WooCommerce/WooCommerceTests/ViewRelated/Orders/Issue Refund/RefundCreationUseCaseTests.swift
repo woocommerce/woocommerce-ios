@@ -53,8 +53,8 @@ final class RefundCreationUseCaseTests: XCTestCase {
         XCTAssertEqual(refund.items[0].quantity, 1)
         XCTAssertEqual(refund.items[1].quantity, 2)
 
-        XCTAssertEqual(refund.items[0].total, "5.10")
-        XCTAssertEqual(refund.items[1].total, "12.60")
+        XCTAssertEqual(refund.items[0].total, "5.1")
+        XCTAssertEqual(refund.items[1].total, "12.6")
 
         XCTAssertEqual(refund.items[0].taxes, [])
         XCTAssertEqual(refund.items[0].taxes, [])
@@ -83,11 +83,11 @@ final class RefundCreationUseCaseTests: XCTestCase {
         XCTAssertEqual(refund.items.count, items.count)
         XCTAssertEqual(refund.items[0].itemID, 1)
         XCTAssertEqual(refund.items[0].quantity, 2)
-        XCTAssertEqual(refund.items[0].total, "10.20")
+        XCTAssertEqual(refund.items[0].total, "10.2")
         XCTAssertEqual(refund.items[0].taxes[0].taxID, 11)
-        XCTAssertEqual(refund.items[0].taxes[0].total, "0.40")
+        XCTAssertEqual(refund.items[0].taxes[0].total, "0.4")
         XCTAssertEqual(refund.items[0].taxes[1].taxID, 12)
-        XCTAssertEqual(refund.items[0].taxes[1].total, "2.20")
+        XCTAssertEqual(refund.items[0].taxes[1].total, "2.2")
     }
 
     func test_refund_shipping_values_with_no_items_are_transformed_correctly() {
@@ -141,13 +141,13 @@ final class RefundCreationUseCaseTests: XCTestCase {
         // Fist Item
         XCTAssertEqual(refund.items[0].itemID, 1)
         XCTAssertEqual(refund.items[0].quantity, 1)
-        XCTAssertEqual(refund.items[0].total, "5.10")
+        XCTAssertEqual(refund.items[0].total, "5.1")
         XCTAssertEqual(refund.items[0].taxes, [])
 
         // Second Item
         XCTAssertEqual(refund.items[1].itemID, 2)
         XCTAssertEqual(refund.items[1].quantity, 2)
-        XCTAssertEqual(refund.items[1].total, "12.60")
+        XCTAssertEqual(refund.items[1].total, "12.6")
         XCTAssertEqual(refund.items[0].taxes, [])
 
         // Shipping Line
@@ -178,8 +178,8 @@ final class RefundCreationUseCaseTests: XCTestCase {
         let refund = useCase.createRefund()
 
         // Then
-        XCTAssertEqual(refund.items[0].total, "1200.00")
-        XCTAssertEqual(refund.items[1].total, "1301.40")
-        XCTAssertEqual(refund.items[1].taxes[0].total, "1130.60")
+        XCTAssertEqual(refund.items[0].total, "1200")
+        XCTAssertEqual(refund.items[1].total, "1301.4")
+        XCTAssertEqual(refund.items[1].taxes[0].total, "1130.6")
     }
 }

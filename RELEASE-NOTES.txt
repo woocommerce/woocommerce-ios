@@ -2,12 +2,14 @@
 -----
 - [*] fix: the footer in app Settings is now correctly centered.
 - [*] fix: Products tab: earlier draft products now show up in the same order as in core when sorting by "Newest to Oldest".
-- [*] enhancement: in product details > price settings, the sale dates can be edited inline in iOS 14 using the new date picker. Also, the sale end date picker editing does not automatically end on changes anymore.
-- [*] enhancement: in order details > add tracking, the date shipped can be edited inline in iOS 14 using the new date picker.
+- [*] enhancement: in product details > price settings, the sale dates can be edited inline in iOS 14 using the new date picker. Also, the sale end date picker editing does not automatically end on changes anymore. [https://github.com/woocommerce/woocommerce-ios/pull/3044]
+- [*] enhancement: in order details > add tracking, the date shipped can be edited inline in iOS 14 using the new date picker. [https://github.com/woocommerce/woocommerce-ios/pull/3044]
+- [*] fix: the placeholder views in the top dashboard chart and orders tab do not have unexpected white background color in Dark mode in iOS 14 anymore. [https://github.com/woocommerce/woocommerce-ios/pull/3063]
 
 
 5.3
 -----
+- [**] In Settings > Experimental Features, a Products switch is now available for turning Products M4 features on and off (default off). Products M4 features: add a simple/grouped/external product with actions to publish or save as draft.
 - [*] Opening a product from order details now shows readonly product details of the same styles as in editable product details.
 - [*] Opening a product variation from order details now shows readonly product variation details and this product variation does not appear in the Products tab anymore.
 - [*] Enhancement: when not saving a product as "published", the in-progress modal now shows title and message like "saving your product" instead of "publishing your product".

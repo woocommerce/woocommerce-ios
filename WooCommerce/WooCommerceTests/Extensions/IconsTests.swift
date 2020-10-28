@@ -326,4 +326,8 @@ final class IconsTests: XCTestCase {
     func testMenuImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.menuImage)
     }
+
+    func test_wordPressLogoImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.wordPressLogoImage)
+    }
 }

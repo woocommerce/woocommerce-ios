@@ -199,6 +199,13 @@ extension IssueRefundViewModel {
             return nil
         }
 
+        // If there is no amount to refund (EG: free shipping), hide the refund shipping section
+        let formatter = CurrencyFormatter(currencySettings: state.currencySettings)
+        let shippingValues = RefundShippingCalculationUseCase(shippingLine: shippingLine, currencyFormatter: formatter)
+        guard shippingValues.calculateRefundValue() > 0 else {
+            return nil
+        }
+
         // If `shouldRefundShipping` is disabled, return only the `switchRow`
         let switchRow = ShippingSwitchViewModel(title: Localization.refundShippingTitle, isOn: state.shouldRefundShipping)
         guard state.shouldRefundShipping else {

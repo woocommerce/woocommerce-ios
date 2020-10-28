@@ -14,5 +14,23 @@ extension ShippingLine {
     @NSManaged public var total: String?
     @NSManaged public var totalTax: String?
     @NSManaged public var order: Order?
+    @NSManaged public var taxes: Set<ShippingLineTax>?
+
+}
+
+// MARK: Generated accessors for taxes
+extension ShippingLine {
+
+    @objc(addTaxesObject:)
+    @NSManaged public func addToTaxes(_ value: ShippingLineTax)
+
+    @objc(removeTaxesObject:)
+    @NSManaged public func removeFromTaxes(_ value: ShippingLineTax)
+
+    @objc(addTaxes:)
+    @NSManaged public func addToTaxes(_ values: NSSet)
+
+    @objc(removeTaxes:)
+    @NSManaged public func removeFromTaxes(_ values: NSSet)
 
 }

@@ -61,7 +61,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         // Given
         let coupon = Networking.OrderCouponLine(couponID: 1, code: "", discount: "", discountTax: "")
         let refund = Networking.OrderRefundCondensed(refundID: 122, reason: "", total: "1.6")
-        let shippingLine = Networking.ShippingLine(shippingID: 25, methodTitle: "dodo", methodID: "", total: "2.1", totalTax: "0.8")
+        let shippingLine = Networking.ShippingLine(shippingID: 25, methodTitle: "dodo", methodID: "", total: "2.1", totalTax: "0.8", taxes: [])
         let order = makeOrder().copy(orderID: 98, number: "dignissimos", shippingLines: [shippingLine], coupons: [coupon], refunds: [refund])
         let useCase = OrdersUpsertUseCase(storage: viewStorage)
 
@@ -77,6 +77,27 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(persistedRefund.toReadOnly(), refund)
         let persistedShippingLine = try XCTUnwrap(viewStorage.loadShippingLine(siteID: defaultSiteID, shippingID: shippingLine.shippingID))
         XCTAssertEqual(persistedShippingLine.toReadOnly(), shippingLine)
+    }
+
+    func test_it_persists_shipping_line_taxes_in_storage() throws {
+        // Given
+        let taxes = [
+            Networking.ShippingLineTax(taxID: 2, subtotal: "", total: "0.2"),
+            Networking.ShippingLineTax(taxID: 3, subtotal: "", total: "0.6")
+        ]
+        let shippingLine = Networking.ShippingLine(shippingID: 25, methodTitle: "dodo", methodID: "", total: "2.1", totalTax: "0.8", taxes: taxes)
+        let order = makeOrder().copy(orderID: 98, shippingLines: [shippingLine])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+
+        // When
+        useCase.upsert([order])
+
+        // Then
+        let tax1 = try XCTUnwrap(viewStorage.loadShippingLineTax(shippingID: 25, taxID: 2))
+        XCTAssertEqual(tax1.toReadOnly(), taxes[0])
+
+        let tax2 = try XCTUnwrap(viewStorage.loadShippingLineTax(shippingID: 25, taxID: 3))
+        XCTAssertEqual(tax2.toReadOnly(), taxes[1])
     }
 }
 

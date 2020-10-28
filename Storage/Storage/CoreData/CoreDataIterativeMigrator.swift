@@ -144,9 +144,9 @@ private extension CoreDataIterativeMigrator {
         return tempDestinationURL
     }
 
-    /// Move the original source store files to a backup location (typically /Documents/backup).
+    /// Deletes the SQLite files for the store at the given `storeURL`.
     ///
-    /// The files that will be moved are:
+    /// The files that will be deleted are:
     ///
     /// - {store_filename}.sqlite
     /// - {store_filename}.sqlite-wal
@@ -154,14 +154,13 @@ private extension CoreDataIterativeMigrator {
     ///
     /// Where {store_filename} is most probably "WooCommerce".
     ///
-    func moveStoreFilesToBackupFolder(storeURL: URL) throws -> URL {
+    /// TODO Possibly replace this with `NSPersistentStoreCoordinator.destroyStore` or use
+    /// `replaceStore` directly.
+    ///
+    /// - Throws: `Error` if one of the deletion fails.
+    ///
+    func deleteStoreFiles(storeURL: URL) throws {
         let storeFolderURL = storeURL.deletingLastPathComponent()
-        let backupURL = storeFolderURL.appendingPathComponent("backup")
-
-        if fileManager.fileExists(atPath: backupURL.path) {
-            try fileManager.removeItem(at: backupURL)
-        }
-        try fileManager.createDirectory(at: backupURL, withIntermediateDirectories: false, attributes: nil)
 
         do {
             try fileManager.contentsOfDirectory(atPath: storeFolderURL.path).map { fileName in
@@ -170,18 +169,15 @@ private extension CoreDataIterativeMigrator {
                 // Only include files that have the same filename as the store (sqlite) filename.
                 fileURL.deletingPathExtension() == storeURL.deletingPathExtension()
             }.forEach { fileURL in
-                let targetURL = backupURL.appendingPathComponent(fileURL.lastPathComponent)
-                try fileManager.moveItem(at: fileURL, to: targetURL)
+                try fileManager.removeItem(at: fileURL)
             }
         } catch {
-            DDLogError("⛔️ Error while moving original source store to a backup location: \(error)")
+            DDLogError("⛔️ Error while deleting the store SQLite files: \(error)")
             throw error
         }
-
-        return backupURL
     }
 
-    /// Copy the store files that were migrated (using `NSMigrationManager`) migrated to where the
+    /// Copy the store files that were migrated (using `NSMigrationManager`) to where the
     /// store files should be loaded by `CoreDataManager` later.
     ///
     func copyMigratedOverOriginal(from tempDestinationURL: URL, to storeURL: URL) throws {
@@ -192,28 +188,13 @@ private extension CoreDataIterativeMigrator {
                     let fullPath = tempDestinationURL.deletingLastPathComponent().appendingPathComponent(file).path
                     let toPath = storeURL.deletingLastPathComponent().appendingPathComponent(file).path
                     // TODO This removeItem may not be necessary because we should have already
-                    // moved everything during `moveStoreFilesToBackupFolder`.
+                    // moved everything during `deleteStoreFiles`.
                     try? fileManager.removeItem(atPath: toPath)
                     try fileManager.moveItem(atPath: fullPath, toPath: toPath)
                 }
             }
         } catch {
             DDLogError("⛔️ Error while copying migrated over the original files: \(error)")
-            throw error
-        }
-    }
-
-    /// Delete backup copies of the original file before migration
-    ///
-    func deleteBackupCopies(at backupURL: URL) throws {
-        do {
-            let files = try fileManager.contentsOfDirectory(atPath: backupURL.path)
-            try files.forEach { (file) in
-                let fullPath = URL(fileURLWithPath: backupURL.path).appendingPathComponent(file).path
-                try fileManager.removeItem(atPath: fullPath)
-            }
-        } catch {
-            DDLogError("⛔️ Error while deleting backup copies of the original file before migration: \(error)")
             throw error
         }
     }
@@ -273,9 +254,10 @@ private extension CoreDataIterativeMigrator {
         }
 
         do {
-            let backupURL = try moveStoreFilesToBackupFolder(storeURL: url)
+            // Delete the original store files.
+            try deleteStoreFiles(storeURL: url)
+            // Replace the (deleted) original store files with the migrated store files.
             try copyMigratedOverOriginal(from: tempDestinationURL, to: url)
-            try deleteBackupCopies(at: backupURL)
         } catch {
             return (false, error)
         }

@@ -222,6 +222,44 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         // The legacy backup file URL with "~" shouldn't have been deleted.
         XCTAssertFalse(spyFileManager.deletedItems.contains(legacyBackupFileURL.path))
     }
+
+    func test_iterativeMigrate_moves_the_migrated_SQLite_files_to_the_original_store_location() throws {
+        // Given
+        let storeType = NSSQLiteStoreType
+        let sourceModel = try managedObjectModel(for: "Model 30")
+        let targetModel = try managedObjectModel(for: "Model 31")
+
+        let storeFileName = "WooMigrationMoveUnitTest.sqlite"
+        let storeURL = try urlForStore(withName: storeFileName, deleteIfExists: true)
+        // Start a container so the SQLite files will be created.
+        _ = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: sourceModel)
+
+        let spyFileManager = SpyFileManager()
+        let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory, fileManager: spyFileManager)
+
+        // When
+        let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
+                                                                 storeType: storeType,
+                                                                 to: targetModel)
+        // Then
+        XCTAssertTrue(result)
+
+        let movedItems = spyFileManager.movedItems
+        XCTAssertEqual(movedItems.count, 3)
+
+        let storeFolderURL = storeURL.deletingLastPathComponent()
+        let expectedMigrationFolderURL = storeURL.deletingLastPathComponent().appendingPathComponent("migration")
+        let expectedFilesToBeMoved = [
+            storeURL.lastPathComponent,
+            "\(storeURL.lastPathComponent)-wal",
+            "\(storeURL.lastPathComponent)-shm"
+        ]
+
+        expectedFilesToBeMoved.forEach { fileName in
+            XCTAssertEqual(movedItems[expectedMigrationFolderURL.appendingPathComponent(fileName).path],
+                           storeFolderURL.appendingPathComponent(fileName).path)
+        }
+    }
 }
 
 /// Helpers for the Core Data migration tests

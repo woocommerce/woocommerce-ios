@@ -85,7 +85,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
             Networking.OrderItemTax(taxID: 2, subtotal: "", total: "0.2"),
             Networking.OrderItemTax(taxID: 3, subtotal: "", total: "0.6")
         ]
-        let item = sampleOrderItem(itemID: 22, taxes: taxes)
+        let item = makeOrderItem(itemID: 22, taxes: taxes)
         let order = makeOrder().copy(orderID: 98).copy(items: [item])
         let useCase = OrdersUpsertUseCase(storage: viewStorage)
 
@@ -124,7 +124,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
 
 private extension OrdersUpsertUseCaseTests {
 
-    func sampleOrderItem(itemID: Int64, taxes: [Networking.OrderItemTax]) -> Networking.OrderItem {
+    func makeOrderItem(itemID: Int64, taxes: [Networking.OrderItemTax]) -> Networking.OrderItem {
         OrderItem(itemID: itemID,
                   name: "",
                   productID: 0,

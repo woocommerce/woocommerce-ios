@@ -70,4 +70,8 @@ extension MockFileManager: FileManagerProtocol {
     func moveItem(atPath srcPath: String, toPath dstPath: String) throws {
         allMethodsInvocationCount += 1
     }
+
+    func moveItem(at srcURL: URL, to dstURL: URL) throws {
+        allMethodsInvocationCount += 1
+    }
 }

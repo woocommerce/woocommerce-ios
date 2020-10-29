@@ -14,19 +14,28 @@ public final class CoreDataManager: StorageManagerType {
 
     private let modelsInventory: ManagedObjectModelsInventory
 
-    /// Designated Initializer.
+    /// Module-private designated Initializer.
     ///
     /// - Parameter name: Identifier to be used for: [database, data model, container].
     /// - Parameter crashLogger: allows logging a message of any severity level
+    /// - Parameter modelsInventory: The models to load when spinning up the Core Data stack.
+    ///     This is automatically generated if `nil`. You would probably only specify this for
+    ///     unit tests to test migration and/or recovery scenarios.
     ///
     /// - Important: This should *match* with your actual Data Model file!.
     ///
-    public init(name: String, crashLogger: CrashLogger) {
+    init(name: String,
+         crashLogger: CrashLogger,
+         modelsInventory: ManagedObjectModelsInventory?) {
         self.name = name
         self.crashLogger = crashLogger
 
         do {
-            self.modelsInventory = try .from(packageName: name, bundle: Bundle(for: type(of: self)))
+            if let modelsInventory = modelsInventory {
+                self.modelsInventory = modelsInventory
+            } else {
+                self.modelsInventory = try .from(packageName: name, bundle: Bundle(for: type(of: self)))
+            }
         } catch {
             // We'll throw a fatalError() because we can't really proceed without a
             // ManagedObjectModel.
@@ -35,6 +44,17 @@ public final class CoreDataManager: StorageManagerType {
 
             fatalError(message)
         }
+    }
+
+    /// Public designated initializer.
+    ///
+    /// - Parameter name: Identifier to be used for: [database, data model, container].
+    /// - Parameter crashLogger: allows logging a message of any severity level
+    ///
+    /// - Important: This should *match* with your actual Data Model file!.
+    ///
+    public convenience init(name: String, crashLogger: CrashLogger) {
+        self.init(name: name, crashLogger: crashLogger, modelsInventory: nil)
     }
 
     /// Returns the Storage associated with the View Thread.
@@ -48,7 +68,7 @@ public final class CoreDataManager: StorageManagerType {
     public lazy var persistentContainer: NSPersistentContainer = {
         let migrationDebugMessages = migrateDataModelIfNecessary()
 
-        let container = NSPersistentContainer(name: name, managedObjectModel: self.modelsInventory.currentModel)
+        let container = NSPersistentContainer(name: name, managedObjectModel: modelsInventory.currentModel)
         container.persistentStoreDescriptions = [storeDescription]
 
         container.loadPersistentStores { [weak self] (storeDescription, error) in
@@ -62,15 +82,9 @@ public final class CoreDataManager: StorageManagerType {
             ///
             var persistentStoreRemovalError: Error?
             do {
-                let fileManager = FileManager.default
-                let pathToStore = self.storeURL.deletingLastPathComponent().path
-                let files = try fileManager.contentsOfDirectory(atPath: pathToStore)
-                try files.forEach { (file) in
-                    if file.hasPrefix(self.storeURL.lastPathComponent) {
-                        let fullPath = URL(fileURLWithPath: pathToStore).appendingPathComponent(file).path
-                        try fileManager.removeItem(atPath: fullPath)
-                    }
-                }
+                try container.persistentStoreCoordinator.destroyPersistentStore(at: self.storeURL,
+                                                                                ofType: storeDescription.type,
+                                                                                options: nil)
             } catch {
                 persistentStoreRemovalError = error
             }

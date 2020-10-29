@@ -52,7 +52,7 @@ public extension StorageType {
     /// Retrieves the Stored Order Item Tax.
     ///
     func loadOrderItemTax(itemID: Int64, taxID: Int64) -> OrderItemTax? {
-        let predicate = NSPredicate(format: "item.itemID = %ld AND taxID = %ld", taxID)
+        let predicate = NSPredicate(format: "item.itemID = %ld AND taxID = %ld", itemID, taxID)
         return firstObject(ofType: OrderItemTax.self, matching: predicate)
     }
 

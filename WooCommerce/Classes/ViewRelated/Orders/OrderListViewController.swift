@@ -47,7 +47,7 @@ final class OrderListViewController: UIViewController {
 
     /// Ghostable TableView.
     ///
-    private(set) var ghostableTableView = UITableView()
+    private(set) var ghostableTableView = UITableView(frame: .zero, style: .grouped)
 
     /// Pull To Refresh Support.
     ///
@@ -356,7 +356,9 @@ private extension OrderListViewController {
     /// Renders the Placeholder Orders
     ///
     func displayPlaceholderOrders() {
-        let options = GhostOptions(reuseIdentifier: OrderTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
+        let options = GhostOptions(displaysSectionHeader: false,
+                                   reuseIdentifier: OrderTableViewCell.reuseIdentifier,
+                                   rowsPerSection: Settings.placeholderRowsPerSection)
 
         // If the ghostable table view gets stuck for any reason,
         // let's reset the state before using it again

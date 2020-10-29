@@ -106,15 +106,13 @@ struct RefundCreationUseCase {
         }
     }
 
-
-
     /// Calculates the refundable tax from a tax line by diving its total tax value by the purchased quantity and mutiplying it by the refunded quantity.
     ///
     private func calculateTax(of taxLine: OrderItemTax, purchasedQuantity: Decimal, refundQuantity: Decimal) -> String {
         let totalTax = currencyFormatter.convertToDecimal(from: taxLine.total) ?? 0
         let itemTax = (totalTax as Decimal) / purchasedQuantity
         let refundableTax = itemTax * refundQuantity
-        return currencyFormatter.localize(refundableTax) ?? "\(refundableTax)"
+        return "\(refundableTax)"
     }
 
     /// Calculates the refundable total price from a `RefundableOrderItem` by diving the item price value by the purchased quantity
@@ -122,6 +120,6 @@ struct RefundCreationUseCase {
     ///
     private func calculateTotal(of refundable: RefundableOrderItem) -> String {
         let total = (refundable.item.price as Decimal) * refundable.decimalQuantity
-        return currencyFormatter.localize(total) ?? "\(total)"
+        return "\(total)"
     }
 }

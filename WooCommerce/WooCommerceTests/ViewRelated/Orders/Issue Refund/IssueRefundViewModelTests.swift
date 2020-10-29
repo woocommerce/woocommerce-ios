@@ -24,6 +24,24 @@ final class IssueRefundViewModelTests: XCTestCase {
         }
     }
 
+    func test_viewModel_does_not_have_shipping_section_on_order_with_free_shipping() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let shippingLines = MockOrders.sampleShippingLines(cost: "0.0", tax: "0.0")
+        let order = MockOrders().makeOrder(shippingLines: shippingLines)
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+
+        // Then
+        let rows = viewModel.sections.flatMap { $0.rows }
+        XCTAssertFalse(rows.isEmpty)
+        rows.forEach { viewModel in
+            XCTAssertFalse(viewModel is IssueRefundViewModel.ShippingSwitchViewModel)
+            XCTAssertFalse(viewModel is RefundShippingDetailsViewModel)
+        }
+    }
+
     func test_viewModel_does_have_shipping_section_on_order_with_shipping() throws {
         // Given
         let currencySettings = CurrencySettings()

@@ -2,6 +2,11 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 35 (Release 5.4.0.0)
+- @jaclync 2020-10-29
+- Added `OrderItemAttribute` entity.
+- Added  `attributes: [OrderItemAttribute]` relationship to `OrderItem`.
+
 ## Model 34 (Release 5.4.0.0)
 - @ecarrion 2020-10-21
 - Added `ShippingLineTax` entity.

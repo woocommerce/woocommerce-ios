@@ -344,7 +344,7 @@ final class OrderStoreTests: XCTestCase {
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 2)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated(), in: viewStorage)
@@ -818,7 +818,7 @@ private extension OrderStoreTests {
                               subtotal: "50.00",
                               subtotalTax: "2.00",
                               taxClass: "",
-                              taxes: [],
+                              taxes: [.init(taxID: 1, subtotal: "2", total: "1.2")],
                               total: "30.00",
                               totalTax: "1.20",
                               attributes: [])
@@ -833,7 +833,7 @@ private extension OrderStoreTests {
                               subtotal: "10.00",
                               subtotalTax: "0.40",
                               taxClass: "",
-                              taxes: [],
+                              taxes: [.init(taxID: 1, subtotal: "0.4", total: "0")],
                               total: "0.00",
                               totalTax: "0.00",
                               attributes: [])

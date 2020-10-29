@@ -4,7 +4,7 @@ import XCTest
 
 /// OrderMapper Unit Tests
 ///
-class OrderMapperTests: XCTestCase {
+final class OrderMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
@@ -206,6 +206,44 @@ class OrderMapperTests: XCTestCase {
         let expectedTax = ShippingLineTax(taxID: 1, subtotal: "", total: "0.62125")
         XCTAssertEqual(shippingLine.taxes, [expectedTax])
     }
+
+    func test_OrderLineItem_attributes_are_parsed_correctly() {
+        guard let order = mapLoadOrderWithLineItemAttributesResponse() else {
+            XCTFail()
+            return
+        }
+
+        let lineItems = order.items
+        XCTAssertEqual(lineItems.count, 2)
+
+        let variationLineItem = lineItems[0]
+        // Attribute with `_reduced_stock` name is skipped.
+        let expectedAttributes: [OrderItemAttribute] = [
+            .init(metaID: 6377, name: "Color", value: "Orange"),
+            .init(metaID: 6378, name: "Brand", value: "Woo")
+        ]
+        XCTAssertEqual(variationLineItem.attributes, expectedAttributes)
+        XCTAssertEqual(variationLineItem.name, "(Variable) Fun Pens!")
+
+        let productLineItem = lineItems[1]
+        XCTAssertEqual(productLineItem.attributes, [])
+        XCTAssertEqual(productLineItem.name, "(Downloadable) food")
+    }
+
+    func test_OrderLineItem_attributes_are_parsed_correctly_with_old_API_version() {
+        guard let order = mapLoadOrderWithLineItemAttributesOldAPIVersionResponse() else {
+            XCTFail()
+            return
+        }
+
+        let lineItems = order.items
+        XCTAssertEqual(lineItems.count, 1)
+
+        let variationLineItem = lineItems[0]
+        // WC version 4.6.1 returns a different structure of order line item attributes.
+        XCTAssertEqual(variationLineItem.attributes, [])
+        XCTAssertEqual(variationLineItem.name, "Hoodie - Green, No")
+    }
 }
 
 
@@ -245,5 +283,17 @@ private extension OrderMapperTests {
     ///
     func mapLoadPartiallRefundedOrderResponse() -> Order? {
         return mapOrder(from: "order-details-partially-refunded")
+    }
+
+    /// Returns the OrderMapper output upon receiving `order-with-line-item-attributes`
+    ///
+    func mapLoadOrderWithLineItemAttributesResponse() -> Order? {
+        return mapOrder(from: "order-with-line-item-attributes")
+    }
+
+    /// Returns the OrderMapper output upon receiving `order-with-line-item-attributes-old-version`
+    ///
+    func mapLoadOrderWithLineItemAttributesOldAPIVersionResponse() -> Order? {
+        return mapOrder(from: "order-with-line-item-attributes-old-version")
     }
 }

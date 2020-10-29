@@ -72,7 +72,7 @@ public struct OrderItem: Decodable, Hashable {
         if isVariation {
             name = try ((container.decodeIfPresent(String.self, forKey: .variationParentName))
                         ?? container.decode(String.self, forKey: .name)).strippedHTML
-            let allAttributes = try container.decodeIfPresent([OrderItemAttribute].self, forKey: .attributes) ?? []
+            let allAttributes = (try? container.decodeIfPresent([OrderItemAttribute].self, forKey: .attributes)) ?? []
             attributes = allAttributes.filter { $0.name != "_reduced_stock" }
 
             // Logs error for unexpected attributes.

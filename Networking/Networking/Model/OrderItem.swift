@@ -117,22 +117,7 @@ private extension OrderItem {
 
 // MARK: - Comparable Conformance
 //
-extension OrderItem: Comparable {
-    public static func == (lhs: OrderItem, rhs: OrderItem) -> Bool {
-        return lhs.itemID == rhs.itemID &&
-            lhs.name == rhs.name &&
-            lhs.productID == rhs.productID &&
-            lhs.variationID == rhs.variationID &&
-            lhs.quantity == rhs.quantity &&
-            lhs.price == rhs.price &&
-            lhs.sku == rhs.sku &&
-            lhs.subtotal == rhs.subtotal &&
-            lhs.subtotalTax == rhs.subtotalTax &&
-            lhs.taxClass == rhs.taxClass &&
-            lhs.total == rhs.total &&
-            lhs.totalTax == rhs.totalTax
-    }
-
+extension OrderItem: Equatable, Comparable {
     public static func < (lhs: OrderItem, rhs: OrderItem) -> Bool {
         return lhs.itemID < rhs.itemID ||
             (lhs.itemID == rhs.itemID && lhs.productID < rhs.productID) ||

@@ -27,7 +27,7 @@ struct ProductsTabProductViewModel {
 
     init(product: Product, isSelected: Bool = false, imageService: ImageService = ServiceLocator.imageService) {
         imageUrl = product.images.first?.src
-        name = product.name
+        name = product.name.isEmpty ? Localization.noTitle : product.name
         self.isSelected = isSelected
         detailsAttributedString = EditableProductModel(product: product).createDetailsAttributedString()
 
@@ -75,5 +75,11 @@ private extension EditableProductModel {
         let pluralFormat = NSLocalizedString("%ld variants", comment: "Label about number of variations shown on Products tab")
         let format = String.pluralize(numberOfVariations, singular: singularFormat, plural: pluralFormat)
         return String.localizedStringWithFormat(format, numberOfVariations)
+    }
+}
+
+private extension ProductsTabProductViewModel {
+    enum Localization {
+        static let noTitle = NSLocalizedString("(No Title)", comment: "Product title in Products list when there is no title")
     }
 }

@@ -79,6 +79,27 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(persistedShippingLine.toReadOnly(), shippingLine)
     }
 
+    func test_it_persists_order_item_taxes_in_storage() throws {
+        // Given
+        let taxes = [
+            Networking.OrderItemTax(taxID: 2, subtotal: "", total: "0.2"),
+            Networking.OrderItemTax(taxID: 3, subtotal: "", total: "0.6")
+        ]
+        let item = makeOrderItem(itemID: 22, taxes: taxes)
+        let order = makeOrder().copy(orderID: 98).copy(items: [item])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+
+        // When
+        useCase.upsert([order])
+
+        // Then
+        let tax1 = try XCTUnwrap(viewStorage.loadOrderItemTax(itemID: 22, taxID: 2))
+        XCTAssertEqual(tax1.toReadOnly(), taxes[0])
+
+        let tax2 = try XCTUnwrap(viewStorage.loadOrderItemTax(itemID: 22, taxID: 3))
+        XCTAssertEqual(tax2.toReadOnly(), taxes[1])
+    }
+
     func test_it_persists_shipping_line_taxes_in_storage() throws {
         // Given
         let taxes = [
@@ -102,6 +123,23 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
 }
 
 private extension OrdersUpsertUseCaseTests {
+
+    func makeOrderItem(itemID: Int64, taxes: [Networking.OrderItemTax]) -> Networking.OrderItem {
+        OrderItem(itemID: itemID,
+                  name: "",
+                  productID: 0,
+                  variationID: 0,
+                  quantity: 0,
+                  price: 0,
+                  sku: nil,
+                  subtotal: "",
+                  subtotalTax: "",
+                  taxClass: "",
+                  taxes: taxes,
+                  total: "",
+                  totalTax: "")
+    }
+
     func makeOrder() -> Networking.Order {
         Order(siteID: defaultSiteID,
               orderID: 0,

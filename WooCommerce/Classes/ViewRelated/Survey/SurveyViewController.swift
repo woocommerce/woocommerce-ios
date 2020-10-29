@@ -148,7 +148,7 @@ extension SurveyViewController: WKNavigationDelegate {
 }
 // MARK: Survey Tags
 //
-internal extension URL {
+extension URL {
     func tagPlatform() -> URL {
         appendingQueryItem(URLQueryItem(name: Tags.surveyRequestPlatformTag, value: Tags.surveyRequestPlatformValue))
     }

@@ -28,7 +28,8 @@ final class ProductDownloadListViewController: UIViewController {
 
     /// Loading view displayed while an user is uploading a new image
     ///
-    private let loadingView = LoadingView(waitMessage: Localization.loadingMessage)
+    private let loadingView = LoadingView(waitMessage: Localization.loadingMessage,
+                                          backgroundColor: UIColor.black.withAlphaComponent(0.4))
 
     init(product: ProductFormDataModel, completion: @escaping Completion) {
         self.product = product

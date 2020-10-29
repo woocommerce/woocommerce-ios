@@ -40,8 +40,9 @@ final class LoadingView: UIView {
         return indicator
     }()
 
-    init(waitMessage: String) {
+    init(waitMessage: String, backgroundColor: UIColor? = .clear) {
         super.init(frame: CGRect.zero)
+        self.backgroundColor = backgroundColor
         addComponents()
         styleComponents()
         waitLabel.text = waitMessage

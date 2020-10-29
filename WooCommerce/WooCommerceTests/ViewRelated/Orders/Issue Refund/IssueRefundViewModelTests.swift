@@ -342,4 +342,52 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Price is 11.50 and tax is 0.99 (2.97 / 3(quantity))
         XCTAssertEqual(viewModel.title, "$12.49")
     }
+
+    func test_viewModel_starts_with_next_button_disabled() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
+        ]
+        let order = MockOrders().makeOrder(items: items)
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+
+        // Then
+        XCTAssertFalse(viewModel.isNextButtonEnabled)
+    }
+
+    func test_viewModel_next_button_gets_enabled_after_selecting_items() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
+        ]
+        let order = MockOrders().makeOrder(items: items)
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+
+        // When
+        viewModel.selectAllOrderItems()
+
+        // Then
+        XCTAssertTrue(viewModel.isNextButtonEnabled)
+    }
+
+    func test_viewModel_next_button_gets_disabled_after_selecting_and_then_unselecting_items() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
+        ]
+        let order = MockOrders().makeOrder(items: items)
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+        viewModel.selectAllOrderItems()
+
+        // When
+        viewModel.updateRefundQuantity(quantity: 0, forItemAtIndex: 0)
+
+        // Then
+        XCTAssertFalse(viewModel.isNextButtonEnabled)
+    }
 }

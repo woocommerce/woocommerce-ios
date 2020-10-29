@@ -176,7 +176,8 @@ private extension OrdersUpsertUseCaseTests {
                   taxClass: "",
                   taxes: taxes,
                   total: "",
-                  totalTax: "")
+                  totalTax: "",
+                  attributes: [])
     }
 
     func makeOrder() -> Networking.Order {

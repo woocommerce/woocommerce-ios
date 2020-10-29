@@ -207,11 +207,8 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(shippingLine.taxes, [expectedTax])
     }
 
-    func test_OrderLineItem_attributes_are_parsed_correctly() {
-        guard let order = mapLoadOrderWithLineItemAttributesResponse() else {
-            XCTFail()
-            return
-        }
+    func test_OrderLineItem_attributes_are_parsed_correctly() throws {
+        let order = try XCTUnwrap(mapLoadOrderWithLineItemAttributesResponse())
 
         let lineItems = order.items
         XCTAssertEqual(lineItems.count, 2)
@@ -223,6 +220,7 @@ final class OrderMapperTests: XCTestCase {
             .init(metaID: 6378, name: "Brand", value: "Woo")
         ]
         XCTAssertEqual(variationLineItem.attributes, expectedAttributes)
+        // `parent_name` is used instead of `name` in the API line item response.
         XCTAssertEqual(variationLineItem.name, "(Variable) Fun Pens!")
 
         let productLineItem = lineItems[1]
@@ -230,11 +228,8 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(productLineItem.name, "(Downloadable) food")
     }
 
-    func test_OrderLineItem_attributes_are_parsed_correctly_with_old_API_version() {
-        guard let order = mapLoadOrderWithLineItemAttributesOldAPIVersionResponse() else {
-            XCTFail()
-            return
-        }
+    func test_OrderLineItem_attributes_are_parsed_correctly_with_old_API_version() throws {
+        let order = try XCTUnwrap(mapLoadOrderWithLineItemAttributesOldAPIVersionResponse())
 
         let lineItems = order.items
         XCTAssertEqual(lineItems.count, 1)

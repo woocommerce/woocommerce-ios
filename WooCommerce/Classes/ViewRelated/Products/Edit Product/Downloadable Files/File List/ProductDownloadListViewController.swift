@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Photos
 
 final class ProductDownloadListViewController: UIViewController {
     private let product: ProductFormDataModel
@@ -15,11 +16,38 @@ final class ProductDownloadListViewController: UIViewController {
     typealias Completion = (_ data: ProductDownloadsEditableData, _ hasUnsavedChanges: Bool) -> Void
     private let onCompletion: Completion
 
+    // Device Media Library and Completion callbacks
+    //
+    private lazy var deviceMediaLibraryPicker: DeviceMediaLibraryPicker = {
+        return DeviceMediaLibraryPicker(allowsMultipleImages: false, onCompletion: onDeviceMediaLibraryPickerCompletion)
+    }()
+    private var onDeviceMediaLibraryPickerCompletion: DeviceMediaLibraryPicker.Completion?
+    private var onWPMediaPickerCompletion: WordPressMediaLibraryImagePickerViewController.Completion?
+    private let productImageActionHandler: ProductImageActionHandler?
+    private var cancellable: ObservationToken?
+
+    /// Loading view displayed while an user is uploading a new image
+    ///
+    private let loadingView = LoadingView(waitMessage: Localization.loadingMessage,
+                                          backgroundColor: UIColor.black.withAlphaComponent(0.4))
+
     init(product: ProductFormDataModel, completion: @escaping Completion) {
         self.product = product
         viewModel = ProductDownloadListViewModel(product: product)
         onCompletion = completion
+        productImageActionHandler = ProductImageActionHandler(siteID: product.siteID, product: product)
         super.init(nibName: type(of: self).nibName, bundle: nil)
+
+        onDeviceMediaLibraryPickerCompletion = { [weak self] assets in
+            self?.onDeviceMediaLibraryPickerCompletion(assets: assets)
+        }
+        onWPMediaPickerCompletion = { [weak self] mediaItems in
+            self?.onWPMediaPickerCompletion(mediaItems: mediaItems)
+        }
+        cancellable = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, productImage in
+            self?.addDownloadableFile(fileName: productImage.name, fileURL: productImage.src)
+            self?.loadingView.hideLoader()
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -34,6 +62,10 @@ final class ProductDownloadListViewController: UIViewController {
         configureTableView()
         configureNavigationBar()
         handleSwipeBackGesture()
+    }
+
+    deinit {
+        cancellable?.cancel()
     }
 }
 
@@ -127,13 +159,14 @@ extension ProductDownloadListViewController {
         let actions = viewModel.bottomSheetActions
         let dataSource = DownloadableFileBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
             self?.dismiss(animated: true) { [weak self] in
+                guard let self = self else { return }
                 switch action {
                 case .device:
-                    return
+                    self.showDeviceMediaLibraryPicker(origin: self)
                 case .wordPressMediaLibrary:
-                    return
+                    self.showSiteMediaPicker(origin: self)
                 case .fileURL:
-                    self?.addEditDownloadableFile(indexPath: nil, formType: .add)
+                    self.addDownloadableFile(fileName: nil, fileURL: nil)
                 }
             }
         }
@@ -150,10 +183,19 @@ extension ProductDownloadListViewController {
 
 // MARK: Action - Add/Edit Product Downloadable File Settings
 //
-extension ProductDownloadListViewController {
-    func addEditDownloadableFile(indexPath: IndexPath?, formType: ProductDownloadFileViewController.FormType) {
-        let downloadableFile = viewModel.item(at: indexPath?.row ?? -1)?.downloadableFile
-        let viewController = ProductDownloadFileViewController(productDownload: downloadableFile,
+private extension ProductDownloadListViewController {
+    func addDownloadableFile(fileName: String?, fileURL: String?) {
+        let downloadableFile = ProductDownload(downloadID: Constants.defaultAddProductDownloadID, name: fileName, fileURL: fileURL)
+        openDownloadableFile(productDownload: downloadableFile, indexPath: nil, formType: .add)
+    }
+
+    func editDownloadableFile(indexPath: IndexPath) {
+        let downloadableFile = viewModel.item(at: indexPath.row)?.downloadableFile
+        openDownloadableFile(productDownload: downloadableFile, indexPath: indexPath, formType: .edit)
+    }
+
+    func openDownloadableFile(productDownload: ProductDownload?, indexPath: IndexPath?, formType: ProductDownloadFileViewController.FormType) {
+        let viewController = ProductDownloadFileViewController(productDownload: productDownload,
                                                                downloadFileIndex: indexPath?.row,
                                                                formType: formType) { [weak self] (fileName, fileURL, fileID, hasUnsavedChanges) in
             self?.onAddEditDownloadableFileCompletion(fileName: fileName,
@@ -253,6 +295,50 @@ private extension ProductDownloadListViewController {
     }
 }
 
+// MARK: Alert Action Handlers
+//
+private extension ProductDownloadListViewController {
+    func showDeviceMediaLibraryPicker(origin: UIViewController) {
+        deviceMediaLibraryPicker.presentPicker(origin: origin)
+    }
+
+    func showSiteMediaPicker(origin: UIViewController) {
+        let wordPressMediaPickerViewController = WordPressMediaLibraryImagePickerViewController(siteID: product.siteID,
+                                                                                                allowsMultipleImages: false,
+                                                                                                onCompletion: onWPMediaPickerCompletion)
+        origin.present(wordPressMediaPickerViewController, animated: true)
+    }
+}
+
+// MARK: Action handling for device media library picker
+//
+private extension ProductDownloadListViewController {
+    func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset]) {
+        let shouldAnimateMediaLibraryDismissal = assets.isEmpty
+        dismiss(animated: shouldAnimateMediaLibraryDismissal) { [weak self] in
+            guard let self = self, let asset = assets.first else {
+                return
+            }
+            self.productImageActionHandler?.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+            self.loadingView.showLoader(in: self.view)
+        }
+    }
+}
+
+// MARK: - Action handling for WordPress Media Library
+//
+private extension ProductDownloadListViewController {
+    func onWPMediaPickerCompletion(mediaItems: [Media]) {
+        let shouldAnimateWPMediaPickerDismissal = mediaItems.isEmpty
+        dismiss(animated: shouldAnimateWPMediaPickerDismissal) { [weak self] in
+            guard let self = self, mediaItems.isNotEmpty else {
+                return
+            }
+            self.addDownloadableFile(fileName: mediaItems.first?.name, fileURL: mediaItems.first?.src)
+        }
+    }
+}
+
 // MARK: - UITableView Datasource and Delegate conformance
 //
 extension ProductDownloadListViewController: UITableViewDataSource, UITableViewDelegate {
@@ -274,7 +360,7 @@ extension ProductDownloadListViewController: UITableViewDataSource, UITableViewD
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        addEditDownloadableFile(indexPath: indexPath, formType: .edit)
+        editDownloadableFile(indexPath: indexPath)
         tableView.deselectRow(at: indexPath, animated: true)
     }
 
@@ -303,6 +389,8 @@ private extension ProductDownloadListViewController {
 
 private extension ProductDownloadListViewController {
     enum Localization {
+        static let loadingMessage = NSLocalizedString("Please wait...",
+                                                      comment: "Text on the loading view of the product downloadable file screen indicating the user to wait")
         static let addFileButton = NSLocalizedString("Add File", comment: "Action to add downloadable file on the Product Downloadable Files screen")
         static let title = NSLocalizedString("Downloadable Files",
                                              comment: "Edit product downloadable files screen - Screen title")
@@ -316,5 +404,11 @@ private extension ProductDownloadListViewController {
                                                               comment: "Button title Download Settings in Downloadable Files More Options Action Sheet")
         static let cancelAction = NSLocalizedString("Cancel",
                                                     comment: "Button title Cancel in Downloadable Files More Options Action Sheet")
+    }
+}
+
+extension ProductDownloadListViewController {
+    private enum Constants {
+        static let defaultAddProductDownloadID: String = ""
     }
 }

@@ -86,13 +86,13 @@ extension SurveyViewController {
             case .inAppFeedback:
                 return WooConstants.URLs.inAppFeedback
                     .asURL()
-                    .tagPlatform()
+                    .tagPlatform("ios")
 
             case .productsM4Feedback:
                 return WooConstants.URLs.productsM4Feedback
                     .asURL()
-                    .tagPlatform()
-                    .tagProductMilestone()
+                    .tagPlatform("ios")
+                    .tagProductMilestone("4")
             }
         }
 
@@ -149,12 +149,12 @@ extension SurveyViewController: WKNavigationDelegate {
 // MARK: Survey Tags
 //
 extension URL {
-    func tagPlatform() -> URL {
-        appendingQueryItem(URLQueryItem(name: Tags.surveyRequestPlatformTag, value: Tags.surveyRequestPlatformValue))
+    func tagPlatform(_ platformName: String) -> URL {
+        appendingQueryItem(URLQueryItem(name: Tags.surveyRequestPlatformTag, value: platformName))
     }
 
-    func tagProductMilestone() -> URL {
-        appendingQueryItem(URLQueryItem(name: Tags.surveyRequestProductMilestoneTag, value: Tags.surveyRequestProductMilestoneValue))
+    func tagProductMilestone(_ milestone: String) -> URL {
+        appendingQueryItem(URLQueryItem(name: Tags.surveyRequestProductMilestoneTag, value: milestone))
     }
 
     private func appendingQueryItem(_ queryItem: URLQueryItem) -> URL {
@@ -172,10 +172,7 @@ extension URL {
     }
 
     private enum Tags {
-        static let surveyRequestPlatformValue = "ios"
         static let surveyRequestPlatformTag = "woo-mobile-platform"
-
-        static let surveyRequestProductMilestoneValue = "4"
         static let surveyRequestProductMilestoneTag = "product-milestone"
     }
 }

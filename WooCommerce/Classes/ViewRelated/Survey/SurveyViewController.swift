@@ -150,19 +150,25 @@ extension SurveyViewController: WKNavigationDelegate {
 //
 internal extension URL {
     func tagPlatform() -> URL {
-        safeWrap(rawValue: "\(self.absoluteString)?\(Tags.surveyRequestPlatformTag)=\(Tags.surveyRequestPlatformValue)")
+        appendingQueryItem(URLQueryItem(name: Tags.surveyRequestPlatformTag, value: Tags.surveyRequestPlatformValue))
     }
 
     func tagProductMilestone() -> URL {
-        safeWrap(rawValue: "\(self.absoluteString)&\(Tags.surveyRequestProductMilestoneTag)=\(Tags.surveyRequestProductMilestoneValue)")
+        appendingQueryItem(URLQueryItem(name: Tags.surveyRequestProductMilestoneTag, value: Tags.surveyRequestProductMilestoneValue))
     }
 
-    private func safeWrap(rawValue: String) -> URL {
-        if let url = URL(string: rawValue) {
-            return url
-        } else {
-            fatalError("Expected URL \(rawValue) to be a well-formed URL.")
+    private func appendingQueryItem(_ queryItem: URLQueryItem) -> URL {
+        guard var urlComponents = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
+            assertionFailure("Cannot create URL components from \(self)")
+            return self
         }
+        let queryItems: [URLQueryItem] = urlComponents.queryItems ?? []
+        urlComponents.queryItems = queryItems + [queryItem]
+        guard let url = try? urlComponents.asURL() else {
+            assertionFailure("Cannot convert URL components to URL: \(urlComponents)")
+            return self
+        }
+        return url
     }
 
     private enum Tags {

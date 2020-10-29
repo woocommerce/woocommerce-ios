@@ -176,7 +176,7 @@ internal extension URL {
         static let surveyRequestPlatformTag = "woo-mobile-platform"
 
         static let surveyRequestProductMilestoneValue = "4"
-        static let surveyRequestProductMilestoneTag = "product_milestone"
+        static let surveyRequestProductMilestoneTag = "product-milestone"
     }
 }
 

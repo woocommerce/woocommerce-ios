@@ -287,7 +287,7 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
         let row = rowAtIndexPath(indexPath)
 
         if row == .datePickerSaleFrom || row == .datePickerSaleTo {
-            return Constants.pickerRowHeight
+            return DatePickerTableViewCell.getDefaultCellHeight()
         }
 
         return UITableView.automaticDimension
@@ -488,5 +488,4 @@ extension ProductPriceSettingsViewController {
 
 private struct Constants {
     static let sectionHeight = CGFloat(44)
-    static let pickerRowHeight = CGFloat(216)
 }

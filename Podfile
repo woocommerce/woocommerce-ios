@@ -8,7 +8,9 @@ inhibit_all_warnings!
 use_frameworks! # Defaulting to use_frameworks! See pre_install hook below for static linking.
 use_modular_headers!
 
-platform :ios, '12.0'
+app_ios_dt = Gem::Version.new('12.0')
+
+platform :ios, app_ios_dt
 workspace 'WooCommerce.xcworkspace'
 
 ## Pods shared between all the targets
@@ -209,7 +211,9 @@ post_install do |installer|
   #
   installer.pods_project.targets.each do |target|
       target.build_configurations.each do |configuration|
-          configuration.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
+         pod_ios_dt = Gem::Version.new(configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET'])
+         configuration.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET' if pod_ios_dt <= app_ios_dt
       end
   end
 end
+

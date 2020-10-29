@@ -220,6 +220,41 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedProduct.value(forKey: "date") as? Date, dateCreated)
         XCTAssertEqual(migratedProduct.value(forKey: "dateCreated") as? Date, dateCreated)
     }
+
+    func test_migrating_from_34_to_35_enables_creating_new_OrderItemAttribute_and_adding_to_OrderItem_attributes_relationship() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 34")
+        let sourceContext = sourceContainer.viewContext
+
+        let order = insertOrder(to: sourceContext)
+        let orderItem = insertOrderItem(to: sourceContext)
+        orderItem.setValue(order, forKey: "order")
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "Order"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "OrderItem"), 1)
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 35")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "OrderItem"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "OrderItemAttribute"), 0)
+
+        let migratedOrderItem = try XCTUnwrap(targetContext.first(entityName: "OrderItem"))
+
+        // Creates an `OrderItemAttribute` and adds it to `OrderItem`.
+        let orderItemAttribute = insertOrderItemAttribute(to: targetContext)
+        migratedOrderItem.setValue(NSOrderedSet(array: [orderItemAttribute]), forKey: "attributes")
+        try targetContext.save()
+
+        XCTAssertEqual(try targetContext.count(entityName: "OrderItemAttribute"), 1)
+        XCTAssertEqual(migratedOrderItem.value(forKey: "attributes") as? NSOrderedSet, NSOrderedSet(array: [orderItemAttribute]))
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -324,6 +359,30 @@ private extension MigrationTests {
         context.insert(entityName: "Account", properties: [
             "userID": 0,
             "username": ""
+        ])
+    }
+
+    @discardableResult
+    func insertOrder(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "Order", properties: [
+            "orderID": 134,
+            "statusKey": ""
+        ])
+    }
+
+    @discardableResult
+    func insertOrderItem(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderItem", properties: [
+            "itemID": 134
+        ])
+    }
+
+    @discardableResult
+    func insertOrderItemAttribute(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderItemAttribute", properties: [
+            "metaID": 134,
+            "name": "Woo",
+            "value": "4.7"
         ])
     }
 

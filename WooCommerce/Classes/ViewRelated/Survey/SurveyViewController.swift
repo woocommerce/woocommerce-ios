@@ -28,7 +28,7 @@ final class SurveyViewController: UIViewController, SurveyViewControllerOutputs 
 
     /// Loading view displayed while the survey loads
     ///
-    private let loadingView = SurveyLoadingView()
+    private let loadingView = LoadingView(waitMessage: Localization.wait)
 
     init(survey: Source, onCompletion: @escaping () -> Void) {
         self.survey = survey
@@ -44,7 +44,7 @@ final class SurveyViewController: UIViewController, SurveyViewControllerOutputs 
         super.viewDidLoad()
 
         addCloseNavigationBarButton()
-        addLoadingView()
+        loadingView.showLoader(in: view)
         configureAndLoadSurvey()
     }
 
@@ -55,22 +55,6 @@ final class SurveyViewController: UIViewController, SurveyViewControllerOutputs 
         webView.customUserAgent = UserAgent.defaultUserAgent
         webView.load(request)
         webView.navigationDelegate = self
-    }
-
-    /// Adds a loading view to the screen pinned at the center
-    ///
-    private func addLoadingView() {
-        loadingView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(loadingView)
-        view.pinSubviewAtCenter(loadingView)
-    }
-
-    /// Removes the loading view from the screen with a fade out animaition
-    ///
-    private func removeLoadingView() {
-        loadingView.fadeOut { [weak self] _ in
-            self?.loadingView.removeFromSuperview()
-        }
     }
 }
 
@@ -93,9 +77,9 @@ extension SurveyViewController {
         fileprivate var title: String {
             switch self {
             case .inAppFeedback:
-                return NSLocalizedString("How can we improve?", comment: "Title on the navigation bar for the in-app feedback survey")
+                return Localization.title
             case .productsM4Feedback:
-                return NSLocalizedString("Give feedback", comment: "Title on the navigation bar for the products feedback survey")
+                return Localization.giveFeedback
             }
         }
 
@@ -137,7 +121,7 @@ extension SurveyViewController: WKNavigationDelegate {
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {
-        removeLoadingView()
+        loadingView.hideLoader()
     }
 }
 
@@ -147,5 +131,11 @@ private extension SurveyViewController {
     enum Constants {
         static let surveyMessageParameterKey = "msg"
         static let surveyCompletionParameterValue = "done"
+    }
+
+    enum Localization {
+        static let wait = NSLocalizedString("Please wait", comment: "Text on the loading view of the survey screen indicating the user to wait")
+        static let title = NSLocalizedString("How can we improve?", comment: "Title on the navigation bar for the in-app feedback survey")
+        static let giveFeedback = NSLocalizedString("Give feedback", comment: "Title on the navigation bar for the products feedback survey")
     }
 }

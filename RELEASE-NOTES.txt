@@ -1,5 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+5.5
+-----
+- [*] fix: Product detail screen now includes the number of ratings for that product. [https://github.com/woocommerce/woocommerce-ios/pull/3089]
+
+
 5.4
 -----
 - [*] fix: the footer in app Settings is now correctly centered.

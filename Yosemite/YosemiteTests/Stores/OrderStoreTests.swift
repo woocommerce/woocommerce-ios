@@ -921,7 +921,7 @@ private extension OrderStoreTests {
     }
 
     func taxesMutated() -> [Networking.OrderItemTax] {
-        return [Networking.OrderItemTax(taxID: 75, subtotal: "0.45", total: "0.45"),
-                Networking.OrderItemTax(taxID: 73, subtotal: "0.9", total: "0.9")]
+        [Networking.OrderItemTax(taxID: 73, subtotal: "0.9", total: "0.9"),
+         Networking.OrderItemTax(taxID: 75, subtotal: "0.45", total: "0.45")]
     }
 }

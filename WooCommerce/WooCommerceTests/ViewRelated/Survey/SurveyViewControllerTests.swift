@@ -125,14 +125,14 @@ final class SurveyViewControllerTests: XCTestCase {
 private extension SurveyViewControllerTests {
     struct SurveyViewControllerMirror {
         let webView: WKWebView
-        let loadingView: SurveyLoadingView
+        let loadingView: LoadingView
     }
 
     func mirror(of viewController: SurveyViewController) throws -> SurveyViewControllerMirror {
         let mirror = Mirror(reflecting: viewController)
         return SurveyViewControllerMirror(
             webView: try XCTUnwrap(mirror.descendant("webView") as? WKWebView),
-            loadingView: try XCTUnwrap(mirror.descendant("loadingView") as? SurveyLoadingView)
+            loadingView: try XCTUnwrap(mirror.descendant("loadingView") as? LoadingView)
         )
     }
 }

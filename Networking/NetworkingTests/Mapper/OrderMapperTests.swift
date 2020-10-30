@@ -221,7 +221,7 @@ final class OrderMapperTests: XCTestCase {
         ]
         XCTAssertEqual(variationLineItem.attributes, expectedAttributes)
         // `parent_name` is used instead of `name` in the API line item response.
-        XCTAssertEqual(variationLineItem.name, "(Variable) Fun Pens!")
+        XCTAssertEqual(variationLineItem.name, "<Variable> Fun Pens!")
 
         let productLineItem = lineItems[1]
         XCTAssertEqual(productLineItem.attributes, [])

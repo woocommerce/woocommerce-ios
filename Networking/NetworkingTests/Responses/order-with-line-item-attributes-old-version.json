@@ -31,8 +31,8 @@
             "state": "",
             "postcode": "",
             "country": "",
-            "email": "wassyii87@gmail.com",
-            "phone": "16506465177"
+            "email": "",
+            "phone": ""
         },
         "shipping": {
             "first_name": "",
@@ -52,7 +52,7 @@
         "date_paid_gmt": null,
         "date_completed": null,
         "date_completed_gmt": null,
-        "cart_hash": "d30b0d57762f4dbda7e76e23044b0c71",
+        "cart_hash": "",
         "meta_data": [],
         "line_items": [
             {

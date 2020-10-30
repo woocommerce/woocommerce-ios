@@ -56,6 +56,7 @@ private extension IssueRefundViewController {
     func updateWithViewModelContent() {
         title = viewModel.title
         itemsSelectedLabel.text = viewModel.selectedItemsTitle
+        nextButton.isEnabled = viewModel.isNextButtonEnabled
         tableView.reloadData()
     }
 }

@@ -176,7 +176,7 @@ private extension DefaultProductFormTableViewModel {
             details = " · "
         }
         if product.ratingCount == 1 {
-            details += String.localizedStringWithFormat(Constants.singularReviewFormat, product.ratingCount)
+            details += Constants.singularReviewFormat
         }
         else if product.ratingCount > 1 {
             details += String.localizedStringWithFormat(Constants.pluralReviewsFormat, product.ratingCount)
@@ -471,12 +471,12 @@ private extension DefaultProductFormTableViewModel {
                                                     comment: "Format of the sale period on the Price Settings row until a certain date")
 
         // Reviews
-        static let emptyReviews = NSLocalizedString("No reviews yet",
-                                                    comment: "Placeholder for empty product reviews")
-        static let singularReviewFormat = NSLocalizedString("%ld review",
-                                                            comment: "Format of the number of product review in singular form")
-        static let pluralReviewsFormat = NSLocalizedString("%ld reviews",
-                                                           comment: "Format of the number of product reviews in plural form")
+        static let emptyReviews = NSLocalizedString("No ratings",
+                                                    comment: "Placeholder for empty product ratings")
+        static let singularReviewFormat = NSLocalizedString("rated once",
+                                                            comment: "Format of the number of product ratings in singular form")
+        static let pluralReviewsFormat = NSLocalizedString("rated %ld times",
+                                                           comment: "Format of the number of product ratings in plural form")
 
         // Inventory
         static let skuFormat = NSLocalizedString("SKU: %@",

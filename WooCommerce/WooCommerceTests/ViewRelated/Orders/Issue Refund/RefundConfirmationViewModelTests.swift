@@ -22,7 +22,9 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         ]
         let order = MockOrders().empty().copy(refunds: refundItems)
 
-        let viewModel = RefundConfirmationViewModel(order: order, currencySettings: currencySettings)
+        let details = RefundConfirmationViewModel.Details(order: order, amount: "0.0", refundsShipping: false, items: [])
+
+        let viewModel = RefundConfirmationViewModel(details: details, currencySettings: currencySettings)
 
         // When
         // We expect the Previously Refunded row to be the first item.

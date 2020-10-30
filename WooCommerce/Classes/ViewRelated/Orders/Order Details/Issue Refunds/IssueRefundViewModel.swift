@@ -75,7 +75,12 @@ final class IssueRefundViewModel {
     /// Creates the `ViewModel` to be used when navigating to the page where the user can
     /// confirm and submit the refund.
     func createRefundConfirmationViewModel() -> RefundConfirmationViewModel {
-        RefundConfirmationViewModel(order: state.order, currencySettings: state.currencySettings)
+        let refundItems = state.refundQuantityStore.map { RefundableOrderItem(item: $0, quantity: $1) }
+        let details = RefundConfirmationViewModel.Details(order: state.order,
+                                                          amount: "\(calculateRefundTotal())",
+                                                          refundsShipping: state.shouldRefundShipping,
+                                                          items: refundItems)
+        return RefundConfirmationViewModel(details: details, currencySettings: state.currencySettings)
     }
 }
 

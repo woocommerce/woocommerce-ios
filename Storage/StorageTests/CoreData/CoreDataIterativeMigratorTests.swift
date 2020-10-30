@@ -131,7 +131,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         let model1 = try managedObjectModel(for: "Model")
         let model10 = try managedObjectModel(for: "Model 10")
 
-        let storeURL = urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
+        let storeURL = try urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
         let options = [NSInferMappingModelAutomaticallyOption: false, NSMigratePersistentStoresAutomaticallyOption: false]
 
         // When
@@ -156,7 +156,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         let model1 = try managedObjectModel(for: "Model")
         let model10 = try managedObjectModel(for: "Model 10")
 
-        let storeURL = urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
+        let storeURL = try urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
         let options = [NSInferMappingModelAutomaticallyOption: false, NSMigratePersistentStoresAutomaticallyOption: false]
 
         var psc = NSPersistentStoreCoordinator(managedObjectModel: model1)
@@ -182,6 +182,84 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertNotNil(ps)
     }
 
+    func test_iterativeMigrate_deletes_the_original_SQLite_files() throws {
+        // Given
+        let storeType = NSSQLiteStoreType
+        let sourceModel = try managedObjectModel(for: "Model 30")
+        let targetModel = try managedObjectModel(for: "Model 31")
+
+        let storeFileName = "WooMigrationDeletionUnitTest.sqlite"
+        let storeURL = try urlForStore(withName: storeFileName, deleteIfExists: true)
+        // Start a container so the SQLite files will be created.
+        _ = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: sourceModel)
+
+        let fileManager = FileManager()
+        let spyFileManager = SpyFileManager(fileManager)
+        let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory, fileManager: spyFileManager)
+
+        // Create a file (e.g. WooCommerce.sqlite.~) that shouldn't be included in the deletion.
+        let legacyBackupFileURL = storeURL.appendingPathExtension("~")
+        if fileManager.fileExists(atPath: legacyBackupFileURL.path) {
+            try fileManager.removeItem(at: legacyBackupFileURL)
+        }
+        try fileManager.copyItem(at: storeURL, to: legacyBackupFileURL)
+
+        // When
+        let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
+                                                                 storeType: storeType,
+                                                                 to: targetModel)
+        // Then
+        XCTAssertTrue(result)
+        // There are 4 deleted items. The first is the "migrated" folder. The rest are the SQLite
+        // files.
+        XCTAssertEqual(spyFileManager.deletedItems.count, 4)
+
+        // The expected SQLite files should have been deleted.
+        XCTAssertTrue(spyFileManager.deletedItems.contains(storeURL.path))
+        XCTAssertTrue(spyFileManager.deletedItems.contains("\(storeURL.path)-wal"))
+        XCTAssertTrue(spyFileManager.deletedItems.contains("\(storeURL.path)-shm"))
+
+        // The legacy backup file URL with "~" shouldn't have been deleted.
+        XCTAssertFalse(spyFileManager.deletedItems.contains(legacyBackupFileURL.path))
+    }
+
+    func test_iterativeMigrate_moves_the_migrated_SQLite_files_to_the_original_store_location() throws {
+        // Given
+        let storeType = NSSQLiteStoreType
+        let sourceModel = try managedObjectModel(for: "Model 30")
+        let targetModel = try managedObjectModel(for: "Model 31")
+
+        let storeFileName = "WooMigrationMoveUnitTest.sqlite"
+        let storeURL = try urlForStore(withName: storeFileName, deleteIfExists: true)
+        // Start a container so the SQLite files will be created.
+        _ = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: sourceModel)
+
+        let spyFileManager = SpyFileManager()
+        let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory, fileManager: spyFileManager)
+
+        // When
+        let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
+                                                                 storeType: storeType,
+                                                                 to: targetModel)
+        // Then
+        XCTAssertTrue(result)
+
+        let movedItems = spyFileManager.movedItems
+        XCTAssertEqual(movedItems.count, 3)
+
+        let storeFolderURL = storeURL.deletingLastPathComponent()
+        let expectedMigrationFolderURL = storeURL.deletingLastPathComponent().appendingPathComponent("migration")
+        let expectedFilesToBeMoved = [
+            storeURL.lastPathComponent,
+            "\(storeURL.lastPathComponent)-wal",
+            "\(storeURL.lastPathComponent)-shm"
+        ]
+
+        expectedFilesToBeMoved.forEach { fileName in
+            XCTAssertEqual(movedItems[expectedMigrationFolderURL.appendingPathComponent(fileName).path],
+                           storeFolderURL.appendingPathComponent(fileName).path)
+        }
+    }
 }
 
 /// Helpers for the Core Data migration tests
@@ -209,14 +287,14 @@ private extension CoreDataIterativeMigratorTests {
         return url
     }
 
-    func urlForStore(withName: String, deleteIfExists: Bool = false) -> URL {
+    func urlForStore(withName: String, deleteIfExists: Bool = false) throws -> URL {
         let storeURL = documentsDirectory.appendingPathComponent(withName)
 
-        if deleteIfExists {
-            try? FileManager.default.removeItem(at: storeURL)
+        if deleteIfExists && FileManager.default.fileExists(atPath: storeURL.path) {
+            try FileManager.default.removeItem(at: storeURL)
         }
 
-        try? FileManager.default.createDirectory(at: documentsDirectory, withIntermediateDirectories: true, attributes: nil)
+        try FileManager.default.createDirectory(at: documentsDirectory, withIntermediateDirectories: true, attributes: nil)
 
         return storeURL
     }
@@ -232,6 +310,20 @@ private extension CoreDataIterativeMigratorTests {
 
         let container = NSPersistentContainer(name: "ContainerName", managedObjectModel: model)
         container.persistentStoreDescriptions = [description]
+        return container
+    }
+
+    /// Creates an `NSPersistentContainer` and load the store. Returns the loaded `NSPersistentContainer`.
+    func startPersistentContainer(storeURL: URL, storeType: String, model: NSManagedObjectModel) throws -> NSPersistentContainer {
+        let container = makePersistentContainer(storeURL: storeURL, storeType: storeType, model: model)
+
+        let loadingError: Error? = try waitFor { promise in
+            container.loadPersistentStores { _, error in
+                promise(error)
+            }
+        }
+        XCTAssertNil(loadingError)
+
         return container
     }
 }

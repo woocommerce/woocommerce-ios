@@ -1,5 +1,0 @@
-- Je kunt nu restituties op een bestelling bekijken.
-- De badge 'te voltooien bestellingen' heeft nu een maximum van 99 en geeft 99+ weer als het meer dan 99 is. Voorheen was het 9+.
-- Probleem opgelost waarbij lange productnamen ervoor konden zorgen dat het aantal van het product verdween als er een bestelling werd bekeken.
-- Productnamen met HTML-escapetekens worden nu correct weergegeven.
-- Als een bestelling meerdere producten bevat, moet het correcte product geopend worden als er op een product wordt getikt.

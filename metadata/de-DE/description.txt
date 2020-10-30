@@ -1,4 +1,4 @@
-BESTELLUNGEN ANZEIGEN UND VERWALTEN
+BESTELLUNGEN ANSEHEN UND VERWALTEN
 Scrolle durch deine Bestellungen, filtere oder durchsuche sie. Tippe zum Anzeigen von Bestellinformationen wie Produkt(e), Wert, Kundendaten, Versanddetails und Hinweisen.
 
 DEINEN SHOP VERFOLGEN
@@ -7,6 +7,8 @@ Erfahre, welche Produkte am beliebtesten sind. Überprüfe deine Gesamteinnahmen
 BESTELLBENACHRICHTIGUNGEN IN ECHTZEIT
 Erhalte Benachrichtigungen zu Shopaktivitäten wie neuen Bestellungen und Produktbewertungen.
 
-WooCommerce bietet die flexibelste E-Commerce-Plattform zum Aufbau deines Online-Geschäfts. Sie ist mit WordPress erstellt und in die weltweit besten Content-Management-Tools integriert. Von Kaffee-Abos über Spanischkurse und Mitgliedschaften im Fitnessstudio bis hin zu komplexem E-Commerce auf Unternehmensniveau – erstelle jetzt einen neuen Shop unter WooCommerce.com/start und bring deine Idee auf den Markt.
+WooCommerce bietet die flexibelste E-Commerce-Plattform zum Aufbau deines Online-Geschäfts. Sie ist mit WordPress erstellt und in die weltweit besten Content-Management-Tools integriert.
 
-Anforderungen: WooCommerce 3.5 oder höher, Jetpack-Plugin.
+Anforderungen: WooCommerce v3.5+, das Jetpack-Plugin
+
+Den Datenschutzhinweis für Benutzer in Kalifornien kannst du unter  https://automattic.com/privacy/#california-consumer-privacy-act-ccpa anzeigen.

@@ -26,6 +26,9 @@ public protocol ProductsRemoteProtocol {
                         pageSize: Int,
                         excludedProductIDs: [Int64],
                         completion: @escaping ([Product]?, Error?) -> Void)
+    func searchProductBySKU(for siteID: Int64,
+                            sku: String,
+                            completion: @escaping (Result<Product, Error>) -> Void)
     func searchSku(for siteID: Int64,
                    sku: String,
                    completion: @escaping (String?, Error?) -> Void)
@@ -226,20 +229,25 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///     - pageSize: Number of products to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func searchProductsBySKU(for siteID: Int64,
-                                    sku: String,
-                                    limit: Int = 1,
-                                    completion: @escaping ([Product]?, Error?) -> Void) {
-        let parameters = [
+    public func searchProductBySKU(for siteID: Int64,
+                                   sku: String,
+                                   completion: @escaping (Result<Product, Error>) -> Void) {
+        let parameters: [String: Any] = [
             ParameterKey.sku: sku,
-            ParameterKey.perPage: String(limit)
+            ParameterKey.perPage: 1
         ]
 
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = ProductListMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        enqueue(request, mapper: mapper) { (products, error) in
+            guard let product = products?.first else {
+                completion(.failure(error ?? DotcomError.empty))
+                return
+            }
+            completion(.success(product))
+        }
     }
 
     /// Retrieves a product SKU if available.

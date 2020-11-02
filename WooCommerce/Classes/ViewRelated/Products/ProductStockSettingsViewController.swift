@@ -5,7 +5,7 @@ final class ProductStockSettingsViewController: UIViewController {
 
     struct ProductStockEditableData {
         let manageStock: Bool
-        let stockQuantity: Int?
+        let stockQuantity: Int64?
         let backordersSetting: ProductBackordersSetting?
         let stockStatus: ProductStockStatus?
     }
@@ -13,14 +13,14 @@ final class ProductStockSettingsViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
 
     private let product: Product
-    private let originalStockQuantity: Int?
+    private let originalStockQuantity: Int64?
 
     // Editable data - shared.
     //
     private var manageStockEnabled: Bool
 
     // Editable data - manage stock enabled.
-    private var stockQuantity: Int?
+    private var stockQuantity: Int64?
     private var backordersSetting: ProductBackordersSetting?
 
     // Editable data - manage stock disabled.
@@ -33,7 +33,7 @@ final class ProductStockSettingsViewController: UIViewController {
     typealias Completion = (_ data: ProductStockEditableData) -> Void
     private let onCompletion: Completion
 
-    init(product: Product, stockQuantity: Int?, completion: @escaping Completion) {
+    init(product: Product, stockQuantity: Int64?, completion: @escaping Completion) {
         self.onCompletion = completion
 
         self.product = product
@@ -264,7 +264,7 @@ private extension ProductStockSettingsViewController {
         guard let stockQuantity = stockQuantity else {
             return
         }
-        self.stockQuantity = Int(stockQuantity)
+        self.stockQuantity = Int64(stockQuantity)
     }
 }
 

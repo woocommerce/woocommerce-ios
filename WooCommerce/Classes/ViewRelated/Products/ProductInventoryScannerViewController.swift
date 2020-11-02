@@ -46,7 +46,7 @@ struct ScannedProductsBottomSheetListSelectorCommand: BottomSheetListSelectorCom
 }
 
 enum ProductSKUScannerResult {
-    case matched(product: Product)
+    case matched(product: ProductFormDataModel)
     case noMatch(sku: String)
 }
 
@@ -54,7 +54,13 @@ extension ProductSKUScannerResult: Equatable {
     static func ==(lhs: ProductSKUScannerResult, rhs: ProductSKUScannerResult) -> Bool {
         switch (lhs, rhs) {
         case (let .matched(product1), let .matched(product2)):
-            return product1 == product2
+            if let product1 = product1 as? EditableProductModel, let product2 = product2 as? EditableProductModel {
+                return product1 == product2
+            } else if let product1 = product1 as? EditableProductVariationModel, let product2 = product2 as? EditableProductVariationModel {
+                return product1 == product2
+            } else {
+                return false
+            }
         case (let .noMatch(sku1), let .noMatch(sku2)):
             return sku1 == sku2
         default:
@@ -65,7 +71,7 @@ extension ProductSKUScannerResult: Equatable {
 
 final class ProductInventoryScannerViewController: UIViewController {
 
-    private lazy var barcodeScannerChildViewController : BarcodeScannerViewController = {
+    private lazy var barcodeScannerChildViewController: BarcodeScannerViewController = {
         return BarcodeScannerViewController { [weak self] (barcodes, error) in
             guard let barcode = barcodes.first else {
                 return
@@ -77,7 +83,8 @@ final class ProductInventoryScannerViewController: UIViewController {
     private var results: [ProductSKUScannerResult] = []
 
     private var bottomSheetViewController: BottomSheetViewController?
-    private var listSelectorViewController: BottomSheetListSelectorViewController<ScannedProductsBottomSheetListSelectorCommand, ProductSKUScannerResult, ProductDetailsTableViewCell>?
+    private var listSelectorViewController: BottomSheetListSelectorViewController
+    <ScannedProductsBottomSheetListSelectorCommand, ProductSKUScannerResult, ProductDetailsTableViewCell>?
 
     private lazy var statusLabel: PaddedLabel = {
         let label = PaddedLabel()
@@ -137,7 +144,7 @@ private extension ProductInventoryScannerViewController {
             self.statusLabel.text = NSLocalizedString("Searching for product by the SKU...", comment: "")
             self.showStatusLabel()
 
-            let action = ProductAction.searchProductBySKU(siteID: self.siteID, sku: barcode) { [weak self] result in
+            let action = ProductAction.findProductBySKU(siteID: self.siteID, sku: barcode) { [weak self] result in
                 guard let self = self else {
                     return
                 }
@@ -150,7 +157,7 @@ private extension ProductInventoryScannerViewController {
                     self.statusLabel.text = NSLocalizedString("Product found!", comment: "")
                     self.showStatusLabel()
 
-                    self.updateResults(scannedProduct: product)
+                    self.updateResults(scannedProduct: EditableProductModel(product: product))
                 case .failure(let error):
                     let generator = UINotificationFeedbackGenerator()
                     generator.notificationOccurred(.error)
@@ -165,7 +172,7 @@ private extension ProductInventoryScannerViewController {
         }
     }
 
-    func updateResults(scannedProduct: Product) {
+    func updateResults(scannedProduct: ProductFormDataModel) {
         results.append(.matched(product: scannedProduct))
         presentSearchResults()
     }
@@ -210,14 +217,14 @@ private extension ProductInventoryScannerViewController {
         // TODO-jc
     }
 
-    func editInventorySettings(for product: Product) {
+    func editInventorySettings(for product: ProductFormDataModel) {
         let inventorySettingsViewController = ProductInventorySettingsViewController(product: product) { [weak self] data in
             self?.updateProductInventorySettings(product, inventoryData: data)
         }
         navigationController?.pushViewController(inventorySettingsViewController, animated: true)
     }
 
-    func updateProductInventorySettings(_ product: Product, inventoryData: ProductInventoryEditableData) {
+    func updateProductInventorySettings(_ product: ProductFormDataModel, inventoryData: ProductInventoryEditableData) {
         // TODO-jc: analytics
 //        ServiceLocator.analytics.track(.productDetailUpdateButtonTapped)
         let title = NSLocalizedString("Updating inventory", comment: "Title of the in-progress UI while updating the Product inventory settings remotely")
@@ -234,34 +241,38 @@ private extension ProductInventoryScannerViewController {
 
         navigationController?.present(inProgressViewController, animated: true, completion: nil)
 
-        let productWithUpdatedInventory = product.inventorySettingsUpdated(sku: inventoryData.sku,
-                                                                           manageStock: inventoryData.manageStock,
-                                                                           soldIndividually: inventoryData.soldIndividually,
-                                                                           stockQuantity: inventoryData.stockQuantity,
-                                                                           backordersSetting: inventoryData.backordersSetting,
-                                                                           stockStatus: inventoryData.stockStatus)
-        let updateProductAction = ProductAction.updateProduct(product: productWithUpdatedInventory) { [weak self] updateResult in
-            guard let self = self else {
-                return
-            }
-
-            switch updateResult {
-            case .success(let product):
-                // TODO-jc: analytics
-                print("Updated \(product.name)!")
-//                ServiceLocator.analytics.track(.productDetailUpdateSuccess)
-            case .failure(let error):
-                let errorDescription = error.localizedDescription
-                DDLogError("⛔️ Error updating Product: \(errorDescription)")
-                // TODO-jc: display error
-                // TODO-jc: analytics
-//                ServiceLocator.analytics.track(.productDetailUpdateError)
-                // Dismisses the in-progress UI then presents the error alert.
-            }
-            self.navigationController?.popToViewController(self, animated: true)
-            self.navigationController?.dismiss(animated: true, completion: nil)
-        }
-        ServiceLocator.stores.dispatch(updateProductAction)
+        // TODO-jc: view model
+//        let productWithUpdatedInventory = product
+//
+//
+//            .inventorySettingsUpdated(sku: inventoryData.sku,
+//                                                                           manageStock: inventoryData.manageStock,
+//                                                                           soldIndividually: inventoryData.soldIndividually,
+//                                                                           stockQuantity: inventoryData.stockQuantity,
+//                                                                           backordersSetting: inventoryData.backordersSetting,
+//                                                                           stockStatus: inventoryData.stockStatus)
+//        let updateProductAction = ProductAction.updateProduct(product: productWithUpdatedInventory) { [weak self] updateResult in
+//            guard let self = self else {
+//                return
+//            }
+//
+//            switch updateResult {
+//            case .success(let product):
+//                // TODO-jc: analytics
+//                print("Updated \(product.name)!")
+////                ServiceLocator.analytics.track(.productDetailUpdateSuccess)
+//            case .failure(let error):
+//                let errorDescription = error.localizedDescription
+//                DDLogError("⛔️ Error updating Product: \(errorDescription)")
+//                // TODO-jc: display error
+//                // TODO-jc: analytics
+////                ServiceLocator.analytics.track(.productDetailUpdateError)
+//                // Dismisses the in-progress UI then presents the error alert.
+//            }
+//            self.navigationController?.popToViewController(self, animated: true)
+//            self.navigationController?.dismiss(animated: true, completion: nil)
+//        }
+//        ServiceLocator.stores.dispatch(updateProductAction)
     }
 }
 

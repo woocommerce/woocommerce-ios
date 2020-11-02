@@ -12,7 +12,7 @@ public enum ProductAction: Action {
 
     /// Searches product that contain a given SKU.
     ///
-    case searchProductBySKU(siteID: Int64, sku: String, onCompletion: (Result<Product, Error>) -> Void)
+    case findProductBySKU(siteID: Int64, sku: String, onCompletion: (Result<Product, Error>) -> Void)
 
     /// Synchronizes the Products matching the specified criteria.
     ///

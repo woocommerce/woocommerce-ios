@@ -6,7 +6,7 @@ import WordPressUI
 final class BottomSheetListSelectorViewController<Command: BottomSheetListSelectorCommand, Model, Cell>:
 UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model == Model, Command.Cell == Cell {
     private let viewProperties: BottomSheetListSelectorViewProperties
-    private let command: Command
+    private var command: Command
     private let onDismiss: ((_ selected: Model?) -> Void)?
 
     private let rowType = Cell.self

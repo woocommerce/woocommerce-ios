@@ -58,8 +58,8 @@ public class ProductStore: Store {
                            pageSize: pageSize,
                            excludedProductIDs: excludedProductIDs,
                            onCompletion: onCompletion)
-        case .searchProductBySKU(let siteID, let sku, let onCompletion):
-            searchProductBySKU(siteID: siteID, sku: sku, onCompletion: onCompletion)
+        case .findProductBySKU(let siteID, let sku, let onCompletion):
+            findProductBySKU(siteID: siteID, sku: sku, onCompletion: onCompletion)
         case .synchronizeProducts(let siteID,
                                   let pageNumber,
                                   let pageSize,
@@ -129,18 +129,17 @@ private extension ProductStore {
 
     /// Searches all of the products that contain a given SKU.
     ///
-    func searchProductBySKU(siteID: Int64, sku: String, onCompletion: @escaping (Result<Product, Error>) -> Void) {
-        let remote = ProductsRemote(network: network)
-        remote.searchProductsBySKU(for: siteID,
-                                   sku: sku) { [weak self] (products, error) in
-                                    guard let products = products, let product = products.first else {
-                                        onCompletion(.failure(error ?? DefaultError.unknown))
-                                        return
-                                    }
-
-                                    self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) {
-                                        onCompletion(.success(product))
-                                    }
+    func findProductBySKU(siteID: Int64, sku: String, onCompletion: @escaping (Result<Product, Error>) -> Void) {
+        remote.searchProductBySKU(for: siteID,
+                                  sku: sku) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let product):
+                self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) {
+                    onCompletion(.success(product))
+                }
+            }
         }
     }
 

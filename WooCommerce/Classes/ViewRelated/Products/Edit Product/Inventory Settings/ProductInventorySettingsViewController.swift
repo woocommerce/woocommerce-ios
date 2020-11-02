@@ -270,10 +270,7 @@ private extension ProductInventorySettingsViewController {
     func configureSKU(cell: TitleAndTextFieldTableViewCell) {
         var cellViewModel = Product.createSKUViewModel(sku: viewModel.sku) { [weak self] value in
             self?.viewModel.handleSKUChange(value) { [weak self] (isValid, shouldBringUpKeyboard) in
-                self?.enableDoneButton(isValid)
-                if shouldBringUpKeyboard {
-                    self?.getSkuCell()?.textFieldBecomeFirstResponder()
-                }
+                self?.handleSKUValidation(isValid: isValid, shouldBringUpKeyboard: shouldBringUpKeyboard)
             }
         }
         switch viewModel.error {
@@ -346,9 +343,18 @@ private extension ProductInventorySettingsViewController {
     }
 
     func onSKUBarcodeScanned(barcode: String) {
-        sku = barcode
-        reloadSections()
-        handleSKUChange(sku)
+        viewModel.handleSKUChange(barcode) { [weak self] (isValid, shouldBringUpKeyboard) in
+            self?.handleSKUValidation(isValid: isValid, shouldBringUpKeyboard: shouldBringUpKeyboard)
+        }
+    }
+}
+
+private extension ProductInventorySettingsViewController {
+    func handleSKUValidation(isValid: Bool, shouldBringUpKeyboard: Bool) {
+        enableDoneButton(isValid)
+        if shouldBringUpKeyboard {
+            getSkuCell()?.textFieldBecomeFirstResponder()
+        }
     }
 }
 

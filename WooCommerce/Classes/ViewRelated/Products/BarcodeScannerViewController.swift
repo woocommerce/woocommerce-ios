@@ -37,8 +37,8 @@ final class BarcodeScannerViewController: UIViewController {
 
     private let textBoxSize: CGSize = CGSize(width: 200.0, height: 200.0)
     private let contentFormatting: [NSAttributedString.Key: Any] = [
-        .foregroundColor : UIColor.black,
-        .font : UIFont.systemFont(ofSize: 18.0, weight: .medium)
+        .foregroundColor: UIColor.black,
+        .font: UIFont.systemFont(ofSize: 18.0, weight: .medium)
     ]
 
     private var session = AVCaptureSession()
@@ -73,13 +73,15 @@ final class BarcodeScannerViewController: UIViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
         startBarcodeDetection()
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        if let connection = self.previewLayer?.connection  {
+        if let connection = self.previewLayer?.connection {
             let orientation = UIApplication.shared.statusBarOrientation
             let previewLayerConnection: AVCaptureConnection = connection
             if previewLayerConnection.isVideoOrientationSupported {

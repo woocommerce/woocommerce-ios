@@ -191,10 +191,6 @@ private extension ProductsViewController {
     }
 
     @objc func scanProducts() {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            assertionFailure("No valid site ID for Products tab")
-            return
-        }
         let viewController = ProductInventoryScannerViewController(siteID: siteID)
         // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         viewController.hidesBottomBarWhenPushed = true

@@ -1,4 +1,9 @@
-* Puedes activar y desactivar Products M2 Features para productos simples en Ajustes > Funciones experimentales. Con Products M2 Features, puedes modificar las imágenes, las descripciones cortas, la visualización, el uso compartido y la configuración del producto. En la configuración del producto se incluyen el estado, la visibilidad, la visibilidad del catálogo, el slug, el recibo de compra y el menú del pedido.
-* Ahora, puedes editar y guardar información en las pestañas Detalles del pedido o Más destacados. También hemos mejorado la accesibilidad optimizando la compatibilidad con VoiceOver en la configuración del precio del producto.
-* Hemos implementado algunas mejoras visuales: En Detalles del pedido, la tarjeta de pago ahora se muestra después de las tarjetas de Productos y Productos reembolsados. El banner WIP de la pestaña Productos ahora está oculto por defecto. ¡Por fin tenemos más espacio vertical!
-* Ya no ofrecemos soporte para iOS 11 y las versiones anteriores.
+En esta actualización, informamos de un montón de opciones nuevas para editar tus productos. 
+
+En el caso de los productos que no son principales (productos que WooCommerce no agrupa bajo simples, externos, variables o grupos), hay un sinfín de opciones de edición nuevas. Ahora puedes cambiar la imagen, el nombre, la descripción, el precio de solo lectura, el inventario de solo lectura, las etiquetas, la descripción corta y los ajustes del producto.
+
+Ahora también puedes editar los productos variables, y el estado de las existencias se incluye en la lista de variaciones.
+
+Nuestros productos principales también cuentan con campos adicionales que se pueden editar: etiquetas, categorías, tipo de producto, visibilidad y activación y desactivación de valoraciones.
+
+También se incluye una actualización para el inicio de sesión de Apple: si desconectas el ID Apple de la aplicación de ﻿﻿﻿WordPres﻿s (Ajustes > ID de Apple > Contraseña y seguridad > Aplicaciones que utilizan el ID de Apple), la aplicación cerrará la sesión al iniciarse o cuando cambies de una aplicación a otra. Por lo tanto, no tendrás que mantener la sesión iniciada si no lo deseas.

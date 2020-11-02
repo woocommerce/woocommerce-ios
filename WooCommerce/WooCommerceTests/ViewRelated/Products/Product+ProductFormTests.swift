@@ -10,15 +10,16 @@ class Product_ProductFormTests: XCTestCase {
     func testTrimmedFullDescriptionWithLeadingNewLinesAndHTMLTags() {
         let description = "\n\n\n  <p>This is the party room!</p>\n"
         let product = sampleProduct(description: description)
+        let model = EditableProductModel(product: product)
         let expectedDescription = "This is the party room!"
-        XCTAssertEqual(product.trimmedFullDescription, expectedDescription)
+        XCTAssertEqual(model.trimmedFullDescription, expectedDescription)
     }
 
-    func testTrimmedBriefDescriptionWithLeadingNewLinesAndHTMLTags() {
+    func testTrimmedShortDescriptionWithLeadingNewLinesAndHTMLTags() {
         let description = "\n\n\n  <p>This is the party room!</p>\n"
-        let product = sampleProduct(briefDescription: description)
+        let product = sampleProduct(shortDescription: description)
         let expectedDescription = "This is the party room!"
-        XCTAssertEqual(product.trimmedBriefDescription, expectedDescription)
+        XCTAssertEqual(product.trimmedShortDescription, expectedDescription)
     }
 
     func testNoCategoryDescriptionOutputsNilDescription() {
@@ -33,7 +34,7 @@ class Product_ProductFormTests: XCTestCase {
         XCTAssertEqual(product.categoriesDescription(), expectedDescription)
     }
 
-    func testMutipleCategoriesDescriptionOutputsFormattedList() {
+    func testMultipleCategoriesDescriptionOutputsFormattedList() {
         let categories = ["Pants", "Dress", "Shoes"].map { sampleCategory(name: $0) }
         let product = sampleProduct(categories: categories)
         let expectedDescription: String = {
@@ -45,6 +46,45 @@ class Product_ProductFormTests: XCTestCase {
         }()
         let usLocale = Locale(identifier: "en_US")
         XCTAssertEqual(product.categoriesDescription(using: usLocale), expectedDescription)
+    }
+
+    // MARK: image related
+
+    func testProductAllowsMultipleImages() {
+        let product = Product().copy(images: [])
+        let model = EditableProductModel(product: product)
+        XCTAssertTrue(model.allowsMultipleImages())
+    }
+
+    func testProductImageDeletionIsEnabled() {
+        let product = Product().copy(images: [])
+        let model = EditableProductModel(product: product)
+        XCTAssertTrue(model.isImageDeletionEnabled())
+    }
+
+    // MARK: `productTaxStatus`
+
+    func testProductTaxStatusFromAnUnexpectedRawValueReturnsDefaultTaxable() {
+        let product = Product().copy(taxStatusKey: "unknown tax status")
+        XCTAssertEqual(product.productTaxStatus, .taxable)
+    }
+
+    func testProductTaxStatusFromAValidRawValueReturnsTheCorrespondingCase() {
+        let product = Product().copy(taxStatusKey: ProductTaxStatus.shipping.rawValue)
+        XCTAssertEqual(product.productTaxStatus, .shipping)
+    }
+
+    // MARK: `backordersSetting`
+
+    func testBackordersSettingFromAnUnexpectedRawValueReturnsACustomCase() {
+        let rawValue = "unknown setting"
+        let product = Product().copy(backordersKey: rawValue)
+        XCTAssertEqual(product.backordersSetting, .custom(rawValue))
+    }
+
+    func testBackordersSettingFromAValidRawValueReturnsTheCorrespondingCase() {
+        let product = Product().copy(backordersKey: ProductBackordersSetting.notAllowed.rawValue)
+        XCTAssertEqual(product.backordersSetting, .notAllowed)
     }
 }
 
@@ -58,12 +98,13 @@ private extension Product_ProductFormTests {
                                slug: "")
     }
 
-    func sampleProduct(description: String? = "", briefDescription: String? = "", categories: [ProductCategory] = []) -> Product {
+    func sampleProduct(description: String? = "", shortDescription: String? = "", categories: [ProductCategory] = []) -> Product {
         return Product(siteID: sampleSiteID,
                        productID: 177,
                        name: "Book the Green Room",
                        slug: "book-the-green-room",
                        permalink: "https://example.com/product/book-the-green-room/",
+                       date: Date(),
                        dateCreated: Date(),
                        dateModified: Date(),
                        dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
@@ -73,7 +114,7 @@ private extension Product_ProductFormTests {
                        featured: false,
                        catalogVisibilityKey: "visible",
                        fullDescription: description,
-                       briefDescription: briefDescription,
+                       shortDescription: shortDescription,
                        sku: "",
                        price: "0",
                        regularPrice: "",
@@ -86,6 +127,7 @@ private extension Product_ProductFormTests {
                        downloads: [],
                        downloadLimit: -1,
                        downloadExpiry: -1,
+                       buttonText: "",
                        externalURL: "http://somewhere.com",
                        taxStatusKey: "taxable",
                        taxClass: "",

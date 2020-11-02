@@ -13,7 +13,7 @@ class DateFormatterWooTests: XCTestCase {
 
     /// Verifies that a Woo Datetime is properly parsed by `DateFormatter.Defaults.dateTimeFormatter`.
     ///
-    func testWooFormattedDateIsProperlyParsed() {
+    func test_woo_formatted_date_is_properly_parsed() {
         guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: datetimeAsString) else {
             XCTFail()
             return
@@ -27,7 +27,7 @@ class DateFormatterWooTests: XCTestCase {
 
     /// Verifies that a valid stats **day** string is produced by `DateFormatter.Defaults.statsDayFormatter`.
     ///
-    func testStatsDayDateStringIsProperlyParsed() {
+    func test_stats_day_date_string_is_properly_parsed() {
         guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: datetimeAsString) else {
             XCTFail()
             return
@@ -40,7 +40,7 @@ class DateFormatterWooTests: XCTestCase {
 
     /// Verifies that a valid stats **week** string is produced by `DateFormatter.Defaults.statsWeekFormatter`.
     ///
-    func testStatsWeekDateStringIsProperlyParsed() {
+    func test_stats_week_date_string_is_properly_parsed() {
         guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: datetimeAsString) else {
             XCTFail()
             return
@@ -53,7 +53,7 @@ class DateFormatterWooTests: XCTestCase {
 
     /// Verifies that a valid stats **month** string is produced by `DateFormatter.Defaults.statsMonthFormatter`.
     ///
-    func testStatsMonthDateStringIsProperlyParsed() {
+    func test_stats_month_date_string_is_properly_parsed() {
         guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: datetimeAsString) else {
             XCTFail()
             return
@@ -66,7 +66,7 @@ class DateFormatterWooTests: XCTestCase {
 
     /// Verifies that a valid stats **year** string is produced by `DateFormatter.Defaults.statsYearFormatter`.
     ///
-    func testStatsYearDateStringIsProperlyParsed() {
+    func test_stats_year_date_string_is_properly_parsed() {
         guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: datetimeAsString) else {
             XCTFail()
             return

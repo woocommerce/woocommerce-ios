@@ -27,7 +27,9 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
         case .images:
             return [ProductImagesHeaderTableViewCell.self]
         case .name:
-            return [TextFieldTableViewCell.self]
+            return [TextViewTableViewCell.self, BasicTableViewCell.self]
+        case .variationName:
+            return [cellType]
         case .description:
             return [ImageAndTitleAndTextTableViewCell.self, BasicTableViewCell.self]
         }
@@ -41,9 +43,11 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
         switch self {
         case .images:
             return ProductImagesHeaderTableViewCell.self
-        case .name:
-            return TextFieldTableViewCell.self
-        case .description(let description):
+        case .name(_, let editable):
+            return editable ? TextViewTableViewCell.self: BasicTableViewCell.self
+        case .variationName:
+            return BasicTableViewCell.self
+        case .description(let description, _):
             return description?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
         }
     }
@@ -52,8 +56,23 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
 extension ProductFormSection.SettingsRow: ReusableTableRow {
     var cellTypes: [UITableViewCell.Type] {
         switch self {
-        case .price, .inventory, .shipping, .categories, .briefDescription:
+        case .price,
+             .productType,
+             .inventory,
+             .shipping,
+             .categories,
+             .tags,
+             .shortDescription,
+             .externalURL,
+             .sku,
+             .groupedProducts,
+             .variations,
+             .downloadableFiles,
+             .status,
+             .noPriceWarning:
             return [ImageAndTitleAndTextTableViewCell.self]
+        case .reviews:
+            return [ProductReviewsTableViewCell.self]
         }
     }
 
@@ -63,8 +82,23 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
 
     private var cellType: UITableViewCell.Type {
         switch self {
-        case .price, .inventory, .shipping, .categories, .briefDescription:
+        case .price,
+             .productType,
+             .inventory,
+             .shipping,
+             .categories,
+             .tags,
+             .shortDescription,
+             .externalURL,
+             .sku,
+             .groupedProducts,
+             .variations,
+             .downloadableFiles,
+             .status,
+             .noPriceWarning:
             return ImageAndTitleAndTextTableViewCell.self
+        case .reviews:
+            return ProductReviewsTableViewCell.self
         }
     }
 }

@@ -1,0 +1,108 @@
+{
+    "data": {
+        "id": 282,
+        "name": "Snowboard rentals",
+        "slug": "snowboard-rentals",
+        "permalink": "https://test.com/product/snowboard-rentals/",
+        "date_created": "2020-02-11T16:23:15",
+        "date_created_gmt": "2020-02-11T08:23:15",
+        "date_modified": "2020-06-04T15:08:36",
+        "date_modified_gmt": "2020-06-04T07:08:36",
+        "type": "external",
+        "status": "publish",
+        "featured": false,
+        "catalog_visibility": "visible",
+        "description": "<p>Winter is coming!</p>\n",
+        "short_description": "",
+        "sku": "",
+        "price": "999",
+        "regular_price": "999",
+        "sale_price": "",
+        "date_on_sale_from": null,
+        "date_on_sale_from_gmt": null,
+        "date_on_sale_to": null,
+        "date_on_sale_to_gmt": null,
+        "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&euro;</span>999!0000</span>",
+        "on_sale": false,
+        "purchasable": false,
+        "total_sales": 0,
+        "virtual": false,
+        "downloadable": false,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": -1,
+        "external_url": "https://snowboarding.com/product/rentals/",
+        "button_text": "Hit the slopes",
+        "tax_status": "taxable",
+        "tax_class": "",
+        "manage_stock": false,
+        "stock_quantity": null,
+        "stock_status": "instock",
+        "backorders": "no",
+        "backorders_allowed": false,
+        "backordered": false,
+        "sold_individually": false,
+        "weight": "",
+        "dimensions": {
+            "length": "",
+            "width": "",
+            "height": ""
+        },
+        "shipping_required": true,
+        "shipping_taxable": true,
+        "shipping_class": "",
+        "shipping_class_id": 0,
+        "reviews_allowed": true,
+        "average_rating": "0.00",
+        "rating_count": 0,
+        "related_ids": [],
+        "upsell_ids": [],
+        "cross_sell_ids": [],
+        "parent_id": 0,
+        "purchase_note": "",
+        "categories": [],
+        "tags": [],
+        "images": [],
+        "attributes": [
+            {
+                "id": 1,
+                "name": "Color",
+                "position": 0,
+                "visible": true,
+                "variation": false,
+                "options": [
+                    "Orange!",
+                    "Wooo purple"
+                ]
+            },
+            {
+                "id": 0,
+                "name": "Nuts",
+                "position": 2,
+                "visible": true,
+                "variation": false,
+                "options": [
+                    "Almond",
+                    "Cashew"
+                ]
+            }
+        ],
+        "default_attributes": [],
+        "variations": [],
+        "grouped_products": [],
+        "menu_order": 0,
+        "meta_data": [],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/2197"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products"
+                }
+            ]
+        }
+    }
+}

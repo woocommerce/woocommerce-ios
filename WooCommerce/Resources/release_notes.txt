@@ -1,12 +1,5 @@
-We’re continuing to add functionality to product editing. Look out for improvements to image and product management — head to “Settings” in the My Store tab to learn more and turn on the new features!
+Products: In Settings → Experimental Features, a Products switch is now available for turning M4 features on and off (currently, the default is off). You can also add a simple, grouped, or external product and publish or save it as a draft.
 
-Push notifications and update badges work better together. The Reviews tab no longer shows a badge after you receive a new order push notification, and navigating to the Orders and/or the Reviews tab now clears the badge number (depending on the types of notifications).
+General enhancements: Now, if you’re not saving a product as “published,” the in-progress modal will show a more accurate message — like “saving your product” instead of “publishing your product.” Also, when you dismiss the product selector search modal when at least one product is selected for a grouped product’s linked products, we’ll first ask you if you want to discard your changes.
 
-Nudges are a bit less nudge-y. When editing products, the “discard changes” prompt now only appears if you’ve deleted images, and not when you’re leaving product settings detail screens with a text field (slug, purchase note, and menu order).
-
-We also straightened out a few little UI foibles:
-- The product name displays in the product details navigation bar, so it’s always visible.
-- We fixed an issue that prevented the product details from scrolling all the way to the bottom in landscape mode after dismissing the keyboard.
-- Images pending upload will be visible after editing product images from product details.
-- The “View product in store” action displays only if the product is published.
-- HTML codes in the shipping method are now shown correctly.
+Miscellaneous fixes: When opening a product or product variation from Order Details, it now shows read-only product or product variation details (and the product variation no longer appears in the Products tab anymore). Also, in the product and variation list, the stock quantity isn’t shown anymore if stock management is disabled.

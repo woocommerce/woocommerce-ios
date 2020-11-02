@@ -3,48 +3,55 @@ import UIKit
 /// View model for `TopBannerView`.
 ///
 struct TopBannerViewModel {
+
+    enum TopButtonType {
+        case chevron(handler: (() -> Void)?)
+        case dismiss(handler: (() -> Void)?)
+        case none
+
+        var handler: (() -> Void)? {
+            switch self {
+            case let .chevron(handler), let .dismiss(handler):
+                return handler
+            case .none:
+                return nil
+            }
+        }
+    }
+
+    /// Represents an actionable button with a title and an action
+    ///
+    struct ActionButton {
+        let title: String
+        let action: () -> Void
+    }
+
+    enum BannerType {
+        case normal
+        case warning
+    }
+
     let title: String?
     let infoText: String?
     let icon: UIImage?
-    let actionButtonTitle: String?
     let isExpanded: Bool
-    let actionHandler: (() -> Void)?
-    let dismissHandler: (() -> Void)?
-    let expandedStateChangeHandler: (() -> Void)?
+    let topButton: TopButtonType
+    let actionButtons: [ActionButton]
+    let type: BannerType
 
-    /// Used when the top banner is not actionable.
-    ///
     init(title: String?,
          infoText: String?,
          icon: UIImage?,
          isExpanded: Bool = true,
-         expandedStateChangeHandler: (() -> Void)?) {
+         topButton: TopButtonType,
+         actionButtons: [ActionButton] = [],
+         type: BannerType = .normal) {
         self.title = title
         self.infoText = infoText
         self.icon = icon
         self.isExpanded = isExpanded
-        self.actionButtonTitle = nil
-        self.actionHandler = nil
-        self.dismissHandler = nil
-        self.expandedStateChangeHandler = expandedStateChangeHandler
-    }
-
-    /// Used when the top banner is actionable.
-    ///
-    init(title: String?,
-         infoText: String?,
-         icon: UIImage?,
-         actionButtonTitle: String,
-         isExpanded: Bool = true,
-         actionHandler: @escaping () -> Void,
-         dismissHandler: @escaping () -> Void) {
-        self.title = title
-        self.infoText = infoText
-        self.icon = icon
-        self.actionButtonTitle = actionButtonTitle
-        self.isExpanded = isExpanded
-        self.actionHandler = actionHandler
-        self.dismissHandler = dismissHandler
-        self.expandedStateChangeHandler = nil
+        self.topButton = topButton
+        self.actionButtons = actionButtons
+        self.type = type
     }
 }

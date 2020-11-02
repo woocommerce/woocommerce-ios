@@ -6,8 +6,8 @@ import WordPressUI
 final class BottomSheetListSelectorViewController<Command: BottomSheetListSelectorCommand, Model, Cell>:
 UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model == Model, Command.Cell == Cell {
     private let viewProperties: BottomSheetListSelectorViewProperties
-    private var command: Command
-    private let onDismiss: (_ selected: Model?) -> Void
+    private let command: Command
+    private let onDismiss: ((_ selected: Model?) -> Void)?
 
     private let rowType = Cell.self
 
@@ -26,7 +26,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
 
     init(viewProperties: BottomSheetListSelectorViewProperties,
          command: Command,
-         onDismiss: @escaping (_ selected: Model?) -> Void) {
+         onDismiss: ((_ selected: Model?) -> Void)?) {
         self.viewProperties = viewProperties
         self.command = command
         self.onDismiss = onDismiss
@@ -46,7 +46,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        onDismiss(command.selected)
+        onDismiss?(command.selected)
         super.viewWillDisappear(animated)
     }
 
@@ -66,10 +66,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: rowType.reuseIdentifier,
-                                                       for: indexPath) as? Cell else {
-                                                        fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(Cell.self, for: indexPath)
         let model = command.data[indexPath.row]
         command.configureCell(cell: cell, model: model)
 
@@ -125,7 +122,7 @@ private extension BottomSheetListSelectorViewController {
     }
 
     func registerTableViewCells() {
-        tableView.register(rowType.loadNib(), forCellReuseIdentifier: rowType.reuseIdentifier)
+        tableView.registerNib(for: rowType)
     }
 
     func registerTableViewHeaderFooters() {

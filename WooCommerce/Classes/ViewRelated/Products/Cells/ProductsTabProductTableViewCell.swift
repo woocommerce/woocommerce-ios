@@ -1,11 +1,12 @@
 import UIKit
-import Kingfisher
 
 final class ProductsTabProductTableViewCell: UITableViewCell {
     private lazy var productImageView: UIImageView = {
         let image = UIImageView(frame: .zero)
         return image
     }()
+
+    private var selectedProductImageOverlayView: UIView?
 
     private lazy var nameLabel: UILabel = {
         let label = UILabel(frame: .zero)
@@ -51,7 +52,7 @@ extension ProductsTabProductTableViewCell: SearchResultCell {
     }
 
     static func register(for tableView: UITableView) {
-        tableView.register(self, forCellReuseIdentifier: reuseIdentifier)
+        tableView.register(self)
     }
 }
 
@@ -74,6 +75,27 @@ extension ProductsTabProductTableViewCell {
                                                             }
             }
         }
+
+        // Selected state.
+        let isSelected = viewModel.isSelected
+        if isSelected {
+            configureSelectedProductImageOverlayView()
+        } else {
+            selectedProductImageOverlayView?.removeFromSuperview()
+            selectedProductImageOverlayView = nil
+        }
+        let selectedBackgroundColor = isSelected ? UIColor.primary.withAlphaComponent(0.2): .listForeground
+        backgroundColor = selectedBackgroundColor
+    }
+
+    func configureAccessoryDeleteButton(onTap: @escaping () -> Void) {
+        let deleteButton = UIButton(type: .detailDisclosure)
+        deleteButton.setImage(.deleteCellImage, for: .normal)
+        deleteButton.tintColor = .systemColor(.tertiaryLabel)
+        deleteButton.on(.touchUpInside) { _ in
+            onTap()
+        }
+        accessoryView = deleteButton
     }
 }
 
@@ -93,7 +115,7 @@ private extension ProductsTabProductTableViewCell {
 
         NSLayoutConstraint.activate([
             bottomBorderView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            bottomBorderView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            bottomBorderView.trailingAnchor.constraint(equalTo: trailingAnchor),
             bottomBorderView.leadingAnchor.constraint(equalTo: contentStackView.leadingAnchor),
             bottomBorderView.heightAnchor.constraint(equalToConstant: 0.5)
         ])
@@ -137,11 +159,30 @@ private extension ProductsTabProductTableViewCell {
             // This multiplier matches the required size(37.5pt) for a 375pt(as per designs) content view width
             productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.1),
             productImageView.widthAnchor.constraint(equalTo: productImageView.heightAnchor)
-            ])
+        ])
     }
 
     func configureBottomBorderView() {
         bottomBorderView.backgroundColor = .systemColor(.separator)
+    }
+
+    func configureSelectedProductImageOverlayView() {
+        guard selectedProductImageOverlayView == nil else {
+            return
+        }
+
+        let view = UIView(frame: .zero)
+        view.backgroundColor = .primary
+        view.translatesAutoresizingMaskIntoConstraints = false
+        let checkmarkImage = UIImage.checkmarkInCellImageOverlay
+        let checkmarkImageView = UIImageView(image: checkmarkImage)
+        checkmarkImageView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(checkmarkImageView)
+        view.pinSubviewAtCenter(checkmarkImageView)
+        selectedProductImageOverlayView = view
+
+        productImageView.addSubview(view)
+        productImageView.pinSubviewToAllEdges(view)
     }
 }
 
@@ -159,3 +200,56 @@ private extension ProductsTabProductTableViewCell {
         static let imageBackgroundColor = UIColor.listForeground
     }
 }
+
+#if canImport(SwiftUI) && DEBUG
+
+import SwiftUI
+
+import Yosemite
+
+private struct ProductsTabProductTableViewCellRepresentable: UIViewRepresentable {
+    let viewModel: ProductsTabProductViewModel
+
+    func makeUIView(context: Context) -> ProductsTabProductTableViewCell {
+        .init(style: .default, reuseIdentifier: "cell")
+    }
+
+    func updateUIView(_ view: ProductsTabProductTableViewCell, context: Context) {
+        view.update(viewModel: viewModel, imageService: ServiceLocator.imageService)
+    }
+}
+
+@available(iOS 13.0, *)
+struct ProductsTabProductTableViewCell_Previews: PreviewProvider {
+    private static var nonSelectedViewModel = ProductsTabProductViewModel(product: Product(), isSelected: false)
+    private static var selectedViewModel = ProductsTabProductViewModel(product: Product().copy(statusKey: ProductStatus.pending.rawValue),
+                                                                       isSelected: true)
+
+    private static func makeStack() -> some View {
+        VStack {
+            ProductsTabProductTableViewCellRepresentable(viewModel: nonSelectedViewModel)
+            ProductsTabProductTableViewCellRepresentable(viewModel: selectedViewModel)
+        }
+        .background(Color(UIColor.listForeground))
+    }
+
+    static var previews: some View {
+        Group {
+            makeStack()
+                .previewLayout(.fixed(width: 320, height: 150))
+                .previewDisplayName("Light")
+
+            makeStack()
+                .previewLayout(.fixed(width: 320, height: 150))
+                .environment(\.colorScheme, .dark)
+                .previewDisplayName("Dark")
+
+            makeStack()
+                .previewLayout(.fixed(width: 320, height: 400))
+                .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+                .previewDisplayName("Large Font")
+        }
+    }
+}
+
+#endif

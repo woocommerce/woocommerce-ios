@@ -2,29 +2,13 @@ import Foundation
 import Yosemite
 
 final class SiteCountry {
-    /// ResultsController. Fetches the store country from SiteSetting
-    ///
-    private lazy var resultsController: ResultsController<StorageSiteSetting> = {
-        let storageManager = ServiceLocator.storageManager
-        let sitePredicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
-        let settingCountryPredicate = NSPredicate(format: "settingID ==[c] %@", Constants.countryKey)
 
-        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, settingCountryPredicate])
-
-        let siteIDKeyPath = #keyPath(StorageSiteSetting.siteID)
-        let descriptor = NSSortDescriptor(keyPath: \StorageSiteSetting.siteID, ascending: false)
-        return ResultsController<StorageSiteSetting>(storageManager: storageManager,
-                                                     sectionNameKeyPath: siteIDKeyPath,
-                                                     matching: compoundPredicate,
-                                                     sortedBy: [descriptor])
-    }()
-
-    init() {
-        configureResultsController()
-    }
+    private let siteSettings: [SiteSetting]
 
     private var siteCountry: String? {
-        return resultsController.fetchedObjects.first?.value
+        return siteSettings.first { (setting) -> Bool in
+            return setting.settingID.contains(Constants.countryKey)
+        }?.value
     }
 
     /// Returns the name of the country associated with the current store.
@@ -41,10 +25,8 @@ final class SiteCountry {
         return countryCode.readableCountry
     }
 
-    /// Setup: ResultsController
-    ///
-    private func configureResultsController() {
-        try? resultsController.performFetch()
+    init(siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings) {
+        self.siteSettings = siteSettings
     }
 }
 

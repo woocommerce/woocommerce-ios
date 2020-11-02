@@ -6,7 +6,14 @@ final class ProductSettingsViewModelTests: XCTestCase {
 
     func testOnReloadClosure() {
 
-        let product = MockProduct().product(status: .publish, featured: true, catalogVisibility: .search, slug: "this-is-a-slug", menuOrder: 1)
+        let product = MockProduct().product(downloadable: false,
+                                            virtual: true,
+                                            status: .publish,
+                                            featured: true,
+                                            catalogVisibility: .search,
+                                            reviewsAllowed: false,
+                                            slug: "this-is-a-slug",
+                                            menuOrder: 1)
         let viewModel = ProductSettingsViewModel(product: product, password: "1234")
 
         // Act
@@ -21,9 +28,12 @@ final class ProductSettingsViewModelTests: XCTestCase {
                                                     featured: true,
                                                     password: "1234",
                                                     catalogVisibility: .search,
+                                                    virtual: true,
+                                                    reviewsAllowed: true,
                                                     slug: "this-is-a-slug",
                                                     purchaseNote: "This is a purchase note",
-                                                    menuOrder: 1)
+                                                    menuOrder: 1,
+                                                    downloadable: true)
 
         waitForExpectations(timeout: 1.5, handler: nil)
     }
@@ -54,4 +64,13 @@ final class ProductSettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
+}
+
+private extension ProductSettingsViewModel {
+    convenience init(product: Product, password: String?) {
+        self.init(product: product,
+                  password: password,
+                  formType: .edit,
+                  isEditProductsRelease5Enabled: true)
+    }
 }

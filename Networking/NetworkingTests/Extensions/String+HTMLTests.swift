@@ -1,11 +1,13 @@
 import XCTest
+import TestKit
+
 @testable import Networking
 
 final class String_HTMLTests: XCTestCase {
 
     /// Verifies that regular HTML Tags are effectively nuked
     ///
-    func testRegularTagsAreCleanedUp() {
+    func test_regular_tags_are_cleaned_up() {
         let sampleHTML1 = "<a href='www.automattic.com'><b><i>LINK</i></b></a>"
         let sampleStripped1 = "LINK"
 
@@ -14,7 +16,7 @@ final class String_HTMLTests: XCTestCase {
 
     /// Verifies that Hexa Entities are converted into plain Characters
     ///
-    func testHexaCharactersAreConvertedIntoSimpleCharacters() {
+    func test_hexa_characters_are_converted_into_simple_characters() {
         let sampleHTML2 = "&lt;&gt;&amp;&quot;&apos;"
         let sampleStripped2 = "<>&\"'"
 
@@ -23,7 +25,7 @@ final class String_HTMLTests: XCTestCase {
 
     /// Verifies that Line Breaks are effectively converted into `\n` characters
     ///
-    func testLineBreaksAreConvertedIntoNewlines() {
+    func test_line_breaks_are_converted_into_newlines() {
         let sampleHTML3 = "<br><br/>"
         let sampleStripped3 = "\n\n"
 
@@ -32,7 +34,7 @@ final class String_HTMLTests: XCTestCase {
 
     /// Confidence-check that stripping works in the background thread too.
     ///
-    func testItCanStripHTMLInABackgroundThread() {
+    func test_it_can_strip_HTML_in_a_background_thread() {
         let source = "<p><strong>Pellentesque <em>habitant</em> morbi tristique</strong></p>"
 
         var stripped: String?
@@ -48,7 +50,7 @@ final class String_HTMLTests: XCTestCase {
 
     /// Test with lotsa HTML tags
     ///
-    func testItCanStripHTMLFromALargeSource() {
+    func test_it_can_strip_HTML_from_a_large_source() {
         let source = Fixtures.longHTML.source
 
         let stripped = source.strippedHTML
@@ -59,7 +61,7 @@ final class String_HTMLTests: XCTestCase {
     /// Test that we did not lose performance when we changed from using NSAttributedString
     /// to HTMLParser.
     ///
-    func testStrippingHTMLHasReasonablePerformance() {
+    func test_stripping_HTML_has_reasonable_performance() {
         let source = Fixtures.longHTML.source
 
         measure {

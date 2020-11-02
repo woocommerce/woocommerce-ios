@@ -3,13 +3,14 @@ import Foundation
 
 /// Represents a Product Entity.
 ///
-public struct Product: Codable {
+public struct Product: Codable, GeneratedCopiable, Equatable {
     public let siteID: Int64
     public let productID: Int64
     public let name: String
     public let slug: String
     public let permalink: String
 
+    public let date: Date               // Calculated date based on `dateCreated`, `dateModified`, and `statusKey`
     public let dateCreated: Date        // gmt
     public let dateModified: Date?      // gmt
     public let dateOnSaleStart: Date?   // gmt
@@ -21,7 +22,7 @@ public struct Product: Codable {
     public let catalogVisibilityKey: String // visible, catalog, search, hidden
 
     public let fullDescription: String?
-    public let briefDescription: String?
+    public let shortDescription: String?
     public let sku: String?
 
     public let price: String
@@ -35,15 +36,16 @@ public struct Product: Codable {
 
     public let downloadable: Bool
     public let downloads: [ProductDownload]
-    public let downloadLimit: Int       // defaults to -1
-    public let downloadExpiry: Int      // defaults to -1
+    public let downloadLimit: Int64       // defaults to -1
+    public let downloadExpiry: Int64      // defaults to -1
 
-    public let externalURL: String?
+    public let buttonText: String       // External products only
+    public let externalURL: String?     // External products only
     public let taxStatusKey: String     // taxable, shipping, none
     public let taxClass: String?
 
     public let manageStock: Bool
-    public let stockQuantity: Int?      // API reports Int or null
+    public let stockQuantity: Int64?    // API reports Int or null
     public let stockStatusKey: String   // instock, outofstock, backorder
 
     public let backordersKey: String    // no, notify, yes
@@ -114,6 +116,7 @@ public struct Product: Codable {
                 name: String,
                 slug: String,
                 permalink: String,
+                date: Date,
                 dateCreated: Date,
                 dateModified: Date?,
                 dateOnSaleStart: Date?,
@@ -123,7 +126,7 @@ public struct Product: Codable {
                 featured: Bool,
                 catalogVisibilityKey: String,
                 fullDescription: String?,
-                briefDescription: String?,
+                shortDescription: String?,
                 sku: String?,
                 price: String,
                 regularPrice: String?,
@@ -134,13 +137,14 @@ public struct Product: Codable {
                 virtual: Bool,
                 downloadable: Bool,
                 downloads: [ProductDownload],
-                downloadLimit: Int,
-                downloadExpiry: Int,
+                downloadLimit: Int64,
+                downloadExpiry: Int64,
+                buttonText: String,
                 externalURL: String?,
                 taxStatusKey: String,
                 taxClass: String?,
                 manageStock: Bool,
-                stockQuantity: Int?,
+                stockQuantity: Int64?,
                 stockStatusKey: String,
                 backordersKey: String,
                 backordersAllowed: Bool,
@@ -174,6 +178,7 @@ public struct Product: Codable {
         self.name = name
         self.slug = slug
         self.permalink = permalink
+        self.date = date
         self.dateCreated = dateCreated
         self.dateModified = dateModified
         self.dateOnSaleStart = dateOnSaleStart
@@ -183,7 +188,7 @@ public struct Product: Codable {
         self.featured = featured
         self.catalogVisibilityKey = catalogVisibilityKey
         self.fullDescription = fullDescription
-        self.briefDescription = briefDescription
+        self.shortDescription = shortDescription
         self.sku = sku
         self.price = price
         self.regularPrice = regularPrice
@@ -196,6 +201,7 @@ public struct Product: Codable {
         self.downloads = downloads
         self.downloadLimit = downloadLimit
         self.downloadExpiry = downloadExpiry
+        self.buttonText = buttonText
         self.externalURL = externalURL
         self.taxStatusKey = taxStatusKey
         self.taxClass = taxClass
@@ -255,18 +261,19 @@ public struct Product: Codable {
         let featured = try container.decode(Bool.self, forKey: .featured)
         let catalogVisibilityKey = try container.decode(String.self, forKey: .catalogVisibilityKey)
 
+        // Calculated date: `dateModified` for a draft product and `dateCreated` otherwise.
+        let date = statusKey == ProductStatus.draft.rawValue ? dateModified: dateCreated
+
         let fullDescription = try container.decodeIfPresent(String.self, forKey: .fullDescription)
-        let briefDescription = try container.decodeIfPresent(String.self, forKey: .briefDescription)
+        let shortDescription = try container.decodeIfPresent(String.self, forKey: .shortDescription)
         let sku = try container.decodeIfPresent(String.self, forKey: .sku)
 
         // Even though a plain install of WooCommerce Core provides string values,
         // some plugins alter the field value from String to Int or Decimal.
-        var price = ""
-        if let parsedStringValue = container.failsafeDecodeIfPresent(stringForKey: .price) {
-            price = parsedStringValue
-        } else if let parsedDecimalValue = container.failsafeDecodeIfPresent(decimalForKey: .price) {
-            price = NSDecimalNumber(decimal: parsedDecimalValue).stringValue
-        }
+        let price = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                      forKey: .price,
+                                                      alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
+            ?? ""
 
         let regularPrice = try container.decodeIfPresent(String.self, forKey: .regularPrice)
 
@@ -274,12 +281,13 @@ public struct Product: Codable {
 
         // Even though a plain install of WooCommerce Core provides string values,
         // some plugins alter the field value from String to Int or Decimal.
-        var salePrice = ""
-        if let parsedSalePriceString = container.failsafeDecodeIfPresent(stringForKey: .salePrice) {
-            salePrice = (onSale && parsedSalePriceString.isEmpty) ? "0" : parsedSalePriceString
-        } else if let parsedSalePriceDecimal = container.failsafeDecodeIfPresent(decimalForKey: .salePrice) {
-            salePrice = NSDecimalNumber(decimal: parsedSalePriceDecimal).stringValue
-        }
+        let salePrice = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                          forKey: .salePrice,
+                                                          shouldDecodeTargetTypeFirst: false,
+                                                          alternativeTypes: [
+                                                            .string(transform: { (onSale && $0.isEmpty) ? "0" : $0 }),
+                                                            .decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
+            ?? ""
 
         let purchasable = try container.decode(Bool.self, forKey: .purchasable)
         let totalSales = container.failsafeDecodeIfPresent(Int.self, forKey: .totalSales) ?? 0
@@ -287,9 +295,10 @@ public struct Product: Codable {
 
         let downloadable = try container.decode(Bool.self, forKey: .downloadable)
         let downloads = try container.decode([ProductDownload].self, forKey: .downloads)
-        let downloadLimit = try container.decode(Int.self, forKey: .downloadLimit)
-        let downloadExpiry = try container.decode(Int.self, forKey: .downloadExpiry)
+        let downloadLimit = try container.decode(Int64.self, forKey: .downloadLimit)
+        let downloadExpiry = try container.decode(Int64.self, forKey: .downloadExpiry)
 
+        let buttonText = try container.decode(String.self, forKey: .buttonText)
         let externalURL = try container.decodeIfPresent(String.self, forKey: .externalURL)
         let taxStatusKey = try container.decode(String.self, forKey: .taxStatusKey)
         let taxClass = try container.decodeIfPresent(String.self, forKey: .taxClass)
@@ -299,15 +308,17 @@ public struct Product: Codable {
         // A "parent" value means that stock mgmt is turned on + managed at the parent product-level, therefore
         // we need to set this var as `true` in this situation.
         // See: https://github.com/woocommerce/woocommerce-ios/issues/884 for more deets
-        var manageStock = false
-        if let parsedBoolValue = container.failsafeDecodeIfPresent(booleanForKey: .manageStock) {
-            manageStock = parsedBoolValue
-        } else if let parsedStringValue = container.failsafeDecodeIfPresent(stringForKey: .manageStock) {
-            // A bool could not be parsed — check if "parent" is set, and if so, set manageStock to `true`
-            manageStock = parsedStringValue.lowercased() == Values.manageStockParent ? true : false
-        }
+        let manageStock = container.failsafeDecodeIfPresent(targetType: Bool.self,
+                                                            forKey: .manageStock,
+                                                            alternativeTypes: [
+                                                                .string(transform: { value in
+                                                                    // A bool could not be parsed — check if "parent" is set, and if so, set manageStock to
+                                                                    // `true`
+                                                                    value.lowercased() == Values.manageStockParent ? true : false
+                                                                })
+        ]) ?? false
 
-        let stockQuantity = try container.decodeIfPresent(Int.self, forKey: .stockQuantity)
+        let stockQuantity = try container.decodeIfPresent(Int64.self, forKey: .stockQuantity)
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
 
         let backordersKey = try container.decode(String.self, forKey: .backordersKey)
@@ -349,6 +360,7 @@ public struct Product: Codable {
                   name: name,
                   slug: slug,
                   permalink: permalink,
+                  date: date,
                   dateCreated: dateCreated,
                   dateModified: dateModified,
                   dateOnSaleStart: dateOnSaleStart,
@@ -358,7 +370,7 @@ public struct Product: Codable {
                   featured: featured,
                   catalogVisibilityKey: catalogVisibilityKey,
                   fullDescription: fullDescription,
-                  briefDescription: briefDescription,
+                  shortDescription: shortDescription,
                   sku: sku,
                   price: price,
                   regularPrice: regularPrice,
@@ -371,6 +383,7 @@ public struct Product: Codable {
                   downloads: downloads,
                   downloadLimit: downloadLimit,
                   downloadExpiry: downloadExpiry,
+                  buttonText: buttonText,
                   externalURL: externalURL,
                   taxStatusKey: taxStatusKey,
                   taxClass: taxClass,
@@ -451,17 +464,46 @@ public struct Product: Codable {
         try container.encode(stockQuantity, forKey: .stockQuantity)
         try container.encode(backordersKey, forKey: .backordersKey)
         try container.encode(stockStatusKey, forKey: .stockStatusKey)
+        try container.encode(virtual, forKey: .virtual)
 
-        // Brief description (short description).
-        try container.encode(briefDescription, forKey: .briefDescription)
+        // Product type
+        switch productType {
+        case .custom:
+            break
+        default:
+            try container.encode(productTypeKey, forKey: .productTypeKey)
+        }
+
+        // Categories
+        try container.encode(categories, forKey: .categories)
+
+        // Tags
+        try container.encode(tags, forKey: .tags)
+
+        // Short description.
+        try container.encode(shortDescription, forKey: .shortDescription)
+
+        // Grouped products.
+        try container.encode(groupedProducts, forKey: .groupedProducts)
 
         // Product Settings
         try container.encode(statusKey, forKey: .statusKey)
         try container.encode(featured, forKey: .featured)
         try container.encode(catalogVisibilityKey, forKey: .catalogVisibilityKey)
+        try container.encode(reviewsAllowed, forKey: .reviewsAllowed)
         try container.encode(slug, forKey: .slug)
         try container.encode(purchaseNote, forKey: .purchaseNote)
         try container.encode(menuOrder, forKey: .menuOrder)
+
+        // External link for external/affiliate products.
+        try container.encode(externalURL, forKey: .externalURL)
+        try container.encode(buttonText, forKey: .buttonText)
+
+        // Downloadable files settings for a downloadable products.
+        try container.encode(downloadable, forKey: .downloadable)
+        try container.encode(downloads, forKey: .downloads)
+        try container.encode(downloadLimit, forKey: .downloadLimit)
+        try container.encode(downloadExpiry, forKey: .downloadExpiry)
     }
 }
 
@@ -487,7 +529,7 @@ private extension Product {
         case catalogVisibilityKey   = "catalog_visibility"
 
         case fullDescription        = "description"
-        case briefDescription       = "short_description"
+        case shortDescription       = "short_description"
 
         case sku            = "sku"
         case price          = "price"
@@ -504,6 +546,7 @@ private extension Product {
         case downloadLimit  = "download_limit"
         case downloadExpiry = "download_expiry"
 
+        case buttonText     = "button_text"
         case externalURL    = "external_url"
         case taxStatusKey   = "tax_status"
         case taxClass       = "tax_class"
@@ -551,72 +594,6 @@ private extension Product {
 // MARK: - Comparable Conformance
 //
 extension Product: Comparable {
-    public static func == (lhs: Product, rhs: Product) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.productID == rhs.productID &&
-            lhs.name == rhs.name &&
-            lhs.slug == rhs.slug &&
-            lhs.permalink == rhs.permalink &&
-            lhs.dateCreated == rhs.dateCreated &&
-            lhs.dateModified == rhs.dateModified &&
-            lhs.dateOnSaleStart == rhs.dateOnSaleStart &&
-            lhs.dateOnSaleEnd == rhs.dateOnSaleEnd &&
-            lhs.productTypeKey == rhs.productTypeKey &&
-            lhs.statusKey == rhs.statusKey &&
-            lhs.featured == rhs.featured &&
-            lhs.catalogVisibilityKey == rhs.catalogVisibilityKey &&
-            lhs.fullDescription == rhs.fullDescription &&
-            lhs.briefDescription == rhs.briefDescription &&
-            lhs.sku == rhs.sku &&
-            // lhs.price == rhs.price &&    // can't compare because object type unknown
-            lhs.regularPrice == rhs.regularPrice &&
-            // lhs.salePrice == rhs.salePrice && // can't compare because object type unknown
-            lhs.onSale == rhs.onSale &&
-            lhs.purchasable == rhs.purchasable &&
-            lhs.totalSales == rhs.totalSales &&
-            lhs.virtual == rhs.virtual &&
-            lhs.downloadable == rhs.downloadable &&
-            lhs.downloadLimit == rhs.downloadLimit &&
-            lhs.downloadExpiry == rhs.downloadExpiry &&
-            lhs.externalURL == rhs.externalURL &&
-            lhs.taxStatusKey == rhs.taxStatusKey &&
-            lhs.taxClass == rhs.taxClass &&
-            lhs.manageStock == rhs.manageStock &&
-            lhs.stockQuantity == rhs.stockQuantity &&
-            lhs.stockStatusKey == rhs.stockStatusKey &&
-            lhs.backordersKey == rhs.backordersKey &&
-            lhs.backordersAllowed == rhs.backordersAllowed &&
-            lhs.backordered == rhs.backordered &&
-            lhs.soldIndividually == rhs.soldIndividually &&
-            lhs.weight == rhs.weight &&
-            lhs.dimensions == rhs.dimensions &&
-            lhs.shippingRequired == rhs.shippingRequired &&
-            lhs.shippingTaxable == rhs.shippingTaxable &&
-            lhs.shippingClass == rhs.shippingClass &&
-            lhs.shippingClassID == rhs.shippingClassID &&
-            lhs.productShippingClass == rhs.productShippingClass &&
-            lhs.reviewsAllowed == rhs.reviewsAllowed &&
-            lhs.averageRating == rhs.averageRating &&
-            lhs.ratingCount == rhs.ratingCount &&
-            lhs.relatedIDs == rhs.relatedIDs &&
-            lhs.upsellIDs == rhs.upsellIDs &&
-            lhs.parentID == rhs.parentID &&
-            lhs.purchaseNote == rhs.purchaseNote &&
-            lhs.categories.count == rhs.categories.count &&
-            lhs.categories.sorted() == rhs.categories.sorted() &&
-            lhs.tags.count == rhs.tags.count &&
-            lhs.tags.sorted() == rhs.tags.sorted() &&
-            lhs.images.count == rhs.images.count &&
-            lhs.images.sorted() == rhs.images.sorted() &&
-            lhs.attributes.count == rhs.attributes.count &&
-            lhs.attributes.sorted() == rhs.attributes.sorted() &&
-            lhs.defaultAttributes.count == rhs.defaultAttributes.count &&
-            lhs.defaultAttributes.sorted() == rhs.defaultAttributes.sorted() &&
-            lhs.variations == rhs.variations &&
-            lhs.groupedProducts == rhs.groupedProducts &&
-            lhs.menuOrder == rhs.menuOrder
-    }
-
     public static func < (lhs: Product, rhs: Product) -> Bool {
         /// Note: stockQuantity can be `null` in the API,
         /// which is why we are unable to sort by it here.

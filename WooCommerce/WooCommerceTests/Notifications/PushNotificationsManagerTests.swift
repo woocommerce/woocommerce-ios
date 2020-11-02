@@ -359,7 +359,7 @@ final class PushNotificationsManagerTests: XCTestCase {
     /// state is inactive.
     ///
     func testHandleNotificationDisplaysDetailsForTheNewNotificationWheneverTheAppStateIsInactive() {
-        let payload = notificationPayload()
+        let payload = notificationPayload(type: .storeOrder)
         var handleNotificationCallbackWasExecuted = false
 
         application.applicationState = .inactive
@@ -392,7 +392,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Given
         application.applicationState = .active
 
-        var emittedNotifications = [ForegroundNotification]()
+        var emittedNotifications = [PushNotification]()
         _ = manager.foregroundNotifications.subscribe { notification in
             emittedNotifications.append(notification)
         }
@@ -417,7 +417,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Given
         application.applicationState = .background
 
-        var emittedNotifications = [ForegroundNotification]()
+        var emittedNotifications = [PushNotification]()
         _ = manager.foregroundNotifications.subscribe { notification in
             emittedNotifications.append(notification)
         }
@@ -431,6 +431,31 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(emittedNotifications.isEmpty)
+    }
+
+    func testItEmitsInactiveNotificationsWhenItReceivesANotificationWhileTheAppIsNotActive() throws {
+        // Given
+        application.applicationState = .inactive
+
+        var emittedNotifications = [PushNotification]()
+        _ = manager.inactiveNotifications.subscribe { notification in
+            emittedNotifications.append(notification)
+        }
+
+        let userinfo = notificationPayload(noteID: 9_981, type: .storeOrder)
+
+        // When
+        manager.handleNotification(userinfo, onBadgeUpdateCompletion: {}) { _ in
+            // noop
+        }
+
+        // Then
+        XCTAssertEqual(emittedNotifications.count, 1)
+
+        let emittedNotification = try XCTUnwrap(emittedNotifications.first)
+        XCTAssertEqual(emittedNotification.kind, .storeOrder)
+        XCTAssertEqual(emittedNotification.noteID, 9_981)
+        XCTAssertEqual(emittedNotification.message, Sample.defaultMessage)
     }
 }
 

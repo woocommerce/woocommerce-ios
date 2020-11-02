@@ -32,7 +32,7 @@ final class MockReviews {
                              verified: verified)
     }
 
-    func anonyousReview() -> Networking.ProductReview {
+    func anonymousReview() -> Networking.ProductReview {
         return ProductReview(siteID: siteID,
                              reviewID: reviewID,
                              productID: productID,
@@ -56,6 +56,7 @@ extension MockReviews {
                        name: productName,
                        slug: "book-the-green-room",
                        permalink: "https://example.com/product/book-the-green-room/",
+                       date: date(with: "2019-02-19T17:33:31"),
                        dateCreated: date(with: "2019-02-19T17:33:31"),
                        dateModified: date(with: "2019-02-19T17:48:01"),
                        dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
@@ -65,7 +66,7 @@ extension MockReviews {
                        featured: false,
                        catalogVisibilityKey: "visible",
                        fullDescription: "<p>This is the party room!</p>\n",
-                       briefDescription: """
+                       shortDescription: """
                            [contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. \
                            We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let us \
                            know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests \
@@ -83,6 +84,7 @@ extension MockReviews {
                        downloads: [],
                        downloadLimit: -1,
                        downloadExpiry: -1,
+                       buttonText: "",
                        externalURL: "http://somewhere.com",
                        taxStatusKey: "taxable",
                        taxClass: "",
@@ -128,15 +130,15 @@ extension MockReviews {
     }
 
     func sampleTags() -> [Networking.ProductTag] {
-        let tag1 = ProductTag(tagID: 37, name: "room", slug: "room")
-        let tag2 = ProductTag(tagID: 38, name: "party room", slug: "party-room")
-        let tag3 = ProductTag(tagID: 39, name: "30", slug: "30")
-        let tag4 = ProductTag(tagID: 40, name: "20+", slug: "20")
-        let tag5 = ProductTag(tagID: 41, name: "meeting room", slug: "meeting-room")
-        let tag6 = ProductTag(tagID: 42, name: "meetings", slug: "meetings")
-        let tag7 = ProductTag(tagID: 43, name: "parties", slug: "parties")
-        let tag8 = ProductTag(tagID: 44, name: "graduation", slug: "graduation")
-        let tag9 = ProductTag(tagID: 45, name: "birthday party", slug: "birthday-party")
+        let tag1 = ProductTag(siteID: siteID, tagID: 37, name: "room", slug: "room")
+        let tag2 = ProductTag(siteID: siteID, tagID: 38, name: "party room", slug: "party-room")
+        let tag3 = ProductTag(siteID: siteID, tagID: 39, name: "30", slug: "30")
+        let tag4 = ProductTag(siteID: siteID, tagID: 40, name: "20+", slug: "20")
+        let tag5 = ProductTag(siteID: siteID, tagID: 41, name: "meeting room", slug: "meeting-room")
+        let tag6 = ProductTag(siteID: siteID, tagID: 42, name: "meetings", slug: "meetings")
+        let tag7 = ProductTag(siteID: siteID, tagID: 43, name: "parties", slug: "parties")
+        let tag8 = ProductTag(siteID: siteID, tagID: 44, name: "graduation", slug: "graduation")
+        let tag9 = ProductTag(siteID: siteID, tagID: 45, name: "birthday party", slug: "birthday-party")
 
         return [tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9]
     }
@@ -179,13 +181,13 @@ extension MockReviews {
     func sampleDownloads() -> [Networking.ProductDownload] {
         let download1 = ProductDownload(downloadID: "1f9c11f99ceba63d4403c03bd5391b11",
                                         name: "Song #1",
-                                        fileURL: "https://woocommerce.files.wordpress.com/2017/06/woo-single-1.ogg")
+                                        fileURL: "https://example.com/woo-single-1.ogg")
         let download2 = ProductDownload(downloadID: "ec87d8b5-1361-4562-b4b8-18980b5a2cae",
                                         name: "Artwork",
-                                        fileURL: "https://thuy-test.mystagingwebsite.com/wp-content/uploads/2018/01/cd_4_angle.jpg")
+                                        fileURL: "https://example.com/cd_4_angle.jpg")
         let download3 = ProductDownload(downloadID: "240cd543-5457-498e-95e2-6b51fdaf15cc",
                                         name: "Artwork 2",
-                                        fileURL: "https://thuy-test.mystagingwebsite.com/wp-content/uploads/2018/01/cd_4_flat.jpg")
+                                        fileURL: "https://example.com/cd_4_flat.jpg")
         return [download1, download2, download3]
     }
 
@@ -197,6 +199,7 @@ extension MockReviews {
                        name: productName,
                        slug: "book-the-green-room",
                        permalink: "https://example.com/product/book-the-green-room/",
+                       date: date(with: "2019-02-19T17:33:31"),
                        dateCreated: date(with: "2019-02-19T17:33:31"),
                        dateModified: date(with: "2019-02-19T17:48:01"),
                        dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
@@ -206,7 +209,7 @@ extension MockReviews {
                        featured: false,
                        catalogVisibilityKey: "visible",
                        fullDescription: "<p>This is the party room!</p>\n",
-                       briefDescription: """
+                       shortDescription: """
                            [contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. \
                            We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let us \
                            know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests \
@@ -224,6 +227,7 @@ extension MockReviews {
                        downloads: sampleDownloads(),
                        downloadLimit: 1,
                        downloadExpiry: 1,
+                       buttonText: "",
                        externalURL: "http://somewhere.com.net",
                        taxStatusKey: "taxable",
                        taxClass: "",
@@ -270,11 +274,11 @@ extension MockReviews {
     }
 
     func sampleTagsMutated() -> [Networking.ProductTag] {
-        let tag1 = ProductTag(tagID: 37, name: "something", slug: "something")
-        let tag2 = ProductTag(tagID: 38, name: "party room", slug: "party-room")
-        let tag3 = ProductTag(tagID: 39, name: "3000", slug: "3000")
-        let tag4 = ProductTag(tagID: 45, name: "birthday party", slug: "birthday-party")
-        let tag5 = ProductTag(tagID: 95, name: "yep", slug: "yep")
+        let tag1 = ProductTag(siteID: siteID, tagID: 37, name: "something", slug: "something")
+        let tag2 = ProductTag(siteID: siteID, tagID: 38, name: "party room", slug: "party-room")
+        let tag3 = ProductTag(siteID: siteID, tagID: 39, name: "3000", slug: "3000")
+        let tag4 = ProductTag(siteID: siteID, tagID: 45, name: "birthday party", slug: "birthday-party")
+        let tag5 = ProductTag(siteID: siteID, tagID: 95, name: "yep", slug: "yep")
 
         return [tag1, tag2, tag3, tag4, tag5]
     }
@@ -319,6 +323,7 @@ extension MockReviews {
                        name: "Paper Airplane - Black, Long",
                        slug: "paper-airplane-3",
                        permalink: "https://paperairplane.store/product/paper-airplane/?attribute_color=Black&attribute_length=Long",
+                       date: date(with: "2019-04-04T22:06:45"),
                        dateCreated: date(with: "2019-04-04T22:06:45"),
                        dateModified: date(with: "2019-04-09T20:24:03"),
                        dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
@@ -328,7 +333,7 @@ extension MockReviews {
                        featured: false,
                        catalogVisibilityKey: "visible",
                        fullDescription: "<p>Long paper airplane. Color is black. </p>\n",
-                       briefDescription: "",
+                       shortDescription: "",
                        sku: "345345-2",
                        price: "22.72",
                        regularPrice: "22.72",
@@ -341,6 +346,7 @@ extension MockReviews {
                        downloads: [],
                        downloadLimit: -1,
                        downloadExpiry: -1,
+                       buttonText: "",
                        externalURL: "",
                        taxStatusKey: "taxable",
                        taxClass: "",

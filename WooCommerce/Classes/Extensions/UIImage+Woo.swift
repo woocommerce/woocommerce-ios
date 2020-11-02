@@ -33,9 +33,9 @@ extension UIImage {
         return UIImage.gridicon(.bell)
     }
 
-    /// Brief Description Icon
+    /// Short Description Icon
     ///
-    static var briefDescriptionImage: UIImage {
+    static var shortDescriptionImage: UIImage {
         return UIImage.gridicon(.alignLeft, size: CGSize(width: 24, height: 24)).imageFlippedForRightToLeftLayoutDirection()
     }
 
@@ -53,6 +53,12 @@ extension UIImage {
         return UIImage.gridicon(.folder).imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Product tags Icon
+    ///
+    static var tagsIcon: UIImage {
+        return UIImage.gridicon(.tag).imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Add Image icon
     ///
     static var addImage: UIImage {
@@ -64,6 +70,13 @@ extension UIImage {
     ///
     static var checkmarkImage: UIImage {
         return UIImage.gridicon(.checkmark)
+    }
+
+    /// Checkmark image that is shown in a cell's image overlay
+    ///
+    static var checkmarkInCellImageOverlay: UIImage {
+        return UIImage.gridicon(.checkmark, size: CGSize(width: 22, height: 22))
+            .imageWithTintColor(.listBackground)!
     }
 
     /// WooCommerce Styled Checkmark
@@ -119,6 +132,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Delete cell image shown in a cell's accessory view
+    ///
+    static var deleteCellImage: UIImage {
+        return UIImage.gridicon(.cross, size: CGSize(width: 22, height: 22))
+    }
+
     /// Ellipsis Icon
     ///
     static var ellipsisImage: UIImage {
@@ -161,6 +180,12 @@ extension UIImage {
     static var externalImage: UIImage {
         return UIImage.gridicon(.external)
             .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// External Product
+    ///
+    static var externalProductImage: UIImage {
+        return UIImage(named: "icon-external-product")!.withRenderingMode(.alwaysTemplate)
     }
 
     /// Filter Icon
@@ -218,10 +243,34 @@ extension UIImage {
         return UIImage.gridicon(.info, size: CGSize(width: 24, height: 24))
     }
 
+    /// Info Outline Icon
+    ///
+    static var infoOutlineImage: UIImage {
+        return UIImage.gridicon(.infoOutline)
+    }
+
+    /// Files Download Icon
+    ///
+    static var cloudImage: UIImage {
+        return UIImage.gridicon(.cloud)
+    }
+
+    /// Menu Icon
+    ///
+    static var menuImage: UIImage {
+        return UIImage.gridicon(.menu)
+    }
+
     /// Invisible Image
     ///
     static var invisibleImage: UIImage {
         return UIImage.gridicon(.image)
+    }
+
+    /// Link Image
+    ///
+    static var linkImage: UIImage {
+        return UIImage.gridicon(.link)
     }
 
     /// Login magic link
@@ -253,6 +302,13 @@ extension UIImage {
     ///
     static var priceImage: UIImage {
         return UIImage.gridicon(.money, size: CGSize(width: 24, height: 24))
+    }
+
+    /// Product Reviews Icon
+    ///
+    static var productReviewsImage: UIImage {
+        let tintColor = UIColor.gray(.shade30)
+        return UIImage.gridicon(.starOutline, size: CGSize(width: 24, height: 24)).imageWithTintColor(tintColor)!
     }
 
     /// Product Placeholder Image
@@ -343,6 +399,12 @@ extension UIImage {
         return UIImage(named: "icon-scan")!
     }
 
+    /// WordPress Logo Icon
+    ///
+    static var wordPressLogoImage: UIImage {
+        return UIImage.gridicon(.mySites)
+    }
+
     /// Returns a star icon with the given size
     ///
     /// - Parameters:
@@ -385,6 +447,41 @@ extension UIImage {
         return UIImage.gridicon(.trash)
     }
 
+    /// Widgets Icon
+    ///
+    static var widgetsImage: UIImage {
+        return UIImage(named: "icon-widgets")!.withRenderingMode(.alwaysTemplate)
+    }
+
+
+    static var syncImage: UIImage {
+        return UIImage(imageLiteralResourceName: "icon-sync-dot")
+    }
+
+    /// Variations Icon
+    ///
+    static var variationsImage: UIImage {
+        return UIImage.gridicon(.types).imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Visibility Image
+    ///
+    static var visibilityImage: UIImage {
+        return UIImage.gridicon(.visible)
+    }
+
+    /// No store image
+    ///
+    static var noStoreImage: UIImage {
+        return UIImage(imageLiteralResourceName: "woo-no-store").imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Megaphone Icon
+    ///
+    static var megaphoneIcon: UIImage {
+        return UIImage(imageLiteralResourceName: "megaphone").imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Creates a bitmap image of the Woo "bubble" logo based on a vector image in our asset catalog.
     ///
     /// - Parameters:
@@ -401,12 +498,6 @@ extension UIImage {
         }
 
         return im2.imageWithTintColor(tintColor)
-    }
-
-    /// Password Field Image
-    ///
-    static var passwordFieldImage: UIImage {
-        return UIImage.gridicon(.visible)
     }
 
     /// Waiting for Customers Image

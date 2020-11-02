@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents an Order Entity.
 ///
-public struct Order: Decodable {
+public struct Order: Decodable, GeneratedCopiable {
     public let siteID: Int64
     public let orderID: Int64
     public let parentID: Int64
@@ -14,7 +14,7 @@ public struct Order: Decodable {
     ///
     /// Maps to `OrderStatus.slug`.
     ///
-    public let statusKey: String
+    public let status: OrderStatusEnum
     public let currency: String
     public let customerNote: String?
 
@@ -44,7 +44,7 @@ public struct Order: Decodable {
                 parentID: Int64,
                 customerID: Int64,
                 number: String,
-                statusKey: String,
+                status: OrderStatusEnum,
                 currency: String,
                 customerNote: String?,
                 dateCreated: Date,
@@ -70,7 +70,7 @@ public struct Order: Decodable {
         self.customerID = customerID
 
         self.number = number
-        self.statusKey = statusKey
+        self.status = status
         self.currency = currency
         self.customerNote = customerNote
 
@@ -109,7 +109,7 @@ public struct Order: Decodable {
         let customerID = try container.decode(Int64.self, forKey: .customerID)
 
         let number = try container.decode(String.self, forKey: .number)
-        let statusKey = try container.decode(String.self, forKey: .status)
+        let status = try container.decode(OrderStatusEnum.self, forKey: .status)
 
         let currency = try container.decode(String.self, forKey: .currency)
         let customerNote = try container.decode(String.self, forKey: .customerNote)
@@ -142,7 +142,7 @@ public struct Order: Decodable {
                   parentID: parentID,
                   customerID: customerID,
                   number: number,
-                  statusKey: statusKey,
+                  status: status,
                   currency: currency,
                   customerNote: customerNote,
                   dateCreated: dateCreated,
@@ -210,7 +210,7 @@ extension Order: Comparable {
             lhs.parentID == rhs.parentID &&
             lhs.customerID == rhs.customerID &&
             lhs.number == rhs.number &&
-            lhs.statusKey == rhs.statusKey &&
+            lhs.status == rhs.status &&
             lhs.dateCreated == rhs.dateCreated &&
             lhs.dateModified == rhs.dateModified &&
             lhs.datePaid == rhs.datePaid &&

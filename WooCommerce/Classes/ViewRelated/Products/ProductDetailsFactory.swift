@@ -7,56 +7,46 @@ struct ProductDetailsFactory {
     ///   - product: product model.
     ///   - presentationStyle: how the product details are presented.
     ///   - currencySettings: site currency settings.
-    ///   - featureFlagService: where edit product feature flags are read.
+    ///   - stores: where the Products feature switch value can be read.
+    ///   - forceReadOnly: force the product detail to be presented in read only mode
     ///   - onCompletion: called when the view controller is created and ready for display.
     static func productDetails(product: Product,
-                               presentationStyle: ProductFormViewController.PresentationStyle,
-                               currencySettings: CurrencySettings = CurrencySettings.shared,
-                               featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+                               presentationStyle: ProductFormPresentationStyle,
+                               currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+                               stores: StoresManager = ServiceLocator.stores,
+                               forceReadOnly: Bool,
                                onCompletion: @escaping (UIViewController) -> Void) {
-        let isEditProductsEnabled = featureFlagService.isFeatureFlagEnabled(.editProducts)
-        if product.productType == .simple && isEditProductsEnabled {
-            let action = AppSettingsAction.loadProductsFeatureSwitch { isEditProductsRelease2Enabled in
-                let vc = productDetails(product: product,
-                                        presentationStyle: presentationStyle,
-                                        currencySettings: currencySettings,
-                                        isEditProductsEnabled: isEditProductsEnabled,
-                                        isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                        isEditProductsRelease3Enabled: featureFlagService.isFeatureFlagEnabled(.editProductsRelease3))
-                onCompletion(vc)
-            }
-            ServiceLocator.stores.dispatch(action)
-        } else {
-            let vc = productDetails(product: product,
-                                    presentationStyle: presentationStyle,
-                                    currencySettings: currencySettings,
-                                    isEditProductsEnabled: false,
-                                    isEditProductsRelease2Enabled: false,
-                                    isEditProductsRelease3Enabled: false)
-            onCompletion(vc)
-        }
+        let vc = productDetails(product: product,
+                                presentationStyle: presentationStyle,
+                                currencySettings: currencySettings,
+                                isEditProductsEnabled: forceReadOnly ? false: true,
+                                isEditProductsRelease5Enabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5))
+        onCompletion(vc)
     }
 }
 
 private extension ProductDetailsFactory {
     static func productDetails(product: Product,
-                               presentationStyle: ProductFormViewController.PresentationStyle,
+                               presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings,
                                isEditProductsEnabled: Bool,
-                               isEditProductsRelease2Enabled: Bool,
-                               isEditProductsRelease3Enabled: Bool) -> UIViewController {
+                               isEditProductsRelease5Enabled: Bool) -> UIViewController {
         let vc: UIViewController
-        if isEditProductsEnabled {
-            vc = ProductFormViewController(product: product,
-                                           presentationStyle: presentationStyle,
-                                           isEditProductsRelease2Enabled: isEditProductsRelease2Enabled,
-                                           isEditProductsRelease3Enabled: isEditProductsRelease3Enabled)
-            // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
-            vc.hidesBottomBarWhenPushed = true
-        } else {
-            let viewModel = ProductDetailsViewModel(product: product)
-            vc = ProductDetailsViewController(viewModel: viewModel)
-        }
+        let productModel = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
+                                                                  product: productModel)
+        let formType: ProductFormType = isEditProductsEnabled ? .edit: .readonly
+        let viewModel = ProductFormViewModel(product: productModel,
+                                             formType: formType,
+                                             productImageActionHandler: productImageActionHandler,
+                                             isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
+        vc = ProductFormViewController(viewModel: viewModel,
+                                       eventLogger: ProductFormEventLogger(),
+                                       productImageActionHandler: productImageActionHandler,
+                                       presentationStyle: presentationStyle,
+                                       isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
+        // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
+        vc.hidesBottomBarWhenPushed = true
         return vc
     }
 }

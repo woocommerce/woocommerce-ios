@@ -13,7 +13,7 @@ class OrderListMapperTests: XCTestCase {
 
     /// Verifies that all of the Order Fields are parsed correctly.
     ///
-    func testOrderFieldsAreProperlyParsed() {
+    func test_order_fields_are_properly_parsed() {
         let orders = mapLoadAllOrdersResponse()
         XCTAssert(orders.count == 4)
 
@@ -26,7 +26,7 @@ class OrderListMapperTests: XCTestCase {
         XCTAssertEqual(firstOrder.parentID, 0)
         XCTAssertEqual(firstOrder.customerID, 11)
         XCTAssertEqual(firstOrder.number, "963")
-        XCTAssert(firstOrder.statusKey == "processing")
+        XCTAssertEqual(firstOrder.status, .processing)
         XCTAssertEqual(firstOrder.currency, "USD")
         XCTAssertEqual(firstOrder.customerNote, "")
         XCTAssertEqual(firstOrder.dateCreated, dateCreated)
@@ -42,7 +42,7 @@ class OrderListMapperTests: XCTestCase {
 
     /// Verifies that the siteID field is properly set.
     ///
-    func testSiteIdentifierIsProperlyInjectedIntoEveryOrder() {
+    func test_site_identifier_is_properly_injected_into_every_order() {
         for order in mapLoadAllOrdersResponse() {
             XCTAssertEqual(order.siteID, dummySiteID)
         }
@@ -50,7 +50,7 @@ class OrderListMapperTests: XCTestCase {
 
     /// Verifies that all of the Order Address fields are parsed correctly.
     ///
-    func testOrderAddressesAreCorrectlyParsed() {
+    func test_order_addresses_are_correctly_parsed() {
         let orders = mapLoadAllOrdersResponse()
         XCTAssert(orders.count == 4)
 
@@ -79,7 +79,7 @@ class OrderListMapperTests: XCTestCase {
 
     /// Verifies that all of the Order Items are parsed correctly.
     ///
-    func testOrderItemsAreCorrectlyParsed() {
+    func test_order_items_are_correctly_parsed() {
         let order = mapLoadAllOrdersResponse()[0]
         XCTAssertEqual(order.items.count, 2)
 
@@ -100,7 +100,7 @@ class OrderListMapperTests: XCTestCase {
 
     /// Verifies that an Order in a broken state does [gets default values] | [gets skipped while parsing]
     ///
-    func testOrderHasDefaultDateCreatedWhenNullDateReceived() {
+    func test_order_has_default_date_created_when_null_date_received() {
         let orders = mapLoadBrokenOrderResponse()
         XCTAssert(orders.count == 1)
 
@@ -121,7 +121,7 @@ class OrderListMapperTests: XCTestCase {
     ///
     /// Ref. Issue: https://github.com/woocommerce/woocommerce-ios/issues/221
     ///
-    func testOrderListWithBreakingFormatIsProperlyParsed() {
+    func test_order_list_with_breaking_format_is_properly_parsed() {
         let orders = mapLoadBrokenOrdersResponseMarkII()
         XCTAssertEqual(orders.count, 6)
 

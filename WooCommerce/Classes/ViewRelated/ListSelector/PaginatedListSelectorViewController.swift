@@ -2,11 +2,16 @@ import UIKit
 import WordPressUI
 import Yosemite
 
+import class AutomatticTracks.CrashLogging
+
 /// A generic data source for the paginated list selector UI `PaginatedListSelectorViewController`.
 ///
 protocol PaginatedListSelectorDataSource {
     associatedtype StorageModel: ResultsControllerMutableType
     associatedtype Cell: UITableViewCell
+
+    /// Optional custom sorting strategy for storage models in the paginated list. Default is `nil`.
+    var customResultsSortOrder: ((StorageModel.ReadOnlyType, StorageModel.ReadOnlyType) -> Bool)? { get }
 
     /// The model that is currently selected in the list.
     var selected: StorageModel.ReadOnlyType? { get }
@@ -24,13 +29,23 @@ protocol PaginatedListSelectorDataSource {
     func configureCell(cell: Cell, model: StorageModel.ReadOnlyType)
 
     /// Called when the UI is requesting to sync another page of data.
-    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?)
+    /// - Parameters:
+    ///   - onCompletion: called on sync completion that returns either an error or a boolean that indicates
+    ///                   whether there might be the next page to sync.
+    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Result<Bool, Error>) -> Void)?)
+}
+
+// Default implementation for optional variables/functions.
+extension PaginatedListSelectorDataSource {
+    var customResultsSortOrder: ((StorageModel.ReadOnlyType, StorageModel.ReadOnlyType) -> Bool)? {
+        nil
+    }
 }
 
 /// Displays a paginated list (implemented by table view) for the user to select a generic model.
 ///
 final class PaginatedListSelectorViewController<DataSource: PaginatedListSelectorDataSource, Model, StorageModel, Cell>: UIViewController,
-    UITableViewDataSource, UITableViewDelegate, SyncingCoordinatorDelegate
+    UITableViewDataSource, UITableViewDelegate, PaginationTrackerDelegate
 where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.ReadOnlyType, Model: Equatable, DataSource.Cell == Cell {
     private let viewProperties: PaginatedListSelectorViewProperties
     private var dataSource: DataSource
@@ -38,7 +53,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
 
     private let rowType = Cell.self
 
-    @IBOutlet private weak var tableView: UITableView!
+    private lazy var tableView: UITableView = UITableView(frame: .zero, style: viewProperties.tableViewStyle)
 
     /// Pull To Refresh Support.
     ///
@@ -68,9 +83,12 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
         return resultsController
     }()
 
-    /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
+    /// Infinite scroll support
     ///
-    private let syncingCoordinator = SyncingCoordinator()
+    private let scrollWatcher = ScrollWatcher()
+    private let paginationTracker = PaginationTracker()
+
+    private var cancellableScrollWatcher: ObservationToken?
 
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
     ///
@@ -102,7 +120,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
         self.viewProperties = viewProperties
         self.dataSource = dataSource
         self.onDismiss = onDismiss
-        super.init(nibName: "PaginatedListSelectorViewController", bundle: nil)
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder: NSCoder) {
@@ -115,18 +133,35 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
         configureNavigation()
         configureMainView()
         configureTableView()
-        configureSyncingCoordinator()
+        configureScrollWatcher()
+        configurePaginationTracker()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        syncingCoordinator.synchronizeFirstPage()
+        paginationTracker.syncFirstPage()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         onDismiss(dataSource.selected)
         super.viewWillDisappear(animated)
+    }
+
+    // MARK: Public functions
+
+    /// Called when the visual data of the data source change outside of selection UX.
+    /// (e.g. receiving selected products from search UI in `ProductListMultiSelectorDataSource`)
+    func reloadData() {
+        tableView.reloadData()
+    }
+
+    func updateResultsController() {
+        resultsController = dataSource.createResultsController()
+        configureResultsController(resultsController) { [weak self] in
+            self?.tableView.reloadData()
+        }
+        transitionToResultsUpdatedState()
     }
 
     // MARK: UITableViewDataSource
@@ -140,16 +175,22 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: rowType.reuseIdentifier,
-                                                       for: indexPath) as? Cell else {
-                                                        fatalError()
-        }
-        let model = resultsController.object(at: indexPath)
+        let cell = tableView.dequeueReusableCell(Cell.self, for: indexPath)
+        let model = object(at: indexPath)
         dataSource.configureCell(cell: cell, model: model)
 
-        cell.accessoryType = dataSource.isSelected(model: model) ? .checkmark: .none
-
         return cell
+    }
+
+    private func object(at indexPath: IndexPath) -> Model {
+        guard let customResultsSortOrder = dataSource.customResultsSortOrder else {
+            return resultsController.object(at: indexPath)
+        }
+        let objects = resultsController.sections[indexPath.section].objects
+            .sorted(by: { (lhs, rhs) -> Bool in
+                return customResultsSortOrder(lhs, rhs)
+            })
+        return objects[indexPath.row]
     }
 
     // MARK: UITableViewDelegate
@@ -168,9 +209,6 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let objectIndex = resultsController.objectIndex(from: indexPath)
-        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: objectIndex)
-
         // Preserve the Cell Height
         // Why: Because Autosizing Cells, upon reload, will need to be laid yout yet again. This might cause
         // UI glitches / unwanted animations. By preserving it, *then* the estimated will be extremely close to
@@ -179,23 +217,23 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
         estimatedRowHeights[indexPath] = cell.frame.height
     }
 
-    // MARK: SyncingCoordinatorDelegate
+    // MARK: PaginationTrackerDelegate
     //
-    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
+    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: SyncCompletion?) {
         transitionToSyncingState(pageNumber: pageNumber)
-        dataSource.sync(pageNumber: pageNumber, pageSize: pageSize) { [weak self] isCompleted in
+        dataSource.sync(pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
             guard let self = self else {
                 return
             }
 
-            guard isCompleted else {
+            guard result.isSuccess else {
                 DDLogError("⛔️ Error synchronizing models")
                 self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
                 return
             }
 
             self.transitionToResultsUpdatedState()
-            onCompletion?(isCompleted)
+            onCompletion?(result)
         }
     }
 
@@ -204,7 +242,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
     @objc private func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.productVariationListPulledToRefresh)
 
-        syncingCoordinator.synchronizeFirstPage {
+        paginationTracker.syncFirstPage {
             sender.endRefreshing()
         }
     }
@@ -233,17 +271,36 @@ private extension PaginatedListSelectorViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
 
+        tableView.separatorStyle = viewProperties.separatorStyle
+
+        // Removes extra header spacing in ghost content view.
+        tableView.estimatedSectionHeaderHeight = 0
+        tableView.sectionHeaderHeight = 0
+
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToSafeArea(tableView)
+
         registerTableViewCells()
     }
 
     func registerTableViewCells() {
-        tableView.register(rowType.loadNib(), forCellReuseIdentifier: rowType.reuseIdentifier)
+        guard Bundle.main.path(forResource: rowType.classNameWithoutNamespaces, ofType: "nib") != nil else {
+            tableView.register(rowType)
+            return
+        }
+        tableView.registerNib(for: rowType)
     }
 
-    /// Setup: Sync'ing Coordinator
-    ///
-    func configureSyncingCoordinator() {
-        syncingCoordinator.delegate = self
+    func configureScrollWatcher() {
+        scrollWatcher.startObservingScrollPosition(tableView: tableView)
+    }
+
+    func configurePaginationTracker() {
+        paginationTracker.delegate = self
+        cancellableScrollWatcher = scrollWatcher.trigger.subscribe { [weak self] _ in
+            self?.paginationTracker.ensureNextPageIsSynced()
+        }
     }
 }
 
@@ -343,32 +400,18 @@ private extension PaginatedListSelectorViewController {
 
 // MARK: - Spinner Helpers
 //
-extension PaginatedListSelectorViewController {
+private extension PaginatedListSelectorViewController {
 
     /// Starts the Footer Spinner animation, whenever `mustStartFooterSpinner` returns *true*.
     ///
-    private func ensureFooterSpinnerIsStarted() {
-        guard mustStartFooterSpinner() else {
-            return
-        }
-
+    func ensureFooterSpinnerIsStarted() {
         tableView.tableFooterView = footerSpinnerView
         footerSpinnerView.startAnimating()
     }
 
-    /// Whenever we're sync'ing an Products Page that's beyond what we're currently displaying, this method will return *true*.
-    ///
-    private func mustStartFooterSpinner() -> Bool {
-        guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
-            return false
-        }
-
-        return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > resultsController.numberOfObjects
-    }
-
     /// Stops animating the Footer Spinner.
     ///
-    private func ensureFooterSpinnerIsStopped() {
+    func ensureFooterSpinnerIsStopped() {
         footerSpinnerView.stopAnimating()
         tableView.tableFooterView = footerEmptyView
     }
@@ -387,6 +430,12 @@ private extension PaginatedListSelectorViewController {
             onReload()
         }
 
-        try? resultsController.performFetch()
+        do {
+            try resultsController.performFetch()
+        } catch {
+            CrashLogging.logError(error)
+        }
+
+        tableView.reloadData()
     }
 }

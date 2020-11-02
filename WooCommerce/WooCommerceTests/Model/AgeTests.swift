@@ -24,7 +24,7 @@ final class AgeTests: XCTestCase {
         super.tearDown()
     }
 
-    func testItReturnsMonthsIfTheDatesAreMoreThanAMonthApart() {
+    func test_it_returns_months_if_the_dates_are_more_than_a_month_apart() {
         let dateFrom = dateFormatter.date(from: "2020-03-08T00:00:00Z")!
         let dateTo = dateFormatter.date(from: "2020-04-08T00:00:00Z")!
 
@@ -33,7 +33,7 @@ final class AgeTests: XCTestCase {
         XCTAssertEqual(age, .months)
     }
 
-    func testItReturnsWeeksIfTheDatesAreMoreThanAWeekApart() {
+    func test_it_returns_weeks_if_the_dates_are_more_than_a_week_apart() {
         let dateFrom = dateFormatter.date(from: "2020-03-08T00:00:00Z")!
         let dateTo = dateFormatter.date(from: "2020-04-07T00:00:00Z")!
 
@@ -42,7 +42,7 @@ final class AgeTests: XCTestCase {
         XCTAssertEqual(age, .weeks)
     }
 
-    func testItReturnsWeeksIfTheDatesAreExactlySevenDaysApart() {
+    func test_it_returns_weeks_if_the_dates_are_exactly_seven_days_apart() {
         let dateFrom = dateFormatter.date(from: "2020-03-08T00:00:00Z")!
         let dateTo = dateFormatter.date(from: "2020-03-15T00:00:00Z")!
 
@@ -51,7 +51,7 @@ final class AgeTests: XCTestCase {
         XCTAssertEqual(age, .weeks)
     }
 
-    func testItReturnsDaysIfTheDatesAreBetweenTwoAndSevenDaysApart() {
+    func test_it_returns_days_if_the_dates_are_between_two_and_seven_days_apart() {
         let dateFrom = dateFormatter.date(from: "2020-03-08T00:00:00Z")!
         let dateTo = dateFormatter.date(from: "2020-03-10T00:00:00Z")!
 
@@ -60,7 +60,7 @@ final class AgeTests: XCTestCase {
         XCTAssertEqual(age, .days)
     }
 
-    func testItReturnsDaysIfTheDatesAreExactlySixDaysApart() {
+    func test_it_returns_days_if_the_dates_are_exactly_six_days_apart() {
         let dateFrom = dateFormatter.date(from: "2020-03-08T00:00:00Z")!
         let dateTo = dateFormatter.date(from: "2020-03-14T00:00:00Z")!
 
@@ -69,7 +69,7 @@ final class AgeTests: XCTestCase {
         XCTAssertEqual(age, .days)
     }
 
-    func testItReturnsYesterdayIfTheDatesAreExactlyOneDayApart() {
+    func test_it_returns_yesterday_if_the_dates_are_exactly_one_day_apart() {
         let dateFrom = dateFormatter.date(from: "2020-03-08T00:00:00Z")!
         let dateTo = dateFormatter.date(from: "2020-03-09T00:00:00Z")!
 
@@ -78,7 +78,7 @@ final class AgeTests: XCTestCase {
         XCTAssertEqual(age, .yesterday)
     }
 
-    func testItReturnsYesterdayIfTheDatesAreExactlyOneAndAHalfDayApart() {
+    func test_it_returns_yesterday_if_the_dates_are_exactly_one_and_a_half_day_apart() {
         let dateFrom = dateFormatter.date(from: "2020-03-08T00:00:00Z")!
         let dateTo = dateFormatter.date(from: "2020-03-09T00:12:00Z")!
 
@@ -87,7 +87,7 @@ final class AgeTests: XCTestCase {
         XCTAssertEqual(age, .yesterday)
     }
 
-    func testItReturnsTodayIfTheDatesAreExactlyTheSame() {
+    func test_it_returns_today_if_the_dates_are_exactly_the_same() {
         let dateFrom = dateFormatter.date(from: "2020-03-08T00:00:00Z")!
         let dateTo = dateFormatter.date(from: "2020-03-08T00:00:00Z")!
 
@@ -96,7 +96,7 @@ final class AgeTests: XCTestCase {
         XCTAssertEqual(age, .today)
     }
 
-    func testItReturnsTodayIfTheDatesHaveTheSameDayButDifferentTime() {
+    func test_it_returns_today_if_the_dates_have_the_same_day_but_different_time() {
         let dateFrom = dateFormatter.date(from: "2020-03-08T00:00:00Z")!
         let dateTo = dateFormatter.date(from: "2020-03-08T23:59:59Z")!
 
@@ -105,7 +105,7 @@ final class AgeTests: XCTestCase {
         XCTAssertEqual(age, .today)
     }
 
-    func testItReturnsUpcomingIfTheDateFromIsADayAfterDateTo() {
+    func test_it_returns_upcoming_if_the_dateFrom_is_a_day_after_dateTo() {
         let dateFrom = dateFormatter.date(from: "2020-03-09T00:00:00Z")!
         let dateTo = dateFormatter.date(from: "2020-03-08T00:00:00Z")!
 
@@ -114,7 +114,7 @@ final class AgeTests: XCTestCase {
         XCTAssertEqual(age, .upcoming)
     }
 
-    func testItReturnsUpcomingIfTheDateFromIsDaysAfterDateTo() {
+    func test_it_returns_upcoming_if_the_dateFrom_is_days_after_dateTo() {
         let dateFrom = dateFormatter.date(from: "2020-03-19T00:00:00Z")!
         let dateTo = dateFormatter.date(from: "2020-03-08T00:00:00Z")!
 
@@ -123,7 +123,7 @@ final class AgeTests: XCTestCase {
         XCTAssertEqual(age, .upcoming)
     }
 
-    func testItReturnsUpcomingIfTheDateFromIsExactlyAMonthAfterDateTo() {
+    func test_it_returns_upcoming_if_the_dateFrom_is_exactly_a_month_after_dateTo() {
         let dateFrom = dateFormatter.date(from: "2020-04-08T00:00:00Z")!
         let dateTo = dateFormatter.date(from: "2020-03-08T00:00:00Z")!
 
@@ -132,7 +132,7 @@ final class AgeTests: XCTestCase {
         XCTAssertEqual(age, .upcoming)
     }
 
-    func testItReturnsUpcomingIfTheDateFromIsExactlyAWeekAfterDateTo() {
+    func test_it_returns_upcoming_if_the_dateFrom_is_exactly_a_week_after_dateTo() {
         let dateFrom = dateFormatter.date(from: "2020-03-15T00:00:00Z")!
         let dateTo = dateFormatter.date(from: "2020-03-08T00:00:00Z")!
 
@@ -141,7 +141,7 @@ final class AgeTests: XCTestCase {
         XCTAssertEqual(age, .upcoming)
     }
 
-    func testItReturnsUpcomingIfTheDateFromIsExactlyAYearAfterDateTo() {
+    func test_it_returns_upcoming_if_the_dateFrom_is_exactly_a_year_after_dateTo() {
         let dateFrom = dateFormatter.date(from: "2021-03-08T00:00:00Z")!
         let dateTo = dateFormatter.date(from: "2020-03-08T00:00:00Z")!
 

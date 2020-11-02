@@ -51,6 +51,12 @@ protocol SearchUICommand {
     func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptyStateViewControllerType,
                                                         searchKeyword: String)
 
+    /// Optionally configures the action button that dismisses the search UI.
+    /// - Parameters:
+    ///   - button: the button in the navigation bar that dismisses the search UI. Shows "Cancel" by default.
+    ///   - onDismiss: called when it is ready to dismiss the search UI.
+    func configureActionButton(_ button: UIButton, onDismiss: @escaping () -> Void)
+
     /// Creates a view model for the search result cell.
     ///
     /// - Parameter model: search result model.
@@ -69,13 +75,22 @@ protocol SearchUICommand {
     /// - Parameters:
     ///   - model: search result model.
     ///   - viewController: view controller where the user selects the search result.
-    func didSelectSearchResult(model: Model, from viewController: UIViewController)
+    ///   - reloadData: called when UI reload is necessary.
+    ///   - updateActionButton: called when action button update is necessary.
+    func didSelectSearchResult(model: Model, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void)
 
     /// The Accessibility Identifier for the search bar
     var searchBarAccessibilityIdentifier: String { get }
 
     /// The Accessibility Identifier for the cancel button
     var cancelButtonAccessibilityIdentifier: String { get }
+}
+
+// MARK: - Default implementation
+extension SearchUICommand {
+    func configureActionButton(_ button: UIButton, onDismiss: @escaping () -> Void) {
+        // If not implemented, keeps the default cancel UI/UX
+    }
 }
 
 // MARK: - SearchUICommand using EmptySearchResultsViewController

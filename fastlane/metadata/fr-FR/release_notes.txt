@@ -1,4 +1,9 @@
-* Vous pouvez désormais activer/désactiver les fonctionnalités Produits M2 des produits simples sous Réglages > Fonctionnalités expérimentales. Produits M2 permet de mettre à jour divers éléments : images, description courte, affichage, partage et réglages des produits (état, visibilité, visibilité du catalogue, identifiant, note d'achat et ordre du menu.)
-* Vous pouvez désormais modifier et enregistrer les détails dans l'onglet Détails de la commande ou Produits les plus performants. Nous avons également optimisé l'accessibilité grâce à une meilleure prise en charge de VoiceOver dans les réglages du prix du produit.
-* Nous avons apporté des améliorations visuelles : Dans Détails de la commande, la carte de paiement apparaît désormais à droite après les cartes Produits et Produits remboursés. La bannière WIP de l'onglet Produits est désormais réduite par défaut. Vous disposez ainsi de davantage d'espace vertical !
-* Nous avons abandonné la prise en charge d'iOS 11 et versions inférieures.
+Dans cette mise à jour, nous avons ajouté de nombreuses nouvelles fonctionnalités pour modifier vos produits.
+
+Pour les produits non essentiels, qui sont les produits que WooCommerce ne regroupe pas sous simples, externes, variables ou groupes, il existe de nombreuses nouvelles options de modification ! Vous pouvez désormais modifier l’image, le nom, la description, le prix en lecture seule, l’inventaire en lecture seule, les étiquettes, la courte description et les paramètres de produit.
+
+Vous pouvez également modifier les produits variables, et l’état du stock est inclus dans la liste de variantes.
+
+De plus, nos produits essentiels intègrent des champs supplémentaires qui peuvent être modifiés : étiquettes, catégories, type de produit, activer/désactiver les avis et visibilité.
+
+Nous proposons également une mise à jour pour Apple Sign In. Si vous déconnectez l’identifiant Apple de l’application WordPress (Réglages > Identifiant Apple > Mot de passe et sécurité > Applications utilisant l’identifiant Apple), l’application se déconnectera au lancement ou si vous basculez entre les applications. Ainsi vous ne restez pas connecté si vous ne le souhaitez pas !

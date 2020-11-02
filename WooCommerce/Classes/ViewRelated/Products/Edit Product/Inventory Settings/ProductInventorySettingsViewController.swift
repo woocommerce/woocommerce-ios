@@ -3,35 +3,18 @@ import Yosemite
 
 final class ProductInventorySettingsViewController: UIViewController {
 
-    @IBOutlet private weak var tableView: UITableView!
+    /// The type of form with different inventory settings.
+    enum FormType {
+        /// Allows editing all inventory settings.
+        case inventory
+        /// Only SKU is editable.
+        case sku
+    }
 
-    private let product: Product
-
-    private let siteID: Int64
-
-    // Editable data - shared.
-    //
-    private var sku: String?
-    private var manageStockEnabled: Bool
-    private var soldIndividually: Bool
-
-    // Editable data - manage stock enabled.
-    private var stockQuantity: Int?
-    private var backordersSetting: ProductBackordersSetting?
-
-    // Editable data - manage stock disabled.
-    private var stockStatus: ProductStockStatus?
-
-    /// Table Sections to be rendered
-    ///
+    private let viewModel: ProductInventorySettingsViewModelOutput & ProductInventorySettingsActionHandler
     private var sections: [Section] = []
 
-    private var error: ProductUpdateError?
-
-    // Sku validation
-    private var skuIsValid: Bool = true
-
-    private lazy var throttler: Throttler = Throttler(seconds: 0.5)
+    @IBOutlet private weak var tableView: UITableView!
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
         let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
@@ -43,21 +26,11 @@ final class ProductInventorySettingsViewController: UIViewController {
     typealias Completion = (_ data: ProductInventoryEditableData) -> Void
     private let onCompletion: Completion
 
-    init(product: Product, completion: @escaping Completion) {
+    private var cancellable: ObservationToken?
+
+    init(product: ProductFormDataModel, formType: FormType = .inventory, completion: @escaping Completion) {
+        self.viewModel = ProductInventorySettingsViewModel(formType: formType, productModel: product)
         self.onCompletion = completion
-
-        self.product = product
-
-        self.siteID = product.siteID
-
-        self.sku = product.sku
-        self.manageStockEnabled = product.manageStock
-        self.soldIndividually = product.soldIndividually
-
-        self.stockQuantity = product.stockQuantity
-        self.backordersSetting = product.backordersSetting
-        self.stockStatus = product.productStockStatus
-
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -72,8 +45,16 @@ final class ProductInventorySettingsViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
-        reloadSections()
+        observeSections()
         handleSwipeBackGesture()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        if viewModel.formType == .sku {
+            configureSKUFormTextFieldAsFirstResponder()
+        }
     }
 }
 
@@ -93,41 +74,17 @@ private extension ProductInventorySettingsViewController {
     }
 }
 
-// MARK: - View Updates
-//
-private extension ProductInventorySettingsViewController {
-    func reloadSections() {
-        let stockSection: Section
-        if manageStockEnabled {
-            stockSection = Section(rows: [.manageStock, .stockQuantity, .backorders])
-        } else {
-            stockSection = Section(rows: [.manageStock, .stockStatus])
-        }
-
-        let skuSection: Section
-        if let error = error {
-            skuSection = Section(errorTitle: error.alertMessage,
-                                 rows: [.sku])
-        } else {
-            skuSection = Section(rows: [.sku])
-        }
-
-        sections = [
-            skuSection,
-            stockSection,
-            Section(rows: [.limitOnePerOrder])
-        ]
-
-        tableView.reloadData()
-    }
-}
-
 // MARK: - View Configuration
 //
 private extension ProductInventorySettingsViewController {
 
     func configureNavigationBar() {
-        title = NSLocalizedString("Inventory", comment: "Product Inventory Settings navigation title")
+        switch viewModel.formType {
+        case .inventory:
+            title = NSLocalizedString("Inventory", comment: "Product Inventory Settings navigation title")
+        case .sku:
+            title = NSLocalizedString("SKU", comment: "Edit Product SKU navigation title")
+        }
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(completeUpdating))
     }
@@ -147,9 +104,18 @@ private extension ProductInventorySettingsViewController {
         tableView.delegate = self
     }
 
+    /// Since there is only a text field in this view for Product SKU form, the text field becomes the first responder immediately when the view did appear
+    ///
+    func configureSKUFormTextFieldAsFirstResponder() {
+        if let indexPath = sections.indexPathForRow(.sku) {
+            let cell = tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell
+            cell?.textFieldBecomeFirstResponder()
+        }
+    }
+
     func registerTableViewCells() {
         for row in Row.allCases {
-            tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
+            tableView.registerNib(for: row.type)
         }
     }
 
@@ -160,6 +126,13 @@ private extension ProductInventorySettingsViewController {
             tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
         }
     }
+
+    func observeSections() {
+        cancellable = viewModel.sections.subscribe { [weak self] sections in
+            self?.sections = sections
+            self?.tableView.reloadData()
+        }
+    }
 }
 
 // MARK: - Navigation actions handling
@@ -167,31 +140,11 @@ private extension ProductInventorySettingsViewController {
 extension ProductInventorySettingsViewController {
 
     override func shouldPopOnBackButton() -> Bool {
-        guard skuIsValid else {
+        guard viewModel.hasUnsavedChanges() else {
             return true
         }
-
-        // Checks general settings regardless of whether stock management is enabled.
-        let hasChangesInGeneralSettings = sku != product.sku || manageStockEnabled != product.manageStock || soldIndividually != product.soldIndividually
-
-        if hasChangesInGeneralSettings {
-            presentBackNavigationActionSheet()
-            return false
-        }
-
-        // Checks stock settings depending on whether stock management is enabled.
-        let hasChangesInStockSettings: Bool
-        if manageStockEnabled {
-            hasChangesInStockSettings = stockQuantity != product.stockQuantity || backordersSetting != product.backordersSetting
-        } else {
-            hasChangesInStockSettings = stockStatus != product.productStockStatus
-        }
-
-        if hasChangesInStockSettings {
-            presentBackNavigationActionSheet()
-            return false
-        }
-        return true
+        presentBackNavigationActionSheet()
+        return false
     }
 
     override func shouldPopOnSwipeBack() -> Bool {
@@ -199,15 +152,7 @@ extension ProductInventorySettingsViewController {
     }
 
     @objc private func completeUpdating() {
-        if skuIsValid {
-            let data = ProductInventoryEditableData(sku: self.sku,
-                                            manageStock: self.manageStockEnabled,
-                                            soldIndividually: self.soldIndividually,
-                                            stockQuantity: self.stockQuantity,
-                                            backordersSetting: self.backordersSetting,
-                                            stockStatus: self.stockStatus)
-            self.onCompletion(data)
-        }
+        viewModel.completeUpdating(onCompletion: onCompletion)
     }
 
     private func presentBackNavigationActionSheet() {
@@ -218,72 +163,6 @@ extension ProductInventorySettingsViewController {
 
     private func enableDoneButton(_ enabled: Bool) {
         navigationItem.rightBarButtonItem?.isEnabled = enabled
-    }
-}
-
-// MARK: - Input changes handling
-//
-private extension ProductInventorySettingsViewController {
-    func handleSKUChange(_ sku: String?) {
-        self.sku = sku
-
-        // If the sku is identical to the old one, is always valid
-        guard sku != product.sku else {
-            skuIsValid = true
-            hideError()
-            throttler.cancel()
-            getSkuCell()?.textFieldBecomeFirstResponder()
-            enableDoneButton(true)
-            return
-        }
-
-        // Throttled API call
-        let siteID = self.siteID
-        throttler.throttle {
-            DispatchQueue.main.async {
-                let action = ProductAction.validateProductSKU(sku, siteID: siteID) { [weak self] isValid in
-                    guard let self = self else {
-                        return
-                    }
-                    self.skuIsValid = isValid
-
-                    guard isValid else {
-                        self.displayError(error: .duplicatedSKU)
-                        self.getSkuCell()?.textFieldBecomeFirstResponder()
-                        self.enableDoneButton(false)
-                        return
-                    }
-                    self.hideError()
-                    self.enableDoneButton(true)
-                }
-
-                ServiceLocator.stores.dispatch(action)
-            }
-        }
-    }
-
-    func handleStockQuantityChange(_ stockQuantity: String?) {
-        guard let stockQuantity = stockQuantity else {
-            return
-        }
-        self.stockQuantity = Int(stockQuantity)
-    }
-}
-
-// MARK: - Error handling
-//
-private extension ProductInventorySettingsViewController {
-    func displayError(error: ProductUpdateError) {
-        self.error = error
-        reloadSections()
-    }
-
-    func hideError() {
-        // This check is useful so we don't reload while typing each letter in the sections
-        if error != nil {
-            error = nil
-            reloadSections()
-        }
     }
 }
 
@@ -316,17 +195,15 @@ extension ProductInventorySettingsViewController: UITableViewDelegate {
 
         switch rowAtIndexPath(indexPath) {
         case .stockStatus:
-            let command = ProductStockStatusListSelectorCommand(selected: stockStatus)
+            let command = ProductStockStatusListSelectorCommand(selected: viewModel.stockStatus)
             let listSelectorViewController = ListSelectorViewController(command: command) { [weak self] selected in
-                                                                            self?.stockStatus = selected
-                                                                            self?.tableView.reloadData()
+                self?.viewModel.handleStockStatusChange(selected)
             }
             navigationController?.pushViewController(listSelectorViewController, animated: true)
         case .backorders:
-            let command = ProductBackordersSettingListSelectorCommand(selected: backordersSetting)
+            let command = ProductBackordersSettingListSelectorCommand(selected: viewModel.backordersSetting)
             let listSelectorViewController = ListSelectorViewController(command: command) { [weak self] selected in
-                                                                            self?.backordersSetting = selected
-                                                                            self?.tableView.reloadData()
+                self?.viewModel.handleBackordersSettingChange(selected)
             }
             navigationController?.pushViewController(listSelectorViewController, animated: true)
         default:
@@ -391,16 +268,22 @@ private extension ProductInventorySettingsViewController {
     }
 
     func configureSKU(cell: TitleAndTextFieldTableViewCell) {
-        var viewModel = Product.createSKUViewModel(sku: sku) { [weak self] value in
-            self?.handleSKUChange(value)
+        var cellViewModel = Product.createSKUViewModel(sku: viewModel.sku) { [weak self] value in
+            self?.viewModel.handleSKUChange(value) { [weak self] (isValid, shouldBringUpKeyboard) in
+                self?.enableDoneButton(isValid)
+                if shouldBringUpKeyboard {
+                    self?.getSkuCell()?.textFieldBecomeFirstResponder()
+                }
+            }
         }
-        switch error {
+        switch viewModel.error {
         case .duplicatedSKU, .invalidSKU:
-            viewModel = viewModel.stateUpdated(state: .error)
+            cellViewModel = cellViewModel.stateUpdated(state: .error)
         default:
             break
         }
-        cell.configure(viewModel: viewModel)
+
+        cell.configure(viewModel: cellViewModel)
 
         let button = UIButton(type: .detailDisclosure)
         button.setImage(.cameraImage, for: .normal)
@@ -411,33 +294,32 @@ private extension ProductInventorySettingsViewController {
 
     func configureManageStock(cell: SwitchTableViewCell) {
         cell.title = NSLocalizedString("Manage stock", comment: "Title of the cell in Product Inventory Settings > Manage stock")
-        cell.isOn = manageStockEnabled
+        cell.isOn = viewModel.manageStockEnabled
         cell.onChange = { [weak self] value in
-            self?.manageStockEnabled = value
-            self?.reloadSections()
+            self?.viewModel.handleManageStockEnabledChange(value)
         }
     }
 
     func configureLimitOnePerOrder(cell: SwitchTableViewCell) {
         cell.title = NSLocalizedString("Limit one per order", comment: "Title of the cell in Product Inventory Settings > Limit one per order")
-        cell.isOn = soldIndividually
+        cell.isOn = viewModel.soldIndividually == true
         cell.onChange = { [weak self] value in
-            self?.soldIndividually = value
+            self?.viewModel.handleSoldIndividuallyChange(value)
         }
     }
 
     // Manage stock enabled.
 
     func configureStockQuantity(cell: UnitInputTableViewCell) {
-        let viewModel = Product.createStockQuantityViewModel(stockQuantity: stockQuantity) { [weak self] value in
-            self?.handleStockQuantityChange(value)
+        let cellViewModel = Product.createStockQuantityViewModel(stockQuantity: viewModel.stockQuantity) { [weak self] value in
+            self?.viewModel.handleStockQuantityChange(value)
         }
-        cell.configure(viewModel: viewModel)
+        cell.configure(viewModel: cellViewModel)
     }
 
     func configureBackordersSetting(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("Backorders", comment: "Title of the cell in Product Inventory Settings > Backorders")
-        cell.updateUI(title: title, value: backordersSetting?.description)
+        cell.updateUI(title: title, value: viewModel.backordersSetting?.description)
         cell.accessoryType = .disclosureIndicator
     }
 
@@ -445,7 +327,7 @@ private extension ProductInventorySettingsViewController {
 
     func configureStockStatus(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("Stock status", comment: "Title of the cell in Product Inventory Settings > Stock status")
-        cell.updateUI(title: title, value: stockStatus?.description)
+        cell.updateUI(title: title, value: viewModel.stockStatus?.description)
         cell.accessoryType = .disclosureIndicator
     }
 }
@@ -487,12 +369,13 @@ private extension ProductInventorySettingsViewController {
 }
 
 private extension ProductInventorySettingsViewController {
-
     enum Constants {
         static let estimatedSectionHeaderHeight: CGFloat = 44
     }
+}
 
-    struct Section: RowIterable {
+extension ProductInventorySettingsViewController {
+    struct Section: RowIterable, Equatable {
         let errorTitle: String?
         let rows: [Row]
 
@@ -513,7 +396,7 @@ private extension ProductInventorySettingsViewController {
         // Manage stock is disabled.
         case stockStatus
 
-        var type: UITableViewCell.Type {
+        fileprivate var type: UITableViewCell.Type {
             switch self {
             case .sku:
                 return TitleAndTextFieldTableViewCell.self
@@ -526,7 +409,7 @@ private extension ProductInventorySettingsViewController {
             }
         }
 
-        var reuseIdentifier: String {
+        fileprivate var reuseIdentifier: String {
             return type.reuseIdentifier
         }
     }

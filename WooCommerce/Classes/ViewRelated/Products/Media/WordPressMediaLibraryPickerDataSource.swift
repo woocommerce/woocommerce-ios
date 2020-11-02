@@ -114,11 +114,15 @@ extension WordPressMediaLibraryPickerDataSource: WPMediaCollectionDataSource {
     func loadData(with options: WPMediaLoadOptions, success successBlock: WPMediaSuccessBlock?, failure failureBlock: WPMediaFailureBlock? = nil) {
         syncingCoordinator.resetInternalState()
         retrieveMedia(pageNumber: syncingCoordinator.pageFirstIndex, pageSize: Constants.numberOfItemsPerPage) { [weak self] (mediaItems, error) in
+            guard let self = self else {
+                return
+            }
+
             guard error == nil else {
                 failureBlock?(error)
                 return
             }
-            self?.mediaItems = mediaItems.map { CancellableMedia(media: $0) }
+            self.mediaItems = mediaItems.map { CancellableMedia(media: $0) }
             successBlock?()
         }
     }
@@ -145,10 +149,13 @@ extension WordPressMediaLibraryPickerDataSource: WPMediaCollectionDataSource {
 extension WordPressMediaLibraryPickerDataSource: SyncingCoordinatorDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: ((Bool) -> Void)?) {
         retrieveMedia(pageNumber: pageNumber, pageSize: pageSize) { [weak self] (mediaItems, error) in
+            guard let self = self else {
+                return
+            }
             guard error == nil else {
                 return
             }
-            self?.updateMediaItems(mediaItems, pageNumber: pageNumber, pageSize: pageSize)
+            self.updateMediaItems(mediaItems, pageNumber: pageNumber, pageSize: pageSize)
         }
     }
 }

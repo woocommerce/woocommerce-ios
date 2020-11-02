@@ -13,15 +13,25 @@ final class PushNotificationsManager: PushNotesManager {
     ///
     let configuration: PushNotificationsConfiguration
 
-    /// Mutable reference to `foregroundNotifications`.
-    private let foregroundNotificationsSubject = PublishSubject<ForegroundNotification>()
-
     /// An observable that emits values when the Remote Notifications are received while the app is
     /// in the foreground.
     ///
-    var foregroundNotifications: Observable<ForegroundNotification> {
+    var foregroundNotifications: Observable<PushNotification> {
         foregroundNotificationsSubject
     }
+
+    /// Mutable reference to `foregroundNotifications`.
+    private let foregroundNotificationsSubject = PublishSubject<PushNotification>()
+
+    /// An observable that emits values when a Remote Notification is received while the app is
+    /// in inactive.
+    ///
+    var inactiveNotifications: Observable<PushNotification> {
+        inactiveNotificationsSubject
+    }
+
+    /// Mutable reference to `inactiveNotifications`
+    private let inactiveNotificationsSubject = PublishSubject<PushNotification>()
 
     /// Returns the current Application's State
     ///
@@ -326,7 +336,7 @@ private extension PushNotificationsManager {
             return false
         }
 
-        if let foregroundNotification = ForegroundNotification.from(userInfo: userInfo) {
+        if let foregroundNotification = PushNotification.from(userInfo: userInfo) {
             configuration.application.presentInAppNotification(message: foregroundNotification.message)
 
             foregroundNotificationsSubject.send(foregroundNotification)
@@ -347,12 +357,24 @@ private extension PushNotificationsManager {
     /// - Returns: True when handled. False otherwise
     ///
     func handleInactiveNotification(_ userInfo: [AnyHashable: Any], completionHandler: (UIBackgroundFetchResult) -> Void) -> Bool {
-        guard applicationState == .inactive, let notificationID = userInfo.integer(forKey: APNSKey.identifier) else {
+        guard applicationState == .inactive else {
             return false
         }
 
         DDLogVerbose("📱 Handling Notification in Inactive State")
-        configuration.application.presentNotificationDetails(for: Int64(notificationID))
+
+        if let notification = PushNotification.from(userInfo: userInfo) {
+
+            // Handling the product review notifications (`.comment`) has been moved to
+            // `ReviewsCoordinator`. All other push notification handling should be in a coordinator
+            // in the future too.
+            if notification.kind != .comment {
+                configuration.application.presentNotificationDetails(for: Int64(notification.noteID))
+            }
+
+            inactiveNotificationsSubject.send(notification)
+        }
+
         completionHandler(.newData)
 
         return true
@@ -478,10 +500,10 @@ private extension PushNotificationsManager {
     }
 }
 
-// MARK: - ForegroundNotification Extension
+// MARK: - PushNotification Extension
 
-private extension ForegroundNotification {
-    static func from(userInfo: [AnyHashable: Any]) -> ForegroundNotification? {
+private extension PushNotification {
+    static func from(userInfo: [AnyHashable: Any]) -> PushNotification? {
         guard let noteID = userInfo.integer(forKey: APNSKey.identifier),
               let message = userInfo.dictionary(forKey: APNSKey.aps)?.string(forKey: APNSKey.alert),
               let type = userInfo.string(forKey: APNSKey.type),
@@ -489,7 +511,7 @@ private extension ForegroundNotification {
             return nil
         }
 
-        return ForegroundNotification(noteID: noteID, kind: noteKind, message: message)
+        return PushNotification(noteID: noteID, kind: noteKind, message: message)
     }
 }
 
@@ -498,7 +520,6 @@ private extension ForegroundNotification {
 private enum APNSKey {
     static let aps = "aps"
     static let alert = "alert"
-    static let badge = "badge"
     static let identifier = "note_id"
     static let type = "type"
 }

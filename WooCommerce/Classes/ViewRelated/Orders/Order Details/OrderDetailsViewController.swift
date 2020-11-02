@@ -302,6 +302,8 @@ private extension OrderDetailsViewController {
                 break
             }
             trackingWasPressed(at: indexPath)
+        case .issueRefund:
+            issueRefundWasPressed()
         }
     }
 
@@ -327,6 +329,13 @@ private extension OrderDetailsViewController {
 
         ServiceLocator.analytics.track(.orderDetailTrackPackageButtonTapped)
         displayWebView(url: url)
+    }
+
+    func issueRefundWasPressed() {
+        // TODO: Migrate to a CoordinatingController https://github.com/woocommerce/woocommerce-ios/issues/2844
+        let issueRefundViewController = IssueRefundViewController(order: viewModel.order, refunds: viewModel.refunds)
+        let navigationController = WooNavigationController(rootViewController: issueRefundViewController)
+        present(navigationController, animated: true)
     }
 
     func displayWebView(url: URL) {
@@ -459,7 +468,7 @@ private extension OrderDetailsViewController {
 private extension OrderDetailsViewController {
     private func displayOrderStatusList() {
         ServiceLocator.analytics.track(.orderDetailOrderStatusEditButtonTapped,
-                                  withProperties: ["status": viewModel.order.statusKey])
+                                       withProperties: ["status": viewModel.order.status.rawValue])
         let statusList = OrderStatusListViewController(order: viewModel.order, currentStatus: viewModel.orderStatus)
         let navigationController = UINavigationController(rootViewController: statusList)
 

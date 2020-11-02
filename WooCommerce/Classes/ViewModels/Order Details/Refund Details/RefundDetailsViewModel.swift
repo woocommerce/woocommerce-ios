@@ -16,7 +16,7 @@ final class RefundDetailsViewModel {
 
     /// Currency Formatter
     ///
-    let currencyFormatter = CurrencyFormatter()
+    let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     /// Designated Initializer
     ///
@@ -134,9 +134,9 @@ extension RefundDetailsViewModel {
 
         case .orderItem:
             let item = refund.items[indexPath.row]
-            let productID = item.variationID == 0 ? item.productID : item.variationID
-            let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                                   siteID: refund.siteID)
+            let loaderViewController = ProductLoaderViewController(model: .init(orderItemRefund: item),
+                                                                   siteID: refund.siteID,
+                                                                   forceReadOnly: true)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
 

@@ -3,6 +3,8 @@ import UIKit
 import Yosemite
 import WordPressUI
 
+import class AutomatticTracks.CrashLogging
+
 
 /// SearchViewController: Displays the Search Interface for A Generic Model
 ///
@@ -34,6 +36,10 @@ where Cell.SearchModel == Command.CellViewModel {
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) models in sync.
     ///
     private let resultsController: ResultsController<Command.ResultsControllerModel>
+
+    /// Predicate for the results controller from the command.
+    ///
+    private let resultsPredicate: NSPredicate?
 
     /// The controller of the view to show if there is no search `keyword` entered.
     ///
@@ -94,6 +100,7 @@ where Cell.SearchModel == Command.CellViewModel {
          command: Command,
          cellType: Cell.Type) {
         self.resultsController = command.createResultsController()
+        self.resultsPredicate = resultsController.predicate
         self.searchUICommand = command
         self.storeID = storeID
         super.init(nibName: "SearchViewController", bundle: nil)
@@ -161,9 +168,7 @@ where Cell.SearchModel == Command.CellViewModel {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Cell.reuseIdentifier, for: indexPath) as? Cell else {
-            fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(Cell.self, for: indexPath)
 
         let model = resultsController.object(at: indexPath)
         let cellModel = searchUICommand.createCellViewModel(model: model)
@@ -177,7 +182,16 @@ where Cell.SearchModel == Command.CellViewModel {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let model = resultsController.object(at: indexPath)
-        searchUICommand.didSelectSearchResult(model: model, from: self)
+        searchUICommand.didSelectSearchResult(model: model, from: self, reloadData: { [weak self] in
+            self?.tableView.reloadData()
+        }, updateActionButton: { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.searchUICommand.configureActionButton(self.cancelButton, onDismiss: { [weak self] in
+                self?.dismissWasPressed()
+            })
+        })
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -282,7 +296,14 @@ private extension SearchViewController {
     ///
     func configureResultsController() {
         resultsController.startForwardingEvents(to: tableView)
-        try? resultsController.performFetch()
+
+        do {
+            try resultsController.performFetch()
+        } catch {
+            CrashLogging.logError(error)
+        }
+
+        tableView.reloadData()
     }
 
     /// Create and add `starterViewController` to the `view.`
@@ -364,7 +385,10 @@ private extension SearchViewController {
     /// Updates the Predicate + Triggers a Sync Event
     ///
     func synchronizeSearchResults(with keyword: String) {
-        resultsController.predicate = NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
+        // When the search query changes, also includes the original results predicate in addition to the search keyword.
+        let searchResultsPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
+        let subpredicates = [resultsPredicate].compactMap { $0 } + [searchResultsPredicate]
+        resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
 
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
@@ -443,7 +467,7 @@ private extension SearchViewController {
             childView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
             childView.trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
             childView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
-            childView.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
+            childView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
 
         childController.didMove(toParent: self)

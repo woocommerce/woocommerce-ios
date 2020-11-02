@@ -46,7 +46,7 @@ final class BillingInformationViewController: UIViewController {
     ///
     private let emailComposer = OrderEmailComposer()
 
-    private let messageComposer = OrderMessageComposer()
+    private let messageComposerPresenter: MessageComposerPresenter = ServiceLocator.messageComposerPresenter
 
     /// Haptic Feedback!
     ///
@@ -76,14 +76,8 @@ private extension BillingInformationViewController {
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells() {
-        let cells = [
-            BillingAddressTableViewCell.self,
-            WooBasicTableViewCell.self
-        ]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        tableView.registerNib(for: BillingAddressTableViewCell.self)
+        tableView.registerNib(for: WooBasicTableViewCell.self)
     }
 
     /// Registers all of the available TableViewHeaderFooters
@@ -151,15 +145,23 @@ private extension BillingInformationViewController {
 
         UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
         ServiceLocator.analytics.track(.orderContactAction, withProperties: ["id": order.orderID,
-                                                                        "status": order.statusKey,
-                                                                        "type": "call"])
+                                                                             "status": order.status.rawValue,
+                                                                             "type": "call"])
 
     }
 
     /// Initiate communication with a customer via message
     ///
     func displayMessageComposerIfPossible(from: UIViewController) {
-        messageComposer.displayMessageComposerIfPossible(order: order, from: from)
+        guard let phoneNumber = order.billingAddress?.cleanedPhoneNumber else {
+            return
+        }
+
+        messageComposerPresenter.presentIfPossible(from: from, recipient: phoneNumber)
+
+        ServiceLocator.analytics.track(.orderContactAction, withProperties: ["id": order.orderID,
+                                                                             "status": order.status.rawValue,
+                                                                             "type": "sms"])
     }
 
     /// Create an action sheet that offers the option to copy the email address

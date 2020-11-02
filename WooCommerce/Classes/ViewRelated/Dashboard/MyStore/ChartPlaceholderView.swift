@@ -31,6 +31,7 @@ private extension ChartPlaceholderView {
     ///
     func setupView() {
         backgroundColor = .listForeground
+        topStackView.backgroundColor = .listForeground
     }
 
     /// Applies Rounded Style to the upper views.

@@ -15,6 +15,7 @@ extension Product {
     @NSManaged public var name: String
     @NSManaged public var slug: String
     @NSManaged public var permalink: String
+    @NSManaged public var date: Date
     @NSManaged public var dateCreated: Date
     @NSManaged public var dateModified: Date?
     @NSManaged public var dateOnSaleStart: Date?
@@ -66,9 +67,9 @@ extension Product {
     @NSManaged public var attributes: Set<ProductAttribute>?
     @NSManaged public var categories: Set<ProductCategory>?
     @NSManaged public var defaultAttributes: Set<ProductDefaultAttribute>?
-    @NSManaged public var downloads: Set<ProductDownload>?
+    @NSManaged public var downloads: NSOrderedSet?
     @NSManaged public var images: NSOrderedSet?
-    @NSManaged public var tags: Set<ProductTag>?
+    @NSManaged public var tags: NSOrderedSet?
     @NSManaged public var searchResults: Set<ProductSearchResults>?
     @NSManaged public var productVariations: Set<ProductVariation>?
     @NSManaged public var productShippingClass: ProductShippingClass?
@@ -129,6 +130,24 @@ extension Product {
 // MARK: Generated accessors for downloads
 extension Product {
 
+    @objc(insertObject:inDownloadsAtIndex:)
+    @NSManaged public func insertIntoDownloads(_ value: ProductDownload, at idx: Int)
+
+    @objc(removeObjectFromDownloadsAtIndex:)
+    @NSManaged public func removeFromDownloads(at idx: Int)
+
+    @objc(insertDownloads:atIndexes:)
+    @NSManaged public func insertIntoDownloads(_ values: [ProductDownload], at indexes: NSIndexSet)
+
+    @objc(removeDownloadsAtIndexes:)
+    @NSManaged public func removeFromDownloads(at indexes: NSIndexSet)
+
+    @objc(replaceObjectInDownloadsAtIndex:withObject:)
+    @NSManaged public func replaceDownloads(at idx: Int, with value: ProductDownload)
+
+    @objc(replaceDownloadsAtIndexes:withDownloads:)
+    @NSManaged public func replaceDownloads(at indexes: NSIndexSet, with values: [ProductDownload])
+
     @objc(addDownloadsObject:)
     @NSManaged public func addToDownloads(_ value: ProductDownload)
 
@@ -136,10 +155,10 @@ extension Product {
     @NSManaged public func removeFromDownloads(_ value: ProductDownload)
 
     @objc(addDownloads:)
-    @NSManaged public func addToDownloads(_ values: NSSet)
+    @NSManaged public func addToDownloads(_ values: NSOrderedSet)
 
     @objc(removeDownloads:)
-    @NSManaged public func removeFromDownloads(_ values: NSSet)
+    @NSManaged public func removeFromDownloads(_ values: NSOrderedSet)
 
 }
 
@@ -181,6 +200,24 @@ extension Product {
 // MARK: Generated accessors for tags
 extension Product {
 
+    @objc(insertObject:inTagsAtIndex:)
+    @NSManaged public func insertIntoTags(_ value: ProductTag, at idx: Int)
+
+    @objc(removeObjectFromTagsAtIndex:)
+    @NSManaged public func removeFromTags(at idx: Int)
+
+    @objc(insertTags:atIndexes:)
+    @NSManaged public func insertIntoTags(_ values: [ProductTag], at indexes: NSIndexSet)
+
+    @objc(removeTagsAtIndexes:)
+    @NSManaged public func removeFromTags(at indexes: NSIndexSet)
+
+    @objc(replaceObjectInTagsAtIndex:withObject:)
+    @NSManaged public func replaceTags(at idx: Int, with value: ProductTag)
+
+    @objc(replaceTagsAtIndexes:withTags:)
+    @NSManaged public func replaceTags(at indexes: NSIndexSet, with values: [ProductTag])
+
     @objc(addTagsObject:)
     @NSManaged public func addToTags(_ value: ProductTag)
 
@@ -188,10 +225,10 @@ extension Product {
     @NSManaged public func removeFromTags(_ value: ProductTag)
 
     @objc(addTags:)
-    @NSManaged public func addToTags(_ values: NSSet)
+    @NSManaged public func addToTags(_ values: NSOrderedSet)
 
     @objc(removeTags:)
-    @NSManaged public func removeFromTags(_ values: NSSet)
+    @NSManaged public func removeFromTags(_ values: NSOrderedSet)
 
 }
 

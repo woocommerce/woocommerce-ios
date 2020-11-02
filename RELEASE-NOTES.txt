@@ -1,10 +1,98 @@
+*** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
+
+5.4
+-----
+- [*] fix: the footer in app Settings is now correctly centered.
+- [*] fix: Products tab: earlier draft products now show up in the same order as in core when sorting by "Newest to Oldest".
+- [*] enhancement: in product details > price settings, the sale dates can be edited inline in iOS 14 using the new date picker. Also, the sale end date picker editing does not automatically end on changes anymore. [https://github.com/woocommerce/woocommerce-ios/pull/3044]
+- [*] enhancement: in order details > add tracking, the date shipped can be edited inline in iOS 14 using the new date picker. [https://github.com/woocommerce/woocommerce-ios/pull/3044]
+- [*] enhancement: in products list, the "(No Title)" placeholder will be showed when a product doesn't have the title set. [https://github.com/woocommerce/woocommerce-ios/pull/3068]
+- [*] fix: the placeholder views in the top dashboard chart and orders tab do not have unexpected white background color in Dark mode in iOS 14 anymore. [https://github.com/woocommerce/woocommerce-ios/pull/3063]
+
+
+5.3
+-----
+- [**] In Settings > Experimental Features, a Products switch is now available for turning Products M4 features on and off (default off). Products M4 features: add a simple/grouped/external product with actions to publish or save as draft.
+- [*] Opening a product from order details now shows readonly product details of the same styles as in editable product details.
+- [*] Opening a product variation from order details now shows readonly product variation details and this product variation does not appear in the Products tab anymore.
+- [*] Enhancement: when not saving a product as "published", the in-progress modal now shows title and message like "saving your product" instead of "publishing your product".
+- [*] In product and variation list, the stock quantity is not shown anymore when stock management is disabled.
+- [*] Enhancement: when the user attempts to dismiss the product selector search modal while at least one product is selected for a grouped product's linked products, a discard changes action sheet is shown.
+- [internal] Renamed a product database table (Attribute) to GenericAttribute. This adds a new database migration.  [https://github.com/woocommerce/woocommerce-ios/pull/2883]
+- [internal] Refactored the text fields in the Manual Shipment Tracking page. [https://github.com/woocommerce/woocommerce-ios/pull/2979]
+- [internal] Attempt fix for startup crashes. [https://github.com/woocommerce/woocommerce-ios/pull/3069]
+
+
+5.2
+-----
+- [**] Products: now you can editing basic fields for non-core products (whose product type is not simple/external/variable/grouped) - images, name, description, readonly price, readonly inventory, tags, categories, short description, and product settings.
+- [*] Enhancement: for variable products, the stock status is now shown in its variation list.
+- [*] Sign In With Apple: if the Apple ID has been disconnected from the WordPress app (e.g. in Settings > Apple ID > Password & Security > Apps using Apple ID), the app is logged out on app launch or app switch.
+- [*] Now from an Order Detail it's only possible to open a Product in read-only mode.
+- [internal] #2881 Upgraded WPAuth from 1.24 to 1.26-beta.12. Regressions may happen in login flows.
+- [internal] #2896 Configured the same user agent header for all the network requests made through the app.
+- [internal] #2879 After logging out, the persistent store is not reset anymore to fix a crash in SIWA revoked token scenario after app launch (issue #2830). No user-facing changes are intended, the data should be associated with a site after logging out and in like before.
+
+5.1
+-----
+- [*] bugfix: now reviews are refreshed correctly. If you try to delete or to set as spam a review from the web, the result will match in the product reviews list.
+- [*] If the Products switch is on in Settings > Experimental Features:
+  - For a variable product, the stock status is not shown in the product details anymore when stock management is disabled since stock status is controlled at variation level.
+- [internal] The Order List and Orders Search → Filter has a new backend architecture (#2820). This was changed as an experiment to fix #1543. This affects iOS 13.0 users only. No new behaviors have been added. Github project: https://git.io/JUBco. 
+- [*] Orders → Search list will now show the full counts instead of “99+”. #2825
+
+
+5.0
+-----
+- [*] Order details > product details: tapping outside of the bottom sheet from "Add more details" menu does not dismiss the whole product details anymore.
+- [*] If the Products switch is on in Settings > Experimental Features, product editing for basic fields are enabled for non-core products (whose product type is not simple/external/variable/grouped) - images, name, description, readonly price, readonly inventory, tags, categories, short description, and product settings.
+- [*] Order Detail: added "Guest" placeholder on Order Details card when there's no customer name.
+- [*] If the Products switch is on in Settings > Experimental Features:
+  - Product editing for basic fields are enabled for non-core products (whose product type is not simple/external/variable/grouped) - images, name, description, readonly price, readonly inventory, tags, categories, short description, and product settings.
+  - Inventory and shipping settings are now editable for a variable product.
+  - A product variation's stock status is now editable in inventory settings.
+  - Reviews row is now hidden if reviews are disabled.
+  - Now it's possible to open the product's reviews screen also if there are no reviews.
+  - We improved our VoiceOver support in Product Detail screen.
+- [*] In Settings, the "Feature Request" button was replaced with "Send Feedback" (Survey) (https://git.io/JUmUY)
+
+
+4.9
+-----
+- [**] Sign in with Apple is now available in the log in process.
+- [**] In Settings > Experimental Features, a Products switch is now available for turning Products M3 features on and off for core products (default off for beta testing). Products M3 features: edit grouped, external and variable products, enable/disable reviews, change product type and update categories and tags.
+- [*] Edit Products: the update action now shows up on the product details after updating just the sale price.
+- [*] Fix a crash that sometimes happen when tapping on a Product Review push notification.
+- [*] Variable product > variation list: a warning banner is shown if any variations do not have a price, and warning text is shown on these variation rows.
+
+
+4.8
+-----
+- [*] Enabled right/left swipe on product images.
+
+
+4.7
+-----
+- [*] Fixed an intermittent crash when sending an SMS from the app.
+
+
+4.6
+-----
+- [*] Fix an issue in the y-axis values on the dashboard charts where a negative value could show two minus signs.
+- [*] When a simple product doesn't have a price set, the price row on the product details screen now shows "Add Price" placeholder instead of an empty regular price.
+- [*] If WooCommerce 4.0 is available the app will show the new stats dashboard, otherwise will show a banner indicating the user to upgrade.
+- [*] The total orders row is removed from the readonly product details (products that are not a simple product) to avoid confusion since it's not shown on the editable form for simple products.
+
+
 4.5
 -----
+- [**] Products: now you can update product images, product settings, viewing and sharing a product.
 - [*] In Order Details, the item subtotal is now shown on the right side instead of the quantity. The quantity can still be viewed underneath the product name.
 - [*] In Order Details, SKU was removed from the Products List. It is still shown when fulfilling the order or viewing the product details.
 - [*] Polish the loading state on the product variations screen.
 - [*] When opening a simple product from outside of the Products tab (e.g. from Top Performers section or an order), the product name and ellipsis menu (if the Products feature switch is enabled) should be visible in the navigation bar.
  
+
 4.4
 -----
 - Order Detail: the HTML shipping method is now showed correctly

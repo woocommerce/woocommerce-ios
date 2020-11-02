@@ -30,6 +30,7 @@ public enum StatsActionV4: Action {
     ///
     case retrieveTopEarnerStats(siteID: Int64,
         timeRange: StatsTimeRangeV4,
+        earliestDateToInclude: Date,
         latestDateToInclude: Date,
         onCompletion: (Error?) -> Void)
 }

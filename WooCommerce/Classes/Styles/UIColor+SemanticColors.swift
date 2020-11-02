@@ -27,13 +27,6 @@ extension UIColor {
                         dark: withColorStudio(.red, shade: .shade30))
     }
 
-    /// Error Dark. Red-70 (< iOS 13 and Light Mode) and Red-50 (Dark Mode)
-    ///
-    static var errorDark: UIColor {
-        return UIColor(light: .withColorStudio(.red, shade: .shade70),
-                       dark: .withColorStudio(.red, shade: .shade50))
-    }
-
     /// Primary. WooCommercePurple-60 (< iOS 13 and Light Mode) and WooCommercePurple-30 (Dark Mode)
     ///
     static var primary: UIColor {
@@ -41,25 +34,18 @@ extension UIColor {
                        dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
     }
 
-    /// Primary Dark. WooCommercePurple-80 (< iOS 13 and Light Mode) and WooCommercePurple-50 (Dark Mode)
-    ///
-    static var primaryDark: UIColor {
-        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade80),
-                       dark: .withColorStudio(.wooCommercePurple, shade: .shade50))
-    }
-
-    /// Success. Green-50 (< iOS 13 and Light Mode) and Green-30 (Dark Mode)
-    ///
-    static var success: UIColor {
-        return UIColor(light: .withColorStudio(.green, shade: .shade50),
-                       dark: .withColorStudio(.green, shade: .shade30))
-    }
-
-    /// Warning. Yellow-50 (< iOS 13 and Light Mode) and Yellow-30 (Dark Mode)
+    /// Warning. Orange-30 (< iOS 13 and Light Mode) and Orange-50 (Dark Mode)
     ///
     static var warning: UIColor {
-        return UIColor(light: .withColorStudio(.yellow, shade: .shade50),
-                       dark: .withColorStudio(.yellow, shade: .shade30))
+        return UIColor(light: .withColorStudio(.orange, shade: .shade30),
+                       dark: .withColorStudio(.orange, shade: .shade50))
+    }
+
+    /// Warning. Orange-5 (< iOS 13 and Light Mode) and Orange-90 (Dark Mode)
+    ///
+    static var warningBackground: UIColor {
+        return UIColor(light: .withColorStudio(.orange, shade: .shade5),
+                       dark: .withColorStudio(.orange, shade: .shade90))
     }
 
     /// Blue. Blue-50 (< iOS 13 and Light Mode) and Blue-30 (Dark Mode)
@@ -199,13 +185,6 @@ extension UIColor {
         dark: .systemColor(.secondarySystemGroupedBackground))
     }
 
-    /// Tab Unselected. Gray-20 (< iOS 13 and Light Mode) and Gray-60 (Dark Mode)
-    ///
-    static var tabUnselected: UIColor {
-        return UIColor(light: .withColorStudio(.gray, shade: .shade20),
-                       dark: .withColorStudio(.gray, shade: .shade60))
-    }
-
     /// Divider. Gray-10 (< iOS 13) and `UIColor.separator` (> iOS 13)
     ///
     static var divider: UIColor {
@@ -287,23 +266,10 @@ extension UIColor {
         return .systemColor(.systemGray3)
     }
 
-    /// Filter Bar Selected. `primary` (< iOS 13 and Light Mode) and `UIColor.label` (Dark Mode)
+    /// Switch disabled color.
     ///
-    static var filterBarSelected: UIColor {
-        if #available(iOS 13, *) {
-            return UIColor(light: .primary,
-                           dark: .label)
-        }
-
-
-        return .primary
-    }
-
-    /// Filter Bar Background. `white` (< iOS 13 and Light Mode) and Gray-90 (Dark Mode)
-    ///
-    static var filterBarBackground: UIColor {
-        return UIColor(light: .white,
-                       dark: .withColorStudio(.gray, shade: .shade90))
+    static var switchDisabledColor: UIColor {
+        return .systemColor(.systemGray3)
     }
 
     /// Ghost cell animation end color. `Gray-5` (Light Mode) and Gray-10 (Dark Mode)
@@ -394,16 +360,6 @@ extension UIColor {
 
         return .white
     }
-
-    /// List ForeGround Unread. Blue-0 (< iOS 13) and `UIColor.tertiarySystemGroupedBackground` (> iOS 13)
-    ///
-    static var listForegroundUnread: UIColor {
-        if #available(iOS 13, *) {
-            return .tertiarySystemGroupedBackground
-        }
-
-        return .withColorStudio(.blue, shade: .shade0)
-    }
 }
 
 
@@ -412,6 +368,12 @@ extension UIColor {
     class var alertHeaderImageBackgroundColor: UIColor {
         return UIColor(light: .systemColor(.systemGray6),
                        dark: .systemColor(.systemGray5))
+    }
+
+    /// The background color of the authentication prologue bottom area & button container.
+    ///
+    static var authPrologueBottomBackgroundColor: UIColor {
+        return .withColorStudio(.brand, shade: .shade80)
     }
 }
 
@@ -426,9 +388,6 @@ extension UIColor {
 
     /// Muriel neutral colors, which invert in dark mode
     /// - Parameter shade: a MurielColorShade of the desired neutral shade
-    static var neutral: UIColor {
-        return neutral(.shade50)
-    }
     class func neutral(_ shade: ColorStudioShade) -> UIColor {
         switch shade {
         case .shade0:

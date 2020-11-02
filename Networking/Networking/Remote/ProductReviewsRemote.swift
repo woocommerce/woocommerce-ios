@@ -4,7 +4,7 @@ import Foundation
 ///
 /// The required methods are intentionally incomplete. Feel free to add the other ones.
 ///
-public protocol ProductReviewsEndpointsProviding {
+public protocol ProductReviewsRemoteProtocol {
     func loadProductReview(for siteID: Int64,
                            reviewID: Int64,
                            completion: @escaping (Result<ProductReview, Error>) -> Void)
@@ -12,7 +12,7 @@ public protocol ProductReviewsEndpointsProviding {
 
 /// Product reviews: Remote Endpoints
 ///
-public final class ProductReviewsRemote: Remote, ProductReviewsEndpointsProviding {
+public final class ProductReviewsRemote: Remote, ProductReviewsRemoteProtocol {
 
     // MARK: - Product Reviews
 
@@ -25,19 +25,27 @@ public final class ProductReviewsRemote: Remote, ProductReviewsEndpointsProvidin
     ///                determines fields present in response. Default is view.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of Orders to be retrieved per page.
+    ///     - products: Limit result set to reviews assigned to specific product IDs.
+    ///     - status: Limit result set to reviews assigned a specific status. If nil, the default status will be `allReviews`.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllProductReviews(for siteID: Int64,
                                 context: String? = nil,
                                 pageNumber: Int = Default.pageNumber,
                                 pageSize: Int = Default.pageSize,
+                                products: [Int64]? = nil,
+                                status: ProductReviewStatus? = nil,
                                 completion: @escaping ([ProductReview]?, Error?) -> Void) {
+
+
+        let stringOfProductIDs = products?.map { String($0) }.joined(separator: ",") ?? ""
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.contextKey: context ?? Default.context,
-            ParameterKey.status: Default.allReviews
-        ]
+            ParameterKey.product: stringOfProductIDs,
+            ParameterKey.status: status?.rawValue ?? Default.allReviews
+            ]
 
         let path = Path.reviews
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
@@ -98,7 +106,7 @@ public extension ProductReviewsRemote {
         static let page: String       = "page"
         static let perPage: String    = "per_page"
         static let contextKey: String = "context"
-        static let include: String    = "include"
+        static let product: String    = "product"
         static let status: String     = "status"
     }
 }

@@ -5,7 +5,7 @@ import Yosemite
 /// Top-level stats container view controller that consists of a button bar with 4 time ranges.
 /// Each time range tab is managed by a `StoreStatsAndTopPerformersPeriodViewController`.
 ///
-class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewController {
+final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewController {
 
     // MARK: - DashboardUI protocol
 
@@ -28,8 +28,18 @@ class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewContro
     // MARK: - Private Properties
 
     private var periodVCs = [StoreStatsAndTopPerformersPeriodViewController]()
+    private let siteID: Int64
 
     // MARK: - View Lifecycle
+
+    init(siteID: Int64) {
+        self.siteID = siteID
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         configurePeriodViewControllers()
@@ -67,6 +77,7 @@ class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewContro
         /// Hide the ImageView:
         /// We don't use it, and if / when "Ghostified" produces a quite awful placeholder UI!
         cell.imageView.isHidden = true
+        cell.accessibilityIdentifier = indicatorInfo.accessibilityIdentifier
 
         /// Flip the cells back to their proper state for RTL languages.
         if traitCollection.layoutDirection == .rightToLeft {
@@ -76,14 +87,14 @@ class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewContro
 }
 
 extension StoreStatsAndTopPerformersViewController: DashboardUI {
-    func defaultAccountDidUpdate() {
-        clearAllFields()
-    }
-
     func reloadData(completion: @escaping () -> Void) {
         syncAllStats { _ in
             completion()
         }
+    }
+
+    func remindStatsUpgradeLater() {
+        // No op as this VC represents the latest stats version to date.
     }
 }
 
@@ -96,10 +107,6 @@ private extension StoreStatsAndTopPerformersViewController {
         var syncError: Error? = nil
 
         ensureGhostContentIsDisplayed()
-
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return
-        }
 
         showSpinner(shouldShowSpinner: true)
 
@@ -123,7 +130,11 @@ private extension StoreStatsAndTopPerformersViewController {
         let timezoneForStatsDates = TimeZone.siteTimezone
         let timezoneForSync = TimeZone.current
 
-        periodVCs.forEach { (vc) in
+        periodVCs.forEach { [weak self] (vc) in
+            guard let self = self else {
+                return
+            }
+
             vc.siteTimezone = timezoneForStatsDates
 
             let currentDate = Date()
@@ -158,6 +169,7 @@ private extension StoreStatsAndTopPerformersViewController {
 
             group.enter()
             self.syncTopEarnersStats(for: siteID,
+                                     siteTimezone: timezoneForSync,
                                      timeRange: vc.timeRange,
                                      latestDateToInclude: latestDateToInclude) { error in
                 if let error = error {
@@ -250,10 +262,22 @@ private extension StoreStatsAndTopPerformersViewController {
 
     func configurePeriodViewControllers() {
         let currentDate = Date()
-        let dayVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .today, currentDate: currentDate)
-        let weekVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .thisWeek, currentDate: currentDate)
-        let monthVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .thisMonth, currentDate: currentDate)
-        let yearVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .thisYear, currentDate: currentDate)
+        let dayVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+                                                                   timeRange: .today,
+                                                                   currentDate: currentDate,
+                                                                   canDisplayInAppFeedbackCard: true)
+        let weekVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+                                                                    timeRange: .thisWeek,
+                                                                    currentDate: currentDate,
+                                                                    canDisplayInAppFeedbackCard: false)
+        let monthVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+                                                                     timeRange: .thisMonth,
+                                                                     currentDate: currentDate,
+                                                                     canDisplayInAppFeedbackCard: false)
+        let yearVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+                                                                    timeRange: .thisYear,
+                                                                    currentDate: currentDate,
+                                                                    canDisplayInAppFeedbackCard: false)
 
         periodVCs.append(dayVC)
         periodVCs.append(weekVC)
@@ -333,10 +357,16 @@ private extension StoreStatsAndTopPerformersViewController {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func syncTopEarnersStats(for siteID: Int64, timeRange: StatsTimeRangeV4, latestDateToInclude: Date, onCompletion: ((Error?) -> Void)? = nil) {
+    func syncTopEarnersStats(for siteID: Int64,
+                             siteTimezone: TimeZone,
+                             timeRange: StatsTimeRangeV4,
+                             latestDateToInclude: Date,
+                             onCompletion: ((Error?) -> Void)? = nil) {
+        let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
         let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
                                                           timeRange: timeRange,
-                                                          latestDateToInclude: Date()) { error in
+                                                          earliestDateToInclude: earliestDateToInclude,
+                                                          latestDateToInclude: latestDateToInclude) { error in
                                                             if let error = error {
                                                                 DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
                                                             } else {
@@ -353,12 +383,6 @@ private extension StoreStatsAndTopPerformersViewController {
 }
 
 private extension StoreStatsAndTopPerformersViewController {
-    func clearAllFields() {
-        periodVCs.forEach { (vc) in
-            vc.clearAllFields()
-        }
-    }
-
     func showSiteVisitors(_ shouldShowSiteVisitors: Bool) {
         periodVCs.forEach { vc in
             vc.shouldShowSiteVisitStats = shouldShowSiteVisitors

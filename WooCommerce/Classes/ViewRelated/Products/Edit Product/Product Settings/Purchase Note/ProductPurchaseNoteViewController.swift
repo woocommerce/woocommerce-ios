@@ -72,7 +72,7 @@ private extension ProductPurchaseNoteViewController {
     }
 
     func configureTableView() {
-        tableView.register(TextViewTableViewCell.loadNib(), forCellReuseIdentifier: TextViewTableViewCell.reuseIdentifier)
+        tableView.registerNib(for: TextViewTableViewCell.self)
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -86,7 +86,7 @@ private extension ProductPurchaseNoteViewController {
     func configureTextViewFirstResponder() {
         if let indexPath = sections.indexPathForRow(.purchaseNote) {
             let cell = tableView.cellForRow(at: indexPath) as? TextViewTableViewCell
-            cell?.noteTextView.becomeFirstResponder()
+            cell?.becomeFirstResponder()
         }
     }
 }
@@ -148,12 +148,15 @@ private extension ProductPurchaseNoteViewController {
     }
 
     func configurePurchaseNote(cell: TextViewTableViewCell) {
-        cell.iconImage = nil
-        cell.noteTextView.placeholder = NSLocalizedString("Add a purchase note...", comment: "Placeholder text in Product Purchase Note screen")
-        cell.noteTextView.text = productSettings.purchaseNote?.strippedHTML
-        cell.noteTextView.onTextChange = { [weak self] (text) in
+        let placeholder = NSLocalizedString("Add a purchase note...",
+                                            comment: "Placeholder text in Product Purchase Note screen")
+
+        let cellViewModel = TextViewTableViewCell.ViewModel(text: productSettings.purchaseNote?.strippedHTML,
+                                                            placeholder: placeholder,
+                                                            onTextChange: { [weak self] (text) in
             self?.productSettings.purchaseNote = text
-        }
+        })
+        cell.configure(with: cellViewModel)
     }
 }
 

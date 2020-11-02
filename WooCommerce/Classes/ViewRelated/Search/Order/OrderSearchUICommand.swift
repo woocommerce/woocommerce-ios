@@ -16,13 +16,16 @@ final class OrderSearchUICommand: SearchUICommand {
 
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
 
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
-    init() {
+    private let siteID: Int64
+
+    init(siteID: Int64) {
+        self.siteID = siteID
         configureResultsController()
     }
 
@@ -33,7 +36,7 @@ final class OrderSearchUICommand: SearchUICommand {
     }
 
     func createStarterViewController() -> UIViewController? {
-        OrderSearchStarterViewController()
+        OrderSearchStarterViewController(siteID: siteID)
     }
 
     func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptyStateViewController,
@@ -71,7 +74,7 @@ final class OrderSearchUICommand: SearchUICommand {
         ServiceLocator.analytics.track(.ordersListFilterOrSearch, withProperties: ["filter": "", "search": "\(keyword)"])
     }
 
-    func didSelectSearchResult(model: Order, from viewController: UIViewController) {
+    func didSelectSearchResult(model: Order, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
         guard let detailsViewController = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
             fatalError()
         }
@@ -88,7 +91,7 @@ private extension OrderSearchUICommand {
 
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
         let listAll = statusResultsController.fetchedObjects
-        for orderStatus in listAll where orderStatus.slug == order.statusKey {
+        for orderStatus in listAll where orderStatus.status == order.status {
             return orderStatus
         }
 

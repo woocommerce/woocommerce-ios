@@ -5,6 +5,12 @@ extension Storage.Product {
     var imagesArray: [Storage.ProductImage] {
         return images?.toArray() ?? []
     }
+    var tagsArray: [Storage.ProductTag] {
+        return tags?.toArray() ?? []
+    }
+    var downloadableFilesArray: [Storage.ProductDownload] {
+        return downloads?.toArray() ?? []
+    }
 }
 
 // MARK: - Storage.Product: ReadOnlyConvertible
@@ -20,6 +26,7 @@ extension Storage.Product: ReadOnlyConvertible {
         name = product.name
         slug = product.slug
         permalink = product.permalink
+        date = product.date
         dateCreated = product.dateCreated
         dateModified = product.dateModified
         dateOnSaleStart = product.dateOnSaleStart
@@ -28,7 +35,7 @@ extension Storage.Product: ReadOnlyConvertible {
         featured = product.featured
         catalogVisibilityKey = product.catalogVisibilityKey
         fullDescription = product.fullDescription
-        briefDescription = product.briefDescription
+        briefDescription = product.shortDescription
         sku = product.sku
         price = product.price
         regularPrice = product.regularPrice
@@ -38,8 +45,9 @@ extension Storage.Product: ReadOnlyConvertible {
         totalSales = Int64(product.totalSales)
         virtual = product.virtual
         downloadable = product.downloadable
-        downloadLimit = Int64(product.downloadLimit)
-        downloadExpiry = Int64(product.downloadExpiry)
+        downloadLimit = product.downloadLimit
+        downloadExpiry = product.downloadExpiry
+        buttonText = product.buttonText
         externalURL = product.externalURL
         taxStatusKey = product.taxStatusKey
         taxClass = product.taxClass
@@ -79,16 +87,16 @@ extension Storage.Product: ReadOnlyConvertible {
     public func toReadOnly() -> Yosemite.Product {
 
         let productCategories = categories?.map { $0.toReadOnly() } ?? [Yosemite.ProductCategory]()
-        let productDownloads = downloads?.map { $0.toReadOnly() } ?? [Yosemite.ProductDownload]()
-        let productTags = tags?.map { $0.toReadOnly() } ?? [Yosemite.ProductTag]()
+        let productDownloads = downloadableFilesArray.map { $0.toReadOnly() }
+        let productTags = tagsArray.map { $0.toReadOnly() }
         let productImages = imagesArray.map { $0.toReadOnly() }
         let productAttributes = attributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductAttribute]()
         let productDefaultAttributes = defaultAttributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductDefaultAttribute]()
         let productShippingClassModel = productShippingClass?.toReadOnly()
 
-        var quantity: Int?
+        var quantity: Int64?
         if let stockQuantity = stockQuantity {
-            quantity = Int(stockQuantity)
+            quantity = Int64(stockQuantity)
         }
 
         return Product(siteID: siteID,
@@ -96,6 +104,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        name: name,
                        slug: slug,
                        permalink: permalink,
+                       date: date,
                        dateCreated: dateCreated,
                        dateModified: dateModified,
                        dateOnSaleStart: dateOnSaleStart,
@@ -105,7 +114,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        featured: featured,
                        catalogVisibilityKey: catalogVisibilityKey,
                        fullDescription: fullDescription,
-                       briefDescription: briefDescription,
+                       shortDescription: briefDescription,
                        sku: sku,
                        price: price,
                        regularPrice: regularPrice,
@@ -115,9 +124,10 @@ extension Storage.Product: ReadOnlyConvertible {
                        totalSales: Int(totalSales),
                        virtual: virtual,
                        downloadable: downloadable,
-                       downloads: productDownloads.sorted(),
-                       downloadLimit: Int(downloadLimit),
-                       downloadExpiry: Int(downloadExpiry),
+                       downloads: productDownloads,
+                       downloadLimit: downloadLimit,
+                       downloadExpiry: downloadExpiry,
+                       buttonText: buttonText,
                        externalURL: externalURL,
                        taxStatusKey: taxStatusKey,
                        taxClass: taxClass,
@@ -144,7 +154,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        parentID: parentID,
                        purchaseNote: purchaseNote,
                        categories: productCategories.sorted(),
-                       tags: productTags.sorted(),
+                       tags: productTags,
                        images: productImages,
                        attributes: productAttributes.sorted(),
                        defaultAttributes: productDefaultAttributes.sorted(),

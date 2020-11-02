@@ -4,13 +4,13 @@ import Foundation
 ///
 /// The required methods are intentionally incomplete. Feel free to add the other ones.
 ///
-public protocol NotificationsEndpointsProviding {
+public protocol NotificationsRemoteProtocol {
     func loadNotes(noteIDs: [Int64]?, pageSize: Int?, completion: @escaping (Result<[Note], Error>) -> Void)
 }
 
 /// Notifications: Remote Endpoints
 ///
-public final class NotificationsRemote: Remote, NotificationsEndpointsProviding {
+public final class NotificationsRemote: Remote, NotificationsRemoteProtocol {
 
     /// Retrieves latest Notifications (OR collection of specified Notifications, whenever the NoteIds is present).
     ///

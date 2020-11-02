@@ -66,8 +66,8 @@ final class ProductSearchUICommand: SearchUICommand {
         ServiceLocator.analytics.track(.productListSearched)
     }
 
-    func didSelectSearchResult(model: Product, from viewController: UIViewController) {
-        ProductDetailsFactory.productDetails(product: model, presentationStyle: .navigationStack) { [weak viewController] vc in
+    func didSelectSearchResult(model: Product, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
+        ProductDetailsFactory.productDetails(product: model, presentationStyle: .navigationStack, forceReadOnly: false) { [weak viewController] vc in
             viewController?.navigationController?.pushViewController(vc, animated: true)
         }
     }

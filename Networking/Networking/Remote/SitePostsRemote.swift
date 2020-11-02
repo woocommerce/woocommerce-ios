@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 
 /// WP.com Site Posts API: Remote Endpoints
@@ -33,7 +32,7 @@ public class SitePostsRemote: Remote {
     ///     - post: Post that we will use to update the post.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func updateSitePost(for siteID: Int64, postID: Int64, post: Post, completion: @escaping (Post?, Error?) -> Void) {
+    public func updateSitePost(for siteID: Int64, postID: Int64, post: Post, completion: @escaping (Result<Post, Error>) -> Void) {
         do {
             var parameters = try post.toDictionary()
             let parametersFields = ["fields": "site_ID,password"]
@@ -44,7 +43,7 @@ public class SitePostsRemote: Remote {
 
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
-            completion(nil, error)
+            completion(.failure(error))
         }
     }
 }

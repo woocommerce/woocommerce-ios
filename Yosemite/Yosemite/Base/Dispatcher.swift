@@ -38,7 +38,7 @@ public class Dispatcher {
         assertMainThread()
 
         guard processors[actionType.identifier] == nil else {
-            fatalError("An action type can only be handled by a single processor!")
+            logErrorAndExit("An action type can only be handled by a single processor!")
         }
 
         processors[actionType.identifier] = WeakProcessor(processor: processor)
@@ -47,8 +47,6 @@ public class Dispatcher {
     /// Unregisters the specified Processor from *ALL* of the dispatcher queues.
     ///
     public func unregister(processor: ActionsProcessor) {
-        assertMainThread()
-
         for (identifier, subprocessor) in processors where subprocessor.identifier == processor.identifier {
             processors[identifier] = nil
         }

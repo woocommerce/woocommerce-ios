@@ -7,7 +7,7 @@ import Yosemite
 public class CurrencyFormatter {
     private let currencySettings: CurrencySettings
 
-    init(currencySettings: CurrencySettings = CurrencySettings.shared) {
+    init(currencySettings: CurrencySettings) {
         self.currencySettings = currencySettings
     }
 
@@ -67,8 +67,25 @@ public class CurrencyFormatter {
         numberFormatter.generatesDecimalNumbers = true
         numberFormatter.minimumFractionDigits = decimalPosition
         numberFormatter.maximumFractionDigits = decimalPosition
+        numberFormatter.roundingMode = .halfUp
 
         return numberFormatter.string(from: absoluteAmount)
+    }
+
+    /// Returns a formatted string for the amount. Does not contain currency symbol.
+    /// - Parameters:
+    ///     - decimal: a valid Decimal number
+    ///     - decimalSeparator: a string representing the user's preferred decimal symbol
+    ///     - decimalPosition: an int for positioning the decimal symbol
+    ///     - thousandSeparator: a string representing the user's preferred thousand symbol*
+    ///       *Assumes thousands grouped by 3, because a user can't indicate a preference and it's a majority default.
+    ///       Note this assumption will be wrong for India.
+    ///
+    func localize(_ decimalAmount: Decimal,
+                  with decimalSeparator: String? = ".",
+                  in decimalPosition: Int = 2,
+                  including thousandSeparator: String? = ",") -> String? {
+        localize(decimalAmount as NSDecimalNumber, with: decimalSeparator, in: decimalPosition, including: thousandSeparator)
     }
 
     /// Returns a string that displays the amount using all of the specified currency settings
@@ -86,6 +103,10 @@ public class CurrencyFormatter {
                         locale: Locale = .current) -> String {
         let space = "\u{00a0}" // unicode equivalent of &nbsp;
         let negative = isNegative ? "-" : ""
+
+        // Remove all occurences of the minus sign from the string amount.
+        // We want to position the minus sign manually.
+        let amount = amount.replacingOccurrences(of: "-", with: "")
 
         // We're relying on the phone's Locale to assist with language direction
         let languageCode = locale.languageCode
@@ -239,5 +260,15 @@ public class CurrencyFormatter {
                                              locale: locale)
 
         return formattedAmount
+    }
+
+    /// Applies currency option settings to the amount for the given currency.
+    /// - Parameters:
+    ///     - amount: a Decimal representation of the amount, from the API, with no formatting applied. e.g. "19.87"
+    ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
+    ///     - locale: the locale that is used to format the currency amount string.
+    ///
+    func formatAmount(_ amount: Decimal, with currency: String? = nil, locale: Locale = .current) -> String? {
+        formatAmount(amount as NSDecimalNumber, with: currency, locale: locale)
     }
 }

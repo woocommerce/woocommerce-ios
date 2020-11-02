@@ -285,6 +285,25 @@ class CurrencyFormatterTests: XCTestCase {
         XCTAssertEqual(expectedResult, actualResult)
     }
 
+    /// This use case is for the y-axis values in the dashboard charts.
+    func testFormattingANegativeValueInHumanReadableString() {
+        let currencyPosition = CurrencySettings.CurrencyPosition.rightSpace
+        let currencyCode = CurrencySettings.CurrencyCode.GBP
+        let value = Double(-7867818684.64)
+        let stringAmount = value.humanReadableString()
+        let expectedResult = "-7.9b £"
+
+        let symbol = sampleCurrencySettings.symbol(from: currencyCode)
+        let isNegative = true
+        let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings)
+            .formatCurrency(using: stringAmount,
+                            at: currencyPosition,
+                            with: symbol,
+                            isNegative: isNegative,
+                            locale: sampleLocale)
+
+        XCTAssertEqual(expectedResult, actualResult)
+    }
 
     // MARK: - Human readable formatter tests
 

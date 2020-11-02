@@ -15,11 +15,6 @@ final class ProductPriceSettingsViewController: UIViewController {
     //
     private let timezoneForScheduleSaleDates = TimeZone.siteTimezone
 
-    // Date Pickers status
-    //
-    private var datePickerSaleFromVisible = false
-    private var datePickerSaleToVisible = false
-
     /// Table Sections to be rendered
     ///
     private var sections: [Section] = []
@@ -31,7 +26,8 @@ final class ProductPriceSettingsViewController: UIViewController {
         _ dateOnSaleStart: Date?,
         _ dateOnSaleEnd: Date?,
         _ taxStatus: ProductTaxStatus,
-        _ taxClass: TaxClass?) -> Void
+        _ taxClass: TaxClass?,
+        _ hasUnsavedChanges: Bool) -> Void
     private let onCompletion: Completion
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
@@ -43,7 +39,7 @@ final class ProductPriceSettingsViewController: UIViewController {
 
     /// Init
     ///
-    init(product: Product, completion: @escaping Completion) {
+    init(product: ProductFormDataModel & TaxClassRequestable, completion: @escaping Completion) {
         siteID = product.siteID
         viewModel = ProductPriceSettingsViewModel(product: product)
         onCompletion = completion
@@ -115,7 +111,7 @@ private extension ProductPriceSettingsViewController {
 
     func registerTableViewCells() {
         for row in Row.allCases {
-            tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
+            tableView.registerNib(for: row.type)
         }
     }
 
@@ -143,8 +139,9 @@ extension ProductPriceSettingsViewController {
     }
 
     @objc private func completeUpdating() {
-        viewModel.completeUpdating(onCompletion: { [weak self] (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass) in
-            self?.onCompletion(regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass)
+        viewModel.completeUpdating(
+            onCompletion: { [weak self] (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges) in
+                self?.onCompletion(regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges)
             }, onError: { [weak self] error in
                 switch error {
                 case .salePriceWithoutRegularPrice:
@@ -219,13 +216,12 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
 
         switch row {
         case .scheduleSaleFrom:
-            datePickerSaleFromVisible = !datePickerSaleFromVisible
+            viewModel.didTapScheduleSaleFromRow()
             refreshViewContent()
         case .scheduleSaleTo:
-            datePickerSaleToVisible = !datePickerSaleToVisible
+            viewModel.didTapScheduleSaleToRow()
             refreshViewContent()
         case .removeSaleTo:
-            datePickerSaleToVisible = false
             viewModel.handleSaleEndDateChange(nil)
             refreshViewContent()
         case .taxStatus:
@@ -246,7 +242,8 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
             let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: navigationBarTitle,
                                                                      noResultsPlaceholderText: noResultsPlaceholderText,
                                                                      noResultsPlaceholderImage: noResultsPlaceholderImage,
-                                                                     noResultsPlaceholderImageTintColor: .gray(.shade20))
+                                                                     noResultsPlaceholderImageTintColor: .gray(.shade20),
+                                                                     tableViewStyle: .grouped)
             let selectorViewController =
                 PaginatedListSelectorViewController(viewProperties: viewProperties,
                                                     dataSource: dataSource) { [weak self] selected in
@@ -290,7 +287,7 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
         let row = rowAtIndexPath(indexPath)
 
         if row == .datePickerSaleFrom || row == .datePickerSaleTo {
-            return Constants.pickerRowHeight
+            return DatePickerTableViewCell.getDefaultCellHeight()
         }
 
         return UITableView.automaticDimension
@@ -331,7 +328,8 @@ private extension ProductPriceSettingsViewController {
     }
 
     func configurePrice(cell: UnitInputTableViewCell) {
-        let cellViewModel = Product.createRegularPriceViewModel(regularPrice: viewModel.regularPrice, using: CurrencySettings.shared) { [weak self] value in
+        let cellViewModel = Product.createRegularPriceViewModel(regularPrice: viewModel.regularPrice,
+                                                                using: ServiceLocator.currencySettings) { [weak self] value in
             self?.viewModel.handleRegularPriceChange(value)
         }
         cell.selectionStyle = .none
@@ -339,7 +337,7 @@ private extension ProductPriceSettingsViewController {
     }
 
     func configureSalePrice(cell: UnitInputTableViewCell) {
-        let cellViewModel = Product.createSalePriceViewModel(salePrice: viewModel.salePrice, using: CurrencySettings.shared) { [weak self] value in
+        let cellViewModel = Product.createSalePriceViewModel(salePrice: viewModel.salePrice, using: ServiceLocator.currencySettings) { [weak self] value in
             self?.viewModel.handleSalePriceChange(value)
         }
         cell.selectionStyle = .none
@@ -438,34 +436,15 @@ private extension ProductPriceSettingsViewController {
     }
 
     func configureSections() {
-        var saleScheduleRows: [Row] = [.scheduleSale]
-        if viewModel.dateOnSaleStart != nil || viewModel.dateOnSaleEnd != nil {
-            saleScheduleRows.append(contentsOf: [.scheduleSaleFrom])
-            if datePickerSaleFromVisible {
-                saleScheduleRows.append(contentsOf: [.datePickerSaleFrom])
-            }
-            saleScheduleRows.append(contentsOf: [.scheduleSaleTo])
-            if datePickerSaleToVisible {
-                saleScheduleRows.append(contentsOf: [.datePickerSaleTo])
-            }
-            if viewModel.dateOnSaleEnd != nil {
-                saleScheduleRows.append(.removeSaleTo)
-            }
-        }
-
-        sections = [
-        Section(title: NSLocalizedString("Price", comment: "Section header title for product price"), rows: [.price, .salePrice]),
-        Section(title: nil, rows: saleScheduleRows),
-        Section(title: NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings"), rows: [.taxStatus, .taxClass])
-        ]
+        sections = viewModel.sections
     }
 }
 
 // MARK: - Private Types
 //
-private extension ProductPriceSettingsViewController {
+extension ProductPriceSettingsViewController {
 
-    struct Section {
+    struct Section: Equatable {
         let title: String?
         let rows: [Row]
     }
@@ -484,7 +463,7 @@ private extension ProductPriceSettingsViewController {
         case taxStatus
         case taxClass
 
-        var type: UITableViewCell.Type {
+        fileprivate var type: UITableViewCell.Type {
             switch self {
             case .price, .salePrice:
                 return UnitInputTableViewCell.self
@@ -501,7 +480,7 @@ private extension ProductPriceSettingsViewController {
             }
         }
 
-        var reuseIdentifier: String {
+        fileprivate var reuseIdentifier: String {
             return type.reuseIdentifier
         }
     }
@@ -509,5 +488,4 @@ private extension ProductPriceSettingsViewController {
 
 private struct Constants {
     static let sectionHeight = CGFloat(44)
-    static let pickerRowHeight = CGFloat(216)
 }

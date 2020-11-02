@@ -1,6 +1,8 @@
 import Foundation
+import KeychainAccess
 import WordPressAuthenticator
 import Yosemite
+import class Networking.UserAgent
 import struct Networking.Settings
 
 
@@ -12,45 +14,81 @@ class AuthenticationManager: Authentication {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
+    /// Keychain access for SIWA auth token
+    ///
+    private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
+
+    /// Apple ID is temporarily stored in memory until we can save it to Keychain when the authentication is complete.
+    ///
+    private var appleUserID: String?
+
     /// Initializes the WordPress Authenticator.
     ///
     func initialize() {
+        let isSignInWithAppleEnabled: Bool
+        if #available(iOS 13.0, *) {
+            isSignInWithAppleEnabled = true
+        } else {
+            isSignInWithAppleEnabled = false
+        }
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
-                                                                wpcomTermsOfServiceURL: WooConstants.termsOfServiceUrl.absoluteString,
+                                                                wpcomTermsOfServiceURL: WooConstants.URLs.termsOfService.rawValue,
                                                                 wpcomAPIBaseURL: Settings.wordpressApiBaseURL,
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
-                                                                userAgent: UserAgent.defaultUserAgent)
+                                                                userAgent: UserAgent.defaultUserAgent,
+                                                                showLoginOptions: true,
+                                                                enableSignUp: false,
+                                                                enableSignInWithApple: isSignInWithAppleEnabled)
 
+        let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
+        let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
         let style = WordPressAuthenticatorStyle(primaryNormalBackgroundColor: .primaryButtonBackground,
                                                 primaryNormalBorderColor: .primaryButtonDownBackground,
                                                 primaryHighlightBackgroundColor: .primaryButtonDownBackground,
                                                 primaryHighlightBorderColor: .primaryButtonDownBorder,
-                                                secondaryNormalBackgroundColor: .secondaryButtonBackground,
-                                                secondaryNormalBorderColor: .secondaryButtonBorder,
-                                                secondaryHighlightBackgroundColor: .secondaryButtonDownBackground,
-                                                secondaryHighlightBorderColor: .secondaryButtonDownBorder,
+                                                secondaryNormalBackgroundColor: .white,
+                                                secondaryNormalBorderColor: systemGray3LightModeColor,
+                                                secondaryHighlightBackgroundColor: systemGray3LightModeColor,
+                                                secondaryHighlightBorderColor: systemGray3LightModeColor,
                                                 disabledBackgroundColor: .buttonDisabledBackground,
                                                 disabledBorderColor: .gray(.shade30),
                                                 primaryTitleColor: .primaryButtonTitle,
-                                                secondaryTitleColor: .secondaryButtonTitle,
+                                                secondaryTitleColor: systemLabelLightModeColor,
                                                 disabledTitleColor: .textSubtle,
                                                 textButtonColor: .accent,
                                                 textButtonHighlightColor: .accentDark,
                                                 instructionColor: .textSubtle,
-                                                subheadlineColor: .systemColor(.secondaryLabel),
+                                                subheadlineColor: .gray(.shade30),
                                                 placeholderColor: .placeholderImage,
                                                 viewControllerBackgroundColor: .listBackground,
                                                 textFieldBackgroundColor: .listForeground,
+                                                buttonViewBackgroundColor: .authPrologueBottomBackgroundColor,
+                                                buttonViewTopShadowImage: nil,
                                                 navBarImage: StyleManager.navBarImage,
-                                                navBarBadgeColor: .primary)
+                                                navBarBadgeColor: .primary,
+                                                navBarBackgroundColor: .appBar,
+                                                prologueTopContainerChildViewController: LoginPrologueViewController(),
+                                                statusBarStyle: .default)
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
-                                                     jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
-                                                     siteLoginInstructions: AuthenticationConstants.siteInstructions)
+                                                                  jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
+                                                                  siteLoginInstructions: AuthenticationConstants.siteInstructions,
+                                                                  usernamePasswordInstructions: AuthenticationConstants.usernamePasswordInstructions)
+
+        let unifiedStyle = WordPressAuthenticatorUnifiedStyle(borderColor: .divider,
+                                                              errorColor: .error,
+                                                              textColor: .text,
+                                                              textSubtleColor: .textSubtle,
+                                                              textButtonColor: .brand,
+                                                              textButtonHighlightColor: .brand,
+                                                              viewControllerBackgroundColor: .basicBackground,
+                                                              navBarBackgroundColor: .basicBackground,
+                                                              navButtonTextColor: .brand,
+                                                              navTitleTextColor: .text)
 
         let displayImages = WordPressAuthenticatorDisplayImages(
             magicLink: .loginMagicLinkImage,
@@ -59,6 +97,7 @@ class AuthenticationManager: Authentication {
 
         WordPressAuthenticator.initialize(configuration: configuration,
                                           style: style,
+                                          unifiedStyle: unifiedStyle,
                                           displayImages: displayImages,
                                           displayStrings: displayStrings)
         WordPressAuthenticator.shared.delegate = self
@@ -66,22 +105,14 @@ class AuthenticationManager: Authentication {
 
     /// Displays the Login Flow using the specified UIViewController as presenter.
     ///
-    func displayAuthentication(from presenter: UIViewController) {
-        let prologueViewController = LoginPrologueViewController()
-        let navigationController = LoginNavigationController(rootViewController: prologueViewController)
-        navigationController.modalPresentationStyle = .fullScreen
+    func displayAuthentication(from presenter: UIViewController, animated: Bool, onCompletion: @escaping () -> Void) {
+        WordPressAuthenticator.showLogin(from: presenter, animated: animated, onLoginButtonTapped: { [weak self] in
+            guard let self = self else { return }
+            // Resets Apple ID at the beginning of the authentication.
+            self.appleUserID = nil
 
-        presenter.present(navigationController, animated: true, completion: nil)
-    }
-
-    /// Returns a LoginViewController preinitialized for WordPress.com
-    ///
-    func loginForWordPressDotCom() -> UIViewController {
-        let loginViewController = WordPressAuthenticator.signinForWPCom()
-        loginViewController.offerSignupOption = false
-        loginViewController.loginFields.restrictToWPCom = false
-
-        return loginViewController
+            ServiceLocator.analytics.track(.loginPrologueContinueTapped)
+        }, onCompletion: onCompletion)
     }
 
     /// Handles an Authentication URL Callback. Returns *true* on success.
@@ -108,7 +139,7 @@ class AuthenticationManager: Authentication {
 //
 extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func userAuthenticatedWithAppleUserID(_ appleUserID: String) {
-        // Sign in with Apple is not supported yet.
+        self.appleUserID = appleUserID
     }
 
     var allowWPComLogin: Bool {
@@ -178,7 +209,21 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the Signup Epilogue, in the specified NavigationController.
     ///
     func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, service: SocialService?) {
-        // NO-OP: The current WC version does not support Signup.
+        // NO-OP: The current WC version does not support Signup. Let SIWA through.
+        guard case .apple = service else {
+            return
+        }
+
+        // For SIWA, signups are treating like signing in for now.
+        // Signup code in Authenticator normally synchronizes the auth credentials but
+        // since we're hacking in SIWA, that's never called in the pod. Call here so the
+        // person's name and user ID show up on the picker screen.
+        //
+        // This is effectively a useless screen for them other than telling them to install Jetpack.
+        sync(credentials: credentials) { [weak self] in
+            self?.storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
+            self?.storePickerCoordinator?.start()
+        }
     }
 
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
@@ -222,6 +267,12 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         guard let wpcom = credentials.wpcom else {
             fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
         }
+
+        // If Apple ID is previously set, saves it to Keychain now that authentication is complete.
+        if let appleUserID = appleUserID {
+            keychain.wooAppleID = appleUserID
+        }
+        appleUserID = nil
 
         ServiceLocator.stores.authenticate(credentials: .init(authToken: wpcom.authToken))
         let action = AccountAction.synchronizeAccount { (account, error) in

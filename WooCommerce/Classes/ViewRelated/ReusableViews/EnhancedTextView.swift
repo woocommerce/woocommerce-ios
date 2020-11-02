@@ -5,6 +5,7 @@ import UIKit
 final class EnhancedTextView: UITextView {
 
     var onTextChange: ((String) -> Void)?
+    var onTextDidBeginEditing: (() -> Void)?
 
     var placeholder: String? {
         didSet {
@@ -56,7 +57,8 @@ final class EnhancedTextView: UITextView {
 //
 private extension EnhancedTextView {
     func configurePlaceholderLabel() {
-        placeholderLabel = UILabel(frame: bounds)
+        let frameRect = CGRect(x: Constants.margin, y: Constants.margin, width: bounds.width, height: bounds.height)
+        placeholderLabel = UILabel(frame: frameRect)
         if let unwrappedLabel = placeholderLabel {
             addSubview(unwrappedLabel)
         }
@@ -72,6 +74,7 @@ extension EnhancedTextView: UITextViewDelegate {
 
     func textViewDidBeginEditing(_ textView: UITextView) {
         hidePlaceholder()
+        onTextDidBeginEditing?()
     }
 
     func textViewDidEndEditing(_ textView: UITextView) {
@@ -89,6 +92,7 @@ extension EnhancedTextView: UITextViewDelegate {
 private extension EnhancedTextView {
 
     enum Constants {
-        static let animationDuration    = 0.2
+        static let animationDuration = 0.2
+        static let margin: CGFloat = 8.0
     }
 }

@@ -22,7 +22,7 @@ struct AuthenticatedRequest: URLRequestConvertible {
 
         authenticated.setValue("Bearer " + credentials.authToken, forHTTPHeaderField: "Authorization")
         authenticated.setValue("application/json", forHTTPHeaderField: "Accept")
-        authenticated.setValue(Settings.userAgent, forHTTPHeaderField: "User-Agent")
+        authenticated.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
 
         return authenticated
     }

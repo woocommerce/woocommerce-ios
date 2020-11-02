@@ -7,52 +7,26 @@ final class ProductShippingSettingsViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
 
-    // Editable data
-    //
-    private var weight: String?
-    private var length: String?
-    private var width: String?
-    private var height: String?
-    private var shippingClassSlug: String? {
-        return shippingClass?.slug
-    }
-
-    // Internal data for rendering UI
-    //
-    private var shippingClass: ProductShippingClass?
-
     /// Tracks whether the original shipping class has been retrieved, if the product has a shipping class.
     /// The shipping class picker action is blocked until the original shipping class has been retrieved.
     private var hasRetrievedShippingClassIfNeeded: Bool = false
 
-    /// Table Sections to be rendered
-    ///
-    private let sections: [Section] = [
-        Section(rows: [.weight, .length, .width, .height]),
-        Section(rows: [.shippingClass])
-    ]
-
-    typealias Completion = (_ weight: String?, _ dimensions: ProductDimensions, _ shippingClass: ProductShippingClass?) -> Void
+    typealias Completion = (_ weight: String?,
+        _ dimensions: ProductDimensions,
+        _ shippingClassSlug: String?,
+        _ shippingClassID: Int64?,
+        _ hasUnsavedChanges: Bool) -> Void
     private let onCompletion: Completion
 
-    private let product: Product
-    private var originalShippingClass: ProductShippingClass?
+    private let viewModel: ProductShippingSettingsViewModel
     private let shippingSettingsService: ShippingSettingsService
 
-    init(product: Product,
+    init(product: ProductFormDataModel,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
          completion: @escaping Completion) {
-        self.product = product
-        self.originalShippingClass = product.productShippingClass
+        self.viewModel = ProductShippingSettingsViewModel(product: product)
         self.shippingSettingsService = shippingSettingsService
         self.onCompletion = completion
-
-        self.weight = product.weight
-        self.length = product.dimensions.length
-        self.width = product.dimensions.width
-        self.height = product.dimensions.height
-
-        self.shippingClass = product.productShippingClass
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -98,22 +72,24 @@ private extension ProductShippingSettingsViewController {
 
     func registerTableViewCells() {
         for row in Row.allCases {
-            tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
+            tableView.registerNib(for: row.type)
         }
     }
 
     func retrieveProductShippingClass() {
-        let productHasShippingClass = product.shippingClass?.isEmpty == false
+        let productHasShippingClass = viewModel.product.shippingClass?.isEmpty == false
         guard productHasShippingClass else {
             hasRetrievedShippingClassIfNeeded = true
             return
         }
 
         let action = ProductShippingClassAction
-            .retrieveProductShippingClass(siteID: product.siteID,
-                                          remoteID: product.shippingClassID) { [weak self] (shippingClass, error) in
-                                            self?.shippingClass = shippingClass
-                                            self?.originalShippingClass = shippingClass
+            .retrieveProductShippingClass(siteID: viewModel.product.siteID,
+                                          remoteID: viewModel.product.shippingClassID) { [weak self] (shippingClass, error) in
+                                            guard let shippingClass = shippingClass, error == nil else {
+                                                return
+                                            }
+                                            self?.viewModel.onShippingClassRetrieved(shippingClass: shippingClass)
                                             self?.hasRetrievedShippingClassIfNeeded = true
                                             self?.tableView.reloadData()
         }
@@ -126,8 +102,7 @@ private extension ProductShippingSettingsViewController {
 extension ProductShippingSettingsViewController {
 
     override func shouldPopOnBackButton() -> Bool {
-        if weight != product.weight || length != product.dimensions.length || width != product.dimensions.width || height != product.dimensions.height ||
-            shippingClass != originalShippingClass {
+        guard viewModel.hasUnsavedChanges() == false else {
             presentBackNavigationActionSheet()
             return false
         }
@@ -139,10 +114,7 @@ extension ProductShippingSettingsViewController {
     }
 
     @objc private func completeUpdating() {
-        let dimensions = ProductDimensions(length: length ?? "",
-                                           width: width ?? "",
-                                           height: height ?? "")
-        onCompletion(weight, dimensions, shippingClass)
+        viewModel.completeUpdating(onCompletion: onCompletion)
     }
 
     private func presentBackNavigationActionSheet() {
@@ -152,36 +124,16 @@ extension ProductShippingSettingsViewController {
     }
 }
 
-// MARK: - Input changes handling
-//
-private extension ProductShippingSettingsViewController {
-    func handleWeightChange(_ weight: String?) {
-        self.weight = weight
-    }
-
-    func handleLengthChange(_ length: String?) {
-        self.length = length
-    }
-
-    func handleWidthChange(_ width: String?) {
-        self.width = width
-    }
-
-    func handleHeightChange(_ height: String?) {
-        self.height = height
-    }
-}
-
 // MARK: - UITableViewDataSource Conformance
 //
 extension ProductShippingSettingsViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return sections.count
+        return viewModel.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sections[section].rows.count
+        return viewModel.sections[section].rows.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -205,7 +157,7 @@ extension ProductShippingSettingsViewController: UITableViewDelegate {
             guard hasRetrievedShippingClassIfNeeded else {
                 return
             }
-            let dataSource = PaginatedProductShippingClassListSelectorDataSource(product: product, selected: shippingClass)
+            let dataSource = PaginatedProductShippingClassListSelectorDataSource(product: viewModel.product, selected: viewModel.shippingClass)
             let navigationBarTitle = NSLocalizedString("Shipping classes", comment: "Navigation bar title of the Product shipping class selector screen")
             let noResultsPlaceholderText = NSLocalizedString("No shipping classes yet",
             comment: "The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker")
@@ -213,14 +165,15 @@ extension ProductShippingSettingsViewController: UITableViewDelegate {
             let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: navigationBarTitle,
                                                                      noResultsPlaceholderText: noResultsPlaceholderText,
                                                                      noResultsPlaceholderImage: noResultsPlaceholderImage,
-                                                                     noResultsPlaceholderImageTintColor: .gray(.shade20))
+                                                                     noResultsPlaceholderImageTintColor: .gray(.shade20),
+                                                                     tableViewStyle: .grouped)
             let selectorViewController =
                 PaginatedListSelectorViewController(viewProperties: viewProperties,
                                                     dataSource: dataSource) { [weak self] selected in
                                                         guard let self = self else {
                                                             return
                                                         }
-                                                        self.shippingClass = selected
+                                                        self.viewModel.handleShippingClassChange(selected)
                                                         self.tableView.reloadData()
             }
             navigationController?.pushViewController(selectorViewController, animated: true)
@@ -253,40 +206,40 @@ private extension ProductShippingSettingsViewController {
     }
 
     func configureWeight(cell: UnitInputTableViewCell) {
-        let viewModel = Product.createShippingWeightViewModel(weight: weight,
-                                                              using: shippingSettingsService) { [weak self] value in
-                                                                self?.handleWeightChange(value)
+        let cellViewModel = Product.createShippingWeightViewModel(weight: viewModel.weight,
+                                                                  using: shippingSettingsService) { [weak self] value in
+                                                                    self?.viewModel.handleWeightChange(value)
         }
-        cell.configure(viewModel: viewModel)
+        cell.configure(viewModel: cellViewModel)
     }
 
     func configureLength(cell: UnitInputTableViewCell) {
-        let viewModel = Product.createShippingLengthViewModel(length: length ?? "",
-                                                              using: shippingSettingsService) { [weak self] value in
-                                                                self?.handleLengthChange(value)
+        let cellViewModel = Product.createShippingLengthViewModel(length: viewModel.length ?? "",
+                                                                  using: shippingSettingsService) { [weak self] value in
+                                                                    self?.viewModel.handleLengthChange(value)
         }
-        cell.configure(viewModel: viewModel)
+        cell.configure(viewModel: cellViewModel)
     }
 
     func configureWidth(cell: UnitInputTableViewCell) {
-        let viewModel = Product.createShippingWidthViewModel(width: width ?? "",
-                                                             using: shippingSettingsService) { [weak self] value in
-                                                                self?.handleWidthChange(value)
+        let cellViewModel = Product.createShippingWidthViewModel(width: viewModel.width ?? "",
+                                                                 using: shippingSettingsService) { [weak self] value in
+                                                                    self?.viewModel.handleWidthChange(value)
         }
-        cell.configure(viewModel: viewModel)
+        cell.configure(viewModel: cellViewModel)
     }
 
     func configureHeight(cell: UnitInputTableViewCell) {
-        let viewModel = Product.createShippingHeightViewModel(height: height ?? "",
-                                                              using: shippingSettingsService) { [weak self] value in
-                                                                self?.handleHeightChange(value)
+        let cellViewModel = Product.createShippingHeightViewModel(height: viewModel.height ?? "",
+                                                                  using: shippingSettingsService) { [weak self] value in
+                                                                    self?.viewModel.handleHeightChange(value)
         }
-        cell.configure(viewModel: viewModel)
+        cell.configure(viewModel: cellViewModel)
     }
 
     func configureShippingClass(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("Shipping class", comment: "Title of the cell in Product Shipping Settings > Shipping class")
-        cell.updateUI(title: title, value: shippingClass?.name)
+        cell.updateUI(title: title, value: viewModel.shippingClass?.name)
         cell.accessoryType = .disclosureIndicator
     }
 }
@@ -296,13 +249,13 @@ private extension ProductShippingSettingsViewController {
 private extension ProductShippingSettingsViewController {
 
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
-        return sections[indexPath.section].rows[indexPath.row]
+        return viewModel.sections[indexPath.section].rows[indexPath.row]
     }
 }
 
-private extension ProductShippingSettingsViewController {
+extension ProductShippingSettingsViewController {
 
-    struct Section {
+    struct Section: Equatable {
         let rows: [Row]
     }
 
@@ -313,7 +266,7 @@ private extension ProductShippingSettingsViewController {
         case height
         case shippingClass
 
-        var type: UITableViewCell.Type {
+        fileprivate var type: UITableViewCell.Type {
             switch self {
             case .weight, .length, .width, .height:
                 return UnitInputTableViewCell.self
@@ -322,7 +275,7 @@ private extension ProductShippingSettingsViewController {
             }
         }
 
-        var reuseIdentifier: String {
+        fileprivate var reuseIdentifier: String {
             return type.reuseIdentifier
         }
     }

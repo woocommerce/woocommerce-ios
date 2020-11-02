@@ -20,20 +20,22 @@ struct ProductsTabProductViewModel {
     let imageUrl: String?
     let name: String
     let detailsAttributedString: NSAttributedString
+    let isSelected: Bool
 
     // Dependency for configuring the view.
     let imageService: ImageService
 
-    init(product: Product, imageService: ImageService = ServiceLocator.imageService) {
+    init(product: Product, isSelected: Bool = false, imageService: ImageService = ServiceLocator.imageService) {
         imageUrl = product.images.first?.src
-        name = product.name
-        detailsAttributedString = product.createDetailsAttributedString()
+        name = product.name.isEmpty ? Localization.noTitle : product.name
+        self.isSelected = isSelected
+        detailsAttributedString = EditableProductModel(product: product).createDetailsAttributedString()
 
         self.imageService = imageService
     }
 }
 
-private extension Product {
+private extension EditableProductModel {
     func createDetailsAttributedString() -> NSAttributedString {
         let statusText = createStatusText()
         let stockText = createStockText()
@@ -49,43 +51,35 @@ private extension Product {
                                                             .font: StyleManager.footerLabelFont
             ])
         if let statusText = statusText {
-            attributedString.addAttributes([.foregroundColor: productStatus.descriptionColor],
+            attributedString.addAttributes([.foregroundColor: status.descriptionColor],
                                            range: NSRange(location: 0, length: statusText.count))
         }
         return attributedString
     }
 
     func createStatusText() -> String? {
-        switch productStatus {
+        switch status {
         case .pending, .draft:
-            return productStatus.description
+            return status.description
         default:
             return nil
-        }
-    }
-
-    func createStockText() -> String? {
-        switch productStockStatus {
-        case .inStock:
-            if let stockQuantity = stockQuantity {
-                let format = NSLocalizedString("%ld in stock", comment: "Label about product's inventory stock status shown on Products tab")
-                return String.localizedStringWithFormat(format, stockQuantity)
-            } else {
-                return NSLocalizedString("In stock", comment: "Label about product's inventory stock status shown on Products tab")
-            }
-        default:
-            return productStockStatus.description
         }
     }
 
     func createVariationsText() -> String? {
-        guard !variations.isEmpty else {
+        guard !product.variations.isEmpty else {
             return nil
         }
-        let numberOfVariations = variations.count
+        let numberOfVariations = product.variations.count
         let singularFormat = NSLocalizedString("%ld variant", comment: "Label about one product variation shown on Products tab")
         let pluralFormat = NSLocalizedString("%ld variants", comment: "Label about number of variations shown on Products tab")
         let format = String.pluralize(numberOfVariations, singular: singularFormat, plural: pluralFormat)
         return String.localizedStringWithFormat(format, numberOfVariations)
+    }
+}
+
+private extension ProductsTabProductViewModel {
+    enum Localization {
+        static let noTitle = NSLocalizedString("(No Title)", comment: "Product title in Products list when there is no title")
     }
 }

@@ -1,0 +1,80 @@
+{
+    "data": [
+      {
+        "id": 34,
+        "name": "Leather Shoes",
+        "slug": "leather-shoes",
+        "description": "",
+        "count": 0,
+        "_links": {
+          "self": [
+            {
+              "href": "https://example.com/wp-json/wc/v3/products/tags/34"
+            }
+          ],
+          "collection": [
+            {
+              "href": "https://example.com/wp-json/wc/v3/products/tags"
+            }
+          ]
+        }
+      },
+      {
+        "id": 35,
+        "name": "Oxford Shoes",
+        "slug": "oxford-shoes",
+        "description": "",
+        "count": 0,
+        "_links": {
+          "self": [
+            {
+              "href": "https://example.com/wp-json/wc/v3/products/tags/35"
+            }
+          ],
+          "collection": [
+            {
+              "href": "https://example.com/wp-json/wc/v3/products/tags"
+            }
+          ]
+        }
+      },
+      {
+        "id": 14,
+        "name": "Leather Boots",
+        "slug": "leather-boots",
+        "description": "",
+        "count": 0,
+        "_links": {
+          "self": [
+            {
+              "href": "https://example.com/wp-json/wc/v3/products/tags/14"
+            }
+          ],
+          "collection": [
+            {
+              "href": "https://example.com/wp-json/wc/v3/products/tags"
+            }
+          ]
+        }
+      },
+      {
+        "id": 15,
+        "name": "Sneakers",
+        "slug": "sneakers",
+        "description": "A shoe suitable for playing sports",
+        "count": 0,
+        "_links": {
+          "self": [
+            {
+              "href": "https://example.com/wp-json/wc/v3/products/tags/15"
+            }
+          ],
+          "collection": [
+            {
+              "href": "https://example.com/wp-json/wc/v3/products/tags"
+            }
+          ]
+        }
+      }
+    ]
+}

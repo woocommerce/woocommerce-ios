@@ -1,5 +1,11 @@
 import Foundation
 
+/// Defines an alternative way of decoding a type to the target type.
+enum AlternativeDecodingType<T> {
+    case decimal(transform: (Decimal) -> T)
+    case string(transform: (String) -> T)
+    case bool(transform: (Bool) -> T)
+}
 
 // MARK: - KeyedDecodingContainer: Bulletproof JSON Decoding.
 //
@@ -16,6 +22,42 @@ extension KeyedDecodingContainer {
         } catch {
             return nil
         }
+    }
+
+    /// Decodes the value for a given key to a target type, where the value could one of alternative types that can be transformed to the target type.
+    /// - Parameters:
+    ///   - targetType: target type for a given key.
+    ///   - key: the key that maps to the value to be decoded.
+    ///   - shouldDecodeTargetTypeFirst: whether it should try decoding to the target type without going through the alternative types first.
+    ///   - alternativeTypes: a list of alternative types that can be mapped to the target type.
+    /// - Returns: optional value of the target type.
+    func failsafeDecodeIfPresent<T>(targetType: T.Type,
+                                    forKey key: KeyedDecodingContainer<K>.Key,
+                                    shouldDecodeTargetTypeFirst: Bool = true,
+                                    alternativeTypes: [AlternativeDecodingType<T>]) -> T? where T: Decodable {
+        if shouldDecodeTargetTypeFirst {
+            if let result = failsafeDecodeIfPresent(T.self, forKey: key) {
+                return result
+            }
+        }
+
+        for alternativeType in alternativeTypes {
+            switch alternativeType {
+            case .decimal(let transform):
+                if let result = failsafeDecodeIfPresent(decimalForKey: key) {
+                    return transform(result)
+                }
+            case .string(transform: let transform):
+                if let result = failsafeDecodeIfPresent(stringForKey: key) {
+                    return transform(result)
+                }
+            case .bool(transform: let transform):
+                if let result = failsafeDecodeIfPresent(booleanForKey: key) {
+                    return transform(result)
+                }
+            }
+        }
+        return nil
     }
 
     /// Decodes a String for the specified key. Supported Encodings = [String, Integer]

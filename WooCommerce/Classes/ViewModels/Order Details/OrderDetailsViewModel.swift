@@ -5,7 +5,7 @@ import Yosemite
 import MessageUI
 
 final class OrderDetailsViewModel {
-    private let currencyFormatter = CurrencyFormatter()
+    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     private(set) var order: Order
 
@@ -54,6 +54,12 @@ final class OrderDetailsViewModel {
     ///
     private var items: [OrderItem] {
         return dataSource.items
+    }
+
+    /// Refunds from an order
+    ///
+    var refunds: [Refund] {
+        return dataSource.refunds
     }
 
     /// Refunded products from an Order
@@ -158,11 +164,12 @@ extension OrderDetailsViewModel {
             ProductDetailsTableViewCell.self,
             OrderTrackingTableViewCell.self,
             SummaryTableViewCell.self,
-            FulfillButtonTableViewCell.self
+            ButtonTableViewCell.self,
+            IssueRefundTableViewCell.self
         ]
 
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+        for cellClass in cells {
+            tableView.registerNib(for: cellClass)
         }
     }
 
@@ -211,15 +218,16 @@ extension OrderDetailsViewModel {
             viewController.present(navController, animated: true, completion: nil)
         case .orderItem:
             let item = items[indexPath.row]
-            let loaderViewController = ProductLoaderViewController(productID: item.productOrVariationID,
-                                                                   siteID: order.siteID)
+            let loaderViewController = ProductLoaderViewController(model: .init(orderItem: item),
+                                                                   siteID: order.siteID,
+                                                                   forceReadOnly: true)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
         case .aggregateOrderItem:
             let item = dataSource.aggregateOrderItems[indexPath.row]
-            let productID = item.variationID == 0 ? item.productID : item.variationID
-            let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                                   siteID: order.siteID)
+            let loaderViewController = ProductLoaderViewController(model: .init(aggregateOrderItem: item),
+                                                                   siteID: order.siteID,
+                                                                   forceReadOnly: true)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
         case .billingDetail:
@@ -324,7 +332,7 @@ extension OrderDetailsViewModel {
 
     func syncRefunds(onCompletion: ((Error?) -> ())? = nil) {
         let refundIDs = order.refunds.map { $0.refundID }
-        let action = RefundAction.retrieveRefunds(siteID: order.siteID, orderID: order.orderID, refundIDs: refundIDs) { (error) in
+        let action = RefundAction.retrieveRefunds(siteID: order.siteID, orderID: order.orderID, refundIDs: refundIDs, deleteStaleRefunds: true) { (error) in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing detailed Refunds: \(error)")
                 onCompletion?(error)
@@ -343,13 +351,13 @@ extension OrderDetailsViewModel {
         let orderID = order.orderID
         let trackingID = tracking.trackingID
 
-        let statusKey = order.statusKey
+        let status = order.status
         let providerName = tracking.trackingProvider ?? ""
 
         ServiceLocator.analytics.track(.orderTrackingDelete, withProperties: ["id": orderID,
-                                                                         "status": statusKey,
-                                                                         "carrier": providerName,
-                                                                         "source": "order_detail"])
+                                                                              "status": status.rawValue,
+                                                                              "carrier": providerName,
+                                                                              "source": "order_detail"])
 
         let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
                                                                  orderID: orderID,

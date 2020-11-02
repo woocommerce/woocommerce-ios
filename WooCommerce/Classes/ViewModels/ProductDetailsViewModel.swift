@@ -28,7 +28,7 @@ final class ProductDetailsViewModel {
     /// The default currency configured on the store
     ///
     var currency: String {
-        return CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
+        return ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
     }
 
     /// Nav bar title
@@ -56,6 +56,8 @@ final class ProductDetailsViewModel {
     var productID: Int64 {
         return product.productID
     }
+
+    let isEditProductsRelease5Enabled: Bool
 
     // MARK: - private variables
 
@@ -112,7 +114,7 @@ final class ProductDetailsViewModel {
 
     /// Currency Formatter.
     ///
-    private var currencyFormatter = CurrencyFormatter()
+    private var currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     private let productUIImageLoader = DefaultProductUIImageLoader()
 
@@ -120,8 +122,9 @@ final class ProductDetailsViewModel {
 
     /// Designated initializer.
     ///
-    init(product: Product) {
+    init(product: Product, isEditProductsRelease5Enabled: Bool) {
         self.product = product
+        self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
 
         refreshResultsController()
     }
@@ -239,9 +242,7 @@ extension ProductDetailsViewModel {
             configureProductImages(cell)
         case let cell as TitleBodyTableViewCell where row == .productName:
             configureProductName(cell)
-        case let cell as TwoColumnTableViewCell where row == .totalOrders:
-            configureTotalOrders(cell)
-        case let cell as ProductReviewsTableViewCell:
+        case let cell as OldProductReviewsTableViewCell:
             configureReviews(cell)
         case let cell as WooBasicTableViewCell where row == .permalink:
             configurePermalink(cell)
@@ -288,20 +289,9 @@ extension ProductDetailsViewModel {
         cell.bodyLabel?.text = product.name
     }
 
-    /// Total Orders cell.
-    ///
-    func configureTotalOrders(_ cell: TwoColumnTableViewCell) {
-        cell.selectionStyle = .none
-        cell.leftLabel?.text = NSLocalizedString("Total Orders",
-                                                 comment: "Product details screen - total orders descriptive label")
-        cell.rightLabel?.applySecondaryBodyStyle()
-        cell.rightLabel.textInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0)
-        cell.rightLabel?.text = String(product.totalSales)
-    }
-
     /// Reviews cell.
     ///
-    func configureReviews(_ cell: ProductReviewsTableViewCell) {
+    func configureReviews(_ cell: OldProductReviewsTableViewCell) {
         cell.selectionStyle = .none
         cell.reviewLabel?.text = NSLocalizedString("Reviews",
                                                    comment: "Reviews descriptive label")
@@ -507,7 +497,7 @@ extension ProductDetailsViewModel {
                                               comment: "'Limit: 1 download', for example.")
         let limitPlural = NSLocalizedString("Limit: %ld downloads",
                                             comment: "'Limit: 2 downloads', for example.")
-        let limitText = String.pluralize(product.downloadLimit,
+        let limitText = String.pluralize(Int(product.downloadLimit),
                                          singular: limitSingular,
                                          plural: limitPlural)
 
@@ -515,7 +505,7 @@ extension ProductDetailsViewModel {
         let expirationSingular = NSLocalizedString("Expiry: %ld day", comment: "Expiry: 1 day")
         let expirationPlural = NSLocalizedString("Expiry: %ld days",
                                                  comment: "For example: 'Expiry: 30 days'")
-        let expirationText = String.pluralize(product.downloadExpiry,
+        let expirationText = String.pluralize(Int(product.downloadExpiry),
                                               singular: expirationSingular,
                                               plural: expirationPlural)
 
@@ -598,9 +588,9 @@ extension ProductDetailsViewModel {
         }
 
         if shouldShowProductVariantsInfo() {
-            rows += [.productName, .totalOrders, .reviews, .productVariants, .permalink]
+            rows += [.productName, .reviews, .productVariants, .permalink]
         } else {
-            rows += [.productName, .totalOrders, .reviews, .permalink]
+            rows += [.productName, .reviews, .permalink]
         }
 
         return Section(rows: rows)
@@ -721,9 +711,10 @@ extension ProductDetailsViewModel {
         case .affiliateLink:
             WebviewHelper.launch(product.externalURL, with: sender)
         case .productVariants:
-            ServiceLocator.analytics.track(.productDetailsProductVariantsTapped)
-            let variationsViewController = ProductVariationsViewController(siteID: product.siteID,
-                                                                           productID: product.productID)
+            ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
+            let variationsViewController = ProductVariationsViewController(product: product,
+                                                                           formType: .readonly,
+                                                                           isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
             sender.navigationController?.pushViewController(variationsViewController, animated: true)
         default:
             break
@@ -737,15 +728,17 @@ extension ProductDetailsViewModel {
 
     func syncProduct(onCompletion: ((Error?) -> ())? = nil) {
         let action = ProductAction.retrieveProduct(siteID: product.siteID,
-                                                   productID: product.productID) { [weak self] (product, error) in
-            guard let self = self, let product = product else {
-                DDLogError("⛔️ Error synchronizing Product: \(error.debugDescription)")
-                onCompletion?(error)
-                return
-            }
+                                                   productID: product.productID) { [weak self] result in
+                                                    guard let self = self else { return }
 
-            self.product = product
-            onCompletion?(nil)
+                                                    switch result {
+                                                    case .failure(let error):
+                                                        DDLogError("⛔️ Error synchronizing Product: \(error)")
+                                                        onCompletion?(error)
+                                                    case .success(let product):
+                                                        self.product = product
+                                                        onCompletion?(nil)
+                                                    }
         }
 
         ServiceLocator.stores.dispatch(action)
@@ -757,9 +750,7 @@ extension ProductDetailsViewModel {
 //
 private extension ProductDetailsViewModel {
     func shouldShowProductVariantsInfo() -> Bool {
-        let isFeatureEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readonlyProductVariants)
-        let hasVariations = product.variations.isEmpty == false
-        return isFeatureEnabled && hasVariations
+        product.variations.isEmpty == false
     }
 }
 
@@ -793,7 +784,6 @@ extension ProductDetailsViewModel {
     enum Row {
         case productImages
         case productName
-        case totalOrders
         case reviews
         case productVariants
         case permalink
@@ -812,10 +802,8 @@ extension ProductDetailsViewModel {
                 return ProductImagesHeaderTableViewCell.reuseIdentifier
             case .productName:
                 return TitleBodyTableViewCell.reuseIdentifier
-            case .totalOrders:
-                return TwoColumnTableViewCell.reuseIdentifier
             case .reviews:
-                return ProductReviewsTableViewCell.reuseIdentifier
+                return OldProductReviewsTableViewCell.reuseIdentifier
             case .productVariants:
                 return TitleBodyTableViewCell.reuseIdentifier
             case .permalink:

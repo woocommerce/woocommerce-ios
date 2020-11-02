@@ -239,50 +239,63 @@ final class StatsStoreV4Tests: XCTestCase {
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` effectively persists any retrieved TopEarnerStats.
     ///
     func testRetrieveTopEarnersStatsEffectivelyPersistsRetrievedStats() {
-        let expectation = self.expectation(description: "Persist top earner stats")
+        // Given
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
-        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/top-earners/", filename: "top-performers-week")
+        network.simulateResponse(requestUrlSuffix: "leaderboards", filename: "leaderboards-year")
+        network.simulateResponse(requestUrlSuffix: "products", filename: "leaderboards-products")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 0)
 
-        let action = StatsActionV4.retrieveTopEarnerStats(siteID: sampleSiteID, timeRange: .thisMonth, latestDateToInclude: Date()) { error in
-            XCTAssertNil(error)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 3)
-            let readOnlyTopEarnerStats = self.viewStorage.firstObject(ofType: Storage.TopEarnerStats.self)?.toReadOnly()
-            XCTAssertEqual(readOnlyTopEarnerStats, self.sampleTopEarnerStats())
-
-            expectation.fulfill()
+        // When
+        var topEarnersError: Error?
+        waitForExpectation { exp in
+            let action = StatsActionV4.retrieveTopEarnerStats(siteID: sampleSiteID,
+                                                              timeRange: .thisYear,
+                                                              earliestDateToInclude: date(with: "2020-01-01T00:00:00"),
+                                                              latestDateToInclude: date(with: "2020-07-22T12:00:00")) { error in
+                                                                topEarnersError = error
+                                                                exp.fulfill()
+            }
+            statsStore.onAction(action)
         }
 
-        statsStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertNil(topEarnersError)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
+
+        let readOnlyTopEarnerStats = viewStorage.firstObject(ofType: Storage.TopEarnerStats.self)?.toReadOnly()
+        XCTAssertEqual(readOnlyTopEarnerStats, sampleTopEarnerStats())
     }
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` effectively persists any updated TopEarnerStatsItems.
     ///
     func testRetrieveTopEarnersStatsEffectivelyPersistsUpdatedItems() {
-        let expectation = self.expectation(description: "Persist updated top earner stats items")
+        // Given
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 0)
+        network.simulateResponse(requestUrlSuffix: "leaderboards", filename: "leaderboards-year-alt")
+        network.simulateResponse(requestUrlSuffix: "products", filename: "leaderboards-products")
         statsStore.upsertStoredTopEarnerStats(readOnlyStats: sampleTopEarnerStats())
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 3)
 
-        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/top-earners/", filename: "top-performers-week-alt")
-        let action = StatsActionV4.retrieveTopEarnerStats(siteID: sampleSiteID, timeRange: .thisMonth, latestDateToInclude: Date()) { error in
-            XCTAssertNil(error)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
-            let readOnlyTopEarnerStats = self.viewStorage.firstObject(ofType: Storage.TopEarnerStats.self)?.toReadOnly()
-            XCTAssertEqual(readOnlyTopEarnerStats, self.sampleTopEarnerStatsMutated())
-
-            expectation.fulfill()
+        // When
+        var topEarnersError: Error?
+        waitForExpectation { exp in
+            let action = StatsActionV4.retrieveTopEarnerStats(siteID: sampleSiteID,
+                                                              timeRange: .thisYear,
+                                                              earliestDateToInclude: date(with: "2020-01-01T00:00:00"),
+                                                              latestDateToInclude: date(with: "2020-07-22T12:00:00")) { error in
+                                                                topEarnersError = error
+                                                                exp.fulfill()
+            }
+            statsStore.onAction(action)
         }
 
-        statsStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertNil(topEarnersError)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
+
+        let readOnlyTopEarnerStats = viewStorage.firstObject(ofType: Storage.TopEarnerStats.self)?.toReadOnly()
+        XCTAssertEqual(readOnlyTopEarnerStats, sampleTopEarnerStatsMutated())
     }
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` returns an error whenever there is an error response from the backend.
@@ -292,7 +305,10 @@ final class StatsStoreV4Tests: XCTestCase {
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/top-earners/", filename: "generic_error")
-        let action = StatsActionV4.retrieveTopEarnerStats(siteID: sampleSiteID, timeRange: .thisMonth, latestDateToInclude: Date()) { error in
+        let action = StatsActionV4.retrieveTopEarnerStats(siteID: sampleSiteID,
+                                                          timeRange: .thisMonth,
+                                                          earliestDateToInclude: Date(),
+                                                          latestDateToInclude: Date()) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -307,7 +323,10 @@ final class StatsStoreV4Tests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve top earner stats empty response")
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = StatsActionV4.retrieveTopEarnerStats(siteID: sampleSiteID, timeRange: .thisMonth, latestDateToInclude: Date()) { error in
+        let action = StatsActionV4.retrieveTopEarnerStats(siteID: sampleSiteID,
+                                                          timeRange: .thisMonth,
+                                                          earliestDateToInclude: Date(),
+                                                          latestDateToInclude: Date()) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -322,10 +341,10 @@ final class StatsStoreV4Tests: XCTestCase {
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteTopEarnersStats = sampleTopEarnerStats()
 
-        XCTAssertNil(viewStorage.loadTopEarnerStats(date: "2018-W12", granularity: StatGranularity.week.rawValue))
+        XCTAssertNil(viewStorage.loadTopEarnerStats(date: "2020", granularity: StatGranularity.year.rawValue))
         statsStore.upsertStoredTopEarnerStats(readOnlyStats: remoteTopEarnersStats)
 
-        let storageTopEarnersStats = viewStorage.loadTopEarnerStats(date: "2018-W12", granularity: StatGranularity.week.rawValue)
+        let storageTopEarnersStats = viewStorage.loadTopEarnerStats(date: "2020", granularity: StatGranularity.year.rawValue)
         XCTAssertEqual(storageTopEarnersStats?.toReadOnly(), remoteTopEarnersStats)
     }
 
@@ -334,16 +353,16 @@ final class StatsStoreV4Tests: XCTestCase {
     func testUpdateStoredTopEarnersStatsEffectivelyUpdatesPreexistantTopEarnersStats() {
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        XCTAssertNil(viewStorage.loadTopEarnerStats(date: "2018-W12", granularity: StatGranularity.week.rawValue))
+        XCTAssertNil(viewStorage.loadTopEarnerStats(date: "2020", granularity: StatGranularity.week.rawValue))
         statsStore.upsertStoredTopEarnerStats(readOnlyStats: sampleTopEarnerStats())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 3)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
         statsStore.upsertStoredTopEarnerStats(readOnlyStats: sampleTopEarnerStatsMutated())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStats.self), 1)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TopEarnerStatsItem.self), 2)
 
         let expectedTopEarnerStats = sampleTopEarnerStatsMutated()
-        let storageTopEarnerStats = viewStorage.loadTopEarnerStats(date: "2018-W12", granularity: StatGranularity.week.rawValue)
+        let storageTopEarnerStats = viewStorage.loadTopEarnerStats(date: "2020", granularity: StatGranularity.year.rawValue)
         XCTAssertEqual(storageTopEarnerStats?.toReadOnly(), expectedTopEarnerStats)
     }
 }
@@ -460,66 +479,56 @@ private extension StatsStoreV4Tests {
     // MARK: - Top Earner Stats Sample
 
     func sampleTopEarnerStats() -> Networking.TopEarnerStats {
-        return TopEarnerStats(date: "2018-W12",
-                              granularity: .week,
-                              limit: "5",
-                              items: [sampleTopEarnerStatsItem1(), sampleTopEarnerStatsItem2(), sampleTopEarnerStatsItem3()])
+        return TopEarnerStats(date: "2020",
+                              granularity: .year,
+                              limit: "3",
+                              items: [sampleTopEarnerStatsItem1(), sampleTopEarnerStatsItem2()])
     }
 
     func sampleTopEarnerStatsItem1() -> Networking.TopEarnerStatsItem {
-        return TopEarnerStatsItem(productID: 296,
-                                  productName: "Funky Hoodie",
+        return TopEarnerStatsItem(productID: 29,
+                                  productName: "Album",
                                   quantity: 1,
-                                  price: 40,
-                                  total: 0,
-                                  currency: "USD",
-                                  imageUrl: "https://jamosova3.mystagingwebsite.com/wp-content/uploads/2017/05/hoodie-with-logo.jpg?w=801")
+                                  price: 15.0,
+                                  total: 15.99,
+                                  currency: "",
+                                  imageUrl: "https://dulces.mystagingwebsite.com/wp-content/uploads/2020/06/album-1.jpg")
     }
 
     func sampleTopEarnerStatsItem2() -> Networking.TopEarnerStatsItem {
-        return TopEarnerStatsItem(productID: 373,
-                                  productName: "Black Dress (H&M)",
+        return TopEarnerStatsItem(productID: 9,
+                                  productName: "Aljafor",
                                   quantity: 4,
-                                  price: 30,
-                                  total: 120,
-                                  currency: "USD",
-                                  imageUrl: "https://jamosova3.mystagingwebsite.com/wp-content/uploads/2017/07/hm-black.jpg?w=640")
-    }
-
-    func sampleTopEarnerStatsItem3() -> Networking.TopEarnerStatsItem {
-        return TopEarnerStatsItem(productID: 1033,
-                                  productName: "Smile T-Shirt",
-                                  quantity: 2,
-                                  price: 80,
-                                  total: 160,
-                                  currency: "USD",
-                                  imageUrl: "https://jamosova3.mystagingwebsite.com/wp-content/uploads/2018/04/smile.gif?w=480")
+                                  price: 4000,
+                                  total: 20000,
+                                  currency: "",
+                                  imageUrl: "https://dulces.mystagingwebsite.com/wp-content/uploads/2020/07/img_7472-scaled.jpeg")
     }
 
     func sampleTopEarnerStatsMutated() -> Networking.TopEarnerStats {
-        return TopEarnerStats(date: "2018-W12",
-                              granularity: .week,
-                              limit: "4",
+        return TopEarnerStats(date: "2020",
+                              granularity: .year,
+                              limit: "3",
                               items: [sampleTopEarnerStatsMutatedItem1(), sampleTopEarnerStatsMutatedItem2()])
     }
 
     func sampleTopEarnerStatsMutatedItem1() -> Networking.TopEarnerStatsItem {
-        return TopEarnerStatsItem(productID: 996,
-                                  productName: "Funky Hoodie 2",
-                                  quantity: 444,
-                                  price: 40,
-                                  total: 2,
-                                  currency: "USD",
-                                  imageUrl: "https://jamosova3.mystagingwebsite.com/wp-content/uploads/2017/05/hoodie-with-logo.jpg")
+        return TopEarnerStatsItem(productID: 29,
+                                  productName: "Album",
+                                  quantity: 2,
+                                  price: 15.0,
+                                  total: 30.99,
+                                  currency: "",
+                                  imageUrl: "https://dulces.mystagingwebsite.com/wp-content/uploads/2020/06/album-1.jpg")
     }
 
     func sampleTopEarnerStatsMutatedItem2() -> Networking.TopEarnerStatsItem {
-        return TopEarnerStatsItem(productID: 933,
-                                  productName: "Smile T-Shirt 2",
-                                  quantity: 555,
-                                  price: 55.44,
-                                  total: 161.00,
-                                  currency: "USD",
-                                  imageUrl: "https://jamosova3.mystagingwebsite.com/wp-content/uploads/2018/04/smile.gif")
+        return TopEarnerStatsItem(productID: 9,
+                                  productName: "Aljafor",
+                                  quantity: 10,
+                                  price: 4000,
+                                  total: 60000,
+                                  currency: "",
+                                  imageUrl: "https://dulces.mystagingwebsite.com/wp-content/uploads/2020/07/img_7472-scaled.jpeg")
     }
 }

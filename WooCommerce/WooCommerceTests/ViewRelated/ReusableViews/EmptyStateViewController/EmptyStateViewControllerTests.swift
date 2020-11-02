@@ -1,6 +1,7 @@
 
 import Foundation
 import XCTest
+import TestKit
 
 @testable import WooCommerce
 
@@ -8,7 +9,7 @@ import XCTest
 ///
 final class EmptyStateViewControllerTests: XCTestCase {
 
-    func testItHidesAllConfigurableElementsExceptMessageByDefault() throws {
+    func test_it_hides_all_configurable_elements_except_message_by_default() throws {
         // Given
         let viewController = EmptyStateViewController()
 
@@ -28,7 +29,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertNil(mirror.actionButton.titleLabel?.text)
     }
 
-    func testGivenASimpleConfigItHidesTheDetailsAndActionButton() throws {
+    func test_given_a_simple_config_it_hides_the_details_and_action_button() throws {
         // Given
         let viewController = EmptyStateViewController()
         XCTAssertNotNil(viewController.view)
@@ -36,7 +37,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
         let mirror = try self.mirror(of: viewController)
 
         // When
-        viewController.configure(.simple(message: NSAttributedString(string: "Ola"), image: .appleIcon))
+        viewController.configure(.simple(message: NSAttributedString(string: "Ola"), image: .infoImage))
 
         // Then
         XCTAssertFalse(mirror.messageLabel.isHidden)
@@ -44,10 +45,10 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertTrue(mirror.actionButton.isHidden)
 
         XCTAssertEqual(mirror.messageLabel.attributedText, NSAttributedString(string: "Ola"))
-        XCTAssertEqual(mirror.imageView.image, UIImage.appleIcon)
+        XCTAssertEqual(mirror.imageView.image, UIImage.infoImage)
     }
 
-    func testGivenALinkConfigItShowsAllTheElements() throws {
+    func test_given_a_link_config_it_shows_all_the_elements() throws {
         // Given
         let viewController = EmptyStateViewController()
         XCTAssertNotNil(viewController.view)
@@ -57,10 +58,10 @@ final class EmptyStateViewControllerTests: XCTestCase {
         // When
         viewController.configure(.withLink(
             message: NSAttributedString(string: "Ola"),
-            image: .appleIcon,
+            image: .infoImage,
             details: "Dolores eum",
             linkTitle: "Bakero!",
-            linkURL: WooConstants.blogURL
+            linkURL: WooConstants.URLs.blog.asURL()
         ))
 
         // Then
@@ -69,12 +70,12 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertFalse(mirror.actionButton.isHidden)
 
         XCTAssertEqual(mirror.messageLabel.attributedText, NSAttributedString(string: "Ola"))
-        XCTAssertEqual(mirror.imageView.image, UIImage.appleIcon)
+        XCTAssertEqual(mirror.imageView.image, UIImage.infoImage)
         XCTAssertEqual(mirror.detailsLabel.text, "Dolores eum")
         XCTAssertEqual(mirror.actionButton.titleLabel?.text, "Bakero!")
     }
 
-    func testTheImageViewVisibilityIsSetDuringConfigure() throws {
+    func test_the_imageView_visibility_is_set_during_configure() throws {
         // Given
         let viewController = EmptyStateViewController()
         XCTAssertNotNil(viewController.view)
@@ -85,7 +86,7 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertTrue(mirror.imageView.isHidden)
 
         // When
-        viewController.configure(.simple(message: NSAttributedString(string: "Ola"), image: .appleIcon))
+        viewController.configure(.simple(message: NSAttributedString(string: "Ola"), image: .infoImage))
 
         // Then
 
@@ -97,14 +98,14 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertEqual(mirror.imageView.isHidden, shouldBeHidden)
     }
 
-    func testGivenACompactVerticalSizeClassItWillHideTheImageView() throws {
+    func test_given_a_compact_verticalSizeClass_it_will_hide_the_imageView() throws {
         // Given
         let viewController = EmptyStateViewController()
         XCTAssertNotNil(viewController.view)
 
         let mirror = try self.mirror(of: viewController)
 
-        viewController.configure(.simple(message: NSAttributedString(string: ""), image: .appleIcon))
+        viewController.configure(.simple(message: NSAttributedString(string: ""), image: .infoImage))
 
         // When
         viewController.willTransition(to: UITraitCollection(verticalSizeClass: .compact),
@@ -114,14 +115,14 @@ final class EmptyStateViewControllerTests: XCTestCase {
         XCTAssertTrue(mirror.imageView.isHidden)
     }
 
-    func testGivenANonCompactVerticalSizeClassItWillNotHideTheImageView() throws {
+    func test_given_a_non_compact_verticalSizeClass_it_will_not_hide_the_imageView() throws {
         // Given
         let viewController = EmptyStateViewController()
         XCTAssertNotNil(viewController.view)
 
         let mirror = try self.mirror(of: viewController)
 
-        viewController.configure(.simple(message: NSAttributedString(string: ""), image: .appleIcon))
+        viewController.configure(.simple(message: NSAttributedString(string: ""), image: .infoImage))
 
         // When
         viewController.willTransition(to: UITraitCollection(verticalSizeClass: .regular),
@@ -129,6 +130,60 @@ final class EmptyStateViewControllerTests: XCTestCase {
 
         // Then
         XCTAssertFalse(mirror.imageView.isHidden)
+    }
+
+    func test_given_a_supportRequest_config_then_it_shows_all_the_elements() throws {
+        // Given
+        let viewController = EmptyStateViewController()
+        XCTAssertNotNil(viewController.view)
+
+        let mirror = try self.mirror(of: viewController)
+
+        // When
+        viewController.configure(.withSupportRequest(
+            message: NSAttributedString(string: "aTque"),
+            image: .infoImage,
+            details: "Sequi corrupti explicabo",
+            buttonTitle: "Contact You!"
+        ))
+
+        // Then
+        XCTAssertFalse(mirror.messageLabel.isHidden)
+        XCTAssertFalse(mirror.detailsLabel.isHidden)
+        XCTAssertFalse(mirror.actionButton.isHidden)
+
+        XCTAssertEqual(mirror.messageLabel.attributedText, NSAttributedString(string: "aTque"))
+        XCTAssertEqual(mirror.imageView.image, UIImage.infoImage)
+        XCTAssertEqual(mirror.detailsLabel.text, "Sequi corrupti explicabo")
+        XCTAssertEqual(mirror.actionButton.titleLabel?.text, "Contact You!")
+    }
+
+    func test_given_a_supportRequest_config_when_tapping_on_button_then_the_contact_us_page_is_presented() throws {
+        // Given
+        let zendeskManager = MockZendeskManager()
+        let viewController = EmptyStateViewController(style: .basic, zendeskManager: zendeskManager)
+        XCTAssertNotNil(viewController.view)
+
+        let mirror = try self.mirror(of: viewController)
+
+        viewController.configure(.withSupportRequest(
+            message: NSAttributedString(string: ""),
+            image: .infoImage,
+            details: "",
+            buttonTitle: "Dolores"
+        ))
+
+        assertEmpty(zendeskManager.newRequestIfPossibleInvocations)
+
+        // When
+        mirror.actionButton.sendActions(for: .touchUpInside)
+
+        // Then
+        XCTAssertEqual(zendeskManager.newRequestIfPossibleInvocations.count, 1)
+
+        let invocation = try XCTUnwrap(zendeskManager.newRequestIfPossibleInvocations.first)
+        XCTAssertEqual(invocation.controller, viewController)
+        XCTAssertNil(invocation.sourceTag)
     }
 }
 

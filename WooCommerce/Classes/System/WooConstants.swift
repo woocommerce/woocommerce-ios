@@ -13,6 +13,10 @@ enum WooConstants {
     ///
     static let keychainServiceName = "com.automattic.woocommerce"
 
+    /// Keychain Access's Key for Apple ID
+    ///
+    static let keychainAppleIDKey = "AppleID"
+
     /// Push Notifications ApplicationID
     ///
 #if DEBUG
@@ -20,46 +24,6 @@ enum WooConstants {
 #else
     static let pushApplicationID = "com.automattic.woocommerce"
 #endif
-
-    /// Jetpack Setup URL
-    ///
-    static let jetpackSetupUrl = "https://jetpack.com/support/getting-started-with-jetpack/"
-
-    /// Terms of Service Website. Displayed by the Authenticator (when / if needed).
-    ///
-    static var termsOfServiceUrl: URL {
-        trustedURL("https://wordpress.com/tos/")
-    }
-
-    /// Cookie policy URL
-    ///
-    static var cookieURL: URL {
-        trustedURL("https://automattic.com/cookies/")
-    }
-
-    /// Privacy policy URL
-    ///
-    static var privacyURL: URL {
-        trustedURL("https://automattic.com/privacy/")
-    }
-
-    /// Help Center URL
-    ///
-    static var helpCenterURL: URL {
-        trustedURL("https://docs.woocommerce.com/document/woocommerce-ios/")
-    }
-
-    /// Feature Request URL
-    ///
-    static var featureRequestURL: URL {
-        trustedURL("http://ideas.woocommerce.com/forums/133476-woocommerce?category_id=84283")
-    }
-
-    /// URL used for Learn More button in Orders empty state.
-    ///
-    static var blogURL: URL {
-        trustedURL("https://woocommerce.com/blog/")
-    }
 
     /// Number of section events required before an app review prompt appears
     ///
@@ -71,9 +35,65 @@ enum WooConstants {
     static let systemEventCount = 10
 }
 
+// MARK: URLs
+//
+extension WooConstants {
+
+    /// List of trusted URLs
+    ///
+    enum URLs: String, CaseIterable {
+
+        /// Terms of Service Website. Displayed by the Authenticator (when / if needed).
+        ///
+        case termsOfService = "https://wordpress.com/tos/"
+
+        /// Cookie policy URL
+        ///
+        case cookie = "https://automattic.com/cookies/"
+
+        /// Privacy policy URL
+        ///
+        case privacy = "https://automattic.com/privacy/"
+
+        /// Privacy policy for California users URL
+        ///
+        case californiaPrivacy = "https://automattic.com/privacy/#california-consumer-privacy-act-ccpa"
+
+        /// Help Center URL
+        ///
+        case helpCenter = "https://docs.woocommerce.com/document/woocommerce-ios/"
+
+        /// URL used for Learn More button in Orders empty state.
+        ///
+        case blog = "https://woocommerce.com/blog/"
+
+        /// Jetpack Setup URL when there are no stores available
+        ///
+        case emptyStoresJetpackSetup = "https://docs.woocommerce.com/document/jetpack-setup-instructions-for-the-woocommerce-mobile-app/"
+
+        /// URL for in-app feedback survey
+        ///
+#if DEBUG
+        case inAppFeedback = "https://automattic.survey.fm/woo-app-general-feedback-test-survey"
+#else
+        case inAppFeedback = "https://automattic.survey.fm/woo-app-general-feedback-user-survey"
+#endif
+
+        /// URL for the products M4 feedback survey
+        ///
+        case productsM4Feedback = "https://automattic.survey.fm/woo-app-feature-feedback-products"
+
+        /// Returns the URL version of the receiver
+        ///
+        func asURL() -> URL {
+            Self.trustedURL(self.rawValue)
+        }
+    }
+}
+
 // MARK: - Utils
 
-private extension WooConstants {
+private extension WooConstants.URLs {
     /// Convert a `string` to a `URL`. Crash if it is malformed.
     ///
     private static func trustedURL(_ url: String) -> URL {

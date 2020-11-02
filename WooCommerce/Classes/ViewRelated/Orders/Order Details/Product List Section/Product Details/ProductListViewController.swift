@@ -45,9 +45,7 @@ private extension ProductListViewController {
         tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-
-        let nib = PickListTableViewCell.loadNib()
-        tableView.register(nib, forCellReuseIdentifier: PickListTableViewCell.reuseIdentifier)
+        tableView.registerNib(for: PickListTableViewCell.self)
 
         let headerNib = UINib(nibName: TwoColumnSectionHeaderView.reuseIdentifier, bundle: nil)
         tableView.register(headerNib, forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
@@ -73,10 +71,7 @@ extension ProductListViewController: UITableViewDataSource {
         let itemViewModel = ProductDetailsCellViewModel(item: item,
                                                         currency: viewModel.order.currency,
                                                         product: product)
-        let cellID = PickListTableViewCell.reuseIdentifier
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? PickListTableViewCell else {
-            fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(PickListTableViewCell.self, for: indexPath)
         cell.selectionStyle = .default
         cell.configure(item: itemViewModel, imageService: imageService)
 
@@ -104,8 +99,7 @@ extension ProductListViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let orderItem = itemAtIndexPath(indexPath)
-        let productIDToLoad = orderItem.variationID == 0 ? orderItem.productID : orderItem.variationID
-        productWasPressed(for: productIDToLoad)
+        productWasPressed(orderItem: orderItem)
     }
 }
 
@@ -122,11 +116,12 @@ private extension ProductListViewController {
         return products?.filter({ $0.productID == productID }).first
     }
 
-    /// Displays the product detail screen for the provided ProductID
+    /// Displays the product details screen for the provided OrderItem
     ///
-    func productWasPressed(for productID: Int64) {
-        let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                               siteID: viewModel.order.siteID)
+    func productWasPressed(orderItem: OrderItem) {
+        let loaderViewController = ProductLoaderViewController(model: .init(orderItem: orderItem),
+                                                               siteID: viewModel.order.siteID,
+                                                               forceReadOnly: false)
         let navController = WooNavigationController(rootViewController: loaderViewController)
         present(navController, animated: true, completion: nil)
     }

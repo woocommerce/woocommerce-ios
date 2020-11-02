@@ -4,13 +4,43 @@ final class MockOrders {
     let siteID: Int64 = 1234
     let orderID: Int64 = 5678
 
-    func makeOrder(items: [OrderItem] = []) -> Order {
+    /// Returns an `Order` with empty values. Use `copy()` to modify them.
+    func empty() -> Order {
+        Order(
+            siteID: 0,
+            orderID: 0,
+            parentID: 0,
+            customerID: 0,
+            number: "",
+            status: .pending,
+            currency: "",
+            customerNote: nil,
+            dateCreated: Date(),
+            dateModified: Date(),
+            datePaid: nil,
+            discountTotal: "",
+            discountTax: "",
+            shippingTotal: "",
+            shippingTax: "",
+            total: "",
+            totalTax: "",
+            paymentMethodTitle: "",
+            items: [],
+            billingAddress: nil,
+            shippingAddress: nil,
+            shippingLines: [],
+            coupons: [],
+            refunds: []
+        )
+    }
+
+    func makeOrder(status: OrderStatusEnum = .processing, items: [OrderItem] = [], shippingLines: [ShippingLine] = sampleShippingLines()) -> Order {
         return Order(siteID: siteID,
                      orderID: orderID,
                      parentID: 0,
                      customerID: 11,
                      number: "963",
-                     statusKey: "processing",
+                     status: status,
                      currency: "USD",
                      customerNote: "",
                      dateCreated: date(with: "2018-04-03T23:05:12"),
@@ -26,7 +56,7 @@ final class MockOrders {
                      items: items,
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
-                     shippingLines: sampleShippingLines(),
+                     shippingLines: shippingLines,
                      coupons: [],
                      refunds: [])
     }
@@ -41,7 +71,7 @@ final class MockOrders {
                      parentID: 0,
                      customerID: 11,
                      number: "963",
-                     statusKey: "processing",
+                     status: .processing,
                      currency: "USD",
                      customerNote: "",
                      dateCreated: Date(),
@@ -57,17 +87,18 @@ final class MockOrders {
                      items: [],
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
-                     shippingLines: sampleShippingLines(),
+                     shippingLines: Self.sampleShippingLines(),
                      coupons: [],
                      refunds: [])
     }
 
-    func sampleShippingLines() -> [ShippingLine] {
+    static func sampleShippingLines(cost: String = "133.00", tax: String = "0.00") -> [ShippingLine] {
         return [ShippingLine(shippingID: 123,
         methodTitle: "International Priority Mail Express Flat Rate",
         methodID: "usps",
-        total: "133.00",
-        totalTax: "0.00")]
+        total: cost,
+        totalTax: tax,
+        taxes: [])]
     }
 
     func sampleAddress() -> Address {
@@ -92,7 +123,7 @@ final class MockOrders {
                      parentID: 0,
                      customerID: 0,
                      number: "85",
-                     statusKey: "draft",
+                     status: .custom("draft"),
                      currency: "GBP",
                      customerNote: "",
                      dateCreated: Date(),
@@ -121,7 +152,7 @@ final class MockOrders {
                      parentID: 0,
                      customerID: 0,
                      number: "85",
-                     statusKey: "draft",
+                     status: .custom("draft"),
                      currency: "GBP",
                      customerNote: "",
                      dateCreated: Date(),
@@ -165,7 +196,8 @@ final class MockOrders {
                             methodTitle: "Shipping",
                             methodID: "",
                             total: "0.00",
-                            totalTax: "0.00")]
+                            totalTax: "0.00",
+                            taxes: [])]
     }
 
     /// Converts a date string to a date type

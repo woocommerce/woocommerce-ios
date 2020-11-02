@@ -12,7 +12,7 @@ final class OrderSearchStarterViewController: UIViewController, KeyboardFrameAdj
 
     @IBOutlet private var tableView: UITableView!
 
-    private lazy var viewModel = OrderSearchStarterViewModel()
+    private lazy var viewModel = OrderSearchStarterViewModel(siteID: siteID)
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
         KeyboardFrameObserver { [weak self] keyboardFrame in
@@ -23,7 +23,10 @@ final class OrderSearchStarterViewController: UIViewController, KeyboardFrameAdj
     /// Required implementation for `KeyboardFrameAdjustmentProvider`.
     var additionalKeyboardFrameHeight: CGFloat = 0
 
-    init() {
+    private let siteID: Int64
+
+    init(siteID: Int64) {
+        self.siteID = siteID
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -37,11 +40,13 @@ final class OrderSearchStarterViewController: UIViewController, KeyboardFrameAdj
         configureTableView()
 
         viewModel.activateAndForwardUpdates(to: tableView)
+
+        // Reload because viewModel.activate executes performFetch
+        tableView.reloadData()
     }
 
     private func configureTableView() {
-        tableView.register(SettingTitleAndValueTableViewCell.loadNib(),
-                           forCellReuseIdentifier: SettingTitleAndValueTableViewCell.reuseIdentifier)
+        tableView.registerNib(for: SettingTitleAndValueTableViewCell.self)
 
         tableView.backgroundColor = .listBackground
         tableView.delegate = self
@@ -59,11 +64,7 @@ extension OrderSearchStarterViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell =
-            tableView.dequeueReusableCell(withIdentifier: SettingTitleAndValueTableViewCell.reuseIdentifier,
-                                          for: indexPath) as? SettingTitleAndValueTableViewCell else {
-                                            fatalError("Unexpected or missing cell")
-        }
+        let cell = tableView.dequeueReusableCell(SettingTitleAndValueTableViewCell.self, for: indexPath)
 
         let cellViewModel = viewModel.cellViewModel(at: indexPath)
 
@@ -87,6 +88,28 @@ extension OrderSearchStarterViewController: UITableViewDelegate {
 
         analytics.trackSelectionOf(orderStatusSlug: cellViewModel.slug)
 
+        let listViewController = makeOrderListViewController(for: cellViewModel)
+
+        navigationController?.pushViewController(listViewController, animated: true)
+
+        tableView.deselectSelectedRowWithAnimation(true)
+    }
+}
+
+// MARK: - KeyboardScrollable
+
+extension OrderSearchStarterViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        tableView
+    }
+}
+
+// MARK: - Other Private Helpers
+
+private extension OrderSearchStarterViewController {
+
+    /// Make a view controller that shows the orders with the given filter.
+    func makeOrderListViewController(for cellViewModel: OrderSearchStarterViewModel.CellViewModel) -> UIViewController {
         let emptyStateMessage: NSAttributedString = {
             guard let statusName = cellViewModel.name else {
                 return NSAttributedString(string: NSLocalizedString("We're sorry, we couldn't find any orders.",
@@ -103,23 +126,29 @@ extension OrderSearchStarterViewController: UITableViewDelegate {
 
             return message
         }()
-        let ordersViewController = OrdersViewController(
-            title: cellViewModel.name ?? NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter."),
-            viewModel: OrdersViewModel(statusFilter: cellViewModel.orderStatus),
-            emptyStateConfig: .simple(message: emptyStateMessage, image: .emptySearchResultsImage)
-        )
 
-        navigationController?.pushViewController(ordersViewController, animated: true)
+        let title = cellViewModel.name ?? Localization.defaultOrderListTitle
+        let emptyStateConfig = EmptyStateViewController.Config.simple(message: emptyStateMessage, image: .emptySearchResultsImage)
 
-        tableView.deselectSelectedRowWithAnimation(true)
+        if #available(iOS 13, *) {
+            return OrderListViewController(
+                siteID: siteID,
+                title: title,
+                viewModel: .init(siteID: siteID, statusFilter: cellViewModel.orderStatus),
+                emptyStateConfig: emptyStateConfig
+            )
+        } else {
+            return OrdersViewController(
+                siteID: siteID,
+                title: title,
+                viewModel: .init(siteID: siteID, statusFilter: cellViewModel.orderStatus),
+                emptyStateConfig: emptyStateConfig
+            )
+        }
     }
-}
 
-// MARK: - KeyboardScrollable
-
-extension OrderSearchStarterViewController: KeyboardScrollable {
-    var scrollable: UIScrollView {
-        tableView
+    enum Localization {
+        static let defaultOrderListTitle = NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter.")
     }
 }
 

@@ -83,7 +83,7 @@ final class BarcodeScannerViewController: UIViewController {
             let orientation = UIApplication.shared.statusBarOrientation
             let previewLayerConnection: AVCaptureConnection = connection
             if previewLayerConnection.isVideoOrientationSupported {
-                switch (orientation) {
+                switch orientation {
                 case .portrait:
                     updatePreviewLayer(layer: previewLayerConnection, orientation: .portrait)
                     break
@@ -132,7 +132,7 @@ final class BarcodeScannerViewController: UIViewController {
         self.previewLayer = previewLayer
         let deviceOrientation: UIDeviceOrientation = UIDevice.current.orientation
         // Orientation is reversed
-        switch (deviceOrientation) {
+        switch deviceOrientation {
         case .landscapeLeft:
             previewLayer.connection?.videoOrientation = .landscapeRight
         case .landscapeRight:
@@ -233,7 +233,7 @@ final class BarcodeScannerViewController: UIViewController {
         outline.borderWidth = borderWidth
 
         let colorAnimation = CABasicAnimation(keyPath: "borderColor")
-        colorAnimation.fromValue = UIColor.success.cgColor
+        colorAnimation.fromValue = UIColor.green.cgColor
         colorAnimation.toValue = UIColor.white.cgColor
         colorAnimation.duration = 0.5
         colorAnimation.repeatCount = .infinity

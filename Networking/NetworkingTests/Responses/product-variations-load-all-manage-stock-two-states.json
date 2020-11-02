@@ -1,0 +1,124 @@
+{
+    "data": [
+        {
+            "id": 1274,
+            "date_created": "2019-11-14T20:40:55",
+            "date_created_gmt": "2019-11-14T12:40:55",
+            "date_modified": "2020-07-31T13:23:13",
+            "date_modified_gmt": "2020-07-31T05:23:13",
+            "description": "<p>Hi</p>\n",
+            "permalink": "https://example.com/product/chocolate-2/?attribute_darkness=99%25&attribute_flavor=nuts&attribute_shape=brick",
+            "sku": "",
+            "price": "16.2",
+            "regular_price": "16.2",
+            "sale_price": "",
+            "date_on_sale_from": null,
+            "date_on_sale_from_gmt": null,
+            "date_on_sale_to": null,
+            "date_on_sale_to_gmt": null,
+            "on_sale": false,
+            "status": "publish",
+            "purchasable": true,
+            "virtual": false,
+            "downloadable": false,
+            "downloads": [],
+            "download_limit": -1,
+            "download_expiry": -1,
+            "tax_status": "taxable",
+            "tax_class": "reduced-rate",
+            "manage_stock": true,
+            "stock_quantity": 6,
+            "stock_status": "instock",
+            "backorders": "notify",
+            "backorders_allowed": true,
+            "backordered": false,
+            "weight": "0.02",
+            "dimensions": {
+                "length": "6",
+                "width": "",
+                "height": ""
+            },
+            "shipping_class": "10-day-shipping",
+            "shipping_class_id": 96987521,
+            "image": null,
+            "attributes": [
+                {
+                    "id": 0,
+                    "name": "Darkness",
+                    "option": "99%"
+                },
+                {
+                    "id": 0,
+                    "name": "Flavor",
+                    "option": "nuts"
+                },
+                {
+                    "id": 0,
+                    "name": "Shape",
+                    "option": "brick"
+                }
+            ],
+            "menu_order": 8
+        },
+        {
+            "id": 1273,
+            "date_created": "2019-11-14T20:40:55",
+            "date_created_gmt": "2019-11-14T12:40:55",
+            "date_modified": "2020-07-31T13:23:13",
+            "date_modified_gmt": "2020-07-31T05:23:13",
+            "description": "",
+            "permalink": "https://example.com/product/chocolate-2/?attribute_darkness=99%25&attribute_flavor=strawberry&attribute_shape=marble",
+            "sku": "",
+            "price": "",
+            "regular_price": "",
+            "sale_price": "",
+            "date_on_sale_from": null,
+            "date_on_sale_from_gmt": null,
+            "date_on_sale_to": null,
+            "date_on_sale_to_gmt": null,
+            "on_sale": false,
+            "status": "publish",
+            "purchasable": false,
+            "virtual": false,
+            "downloadable": false,
+            "downloads": [],
+            "download_limit": -1,
+            "download_expiry": -1,
+            "tax_status": "taxable",
+            "tax_class": "reduced-rate",
+            "manage_stock": "parent",
+            "stock_quantity": 1,
+            "stock_status": "instock",
+            "backorders": "notify",
+            "backorders_allowed": true,
+            "backordered": false,
+            "weight": "67",
+            "dimensions": {
+                "length": "6",
+                "width": "",
+                "height": ""
+            },
+            "shipping_class": "10-day-shipping",
+            "shipping_class_id": 96987521,
+            "image": null,
+            "attributes": [
+                {
+                    "id": 0,
+                    "name": "Darkness",
+                    "option": "99%"
+                },
+                {
+                    "id": 0,
+                    "name": "Flavor",
+                    "option": "strawberry"
+                },
+                {
+                    "id": 0,
+                    "name": "Shape",
+                    "option": "marble"
+                }
+            ],
+            "menu_order": 7
+        }
+    ]
+}

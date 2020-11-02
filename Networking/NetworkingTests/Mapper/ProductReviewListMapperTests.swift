@@ -9,7 +9,7 @@ final class ProductReviewListMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductReview Fields are parsed correctly.
     ///
-    func testProductReviewFieldsAreProperlyParsed() {
+    func test_ProductReview_fields_are_properly_parsed() {
         let productReviews = mapLoadAllProductReviewsResponse()
         XCTAssertEqual(productReviews.count, 2)
 

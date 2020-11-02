@@ -11,7 +11,7 @@ class ProductListMapperTests: XCTestCase {
 
     /// Verifies that all of the Product Fields are parsed correctly.
     ///
-    func testProductFieldsAreProperlyParsed() {
+    func test_Product_fields_are_properly_parsed() {
         let products = mapLoadAllProductsResponse()
         XCTAssertEqual(products.count, 10)
 
@@ -33,7 +33,7 @@ class ProductListMapperTests: XCTestCase {
         XCTAssertEqual(firstProduct.catalogVisibilityKey, "visible")
 
         XCTAssertEqual(firstProduct.fullDescription, "<p>This is the party room!</p>\n")
-        XCTAssertEqual(firstProduct.briefDescription, """
+        XCTAssertEqual(firstProduct.shortDescription, """
             [contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. \
             We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let \
             us know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests for $100.</p>\n
@@ -92,7 +92,7 @@ class ProductListMapperTests: XCTestCase {
 
     /// Test that ProductTypeKey converts to
     /// a ProductType enum properly.
-    func testThatProductTypeKeyConvertsToEnumProperly() {
+    func test_that_productTypeKey_converts_to_enum_properly() {
         let products = mapLoadAllProductsResponse()
 
         let firstProduct = products[0]
@@ -123,7 +123,7 @@ class ProductListMapperTests: XCTestCase {
 
     /// Test that categories are properly mapped.
     ///
-    func testThatProductCategoriesAreProperlyMapped() {
+    func test_that_product_categories_are_properly_mapped() {
         let products = mapLoadAllProductsResponse()
         let firstProduct = products[0]
         let categories = firstProduct.categories
@@ -138,7 +138,7 @@ class ProductListMapperTests: XCTestCase {
 
     /// Test that tags are properly mapped.
     ///
-    func testThatProductTagsAreProperlyMapped() {
+    func test_that_product_tags_are_properly_mapped() {
         let products = mapLoadAllProductsResponse()
         let firstProduct = products[0]
         let tags = firstProduct.tags
@@ -152,7 +152,7 @@ class ProductListMapperTests: XCTestCase {
 
     /// Test that product images are properly mapped.
     ///
-    func testThatProductImagesAreProperlyMapped() {
+    func test_that_product_images_are_properly_mapped() {
         let products = mapLoadAllProductsResponse()
         let product = products[1]
         let images = product.images
@@ -172,7 +172,7 @@ class ProductListMapperTests: XCTestCase {
 
     /// Test that product attributes are properly mapped
     ///
-    func testThatProductAttributesAreProperlyMapped() {
+    func test_that_product_attributes_are_properly_mapped() {
         let products = mapLoadAllProductsResponse()
         let product = products[4]
         let attributes = product.attributes
@@ -195,7 +195,7 @@ class ProductListMapperTests: XCTestCase {
 
     /// Test that the default product attributes map properly
     ///
-    func testThatDefaultProductAttributesMapProperly() {
+    func test_that_default_product_attributes_map_properly() {
         let products = mapLoadAllProductsResponse()
         let product = products[4]
         let defaultAttributes = product.defaultAttributes

@@ -5,7 +5,7 @@ import CoreData.NSFetchRequest
 
 /// Defines all of the methods made available by the Storage.
 ///
-public protocol StorageType {
+public protocol StorageType: class {
 
     var parentStorage: StorageType? {get}
 
@@ -45,6 +45,18 @@ public protocol StorageType {
     /// Loads an object, of the specified Type, with a given ObjectID (if any).
     ///
     func loadObject<T: Object>(ofType type: T.Type, with objectID: T.ObjectID) -> T?
+
+    /// Obtain permanent `ObjectID` for the given `NSManagedObjects`.
+    ///
+    /// This is temporarily exposed since `NSFetchedResultsController`'s `DiffableDataSource`
+    /// support exposes temporary IDs in snapshots and immediately converts them to permanent IDs.
+    /// This causes an undesirable confusing animation (dual refresh) when the subsequent
+    /// snapshots are applied to the `UITableView`.
+    ///
+    /// We will find a better solution for this later. My current idea is to use a separate
+    /// **read-only** `NSManagedObjectContext` to use for the `NSFetchedResultsController`.
+    /// This will ensure that `NSFetchedResultsController` will not ever receive temporary IDs.
+    func obtainPermanentIDs(for objects: [NSManagedObject]) throws
 
     /// Persists unsaved changes, if needed.
     ///

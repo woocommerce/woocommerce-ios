@@ -4,14 +4,4 @@ about: "If you have an idea to improve an existing feature in the app please let
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
-
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
-
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
-
-**Additional context**
-Add any other context or screenshots about the feature request here.
+Please submit all enhancements to the ideas board located at http://ideas.woocommerce.com/forums/133476-woocommerce?category_id=84283.

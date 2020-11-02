@@ -1,0 +1,25 @@
+{
+    "data": {
+      "delete": [
+        {
+          "id": 35,
+          "name": "Oxford Shoes",
+          "slug": "oxford-shoes",
+          "description": "",
+          "count": 0,
+          "_links": {
+            "self": [
+              {
+                "href": "https://example.com/wp-json/wc/v3/products/tags/35"
+              }
+            ],
+            "collection": [
+              {
+                "href": "https://example.com/wp-json/wc/v3/products/tags"
+              }
+            ]
+          }
+        }
+      ]
+    }
+}

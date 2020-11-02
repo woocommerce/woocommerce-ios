@@ -44,11 +44,11 @@ class AuthenticatedState: StoresManagerState {
             ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductTagStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SitePostStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
             TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
@@ -115,6 +115,7 @@ private extension AuthenticatedState {
     func resetServices() {
         let resetStoredProviders = AppSettingsAction.resetStoredProviders(onCompletion: nil)
         let resetStoredStatsVersionStates = AppSettingsAction.resetStatsVersionStates
-        ServiceLocator.stores.dispatch([resetStoredProviders, resetStoredStatsVersionStates])
+        let resetFeatureSwitchStates = AppSettingsAction.resetFeatureSwitches
+        ServiceLocator.stores.dispatch([resetStoredProviders, resetStoredStatsVersionStates, resetFeatureSwitchStates])
     }
 }

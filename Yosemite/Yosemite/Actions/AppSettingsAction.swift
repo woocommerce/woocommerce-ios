@@ -42,29 +42,18 @@ public enum AppSettingsAction: Action {
     ///
     case loadStatsVersionBannerVisibility(banner: StatsVersionBannerVisibility.StatsVersionBanner, onCompletion: (Bool) -> Void)
 
-    /// Loads the eligible stats version given the latest app settings associated with the `siteID`
-    ///
-    case loadStatsVersionEligible(siteID: Int64,
-        onCompletion: (StatsVersion?) -> Void)
-
     /// Sets whether a stats version banner should be shown
     ///
     case setStatsVersionBannerVisibility(banner: StatsVersionBannerVisibility.StatsVersionBanner, shouldShowBanner: Bool)
-
-    /// Sets the latest highest eligible stats version associated with the `siteID`
-    ///
-    case setStatsVersionEligible(siteID: Int64,
-        statsVersion: StatsVersion)
 
     /// Sets the last shown stats version associated with the `siteID`
     ///
     case setStatsVersionLastShown(siteID: Int64,
         statsVersion: StatsVersion)
 
-    /// Sets the user preferred stats version associated with the `siteID`
+    /// Clears all the states related to stats version
     ///
-    case setStatsVersionPreference(siteID: Int64,
-        statsVersion: StatsVersion)
+    case resetStatsVersionStates
 
     /// Loads the user preferred Product feature switch given the latest app settings
     ///
@@ -75,7 +64,26 @@ public enum AppSettingsAction: Action {
     ///
     case setProductsFeatureSwitch(isEnabled: Bool, onCompletion: () -> Void)
 
-    /// Clears all the states related to stats version
+    /// Clears all the app settings on feature switches
     ///
-    case resetStatsVersionStates
+    case resetFeatureSwitches
+
+    // MARK: - General App Settings
+
+    /// Saves the `date` as the last known date that the app was installed. This does not do
+    /// anything if there is a persisted installation date already and it is older than the
+    /// given `date`.
+    ///
+    /// - Parameter onCompletion: The `Result`'s success value will be `true` if the installation
+    ///                           date was changed and `false` if not.
+    ///
+    case setInstallationDateIfNecessary(date: Date, onCompletion: ((Result<Bool, Error>) -> Void))
+
+    /// Updates or stores a feedback setting with the provided `type` and `status`.
+    ///
+    case updateFeedbackStatus(type: FeedbackType, status: FeedbackSettings.Status, onCompletion: ((Result<Void, Error>) -> Void))
+
+    /// Returns whether a specific feedback request should be shown to the user.
+    ///
+    case loadFeedbackVisibility(type: FeedbackType, onCompletion: (Result<Bool, Error>) -> Void)
 }

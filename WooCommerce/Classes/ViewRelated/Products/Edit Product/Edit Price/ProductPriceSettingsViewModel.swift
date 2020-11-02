@@ -3,6 +3,10 @@ import Yosemite
 /// Provides data needed for price settings.
 ///
 protocol ProductPriceSettingsViewModelOutput {
+    typealias Section = ProductPriceSettingsViewController.Section
+    typealias Row = ProductPriceSettingsViewController.Row
+    var sections: [Section] { get }
+
     var regularPrice: String? { get }
     var salePrice: String? { get }
     var dateOnSaleStart: Date? { get }
@@ -16,6 +20,10 @@ protocol ProductPriceSettingsViewModelOutput {
 protocol ProductPriceSettingsActionHandler {
     // Initialization
     func retrieveProductTaxClass(completion: @escaping () -> Void)
+
+    // Tap actions
+    func didTapScheduleSaleFromRow()
+    func didTapScheduleSaleToRow()
 
     // Input field actions
     func handleRegularPriceChange(_ regularPrice: String?)
@@ -41,7 +49,7 @@ enum ProductPriceSetingsError: Error {
 /// Provides view data for price settings, and handles init/UI/navigation actions needed in product price settings.
 ///
 final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
-    private let product: Product
+    private let product: ProductFormDataModel & TaxClassRequestable
 
     // Editable data
     //
@@ -81,7 +89,9 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
 
     private let currencyFormatter: CurrencyFormatter
 
-    init(product: Product, currencySettings: CurrencySettings = CurrencySettings.shared, timezoneForScheduleSaleDates: TimeZone = TimeZone.siteTimezone) {
+    init(product: ProductFormDataModel & TaxClassRequestable,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         timezoneForScheduleSaleDates: TimeZone = TimeZone.siteTimezone) {
         self.product = product
         self.timezoneForScheduleSaleDates = timezoneForScheduleSaleDates
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
@@ -99,8 +109,7 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
         originalDateOnSaleStart = dateOnSaleStart
         dateOnSaleEnd = product.dateOnSaleEnd
 
-        let taxClassName = NSLocalizedString("Standard rate", comment: "The name of the default Tax Class in Product Price Settings")
-        standardTaxClass = TaxClass(siteID: product.siteID, name: taxClassName, slug: "standard")
+        standardTaxClass = TaxClass(siteID: product.siteID, name: Strings.standardTaxClassName, slug: "standard")
 
         if let productTaxClassSlug = product.taxClass, productTaxClassSlug.isEmpty == false {
             taxClass = TaxClass(siteID: product.siteID, name: productTaxClassSlug, slug: productTaxClassSlug)
@@ -109,6 +118,48 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
             taxClass = standardTaxClass
         }
         taxStatus = product.productTaxStatus
+    }
+
+    var sections: [Section] {
+        // Price section
+        let priceSection = Section(title: Strings.priceSectionTitle, rows: [.price, .salePrice])
+
+        // Sales section
+        var saleScheduleRows: [Row] = [.scheduleSale]
+        if dateOnSaleStart != nil || dateOnSaleEnd != nil {
+            saleScheduleRows.append(contentsOf: [.scheduleSaleFrom])
+            if datePickerSaleFromVisible {
+                saleScheduleRows.append(contentsOf: [.datePickerSaleFrom])
+            }
+            saleScheduleRows.append(contentsOf: [.scheduleSaleTo])
+            if datePickerSaleToVisible {
+                saleScheduleRows.append(contentsOf: [.datePickerSaleTo])
+            }
+            if dateOnSaleEnd != nil {
+                saleScheduleRows.append(.removeSaleTo)
+            }
+        }
+        let salesSection = Section(title: nil, rows: saleScheduleRows)
+
+        switch product {
+        case is EditableProductModel:
+            // Tax section
+            let taxSection: Section
+            taxSection = Section(title: Strings.taxSectionTitle,
+                                 rows: [.taxStatus, .taxClass])
+            return [
+                priceSection,
+                salesSection,
+                taxSection
+            ]
+        case is EditableProductVariationModel:
+            return [
+                priceSection,
+                salesSection
+            ]
+        default:
+            fatalError("Unsupported product type: \(product)")
+        }
     }
 }
 
@@ -121,6 +172,16 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
             completion()
         }
         ServiceLocator.stores.dispatch(action)
+    }
+
+    // MARK: - Tap actions
+
+    func didTapScheduleSaleFromRow() {
+        datePickerSaleFromVisible = !datePickerSaleFromVisible
+    }
+
+    func didTapScheduleSaleToRow() {
+        datePickerSaleToVisible = !datePickerSaleToVisible
     }
 
     // MARK: - UI changes
@@ -161,6 +222,9 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
     }
 
     func handleSaleEndDateChange(_ date: Date?) {
+        if date == nil {
+            datePickerSaleToVisible = false
+        }
         if let date = date, let dateOnSaleStart = dateOnSaleStart, date < dateOnSaleStart {
             return
         }
@@ -186,7 +250,7 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
             return
         }
 
-        onCompletion(regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass)
+        onCompletion(regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges())
     }
 
     func hasUnsavedChanges() -> Bool {
@@ -215,5 +279,13 @@ private extension ProductPriceSettingsViewModel {
             return nil
         }
         return currencyFormatter.convertToDecimal(from: price)
+    }
+}
+
+extension ProductPriceSettingsViewModel {
+    enum Strings {
+        static let priceSectionTitle = NSLocalizedString("Price", comment: "Section header title for product price")
+        static let taxSectionTitle = NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings")
+        static let standardTaxClassName = NSLocalizedString("Standard rate", comment: "The name of the default Tax Class in Product Price Settings")
     }
 }

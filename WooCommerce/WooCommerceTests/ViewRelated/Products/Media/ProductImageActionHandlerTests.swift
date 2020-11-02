@@ -35,8 +35,9 @@ final class ProductImageActionHandlerTests: XCTestCase {
         let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
         let mockProduct = MockProduct().product(images: mockProductImages)
 
+        let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: 123,
-                                                                  product: mockProduct)
+                                                                  product: model)
 
         let mockAsset = PHAsset()
         let expectedStatusUpdates: [[ProductImageStatus]] = [
@@ -85,8 +86,9 @@ final class ProductImageActionHandlerTests: XCTestCase {
         let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
         let mockProduct = MockProduct().product(images: mockProductImages)
 
+        let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: 123,
-                                                                  product: mockProduct)
+                                                                  product: model)
 
         let mockAsset = PHAsset()
         let expectedStatusUpdates: [[ProductImageStatus]] = [
@@ -124,8 +126,9 @@ final class ProductImageActionHandlerTests: XCTestCase {
         let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
         let mockProduct = MockProduct().product(images: mockProductImages)
 
+        let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: 123,
-                                                                  product: mockProduct)
+                                                                  product: model)
 
         let expectedStatusUpdates: [[ProductImageStatus]] = [
             mockRemoteProductImageStatuses,
@@ -164,8 +167,9 @@ final class ProductImageActionHandlerTests: XCTestCase {
         let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
         let mockProduct = MockProduct().product(images: mockProductImages)
 
+        let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: 123,
-                                                                  product: mockProduct)
+                                                                  product: model)
 
         // Media items to upload to site media library.
         let mockMedia1 = Media(mediaID: 134, date: Date(),
@@ -211,8 +215,9 @@ final class ProductImageActionHandlerTests: XCTestCase {
     func testResettingProductImagesToAProduct() {
         // Arrange
         let mockProduct = MockProduct().product(images: [])
+        let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: 123,
-                                                                  product: mockProduct)
+                                                                  product: model)
 
         // Action
         let mockProductImages = [
@@ -220,7 +225,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
         ]
         let anotherMockProduct = MockProduct().product(images: mockProductImages)
-        productImageActionHandler.resetProductImages(to: anotherMockProduct)
+        let anotherModel = EditableProductModel(product: anotherMockProduct)
+        productImageActionHandler.resetProductImages(to: anotherModel)
 
         // Assert
         let expectedProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }

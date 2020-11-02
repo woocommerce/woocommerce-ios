@@ -8,10 +8,11 @@ extension Product {
         return TitleAndTextFieldTableViewCell.ViewModel(title: title,
                                                         text: sku,
                                                         placeholder: placeholder,
+                                                        textFieldAlignment: .leading,
                                                         onTextChange: onTextChange)
     }
 
-    static func createStockQuantityViewModel(stockQuantity: Int?, onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
+    static func createStockQuantityViewModel(stockQuantity: Int64?, onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
         let title = NSLocalizedString("Quantity", comment: "Title of the cell in Product Inventory Settings > Quantity")
         let value = "\(stockQuantity ?? 0)"
         let accessibilityHint = NSLocalizedString(

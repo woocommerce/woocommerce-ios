@@ -15,82 +15,53 @@ final class DashboardUIFactoryTests: XCTestCase {
         super.tearDown()
     }
 
-    func testWhenV4IsAvailableWhileNoStatsVersionIsSaved() {
+    func test_it_loads_only_statsV4_when_V4_is_available_while_no_stats_version_is_saved() {
+        // Given
         mockStoresManager = MockupStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
-
         dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
 
-        var dashboardUITypes: [UIViewController.Type] = []
-        let expectedDashboardUITypes: [UIViewController.Type] = [DashboardStatsV3ViewController.self,
-                                                                 // After reload, UI is reverted to v3
-                                                                 DashboardStatsV3ViewController.self]
-        let expectation = self.expectation(description: "Wait for the stats v4")
-        expectation.expectedFulfillmentCount = 1
-
-        dashboardUIFactory.reloadDashboardUI { dashboardUI in
-            dashboardUITypes.append(type(of: dashboardUI))
-            if dashboardUITypes.count >= expectedDashboardUITypes.count {
-                for i in 0..<dashboardUITypes.count {
-                    XCTAssertTrue(dashboardUITypes[i] == expectedDashboardUITypes[i])
-                }
-                expectation.fulfill()
+        // When
+        var dashboard: DashboardUI?
+        waitForExpectation { exp in
+            dashboardUIFactory.reloadDashboardUI { dashboardUI in
+                dashboard = dashboardUI
+                exp.fulfill()
             }
         }
-        waitForExpectations(timeout: 0.1, handler: nil)
+
+        // Then
+        XCTAssertTrue(dashboard is StoreStatsAndTopPerformersViewController)
     }
 
-    func testWhenV4IsUnavailableWhileNoStatsVersionIsSaved() {
+    func test_it_loads_deprecated_dashboard_when_V4_is_unavailable_while_no_stats_version_is_saved() {
+        // Given
         mockStoresManager = MockupStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
-
         dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
 
-        var dashboardUIArray: [DashboardUI] = []
-        let expectation = self.expectation(description: "Wait for the stats v4")
-        expectation.expectedFulfillmentCount = 1
+        // When
+        var dashboardUITypes: [UIViewController.Type] = []
+        let expectedDashboardUITypes: [UIViewController.Type] = [StoreStatsAndTopPerformersViewController.self,
+                                                                 DeprecatedDashboardStatsViewController.self]
 
-        dashboardUIFactory.reloadDashboardUI { dashboardUI in
-            dashboardUIArray.append(dashboardUI)
-            // 2 view controllers are expected to be the same v3 UI.
-            if dashboardUIArray.count >= 2 {
-                XCTAssertTrue(dashboardUIArray[0] == dashboardUIArray[1])
-                XCTAssertTrue(dashboardUIArray[0] is DashboardStatsV3ViewController)
-                expectation.fulfill()
+        waitForExpectation(description: #function, count: expectedDashboardUITypes.count) { exp in
+            dashboardUIFactory.reloadDashboardUI { dashboardUI in
+                dashboardUITypes.append(type(of: dashboardUI))
+                exp.fulfill()
             }
         }
-        waitForExpectations(timeout: 0.1, handler: nil)
-    }
 
-    /// Stats v3 --> v3
-    func testWhenV4IsUnavailableWhileStatsV3IsLastShown() {
-        mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
-                                                            sessionManager: SessionManager.testingInstance)
-        mockStoresManager.isStatsV4Available = false
-        ServiceLocator.setStores(mockStoresManager)
-
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
-
-        var dashboardUIArray: [DashboardUI] = []
-        let expectation = self.expectation(description: "Wait for the stats v4")
-        expectation.expectedFulfillmentCount = 1
-
-        dashboardUIFactory.reloadDashboardUI { dashboardUI in
-            dashboardUIArray.append(dashboardUI)
-            // 2 view controllers are expected to be the same v3 UI.
-            if dashboardUIArray.count >= 2 {
-                XCTAssertTrue(dashboardUIArray[0] == dashboardUIArray[1])
-                XCTAssertTrue(dashboardUIArray[0] is DashboardStatsV3ViewController)
-                expectation.fulfill()
-            }
-        }
-        waitForExpectations(timeout: 0.1, handler: nil)
+        // Then
+        XCTAssertEqual(dashboardUITypes.count, expectedDashboardUITypes.count)
+        XCTAssertTrue(dashboardUITypes[0] == expectedDashboardUITypes[0])
+        XCTAssertTrue(dashboardUITypes[1] == expectedDashboardUITypes[1])
     }
 
     /// Stats v4 --> v4
-    func testWhenV4IsAvailableWhileStatsV4IsLastShown() {
+    func test_when_V4_is_available_while_stats_V4_is_last_shown() {
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
@@ -98,24 +69,18 @@ final class DashboardUIFactoryTests: XCTestCase {
 
         dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
 
-        var dashboardUIArray: [DashboardUI] = []
         let expectation = self.expectation(description: "Wait for the stats v4")
         expectation.expectedFulfillmentCount = 1
 
         dashboardUIFactory.reloadDashboardUI { dashboardUI in
-            dashboardUIArray.append(dashboardUI)
-            // 2 view controllers are expected to be the same v4 UI.
-            if dashboardUIArray.count >= 2 {
-                XCTAssertTrue(dashboardUIArray[0] == dashboardUIArray[1])
-                XCTAssertTrue(dashboardUIArray[0] is StoreStatsAndTopPerformersViewController)
-                expectation.fulfill()
-            }
+            XCTAssertTrue(dashboardUI is StoreStatsAndTopPerformersViewController)
+            expectation.fulfill()
         }
         waitForExpectations(timeout: 0.1, handler: nil)
     }
 
     /// Stats v4 --> v3 --> v4
-    func testWhenV4IsUnavailableAndThenAvailableWhileStatsV4IsLastShown() {
+    func test_when_V4_is_unavailable_and_then_available_while_stats_v4_is_last_shown() {
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
@@ -132,7 +97,7 @@ final class DashboardUIFactoryTests: XCTestCase {
             // The first updated view controller is v4, and the second view controller is reverted back to v3.
             if dashboardUIArray.count >= 2 {
                 XCTAssertTrue(dashboardUIArray[0] is StoreStatsAndTopPerformersViewController)
-                XCTAssertTrue(dashboardUIArray[1] is DashboardStatsV3ViewController)
+                XCTAssertTrue(dashboardUIArray[1] is DeprecatedDashboardStatsViewController)
 
                 guard let self = self else {
                     XCTFail()
@@ -147,13 +112,34 @@ final class DashboardUIFactoryTests: XCTestCase {
 
                     // The first view controller is v4 -> v3 UI, and the second view controller is v3 -> v4 UI.
                     if dashboardUIArray.count >= 2 {
-                        XCTAssertTrue(dashboardUIArray[0] is DashboardStatsV3ViewController)
-                        XCTAssertTrue(dashboardUIArray[1] is DashboardStatsV3ViewController)
+                        XCTAssertTrue(dashboardUIArray[0] is DeprecatedDashboardStatsViewController)
+                        XCTAssertTrue(dashboardUIArray[1] is StoreStatsAndTopPerformersViewController)
                         expectation.fulfill()
                     }
                 }
             }
         }
         waitForExpectations(timeout: 0.1, handler: nil)
+    }
+
+    func test_deprecated_stats_screen_is_shown_if_V4_is_unavailable() {
+        // Given
+        mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
+                                                            sessionManager: SessionManager.testingInstance)
+        mockStoresManager.isStatsV4Available = false
+        ServiceLocator.setStores(mockStoresManager)
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
+
+        // When
+        let exp = self.expectation(description: #function)
+        var renderedDashboard: DashboardUI?
+        dashboardUIFactory.reloadDashboardUI { dashboardUI in
+            renderedDashboard = dashboardUI
+            exp.fulfill()
+        }
+        waitForExpectations(timeout: 0.1, handler: nil)
+
+        //Then
+        XCTAssertTrue(renderedDashboard is DeprecatedDashboardStatsViewController)
     }
 }

@@ -88,10 +88,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: rowType.reuseIdentifier,
-                                                       for: indexPath) as? Cell else {
-                                                        fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(Cell.self, for: indexPath)
         let model = command.data[indexPath.row]
         // Configures the cell's `accessoryType` before calling `command.configureCell` so that the command could override the `accessoryType`.
         cell.accessoryType = command.isSelected(model: model) ? .checkmark: .none
@@ -141,6 +138,6 @@ private extension ListSelectorViewController {
     }
 
     func registerTableViewCells() {
-        tableView.register(rowType.loadNib(), forCellReuseIdentifier: rowType.reuseIdentifier)
+        tableView.registerNib(for: rowType)
     }
 }

@@ -6,10 +6,6 @@ import WordPressAuthenticator
 ///
 protocol Authentication {
 
-    /// Returns a LoginViewController preinitialized for WordPress.com
-    ///
-    func loginForWordPressDotCom() -> UIViewController
-
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
     ///
     func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag)
@@ -20,7 +16,7 @@ protocol Authentication {
 
     /// Displays the Login Flow using the specified UIViewController as presenter.
     ///
-    func displayAuthentication(from presenter: UIViewController)
+    func displayAuthentication(from presenter: UIViewController, animated: Bool, onCompletion: @escaping () -> Void)
 
     /// Initializes the WordPress Authenticator.
     ///

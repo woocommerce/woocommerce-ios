@@ -77,7 +77,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that ProductReviewAction.synchronizeProductReviews effectively persists any retrieved product reviews.
     ///
-    func testRetrieveProductReviewsEffectivelyPersistsRetrievedProductReviews() {
+    func test_retrieve_product_reviews_effectively_persists_retrieved_product_reviews() {
         let expectation = self.expectation(description: "Retrieve product review list")
 
         network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "reviews-all")
@@ -99,7 +99,7 @@ final class ProductReviewStoreTests: XCTestCase {
     /// Verifies that `ProductReviewAction.synchronizeProductReviews` effectively persists all of the fields
     /// correctly across all of the related `ProductReview` entities
     ///
-    func testRetrieveProductReviewsEffectivelyPersistsProductReviewFields() {
+    func test_retrieve_product_reviews_effectively_persists_product_review_fields() {
         let expectation = self.expectation(description: "Persist product review list")
 
         let remoteProductReview = sampleProductReview()
@@ -123,9 +123,136 @@ final class ProductReviewStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `ProductReviewAction.synchronizeProductReviews` for the first page deletes stored Product Reviews for the given site ID.
+    ///
+    func test_syncing_product_reviews_on_the_first_page_resets_stored_product_reviews() {
+
+        // Given
+        let reviewID1: Int64 = 1
+        let reviewID2: Int64 = 2
+        let productReviews = [sampleProductReview(reviewID: reviewID1), sampleProductReview(reviewID: reviewID2)]
+        store.upsertStoredProductReviews(readOnlyProductReviews: productReviews,
+                                              in: viewStorage,
+                                              siteID: sampleSiteID)
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "reviews-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductReview.self), 2)
+
+        waitForExpectation { exp in
+            let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID,
+                                                                       pageNumber: defaultPageNumber,
+                                                                       pageSize: defaultPageSize) { error in
+
+                // Then
+                XCTAssertNil(error)
+
+                // The previously upserted Product Reviews should be deleted.
+                let storedProductReview1 = self.viewStorage.loadProductReview(
+                    siteID: self.sampleSiteID,
+                    reviewID: reviewID1)
+                XCTAssertNil(storedProductReview1)
+
+                let storedProductReview2 = self.viewStorage.loadProductReview(
+                    siteID: self.sampleSiteID,
+                    reviewID: reviewID2)
+                XCTAssertNil(storedProductReview2)
+
+                exp.fulfill()
+            }
+            store.onAction(action)
+        }
+    }
+
+    /// Verifies that `ProductReviewAction.synchronizeProductReviews` after the first page does not delete stored Product Reviews for the given
+    /// site ID.
+    ///
+    func test_syncing_product_reviews_after_the_first_page() {
+
+        // Given
+        let reviewID1: Int64 = 1
+        let reviewID2: Int64 = 2
+        let productReviews = [sampleProductReview(reviewID: reviewID1), sampleProductReview(reviewID: reviewID2)]
+        store.upsertStoredProductReviews(readOnlyProductReviews: productReviews,
+                                              in: viewStorage,
+                                              siteID: sampleSiteID)
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "reviews-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductReview.self), 2)
+
+        waitForExpectation { exp in
+            let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID,
+                                                                       pageNumber: 3,
+                                                                       pageSize: defaultPageSize) { error in
+
+                // Then
+                XCTAssertNil(error)
+
+                // The previously upserted Product Reviews should stay in storage.
+                let storedProductReview1 = self.viewStorage.loadProductReview(
+                    siteID: self.sampleSiteID,
+                    reviewID: reviewID1)
+                XCTAssertNotNil(storedProductReview1)
+
+                let storedProductReview2 = self.viewStorage.loadProductReview(
+                    siteID: self.sampleSiteID,
+                    reviewID: reviewID2)
+                XCTAssertNotNil(storedProductReview2)
+
+                XCTAssertGreaterThan(self.viewStorage.countObjects(ofType: Storage.ProductReview.self), 2)
+
+                exp.fulfill()
+            }
+            store.onAction(action)
+        }
+    }
+
+    /// Verifies that `ProductReviewAction.synchronizeProductReviews` for the first page does not delete stored Product Reviews if the API call fails.
+    ///
+    func test_syncing_product_reviews_on_the_first_page_does_not_delete_stored_product_reviews_upon_response_error() {
+
+        // Given
+        let reviewID1: Int64 = 1
+        let reviewID2: Int64 = 2
+        let productReviews = [sampleProductReview(reviewID: reviewID1), sampleProductReview(reviewID: reviewID2)]
+        store.upsertStoredProductReviews(readOnlyProductReviews: productReviews,
+                                              in: viewStorage,
+                                              siteID: sampleSiteID)
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "generic_error")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductReview.self), 2)
+
+        waitForExpectation { exp in
+            let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID,
+                                                                       pageNumber: defaultPageNumber,
+                                                                       pageSize: defaultPageSize) { error in
+                // Then
+                XCTAssertNotNil(error)
+
+                // The previously upserted Product Reviews should stay in storage.
+                let storedProductReview1 = self.viewStorage.loadProductReview(
+                    siteID: self.sampleSiteID,
+                    reviewID: reviewID1)
+                XCTAssertNotNil(storedProductReview1)
+
+                let storedProductReview2 = self.viewStorage.loadProductReview(
+                    siteID: self.sampleSiteID,
+                    reviewID: reviewID2)
+                XCTAssertNotNil(storedProductReview2)
+
+                XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductReview.self), 2)
+
+                exp.fulfill()
+            }
+            store.onAction(action)
+        }
+    }
+
     /// Tests that reviews with no `reviewer_avatar_urls` can be saved by Core Data.
     ///
-    func testItCanSaveReviewsWithNoAvatarURLs() {
+    func test_it_can_save_reviews_with_no_avatar_URLs() {
         // Given
         let expectation = self.expectation(description: "Persist product review list")
 
@@ -155,7 +282,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that ProductReviewAction.synchronizeProductReviews returns an error whenever there is an error response from the backend.
     ///
-    func testRetrieveProductReviewsReturnsErrorUponReponseError() {
+    func test_retrieve_product_reviews_returns_error_upon_response_error() {
         let expectation = self.expectation(description: "Retrieve product reviews error response")
 
         network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "generic_error")
@@ -170,7 +297,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that ProductReviewAction.synchronizeProductReviews returns an error whenever there is no backend response.
     ///
-    func testRetrieveProductReviewsReturnsErrorUponEmptyResponse() {
+    func test_retrieve_product_reviews_returns_error_upon_empty_response() {
         let expectation = self.expectation(description: "Retrieve product reviews empty response")
 
         let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
@@ -187,7 +314,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that `ProductReviewAction.retrieveProductReview` returns the expected `ProductReview`.
     ///
-    func testRetrieveSingleProductReviewReturnsExpectedFields() {
+    func test_retrieve_single_product_review_returns_expected_fields() {
         let expectation = self.expectation(description: "Retrieve single product review")
         let remoteProductReview = sampleProductReview()
 
@@ -206,7 +333,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that `ProductReviewAction.retrieveProductReview` returns an error whenever there is an error response from the backend.
     ///
-    func testRetrieveSingleProductReviewReturnsErrorUponReponseError() {
+    func test_retrieve_single_product_review_returns_error_upon_reponse_error() {
         let expectation = self.expectation(description: "Retrieve single product review error response")
 
         network.simulateResponse(requestUrlSuffix: "products/reviews/173", filename: "generic_error")
@@ -221,7 +348,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that `ProductReviewAction.retrieveProductReview` returns an error whenever there is no backend response.
     ///
-    func testRetrieveSingleProductReviewReturnsErrorUponEmptyResponse() {
+    func test_retrieve_single_product_review_returns_error_upon_empty_response() {
         let expectation = self.expectation(description: "Retrieve single product review empty response")
 
         let action = ProductReviewAction.retrieveProductReview(siteID: sampleSiteID, reviewID: sampleReviewID) { (product, error) in
@@ -236,7 +363,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that `ProductReviewAction.retrieveProductReview` returns an error whenever there is no backend response.
     ///
-    func testRetrieveSingleProductReviewDeletesTheReviewWhenReceivingA404Response() throws {
+    func test_retrieve_single_product_review_deletes_the_review_when_receiving_a_404_response() throws {
         // Given
         let storageReview = viewStorage.insertNewObject(ofType: StorageProductReview.self)
         storageReview.update(with: sampleProductReview())
@@ -271,7 +398,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that `ProductReviewAction.resetStoredProductReviews` deletes the Products from Storage
     ///
-    func testResetStoredProductReviewsEffectivelyNukesTheProductsCache() {
+    func test_reset_stored_product_reviews_effectively_nukes_the_products_cache() {
         let expectation = self.expectation(description: "Stored Product reviews Reset")
         let action = ProductReviewAction.resetStoredProductReviews() {
             self.store.upsertStoredProductReviews(readOnlyProductReviews: [self.sampleProductReview()], in: self.viewStorage, siteID: self.sampleSiteID)
@@ -287,7 +414,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that `ProductReviewStore.upsertStoredProductReview` does not produce duplicate entries.
     ///
-    func testUpdateStoredProductReviewEffectivelyUpdatesPreexistantProductReview() {
+    func test_update_stored_product_review_effectively_updates_preexistant_product_review() {
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductReview.self), 0)
 
@@ -306,9 +433,9 @@ final class ProductReviewStoreTests: XCTestCase {
 //
 private extension ProductReviewStoreTests {
 
-    func sampleProductReview() -> Networking.ProductReview {
+    func sampleProductReview(reviewID: Int64? = nil) -> Networking.ProductReview {
         return Networking.ProductReview(siteID: sampleSiteID,
-                                        reviewID: sampleReviewID,
+                                        reviewID: reviewID ?? sampleReviewID,
                                         productID: sampleProductID,
                                         dateCreated: Date(),
                                         statusKey: "hold",

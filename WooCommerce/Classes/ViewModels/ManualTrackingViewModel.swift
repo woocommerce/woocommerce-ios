@@ -74,8 +74,7 @@ protocol ManualTrackingViewModel {
 extension ManualTrackingViewModel {
     func registerCells(for tableView: UITableView) {
         for row in AddEditTrackingRow.allCases {
-            tableView.register(row.type.loadNib(),
-                               forCellReuseIdentifier: row.reuseIdentifier)
+            tableView.registerNib(for: row.type)
         }
     }
 }

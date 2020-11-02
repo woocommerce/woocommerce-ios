@@ -1,4 +1,5 @@
 import XCTest
+import TestKit
 
 @testable import Yosemite
 
@@ -21,6 +22,15 @@ final class NotificationCountStoreTests: XCTestCase {
 
     private let defaultSiteID: Int64 = 134
 
+    /// URL to the plist file that we use to determine the notification count.
+    ///
+    private lazy var fileURL: URL = {
+        guard let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            fatalError("Cannot find app document directory URL")
+        }
+        return documents.appendingPathComponent("notification-count.plist")
+    }()
+
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -41,7 +51,7 @@ final class NotificationCountStoreTests: XCTestCase {
 
     func testIncrementingAndLoadingNotificationCountReturnsTheCorrectCount() {
         let data = SiteNotificationCountFileContents(countBySite: [defaultSiteID: [.comment: 2, .storeOrder: 6]])
-        try! fileStorage.write(data, to: URL(fileURLWithPath: ""))
+        try! fileStorage.write(data, to: fileURL)
 
         var notificationCount: Int?
         waitForExpectation { expectation in
@@ -101,7 +111,7 @@ final class NotificationCountStoreTests: XCTestCase {
             defaultSiteID: [.comment: 2, .storeOrder: 6],
             anotherSiteID: [.comment: 3]
         ])
-        try! fileStorage.write(data, to: URL(fileURLWithPath: ""))
+        try! fileStorage.write(data, to: fileURL)
 
         // Action
         var notificationCount: Int?

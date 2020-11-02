@@ -1,4 +1,9 @@
-* You can now turn Products M2 Features on and off for simple products in Settings > Experimental Features. Products M2 features the ability to update product images, product short description, product viewing, sharing, and settings (Product settings include status, visibility, catalog visibility, slug, purchase note, and menu order.)
-* You can now edit and save details on the Order details or Top Performers tabs. We’ve also improved accessibility with better VoiceOver support for Product Price settings.
-* We’ve made some visual refinements: In Order Details, the Payment card now appears right after the Products and Refunded Products cards. The WIP banner on the Products tab is now collapsed by default. Yay for more vertical space!
-* We’ve dropped support for iOS 11 and lower.
+In this update, we have a lot of new possibilities for editing your products to report.
+
+For non-core products — which are the products that WooCommerce does not group under simple, external, variable, or groups — there are a plethora of new editing options! You can now change the image, name, description, read-only price, read-only inventory, tags, short description, and product settings.
+
+You can also now edit variable products, and stock status is included in the variation list.
+
+Our core products also have additional fields that can be edited — tags, categories, product type, enable/ disable reviews, and visibility.
+
+We also have an update for Apple Sign In — if you disconnect Apple ID from the WordPress app (Settings > Apple ID > Password & Security > Apps using Apple ID) the app will log out when you launch, or if you switch between apps. So you won’t stay logged in if you don’t want to!

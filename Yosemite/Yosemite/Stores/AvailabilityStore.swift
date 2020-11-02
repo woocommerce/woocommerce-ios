@@ -1,8 +1,16 @@
 import Networking
+import Storage
 
 /// MARK: AvailabilityStore
 ///
 final public class AvailabilityStore: Store {
+    private let orderStatsRemote: OrderStatsRemoteV4
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.orderStatsRemote = OrderStatsRemoteV4(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -32,8 +40,7 @@ private extension AvailabilityStore {
     func checkStatsV4Availability(siteID: Int64,
                                   onCompletion: @escaping (_ isStatsV4Available: Bool) -> Void) {
         let date = String(describing: Date().timeIntervalSinceReferenceDate)
-        let remote = OrderStatsRemoteV4(network: network)
-        remote.loadOrderStats(for: siteID,
+        orderStatsRemote.loadOrderStats(for: siteID,
                               unit: .yearly,
                               earliestDateToInclude: date,
                               latestDateToInclude: date,

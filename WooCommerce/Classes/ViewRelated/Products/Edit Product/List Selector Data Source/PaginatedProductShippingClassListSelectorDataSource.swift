@@ -9,7 +9,7 @@ struct PaginatedProductShippingClassListSelectorDataSource: PaginatedListSelecto
 
     private let siteID: Int64
 
-    init(product: Product, selected: ProductShippingClass?) {
+    init(product: ProductFormDataModel, selected: ProductShippingClass?) {
         self.siteID = product.siteID
         self.selected = selected
     }
@@ -38,15 +38,20 @@ struct PaginatedProductShippingClassListSelectorDataSource: PaginatedListSelecto
 
         let bodyText = model.name
         cell.bodyLabel.text = bodyText
+
+        cell.accessoryType = isSelected(model: model) ? .checkmark: .none
     }
 
-    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Result<Bool, Error>) -> Void)?) {
         let action = ProductShippingClassAction
-            .synchronizeProductShippingClassModels(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { error in
-                if let error = error {
+            .synchronizeProductShippingClassModels(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { result in
+                switch result {
+                case .failure(let error):
                     DDLogError("⛔️ Error synchronizing product shipping classes: \(error)")
+                    onCompletion?(.failure(error))
+                case .success(let hasNextPage):
+                    onCompletion?(.success(hasNextPage))
                 }
-                onCompletion?(error == nil)
         }
 
         ServiceLocator.stores.dispatch(action)

@@ -8,11 +8,11 @@ import WordPressAuthenticator
 
 // MARK: - SettingsViewController
 //
-class SettingsViewController: UIViewController {
+final class SettingsViewController: UIViewController {
 
     /// Main TableView
     ///
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     /// Table Sections to be rendered
     ///
@@ -93,6 +93,9 @@ private extension SettingsViewController {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
+
+        tableView.dataSource = self
+        tableView.delegate = self
     }
 
     func refreshResultsController() {
@@ -114,6 +117,8 @@ private extension SettingsViewController {
 
         tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
+        footerView.translatesAutoresizingMaskIntoConstraints = false
+        footerContainer.pinSubviewToAllEdges(footerView)
     }
 
     func refreshViewContent() {
@@ -145,7 +150,7 @@ private extension SettingsViewController {
             sections = [
                 Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
                 Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
-                Section(title: improveTheAppTitle, rows: [.privacy, .betaFeatures, .featureRequest], footerHeight: UITableView.automaticDimension),
+                Section(title: improveTheAppTitle, rows: [.privacy, .betaFeatures, .sendFeedback], footerHeight: UITableView.automaticDimension),
                 Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
                 otherSection,
                 Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
@@ -154,7 +159,7 @@ private extension SettingsViewController {
             sections = [
                 Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
                 Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
-                Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest], footerHeight: UITableView.automaticDimension),
+                Section(title: improveTheAppTitle, rows: [.privacy, .sendFeedback], footerHeight: UITableView.automaticDimension),
                 Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
                 otherSection,
                 Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
@@ -164,7 +169,7 @@ private extension SettingsViewController {
 
     func registerTableViewCells() {
         for row in Row.allCases {
-            tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
+            tableView.registerNib(for: row.type)
         }
     }
 
@@ -182,8 +187,8 @@ private extension SettingsViewController {
             configurePrivacy(cell: cell)
         case let cell as BasicTableViewCell where row == .betaFeatures:
             configureBetaFeatures(cell: cell)
-        case let cell as BasicTableViewCell where row == .featureRequest:
-            configureFeatureSuggestions(cell: cell)
+        case let cell as BasicTableViewCell where row == .sendFeedback:
+            configureSendFeedback(cell: cell)
         case let cell as BasicTableViewCell where row == .about:
             configureAbout(cell: cell)
         case let cell as BasicTableViewCell where row == .licenses:
@@ -200,8 +205,7 @@ private extension SettingsViewController {
     }
 
     func configureSelectedStore(cell: HeadlineLabelTableViewCell) {
-        cell.headline = siteUrl
-        cell.body = accountName
+        cell.update(headline: siteUrl, body: accountName)
         cell.selectionStyle = .none
     }
 
@@ -232,10 +236,10 @@ private extension SettingsViewController {
         cell.accessibilityIdentifier = "settings-beta-features-button"
     }
 
-    func configureFeatureSuggestions(cell: BasicTableViewCell) {
+    func configureSendFeedback(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Feature Request", comment: "Navigates to the feature request screen")
+        cell.textLabel?.text = NSLocalizedString("Send Feedback", comment: "Presents a survey to gather feedback from the user.")
     }
 
     func configureAbout(cell: BasicTableViewCell) {
@@ -281,8 +285,9 @@ private extension SettingsViewController {
         return sections[indexPath.section].rows[indexPath.row]
     }
 
+    /// This is false because there are no ongoing experiments
     func couldShowBetaFeaturesRow() -> Bool {
-        return true
+        true
     }
 }
 
@@ -330,37 +335,45 @@ private extension SettingsViewController {
 
     func supportWasPressed() {
         ServiceLocator.analytics.track(.settingsContactSupportTapped)
-        performSegue(withIdentifier: Segues.helpSupportSegue, sender: nil)
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: HelpAndSupportViewController.self) else {
+            fatalError("Cannot instantiate `HelpAndSupportViewController` from Dashboard storyboard")
+        }
+        show(viewController, sender: self)
     }
 
     func privacyWasPressed() {
         ServiceLocator.analytics.track(.settingsPrivacySettingsTapped)
-        performSegue(withIdentifier: Segues.privacySegue, sender: nil)
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
+            fatalError("Cannot instantiate `PrivacySettingsViewController` from Dashboard storyboard")
+        }
+        show(viewController, sender: self)
     }
 
     func aboutWasPressed() {
         ServiceLocator.analytics.track(.settingsAboutLinkTapped)
-        performSegue(withIdentifier: Segues.aboutSegue, sender: nil)
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: AboutViewController.self) else {
+            fatalError("Cannot instantiate `AboutViewController` from Dashboard storyboard")
+        }
+        show(viewController, sender: self)
     }
 
     func licensesWasPressed() {
         ServiceLocator.analytics.track(.settingsLicensesLinkTapped)
-        performSegue(withIdentifier: Segues.licensesSegue, sender: nil)
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: LicensesViewController.self) else {
+            fatalError("Cannot instantiate `LicensesViewController` from Dashboard storyboard")
+        }
+        show(viewController, sender: self)
     }
 
     func betaFeaturesWasPressed() {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            assertionFailure("Cannot find store ID")
-            return
-        }
         ServiceLocator.analytics.track(.settingsBetaFeaturesButtonTapped)
-        let betaFeaturesViewController = BetaFeaturesViewController(siteID: siteID)
+        let betaFeaturesViewController = BetaFeaturesViewController()
         navigationController?.pushViewController(betaFeaturesViewController, animated: true)
     }
 
-    func featureRequestWasPressed() {
-        let safariViewController = SFSafariViewController(url: WooConstants.featureRequestURL)
-        present(safariViewController, animated: true, completion: nil)
+    func presentSurveyForFeedback() {
+        let surveyNavigation = SurveyCoordinatingController(survey: .inAppFeedback)
+        present(surveyNavigation, animated: true, completion: nil)
     }
 
     func appSettingsWasPressed() {
@@ -464,8 +477,8 @@ extension SettingsViewController: UITableViewDelegate {
             privacyWasPressed()
         case .betaFeatures:
             betaFeaturesWasPressed()
-        case .featureRequest:
-            featureRequestWasPressed()
+        case .sendFeedback:
+            presentSurveyForFeedback()
         case .about:
             aboutWasPressed()
         case .licenses:
@@ -503,7 +516,7 @@ private enum Row: CaseIterable {
     case logout
     case privacy
     case betaFeatures
-    case featureRequest
+    case sendFeedback
     case about
     case licenses
     case appSettings
@@ -523,7 +536,7 @@ private enum Row: CaseIterable {
             return BasicTableViewCell.self
         case .betaFeatures:
             return BasicTableViewCell.self
-        case .featureRequest:
+        case .sendFeedback:
             return BasicTableViewCell.self
         case .about:
             return BasicTableViewCell.self
@@ -540,14 +553,6 @@ private enum Row: CaseIterable {
         return type.reuseIdentifier
     }
 }
-
-private struct Segues {
-    static let privacySegue     = "ShowPrivacySettingsViewController"
-    static let helpSupportSegue = "ShowHelpAndSupportViewController"
-    static let aboutSegue       = "ShowAboutViewController"
-    static let licensesSegue    = "ShowLicensesViewController"
-}
-
 
 // MARK: - Footer
 //

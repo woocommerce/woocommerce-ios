@@ -60,9 +60,9 @@ final class ProductShippingClassStoreTests: XCTestCase {
         let action = ProductShippingClassAction
             .synchronizeProductShippingClassModels(siteID: sampleSiteID,
                                                    pageNumber: defaultPageNumber,
-                                                   pageSize: defaultPageSize) { error in
+                                                   pageSize: defaultPageSize) { result in
                                                     XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 3)
-                                                    XCTAssertNil(error)
+                                                    XCTAssertTrue(result.isSuccess)
 
                                                     let sampleRemoteID: Int64 = 94
                                                     let storedProductShippingClass = self.viewStorage
@@ -93,8 +93,8 @@ final class ProductShippingClassStoreTests: XCTestCase {
         let action = ProductShippingClassAction
             .synchronizeProductShippingClassModels(siteID: sampleSiteID,
                                                    pageNumber: defaultPageNumber,
-                                                   pageSize: defaultPageSize) { error in
-                                                    XCTAssertNil(error)
+                                                   pageSize: defaultPageSize) { result in
+                                                    XCTAssertTrue(result.isSuccess)
 
                                                     let storedProductShippingClasses = self.viewStorage.loadProductShippingClasses(siteID: self.sampleSiteID)
                                                     XCTAssertEqual(storedProductShippingClasses?.count, 3)
@@ -109,8 +109,8 @@ final class ProductShippingClassStoreTests: XCTestCase {
                                                     let action = ProductShippingClassAction
                                                         .synchronizeProductShippingClassModels(siteID: self.sampleSiteID,
                                                                                                pageNumber: self.defaultPageNumber,
-                                                                                               pageSize: self.defaultPageSize) { error in
-                                                                                                XCTAssertNil(error)
+                                                                                               pageSize: self.defaultPageSize) { result in
+                                                                                                XCTAssertTrue(result.isSuccess)
 
                                                                                                 let storedProductShippingClasses = self.viewStorage
                                                                                                     .loadProductShippingClasses(siteID: self.sampleSiteID)
@@ -134,6 +134,50 @@ final class ProductShippingClassStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    func test_synchronizing_product_shipping_classes_of_the_same_page_size_has_next_page() {
+        // Arrange
+        let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products/shipping_classes", filename: "product-shipping-classes-load-all")
+
+        // Action
+        // The `pageSize` must match the response size in `product-shipping-classes-load-all.json`.
+        let pageSize = 3
+        var result: Result<Bool, Error>?
+        waitForExpectation { expectation in
+            let action = ProductShippingClassAction
+                .synchronizeProductShippingClassModels(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: pageSize) { aResult in
+                    result = aResult
+                    expectation.fulfill()
+            }
+            store.onAction(action)
+        }
+
+        // Assert
+        XCTAssertTrue(try XCTUnwrap(result).get())
+    }
+
+    func test_synchronizing_product_shipping_classes_of_smaller_size_than_page_size_has_no_next_page() {
+        // Arrange
+        let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products/shipping_classes", filename: "product-shipping-classes-load-all")
+
+        // Action
+        // The `pageSize` must be larger than the response size in `product-shipping-classes-load-all.json`.
+        let pageSize = 25
+        var result: Result<Bool, Error>?
+        waitForExpectation { expectation in
+            let action = ProductShippingClassAction
+                .synchronizeProductShippingClassModels(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: pageSize) { aResult in
+                    result = aResult
+                    expectation.fulfill()
+            }
+            store.onAction(action)
+        }
+
+        // Assert
+        XCTAssertFalse(try XCTUnwrap(result).get())
+    }
+
     /// Verifies that `ProductShippingClassAction.synchronizeProductShippingClasss` returns an error whenever there is an error response from the backend.
     ///
     func testRetrieveProductShippingClasssReturnsErrorUponReponseError() {
@@ -144,8 +188,8 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
         let action = ProductShippingClassAction.synchronizeProductShippingClassModels(siteID: sampleSiteID,
                                                                                       pageNumber: defaultPageNumber,
-                                                                                      pageSize: defaultPageSize) { error in
-                                                                                        XCTAssertNotNil(error)
+                                                                                      pageSize: defaultPageSize) { result in
+                                                                                        XCTAssertTrue(result.isFailure)
 
                                                                                         expectation.fulfill()
         }
@@ -162,8 +206,8 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
         let action = ProductShippingClassAction.synchronizeProductShippingClassModels(siteID: sampleSiteID,
                                                                                       pageNumber: defaultPageNumber,
-                                                                                      pageSize: defaultPageSize) { error in
-                                                                                        XCTAssertNotNil(error)
+                                                                                      pageSize: defaultPageSize) { result in
+                                                                                        XCTAssertTrue(result.isFailure)
 
                                                                                         expectation.fulfill()
         }
@@ -192,8 +236,8 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
         let action = ProductShippingClassAction.synchronizeProductShippingClassModels(siteID: siteID1,
                                                                                       pageNumber: Store.Default.firstPageNumber,
-                                                                                      pageSize: defaultPageSize) { error in
-            XCTAssertNil(error)
+                                                                                      pageSize: defaultPageSize) { result in
+            XCTAssertTrue(result.isSuccess)
 
             // The previously upserted ProductVariation for siteID1 should be deleted.
             let storedModelForSite1 = self.viewStorage.loadProductShippingClass(siteID: siteID1, remoteID: shippingClassID)
@@ -229,8 +273,8 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
         let action = ProductShippingClassAction.synchronizeProductShippingClassModels(siteID: siteID,
                                                                                       pageNumber: 6,
-                                                                                      pageSize: defaultPageSize) { error in
-            XCTAssertNil(error)
+                                                                                      pageSize: defaultPageSize) { result in
+            XCTAssertTrue(result.isSuccess)
 
             // The previously upserted model should stay in storage.
             let storedModel = self.viewStorage.loadProductShippingClass(siteID: siteID, remoteID: shippingClassID)
@@ -265,8 +309,8 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
         let action = ProductShippingClassAction.synchronizeProductShippingClassModels(siteID: siteID,
                                                                                       pageNumber: 6,
-                                                                                      pageSize: defaultPageSize) { error in
-                                                                            XCTAssertNotNil(error)
+                                                                                      pageSize: defaultPageSize) { result in
+                                                                            XCTAssertTrue(result.isFailure)
 
             // The previously upserted model should stay in storage.
             let storedModel = self.viewStorage.loadProductShippingClass(siteID: siteID, remoteID: shippingClassID)

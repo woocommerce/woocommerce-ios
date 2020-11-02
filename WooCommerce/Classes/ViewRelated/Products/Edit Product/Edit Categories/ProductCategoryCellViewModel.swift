@@ -3,6 +3,10 @@ import Foundation
 /// Represents a row in the ProductCategoryList screen
 ///
 struct ProductCategoryCellViewModel {
+    /// Category ID
+    ///
+    let categoryID: Int64
+
     /// Category name
     ///
     let name: String

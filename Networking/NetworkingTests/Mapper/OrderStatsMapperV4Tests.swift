@@ -7,16 +7,11 @@ import XCTest
 final class OrderStatsV4MapperTests: XCTestCase {
     private struct Constants {
         static let siteID: Int64 = 1234
-        static let hourlyGranularity = StatsGranularityV4.hourly
-        static let dailyGranularity = StatsGranularityV4.daily
-        static let weeklyGranularity = StatsGranularityV4.weekly
-        static let monthlyGranularity = StatsGranularityV4.monthly
-        static let yearlyGranularity = StatsGranularityV4.yearly
     }
 
     /// Verifies that all of the hourly unit OrderStatsV4 fields are parsed correctly.
     ///
-    func testHourlyUnitStatFieldsAreProperlyParsed() {
+    func test_hourly_unit_stat_fields_are_properly_parsed() {
         guard let hourlyStats = mapOrderStatsWithHourlyUnitResponse() else {
             XCTFail()
             return
@@ -56,7 +51,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
     /// Verifies that all of the daily unit OrderStatsV4 fields are parsed correctly.
     ///
-    func testDailyUnitStatFieldsAreProperlyParsed() {
+    func test_daily_unit_stat_fields_are_properly_parsed() {
         guard let dailyStats = mapOrderStatsWithDailyUnitResponse() else {
             XCTFail()
             return
@@ -96,7 +91,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
     /// Verifies that all of the weekly unit OrderStatsV4 fields are parsed correctly.
     ///
-    func testWeeklyUnitStatFieldsAreProperlyParsed() {
+    func test_weekly_unit_stat_fields_are_properly_parsed() {
         guard let weeklyStats = mapOrderStatsWithWeeklyUnitResponse() else {
             XCTFail()
             return
@@ -136,7 +131,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
     /// Verifies that all of the monthly unit OrderStatsV4 fields are parsed correctly.
     ///
-    func testMonthlyUnitStatFieldsAreProperlyParsed() {
+    func test_monthly_unit_stat_fields_are_properly_parsed() {
         guard let monthlyStats = mapOrderStatsWithMonthlyUnitResponse() else {
             XCTFail()
             return
@@ -176,7 +171,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
     /// Verifies that all of the yearly unit OrderStatsV4 fields are parsed correctly.
     ///
-    func testYearlyUnitStatFieldsAreProperlyParsed() {
+    func test_yearly_unit_stat_fields_are_properly_parsed() {
         guard let yearlyStats = mapOrderStatsWithYearlyUnitResponse() else {
             XCTFail()
             return

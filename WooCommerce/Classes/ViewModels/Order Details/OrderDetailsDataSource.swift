@@ -11,6 +11,9 @@ final class OrderDetailsDataSource: NSObject {
     /// This is only used to pass as a dependency to `OrderDetailsResultsControllers`.
     private let storageManager: StorageManagerType
 
+    /// Used while the `issueRefunds` feature is under development
+    private let isIssueRefundsEnabled: Bool
+
     private(set) var order: Order
     private let couponLines: [OrderCouponLine]?
 
@@ -25,13 +28,13 @@ final class OrderDetailsDataSource: NSObject {
     /// Is this order processing?
     ///
     private var isProcessingPayment: Bool {
-        return order.statusKey == OrderStatusEnum.processing.rawValue
+        return order.status == OrderStatusEnum.processing
     }
 
     /// Is this order fully refunded?
     ///
     private var isRefundedStatus: Bool {
-        return order.statusKey == OrderStatusEnum.refunded.rawValue
+        return order.status == OrderStatusEnum.refunded
     }
 
     /// Is the shipment tracking plugin available?
@@ -141,10 +144,13 @@ final class OrderDetailsDataSource: NSObject {
 
     private let imageService: ImageService = ServiceLocator.imageService
 
-    init(order: Order, storageManager: StorageManagerType = ServiceLocator.storageManager) {
+    init(order: Order,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         isIssueRefundsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.issueRefunds)) {
         self.storageManager = storageManager
         self.order = order
         self.couponLines = order.coupons
+        self.isIssueRefundsEnabled = isIssueRefundsEnabled
 
         super.init()
     }
@@ -241,7 +247,7 @@ private extension OrderDetailsDataSource {
             configureOrderItem(cell: cell, at: indexPath)
         case let cell as ProductDetailsTableViewCell where row == .aggregateOrderItem:
             configureAggregateOrderItem(cell: cell, at: indexPath)
-        case let cell as FulfillButtonTableViewCell:
+        case let cell as ButtonTableViewCell:
             configureFulfillmentButton(cell: cell)
         case let cell as OrderTrackingTableViewCell:
             configureTracking(cell: cell, at: indexPath)
@@ -251,6 +257,8 @@ private extension OrderDetailsDataSource {
             configureSummary(cell: cell)
         case let cell as WooBasicTableViewCell where row == .refundedProducts:
             configureRefundedProducts(cell)
+        case let cell as IssueRefundTableViewCell:
+            configureIssueRefundButton(cell: cell)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -436,10 +444,15 @@ private extension OrderDetailsDataSource {
         )
     }
 
-    private func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
-        cell.fulfillButton.setTitle(Titles.fulfillTitle, for: .normal)
-        cell.onFullfillTouchUp = { [weak self] in
+    private func configureFulfillmentButton(cell: ButtonTableViewCell) {
+        cell.configure(title: Titles.fulfillTitle) { [weak self] in
             self?.onCellAction?(.fulfill, nil)
+        }
+    }
+
+    private func configureIssueRefundButton(cell: IssueRefundTableViewCell) {
+        cell.onIssueRefundTouchUp = { [weak self] in
+            self?.onCellAction?(.issueRefund, nil)
         }
     }
 
@@ -524,7 +537,7 @@ private extension OrderDetailsDataSource {
 // MARK: - Lookup orders and statuses
 extension OrderDetailsDataSource {
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
-        return currentSiteStatuses.filter({$0.slug == order.statusKey}).first
+        return currentSiteStatuses.filter({$0.status == order.status}).first
     }
 
     func lookUpProduct(by productID: Int64) -> Product? {
@@ -567,23 +580,9 @@ extension OrderDetailsDataSource {
                 return nil
             }
 
-            // Order Items section with Refunds hidden
-            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refunds) else {
-                var rows: [Row] = Array(repeating: .orderItem, count: items.count)
-
-                if isProcessingPayment {
-                    rows.append(.fulfillButton)
-                } else {
-                    rows.append(.details)
-                }
-
-                return Section(title: Localization.pluralizedProducts(count: items.count), rightTitle: nil, rows: rows, headerStyle: .primary)
-            }
-
             var rows = [Row]()
 
-            let refundsEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refunds)
-            if refundedProductsCount > 0 && refundsEnabled {
+            if refundedProductsCount > 0 {
                 rows = Array(repeating: .aggregateOrderItem, count: aggregateOrderItems.count)
             } else {
                 rows = Array(repeating: .orderItem, count: items.count)
@@ -603,11 +602,6 @@ extension OrderDetailsDataSource {
         }()
 
         let refundedProducts: Section? = {
-            // Refunds off
-            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refunds) else {
-                return nil
-            }
-
             // Refunds on
             guard refundedProductsCount > 0 else {
                 return nil
@@ -642,13 +636,14 @@ extension OrderDetailsDataSource {
 
         let payment: Section = {
             var rows: [Row] = [.payment, .customerPaid]
+            if order.refunds.count > 0 {
+                let refunds = Array<Row>(repeating: .refund, count: order.refunds.count)
+                rows.append(contentsOf: refunds)
+                rows.append(.netAmount)
+            }
 
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(. refunds) {
-                if order.refunds.count > 0 {
-                    let refunds = Array<Row>(repeating: .refund, count: order.refunds.count)
-                    rows.append(contentsOf: refunds)
-                    rows.append(.netAmount)
-                }
+            if isIssueRefundsEnabled && !isRefundedStatus {
+                rows.append(.issueRefundButton)
             }
 
             return Section(title: Title.payment, rows: rows)
@@ -945,6 +940,7 @@ extension OrderDetailsDataSource {
         case fulfillButton
         case details
         case refundedProducts
+        case issueRefundButton
         case customerNote
         case shippingAddress
         case shippingMethod
@@ -969,11 +965,13 @@ extension OrderDetailsDataSource {
             case .aggregateOrderItem:
                 return ProductDetailsTableViewCell.reuseIdentifier
             case .fulfillButton:
-                return FulfillButtonTableViewCell.reuseIdentifier
+                return ButtonTableViewCell.reuseIdentifier
             case .details:
                 return WooBasicTableViewCell.reuseIdentifier
             case .refundedProducts:
                 return WooBasicTableViewCell.reuseIdentifier
+            case .issueRefundButton:
+                return IssueRefundTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:
@@ -1010,6 +1008,7 @@ extension OrderDetailsDataSource {
         case fulfill
         case tracking
         case summary
+        case issueRefund
     }
 
     struct Constants {

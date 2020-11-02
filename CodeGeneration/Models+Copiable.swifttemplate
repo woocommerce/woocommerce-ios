@@ -1,0 +1,223 @@
+<%# 
+//
+// Generates .copy methods for all structs and classes conforming to the `GeneratedCopiable` protocol
+//
+// -------------------------------------------------------------------------------- 
+// Testing
+// -------------------------------------------------------------------------------- 
+//
+// There's no unit test for this unfortunately. For now, you can test this by:
+//
+// 1. Adding the `testdata.swift` file in [this gist](https://git.io/JfS5q) to one of 
+//    the WooCommerce files.
+// 2. Build and run `rake generate`
+// 3. Confirm that the resulting code still compiles. If it doesn't, compare it with the 
+//    [expected-output.swift](https://git.io/JfS5O) and check for anomalies.
+//
+// Please feel free to update the example test data and result if necessary.
+//
+-%>
+<% 
+// -------------------------------------------------------------------------------- 
+// Utils
+// -------------------------------------------------------------------------------- 
+
+/// Guess the `moduleName` of a `TypeName` given by Sourcery.
+///
+/// Based on some experiments, built-in types like `UINotificationFeedbackGenerator.FeedbackType` are 
+/// not given a `.module` property value by Sourcery. Which makes sense, I guess?
+///
+/// - SeeAlso: https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/Classes/Type.html
+///
+func guessModuleOf(typeName: TypeName) -> String? {
+    if (typeName.name.hasPrefix("UI")) {
+        return "UIKit"
+    } else {
+        return nil
+    }
+}
+
+/// Converts a variable/property's type to it's fully qualified name so that the 
+/// generated file will compile. 
+///
+/// Consider this example:
+///
+/// ````
+/// struct Alpha: GeneratedCopiable {
+///     struct Bravo {
+///         struct Charlie {
+///         }
+///     }
+/// 
+///     let charlie: Bravo.Charlie
+/// }
+/// ```
+/// 
+/// We want to declare the generated `charlie` argument with a type that has the complete 
+/// name, `Alpha.Bravo.Charlie`. Using what is declared, `Bravo.Charlie`, is not enough 
+/// because the Swift compiler cannot find it and will fail to build. 
+///
+/// TODO Support for closures needs to be added if we eventually need it.
+///
+func fullyQualifiedName(of typeName: TypeName, type: Type?) -> String {
+    if let arrayType = typeName.array {
+        let elementName = fullyQualifiedName(of: arrayType.elementTypeName, type: arrayType.elementType)
+        return "[\(elementName)]"
+    } else if let dictionaryType = typeName.dictionary {
+        let keyName = fullyQualifiedName(of: dictionaryType.keyTypeName, type: dictionaryType.keyType)
+        let valueName = fullyQualifiedName(of: dictionaryType.valueTypeName, type: dictionaryType.valueType)
+        return "[\(keyName): \(valueName)]"
+    } else if let tupleType = typeName.tuple {
+        let joinedNames = tupleType.elements.map {
+            fullyQualifiedName(of: $0.typeName, type: $0.type)
+        }.joined(separator: ", ")
+        return "(\(joinedNames))"
+    } else if typeName.isClosure {
+        // TODO Add support for closures if needed
+        return typeName.unwrappedTypeName
+    } else {
+        if let type = type {
+            // Always try to use the `type.name` because it is fully qualified
+            return type.name
+        } else {
+            return typeName.unwrappedTypeName
+        }
+    } 
+}
+
+-%>
+<%
+// -------------------------------------------------------------------------------- 
+// Gather Information
+// -------------------------------------------------------------------------------- 
+
+// The module where the CopiableProp and NullableCopiableProp typealiases belong.
+let copiablePropModule = "Networking"
+
+// The matching types that we're going to generate code for.
+let matchingTypes = types.based["GeneratedCopiable"].filter { 
+    $0.kind == "struct" || $0.kind == "class"
+}
+
+// The names of modules that we should generate "import MODULE_NAME" lines for.
+let modulesToGenerateImports: [String] = { 
+    let modulesFromProperties: [String] = matchingTypes.flatMap { type in 
+        type.variables.compactMap { variable in 
+            if let variableModule = variable.type?.module {
+                return variableModule
+            }
+
+            return guessModuleOf(typeName: variable.typeName)
+        }
+    }
+
+    let modulesRequiredByTemplate: [String] = {
+        let shouldImportCopiablePropModule = matchingTypes.contains(where: { $0.module != copiablePropModule })
+        return shouldImportCopiablePropModule ? [copiablePropModule] : []
+    }()
+
+    return Array(Set(modulesFromProperties + modulesRequiredByTemplate)).sorted().filter {
+        // Ignore modules that belong to the current types we're generating for.
+        $0 != matchingTypes.first?.module
+    }
+}()
+
+/// A representation of the struct/class that conforms to GeneratedCopiable. This defines the 
+/// properties that the template will need to generate the copy() method.
+///
+/// We create our own data structure to clarify what we need in the template code below. 
+/// This also makes the template simpler to read because the complexity are all encapsulated
+/// by this struct.
+///
+struct CopiableSpec {
+
+    /// A representation of a property that will be part of the copy() arguments.
+    ///
+    struct Property {
+        /// The name of the property
+        let name: String
+        /// String, Int, etc 
+        let typeName: String
+        /// NullableCopiableProp or CopiableProp
+        let copiablePropTypeName: String
+        /// If this is not the last, this will be a literal comma (",")
+        let commaOrNothing: String
+    }
+
+    /// The name of the struct/class that conforms to GeneratedCopiable.
+    let name: String
+    /// The access level "public", "private", etc with a space at the end. This is just an empty
+    /// string if the true accessLevel is "internal".
+    let accessLevelWithSpacePostfix: String
+    /// The properties that we're going to generate as part of the copy() arguments.
+    let properties: [Property]
+}
+
+// The collection of CopiableSpec that the template below will use. 
+let specsToGenerate: [CopiableSpec] = matchingTypes.map { type in
+
+    // Grab the properties that should be part of the copy() arguments. A possible future enhancement would be 
+    // to actually match this with the class/struct's constructor arguments.
+    let validVariables = type.variables.filter {
+        // Exclude properties that do not have the same access level as the class/struct. For example,
+        // properties that are internal or private should not be included.
+        $0.readAccess == type.accessLevel && 
+            !$0.isComputed &&
+            !$0.isStatic
+    }
+
+    // Convert validVariables to CopiableSpec.Property instances that the template will be able to use.
+    let propSpecs: [CopiableSpec.Property] = validVariables.map { variable in 
+        let typeName = fullyQualifiedName(of: variable.typeName, type: variable.type)
+
+        return CopiableSpec.Property(
+            name: variable.name, 
+            typeName: typeName,
+            copiablePropTypeName: variable.isOptional ? "NullableCopiableProp" : "CopiableProp",
+            commaOrNothing: variable == validVariables.last  ? "" : ","
+        )
+    }
+
+    return CopiableSpec(
+        name: type.name,
+        accessLevelWithSpacePostfix: type.accessLevel == "internal" ? "" : "\(type.accessLevel) ",
+        properties: propSpecs
+    )
+}
+
+-%>
+<%#
+// -------------------------------------------------------------------------------- 
+// Template
+// -------------------------------------------------------------------------------- 
+-%>
+<% for module in modulesToGenerateImports { -%>
+import <%= module %>
+<% } -%>
+
+<% for copiableSpec in specsToGenerate { -%>
+
+extension <%= copiableSpec.name %> {
+    <%= copiableSpec.accessLevelWithSpacePostfix %>func copy(
+<% for propertySpec in copiableSpec.properties { -%>
+        <%= propertySpec.name %>: <%= propertySpec.copiablePropTypeName %><<%= propertySpec.typeName %>> = .copy<%= propertySpec.commaOrNothing %>
+<% } -%>
+    ) -> <%= copiableSpec.name %> {
+<%# 
+// Generate `let propName = propName ?? self.propName` lines
+// 
+// We declare local variables first because if we immediately call the initializer,
+// Swift will fail to compile because of _code complexity_.
+-%>
+<% for propertySpec in copiableSpec.properties { -%>
+        let <%= propertySpec.name %> = <%= propertySpec.name %> ?? self.<%= propertySpec.name %>
+<% } -%>
+
+        return <%= copiableSpec.name %>(
+<% for propertySpec in copiableSpec.properties { -%>
+            <%= propertySpec.name %>: <%= propertySpec.name %><%= propertySpec.commaOrNothing %>
+<% } -%>
+        )
+    }
+}
+<% } -%>

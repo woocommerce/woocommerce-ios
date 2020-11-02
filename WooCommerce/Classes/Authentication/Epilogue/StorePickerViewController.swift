@@ -1,4 +1,5 @@
 import Foundation
+import SafariServices
 import UIKit
 import WordPressAuthenticator
 import WordPressUI
@@ -11,16 +12,14 @@ typealias SelectStoreClosure = () -> Void
 ///
 protocol StorePickerViewControllerDelegate: AnyObject {
 
-    /// Notifies the delegate that a store is about to be picked.
-    ///
+    /// Notifies the delegate that the store selection is complete,
     /// - Parameter storeID: ID of the store selected by the user
-    /// - Returns: a closure to be executed prior to store selection
+    /// - Returns: a closure to be executed after the store selection
     ///
-    func willSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure)
+    func didSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure)
 
-    /// Notifies the delegate that the store selection is complete
-    ///
-    func didSelectStore(with storeID: Int64)
+    /// Notifies the delegate to dismiss the store picker and restart authentication.
+    func restartAuthentication()
 }
 
 
@@ -84,19 +83,6 @@ class StorePickerViewController: UIViewController {
             secondaryActionButton.setTitle(NSLocalizedString("Try another account",
                                                              comment: "Button to trigger connection to another account in store picker"),
                                            for: .normal)
-        }
-    }
-
-    /// No Results Placeholder Image
-    ///
-    @IBOutlet private var noResultsImageView: UIImageView!
-
-    /// No Results Placeholder Text
-    ///
-    @IBOutlet private var noResultsLabel: UILabel! {
-        didSet {
-            noResultsLabel.font = StyleManager.subheadlineFont
-            noResultsLabel.textColor = .textSubtle
         }
     }
 
@@ -203,15 +189,8 @@ private extension StorePickerViewController {
     }
 
     func setupTableView() {
-        let cells = [
-            EmptyStoresTableViewCell.reuseIdentifier: EmptyStoresTableViewCell.loadNib(),
-            StoreTableViewCell.reuseIdentifier: StoreTableViewCell.loadNib()
-        ]
-
-        for (reuseIdentifier, nib) in cells {
-            tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
-        }
-
+        tableView.registerNib(for: EmptyStoresTableViewCell.self)
+        tableView.registerNib(for: StoreTableViewCell.self)
         tableView.backgroundColor = .listBackground
     }
 
@@ -223,8 +202,13 @@ private extension StorePickerViewController {
         accountHeaderView.username = "@" + defaultAccount.username
         accountHeaderView.fullname = defaultAccount.displayName
         accountHeaderView.downloadGravatar(with: defaultAccount.email)
-        accountHeaderView.isHelpButtonEnabled = configuration == .login
-        accountHeaderView.onHelpRequested = { ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin) }
+        accountHeaderView.isHelpButtonEnabled = configuration == .login || configuration == .standard
+        accountHeaderView.onHelpRequested = { [weak self] in
+            guard let self = self else {
+                return
+            }
+            ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin)
+        }
     }
 
     func setupNavigation() {
@@ -345,9 +329,14 @@ private extension StorePickerViewController {
     ///
     @objc func cleanupAndDismiss() {
         if let siteID = currentlySelectedSite?.siteID {
-            delegate?.didSelectStore(with: siteID)
+            delegate?.didSelectStore(with: siteID, onCompletion: {
+            })
         }
 
+        dismiss()
+    }
+
+    func dismiss() {
         switch configuration {
         case .switchingStores:
             dismiss(animated: true)
@@ -403,15 +392,8 @@ private extension StorePickerViewController {
             return
         }
 
-        let loginViewController = ServiceLocator.authenticationManager.loginForWordPressDotCom()
-
-        guard let navigationController = navigationController else {
-            assertionFailure("Navigation error: one of the login / logout states is not correctly handling navigation. No navigationController found.")
-            return
-        }
-
         ServiceLocator.stores.deauthenticate()
-        navigationController.setViewControllers([loginViewController], animated: true)
+        delegate?.restartAuthentication()
     }
 
     /// If the provided site's WC version is not valid, display a warning to the user.
@@ -538,8 +520,8 @@ extension StorePickerViewController {
                 return
             }
 
-            delegate.willSelectStore(with: site.siteID) { [weak self] in
-                self?.cleanupAndDismiss()
+            delegate.didSelectStore(with: site.siteID) { [weak self] in
+                self?.dismiss()
             }
         }
     }
@@ -571,11 +553,14 @@ extension StorePickerViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let site = state.site(at: indexPath) else {
             hideActionButton()
-            return tableView.dequeueReusableCell(withIdentifier: EmptyStoresTableViewCell.reuseIdentifier, for: indexPath)
+            let cell = tableView.dequeueReusableCell(EmptyStoresTableViewCell.self, for: indexPath)
+            cell.onJetpackSetupButtonTapped = { [weak self] in
+                let safariViewController = SFSafariViewController(url: WooConstants.URLs.emptyStoresJetpackSetup.asURL())
+                self?.present(safariViewController, animated: true, completion: nil)
+            }
+            return cell
         }
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreTableViewCell.reuseIdentifier, for: indexPath) as? StoreTableViewCell else {
-            fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(StoreTableViewCell.self, for: indexPath)
 
         cell.name = site.name
         cell.url = site.url

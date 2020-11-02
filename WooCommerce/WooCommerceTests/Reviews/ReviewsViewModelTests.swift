@@ -10,7 +10,7 @@ final class ReviewsViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         mockDataSource = MockReviewsDataSource()
-        viewModel = ReviewsViewModel(data: mockDataSource)
+        viewModel = ReviewsViewModel(siteID: 1, data: mockDataSource)
     }
 
     override func tearDown() {
@@ -174,7 +174,7 @@ final class MockReviewsStoresManager: DefaultStoresManager {
 
     private func onReviewAction(_ action: ProductReviewAction) {
         switch action {
-        case .synchronizeProductReviews(_, _, _, let onCompletion):
+        case .synchronizeProductReviews(_, _, _, _, _, let onCompletion):
             syncReviewsIsHit = true
             onCompletion(nil)
         default:
@@ -184,9 +184,9 @@ final class MockReviewsStoresManager: DefaultStoresManager {
 
     private func onProductAction(_ action: ProductAction) {
         switch action {
-        case .retrieveProducts(_, _, onCompletion: let onCompletion):
+        case .retrieveProducts(_, _, _, _, onCompletion: let onCompletion):
             retrieveProductsIsHit = true
-            onCompletion(nil)
+            onCompletion(.success((products: [], hasNextPage: false)))
         default:
             return
         }

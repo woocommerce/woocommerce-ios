@@ -11,7 +11,9 @@ final class ProductSettingsViewModel {
 
     var productSettings: ProductSettings {
         didSet {
-            sections = Self.configureSections(productSettings)
+            sections = Self.configureSections(productSettings,
+                                              productType: product.productType,
+                                              isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
         }
     }
 
@@ -27,26 +29,46 @@ final class ProductSettingsViewModel {
     var onReload: (() -> Void)?
     var onPasswordRetrieved: ((_ password: String) -> Void)?
 
-    init(product: Product, password: String?) {
+    private let isEditProductsRelease5Enabled: Bool
+
+    init(product: Product, password: String?, formType: ProductFormType, isEditProductsRelease5Enabled: Bool) {
         self.product = product
         self.password = password
+        self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
         productSettings = ProductSettings(from: product, password: password)
-        sections = Self.configureSections(productSettings)
 
-        /// If nil, we fetch the password from site post API because it was never fetched
-        if password == nil {
-            retrieveProductPassword(siteID: product.siteID, productID: product.productID) { [weak self] (password, error) in
-                guard let self = self else {
-                    return
+        switch formType {
+        case .add:
+            self.password = ""
+            productSettings.password = ""
+            sections = Self.configureSections(productSettings,
+                                              productType: product.productType,
+                                              isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
+        case .edit:
+            sections = Self.configureSections(productSettings,
+                                              productType: product.productType,
+                                              isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
+            /// If nil, we fetch the password from site post API because it was never fetched
+            if password == nil {
+                retrieveProductPassword(siteID: product.siteID, productID: product.productID) { [weak self] (password, error) in
+                    guard let self = self else {
+                        return
+                    }
+                    guard error == nil, let password = password else {
+                        return
+                    }
+                    self.onPasswordRetrieved?(password)
+                    self.password = password
+                    self.productSettings.password = password
+                    self.sections = Self.configureSections(self.productSettings,
+                                                           productType: product.productType,
+                                                           isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
                 }
-                guard error == nil, let password = password else {
-                    return
-                }
-                self.onPasswordRetrieved?(password)
-                self.password = password
-                self.productSettings.password = password
-                self.sections = Self.configureSections(self.productSettings)
             }
+        case .readonly:
+            sections = Self.configureSections(productSettings,
+                                              productType: product.productType,
+                                              isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
         }
     }
 
@@ -89,9 +111,15 @@ private extension ProductSettingsViewModel {
 // MARK: Configure sections and rows in Product Settings
 //
 private extension ProductSettingsViewModel {
-    static func configureSections(_ settings: ProductSettings) -> [ProductSettingsSectionMediator] {
-        return [ProductSettingsSections.PublishSettings(settings),
-                     ProductSettingsSections.MoreOptions(settings)
+    static func configureSections(_ settings: ProductSettings,
+                                  productType: ProductType,
+                                  isEditProductsRelease5Enabled: Bool) -> [ProductSettingsSectionMediator] {
+        return [ProductSettingsSections.PublishSettings(settings,
+                                                        productType: productType,
+                                                        isEditProductsRelease5Enabled: isEditProductsRelease5Enabled),
+                ProductSettingsSections.MoreOptions(settings,
+                                                    productType: productType,
+                                                    isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
         ]
     }
 }
@@ -106,7 +134,7 @@ extension ProductSettingsViewModel {
         sections.flatMap {
             $0.rows.flatMap { $0.cellTypes }
         }.forEach {
-            tableView.register($0.loadNib(), forCellReuseIdentifier: $0.reuseIdentifier)
+            tableView.registerNib(for: $0)
         }
     }
 

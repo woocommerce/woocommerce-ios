@@ -10,16 +10,6 @@ final class StyleManager {
         return .font(forStyle: .headline, weight: .semibold)
     }
 
-    static var alternativeLoginsTitleFont: UIFont {
-        return .font(forStyle: .subheadline, weight: .semibold)
-    }
-
-    static var badgeFont: UIFont {
-        return self.fontForTextStyle(.caption2,
-        weight: .regular,
-        maximumPointSize: 12.0)
-    }
-
     static var chartLabelFont: UIFont {
         return .font(forStyle: .caption2, weight: .regular)
     }
@@ -59,10 +49,6 @@ final class StyleManager {
     }
 
     // MARK: - StatusBar
-    static var statusBarDark: UIStatusBarStyle {
-        return UIStatusBarStyle.default
-    }
-
     static var statusBarLight: UIStatusBarStyle {
         return UIStatusBarStyle.lightContent
     }

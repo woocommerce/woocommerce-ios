@@ -4,7 +4,7 @@ import XCTest
 
 /// ProductMapper Unit Tests
 ///
-class ProductMapperTests: XCTestCase {
+final class ProductMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
@@ -14,13 +14,9 @@ class ProductMapperTests: XCTestCase {
     ///
     private let dummyProductID: Int64 = 282
 
-    /// Dummy Product Variation ID.
-    ///
-    private let dummyProductVariationID: Int64 = 295
-
     /// Verifies that all of the Product Fields are parsed correctly.
     ///
-    func testProductFieldsAreProperlyParsed() {
+    func test_Product_fields_are_properly_parsed() {
         guard let product = mapLoadProductResponse() else {
             XCTFail("Failed to parse product")
             return
@@ -43,7 +39,7 @@ class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.catalogVisibilityKey, "visible")
 
         XCTAssertEqual(product.fullDescription, "<p>This is the party room!</p>\n")
-        XCTAssertEqual(product.briefDescription, """
+        XCTAssertEqual(product.shortDescription, """
             [contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. \
             We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let \
             us know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests for $100.</p>\n
@@ -59,9 +55,10 @@ class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.totalSales, 0)
         XCTAssertTrue(product.virtual)
 
-        XCTAssertFalse(product.downloadable)
-        XCTAssertEqual(product.downloadLimit, -1)
-        XCTAssertEqual(product.downloadExpiry, -1)
+        XCTAssertTrue(product.downloadable)
+        XCTAssertEqual(product.downloads.count, 3)
+        XCTAssertEqual(product.downloadLimit, 1)
+        XCTAssertEqual(product.downloadExpiry, 1)
 
         XCTAssertEqual(product.externalURL, "http://somewhere.com")
         XCTAssertEqual(product.taxStatusKey, "taxable")
@@ -105,9 +102,20 @@ class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.productType, ProductType(rawValue: "booking"))
     }
 
+    /// Verifies that the fields of the Product with alternative types are parsed correctly when they have different types than in the struct.
+    /// Currently, `price`, `salePrice` and `manageStock` allow alternative types.
+    ///
+    func test_that_product_alternative_types_are_properly_parsed() throws {
+        let product = try XCTUnwrap(mapLoadProductResponseWithAlternativeTypes())
+
+        XCTAssertEqual(product.price, "17")
+        XCTAssertEqual(product.salePrice, "26.73")
+        XCTAssertTrue(product.manageStock)
+    }
+
     /// Verifies that the `salePrice` field of the Product are parsed correctly when the product is on sale, and the sale price is an empty string
     ///
-    func testThatProductSalePriceIsProperlyParsed() {
+    func test_that_product_sale_price_is_properly_parsed() {
         guard let product = mapLoadProductOnSaleWithEmptySalePriceResponse() else {
             XCTFail("Failed to parse product")
             return
@@ -119,7 +127,7 @@ class ProductMapperTests: XCTestCase {
 
     /// Test that ProductTypeKey converts to a ProductType enum properly.
     ///
-    func testThatProductTypeKeyConvertsToEnumProperly() {
+    func test_that_product_type_key_converts_to_enum_properly() {
         let product = mapLoadProductResponse()
 
         let customType = ProductType(rawValue: "booking")
@@ -129,7 +137,7 @@ class ProductMapperTests: XCTestCase {
 
     /// Test that categories are properly mapped.
     ///
-    func testThatProductCategoriesAreProperlyMapped() {
+    func test_that_product_categories_are_properly_mapped() {
         let product = mapLoadProductResponse()
         let categories = product?.categories
         XCTAssertEqual(categories?.count, 1)
@@ -147,7 +155,7 @@ class ProductMapperTests: XCTestCase {
 
     /// Test that tags are properly mapped.
     ///
-    func testThatProductTagsAreProperlyMapped() {
+    func test_that_product_tags_are_properly_mapped() {
         let product = mapLoadProductResponse()
         let tags = product?.tags
         XCTAssertNotNil(tags)
@@ -161,7 +169,7 @@ class ProductMapperTests: XCTestCase {
 
     /// Test that product images are properly mapped.
     ///
-    func testThatProductImagesAreProperlyMapped() {
+    func test_that_product_images_are_properly_mapped() {
         let product = mapLoadProductResponse()
 
         guard let images = product?.images else {
@@ -182,9 +190,30 @@ class ProductMapperTests: XCTestCase {
         XCTAssert(productImage.alt?.isEmpty == true)
     }
 
+    /// Test that product downloadable files are properly mapped.
+    ///
+    func test_that_product_downloadable_files_are_properly_mapped() {
+        // Given
+        let product = mapLoadProductResponse()
+
+        // When
+        guard let files = product?.downloads else {
+            XCTFail("Failed to parse product downloadable files")
+            return
+        }
+        XCTAssertEqual(files.count, 3)
+        let actualDownloadableFile = files[0]
+        let expectedDownloadableFile = ProductDownload(downloadID: "1f9c11f99ceba63d4403c03bd5391b11",
+                                                       name: "Song #1",
+                                                       fileURL: "https://example.com/woo-single-1.ogg")
+
+        // Then
+        XCTAssertEqual(actualDownloadableFile, expectedDownloadableFile)
+    }
+
     /// Test that product attributes are properly mapped
     ///
-    func testThatProductAttributesAreProperlyMapped() {
+    func test_that_product_attributes_are_properly_mapped() {
         let product = mapLoadProductResponse()
         let attributes = product?.attributes
         XCTAssertEqual(attributes?.count, 2)
@@ -210,7 +239,7 @@ class ProductMapperTests: XCTestCase {
 
     /// Test that the default product attributes map properly
     ///
-    func testThatDefaultProductAttributesMapProperly() {
+    func test_that_default_product_attributes_map_properly() {
         let product = mapLoadProductResponse()
         let defaultAttributes = product?.defaultAttributes
         XCTAssertEqual(defaultAttributes?.count, 2)
@@ -249,15 +278,15 @@ private extension ProductMapperTests {
         return mapProduct(from: "product")
     }
 
+    /// Returns the ProductMapper output upon receiving `product-alternative-types`
+    ///
+    func mapLoadProductResponseWithAlternativeTypes() -> Product? {
+        return mapProduct(from: "product-alternative-types")
+    }
+
     /// Returns the ProductMapper output upon receiving `product` on sale, with empty sale price
     ///
     func mapLoadProductOnSaleWithEmptySalePriceResponse() -> Product? {
         return mapProduct(from: "product-on-sale-with-empty-sale-price")
-    }
-
-    /// Returns the ProductMapper output upon receiving `variation-as-product`
-    ///
-    func mapLoadVariationProductResponse() -> Product? {
-        return mapProduct(from: "variation-as-product")
     }
 }

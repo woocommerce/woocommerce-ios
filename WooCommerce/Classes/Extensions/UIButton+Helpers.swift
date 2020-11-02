@@ -59,17 +59,6 @@ extension UIButton {
         setBackgroundImage(disabledBackgroundImage, for: .disabled)
     }
 
-    /// Applies the Tertiary Button Style: Clear BG / Top Outline
-    ///
-    func applyTertiaryButtonStyle() {
-        backgroundColor = .clear
-        contentEdgeInsets = Style.noMarginEdgeInsets
-        tintColor = .primary
-        layer.borderColor = UIColor.primary.cgColor
-        titleLabel?.applySubheadlineStyle()
-        titleLabel?.textAlignment = .natural
-    }
-
     /// Applies the Link Button Style: Clear BG / Brand Text Color
     ///
     func applyLinkButtonStyle() {
@@ -119,6 +108,5 @@ private extension UIButton {
         static let defaultCornerRadius = CGFloat(8.0)
         static let defaultBorderWidth = CGFloat(1.0)
         static let defaultEdgeInsets = UIEdgeInsets(top: 12, left: 22, bottom: 12, right: 22)
-        static let noMarginEdgeInsets = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }
 }

@@ -1,6 +1,10 @@
 default_platform(:ios)
 fastlane_require 'dotenv'
 
+unless FastlaneCore::Helper.bundler?
+  UI.user_error!('Please run fastlane via `bundle exec`')
+end
+
 USER_ENV_FILE_PATH = File.join(Dir.home, '.wcios-env.default')
 PROJECT_ENV_FILE_PATH = File.expand_path(File.join(Dir.pwd, '../.configure-files/project.env'))
 
@@ -68,10 +72,27 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     ios_update_release_notes(new_version: new_version)
     setbranchprotection(repository:GHHELPER_REPO, branch: "release/#{new_version}")
     setfrozentag(repository:GHHELPER_REPO, milestone: new_version)
-
-    ios_localize_project()
-    
     get_prs_list(repository:GHHELPER_REPO, start_tag:"#{old_version}", report_path:"#{File.expand_path('~')}/wcios_prs_list_#{old_version}_#{new_version}.txt")
+    ios_check_beta_deps(podfile:"#{ENV["PROJECT_ROOT_FOLDER"]}Podfile")
+  end
+
+  #####################################################################################
+  # complete_code_freeze
+  # -----------------------------------------------------------------------------------
+  # This lane executes the initial steps planned on code freeze
+  # -----------------------------------------------------------------------------------
+  # Usage:
+  # bundle exec fastlane complete_code_freeze [skip_confirm:<skip confirm>]
+  #
+  # Example:
+  # bundle exec fastlane complete_code_freeze
+  # bundle exec fastlane complete_code_freeze skip_confirm:true
+  #####################################################################################
+  desc "Creates a new release branch from the current develop"
+  lane :complete_code_freeze do | options |
+    ios_completecodefreeze_prechecks(options)
+    ios_localize_project()
+    ios_tag_build()
   end
 
   #####################################################################################
@@ -344,6 +365,26 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     comment_body = "You can test the changes on this Pull Request by downloading it from AppCenter [here](#{install_url}) with build number: #{build_number}. IPA is available [here](#{download_url}). If you need access to this, you can ask a maintainer to add you."
     File.write("comment.json", { body: comment_body }.to_json)
   end
+
+
+  #####################################################################################
+  # build_for_testing
+  # -----------------------------------------------------------------------------------
+  # This lane builds the app for testing
+  # -----------------------------------------------------------------------------------
+  # Usage:
+  # bundle exec fastlane build_for_testing 
+  #####################################################################################
+  desc "Build for Testing"
+  lane :build_for_testing do | options |
+    run_tests(
+      workspace: "WooCommerce.xcworkspace",
+      scheme: "WooCommerce",
+      derived_data_path: "DerivedData",
+      build_for_testing: true,
+    )
+  end
+
 
   ########################################################################
   # Screenshot Lanes
@@ -661,19 +702,27 @@ end
   # It requires a prebuilt xctestrun file and simulator destination where the tests will be run.
   # -----------------------------------------------------------------------------------
   # Usage:
-  # bundle exec fastlane test_without_building [xctestrun:<Path to xctestrun file>] [destination:<Simulator>] [try_count:<Number of times to try tests>]
+  # bundle exec fastlane test_without_building [name:<Partial name of the .xctestrun file>] [try_count:<Number of times to try tests>]
   #
   # Example:
-  # bundle exec fastlane test_without_building xctestrun:WooCommerce_UITests_iphonesimulator13.2-x86_64.xctestrun destination:"platform=iOS Simulator,id=$SIMULATOR_UDID" try_count:3
+  # bundle exec fastlane test_without_building name:UITests try_count:3
   #####################################################################################
   desc "Run tests without building"
   lane :test_without_building do | options |
+    # Find the referenced .xctestrun file based on its name
+    buildProductsPath = File.expand_path("DerivedData/Build/Products/", File.dirname(Dir.pwd))
+
+    testPlanPath = Dir.glob(File.join(buildProductsPath, '*.xctestrun') ).select { |e|
+      e.include?(options[:name])
+    }.first
+
+    UI.user_error!("Unable to find .xctestrun file") unless testPlanPath != nil and File.exists? (testPlanPath)
+    
     multi_scan(
       workspace: "WooCommerce.xcworkspace",
       scheme: "WooCommerce",
       test_without_building: true,
-      xctestrun: "#{options[:xctestrun]}",
-      destination: options[:destination],
+      xctestrun: testPlanPath,
       try_count: options[:try_count],
       output_directory: "build/results",
       result_bundle: true

@@ -1,12 +1,14 @@
-SE OCH HANTERA ORDRAR
+VISA OCH HANTERA ORDRAR
 Scrolla igenom, filtrera eller kontrollera specifika ordrar. Nudda för att se orderinformation – inklusive produkter, värde, kunddata, fraktuppgifter och noteringar.
 
-SPÅRA DIN BUTIK
+Håll koll på din butik
 Se vilka produkter som presterar bäst. Kontrollera dina totala intäkter och se data om ordrar och besökare sorterat enligt vecka, månad och år.
 
-ORDERMEDDELANDEN I REALTID
-Få notifikationer om butiksaktivitet – inklusive nya ordrar och produktomdömen.
+Beställningsaviseringar i realtid
+Få meddelanden om butiksaktivitet – inklusive nya beställningar och produktrecensioner.
 
-WooCommerce är den mest anpassningsbara e-handelsplattformen för att skapa ditt företag online. Den är byggd på WordPress och därmed integrerad med världens bästa verktyg för innehållshantering. Från prenumerationer på kaffe till spanskalektioner och gymmedlemskap till komplex e-handel på företagsnivå – besök WooCommerce.com/start för att starta en ny butik och skapa verklighet av din idé.
+WooCommerce är den mest anpassningsbara e-handelsplattformen för att skapa ditt företag online. Den är byggd på WordPress och därmed integrerad med världens bästa verktyg för innehållshantering.
 
-Krav: WooCommerce v3.5+, Jetpack-tillägget.
+Förhandskrav: WooCommerce v3.5+, Jetpack-tillägget.
+
+Visa sekretessmeddelandet för användare i Kalifornien på https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

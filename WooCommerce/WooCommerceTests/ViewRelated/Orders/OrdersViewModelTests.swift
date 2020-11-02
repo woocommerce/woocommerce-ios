@@ -5,7 +5,7 @@ import XCTest
 import Yosemite
 import Storage
 
-private typealias SyncReason = OrdersViewModel.SyncReason
+private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
 private typealias Defaults = OrdersViewModel.Defaults
 
 /// Tests for `OrdersViewModel`.
@@ -20,6 +20,7 @@ final class OrdersViewModelTests: XCTestCase {
     }
 
     private var storageManager: StorageManagerType!
+    private var stores: StoresManager!
 
     private var storage: StorageType {
         storageManager.viewStorage
@@ -28,174 +29,26 @@ final class OrdersViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         storageManager = MockupStorageManager()
+        stores = MockupStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.sessionManager.setStoreId(siteID)
     }
 
     override func tearDown() {
+        // If not resetting store ID back to `nil`, it could cause other test failures since `setStoreId` changes UserDefaults.
+        stores.sessionManager.setStoreId(nil)
+        stores = nil
         storageManager = nil
         super.tearDown()
     }
 
-    // MARK: - Synchronization Spec
-
-    // Test that when pulling to refresh on a filtered list (e.g. Processing tab), the action
-    // returned will be for:
-    //
-    // 1. deleting all orders
-    // 2. fetching both the filtered list and the "all orders" list
-    //
-    func testPullingToRefreshOnFilteredListItDeletesAndPerformsDualFetch() {
-        // Arrange
-        let viewModel = OrdersViewModel(statusFilter: orderStatus(with: .processing))
-
-        // Act
-        let action = viewModel.synchronizationAction(
-            siteID: siteID,
-            pageNumber: Defaults.pageFirstIndex,
-            pageSize: pageSize,
-            reason: SyncReason.pullToRefresh,
-            completionHandler: unimportantCompletionHandler)
-
-        // Assert
-        guard case .fetchFilteredAndAllOrders(_, let statusKey, _, let deleteAllBeforeSaving, _, _) = action else {
-            XCTFail("Unexpected OrderAction type: \(action)")
-            return
-        }
-
-        XCTAssertTrue(deleteAllBeforeSaving)
-        XCTAssertEqual(statusKey, OrderStatusEnum.processing.rawValue)
-    }
-
-    // Test that when fetching the first page of a filtered list (e.g. Processing) for reasons
-    // other than pull-to-refresh (e.g. `viewWillAppear`), the action returned will only be for
-    // dual fetching of the filtered list and the all orders list.
-    //
-    func testFirstPageLoadOnFilteredListWithNonPullToRefreshReasonsWillOnlyPerformDualFetch() {
-        // Arrange
-        let viewModel = OrdersViewModel(statusFilter: orderStatus(with: .processing))
-
-        // Act
-        let action = viewModel.synchronizationAction(
-            siteID: siteID,
-            pageNumber: Defaults.pageFirstIndex,
-            pageSize: pageSize,
-            reason: nil,
-            completionHandler: unimportantCompletionHandler)
-
-        // Assert
-        guard case .fetchFilteredAndAllOrders(_, let statusKey, _, let deleteAllBeforeSaving, _, _) = action else {
-            XCTFail("Unexpected OrderAction type: \(action)")
-            return
-        }
-
-        XCTAssertFalse(deleteAllBeforeSaving)
-        XCTAssertEqual(statusKey, OrderStatusEnum.processing.rawValue)
-    }
-
-    // Test that when pulling to refresh on the All Orders tab, the action returned will be for:
-    //
-    // 1. Deleting all the orders
-    // 2. Fetching the first page of all orders (any status)
-    //
-    func testPullingToRefreshOnAllOrdersListDeletesAndFetchesFirstPageOfAllOrdersOnly() {
-        // Arrange
-        let viewModel = OrdersViewModel(statusFilter: nil)
-
-        // Act
-        let action = viewModel.synchronizationAction(
-            siteID: siteID,
-            pageNumber: Defaults.pageFirstIndex,
-            pageSize: pageSize,
-            reason: SyncReason.pullToRefresh,
-            completionHandler: unimportantCompletionHandler)
-
-        // Assert
-        guard case .fetchFilteredAndAllOrders(_, let statusKey, _, let deleteAllBeforeSaving, _, _) = action else {
-            XCTFail("Unexpected OrderAction type: \(action)")
-            return
-        }
-
-        XCTAssertTrue(deleteAllBeforeSaving)
-        XCTAssertNil(statusKey, "No filtered list will be fetched.")
-    }
-
-    // Test that when fetching the first page of the All Orders list for reasons other than
-    // pull-to-refresh (e.g. `viewWillAppear`), the action returned will only be for fetching the
-    // all the orders (any status).
-    //
-    func testFirstPageLoadOnAllOrdersListWithNonPullToRefreshReasonsWillOnlyPerformSingleFetch() {
-        // Arrange
-        let viewModel = OrdersViewModel(statusFilter: nil)
-
-        // Act
-        let action = viewModel.synchronizationAction(
-            siteID: siteID,
-            pageNumber: Defaults.pageFirstIndex,
-            pageSize: pageSize,
-            reason: nil,
-            completionHandler: unimportantCompletionHandler)
-
-        // Assert
-        guard case .fetchFilteredAndAllOrders(_, let statusKey, _, let deleteAllBeforeSaving, _, _) = action else {
-            XCTFail("Unexpected OrderAction type: \(action)")
-            return
-        }
-
-        XCTAssertFalse(deleteAllBeforeSaving)
-        XCTAssertNil(statusKey, "No filtered list will be fetched.")
-    }
-
-    func testSubsequentPageLoadsOnFilteredListWillFetchTheGivenPageOnThatList() {
-        // Arrange
-        let viewModel = OrdersViewModel(statusFilter: orderStatus(with: .pending))
-
-        // Act
-        let action = viewModel.synchronizationAction(
-            siteID: siteID,
-            pageNumber: Defaults.pageFirstIndex + 3,
-            pageSize: pageSize,
-            reason: nil,
-            completionHandler: unimportantCompletionHandler)
-
-        // Assert
-        guard case .synchronizeOrders(_, let statusKey, _, let pageNumber, let pageSize, _) = action else {
-            XCTFail("Unexpected OrderAction type: \(action)")
-            return
-        }
-
-        XCTAssertEqual(statusKey, OrderStatusEnum.pending.rawValue)
-        XCTAssertEqual(pageNumber, Defaults.pageFirstIndex + 3)
-        XCTAssertEqual(pageSize, self.pageSize)
-    }
-
-    func testSubsequentPageLoadsOnAllOrdersListWillFetchTheGivenPageOnThatList() {
-        // Arrange
-        let viewModel = OrdersViewModel(statusFilter: nil)
-
-        // Act
-        let action = viewModel.synchronizationAction(
-            siteID: siteID,
-            pageNumber: Defaults.pageFirstIndex + 5,
-            pageSize: pageSize,
-            reason: nil,
-            completionHandler: unimportantCompletionHandler)
-
-        // Assert
-        guard case .synchronizeOrders(_, let statusKey, _, let pageNumber, let pageSize, _) = action else {
-            XCTFail("Unexpected OrderAction type: \(action)")
-            return
-        }
-
-        XCTAssertNil(statusKey)
-        XCTAssertEqual(pageNumber, Defaults.pageFirstIndex + 5)
-        XCTAssertEqual(pageSize, self.pageSize)
-    }
-
     // MARK: - Future Orders
 
-    func testGivenAFilterItLoadsTheOrdersMatchingThatFilterFromTheDB() {
+    func test_given_a_filter_it_loads_the_orders_matching_that_filter_from_the_DB() {
         // Arrange
-        let viewModel = OrdersViewModel(storageManager: storageManager,
-                                        statusFilter: orderStatus(with: .processing))
+        let viewModel = OrdersViewModel(siteID: siteID,
+                                        storageManager: storageManager,
+                                        statusFilter: orderStatus(with: .processing),
+                                        stores: stores)
 
         let processingOrders = (0..<10).map { insertOrder(id: $0, status: .processing) }
         let completedOrders = (100..<105).map { insertOrder(id: $0, status: .completed) }
@@ -212,9 +65,9 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.fetchedOrders.orderIDs, processingOrders.orderIDs)
     }
 
-    func testGivenNoFilterItLoadsAllTheTodayAndPastOrdersFromTheDB() {
+    func test_given_no_filter_it_loads_all_the_today_and_past_orders_from_the_DB() {
         // Arrange
-        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: nil)
+        let viewModel = OrdersViewModel(siteID: siteID, storageManager: storageManager, statusFilter: nil, stores: stores)
 
         let allInsertedOrders = [
             (0..<10).map { insertOrder(id: $0, status: .processing) },
@@ -236,11 +89,13 @@ final class OrdersViewModelTests: XCTestCase {
 
     /// If `includeFutureOrders` is `true`, all orders including orders dated in the future (dateCreated) will
     /// be fetched.
-    func testGivenIncludingFutureOrdersItAlsoLoadsFutureOrdersFromTheDB() {
+    func test_given_including_future_orders_it_also_loads_future_orders_from_the_DB() {
         // Arrange
-        let viewModel = OrdersViewModel(storageManager: storageManager,
+        let viewModel = OrdersViewModel(siteID: siteID,
+                                        storageManager: storageManager,
                                         statusFilter: orderStatus(with: .pending),
-                                        includesFutureOrders: true)
+                                        includesFutureOrders: true,
+                                        stores: stores)
 
         let expectedOrders = [
             // Future orders
@@ -267,9 +122,9 @@ final class OrdersViewModelTests: XCTestCase {
 
     /// If `includesFutureOrders` is `false`, only orders created up to the current day are returned. Orders before
     /// midnight are included.
-    func testGivenExcludingFutureOrdersItOnlyLoadsOrdersUpToMidnightFromTheDB() {
+    func test_given_excluding_future_orders_it_only_loads_orders_up_to_midnight_from_the_DB() {
         // Arrange
-        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: nil, includesFutureOrders: false)
+        let viewModel = OrdersViewModel(siteID: siteID, storageManager: storageManager, statusFilter: nil, includesFutureOrders: false, stores: stores)
 
         let ignoredOrders = [
             // Orders in the future
@@ -298,9 +153,9 @@ final class OrdersViewModelTests: XCTestCase {
     }
 
     /// Orders with dateCreated in the future should be grouped in an "Upcoming" section.
-    func testItGroupsFutureOrdersInUpcomingSection() {
+    func test_it_groups_future_orders_in_upcoming_section() {
         // Arrange
-        let viewModel = OrdersViewModel(storageManager: storageManager, statusFilter: orderStatus(with: .failed))
+        let viewModel = OrdersViewModel(siteID: siteID, storageManager: storageManager, statusFilter: orderStatus(with: .failed), stores: stores)
 
         let expectedOrders = (
             future: [
@@ -326,10 +181,10 @@ final class OrdersViewModelTests: XCTestCase {
 
     // MARK: - App Activation
 
-    func testItRequestsAResynchronizationWhenTheAppIsActivated() {
+    func test_it_requests_a_resynchronization_when_the_app_is_activated() {
         // Arrange
         let notificationCenter = NotificationCenter()
-        let viewModel = OrdersViewModel(notificationCenter: notificationCenter, statusFilter: nil)
+        let viewModel = OrdersViewModel(siteID: siteID, notificationCenter: notificationCenter, statusFilter: nil, stores: stores)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {
@@ -346,10 +201,10 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertTrue(resynchronizeRequested)
     }
 
-    func testGivenNoPreviousDeactivationItDoesNotRequestAResynchronizationWhenTheAppIsActivated() {
+    func test_given_no_previous_deactivation_it_does_not_request_a_resynchronization_when_the_app_is_activated() {
         // Arrange
         let notificationCenter = NotificationCenter()
-        let viewModel = OrdersViewModel(notificationCenter: notificationCenter, statusFilter: nil)
+        let viewModel = OrdersViewModel(siteID: siteID, notificationCenter: notificationCenter, statusFilter: nil, stores: stores)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {
@@ -367,10 +222,10 @@ final class OrdersViewModelTests: XCTestCase {
 
     // MARK: - Foreground Notifications
 
-    func testGivenANewOrderNotificationItRequestsAResynchronization() {
+    func test_given_a_new_order_notification_it_requests_a_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
-        let viewModel = OrdersViewModel(pushNotificationsManager: pushNotificationsManager, statusFilter: nil)
+        let viewModel = OrdersViewModel(siteID: siteID, pushNotificationsManager: pushNotificationsManager, statusFilter: nil, stores: stores)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {
@@ -380,17 +235,17 @@ final class OrdersViewModelTests: XCTestCase {
         viewModel.activateAndForwardUpdates(to: UITableView())
 
         // Act
-        let notification = ForegroundNotification(noteID: 1, kind: .storeOrder, message: "")
+        let notification = PushNotification(noteID: 1, kind: .storeOrder, message: "")
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert
         XCTAssertTrue(resynchronizeRequested)
     }
 
-    func testGivenANonOrderNotificationItDoesNotRequestAResynchronization() {
+    func test_given_a_non_order_notification_it_does_not_request_a_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
-        let viewModel = OrdersViewModel(pushNotificationsManager: pushNotificationsManager, statusFilter: nil)
+        let viewModel = OrdersViewModel(siteID: siteID, pushNotificationsManager: pushNotificationsManager, statusFilter: nil, stores: stores)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {
@@ -400,7 +255,7 @@ final class OrdersViewModelTests: XCTestCase {
         viewModel.activateAndForwardUpdates(to: UITableView())
 
         // Act
-        let notification = ForegroundNotification(noteID: 1, kind: .comment, message: "")
+        let notification = PushNotification(noteID: 1, kind: .comment, message: "")
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert
@@ -415,8 +270,8 @@ private extension OrdersViewModel {
     ///
     var fetchedOrders: [Yosemite.Order] {
         (0..<numberOfSections).flatMap { section in
-            (0..<numberOfRows(in: section)).map { row in
-                detailsViewModel(at: IndexPath(row: row, section: section)).order
+            (0..<numberOfRows(in: section)).compactMap { row in
+                detailsViewModel(at: IndexPath(row: row, section: section))?.order
             }
         }
     }
@@ -445,7 +300,7 @@ private extension OrdersViewModelTests {
                                   parentID: 0,
                                   customerID: 11,
                                   number: "963",
-                                  statusKey: status.rawValue,
+                                  status: status,
                                   currency: "USD",
                                   customerNote: "",
                                   dateCreated: dateCreated,

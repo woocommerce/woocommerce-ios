@@ -5,10 +5,16 @@ import Storage
 // MARK: - ProductShippingClassStore
 //
 public final class ProductShippingClassStore: Store {
+    private let remote: ProductShippingClassRemote
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
     }()
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.remote = ProductShippingClassRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     /// Registers for supported Actions.
     ///
@@ -40,22 +46,25 @@ private extension ProductShippingClassStore {
 
     /// Synchronizes the `ProductShippingClass`s associated with a given Site ID (if any!).
     ///
-    func synchronizeProductShippingClassModels(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
-        let remote = ProductShippingClassRemote(network: network)
+    func synchronizeProductShippingClassModels(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        remote.loadAll(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let models):
+                guard let self = self else {
+                    return
+                }
 
-        remote.loadAll(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (models, error) in
-            guard let models = models else {
-                onCompletion(error)
-                return
-            }
+                if pageNumber == Default.firstPageNumber {
+                    self.deleteStoredProductShippingClassModels(siteID: siteID)
+                }
 
-            if pageNumber == Default.firstPageNumber {
-                self?.deleteStoredProductShippingClassModels(siteID: siteID)
-            }
-
-            self?.upsertStoredProductShippingClassModelsInBackground(readOnlyProductShippingClassModels: models,
-                                                                     siteID: siteID) {
-                                                                        onCompletion(nil)
+                self.upsertStoredProductShippingClassModelsInBackground(readOnlyProductShippingClassModels: models,
+                                                                        siteID: siteID) {
+                                                                            let hasNextPage = models.count == pageSize
+                                                                            onCompletion(.success(hasNextPage))
+                }
             }
         }
     }
@@ -63,8 +72,6 @@ private extension ProductShippingClassStore {
     /// Retrieves the `ProductShippingClass` associated with a given `Product`.
     ///
     func retrieveProductShippingClass(siteID: Int64, remoteID: Int64, onCompletion: @escaping (ProductShippingClass?, Error?) -> Void) {
-        let remote = ProductShippingClassRemote(network: network)
-
         remote.loadOne(for: siteID, remoteID: remoteID) { [weak self] (model, error) in
             guard let model = model else {
                 onCompletion(nil, error)

@@ -2,6 +2,8 @@ import UIKit
 import WordPressUI
 import Yosemite
 
+import class AutomatticTracks.CrashLogging
+
 /// Displays a paginated list of Product Variations with its price or visibility.
 ///
 final class ProductVariationsViewController: UIViewController {
@@ -14,6 +16,23 @@ final class ProductVariationsViewController: UIViewController {
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(pullToRefresh(sender:)), for: .valueChanged)
         return refreshControl
+    }()
+
+    /// Stack view that contains the top warning banner and is contained in the table view header.
+    ///
+    private lazy var topStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [])
+        stackView.axis = .vertical
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+
+    /// Top banner that shows a warning in case some variations are missing a price.
+    ///
+    private lazy var topBannerView: TopBannerView = {
+        let topBanner = ProductVariationsTopBannerFactory.missingPricesTopBannerView()
+        topBanner.translatesAutoresizingMaskIntoConstraints = false
+        return topBanner
     }()
 
     /// Footer "Loading More" Spinner.
@@ -30,9 +49,7 @@ final class ProductVariationsViewController: UIViewController {
     ///
     private lazy var resultsController: ResultsController<StorageProductVariation> = {
         let resultsController = createResultsController()
-        configureResultsController(resultsController) { [weak self] in
-            self?.tableView.reloadData()
-        }
+        configureResultsController(resultsController)
         return resultsController
     }()
 
@@ -61,12 +78,20 @@ final class ProductVariationsViewController: UIViewController {
 
     private let siteID: Int64
     private let productID: Int64
+    private let allAttributes: [ProductAttribute]
+    private let parentProductSKU: String?
+    private let formType: ProductFormType
 
     private let imageService: ImageService = ServiceLocator.imageService
+    private let isEditProductsRelease5Enabled: Bool
 
-    init(siteID: Int64, productID: Int64) {
-        self.siteID = siteID
-        self.productID = productID
+    init(product: Product, formType: ProductFormType, isEditProductsRelease5Enabled: Bool) {
+        self.siteID = product.siteID
+        self.productID = product.productID
+        self.allAttributes = product.attributes
+        self.parentProductSKU = product.sku
+        self.formType = formType
+        self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -84,12 +109,16 @@ final class ProductVariationsViewController: UIViewController {
         configureTableView()
         configureSyncingCoordinator()
         registerTableViewCells()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+        configureTopBannerContainerView()
+        updateTopBannerView()
 
         syncingCoordinator.synchronizeFirstPage()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        tableView.updateHeaderHeight()
     }
 }
 
@@ -141,7 +170,29 @@ private extension ProductVariationsViewController {
     /// Register table cells.
     ///
     func registerTableViewCells() {
-        tableView.register(ProductsTabProductTableViewCell.self, forCellReuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier)
+        tableView.register(ProductsTabProductTableViewCell.self)
+    }
+}
+
+private extension ProductVariationsViewController {
+    func configureTopBannerContainerView() {
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
+        headerContainer.addSubview(topStackView)
+        headerContainer.pinSubviewToSafeArea(topStackView)
+        topStackView.addArrangedSubview(topBannerView)
+
+        tableView.tableHeaderView = headerContainer
+    }
+
+    func updateTopBannerView() {
+        let hasVariationsMissingPrice = resultsController.fetchedObjects.contains {
+            EditableProductVariationModel(productVariation: $0,
+                                          allAttributes: allAttributes,
+                                          parentProductSKU: parentProductSKU)
+                .isEnabledAndMissingPrice
+        }
+        topBannerView.isHidden = hasVariationsMissingPrice == false
+        tableView.updateHeaderHeight()
     }
 }
 
@@ -158,16 +209,32 @@ private extension ProductVariationsViewController {
                                                           sortedBy: [descriptor])
     }
 
-    func configureResultsController(_ resultsController: ResultsController<StorageProductVariation>, onReload: @escaping () -> Void) {
-        resultsController.onDidChangeContent = {
+    func configureResultsController(_ resultsController: ResultsController<StorageProductVariation>) {
+        configureResultsControllerEventHandling(resultsController)
+
+        do {
+            try resultsController.performFetch()
+        } catch {
+            CrashLogging.logError(error)
+        }
+
+        tableView.reloadData()
+    }
+
+    func configureResultsControllerEventHandling(_ resultsController: ResultsController<StorageProductVariation>) {
+        let onReload = { [weak self] in
+            self?.tableView.reloadData()
+            self?.updateTopBannerView()
+        }
+
+        resultsController.onDidChangeContent = { [weak tableView] in
+            tableView?.endUpdates()
             onReload()
         }
 
         resultsController.onDidResetContent = {
             onReload()
         }
-
-        try? resultsController.performFetch()
     }
 }
 
@@ -184,20 +251,17 @@ extension ProductVariationsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductsTabProductTableViewCell.reuseIdentifier,
-                                                       for: indexPath) as? ProductsTabProductTableViewCell else {
-            fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
 
         let productVariation = resultsController.object(at: indexPath)
+        let model = EditableProductVariationModel(productVariation: productVariation,
+                                                  allAttributes: allAttributes,
+                                                  parentProductSKU: parentProductSKU)
 
-        let currencyCode = CurrencySettings.shared.currencyCode
-        let currency = CurrencySettings.shared.symbol(from: currencyCode)
-        let viewModel = ProductsTabProductViewModel(productVariation: productVariation,
-                                                    currency: currency)
+        let viewModel = ProductsTabProductViewModel(productVariationModel: model)
         cell.update(viewModel: viewModel, imageService: imageService)
         cell.selectionStyle = .none
-        cell.accessoryType = .none
+        cell.accessoryType = .disclosureIndicator
 
         return cell
     }
@@ -218,6 +282,30 @@ extension ProductVariationsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+
+        ServiceLocator.analytics.track(.productVariationListVariationTapped)
+
+        let productVariation = resultsController.object(at: indexPath)
+        let model = EditableProductVariationModel(productVariation: productVariation,
+                                                  allAttributes: allAttributes,
+                                                  parentProductSKU: parentProductSKU)
+
+        let currencyCode = ServiceLocator.currencySettings.currencyCode
+        let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
+        let productImageActionHandler = ProductImageActionHandler(siteID: productVariation.siteID,
+                                                                  product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model,
+                                                      allAttributes: allAttributes,
+                                                      parentProductSKU: parentProductSKU,
+                                                      formType: formType,
+                                                      productImageActionHandler: productImageActionHandler)
+        let viewController = ProductFormViewController(viewModel: viewModel,
+                                                       eventLogger: ProductVariationFormEventLogger(),
+                                                       productImageActionHandler: productImageActionHandler,
+                                                       currency: currency,
+                                                       presentationStyle: .navigationStack,
+                                                       isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
+        navigationController?.pushViewController(viewController, animated: true)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -261,6 +349,7 @@ private extension ProductVariationsViewController {
     func removePlaceholderProducts() {
         tableView.removeGhostContent()
         resultsController.startForwardingEvents(to: tableView)
+        configureResultsControllerEventHandling(resultsController)
         tableView.reloadData()
     }
 
@@ -307,21 +396,21 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
 
         let action = ProductVariationAction
             .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
-                                    guard let self = self else {
-                                        return
-                                    }
+                guard let self = self else {
+                    return
+                }
 
-                                    if let error = error {
-                                        ServiceLocator.analytics.track(.productVariationListLoadError, withError: error)
+                if let error = error {
+                    ServiceLocator.analytics.track(.productVariationListLoadError, withError: error)
 
-                                        DDLogError("⛔️ Error synchronizing product variations: \(error)")
-                                        self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
-                                    } else {
-                                        ServiceLocator.analytics.track(.productVariationListLoaded)
-                                    }
+                    DDLogError("⛔️ Error synchronizing product variations: \(error)")
+                    self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
+                } else {
+                    ServiceLocator.analytics.track(.productVariationListLoaded)
+                }
 
-                                    self.transitionToResultsUpdatedState()
-                                    onCompletion?(error == nil)
+                self.transitionToResultsUpdatedState()
+                onCompletion?(error == nil)
         }
 
         ServiceLocator.stores.dispatch(action)
@@ -365,6 +454,7 @@ private extension ProductVariationsViewController {
 
     func transitionToResultsUpdatedState() {
         stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
+        updateTopBannerView()
     }
 }
 

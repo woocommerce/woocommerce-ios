@@ -6,11 +6,12 @@ import XCTest
 final class PaginatedProductShippingClassListSelectorDataSourceTests: XCTestCase {
     private let sampleSiteID: Int64 = 521
 
-    func testSelectedShippingClass() {
+    func test_selected_shippingClass() {
         let shippingClassID = Int64(134)
         let shippingClass = sampleProductShippingClass(remoteID: shippingClassID)
         let product = MockProduct().product(productShippingClass: shippingClass)
-        var dataSource = PaginatedProductShippingClassListSelectorDataSource(product: product, selected: product.productShippingClass)
+        let model = EditableProductModel(product: product)
+        var dataSource = PaginatedProductShippingClassListSelectorDataSource(product: model, selected: product.productShippingClass)
         XCTAssertEqual(dataSource.selected, shippingClass)
 
         let newShippingClass = sampleProductShippingClass(remoteID: 2019)
@@ -22,9 +23,10 @@ final class PaginatedProductShippingClassListSelectorDataSourceTests: XCTestCase
         XCTAssertNil(dataSource.selected)
     }
 
-    func testCellConfiguration() {
+    func test_cell_configuration() {
         let product = MockProduct().product()
-        let dataSource = PaginatedProductShippingClassListSelectorDataSource(product: product, selected: product.productShippingClass)
+        let model = EditableProductModel(product: product)
+        let dataSource = PaginatedProductShippingClassListSelectorDataSource(product: model, selected: product.productShippingClass)
         let nib = Bundle.main.loadNibNamed(WooBasicTableViewCell.classNameWithoutNamespaces, owner: self, options: nil)
         guard let cell = nib?.first as? WooBasicTableViewCell else {
             XCTFail()

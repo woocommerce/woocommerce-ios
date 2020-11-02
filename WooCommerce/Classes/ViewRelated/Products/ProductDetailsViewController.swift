@@ -154,13 +154,13 @@ private extension ProductDetailsViewController {
             ProductImagesHeaderTableViewCell.self,
             TitleBodyTableViewCell.self,
             TwoColumnTableViewCell.self,
-            ProductReviewsTableViewCell.self,
+            OldProductReviewsTableViewCell.self,
             WooBasicTableViewCell.self,
             ReadMoreTableViewCell.self
         ]
 
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+        for cellClass in cells {
+            tableView.registerNib(for: cellClass)
         }
     }
 

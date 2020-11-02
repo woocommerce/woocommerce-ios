@@ -41,6 +41,14 @@ final class ServiceLocator {
     ///
     private static var _shippingSettingsService: ShippingSettingsService?
 
+    /// Selected Site Settings
+    ///
+    private static var _selectedSiteSettings: SelectedSiteSettings = SelectedSiteSettings()
+
+    /// Currency Settings
+    ///
+    private static var _currencySettings: CurrencySettings = CurrencySettings()
+
     /// CoreData Stack
     ///
     private static var _storageManager = CoreDataManager(name: WooConstants.databaseStackName, crashLogger: SentryCrashLogger())
@@ -106,6 +114,18 @@ final class ServiceLocator {
         return shippingSettingsService
     }
 
+    /// Provides the access point to the Site Settings for the current Site.
+    /// - Returns: An instance of SelectedSiteSettings.
+    static var selectedSiteSettings: SelectedSiteSettings {
+        return _selectedSiteSettings
+    }
+
+    /// Provides the access point to the Currency Settings for the current Site.
+    /// - Returns: An instance of CurrencySettings.
+    static var currencySettings: CurrencySettings {
+        return _currencySettings
+    }
+
     /// Provides the access point to the StorageManager.
     /// - Returns: An instance of CoreDataManager. Notice how we break the pattern we
     /// use in all other properties provided by the ServiceLocator. Mocked implementations
@@ -126,6 +146,10 @@ final class ServiceLocator {
     /// (i.e. AppDelegate) for it to accurately provide the last known state.
     ///
     static let keyboardStateProvider: KeyboardStateProviding = KeyboardStateProvider()
+
+    /// The main object to use for presenting SMS (`MessageUI`) ViewControllers.
+    ///
+    static let messageComposerPresenter = MessageComposerPresenter()
 }
 
 
@@ -187,6 +211,14 @@ extension ServiceLocator {
         }
 
         _shippingSettingsService = mock
+    }
+
+    static func setCurrencySettings(_ mock: CurrencySettings) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _currencySettings = mock
     }
 
     static func setStorageManager(_ mock: CoreDataManager) {

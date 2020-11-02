@@ -1,5 +1,9 @@
 source 'https://cdn.cocoapods.org/'
 
+unless ['BUNDLE_BIN_PATH', 'BUNDLE_GEMFILE'].any? { |k| ENV.key?(k) }
+  raise 'Please run CocoaPods via `bundle exec`'
+end
+
 inhibit_all_warnings!
 use_frameworks! # Defaulting to use_frameworks! See pre_install hook below for static linking.
 use_modular_headers!
@@ -27,24 +31,24 @@ target 'WooCommerce' do
 
   # Use the latest bugfix for coretelephony
   #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'add/application-state-tag'
-  pod 'Automattic-Tracks-iOS', '~> 0.4.5-beta.1'
+  pod 'Automattic-Tracks-iOS', '~> 0.6.0'
 
   pod 'Gridicons', '~> 1.0'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressAuthenticator', '1.17.0'
+  pod 'WordPressAuthenticator', '~> 1.28.0-beta'
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => ''
   # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
 
-  pod 'WordPressShared', '~> 1.8.16'
+  pod 'WordPressShared', '~> 1.12'
 
-#  pod 'WordPressUI', '~> 1.7.0'
-  pod 'WordPressUI', :path => '../WordPressUI-iOS'
+  pod 'WordPressUI', '~> 1.7.2'
+  # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
 
   aztec
 
-  pod 'WPMediaPicker', '~> 1.6.0'
+  pod 'WPMediaPicker', '~> 1.7.1'
 
   # External Libraries
   # ==================
@@ -54,10 +58,10 @@ target 'WooCommerce' do
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
   pod 'XLPagerTabStrip', '~> 9.0'
-  pod 'Charts', '~> 3.3.0'
+  pod 'Charts', '~> 3.6.0'
   pod 'ZendeskSupportSDK', '~> 5.0'
   pod 'Kingfisher', '~> 5.11.0'
-  pod 'Wormholy', '~> 1.6.0', :configurations => ['Debug']
+  pod 'Wormholy', '~> 1.6.2', :configurations => ['Debug']
 
   # Unit Tests
   # ==========
@@ -102,6 +106,8 @@ def networking_pods
   pod 'Alamofire', '~> 4.8'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
+
+  pod 'Sourcery', '~> 0.18', :configuration => 'Debug'
 
   # Used for HTML parsing
   aztec

@@ -8,19 +8,17 @@ import StoreKit
 // Used for protocol conformance of IndicatorInfoProvider only.
 import XLPagerTabStrip
 
-private typealias SyncReason = OrdersViewModel.SyncReason
-
-protocol OrdersViewControllerDelegate: class {
-    /// Called when `OrdersViewController` is about to fetch Orders from the API.
-    ///
-    func ordersViewControllerWillSynchronizeOrders(_ viewController: OrdersViewController)
-}
+private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
 
 /// OrdersViewController: Displays the list of Orders associated to the active Store / Account.
 ///
+/// ## Deprecated
+///
+/// This will be replaced with `OrderListViewController` when the minimum iOS version is 13.0.
+///
 final class OrdersViewController: UIViewController {
 
-    weak var delegate: OrdersViewControllerDelegate?
+    weak var delegate: OrderListViewControllerDelegate?
 
     private let viewModel: OrdersViewModel
 
@@ -88,11 +86,14 @@ final class OrdersViewController: UIViewController {
         }
     }
 
+    private let siteID: Int64
+
     // MARK: - View Lifecycle
 
     /// Designated initializer.
     ///
-    init(title: String, viewModel: OrdersViewModel, emptyStateConfig: EmptyStateViewController.Config) {
+    init(siteID: Int64, title: String, viewModel: OrdersViewModel, emptyStateConfig: EmptyStateViewController.Config) {
+        self.siteID = siteID
         self.viewModel = viewModel
         self.emptyStateConfig = emptyStateConfig
 
@@ -112,13 +113,10 @@ final class OrdersViewController: UIViewController {
         configureTableView()
         configureGhostableTableView()
 
-        refreshStatusPredicate()
         configureStatusResultsController()
 
         configureViewModel()
         configureSyncingCoordinator()
-
-        startListeningToNotifications()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -151,27 +149,15 @@ private extension OrdersViewController {
         }
 
         viewModel.activateAndForwardUpdates(to: tableView)
-    }
 
-    /// Setup: Order status predicate
-    ///
-    func refreshStatusPredicate() {
-        // Bugfix for https://github.com/woocommerce/woocommerce-ios/issues/751.
-        // Because we are listening for default account changes,
-        // this will also fire upon logging out, when the account
-        // is set to nil. So let's protect against multi-threaded
-        // access attempts if the account is indeed nil.
-        guard ServiceLocator.stores.isAuthenticated,
-            ServiceLocator.stores.needsDefaultStore == false else {
-                return
-        }
-
-        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
+        // Reload table because the activate call above executes a performFetch()
+        tableView.reloadData()
     }
 
     /// Setup: Status Results Controller
     ///
     func configureStatusResultsController() {
+        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", siteID)
         try? statusResultsController.performFetch()
     }
 
@@ -224,35 +210,11 @@ private extension OrdersViewController {
     /// Registers all of the available table view cells and headers
     ///
     func registerTableViewHeadersAndCells() {
-        let cells = [ OrderTableViewCell.self ]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-            ghostableTableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        tableView.registerNib(for: OrderTableViewCell.self)
+        ghostableTableView.registerNib(for: OrderTableViewCell.self)
 
         let headerType = TwoColumnSectionHeaderView.self
         tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
-    }
-}
-
-
-// MARK: - Notifications
-//
-extension OrdersViewController {
-
-    /// Wires all of the Notification Hooks
-    ///
-    func startListeningToNotifications() {
-        let nc = NotificationCenter.default
-        nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
-    }
-
-    /// Runs whenever the default Account is updated.
-    ///
-    @objc func defaultAccountWasUpdated() {
-        refreshStatusPredicate()
-        syncingCoordinator.resetInternalState()
     }
 }
 
@@ -261,7 +223,7 @@ extension OrdersViewController {
 extension OrdersViewController {
     @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
-        delegate?.ordersViewControllerWillSynchronizeOrders(self)
+        delegate?.orderListViewControllerWillSynchronizeOrders(self)
         syncingCoordinator.resynchronize(reason: SyncReason.pullToRefresh.rawValue) {
             sender.endRefreshing()
         }
@@ -275,11 +237,6 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
     /// Synchronizes the Orders for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            onCompletion?(false)
-            return
-        }
-
         transitionToSyncingState()
 
         let action = viewModel.synchronizationAction(
@@ -377,7 +334,7 @@ private extension OrdersViewController {
                 return
             }
 
-            self.delegate?.ordersViewControllerWillSynchronizeOrders(self)
+            self.delegate?.orderListViewControllerWillSynchronizeOrders(self)
             self.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason)
         }
 
@@ -431,8 +388,12 @@ private extension OrdersViewController {
 //
 private extension OrdersViewController {
 
-    func lookUpOrderStatus(for order: Order) -> OrderStatus? {
-        for orderStatus in currentSiteStatuses where orderStatus.slug == order.statusKey {
+    func lookUpOrderStatus(for order: Order?) -> OrderStatus? {
+        guard let order = order else {
+            return nil
+        }
+
+        for orderStatus in currentSiteStatuses where orderStatus.status == order.status {
             return orderStatus
         }
 
@@ -454,12 +415,10 @@ extension OrdersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderTableViewCell.reuseIdentifier, for: indexPath) as? OrderTableViewCell else {
-            fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(OrderTableViewCell.self, for: indexPath)
 
         let detailsViewModel = viewModel.detailsViewModel(at: indexPath)
-        let orderStatus = lookUpOrderStatus(for: detailsViewModel.order)
+        let orderStatus = lookUpOrderStatus(for: detailsViewModel?.order)
         cell.configureCell(viewModel: detailsViewModel, orderStatus: orderStatus)
         cell.layoutIfNeeded()
         return cell
@@ -493,11 +452,20 @@ extension OrdersViewController: UITableViewDelegate {
             return
         }
 
+        guard let orderDetailsViewModel = viewModel.detailsViewModel(at: indexPath) else {
+            return
+        }
+
         guard let orderDetailsVC = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
             assertionFailure("Expected OrderDetailsViewController to be instantiated")
             return
         }
-        orderDetailsVC.viewModel = viewModel.detailsViewModel(at: indexPath)
+
+        orderDetailsVC.viewModel = orderDetailsViewModel
+
+        let order = orderDetailsViewModel.order
+        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": order.orderID,
+                                                                    "status": order.status.rawValue])
 
         navigationController?.pushViewController(orderDetailsVC, animated: true)
     }
@@ -507,23 +475,6 @@ extension OrdersViewController: UITableViewDelegate {
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: orderIndex)
     }
 }
-
-
-// MARK: - Segues
-//
-extension OrdersViewController {
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let singleOrderViewController = segue.destination as? OrderDetailsViewController, let viewModel = sender as? OrderDetailsViewModel else {
-            return
-        }
-
-        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": viewModel.order.orderID,
-                                                               "status": viewModel.order.statusKey])
-        singleOrderViewController.viewModel = viewModel
-    }
-}
-
 
 // MARK: - Finite State Machine Management
 //

@@ -1,0 +1,45 @@
+import Foundation
+@testable import Yosemite
+
+final class MockProductVariation {
+    func productVariation() -> ProductVariation {
+        return ProductVariation(siteID: 0,
+                                productID: 0,
+                                productVariationID: 0,
+                                attributes: [],
+                                image: nil,
+                                permalink: "",
+                                dateCreated: Date(),
+                                dateModified: Date(),
+                                dateOnSaleStart: nil,
+                                dateOnSaleEnd: nil,
+                                status: .publish,
+                                description: "",
+                                sku: "",
+                                price: "",
+                                regularPrice: "",
+                                salePrice: "",
+                                onSale: false,
+                                purchasable: false,
+                                virtual: false,
+                                downloadable: false,
+                                downloads: [],
+                                downloadLimit: -1,
+                                downloadExpiry: -1,
+                                taxStatusKey: "taxable",
+                                taxClass: "",
+                                manageStock: false,
+                                stockQuantity: nil,
+                                stockStatus: .inStock,
+                                backordersKey: "no",
+                                backordersAllowed: false,
+                                backordered: false,
+                                weight: "",
+                                dimensions: ProductDimensions(length: "",
+                                                              width: "",
+                                                              height: ""),
+                                shippingClass: "",
+                                shippingClassID: 0,
+                                menuOrder: 1)
+    }
+}

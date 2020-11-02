@@ -18,7 +18,7 @@ class AuthenticatedRequestTests: XCTestCase {
 
     /// Verifies that the Bearer Token is injected, as part of the HTTP Headers.
     ///
-    func testBearerTokenIsInjectedAsRequestHeader() {
+    func test_bearer_token_is_injected_as_request_header() {
         XCTAssertEqual(unauthenticatedRequest.allHTTPHeaderFields, [:])
 
         let authenticated = AuthenticatedRequest(credentials: credentials, request: unauthenticatedRequest)
@@ -31,11 +31,11 @@ class AuthenticatedRequestTests: XCTestCase {
 
     /// Verifies that the User Agent is injected as part of the HTTP Headers.
     ///
-    func testUserAgentIsInjectedAsRequestHeader() {
+    func test_user_agent_is_injected_as_request_header() {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: unauthenticatedRequest)
         let output = try! authenticated.asURLRequest()
 
         let generated = output.allHTTPHeaderFields?["User-Agent"]
-        XCTAssertEqual(generated, Settings.userAgent)
+        XCTAssertEqual(generated, UserAgent.defaultUserAgent)
     }
 }

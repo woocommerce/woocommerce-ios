@@ -41,6 +41,7 @@ class DefaultStoresManager: StoresManager {
         }
         didSet {
             state.didEnter()
+            isLoggedInSubject.send(isAuthenticated)
         }
     }
 
@@ -50,19 +51,28 @@ class DefaultStoresManager: StoresManager {
         return state is AuthenticatedState
     }
 
+    var isLoggedIn: Observable<Bool> {
+        isLoggedInSubject
+    }
+    private let isLoggedInSubject = BehaviorSubject<Bool>(false)
+
     /// Indicates if we need a Default StoreID, or there's one already set.
     ///
     var needsDefaultStore: Bool {
         return sessionManager.defaultStoreID == nil
     }
 
-
+    var siteID: Observable<Int64?> {
+        sessionManager.siteID
+    }
 
     /// Designated Initializer
     ///
     init(sessionManager: SessionManager) {
         _sessionManager = sessionManager
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
+
+        isLoggedInSubject.send(isAuthenticated)
 
         restoreSessionAccountIfPossible()
         restoreSessionSiteIfPossible()
@@ -325,7 +335,7 @@ private extension DefaultStoresManager {
 
         restoreSessionSite(with: siteID)
         synchronizeSettings(with: siteID) {
-            CurrencySettings.shared.refresh()
+            ServiceLocator.selectedSiteSettings.refresh()
             ServiceLocator.shippingSettingsService.update(siteID: siteID)
         }
         retrieveOrderStatus(with: siteID)

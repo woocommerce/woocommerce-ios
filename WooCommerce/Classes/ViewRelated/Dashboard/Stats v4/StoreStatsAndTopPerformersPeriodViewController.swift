@@ -7,7 +7,7 @@ import Yosemite
 /// - Top performers header view (`TopPerformersSectionHeaderView`)
 /// - Top performers data view (managed by child view controller `TopPerformerDataViewController`)
 ///
-class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
+final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     // MARK: Public Interface
 
@@ -65,32 +65,71 @@ class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         return StoreStatsV4PeriodViewController(timeRange: timeRange, currentDate: currentDate)
     }()
 
+    private lazy var inAppFeedbackCardViewController = InAppFeedbackCardViewController()
+
+    /// An array of UIViews for the In-app Feedback Card. This will be dynamically shown
+    /// or hidden depending on the configuration.
+    private lazy var inAppFeedbackCardViewsForStackView: [UIView] = createInAppFeedbackCardViewsForStackView()
+
     private lazy var topPerformersPeriodViewController: TopPerformerDataViewController = {
-        return TopPerformerDataViewController(granularity: timeRange.topEarnerStatsGranularity)
+        return TopPerformerDataViewController(siteID: siteID, granularity: timeRange.topEarnerStatsGranularity)
     }()
 
     // MARK: Internal Properties
 
     private var childViewContrllers: [UIViewController] {
-        return [storeStatsPeriodViewController, topPerformersPeriodViewController]
+        return [storeStatsPeriodViewController, inAppFeedbackCardViewController, topPerformersPeriodViewController]
     }
 
-    init(timeRange: StatsTimeRangeV4, currentDate: Date) {
+    private let viewModel: StoreStatsAndTopPerformersPeriodViewModel
+
+    private let siteID: Int64
+
+    /// Subscriptions that should be cancelled on `deinit`.
+    private var cancellables = [ObservationToken]()
+
+    /// Create an instance of `self`.
+    ///
+    /// - Parameter canDisplayInAppFeedbackCard: If applicable, present the in-app feedback card.
+    ///     The in-app feedback card may still not be presented depending on the constraints. But
+    ///     setting this to `false`, will ensure that it will never be presented.
+    ///
+    init(siteID: Int64,
+         timeRange: StatsTimeRangeV4,
+         currentDate: Date,
+         canDisplayInAppFeedbackCard: Bool) {
+        self.siteID = siteID
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
         self.currentDate = currentDate
+        self.viewModel = StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: canDisplayInAppFeedbackCard)
+
         super.init(nibName: nil, bundle: nil)
+
+        configureInAppFeedbackCardViews()
         configureChildViewControllers()
+        configureInAppFeedbackViewControllerAction()
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        cancellables.forEach {
+            $0.cancel()
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         configureSubviews()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        viewModel.onViewDidAppear()
     }
 }
 
@@ -123,9 +162,14 @@ extension StoreStatsAndTopPerformersPeriodViewController {
 //
 extension StoreStatsAndTopPerformersPeriodViewController: IndicatorInfoProvider {
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
-        return IndicatorInfo(title: timeRange.tabTitle)
+        return IndicatorInfo(
+            title: timeRange.tabTitle,
+            accessibilityIdentifier: "period-data-" + timeRange.rawValue + "-tab"
+        )
     }
 }
+
+// MARK: - Provisioning and Utils
 
 private extension StoreStatsAndTopPerformersPeriodViewController {
     func configureChildViewControllers() {
@@ -133,6 +177,33 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
             addChild(childViewController)
             childViewController.view.translatesAutoresizingMaskIntoConstraints = false
         }
+    }
+
+    /// Observe and react to visibility events for the in-app feedback card.
+    func configureInAppFeedbackCardViews() {
+        guard viewModel.canDisplayInAppFeedbackCard else {
+            return
+        }
+
+        let cancellable = viewModel.isInAppFeedbackCardVisible.subscribe { [weak self] isVisible in
+            guard let self = self else {
+                return
+            }
+
+            let isHidden = !isVisible
+
+            self.inAppFeedbackCardViewsForStackView.forEach { subView in
+                // Check if the subView will change first. It looks like if we don't do this,
+                // then StackView will not animate the change correctly.
+                if subView.isHidden != isHidden {
+                    UIView.animate(withDuration: 0.2) {
+                        subView.isHidden = isHidden
+                        self.stackView.setNeedsLayout()
+                    }
+                }
+            }
+        }
+        cancellables.append(cancellable)
     }
 
     func configureSubviews() {
@@ -159,6 +230,9 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         NSLayoutConstraint.activate([
             storeStatsPeriodView.heightAnchor.constraint(equalToConstant: 380),
             ])
+
+        // In-app Feedback Card
+        stackView.addArrangedSubviews(inAppFeedbackCardViewsForStackView)
 
         // Top performers header.
         let topPerformersHeaderView = TopPerformersSectionHeaderView(title:
@@ -201,6 +275,31 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         }
     }
 
+    /// Create in-app feedback views to be added to the main `stackView`.
+    ///
+    /// The views created are an empty space and the `inAppFeedbackCardViewController.view`.
+    ///
+    /// - SeeAlso: configureSubviews
+    /// - Returns: The views or an empty array if something catastrophic happened.
+    ///
+    func createInAppFeedbackCardViewsForStackView() -> [UIView] {
+        guard viewModel.canDisplayInAppFeedbackCard,
+            let cardView = inAppFeedbackCardViewController.view else {
+            return []
+        }
+
+        let emptySpaceView: UIView = {
+            let view = UIView(frame: .zero)
+            view.backgroundColor = nil
+            NSLayoutConstraint.activate([
+                view.heightAnchor.constraint(equalToConstant: 8)
+            ])
+            return view
+        }()
+
+        return [emptySpaceView, cardView]
+    }
+
     func createBorderView() -> UIView {
         let view = UIView(frame: .zero)
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -209,6 +308,12 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
             view.heightAnchor.constraint(equalToConstant: 0.5)
             ])
         return view
+    }
+
+    func configureInAppFeedbackViewControllerAction() {
+        inAppFeedbackCardViewController.onFeedbackGiven = { [weak self] in
+            self?.viewModel.onInAppFeedbackCardAction()
+        }
     }
 }
 

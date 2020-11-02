@@ -1,7 +1,7 @@
 import UIKit
 import WordPressShared
 import SafariServices
-
+import AutomatticTracks
 
 class AboutViewController: UIViewController {
 
@@ -104,6 +104,8 @@ private extension AboutViewController {
         let imageView               = UIImageView(image: tintedImage)
         imageView.contentMode       = .center
         imageView.frame.size.height += Constants.headerPadding
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(crashDebugMenuGestureRecognizer)
         tableView.tableHeaderView = imageView
     }
 
@@ -124,14 +126,14 @@ private extension AboutViewController {
     /// Setup the sections in this table view
     ///
     func configureSections() {
-        sections = [Section(title: nil, rows: [.terms, .privacy])]
+        sections = [Section(title: nil, rows: [.terms, .privacy, .californiaPrivacy])]
     }
 
     /// Register table cells.
     ///
     func registerTableViewCells() {
         for row in Row.allCases {
-            tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
+            tableView.registerNib(for: row.type)
         }
     }
 
@@ -139,6 +141,8 @@ private extension AboutViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
+        case let cell as BasicTableViewCell where row == .californiaPrivacy:
+            configureCaliforniaPrivacy(cell: cell)
         case let cell as BasicTableViewCell where row == .terms:
             configureTerms(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
@@ -156,12 +160,20 @@ private extension AboutViewController {
         cell.textLabel?.text = NSLocalizedString("Terms of Service", comment: "Opens the Terms of Service web page")
     }
 
-    /// Privacy polocy cell.
+    /// Privacy policy cell.
     ///
     func configurePrivacy(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Privacy Policy", comment: "Opens the Privacy Policy web page")
+    }
+
+    /// California Privacy policy cell.
+    ///
+    func configureCaliforniaPrivacy(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Privacy Notice for California Users", comment: "Opens the California Privacy Policy web page")
     }
 }
 
@@ -185,16 +197,22 @@ private extension AboutViewController {
 //
 private extension AboutViewController {
 
-    /// Terms of Service action
+    /// California Privacy Policy action
     ///
-    func privacyWasPressed() {
-        displayWebView(url: WooConstants.privacyURL)
+    func californiaPrivacyWasPressed() {
+        displayWebView(url: WooConstants.URLs.californiaPrivacy.asURL())
     }
 
     /// Privacy Policy action
     ///
+    func privacyWasPressed() {
+        displayWebView(url: WooConstants.URLs.privacy.asURL())
+    }
+
+    /// Terms of Service action
+    ///
     func termsWasPressed() {
-        displayWebView(url: WooConstants.termsOfServiceUrl)
+        displayWebView(url: WooConstants.URLs.termsOfService.asURL())
     }
 }
 
@@ -241,6 +259,8 @@ extension AboutViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         switch rowAtIndexPath(indexPath) {
+        case .californiaPrivacy:
+            californiaPrivacyWasPressed()
         case .privacy:
             privacyWasPressed()
         case .terms:
@@ -249,6 +269,49 @@ extension AboutViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - Crash Debug Menu
+//
+extension AboutViewController {
+
+    private var crashDebugMenuGestureRecognizer: UITapGestureRecognizer {
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didInvokeCrashDebugMenu))
+        gestureRecognizer.numberOfTapsRequired = 4
+        return gestureRecognizer
+    }
+
+    @objc func didInvokeCrashDebugMenu(_ sender: UITapGestureRecognizer? = nil) {
+
+        let menuTitle = NSLocalizedString(
+            "Crash Debug Menu",
+            comment: "The title for a menu that helps debug crashes in production builds"
+        )
+
+        let crashDebugMenu = UIAlertController(title: menuTitle, message: nil, preferredStyle: .actionSheet)
+        crashDebugMenu.addAction(crashDebugMenuCrashAction)
+        crashDebugMenu.addAction(crashDebugMenuCancelAction)
+
+        present(crashDebugMenu, animated: true, completion: nil)
+    }
+
+    private var crashDebugMenuCrashAction: UIAlertAction {
+        let crashTitle = NSLocalizedString(
+            "Crash Immediately",
+            comment: "The title for a button that causes the app to deliberately crash for debugging purposes"
+        )
+
+        return UIAlertAction(title: crashTitle, style: .destructive) { _ in
+            CrashLogging.crash()
+        }
+    }
+
+    private var crashDebugMenuCancelAction: UIAlertAction {
+        let cancelTitle = NSLocalizedString(
+            "Cancel",
+            comment: "The title for a button that dismisses the crash debug menu"
+        )
+        return UIAlertAction(title: cancelTitle, style: .cancel, handler: nil)
+    }
+}
 
 // MARK: - Private Types
 //
@@ -267,9 +330,12 @@ private struct Section {
 private enum Row: CaseIterable {
     case terms
     case privacy
+    case californiaPrivacy
 
     var type: UITableViewCell.Type {
         switch self {
+        case .californiaPrivacy:
+            return BasicTableViewCell.self
         case .terms:
             return BasicTableViewCell.self
         case .privacy:

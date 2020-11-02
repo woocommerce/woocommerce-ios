@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a Product Variation Entity.
 ///
-public struct ProductVariation: Decodable {
+public struct ProductVariation: Codable, GeneratedCopiable, Equatable {
     public let siteID: Int64
     public let productID: Int64
 
@@ -156,10 +156,27 @@ public struct ProductVariation: Decodable {
         let status = ProductStatus(rawValue: statusKey)
         let description = try container.decodeIfPresent(String.self, forKey: .description)
         let sku = try container.decodeIfPresent(String.self, forKey: .sku)
-        let price = try container.decode(String.self, forKey: .price)
+
+        // Even though a plain install of WooCommerce Core provides string values,
+        // some plugins alter the field value from String to Int or Decimal.
+        let price = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                      forKey: .price,
+                                                      alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
+            ?? ""
+
         let regularPrice = try container.decodeIfPresent(String.self, forKey: .regularPrice)
-        let salePrice = try container.decodeIfPresent(String.self, forKey: .salePrice)
         let onSale = try container.decode(Bool.self, forKey: .onSale)
+
+        // Even though a plain install of WooCommerce Core provides string values,
+        // some plugins alter the field value from String to Int or Decimal.
+        let salePrice = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                          forKey: .salePrice,
+                                                          shouldDecodeTargetTypeFirst: false,
+                                                          alternativeTypes: [
+                                                            .string(transform: { (onSale && $0.isEmpty) ? "0" : $0 }),
+                                                            .decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
+            ?? ""
+
         let purchasable = try container.decode(Bool.self, forKey: .purchasable)
         let virtual = try container.decode(Bool.self, forKey: .virtual)
         let downloadable = try container.decode(Bool.self, forKey: .downloadable)
@@ -171,16 +188,22 @@ public struct ProductVariation: Decodable {
 
         // Even though the API docs claim `manageStock` is a bool, it's possible that `"parent"`
         // could be returned as well (typically with variations) — we need to account for this.
-        // A "parent" value means that stock mgmt is turned on + managed at the parent product-level, therefore
-        // we need to set this var as `true` in this situation.
+        // A "parent" value means that stock mgmt is turned off at the product variation and it is managed at the parent product-level.
+        // Therefore, we need to set this var as `false` in this situation.
         // See: https://github.com/woocommerce/woocommerce-ios/issues/884 for more deets
-        var manageStock = false
-        if let parsedBoolValue = container.failsafeDecodeIfPresent(booleanForKey: .manageStock) {
-            manageStock = parsedBoolValue
-        } else if let parsedStringValue = container.failsafeDecodeIfPresent(stringForKey: .manageStock) {
-            // A bool could not be parsed — check if "parent" is set, and if so, set manageStock to `true`
-            manageStock = parsedStringValue.lowercased() == Values.manageStockParent ? true : false
-        }
+        let manageStock = container.failsafeDecodeIfPresent(targetType: Bool.self,
+                                                            forKey: .manageStock,
+                                                            alternativeTypes: [
+                                                                .string(transform: { value in
+                                                                    guard value.lowercased() == Values.manageStockParent else {
+                                                                        let message = "Unexpected manage stock value: \(value)"
+                                                                        assertionFailure(message)
+                                                                        DDLogError(message)
+                                                                        return false
+                                                                    }
+                                                                    return false
+                                                                })
+        ]) ?? false
 
         let stockQuantity = try container.decodeIfPresent(Int64.self, forKey: .stockQuantity)
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
@@ -230,6 +253,54 @@ public struct ProductVariation: Decodable {
                   shippingClass: shippingClass,
                   shippingClassID: shippingClassID,
                   menuOrder: menuOrder)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        // TODO-2576: When the image removal is feasible in the API, let's remove this condition.
+        // Ref: https://github.com/woocommerce/woocommerce/issues/27116
+        if let image = image {
+            try container.encode(image, forKey: .image)
+        }
+
+        try container.encode(description, forKey: .description)
+        try container.encode(status.rawValue, forKey: .statusKey)
+
+        // Price Settings.
+        try container.encode(regularPrice, forKey: .regularPrice)
+        try container.encode(salePrice, forKey: .salePrice)
+
+        // We need to send empty string if fields are null, because there is a bug on the API side
+        // Issue: https://github.com/woocommerce/woocommerce/issues/25350
+        if dateOnSaleStart == nil {
+            try container.encode("", forKey: .dateOnSaleStart)
+        } else {
+            try container.encode(dateOnSaleStart, forKey: .dateOnSaleStart)
+        }
+        if dateOnSaleEnd == nil {
+            try container.encode("", forKey: .dateOnSaleEnd)
+        } else {
+            try container.encode(dateOnSaleEnd, forKey: .dateOnSaleEnd)
+        }
+
+        try container.encode(taxStatusKey, forKey: .taxStatusKey)
+        //The backend for the standard tax class return "standard",
+        // but to set the standard tax class it accept only an empty string "" in the POST request
+        let newTaxClass = taxClass == "standard" ? "" : taxClass
+        try container.encode(newTaxClass, forKey: .taxClass)
+
+        // Shipping Settings.
+        try container.encode(weight, forKey: .weight)
+        try container.encode(dimensions, forKey: .dimensions)
+        try container.encode(shippingClass, forKey: .shippingClass)
+
+        // Inventory Settings.
+        try container.encode(sku, forKey: .sku)
+        try container.encode(manageStock, forKey: .manageStock)
+        try container.encode(stockStatus.rawValue, forKey: .stockStatusKey)
+        try container.encode(stockQuantity, forKey: .stockQuantity)
+        try container.encode(backordersKey, forKey: .backordersKey)
     }
 }
 
@@ -286,50 +357,6 @@ private extension ProductVariation {
 
         case attributes
         case menuOrder          = "menu_order"
-    }
-}
-
-
-// MARK: - Equatable Conformance
-//
-extension ProductVariation: Equatable {
-    public static func == (lhs: ProductVariation, rhs: ProductVariation) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.productID == rhs.productID &&
-            lhs.productVariationID == rhs.productVariationID &&
-            lhs.attributes == rhs.attributes &&
-            lhs.image == rhs.image &&
-            lhs.permalink == rhs.permalink &&
-            lhs.dateCreated == rhs.dateCreated &&
-            lhs.dateModified == rhs.dateModified &&
-            lhs.dateOnSaleStart == rhs.dateOnSaleStart &&
-            lhs.dateOnSaleEnd == rhs.dateOnSaleEnd &&
-            lhs.status == rhs.status &&
-            lhs.description == rhs.description &&
-            lhs.sku == rhs.sku &&
-            lhs.price == rhs.price &&
-            lhs.regularPrice == rhs.regularPrice &&
-            lhs.salePrice == rhs.salePrice &&
-            lhs.onSale == rhs.onSale &&
-            lhs.purchasable == rhs.purchasable &&
-            lhs.virtual == rhs.virtual &&
-            lhs.downloadable == rhs.downloadable &&
-            lhs.downloads == rhs.downloads &&
-            lhs.downloadLimit == rhs.downloadLimit &&
-            lhs.downloadExpiry == rhs.downloadExpiry &&
-            lhs.taxStatusKey == rhs.taxStatusKey &&
-            lhs.taxClass == rhs.taxClass &&
-            lhs.manageStock == rhs.manageStock &&
-            lhs.stockQuantity == rhs.stockQuantity &&
-            lhs.stockStatus == rhs.stockStatus &&
-            lhs.backordersKey == rhs.backordersKey &&
-            lhs.backordersAllowed == rhs.backordersAllowed &&
-            lhs.backordered == rhs.backordered &&
-            lhs.weight == rhs.weight &&
-            lhs.dimensions == rhs.dimensions &&
-            lhs.shippingClass == rhs.shippingClass &&
-            lhs.shippingClassID == rhs.shippingClassID &&
-            lhs.menuOrder == rhs.menuOrder
     }
 }
 

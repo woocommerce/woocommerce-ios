@@ -5,7 +5,7 @@ import XCTest
 
 final class ProductStockStatusListSelectorCommandTests: XCTestCase {
 
-    func testSelectedStatus() {
+    func test_selected_status() {
         let expectedStockStatus = ProductStockStatus.outOfStock
         let product = MockProduct().product(stockStatus: expectedStockStatus)
         let command = ProductStockStatusListSelectorCommand(selected: product.productStockStatus)
@@ -17,13 +17,13 @@ final class ProductStockStatusListSelectorCommandTests: XCTestCase {
         XCTAssertEqual(command.selected, newStockStatus)
     }
 
-    func testStockStatusListData() {
+    func test_stock_status_list_data() {
         let product = MockProduct().product()
         let command = ProductStockStatusListSelectorCommand(selected: product.productStockStatus)
         XCTAssertEqual(command.data.count, 3)
     }
 
-    func testCellConfiguration() {
+    func test_cell_configuration() {
         let product = MockProduct().product()
         let command = ProductStockStatusListSelectorCommand(selected: product.productStockStatus)
         let nib = Bundle.main.loadNibNamed(BasicTableViewCell.classNameWithoutNamespaces, owner: self, options: nil)

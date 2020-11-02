@@ -11,9 +11,12 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
 
     private lazy var analytics = ServiceLocator.analytics
 
-    private lazy var viewModel = OrdersMasterViewModel()
+    private lazy var viewModel = OrdersMasterViewModel(siteID: siteID)
 
-    init() {
+    private let siteID: Int64
+
+    init(siteID: Int64) {
+        self.siteID = siteID
         super.init(nibName: Self.nibName, bundle: nil)
     }
 
@@ -58,14 +61,10 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
     /// Shows `SearchViewController`.
     ///
     @objc private func displaySearchOrders() {
-        guard let storeID = viewModel.siteID else {
-            return
-        }
-
         analytics.track(.ordersListSearchTapped)
 
-        let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(storeID: storeID,
-                                                                                                  command: OrderSearchUICommand(),
+        let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(storeID: siteID,
+                                                                                                  command: OrderSearchUICommand(siteID: siteID),
                                                                                                   cellType: OrderTableViewCell.self)
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
@@ -77,49 +76,19 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
     /// Return the ViewControllers for "Processing" and "All Orders".
     ///
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
-        // TODO This is fake. It's probably better to just pass the `slug` to `OrdersViewController`.
-        let processingOrderStatus = OrderStatus(
-            name: OrderStatusEnum.processing.rawValue,
-            siteID: Int64.max,
-            slug: OrderStatusEnum.processing.rawValue,
-            total: 0
-        )
-        // We're intentionally not using `processingOrderStatus` as the source of the "Processing"
-        // text in here. We want the string to be translated.
-        let processingOrdersVC = OrdersViewController(
-            title: NSLocalizedString("Processing", comment: "Title for the first page in the Orders tab."),
-            viewModel: OrdersViewModel(statusFilter: processingOrderStatus),
-            emptyStateConfig: .simple(
-                message: NSAttributedString(string: NSLocalizedString("All orders have been fulfilled",
-                                                                      comment: "The message shown in the Orders → Processing tab if the list is empty.")),
-                image: .waitingForCustomersImage
-            )
-        )
-        processingOrdersVC.delegate = self
-
-        let allOrdersVC = OrdersViewController(
-            title: NSLocalizedString("All Orders", comment: "Title for the second page in the Orders tab."),
-            viewModel: OrdersViewModel(statusFilter: nil, includesFutureOrders: false),
-            emptyStateConfig: .withLink(
-                message: NSAttributedString(string: NSLocalizedString("Waiting for your first order",
-                                                                      comment: "The message shown in the Orders → All Orders tab if the list is empty.")),
-                image: .emptyOrdersImage,
-                details: NSLocalizedString("We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales.",
-                                           comment: "The detailed message shown in the Orders → All Orders tab if the list is empty."),
-                linkTitle: NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty."),
-                linkURL: WooConstants.blogURL
-            )
-        )
-        allOrdersVC.delegate = self
-
-        return [processingOrdersVC, allOrdersVC]
+        if #available(iOS 13, *) {
+            return makeViewControllers()
+        } else {
+            return makeDeprecatedViewControllers()
+        }
     }
+
 }
 
 // MARK: - OrdersViewControllerDelegate
 
-extension OrdersMasterViewController: OrdersViewControllerDelegate {
-    func ordersViewControllerWillSynchronizeOrders(_ viewController: OrdersViewController) {
+extension OrdersMasterViewController: OrderListViewControllerDelegate {
+    func orderListViewControllerWillSynchronizeOrders(_ viewController: UIViewController) {
         viewModel.syncOrderStatuses()
     }
 }
@@ -196,5 +165,107 @@ extension OrdersMasterViewController {
         button.accessibilityIdentifier = "order-search-button"
 
         return button
+    }
+
+    /// Creates the view controllers to be shown in tabs. This will soon replace
+    /// `makeDeprecatedViewControllers()` when iOS 13 is the minimum version.
+    ///
+    /// This is intentionally currently unused.
+    @available(iOS 13.0, *)
+    func makeViewControllers() -> [UIViewController] {
+        // TODO This is fake. It's probably better to just pass the `slug` to `OrdersViewController`.
+        let processingOrderStatus = OrderStatus(
+            name: OrderStatusEnum.processing.rawValue,
+            siteID: siteID,
+            slug: OrderStatusEnum.processing.rawValue,
+            total: 0
+        )
+
+        // We're intentionally not using `processingOrderStatus` as the source of the "Processing"
+        // text in here. We want the string to be translated.
+        let processingOrdersVC = OrderListViewController(
+            siteID: siteID,
+            title: Localization.processingTitle,
+            viewModel: OrderListViewModel(siteID: siteID, statusFilter: processingOrderStatus),
+            emptyStateConfig: .simple(
+                message: NSAttributedString(string: Localization.processingEmptyStateMessage),
+                image: .waitingForCustomersImage
+            )
+        )
+        processingOrdersVC.delegate = self
+
+        let allOrdersVC = OrderListViewController(
+            siteID: siteID,
+            title: Localization.allOrdersTitle,
+            viewModel: OrderListViewModel(siteID: siteID, statusFilter: nil, includesFutureOrders: false),
+            emptyStateConfig: .withLink(
+                message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
+                image: .emptyOrdersImage,
+                details: Localization.allOrdersEmptyStateDetail,
+                linkTitle: Localization.learnMore,
+                linkURL: WooConstants.URLs.blog.asURL()
+            )
+        )
+        allOrdersVC.delegate = self
+
+        return [processingOrdersVC, allOrdersVC]
+    }
+
+    /// These view controllers will soon be deleted when iOS 13 is the minimum.
+    func makeDeprecatedViewControllers() -> [UIViewController] {
+        // TODO This is fake. It's probably better to just pass the `slug` to `OrdersViewController`.
+        let processingOrderStatus = OrderStatus(
+            name: OrderStatusEnum.processing.rawValue,
+            siteID: siteID,
+            slug: OrderStatusEnum.processing.rawValue,
+            total: 0
+        )
+        // We're intentionally not using `processingOrderStatus` as the source of the "Processing"
+        // text in here. We want the string to be translated.
+        let processingOrdersVC = OrdersViewController(
+            siteID: siteID,
+            title: Localization.processingTitle,
+            viewModel: OrdersViewModel(siteID: siteID, statusFilter: processingOrderStatus),
+            emptyStateConfig: .simple(
+                message: NSAttributedString(string: Localization.processingEmptyStateMessage),
+                image: .waitingForCustomersImage
+            )
+        )
+        processingOrdersVC.delegate = self
+
+        let allOrdersVC = OrdersViewController(
+            siteID: siteID,
+            title: Localization.allOrdersTitle,
+            viewModel: OrdersViewModel(siteID: siteID, statusFilter: nil, includesFutureOrders: false),
+            emptyStateConfig: .withLink(
+                message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
+                image: .emptyOrdersImage,
+                details: Localization.allOrdersEmptyStateDetail,
+                linkTitle: Localization.learnMore,
+                linkURL: WooConstants.URLs.blog.asURL()
+            )
+        )
+        allOrdersVC.delegate = self
+
+        return [processingOrdersVC, allOrdersVC]
+    }
+}
+
+// MARK: - Localization
+
+private extension OrdersMasterViewController {
+    enum Localization {
+        static let processingTitle = NSLocalizedString("Processing", comment: "Title for the first page in the Orders tab.")
+        static let processingEmptyStateMessage =
+            NSLocalizedString("All orders have been fulfilled",
+                              comment: "The message shown in the Orders → Processing tab if the list is empty.")
+        static let allOrdersTitle = NSLocalizedString("All Orders", comment: "Title for the second page in the Orders tab.")
+        static let allOrdersEmptyStateMessage =
+            NSLocalizedString("Waiting for your first order",
+                              comment: "The message shown in the Orders → All Orders tab if the list is empty.")
+        static let allOrdersEmptyStateDetail =
+            NSLocalizedString("We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales.",
+                              comment: "The detailed message shown in the Orders → All Orders tab if the list is empty.")
+        static let learnMore = NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty.")
     }
 }

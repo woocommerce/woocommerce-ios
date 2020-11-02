@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a ProductCategory entity.
 ///
-public struct ProductCategory: Decodable {
+public struct ProductCategory: Codable {
     public let categoryID: Int64
     public let siteID: Int64
     public let parentID: Int64
@@ -40,6 +40,14 @@ public struct ProductCategory: Decodable {
         let slug = try container.decode(String.self, forKey: .slug)
 
         self.init(categoryID: categoryID, siteID: siteID, parentID: parentID, name: name, slug: slug)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(categoryID, forKey: .categoryID)
+        try container.encode(name, forKey: .name)
+        try container.encode(slug, forKey: .slug)
     }
 }
 

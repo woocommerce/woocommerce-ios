@@ -27,7 +27,7 @@ final class RefundDetailsDataSource: NSObject {
 
     /// Currency Formatter
     ///
-    private let currencyFormatter = CurrencyFormatter()
+    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     /// Products from a Refund
     ///
@@ -45,7 +45,7 @@ final class RefundDetailsDataSource: NSObject {
     /// The results controllers used to display a refund
     ///
     private lazy var resultsControllers: RefundDetailsResultController = {
-        return RefundDetailsResultController()
+        return RefundDetailsResultController(siteID: order.siteID)
     }()
 
     /// Set up results controllers

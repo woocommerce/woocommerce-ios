@@ -11,19 +11,23 @@ final class MockProduct {
                  productStatus: ProductStatus = .publish,
                  productType: ProductType = .simple,
                  sku: String? = nil,
-                 stockQuantity: Int? = nil,
+                 stockQuantity: Int64? = nil,
                  stockStatus: ProductStockStatus = .inStock,
                  variations: [Int64] = [],
                  virtual: Bool = true,
                  images: [ProductImage] = [],
                  shippingClassID: Int64 = 0,
-                 categories: [ProductCategory] = []) -> Product {
+                 categories: [ProductCategory] = [],
+                 // External products only
+                 buttonText: String = "",
+                 externalURL: String? = "http://somewhere.com") -> Product {
 
         return Product(siteID: siteID,
                        productID: productID,
                        name: name,
                        slug: "book-the-green-room",
                        permalink: "https://example.com/product/book-the-green-room/",
+                       date: dateCreated,
                        dateCreated: dateCreated,
                        dateModified: Date(),
                        dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
@@ -33,7 +37,7 @@ final class MockProduct {
                        featured: false,
                        catalogVisibilityKey: "visible",
                        fullDescription: "<p>This is the party room!</p>\n",
-                       briefDescription: """
+                       shortDescription: """
                        [contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. \
                        We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let us \
                        know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests \
@@ -51,7 +55,8 @@ final class MockProduct {
                        downloads: [],
                        downloadLimit: -1,
                        downloadExpiry: -1,
-                       externalURL: "http://somewhere.com",
+                       buttonText: buttonText,
+                       externalURL: externalURL,
                        taxStatusKey: "taxable",
                        taxClass: "standard",
                        manageStock: false,

@@ -9,6 +9,7 @@ final class ProductImageViewController: UIViewController {
     @IBOutlet private weak var imageView: UIImageView!
 
     private let productImage: ProductImage
+    private let isDeletionEnabled: Bool
     private let productUIImageLoader: ProductUIImageLoader
     private let onDeletion: Deletion
 
@@ -17,9 +18,11 @@ final class ProductImageViewController: UIViewController {
     private var imageLoaderTask: Cancellable?
 
     init(productImage: ProductImage,
+         isDeletionEnabled: Bool,
          productUIImageLoader: ProductUIImageLoader,
          onDeletion: @escaping Deletion) {
         self.productImage = productImage
+        self.isDeletionEnabled = isDeletionEnabled
         self.productUIImageLoader = productUIImageLoader
         self.onDeletion = onDeletion
         super.init(nibName: nil, bundle: nil)
@@ -59,6 +62,9 @@ private extension ProductImageViewController {
     }
 
     func configureNavigation() {
+        guard isDeletionEnabled else {
+            return
+        }
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: .trashImage,
                                                             style: .plain,
                                                             target: self,

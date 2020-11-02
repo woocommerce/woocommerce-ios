@@ -6,7 +6,7 @@ import XCTest
 
 /// ProductStore Unit Tests
 ///
-class ProductStoreTests: XCTestCase {
+final class ProductStoreTests: XCTestCase {
 
     /// Mockup Dispatcher!
     ///
@@ -60,6 +60,153 @@ class ProductStoreTests: XCTestCase {
         network = MockupNetwork()
     }
 
+    // MARK: - ProductAction.addProduct
+
+    func test_addProduct_returns_the_expected_product_with_related_objects() throws {
+        // Arrange
+        let remote = MockProductsRemote()
+        let mockImage = ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
+        let mockTag = ProductTag(siteID: 123, tagID: 1, name: "", slug: "")
+        let mockDefaultAttribute = ProductDefaultAttribute(attributeID: 0, name: "Color", option: "Purple")
+        let mockAttribute = ProductAttribute(attributeID: 0, name: "Brand", position: 1, visible: true, variation: true, options: ["Unknown", "House"])
+        let mockCategory = ProductCategory(categoryID: 36, siteID: 2, parentID: 1, name: "Events", slug: "events")
+        let expectedProduct = MockProduct().product().copy(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           downloads: sampleDownloads(),
+                                                           dimensions: ProductDimensions(length: "12", width: "26", height: "16"),
+                                                           shippingClass: "2-day",
+                                                           shippingClassID: 1,
+                                                           categories: [mockCategory],
+                                                           tags: [mockTag],
+                                                           images: [mockImage],
+                                                           attributes: [mockAttribute],
+                                                           defaultAttributes: [mockDefaultAttribute])
+        remote.whenAddingProduct(siteID: sampleSiteID, thenReturn: .success(expectedProduct))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Action
+        let product = MockProduct().product(siteID: sampleSiteID, productID: 0)
+
+        var result: Result<Yosemite.Product, ProductUpdateError>?
+        waitForExpectation { expectation in
+            let action = ProductAction.addProduct(product: product) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
+
+        // Assert
+        let addedProduct = try XCTUnwrap(result?.get())
+        XCTAssertEqual(addedProduct, expectedProduct)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProduct.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDownload.self), 3)
+    }
+
+    func test_addProduct_returns_error_upon_network_error() {
+        // Arrange
+        let remote = MockProductsRemote()
+        remote.whenAddingProduct(siteID: sampleSiteID, thenReturn: .failure(DotcomError.requestFailed))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Action
+        let product = MockProduct().product(siteID: sampleSiteID, productID: 0)
+
+        var result: Result<Yosemite.Product, ProductUpdateError>?
+        waitForExpectation { expectation in
+            let action = ProductAction.addProduct(product: product) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
+
+        // Assert
+        XCTAssertEqual(result?.isFailure, true)
+    }
+
+    // MARK: - ProductAction.deleteProduct
+
+    func test_deleteProduct_deletes_the_stored_product() throws {
+        // Arrange
+        let remote = MockProductsRemote()
+        let mockImage = ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
+        let mockTag = ProductTag(siteID: 123, tagID: 1, name: "", slug: "")
+        let mockDefaultAttribute = ProductDefaultAttribute(attributeID: 0, name: "Color", option: "Purple")
+        let mockAttribute = ProductAttribute(attributeID: 0, name: "Brand", position: 1, visible: true, variation: true, options: ["Unknown", "House"])
+        let mockCategory = ProductCategory(categoryID: 36, siteID: 2, parentID: 1, name: "Events", slug: "events")
+        let expectedProduct = MockProduct().product().copy(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           dimensions: ProductDimensions(length: "12", width: "26", height: "16"),
+                                                           shippingClass: "2-day",
+                                                           shippingClassID: 1,
+                                                           categories: [mockCategory],
+                                                           tags: [mockTag],
+                                                           images: [mockImage],
+                                                           attributes: [mockAttribute],
+                                                           defaultAttributes: [mockDefaultAttribute])
+        remote.whenDeletingProduct(siteID: sampleSiteID, thenReturn: .success(expectedProduct))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Action
+        productStore.upsertStoredProduct(readOnlyProduct: expectedProduct, in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProduct.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
+
+        var result: Result<Yosemite.Product, ProductUpdateError>?
+        waitForExpectation { expectation in
+            let action = ProductAction.deleteProduct(siteID: sampleSiteID, productID: sampleProductID) { (aResult) in
+                result = aResult
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
+
+        // Assert
+        let deletedProduct = try XCTUnwrap(result?.get())
+        XCTAssertEqual(deletedProduct, expectedProduct)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProduct.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductImage.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
+    }
+
+    func test_deleteProduct_returns_error_upon_network_error() {
+        // Arrange
+        let remote = MockProductsRemote()
+        remote.whenDeletingProduct(siteID: sampleSiteID, thenReturn: .failure(DotcomError.requestFailed))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Action
+        var result: Result<Yosemite.Product, ProductUpdateError>?
+        waitForExpectation { expectation in
+            let action = ProductAction.deleteProduct(siteID: sampleSiteID, productID: sampleProductID) { (aResult) in
+                result = aResult
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
+
+        // Assert
+        XCTAssertEqual(result?.isFailure, true)
+    }
 
     // MARK: - ProductAction.synchronizeProducts
 
@@ -78,11 +225,10 @@ class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
-                                                       sortOrder: .nameAscending) { error in
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 10)
-            XCTAssertNil(error)
-
-            expectation.fulfill()
+                                                       sortOrder: .nameAscending) { result in
+                                                        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 10)
+                                                        XCTAssertTrue(result.isSuccess)
+                                                        expectation.fulfill()
         }
 
         productStore.onAction(action)
@@ -106,8 +252,8 @@ class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
-                                                       sortOrder: .nameAscending) { error in
-            XCTAssertNil(error)
+                                                       sortOrder: .nameAscending) { result in
+            XCTAssertTrue(result.isSuccess)
 
             let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: self.sampleProductID)
             let readOnlyStoredProduct = storedProduct?.toReadOnly()
@@ -173,8 +319,8 @@ class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
-                                                       sortOrder: .nameAscending) { error in
-            XCTAssertNil(error)
+                                                       sortOrder: .nameAscending) { result in
+            XCTAssertTrue(result.isSuccess)
 
             // The previously upserted Product for siteID1 should be deleted.
             let storedProductForSite1 = self.viewStorage.loadProduct(siteID: siteID1, productID: productID)
@@ -215,8 +361,8 @@ class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
-                                                       sortOrder: .nameAscending) { error in
-            XCTAssertNil(error)
+                                                       sortOrder: .nameAscending) { result in
+            XCTAssertTrue(result.isSuccess)
 
             // The previously upserted Product's should stay in storage.
             let storedProductForSite1 = self.viewStorage.loadProduct(siteID: siteID, productID: productID)
@@ -254,8 +400,8 @@ class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
-                                                       sortOrder: .nameAscending) { error in
-            XCTAssertNotNil(error)
+                                                       sortOrder: .nameAscending) { result in
+            XCTAssertTrue(result.isFailure)
 
             // The previously upserted Product's should stay in storage.
             let storedProductForSite1 = self.viewStorage.loadProduct(siteID: siteID, productID: productID)
@@ -268,6 +414,56 @@ class ProductStoreTests: XCTestCase {
 
         productStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_synchronizing_products_of_the_same_page_size_has_next_page() {
+        // Arrange
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+
+        // Action
+        var result: Result<Bool, Error>?
+        waitForExpectation { expectation in
+            let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
+                                                           pageNumber: 1,
+                                                           pageSize: 10, // This matches the response size in `products-load-all.json`
+                                                           stockStatus: nil,
+                                                           productStatus: nil,
+                                                           productType: nil,
+                                                           sortOrder: .nameAscending) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+            store.onAction(action)
+        }
+
+        // Assert
+        XCTAssertTrue(try XCTUnwrap(result).get())
+    }
+
+    func test_synchronizing_products_of_smaller_size_than_page_size_has_no_next_page() {
+        // Arrange
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+
+        // Action
+        var result: Result<Bool, Error>?
+        waitForExpectation { expectation in
+            let action = ProductAction.synchronizeProducts(siteID: sampleSiteID,
+                                                           pageNumber: 1,
+                                                           pageSize: 20, // This must be larger than the response size in `products-load-all.json`
+                                                           stockStatus: nil,
+                                                           productStatus: nil,
+                                                           productType: nil,
+                                                           sortOrder: .nameAscending) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+            store.onAction(action)
+        }
+
+        // Assert
+        XCTAssertFalse(try XCTUnwrap(result).get())
     }
 
     /// Verifies that ProductAction.synchronizeProducts returns an error whenever there is an error response from the backend.
@@ -283,8 +479,8 @@ class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
-                                                       sortOrder: .nameAscending) { error in
-            XCTAssertNotNil(error)
+                                                       sortOrder: .nameAscending) { result in
+            XCTAssertTrue(result.isFailure)
             expectation.fulfill()
         }
 
@@ -304,8 +500,8 @@ class ProductStoreTests: XCTestCase {
                                                        stockStatus: nil,
                                                        productStatus: nil,
                                                        productType: nil,
-                                                       sortOrder: .nameAscending) { error in
-            XCTAssertNotNil(error)
+                                                       sortOrder: .nameAscending) { result in
+            XCTAssertTrue(result.isFailure)
             expectation.fulfill()
         }
 
@@ -318,170 +514,202 @@ class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.retrieveProduct` returns the expected `Product`.
     ///
-    func testRetrieveSingleProductReturnsExpectedFields() {
+    func testRetrieveSingleProductReturnsExpectedFields() throws {
+        // Arrange
         // The shipping class ID should match the `shipping_class_id` field in `product.json`.
         let expectedShippingClass = sampleProductShippingClass(remoteID: 134, siteID: sampleSiteID)
         storageManager.insertSampleProductShippingClass(readOnlyProductShippingClass: expectedShippingClass)
 
-        let expectation = self.expectation(description: "Retrieve single product")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass)
+        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass, downloadable: true)
 
+        // Action
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product")
-        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(product)
-            XCTAssertEqual(product, remoteProduct)
-
-            expectation.fulfill()
+        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+            let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
         }
 
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Assert
+        let product = try XCTUnwrap(result.get())
+        XCTAssertEqual(product, remoteProduct)
+    }
+
+    /// Verifies that `ProductAction.retrieveProduct` returns the expected `Product` of external product type.
+    ///
+    func testRetrieveSingleExternalProductReturnsExpectedFields() throws {
+        // Arrange
+        let remote = MockProductsRemote()
+        let expectedProduct = MockProduct().product(siteID: sampleSiteID, productID: sampleProductID, buttonText: "Deal", externalURL: "https://example.com")
+        remote.whenLoadingProduct(siteID: sampleSiteID, productID: sampleProductID, thenReturn: .success(expectedProduct))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Action
+        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+            let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
+        }
+
+        // Assert
+        let product = try XCTUnwrap(result.get())
+        XCTAssertEqual(product, expectedProduct)
     }
 
     /// Verifies that `ProductAction.retrieveProduct` returns the expected `Product` for `variation` product types.
     ///
-    func testRetrieveSingleVariationTypeProductReturnsExpectedFields() {
-        let expectation = self.expectation(description: "Retrieve single variation type product")
+    func testRetrieveSingleVariationTypeProductReturnsExpectedFields() throws {
+        // Arrange
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteProduct = sampleVariationTypeProduct()
 
+        // Action
         network.simulateResponse(requestUrlSuffix: "products/295", filename: "variation-as-product")
-        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleVariationTypeProductID) { (product, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(product)
-            XCTAssertEqual(product, remoteProduct)
-
-            expectation.fulfill()
+        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+            let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleVariationTypeProductID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
         }
 
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Assert
+        let product = try XCTUnwrap(result.get())
+        XCTAssertEqual(product, remoteProduct)
     }
 
     /// Verifies that `ProductAction.retrieveProduct` effectively persists all of the remote product fields
     /// correctly across all of the related `Product` entities (tags, categories, attributes, etc).
     ///
-    func testRetrieveSingleProductEffectivelyPersistsProductFieldsAndRelatedObjects() {
-        let expectation = self.expectation(description: "Persist single product")
+    func testRetrieveSingleProductEffectivelyPersistsProductFieldsAndRelatedObjects() throws {
+        // Arrange
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // The shipping class ID should match the `shipping_class_id` field in `product.json`.
         let expectedShippingClass = sampleProductShippingClass(remoteID: 134, siteID: sampleSiteID)
         storageManager.insertSampleProductShippingClass(readOnlyProductShippingClass: expectedShippingClass)
 
-        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass)
+        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass, downloadable: true)
 
+        // Action
         network.simulateResponse(requestUrlSuffix: "products/282", filename: "product")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
 
-        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
-            XCTAssertNotNil(product)
-            XCTAssertNil(error)
-
-            let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: self.sampleProductID)
-            let readOnlyStoredProduct = storedProduct?.toReadOnly()
-            XCTAssertNotNil(storedProduct)
-            XCTAssertNotNil(readOnlyStoredProduct)
-            XCTAssertEqual(readOnlyStoredProduct, remoteProduct)
-
-            expectation.fulfill()
+        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+            let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
         }
 
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Assert
+        XCTAssertTrue(result.isSuccess)
+
+        let storedProduct = viewStorage.loadProduct(siteID: sampleSiteID, productID: sampleProductID)
+        let readOnlyStoredProduct = storedProduct?.toReadOnly()
+        XCTAssertNotNil(storedProduct)
+        XCTAssertNotNil(readOnlyStoredProduct)
+        XCTAssertEqual(readOnlyStoredProduct, remoteProduct)
     }
 
     /// Verifies that `ProductAction.retrieveProduct` effectively persists all of the remote product fields
     /// correctly across all of the related `Product` entities (tags, categories, attributes, etc) for `variation` product types.
     ///
-    func testRetrieveSingleVariationTypeProductEffectivelyPersistsProductFieldsAndRelatedObjects() {
-        let expectation = self.expectation(description: "Persist single variation type product")
+    func testRetrieveSingleVariationTypeProductEffectivelyPersistsProductFieldsAndRelatedObjects() throws {
+        // Arrange
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteProduct = sampleVariationTypeProduct()
 
+        // Action
         network.simulateResponse(requestUrlSuffix: "products/295", filename: "variation-as-product")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
 
-        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleVariationTypeProductID) { (product, error) in
-            XCTAssertNotNil(product)
-            XCTAssertNil(error)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 1)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 0)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
-
-            let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: self.sampleVariationTypeProductID)
-            let readOnlyStoredProduct = storedProduct?.toReadOnly()
-            XCTAssertNotNil(storedProduct)
-            XCTAssertNotNil(readOnlyStoredProduct)
-            XCTAssertEqual(readOnlyStoredProduct, remoteProduct)
-
-            expectation.fulfill()
+        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+            let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleVariationTypeProductID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
         }
 
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Assert
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
+
+        let storedProduct = viewStorage.loadProduct(siteID: sampleSiteID, productID: sampleVariationTypeProductID)
+        let readOnlyStoredProduct = storedProduct?.toReadOnly()
+        XCTAssertNotNil(storedProduct)
+        XCTAssertNotNil(readOnlyStoredProduct)
+        XCTAssertEqual(readOnlyStoredProduct, remoteProduct)
     }
 
     /// Verifies that `ProductAction.retrieveProduct` returns an error whenever there is an error response from the backend.
     ///
-    func testRetrieveSingleProductReturnsErrorUponReponseError() {
-        let expectation = self.expectation(description: "Retrieve single product error response")
+    func testRetrieveSingleProductReturnsErrorUponReponseError() throws {
+        // Arrange
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
+        // Action
         network.simulateResponse(requestUrlSuffix: "products/282", filename: "generic_error")
-        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+            let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
         }
 
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Assert
+        XCTAssertNotNil(result.failure)
     }
 
     /// Verifies that `ProductAction.retrieveProduct` returns an error whenever there is no backend response.
     ///
-    func testRetrieveSingleProductReturnsErrorUponEmptyResponse() {
-        let expectation = self.expectation(description: "Retrieve single product empty response")
+    func testRetrieveSingleProductReturnsErrorUponEmptyResponse() throws {
+        // Arrange
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
-            XCTAssertNotNil(error)
-            XCTAssertNil(product)
-            expectation.fulfill()
+        // Action
+        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+            let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
         }
 
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Assert
+        XCTAssertNotNil(result.failure)
     }
 
     /// Verifies that whenever a `ProductAction.retrieveProduct` action results in a response with statusCode = 404, the local entity
     /// is obliterated from existence.
     ///
-    func testRetrieveSingleProductResultingInStatusCode404CausesTheStoredProductToGetDeleted() {
-        let expectation = self.expectation(description: "Retrieve single product empty response")
+    func testRetrieveSingleProductResultingInStatusCode404CausesTheStoredProductToGetDeleted() throws {
+        // Arrange
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
 
+        // Action
         network.simulateError(requestUrlSuffix: "products/282", error: NetworkError.notFound)
-        let action = ProductAction.retrieveProduct(siteID: sampleSiteID, productID: sampleProductID) { (product, error) in
-            XCTAssertNotNil(error)
-            XCTAssertNil(product)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 0)
-
-            expectation.fulfill()
+        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+            let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
         }
 
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Assert
+        XCTAssertNotNil(result.failure)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
     }
 
 
@@ -494,7 +722,7 @@ class ProductStoreTests: XCTestCase {
 
         let expectation = self.expectation(description: "Stored Products Reset")
         let action = ProductAction.resetStoredProducts() {
-            productStore.upsertStoredProduct(readOnlyProduct: self.sampleProduct(), in: self.viewStorage)
+            productStore.upsertStoredProduct(readOnlyProduct: self.sampleProduct(downloadable: true), in: self.viewStorage)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 1)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 9)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 1)
@@ -502,6 +730,7 @@ class ProductStoreTests: XCTestCase {
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 2)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDownload.self), 3)
 
             expectation.fulfill()
         }
@@ -525,26 +754,29 @@ class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDownload.self), 0)
 
-        productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
+        productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(downloadable: true), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 9)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self, matching: NSPredicate(format: "siteID == %lld", sampleSiteID)), 9)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDownload.self), 3)
 
         productStore.upsertStoredProduct(readOnlyProduct: sampleProductMutated(), in: viewStorage)
         let storageProduct1 = viewStorage.loadProduct(siteID: sampleSiteID, productID: sampleProductID)
         XCTAssertEqual(storageProduct1?.toReadOnly(), sampleProductMutated())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 5)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self, matching: NSPredicate(format: "siteID == %lld", sampleSiteID)), 10)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDownload.self), 2)
     }
 
     /// Verifies that `ProductStore.upsertStoredProduct` updates the correct site's product.
@@ -562,7 +794,7 @@ class ProductStoreTests: XCTestCase {
 
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 9)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self, matching: NSPredicate(format: "siteID == %lld", sampleSiteID)), 9)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
@@ -571,7 +803,7 @@ class ProductStoreTests: XCTestCase {
 
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(sampleSiteID2), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 2)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 18)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self, matching: NSPredicate(format: "siteID == %lld", sampleSiteID2)), 9)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 2)
@@ -582,7 +814,7 @@ class ProductStoreTests: XCTestCase {
         let storageProduct1 = viewStorage.loadProduct(siteID: sampleSiteID, productID: sampleProductID)
         XCTAssertEqual(storageProduct1?.toReadOnly(), sampleProductMutated())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 2)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 14)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self, matching: NSPredicate(format: "siteID == %lld", sampleSiteID)), 10)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 3)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 3)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 2)
@@ -597,7 +829,7 @@ class ProductStoreTests: XCTestCase {
     ///
     func testUpdateStoredProductEffectivelyPersistsNewProduct() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let remoteProduct = sampleProduct()
+        let remoteProduct = sampleProduct(downloadable: true)
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductTag.self), 0)
@@ -606,17 +838,19 @@ class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDownload.self), 0)
         productStore.upsertStoredProduct(readOnlyProduct: remoteProduct, in: viewStorage)
 
         let storageProduct = viewStorage.loadProduct(siteID: sampleSiteID, productID: sampleProductID)
         XCTAssertEqual(storageProduct?.toReadOnly(), remoteProduct)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self), 9)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductTag.self, matching: NSPredicate(format: "siteID == %lld", sampleSiteID)), 9)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductCategory.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductImage.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDownload.self), 3)
     }
 
     /// Verifies that Innocuous Upsert OP(s) performed in Derived Contexts **DO NOT** trigger Refresh Events in the
@@ -812,7 +1046,7 @@ class ProductStoreTests: XCTestCase {
         let expectedProductSKU = "94115"
         let expectedProductManageStock = true
         let expectedProductSoldIndividually = false
-        let expectedStockQuantity = 99
+        let expectedStockQuantity: Int64 = 99
         let expectedBackordersSetting = ProductBackordersSetting.allowed
         let expectedStockStatus = ProductStockStatus.inStock
         let expectedProductRegularPrice = "12.00"
@@ -821,6 +1055,8 @@ class ProductStoreTests: XCTestCase {
         let expectedProductSaleEnd = date(with: "2019-10-27T21:29:50")
         let expectedProductTaxStatus = "taxable"
         let expectedProductTaxClass = "reduced-rate"
+        let expectedDownloadableFileCount = 0
+        let expectedDownloadable = false
 
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update")
         let product = sampleProduct(productID: expectedProductID)
@@ -836,8 +1072,7 @@ class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageProduct.self), 1)
 
         let action = ProductAction.updateProduct(product: product) { result in
-            guard case .success(let product) = result else {
-                XCTFail()
+                XCTFail("Unexpected result: \(result)")
                 return
             }
             XCTAssertEqual(product.productID, expectedProductID)
@@ -861,6 +1096,8 @@ class ProductStoreTests: XCTestCase {
             XCTAssertEqual(product.dateOnSaleEnd, expectedProductSaleEnd)
             XCTAssertEqual(product.taxStatusKey, expectedProductTaxStatus)
             XCTAssertEqual(product.taxClass, expectedProductTaxClass)
+            XCTAssertEqual(product.downloadable, expectedDownloadable)
+            XCTAssertEqual(product.downloads.count, expectedDownloadableFileCount)
 
             let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: expectedProductID)
             let readOnlyStoredProduct = storedProduct?.toReadOnly()
@@ -897,10 +1134,10 @@ class ProductStoreTests: XCTestCase {
         let existingStorageShippingClass = viewStorage.insertNewObject(ofType: StorageProductShippingClass.self)
         existingStorageShippingClass.update(with: existingShippingClass)
 
-        let product = sampleProduct(productID: expectedProductID)
+        let product = sampleProduct(productID: expectedProductID, downloadable: true)
         let action = ProductAction.updateProduct(product: product) { result in
             guard case .success = result else {
-                XCTFail()
+                XCTFail("Unexpected result: \(result)")
                 return
             }
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 1)
@@ -911,6 +1148,7 @@ class ProductStoreTests: XCTestCase {
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 5)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 1)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDownload.self), 0)
 
             let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: expectedProductID)
             let readOnlyStoredProduct = storedProduct?.toReadOnly()
@@ -930,46 +1168,50 @@ class ProductStoreTests: XCTestCase {
     /// Verifies that `ProductAction.updateProduct` returns an error whenever there is an error response from the backend.
     ///
     func testUpdatingProductReturnsErrorUponReponseError() {
-        let expectation = self.expectation(description: "Update product")
+        // Given
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "generic_error")
-        let product = sampleProduct()
-        let action = ProductAction.updateProduct(product: product) { result in
-            guard case .failure = result else {
-                XCTFail()
-                return
-            }
-            expectation.fulfill()
-        }
 
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // When
+        let product = sampleProduct()
+        waitForExpectation { expectation in
+            let action = ProductAction.updateProduct(product: product) { result in
+                // Then
+                guard case .failure = result else {
+                    XCTFail("Unexpected result: \(result)")
+                    return
+                }
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
     }
 
     /// Verifies that `ProductAction.updateProduct` returns an error whenever there is no backend response.
     ///
     func testUpdatingProductReturnsErrorUponEmptyResponse() {
-        let expectation = self.expectation(description: "Update product")
+        // Given
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
+        // When
         let product = sampleProduct()
-        let action = ProductAction.updateProduct(product: product) { result in
-            guard case .failure = result else {
-                XCTFail()
-                return
+        waitForExpectation { expectation in
+            let action = ProductAction.updateProduct(product: product) { result in
+                // Then
+                guard case .failure = result else {
+                    XCTFail("Unexpected result: \(result)")
+                    return
+                }
+                expectation.fulfill()
             }
-            expectation.fulfill()
+            productStore.onAction(action)
         }
-
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that whenever a `ProductAction.updateProduct` action results in a response with statusCode = 404, the local entity is not deleted.
     ///
     func testUpdatingProductResultingInStatusCode404DoesNotCauseTheStoredProductToGetDeleted() {
-        let expectation = self.expectation(description: "Update product")
+        // Given
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
@@ -977,20 +1219,187 @@ class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
 
         network.simulateError(requestUrlSuffix: "products/\(sampleProductID)", error: NetworkError.notFound)
-        let product = sampleProduct()
-        let action = ProductAction.updateProduct(product: product) { result in
-            guard case .failure = result else {
-                XCTFail()
-                return
-            }
-            // The existing Product should not be deleted on 404 response.
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 1)
 
+        // When
+        let product = sampleProduct()
+        waitForExpectation { expectation in
+            let action = ProductAction.updateProduct(product: product) { result in
+                // Then
+                guard case .failure = result else {
+                    XCTFail("Unexpected result: \(result)")
+                    return
+                }
+                // The existing Product should not be deleted on 404 response.
+                XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 1)
+
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
+    }
+
+    /// Verifies that whenever a `ProductAction.updateProduct` action results in product update maintaint the Product Tags order.
+    ///
+    func testUpdatingProductResultingMantainingTheSameOrderForTags() {
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let product = sampleProduct(sampleSiteID, productID: sampleProductID)
+        productStore.upsertStoredProduct(readOnlyProduct: product, in: viewStorage)
+        let productStored = viewStorage.loadProduct(siteID: self.sampleSiteID, productID: self.sampleProductID)
+
+        XCTAssertEqual(product.tags.map { $0.tagID }, productStored?.tagsArray.map { $0.tagID })
+
+        let productMutated = sampleProduct(sampleSiteID,
+                                           productID: sampleProductID,
+                                           tags: [ProductTag(siteID: sampleSiteID, tagID: 100, name: "My new tag", slug: "my-new-tag")])
+        productStore.upsertStoredProduct(readOnlyProduct: productMutated, in: viewStorage)
+        let productMutatedStored = viewStorage.loadProduct(siteID: self.sampleSiteID, productID: self.sampleProductID)
+
+        XCTAssertEqual(productMutated.tags.map { $0.tagID }, productMutatedStored?.tagsArray.map { $0.tagID })
+    }
+
+    // MARK: - ProductAction.retrieveProducts
+
+    /// Verifies that ProductAction.retrieveProducts effectively persists any retrieved products.
+    ///
+    func testRetrievingProductsEffectivelyPersistsRetrievedProducts() {
+        // Arrange
+        let remote = MockProductsRemote()
+        let expectedProduct = MockProduct().product(siteID: sampleSiteID, productID: sampleProductID, buttonText: "Deal", externalURL: "https://example.com")
+        remote.whenLoadingProducts(siteID: sampleSiteID, productIDs: [sampleProductID], thenReturn: .success([expectedProduct]))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        let expectation = self.expectation(description: "Retrieve product list")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        // Action
+        var retrievedProducts: [Networking.Product]?
+        let action = ProductAction.retrieveProducts(siteID: sampleSiteID, productIDs: [sampleProductID]) { result in
+            switch result {
+            case .failure(let error):
+                XCTFail(error.localizedDescription)
+            case .success((let products, let hasNextPage)):
+                retrievedProducts = products
+                XCTAssertFalse(hasNextPage)
+            }
             expectation.fulfill()
         }
-
         productStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Assert
+        XCTAssertEqual(retrievedProducts, [expectedProduct])
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+    }
+
+    func test_retrieving_products_of_the_same_page_size_has_next_page() {
+        // Arrange
+        let remote = MockProductsRemote()
+        let expectedProducts: [Yosemite.Product] = .init(repeating: MockProduct().product(), count: 25)
+        remote.whenLoadingProducts(siteID: sampleSiteID, productIDs: [sampleProductID], thenReturn: .success(expectedProducts))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Action
+        var result: Result<(products: [Yosemite.Product], hasNextPage: Bool), Error>?
+        waitForExpectation { expectation in
+            let action = ProductAction.retrieveProducts(siteID: sampleSiteID, productIDs: [sampleProductID], pageNumber: 1, pageSize: 25) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
+
+        // Assert
+        guard case let .success((products: products, hasNextPage: hasNextPage)) = result else {
+            XCTFail("Unexpected result: \(String(describing: result))")
+            return
+        }
+        XCTAssertEqual(products, expectedProducts)
+        XCTAssertTrue(hasNextPage)
+    }
+
+    func test_retrieving_products_of_smaller_size_than_page_size_has_no_next_page() {
+        // Arrange
+        let remote = MockProductsRemote()
+        let expectedProducts: [Yosemite.Product] = .init(repeating: MockProduct().product(), count: 24)
+        remote.whenLoadingProducts(siteID: sampleSiteID, productIDs: [sampleProductID], thenReturn: .success(expectedProducts))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Action
+        var result: Result<(products: [Yosemite.Product], hasNextPage: Bool), Error>?
+        waitForExpectation { expectation in
+            let action = ProductAction.retrieveProducts(siteID: sampleSiteID, productIDs: [sampleProductID], pageNumber: 1, pageSize: 25) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
+
+        // Assert
+        guard case let .success((products: products, hasNextPage: hasNextPage)) = result else {
+            XCTFail("Unexpected result: \(String(describing: result))")
+            return
+        }
+        XCTAssertEqual(products, expectedProducts)
+        XCTAssertFalse(hasNextPage)
+    }
+
+    /// Verifies that ProductAction.retrieveProducts with a page number and size makes a network request that includes these params.
+    ///
+    func testRetrievingProductsMakesANetworkRequestWithTheExpectedPageNumberAndSize() {
+        // Arrange
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // Action
+        let pageNumber = 6
+        let pageSize = 36
+        let action = ProductAction.retrieveProducts(siteID: sampleSiteID, productIDs: [sampleProductID], pageNumber: pageNumber, pageSize: pageSize) { _ in }
+        productStore.onAction(action)
+
+        // Assert
+        guard let pathComponents = network.pathComponents else {
+            XCTFail("Cannot parse path from the API request")
+            return
+        }
+
+        let expectedPageNumberParam = "page=\(pageNumber)"
+        XCTAssertTrue(pathComponents.contains(expectedPageNumberParam), "Expected to have param: \(expectedPageNumberParam)")
+
+        let expectedPageSizeParam = "per_page=\(pageSize)"
+        XCTAssertTrue(pathComponents.contains(expectedPageSizeParam), "Expected to have param: \(expectedPageSizeParam)")
+    }
+
+    /// Verifies that ProductAction.retrieveProducts always returns an empty result for an empty array of product IDs.
+    ///
+    func testRetrievingProductsWithEmptyIDsReturnsAnEmptyResult() {
+        // Arrange
+        let remote = MockProductsRemote()
+        let expectedProduct = MockProduct().product(siteID: sampleSiteID, productID: sampleProductID, buttonText: "Deal", externalURL: "https://example.com")
+        // The mock remote returns a non-empty result for an empty array of product IDs.
+        remote.whenLoadingProducts(siteID: sampleSiteID, productIDs: [], thenReturn: .success([expectedProduct]))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        let expectation = self.expectation(description: "Retrieve product list")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        // Action
+        var retrievedProducts: [Networking.Product]?
+        let action = ProductAction.retrieveProducts(siteID: sampleSiteID, productIDs: []) { result in
+            switch result {
+            case .failure(let error):
+                XCTFail(error.localizedDescription)
+            case .success((let products, let hasNextPage)):
+                retrievedProducts = products
+                XCTAssertFalse(hasNextPage)
+            }
+            expectation.fulfill()
+        }
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Assert
+        XCTAssertEqual(retrievedProducts, [])
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
     }
 }
 
@@ -998,7 +1407,11 @@ class ProductStoreTests: XCTestCase {
 //
 private extension ProductStoreTests {
 
-    func sampleProduct(_ siteID: Int64? = nil, productID: Int64? = nil, productShippingClass: Networking.ProductShippingClass? = nil) -> Networking.Product {
+    func sampleProduct(_ siteID: Int64? = nil,
+                       productID: Int64? = nil,
+                       productShippingClass: Networking.ProductShippingClass? = nil,
+                       tags: [Networking.ProductTag]? = nil,
+                       downloadable: Bool = false) -> Networking.Product {
         let testSiteID = siteID ?? sampleSiteID
         let testProductID = productID ?? sampleProductID
         return Product(siteID: testSiteID,
@@ -1006,6 +1419,7 @@ private extension ProductStoreTests {
                        name: "Book the Green Room",
                        slug: "book-the-green-room",
                        permalink: "https://example.com/product/book-the-green-room/",
+                       date: date(with: "2019-02-19T17:33:31"),
                        dateCreated: date(with: "2019-02-19T17:33:31"),
                        dateModified: date(with: "2019-02-19T17:48:01"),
                        dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
@@ -1015,7 +1429,7 @@ private extension ProductStoreTests {
                        featured: false,
                        catalogVisibilityKey: "visible",
                        fullDescription: "<p>This is the party room!</p>\n",
-                       briefDescription: """
+                       shortDescription: """
                            [contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. \
                            We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let us \
                            know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests \
@@ -1029,10 +1443,11 @@ private extension ProductStoreTests {
                        purchasable: true,
                        totalSales: 0,
                        virtual: true,
-                       downloadable: false,
-                       downloads: [],
-                       downloadLimit: -1,
-                       downloadExpiry: -1,
+                       downloadable: downloadable,
+                       downloads: downloadable ? sampleDownloads() : [],
+                       downloadLimit: downloadable ? 1 : -1,
+                       downloadExpiry: downloadable ? 1 : -1,
+                       buttonText: "",
                        externalURL: "http://somewhere.com",
                        taxStatusKey: "taxable",
                        taxClass: "",
@@ -1059,7 +1474,7 @@ private extension ProductStoreTests {
                        parentID: 0,
                        purchaseNote: "Thank you!",
                        categories: sampleCategories(),
-                       tags: sampleTags(),
+                       tags: tags ?? sampleTags(siteID: testSiteID),
                        images: sampleImages(),
                        attributes: sampleAttributes(),
                        defaultAttributes: sampleDefaultAttributes(),
@@ -1077,16 +1492,16 @@ private extension ProductStoreTests {
         return [category1]
     }
 
-    func sampleTags() -> [Networking.ProductTag] {
-        let tag1 = ProductTag(tagID: 37, name: "room", slug: "room")
-        let tag2 = ProductTag(tagID: 38, name: "party room", slug: "party-room")
-        let tag3 = ProductTag(tagID: 39, name: "30", slug: "30")
-        let tag4 = ProductTag(tagID: 40, name: "20+", slug: "20")
-        let tag5 = ProductTag(tagID: 41, name: "meeting room", slug: "meeting-room")
-        let tag6 = ProductTag(tagID: 42, name: "meetings", slug: "meetings")
-        let tag7 = ProductTag(tagID: 43, name: "parties", slug: "parties")
-        let tag8 = ProductTag(tagID: 44, name: "graduation", slug: "graduation")
-        let tag9 = ProductTag(tagID: 45, name: "birthday party", slug: "birthday-party")
+    func sampleTags(siteID: Int64) -> [Networking.ProductTag] {
+        let tag1 = ProductTag(siteID: siteID, tagID: 37, name: "room", slug: "room")
+        let tag2 = ProductTag(siteID: siteID, tagID: 38, name: "party room", slug: "party-room")
+        let tag3 = ProductTag(siteID: siteID, tagID: 39, name: "30", slug: "30")
+        let tag4 = ProductTag(siteID: siteID, tagID: 40, name: "20+", slug: "20")
+        let tag5 = ProductTag(siteID: siteID, tagID: 41, name: "meeting room", slug: "meeting-room")
+        let tag6 = ProductTag(siteID: siteID, tagID: 42, name: "meetings", slug: "meetings")
+        let tag7 = ProductTag(siteID: siteID, tagID: 43, name: "parties", slug: "parties")
+        let tag8 = ProductTag(siteID: siteID, tagID: 44, name: "graduation", slug: "graduation")
+        let tag9 = ProductTag(siteID: siteID, tagID: 45, name: "birthday party", slug: "birthday-party")
 
         return [tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9]
     }
@@ -1129,14 +1544,24 @@ private extension ProductStoreTests {
     func sampleDownloads() -> [Networking.ProductDownload] {
         let download1 = ProductDownload(downloadID: "1f9c11f99ceba63d4403c03bd5391b11",
                                         name: "Song #1",
-                                        fileURL: "https://woocommerce.files.wordpress.com/2017/06/woo-single-1.ogg")
+                                        fileURL: "https://example.com/woo-single-1.ogg")
         let download2 = ProductDownload(downloadID: "ec87d8b5-1361-4562-b4b8-18980b5a2cae",
                                         name: "Artwork",
-                                        fileURL: "https://thuy-test.mystagingwebsite.com/wp-content/uploads/2018/01/cd_4_angle.jpg")
+                                        fileURL: "https://example.com/cd_4_angle.jpg")
         let download3 = ProductDownload(downloadID: "240cd543-5457-498e-95e2-6b51fdaf15cc",
                                         name: "Artwork 2",
-                                        fileURL: "https://thuy-test.mystagingwebsite.com/wp-content/uploads/2018/01/cd_4_flat.jpg")
+                                        fileURL: "https://example.com/cd_4_flat.jpg")
         return [download1, download2, download3]
+    }
+
+    func sampleDownloadsMutated() -> [Networking.ProductDownload] {
+        let download1 = ProductDownload(downloadID: "1f9c11f99ceba63d4403c03bd5391b11",
+                                        name: "Song #1",
+                                        fileURL: "https://example.com/woo-single-1.ogg")
+        let download2 = ProductDownload(downloadID: "ec87d8b5-1361-4562-b4b8-18980b5a2cae",
+                                        name: "Artwork",
+                                        fileURL: "https://example.com/cd_4_angle.jpg")
+        return [download1, download2]
     }
 
     func sampleProductMutated(_ siteID: Int64? = nil) -> Networking.Product {
@@ -1147,6 +1572,7 @@ private extension ProductStoreTests {
                        name: "Book the Green Room",
                        slug: "book-the-green-room",
                        permalink: "https://example.com/product/book-the-green-room/",
+                       date: date(with: "2019-02-19T17:33:31"),
                        dateCreated: date(with: "2019-02-19T17:33:31"),
                        dateModified: date(with: "2019-02-19T17:48:01"),
                        dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
@@ -1156,7 +1582,7 @@ private extension ProductStoreTests {
                        featured: false,
                        catalogVisibilityKey: "visible",
                        fullDescription: "<p>This is the party room!</p>\n",
-                       briefDescription: """
+                       shortDescription: """
                            [contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. \
                            We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let us \
                            know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests \
@@ -1171,9 +1597,10 @@ private extension ProductStoreTests {
                        totalSales: 66,
                        virtual: false,
                        downloadable: true,
-                       downloads: sampleDownloads(),
+                       downloads: sampleDownloadsMutated(),
                        downloadLimit: 1,
                        downloadExpiry: 1,
+                       buttonText: "",
                        externalURL: "http://somewhere.com.net",
                        taxStatusKey: "taxable",
                        taxClass: "",
@@ -1200,7 +1627,7 @@ private extension ProductStoreTests {
                        parentID: 444,
                        purchaseNote: "Whatever!",
                        categories: sampleCategoriesMutated(),
-                       tags: sampleTagsMutated(),
+                       tags: sampleTagsMutated(siteID: testSiteID),
                        images: sampleImagesMutated(),
                        attributes: sampleAttributesMutated(),
                        defaultAttributes: sampleDefaultAttributesMutated(),
@@ -1219,12 +1646,12 @@ private extension ProductStoreTests {
         return [category1, category2]
     }
 
-    func sampleTagsMutated() -> [Networking.ProductTag] {
-        let tag1 = ProductTag(tagID: 37, name: "something", slug: "something")
-        let tag2 = ProductTag(tagID: 38, name: "party room", slug: "party-room")
-        let tag3 = ProductTag(tagID: 39, name: "3000", slug: "3000")
-        let tag4 = ProductTag(tagID: 45, name: "birthday party", slug: "birthday-party")
-        let tag5 = ProductTag(tagID: 95, name: "yep", slug: "yep")
+    func sampleTagsMutated(siteID: Int64) -> [Networking.ProductTag] {
+        let tag1 = ProductTag(siteID: siteID, tagID: 37, name: "something", slug: "something")
+        let tag2 = ProductTag(siteID: siteID, tagID: 38, name: "party room", slug: "party-room")
+        let tag3 = ProductTag(siteID: siteID, tagID: 39, name: "3000", slug: "3000")
+        let tag4 = ProductTag(siteID: siteID, tagID: 45, name: "birthday party", slug: "birthday-party")
+        let tag5 = ProductTag(siteID: siteID, tagID: 95, name: "yep", slug: "yep")
 
         return [tag1, tag2, tag3, tag4, tag5]
     }
@@ -1278,6 +1705,7 @@ private extension ProductStoreTests {
                        name: "Paper Airplane - Black, Long",
                        slug: "paper-airplane-3",
                        permalink: "https://paperairplane.store/product/paper-airplane/?attribute_color=Black&attribute_length=Long",
+                       date: date(with: "2019-04-04T22:06:45"),
                        dateCreated: date(with: "2019-04-04T22:06:45"),
                        dateModified: date(with: "2019-04-09T20:24:03"),
                        dateOnSaleStart: nil,
@@ -1287,7 +1715,7 @@ private extension ProductStoreTests {
                        featured: false,
                        catalogVisibilityKey: "visible",
                        fullDescription: "<p>Long paper airplane. Color is black. </p>\n",
-                       briefDescription: "",
+                       shortDescription: "",
                        sku: "345345-2",
                        price: "22.72",
                        regularPrice: "22.72",
@@ -1300,6 +1728,7 @@ private extension ProductStoreTests {
                        downloads: [],
                        downloadLimit: -1,
                        downloadExpiry: -1,
+                       buttonText: "",
                        externalURL: "",
                        taxStatusKey: "taxable",
                        taxClass: "",

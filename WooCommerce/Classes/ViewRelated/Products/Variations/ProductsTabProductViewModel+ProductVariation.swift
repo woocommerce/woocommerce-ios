@@ -2,41 +2,82 @@ import UIKit
 import Yosemite
 
 extension ProductsTabProductViewModel {
-    init(productVariation: ProductVariation, currency: String) {
-        imageUrl = productVariation.image?.src
-        name = productVariation.attributes.map({ $0.option }).joined(separator: " - ")
-        detailsAttributedString = productVariation.createDetailsAttributedString(currency: currency)
+    init(productVariationModel: EditableProductVariationModel,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+        imageUrl = productVariationModel.productVariation.image?.src
+        name = productVariationModel.name
+        detailsAttributedString = productVariationModel.createDetailsAttributedString(currencySettings: currencySettings)
 
         imageService = ServiceLocator.imageService
+        isSelected = false
     }
 }
 
-private extension ProductVariation {
-    func createDetailsAttributedString(currency: String) -> NSAttributedString {
-        let visibilityText = createVisibilityText()
-        let priceText = createPriceText(currency: currency)
+private extension EditableProductVariationModel {
+    func createDetailsAttributedString(currencySettings: CurrencySettings) -> NSAttributedString {
+        let stockStatusAttributedString = createStockStatusAttributedString()
+        let variationStatusOrPriceAttributedString = createVariationStatusOrPriceAttributedString(currencySettings: currencySettings)
 
-        let detailsText = [visibilityText, priceText]
-            .compactMap({ $0 })
-            .joined(separator: " • ")
+        let detailsAttributedString = NSMutableAttributedString(attributedString: stockStatusAttributedString)
+        detailsAttributedString.append(NSAttributedString(string: " • ", attributes: [
+            .foregroundColor: UIColor.textSubtle,
+            .font: Style.detailsFont
+        ]))
+        detailsAttributedString.append(variationStatusOrPriceAttributedString)
+        return NSAttributedString(attributedString: detailsAttributedString)
+    }
+
+    func createStockStatusAttributedString() -> NSAttributedString {
+        let stockText = createStockText()
+        return NSAttributedString(string: stockText,
+                                  attributes: [
+                                    .foregroundColor: UIColor.textSubtle,
+                                    .font: Style.detailsFont
+        ])
+    }
+
+    func createVariationStatusOrPriceAttributedString(currencySettings: CurrencySettings) -> NSAttributedString {
+        let currencyCode = currencySettings.currencyCode
+        let currency = currencySettings.symbol(from: currencyCode)
+
+        let detailsText: String
+        let textColor: UIColor
+
+        if isEnabled == false {
+            detailsText = DetailsLocalization.disabledText
+            textColor = .textSubtle
+        } else if isEnabledAndMissingPrice {
+            detailsText = DetailsLocalization.noPriceText
+            textColor = .warning
+        } else {
+            detailsText = createPriceText(currency: currency, currencySettings: currencySettings)
+            textColor = .textSubtle
+        }
 
         let attributedString = NSMutableAttributedString(string: detailsText,
                                                          attributes: [
-                                                            .foregroundColor: UIColor.textSubtle,
-                                                            .font: StyleManager.footerLabelFont
-            ])
+                                                            .foregroundColor: textColor,
+                                                            .font: Style.detailsFont
+        ])
         return attributedString
     }
 
-    func createVisibilityText() -> String? {
-        guard purchasable == false else {
-            return nil
-        }
-        return NSLocalizedString("Hidden", comment: "Shown in a Product Variation cell if the variation is not visible (purchasable is false)")
+    func createPriceText(currency: String, currencySettings: CurrencySettings) -> String {
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        return currencyFormatter.formatAmount(productVariation.price, with: currency) ?? ""
     }
+}
 
-    func createPriceText(currency: String) -> String? {
-        let currencyFormatter = CurrencyFormatter()
-        return currencyFormatter.formatAmount(price, with: currency)
+private extension EditableProductVariationModel {
+    enum Style {
+        static let detailsFont = StyleManager.footerLabelFont
+    }
+}
+
+extension EditableProductVariationModel {
+    enum DetailsLocalization {
+        static let disabledText = NSLocalizedString("Disabled", comment: "Shown in a Product Variation cell if the variation is disabled")
+        static let noPriceText = NSLocalizedString("No price set",
+                                                   comment: "Shown in a Product Variation cell if the variation is enabled but does not have a price")
     }
 }

@@ -6,10 +6,16 @@ import Storage
 // MARK: - ProductReviewStore
 //
 public final class ProductReviewStore: Store {
+    private let remote: ProductReviewsRemote
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
     }()
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.remote = ProductReviewsRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     /// Registers for supported Actions.
     ///
@@ -28,10 +34,17 @@ public final class ProductReviewStore: Store {
         switch action {
         case .resetStoredProductReviews(let onCompletion):
             resetStoredProductReviews(onCompletion: onCompletion)
-        case .synchronizeProductReviews(let siteID, let pageNumber, let pageSize, let onCompletion):
-            synchronizeProductReviews(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .synchronizeProductReviews(let siteID, let pageNumber, let pageSize, let products, let status, let onCompletion):
+            synchronizeProductReviews(siteID: siteID,
+                                      pageNumber: pageNumber,
+                                      pageSize: pageSize,
+                                      products: products,
+                                      status: status,
+                                      onCompletion: onCompletion)
         case .retrieveProductReview(let siteID, let reviewID, let onCompletion):
             retrieveProductReview(siteID: siteID, reviewID: reviewID, onCompletion: onCompletion)
+        case .retrieveProductReviewFromNote(let noteID, let onCompletion):
+            retrieveProductReviewFromNote(noteID: noteID, onCompletion: onCompletion)
         case .updateApprovalStatus(let siteID, let reviewID, let isApproved, let onCompletion):
             updateApprovalStatus(siteID: siteID, reviewID: reviewID, isApproved: isApproved, onCompletion: onCompletion)
         case .updateTrashStatus(let siteID, let reviewID, let isTrashed, let onCompletion):
@@ -60,13 +73,20 @@ private extension ProductReviewStore {
 
     /// Synchronizes the product reviews associated with a given Site ID (if any!).
     ///
-    func synchronizeProductReviews(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
-        let remote = ProductReviewsRemote(network: network)
-
-        remote.loadAllProductReviews(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (productReviews, error) in
+    func synchronizeProductReviews(siteID: Int64, pageNumber: Int, pageSize: Int, products: [Int64]? = nil, status: ProductReviewStatus? = nil,
+                                   onCompletion: @escaping (Error?) -> Void) {
+        remote.loadAllProductReviews(for: siteID,
+                                     pageNumber: pageNumber,
+                                     pageSize: pageSize,
+                                     products: products,
+                                     status: status) { [weak self] (productReviews, error) in
             guard let productReviews = productReviews else {
                 onCompletion(error)
                 return
+            }
+
+            if pageNumber == Default.firstPageNumber {
+                self?.deleteStoredProductReviews(siteID: siteID)
             }
 
             self?.upsertStoredProductReviewsInBackground(readOnlyProductReviews: productReviews, siteID: siteID) {
@@ -78,8 +98,6 @@ private extension ProductReviewStore {
     /// Retrieves the product review associated with a given siteID + reviewID (if any!).
     ///
     func retrieveProductReview(siteID: Int64, reviewID: Int64, onCompletion: @escaping (Networking.ProductReview?, Error?) -> Void) {
-        let remote = ProductReviewsRemote(network: network)
-
         remote.loadProductReview(for: siteID, reviewID: reviewID) { [weak self] result in
             guard let self = self else {
                 return
@@ -97,6 +115,18 @@ private extension ProductReviewStore {
                 }
             }
         }
+    }
+
+    /// Retrieves the `Note`, `ProductReview`, and `Product` in sequence.
+    ///
+    /// Only the `ProductReview` is stored in the database. Please see
+    /// `RetrieveProductReviewFromNoteUseCase` for the reason why.
+    ///
+    func retrieveProductReviewFromNote(noteID: Int64,
+                                       onCompletion: @escaping (Result<ProductReviewFromNoteParcel, Error>) -> Void) {
+        let useCase = RetrieveProductReviewFromNoteUseCase(network: network,
+                                                           derivedStorage: sharedDerivedStorage)
+        useCase.retrieve(noteID: noteID, completion: onCompletion)
     }
 
     /// Updates the review's approval status
@@ -126,6 +156,14 @@ private extension ProductReviewStore {
 //
 private extension ProductReviewStore {
 
+    /// Deletes any Storage.ProductReview with the specified `siteID`
+    ///
+    func deleteStoredProductReviews(siteID: Int64) {
+        let storage = storageManager.viewStorage
+        storage.deleteProductReviews(siteID: siteID)
+        storage.saveIfNeeded()
+    }
+
     /// Deletes any Storage.ProductReview with the specified `siteID` and `reviewID`
     ///
     func deleteStoredProductReview(siteID: Int64, reviewID: Int64) {
@@ -153,7 +191,6 @@ private extension ProductReviewStore {
     }
 
     func moderateReview(siteID: Int64, reviewID: Int64, status: ProductReviewStatus, onCompletion: @escaping (ProductReviewStatus?, Error?) -> Void) {
-        let remote = ProductReviewsRemote(network: network)
         let storage = storageManager.viewStorage
         remote.updateProductReviewStatus(for: siteID, reviewID: reviewID, statusKey: status.rawValue) { (productReview, error) in
             guard let productReview = productReview else {

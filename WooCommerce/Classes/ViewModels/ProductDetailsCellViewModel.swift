@@ -93,7 +93,7 @@ struct ProductDetailsCellViewModel {
     ///
     init(item: OrderItem,
          currency: String,
-         formatter: CurrencyFormatter = CurrencyFormatter(),
+         formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          product: Product? = nil) {
         self.currency = currency
         self.currencyFormatter = formatter
@@ -109,7 +109,7 @@ struct ProductDetailsCellViewModel {
     ///
     init(aggregateItem: AggregateOrderItem,
          currency: String,
-         formatter: CurrencyFormatter = CurrencyFormatter(),
+         formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          product: Product? = nil) {
         self.currency = currency
         self.currencyFormatter = formatter
@@ -125,7 +125,7 @@ struct ProductDetailsCellViewModel {
     ///
     init(refundedItem: OrderItemRefund,
          currency: String,
-         formatter: CurrencyFormatter = CurrencyFormatter(),
+         formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          product: Product? = nil) {
         self.currency = currency
         self.currencyFormatter = formatter

@@ -24,18 +24,19 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
 
     func testObservablesFromEditActionsOfTheSameData() {
         // Arrange
-        let product = MockProduct().product()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: product)
-        let viewModel = ProductFormViewModel(product: product,
+        let product = MockProduct().product(downloadable: true)
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductFormViewModel(product: model,
+                                             formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease2Enabled: true,
-                                             isEditProductsRelease3Enabled: false)
+                                             isEditProductsRelease5Enabled: false)
         let taxClass = TaxClass(siteID: product.siteID, name: "standard", slug: product.taxClass ?? "standard")
         cancellableProduct = viewModel.observableProduct.subscribe { _ in
             // Assert
             XCTFail("Should not be triggered from edit actions of the same data")
         }
-        cancellableProductName = viewModel.productName.subscribe { _ in
+        cancellableProductName = viewModel.productName?.subscribe { _ in
             // Assert
             XCTFail("Should not be triggered from edit actions of the same data")
         }
@@ -47,7 +48,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         // Action
         viewModel.updateName(product.name)
         viewModel.updateDescription(product.fullDescription ?? "")
-        viewModel.updateBriefDescription(product.briefDescription ?? "")
+        viewModel.updateShortDescription(product.shortDescription ?? "")
         viewModel.updateProductSettings(ProductSettings(from: product, password: nil))
         viewModel.updatePriceSettings(regularPrice: product.regularPrice,
                                       salePrice: product.salePrice,
@@ -61,18 +62,27 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
                                           stockQuantity: product.stockQuantity,
                                           backordersSetting: product.backordersSetting,
                                           stockStatus: product.productStockStatus)
-        viewModel.updateShippingSettings(weight: product.weight, dimensions: product.dimensions, shippingClass: product.productShippingClass)
+        viewModel.updateShippingSettings(weight: product.weight,
+                                         dimensions: product.dimensions,
+                                         shippingClass: product.shippingClass,
+                                         shippingClassID: product.shippingClassID)
+        viewModel.updateProductCategories(product.categories)
+        viewModel.updateProductTags(product.tags)
+        viewModel.updateDownloadableFiles(downloadableFiles: product.downloads,
+                                          downloadLimit: product.downloadLimit,
+                                          downloadExpiry: product.downloadExpiry)
     }
 
     /// When only product name is updated, the product name observable should be triggered but no the product observable.
     func testObservablesFromEditingProductName() {
         // Arrange
         let product = MockProduct().product()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: product)
-        let viewModel = ProductFormViewModel(product: product,
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductFormViewModel(product: model,
+                                             formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease2Enabled: true,
-                                             isEditProductsRelease3Enabled: false)
+                                             isEditProductsRelease5Enabled: false)
         var isProductUpdated: Bool?
         cancellableProduct = viewModel.observableProduct.subscribe { product in
             isProductUpdated = true
@@ -81,7 +91,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         var updatedProductName: String?
         let expectationForProductName = self.expectation(description: "Product name updates")
         expectationForProductName.expectedFulfillmentCount = 1
-        cancellableProductName = viewModel.productName.subscribe { productName in
+        cancellableProductName = viewModel.productName?.subscribe { productName in
             updatedProductName = productName
             expectationForProductName.fulfill()
         }
@@ -109,18 +119,19 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
     func testObservablesFromEditingProductPassword() {
         // Arrange
         let product = MockProduct().product()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: product)
-        let viewModel = ProductFormViewModel(product: product,
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductFormViewModel(product: model,
+                                             formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease2Enabled: true,
-                                             isEditProductsRelease3Enabled: false)
+                                             isEditProductsRelease5Enabled: false)
         var isProductUpdated: Bool?
         cancellableProduct = viewModel.observableProduct.subscribe { product in
             isProductUpdated = true
         }
 
         var updatedProductName: String?
-        cancellableProductName = viewModel.productName.subscribe { productName in
+        cancellableProductName = viewModel.productName?.subscribe { productName in
             updatedProductName = productName
         }
 
@@ -146,11 +157,12 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
     func testObservablesFromUpdatingProductPasswordRemotely() {
         // Arrange
         let product = MockProduct().product()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: product)
-        let viewModel = ProductFormViewModel(product: product,
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductFormViewModel(product: model,
+                                             formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease2Enabled: true,
-                                             isEditProductsRelease3Enabled: false)
+                                             isEditProductsRelease5Enabled: false)
         // The password is set from a separate DotCom API.
         viewModel.resetPassword("134")
 
@@ -160,7 +172,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         }
 
         var updatedProductName: String?
-        cancellableProductName = viewModel.productName.subscribe { productName in
+        cancellableProductName = viewModel.productName?.subscribe { productName in
             updatedProductName = productName
         }
 
@@ -190,18 +202,19 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
     func testObservablesFromUploadingAnImage() {
         // Arrange
         let product = MockProduct().product()
-        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: product)
-        let viewModel = ProductFormViewModel(product: product,
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductFormViewModel(product: model,
+                                             formType: .edit,
                                              productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease2Enabled: true,
-                                             isEditProductsRelease3Enabled: false)
+                                             isEditProductsRelease5Enabled: false)
         var isProductUpdated: Bool?
         cancellableProduct = viewModel.observableProduct.subscribe { product in
             isProductUpdated = true
         }
 
         var updatedProductName: String?
-        cancellableProductName = viewModel.productName.subscribe { productName in
+        cancellableProductName = viewModel.productName?.subscribe { productName in
             updatedProductName = productName
         }
 

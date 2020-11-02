@@ -29,7 +29,7 @@ final class RefundedProductsDataSource: NSObject {
     /// The results controllers used to display a refund
     ///
     private lazy var resultsControllers: RefundDetailsResultController = {
-        return RefundDetailsResultController()
+        return RefundDetailsResultController(siteID: order.siteID)
     }()
 
     /// Set up results controllers

@@ -31,7 +31,7 @@ class DotcomRequestTests: XCTestCase {
 
     /// Verifies that the DotcomRequest's generated URL contains the `BaseURL + API Version + RPC Name`.
     ///
-    func testRequestUrlContainsExpectedComponents() {
+    func test_request_url_contains_expected_components() {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: sampleRPC)
 
         let expectedURL = URL(string: Settings.wordpressApiBaseURL + request.wordpressApiVersion.path + sampleRPC)!
@@ -41,7 +41,7 @@ class DotcomRequestTests: XCTestCase {
 
     /// Verifies that the DotcomRequest's generated URL contains the Parameters serialized as part of the query, when the method is `get`.
     ///
-    func testParametersAreSerializedAsPartOfTheUrlQueryWhenMethodIsSetToGet() {
+    func test_parameters_are_serialized_as_part_of_the_url_query_when_method_is_set_to_get() {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: sampleRPC, parameters: sampleParameters)
 
         let expectedURL = URL(string: Settings.wordpressApiBaseURL + request.wordpressApiVersion.path + sampleRPC + sampleParametersForQuery)!
@@ -64,7 +64,7 @@ class DotcomRequestTests: XCTestCase {
 
     /// Verifies that the DotcomRequest's generated URL does NOT contain the Parameters serialized as part of the query, when the method is `post`.
     ///
-    func testParametersAreNotSerializedAsPartOfTheUrlQueryWhenMethodIsSetToPost() {
+    func test_parameters_are_not_serialized_as_part_of_the_url_query_when_method_is_set_to_post() {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: sampleRPC, parameters: sampleParameters)
 
         let generatedURL = try! request.asURLRequest().url!
@@ -74,7 +74,7 @@ class DotcomRequestTests: XCTestCase {
 
     /// Verifies that the DotcomRequest's generated httpBody contains the Parameters, serialized as expected.
     ///
-    func testParametersAreSerializedAsPartOfTheBodyWhenMethodIsSetToPost() {
+    func test_parameters_are_serialized_as_part_of_the_body_when_method_is_set_to_post() {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: sampleRPC, parameters: sampleParameters)
 
         let generatedBodyAsData = try! request.asURLRequest().httpBody!

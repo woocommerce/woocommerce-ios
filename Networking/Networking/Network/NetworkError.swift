@@ -3,7 +3,7 @@ import Foundation
 
 /// Networking Errors
 ///
-public enum NetworkError: Error {
+public enum NetworkError: Error, Equatable {
 
     /// Resource Not Found (statusCode = 404)
     ///

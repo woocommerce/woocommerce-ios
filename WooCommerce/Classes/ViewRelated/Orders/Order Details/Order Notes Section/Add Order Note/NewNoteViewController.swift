@@ -53,8 +53,8 @@ class NewNoteViewController: UIViewController {
 
         ServiceLocator.analytics.track(.orderNoteAddButtonTapped)
         ServiceLocator.analytics.track(.orderNoteAdd, withProperties: ["parent_id": viewModel.order.orderID,
-                                                                  "status": viewModel.order.statusKey,
-                                                                  "type": isCustomerNote ? "customer" : "private"])
+                                                                       "status": viewModel.order.status.rawValue,
+                                                                       "type": isCustomerNote ? "customer" : "private"])
 
         let action = OrderNoteAction.addOrderNote(siteID: viewModel.order.siteID,
                                                   orderID: viewModel.order.orderID,
@@ -96,14 +96,8 @@ private extension NewNoteViewController {
     /// Registers all of the available TableViewCells
     ///
     private func registerTableViewCells() {
-        let cells = [
-            TextViewTableViewCell.self,
-            SwitchTableViewCell.self
-        ]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        tableView.registerNib(for: TextViewTableViewCell.self)
+        tableView.registerNib(for: SwitchTableViewCell.self)
     }
 
     /// Setup: Sections
@@ -132,18 +126,20 @@ private extension NewNoteViewController {
             fatalError()
         }
 
-        cell.iconImage = .asideImage
-        cell.iconTint = isCustomerNote ? .primary : .textSubtle
-        cell.iconImage?.accessibilityLabel = isCustomerNote ?
-            NSLocalizedString("Note to customer",
-                              comment: "Spoken accessibility label for an icon image that indicates it's a note to the customer.") :
-            NSLocalizedString("Private note",
-                              comment: "Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer.")
+        let iconAccessibilityLabel = isCustomerNote ?
+        NSLocalizedString("Note to customer",
+                          comment: "Spoken accessibility label for an icon image that indicates it's a note to the customer.") :
+        NSLocalizedString("Private note",
+                          comment: "Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer.")
+        let cellViewModel = TextViewTableViewCell.ViewModel(icon: .asideImage,
+                                                            iconAccessibilityLabel: iconAccessibilityLabel,
+                                                            iconTint: isCustomerNote ? .primary : .textSubtle,
+                                                            onTextChange: { [weak self] (text) in
+                                                                self?.navigationItem.rightBarButtonItem?.isEnabled = !text.isEmpty
+                                                                self?.noteText = text
+        })
 
-        cell.noteTextView.onTextChange = { [weak self] (text) in
-            self?.navigationItem.rightBarButtonItem?.isEnabled = !text.isEmpty
-            self?.noteText = text
-        }
+        cell.configure(with: cellViewModel)
     }
 
     private func setupEmailCustomerCell(_ cell: UITableViewCell) {

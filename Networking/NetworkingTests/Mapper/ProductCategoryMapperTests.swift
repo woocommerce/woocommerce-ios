@@ -12,7 +12,7 @@ final class ProductCategoryMapperTests: XCTestCase {
 
     /// Verifies that all of the ProductCategory Fields are parsed correctly.
     ///
-    func testProductCategoryFieldsAreProperlyParsed() throws {
+    func test_ProductCategory_fields_are_properly_parsed() throws {
         let productCategory = try XCTUnwrap(mapProductCategoryResponse())
 
         XCTAssertEqual(productCategory.categoryID, 104)

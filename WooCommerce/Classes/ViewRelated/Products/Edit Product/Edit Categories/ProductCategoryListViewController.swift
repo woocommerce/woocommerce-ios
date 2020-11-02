@@ -6,13 +6,24 @@ import WordPressUI
 ///
 final class ProductCategoryListViewController: UIViewController {
 
+    @IBOutlet private weak var addButton: UIButton!
+    @IBOutlet private weak var addButtonSeparator: UIView!
     @IBOutlet private var tableView: UITableView!
     private let ghostTableView = UITableView()
 
     private let viewModel: ProductCategoryListViewModel
 
-    init(product: Product) {
+    private let siteID: Int64
+
+    // Completion callback
+    //
+    typealias Completion = (_ categories: [ProductCategory]) -> Void
+    private let onCompletion: Completion
+
+    init(product: Product, completion: @escaping Completion) {
         self.viewModel = ProductCategoryListViewModel(product: product)
+        self.siteID = product.siteID
+        onCompletion = completion
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -22,11 +33,14 @@ final class ProductCategoryListViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureAddButton()
+        configureAddButtonSeparator()
         registerTableViewCells()
         configureTableView()
         configureGhostTableView()
         configureNavigationBar()
         configureViewModel()
+        handleSwipeBackGesture()
     }
 }
 
@@ -34,8 +48,18 @@ final class ProductCategoryListViewController: UIViewController {
 //
 private extension ProductCategoryListViewController {
     func registerTableViewCells() {
-        tableView.register(ProductCategoryTableViewCell.loadNib(), forCellReuseIdentifier: ProductCategoryTableViewCell.reuseIdentifier)
-        ghostTableView.register(ProductCategoryTableViewCell.loadNib(), forCellReuseIdentifier: ProductCategoryTableViewCell.reuseIdentifier)
+        tableView.registerNib(for: ProductCategoryTableViewCell.self)
+        ghostTableView.registerNib(for: ProductCategoryTableViewCell.self)
+    }
+
+    func configureAddButton() {
+        addButton.setTitle(NSLocalizedString("Add Category", comment: "Action to add category on the Product Categories screen"), for: .normal)
+        addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+        addButton.applySecondaryButtonStyle()
+    }
+
+    func configureAddButtonSeparator() {
+        addButtonSeparator.backgroundColor = .systemColor(.separator)
     }
 
     func configureTableView() {
@@ -96,11 +120,44 @@ private extension ProductCategoryListViewController {
     }
 }
 
-// MARK: - Actions
+// MARK: - Navigation actions handling
 //
-private extension ProductCategoryListViewController {
+extension ProductCategoryListViewController {
+
+    override func shouldPopOnBackButton() -> Bool {
+        if viewModel.hasUnsavedChanges() {
+            presentBackNavigationActionSheet()
+            return false
+        }
+        return true
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
+    }
+
     @objc private func doneButtonTapped() {
-        // TODO-2020: Submit category changes
+        ServiceLocator.analytics.track(.productCategorySettingsDoneButtonTapped)
+        onCompletion(viewModel.selectedCategories)
+    }
+
+    @objc private func addButtonTapped() {
+        ServiceLocator.analytics.track(.productCategorySettingsAddButtonTapped)
+        let addCategoryViewController = AddProductCategoryViewController(siteID: siteID) { [weak self] (newCategory) in
+            defer {
+                self?.dismiss(animated: true, completion: nil)
+            }
+            self?.viewModel.addAndSelectNewCategory(category: newCategory)
+            self?.tableView.reloadData()
+        }
+        let navController = WooNavigationController(rootViewController: addCategoryViewController)
+        present(navController, animated: true, completion: nil)
+    }
+
+    private func presentBackNavigationActionSheet() {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
     }
 }
 
@@ -150,10 +207,7 @@ extension ProductCategoryListViewController: UITableViewDataSource, UITableViewD
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductCategoryTableViewCell.reuseIdentifier,
-                                                       for: indexPath) as? ProductCategoryTableViewCell else {
-            fatalError()
-        }
+        let cell = tableView.dequeueReusableCell(ProductCategoryTableViewCell.self, for: indexPath)
 
         if let categoryViewModel = viewModel.categoryViewModels[safe: indexPath.row] {
             cell.configure(with: categoryViewModel)
@@ -162,6 +216,7 @@ extension ProductCategoryListViewController: UITableViewDataSource, UITableViewD
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // TODO-2020: Select category and update state
+        viewModel.selectOrDeselectCategory(index: indexPath.row)
+        tableView.reloadData()
     }
 }

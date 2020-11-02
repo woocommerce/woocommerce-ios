@@ -44,13 +44,6 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.statsVersionBannerVisibilityFileName)
     }()
 
-    /// URL to the plist file that we use to store the eligible stats version.
-    ///
-    private lazy var statsVersionEligibleURL: URL = {
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents!.appendingPathComponent(Constants.statsVersionEligibleFileName)
-    }()
-
     /// URL to the plist file that we use to store the stats version displayed on Dashboard UI.
     ///
     private lazy var statsVersionLastShownURL: URL = {
@@ -63,6 +56,25 @@ public class AppSettingsStore: Store {
     private lazy var productsFeatureSwitchURL: URL = {
         let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
         return documents!.appendingPathComponent(Constants.productsFeatureSwitchFileName)
+    }()
+
+    /// URL to the plist file that we use to determine the visibility for Product features M3.
+    ///
+    private lazy var productsRelease3FeatureSwitchURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.productsRelease3FeatureSwitchFileName)
+    }()
+
+    /// URL to the plist file that we use to determine the visibility for Product features M4.
+    ///
+    private lazy var productsRelease4FeatureSwitchURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.productsRelease4FeatureSwitchFileName)
+    }()
+
+    private lazy var generalAppSettingsFileURL: URL! = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.generalAppSettingsFileName)
     }()
 
     /// Registers for supported Actions.
@@ -101,11 +113,7 @@ public class AppSettingsStore: Store {
                                         onCompletion: onCompletion)
         case .resetStoredProviders(let onCompletion):
             resetStoredProviders(onCompletion: onCompletion)
-        case .loadStatsVersionEligible(let siteID, let onCompletion):
-            loadStatsVersionEligible(siteID: siteID, onCompletion: onCompletion)
-        case .setStatsVersionEligible(let siteID, let statsVersion):
-            setStatsVersionEligible(siteID: siteID, statsVersion: statsVersion)
-        case .setStatsVersionLastShown(let siteID, let statsVersion), .setStatsVersionPreference(let siteID, let statsVersion):
+        case .setStatsVersionLastShown(let siteID, let statsVersion):
             setStatsVersionLastShownOrFromUserPreference(siteID: siteID, statsVersion: statsVersion)
         case .loadInitialStatsVersionToShow(let siteID, let onCompletion):
             loadInitialStatsVersionToShow(siteID: siteID, onCompletion: onCompletion)
@@ -113,16 +121,89 @@ public class AppSettingsStore: Store {
             loadStatsVersionBannerVisibility(banner: banner, onCompletion: onCompletion)
         case .setStatsVersionBannerVisibility(let banner, let shouldShowBanner):
             setStatsVersionBannerVisibility(banner: banner, shouldShowBanner: shouldShowBanner)
+        case .resetStatsVersionStates:
+            resetStatsVersionStates()
         case .loadProductsFeatureSwitch(let onCompletion):
             loadProductsFeatureSwitch(onCompletion: onCompletion)
         case .setProductsFeatureSwitch(let isEnabled, let onCompletion):
             setProductsFeatureSwitch(isEnabled: isEnabled, onCompletion: onCompletion)
-        case .resetStatsVersionStates:
-            resetStatsVersionStates()
+        case .resetFeatureSwitches:
+            resetFeatureSwitches()
+        case .setInstallationDateIfNecessary(let date, let onCompletion):
+            setInstallationDateIfNecessary(date: date, onCompletion: onCompletion)
+        case .updateFeedbackStatus(let type, let status, let onCompletion):
+            updateFeedbackStatus(type: type, status: status, onCompletion: onCompletion)
+        case .loadFeedbackVisibility(let type, let onCompletion):
+            loadFeedbackVisibility(type: type, onCompletion: onCompletion)
         }
     }
 }
 
+// MARK: - General App Settings
+
+private extension AppSettingsStore {
+    /// Save the `date` in `GeneralAppSettings` but only if the `date` is older than the existing
+    /// `GeneralAppSettings.installationDate`.
+    ///
+    /// - Parameter onCompletion: The `Result`'s success value will be `true` if the installation
+    ///                           date was changed and `false` if not.
+    ///
+    func setInstallationDateIfNecessary(date: Date, onCompletion: ((Result<Bool, Error>) -> Void)) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings()
+
+            if let installationDate = settings.installationDate,
+                date > installationDate {
+                return onCompletion(.success(false))
+            }
+
+            let settingsToSave = GeneralAppSettings(installationDate: date, feedbacks: settings.feedbacks)
+            try saveGeneralAppSettings(settingsToSave)
+
+            onCompletion(.success(true))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    /// Updates the feedback store  in `GeneralAppSettings` with the given `type` and `status`.
+    ///
+    func updateFeedbackStatus(type: FeedbackType, status: FeedbackSettings.Status, onCompletion: ((Result<Void, Error>) -> Void)) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings()
+            let newFeedback = FeedbackSettings(name: type, status: status)
+            let settingsToSave = settings.replacing(feedback: newFeedback)
+            try saveGeneralAppSettings(settingsToSave)
+
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    func loadFeedbackVisibility(type: FeedbackType, onCompletion: (Result<Bool, Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: type)
+
+        onCompletion(Result {
+            try useCase.shouldBeVisible()
+        })
+    }
+
+    /// Load the `GeneralAppSettings` from file or create an empty one if it doesn't exist.
+    func loadOrCreateGeneralAppSettings() -> GeneralAppSettings {
+        guard let settings: GeneralAppSettings = try? fileStorage.data(for: generalAppSettingsFileURL) else {
+            return GeneralAppSettings(installationDate: nil, feedbacks: [:])
+        }
+
+        return settings
+    }
+
+    /// Save the `GeneralAppSettings` to the appropriate file.
+    func saveGeneralAppSettings(_ settings: GeneralAppSettings) throws {
+        try fileStorage.write(settings, to: generalAppSettingsFileURL)
+    }
+}
 
 // MARK: - Shipment tracking providers!
 //
@@ -290,29 +371,11 @@ private extension AppSettingsStore {
         })
     }
 
-    func setStatsVersionEligible(siteID: Int64,
-                                 statsVersion: StatsVersion) {
-        set(statsVersion: statsVersion, for: siteID, to: statsVersionEligibleURL, onCompletion: { error in
-            if let error = error {
-                DDLogError("⛔️ Saving the eligible stats version to \(statsVersion) failed: siteID \(siteID). Error: \(error)")
-            }
-        })
-    }
-
     func loadInitialStatsVersionToShow(siteID: Int64, onCompletion: (StatsVersion?) -> Void) {
         guard let existingData: StatsVersionBySite = try? fileStorage.data(for: statsVersionLastShownURL),
             let statsVersion = existingData.statsVersionBySite[siteID] else {
             onCompletion(nil)
             return
-        }
-        onCompletion(statsVersion)
-    }
-
-    func loadStatsVersionEligible(siteID: Int64, onCompletion: (StatsVersion?) -> Void) {
-        guard let existingData: StatsVersionBySite = try? fileStorage.data(for: statsVersionEligibleURL),
-            let statsVersion = existingData.statsVersionBySite[siteID] else {
-                onCompletion(nil)
-                return
         }
         onCompletion(statsVersion)
     }
@@ -363,8 +426,18 @@ private extension AppSettingsStore {
         try? fileStorage.write(StatsVersionBannerVisibility(visibilityByBanner: visibilityByBanner), to: fileURL)
     }
 
+    func resetStatsVersionStates() {
+        do {
+            try fileStorage.deleteFile(at: statsVersionBannerVisibilityURL)
+            try fileStorage.deleteFile(at: statsVersionLastShownURL)
+        } catch {
+            let error = AppSettingsStoreErrors.deleteStatsVersionStates
+            DDLogError("⛔️ Deleting the stats version files failed. Error: \(error)")
+        }
+    }
+
     func loadProductsFeatureSwitch(onCompletion: (Bool) -> Void) {
-        guard let existingData: ProductsFeatureSwitchPListWrapper = try? fileStorage.data(for: productsFeatureSwitchURL) else {
+        guard let existingData: ProductsFeatureSwitchPListWrapper = try? fileStorage.data(for: productsRelease4FeatureSwitchURL) else {
             onCompletion(false)
             return
         }
@@ -372,7 +445,7 @@ private extension AppSettingsStore {
     }
 
     func setProductsFeatureSwitch(isEnabled: Bool, onCompletion: () -> Void) {
-        let fileURL = productsFeatureSwitchURL
+        let fileURL = productsRelease4FeatureSwitchURL
         let wrapper = ProductsFeatureSwitchPListWrapper(isEnabled: isEnabled)
         do {
             try fileStorage.write(wrapper, to: fileURL)
@@ -383,14 +456,13 @@ private extension AppSettingsStore {
         }
     }
 
-    func resetStatsVersionStates() {
+    func resetFeatureSwitches() {
         do {
-            try fileStorage.deleteFile(at: statsVersionBannerVisibilityURL)
-            try fileStorage.deleteFile(at: statsVersionEligibleURL)
-            try fileStorage.deleteFile(at: statsVersionLastShownURL)
+            try fileStorage.deleteFile(at: productsFeatureSwitchURL)
+            try fileStorage.deleteFile(at: productsRelease3FeatureSwitchURL)
+            try fileStorage.deleteFile(at: productsRelease4FeatureSwitchURL)
         } catch {
-            let error = AppSettingsStoreErrors.deleteStatsVersionStates
-            DDLogError("⛔️ Deleting the stats version files failed. Error: \(error)")
+            DDLogError("⛔️ Deleting the product feature switch files failed. Error: \(error)")
         }
     }
 }
@@ -416,10 +488,14 @@ enum AppSettingsStoreErrors: Error {
 /// Constants
 ///
 private enum Constants {
+
+    // MARK: File Names
     static let shipmentProvidersFileName = "shipment-providers.plist"
     static let customShipmentProvidersFileName = "custom-shipment-providers.plist"
     static let statsVersionBannerVisibilityFileName = "stats-version-banner-visibility.plist"
-    static let statsVersionEligibleFileName = "stats-version-eligible.plist"
     static let statsVersionLastShownFileName = "stats-version-last-shown.plist"
     static let productsFeatureSwitchFileName = "products-feature-switch.plist"
+    static let productsRelease3FeatureSwitchFileName = "products-m3-feature-switch.plist"
+    static let productsRelease4FeatureSwitchFileName = "products-m4-feature-switch.plist"
+    static let generalAppSettingsFileName = "general-app-settings.plist"
 }

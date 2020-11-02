@@ -17,7 +17,7 @@ class NoteWooTests: XCTestCase {
 
     /// Verifies that `blockForSubject` returns the first block in the `.subject` collection.
     ///
-    func testBlockForSubjectReturnsTheFirstBlockInTheSubjectArray() {
+    func test_blockForSubject_returns_the_first_block_in_the_subject_array() {
         for note in sampleNotes {
             XCTAssertEqual(note.blockForSubject, note.subject.first)
         }
@@ -26,7 +26,7 @@ class NoteWooTests: XCTestCase {
     /// Verifies that `blockForSnippet` returns the last block in the `.subject` collection, whenever there's at least 2 subject
     /// blocks.
     ///
-    func testBlockForSnippetReturnsTheLastSubjectBlockWheneverThereIsMoreThanOneEntityInSuchArray() {
+    func test_blockForSnippet_returns_the_last_subject_block_whenever_there_is_more_than_one_entity_in_such_array() {
         for note in sampleNotes {
             let expected = (note.subject.count > 1) ? note.subject.last : nil
             XCTAssertEqual(note.blockForSnippet, expected)
@@ -35,7 +35,7 @@ class NoteWooTests: XCTestCase {
 
     /// Verifies that the Product Metadata is successfully extracted from Store Review Notifications.
     ///
-    func testProductMetadataIsSuccessfullyExtractedFromStoreReviewNotification() {
+    func test_product_metadata_is_successfully_extracted_from_store_review_notification() {
         guard let reviewNote = sampleNotes.first(where: { $0.subkind == .storeReview }), let product = reviewNote.product else {
             XCTFail()
             return
@@ -47,7 +47,7 @@ class NoteWooTests: XCTestCase {
 
     /// Verifies that no Product Metadata can be extracted from non Store Review Notifications.
     ///
-    func testProductMetadataIsNullForNonReviewNotifications() {
+    func test_product_metadata_is_null_for_non_review_notifications() {
         for note in sampleNotes where note.subkind != .storeReview {
             XCTAssertNil(note.product)
         }
@@ -55,7 +55,7 @@ class NoteWooTests: XCTestCase {
 
     /// Verifies that the Star Rating property can be effectively extracted from Store Review Notifications.
     ///
-    func testStarRatingIsSuccessfullyExtractedFromStoreReviewNotification() {
+    func test_starRating_is_successfully_extracted_from_store_review_notification() {
         guard let reviewNote = sampleNotes.first(where: { $0.subkind == .storeReview }) else {
             XCTFail()
             return
@@ -66,7 +66,7 @@ class NoteWooTests: XCTestCase {
 
     /// Verifies that no Star Rating can be extracted from non Store Review Notifications.
     ///
-    func testStarRatingCalculatedPropertyReturnsNilWheneverTheReceiverIsNotAStoreReviewNote() {
+    func test_starRating_calculated_property_returns_nil_whenever_the_receiver_is_not_a_store_review_note() {
         for note in sampleNotes where note.subkind != .storeReview {
             XCTAssertNil(note.starRating)
         }

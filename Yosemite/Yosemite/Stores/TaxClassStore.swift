@@ -2,14 +2,29 @@ import Foundation
 import Networking
 import Storage
 
+/// Describes a class/struct that can be used to request a tax class remotely.
+public protocol TaxClassRequestable {
+    var siteID: Int64 { get }
+    var taxClass: String? { get }
+}
+
+extension Product: TaxClassRequestable {}
+
+extension ProductVariation: TaxClassRequestable {}
 
 // MARK: - TaxClassStore
 //
 public class TaxClassStore: Store {
+    private let remote: TaxClassRemote
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
     }()
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.remote = TaxClassRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     /// Registers for supported Actions.
     ///
@@ -43,8 +58,6 @@ private extension TaxClassStore {
     /// Retrieve and synchronizes the Tax Classes associated with a given Site ID (if any!).
     ///
     func retrieveTaxClasses(siteID: Int64, onCompletion: @escaping ([TaxClass]?, Error?) -> Void) {
-        let remote = TaxClassRemote(network: network)
-
         remote.loadAllTaxClasses(for: siteID) { [weak self] (taxClasses, error) in
             guard let taxClasses = taxClasses else {
                 onCompletion(nil, error)
@@ -59,8 +72,8 @@ private extension TaxClassStore {
 
     /// Synchronizes the Tax Class found in a specified Product.
     ///
-    func requestMissingTaxClasses(for product: Product, onCompletion: @escaping (TaxClass?, Error?) -> Void) {
-        guard let taxClassFromStorage = product.taxClass, product.taxClass?.isEmpty == false else {
+    func requestMissingTaxClasses(for taxClassRequestable: TaxClassRequestable, onCompletion: @escaping (TaxClass?, Error?) -> Void) {
+        guard let taxClassFromStorage = taxClassRequestable.taxClass, taxClassRequestable.taxClass?.isEmpty == false else {
             onCompletion(nil, nil)
             return
         }
@@ -72,15 +85,14 @@ private extension TaxClassStore {
             return
         }
         else {
-            let remote = TaxClassRemote(network: network)
-            remote.loadAllTaxClasses(for: product.siteID) { [weak self] (taxClasses, error) in
+            remote.loadAllTaxClasses(for: taxClassRequestable.siteID) { [weak self] (taxClasses, error) in
                 guard let taxClasses = taxClasses else {
                     onCompletion(nil, error)
                     return
                 }
 
                 self?.upsertStoredTaxClassesInBackground(readOnlyTaxClasses: taxClasses) {
-                    let taxClass = taxClasses.first(where: { $0.slug == product.taxClass } )
+                    let taxClass = taxClasses.first(where: { $0.slug == taxClassRequestable.taxClass } )
                     onCompletion(taxClass, nil)
                 }
             }

@@ -5,7 +5,7 @@ import XCTest
 
 final class ProductTaxStatusListSelectorCommandTests: XCTestCase {
 
-    func testSelectedTaxStatus() {
+    func test_selected_taxStatus() {
 
         let taxStatus = ProductTaxStatus.taxable
         let command = ProductTaxStatusListSelectorCommand(selected: taxStatus)
@@ -21,7 +21,7 @@ final class ProductTaxStatusListSelectorCommandTests: XCTestCase {
         XCTAssertNotNil(command.selected)
     }
 
-    func testCellConfiguration() {
+    func test_cell_configuration() {
         let taxStatus = ProductTaxStatus.taxable
         let command = ProductTaxStatusListSelectorCommand(selected: taxStatus)
         let nib = Bundle.main.loadNibNamed(BasicTableViewCell.classNameWithoutNamespaces, owner: self, options: nil)

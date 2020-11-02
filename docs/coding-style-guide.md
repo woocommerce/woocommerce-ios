@@ -2,7 +2,13 @@
 
 We use the [Swift.org API Design Guidelines](https://swift.org/documentation/api-design-guidelines/) as the base. We refer to the [raywenderlich.com Swift Style Guide](https://github.com/raywenderlich/swift-style-guide/) for guides that are not described here.
 
-We also use [SwiftLint](https://github.com/realm/SwiftLint) to enforce as many of our rules as we can. 
+## SwiftLint
+
+We use [SwiftLint](https://github.com/realm/SwiftLint) to enforce as many of our rules as we can. It is integrated in the build process so you should see any violations in Xcode.
+
+You can the lint check manually by executing `bundle exec rake lint` in the command line. You can also run `bundle exec rake lint:autocorrect` to automatically fix any lint issues.
+
+The SwiftLint rules are automatically enforced by [Hound](https://houndci.com) when pull requests are submitted.
 
 ## Braces
 
@@ -28,6 +34,11 @@ if condition {
 guard condition else { return }
 
 if condition { } else { }
+```
+
+**As an exception to this rule,** guarding for a safe `self` is allowed to be expressed in one line.
+```swift
+guard let self = self else { return }
 ```
 
 ## Parentheses

@@ -16,7 +16,7 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         order = MockOrders().sampleOrder()
-        viewModel = OrderPaymentDetailsViewModel(order: order!)
+        viewModel = OrderPaymentDetailsViewModel(order: order!, currencySettings: CurrencySettings())
 
         brokenOrder = MockOrders().brokenOrder()
         brokenOrderViewModel = OrderPaymentDetailsViewModel(order: brokenOrder)
@@ -40,7 +40,7 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     }
 
     func testSubtotalValueMatchesExpectation() {
-        let expectedValue = CurrencyFormatter().formatAmount(0, with: order.currency) ?? String()
+        let expectedValue = CurrencyFormatter(currencySettings: CurrencySettings()).formatAmount(.zero, with: order.currency) ?? String()
         XCTAssertEqual(viewModel.subtotalValue, expectedValue)
     }
 
@@ -49,28 +49,28 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     }
 
     func testDiscountValueMatchesExpectation() {
-        let expectedValue = "-" + CurrencyFormatter().formatAmount(order.discountTotal, with: order.currency)!
+        let expectedValue = "-" + CurrencyFormatter(currencySettings: CurrencySettings()).formatAmount(order.discountTotal, with: order.currency)!
         XCTAssertEqual(viewModel.discountValue, expectedValue)
     }
 
     func testShippingValueMatchesExpectation() {
-        let expectedValue = CurrencyFormatter().formatAmount(order.shippingTotal, with: order.currency)
+        let expectedValue = CurrencyFormatter(currencySettings: CurrencySettings()).formatAmount(order.shippingTotal, with: order.currency)
         XCTAssertEqual(viewModel.shippingValue, expectedValue)
     }
 
     func testTaxesValueMatchesExpectation() {
-        let expectedValue = CurrencyFormatter().formatAmount(order.totalTax, with: order.currency)
+        let expectedValue = CurrencyFormatter(currencySettings: CurrencySettings()).formatAmount(order.totalTax, with: order.currency)
         XCTAssertEqual(viewModel.taxesValue, expectedValue)
     }
 
     func testTotalValueMatchedExpectation() {
-        let expectedValue = CurrencyFormatter().formatAmount(order.total,
+        let expectedValue = CurrencyFormatter(currencySettings: CurrencySettings()).formatAmount(order.total,
                                                              with: order.currency)
         XCTAssertEqual(viewModel.totalValue, expectedValue)
     }
 
     func testPaymentTotalMatchedExpectation() {
-        let expectedValue = CurrencyFormatter().formatAmount(order.total,
+        let expectedValue = CurrencyFormatter(currencySettings: CurrencySettings()).formatAmount(order.total,
                                                              with: order.currency)
         XCTAssertEqual(viewModel.totalValue, expectedValue)
     }

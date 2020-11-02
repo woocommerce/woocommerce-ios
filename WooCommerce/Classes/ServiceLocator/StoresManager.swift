@@ -40,6 +40,14 @@ protocol StoresManager {
     ///
     var isAuthenticated: Bool { get }
 
+    /// Indicates if the user is currently logged in to a store.
+    ///
+    var isLoggedIn: Observable<Bool> { get }
+
+    /// The currently logged in store/site ID. Nil when the app is logged out.
+    ///
+    var siteID: Observable<Int64?> { get }
+
     /// Indicates if we need a Default StoreID, or there's one already set.
     ///
     var needsDefaultStore: Bool { get }

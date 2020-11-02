@@ -24,11 +24,6 @@ class WooCommerceScreenshots: XCTestCase {
             .proceedWith(password: ScreenshotCredentials.password)
             .continueWithSelectedSite()
 
-            // Enable Products
-            .openSettingsPane().openBetaFeatures()
-            .enableProducts()
-            .goBackToSettingsScreen().goBackToMyStore()
-
             // My Store
             .dismissTopBannerIfNeeded()
             .then { ($0 as! MyStoreScreen).periodStatsTable.switchToYearsTab() }

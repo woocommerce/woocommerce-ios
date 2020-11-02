@@ -115,8 +115,9 @@ final class PublishSubjectTests: XCTestCase {
 
     // MARK: - Proof of Compatibility with Combine's PassthroughSubject
 
-    func testCombinePassthroughSubjectEmitsValuesToAnObserver() {
+    func testCombinePassthroughSubjectEmitsValuesToAnObserver() throws {
         guard #available(iOS 13.0, *) else {
+            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
             return
         }
 
@@ -138,8 +139,9 @@ final class PublishSubjectTests: XCTestCase {
         XCTAssertEqual(emittedValues, ["dicta"])
     }
 
-    func testCombinePassthroughSubjectContinuouslyEmitsValuesToAnObserver() {
+    func testCombinePassthroughSubjectContinuouslyEmitsValuesToAnObserver() throws {
         guard #available(iOS 13.0, *) else {
+            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
             return
         }
 
@@ -163,8 +165,9 @@ final class PublishSubjectTests: XCTestCase {
         XCTAssertEqual(emittedValues, ["dicta", "amet", "dolor"])
     }
 
-    func testCombinePassthroughSubjectDoesNotEmitValuesBeforeTheSubscription() {
+    func testCombinePassthroughSubjectDoesNotEmitValuesBeforeTheSubscription() throws {
         guard #available(iOS 13.0, *) else {
+            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
             return
         }
 
@@ -193,8 +196,9 @@ final class PublishSubjectTests: XCTestCase {
         XCTAssertEqual(emittedValues, ["dolor"])
     }
 
-    func testCombinePassthroughSubjectEmitsValuesToAllObservers() {
+    func testCombinePassthroughSubjectEmitsValuesToAllObservers() throws {
         guard #available(iOS 13.0, *) else {
+            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
             return
         }
 
@@ -227,8 +231,9 @@ final class PublishSubjectTests: XCTestCase {
         XCTAssertEqual(emittedValues, ["dicta", "dicta", "amet", "amet"])
     }
 
-    func testCombinePassthroughSubjectDoesNotEmitValuesToCancelledObservers() {
+    func testCombinePassthroughSubjectDoesNotEmitValuesToCancelledObservers() throws {
         guard #available(iOS 13.0, *) else {
+            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
             return
         }
 

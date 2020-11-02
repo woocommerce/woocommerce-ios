@@ -7,7 +7,7 @@ final class ProductFormBottomSheetListSelectorCommandTests: XCTestCase {
 
     func testCallbackIsCalledOnSelection() {
         // Arrange
-        let actions: [ProductFormBottomSheetAction] = [.editInventorySettings, .editShippingSettings, .editCategories, .editBriefDescription]
+        let actions: [ProductFormBottomSheetAction] = [.editInventorySettings, .editShippingSettings, .editCategories, .editShortDescription]
         var selectedActions = [ProductFormBottomSheetAction]()
         let command = ProductFormBottomSheetListSelectorCommand(actions: actions) { selected in
                                                                     selectedActions.append(selected)
@@ -15,14 +15,14 @@ final class ProductFormBottomSheetListSelectorCommandTests: XCTestCase {
 
         // Action
         command.handleSelectedChange(selected: .editInventorySettings)
-        command.handleSelectedChange(selected: .editBriefDescription)
+        command.handleSelectedChange(selected: .editShortDescription)
         command.handleSelectedChange(selected: .editShippingSettings)
         command.handleSelectedChange(selected: .editCategories)
 
         // Assert
         let expectedActions: [ProductFormBottomSheetAction] = [
             .editInventorySettings,
-            .editBriefDescription,
+            .editShortDescription,
             .editShippingSettings,
             .editCategories
         ]

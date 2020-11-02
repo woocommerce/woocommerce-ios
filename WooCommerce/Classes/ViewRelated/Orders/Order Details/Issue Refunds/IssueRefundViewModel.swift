@@ -36,6 +36,7 @@ final class IssueRefundViewModel {
             sections = createSections()
             title = calculateTitle()
             selectedItemsTitle = createSelectedItemsCount()
+            isNextButtonEnabled = calculateNextButtonEnableState()
             onChange?()
         }
     }
@@ -51,6 +52,10 @@ final class IssueRefundViewModel {
     /// String indicating how many items the user has selected to refund
     ///
     private(set) var selectedItemsTitle: String = ""
+
+    /// Boolean indicating if the next button is enabled
+    ///
+    private(set) var isNextButtonEnabled: Bool = false
 
     /// The sections and rows to display in the `UITableView`.
     ///
@@ -69,6 +74,7 @@ final class IssueRefundViewModel {
         state = State(order: order, itemsToRefund: items, currencySettings: currencySettings)
         sections = createSections()
         title = calculateTitle()
+        isNextButtonEnabled = calculateNextButtonEnableState()
         selectedItemsTitle = createSelectedItemsCount()
     }
 
@@ -245,6 +251,12 @@ extension IssueRefundViewModel {
     private func createSelectedItemsCount() -> String {
         let count = state.refundQuantityStore.count()
         return String.pluralize(count, singular: Localization.itemSingular, plural: Localization.itemsPlural)
+    }
+
+    /// Calculates wether the next button should be enabled or not
+    ///
+    private func calculateNextButtonEnableState() -> Bool {
+        return state.refundQuantityStore.count() > 0 || state.shouldRefundShipping
     }
 
     /// Return an array of `RefundableOrderItems` by taking out all previously refunded items

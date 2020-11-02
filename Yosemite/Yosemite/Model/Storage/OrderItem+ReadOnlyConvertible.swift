@@ -26,7 +26,7 @@ extension Storage.OrderItem: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.OrderItem {
-        let orderItemTaxes = taxes?.map { $0.toReadOnly() } ?? [Yosemite.OrderItemTax]()
+        let orderItemTaxes = taxes?.map { $0.toReadOnly() }.sorted(by: { $0.taxID < $1.taxID }) ?? [Yosemite.OrderItemTax]()
 
         return OrderItem(itemID: itemID,
                          name: name ?? "",

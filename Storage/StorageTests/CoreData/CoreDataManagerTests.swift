@@ -5,7 +5,7 @@ import CoreData
 
 /// CoreDataManager Unit Tests
 ///
-class CoreDataManagerTests: XCTestCase {
+final class CoreDataManagerTests: XCTestCase {
 
     /// Verifies that the Store URL contains the ContextIdentifier string.
     ///
@@ -103,5 +103,74 @@ class CoreDataManagerTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(viewContext.countObjects(ofType: ShippingLine.self), 1)
+    }
+
+    func test_when_the_model_is_incompatible_then_it_recovers_and_recreates_the_database() throws {
+        // Given
+        let packageName = "WooCommerce"
+
+        var manager = CoreDataManager(name: packageName, crashLogger: MockCrashLogger())
+        try deleteStoreFiles(at: manager.storeURL)
+
+        insertAccount(to: manager.viewStorage)
+        manager.viewStorage.saveIfNeeded()
+
+        XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: Note.entityName,
+                                                   in: manager.viewStorage as! NSManagedObjectContext))
+
+        // When
+        // Use a models inventory with an old model. this will cause a loading error and make the
+        // `CoreDataManager` recover and recreate the database.
+        let olderModelsInventory: ManagedObjectModelsInventory = try {
+            let inventory =
+                try ManagedObjectModelsInventory.from(packageName: packageName, bundle: .init(for: CoreDataManager.self))
+
+            return ManagedObjectModelsInventory(
+                packageURL: inventory.packageURL,
+                currentModel: try XCTUnwrap(inventory.model(for: .init(name: "Model 2"))),
+                versions: [.init(name: "Model 2")]
+            )
+        }()
+
+        manager = CoreDataManager(name: packageName,
+                                  crashLogger: MockCrashLogger(),
+                                  modelsInventory: olderModelsInventory)
+
+        // Then
+        // The rows should have been deleted during the recovery.
+        XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 0)
+        // We should still be able to use the storage
+        insertAccount(to: manager.viewStorage)
+        insertAccount(to: manager.viewStorage)
+        XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 2)
+
+        // The Note entity does not exist in Model 2. This proves that the store was reset to Model 2.
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: Note.entityName,
+                                                in: manager.viewStorage as! NSManagedObjectContext))
+    }
+}
+
+// MARK: - Helpers
+
+private extension CoreDataManagerTests {
+    @discardableResult
+    func insertAccount(to storage: StorageType) -> Account {
+        let account = storage.insertNewObject(ofType: Account.self)
+        account.userID = 0
+        account.username = ""
+        return account
+    }
+
+    func deleteStoreFiles(at storeURL: URL) throws {
+        let fileManager = FileManager.default
+        let expectedExtensions = ["sqlite", "sqlite-wal", "sqlite-shm"]
+
+        try expectedExtensions.forEach { ext in
+            let fileURL = storeURL.deletingPathExtension().appendingPathExtension(ext)
+            if fileManager.fileExists(atPath: fileURL.path) {
+                try fileManager.removeItem(at: fileURL)
+            }
+        }
     }
 }

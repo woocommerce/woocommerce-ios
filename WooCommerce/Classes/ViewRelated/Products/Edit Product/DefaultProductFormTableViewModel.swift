@@ -123,34 +123,34 @@ private extension DefaultProductFormTableViewModel {
         // Regular price and sale price are both available only when a sale price is set.
         if let regularPrice = product.regularPrice, regularPrice.isNotEmpty {
             let formattedRegularPrice = currencyFormatter.formatAmount(regularPrice, with: currency) ?? ""
-            priceDetails.append(String.localizedStringWithFormat(Constants.regularPriceFormat, formattedRegularPrice))
+            priceDetails.append(String.localizedStringWithFormat(Localization.regularPriceFormat, formattedRegularPrice))
 
             if let salePrice = product.salePrice, salePrice.isNotEmpty {
                 let formattedSalePrice = currencyFormatter.formatAmount(salePrice, with: currency) ?? ""
-                priceDetails.append(String.localizedStringWithFormat(Constants.salePriceFormat, formattedSalePrice))
+                priceDetails.append(String.localizedStringWithFormat(Localization.salePriceFormat, formattedSalePrice))
             }
 
             if let dateOnSaleStart = product.dateOnSaleStart, let dateOnSaleEnd = product.dateOnSaleEnd {
                 let dateIntervalFormatter = DateIntervalFormatter.mediumLengthLocalizedDateIntervalFormatter
                 dateIntervalFormatter.timeZone = siteTimezone
                 let formattedTimeRange = dateIntervalFormatter.string(from: dateOnSaleStart, to: dateOnSaleEnd)
-                priceDetails.append(String.localizedStringWithFormat(Constants.saleDatesFormat, formattedTimeRange))
+                priceDetails.append(String.localizedStringWithFormat(Localization.saleDatesFormat, formattedTimeRange))
             }
             else if let dateOnSaleStart = product.dateOnSaleStart, product.dateOnSaleEnd == nil {
                 let dateFormatter = DateFormatter.mediumLengthLocalizedDateFormatter
                 dateFormatter.timeZone = siteTimezone
                 let formattedDate = dateFormatter.string(from: dateOnSaleStart)
-                priceDetails.append(String.localizedStringWithFormat(Constants.saleDateFormatFrom, formattedDate))
+                priceDetails.append(String.localizedStringWithFormat(Localization.saleDateFormatFrom, formattedDate))
             }
             else if let dateOnSaleEnd = product.dateOnSaleEnd, product.dateOnSaleStart == nil {
                 let dateFormatter = DateFormatter.mediumLengthLocalizedDateFormatter
                 dateFormatter.timeZone = siteTimezone
                 let formattedDate = dateFormatter.string(from: dateOnSaleEnd)
-                priceDetails.append(String.localizedStringWithFormat(Constants.saleDateFormatTo, formattedDate))
+                priceDetails.append(String.localizedStringWithFormat(Localization.saleDateFormatTo, formattedDate))
             }
         }
 
-        let title = priceDetails.isEmpty ? Constants.addPriceSettingsTitle: Constants.priceSettingsTitle
+        let title = priceDetails.isEmpty ? Localization.addPriceSettingsTitle: Localization.priceSettingsTitle
         let details = priceDetails.isEmpty ? nil: priceDetails.joined(separator: "\n")
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
@@ -170,16 +170,16 @@ private extension DefaultProductFormTableViewModel {
 
     func reviewsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.productReviewsImage
-        let title = Constants.reviewsTitle
-        var details = Constants.emptyReviews
+        let title = Localization.reviewsTitle
+        var details = Localization.emptyReviews
         if product.ratingCount > 0 {
             details = " · "
         }
         if product.ratingCount == 1 {
-            details += String.localizedStringWithFormat(Constants.singularReviewFormat, product.ratingCount)
+            details += Localization.singularReviewFormat
         }
         else if product.ratingCount > 1 {
-            details += String.localizedStringWithFormat(Constants.pluralReviewsFormat, product.ratingCount)
+            details += String.localizedStringWithFormat(Localization.pluralReviewsFormat, product.ratingCount)
         }
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
@@ -189,16 +189,16 @@ private extension DefaultProductFormTableViewModel {
 
     func inventorySettingsRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.inventoryImage
-        let title = Constants.inventorySettingsTitle
+        let title = Localization.inventorySettingsTitle
 
         var inventoryDetails = [String]()
 
         if let sku = product.sku, !sku.isEmpty {
-            inventoryDetails.append(String.localizedStringWithFormat(Constants.skuFormat, sku))
+            inventoryDetails.append(String.localizedStringWithFormat(Localization.skuFormat, sku))
         }
 
         if let stockQuantity = product.stockQuantity, product.manageStock {
-            inventoryDetails.append(String.localizedStringWithFormat(Constants.stockQuantityFormat, stockQuantity))
+            inventoryDetails.append(String.localizedStringWithFormat(Localization.stockQuantityFormat, stockQuantity))
         } else if product.manageStock == false && product.isStockStatusEnabled() {
             let stockStatus = product.stockStatus
             inventoryDetails.append(stockStatus.description)
@@ -214,16 +214,16 @@ private extension DefaultProductFormTableViewModel {
 
     func productTypeRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.productImage
-        let title = Constants.productTypeTitle
+        let title = Localization.productTypeTitle
 
         let details: String
         switch product.productType {
         case .simple:
             switch product.virtual {
             case true:
-                details = Constants.virtualProductType
+                details = Localization.virtualProductType
             case false:
-                details = Constants.physicalProductType
+                details = Localization.physicalProductType
             }
         case .custom(let customProductType):
             // Custom product type description is the slug, thus we replace the dash with space and capitalize the string.
@@ -240,13 +240,13 @@ private extension DefaultProductFormTableViewModel {
 
     func shippingSettingsRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.shippingImage
-        let title = Constants.shippingSettingsTitle
+        let title = Localization.shippingSettingsTitle
 
         var shippingDetails = [String]()
 
         // Weight[unit]
         if let weight = product.weight, let weightUnit = ServiceLocator.shippingSettingsService.weightUnit, !weight.isEmpty {
-            shippingDetails.append(String.localizedStringWithFormat(Constants.weightFormat,
+            shippingDetails.append(String.localizedStringWithFormat(Localization.weightFormat,
                                                                     weight, weightUnit))
         }
 
@@ -260,18 +260,18 @@ private extension DefaultProductFormTableViewModel {
             switch dimensions.count {
             case 1:
                 let dimension = dimensions[0]
-                shippingDetails.append(String.localizedStringWithFormat(Constants.oneDimensionFormat,
+                shippingDetails.append(String.localizedStringWithFormat(Localization.oneDimensionFormat,
                                                                         dimension, dimensionUnit))
             case 2:
                 let firstDimension = dimensions[0]
                 let secondDimension = dimensions[1]
-                shippingDetails.append(String.localizedStringWithFormat(Constants.twoDimensionsFormat,
+                shippingDetails.append(String.localizedStringWithFormat(Localization.twoDimensionsFormat,
                                                                         firstDimension, secondDimension, dimensionUnit))
             case 3:
                 let firstDimension = dimensions[0]
                 let secondDimension = dimensions[1]
                 let thirdDimension = dimensions[2]
-                shippingDetails.append(String.localizedStringWithFormat(Constants.fullDimensionsFormat,
+                shippingDetails.append(String.localizedStringWithFormat(Localization.fullDimensionsFormat,
                                                                         firstDimension, secondDimension, thirdDimension, dimensionUnit))
             default:
                 break
@@ -287,22 +287,22 @@ private extension DefaultProductFormTableViewModel {
 
     func categoriesRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.categoriesIcon
-        let title = Constants.categoriesTitle
-        let details = product.categoriesDescription() ?? Constants.categoriesPlaceholder
+        let title = Localization.categoriesTitle
+        let details = product.categoriesDescription() ?? Localization.categoriesPlaceholder
         return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: details, isActionable: isEditable)
     }
 
     func tagsRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.tagsIcon
-        let title = Constants.tagsTitle
-        let details = product.tagsDescription() ?? Constants.tagsPlaceholder
+        let title = Localization.tagsTitle
+        let details = product.tagsDescription() ?? Localization.tagsPlaceholder
         return ProductFormSection.SettingsRow.ViewModel(icon: icon, title: title, details: details, isActionable: isEditable)
     }
 
     func shortDescriptionRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.shortDescriptionImage
-        let title = Constants.shortDescriptionTitle
-        let details = product.trimmedShortDescription?.isNotEmpty == true ? product.trimmedShortDescription: Constants.shortDescriptionPlaceholder
+        let title = Localization.shortDescriptionTitle
+        let details = product.trimmedShortDescription?.isNotEmpty == true ? product.trimmedShortDescription: Localization.shortDescriptionPlaceholder
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
@@ -315,7 +315,7 @@ private extension DefaultProductFormTableViewModel {
 
     func externalURLRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.linkImage
-        let title = product.externalURL?.isNotEmpty == true ? Constants.externalURLTitle: Constants.addExternalURLTitle
+        let title = product.externalURL?.isNotEmpty == true ? Localization.externalURLTitle: Localization.addExternalURLTitle
         let details = product.externalURL
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
@@ -327,7 +327,7 @@ private extension DefaultProductFormTableViewModel {
 
     func skuRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.inventoryImage
-        let title = Constants.skuTitle
+        let title = Localization.skuTitle
         let details = product.sku
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
@@ -341,14 +341,14 @@ private extension DefaultProductFormTableViewModel {
 
     func groupedProductsRow(product: Product, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.widgetsImage
-        let title = product.groupedProducts.isEmpty ? Constants.addGroupedProductsTitle: Constants.groupedProductsTitle
+        let title = product.groupedProducts.isEmpty ? Localization.addGroupedProductsTitle: Localization.groupedProductsTitle
         let details: String
 
         switch product.groupedProducts.count {
         case 1:
-            details = String.localizedStringWithFormat(Constants.singularGroupedProductFormat, product.groupedProducts.count)
+            details = String.localizedStringWithFormat(Localization.singularGroupedProductFormat, product.groupedProducts.count)
         case 2...:
-            details = String.localizedStringWithFormat(Constants.pluralGroupedProductsFormat, product.groupedProducts.count)
+            details = String.localizedStringWithFormat(Localization.pluralGroupedProductsFormat, product.groupedProducts.count)
         default:
             details = ""
         }
@@ -364,14 +364,14 @@ private extension DefaultProductFormTableViewModel {
 
     func variationsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.variationsImage
-        let title = Constants.variationsTitle
+        let title = Localization.variationsTitle
 
         let attributes = product.attributes
 
         let format = NSLocalizedString("%1$@ (%2$ld options)", comment: "Format for each Product attribute")
         let details: String
         if product.variations.isEmpty {
-            details = Constants.variationsPlaceholder
+            details = Localization.variationsPlaceholder
         } else {
             details = attributes
                 .map({ String.localizedStringWithFormat(format, $0.name, $0.options.count) })
@@ -388,7 +388,7 @@ private extension DefaultProductFormTableViewModel {
 
     func variationStatusRow(productVariation: EditableProductVariationModel, isEditable: Bool) -> ProductFormSection.SettingsRow.SwitchableViewModel {
         let icon = UIImage.visibilityImage
-        let title = Constants.variationStatusTitle
+        let title = Localization.variationStatusTitle
         let viewModel = ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                                  title: title,
                                                                  details: nil,
@@ -399,7 +399,7 @@ private extension DefaultProductFormTableViewModel {
 
     func noPriceWarningRow() -> ProductFormSection.SettingsRow.WarningViewModel {
         let icon = UIImage.infoOutlineImage
-        let title = Constants.noPriceWarningTitle
+        let title = Localization.noPriceWarningTitle
         return ProductFormSection.SettingsRow.WarningViewModel(icon: icon, title: title)
     }
 
@@ -407,16 +407,16 @@ private extension DefaultProductFormTableViewModel {
 
     func downloadsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.cloudImage
-        let title = Constants.downloadsTitle
-        var details = Constants.emptyDownloads
+        let title = Localization.downloadsTitle
+        var details = Localization.emptyDownloads
 
         switch product.downloadableFiles.count {
         case 1:
-            details = String.localizedStringWithFormat(Constants.singularDownloadsFormat, product.downloadableFiles.count)
+            details = String.localizedStringWithFormat(Localization.singularDownloadsFormat, product.downloadableFiles.count)
         case 2...:
-            details = String.localizedStringWithFormat(Constants.pluralDownloadsFormat, product.downloadableFiles.count)
+            details = String.localizedStringWithFormat(Localization.pluralDownloadsFormat, product.downloadableFiles.count)
         default:
-            details = Constants.emptyDownloads
+            details = Localization.emptyDownloads
         }
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
@@ -426,7 +426,7 @@ private extension DefaultProductFormTableViewModel {
 }
 
 private extension DefaultProductFormTableViewModel {
-    enum Constants {
+    enum Localization {
         static let addPriceSettingsTitle = NSLocalizedString("Add Price",
                                                              comment: "Title for adding the price settings row on Product main screen")
         static let priceSettingsTitle = NSLocalizedString("Price",
@@ -471,12 +471,12 @@ private extension DefaultProductFormTableViewModel {
                                                     comment: "Format of the sale period on the Price Settings row until a certain date")
 
         // Reviews
-        static let emptyReviews = NSLocalizedString("No reviews yet",
-                                                    comment: "Placeholder for empty product reviews")
-        static let singularReviewFormat = NSLocalizedString("%ld review",
-                                                            comment: "Format of the number of product review in singular form")
-        static let pluralReviewsFormat = NSLocalizedString("%ld reviews",
-                                                           comment: "Format of the number of product reviews in plural form")
+        static let emptyReviews = NSLocalizedString("No ratings",
+                                                    comment: "Placeholder for empty product ratings")
+        static let singularReviewFormat = NSLocalizedString("rated once",
+                                                            comment: "Format of the number of product ratings in singular form")
+        static let pluralReviewsFormat = NSLocalizedString("rated %ld times",
+                                                           comment: "Format of the number of product ratings in plural form")
 
         // Inventory
         static let skuFormat = NSLocalizedString("SKU: %@",

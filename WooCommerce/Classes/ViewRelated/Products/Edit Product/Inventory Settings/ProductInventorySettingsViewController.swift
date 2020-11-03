@@ -335,12 +335,7 @@ private extension ProductInventorySettingsViewController {
 //
 private extension ProductInventorySettingsViewController {
     @objc func scanSKUButtonTapped() {
-    }
-
-    func onSKUBarcodeScanned(barcode: String) {
-        viewModel.handleSKUChange(barcode) { [weak self] (isValid, shouldBringUpKeyboard) in
-            self?.handleSKUValidation(isValid: isValid, shouldBringUpKeyboard: shouldBringUpKeyboard)
-        }
+        // TODO-2704: scan barcode for product SKU
     }
 }
 

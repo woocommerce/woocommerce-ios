@@ -270,10 +270,7 @@ private extension ProductInventorySettingsViewController {
     func configureSKU(cell: TitleAndTextFieldTableViewCell) {
         var cellViewModel = Product.createSKUViewModel(sku: viewModel.sku) { [weak self] value in
             self?.viewModel.handleSKUChange(value) { [weak self] (isValid, shouldBringUpKeyboard) in
-                self?.enableDoneButton(isValid)
-                if shouldBringUpKeyboard {
-                    self?.getSkuCell()?.textFieldBecomeFirstResponder()
-                }
+                self?.handleSKUValidation(isValid: isValid, shouldBringUpKeyboard: shouldBringUpKeyboard)
             }
         }
         switch viewModel.error {
@@ -283,6 +280,15 @@ private extension ProductInventorySettingsViewController {
             break
         }
         cell.configure(viewModel: cellViewModel)
+
+        // Configures accessory view for adding SKU from barcode scanner.
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.barcodeScanner) {
+            let button = UIButton(type: .detailDisclosure)
+            button.applyIconButtonStyle(icon: .scanImage)
+            button.addTarget(self, action: #selector(scanSKUButtonTapped), for: .touchUpInside)
+
+            cell.accessoryView = button
+        }
     }
 
     func configureManageStock(cell: SwitchTableViewCell) {
@@ -322,6 +328,28 @@ private extension ProductInventorySettingsViewController {
         let title = NSLocalizedString("Stock status", comment: "Title of the cell in Product Inventory Settings > Stock status")
         cell.updateUI(title: title, value: viewModel.stockStatus?.description)
         cell.accessoryType = .disclosureIndicator
+    }
+}
+
+// MARK: - SKU Scanner
+//
+private extension ProductInventorySettingsViewController {
+    @objc func scanSKUButtonTapped() {
+    }
+
+    func onSKUBarcodeScanned(barcode: String) {
+        viewModel.handleSKUChange(barcode) { [weak self] (isValid, shouldBringUpKeyboard) in
+            self?.handleSKUValidation(isValid: isValid, shouldBringUpKeyboard: shouldBringUpKeyboard)
+        }
+    }
+}
+
+private extension ProductInventorySettingsViewController {
+    func handleSKUValidation(isValid: Bool, shouldBringUpKeyboard: Bool) {
+        enableDoneButton(isValid)
+        if shouldBringUpKeyboard {
+            getSkuCell()?.textFieldBecomeFirstResponder()
+        }
     }
 }
 

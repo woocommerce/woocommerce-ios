@@ -34,7 +34,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         XCTAssertEqual(previouslyRefundedRow.value, "$147.2319")
     }
 
-    func test_refund_amount_is_property_formatted_with_currency() throws {
+    func test_refund_amount_is_properly_formatted_with_currency() throws {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .USD,
                                                 currencyPosition: .left,

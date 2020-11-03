@@ -10,26 +10,26 @@ enum BoxAnchorLocation {
     case none
 }
 
-// TODO-jc: remove if not needed / not working
-extension AVCaptureDevice {
-    func set(frameRate: Double) {
-        guard let range = activeFormat.videoSupportedFrameRateRanges.first,
-            range.minFrameRate...range.maxFrameRate ~= frameRate
-            else {
-                print("Requested FPS is not supported by the device's activeFormat !")
-                return
-        }
-
-        do {
-            try lockForConfiguration()
-            activeVideoMinFrameDuration = CMTimeMake(value: 1, timescale: Int32(frameRate))
-            activeVideoMaxFrameDuration = CMTimeMake(value: 1, timescale: Int32(frameRate))
-            unlockForConfiguration()
-        } catch {
-            print("LockForConfiguration failed with error: \(error.localizedDescription)")
-        }
-    }
-}
+//// TODO-jc: remove if not needed / not working
+//extension AVCaptureDevice {
+//    func set(frameRate: Double) {
+//        guard let range = activeFormat.videoSupportedFrameRateRanges.first,
+//            range.minFrameRate...range.maxFrameRate ~= frameRate
+//            else {
+//                print("Requested FPS is not supported by the device's activeFormat !")
+//                return
+//        }
+//
+//        do {
+//            try lockForConfiguration()
+//            activeVideoMinFrameDuration = CMTimeMake(value: 1, timescale: Int32(frameRate))
+//            activeVideoMaxFrameDuration = CMTimeMake(value: 1, timescale: Int32(frameRate))
+//            unlockForConfiguration()
+//        } catch {
+//            print("LockForConfiguration failed with error: \(error.localizedDescription)")
+//        }
+//    }
+//}
 
 final class BarcodeScannerViewController: UIViewController {
     @IBOutlet private weak var videoOutputImageView: UIImageView!
@@ -52,10 +52,10 @@ final class BarcodeScannerViewController: UIViewController {
     private var lastBufferOrientation: CGImagePropertyOrientation?
     private var bufferSize: CGSize?
 
-    private let onBarcodeScanned: ([String], Error?) -> Void
+    private let onBarcodeScanned: (Result<[String], Error>) -> Void
 
     // TODO-jc: maybe let the user to pick a Barcode if multiple are available
-    init(onBarcodeScanned: @escaping ([String], Error?) -> Void) {
+    init(onBarcodeScanned: @escaping (Result<[String], Error>) -> Void) {
         self.onBarcodeScanned = onBarcodeScanned
         super.init(nibName: nil, bundle: nil)
     }
@@ -81,7 +81,7 @@ final class BarcodeScannerViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        if let connection = self.previewLayer?.connection {
+        if let connection = previewLayer?.connection {
             let orientation = UIApplication.shared.statusBarOrientation
             let previewLayerConnection: AVCaptureConnection = connection
             if previewLayerConnection.isVideoOrientationSupported {
@@ -168,9 +168,7 @@ final class BarcodeScannerViewController: UIViewController {
         let barcodes = barcodeObservations.compactMap({ $0.payloadStringValue }).uniqued()
 
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
 
             guard self.session.isRunning else {
                 return
@@ -189,7 +187,7 @@ final class BarcodeScannerViewController: UIViewController {
 
                 if let error = error {
                     print(error)
-                    self.onBarcodeScanned([], error)
+                    self.onBarcodeScanned(.failure(error))
                 }
 
                 return
@@ -221,7 +219,7 @@ final class BarcodeScannerViewController: UIViewController {
 //                self.drawTextBox(barcodeObservation: barcodeObservation, content: barcodeContent)
             }
 
-            self.onBarcodeScanned(barcodes, nil)
+            self.onBarcodeScanned(.success(barcodes))
         }
     }
 
@@ -311,9 +309,9 @@ final class BarcodeScannerViewController: UIViewController {
         }
 
         // Skip the first layer (i.e. the video layer) and outline layers
-        let textBoxLayers: [CALayer] = Array(videoOutputLayers[(videoOutputLayers.count - totalNumberOfTextBoxes)...]);
+        let textBoxLayers: [CALayer] = Array(videoOutputLayers[(videoOutputLayers.count - totalNumberOfTextBoxes)...])
 
-        let bottomLeftAnchorBox = originalBox;
+        let bottomLeftAnchorBox = originalBox
         let topLeftAnchorBox = CGRect(x: originalBox.origin.x, y: originalBox.origin.y + originalBox.size.height + barcodeSize.height,
                                       width: originalBox.size.width, height: originalBox.size.height)
         let topRightAnchorBox = CGRect(x: originalBox.origin.x - barcodeSize.width - originalBox.size.width, y: originalBox.origin.y + barcodeSize.height + originalBox.size.height,
@@ -321,10 +319,10 @@ final class BarcodeScannerViewController: UIViewController {
         let bottomRightAnchorBox = CGRect(x: originalBox.origin.x - barcodeSize.width - originalBox.size.width, y: originalBox.origin.y,
                                           width: originalBox.size.width, height: originalBox.size.height)
         var potentialBoxes: [BoxAnchorLocation : CGRect] = [
-            .bottomLeft : bottomLeftAnchorBox,
-            .topLeft : topLeftAnchorBox,
-            .topRight : topRightAnchorBox,
-            .bottomRight : bottomRightAnchorBox
+            .bottomLeft: bottomLeftAnchorBox,
+            .topLeft: topLeftAnchorBox,
+            .topRight: topRightAnchorBox,
+            .bottomRight: bottomRightAnchorBox
         ]
 
         var potentialBoxToUse: (CGRect?, BoxAnchorLocation) = (nil, .none)
@@ -369,7 +367,9 @@ private extension BarcodeScannerViewController {
 extension BarcodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     // Run Vision code with live stream
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        throttler.throttle {
+        throttler.throttle { [weak self] in
+            guard let self = self else { return }
+
             guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
                 return
             }
@@ -386,19 +386,19 @@ extension BarcodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDele
             // to know how to draw bounding boxes based on relative values.
             // https://developer.apple.com/documentation/coreml/understanding_a_dice_roll_with_vision_and_object_detection
             // TODO-jc: remove if not needed eventually
-            if self.bufferSize == nil || self.lastBufferOrientation != imageOrientation {
-                self.lastBufferOrientation = imageOrientation
-                let pixelBufferWidth = CVPixelBufferGetWidth(pixelBuffer)
-                let pixelBufferHeight = CVPixelBufferGetHeight(pixelBuffer)
-                if [.up, .down].contains(imageOrientation) {
-                    self.bufferSize = CGSize(width: pixelBufferWidth,
-                                             height: pixelBufferHeight)
-                } else {
-                    self.bufferSize = CGSize(width: pixelBufferHeight,
-                                             height: pixelBufferWidth)
-                }
-                print("video buffer size: \(self.bufferSize)")
-            }
+//            if self.bufferSize == nil || self.lastBufferOrientation != imageOrientation {
+//                self.lastBufferOrientation = imageOrientation
+//                let pixelBufferWidth = CVPixelBufferGetWidth(pixelBuffer)
+//                let pixelBufferHeight = CVPixelBufferGetHeight(pixelBuffer)
+//                if [.up, .down].contains(imageOrientation) {
+//                    self.bufferSize = CGSize(width: pixelBufferWidth,
+//                                             height: pixelBufferHeight)
+//                } else {
+//                    self.bufferSize = CGSize(width: pixelBufferHeight,
+//                                             height: pixelBufferWidth)
+//                }
+//                print("video buffer size: \(self.bufferSize)")
+//            }
 
             // CGImagePropertyOrientation(rawValue: 6)
             let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: imageOrientation, options: requestOptions)

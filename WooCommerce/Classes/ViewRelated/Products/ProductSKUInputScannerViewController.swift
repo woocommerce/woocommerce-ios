@@ -2,7 +2,7 @@ import UIKit
 
 final class ProductSKUInputScannerViewController: UIViewController {
 
-    private lazy var barcodeScannerChildViewController : BarcodeScannerViewController = {
+    private lazy var barcodeScannerChildViewController: BarcodeScannerViewController = {
         return BarcodeScannerViewController { [weak self] (barcodes, error) in
             guard let barcode = barcodes.first else {
                 return

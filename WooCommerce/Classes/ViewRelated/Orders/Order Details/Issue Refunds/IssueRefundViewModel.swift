@@ -81,7 +81,11 @@ final class IssueRefundViewModel {
     /// Creates the `ViewModel` to be used when navigating to the page where the user can
     /// confirm and submit the refund.
     func createRefundConfirmationViewModel() -> RefundConfirmationViewModel {
-        RefundConfirmationViewModel(order: state.order, currencySettings: state.currencySettings)
+        let details = RefundConfirmationViewModel.Details(order: state.order,
+                                                          amount: "\(calculateRefundTotal())",
+                                                          refundsShipping: state.shouldRefundShipping,
+                                                          items: state.refundQuantityStore.refundableItems())
+        return RefundConfirmationViewModel(details: details, currencySettings: state.currencySettings)
     }
 }
 
@@ -191,7 +195,7 @@ extension IssueRefundViewModel {
                                        currencySettings: state.currencySettings)
         }
 
-        let refundItems = state.refundQuantityStore.map { RefundableOrderItem(item: $0, quantity: $1) }
+        let refundItems = state.refundQuantityStore.refundableItems()
         let summaryRow = RefundProductsTotalViewModel(refundItems: refundItems, currency: state.order.currency, currencySettings: state.currencySettings)
 
         return Section(rows: itemsRows + [summaryRow])
@@ -234,7 +238,7 @@ extension IssueRefundViewModel {
     ///
     private func calculateRefundTotal() -> Decimal {
         let formatter = CurrencyFormatter(currencySettings: state.currencySettings)
-        let refundItems = state.refundQuantityStore.map { RefundableOrderItem(item: $0, quantity: $1) }
+        let refundItems = state.refundQuantityStore.refundableItems()
         let productsTotalUseCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter)
 
         // If shipping is not enabled, return only the products value
@@ -331,6 +335,12 @@ private extension IssueRefundViewModel {
         ///
         func count() -> Int {
             store.values.reduce(0) { $0 + $1 }
+        }
+
+        /// Returns an array of `RefundableOrderItem` from the internal store
+        ///
+        func refundableItems() -> [RefundableOrderItem] {
+            map { RefundableOrderItem(item: $0, quantity: $1) }
         }
     }
 }

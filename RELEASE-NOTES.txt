@@ -10,6 +10,11 @@
 
 5.4
 -----
+- [*] fix: text headers on Product price screen are no more clipped with large text sizes. [https://github.com/woocommerce/woocommerce-ios/pull/3090]
+
+
+5.4
+-----
 - [*] fix: the footer in app Settings is now correctly centered.
 - [*] fix: Products tab: earlier draft products now show up in the same order as in core when sorting by "Newest to Oldest".
 - [*] enhancement: in product details > price settings, the sale dates can be edited inline in iOS 14 using the new date picker. Also, the sale end date picker editing does not automatically end on changes anymore. [https://github.com/woocommerce/woocommerce-ios/pull/3044]

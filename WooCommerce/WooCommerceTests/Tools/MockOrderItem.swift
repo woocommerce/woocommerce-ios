@@ -29,6 +29,7 @@ public struct MockOrderItem {
                          taxClass: taxClass,
                          taxes: taxes,
                          total: total,
-                         totalTax: totalTax)
+                         totalTax: totalTax,
+                         attributes: [])
     }
 }

@@ -26,6 +26,7 @@ public typealias Order = Networking.Order
 public typealias OrderCount = Networking.OrderCount
 public typealias OrderCountItem = Networking.OrderCountItem
 public typealias OrderItem = Networking.OrderItem
+public typealias OrderItemAttribute = Networking.OrderItemAttribute
 public typealias OrderItemTax = Networking.OrderItemTax
 public typealias OrderItemRefund = Networking.OrderItemRefund
 public typealias OrderItemTaxRefund = Networking.OrderItemTaxRefund

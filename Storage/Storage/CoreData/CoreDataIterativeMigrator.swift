@@ -288,7 +288,7 @@ private extension CoreDataIterativeMigrator {
     }
 
     func models(for modelVersions: [ManagedObjectModelsInventory.ModelVersion]) throws -> [NSManagedObjectModel] {
-        let models = try modelVersions.map { version -> NSManagedObjectModel in
+        try modelVersions.map { version -> NSManagedObjectModel in
             guard let model = self.modelsInventory.model(for: version) else {
                 let description = "No model found for \(version.name)"
                 throw NSError(domain: "IterativeMigrator", code: 110, userInfo: [NSLocalizedDescriptionKey: description])
@@ -296,7 +296,5 @@ private extension CoreDataIterativeMigrator {
 
             return model
         }
-
-        return models
     }
 }

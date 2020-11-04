@@ -119,15 +119,16 @@ final class CoreDataManagerTests: XCTestCase {
                                                    in: manager.viewStorage as! NSManagedObjectContext))
 
         // When
-        // Use a models inventory with an old model. this will cause a loading error and make the
-        // `CoreDataManager` recover and recreate the database.
-        let olderModelsInventory = ManagedObjectModelsInventory(
+        // Use a models inventory with an old and only one model. This will cause a loading error
+        // because it is not compatible. This will then make `CoreDataManager` recover and
+        // recreate the database.
+        let invalidModelsInventory = ManagedObjectModelsInventory(
             packageURL: modelsInventory.packageURL,
             currentModel: try XCTUnwrap(modelsInventory.model(for: .init(name: "Model 2"))),
             versions: [.init(name: "Model 2")]
         )
 
-        manager = try makeManager(using: olderModelsInventory, deletingExistingStoreFiles: false)
+        manager = try makeManager(using: invalidModelsInventory, deletingExistingStoreFiles: false)
 
         // Then
         // The rows should have been deleted during the recovery.

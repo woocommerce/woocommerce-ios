@@ -119,7 +119,8 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.success)
-        XCTAssertTrue(result.debugMessages.isEmpty)
+        XCTAssertEqual(result.debugMessages.count, 1)
+        assertThat(try XCTUnwrap(result.debugMessages.first), contains: "Skipping migration.")
         XCTAssertEqual(fileManager.fileExistsInvocationCount, 1)
         XCTAssertEqual(fileManager.allMethodsInvocationCount, 1)
     }

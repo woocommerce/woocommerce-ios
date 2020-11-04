@@ -20,7 +20,7 @@
       location = "group:TestKit">
    </FileRef>
    <FileRef
-      location = "group:Hardware">
+      location = "group:Fakes">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

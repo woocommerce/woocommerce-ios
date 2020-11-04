@@ -1,4 +1,5 @@
 import XCTest
+import Fakes
 
 @testable import Networking
 

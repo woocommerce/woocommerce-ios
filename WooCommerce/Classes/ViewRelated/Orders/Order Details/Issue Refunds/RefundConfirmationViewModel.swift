@@ -5,18 +5,28 @@ import Yosemite
 ///
 final class RefundConfirmationViewModel {
 
-    /// This will be computed later :D
-    let refundAmount = "$87.50"
+    /// Amount to refund, formatted with the order's currency
+    ///
+    private(set) lazy var refundAmount: String = {
+        currencyFormatter.formatAmount(details.amount, with: details.order.currency) ?? ""
+    }()
 
-    private let order: Order
+    /// Struct with al refund details needed to create a `Refund` object.
+    ///
+    private let details: Details
+
+    /// Amount currency formatter
+    ///
     private let currencyFormatter: CurrencyFormatter
 
     /// Contains the current value of the Reason for Refund text field.
+    ///
     private let reasonForRefundCellViewModel =
         TitleAndEditableValueTableViewCellViewModel(title: Localization.reasonForRefund,
                                                     placeholder: Localization.reasonForRefundingOrder)
 
     /// The sections and rows to display in the `UITableView`.
+    ///
     lazy private(set) var sections: [Section] = [
         Section(
             title: nil,
@@ -35,8 +45,8 @@ final class RefundConfirmationViewModel {
         )
     ]
 
-    init(order: Order, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
-        self.order = order
+    init(details: Details, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+        self.details = details
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
     }
 
@@ -50,11 +60,32 @@ final class RefundConfirmationViewModel {
     }
 }
 
+// MARK: Refund Details
+extension RefundConfirmationViewModel {
+    struct Details {
+        /// Order to refund
+        ///
+        let order: Order
+
+        /// Total amount to refund
+        ///
+        let amount: String
+
+        /// Indicates if shipping will be refunded
+        ///
+        let refundsShipping: Bool
+
+        /// Order items and quantities to refund
+        ///
+        let items: [RefundableOrderItem]
+    }
+}
+
 // MARK: - Builders
 
 private extension RefundConfirmationViewModel {
     func makePreviouslyRefundedRow() -> TwoColumnRow {
-        let useCase = TotalRefundedCalculationUseCase(order: order, currencyFormatter: currencyFormatter)
+        let useCase = TotalRefundedCalculationUseCase(order: details.order, currencyFormatter: currencyFormatter)
         let totalRefunded = useCase.totalRefunded().abs()
         let totalRefundedFormatted = currencyFormatter.formatAmount(totalRefunded) ?? ""
         return TwoColumnRow(title: Localization.previouslyRefunded, value: totalRefundedFormatted, isHeadline: false)

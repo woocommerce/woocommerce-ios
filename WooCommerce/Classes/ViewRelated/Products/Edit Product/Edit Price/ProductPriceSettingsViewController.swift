@@ -260,10 +260,10 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if sections[section].title == nil {
-            return UITableView.automaticDimension
-        }
+        return UITableView.automaticDimension
+    }
 
+    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
         return Constants.sectionHeight
     }
 

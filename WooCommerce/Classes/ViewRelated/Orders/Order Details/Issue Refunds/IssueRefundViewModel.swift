@@ -36,6 +36,7 @@ final class IssueRefundViewModel {
             sections = createSections()
             title = calculateTitle()
             selectedItemsTitle = createSelectedItemsCount()
+            isNextButtonEnabled = calculateNextButtonEnableState()
             onChange?()
         }
     }
@@ -51,6 +52,10 @@ final class IssueRefundViewModel {
     /// String indicating how many items the user has selected to refund
     ///
     private(set) var selectedItemsTitle: String = ""
+
+    /// Boolean indicating if the next button is enabled
+    ///
+    private(set) var isNextButtonEnabled: Bool = false
 
     /// The sections and rows to display in the `UITableView`.
     ///
@@ -69,13 +74,18 @@ final class IssueRefundViewModel {
         state = State(order: order, itemsToRefund: items, currencySettings: currencySettings)
         sections = createSections()
         title = calculateTitle()
+        isNextButtonEnabled = calculateNextButtonEnableState()
         selectedItemsTitle = createSelectedItemsCount()
     }
 
     /// Creates the `ViewModel` to be used when navigating to the page where the user can
     /// confirm and submit the refund.
     func createRefundConfirmationViewModel() -> RefundConfirmationViewModel {
-        RefundConfirmationViewModel(order: state.order, currencySettings: state.currencySettings)
+        let details = RefundConfirmationViewModel.Details(order: state.order,
+                                                          amount: "\(calculateRefundTotal())",
+                                                          refundsShipping: state.shouldRefundShipping,
+                                                          items: state.refundQuantityStore.refundableItems())
+        return RefundConfirmationViewModel(details: details, currencySettings: state.currencySettings)
     }
 }
 
@@ -185,7 +195,7 @@ extension IssueRefundViewModel {
                                        currencySettings: state.currencySettings)
         }
 
-        let refundItems = state.refundQuantityStore.map { RefundableOrderItem(item: $0, quantity: $1) }
+        let refundItems = state.refundQuantityStore.refundableItems()
         let summaryRow = RefundProductsTotalViewModel(refundItems: refundItems, currency: state.order.currency, currencySettings: state.currencySettings)
 
         return Section(rows: itemsRows + [summaryRow])
@@ -228,7 +238,7 @@ extension IssueRefundViewModel {
     ///
     private func calculateRefundTotal() -> Decimal {
         let formatter = CurrencyFormatter(currencySettings: state.currencySettings)
-        let refundItems = state.refundQuantityStore.map { RefundableOrderItem(item: $0, quantity: $1) }
+        let refundItems = state.refundQuantityStore.refundableItems()
         let productsTotalUseCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter)
 
         // If shipping is not enabled, return only the products value
@@ -245,6 +255,12 @@ extension IssueRefundViewModel {
     private func createSelectedItemsCount() -> String {
         let count = state.refundQuantityStore.count()
         return String.pluralize(count, singular: Localization.itemSingular, plural: Localization.itemsPlural)
+    }
+
+    /// Calculates wether the next button should be enabled or not
+    ///
+    private func calculateNextButtonEnableState() -> Bool {
+        return state.refundQuantityStore.count() > 0 || state.shouldRefundShipping
     }
 
     /// Return an array of `RefundableOrderItems` by taking out all previously refunded items
@@ -319,6 +335,12 @@ private extension IssueRefundViewModel {
         ///
         func count() -> Int {
             store.values.reduce(0) { $0 + $1 }
+        }
+
+        /// Returns an array of `RefundableOrderItem` from the internal store
+        ///
+        func refundableItems() -> [RefundableOrderItem] {
+            map { RefundableOrderItem(item: $0, quantity: $1) }
         }
     }
 }

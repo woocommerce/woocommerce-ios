@@ -1,12 +1,14 @@
-LIHAT DAN KELOLA PESANAN
-Gulir, saring, atau cari pesanan tertentu. Ketuk untuk melihat informasi pesanan, termasuk produk, nilai, data pelanggan, detail pengiriman, dan catatan.
+LIHAT DAN KELOLA PEMESANAN
+Gulir, filter, atau cari pesanan tertentu. Ketuk untuk melihat informasi pesanan, termasuk produk, nilai, data pelanggan, detail pengiriman, dan catatan.
 
-PANTAU TOKO ANDA
-Ketahui produk yang memiliki performa terbaik. Periksa pendapatan keseluruhan serta lihat pesanan dan data pengunjung per minggu, bulan, dan tahun.
+LACAK TOKO ANDA
+Lihat produk yang memiliki kinerja terbaik. Periksa pendapatan keseluruhan serta lihat pesanan dan data pengunjung per minggu, bulan, dan tahun.
 
 PEMBERITAHUAN PESANAN REAL-TIME
-Dapat pemberitahuan mengenai aktivitas toko, termasuk pesanan baru dan ulasan produk.
+Dapatkan pemberitahuan mengenai aktivitas toko, termasuk pesanan baru dan ulasan produk.
 
-WooCommerce adalah platform eCommerce yang paling mudah disesuaikan untuk membangun bisnis online. Dibuat berdasarkan WordPress, platform ini terintegrasi dengan alat pengelolaan konten terbaik di dunia. Mulai dari langganan kopi, kursus bahasa Spanyol, keanggotaan gym, hingga eCommerce tingkat perusahaan yang kompleks, kunjungi WooCommerce.com/start untuk meluncurkan toko baru dan menyebarkan gagasan Anda.
+WooCommerce adalah platform eCommerce yang paling mudah disesuaikan untuk membangun bisnis online. Dibuat berdasarkan WordPress, platform ini terintegrasi dengan alat pengelolaan konten terbaik di dunia.
 
 Persyaratan: WooCommerce v3.5+, plugin Jetpack.
+
+Lihat Pemberitahuan Privasi untuk Pengguna California di https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

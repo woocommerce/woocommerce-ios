@@ -82,7 +82,7 @@ class AsyncDictionaryTests: XCTestCase {
         }
 
         asyncDictionary.calculate(forKey: key, operation: operation2, onCompletion: onOperation2Completion)
-        waitForExpectations(timeout: 0.1, handler: nil)
+        waitForExpectations(timeout: 1, handler: nil)
         XCTAssertEqual(asyncDictionary.value(forKey: key), value2)
     }
 }

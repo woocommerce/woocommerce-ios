@@ -68,9 +68,15 @@ extension SurveyViewController {
         fileprivate var url: URL {
             switch self {
             case .inAppFeedback:
-                return WooConstants.URLs.inAppFeedback.asURL()
+                return WooConstants.URLs.inAppFeedback
+                    .asURL()
+                    .tagPlatform("ios")
+
             case .productsM4Feedback:
-                return WooConstants.URLs.productsM4Feedback.asURL()
+                return WooConstants.URLs.productsM4Feedback
+                    .asURL()
+                    .tagPlatform("ios")
+                    .tagProductMilestone("4")
             }
         }
 
@@ -122,6 +128,36 @@ extension SurveyViewController: WKNavigationDelegate {
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {
         loadingView.hideLoader()
+    }
+}
+// MARK: Survey Tags
+//
+extension URL {
+    func tagPlatform(_ platformName: String) -> URL {
+        appendingQueryItem(URLQueryItem(name: Tags.surveyRequestPlatformTag, value: platformName))
+    }
+
+    func tagProductMilestone(_ milestone: String) -> URL {
+        appendingQueryItem(URLQueryItem(name: Tags.surveyRequestProductMilestoneTag, value: milestone))
+    }
+
+    private func appendingQueryItem(_ queryItem: URLQueryItem) -> URL {
+        guard var urlComponents = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
+            assertionFailure("Cannot create URL components from \(self)")
+            return self
+        }
+        let queryItems: [URLQueryItem] = urlComponents.queryItems ?? []
+        urlComponents.queryItems = queryItems + [queryItem]
+        guard let url = try? urlComponents.asURL() else {
+            assertionFailure("Cannot convert URL components to URL: \(urlComponents)")
+            return self
+        }
+        return url
+    }
+
+    private enum Tags {
+        static let surveyRequestPlatformTag = "woo-mobile-platform"
+        static let surveyRequestProductMilestoneTag = "product-milestone"
     }
 }
 

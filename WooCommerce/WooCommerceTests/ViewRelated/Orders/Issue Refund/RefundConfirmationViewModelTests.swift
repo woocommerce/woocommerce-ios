@@ -22,7 +22,9 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         ]
         let order = MockOrders().empty().copy(refunds: refundItems)
 
-        let viewModel = RefundConfirmationViewModel(order: order, currencySettings: currencySettings)
+        let details = RefundConfirmationViewModel.Details(order: order, amount: "0.0", refundsShipping: false, items: [])
+
+        let viewModel = RefundConfirmationViewModel(details: details, currencySettings: currencySettings)
 
         // When
         // We expect the Previously Refunded row to be the first item.
@@ -30,5 +32,23 @@ final class RefundConfirmationViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(previouslyRefundedRow.value, "$147.2319")
+    }
+
+    func test_refund_amount_is_properly_formatted_with_currency() throws {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .USD,
+                                                currencyPosition: .left,
+                                                thousandSeparator: ",",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 2)
+
+        let order = MockOrders().empty()
+        let details = RefundConfirmationViewModel.Details(order: order, amount: "130.3473", refundsShipping: false, items: [])
+
+        // When
+        let viewModel = RefundConfirmationViewModel(details: details, currencySettings: currencySettings)
+
+        // Then
+        XCTAssertEqual(viewModel.refundAmount, "$130.35")
     }
 }

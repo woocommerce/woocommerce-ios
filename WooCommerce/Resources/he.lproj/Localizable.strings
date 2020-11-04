@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-10-15 15:54:03+0000 */
+/* Translation-Revision-Date: 2020-10-29 10:54:34+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -54,8 +54,20 @@
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
 "%@ via %@" = "%1$@ באמצעות %2$@";
 
+/* Refund item price and quantity format. EG: 2 x $10.00 each */
+"%@ x %@ each" = "%1$@ x‏ %2$@ כל אחד";
+
+/* Title of the label indicating that there are multiple items to refund. */
+"%d items selected" = "נבחרו %d פריטים";
+
 /* Navigation bar title for selecting multiple products when more multiple products have been selected. */
 "%ld Products Selected" = "%ld מוצרים נבחרו";
+
+/* Format of the number of Downloadable Files row in the singular form. Reads, `1 file` */
+"%ld file" = "קובץ %ld";
+
+/* Format of the number of Downloadable Files row in the plural form. Reads, `5 files` */
+"%ld files" = "%ld קבצים";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld במלאי";
@@ -81,6 +93,9 @@
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "נבחר מוצר אחד";
 
+/* Title of the label indicating that there is 1 item to refund. */
+"1 item selected" = "נבחר פריט אחד";
+
 /* Shown when there are more than 99 items of something (e.g. Processing Orders). */
 "99+" = "‎99+‎";
 
@@ -95,6 +110,9 @@
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "A product with variations like color or size" = "מוצר עם סוגים כגון צבע או מידה";
+
+/* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
+"A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "לא יופק החזר כספי ללקוח. עליך להפיק את ההחזר הכספי באופן ידני דרך %1$@.";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "פריט ייחודי למכירה";
@@ -127,6 +145,15 @@
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "להוסיף קטגוריה";
+
+/* Downloadable file screen navigation title */
+"Add Downloadable File" = "להוסיף קובץ שניתן להורדה";
+
+/* Action to add downloadable file on the Product Downloadable Files screen */
+"Add File" = "להוסיף קובץ";
+
+/* Action to add downloadable file on the Product Downloadable Files screen */
+"Add File" = "Add File";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "להוסיף תמונה";
@@ -342,7 +369,7 @@
 "Can Not Request Link" = "לא ניתן לבקש קישור";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
 "Cancel" = "ביטול";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -596,7 +623,7 @@
 "Don't have an account? _Sign up_" = "אין לך חשבון עדיין? _הרשמה_";
 
 /* Action title to select products to add to a grouped product from search results
-   Edit product categories screen - button title to apply categories selection */
+   Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
 "Done" = "בוצע";
 
 /* WordPress.com (unmapped!) error */
@@ -628,6 +655,44 @@
 
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "יש להקיש פעמיים כדי לשנות את ההגדרות.";
+
+/* Button title Download Settings in Downloadable Files More Options Action Sheet
+   Download file settings navigation title */
+"Download Settings" = "הגדרות הורדה";
+
+/* Button title Download Settings in Downloadable Files More Options Action Sheet
+   Download file settings navigation title */
+"Download Settings" = "Download Settings";
+
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "Download expiration";
+
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "תאריך התוקף של ההורדה";
+
+/* Title of the cell in Product Download limit > Download limit */
+"Download limit" = "Download limit";
+
+/* Title of the cell in Product Download limit > Download limit */
+"Download limit" = "מגבלת הורדה";
+
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "Downloadable Files";
+
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "קבצים שניתנים להורדה";
+
+/* Downloadable Product label in Product Settings */
+"Downloadable Product" = "מוצר שניתן להורדה";
+
+/* Downloadable Product label in Product Settings */
+"Downloadable Product" = "Downloadable Product";
+
+/* Title of the Downloadable Files row on Product main screen */
+"Downloadable files" = "קבצים שניתנים להורדה";
+
+/* Title of the Downloadable Files row on Product main screen */
+"Downloadable files" = "Downloadable files";
 
 /* Product Details > Purchase Details > Downloads cell title */
 "Downloads" = "הורדות";
@@ -688,6 +753,18 @@
 /* Footer text for editing product external URL */
 "Enter the external URL to the product." = "להזין את כתובת ה-URL החיצונית למוצר.";
 
+/* Footer text for Download Expiration */
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "יש להזין את מספר הימים עד לתאריך התוקף של הקישור להורדה או להשאיר ריק אם הוא לא יפוג לעולם";
+
+/* Footer text for Download Expiration */
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
+
+/* Footer text for Downloadable Limit */
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "יש להזין את מספר הפעמים שניתן להוריד את הקובץ או להשאיר ריק כדי לאפשר הורדות ללא הגבלה";
+
+/* Footer text for Downloadable Limit */
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
+
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "יש להזין את הסיסמה לחשבון WordPress.com שלך.";
 
@@ -740,6 +817,22 @@
 
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "המשוב נשלח!";
+
+/* Placeholder of the cell text field in Product Downloadable File
+   Title of the cell in Product Downloadable File > File Name */
+"File Name" = "שם קובץ";
+
+/* Placeholder of the cell text field in Product Downloadable File
+   Title of the cell in Product Downloadable File > File Name */
+"File Name" = "File Name";
+
+/* Placeholder of the cell text field in Product Downloadable File URL
+   Title of the cell in Product Downloadable File URL > File URL */
+"File URL" = "File URL";
+
+/* Placeholder of the cell text field in Product Downloadable File URL
+   Title of the cell in Product Downloadable File URL > File URL */
+"File URL" = "כתובת URL של קובץ";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "למלא באמצעות מנהל סיסמאות";
@@ -1068,6 +1161,12 @@
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "התאמות ידניות";
 
+/* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
+
+/* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
+"Manual Refund via %1$@" = "החזר כספי ידני דרך %1$@";
+
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "דומיין ממופה";
 
@@ -1156,7 +1255,7 @@
 "New editing options available" = "אפשרויות עריכה נוספות זמינות";
 
 /* Title of a button.
-   Title of a button. The text should be capitalized. */
+   Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "הבא";
 
 /* Empty Product Reviews List Message */
@@ -1175,8 +1274,26 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "אין נתונים זמינים";
 
+/* Placeholder of the cell text field in Download expiration */
+"No expiration" = "No expiration";
+
+/* Placeholder of the cell text field in Download expiration */
+"No expiration" = "ללא תאריך תוקף";
+
+/* Placeholder for empty Downloadable Files row on Product main screen */
+"No files yet" = "אין עדיין קבצים";
+
+/* Placeholder for empty Downloadable Files row on Product main screen */
+"No files yet" = "No files yet";
+
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "עדיין אין תמונות";
+
+/* Placeholder of the cell text field in Download limit */
+"No limit" = "No limit";
+
+/* Placeholder of the cell text field in Download limit */
+"No limit" = "ללא מגבלה";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "טרם צוין מחיר";
@@ -1421,11 +1538,23 @@
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "יש להמתין מעט לפרסום המוצר הזה בחנות שלך";
 
+/* Message of the in-progress UI while saving a Product as draft remotely */
+"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
+
+/* Message of the in-progress UI while saving a Product as draft remotely */
+"Please wait while we save this product to your store" = "עליך להמתין זמן מה בזמן שאנחנו שומרים מוצר זה בחנות שלך";
+
 /* Message of the in-progress UI while deleting the Product remotely */
 "Please wait while we update your store details" = "עליך להמתין זמן מה בזמן שאנחנו מעדכנים את הפרטים בחנות";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "מופעל על ידי Automattic";
+
+/* A label representing the amount that was previously refunded for the order. */
+"Previously Refunded" = "החזר כספי בוצע בעבר";
+
+/* A label representing the amount that was previously refunded for the order. */
+"Previously Refunded" = "Previously Refunded";
 
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
    Product Price Settings navigation title - Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
@@ -1544,6 +1673,12 @@
 /* Title of the cell in Product Inventory Settings > Quantity */
 "Quantity" = "כמות";
 
+/* Navigation title on the quantity item selector screen */
+"Quantity to refund" = "Quantity to refund";
+
+/* Navigation title on the quantity item selector screen */
+"Quantity to refund" = "כמות להחזר הכספי";
+
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %ld" = "כמות: %ld";
 
@@ -1559,14 +1694,45 @@
 /* Refund note section title */
 "Reason for Refund" = "סיבה להחזר הכספי";
 
+/* A label for the text field that the user can edit to indicate why they are issuing a refund. */
+"Reason for Refund (Optional)" = "סיבה להחזר הכספי (אופציונלי)";
+
+/* A label for the text field that the user can edit to indicate why they are issuing a refund. */
+"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
+
+/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
+"Reason for refunding order" = "Reason for refunding order";
+
+/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
+"Reason for refunding order" = "סיבה להחזר הכספי על ההזמנה";
+
+/* The title of the button to confirm the refund. */
+"Refund" = "החזר כספי";
+
+/* The title of the button to confirm the refund. */
+"Refund" = "Refund";
+
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "החזר כספי #%@";
 
-/* Refund Details page > Refund Details section > The label that marks the refunded amount */
+/* A label representing the amount that will be refunded if the user confirms to proceed with the refund.
+   Refund Details page > Refund Details section > The label that marks the refunded amount */
 "Refund Amount" = "הסכום של ההחזר הכספי";
 
 /* Refund Details section title */
 "Refund Details" = "פרטי ההחזר";
+
+/* Title of the switch in the IssueRefund screen to refund shipping */
+"Refund Shipping" = "Refund Shipping";
+
+/* Title of the switch in the IssueRefund screen to refund shipping */
+"Refund Shipping" = "להנפיק החזר כספי עבור משלוח";
+
+/* The title of the section containing information about how the refund will be processed. */
+"Refund Via" = "Refund Via";
+
+/* The title of the section containing information about how the refund will be processed. */
+"Refund Via" = "החזר כספי דרך";
 
 /* The title for the refunded amount cell */
 "Refunded" = "הוחזר";
@@ -1686,6 +1852,12 @@
 /* Button title to save a product as draft in Product More Options Action Sheet */
 "Save as draft" = "לשמור כטיוטה";
 
+/* Title of the in-progress UI while saving a Product as draft remotely */
+"Saving your product..." = "Saving your product...";
+
+/* Title of the in-progress UI while saving a Product as draft remotely */
+"Saving your product..." = "שומר את המוצר שלך...";
+
 /* Scan Products */
 "Scan products" = "לסרוק מוצרים";
 
@@ -1709,6 +1881,12 @@
 
 /* Display label for the product's catalog visibility */
 "Search results only" = "תוצאות חיפוש בלבד";
+
+/* Select all button title in the issue refund screen */
+"Select All" = "Select All";
+
+/* Select all button title in the issue refund screen */
+"Select All" = "לבחור הכול";
 
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "לבחור קטגוריית אם";
@@ -1816,6 +1994,12 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show a list of refunded order items for this order." = "להציג רשימה של פריטי הזמנה שעבורם התקבל החזר כספי בהזמנה זאת.";
+
+/* Accessibility label to show bottom action sheet to delete downloadable file from the list */
+"Show bottom action sheet to delete downloadable file from list" = "להציג גיליון פעולות בתחתית כדי למחוק מהרשימה את הקובץ שניתן להורדה";
+
+/* Accessibility label to show bottom action sheet to delete downloadable file from the list */
+"Show bottom action sheet to delete downloadable file from list" = "Show bottom action sheet to delete downloadable file from list";
 
 /* Accessibility label for the 'Show password' button in the login page's password field.
    Accessibility label for the “Show password“ button in the login page's password field. */
@@ -2218,6 +2402,18 @@
 /* Footer text in Product Slug screen */
 "This is the URL-friendly version of the product title" = "זאת גרסה ידידותית לכתובות URL בכותרת המוצר";
 
+/* Footer text for Downloadable File Name */
+"This is the name of the file shown to the customer." = "This is the name of the file shown to the customer.";
+
+/* Footer text for Downloadable File Name */
+"This is the name of the file shown to the customer." = "זהו שם הקובץ שמוצג ללקוח.";
+
+/* Footer text for Downloadable File URL */
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
+
+/* Footer text for Downloadable File URL */
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "זוהי כתובת ה-URL של הקובץ שאליו הלקוחות יקבלו גישה. כתובות ה-URL שהוזנו צריכות להיות מקודדות כבר.";
+
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
 "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "בהזמנה זו נעשה שימוש בהרחבות לחישוב עלות המשלוח. ייתכן שדרכי המשלוח המוצגות אינן כוללות את כל הדרכים הזמינות.";
@@ -2406,7 +2602,7 @@
 "Upcoming" = "אירועים קרובים";
 
 /* Action for updating a Product remotely
-   Label action for updating a link on the editor */
+   Action for updating a Products' downloadable files' info remotely - Label action for updating a link on the editor */
 "Update" = "לעדכן";
 
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
@@ -2420,6 +2616,12 @@
 
 /* Subtitle of the product form bottom sheet action for editing inventory settings. */
 "Update product inventory and SKU" = "לעדכן את המלאי וה-SKU של המוצר";
+
+/* Accessibility label to update products' downloadable files' info remotely */
+"Update products' downloadable files' info remotely" = "לעדכן מרחוק את הפרטים של קובצי המוצר שניתנים להורדה";
+
+/* Accessibility label to update products' downloadable files' info remotely */
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "יש לעדכן ל-WooCommerce 3.5 כדי להמשיך להשתמש באפליקציה זו";
@@ -2488,6 +2690,12 @@
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "צפייה במוצר הממומן";
+
+/* The action to update downloadable files settings for a product */
+"View downloadable file settings" = "להציג הגדרות של קבצים שניתנים להורדה";
+
+/* The action to update downloadable files settings for a product */
+"View downloadable file settings" = "View downloadable file settings";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "הצגה של קריאות תמיכה שנשלחו בעבר";

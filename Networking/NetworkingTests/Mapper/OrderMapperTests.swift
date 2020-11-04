@@ -228,14 +228,14 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(productLineItem.name, "(Downloadable) food")
     }
 
-    func test_OrderLineItem_attributes_are_parsed_correctly_with_old_API_version() throws {
-        let order = try XCTUnwrap(mapLoadOrderWithLineItemAttributesOldAPIVersionResponse())
+    /// The attributes API support are added in WC version 4.7, and WC version 4.6.1 returns a different structure of order line item attributes.
+    func test_OrderLineItem_attributes_are_empty_before_API_support() throws {
+        let order = try XCTUnwrap(mapLoadOrderWithLineItemAttributesBeforeAPISuppportResponse())
 
         let lineItems = order.items
         XCTAssertEqual(lineItems.count, 1)
 
         let variationLineItem = lineItems[0]
-        // WC version 4.6.1 returns a different structure of order line item attributes.
         XCTAssertEqual(variationLineItem.attributes, [])
         XCTAssertEqual(variationLineItem.name, "Hoodie - Green, No")
     }
@@ -286,9 +286,9 @@ private extension OrderMapperTests {
         return mapOrder(from: "order-with-line-item-attributes")
     }
 
-    /// Returns the OrderMapper output upon receiving `order-with-line-item-attributes-old-version`
+    /// Returns the OrderMapper output upon receiving `order-with-line-item-attributes-before-API-support`
     ///
-    func mapLoadOrderWithLineItemAttributesOldAPIVersionResponse() -> Order? {
-        return mapOrder(from: "order-with-line-item-attributes-old-version")
+    func mapLoadOrderWithLineItemAttributesBeforeAPISuppportResponse() -> Order? {
+        return mapOrder(from: "order-with-line-item-attributes-before-API-support")
     }
 }

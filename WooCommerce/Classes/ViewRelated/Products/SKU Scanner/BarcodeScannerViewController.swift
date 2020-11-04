@@ -23,7 +23,6 @@ final class BarcodeScannerViewController: UIViewController {
     private var requests = [VNRequest]()
 
     private lazy var throttler: Throttler = Throttler(seconds: 0.1)
-    private let thresholdFilter = PresenceThresholdFilter<[String]>(threshold: 0.05, outOf: 10)
 
     private let viewProperties: ViewProperties
     private let onBarcodeScanned: (Result<[String], Error>) -> Void

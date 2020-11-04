@@ -5,14 +5,22 @@ final class ProductSKUInputScannerViewController: UIViewController {
     private lazy var barcodeScannerChildViewController: BarcodeScannerViewController = {
         let viewProperties = BarcodeScannerViewController.ViewProperties(instructionText: Localization.instructionText)
         return BarcodeScannerViewController(viewProperties: viewProperties) { [weak self] result in
+            guard let self = self else { return }
+            guard self.hasDetectedBarcode == false else {
+                return
+            }
             guard let barcode = try? result.get().first else {
                 return
             }
-            self?.onBarcodeScanned(barcode)
+            self.hasDetectedBarcode = true
+            self.onBarcodeScanned(barcode)
         }
     }()
 
     private let onBarcodeScanned: (String) -> Void
+
+    /// Makes sure the barcode detection callback is only handled once.
+    private var hasDetectedBarcode: Bool = false
 
     init(onBarcodeScanned: @escaping (String) -> Void) {
         self.onBarcodeScanned = onBarcodeScanned

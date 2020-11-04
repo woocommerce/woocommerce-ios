@@ -38,9 +38,8 @@ final class CoreDataIterativeMigrator {
 
         // Get the persistent store's metadata.  The metadata is used to
         // get information about the store's managed object model.
-        guard let sourceMetadata = try metadataForPersistentStore(storeType: storeType, at: sourceStore) else {
-            return (false, [])
-        }
+        let sourceMetadata =
+            try NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: storeType, at: sourceStore, options: nil)
 
         // Check whether the final model is already compatible with the store.
         // If it is, no migration is necessary.
@@ -265,16 +264,6 @@ private extension CoreDataIterativeMigrator {
         }
 
         return (true, nil)
-    }
-
-    func metadataForPersistentStore(storeType: String, at url: URL) throws -> [String: Any]? {
-
-        guard let sourceMetadata = try? NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: storeType, at: url, options: nil) else {
-            let description = "Failed to find source metadata for store: \(url)"
-            throw NSError(domain: "IterativeMigrator", code: 102, userInfo: [NSLocalizedDescriptionKey: description])
-        }
-
-        return sourceMetadata
     }
 
     func model(for metadata: [String: Any]) throws -> NSManagedObjectModel? {

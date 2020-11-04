@@ -52,45 +52,13 @@ final class CoreDataIterativeMigrator {
             return (false, [])
         }
 
-        // Get NSManagedObjectModels for each of the model names given.
-        let objectModels = try models(for: modelsInventory.versions)
-
-        // Build an inclusive list of models between the source and final models.
-        var modelsToMigrate = [NSManagedObjectModel]()
-        var firstFound = false, lastFound = false, reverse = false
-
-        for model in objectModels {
-            if model.isEqual(sourceModel) || model.isEqual(targetModel) {
-                if firstFound {
-                    lastFound = true
-                    // In case a reverse migration is being performed (descending through the
-                    // ordered array of models), check whether the source model is found
-                    // after the final model.
-                    reverse = model.isEqual(sourceModel)
-                } else {
-                    firstFound = true
-                }
-            }
-
-            if firstFound {
-                modelsToMigrate.append(model)
-            }
-
-            if lastFound {
-                break
-            }
-        }
-
-        // Ensure that the source model is at the start of the list.
-        if reverse {
-            modelsToMigrate = modelsToMigrate.reversed()
-        }
-
-        var debugMessages = [String]()
+        let modelsToMigrate = try self.modelsToMigrate(from: sourceModel, to: targetModel)
 
         guard modelsToMigrate.count > 1 else {
             return (false, ["Skipping migration. Unexpectedly found less than 2 models to perform a migration."])
         }
+
+        var debugMessages = [String]()
 
         // Migrate between each model. Count - 2 because of zero-based index and we want
         // to stop at the last pair (you can't migrate the last model to nothingness).
@@ -106,7 +74,9 @@ final class CoreDataIterativeMigrator {
             }
 
             // Migrate the model to the next step
-            let migrationAttemptMessage = makeMigrationAttemptLogMessage(models: objectModels, from: modelFrom, to: modelTo)
+            let migrationAttemptMessage = makeMigrationAttemptLogMessage(models: modelsToMigrate,
+                                                                         from: modelFrom,
+                                                                         to: modelTo)
             debugMessages.append(migrationAttemptMessage)
             DDLogWarn(migrationAttemptMessage)
 
@@ -285,5 +255,45 @@ private extension CoreDataIterativeMigrator {
 
             return model
         }
+    }
+
+    /// Build an inclusive list of models between the source and target models.
+    func modelsToMigrate(from sourceModel: NSManagedObjectModel,
+                         to targetModel: NSManagedObjectModel) throws -> [NSManagedObjectModel] {
+        // Get NSManagedObjectModels for each of the model names given.
+        let objectModels = try models(for: modelsInventory.versions)
+
+        // Build an inclusive list of models between the source and final models.
+        var modelsToMigrate = [NSManagedObjectModel]()
+        var firstFound = false, lastFound = false, reverse = false
+
+        for model in objectModels {
+            if model.isEqual(sourceModel) || model.isEqual(targetModel) {
+                if firstFound {
+                    lastFound = true
+                    // In case a reverse migration is being performed (descending through the
+                    // ordered array of models), check whether the source model is found
+                    // after the final model.
+                    reverse = model.isEqual(sourceModel)
+                } else {
+                    firstFound = true
+                }
+            }
+
+            if firstFound {
+                modelsToMigrate.append(model)
+            }
+
+            if lastFound {
+                break
+            }
+        }
+
+        // Ensure that the source model is at the start of the list.
+        if reverse {
+            modelsToMigrate = modelsToMigrate.reversed()
+        }
+
+        return modelsToMigrate
     }
 }

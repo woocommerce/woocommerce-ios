@@ -129,8 +129,12 @@ final class CoreDataManagerTests: XCTestCase {
         )
 
         manager = try makeManager(using: invalidModelsInventory, deletingExistingStoreFiles: false)
+        // Access persistentContainer to start the stack.
+        _ = manager.persistentContainer
 
         // Then
+        try assertThat(manager, isCompatibleWith: invalidModelsInventory.currentModel)
+
         // The rows should have been deleted during the recovery.
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 0)
         // We should still be able to use the storage
@@ -168,12 +172,16 @@ final class CoreDataManagerTests: XCTestCase {
         XCTAssertNil(NSEntityDescription.entity(forEntityName: ShippingLineTax.entityName,
                                                 in: manager.viewStorage as! NSManagedObjectContext))
 
+        try assertThat(manager, isCompatibleWith: olderModelsInventory.currentModel)
+
         // When
         manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: false)
         // Access persistentContainer to run the migration.
         _ = manager.persistentContainer
 
         // Then
+        try assertThat(manager, isCompatibleWith: modelsInventory.currentModel)
+
         // The rows should have been kept.
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
         // We should still be able to use the storage
@@ -184,6 +192,34 @@ final class CoreDataManagerTests: XCTestCase {
         // The ShippineLineTax entity should now be available. This proves that a migration happened.
         XCTAssertNotNil(NSEntityDescription.entity(forEntityName: ShippingLineTax.entityName,
                                                    in: manager.viewStorage as! NSManagedObjectContext))
+    }
+
+    func test_accessing_persistentContainer_will_not_migrate_the_database_if_the_model_is_up_to_date() throws {
+        // Given
+        let modelsInventory = try makeModelsInventory()
+
+        var manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
+
+        insertAccount(to: manager.viewStorage)
+        manager.viewStorage.saveIfNeeded()
+
+        XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
+        try assertThat(manager, isCompatibleWith: modelsInventory.currentModel)
+
+        // When
+        manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: false)
+        // Access persistentContainer to initialize the stack.
+        _ = manager.persistentContainer
+
+        // Then
+        try assertThat(manager, isCompatibleWith: modelsInventory.currentModel)
+
+        // The rows should have been kept.
+        XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
+        // We should still be able to use the storage
+        insertAccount(to: manager.viewStorage)
+        insertAccount(to: manager.viewStorage)
+        XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 3)
     }
 }
 
@@ -223,5 +259,22 @@ private extension CoreDataManagerTests {
                 try fileManager.removeItem(at: fileURL)
             }
         }
+    }
+}
+
+// Assertions
+
+private extension CoreDataManagerTests {
+    func assertThat(_ manager: CoreDataManager,
+                    isCompatibleWith model: NSManagedObjectModel,
+                    file: StaticString = #file,
+                    line: UInt = #line) throws {
+        let store = try XCTUnwrap(manager.persistentContainer.persistentStoreCoordinator.persistentStores.first)
+        let isCompatible = model.isConfiguration(withName: nil,
+                                                 compatibleWithStoreMetadata: store.metadata)
+        XCTAssertTrue(isCompatible,
+                      "Expected store at \(String(describing: store.url)) to be compatible with model \(model).",
+                      file: file,
+                      line: line)
     }
 }

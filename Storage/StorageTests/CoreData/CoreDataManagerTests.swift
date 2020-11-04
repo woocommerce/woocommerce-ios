@@ -108,8 +108,8 @@ final class CoreDataManagerTests: XCTestCase {
 
     func test_when_the_model_is_incompatible_then_it_recovers_and_recreates_the_database() throws {
         // Given
-        var manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
-        try deleteStoreFiles(at: manager.storeURL)
+        let modelsInventory = try makeModelsInventory()
+        var manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
 
         insertAccount(to: manager.viewStorage)
         manager.viewStorage.saveIfNeeded()
@@ -121,19 +121,13 @@ final class CoreDataManagerTests: XCTestCase {
         // When
         // Use a models inventory with an old model. this will cause a loading error and make the
         // `CoreDataManager` recover and recreate the database.
-        let olderModelsInventory: ManagedObjectModelsInventory = try {
-            let inventory = try makeModelsInventory()
+        let olderModelsInventory = ManagedObjectModelsInventory(
+            packageURL: modelsInventory.packageURL,
+            currentModel: try XCTUnwrap(modelsInventory.model(for: .init(name: "Model 2"))),
+            versions: [.init(name: "Model 2")]
+        )
 
-            return ManagedObjectModelsInventory(
-                packageURL: inventory.packageURL,
-                currentModel: try XCTUnwrap(inventory.model(for: .init(name: "Model 2"))),
-                versions: [.init(name: "Model 2")]
-            )
-        }()
-
-        manager = CoreDataManager(name: storageIdentifier,
-                                  crashLogger: MockCrashLogger(),
-                                  modelsInventory: olderModelsInventory)
+        manager = try makeManager(using: olderModelsInventory, deletingExistingStoreFiles: false)
 
         // Then
         // The rows should have been deleted during the recovery.
@@ -158,6 +152,17 @@ private extension CoreDataManagerTests {
         account.userID = 0
         account.username = ""
         return account
+    }
+
+    func makeManager(using modelsInventory: ManagedObjectModelsInventory,
+                     deletingExistingStoreFiles deleteStoreFiles: Bool) throws -> CoreDataManager {
+        let manager = CoreDataManager(name: storageIdentifier,
+                                      crashLogger: MockCrashLogger(),
+                                      modelsInventory: modelsInventory)
+        if deleteStoreFiles {
+            try self.deleteStoreFiles(at: manager.storeURL)
+        }
+        return manager
     }
 
     func makeModelsInventory() throws -> ManagedObjectModelsInventory {

@@ -269,7 +269,12 @@ private extension CoreDataManagerTests {
                     isCompatibleWith model: NSManagedObjectModel,
                     file: StaticString = #file,
                     line: UInt = #line) throws {
-        let store = try XCTUnwrap(manager.persistentContainer.persistentStoreCoordinator.persistentStores.first)
+        let coordinator = manager.persistentContainer.persistentStoreCoordinator
+
+        // We assume that there is only 1 store loaded.
+        XCTAssertEqual(coordinator.persistentStores.count, 1)
+
+        let store = try XCTUnwrap(coordinator.persistentStores.first)
         let isCompatible = model.isConfiguration(withName: nil,
                                                  compatibleWithStoreMetadata: store.metadata)
         XCTAssertTrue(isCompatible,

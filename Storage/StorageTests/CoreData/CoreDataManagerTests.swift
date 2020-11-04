@@ -7,10 +7,12 @@ import CoreData
 ///
 final class CoreDataManagerTests: XCTestCase {
 
+    private let storageIdentifier = "WooCommerce"
+
     /// Verifies that the Store URL contains the ContextIdentifier string.
     ///
     func test_storeUrl_maps_to_sqlite_file_with_context_identifier() {
-        let manager = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
+        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
         XCTAssertEqual(manager.storeURL.lastPathComponent, "WooCommerce.sqlite")
         XCTAssertEqual(manager.storeDescription.url?.lastPathComponent, "WooCommerce.sqlite")
     }
@@ -19,10 +21,10 @@ final class CoreDataManagerTests: XCTestCase {
     ///
     func test_persistentContainer_loads_expected_data_model_and_sqlite_database() throws {
         // Given
-        let modelsInventory = try ManagedObjectModelsInventory.from(packageName: "WooCommerce",
+        let modelsInventory = try ManagedObjectModelsInventory.from(packageName: storageIdentifier,
                                                                     bundle: Bundle(for: CoreDataManager.self))
 
-        let manager = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
+        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
 
         // When
         let container = manager.persistentContainer
@@ -35,14 +37,14 @@ final class CoreDataManagerTests: XCTestCase {
     /// Verifies that the ContextManager's viewContext matches the PersistenContainer.viewContext
     ///
     func test_viewContext_property_returns_persistentContainer_main_context() {
-        let manager = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
+        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
         XCTAssertEqual(manager.viewStorage as? NSManagedObjectContext, manager.persistentContainer.viewContext)
     }
 
     /// Verifies that performBackgroundTask effectively runs received closure in BG.
     ///
     func test_performBackgroundTask_effectively_runs_received_closure_in_background_thread() {
-        let manager = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
+        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
         let expectation = self.expectation(description: "Background")
 
         manager.performBackgroundTask { (_) in
@@ -56,7 +58,7 @@ final class CoreDataManagerTests: XCTestCase {
     /// Verifies that derived context is instantiated correctly.
     ///
     func test_derived_storage_is_instantiated_correctly() {
-        let manager = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
+        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
         let viewContext = (manager.viewStorage as? NSManagedObjectContext)
         let derivedContext = (manager.newDerivedStorage() as? NSManagedObjectContext)
 
@@ -68,7 +70,7 @@ final class CoreDataManagerTests: XCTestCase {
 
     func test_resetting_CoreData_deletes_preexisting_objects() throws {
         // Arrange
-        let manager = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
+        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
         manager.reset()
         let viewContext = try XCTUnwrap(manager.viewStorage as? NSManagedObjectContext)
         _ = viewContext.insertNewObject(ofType: ShippingLine.self)
@@ -84,7 +86,7 @@ final class CoreDataManagerTests: XCTestCase {
 
     func test_saving_derived_storage_while_resetting_CoreData_still_saves_data() throws {
         // Arrange
-        let manager = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
+        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
         manager.reset()
         let viewContext = try XCTUnwrap(manager.viewStorage as? NSManagedObjectContext)
         let derivedContext = try XCTUnwrap(manager.newDerivedStorage() as? NSManagedObjectContext)
@@ -107,9 +109,7 @@ final class CoreDataManagerTests: XCTestCase {
 
     func test_when_the_model_is_incompatible_then_it_recovers_and_recreates_the_database() throws {
         // Given
-        let packageName = "WooCommerce"
-
-        var manager = CoreDataManager(name: packageName, crashLogger: MockCrashLogger())
+        var manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
         try deleteStoreFiles(at: manager.storeURL)
 
         insertAccount(to: manager.viewStorage)
@@ -124,7 +124,7 @@ final class CoreDataManagerTests: XCTestCase {
         // `CoreDataManager` recover and recreate the database.
         let olderModelsInventory: ManagedObjectModelsInventory = try {
             let inventory =
-                try ManagedObjectModelsInventory.from(packageName: packageName, bundle: .init(for: CoreDataManager.self))
+                try ManagedObjectModelsInventory.from(packageName: storageIdentifier, bundle: .init(for: CoreDataManager.self))
 
             return ManagedObjectModelsInventory(
                 packageURL: inventory.packageURL,
@@ -133,7 +133,7 @@ final class CoreDataManagerTests: XCTestCase {
             )
         }()
 
-        manager = CoreDataManager(name: packageName,
+        manager = CoreDataManager(name: storageIdentifier,
                                   crashLogger: MockCrashLogger(),
                                   modelsInventory: olderModelsInventory)
 

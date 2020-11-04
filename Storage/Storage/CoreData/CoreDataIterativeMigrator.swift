@@ -66,12 +66,7 @@ final class CoreDataIterativeMigrator {
         for index in 0...upperBound {
             let modelFrom = modelsToMigrate[index]
             let modelTo = modelsToMigrate[index + 1]
-
-            // Check whether a custom mapping model exists.
-            guard let migrateWithModel = NSMappingModel(from: nil, forSourceModel: modelFrom, destinationModel: modelTo) ??
-                (try? NSMappingModel.inferredMappingModel(forSourceModel: modelFrom, destinationModel: modelTo)) else {
-                    return (false, debugMessages)
-            }
+            let mappingModel = try self.mappingModel(from: modelFrom, to: modelTo)
 
             // Migrate the model to the next step
             let migrationAttemptMessage = makeMigrationAttemptLogMessage(models: modelsToMigrate,
@@ -84,7 +79,7 @@ final class CoreDataIterativeMigrator {
                                                             storeType: storeType,
                                                             fromModel: modelFrom,
                                                             toModel: modelTo,
-                                                            with: migrateWithModel)
+                                                            with: mappingModel)
             guard success else {
                 if let migrateStoreError = migrateStoreError {
                     let errorInfo = (migrateStoreError as NSError?)?.userInfo ?? [:]
@@ -295,5 +290,15 @@ private extension CoreDataIterativeMigrator {
         }
 
         return modelsToMigrate
+    }
+
+    /// Load a developer-defined `NSMappingModel` (`*.xcmappingmodel` file) or infer it.
+    func mappingModel(from sourceModel: NSManagedObjectModel,
+                      to targetModel: NSManagedObjectModel) throws -> NSMappingModel {
+        if let mappingModel = NSMappingModel(from: nil, forSourceModel: sourceModel, destinationModel: targetModel) {
+            return mappingModel
+        }
+
+        return try NSMappingModel.inferredMappingModel(forSourceModel: sourceModel, destinationModel: targetModel)
     }
 }

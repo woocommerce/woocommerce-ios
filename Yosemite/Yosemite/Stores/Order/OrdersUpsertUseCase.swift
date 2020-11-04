@@ -79,6 +79,7 @@ struct OrdersUpsertUseCase {
                 storageItem = newStorageItem
             }
 
+            handleOrderItemAttributes(readOnlyItem, storageItem, storage)
             handleOrderItemTaxes(readOnlyItem, storageItem, storage)
         }
 
@@ -89,6 +90,24 @@ struct OrdersUpsertUseCase {
                 storage.deleteObject(storageItem)
             }
         }
+    }
+
+    /// Updates, inserts, or prunes the provided StorageOrderItem's attributes using the provided read-only OrderItem
+    ///
+    private func handleOrderItemAttributes(_ readOnlyItem: Networking.OrderItem, _ storageItem: Storage.OrderItem, _ storage: StorageType) {
+        // Removes all the attributes first.
+        storageItem.attributesArray.forEach { existingStorageAttribute in
+            storage.deleteObject(existingStorageAttribute)
+        }
+
+        // Inserts the attributes from the read-only model.
+        let storageAttributes: [StorageOrderItemAttribute] = readOnlyItem.attributes
+            .map { readOnlyAttribute in
+                let storageAttribute = storage.insertNewObject(ofType: Storage.OrderItemAttribute.self)
+                storageAttribute.update(with: readOnlyAttribute)
+                return storageAttribute
+        }
+        storageItem.attributes = NSOrderedSet(array: storageAttributes)
     }
 
     /// Updates, inserts, or prunes the provided StorageOrderItem's taxes using the provided read-only OrderItem

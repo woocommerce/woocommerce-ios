@@ -282,11 +282,14 @@ private extension ProductInventorySettingsViewController {
 
         cell.configure(viewModel: cellViewModel)
 
-        let button = UIButton(type: .detailDisclosure)
-        button.setImage(.cameraImage, for: .normal)
-        button.addTarget(self, action: #selector(skuCameraButtonTapped), for: .touchUpInside)
+        // Configures accessory view for adding SKU from barcode scanner.
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.barcodeScanner) {
+            let button = UIButton(type: .detailDisclosure)
+            button.applyIconButtonStyle(icon: .scanImage)
+            button.addTarget(self, action: #selector(scanSKUButtonTapped), for: .touchUpInside)
 
-        cell.accessoryView = button
+            cell.accessoryView = button
+        }
     }
 
     func configureManageStock(cell: SwitchTableViewCell) {
@@ -329,21 +332,19 @@ private extension ProductInventorySettingsViewController {
     }
 }
 
-// MARK: - SKU from camera
+// MARK: - SKU Scanner
 //
 private extension ProductInventorySettingsViewController {
-    @objc func skuCameraButtonTapped() {
-        let scannerViewController = ProductSKUInputScannerViewController(onBarcodeScanned: { [weak self] (barcode) in
+    @objc func scanSKUButtonTapped() {
+        let scannerViewController = ProductSKUInputScannerViewController(onBarcodeScanned: { [weak self] barcode in
             self?.onSKUBarcodeScanned(barcode: barcode)
-            self?.dismiss(animated: true, completion: nil)
-        }, onCancelled: { [weak self] in
-            self?.dismiss(animated: true, completion: nil)
+            self?.navigationController?.popViewController(animated: true)
         })
-        present(WooNavigationController(rootViewController: scannerViewController), animated: true, completion: nil)
+        navigationController?.pushViewController(scannerViewController, animated: true)
     }
 
     func onSKUBarcodeScanned(barcode: String) {
-        viewModel.handleSKUChange(barcode) { [weak self] (isValid, shouldBringUpKeyboard) in
+        viewModel.handleSKUFromBarcodeScanner(barcode) { [weak self] (isValid, shouldBringUpKeyboard) in
             self?.handleSKUValidation(isValid: isValid, shouldBringUpKeyboard: shouldBringUpKeyboard)
         }
     }

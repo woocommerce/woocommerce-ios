@@ -1,9 +1,0 @@
-I den här uppdateringen finns det många nya möjligheter att redigera dina produkter att rapportera.
-
-För icke-kärnprodukter - vilket är de produkter som WooCommerce inte grupperar under enkla, externa, variabla eller grupper - finns det en mängd nya redigeringsalternativ! Du kan nu ändra bild, namn, beskrivning, skrivskyddat pris, skrivskyddat lager, etiketter, kort beskrivning och produktinställningar.
-
-Du kan nu även redigera variabla produkter och lagerstatus är inkluderat i listan med variationer.
-
-Våra kärnprodukter har också ytterligare fält som kan redigeras - etiketter, kategorier, produkttyp, aktivera/inaktivera recensioner och synlighet.
-
-Vi har även en uppdatering för Apple-inloggning - om du kopplar bort Apple-ID från WordPress-appen (Inställningar > Apple-ID > Lösenord och säkerhet > Appar som använder Apple-ID) kommer appen att logga ut dig vid start eller när du växlar mellan appar. Så du kommer inte att fortsätta vara inloggad om du inte vill vara det!

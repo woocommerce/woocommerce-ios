@@ -119,7 +119,8 @@ private extension OrderDetailsDataSourceTests {
                   taxClass: "TaxClass",
                   taxes: [],
                   total: "1",
-                  totalTax: "1")
+                  totalTax: "1",
+                  attributes: [])
     }
 
     func makeRefund(orderID: Int64, siteID: Int64) -> Refund {

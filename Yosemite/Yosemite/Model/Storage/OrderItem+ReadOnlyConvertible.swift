@@ -1,6 +1,11 @@
 import Foundation
 import Storage
 
+extension Storage.OrderItem {
+    var attributesArray: [Storage.OrderItemAttribute] {
+        return attributes?.toArray() ?? []
+    }
+}
 
 // MARK: - Storage.OrderItem: ReadOnlyConvertible
 //
@@ -27,6 +32,7 @@ extension Storage.OrderItem: ReadOnlyConvertible {
     ///
     public func toReadOnly() -> Yosemite.OrderItem {
         let orderItemTaxes = taxes?.map { $0.toReadOnly() }.sorted(by: { $0.taxID < $1.taxID }) ?? [Yosemite.OrderItemTax]()
+        let attributes = attributesArray.map { $0.toReadOnly() }
 
         return OrderItem(itemID: itemID,
                          name: name ?? "",
@@ -40,6 +46,7 @@ extension Storage.OrderItem: ReadOnlyConvertible {
                          taxClass: taxClass ?? "",
                          taxes: orderItemTaxes,
                          total: total ?? "",
-                         totalTax: totalTax ?? "")
+                         totalTax: totalTax ?? "",
+                         attributes: attributes)
     }
 }

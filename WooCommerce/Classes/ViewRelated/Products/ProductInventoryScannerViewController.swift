@@ -72,8 +72,9 @@ extension ProductSKUScannerResult: Equatable {
 final class ProductInventoryScannerViewController: UIViewController {
 
     private lazy var barcodeScannerChildViewController: BarcodeScannerViewController = {
-        return BarcodeScannerViewController { [weak self] (barcodes, error) in
-            guard let barcode = barcodes.first else {
+        let viewProperties = BarcodeScannerViewController.ViewProperties(instructionText: Localization.instructionText)
+        return BarcodeScannerViewController(viewProperties: viewProperties) { [weak self] result in
+            guard let barcode = try? result.get().first else {
                 return
             }
             self?.searchProductBySKU(barcode: barcode)
@@ -317,5 +318,12 @@ private extension ProductInventoryScannerViewController {
 
     func hideStatusLabel() {
         statusLabel.isHidden = true
+    }
+}
+
+private extension ProductInventoryScannerViewController {
+    enum Localization {
+        static let instructionText = NSLocalizedString("Scan first product barcode",
+                                                       comment: "The instruction text below the scan area in the barcode scanner for product inventory.")
     }
 }

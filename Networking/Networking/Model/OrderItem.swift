@@ -24,6 +24,8 @@ public struct OrderItem: Decodable, Hashable {
     public let total: String
     public let totalTax: String
 
+    public let attributes: [OrderItemAttribute]
+
     /// OrderItem struct initializer.
     ///
     public init(itemID: Int64,
@@ -38,7 +40,8 @@ public struct OrderItem: Decodable, Hashable {
                 taxClass: String,
                 taxes: [OrderItemTax],
                 total: String,
-                totalTax: String) {
+                totalTax: String,
+                attributes: [OrderItemAttribute]) {
         self.itemID = itemID
         self.name = name
         self.productID = productID
@@ -52,6 +55,7 @@ public struct OrderItem: Decodable, Hashable {
         self.taxes = taxes
         self.total = total
         self.totalTax = totalTax
+        self.attributes = attributes
     }
 
     /// The public initializer for OrderItem.
@@ -59,9 +63,28 @@ public struct OrderItem: Decodable, Hashable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let itemID = try container.decode(Int64.self, forKey: .itemID)
-        let name = try container.decode(String.self, forKey: .name).strippedHTML
         let productID = try container.decode(Int64.self, forKey: .productID)
         let variationID = try container.decode(Int64.self, forKey: .variationID)
+
+        let isVariation = variationID > 0
+        let name: String
+        let attributes: [OrderItemAttribute]
+        if isVariation {
+            name = try ((container.decodeIfPresent(String.self, forKey: .variationParentName))
+                        ?? container.decode(String.self, forKey: .name)).strippedHTML
+            let allAttributes = (try? container.decodeIfPresent([OrderItemAttribute].self, forKey: .attributes)) ?? []
+            // Skips any attribute if the name is `_reduced_stock` because this is a known attribute added by core.
+            attributes = allAttributes.filter { $0.name != "_reduced_stock" }
+
+            // Logs error for unexpected attributes.
+            let unexpectedAttributes = attributes.filter { $0.name.hasPrefix("_") }
+            if unexpectedAttributes.isEmpty == false {
+                DDLogError("⚠️ Unexpected order item attributes: \(unexpectedAttributes)")
+            }
+        } else {
+            name = try container.decode(String.self, forKey: .name).strippedHTML
+            attributes = []
+        }
 
         let quantity = try container.decode(Decimal.self, forKey: .quantity)
         let decimalPrice = try container.decodeIfPresent(Decimal.self, forKey: .price) ?? Decimal(0)
@@ -88,7 +111,8 @@ public struct OrderItem: Decodable, Hashable {
                   taxClass: taxClass,
                   taxes: taxes,
                   total: total,
-                  totalTax: totalTax)
+                  totalTax: totalTax,
+                  attributes: attributes)
     }
 }
 
@@ -100,6 +124,8 @@ private extension OrderItem {
     enum CodingKeys: String, CodingKey {
         case itemID         = "id"
         case name
+        case variationParentName = "parent_name"
+        case attributes = "meta_data"
         case productID      = "product_id"
         case variationID    = "variation_id"
         case quantity

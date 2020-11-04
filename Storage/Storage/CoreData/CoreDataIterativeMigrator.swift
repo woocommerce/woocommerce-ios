@@ -33,7 +33,7 @@ final class CoreDataIterativeMigrator {
         // If the persistent store does not exist at the given URL,
         // assume that it hasn't yet been created and return success immediately.
         guard fileManager.fileExists(atPath: sourceStore.path) == true else {
-            return (true, [])
+            return (true, ["No store exists at URL \(sourceStore).  Skipping migration."])
         }
 
         // Get the persistent store's metadata.  The metadata is used to
@@ -44,7 +44,7 @@ final class CoreDataIterativeMigrator {
         // Check whether the final model is already compatible with the store.
         // If it is, no migration is necessary.
         guard targetModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: sourceMetadata) == false else {
-            return (true, [])
+            return (true, ["Target model is compatible with the store. No migration necessary."])
         }
 
         // Find the current model used by the store.

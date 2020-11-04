@@ -2,7 +2,8 @@ import UIKit
 
 extension CGRect {
     /// Returns a CGRect that maps the current frame to a target frame that has been scaled to aspect fill in the reference frame.
-    /// This assumes the target frame has zero origin and is resized to fill the shortest dimension and centered on the other dimension (the behavior of `resizeAspectFill`).
+    /// This assumes the reference and target frame have zero origin, and the target frame is resized to fill the shorter dimension of reference frame and
+    /// centered on the other dimension (the behavior of `resizeAspectFill`).
     ///
     /// - Parameters:
     ///   - referenceFrame: the reference frame for self.
@@ -18,13 +19,16 @@ extension CGRect {
         let referenceAspectRatio = referenceFrame.width / referenceFrame.height
         let targetAspectRatio = targetFrame.width / targetFrame.height
 
-        // If the reference frame is shorter than target frame when scaled to fill.
         let x: CGFloat
         let y: CGFloat
         if referenceAspectRatio > targetAspectRatio {
+            // If the reference frame is vertically shorter than the target frame when the target frame is scaled to fill the reference frame width.
+            // For example, iPhone landscape mode is the reference frame, and the video canvas that has lower aspect ratio.
             x = origin.x * scaleFactor
             y = ((targetFrame.height / scaleFactor - referenceFrame.height) / 2.0 + origin.y) * scaleFactor
         } else {
+            // If the reference frame is horizontally shorter than the target frame when the target frame is scaled to fill the reference frame height.
+            // For example, iPhone portrait mode is the reference frame, and the video canvas that has higher aspect ratio.
             x = ((targetFrame.width / scaleFactor - referenceFrame.width) / 2.0 + origin.x) * scaleFactor
             y = origin.y * scaleFactor
         }

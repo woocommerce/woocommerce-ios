@@ -44,7 +44,6 @@ final class BarcodeScannerViewController: UIViewController {
         configureDimmingViews()
         configureScanAreaView()
         configureInstructionLabel()
-        configureVideoOutputImageView()
 
         configureBarcodeDetection()
     }
@@ -170,10 +169,6 @@ private extension BarcodeScannerViewController {
 private extension BarcodeScannerViewController {
     func configureMainView() {
         view.backgroundColor = .basicBackground
-    }
-
-    func configureVideoOutputImageView() {
-        videoOutputImageView.contentMode = .scaleAspectFit
     }
 
     func configureScanAreaView() {

@@ -41,7 +41,7 @@ final class ProductSKUInputScannerViewController: UIViewController {
 
 private extension ProductSKUInputScannerViewController {
     func configureNavigation() {
-        title = NSLocalizedString("Scan barcode to update SKU", comment: "Navigation bar title for scanning a barcode to use as a product's SKU.")
+        title = Localization.title
     }
 
     func configureBarcodeScannerChildViewController() {
@@ -59,6 +59,7 @@ private extension ProductSKUInputScannerViewController {
 
 private extension ProductSKUInputScannerViewController {
     enum Localization {
+        static let title = NSLocalizedString("Scan barcode to update SKU", comment: "Navigation bar title for scanning a barcode to use as a product's SKU.")
         static let instructionText = NSLocalizedString("Scan product barcode",
                                                        comment: "The instruction text below the scan area in the barcode scanner for product SKU.")
     }

@@ -141,6 +141,48 @@ final class CoreDataManagerTests: XCTestCase {
         XCTAssertNil(NSEntityDescription.entity(forEntityName: Note.entityName,
                                                 in: manager.viewStorage as! NSManagedObjectContext))
     }
+
+    func test_accessing_persistentContainer_will_automatically_migrate_the_database() throws {
+        // Given
+        let modelsInventory = try makeModelsInventory()
+        let olderModelsInventory: ManagedObjectModelsInventory = try {
+            let model33Index = try XCTUnwrap(modelsInventory.versions.firstIndex(of: .init(name: "Model 33")))
+            let versions = Array(modelsInventory.versions.prefix(through: model33Index))
+
+            return ManagedObjectModelsInventory(
+                packageURL: modelsInventory.packageURL,
+                currentModel: try XCTUnwrap(modelsInventory.model(for: try XCTUnwrap(versions.last))),
+                versions: versions
+            )
+        }()
+
+        var manager = try makeManager(using: olderModelsInventory, deletingExistingStoreFiles: true)
+
+        insertAccount(to: manager.viewStorage)
+        manager.viewStorage.saveIfNeeded()
+
+        XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
+        // The ShippineLineTax entity does not exist in Model 33.
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: ShippingLineTax.entityName,
+                                                in: manager.viewStorage as! NSManagedObjectContext))
+
+        // When
+        manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: false)
+        // Access persistentContainer to run the migration.
+        _ = manager.persistentContainer
+
+        // Then
+        // The rows should have been kept.
+        XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
+        // We should still be able to use the storage
+        insertAccount(to: manager.viewStorage)
+        insertAccount(to: manager.viewStorage)
+        XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 3)
+
+        // The ShippineLineTax entity should now be available. This proves that a migration happened.
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: ShippingLineTax.entityName,
+                                                   in: manager.viewStorage as! NSManagedObjectContext))
+    }
 }
 
 // MARK: - Helpers

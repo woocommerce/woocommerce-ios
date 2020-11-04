@@ -46,10 +46,6 @@ final class BarcodeScannerViewController: UIViewController {
         configureInstructionLabel()
 
         configureBarcodeDetection()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
 
         startLiveVideo()
     }

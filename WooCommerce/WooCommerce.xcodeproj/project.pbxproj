@@ -158,9 +158,7 @@
 		025C00692550DE4700FAC222 /* BarcodeScannerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 025C00652550DE4700FAC222 /* BarcodeScannerViewController.xib */; };
 		025C006A2550DE4700FAC222 /* ProductSKUInputScannerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 025C00662550DE4700FAC222 /* ProductSKUInputScannerViewController.xib */; };
 		025C006B2550DE4700FAC222 /* BarcodeScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025C00672550DE4700FAC222 /* BarcodeScannerViewController.swift */; };
-		025C00B42550E01400FAC222 /* PresenceThresholdFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025C00B32550E01400FAC222 /* PresenceThresholdFilter.swift */; };
 		025C00BA25514A7100FAC222 /* CGRect+Scaling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025C00B925514A7100FAC222 /* CGRect+Scaling.swift */; };
-		025C00C2255151FB00FAC222 /* PresenceThresholdFilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025C00C1255151FB00FAC222 /* PresenceThresholdFilterTests.swift */; };
 		025C00CC2551524300FAC222 /* CGRect+ScalingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025C00CB2551524300FAC222 /* CGRect+ScalingTests.swift */; };
 		025E32BC251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025E32BB251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift */; };
 		025FA38B2522CB4D0054CA57 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025FA38A2522CB4D0054CA57 /* AppCoordinator.swift */; };
@@ -1196,9 +1194,7 @@
 		025C00652550DE4700FAC222 /* BarcodeScannerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BarcodeScannerViewController.xib; sourceTree = "<group>"; };
 		025C00662550DE4700FAC222 /* ProductSKUInputScannerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProductSKUInputScannerViewController.xib; sourceTree = "<group>"; };
 		025C00672550DE4700FAC222 /* BarcodeScannerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarcodeScannerViewController.swift; sourceTree = "<group>"; };
-		025C00B32550E01400FAC222 /* PresenceThresholdFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PresenceThresholdFilter.swift; sourceTree = "<group>"; };
 		025C00B925514A7100FAC222 /* CGRect+Scaling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+Scaling.swift"; sourceTree = "<group>"; };
-		025C00C1255151FB00FAC222 /* PresenceThresholdFilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresenceThresholdFilterTests.swift; sourceTree = "<group>"; };
 		025C00CB2551524300FAC222 /* CGRect+ScalingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGRect+ScalingTests.swift"; sourceTree = "<group>"; };
 		025E32BB251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormDataModel+ProductsTabProductViewModel.swift"; sourceTree = "<group>"; };
 		025FA38A2522CB4D0054CA57 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
@@ -2438,7 +2434,6 @@
 		025C00572550DDDD00FAC222 /* SKU Scanner */ = {
 			isa = PBXGroup;
 			children = (
-				025C00B32550E01400FAC222 /* PresenceThresholdFilter.swift */,
 				025C00672550DE4700FAC222 /* BarcodeScannerViewController.swift */,
 				025C00652550DE4700FAC222 /* BarcodeScannerViewController.xib */,
 				025C00642550DE4600FAC222 /* ProductSKUInputScannerViewController.swift */,
@@ -2452,14 +2447,6 @@
 			children = (
 			);
 			path = "New Group";
-			sourceTree = "<group>";
-		};
-		025C00C0255151DD00FAC222 /* SKU Scanner */ = {
-			isa = PBXGroup;
-			children = (
-				025C00C1255151FB00FAC222 /* PresenceThresholdFilterTests.swift */,
-			);
-			path = "SKU Scanner";
 			sourceTree = "<group>";
 		};
 		025FDD3023717D1A00824006 /* Editor */ = {
@@ -2498,7 +2485,6 @@
 				0279F0E0252DC4A30098D7DE /* Product Loader */,
 				020B2F9723BDF2D000BD79AD /* Edit Product */,
 				45FBDF29238BF87800127F77 /* Collection View Cells */,
-				025C00C0255151DD00FAC222 /* SKU Scanner */,
 				0269177F232600A6002AFC20 /* ProductsTabProductViewModelTests.swift */,
 				02691781232605B9002AFC20 /* PaginatedListViewControllerStateCoordinatorTests.swift */,
 				022A45ED237BADA6001417F0 /* Product+ProductFormTests.swift */,
@@ -5491,7 +5477,6 @@
 				02DD81FB242CAA400060E50B /* WordPressMediaLibraryPickerDataSource.swift in Sources */,
 				0240B3AC230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift in Sources */,
 				74D0A5302139CF1300E2919F /* String+Helpers.swift in Sources */,
-				025C00B42550E01400FAC222 /* PresenceThresholdFilter.swift in Sources */,
 				0286B27F23C70557003D784B /* ColumnFlowLayout.swift in Sources */,
 				450C2CB624D1ABB200D570DD /* ProductImagesGalleryViewController.swift in Sources */,
 				7435E58E21C0151B00216F0F /* OrderNote+Woo.swift in Sources */,
@@ -6105,7 +6090,6 @@
 				0236BCA425087B660043EB43 /* ProductFormRemoteActionUseCaseTests.swift in Sources */,
 				0225C42A24768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift in Sources */,
 				02691780232600A6002AFC20 /* ProductsTabProductViewModelTests.swift in Sources */,
-				025C00C2255151FB00FAC222 /* PresenceThresholdFilterTests.swift in Sources */,
 				024F1452250B65A40003030A /* AddProductCoordinatorTests.swift in Sources */,
 				02BC5AA624D27F8900C43326 /* ProductVariationFormViewModel+ChangesTests.swift in Sources */,
 				57C2F6E624C27B3100131012 /* SwitchStoreNoticePresenterTests.swift in Sources */,

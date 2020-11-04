@@ -85,7 +85,6 @@ extension BarcodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDele
                 let scanAreaRect = self.scanAreaView.frame
                 let scaledScanAreaRect = scanAreaRect.scaling(in: self.videoOutputImageView.frame, to: imageExtent)
 
-
                 // Crops scan area from the original video output image.
                 let croppedCIImage = ciImage.cropped(to: scaledScanAreaRect)
 
@@ -122,11 +121,11 @@ private extension BarcodeScannerViewController {
 
         let deviceOutput = AVCaptureVideoDataOutput()
         deviceOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)]
-        // Sets the quality of the video
+        // Sets the quality of the video.
         deviceOutput.setSampleBufferDelegate(self, queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.default))
-        // What the camera is seeing
+        // What the camera is seeing.
         session.addInput(deviceInput)
-        // What we will display on the screen
+        // What we will display on the screen.
         session.addOutput(deviceOutput)
 
         // Shows the video as it's being captured.
@@ -159,15 +158,10 @@ private extension BarcodeScannerViewController {
         let barcodes = barcodeObservations.compactMap { $0.payloadStringValue }.uniqued()
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-
-            guard self.session.isRunning else {
+            guard self.session.isRunning, barcodes.isNotEmpty else {
                 return
             }
-
-            guard let filteredBarcodes = self.thresholdFilter.append(value: barcodes), filteredBarcodes.isNotEmpty else {
-                return
-            }
-            self.onBarcodeScanned(.success(filteredBarcodes))
+            self.onBarcodeScanned(.success(barcodes))
         }
     }
 }

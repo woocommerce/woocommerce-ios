@@ -21,8 +21,7 @@ final class CoreDataManagerTests: XCTestCase {
     ///
     func test_persistentContainer_loads_expected_data_model_and_sqlite_database() throws {
         // Given
-        let modelsInventory = try ManagedObjectModelsInventory.from(packageName: storageIdentifier,
-                                                                    bundle: Bundle(for: CoreDataManager.self))
+        let modelsInventory = try makeModelsInventory()
 
         let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
 
@@ -123,8 +122,7 @@ final class CoreDataManagerTests: XCTestCase {
         // Use a models inventory with an old model. this will cause a loading error and make the
         // `CoreDataManager` recover and recreate the database.
         let olderModelsInventory: ManagedObjectModelsInventory = try {
-            let inventory =
-                try ManagedObjectModelsInventory.from(packageName: storageIdentifier, bundle: .init(for: CoreDataManager.self))
+            let inventory = try makeModelsInventory()
 
             return ManagedObjectModelsInventory(
                 packageURL: inventory.packageURL,
@@ -160,6 +158,10 @@ private extension CoreDataManagerTests {
         account.userID = 0
         account.username = ""
         return account
+    }
+
+    func makeModelsInventory() throws -> ManagedObjectModelsInventory {
+        try ManagedObjectModelsInventory.from(packageName: storageIdentifier, bundle: .init(for: CoreDataManager.self))
     }
 
     func deleteStoreFiles(at storeURL: URL) throws {

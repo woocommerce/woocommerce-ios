@@ -146,6 +146,7 @@ final class CoreDataManagerTests: XCTestCase {
     func test_accessing_persistentContainer_will_automatically_migrate_the_database() throws {
         // Given
         let modelsInventory = try makeModelsInventory()
+        // Create an inventory with up to Model 33 only. This is what we'll load first.
         let olderModelsInventory: ManagedObjectModelsInventory = try {
             let model33Index = try XCTUnwrap(modelsInventory.versions.firstIndex(of: .init(name: "Model 33")))
             let versions = Array(modelsInventory.versions.prefix(through: model33Index))

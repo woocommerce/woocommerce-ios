@@ -48,12 +48,10 @@ final class CoreDataIterativeMigrator {
         }
 
         // Find the current model used by the store.
-        guard let sourceModel = try model(for: sourceMetadata) else {
-            return (false, [])
-        }
+        let sourceModel = try model(for: sourceMetadata)
 
+        // Retrieve an inclusive list of models between the source and target models.
         let modelsToMigrate = try self.modelsToMigrate(from: sourceModel, to: targetModel)
-
         guard modelsToMigrate.count > 1 else {
             return (false, ["Skipping migration. Unexpectedly found less than 2 models to perform a migration."])
         }
@@ -231,7 +229,7 @@ private extension CoreDataIterativeMigrator {
         return (true, nil)
     }
 
-    func model(for metadata: [String: Any]) throws -> NSManagedObjectModel? {
+    func model(for metadata: [String: Any]) throws -> NSManagedObjectModel {
         let bundle = Bundle(for: CoreDataManager.self)
         guard let sourceModel = NSManagedObjectModel.mergedModel(from: [bundle], forStoreMetadata: metadata) else {
             let description = "Failed to find source model for metadata: \(metadata)"
@@ -252,7 +250,7 @@ private extension CoreDataIterativeMigrator {
         }
     }
 
-    /// Build an inclusive list of models between the source and target models.
+    /// Returns an inclusive list of models between the source and target models.
     func modelsToMigrate(from sourceModel: NSManagedObjectModel,
                          to targetModel: NSManagedObjectModel) throws -> [NSManagedObjectModel] {
         // Get NSManagedObjectModels for each of the model names given.

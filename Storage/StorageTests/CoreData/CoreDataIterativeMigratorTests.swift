@@ -134,7 +134,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertEqual(fileManager.allMethodsInvocationCount, 1)
 
         assertEmpty(spyCoordinator.storeMigrations)
-        assertEmpty(spyCoordinator.storeReplacements)
+        assertEmpty(spyCoordinator.replacements)
     }
 
     /// This is more like a confidence-check that Core Data does not allow us to open SQLite
@@ -217,10 +217,10 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
                                                                  to: targetModel)
         // Then
         XCTAssertTrue(result)
-        XCTAssertEqual(spyCoordinator.storeReplacements.count, 1)
+        XCTAssertEqual(spyCoordinator.replacements.count, 1)
 
         // The `storeURL` should have been the target of the replacement.
-        let replacement = try XCTUnwrap(spyCoordinator.storeReplacements.first)
+        let replacement = try XCTUnwrap(spyCoordinator.replacements.first)
         XCTAssertEqual(replacement.destinationURL, storeURL)
         // The sourceURL should have been from the temporary directory.
         XCTAssertEqual(replacement.sourceURL.deletingLastPathComponent(),

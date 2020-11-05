@@ -133,7 +133,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertEqual(fileManager.fileExistsInvocationCount, 1)
         XCTAssertEqual(fileManager.allMethodsInvocationCount, 1)
 
-        assertEmpty(spyCoordinator.storeMigrations)
+        assertEmpty(spyCoordinator.migrations)
         assertEmpty(spyCoordinator.replacements)
     }
 

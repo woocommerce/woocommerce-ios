@@ -16,7 +16,7 @@ final class SpyPersistentStoreCoordinator: PersistentStoreCoordinatorProtocol {
     private let spiedCoordinator: NSPersistentStoreCoordinator
 
     private(set) var replacements = [Replacement]()
-    private(set) var storeMigrations = [Migration]()
+    private(set) var migrations = [Migration]()
 
     init(_ coordinator: NSPersistentStoreCoordinator) {
         spiedCoordinator = coordinator
@@ -30,7 +30,7 @@ final class SpyPersistentStoreCoordinator: PersistentStoreCoordinatorProtocol {
                                                                         to: URL,
                                                                         options: options,
                                                                         withType: storeType)
-        storeMigrations.append(.init(destinationURL: URL))
+        migrations.append(.init(destinationURL: URL))
         return migratedStore
     }
 

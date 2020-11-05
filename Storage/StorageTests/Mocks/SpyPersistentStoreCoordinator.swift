@@ -4,7 +4,7 @@ import CoreData
 
 final class SpyPersistentStoreCoordinator: PersistentStoreCoordinatorProtocol {
 
-    struct StoreReplacement {
+    struct Replacement {
         let destinationURL: URL
         let sourceURL: URL
     }
@@ -15,8 +15,8 @@ final class SpyPersistentStoreCoordinator: PersistentStoreCoordinatorProtocol {
 
     private let spiedCoordinator: NSPersistentStoreCoordinator
 
-    private(set) var storeReplacements = [StoreReplacement]()
     private(set) var storeMigrations = [StoreMigrations]()
+    private(set) var storeReplacements = [Replacement]()
 
     init(_ coordinator: NSPersistentStoreCoordinator) {
         spiedCoordinator = coordinator

@@ -80,13 +80,21 @@ final class CoreDataIterativeMigrator {
                 debugMessages.append(migrationAttemptMessage)
                 DDLogWarn(migrationAttemptMessage)
 
-                let migrationResult = migrateStore(at: sourceStore,
+                let migrationResult = migrateStore(at: currentSourceStoreURL,
                                                    storeType: storeType,
                                                    fromModel: step.sourceModel,
                                                    toModel: step.targetModel,
                                                    with: mappingModel)
                 switch migrationResult {
                 case .success(let destinationURL):
+                    // Destroy the `currentSourceStoreURL` if it is a temporary URL since we
+                    // will no longer need it.
+                    if currentSourceStoreURL != sourceStore {
+                        try persistentStoreCoordinator.destroyPersistentStore(at: currentSourceStoreURL,
+                                                                              ofType: storeType,
+                                                                              options: nil)
+                    }
+
                     return destinationURL
                 case .failure(let error):
                     throw error
@@ -115,39 +123,6 @@ private extension CoreDataIterativeMigrator {
         URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             .appendingPathComponent("migration_\(UUID().uuidString)")
             .appendingPathExtension("sqlite")
-    }
-
-    /// Deletes the SQLite files for the store at the given `storeURL`.
-    ///
-    /// The files that will be deleted are:
-    ///
-    /// - {store_filename}.sqlite
-    /// - {store_filename}.sqlite-wal
-    /// - {store_filename}.sqlite-shm
-    ///
-    /// Where {store_filename} is most probably "WooCommerce".
-    ///
-    /// TODO Possibly replace this with `NSPersistentStoreCoordinator.destroyStore` or use
-    /// `replaceStore` directly.
-    ///
-    /// - Throws: `Error` if one of the deletion fails.
-    ///
-    func deleteStoreFiles(storeURL: URL) throws {
-        let storeFolderURL = storeURL.deletingLastPathComponent()
-
-        do {
-            try fileManager.contentsOfDirectory(atPath: storeFolderURL.path).map { fileName in
-                storeFolderURL.appendingPathComponent(fileName)
-            }.filter { fileURL in
-                // Only include files that have the same filename as the store (sqlite) filename.
-                fileURL.deletingPathExtension() == storeURL.deletingPathExtension()
-            }.forEach { fileURL in
-                try fileManager.removeItem(at: fileURL)
-            }
-        } catch {
-            DDLogError("⛔️ Error while deleting the store SQLite files: \(error)")
-            throw error
-        }
     }
 
     /// Copy the store files that were migrated (using `NSMigrationManager`) to where the
@@ -237,8 +212,6 @@ private extension CoreDataIterativeMigrator {
         }
 
         do {
-            // Delete the original store files.
-            try deleteStoreFiles(storeURL: sourceURL)
             // Replace the (deleted) original store files with the migrated store files.
             try copyMigratedOverOriginal(from: tempDestinationURL, to: sourceURL)
         } catch {

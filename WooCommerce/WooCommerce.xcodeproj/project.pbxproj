@@ -1410,6 +1410,30 @@
 		26FF455E24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedStatsDashboardViewController.swift; sourceTree = "<group>"; };
 		2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
+		3FE8E6552553859600EFBD29 /* WooCommerceScreenshots-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerceScreenshots-Debug.xcconfig"; sourceTree = "<group>"; };
+		3FE8E6562553859600EFBD29 /* GenerateCredentials-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "GenerateCredentials-Release.xcconfig"; sourceTree = "<group>"; };
+		3FE8E6572553859600EFBD29 /* GenerateCredentials-Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "GenerateCredentials-Shared.xcconfig"; sourceTree = "<group>"; };
+		3FE8E6582553859600EFBD29 /* WooCommerceUITests-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerceUITests-Release.xcconfig"; sourceTree = "<group>"; };
+		3FE8E6592553859600EFBD29 /* Project-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-Release.xcconfig"; sourceTree = "<group>"; };
+		3FE8E65A2553859600EFBD29 /* WooCommerceScreenshots-Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerceScreenshots-Shared.xcconfig"; sourceTree = "<group>"; };
+		3FE8E65B2553859600EFBD29 /* WooCommerce-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerce-Debug.xcconfig"; sourceTree = "<group>"; };
+		3FE8E65C2553859600EFBD29 /* GenerateCredentials-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "GenerateCredentials-Debug.xcconfig"; sourceTree = "<group>"; };
+		3FE8E65D2553859600EFBD29 /* WooCommerceUITests-Release-Alpha.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerceUITests-Release-Alpha.xcconfig"; sourceTree = "<group>"; };
+		3FE8E65E2553859600EFBD29 /* Project-Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-Shared.xcconfig"; sourceTree = "<group>"; };
+		3FE8E65F2553859600EFBD29 /* WooCommerceTests-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerceTests-Release.xcconfig"; sourceTree = "<group>"; };
+		3FE8E6602553859600EFBD29 /* WooCommerceUITests-Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerceUITests-Shared.xcconfig"; sourceTree = "<group>"; };
+		3FE8E6612553859600EFBD29 /* WooCommerceTests-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerceTests-Debug.xcconfig"; sourceTree = "<group>"; };
+		3FE8E6622553859600EFBD29 /* WooCommerceTests-Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerceTests-Shared.xcconfig"; sourceTree = "<group>"; };
+		3FE8E6632553859600EFBD29 /* GenerateCredentials-Release-Alpha.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "GenerateCredentials-Release-Alpha.xcconfig"; sourceTree = "<group>"; };
+		3FE8E6642553859600EFBD29 /* WooCommerceScreenshots-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerceScreenshots-Release.xcconfig"; sourceTree = "<group>"; };
+		3FE8E6652553859600EFBD29 /* WooCommerce-Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerce-Shared.xcconfig"; sourceTree = "<group>"; };
+		3FE8E6662553859600EFBD29 /* WooCommerce-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerce-Release.xcconfig"; sourceTree = "<group>"; };
+		3FE8E6672553859600EFBD29 /* Project-Release-Alpha.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-Release-Alpha.xcconfig"; sourceTree = "<group>"; };
+		3FE8E6682553859600EFBD29 /* WooCommerceScreenshots-Release-Alpha.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerceScreenshots-Release-Alpha.xcconfig"; sourceTree = "<group>"; };
+		3FE8E6692553859600EFBD29 /* Project-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Project-Debug.xcconfig"; sourceTree = "<group>"; };
+		3FE8E66A2553859600EFBD29 /* WooCommerce-Release-Alpha.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerce-Release-Alpha.xcconfig"; sourceTree = "<group>"; };
+		3FE8E66B2553859600EFBD29 /* WooCommerceTests-Release-Alpha.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerceTests-Release-Alpha.xcconfig"; sourceTree = "<group>"; };
+		3FE8E66C2553859600EFBD29 /* WooCommerceUITests-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerceUITests-Debug.xcconfig"; sourceTree = "<group>"; };
 		4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVisibilityViewController.swift; sourceTree = "<group>"; };
 		4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductVisibilityViewController.xib; sourceTree = "<group>"; };
 		450C2CAF24CF006A00D570DD /* ProductTagsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagsDataSource.swift; sourceTree = "<group>"; };
@@ -2971,6 +2995,37 @@
 			path = inAppFeedback;
 			sourceTree = "<group>";
 		};
+		3FE8E6542553859600EFBD29 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				3FE8E65C2553859600EFBD29 /* GenerateCredentials-Debug.xcconfig */,
+				3FE8E6632553859600EFBD29 /* GenerateCredentials-Release-Alpha.xcconfig */,
+				3FE8E6562553859600EFBD29 /* GenerateCredentials-Release.xcconfig */,
+				3FE8E6572553859600EFBD29 /* GenerateCredentials-Shared.xcconfig */,
+				3FE8E6692553859600EFBD29 /* Project-Debug.xcconfig */,
+				3FE8E6672553859600EFBD29 /* Project-Release-Alpha.xcconfig */,
+				3FE8E6592553859600EFBD29 /* Project-Release.xcconfig */,
+				3FE8E65E2553859600EFBD29 /* Project-Shared.xcconfig */,
+				3FE8E65B2553859600EFBD29 /* WooCommerce-Debug.xcconfig */,
+				3FE8E66A2553859600EFBD29 /* WooCommerce-Release-Alpha.xcconfig */,
+				3FE8E6662553859600EFBD29 /* WooCommerce-Release.xcconfig */,
+				3FE8E6652553859600EFBD29 /* WooCommerce-Shared.xcconfig */,
+				3FE8E6552553859600EFBD29 /* WooCommerceScreenshots-Debug.xcconfig */,
+				3FE8E6682553859600EFBD29 /* WooCommerceScreenshots-Release-Alpha.xcconfig */,
+				3FE8E6642553859600EFBD29 /* WooCommerceScreenshots-Release.xcconfig */,
+				3FE8E65A2553859600EFBD29 /* WooCommerceScreenshots-Shared.xcconfig */,
+				3FE8E6612553859600EFBD29 /* WooCommerceTests-Debug.xcconfig */,
+				3FE8E66B2553859600EFBD29 /* WooCommerceTests-Release-Alpha.xcconfig */,
+				3FE8E65F2553859600EFBD29 /* WooCommerceTests-Release.xcconfig */,
+				3FE8E6622553859600EFBD29 /* WooCommerceTests-Shared.xcconfig */,
+				3FE8E66C2553859600EFBD29 /* WooCommerceUITests-Debug.xcconfig */,
+				3FE8E65D2553859600EFBD29 /* WooCommerceUITests-Release-Alpha.xcconfig */,
+				3FE8E6582553859600EFBD29 /* WooCommerceUITests-Release.xcconfig */,
+				3FE8E6602553859600EFBD29 /* WooCommerceUITests-Shared.xcconfig */,
+			);
+			path = Config;
+			sourceTree = SOURCE_ROOT;
+		};
 		4506BD6E2461962700FE6377 /* Visibility */ = {
 			isa = PBXGroup;
 			children = (
@@ -3571,6 +3626,7 @@
 		8CA4F6DC220B24EB00A47B5D /* config */ = {
 			isa = PBXGroup;
 			children = (
+				3FE8E6542553859600EFBD29 /* Config */,
 				8CA4F6DD220B257000A47B5D /* WooCommerce.debug.xcconfig */,
 				8CA4F6DE220B257000A47B5D /* WooCommerce.release.xcconfig */,
 				8CA4F6E1220B259100A47B5D /* Version.Public.xcconfig */,

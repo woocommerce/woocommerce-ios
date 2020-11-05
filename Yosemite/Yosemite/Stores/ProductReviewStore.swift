@@ -8,6 +8,9 @@ import Storage
 public final class ProductReviewStore: Store {
     private let remote: ProductReviewsRemote
 
+    private lazy var productReviewFromNoteUseCase =
+        RetrieveProductReviewFromNoteUseCase(network: network, derivedStorage: sharedDerivedStorage)
+
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
     }()
@@ -124,9 +127,7 @@ private extension ProductReviewStore {
     ///
     func retrieveProductReviewFromNote(noteID: Int64,
                                        onCompletion: @escaping (Result<ProductReviewFromNoteParcel, Error>) -> Void) {
-        let useCase = RetrieveProductReviewFromNoteUseCase(network: network,
-                                                           derivedStorage: sharedDerivedStorage)
-        useCase.retrieve(noteID: noteID, completion: onCompletion)
+        productReviewFromNoteUseCase.retrieve(noteID: noteID, completion: onCompletion)
     }
 
     /// Updates the review's approval status

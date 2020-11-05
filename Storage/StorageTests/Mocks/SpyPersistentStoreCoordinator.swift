@@ -16,6 +16,7 @@ final class SpyPersistentStoreCoordinator: PersistentStoreCoordinatorProtocol {
     private let spiedCoordinator: NSPersistentStoreCoordinator
 
     private(set) var replacements = [Replacement]()
+    private(set) var destroyedURLs = [URL]()
 
     init(_ coordinator: NSPersistentStoreCoordinator) {
         spiedCoordinator = coordinator
@@ -37,5 +38,7 @@ final class SpyPersistentStoreCoordinator: PersistentStoreCoordinatorProtocol {
 
     func destroyPersistentStore(at url: URL, ofType storeType: String, options: [AnyHashable: Any]?) throws {
         try spiedCoordinator.destroyPersistentStore(at: url, ofType: storeType, options: options)
+
+        destroyedURLs.append(url)
     }
 }

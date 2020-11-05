@@ -14,10 +14,24 @@ public final class ProductReviewStore: Store {
         return storageManager.newDerivedStorage()
     }()
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
-        self.reviewsRemote = ProductReviewsRemote(network: network)
-        self.notificationsRemote = NotificationsRemote(network: network)
-        self.productsRemote = ProductsRemote(network: network)
+    public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.init(dispatcher: dispatcher,
+                  storageManager: storageManager,
+                  network: network,
+                  reviewsRemote: ProductReviewsRemote(network: network),
+                  notificationsRemote: NotificationsRemote(network: network),
+                  productsRemote: ProductsRemote(network: network))
+    }
+
+    init(dispatcher: Dispatcher,
+         storageManager: StorageManagerType,
+         network: Network,
+         reviewsRemote: ProductReviewsRemoteProtocol,
+         notificationsRemote: NotificationsRemoteProtocol,
+         productsRemote: ProductsRemoteProtocol) {
+        self.reviewsRemote = reviewsRemote
+        self.notificationsRemote = notificationsRemote
+        self.productsRemote = productsRemote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 

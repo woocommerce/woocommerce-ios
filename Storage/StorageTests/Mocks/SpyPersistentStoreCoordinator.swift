@@ -9,14 +9,14 @@ final class SpyPersistentStoreCoordinator: PersistentStoreCoordinatorProtocol {
         let sourceURL: URL
     }
 
-    struct StoreMigrations {
+    struct Migration {
         let destinationURL: URL
     }
 
     private let spiedCoordinator: NSPersistentStoreCoordinator
 
-    private(set) var storeMigrations = [StoreMigrations]()
     private(set) var storeReplacements = [Replacement]()
+    private(set) var storeMigrations = [Migration]()
 
     init(_ coordinator: NSPersistentStoreCoordinator) {
         spiedCoordinator = coordinator

@@ -143,8 +143,10 @@ private extension ProductReviewStore {
     ///
     func retrieveProductReviewFromNote(noteID: Int64,
                                        onCompletion: @escaping (Result<ProductReviewFromNoteParcel, Error>) -> Void) {
-        let useCase = RetrieveProductReviewFromNoteUseCase(network: network,
-                                                           derivedStorage: sharedDerivedStorage)
+        let useCase = RetrieveProductReviewFromNoteUseCase(derivedStorage: sharedDerivedStorage,
+                                                           notificationsRemote: notificationsRemote,
+                                                           productReviewsRemote: reviewsRemote,
+                                                           productsRemote: productsRemote)
         useCase.retrieve(noteID: noteID, completion: onCompletion)
     }
 

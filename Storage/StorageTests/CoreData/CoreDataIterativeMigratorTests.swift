@@ -134,6 +134,34 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertEqual(fileManager.allMethodsInvocationCount, 1)
 
         assertEmpty(spyCoordinator.replacements)
+        assertEmpty(spyCoordinator.destroyedURLs)
+    }
+
+    func test_it_will_not_migrate_if_the_database_and_the_model_are_compatible() throws {
+        // Given
+        let model = try managedObjectModel(for: "Model 28")
+
+        let storeURL = try urlForStore(withName: "Woo_Compatibility_Test.sqlite", deleteIfExists: true)
+        let container = try startPersistentContainer(storeURL: storeURL, storeType: NSSQLiteStoreType, model: model)
+
+        let spyCoordinator = SpyPersistentStoreCoordinator(container.persistentStoreCoordinator)
+
+        let migrator = CoreDataIterativeMigrator(coordinator: spyCoordinator,
+                                                 modelsInventory: modelsInventory)
+
+        // When
+        let result = try migrator.iterativeMigrate(sourceStore: storeURL,
+                                                   storeType: NSSQLiteStoreType,
+                                                   to: model)
+
+        // Then
+        XCTAssertTrue(result.success)
+
+        XCTAssertEqual(result.debugMessages.count, 1)
+        assertThat(try XCTUnwrap(result.debugMessages.first), contains: "No migration necessary.")
+
+        assertEmpty(spyCoordinator.replacements)
+        assertEmpty(spyCoordinator.destroyedURLs)
     }
 
     /// This is more like a confidence-check that Core Data does not allow us to open SQLite

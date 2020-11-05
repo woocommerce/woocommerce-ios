@@ -71,7 +71,7 @@ final class CoreDataIterativeMigrator {
         let steps = migrationSteps(from: modelsToMigrate)
 
         do {
-            let lastTempDestinationURL = try steps.reduce(sourceStore) { (currentSourceStoreURL, step) -> URL in
+            let lastTempDestinationURL = try steps.reduce(sourceStore) { currentSourceStoreURL, step -> URL in
                 let mappingModel = try self.mappingModel(from: step.sourceModel, to: step.targetModel)
 
                 let migrationAttemptMessage = makeMigrationAttemptLogMessage(models: modelsToMigrate,

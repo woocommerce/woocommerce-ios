@@ -9,9 +9,14 @@ final class SpyPersistentStoreCoordinator: PersistentStoreCoordinatorProtocol {
         let sourceURL: URL
     }
 
+    struct StoreMigrations {
+        let destinationURL: URL
+    }
+
     private let spiedCoordinator: NSPersistentStoreCoordinator
 
     private(set) var storeReplacements = [StoreReplacement]()
+    private(set) var storeMigrations = [StoreMigrations]()
 
     init(_ coordinator: NSPersistentStoreCoordinator) {
         spiedCoordinator = coordinator
@@ -21,7 +26,12 @@ final class SpyPersistentStoreCoordinator: PersistentStoreCoordinatorProtocol {
                                 to URL: URL,
                                 options: [AnyHashable: Any]?,
                                 withType storeType: String) throws -> NSPersistentStore {
-        try spiedCoordinator.migratePersistentStore(store, to: URL, options: options, withType: storeType)
+        let migratedStore = try spiedCoordinator.migratePersistentStore(store,
+                                                                        to: URL,
+                                                                        options: options,
+                                                                        withType: storeType)
+        storeMigrations.append(.init(destinationURL: URL))
+        return migratedStore
     }
 
     func replacePersistentStore(at destinationURL: URL,

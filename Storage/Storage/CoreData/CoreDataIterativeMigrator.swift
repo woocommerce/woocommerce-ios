@@ -83,16 +83,18 @@ final class CoreDataIterativeMigrator {
             debugMessages.append(migrationAttemptMessage)
             DDLogWarn(migrationAttemptMessage)
 
-            let (success, migrateStoreError) = migrateStore(at: sourceStore,
-                                                            storeType: storeType,
-                                                            fromModel: modelFrom,
-                                                            toModel: modelTo,
-                                                            with: mappingModel)
-            guard success else {
-                if let migrateStoreError = migrateStoreError {
-                    let errorInfo = (migrateStoreError as NSError?)?.userInfo ?? [:]
-                    debugMessages.append("Migration error: \(migrateStoreError) [\(errorInfo)]")
-                }
+            let migrationResult = migrateStore(at: sourceStore,
+                                               storeType: storeType,
+                                               fromModel: modelFrom,
+                                               toModel: modelTo,
+                                               with: mappingModel)
+            switch migrationResult {
+            case .success(let destinationURL):
+                #warning("FIXME I should do something!")
+                print("successful")
+            case .failure(let error):
+                let errorInfo = (error as NSError?)?.userInfo ?? [:]
+                debugMessages.append("Migration error: \(error) [\(errorInfo)]")
                 return (false, debugMessages)
             }
         }
@@ -211,7 +213,7 @@ private extension CoreDataIterativeMigrator {
                       storeType: String,
                       fromModel: NSManagedObjectModel,
                       toModel: NSManagedObjectModel,
-                      with mappingModel: NSMappingModel) -> (success: Bool, error: Error?) {
+                      with mappingModel: NSMappingModel) -> Result<URL, Error> {
         let tempDestinationURL = createTemporaryFolder(at: sourceURL)
 
         // Migrate from the source model to the target model using the mapping,
@@ -226,7 +228,7 @@ private extension CoreDataIterativeMigrator {
                                       destinationType: storeType,
                                       destinationOptions: nil)
         } catch {
-            return (false, error)
+            return .failure(error)
         }
 
         do {
@@ -235,10 +237,10 @@ private extension CoreDataIterativeMigrator {
             // Replace the (deleted) original store files with the migrated store files.
             try copyMigratedOverOriginal(from: tempDestinationURL, to: sourceURL)
         } catch {
-            return (false, error)
+            return .failure(error)
         }
 
-        return (true, nil)
+        return.success(tempDestinationURL)
     }
 
     func model(for metadata: [String: Any]) throws -> NSManagedObjectModel {

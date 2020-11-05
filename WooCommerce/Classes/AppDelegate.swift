@@ -56,7 +56,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupAuthenticationManager()
         setupCocoaLumberjack()
         setupLogLevel(.verbose)
-        setupNoticePresenter()
         setupPushNotificationsManagerIfPossible()
         setupAppRatingManager()
         setupWormholy()
@@ -83,6 +82,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Setup the Interface!
         setupMainWindow()
         setupComponentsAppearance()
+        setupNoticePresenter()
 
         // Start app navigation.
         appCoordinator?.start()

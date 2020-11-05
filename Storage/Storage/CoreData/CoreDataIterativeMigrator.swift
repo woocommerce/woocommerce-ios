@@ -108,14 +108,14 @@ final class CoreDataIterativeMigrator {
 //
 private extension CoreDataIterativeMigrator {
 
-    /// Build a temporary path to write the migrated store.
+    /// Build a temporary SQLite **file URL** to be used as the destination when performing a
+    /// migration.
     ///
-    func createTemporaryFolder(at storeURL: URL) -> URL {
-        let tempDestinationURL = storeURL.deletingLastPathComponent().appendingPathComponent("migration").appendingPathComponent(storeURL.lastPathComponent)
-        try? fileManager.removeItem(at: tempDestinationURL.deletingLastPathComponent())
-        try? fileManager.createDirectory(at: tempDestinationURL.deletingLastPathComponent(), withIntermediateDirectories: false, attributes: nil)
-
-        return tempDestinationURL
+    /// - Returns: A unique URL in the temporary directory.
+    func makeTemporaryMigrationDestinationURL() -> URL {
+        URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+            .appendingPathComponent("migration_\(UUID().uuidString)")
+            .appendingPathExtension("sqlite")
     }
 
     /// Deletes the SQLite files for the store at the given `storeURL`.
@@ -214,7 +214,7 @@ private extension CoreDataIterativeMigrator {
                       fromModel: NSManagedObjectModel,
                       toModel: NSManagedObjectModel,
                       with mappingModel: NSMappingModel) -> Result<URL, Error> {
-        let tempDestinationURL = createTemporaryFolder(at: sourceURL)
+        let tempDestinationURL = makeTemporaryMigrationDestinationURL()
 
         // Migrate from the source model to the target model using the mapping,
         // and store the resulting data at the temporary path.

@@ -188,29 +188,21 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertNotNil(ps)
     }
 
-    func test_iterativeMigrate_deletes_the_original_SQLite_files() throws {
+    func test_iterativeMigrate_replaces_the_original_SQLite_files() throws {
         // Given
         let storeType = NSSQLiteStoreType
         let sourceModel = try managedObjectModel(for: "Model 30")
         let targetModel = try managedObjectModel(for: "Model 31")
 
-        let storeFileName = "WooMigrationDeletionUnitTest.sqlite"
+        let storeFileName = "Woo_Migration_Replacement_Unit_Test.sqlite"
         let storeURL = try urlForStore(withName: storeFileName, deleteIfExists: true)
         // Start a container so the SQLite files will be created.
         let container = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: sourceModel)
 
-        let fileManager = FileManager()
-        let spyFileManager = SpyFileManager(fileManager)
-        let iterativeMigrator = CoreDataIterativeMigrator(coordinator: container.persistentStoreCoordinator,
-                                                          modelsInventory: modelsInventory,
-                                                          fileManager: spyFileManager)
+        let spyCoordinator = SpyPersistentStoreCoordinator(container.persistentStoreCoordinator)
 
-        // Create a file (e.g. WooCommerce.sqlite.~) that shouldn't be included in the deletion.
-        let legacyBackupFileURL = storeURL.appendingPathExtension("~")
-        if fileManager.fileExists(atPath: legacyBackupFileURL.path) {
-            try fileManager.removeItem(at: legacyBackupFileURL)
-        }
-        try fileManager.copyItem(at: storeURL, to: legacyBackupFileURL)
+        let iterativeMigrator = CoreDataIterativeMigrator(coordinator: spyCoordinator,
+                                                          modelsInventory: modelsInventory)
 
         // When
         let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
@@ -218,17 +210,14 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
                                                                  to: targetModel)
         // Then
         XCTAssertTrue(result)
-        // There are 4 deleted items. The first is the "migrated" folder. The rest are the SQLite
-        // files.
-        XCTAssertEqual(spyFileManager.deletedItems.count, 4)
+        XCTAssertEqual(spyCoordinator.storeReplacements.count, 1)
 
-        // The expected SQLite files should have been deleted.
-        XCTAssertTrue(spyFileManager.deletedItems.contains(storeURL.path))
-        XCTAssertTrue(spyFileManager.deletedItems.contains("\(storeURL.path)-wal"))
-        XCTAssertTrue(spyFileManager.deletedItems.contains("\(storeURL.path)-shm"))
-
-        // The legacy backup file URL with "~" shouldn't have been deleted.
-        XCTAssertFalse(spyFileManager.deletedItems.contains(legacyBackupFileURL.path))
+        // The `storeURL` should have been the target of the replacement.
+        let replacement = try XCTUnwrap(spyCoordinator.storeReplacements.first)
+        XCTAssertEqual(replacement.destinationURL, storeURL)
+        // The sourceURL should have been from a temporary directory
+        XCTAssertEqual(replacement.sourceURL.deletingLastPathComponent(),
+                       URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true))
     }
 
     func test_iterativeMigrate_moves_the_migrated_SQLite_files_to_the_original_store_location() throws {

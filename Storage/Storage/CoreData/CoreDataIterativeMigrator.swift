@@ -101,6 +101,15 @@ final class CoreDataIterativeMigrator {
                 }
             }
 
+            // Now that the migration steps have been completed, replace the store that the
+            // app will use with the _migrated_ store located at the `lastTempDestinationURL`.
+            //
+            // This completes the iterative migration.
+            try persistentStoreCoordinator.replacePersistentStore(at: sourceStore,
+                                                                  destinationOptions: nil,
+                                                                  withPersistentStoreFrom: lastTempDestinationURL,
+                                                                  sourceOptions: nil,
+                                                                  ofType: storeType)
             return (true, debugMessages)
         } catch {
             let errorInfo = (error as NSError?)?.userInfo ?? [:]

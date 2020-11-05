@@ -8,20 +8,20 @@
 #include "WooCommerce-Shared.xcconfig"
 
 // Code Signing Entitlements
-// 
+//
 // The path to a file specifying code-signing entitlements.
 
 CODE_SIGN_ENTITLEMENTS = Resources/Woo-Debug.entitlements
 
 // Development Team
-// 
+//
 // The team ID of a development team to use for signing certificates and provisioning
 // profiles.
 
 DEVELOPMENT_TEAM = PZYM8XX95Q
 
 // Product Bundle Identifier
-// 
+//
 // A string that uniquely identifies the bundle. The string should be in reverse DNS
 // format using only alphanumeric characters (`A-Z`, `a-z`, `0-9`), the dot (`.`), and
 // the hyphen (`-`). This value is used as the `CFBundleIdentifier` in the `Info.plist`
@@ -29,10 +29,10 @@ DEVELOPMENT_TEAM = PZYM8XX95Q
 
 PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce
 
-PROVISIONING_PROFILE = 
+PROVISIONING_PROFILE =
 
 // Provisioning Profile
-// 
+//
 // Must contain a profile name (or UUID). A missing or invalid profile will cause a build
 // error. Use in conjunction with [DEVELOPMENT_TEAM] to fully specify provisioning
 // profile.

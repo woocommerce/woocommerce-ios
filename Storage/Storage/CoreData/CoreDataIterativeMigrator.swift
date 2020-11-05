@@ -110,6 +110,13 @@ final class CoreDataIterativeMigrator {
                                                                   withPersistentStoreFrom: lastTempDestinationURL,
                                                                   sourceOptions: nil,
                                                                   ofType: storeType)
+
+            // Final cleanuup. Destroy the store at `lastTempDestinationURL` since it should have
+            // been copied over to `sourceStore` above.
+            try persistentStoreCoordinator.destroyPersistentStore(at: lastTempDestinationURL,
+                                                                  ofType: storeType,
+                                                                  options: nil)
+
             return (true, debugMessages)
         } catch {
             let errorInfo = (error as NSError?)?.userInfo ?? [:]

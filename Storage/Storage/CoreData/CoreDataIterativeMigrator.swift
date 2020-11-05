@@ -80,25 +80,20 @@ final class CoreDataIterativeMigrator {
                 debugMessages.append(migrationAttemptMessage)
                 DDLogWarn(migrationAttemptMessage)
 
-                let migrationResult = migrateStore(at: currentSourceStoreURL,
-                                                   storeType: storeType,
-                                                   fromModel: step.sourceModel,
-                                                   toModel: step.targetModel,
-                                                   with: mappingModel)
-                switch migrationResult {
-                case .success(let destinationURL):
-                    // Destroy the `currentSourceStoreURL` if it is a temporary URL since we
-                    // will no longer need it.
-                    if currentSourceStoreURL != sourceStore {
-                        try persistentStoreCoordinator.destroyPersistentStore(at: currentSourceStoreURL,
-                                                                              ofType: storeType,
-                                                                              options: nil)
-                    }
-
-                    return destinationURL
-                case .failure(let error):
-                    throw error
+                let destinationURL = try migrateStore(at: currentSourceStoreURL,
+                                                      storeType: storeType,
+                                                      fromModel: step.sourceModel,
+                                                      toModel: step.targetModel,
+                                                      with: mappingModel)
+                // Destroy the `currentSourceStoreURL` if it is a temporary URL since we
+                // will no longer need it.
+                if currentSourceStoreURL != sourceStore {
+                    try persistentStoreCoordinator.destroyPersistentStore(at: currentSourceStoreURL,
+                                                                          ofType: storeType,
+                                                                          options: nil)
                 }
+
+                return destinationURL
             }
 
             // Now that the migration steps have been completed, replace the store that the
@@ -181,29 +176,28 @@ private extension CoreDataIterativeMigrator {
 
     /// Migrates a store located at the given `sourceURL` to a temporary `URL`. The source store is
     /// **never changed**.
+    ///
+    /// - Returns: The `URL` to the store with the migrated data. The `URL` points to a temporary
+    ///            file which will not be persisted when the app is restarted.
     func migrateStore(at sourceURL: URL,
                       storeType: String,
                       fromModel: NSManagedObjectModel,
                       toModel: NSManagedObjectModel,
-                      with mappingModel: NSMappingModel) -> Result<URL, Error> {
+                      with mappingModel: NSMappingModel) throws -> URL {
         let tempDestinationURL = makeTemporaryMigrationDestinationURL()
 
         // Migrate from the source model to the target model using the mapping,
         // and store the resulting data at the temporary path.
         let migrator = NSMigrationManager(sourceModel: fromModel, destinationModel: toModel)
-        do {
-            try migrator.migrateStore(from: sourceURL,
-                                      sourceType: storeType,
-                                      options: nil,
-                                      with: mappingModel,
-                                      toDestinationURL: tempDestinationURL,
-                                      destinationType: storeType,
-                                      destinationOptions: nil)
-        } catch {
-            return .failure(error)
-        }
+        try migrator.migrateStore(from: sourceURL,
+                                  sourceType: storeType,
+                                  options: nil,
+                                  with: mappingModel,
+                                  toDestinationURL: tempDestinationURL,
+                                  destinationType: storeType,
+                                  destinationOptions: nil)
 
-        return.success(tempDestinationURL)
+        return tempDestinationURL
     }
 
     func model(for metadata: [String: Any]) throws -> NSManagedObjectModel {

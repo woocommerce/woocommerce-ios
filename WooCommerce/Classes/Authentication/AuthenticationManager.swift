@@ -72,7 +72,7 @@ class AuthenticationManager: Authentication {
                                                 navBarBadgeColor: .primary,
                                                 navBarBackgroundColor: .appBar,
                                                 prologueTopContainerChildViewController: LoginPrologueViewController(),
-                                                statusBarStyle: .lightContent)
+                                                statusBarStyle: .default)
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
                                                                   jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,

@@ -5,6 +5,8 @@
 // https://github.com/dempseyatgithub/BuildSettingExtractor
 //
 
+#include "../../config/Version.Public.xcconfig"
+
 // Always Search User Paths (Deprecated)
 //
 // This setting is deprecated as of Xcode 8.3 and may not be supported in future

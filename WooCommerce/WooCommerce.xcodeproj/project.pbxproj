@@ -6470,7 +6470,7 @@
 		};
 		B56DB3E42049BFAA00D4AA8E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8CA4F6DD220B257000A47B5D /* WooCommerce.debug.xcconfig */;
+			baseConfigurationReference = 3FE8E6692553859600EFBD29 /* Project-Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -6590,7 +6590,7 @@
 		};
 		B56DB3E72049BFAA00D4AA8E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 90AC1C0B391E04A837BDC64E /* Pods-WooCommerce.debug.xcconfig */;
+			baseConfigurationReference = 3FE8E65B2553859600EFBD29 /* WooCommerce-Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Resources/Woo-Debug.entitlements";
@@ -6648,7 +6648,7 @@
 		};
 		B56DB3EA2049BFAA00D4AA8E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9D2992FEF3D1246B8CCC2EBB /* Pods-WooCommerceTests.debug.xcconfig */;
+			baseConfigurationReference = 3FE8E6612553859600EFBD29 /* WooCommerceTests-Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";

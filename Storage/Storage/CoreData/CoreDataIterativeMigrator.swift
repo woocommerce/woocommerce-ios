@@ -125,30 +125,6 @@ private extension CoreDataIterativeMigrator {
             .appendingPathExtension("sqlite")
     }
 
-    /// Copy the store files that were migrated (using `NSMigrationManager`) to where the
-    /// store files should be loaded by `CoreDataManager` later.
-    ///
-    func copyMigratedOverOriginal(from tempDestinationURL: URL, to storeURL: URL) throws {
-        do {
-            let files = try fileManager.contentsOfDirectory(atPath: tempDestinationURL.deletingLastPathComponent().path)
-            try files.forEach { (file) in
-                if file.hasPrefix(tempDestinationURL.lastPathComponent) {
-                    let sourceURL = tempDestinationURL.deletingLastPathComponent().appendingPathComponent(file)
-                    let targetURL = storeURL.deletingLastPathComponent().appendingPathComponent(file)
-
-                    // TODO This removeItem may not be necessary because we should have already
-                    // deleted everything during `deleteStoreFiles`.
-                    try? fileManager.removeItem(at: targetURL)
-
-                    try fileManager.moveItem(at: sourceURL, to: targetURL)
-                }
-            }
-        } catch {
-            DDLogError("⛔️ Error while copying migrated over the original files: \(error)")
-            throw error
-        }
-    }
-
     func makeMigrationAttemptLogMessage(models: [NSManagedObjectModel],
                                         from fromModel: NSManagedObjectModel,
                                         to toModel: NSManagedObjectModel) -> String {
@@ -207,13 +183,6 @@ private extension CoreDataIterativeMigrator {
                                       toDestinationURL: tempDestinationURL,
                                       destinationType: storeType,
                                       destinationOptions: nil)
-        } catch {
-            return .failure(error)
-        }
-
-        do {
-            // Replace the (deleted) original store files with the migrated store files.
-            try copyMigratedOverOriginal(from: tempDestinationURL, to: sourceURL)
         } catch {
             return .failure(error)
         }

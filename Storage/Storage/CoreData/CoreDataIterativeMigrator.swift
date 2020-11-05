@@ -205,18 +205,20 @@ private extension CoreDataIterativeMigrator {
 //
 private extension CoreDataIterativeMigrator {
 
-    func migrateStore(at url: URL,
-                             storeType: String,
-                             fromModel: NSManagedObjectModel,
-                             toModel: NSManagedObjectModel,
-                             with mappingModel: NSMappingModel) -> (success: Bool, error: Error?) {
-        let tempDestinationURL = createTemporaryFolder(at: url)
+    /// Migrates a store located at the given `sourceURL` to a temporary `URL`. The source store is
+    /// **never changed**.
+    func migrateStore(at sourceURL: URL,
+                      storeType: String,
+                      fromModel: NSManagedObjectModel,
+                      toModel: NSManagedObjectModel,
+                      with mappingModel: NSMappingModel) -> (success: Bool, error: Error?) {
+        let tempDestinationURL = createTemporaryFolder(at: sourceURL)
 
         // Migrate from the source model to the target model using the mapping,
         // and store the resulting data at the temporary path.
         let migrator = NSMigrationManager(sourceModel: fromModel, destinationModel: toModel)
         do {
-            try migrator.migrateStore(from: url,
+            try migrator.migrateStore(from: sourceURL,
                                       sourceType: storeType,
                                       options: nil,
                                       with: mappingModel,
@@ -229,9 +231,9 @@ private extension CoreDataIterativeMigrator {
 
         do {
             // Delete the original store files.
-            try deleteStoreFiles(storeURL: url)
+            try deleteStoreFiles(storeURL: sourceURL)
             // Replace the (deleted) original store files with the migrated store files.
-            try copyMigratedOverOriginal(from: tempDestinationURL, to: url)
+            try copyMigratedOverOriginal(from: tempDestinationURL, to: sourceURL)
         } catch {
             return (false, error)
         }

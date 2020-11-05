@@ -172,8 +172,10 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         let storeURL = try urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
         let container = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: sourceModel)
 
+        let spyCoordinator = SpyPersistentStoreCoordinator(container.persistentStoreCoordinator)
+
         // When
-        let iterativeMigrator = CoreDataIterativeMigrator(coordinator: container.persistentStoreCoordinator,
+        let iterativeMigrator = CoreDataIterativeMigrator(coordinator: spyCoordinator,
                                                           modelsInventory: modelsInventory)
         let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
                                                                  storeType: storeType,
@@ -183,6 +185,21 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
         // Start another container. If there is no error, then the migration was successful.
         let _ = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: targetModel)
+
+        // There are 9 destroyed URLs because 9 migration steps should have happened between
+        // "Model" to "Model 10"
+        //
+        // 1 → 2, 2 → 3, 3 → 4, 4 → 5, 5 → 6, 6 → 7, 7 → 8, 8 → 9, 9 → 10
+        //
+        XCTAssertEqual(spyCoordinator.destroyedURLs.count, 9)
+
+        // But there is only one replacement, which is the final step in the iterative migration.
+        XCTAssertEqual(spyCoordinator.replacements.count, 1)
+
+        let replacement = try XCTUnwrap(spyCoordinator.replacements.first)
+        XCTAssertEqual(replacement.destinationURL, storeURL)
+        // The source of the replacement should have been the last temporary destination store URL.
+        XCTAssertEqual(replacement.sourceURL, spyCoordinator.destroyedURLs.last)
     }
 
     func test_iterativeMigrate_replaces_the_original_SQLite_files() throws {
@@ -207,6 +224,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
                                                                  to: targetModel)
         // Then
         XCTAssertTrue(result)
+        XCTAssertEqual(spyCoordinator.destroyedURLs.count, 1)
         XCTAssertEqual(spyCoordinator.replacements.count, 1)
 
         // The `storeURL` should have been the target of the replacement.

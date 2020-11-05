@@ -68,38 +68,37 @@ final class CoreDataIterativeMigrator {
 
         var debugMessages = [String]()
 
-        // Migrate between each model. Count - 2 because of zero-based index and we want
-        // to stop at the last pair (you can't migrate the last model to nothingness).
-        let upperBound = modelsToMigrate.count - 2
-        for index in 0...upperBound {
-            let modelFrom = modelsToMigrate[index]
-            let modelTo = modelsToMigrate[index + 1]
-            let mappingModel = try self.mappingModel(from: modelFrom, to: modelTo)
+        let steps = migrationSteps(from: modelsToMigrate)
 
-            // Migrate the model to the next step
-            let migrationAttemptMessage = makeMigrationAttemptLogMessage(models: modelsToMigrate,
-                                                                         from: modelFrom,
-                                                                         to: modelTo)
-            debugMessages.append(migrationAttemptMessage)
-            DDLogWarn(migrationAttemptMessage)
+        do {
+            let lastTempDestinationURL = try steps.reduce(sourceStore) { (currentSourceStoreURL, step) -> URL in
+                let mappingModel = try self.mappingModel(from: step.sourceModel, to: step.targetModel)
 
-            let migrationResult = migrateStore(at: sourceStore,
-                                               storeType: storeType,
-                                               fromModel: modelFrom,
-                                               toModel: modelTo,
-                                               with: mappingModel)
-            switch migrationResult {
-            case .success(let destinationURL):
-                #warning("FIXME I should do something!")
-                print("successful")
-            case .failure(let error):
-                let errorInfo = (error as NSError?)?.userInfo ?? [:]
-                debugMessages.append("Migration error: \(error) [\(errorInfo)]")
-                return (false, debugMessages)
+                let migrationAttemptMessage = makeMigrationAttemptLogMessage(models: modelsToMigrate,
+                                                                             from: step.sourceModel,
+                                                                             to: step.targetModel)
+                debugMessages.append(migrationAttemptMessage)
+                DDLogWarn(migrationAttemptMessage)
+
+                let migrationResult = migrateStore(at: sourceStore,
+                                                   storeType: storeType,
+                                                   fromModel: step.sourceModel,
+                                                   toModel: step.targetModel,
+                                                   with: mappingModel)
+                switch migrationResult {
+                case .success(let destinationURL):
+                    return destinationURL
+                case .failure(let error):
+                    throw error
+                }
             }
-        }
 
-        return (true, debugMessages)
+            return (true, debugMessages)
+        } catch {
+            let errorInfo = (error as NSError?)?.userInfo ?? [:]
+            debugMessages.append("Migration error: \(error) [\(errorInfo)]")
+            return (false, debugMessages)
+        }
     }
 }
 
@@ -207,6 +206,12 @@ private extension CoreDataIterativeMigrator {
 //
 private extension CoreDataIterativeMigrator {
 
+    /// A step in the iterative migration loop executed by `iterativeMigrate`.
+    struct MigrationStep {
+        let sourceModel: NSManagedObjectModel
+        let targetModel: NSManagedObjectModel
+    }
+
     /// Migrates a store located at the given `sourceURL` to a temporary `URL`. The source store is
     /// **never changed**.
     func migrateStore(at sourceURL: URL,
@@ -265,6 +270,10 @@ private extension CoreDataIterativeMigrator {
     }
 
     /// Returns an inclusive list of models between the source and target models.
+    ///
+    /// - Returns: The list of models to be used for migration, including the `sourceModel` and
+    ///            the `targetModel`.
+    ///
     func modelsToMigrate(from sourceModel: NSManagedObjectModel,
                          to targetModel: NSManagedObjectModel) throws -> [NSManagedObjectModel] {
         // Get NSManagedObjectModels for each of the model names given.
@@ -302,6 +311,15 @@ private extension CoreDataIterativeMigrator {
         }
 
         return modelsToMigrate
+    }
+
+    /// Creates `MigrationStep` instances that
+    func migrationSteps(from modelsToMigrate: [NSManagedObjectModel]) -> [MigrationStep] {
+        assert(modelsToMigrate.count > 1)
+        // Exclude the last one using `dropLast()`. It will be the `targetModel` in the last `MigrationStep` created.
+        return modelsToMigrate.dropLast().enumerated().map { index, model -> MigrationStep in
+            MigrationStep(sourceModel: model, targetModel: modelsToMigrate[index + 1])
+        }
     }
 
     /// Load a developer-defined `NSMappingModel` (`*.xcmappingmodel` file) or infer it.

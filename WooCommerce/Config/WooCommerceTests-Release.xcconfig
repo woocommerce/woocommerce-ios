@@ -6,6 +6,7 @@
 //
 
 #include "WooCommerceTests-Shared.xcconfig"
+#include "../../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release.xcconfig"
 
 //********************************************//
 //* Currently no build settings in this file *//

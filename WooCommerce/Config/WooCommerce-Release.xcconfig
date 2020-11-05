@@ -6,6 +6,7 @@
 //
 
 #include "WooCommerce-Shared.xcconfig"
+#include "../../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"
 
 // Code Signing Entitlements
 //

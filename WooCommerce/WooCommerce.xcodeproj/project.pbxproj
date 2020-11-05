@@ -6325,7 +6325,7 @@
 /* Begin XCBuildConfiguration section */
 		1A9690332359CF720061E383 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8CA4F6DE220B257000A47B5D /* WooCommerce.release.xcconfig */;
+			baseConfigurationReference = 3FE8E66A2553859600EFBD29 /* WooCommerce-Release-Alpha.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -6384,7 +6384,7 @@
 		};
 		1A9690342359CF720061E383 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 25D00C97936D2C6589F8ECE9 /* Pods-WooCommerce.release-alpha.xcconfig */;
+			baseConfigurationReference = 3FE8E66A2553859600EFBD29 /* WooCommerce-Release-Alpha.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Resources/Woo-Alpha.entitlements";
@@ -6413,7 +6413,7 @@
 		};
 		1A9690352359CF720061E383 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */;
+			baseConfigurationReference = 3FE8E66B2553859600EFBD29 /* WooCommerceTests-Release-Alpha.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -6437,6 +6437,7 @@
 		};
 		1A9690362359CF720061E383 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3FE8E6632553859600EFBD29 /* GenerateCredentials-Release-Alpha.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_PREFIX_HEADER = InfoPlist.h;
@@ -6448,6 +6449,7 @@
 		};
 		B55D4C1120B612F300D7A50F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3FE8E65C2553859600EFBD29 /* GenerateCredentials-Debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_PREFIX_HEADER = InfoPlist.h;
@@ -6459,6 +6461,7 @@
 		};
 		B55D4C1220B612F300D7A50F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3FE8E6562553859600EFBD29 /* GenerateCredentials-Release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_PREFIX_HEADER = InfoPlist.h;
@@ -6533,7 +6536,7 @@
 		};
 		B56DB3E52049BFAA00D4AA8E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8CA4F6DE220B257000A47B5D /* WooCommerce.release.xcconfig */;
+			baseConfigurationReference = 3FE8E6592553859600EFBD29 /* Project-Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -6619,7 +6622,7 @@
 		};
 		B56DB3E82049BFAA00D4AA8E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */;
+			baseConfigurationReference = 3FE8E6662553859600EFBD29 /* WooCommerce-Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Resources/Woo-Release.entitlements";
@@ -6673,7 +6676,7 @@
 		};
 		B56DB3EB2049BFAA00D4AA8E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8A659E65308A3D9DD79A95F9 /* Pods-WooCommerceTests.release.xcconfig */;
+			baseConfigurationReference = 3FE8E65F2553859600EFBD29 /* WooCommerceTests-Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -6697,6 +6700,7 @@
 		};
 		CCDC49D123FFFFF4003166BA /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3FE8E66C2553859600EFBD29 /* WooCommerceUITests-Debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -6720,6 +6724,7 @@
 		};
 		CCDC49D223FFFFF4003166BA /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3FE8E6582553859600EFBD29 /* WooCommerceUITests-Release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -6742,6 +6747,7 @@
 		};
 		CCDC49D323FFFFF4003166BA /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3FE8E65D2553859600EFBD29 /* WooCommerceUITests-Release-Alpha.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -6764,6 +6770,7 @@
 		};
 		F997170923DBB97500592D8E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3FE8E6552553859600EFBD29 /* WooCommerceScreenshots-Debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -6789,6 +6796,7 @@
 		};
 		F997170A23DBB97500592D8E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3FE8E6642553859600EFBD29 /* WooCommerceScreenshots-Release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -6813,6 +6821,7 @@
 		};
 		F997170B23DBB97500592D8E /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3FE8E6682553859600EFBD29 /* WooCommerceScreenshots-Release-Alpha.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;

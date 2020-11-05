@@ -426,6 +426,44 @@ final class ProductReviewStoreTests: XCTestCase {
         XCTAssertEqual(storageProductReview1?.toReadOnly(), sampleProductReviewMutated())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductReview.self), 1)
     }
+
+    func test_retrieveProductReviewFromNote_action_responds_with_ProductReviewFromNoteParcel() {
+        // Given
+        let product = MockProduct().product(siteID: sampleSiteID, productID: 756_611)
+        let productReview = MockProductReview().make(siteID: sampleSiteID, reviewID: 1_981_157, productID: product.productID)
+        let note = MockNote().make(noteID: 9_981, metaSiteID: sampleSiteID, metaReviewID: productReview.reviewID)
+
+        let notificationsRemote = MockNotificationsRemote()
+        let productReviewsRemote = MockProductReviewsRemote()
+        let productsRemote = MockProductsRemote()
+
+        notificationsRemote.whenLoadingNotes(noteIDs: [note.noteID], thenReturn: .success([note]))
+        productReviewsRemote.whenLoadingProductReview(siteID: productReview.siteID,
+                                                      reviewID: productReview.reviewID,
+                                                      thenReturn: .success(productReview))
+        productsRemote.whenLoadingProduct(siteID: product.siteID,
+                                          productID: product.productID,
+                                          thenReturn: .success(product))
+
+        let store = ProductReviewStore(dispatcher: Dispatcher(),
+                                       storageManager: storageManager,
+                                       network: network,
+                                       reviewsRemote: productReviewsRemote,
+                                       notificationsRemote: notificationsRemote,
+                                       productsRemote: productsRemote)
+
+        // When
+        let result: Result<ProductReviewFromNoteParcel, Error> = waitFor { promise in
+            let action = ProductReviewAction.retrieveProductReviewFromNote(noteID: note.noteID) { result in
+                promise(result)
+            }
+
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
 }
 
 

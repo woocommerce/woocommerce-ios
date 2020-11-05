@@ -271,10 +271,14 @@ private extension CoreDataIterativeMigrator {
         return modelsToMigrate
     }
 
-    /// Creates `MigrationStep` instances that
+    /// Creates migration steps for the given models sequence.
+    ///
+    /// This encapsulates the index-based algorithm into something we can safely consume
+    /// using functional approaches.
     func migrationSteps(from modelsToMigrate: [NSManagedObjectModel]) -> [MigrationStep] {
         assert(modelsToMigrate.count > 1)
-        // Exclude the last one using `dropLast()`. It will be the `targetModel` in the last `MigrationStep` created.
+        // Exclude the last one using `dropLast()`. It will be the `targetModel` in the
+        // last `MigrationStep` created.
         return modelsToMigrate.dropLast().enumerated().map { index, model -> MigrationStep in
             MigrationStep(sourceModel: model, targetModel: modelsToMigrate[index + 1])
         }

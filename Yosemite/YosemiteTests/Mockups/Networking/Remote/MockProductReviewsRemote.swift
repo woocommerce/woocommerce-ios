@@ -47,4 +47,21 @@ extension MockProductReviewsRemote: ProductReviewsRemoteProtocol {
             }
         }
     }
+
+    func updateProductReviewStatus(for siteID: Int64,
+                                   reviewID: Int64,
+                                   statusKey: String,
+                                   completion: @escaping (ProductReview?, Error?) -> Void) {
+        XCTFail("updateProductReviewStatus is currently not available for this mock.")
+    }
+
+    func loadAllProductReviews(for siteID: Int64,
+                               context: String?,
+                               pageNumber: Int,
+                               pageSize: Int,
+                               products: [Int64]?,
+                               status: ProductReviewStatus?,
+                               completion: @escaping ([ProductReview]?, Error?) -> Void) {
+        XCTFail("loadAllProductReviews is currently not available for this mock.")
+    }
 }

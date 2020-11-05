@@ -6,7 +6,7 @@ import Storage
 // MARK: - ProductReviewStore
 //
 public final class ProductReviewStore: Store {
-    private let reviewsRemote: ProductReviewsRemote
+    private let reviewsRemote: ProductReviewsRemoteProtocol
     private let notificationsRemote: NotificationsRemoteProtocol
     private let productsRemote: ProductsRemoteProtocol
 
@@ -80,10 +80,11 @@ private extension ProductReviewStore {
     func synchronizeProductReviews(siteID: Int64, pageNumber: Int, pageSize: Int, products: [Int64]? = nil, status: ProductReviewStatus? = nil,
                                    onCompletion: @escaping (Error?) -> Void) {
         reviewsRemote.loadAllProductReviews(for: siteID,
-                                     pageNumber: pageNumber,
-                                     pageSize: pageSize,
-                                     products: products,
-                                     status: status) { [weak self] (productReviews, error) in
+                                            context: nil,
+                                            pageNumber: pageNumber,
+                                            pageSize: pageSize,
+                                            products: products,
+                                            status: status) { [weak self] (productReviews, error) in
             guard let productReviews = productReviews else {
                 onCompletion(error)
                 return

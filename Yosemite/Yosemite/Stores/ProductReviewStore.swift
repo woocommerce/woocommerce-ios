@@ -7,6 +7,8 @@ import Storage
 //
 public final class ProductReviewStore: Store {
     private let reviewsRemote: ProductReviewsRemote
+    private let notificationsRemote: NotificationsRemoteProtocol
+    private let productsRemote: ProductsRemoteProtocol
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
@@ -14,6 +16,8 @@ public final class ProductReviewStore: Store {
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.reviewsRemote = ProductReviewsRemote(network: network)
+        self.notificationsRemote = NotificationsRemote(network: network)
+        self.productsRemote = ProductsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 

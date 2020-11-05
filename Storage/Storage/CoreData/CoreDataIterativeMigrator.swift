@@ -11,13 +11,13 @@ final class CoreDataIterativeMigrator {
     ///
     /// The coordinator instance can be retrieved from `NSPersistentContainer.persistentStoreCoordinator`.
     ///
-    private let persistentStoreCoordinator: NSPersistentStoreCoordinator
+    private let persistentStoreCoordinator: PersistentStoreCoordinatorProtocol
     /// The model versions that will be used for migration.
     private let modelsInventory: ManagedObjectModelsInventory
 
     private let fileManager: FileManagerProtocol
 
-    init(coordinator: NSPersistentStoreCoordinator,
+    init(coordinator: PersistentStoreCoordinatorProtocol,
          modelsInventory: ManagedObjectModelsInventory,
          fileManager: FileManagerProtocol = FileManager.default) {
         persistentStoreCoordinator = coordinator

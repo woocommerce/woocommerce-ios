@@ -409,6 +409,7 @@
 		2667BFED25360681008099D4 /* RefundShippingCalculationUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2667BFEC25360681008099D4 /* RefundShippingCalculationUseCaseTests.swift */; };
 		26771A14256FFA8700EE030E /* IssueRefundCoordinatingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26771A13256FFA8700EE030E /* IssueRefundCoordinatingController.swift */; };
 		267CFE1C2443A54200AF3A13 /* ProductCategoryCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267CFE1A2443740900AF3A13 /* ProductCategoryCellViewModel.swift */; };
+		2682EAA225589F3200089DAD /* Fakes in Frameworks */ = {isa = PBXBuildFile; productRef = 2682EAA125589F3200089DAD /* Fakes */; };
 		2687165524D21BC80042F6AE /* SurveySubmittedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2687165324D21BC80042F6AE /* SurveySubmittedViewController.swift */; };
 		2687165624D21BC80042F6AE /* SurveySubmittedViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2687165424D21BC80042F6AE /* SurveySubmittedViewController.xib */; };
 		2687165A24D350C20042F6AE /* SurveyCoordinatingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2687165924D350C20042F6AE /* SurveyCoordinatingController.swift */; };
@@ -2286,6 +2287,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2682EAA225589F3200089DAD /* Fakes in Frameworks */,
 				B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */,
 				57150E0F24F462C200E81611 /* TestKit in Frameworks */,
 			);
@@ -5424,6 +5426,7 @@
 			name = WooCommerceTests;
 			packageProductDependencies = (
 				57150E0E24F462C200E81611 /* TestKit */,
+				2682EAA125589F3200089DAD /* Fakes */,
 			);
 			productName = WooCommerceTests;
 			productReference = B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */;
@@ -7494,6 +7497,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 247CE89A2583402A00F9D9D1 /* XCRemoteSwiftPackageReference "Embassy" */;
 			productName = Embassy;
+		};
+		2682EAA125589F3200089DAD /* Fakes */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Fakes;
 		};
 		57150E0E24F462C200E81611 /* TestKit */ = {
 			isa = XCSwiftPackageProductDependency;

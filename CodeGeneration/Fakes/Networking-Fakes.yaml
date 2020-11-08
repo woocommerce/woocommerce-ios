@@ -4,5 +4,5 @@ project:
         name: Networking
 templates:
     - Fakes.swifttemplate
-output: ../../Networking/Networking/Model/Fakes/
+output: ../../Fakes/Sources/Fakes/
 

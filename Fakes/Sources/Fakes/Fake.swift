@@ -1,3 +1,5 @@
+import Foundation
+
 /// Collection of fake values for most common types
 ///
 

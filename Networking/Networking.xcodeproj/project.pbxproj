@@ -101,14 +101,6 @@
 		26B2F74924C55ACE0065CCC8 /* LeaderboardsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B2F74824C55ACE0065CCC8 /* LeaderboardsRemoteTests.swift */; };
 		26B2F74B24C696C00065CCC8 /* LeaderboardRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B2F74A24C696C00065CCC8 /* LeaderboardRow.swift */; };
 		26B2F74D24C696E70065CCC8 /* LeaderboardRowContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B2F74C24C696E70065CCC8 /* LeaderboardRowContent.swift */; };
-		26B6453C259B8C0D00EF3FB3 /* ProductAttributeTerm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B6453B259B8C0D00EF3FB3 /* ProductAttributeTerm.swift */; };
-		26B64540259BCDFE00EF3FB3 /* ProductAttributeTermMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B6453F259BCDFE00EF3FB3 /* ProductAttributeTermMapper.swift */; };
-		26B64544259BCE0F00EF3FB3 /* ProductAttributeTermListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B64543259BCE0F00EF3FB3 /* ProductAttributeTermListMapper.swift */; };
-		26B64548259BF2B900EF3FB3 /* ProductAttributeTermListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B64547259BF2B900EF3FB3 /* ProductAttributeTermListMapperTests.swift */; };
-		26B6454E259BF81400EF3FB3 /* product-attribute-terms.json in Resources */ = {isa = PBXBuildFile; fileRef = 26B6454D259BF81400EF3FB3 /* product-attribute-terms.json */; };
-		26E5A08825A66AFC000DF8F6 /* ProductAttributeTermRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E5A08725A66AFC000DF8F6 /* ProductAttributeTermRemote.swift */; };
-		26E5A08C25A66FD3000DF8F6 /* ProductAttributeTermRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E5A08B25A66FD3000DF8F6 /* ProductAttributeTermRemoteTests.swift */; };
-		26D1EAEC2558924700F0FABF /* Fakes in Frameworks */ = {isa = PBXBuildFile; productRef = 265E4B8525534FC7001C2B8B /* Fakes */; };
 		26E83A022554683A00390DD9 /* GeneratedFakeable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E83A012554683A00390DD9 /* GeneratedFakeable.swift */; };
 		450106852399A7CB00E24722 /* TaxClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106842399A7CB00E24722 /* TaxClass.swift */; };
 		4501068F2399B19500E24722 /* TaxClassRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4501068E2399B19500E24722 /* TaxClassRemote.swift */; };
@@ -876,7 +868,6 @@
 				57150E1524F462E600E81611 /* TestKit in Frameworks */,
 				B557D9ED209753AA005962F4 /* Networking.framework in Frameworks */,
 				21DB5B99C4107CF69C0A57EC /* Pods_NetworkingTests.framework in Frameworks */,
-				26D1EAEC2558924700F0FABF /* Fakes in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1636,7 +1627,6 @@
 			name = NetworkingTests;
 			packageProductDependencies = (
 				57150E1424F462E600E81611 /* TestKit */,
-				265E4B8525534FC7001C2B8B /* Fakes */,
 			);
 			productName = NetworkingTests;
 			productReference = B557D9EC209753AA005962F4 /* NetworkingTests.xctest */;
@@ -2560,10 +2550,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		265E4B8525534FC7001C2B8B /* Fakes */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Fakes;
-		};
 		57150E1424F462E600E81611 /* TestKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TestKit;

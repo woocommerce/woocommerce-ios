@@ -1,0 +1,87 @@
+<%
+// --------------------------------------------------------------------------------
+// Helpers
+// --------------------------------------------------------------------------------
+
+/// A representation of the struct/class to generate. This defines the
+/// properties that the template will need to generate the fake method.
+///
+/// We create our own data structure to clarify what we need in the template code.
+/// This also makes the template simpler to read because the complexity are all encapsulated
+/// by this struct.
+///
+struct FakeableSpec {
+
+    /// A representation of a property for the fake() method.
+    ///
+    struct Property {
+        /// The name of the property
+        let name: String
+
+        /// If this is not the last, this will be a literal comma (",")
+        let commaOrNothing: String
+    }
+
+    /// The name of the struct/class that conforms to GeneratedFakeable.
+    let name: String
+
+    /// The access level "public", "private", etc with a space at the end. This is just an empty
+    /// string if the true accessLevel is "internal".
+    let accessLevelWithSpacePostfix: String
+
+    /// The properties that we're going to generate as part of the fake() method.
+    let properties: [Property]
+}
+
+// The matching types that we're going to generate code for.
+let matchingTypes = types.based["GeneratedFakeable"].filter {
+    $0.kind == "struct" || $0.kind == "class"
+}
+
+// The collection of FakeableSpecs that the template below will use.
+let specsToGenerate: [FakeableSpec] = matchingTypes.map { type in
+
+    // Grab the properties that should be part of the type `init` arguments. A possible future enhancement would be
+    // to actually match this with the class/struct's constructor arguments.
+    let validVariables = type.variables.filter {
+        // Exclude properties that do not have the same access level as the class/struct. For example,
+        // properties that are internal or private should not be included.
+        $0.readAccess == type.accessLevel && !$0.isComputed && !$0.isStatic
+    }
+
+    // Convert validVariables to FakeableSpec.Property instances that the template will be able to use.
+    let propSpecs: [FakeableSpec.Property] = validVariables.map { variable in
+        FakeableSpec.Property(
+            name: variable.name,
+            commaOrNothing: variable == validVariables.last  ? "" : ","
+        )
+    }
+
+    return FakeableSpec(
+        name: type.name,
+        accessLevelWithSpacePostfix: type.accessLevel == "internal" ? "" : "\(type.accessLevel) ",
+        properties: propSpecs
+    )
+}
+-%>
+
+<%#
+// --------------------------------------------------------------------------------
+// Template
+// --------------------------------------------------------------------------------
+-%>
+
+<% for spec in specsToGenerate { -%>
+extension <%= spec.name -%> {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    <%= spec.accessLevelWithSpacePostfix -%> <%_ _%> static func fake() -> <%= spec.name -%> {
+        <%= spec.name -%>(
+<% for property in spec.properties { -%>
+            <%= property.name -%>: .fake() <%_ _%> <%= property.commaOrNothing %>
+<% } -%>
+        )
+    }
+}
+<% } -%>
+

@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a Payment Gateway.
 ///
-public struct PaymentGateway {
+public struct PaymentGateway: Decodable {
 
     /// Features for payment gateway.
     ///
@@ -35,4 +35,37 @@ public struct PaymentGateway {
     /// List of features the payment gateway supports.
     ///
     public let features: [Features]
+}
+
+// MARK: Features Decodable
+extension PaymentGateway.Features: RawRepresentable, Decodable {
+
+    /// Enum containing the 'Known' Features Keys
+    ///
+    private enum Keys {
+        static let products = "products"
+        static let refunds = "refunds"
+    }
+
+    public init?(rawValue: String) {
+        switch rawValue {
+        case Keys.products:
+            self = .products
+        case Keys.refunds:
+            self = .refunds
+        default:
+            self = .custom(raw: rawValue)
+        }
+    }
+
+    public var rawValue: String {
+        switch self {
+        case .products:
+            return Keys.products
+        case .refunds:
+            return Keys.refunds
+        case .custom(let raw):
+            return raw
+        }
+    }
 }

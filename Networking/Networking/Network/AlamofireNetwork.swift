@@ -2,13 +2,17 @@ import Foundation
 import Alamofire
 
 
-extension Alamofire.MultipartFormData: MultipartFormData {}
+extension Alamofire.MultipartFormData: MultipartFormData {
+    public func append(_ data: Data, withName name: String) {
+
+    }
+}
 
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
 ///
 public class AlamofireNetwork: Network {
 
-    private let backgroundSessionManager: Alamofire.SessionManager
+    private let sessionManager: Alamofire.Session
 
     /// WordPress.com Credentials.
     ///
@@ -20,11 +24,8 @@ public class AlamofireNetwork: Network {
     public required init(credentials: Credentials) {
         self.credentials = credentials
 
-        // A unique ID is included in the background session identifier so that the session does not get invalidated when the initializer is called multiple
-        // times (e.g. when logging in).
-        let uniqueID = UUID().uuidString
-        let configuration = URLSessionConfiguration.background(withIdentifier: "com.automattic.woocommerce.backgroundsession.\(uniqueID)")
-        self.backgroundSessionManager = Alamofire.SessionManager(configuration: configuration)
+        let configuration = URLSessionConfiguration.default
+        self.sessionManager = Alamofire.Session(configuration: configuration)
     }
 
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
@@ -45,7 +46,7 @@ public class AlamofireNetwork: Network {
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
 
-        Alamofire.request(authenticated)
+        AF.request(authenticated)
             .responseData { response in
                 completion(response.value, response.networkingError)
             }
@@ -63,7 +64,7 @@ public class AlamofireNetwork: Network {
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
 
-        Alamofire.request(authenticated).responseData { response in
+        AF.request(authenticated).responseData { response in
             completion(response.result.toSwiftResult())
         }
     }
@@ -73,16 +74,15 @@ public class AlamofireNetwork: Network {
                                         completion: @escaping (Data?, Error?) -> Void) {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
 
-        backgroundSessionManager.upload(multipartFormData: multipartFormData, with: authenticated) { (encodingResult) in
-            switch encodingResult {
-            case .success(let upload, _, _):
-                upload.responseData { response in
-                    completion(response.value, response.error)
-                }
+
+        _ = sessionManager.upload(multipartFormData: multipartFormData, with: authenticated).responseData(completionHandler: { (response) in
+            switch response.result {
+            case .success(let data):
+                completion(data, response.error)
             case .failure(let error):
                 completion(nil, error)
             }
-        }
+        })
     }
 }
 
@@ -117,10 +117,10 @@ private extension Alamofire.DataResponse {
 
 // MARK: - Swift.Result Conversion
 
-private extension Alamofire.Result {
-    /// Convert this `Alamofire.Result` to a `Swift.Result`.
+private extension Swift.Result where Success == Data, Failure == AFError {
+    /// Convert this `Swift.Result<Data, AFError>` to a `Swift.Result<Data, Error>`.
     ///
-    func toSwiftResult() -> Swift.Result<Value, Error> {
+    func toSwiftResult() -> Swift.Result<Data, Error> {
         switch self {
         case .success(let value):
             return .success(value)

@@ -184,7 +184,7 @@ private extension BarcodeScannerViewController {
         instructionLabel.textAlignment = .center
         instructionLabel.applyHeadlineStyle()
         instructionLabel.textColor = .white
-        instructionLabel.textInsets = .init(top: 11, left: 0, bottom: 11, right: 0)
+        instructionLabel.textInsets = Constants.instructionTextInsets
         instructionLabel.text = viewProperties.instructionText
     }
 }
@@ -243,5 +243,6 @@ private extension BarcodeScannerViewController {
 private extension BarcodeScannerViewController {
     enum Constants {
         static let dimmingColor = UIColor(white: 0.0, alpha: 0.5)
+        static let instructionTextInsets = UIEdgeInsets(top: 11, left: 0, bottom: 11, right: 0)
     }
 }

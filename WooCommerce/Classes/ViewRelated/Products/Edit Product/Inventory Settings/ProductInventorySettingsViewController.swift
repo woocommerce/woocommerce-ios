@@ -339,7 +339,7 @@ private extension ProductInventorySettingsViewController {
             self?.onSKUBarcodeScanned(barcode: barcode)
             self?.navigationController?.popViewController(animated: true)
         })
-        navigationController?.pushViewController(scannerViewController, animated: true)
+        show(scannerViewController, sender: self)
     }
 
     func onSKUBarcodeScanned(barcode: String) {

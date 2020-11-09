@@ -19,7 +19,7 @@ final class ProductSKUInputScannerViewController: UIViewController {
 
     private let onBarcodeScanned: (String) -> Void
 
-    /// Makes sure the barcode detection callback is only handled once.
+    /// Tracks whether a barcode has been detected because the barcode detection callback is only handled once.
     private var hasDetectedBarcode: Bool = false
 
     init(onBarcodeScanned: @escaping (String) -> Void) {

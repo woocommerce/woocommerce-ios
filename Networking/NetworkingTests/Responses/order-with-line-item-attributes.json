@@ -90,6 +90,13 @@
                         "display_value": "Woo"
                     },
                     {
+                        "id": 6546,
+                        "key": "_square_item_variation_id",
+                        "value": "aweiotjo",
+                        "display_key": "_square_item_variation_id",
+                        "display_value": "aweiotjo"
+                    },
+                    {
                         "id": 6411,
                         "key": "_reduced_stock",
                         "value": "1",

@@ -41,6 +41,7 @@ target 'WooCommerce' do
   # pod 'WordPressAuthenticator', '~> 1.28.0'
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
   pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'fix/migrate-to-alamofire-5'
+  pod 'WordPressKit', :git => 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', :branch => 'upgrade/Alamofire-5-3-0'
   # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
 
   pod 'WordPressShared', '~> 1.12'
@@ -55,7 +56,7 @@ target 'WooCommerce' do
   # External Libraries
   # ==================
   #
-  pod 'Alamofire', '~> 4.8'
+  pod 'Alamofire', '~> 5.4.0'
   pod 'KeychainAccess', '~> 3.2'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
@@ -78,7 +79,7 @@ end
 # ===============
 #
 def yosemite_pods
-  pod 'Alamofire', '~> 4.8'
+  pod 'Alamofire', '~> 5.4.0'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
 
@@ -105,7 +106,7 @@ end
 # =================
 #
 def networking_pods
-  pod 'Alamofire', '~> 4.8'
+  pod 'Alamofire', '~> 5.4.0'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
 

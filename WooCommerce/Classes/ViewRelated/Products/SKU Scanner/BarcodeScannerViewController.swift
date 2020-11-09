@@ -67,29 +67,21 @@ extension BarcodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDele
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
 
-                // Converts video output image buffer to a `CIImage`.
-                guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+                let orientation = self.imageOrientationFromDeviceOrientation()
+                guard let ciImage = self.imageForBarcodeDetection(from: sampleBuffer, orientation: orientation) else {
                     return
                 }
-                let orientation = self.imageOrientationFromDeviceOrientation()
-                let ciImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(orientation)
 
-                // Calculates the scan area frame after scaling to the video image size.
-                let imageExtent = ciImage.extent
-                let scanAreaRect = self.scanAreaView.frame
-                let scaledScanAreaRect = BarcodeScannerFrameScaler.scaling(scanAreaRect, in: self.videoOutputImageView.frame, to: imageExtent)
-
-                // Crops scan area from the original video output image.
-                let croppedCIImage = ciImage.cropped(to: scaledScanAreaRect)
-
-                // Configures options for `VNImageRequestHandler`.
-                var requestOptions: [VNImageOption: Any] = [:]
-                if let cameraData = CMGetAttachment(sampleBuffer, key: kCMSampleBufferAttachmentKey_CameraIntrinsicMatrix, attachmentModeOut: nil) {
-                    requestOptions = [.cameraIntrinsics: cameraData]
-                }
                 DispatchQueue.global().async { [weak self] in
                     guard let self = self else { return }
-                    let imageRequestHandler = VNImageRequestHandler(ciImage: croppedCIImage, orientation: orientation, options: requestOptions)
+
+                    // Configures options for `VNImageRequestHandler`.
+                    var requestOptions: [VNImageOption: Any] = [:]
+                    if let cameraData = CMGetAttachment(sampleBuffer, key: kCMSampleBufferAttachmentKey_CameraIntrinsicMatrix, attachmentModeOut: nil) {
+                        requestOptions = [.cameraIntrinsics: cameraData]
+                    }
+
+                    let imageRequestHandler = VNImageRequestHandler(ciImage: ciImage, orientation: orientation, options: requestOptions)
                     do {
                         try imageRequestHandler.perform(self.requests)
                     } catch {
@@ -98,6 +90,31 @@ extension BarcodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDele
                 }
             }
         }
+    }
+}
+
+// MARK: Video Processing
+//
+private extension BarcodeScannerViewController {
+    /// Returns a `CIImage` for barcode detection Vision request, if available. This has to be run on the main thread due to frame access.
+    /// - Parameters:
+    ///   - videoSampleBuffer: sample buffer from video.
+    ///   - orientation: expected orientation for the image.
+    func imageForBarcodeDetection(from videoSampleBuffer: CMSampleBuffer, orientation: CGImagePropertyOrientation) -> CIImage? {
+        // Converts video output sample buffer to a `CIImage`.
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(videoSampleBuffer) else {
+            return nil
+        }
+        let ciImage = CIImage(cvPixelBuffer: pixelBuffer).oriented(orientation)
+
+        // Calculates the scan area frame after scaling to the video image size.
+        let imageExtent = ciImage.extent
+        let scanAreaRect = scanAreaView.frame
+        let scaledScanAreaRect = BarcodeScannerFrameScaler.scaling(scanAreaRect, in: videoOutputImageView.frame, to: imageExtent)
+
+        // Crops scan area from the original video output image.
+        let croppedCIImage = ciImage.cropped(to: scaledScanAreaRect)
+        return croppedCIImage
     }
 }
 

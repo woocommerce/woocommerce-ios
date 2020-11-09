@@ -77,7 +77,7 @@ extension BarcodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDele
                 // Calculates the scan area frame after scaling to the video image size.
                 let imageExtent = ciImage.extent
                 let scanAreaRect = self.scanAreaView.frame
-                let scaledScanAreaRect = scanAreaRect.scaling(in: self.videoOutputImageView.frame, to: imageExtent)
+                let scaledScanAreaRect = BarcodeScannerFrameScaler.scaling(scanAreaRect, in: self.videoOutputImageView.frame, to: imageExtent)
 
                 // Crops scan area from the original video output image.
                 let croppedCIImage = ciImage.cropped(to: scaledScanAreaRect)

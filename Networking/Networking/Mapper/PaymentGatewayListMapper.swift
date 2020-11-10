@@ -23,13 +23,18 @@ struct PaymentGatewayListMapper: Mapper {
 }
 
 /// PaymentGateway list disposable entity:
-/// `Load Payment Gateways` endpoint returns all of the gateway information within the `data` key. This entity
+/// `Load Payment Gateways` endpoint returns all of the gateway information within a `body` obejcts in the `data` key. This entity
 /// allows us to parse all the things with JSONDecoder.
 ///
 private struct PaymentGatewayListEnvelope: Decodable {
-    enum CodingKeys: String, CodingKey {
-        case paymentGateways = "data"
+
+    struct Body: Decodable {
+        let data: [PaymentGateway]
     }
 
-    let paymentGateways: [PaymentGateway]
+    private let body: Body
+
+    var paymentGateways: [PaymentGateway] {
+        body.data
+    }
 }

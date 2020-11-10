@@ -2,11 +2,11 @@ import Foundation
 
 /// Represents a Payment Gateway.
 ///
-public struct PaymentGateway: Decodable {
+public struct PaymentGateway: Decodable, Equatable {
 
     /// Features for payment gateway.
     ///
-    public enum Features {
+    public enum Features: Equatable {
         case products
         case refunds
         case custom(raw: String)

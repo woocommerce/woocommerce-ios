@@ -3,8 +3,6 @@ import UIKit
 import WordPressUI
 import Yosemite
 
-import class AutomatticTracks.CrashLogging
-
 /// The entry UI for adding/editing a Product.
 final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: UIViewController, UITableViewDelegate {
     typealias ProductModel = ViewModel.ProductModel
@@ -607,7 +605,7 @@ private extension ProductFormViewController {
             switch result {
             case .failure(let error):
                 DDLogError("⛔️ Error updating Product: \(error)")
-                CrashLogging.logError(error)
+
                 // Dismisses the in-progress UI then presents the error alert.
                 self?.navigationController?.dismiss(animated: true) {
                     self?.displayError(error: error)
@@ -686,7 +684,6 @@ private extension ProductFormViewController {
                 switch result {
                 case .failure(let error):
                     DDLogError("⛔️ Error deleting Product: \(error)")
-                    CrashLogging.logError(error)
 
                     // Dismisses the in-progress UI then presents the error alert.
                     self.navigationController?.dismiss(animated: true) { [weak self] in

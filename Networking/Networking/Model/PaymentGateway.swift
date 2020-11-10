@@ -34,7 +34,16 @@ public struct PaymentGateway: Equatable {
 
     /// List of features the payment gateway supports.
     ///
-    public let features: [Feature]
+    public let features: [Features]
+
+    public init(siteID: Int64, gatewayID: String, title: String, description: String, enabled: Bool, features: [Features]) {
+        self.siteID = siteID
+        self.gatewayID = gatewayID
+        self.title = title
+        self.description = description
+        self.enabled = enabled
+        self.features = features
+    }
 }
 
 // MARK: Gateway Decodable

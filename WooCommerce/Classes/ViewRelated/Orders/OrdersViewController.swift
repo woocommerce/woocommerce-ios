@@ -524,7 +524,7 @@ private extension OrdersViewController {
 // MARK: - IndicatorInfoProvider Conformance
 
 // This conformance is not used directly by `OrdersViewController`. We only need this because
-// `Self` is used as a child of `OrdersMasterViewController` which is a
+// `Self` is used as a child of `OrdersTabbedViewController` which is a
 // `ButtonBarPagerTabStripViewController`.
 extension OrdersViewController: IndicatorInfoProvider {
     /// Return `self.title` under `IndicatorInfo`.

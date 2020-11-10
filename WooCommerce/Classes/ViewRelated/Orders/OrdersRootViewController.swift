@@ -3,21 +3,21 @@ import Yosemite
 
 /// The root tab controller for Orders.
 ///
-/// This is really just a container for `OrdersMasterViewController` with subtle fixes for the
+/// This is really just a container for `OrdersTabbedViewController` with subtle fixes for the
 /// XLPagerTabStrip bug in landscape. See PR#1851 (https://git.io/Jvzg8) for more information
 /// about the bug.
 ///
 /// If we eventually get XLPagerTabStrip replaced, we can merge this class with
-/// `OrdersMasterViewController`.
+/// `OrdersTabbedViewController`.
 ///
-/// If you need to add additional logic, probably consider adding it to `OrdersMasterViewController`
+/// If you need to add additional logic, probably consider adding it to `OrdersTabbedViewController`
 /// instead if possible.
 ///
 final class OrdersRootViewController: UIViewController {
 
     // MARK: Child view controller
 
-    private lazy var ordersViewController = OrdersMasterViewController(siteID: siteID)
+    private lazy var ordersViewController = OrdersTabbedViewController(siteID: siteID)
 
     // MARK: Subviews
 

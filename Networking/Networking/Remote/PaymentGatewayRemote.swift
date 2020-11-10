@@ -2,7 +2,7 @@ import Foundation
 
 /// Payment Gateways Endpoints
 ///
-public class PaymentsGatewayRemote: Remote {
+public class PaymentGatewayRemote: Remote {
 
     /// Retrieves all of the `PaymentGateways` available.
     ///
@@ -18,7 +18,7 @@ public class PaymentsGatewayRemote: Remote {
 }
 
 // MARK: Constant
-private extension PaymentsGatewayRemote {
+private extension PaymentGatewayRemote {
     enum Constants {
         static let path = "payment_gateways"
     }

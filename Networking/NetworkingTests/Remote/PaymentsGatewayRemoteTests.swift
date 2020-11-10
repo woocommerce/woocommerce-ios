@@ -3,7 +3,7 @@ import TestKit
 
 @testable import Networking
 
-/// PaymentsGatewayRemote Unit Tests
+/// PaymentGatewayRemote Unit Tests
 ///
 final class PaymentsGatewayRemoteTests: XCTestCase {
 
@@ -23,7 +23,7 @@ final class PaymentsGatewayRemoteTests: XCTestCase {
 
     func test_load_payment_gateways_return_all_gateways() throws {
         // Given
-        let remote = PaymentsGatewayRemote(network: network)
+        let remote = PaymentGatewayRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "payment_gateways", filename: "payment-gateway-list")
 
         // When

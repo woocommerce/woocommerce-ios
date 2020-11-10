@@ -422,4 +422,10 @@ public extension StorageType {
         let predicate = NSPredicate(format: "item.itemID = %ld AND taxID = %ld", itemID, taxID)
         return firstObject(ofType: OrderItemTaxRefund.self, matching: predicate)
     }
+
+    // MARK: - Payment Gateways
+    func loadPaymentGateway(siteID: Int64, gatewayID: String) -> PaymentGateway? {
+        let predicate = NSPredicate(format: "siteID = %ld AND gatewayID = %@", siteID, gatewayID)
+        return firstObject(ofType: PaymentGateway.self, matching: predicate)
+    }
 }

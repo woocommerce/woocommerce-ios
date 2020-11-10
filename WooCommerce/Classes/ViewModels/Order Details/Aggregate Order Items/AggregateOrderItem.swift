@@ -1,5 +1,5 @@
 import Foundation
-
+import Yosemite
 
 /// This model represents a computed summary of order items.
 /// (order items - refunded order items) = aggregate order item data.
@@ -20,6 +20,8 @@ final class AggregateOrderItem {
     let sku: String?
     var total: NSDecimalNumber
 
+    let attributes: [OrderItemAttribute]
+
     /// Designated initializer.
     ///
     init(productID: Int64,
@@ -28,7 +30,8 @@ final class AggregateOrderItem {
          price: NSDecimalNumber,
          quantity: Decimal,
          sku: String?,
-         total: NSDecimalNumber) {
+         total: NSDecimalNumber,
+         attributes: [OrderItemAttribute]) {
         self.productID = productID
         self.variationID = variationID
         self.name = name
@@ -36,6 +39,7 @@ final class AggregateOrderItem {
         self.quantity = quantity
         self.sku = sku
         self.total = total
+        self.attributes = attributes
     }
 }
 

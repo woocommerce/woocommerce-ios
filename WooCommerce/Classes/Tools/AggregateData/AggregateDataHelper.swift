@@ -55,7 +55,8 @@ final class AggregateDataHelper {
                 price: item.price,
                 quantity: totalQuantity,
                 sku: item.sku,
-                total: total
+                total: total,
+                attributes: []
             )
         }
 
@@ -69,7 +70,7 @@ final class AggregateDataHelper {
     ///
     static func combineOrderItems(_ items: [OrderItem], with refunds: [Refund]) -> [AggregateOrderItem] {
         guard let refundedProducts = combineRefundedProducts(from: refunds) else {
-            fatalError("Error: attemtpted to calculate aggregate order item data with no refunded products.")
+            fatalError("Error: attempted to calculate aggregate order item data with no refunded products.")
         }
 
         let currency = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
@@ -83,7 +84,8 @@ final class AggregateDataHelper {
                 price: item.price,
                 quantity: item.quantity,
                 sku: item.sku,
-                total: total
+                total: total,
+                attributes: item.attributes
             )
         }
 
@@ -116,7 +118,8 @@ final class AggregateDataHelper {
                 price: item.price,
                 quantity: totalQuantity,
                 sku: item.sku,
-                total: total
+                total: total,
+                attributes: item.attributes
             )
         }
 

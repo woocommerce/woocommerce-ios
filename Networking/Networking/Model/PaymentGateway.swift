@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a Payment Gateway.
 ///
-public struct PaymentGateway: Decodable, Equatable {
+public struct PaymentGateway: Equatable {
 
     /// Features for payment gateway.
     ///
@@ -35,6 +35,43 @@ public struct PaymentGateway: Decodable, Equatable {
     /// List of features the payment gateway supports.
     ///
     public let features: [Features]
+}
+
+// MARK: Gateway Decodable
+extension PaymentGateway: Decodable {
+
+    public enum DecodingError: Error {
+        case missingSiteID
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case gatewayID = "id"
+        case title
+        case description
+        case enabled
+        case features = "method_supports"
+
+    }
+
+    public init(from decoder: Decoder) throws {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
+            throw DecodingError.missingSiteID
+        }
+
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let gatewayID = try container.decode(String.self, forKey: .gatewayID)
+        let title = try container.decode(String.self, forKey: .title)
+        let description = try container.decode(String.self, forKey: .description)
+        let enabled = try container.decode(Bool.self, forKey: .enabled)
+        let features = try container.decode([Features].self, forKey: .features)
+
+        self.init(siteID: siteID,
+                  gatewayID: gatewayID,
+                  title: title,
+                  description: description,
+                  enabled: enabled,
+                  features: features)
+    }
 }
 
 // MARK: Features Decodable

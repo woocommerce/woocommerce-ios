@@ -60,6 +60,7 @@
 		24F98C622502EFF600F49B68 /* feature-flags-load-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 24F98C612502EFF600F49B68 /* feature-flags-load-all.json */; };
 		261870782540A252006522A1 /* ShippingLineTax.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261870772540A252006522A1 /* ShippingLineTax.swift */; };
 		261CF1B4255AD6B30090D8D3 /* payment-gateway-list.json in Resources */ = {isa = PBXBuildFile; fileRef = 261CF1B3255AD6B30090D8D3 /* payment-gateway-list.json */; };
+		261CF1B8255AE62D0090D8D3 /* PaymentsGatewayRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261CF1B7255AE62D0090D8D3 /* PaymentsGatewayRemote.swift */; };
 		262E5AD5255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262E5AD4255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift */; };
 		265BCA02243056E3004E53EE /* categories-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 265BCA01243056E3004E53EE /* categories-all.json */; };
 		26615473242D596B00A31661 /* ProductCategoriesRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26615472242D596B00A31661 /* ProductCategoriesRemote.swift */; };
@@ -433,6 +434,7 @@
 		24F98C612502EFF600F49B68 /* feature-flags-load-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "feature-flags-load-all.json"; sourceTree = "<group>"; };
 		261870772540A252006522A1 /* ShippingLineTax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLineTax.swift; sourceTree = "<group>"; };
 		261CF1B3255AD6B30090D8D3 /* payment-gateway-list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "payment-gateway-list.json"; sourceTree = "<group>"; };
+		261CF1B7255AE62D0090D8D3 /* PaymentsGatewayRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsGatewayRemote.swift; sourceTree = "<group>"; };
 		262E5AD4255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayListMapperTests.swift; sourceTree = "<group>"; };
 		265BCA01243056E3004E53EE /* categories-all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "categories-all.json"; sourceTree = "<group>"; };
 		26615472242D596B00A31661 /* ProductCategoriesRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoriesRemote.swift; sourceTree = "<group>"; };
@@ -1009,6 +1011,7 @@
 				B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */,
 				B557DA0120975500005962F4 /* OrdersRemote.swift */,
 				D8FBFF0A22D3ADB1006E3336 /* OrderStatsRemoteV4.swift */,
+				261CF1B7255AE62D0090D8D3 /* PaymentsGatewayRemote.swift */,
 				26615472242D596B00A31661 /* ProductCategoriesRemote.swift */,
 				D88D5A44230BC6F9007B6E01 /* ProductReviewsRemote.swift */,
 				4599FC5D24A62AA70056157A /* ProductTagsRemote.swift */,
@@ -1784,6 +1787,7 @@
 				B567AF2920A0FA1E00AB6C62 /* Mapper.swift in Sources */,
 				CE50345E21B571A7007573C6 /* SitePlanMapper.swift in Sources */,
 				D8FBFF2022D52553006E3336 /* OrderStatsV4Totals.swift in Sources */,
+				261CF1B8255AE62D0090D8D3 /* PaymentsGatewayRemote.swift in Sources */,
 				CE0A0F1522396BF00075ED8D /* ProductAttribute.swift in Sources */,
 				026CF620237D69D6009563D4 /* ProductVariationsRemote.swift in Sources */,
 				4599FC5E24A62AA70056157A /* ProductTagsRemote.swift in Sources */,

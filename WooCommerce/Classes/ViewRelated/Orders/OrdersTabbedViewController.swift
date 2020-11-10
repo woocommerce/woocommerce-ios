@@ -11,7 +11,7 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
 
     private lazy var analytics = ServiceLocator.analytics
 
-    private lazy var viewModel = OrdersMasterViewModel(siteID: siteID)
+    private lazy var viewModel = OrdersTabbedViewModel(siteID: siteID)
 
     private let siteID: Int64
 

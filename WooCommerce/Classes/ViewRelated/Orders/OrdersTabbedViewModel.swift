@@ -4,7 +4,7 @@ import Yosemite
 
 /// Encapsulates data management for `OrdersTabbedViewController`.
 ///
-final class OrdersMasterViewModel {
+final class OrdersTabbedViewModel {
 
     private lazy var storageManager = ServiceLocator.storageManager
     private lazy var stores = ServiceLocator.stores

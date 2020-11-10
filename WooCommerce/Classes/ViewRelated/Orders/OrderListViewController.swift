@@ -73,7 +73,7 @@ final class OrderListViewController: UIViewController {
 
     /// Used for looking up the `OrderStatus` to show in the `OrderTableViewCell`.
     ///
-    /// The `OrderStatus` data is fetched from the API by `OrdersMasterViewModel`.
+    /// The `OrderStatus` data is fetched from the API by `OrdersTabbedViewModel`.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let storageManager = ServiceLocator.storageManager

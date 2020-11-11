@@ -1,0 +1,61 @@
+import XCTest
+import TestKit
+
+@testable import Yosemite
+@testable import Networking
+@testable import Storage
+
+/// PaymentGatewayStore Unit Tests
+///
+final class PaymentGatewayStoreTest: XCTestCase {
+
+    /// Mockup Dispatcher!
+    ///
+    private var dispatcher: Dispatcher!
+
+    /// Mockup Storage: InMemory
+    ///
+    private var storageManager: MockupStorageManager!
+
+    /// Mockup Network: Allows us to inject predefined responses!
+    ///
+    private var network: MockupNetwork!
+
+    /// Convenience Property: Returns the StorageType associated with the main thread.
+    ///
+    private var viewStorage: StorageType {
+        return storageManager.viewStorage
+    }
+
+    /// Dummy Site ID
+    ///
+    private let sampleSiteID: Int64 = 123
+
+    override func setUp() {
+        super.setUp()
+        dispatcher = Dispatcher()
+        storageManager = MockupStorageManager()
+        network = MockupNetwork()
+    }
+
+    func test_synchronize_gateways_correcly_persists_payment_gateways() throws {
+        // Given
+        let store = PaymentGatewayStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "payment_gateways", filename: "payment-gateway-list")
+
+        // When
+        let result: Result<Void, Error> = try waitFor { promise in
+            let action = PaymentGatewayAction.synchronizePaymentGateways(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertNotNil(viewStorage.loadPaymentGateway(siteID: sampleSiteID, gatewayID: "bacs"))
+        XCTAssertNotNil(viewStorage.loadPaymentGateway(siteID: sampleSiteID, gatewayID: "cheque"))
+        XCTAssertNotNil(viewStorage.loadPaymentGateway(siteID: sampleSiteID, gatewayID: "paypal"))
+        XCTAssertNotNil(viewStorage.loadPaymentGateway(siteID: sampleSiteID, gatewayID: "cod"))
+    }
+}

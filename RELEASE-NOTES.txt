@@ -2,6 +2,7 @@
 -----
  
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
+- [*] enhancement: Order details screen now shows variation attributes for WC version 4.7+. [https://github.com/woocommerce/woocommerce-ios/pull/3109]
 
 5.5
 -----

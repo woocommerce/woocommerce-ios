@@ -156,7 +156,6 @@ final class ProductsViewController: UIViewController {
         registerTableViewCells()
 
         updateTopBannerView()
-        observeProductsFeatureSwitchChange()
 
         syncingCoordinator.resynchronize()
     }
@@ -234,31 +233,21 @@ private extension ProductsViewController {
             return button
         }()
 
-        updateNavigationBarRightButtonItems()
+        configureNavigationBarRightButtonItems()
     }
 
-    /// Fetches the feature switch value from app settings and updates its navigation bar right button items.
-    func updateNavigationBarRightButtonItems() {
-        let action = AppSettingsAction.loadProductsFeatureSwitch { [weak self] isFeatureSwitchOn in
-            self?.updateNavigationBarRightButtonItems(isProductsFeatureSwitchOn: isFeatureSwitchOn)
-        }
-        ServiceLocator.stores.dispatch(action)
-    }
-
-    func updateNavigationBarRightButtonItems(isProductsFeatureSwitchOn: Bool) {
+    func configureNavigationBarRightButtonItems() {
         var rightBarButtonItems = [UIBarButtonItem]()
-        if isProductsFeatureSwitchOn {
-            let buttonItem: UIBarButtonItem = {
-                let button = UIBarButtonItem(image: .plusImage,
-                                             style: .plain,
-                                             target: self,
-                                             action: #selector(addProduct(_:)))
-                button.accessibilityTraits = .button
-                button.accessibilityLabel = NSLocalizedString("Add a product", comment: "The action to add a product")
-                return button
-            }()
-            rightBarButtonItems.append(buttonItem)
-        }
+        let buttonItem: UIBarButtonItem = {
+            let button = UIBarButtonItem(image: .plusImage,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(addProduct(_:)))
+            button.accessibilityTraits = .button
+            button.accessibilityLabel = NSLocalizedString("Add a product", comment: "The action to add a product")
+            return button
+        }()
+        rightBarButtonItems.append(buttonItem)
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.barcodeScanner) {
             let buttonItem: UIBarButtonItem = {
@@ -367,14 +356,6 @@ private extension ProductsViewController {
 // MARK: - Updates
 //
 private extension ProductsViewController {
-    func observeProductsFeatureSwitchChange() {
-        NotificationCenter.default.addObserver(forName: .ProductsFeatureSwitchDidChange, object: nil, queue: nil) { [weak self] _ in
-            guard let self = self else { return }
-            self.updateTopBannerView()
-            self.updateNavigationBarRightButtonItems()
-        }
-    }
-
     /// Fetches products feedback visibility from AppSettingsStore and update products top banner accordingly
     ///
     func updateTopBannerView() {

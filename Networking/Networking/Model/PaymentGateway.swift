@@ -34,9 +34,9 @@ public struct PaymentGateway: Equatable {
 
     /// List of features the payment gateway supports.
     ///
-    public let features: [Features]
+    public let features: [Feature]
 
-    public init(siteID: Int64, gatewayID: String, title: String, description: String, enabled: Bool, features: [Features]) {
+    public init(siteID: Int64, gatewayID: String, title: String, description: String, enabled: Bool, features: [Feature]) {
         self.siteID = siteID
         self.gatewayID = gatewayID
         self.title = title

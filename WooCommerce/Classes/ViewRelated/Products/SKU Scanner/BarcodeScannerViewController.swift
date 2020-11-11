@@ -5,11 +5,6 @@ import Vision
 /// Starts live stream video for scanning barcodes.
 /// This view controller is meant to be embedded as a child view controller for navigation customization.
 final class BarcodeScannerViewController: UIViewController {
-    /// UI properties that could differ in each use case.
-    struct ViewProperties {
-        let instructionText: String
-    }
-
     @IBOutlet private weak var videoOutputImageView: UIImageView!
 
     // Subviews of `videoOutputImageView`.
@@ -24,11 +19,11 @@ final class BarcodeScannerViewController: UIViewController {
 
     private lazy var throttler: Throttler = Throttler(seconds: 0.1)
 
-    private let viewProperties: ViewProperties
+    private let instructionText: String
     private let onBarcodeScanned: (Result<[String], Error>) -> Void
 
-    init(viewProperties: ViewProperties, onBarcodeScanned: @escaping (Result<[String], Error>) -> Void) {
-        self.viewProperties = viewProperties
+    init(instructionText: String, onBarcodeScanned: @escaping (Result<[String], Error>) -> Void) {
+        self.instructionText = instructionText
         self.onBarcodeScanned = onBarcodeScanned
         super.init(nibName: nil, bundle: nil)
     }
@@ -202,7 +197,7 @@ private extension BarcodeScannerViewController {
         instructionLabel.applyHeadlineStyle()
         instructionLabel.textColor = .white
         instructionLabel.textInsets = Constants.instructionTextInsets
-        instructionLabel.text = viewProperties.instructionText
+        instructionLabel.text = instructionText
     }
 }
 

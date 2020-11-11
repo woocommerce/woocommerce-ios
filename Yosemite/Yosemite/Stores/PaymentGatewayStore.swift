@@ -85,7 +85,7 @@ private extension PaymentGatewayStore {
 
         // Now, remove any objects that exist in storage but not in paymentGateways
         let storedGateways = derivedStorage.loadAllPaymentGateways(siteID: siteID)
-        storedGateways.forEach{ storedGateway in
+        storedGateways.forEach { storedGateway in
             if !paymentGateways.contains(where: { $0.gatewayID == storedGateway.gatewayID }) {
                 derivedStorage.deleteObject(storedGateway)
             }

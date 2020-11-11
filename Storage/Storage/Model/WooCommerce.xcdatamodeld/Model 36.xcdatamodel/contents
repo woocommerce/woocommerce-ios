@@ -118,7 +118,7 @@
         <relationship name="order" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="items" inverseEntity="Order"/>
         <relationship name="taxes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OrderItemTax" inverseName="item" inverseEntity="OrderItemTax"/>
     </entity>
-    <entity name="OrderItemAttribute" representedClassName="OrderItemAttribute" syncable="YES" codeGenerationType="class">
+    <entity name="OrderItemAttribute" representedClassName="OrderItemAttribute" syncable="YES">
         <attribute name="metaID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="value" attributeType="String"/>
@@ -204,7 +204,7 @@
         <attribute name="slug" attributeType="String"/>
         <attribute name="total" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
-    <entity name="PaymentGateway" representedClassName="PaymentGateway" syncable="YES" codeGenerationType="class">
+    <entity name="PaymentGateway" representedClassName="PaymentGateway" syncable="YES">
         <attribute name="enabled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="features" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
         <attribute name="gatewayDescription" attributeType="String" defaultValueString=""/>

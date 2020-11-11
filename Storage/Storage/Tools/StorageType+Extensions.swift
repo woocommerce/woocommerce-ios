@@ -424,6 +424,16 @@ public extension StorageType {
     }
 
     // MARK: - Payment Gateways
+
+    /// Returns all stored payment gateways for a site.
+    ///
+    func loadAllPaymentGateways(siteID: Int64) -> [PaymentGateway] {
+        let predicate = NSPredicate(format: "siteID = %ld AND", siteID)
+        return allObjects(ofType: PaymentGateway.self, matching: predicate, sortedBy: nil)
+    }
+
+    /// Returns a single payment gateway given a `siteID` and a `gatewayID`
+    ///
     func loadPaymentGateway(siteID: Int64, gatewayID: String) -> PaymentGateway? {
         let predicate = NSPredicate(format: "siteID = %ld AND gatewayID = %@", siteID, gatewayID)
         return firstObject(ofType: PaymentGateway.self, matching: predicate)

@@ -26,14 +26,9 @@ struct PaymentGatewayListMapper: Mapper {
 /// allows us to parse all the things with JSONDecoder.
 ///
 private struct PaymentGatewayListEnvelope: Decodable {
-
-    struct Body: Decodable {
-        let data: [PaymentGateway]
+    private enum CodingKeys: String, CodingKey {
+        case paymentGateways = "data"
     }
 
-    private let body: Body
-
-    var paymentGateways: [PaymentGateway] {
-        body.data
-    }
+    let paymentGateways: [PaymentGateway]
 }

@@ -74,13 +74,7 @@ public struct OrderItem: Decodable, Hashable {
                         ?? container.decode(String.self, forKey: .name)).strippedHTML
             let allAttributes = (try? container.decodeIfPresent([OrderItemAttribute].self, forKey: .attributes)) ?? []
             // Skips any attribute if the name is `_reduced_stock` because this is a known attribute added by core.
-            attributes = allAttributes.filter { $0.name != "_reduced_stock" }
-
-            // Logs error for unexpected attributes.
-            let unexpectedAttributes = attributes.filter { $0.name.hasPrefix("_") }
-            if unexpectedAttributes.isEmpty == false {
-                DDLogError("⚠️ Unexpected order item attributes: \(unexpectedAttributes)")
-            }
+            attributes = allAttributes.filter { !$0.name.hasPrefix("_") }
         } else {
             name = try container.decode(String.self, forKey: .name).strippedHTML
             attributes = []

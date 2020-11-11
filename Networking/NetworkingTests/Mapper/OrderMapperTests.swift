@@ -214,7 +214,7 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(lineItems.count, 2)
 
         let variationLineItem = lineItems[0]
-        // Attribute with `_reduced_stock` name is skipped.
+        // Attributes with `_` prefix in the name are skipped.
         let expectedAttributes: [OrderItemAttribute] = [
             .init(metaID: 6377, name: "Color", value: "Orange"),
             .init(metaID: 6378, name: "Brand", value: "Woo")
@@ -230,7 +230,7 @@ final class OrderMapperTests: XCTestCase {
 
     /// The attributes API support are added in WC version 4.7, and WC version 4.6.1 returns a different structure of order line item attributes.
     func test_OrderLineItem_attributes_are_empty_before_API_support() throws {
-        let order = try XCTUnwrap(mapLoadOrderWithLineItemAttributesBeforeAPISuppportResponse())
+        let order = try XCTUnwrap(mapLoadOrderWithLineItemAttributesBeforeAPISupportResponse())
 
         let lineItems = order.items
         XCTAssertEqual(lineItems.count, 1)
@@ -288,7 +288,7 @@ private extension OrderMapperTests {
 
     /// Returns the OrderMapper output upon receiving `order-with-line-item-attributes-before-API-support`
     ///
-    func mapLoadOrderWithLineItemAttributesBeforeAPISuppportResponse() -> Order? {
+    func mapLoadOrderWithLineItemAttributesBeforeAPISupportResponse() -> Order? {
         return mapOrder(from: "order-with-line-item-attributes-before-API-support")
     }
 }

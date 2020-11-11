@@ -428,7 +428,7 @@ public extension StorageType {
     /// Returns all stored payment gateways for a site.
     ///
     func loadAllPaymentGateways(siteID: Int64) -> [PaymentGateway] {
-        let predicate = NSPredicate(format: "siteID = %ld AND", siteID)
+        let predicate = NSPredicate(format: "siteID = %ld", siteID)
         return allObjects(ofType: PaymentGateway.self, matching: predicate, sortedBy: nil)
     }
 

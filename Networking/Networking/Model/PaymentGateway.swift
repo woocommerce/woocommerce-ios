@@ -6,7 +6,7 @@ public struct PaymentGateway: Equatable {
 
     /// Features for payment gateway.
     ///
-    public enum Features: Equatable {
+    public enum Feature: Equatable {
         case products
         case refunds
         case custom(raw: String)
@@ -34,7 +34,7 @@ public struct PaymentGateway: Equatable {
 
     /// List of features the payment gateway supports.
     ///
-    public let features: [Features]
+    public let features: [Feature]
 }
 
 // MARK: Gateway Decodable
@@ -63,7 +63,7 @@ extension PaymentGateway: Decodable {
         let title = try container.decode(String.self, forKey: .title)
         let description = try container.decode(String.self, forKey: .description)
         let enabled = try container.decode(Bool.self, forKey: .enabled)
-        let features = try container.decode([Features].self, forKey: .features)
+        let features = try container.decode([Feature].self, forKey: .features)
 
         self.init(siteID: siteID,
                   gatewayID: gatewayID,
@@ -75,9 +75,9 @@ extension PaymentGateway: Decodable {
 }
 
 // MARK: Features Decodable
-extension PaymentGateway.Features: RawRepresentable, Decodable {
+extension PaymentGateway.Feature: RawRepresentable, Decodable {
 
-    /// Enum containing the 'Known' Features Keys
+    /// Enum containing the 'Known' Feature Keys
     ///
     private enum Keys {
         static let products = "products"

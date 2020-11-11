@@ -28,7 +28,7 @@ public struct PaymentGateway: Equatable {
     ///
     public let description: String
 
-    /// Wether the payment gateway is enabled on the site or not.
+    /// Whether the payment gateway is enabled on the site or not.
     ///
     public let enabled: Bool
 

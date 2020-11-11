@@ -9,15 +9,16 @@ final class PaymentsGatewayRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = MockupNetwork()
+    private let network = MockupNetwork()
 
     /// Dummy Site ID
     ///
-    let sampleSiteID: Int64 = 1234
+    private let sampleSiteID: Int64 = 1234
 
     /// Repeat always!
     ///
     override func setUp() {
+        super.setUp()
         network.removeAllSimulatedResponses()
     }
 
@@ -27,16 +28,14 @@ final class PaymentsGatewayRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "payment_gateways", filename: "payment-gateway-list")
 
         // When
-        var gatewaysResult: Result<[PaymentGateway], Error>?
-        waitForExpectation { exp in
-            remote.loadAllPaymentGateways(siteID: sampleSiteID) { result in
-                gatewaysResult = result
-                exp.fulfill()
+        let result = try waitFor { promise in
+            remote.loadAllPaymentGateways(siteID: self.sampleSiteID) { result in
+                promise(result)
             }
         }
 
         // Then
-        let gateways = try XCTUnwrap(gatewaysResult?.get())
+        let gateways = try result.get()
         XCTAssertFalse(gateways.isEmpty)
     }
 }

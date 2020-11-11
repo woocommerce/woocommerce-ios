@@ -2,7 +2,7 @@ import XCTest
 
 @testable import Networking
 
-class PaymentGatewayListMapperTests: XCTestCase {
+final class PaymentGatewayListMapperTests: XCTestCase {
 
     /// Site sample identifier.
     ///

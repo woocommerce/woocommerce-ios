@@ -5,6 +5,7 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 ## Model 36 (Release 5.5.0.0)
 - @ecarrion 2020-11-10
 - Added `PaymentGateway` entity.
+- Fixed warning from `transformable` properties byt setting an `NSSecureCoding` value transformer.
 
 ## Model 35 (Release 5.5.0.0)
 - @jaclync 2020-10-29

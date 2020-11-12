@@ -2,7 +2,7 @@
 
 5.6
 -----
-- [*] now the date pickers on iOS 14 are opened as modal view.
+- [*] now the date pickers on iOS 14 are opened as modal view. [https://github.com/woocommerce/woocommerce-ios/pull/3148]
 
 
 5.5

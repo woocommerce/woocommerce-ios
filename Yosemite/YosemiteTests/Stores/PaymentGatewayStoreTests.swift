@@ -7,7 +7,7 @@ import TestKit
 
 /// PaymentGatewayStore Unit Tests
 ///
-final class PaymentGatewayStoreTest: XCTestCase {
+final class PaymentGatewayStoreTests: XCTestCase {
 
     /// Mockup Dispatcher!
     ///
@@ -38,7 +38,7 @@ final class PaymentGatewayStoreTest: XCTestCase {
         network = MockupNetwork(useResponseQueue: true)
     }
 
-    func test_synchronize_gateways_correcly_persists_payment_gateways() throws {
+    func test_synchronize_gateways_correctly_persists_payment_gateways() throws {
         // Given
         let store = PaymentGatewayStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "payment_gateways", filename: "payment-gateway-list")
@@ -59,13 +59,13 @@ final class PaymentGatewayStoreTest: XCTestCase {
         XCTAssertNotNil(viewStorage.loadPaymentGateway(siteID: sampleSiteID, gatewayID: "cod"))
     }
 
-    func test_synchrone_gateways_correctly_deletes_stale_payment_gateways() throws {
+    func test_synchronize_gateways_correctly_deletes_stale_payment_gateways() throws {
         // Given
         let store = PaymentGatewayStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "payment_gateways", filename: "payment-gateway-list")
         network.simulateResponse(requestUrlSuffix: "payment_gateways", filename: "payment-gateway-list-half")
 
-        let firstSync = PaymentGatewayAction.synchronizePaymentGateways(siteID: self.sampleSiteID) { _ in }
+        let firstSync = PaymentGatewayAction.synchronizePaymentGateways(siteID: sampleSiteID) { _ in }
         store.onAction(firstSync)
 
         // When

@@ -1,5 +1,4 @@
 import Foundation
-import Networking
 
 /// Defines all of the `actions` supported by the `PaymentGatewayStore`.
 ///

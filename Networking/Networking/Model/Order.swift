@@ -209,7 +209,37 @@ private extension Order {
 
 // MARK: - Comparable Conformance
 //
-extension Order: Equatable, Comparable {
+extension Order: Comparable {
+    public static func == (lhs: Order, rhs: Order) -> Bool {
+        return lhs.siteID == rhs.siteID &&
+            lhs.orderID == rhs.orderID &&
+            lhs.parentID == rhs.parentID &&
+            lhs.customerID == rhs.customerID &&
+            lhs.number == rhs.number &&
+            lhs.status == rhs.status &&
+            lhs.dateCreated == rhs.dateCreated &&
+            lhs.dateModified == rhs.dateModified &&
+            lhs.datePaid == rhs.datePaid &&
+            lhs.discountTotal == rhs.discountTotal &&
+            lhs.discountTax == rhs.discountTax &&
+            lhs.shippingTotal == rhs.shippingTotal &&
+            lhs.shippingTax == rhs.shippingTax &&
+            lhs.total == rhs.total &&
+            lhs.totalTax == rhs.totalTax &&
+            lhs.paymentMethodID == rhs.paymentMethodID &&
+            lhs.paymentMethodTitle == rhs.paymentMethodTitle &&
+            lhs.billingAddress == rhs.billingAddress &&
+            lhs.shippingAddress == rhs.shippingAddress &&
+            lhs.shippingLines.count == rhs.shippingLines.count &&
+            lhs.shippingLines.sorted() == rhs.shippingLines.sorted() &&
+            lhs.coupons.count == rhs.coupons.count &&
+            lhs.coupons.sorted() == rhs.coupons.sorted() &&
+            lhs.refunds.count == rhs.refunds.count &&
+            lhs.refunds.sorted() == rhs.refunds.sorted() &&
+            lhs.items.count == rhs.items.count &&
+            lhs.items.sorted() == rhs.items.sorted()
+    }
+
     public static func < (lhs: Order, rhs: Order) -> Bool {
         return lhs.orderID < rhs.orderID ||
             (lhs.orderID == rhs.orderID && lhs.dateCreated < rhs.dateCreated) ||

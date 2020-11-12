@@ -129,11 +129,6 @@ class DefaultStoresManager: StoresManager {
             group.leave()
         }
 
-        group.enter()
-        synchronizePaymentGateways {
-            group.leave()
-        }
-
         group.notify(queue: .main) {
             onCompletion?()
         }
@@ -316,18 +311,11 @@ private extension DefaultStoresManager {
 
     /// Synchronizes all payment gateways.
     ///
-    func synchronizePaymentGateways(onCompletion: @escaping () -> Void) {
-        guard let siteID = sessionManager.defaultSite?.siteID else {
-            DDLogError("⛔️ Failed to found a default siteID to sync payment gateways")
-            onCompletion()
-            return
-        }
-
+    func synchronizePaymentGateways(siteID: Int64) {
         let action = PaymentGatewayAction.synchronizePaymentGateways(siteID: siteID) { result in
             if let error = result.failure {
                 DDLogError("⛔️ Failed to sync payment gateways for siteID: \(siteID). Error: \(error)")
             }
-            onCompletion()
         }
         dispatch(action)
     }
@@ -362,6 +350,7 @@ private extension DefaultStoresManager {
             ServiceLocator.shippingSettingsService.update(siteID: siteID)
         }
         retrieveOrderStatus(with: siteID)
+        synchronizePaymentGateways(siteID: siteID)
     }
 
     /// Loads the specified siteID into the Session, if possible.

@@ -150,6 +150,10 @@ final class ProductImageActionHandler {
                                                         return
                                                     }
 
+                                                    if let error = error {
+                                                        ServiceLocator.analytics.track(.productImageUploadFailed, withError: error)
+                                                    }
+
                                                     guard let index = self.index(of: asset) else {
                                                         return
                                                     }

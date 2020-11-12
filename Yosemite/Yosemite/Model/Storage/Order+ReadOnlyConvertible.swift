@@ -86,7 +86,7 @@ extension Storage.Order: ReadOnlyConvertible {
                      shippingTax: shippingTax ?? "",
                      total: total ?? "",
                      totalTax: totalTax ?? "",
-                     paymentMethodID: paymentMethodTitle ?? "",
+                     paymentMethodID: paymentMethodID ?? "",
                      paymentMethodTitle: paymentMethodTitle ?? "",
                      items: orderItems,
                      billingAddress: createReadOnlyBillingAddress(),

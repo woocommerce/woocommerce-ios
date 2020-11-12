@@ -71,6 +71,7 @@
                 ]
             }
         ],
+        "payment_method": "stripe",
         "payment_method_title": "Credit Card (Stripe)",
         "date_paid_gmt": "2018-04-03T23:05:14",
         "date_completed_gmt": null,

@@ -73,7 +73,7 @@ final class OrderListViewController: UIViewController {
 
     /// Used for looking up the `OrderStatus` to show in the `OrderTableViewCell`.
     ///
-    /// The `OrderStatus` data is fetched from the API by `OrdersMasterViewModel`.
+    /// The `OrderStatus` data is fetched from the API by `OrdersTabbedViewModel`.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let storageManager = ServiceLocator.storageManager
@@ -562,7 +562,7 @@ private extension OrderListViewController {
 // MARK: - IndicatorInfoProvider Conformance
 
 // This conformance is not used directly by `OrderListViewController`. We only need this because
-// `Self` is used as a child of `OrdersMasterViewController` which is a
+// `Self` is used as a child of `OrdersTabbedViewController` which is a
 // `ButtonBarPagerTabStripViewController`.
 @available(iOS 13.0, *)
 extension OrderListViewController: IndicatorInfoProvider {

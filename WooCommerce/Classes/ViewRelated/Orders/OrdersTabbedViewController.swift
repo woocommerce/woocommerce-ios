@@ -7,11 +7,11 @@ import struct Yosemite.Note
 
 /// The main Orders view controller that is shown when the Orders tab is accessed.
 ///
-final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
+final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
 
     private lazy var analytics = ServiceLocator.analytics
 
-    private lazy var viewModel = OrdersMasterViewModel(siteID: siteID)
+    private lazy var viewModel = OrdersTabbedViewModel(siteID: siteID)
 
     private let siteID: Int64
 
@@ -87,7 +87,7 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
 
 // MARK: - OrdersViewControllerDelegate
 
-extension OrdersMasterViewController: OrderListViewControllerDelegate {
+extension OrdersTabbedViewController: OrderListViewControllerDelegate {
     func orderListViewControllerWillSynchronizeOrders(_ viewController: UIViewController) {
         viewModel.syncOrderStatuses()
     }
@@ -95,7 +95,7 @@ extension OrdersMasterViewController: OrderListViewControllerDelegate {
 
 // MARK: - Initialization and Loading (Not Reusable)
 
-private extension OrdersMasterViewController {
+private extension OrdersTabbedViewController {
     /// Initialize the tab bar containing the "Processing" and "All Orders" buttons.
     ///
     func configureTabStrip() {
@@ -148,7 +148,7 @@ private extension OrdersMasterViewController {
 
 // MARK: - Creators
 
-extension OrdersMasterViewController {
+extension OrdersTabbedViewController {
     /// Create a `UIBarButtonItem` to be used as the search button on the top-left.
     ///
     func createSearchBarButtonItem() -> UIBarButtonItem {
@@ -253,7 +253,7 @@ extension OrdersMasterViewController {
 
 // MARK: - Localization
 
-private extension OrdersMasterViewController {
+private extension OrdersTabbedViewController {
     enum Localization {
         static let processingTitle = NSLocalizedString("Processing", comment: "Title for the first page in the Orders tab.")
         static let processingEmptyStateMessage =

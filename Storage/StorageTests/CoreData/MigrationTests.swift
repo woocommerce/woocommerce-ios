@@ -54,7 +54,7 @@ final class MigrationTests: XCTestCase {
         let sourceContext = sourceContainer.viewContext
 
         insertAccount(to: sourceContext)
-        let product = insertProduct(to: sourceContext)
+        let product = insertProduct(to: sourceContext, forModel: 26)
         let productCategory = insertProductCategory(to: sourceContext)
         product.mutableSetValue(forKey: "categories").add(productCategory)
 
@@ -81,7 +81,7 @@ final class MigrationTests: XCTestCase {
         let sourceContext = sourceContainer.viewContext
 
         insertAccount(to: sourceContext)
-        let product = insertProduct(to: sourceContext)
+        let product = insertProduct(to: sourceContext, forModel: 28)
         let productTag = insertProductTag(to: sourceContext)
         product.mutableSetValue(forKey: "tags").add(productTag)
 
@@ -107,7 +107,7 @@ final class MigrationTests: XCTestCase {
         let sourceContainer = try startPersistentContainer("Model 20")
         let sourceContext = sourceContainer.viewContext
 
-        let product = insertProduct(to: sourceContext)
+        let product = insertProduct(to: sourceContext, forModel: 20)
         // Populates transformable attributes.
         let productCrossSellIDs: [Int64] = [630, 688]
         let groupedProductIDs: [Int64] = [94, 134]
@@ -200,7 +200,7 @@ final class MigrationTests: XCTestCase {
         let sourceContainer = try startPersistentContainer("Model 32")
         let sourceContext = sourceContainer.viewContext
 
-        let product = insertProduct(to: sourceContext)
+        let product = insertProduct(to: sourceContext, forModel: 32)
         let dateCreated = Date(timeIntervalSince1970: 1603250786)
         product.setValue(dateCreated, forKey: "dateCreated")
 
@@ -254,6 +254,35 @@ final class MigrationTests: XCTestCase {
 
         XCTAssertEqual(try targetContext.count(entityName: "OrderItemAttribute"), 1)
         XCTAssertEqual(migratedOrderItem.value(forKey: "attributes") as? NSOrderedSet, NSOrderedSet(array: [orderItemAttribute]))
+    }
+
+    func test_migrating_from_35_to_36_mantains_values_for_transformable_properties() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 35")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext, forModel: 35)
+        product.setValue([1, 2, 3], forKey: "crossSellIDs")
+        product.setValue([4, 5, 6], forKey: "groupedProducts")
+        product.setValue([7, 8, 9], forKey: "relatedIDs")
+        product.setValue([10, 11, 12], forKey: "upsellIDs")
+        product.setValue([13, 14, 15], forKey: "variations")
+
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 36")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
+
+        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
+        XCTAssertEqual(migratedProduct.value(forKey: "crossSellIDs") as? [Int64], [1, 2, 3])
+        XCTAssertEqual(migratedProduct.value(forKey: "groupedProducts") as? [Int64], [4, 5, 6])
+        XCTAssertEqual(migratedProduct.value(forKey: "relatedIDs") as? [Int64], [7, 8, 9])
+        XCTAssertEqual(migratedProduct.value(forKey: "upsellIDs") as? [Int64], [10, 11, 12])
+        XCTAssertEqual(migratedProduct.value(forKey: "variations") as? [Int64], [13, 14, 15])
     }
 }
 
@@ -387,8 +416,8 @@ private extension MigrationTests {
     }
 
     @discardableResult
-    func insertProduct(to context: NSManagedObjectContext) -> NSManagedObject {
-        context.insert(entityName: "Product", properties: [
+    func insertProduct(to context: NSManagedObjectContext, forModel modelVersion: Int) -> NSManagedObject {
+        let product = context.insert(entityName: "Product", properties: [
             "price": "",
             "permalink": "",
             "productTypeKey": "simple",
@@ -415,6 +444,13 @@ private extension MigrationTests {
             "statusKey": "",
             "taxStatusKey": ""
         ])
+
+        // Required since model 33
+        if modelVersion >= 33 {
+            product.setValue(Date(), forKey: "Date")
+        }
+
+        return product
     }
 
     @discardableResult

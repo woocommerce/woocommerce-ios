@@ -11,6 +11,12 @@ struct AuthenticationConstants {
         comment: "Sign in instructions on the 'log in using email' screen."
     )
 
+    /// Get started instructions (Continue with WordPress.com)
+    ///
+    static let getStartedInstructions = NSLocalizedString(
+        "Log in with your WordPress.com account email address to manage your WooCommerce stores.",
+        comment: "Sign in instructions on the 'log in using WordPress.com account' screen."
+    )
     /// Login with Jetpack instructions.
     ///
     static let jetpackInstructions = NSLocalizedString(

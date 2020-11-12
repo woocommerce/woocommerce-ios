@@ -1,7 +1,12 @@
+*** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
+
+5.6
+-----
+- [*] now the date pickers on iOS 14 are opened as modal view.
+
+
 5.5
 -----
- 
-*** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 - [**] Products M4 features are now available to all. Products M4 features: add a simple/grouped/external product with actions to publish or save as draft. [https://github.com/woocommerce/woocommerce-ios/pull/3133]
 - [*] enhancement: Order details screen now shows variation attributes for WC version 4.7+. [https://github.com/woocommerce/woocommerce-ios/pull/3109]
 - [*] fix: Product detail screen now includes the number of ratings for that product. [https://github.com/woocommerce/woocommerce-ios/pull/3089]

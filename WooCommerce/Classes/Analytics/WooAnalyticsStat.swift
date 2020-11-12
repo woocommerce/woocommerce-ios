@@ -311,11 +311,12 @@ public enum WooAnalyticsStat: String {
     case productImageSettingsAddImagesButtonTapped = "product_image_settings_add_images_button_tapped"
     case productImageSettingsAddImagesSourceTapped = "product_image_settings_add_images_source_tapped"
     case productImageSettingsDeleteImageButtonTapped = "product_image_settings_delete_image_button_tapped"
+    case productImageUploadFailed = "product_image_upload_failed"
 
     // Product Categories Events
     //
-    case productCategoriyListLoaded = "product_categories_loaded"
-    case productCategoriyListLoadFailed = "product_categories_load_failed"
+    case productCategoryListLoaded = "product_categories_loaded"
+    case productCategoryListLoadFailed = "product_categories_load_failed"
     case productCategorySettingsDoneButtonTapped = "product_category_settings_done_button_tapped"
     case productCategorySettingsAddButtonTapped = "product_category_settings_add_button_tapped"
     case productCategorySettingsSaveNewCategoryTapped = "add_product_category_save_tapped"

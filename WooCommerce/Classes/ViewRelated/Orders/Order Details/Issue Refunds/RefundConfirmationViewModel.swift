@@ -47,8 +47,7 @@ final class RefundConfirmationViewModel {
         Section(
             title: Localization.refundVia,
             rows: [
-                TitleAndBodyRow(title: Localization.manualRefund(via: "Stripe"),
-                                body: Localization.refundWillNotBeIssued(paymentMethod: "Stripe"))
+                makeRefundViaRow()
             ]
         )
     ]
@@ -97,6 +96,17 @@ private extension RefundConfirmationViewModel {
         let totalRefunded = useCase.totalRefunded().abs()
         let totalRefundedFormatted = currencyFormatter.formatAmount(totalRefunded) ?? ""
         return TwoColumnRow(title: Localization.previouslyRefunded, value: totalRefundedFormatted, isHeadline: false)
+    }
+
+    /// Returns a row with special formatting if the payment gateway does not supports automatic money refunds.
+    ///
+    func makeRefundViaRow() -> RefundConfirmationViewModelRow {
+        if gatewaySupportsAutomaticRefunds() {
+            return TitleAndBodyRow(title: details.order.paymentMethodTitle, body: nil)
+        } else {
+            return TitleAndBodyRow(title: Localization.manualRefund(via: details.order.paymentMethodTitle),
+                                   body: Localization.refundWillNotBeIssued(paymentMethod: details.order.paymentMethodTitle))
+        }
     }
 }
 

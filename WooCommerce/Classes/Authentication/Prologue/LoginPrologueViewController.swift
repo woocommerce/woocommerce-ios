@@ -76,8 +76,8 @@ private extension LoginPrologueViewController {
     func setupUpperLabel() {
         upperLabel.text = NSLocalizedString("Manage orders, track sales and monitor store activity with real-time alerts.", comment: "Login Prologue Legend")
         upperLabel.adjustsFontForContentSizeCategory = true
-        upperLabel.font = StyleManager.subheadlineBoldFont
-        upperLabel.textColor = .text
+        upperLabel.font = StyleManager.headlineSemiBold
+        upperLabel.textColor = .primary
     }
 
     func setupSlantedRectangle() {

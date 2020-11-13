@@ -11,9 +11,17 @@ final class RefundConfirmationViewModel {
         currencyFormatter.formatAmount(details.amount, with: details.order.currency) ?? ""
     }()
 
-    /// Struct with al refund details needed to create a `Refund` object.
+    /// Struct with all refund details needed to create a `Refund` object.
     ///
     private let details: Details
+
+    /// Payment Gateway related to the order. Needed to build `Refund Via` section.
+    ///
+    private lazy var paymentGateway: PaymentGateway? = {
+        let resultsController = createPaymentGatewayResultsController()
+        try? resultsController.performFetch()
+        return resultsController.fetchedObjects.first
+    }()
 
     /// Amount currency formatter
     ///
@@ -89,6 +97,29 @@ private extension RefundConfirmationViewModel {
         let totalRefunded = useCase.totalRefunded().abs()
         let totalRefundedFormatted = currencyFormatter.formatAmount(totalRefunded) ?? ""
         return TwoColumnRow(title: Localization.previouslyRefunded, value: totalRefundedFormatted, isHeadline: false)
+    }
+}
+
+// MARK: Helpers
+private extension RefundConfirmationViewModel {
+    /// Returns `true` if the payment gateway associated with this order supports automatic money refunds. `False` otherwise.
+    /// If no payment gateway is found, `false` will be returned.
+    ///
+    func gatewaySupportsAutomaticRefunds() -> Bool {
+        guard let paymentGateway = paymentGateway else {
+            return false
+        }
+        return paymentGateway.features.contains(.refunds)
+    }
+}
+
+// MARK: Results Controller
+private extension RefundConfirmationViewModel {
+    /// Results controller that fetches the payment gateway related to this order
+    ///
+    func createPaymentGatewayResultsController() -> ResultsController<StoragePaymentGateway> {
+        let predicate = NSPredicate(format: "siteID == %lld AND gatewayID == %@", details.order.siteID, details.order.paymentMethodID)
+        return ResultsController<StoragePaymentGateway>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
     }
 }
 

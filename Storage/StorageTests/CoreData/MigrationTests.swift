@@ -284,6 +284,27 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedProduct.value(forKey: "upsellIDs") as? [Int64], [10, 11, 12])
         XCTAssertEqual(migratedProduct.value(forKey: "variations") as? [Int64], [13, 14, 15])
     }
+
+    func test_migrating_from_36_to_37_creates_new_paymentMethodID_property_on_order_with_nil_value() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 36")
+        let sourceContext = sourceContainer.viewContext
+
+        let order = insertOrder(to: sourceContainer.viewContext)
+        try sourceContext.save()
+
+        XCTAssertNil(order.entity.attributesByName["paymentMethodID"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 37")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+
+        XCTAssertNotNil(migratedOrder.entity.attributesByName["paymentMethodID"])
+        XCTAssertNil(migratedOrder.value(forKey: "paymentMethodID"))
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

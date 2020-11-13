@@ -158,9 +158,9 @@ private extension IssueRefundViewModel {
     /// Results controller that fetches the payment gateway used on this order.
     ///
     func createPaymentGatewayResultsController() -> ResultsController<StoragePaymentGateway> {
-            let predicate = NSPredicate(format: "siteID == %lld AND gatewayID == %@", state.order.siteID, state.order.paymentMethodID)
-            return ResultsController<StoragePaymentGateway>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
-        }
+        let predicate = NSPredicate(format: "siteID == %lld AND gatewayID == %@", state.order.siteID, state.order.paymentMethodID)
+        return ResultsController<StoragePaymentGateway>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
+    }
 }
 
 // MARK: Constants

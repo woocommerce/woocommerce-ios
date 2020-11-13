@@ -15,14 +15,6 @@ final class RefundConfirmationViewModel {
     ///
     private let details: Details
 
-    /// Payment Gateway related to the order. Needed to build `Refund Via` section.
-    ///
-    private lazy var paymentGateway: PaymentGateway? = {
-        let resultsController = createPaymentGatewayResultsController()
-        try? resultsController.performFetch()
-        return resultsController.fetchedObjects.first
-    }()
-
     /// Amount currency formatter
     ///
     private let currencyFormatter: CurrencyFormatter
@@ -85,6 +77,10 @@ extension RefundConfirmationViewModel {
         /// Order items and quantities to refund
         ///
         let items: [RefundableOrderItem]
+
+        /// Payment gateway used with the order
+        ///
+        let paymentGateway: PaymentGateway?
     }
 }
 
@@ -116,20 +112,10 @@ private extension RefundConfirmationViewModel {
     /// If no payment gateway is found, `false` will be returned.
     ///
     func gatewaySupportsAutomaticRefunds() -> Bool {
-        guard let paymentGateway = paymentGateway else {
+        guard let paymentGateway = details.paymentGateway else {
             return false
         }
         return paymentGateway.features.contains(.refunds)
-    }
-}
-
-// MARK: Results Controller
-private extension RefundConfirmationViewModel {
-    /// Results controller that fetches the payment gateway related to this order
-    ///
-    func createPaymentGatewayResultsController() -> ResultsController<StoragePaymentGateway> {
-        let predicate = NSPredicate(format: "siteID == %lld AND gatewayID == %@", details.order.siteID, details.order.paymentMethodID)
-        return ResultsController<StoragePaymentGateway>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
     }
 }
 

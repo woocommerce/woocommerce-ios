@@ -76,6 +76,7 @@ class AuthenticationManager: Authentication {
                                                 statusBarStyle: .default)
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
+                                                                  getStartedInstructions: AuthenticationConstants.getStartedInstructions,
                                                                   jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
                                                                   siteLoginInstructions: AuthenticationConstants.siteInstructions,
                                                                   usernamePasswordInstructions: AuthenticationConstants.usernamePasswordInstructions)

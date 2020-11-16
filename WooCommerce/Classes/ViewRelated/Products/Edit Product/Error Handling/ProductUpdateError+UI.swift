@@ -7,7 +7,7 @@ extension ProductUpdateError {
             return NSLocalizedString("Invalid Product SKU",
                                      comment: "The title of the alert when there is an error updating the product SKU")
         case .variationInvalidImageId:
-            return NSLocalizedString("You should update to WooCommerce 4.7 or greater",
+            return NSLocalizedString("Cannot update product",
                                      comment: "The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7")
         default:
             return nil

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-10-23 13:54:04+0000 */
+/* Translation-Revision-Date: 2020-11-13 13:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -54,20 +54,20 @@
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
 "%@ via %@" = "已在 %1$@ 收到 %2$@ 付款";
 
-/* Refund item price and quantity format. EG: 2 x $10.00 each */
-"%@ x %@ each" = "%@ x %@ each";
-
 /* Title of the label indicating that there are multiple items to refund. */
-"%d items selected" = "%d items selected";
+"%d items selected" = "已選取 %d 個項目";
+
+/* Refund item price and quantity format. EG: 2 x $10.00 each */
+"%d x %@ each" = "%1$d 件商品，每件 %2$@";
 
 /* Navigation bar title for selecting multiple products when more multiple products have been selected. */
 "%ld Products Selected" = "已選取　%ld 件商品";
 
 /* Format of the number of Downloadable Files row in the singular form. Reads, `1 file` */
-"%ld file" = "%ld file";
+"%ld file" = "%ld 個檔案";
 
 /* Format of the number of Downloadable Files row in the plural form. Reads, `5 files` */
-"%ld files" = "%ld files";
+"%ld files" = "%ld 個檔案";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld 尚有存貨";
@@ -90,11 +90,14 @@
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld 個子類選項";
 
+/* Product title in Products list when there is no title */
+"(No Title)" = "（沒有標題）";
+
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "已選取　1 件商品";
 
 /* Title of the label indicating that there is 1 item to refund. */
-"1 item selected" = "1 item selected";
+"1 item selected" = "已選取 1 個項目";
 
 /* Shown when there are more than 99 items of something (e.g. Processing Orders). */
 "99+" = "99 筆以上";
@@ -112,7 +115,7 @@
 "A product with variations like color or size" = "設有變化版本 (顏色或尺寸) 的商品";
 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "A refund will not be issued to the customer. You will need to manually issue the refund through %1$@.";
+"A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "不會發放退款給顧客。 你需要透過 %1$@ 手動退款。";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "獨特的銷售商品";
@@ -139,7 +142,7 @@
 "Active, Autoupdates on" = "已啟用，開啟自動更新";
 
 /* A button title used for a shipment tracking unit test
-   A button title used for a unit test - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
+   A button title used for a unit test - Action for adding a Products' downloadable files' info remotely - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "新增";
 
 /* Action to add category on the Product Categories screen
@@ -147,13 +150,13 @@
 "Add Category" = "新增類別";
 
 /* Downloadable file screen navigation title */
-"Add Downloadable File" = "Add Downloadable File";
+"Add Downloadable File" = "新增可下載的檔案";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "Add File";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "新增檔案";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "新增相片";
@@ -200,6 +203,9 @@
 
 /* Title for adding grouped products row on Product main screen for a grouped product */
 "Add products to the group" = "新增產品至群組";
+
+/* Accessibility label to add products' downloadable files' info remotely */
+"Add products' downloadable files' info remotely" = "遠端新增商品的「可下載檔案」資訊";
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "新增重量和尺寸";
@@ -369,7 +375,7 @@
 "Can Not Request Link" = "無法要求連結";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
 "Cancel" = "取消";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -523,6 +529,12 @@
 /* The button title text for creating a new account. */
 "Create Account" = "建立帳號";
 
+/* The title of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
+"Create products from the app!" = "從應用程式建立商品！";
+
+/* My Store > Settings > Experimental features > Products */
+"Creating products" = "正在建立商品";
+
 /* Cell title: the current date. */
 "Current" = "最新";
 
@@ -562,7 +574,7 @@
 "Default" = "預設";
 
 /* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen
-   Button title Delete in Edit Product More Options Action Sheet */
+   Button title Delete in Downloadable File Options Action Sheet - Button title Delete in Edit Product More Options Action Sheet */
 "Delete" = "刪除";
 
 /* Delete a Shipment Tracking
@@ -662,37 +674,37 @@
 
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
-"Download Settings" = "Download Settings";
+"Download Settings" = "下載設定";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Download expiration";
+"Download expiration" = "下載到期";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Download limit";
 
 /* Title of the cell in Product Download limit > Download limit */
-"Download limit" = "Download limit";
+"Download limit" = "下載限制";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "Downloadable Files";
 
 /* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "Downloadable Files";
+"Downloadable Files" = "可下載的檔案";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "Downloadable Product";
 
 /* Downloadable Product label in Product Settings */
-"Downloadable Product" = "Downloadable Product";
+"Downloadable Product" = "可下載的商品";
 
 /* Title of the Downloadable Files row on Product main screen */
 "Downloadable files" = "Downloadable files";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "Downloadable files";
+"Downloadable files" = "可下載的檔案";
 
 /* Product Details > Purchase Details > Downloads cell title */
 "Downloads" = "下載";
@@ -740,6 +752,9 @@
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "輸入貨運業者名稱";
 
+/* Title of the downloadable file bottom sheet action for adding file from an URL. */
+"Enter file URL" = "輸入檔案 URL";
+
 /* Enter password placeholder in Product Visibility */
 "Enter password" = "輸入密碼";
 
@@ -757,13 +772,13 @@
 "Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
 
 /* Footer text for Download Expiration */
-"Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "輸入下載連結過期前的天數，保留空白則表示永久有效";
 
 /* Footer text for Downloadable Limit */
 "Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
 
 /* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "輸入可以下載檔案的次數，保留空白則表示下載次數無限制";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "請輸入 WordPress.com 帳號的密碼。";
@@ -820,7 +835,7 @@
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "File Name";
+"File Name" = "檔案名稱";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -832,7 +847,7 @@
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
-"File URL" = "File URL";
+"File URL" = "檔案 URL";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "使用密碼管理員填寫";
@@ -853,11 +868,20 @@
 /* The hint button's title text to help users find their site address. */
 "Find your site address" = "尋找你的網站位址";
 
+/* Shown in the prologue carousel (promotional screens) during first launch. */
+"Follow your favorite sites and discover new reads." = "關注你喜歡的網站並發掘新讀物。";
+
 /* User role badge */
 "Follower" = "關注者";
 
 /* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "由";
+
+/* Title of the downloadable file bottom sheet action for adding file from WordPress Media Library. */
+"From WordPress Media Library" = "來自 WordPress 媒體庫";
+
+/* Title of the downloadable file bottom sheet action for adding file from device. */
+"From device" = "來自裝置";
 
 /* Order Fulfillment Title */
 "Fulfill Order #(order.number)" = "履行訂單編號 (order.number)";
@@ -1049,6 +1073,9 @@
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "斜體";
 
+/* The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
+"It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!" = "你現在可以透過 Woo 應用程式隨時隨地建立\n簡單、組合和外部商品。尚未建立完成嗎？ 將它們儲存為草稿！";
+
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "繼續編輯";
 
@@ -1131,6 +1158,12 @@
 /* Sign in instructions on the 'log in using email' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "使用 WordPress.com 帳號電子郵件地址登入，即可管理 WooCommerce 商店。";
 
+/* Sign in instructions for logging in with a username and password. */
+"Log in with your WordPress.com account to manage your WooCommerce stores." = "使用 WordPress.com 帳號登入，即可管理 WooCommerce 商店。";
+
+/* Instructions on the WordPress.com username / password log in form. */
+"Log in with your WordPress.com username and password." = "請使用你的 WordPress.com 使用者名稱和密碼登入。";
+
 /* Error message that displays on the 'Log in by entering your site address.' screen. Jetpack is required for logging into the WooCommerce mobile apps. */
 "Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue." = "你的網站似乎並未準備好使用此應用程式。請確保你的網站已安裝 Jetpack 再繼續操作。";
 
@@ -1162,7 +1195,7 @@
 "Manual Offsets" = "手動時差";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "透過 %1$@ 手動退款";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
 "Manual Refund via %1$@" = "Manual Refund via %1$@";
@@ -1251,7 +1284,7 @@
 /* The title for the net amount paid cell */
 "Net" = "淨額";
 
-/* The title of the Work In Progress top banner on the Products tab. */
+/* The title of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
 "New editing options available" = "有可用的新編輯選項";
 
 /* Title of a button.
@@ -1275,7 +1308,7 @@
 "No data available" = "目前沒有資料";
 
 /* Placeholder of the cell text field in Download expiration */
-"No expiration" = "No expiration";
+"No expiration" = "無到期日";
 
 /* Placeholder of the cell text field in Download expiration */
 "No expiration" = "No expiration";
@@ -1284,7 +1317,7 @@
 "No files yet" = "No files yet";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "No files yet";
+"No files yet" = "尚無任何檔案";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "尚未有圖片";
@@ -1293,7 +1326,7 @@
 "No limit" = "No limit";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "No limit";
+"No limit" = "沒有限制";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "未設定價格";
@@ -1539,7 +1572,7 @@
 "Please wait while we publish this product to your store" = "請稍候，我們正在將此商品上架到你的商店";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
+"Please wait while we save this product to your store" = "請稍候，我們正在將此商品儲存到你的商店";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
 "Please wait while we save this product to your store" = "Please wait while we save this product to your store";
@@ -1547,11 +1580,14 @@
 /* Message of the in-progress UI while deleting the Product remotely */
 "Please wait while we update your store details" = "請稍候，我們正在更新你的商店詳細資料";
 
+/* Text on the loading view of the product downloadable file screen indicating the user to wait */
+"Please wait..." = "請稍候…";
+
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "由 Automattic 提供技術";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Previously Refunded";
+"Previously Refunded" = "之前已退款";
 
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "Previously Refunded";
@@ -1614,9 +1650,6 @@
 /* Title of the text field for editing the external URL for an external/affiliate product */
 "Product URL" = "產品 URL";
 
-/* My Store > Settings > Experimental features > Product editing */
-"Product editing" = "產品編輯";
-
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "產品連結";
 
@@ -1674,7 +1707,7 @@
 "Quantity" = "數量";
 
 /* Navigation title on the quantity item selector screen */
-"Quantity to refund" = "Quantity to refund";
+"Quantity to refund" = "退款數量";
 
 /* Navigation title on the quantity item selector screen */
 "Quantity to refund" = "Quantity to refund";
@@ -1698,10 +1731,10 @@
 "Reason for Refund (Optional)" = "Reason for Refund (Optional)";
 
 /* A label for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
+"Reason for Refund (Optional)" = "退款原因 (選填)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for refunding order" = "Reason for refunding order";
+"Reason for refunding order" = "退還訂單費用原因";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Reason for refunding order";
@@ -1710,7 +1743,7 @@
 "Refund" = "Refund";
 
 /* The title of the button to confirm the refund. */
-"Refund" = "Refund";
+"Refund" = "退費";
 
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "退款 #%@";
@@ -1723,7 +1756,7 @@
 "Refund Details" = "退款詳細資料";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Refund Shipping";
+"Refund Shipping" = "退還運費";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
 "Refund Shipping" = "Refund Shipping";
@@ -1732,7 +1765,7 @@
 "Refund Via" = "Refund Via";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Refund Via";
+"Refund Via" = "退款方式：";
 
 /* The title for the refunded amount cell */
 "Refunded" = "已退款";
@@ -1856,7 +1889,7 @@
 "Saving your product..." = "Saving your product...";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
-"Saving your product..." = "Saving your product...";
+"Saving your product..." = "正在儲存你的商品…";
 
 /* Scan Products */
 "Scan products" = "掃描產品";
@@ -1882,8 +1915,11 @@
 /* Display label for the product's catalog visibility */
 "Search results only" = "僅限搜尋結果";
 
+/* Shown in the prologue carousel (promotional screens) during first launch. */
+"See comments and notifications in real time." = "即時查看留言和通知。";
+
 /* Select all button title in the issue refund screen */
-"Select All" = "Select All";
+"Select All" = "全部選取";
 
 /* Select all button title in the issue refund screen */
 "Select All" = "Select All";
@@ -1908,6 +1944,9 @@
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
 "Select start date" = "選擇開始日期";
+
+/* Title of the bottom sheet from the product downloadable file to add a new downloadable file. */
+"Select upload method" = "選取上傳方式";
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "已選取商店";
@@ -1995,11 +2034,11 @@
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show a list of refunded order items for this order." = "顯示此訂單的退款訂單品項清單。";
 
-/* Accessibility label to show bottom action sheet to delete downloadable file from the list */
-"Show bottom action sheet to delete downloadable file from list" = "Show bottom action sheet to delete downloadable file from list";
+/* Accessibility label to show bottom action sheet options for a downloadable file */
+"Show bottom action sheet options for a downloadable file" = "顯示可下載檔案的底部操作列表選項";
 
 /* Accessibility label to show bottom action sheet to delete downloadable file from the list */
-"Show bottom action sheet to delete downloadable file from list" = "Show bottom action sheet to delete downloadable file from list";
+"Show bottom action sheet to delete downloadable file from list" = "顯示底部操作表，以便從清單刪除可下載的檔案";
 
 /* Accessibility label for the 'Show password' button in the login page's password field.
    Accessibility label for the “Show password“ button in the login page's password field. */
@@ -2278,8 +2317,8 @@
 /* Opens the Terms of Service web page */
 "Terms of Service" = "服務條款";
 
-/* My Store > Settings > Experimental features > Product editing */
-"Test out new product editing functionalities as we get ready to launch them" = "在新產品編輯功能推出前搶先測試";
+/* My Store > Settings > Experimental features > Products */
+"Test out the new product creation as we get ready to launch" = "在推出新商品建立功能之前，搶先試用";
 
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
@@ -2403,7 +2442,7 @@
 "This is the URL-friendly version of the product title" = "這是用在網址列上的產品標題";
 
 /* Footer text for Downloadable File Name */
-"This is the name of the file shown to the customer." = "This is the name of the file shown to the customer.";
+"This is the name of the file shown to the customer." = "這是向顧客顯示的檔案名稱";
 
 /* Footer text for Downloadable File Name */
 "This is the name of the file shown to the customer." = "This is the name of the file shown to the customer.";
@@ -2412,7 +2451,7 @@
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
 
 /* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "這是顧客能夠存取的檔案 URL。 輸入的 URL 應該已編碼。";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2618,7 +2657,7 @@
 "Update product inventory and SKU" = "更新產品庫存和 SKU";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "遠端更新商品的「可下載的檔案」資訊";
 
 /* Accessibility label to update products' downloadable files' info remotely */
 "Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
@@ -2695,7 +2734,7 @@
 "View downloadable file settings" = "View downloadable file settings";
 
 /* The action to update downloadable files settings for a product */
-"View downloadable file settings" = "View downloadable file settings";
+"View downloadable file settings" = "查看可下載的檔案設定";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "檢視先前提交的支援票證";
@@ -2740,6 +2779,9 @@
 /* shown in promotional screens during first launch */
 "Watch readers from around the world read and interact with your site — in real time." = "第一時間看到來自世界各地的讀者閱讀你的網站，並與你的網站互動。";
 
+/* Shown in the prologue carousel (promotional screens) during first launch. */
+"Watch your audience grow with in-depth analytics." = "透過深入分析資料拓展讀者群。";
+
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "我們無法顯示你的商店分析資料";
 
@@ -2777,9 +2819,6 @@
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "很抱歉，我們找不到「%@」的搜尋結果";
 
-/* The info of the Work In Progress top banner on the Products tab. */
-"We've added more editing functionalities to products! You can now update images, see previews and share your products." = "我們已新增更多商品編輯功能！ 你現在可以更新圖片、查看預覽畫面並分享你的商品。";
-
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "我們已透過電子郵件傳送註冊連結給你，使用此連結即可建立新的 WordPress.com 帳號。 請使用此裝置查看電子郵件，並點選 WordPress.com 所傳送電子郵件中的連結。";
 
@@ -2798,6 +2837,9 @@
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "重量：%1$@%2$@";
 
+/* Shown in the prologue carousel (promotional screens) during first launch. */
+"Welcome to the world’s most popular website builder." = "歡迎使用全球最受歡迎的網站建置工具。";
+
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "我的網站位址是？";
 
@@ -2809,6 +2851,9 @@
 
 /* Title of the cell in Product Shipping Settings > Width */
 "Width" = "寬度";
+
+/* Shown in the prologue carousel (promotional screens) during first launch. */
+"With this powerful editor you can post on the go." = "這個功能強大的編輯器讓你隨時隨地都能發佈文章。";
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
@@ -2838,7 +2883,7 @@
 /* Yesterday Section Header */
 "Yesterday" = "昨天";
 
-/* The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
+/* The info of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
 "You can now edit grouped, external and variable products, change product type and update categories and tags" = "你現在可以編輯組合、外部和變化商品、變更商品類型，以及更新類別和標籤";
 
 /* No comment provided by engineer. */

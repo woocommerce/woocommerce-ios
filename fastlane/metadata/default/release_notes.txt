@@ -1,5 +1,2 @@
-Products: In Settings → Experimental Features, a Products switch is now available for turning M4 features on and off (currently, the default is off). You can also add a simple, grouped, or external product and publish or save it as a draft.
-
-General enhancements: Now, if you’re not saving a product as “published,” the in-progress modal will show a more accurate message — like “saving your product” instead of “publishing your product.” Also, when you dismiss the product selector search modal when at least one product is selected for a grouped product’s linked products, we’ll first ask you if you want to discard your changes.
-
-Miscellaneous fixes: When opening a product or product variation from Order Details, it now shows read-only product or product variation details (and the product variation no longer appears in the Products tab anymore). Also, in the product and variation list, the stock quantity isn’t shown anymore if stock management is disabled.
+* Fixed! The footer in the app's Settings is now centered, draft products now sort from "Newest to Oldest" as expected, and the white background color has been removed from the placeholder view in the top dashboard chart in dark mode on iOS 14.
+* Enhanced! Use the new date picker in iOS 14 to edit the date shipped in order details > add tracking and edit sale dates in details > price setting. Also, you'll see a "No Title" placeholder for products without a title in the products list.

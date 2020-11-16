@@ -1,0 +1,2 @@
+* Åtgärdat! Sidfoten i appens inställningar är nu centrerad, utkastprodukter sorteras nu från "nyaste till äldsta" såsom förväntas och den vita bakgrundsfärgen har tagits bort från platshållarvyn i det övre adminpanelsdiagrammet i mörkt läge på iOS 14.
+* Förbättrat! Använd den nya datumväljaren i iOS 14 för att redigera leveransdatumet i Orderdetaljer > Lägg till spårning och för att redigera försäljningsdatum i Detaljer > Prisinställning. Du kommer även att se platshållaren "Ingen titel" för produkter som inte har någon titel i produktlistan.

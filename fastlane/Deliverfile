@@ -14,7 +14,7 @@ app_identifier "com.automattic.woocommerce"
 screenshots_path "./fastlane/promo_screenshots/"
 
 # Make sure to update these keys for a new version
-app_version "5.4"
+app_version "5.5"
 
 privacy_url({
   'default' => 'https://automattic.com/privacy/',

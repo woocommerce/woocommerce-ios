@@ -178,7 +178,7 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
     }
 
     func isImageDeletionEnabled() -> Bool {
-        false
+        true
     }
 
     func isShippingEnabled() -> Bool {

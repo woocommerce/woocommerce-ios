@@ -309,6 +309,17 @@ private extension DefaultStoresManager {
         }
     }
 
+    /// Synchronizes all payment gateways.
+    ///
+    func synchronizePaymentGateways(siteID: Int64) {
+        let action = PaymentGatewayAction.synchronizePaymentGateways(siteID: siteID) { result in
+            if let error = result.failure {
+                DDLogError("⛔️ Failed to sync payment gateways for siteID: \(siteID). Error: \(error)")
+            }
+        }
+        dispatch(action)
+    }
+
     /// Synchronizes the order statuses, if possible.
     ///
     func retrieveOrderStatus(with siteID: Int64) {
@@ -339,6 +350,7 @@ private extension DefaultStoresManager {
             ServiceLocator.shippingSettingsService.update(siteID: siteID)
         }
         retrieveOrderStatus(with: siteID)
+        synchronizePaymentGateways(siteID: siteID)
     }
 
     /// Loads the specified siteID into the Session, if possible.

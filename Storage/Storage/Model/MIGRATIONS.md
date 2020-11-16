@@ -2,6 +2,15 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 37 (Release 5.5.0.0)
+- @ecarrion 2020-12-10
+- Added `paymentMethodID` property to `Order` entity.
+
+## Model 36 (Release 5.5.0.0)
+- @ecarrion 2020-11-10
+- Added `PaymentGateway` entity.
+- Fixed warning from `transformable` properties by setting a `NSSecureCoding` value transformer.
+
 ## Model 35 (Release 5.5.0.0)
 - @jaclync 2020-10-29
 - Added `OrderItemAttribute` entity.

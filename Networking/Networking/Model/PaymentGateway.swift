@@ -35,6 +35,15 @@ public struct PaymentGateway: Equatable {
     /// List of features the payment gateway supports.
     ///
     public let features: [Feature]
+
+    public init(siteID: Int64, gatewayID: String, title: String, description: String, enabled: Bool, features: [Feature]) {
+        self.siteID = siteID
+        self.gatewayID = gatewayID
+        self.title = title
+        self.description = description
+        self.enabled = enabled
+        self.features = features
+    }
 }
 
 // MARK: Gateway Decodable
@@ -61,7 +70,7 @@ extension PaymentGateway: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let gatewayID = try container.decode(String.self, forKey: .gatewayID)
         let title = try container.decode(String.self, forKey: .title)
-        let description = try container.decode(String.self, forKey: .description)
+        let description = try container.decodeIfPresent(String.self, forKey: .description) ?? ""
         let enabled = try container.decode(Bool.self, forKey: .enabled)
         let features = try container.decode([Feature].self, forKey: .features)
 

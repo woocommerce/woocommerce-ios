@@ -194,7 +194,7 @@ public extension OrdersRemote {
     enum ParameterValues {
         static let fieldValues: String = """
             id,parent_id,number,status,currency,customer_id,customer_note,date_created_gmt,date_modified_gmt,date_paid_gmt,\
-            discount_total,discount_tax,shipping_total,shipping_tax,total,total_tax,payment_method_title,line_items,shipping,\
+            discount_total,discount_tax,shipping_total,shipping_tax,total,total_tax,payment_method,payment_method_title,line_items,shipping,\
             billing,coupon_lines,shipping_lines,refunds
             """
     }

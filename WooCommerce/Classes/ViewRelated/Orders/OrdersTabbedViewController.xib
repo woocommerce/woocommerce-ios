@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OrdersMasterViewController" customModule="WooCommerce" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OrdersTabbedViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
                 <outlet property="buttonBarView" destination="7lu-ed-U2a" id="CeJ-gT-RxY"/>
                 <outlet property="containerView" destination="VD7-Yu-YwE" id="3vO-sb-eUc"/>
@@ -22,7 +23,7 @@
             <subviews>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="7lu-ed-U2a" customClass="ButtonBarView" customModule="XLPagerTabStrip">
                     <rect key="frame" x="0.0" y="44" width="414" height="44"/>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="44" id="pvM-9u-cnp"/>
                     </constraints>
@@ -38,7 +39,8 @@
                     <rect key="frame" x="0.0" y="88" width="414" height="774"/>
                 </scrollView>
             </subviews>
-            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+            <viewLayoutGuide key="safeArea" id="rGE-vr-B04"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="VD7-Yu-YwE" firstAttribute="leading" secondItem="rGE-vr-B04" secondAttribute="leading" id="1oC-b9-sf9"/>
                 <constraint firstItem="rGE-vr-B04" firstAttribute="trailing" secondItem="VD7-Yu-YwE" secondAttribute="trailing" id="9vb-3t-PWE"/>
@@ -48,8 +50,12 @@
                 <constraint firstItem="7lu-ed-U2a" firstAttribute="leading" secondItem="rGE-vr-B04" secondAttribute="leading" id="Zdd-er-iM1"/>
                 <constraint firstItem="rGE-vr-B04" firstAttribute="trailing" secondItem="7lu-ed-U2a" secondAttribute="trailing" id="lJ7-pc-DWf"/>
             </constraints>
-            <viewLayoutGuide key="safeArea" id="rGE-vr-B04"/>
             <point key="canvasLocation" x="-317" y="153"/>
         </view>
     </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>

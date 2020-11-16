@@ -39,6 +39,7 @@ class AuthenticatedState: StoresManagerState {
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            PaymentGatewayStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductReviewStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductCategoryStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -103,7 +104,7 @@ private extension AuthenticatedState {
         }
     }
 
-    /// Executed whenever a DotcomError is received (ApplicationLayer). This allows us to have a *Master* error handling flow!
+    /// Executed whenever a DotcomError is received (ApplicationLayer). This allows us to have a *main* error handling flow!
     ///
     func tunnelTimeoutWasReceived(note: Notification) {
         ServiceLocator.analytics.track(.jetpackTunnelTimeout)

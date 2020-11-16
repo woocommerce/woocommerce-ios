@@ -2,9 +2,9 @@
 import Foundation
 import Yosemite
 
-/// Encapsulates data management for `OrdersMasterViewController`.
+/// Encapsulates data management for `OrdersTabbedViewController`.
 ///
-final class OrdersMasterViewModel {
+final class OrdersTabbedViewModel {
 
     private lazy var storageManager = ServiceLocator.storageManager
     private lazy var stores = ServiceLocator.stores
@@ -30,7 +30,7 @@ final class OrdersMasterViewModel {
 
     /// Start all the operations that this `ViewModel` is responsible for.
     ///
-    /// This should only be called once in the lifetime of `OrdersMasterViewController`.
+    /// This should only be called once in the lifetime of `OrdersTabbedViewController`.
     ///
     func activate() {
         try? statusResultsController.performFetch()

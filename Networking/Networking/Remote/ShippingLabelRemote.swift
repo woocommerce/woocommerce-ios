@@ -1,7 +1,15 @@
 import Foundation
 
+/// Protocol for `ShippingLabelRemote` mainly used for mocking.
+public protocol ShippingLabelRemoteProtocol {
+    func printShippingLabel(siteID: Int64,
+                            shippingLabelID: Int64,
+                            paperSize: String,
+                            completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void)
+}
+
 /// Shipping Labels Remote Endpoints.
-public final class ShippingLabelRemote: Remote {
+public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
     /// Generates shipping label data for printing.
     /// - Parameters:
     ///   - siteID: Remote ID of the site that owns the shipping label.

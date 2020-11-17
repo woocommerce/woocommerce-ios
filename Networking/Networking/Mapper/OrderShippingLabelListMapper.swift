@@ -81,7 +81,8 @@ private struct OrderShippingLabelListData: Decodable {
         // Shipping labels.
         let formData = try container.decode(OrderShippingLabelListFormData.self, forKey: .formData)
         let shippingLabelsWithoutAddresses = try container.decode([ShippingLabel].self, forKey: .labelsData)
-        // Populates each shipping label's `originAddress` and `destinationAddress` from `formData` because they are not available in each shipping label response.
+        // Populates each shipping label's `originAddress` and `destinationAddress` from `formData` because they are not available
+        // in each shipping label response.
         let shippingLabels = shippingLabelsWithoutAddresses.map {
             $0.copy(originAddress: formData.originAddress, destinationAddress: formData.destinationAddress)
         }

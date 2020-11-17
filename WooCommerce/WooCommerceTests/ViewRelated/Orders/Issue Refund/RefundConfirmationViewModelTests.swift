@@ -62,11 +62,10 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let viewModel = RefundConfirmationViewModel(details: details)
 
         // We expect the Refund Via row to be the last item in the last row.
-        let row = try XCTUnwrap(viewModel.sections.last?.rows.last as? RefundConfirmationViewModel.TitleAndBodyRow)
+        let row = try XCTUnwrap(viewModel.sections.last?.rows.last as? RefundConfirmationViewModel.SimpleTextRow)
 
         // Then
-        XCTAssertEqual(row.title, order.paymentMethodTitle)
-        XCTAssertNil(row.body)
+        XCTAssertEqual(row.text, order.paymentMethodTitle)
     }
 
     func test_viewModel_has_manual_refundVia_values_when_using_a_gateway_that_does_not_support_refunds() throws {

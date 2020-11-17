@@ -37,6 +37,9 @@
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
+/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
+"%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
+
 /* 1 Item */
 "%@ Item" = "%@ Item";
 
@@ -72,12 +75,6 @@
 
 /* Navigation bar title for selecting multiple products when more multiple products have been selected. */
 "%ld Products Selected" = "%ld Products Selected";
-
-/* Format of the number of product review in singular form */
-"%ld review" = "%ld review";
-
-/* Format of the number of product reviews in plural form */
-"%ld reviews" = "%ld reviews";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld variant";
@@ -1256,9 +1253,6 @@
 /* The title for the net amount paid cell */
 "Net" = "Net";
 
-/* The title of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
-"New editing options available" = "New editing options available";
-
 /* Title of a button.
    Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "Next";
@@ -1295,14 +1289,14 @@
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "No products yet";
 
+/* Placeholder for empty product ratings */
+"No ratings" = "No ratings";
+
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
 "No results found for \(term)\nAdd a custom carrier" = "No results found for \(term)\nAdd a custom carrier";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "No revenue this period";
-
-/* Placeholder for empty product reviews */
-"No reviews yet" = "No reviews yet";
 
 /* Empty Product Reviews List Message */
 "No Reviews Yet for this Product!" = "No Reviews Yet for this Product!";
@@ -1675,6 +1669,12 @@
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %ld" = "Quantity: %ld";
 
+/* Format of the number of product ratings in plural form */
+"rated %ld times" = "rated %ld times";
+
+/* Format of the number of product ratings in singular form */
+"rated once" = "rated once";
+
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Reach our happiness engineers who can help answer tough questions";
 
@@ -1814,6 +1814,12 @@
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Saving your product...";
+
+/* Navigation bar title for scanning a barcode to use as a product's SKU. */
+"Scan barcode to update SKU" = "Scan barcode to update SKU";
+
+/* The instruction text below the scan area in the barcode scanner for product SKU. */
+"Scan product barcode" = "Scan product barcode";
 
 /* Scan Products */
 "Scan products" = "Scan products";
@@ -2295,9 +2301,6 @@
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "The price for this product. Editable.";
-
-/* Displayed whenever a review that was onscreen got deleted. */
-"The review has been removed" = "The review has been removed";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "The sale price can't be added without the regular price.";
@@ -2812,9 +2815,6 @@
 
 /* Yesterday Section Header */
 "Yesterday" = "Yesterday";
-
-/* The info of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
-"You can now edit grouped, external and variable products, change product type and update categories and tags" = "You can now edit grouped, external and variable products, change product type and update categories and tags";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider.";

@@ -198,6 +198,7 @@ private extension OrdersUpsertUseCaseTests {
               shippingTax: "",
               total: "",
               totalTax: "",
+              paymentMethodID: "",
               paymentMethodTitle: "",
               items: [],
               billingAddress: nil,

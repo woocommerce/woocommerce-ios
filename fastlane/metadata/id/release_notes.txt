@@ -1,0 +1,2 @@
+* Telah Diperbaiki! Footer pada Pengaturan aplikasi sekarang sudah di tengah, produk draf sekarang diurutkan dari "Terbaru ke Terlama" sesuai permintaan, dan warna latar putih telah dihapus dari tampilan placeholder di bagan dasbor atas dalam mode gelap pada iOS 14.
+* Ditingkatkan! Gunakan pemilih tanggal yang baru di iOS 14 untuk mengedit tanggal pengiriman pada detail pesanan > tambahkan pelacakan dan edit tanggal penjualan pada detail > pengaturan harga. Anda juga akan melihat placeholder "Tanpa Judul" untuk produk tanpa judul di daftar produk.

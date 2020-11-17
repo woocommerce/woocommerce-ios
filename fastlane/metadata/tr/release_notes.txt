@@ -1,0 +1,2 @@
+* Düzeltildi! Uygulamanın Ayarlar bölümündeki alt bilgi artık ortada yer alıyor, taslak ürünler artık beklendiği gibi "En Yeniden En Eskiye" sıralanıyor ve beyaz arka plan rengi, iOS 14'te karanlık modda üst gösterge grafiğindeki yer tutucu görünümünden kaldırıldı.
+* Geliştirildi! Ayrıntılar > fiyat ayarı bölümündeki sipariş detayları > takip ekle ve satış tarihlerini düzenle kısmındaki sevk tarihini düzenlemek için iOS 14'teki yeni tarih seçiciyi kullanın. Ayrıca, ürün listesinde başlığı olmayan ürünler için "Başlık Yok" yer tutucusu göreceksiniz.

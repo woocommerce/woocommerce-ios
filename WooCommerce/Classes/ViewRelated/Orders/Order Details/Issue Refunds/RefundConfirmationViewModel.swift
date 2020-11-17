@@ -11,7 +11,7 @@ final class RefundConfirmationViewModel {
         currencyFormatter.formatAmount(details.amount, with: details.order.currency) ?? ""
     }()
 
-    /// Struct with al refund details needed to create a `Refund` object.
+    /// Struct with all refund details needed to create a `Refund` object.
     ///
     private let details: Details
 
@@ -39,8 +39,7 @@ final class RefundConfirmationViewModel {
         Section(
             title: Localization.refundVia,
             rows: [
-                TitleAndBodyRow(title: Localization.manualRefund(via: "Stripe"),
-                                body: Localization.refundWillNotBeIssued(paymentMethod: "Stripe"))
+                makeRefundViaRow()
             ]
         )
     ]
@@ -78,6 +77,10 @@ extension RefundConfirmationViewModel {
         /// Order items and quantities to refund
         ///
         let items: [RefundableOrderItem]
+
+        /// Payment gateway used with the order
+        ///
+        let paymentGateway: PaymentGateway?
     }
 }
 
@@ -89,6 +92,30 @@ private extension RefundConfirmationViewModel {
         let totalRefunded = useCase.totalRefunded().abs()
         let totalRefundedFormatted = currencyFormatter.formatAmount(totalRefunded) ?? ""
         return TwoColumnRow(title: Localization.previouslyRefunded, value: totalRefundedFormatted, isHeadline: false)
+    }
+
+    /// Returns a row with special formatting if the payment gateway does not support automatic money refunds.
+    ///
+    func makeRefundViaRow() -> RefundConfirmationViewModelRow {
+        if gatewaySupportsAutomaticRefunds() {
+            return SimpleTextRow(text: details.order.paymentMethodTitle)
+        } else {
+            return TitleAndBodyRow(title: Localization.manualRefund(via: details.order.paymentMethodTitle),
+                                   body: Localization.refundWillNotBeIssued(paymentMethod: details.order.paymentMethodTitle))
+        }
+    }
+}
+
+// MARK: Helpers
+private extension RefundConfirmationViewModel {
+    /// Returns `true` if the payment gateway associated with this order supports automatic money refunds. `False` otherwise.
+    /// If no payment gateway is found, `false` will be returned.
+    ///
+    func gatewaySupportsAutomaticRefunds() -> Bool {
+        guard let paymentGateway = details.paymentGateway else {
+            return false
+        }
+        return paymentGateway.features.contains(.refunds)
     }
 }
 
@@ -122,6 +149,11 @@ extension RefundConfirmationViewModel {
     struct TitleAndBodyRow: RefundConfirmationViewModelRow {
         let title: String
         let body: String?
+    }
+
+    /// A row that shows a simple text on it.
+    struct SimpleTextRow: RefundConfirmationViewModelRow {
+        let text: String
     }
 }
 

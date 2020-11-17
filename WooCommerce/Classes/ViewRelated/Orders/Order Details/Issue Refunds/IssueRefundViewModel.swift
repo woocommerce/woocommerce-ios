@@ -69,6 +69,14 @@ final class IssueRefundViewModel {
         return resultsController.fetchedObjects
     }()
 
+    /// Payment Gateway related to the order. Needed to build `Refund Via` section.
+    ///
+    private lazy var paymentGateway: PaymentGateway? = {
+        let resultsController = createPaymentGatewayResultsController()
+        try? resultsController.performFetch()
+        return resultsController.fetchedObjects.first
+    }()
+
     init(order: Order, refunds: [Refund], currencySettings: CurrencySettings) {
         let items = Self.filterItems(from: order, with: refunds)
         state = State(order: order, itemsToRefund: items, currencySettings: currencySettings)
@@ -84,7 +92,8 @@ final class IssueRefundViewModel {
         let details = RefundConfirmationViewModel.Details(order: state.order,
                                                           amount: "\(calculateRefundTotal())",
                                                           refundsShipping: state.shouldRefundShipping,
-                                                          items: state.refundQuantityStore.refundableItems())
+                                                          items: state.refundQuantityStore.refundableItems(),
+                                                          paymentGateway: paymentGateway)
         return RefundConfirmationViewModel(details: details, currencySettings: state.currencySettings)
     }
 }
@@ -144,6 +153,13 @@ private extension IssueRefundViewModel {
         let itemsIDs = state.itemsToRefund.map { $0.item.productID }
         let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", state.order.siteID, itemsIDs)
         return ResultsController<StorageProduct>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
+    }
+
+    /// Results controller that fetches the payment gateway used on this order.
+    ///
+    func createPaymentGatewayResultsController() -> ResultsController<StoragePaymentGateway> {
+        let predicate = NSPredicate(format: "siteID == %lld AND gatewayID == %@", state.order.siteID, state.order.paymentMethodID)
+        return ResultsController<StoragePaymentGateway>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
     }
 }
 

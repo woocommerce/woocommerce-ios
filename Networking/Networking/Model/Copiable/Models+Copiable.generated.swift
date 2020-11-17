@@ -425,3 +425,60 @@ extension ProductVariation {
         )
     }
 }
+
+extension ShippingLabel {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        orderID: CopiableProp<Int64> = .copy,
+        shippingLabelID: CopiableProp<Int64> = .copy,
+        carrierID: CopiableProp<String> = .copy,
+        dateCreated: CopiableProp<Date> = .copy,
+        packageName: CopiableProp<String> = .copy,
+        rate: CopiableProp<Double> = .copy,
+        currency: CopiableProp<String> = .copy,
+        trackingNumber: CopiableProp<String> = .copy,
+        serviceName: CopiableProp<String> = .copy,
+        refundableAmount: CopiableProp<Double> = .copy,
+        status: CopiableProp<ShippingLabelStatus> = .copy,
+        originAddress: CopiableProp<ShippingLabelAddress> = .copy,
+        destinationAddress: CopiableProp<ShippingLabelAddress> = .copy,
+        productIDs: CopiableProp<[Int64]> = .copy,
+        productNames: CopiableProp<[String]> = .copy
+    ) -> ShippingLabel {
+        let siteID = siteID ?? self.siteID
+        let orderID = orderID ?? self.orderID
+        let shippingLabelID = shippingLabelID ?? self.shippingLabelID
+        let carrierID = carrierID ?? self.carrierID
+        let dateCreated = dateCreated ?? self.dateCreated
+        let packageName = packageName ?? self.packageName
+        let rate = rate ?? self.rate
+        let currency = currency ?? self.currency
+        let trackingNumber = trackingNumber ?? self.trackingNumber
+        let serviceName = serviceName ?? self.serviceName
+        let refundableAmount = refundableAmount ?? self.refundableAmount
+        let status = status ?? self.status
+        let originAddress = originAddress ?? self.originAddress
+        let destinationAddress = destinationAddress ?? self.destinationAddress
+        let productIDs = productIDs ?? self.productIDs
+        let productNames = productNames ?? self.productNames
+
+        return ShippingLabel(
+            siteID: siteID,
+            orderID: orderID,
+            shippingLabelID: shippingLabelID,
+            carrierID: carrierID,
+            dateCreated: dateCreated,
+            packageName: packageName,
+            rate: rate,
+            currency: currency,
+            trackingNumber: trackingNumber,
+            serviceName: serviceName,
+            refundableAmount: refundableAmount,
+            status: status,
+            originAddress: originAddress,
+            destinationAddress: destinationAddress,
+            productIDs: productIDs,
+            productNames: productNames
+        )
+    }
+}

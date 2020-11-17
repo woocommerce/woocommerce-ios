@@ -45,3 +45,9 @@ extension ShippingLabelAddress: Decodable {
         case postcode
     }
 }
+
+extension ShippingLabelAddress {
+    init() {
+        self.init(company: "", name: "", phone: "", country: "", state: "", address1: "", address2: "", city: "", postcode: "")
+    }
+}

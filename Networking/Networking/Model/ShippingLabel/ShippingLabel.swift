@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a Shipping Label.
 ///
-public struct ShippingLabel: Equatable {
+public struct ShippingLabel: Equatable, GeneratedCopiable {
     /// The remote ID of the site that owns this shipping label.
     public let siteID: Int64
 
@@ -39,6 +39,12 @@ public struct ShippingLabel: Equatable {
     /// The status of the shipping label (e.g. purchased).
     public let status: ShippingLabelStatus
 
+    /// The sender (store owner)'s address.
+    public let originAddress: ShippingLabelAddress
+
+    /// The recipient (customer)'s address.
+    public let destinationAddress: ShippingLabelAddress
+
     /// A list of product IDs included in the shipping label.
     /// This could be empty for older plugin versions.
     public let productIDs: [Int64]
@@ -64,11 +70,7 @@ extension ShippingLabel: Decodable {
 
         let shippingLabelID = try container.decode(Int64.self, forKey: .shippingLabelID)
         let carrierID = try container.decode(String.self, forKey: .carrierID)
-
-        // Converts timestamp to Date.
-        let dateCreatedTimestamp = try container.decode(Int64.self, forKey: .dateCreated)
-        let dateCreated = Date(timeIntervalSince1970: TimeInterval(dateCreatedTimestamp/1000))
-
+        let dateCreated = try container.decode(Date.self, forKey: .dateCreated)
         let packageName = try container.decode(String.self, forKey: .packageName)
         let rate = try container.decode(Double.self, forKey: .rate)
         let currency = try container.decode(String.self, forKey: .currency)
@@ -94,6 +96,8 @@ extension ShippingLabel: Decodable {
                   serviceName: serviceName,
                   refundableAmount: refundableAmount,
                   status: status,
+                  originAddress: .init(),
+                  destinationAddress: .init(),
                   productIDs: productIDs,
                   productNames: productNames)
     }

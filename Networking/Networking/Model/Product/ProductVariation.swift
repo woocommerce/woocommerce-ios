@@ -258,11 +258,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
-        // TODO-2576: When the image removal is feasible in the API, let's remove this condition.
-        // Ref: https://github.com/woocommerce/woocommerce/issues/27116
-        if let image = image {
-            try container.encode(image, forKey: .image)
-        }
+        try container.encode(image, forKey: .image)
 
         try container.encode(description, forKey: .description)
         try container.encode(status.rawValue, forKey: .statusKey)

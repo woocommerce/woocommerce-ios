@@ -86,6 +86,8 @@ private extension DefaultProductFormTableViewModel {
                 return .variations(viewModel: variationsRow(product: product.product))
             case .downloadableFiles:
                 return .downloadableFiles(viewModel: downloadsRow(product: product))
+            case .linkedProducts(let editable):
+                return .linkedProducts(viewModel: linkedProductsRow(product: product, isEditable: editable), isEditable: editable)
             default:
                 assertionFailure("Unexpected action in the settings section: \(action)")
                 return nil
@@ -423,6 +425,35 @@ private extension DefaultProductFormTableViewModel {
                                                         title: title,
                                                         details: details)
     }
+
+    // MARK: Linked products only
+
+    func linkedProductsRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.linkedProductsImage
+        let title = Localization.linkedProductsTitle
+
+        var linkedProductsDetails = [String]()
+
+        if product.upsellIDs.count <= 1 {
+            linkedProductsDetails.append(String.localizedStringWithFormat(Localization.singularUpsellProductFormat, product.upsellIDs.count))
+        }
+        else {
+            linkedProductsDetails.append(String.localizedStringWithFormat(Localization.pluralUpsellProductsFormat, product.upsellIDs.count))
+        }
+
+        if product.crossSellIDs.count <= 1 {
+            linkedProductsDetails.append(String.localizedStringWithFormat(Localization.singularCrossSellProductFormat, product.crossSellIDs.count))
+        }
+        else {
+            linkedProductsDetails.append(String.localizedStringWithFormat(Localization.pluralCrossSellProductsFormat, product.crossSellIDs.count))
+        }
+        let details = linkedProductsDetails.isEmpty ? nil : linkedProductsDetails.joined(separator: "\n")
+
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
+                                                        details: details,
+                                                        isActionable: isEditable)
+    }
 }
 
 private extension DefaultProductFormTableViewModel {
@@ -545,5 +576,21 @@ private extension DefaultProductFormTableViewModel {
                                                                comment: "Format of the number of Downloadable Files row in the singular form. Reads, `1 file`")
         static let pluralDownloadsFormat = NSLocalizedString("%ld files",
                                                            comment: "Format of the number of Downloadable Files row in the plural form. Reads, `5 files`")
+
+        // Linked Products
+        static let linkedProductsTitle = NSLocalizedString("Linked Products",
+                                                           comment: "Title of the Linked Products row on Product main screen")
+        static let singularUpsellProductFormat =
+            NSLocalizedString("%ld upsell product",
+                              comment: "Format of upsell linked products row in the singular form. Reads, `1 upsell product`")
+        static let pluralUpsellProductsFormat =
+            NSLocalizedString("%ld upsell products",
+                              comment: "Format of upsell linked products row in the plural form. Reads, `5 upsell products`")
+        static let singularCrossSellProductFormat =
+            NSLocalizedString("%ld cross-sell product",
+                              comment: "Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product`")
+        static let pluralCrossSellProductsFormat =
+            NSLocalizedString("%ld cross-sell products",
+                              comment: "Format of cross-sell linked products row in the plural form. Reads, `5 cross-sell products`")
     }
 }

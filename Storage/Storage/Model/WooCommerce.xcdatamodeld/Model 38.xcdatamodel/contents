@@ -430,6 +430,46 @@
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="providers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ShipmentTrackingProvider" inverseName="group" inverseEntity="ShipmentTrackingProvider"/>
     </entity>
+    <entity name="ShippingLabel" representedClassName="ShippingLabel" syncable="YES">
+        <attribute name="carrierID" attributeType="String" defaultValueString=""/>
+        <attribute name="currency" attributeType="String" defaultValueString=""/>
+        <attribute name="dateCreated" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="orderID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="packageName" attributeType="String" defaultValueString=""/>
+        <attribute name="productIDs" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
+        <attribute name="productNames" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
+        <attribute name="rate" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="refundableAmount" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="serviceName" attributeType="String" defaultValueString=""/>
+        <attribute name="shippingLabelID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="status" attributeType="String" defaultValueString=""/>
+        <attribute name="trackingNumber" attributeType="String" defaultValueString=""/>
+        <relationship name="destinationAddress" maxCount="1" deletionRule="Cascade" destinationEntity="ShippingLabelAddress" inverseName="destinationShippingLabel" inverseEntity="ShippingLabelAddress"/>
+        <relationship name="originAddress" maxCount="1" deletionRule="Cascade" destinationEntity="ShippingLabelAddress" inverseName="originShippingLabel" inverseEntity="ShippingLabelAddress"/>
+    </entity>
+    <entity name="ShippingLabelAddress" representedClassName="ShippingLabelAddress" syncable="YES">
+        <attribute name="address1" attributeType="String" defaultValueString=""/>
+        <attribute name="address2" attributeType="String" defaultValueString=""/>
+        <attribute name="city" attributeType="String" defaultValueString=""/>
+        <attribute name="company" attributeType="String" defaultValueString=""/>
+        <attribute name="country" attributeType="String" defaultValueString=""/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <attribute name="phone" attributeType="String" defaultValueString=""/>
+        <attribute name="postcode" attributeType="String" defaultValueString=""/>
+        <attribute name="state" attributeType="String" defaultValueString=""/>
+        <relationship name="destinationShippingLabel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ShippingLabel" inverseName="destinationAddress" inverseEntity="ShippingLabel"/>
+        <relationship name="originShippingLabel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ShippingLabel" inverseName="originAddress" inverseEntity="ShippingLabel"/>
+    </entity>
+    <entity name="ShippingLabelRefund" representedClassName="ShippingLabelRefund" syncable="YES">
+        <attribute name="dateRequested" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="status" attributeType="String" defaultValueString=""/>
+    </entity>
+    <entity name="ShippingLabelSettings" representedClassName="ShippingLabelSettings" syncable="YES">
+        <attribute name="orderID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="paperSize" attributeType="String" defaultValueString=""/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
     <entity name="ShippingLine" representedClassName="ShippingLine" syncable="YES">
         <attribute name="methodID" optional="YES" attributeType="String"/>
         <attribute name="methodTitle" optional="YES" attributeType="String"/>
@@ -542,5 +582,9 @@
         <element name="TaxClass" positionX="-529.7734375" positionY="-56.109375" width="128" height="88"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
+        <element name="ShippingLabelRefund" positionX="-693" positionY="36" width="128" height="73"/>
+        <element name="ShippingLabelAddress" positionX="-684" positionY="45" width="128" height="208"/>
+        <element name="ShippingLabel" positionX="-675" positionY="54" width="128" height="283"/>
+        <element name="ShippingLabelSettings" positionX="-666" positionY="63" width="128" height="88"/>
     </elements>
 </model>

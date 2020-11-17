@@ -23,8 +23,8 @@ class LoginPrologueViewController: LoginViewController {
 
     /// Constraints on the button view container.
     /// Used to adjust the button width in unified views.
-    @IBOutlet private weak var buttonViewLeadingConstraint: NSLayoutConstraint!
-    @IBOutlet private weak var buttonViewTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var buttonViewLeadingConstraint: NSLayoutConstraint?
+    @IBOutlet private weak var buttonViewTrailingConstraint: NSLayoutConstraint?
     private var defaultButtonViewMargin: CGFloat = 0
 
     // Called when login button is tapped
@@ -544,8 +544,8 @@ private extension LoginPrologueViewController {
         
         guard traitCollection.horizontalSizeClass == .regular &&
             traitCollection.verticalSizeClass == .regular else {
-                buttonViewLeadingConstraint.constant = defaultButtonViewMargin
-                buttonViewTrailingConstraint.constant = defaultButtonViewMargin
+                buttonViewLeadingConstraint?.constant = defaultButtonViewMargin
+                buttonViewTrailingConstraint?.constant = defaultButtonViewMargin
                 return
         }
         
@@ -555,8 +555,8 @@ private extension LoginPrologueViewController {
         
         let margin = viewWidth * marginMultiplier
         
-        buttonViewLeadingConstraint.constant = margin
-        buttonViewTrailingConstraint.constant = margin
+        buttonViewLeadingConstraint?.constant = margin
+        buttonViewTrailingConstraint?.constant = margin
     }
     
     private enum ButtonViewMarginMultipliers {

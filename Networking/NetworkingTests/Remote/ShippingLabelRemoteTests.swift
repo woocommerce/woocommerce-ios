@@ -1,6 +1,5 @@
 import XCTest
 import TestKit
-
 @testable import Networking
 
 /// ShippingLabelRemote Unit Tests

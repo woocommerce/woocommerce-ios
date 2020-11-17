@@ -15,7 +15,7 @@ public final class ShippingLabelRemote: Remote {
         let parameters = [
             ParameterKey.paperSize: paperSize,
             ParameterKey.labelIDCSV: String(shippingLabelID),
-            ParameterKey.cationCSV: "",
+            ParameterKey.captionCSV: "",
             ParameterKey.json: "true" // `json=true` is necessary, otherwise it results in 500 error "no_response_body".
         ]
         let path = "\(Path.shippingLabels)/print"
@@ -35,7 +35,7 @@ private extension ShippingLabelRemote {
     enum ParameterKey {
         static let paperSize = "paper_size"
         static let labelIDCSV = "label_id_csv"
-        static let cationCSV = "caption_csv"
+        static let captionCSV = "caption_csv"
         static let json = "json"
     }
 }

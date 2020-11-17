@@ -1,6 +1,6 @@
 import Foundation
 
-/// Paper size options for printing a shipping label.
+/// The status of shipping label refund.
 public enum ShippingLabelRefundStatus {
     case pending
 }
@@ -14,7 +14,7 @@ extension ShippingLabelRefundStatus: RawRepresentable {
         case Keys.pending:
             self = .pending
         default:
-            assertionFailure("Unexpected value for `ShippingLabelStatus`: \(rawValue)")
+            assertionFailure("Unexpected value for `ShippingLabelRefundStatus`: \(rawValue)")
             self = .pending
         }
     }
@@ -29,7 +29,7 @@ extension ShippingLabelRefundStatus: RawRepresentable {
     }
 }
 
-/// Contains the supported ShippingLabelPaperSize values.
+/// Contains the supported ShippingLabelRefundStatus values.
 private enum Keys {
     static let pending = "pending"
 }

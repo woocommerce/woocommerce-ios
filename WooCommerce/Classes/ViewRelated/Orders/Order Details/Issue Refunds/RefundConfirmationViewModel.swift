@@ -94,7 +94,7 @@ private extension RefundConfirmationViewModel {
         return TwoColumnRow(title: Localization.previouslyRefunded, value: totalRefundedFormatted, isHeadline: false)
     }
 
-    /// Returns a row with special formatting if the payment gateway does not supports automatic money refunds.
+    /// Returns a row with special formatting if the payment gateway does not support automatic money refunds.
     ///
     func makeRefundViaRow() -> RefundConfirmationViewModelRow {
         if gatewaySupportsAutomaticRefunds() {

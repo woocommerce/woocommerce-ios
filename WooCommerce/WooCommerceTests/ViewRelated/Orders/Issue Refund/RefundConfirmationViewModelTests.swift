@@ -65,7 +65,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let row = try XCTUnwrap(viewModel.sections.last?.rows.last as? RefundConfirmationViewModel.TitleAndBodyRow)
 
         // Then
-        XCTAssertEqual(row.title, gateway.title)
+        XCTAssertEqual(row.title, order.paymentMethodTitle)
         XCTAssertNil(row.body)
     }
 

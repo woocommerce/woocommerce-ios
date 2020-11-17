@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-10-22 09:54:03+0000 */
+/* Translation-Revision-Date: 2020-11-13 13:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -54,20 +54,20 @@
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
 "%@ via %@" = "%2$@을(를) 통한 %1$@";
 
-/* Refund item price and quantity format. EG: 2 x $10.00 each */
-"%@ x %@ each" = "%@ x %@ each";
-
 /* Title of the label indicating that there are multiple items to refund. */
-"%d items selected" = "%d items selected";
+"%d items selected" = "%d 아이템 선택됨";
+
+/* Refund item price and quantity format. EG: 2 x $10.00 each */
+"%d x %@ each" = "%1$d x %2$@(각각)";
 
 /* Navigation bar title for selecting multiple products when more multiple products have been selected. */
 "%ld Products Selected" = "%ld 제품 선택됨";
 
 /* Format of the number of Downloadable Files row in the singular form. Reads, `1 file` */
-"%ld file" = "%ld file";
+"%ld file" = "%ld 파일";
 
 /* Format of the number of Downloadable Files row in the plural form. Reads, `5 files` */
-"%ld files" = "%ld files";
+"%ld files" = "%ld 파일";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld 재고 있음";
@@ -90,11 +90,14 @@
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld 변형";
 
+/* Product title in Products list when there is no title */
+"(No Title)" = "(제목 없음)";
+
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "제품 1개 선택됨";
 
 /* Title of the label indicating that there is 1 item to refund. */
-"1 item selected" = "1 item selected";
+"1 item selected" = "1개 아이템 선택됨";
 
 /* Shown when there are more than 99 items of something (e.g. Processing Orders). */
 "99+" = "99+";
@@ -112,7 +115,7 @@
 "A product with variations like color or size" = "색상이나 크기와 같은 선택사항이 있는 제품";
 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "A refund will not be issued to the customer. You will need to manually issue the refund through %1$@.";
+"A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "고객에게는 환불이 발행되지 않습니다. %1$@을(를) 통해 수동으로 환불을 발행해야 합니다.";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "유니크한 아이템";
@@ -139,7 +142,7 @@
 "Active, Autoupdates on" = "활성화, 자동 업데이트 켜기";
 
 /* A button title used for a shipment tracking unit test
-   A button title used for a unit test - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
+   A button title used for a unit test - Action for adding a Products' downloadable files' info remotely - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "추가";
 
 /* Action to add category on the Product Categories screen
@@ -147,13 +150,13 @@
 "Add Category" = "카테고리 추가";
 
 /* Downloadable file screen navigation title */
-"Add Downloadable File" = "Add Downloadable File";
+"Add Downloadable File" = "다운로드 가능한 파일 추가";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "Add File";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "파일 추가하기";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "사진 추가";
@@ -200,6 +203,9 @@
 
 /* Title for adding grouped products row on Product main screen for a grouped product */
 "Add products to the group" = "그룹에 제품 추가";
+
+/* Accessibility label to add products' downloadable files' info remotely */
+"Add products' downloadable files' info remotely" = "원격으로 제품의 다운로드 가능한 파일의 정보 입력";
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "무게 및 치수 추가";
@@ -369,7 +375,7 @@
 "Can Not Request Link" = "링크를 요청할 수 없음";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
 "Cancel" = "취소";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -523,6 +529,12 @@
 /* The button title text for creating a new account. */
 "Create Account" = "계정 생성";
 
+/* The title of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
+"Create products from the app!" = "앱에서 제품을 만들어 보세요!";
+
+/* My Store > Settings > Experimental features > Products */
+"Creating products" = "제품 만들기";
+
 /* Cell title: the current date. */
 "Current" = "현재";
 
@@ -562,7 +574,7 @@
 "Default" = "기본";
 
 /* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen
-   Button title Delete in Edit Product More Options Action Sheet */
+   Button title Delete in Downloadable File Options Action Sheet - Button title Delete in Edit Product More Options Action Sheet */
 "Delete" = "삭제";
 
 /* Delete a Shipment Tracking
@@ -662,37 +674,37 @@
 
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
-"Download Settings" = "Download Settings";
+"Download Settings" = "설정 다운로드";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Download expiration";
+"Download expiration" = "다운로드 만료";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Download limit";
 
 /* Title of the cell in Product Download limit > Download limit */
-"Download limit" = "Download limit";
+"Download limit" = "다운로드 한도";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "Downloadable Files";
 
 /* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "Downloadable Files";
+"Downloadable Files" = "다운로드 가능한 파일";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "Downloadable Product";
 
 /* Downloadable Product label in Product Settings */
-"Downloadable Product" = "Downloadable Product";
+"Downloadable Product" = "다운로드 가능한 제품";
 
 /* Title of the Downloadable Files row on Product main screen */
 "Downloadable files" = "Downloadable files";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "Downloadable files";
+"Downloadable files" = "다운로드 가능한 파일";
 
 /* Product Details > Purchase Details > Downloads cell title */
 "Downloads" = "다운로드";
@@ -740,6 +752,9 @@
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "운송업체 이름 입력";
 
+/* Title of the downloadable file bottom sheet action for adding file from an URL. */
+"Enter file URL" = "파일 URL 입력";
+
 /* Enter password placeholder in Product Visibility */
 "Enter password" = "비밀번호 입력";
 
@@ -757,13 +772,13 @@
 "Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
 
 /* Footer text for Download Expiration */
-"Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "다운로드 링크가 만료될 때까지의 일 수를 입력하거나 만료되지 않을 경우 비워 둡니다.";
 
 /* Footer text for Downloadable Limit */
 "Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
 
 /* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "파일을 다운로드할 수 있는 시간을 입력하거나 무제한으로 다운로드할 수 있도록 비워 둡니다.";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "워드프레스닷컴 계정에 대한 비밀번호를 입력합니다.";
@@ -820,7 +835,7 @@
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "File Name";
+"File Name" = "파일 이름";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -832,7 +847,7 @@
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
-"File URL" = "File URL";
+"File URL" = "파일 URL";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "비밀번호 관리자로 채우기";
@@ -853,11 +868,20 @@
 /* The hint button's title text to help users find their site address. */
 "Find your site address" = "사이트 주소 찾기";
 
+/* Shown in the prologue carousel (promotional screens) during first launch. */
+"Follow your favorite sites and discover new reads." = "즐겨 찾는 사이트를 팔로우하고 새 읽을거리를 발견하세요.";
+
 /* User role badge */
 "Follower" = "팔로워";
 
 /* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "발신:";
+
+/* Title of the downloadable file bottom sheet action for adding file from WordPress Media Library. */
+"From WordPress Media Library" = "워드프레스 미디어 라이브러리에서";
+
+/* Title of the downloadable file bottom sheet action for adding file from device. */
+"From device" = "기기에서";
 
 /* Order Fulfillment Title */
 "Fulfill Order #(order.number)" = "주문 #(order.number) 처리";
@@ -1049,6 +1073,9 @@
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "이탤릭체";
 
+/* The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
+"It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!" = "이제 이동 중에 Woo 앱에서 간단하고 그룹화된 \n외부 제품을 생성할 수 있습니다. 아직 준비되지 않으셨나요? 임시글로 저장하세요!";
+
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "편집 계속";
 
@@ -1131,6 +1158,12 @@
 /* Sign in instructions on the 'log in using email' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "WooCommerce 스토어를 관리하려면 워드프레스닷컴 계정 이메일 주소로 로그인합니다.";
 
+/* Sign in instructions for logging in with a username and password. */
+"Log in with your WordPress.com account to manage your WooCommerce stores." = "워드프레스닷컴 계정으로 로그인하여 WooCommerce 스토어를 관리하세요.";
+
+/* Instructions on the WordPress.com username / password log in form. */
+"Log in with your WordPress.com username and password." = "워드프레스닷컴 사용자 이름과 비밀번호로 로그인하세요.";
+
 /* Error message that displays on the 'Log in by entering your site address.' screen. Jetpack is required for logging into the WooCommerce mobile apps. */
 "Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue." = "회원님의 사이트가 이 앱을 사용하도록 설정되지 않은 것 같습니다. 회원님의 사이트를 계속 이용하려면 젯팩이 설치되어 있어야 합니다.";
 
@@ -1162,7 +1195,7 @@
 "Manual Offsets" = "수동 오프셋";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "%1$@을(를) 통한 수동 환불";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
 "Manual Refund via %1$@" = "Manual Refund via %1$@";
@@ -1251,7 +1284,7 @@
 /* The title for the net amount paid cell */
 "Net" = "최종 금액";
 
-/* The title of the Work In Progress top banner on the Products tab. */
+/* The title of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
 "New editing options available" = "사용 가능한 새 편집 옵션";
 
 /* Title of a button.
@@ -1275,7 +1308,7 @@
 "No data available" = "사용 가능한 데이터 없음";
 
 /* Placeholder of the cell text field in Download expiration */
-"No expiration" = "No expiration";
+"No expiration" = "만료 없음";
 
 /* Placeholder of the cell text field in Download expiration */
 "No expiration" = "No expiration";
@@ -1284,7 +1317,7 @@
 "No files yet" = "No files yet";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "No files yet";
+"No files yet" = "아직 파일 없음";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "아직 이미지 없음";
@@ -1293,7 +1326,7 @@
 "No limit" = "No limit";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "No limit";
+"No limit" = "제한 없음";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "가격이 설정되지 않음";
@@ -1539,7 +1572,7 @@
 "Please wait while we publish this product to your store" = "이 제품을 회원님의 스토어에 게시하는 동안 기다려주세요...";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
+"Please wait while we save this product to your store" = "이 제품을 스토어에 저장하는 동안 기다려주세요...";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
 "Please wait while we save this product to your store" = "Please wait while we save this product to your store";
@@ -1547,11 +1580,14 @@
 /* Message of the in-progress UI while deleting the Product remotely */
 "Please wait while we update your store details" = "스토어 세부정보를 업데이트하는 동안 기다려 주세요.";
 
+/* Text on the loading view of the product downloadable file screen indicating the user to wait */
+"Please wait..." = "기다려주세요...";
+
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Automattic 제공";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Previously Refunded";
+"Previously Refunded" = "이전에 환불됨";
 
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "Previously Refunded";
@@ -1614,9 +1650,6 @@
 /* Title of the text field for editing the external URL for an external/affiliate product */
 "Product URL" = "제품 URL";
 
-/* My Store > Settings > Experimental features > Product editing */
-"Product editing" = "제품 편집";
-
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "제품 링크";
 
@@ -1674,7 +1707,7 @@
 "Quantity" = "수량";
 
 /* Navigation title on the quantity item selector screen */
-"Quantity to refund" = "Quantity to refund";
+"Quantity to refund" = "환불 수량";
 
 /* Navigation title on the quantity item selector screen */
 "Quantity to refund" = "Quantity to refund";
@@ -1698,10 +1731,10 @@
 "Reason for Refund (Optional)" = "Reason for Refund (Optional)";
 
 /* A label for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
+"Reason for Refund (Optional)" = "환불 사유(선택사항)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for refunding order" = "Reason for refunding order";
+"Reason for refunding order" = "주문 환불 사유";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Reason for refunding order";
@@ -1710,7 +1743,7 @@
 "Refund" = "Refund";
 
 /* The title of the button to confirm the refund. */
-"Refund" = "Refund";
+"Refund" = "환불";
 
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "#%@ 환불";
@@ -1723,7 +1756,7 @@
 "Refund Details" = "환불 정보";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Refund Shipping";
+"Refund Shipping" = "배송비 환불";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
 "Refund Shipping" = "Refund Shipping";
@@ -1732,7 +1765,7 @@
 "Refund Via" = "Refund Via";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Refund Via";
+"Refund Via" = "통해 환불";
 
 /* The title for the refunded amount cell */
 "Refunded" = "환불됨";
@@ -1856,7 +1889,7 @@
 "Saving your product..." = "Saving your product...";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
-"Saving your product..." = "Saving your product...";
+"Saving your product..." = "제품 저장...";
 
 /* Scan Products */
 "Scan products" = "제품 스캔";
@@ -1882,8 +1915,11 @@
 /* Display label for the product's catalog visibility */
 "Search results only" = "검색 결과만";
 
+/* Shown in the prologue carousel (promotional screens) during first launch. */
+"See comments and notifications in real time." = "댓글과 알림이 실시간으로 표시됩니다.";
+
 /* Select all button title in the issue refund screen */
-"Select All" = "Select All";
+"Select All" = "모두 선택";
 
 /* Select all button title in the issue refund screen */
 "Select All" = "Select All";
@@ -1908,6 +1944,9 @@
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
 "Select start date" = "시작 날짜 선택";
+
+/* Title of the bottom sheet from the product downloadable file to add a new downloadable file. */
+"Select upload method" = "업로드 방법 선택";
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "선택한 스토어";
@@ -1995,11 +2034,11 @@
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show a list of refunded order items for this order." = "이 주문에 대해 환불된 주문 항목 목록을 표시합니다.";
 
-/* Accessibility label to show bottom action sheet to delete downloadable file from the list */
-"Show bottom action sheet to delete downloadable file from list" = "Show bottom action sheet to delete downloadable file from list";
+/* Accessibility label to show bottom action sheet options for a downloadable file */
+"Show bottom action sheet options for a downloadable file" = "다운로드 가능한 파일에 대한 하단 작업 시트 표시";
 
 /* Accessibility label to show bottom action sheet to delete downloadable file from the list */
-"Show bottom action sheet to delete downloadable file from list" = "Show bottom action sheet to delete downloadable file from list";
+"Show bottom action sheet to delete downloadable file from list" = "다운로드 가능한 파일을 목록에서 삭제하기 위한 아래쪽 작업 시트 표시";
 
 /* Accessibility label for the 'Show password' button in the login page's password field.
    Accessibility label for the “Show password“ button in the login page's password field. */
@@ -2278,8 +2317,8 @@
 /* Opens the Terms of Service web page */
 "Terms of Service" = "서비스 약관";
 
-/* My Store > Settings > Experimental features > Product editing */
-"Test out new product editing functionalities as we get ready to launch them" = "출시 준비가 완료되면 새 제품 편집 기능을 테스트하세요.";
+/* My Store > Settings > Experimental features > Products */
+"Test out the new product creation as we get ready to launch" = "출시 준비가 완료되면 새 제품 생성을 테스트하세요.";
 
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
@@ -2403,7 +2442,7 @@
 "This is the URL-friendly version of the product title" = "제품 제목의 URL 친화적인 버전";
 
 /* Footer text for Downloadable File Name */
-"This is the name of the file shown to the customer." = "This is the name of the file shown to the customer.";
+"This is the name of the file shown to the customer." = "고객에게 표시되는 파일 이름입니다.";
 
 /* Footer text for Downloadable File Name */
 "This is the name of the file shown to the customer." = "This is the name of the file shown to the customer.";
@@ -2412,7 +2451,7 @@
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
 
 /* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "고객이 액세스할 파일의 URL입니다. 입력한 URL은 이미 인코딩되어 있어야 합니다.";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2618,7 +2657,7 @@
 "Update product inventory and SKU" = "제품 인벤토리 및 SKU 업데이트";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "제품의 다운로드 가능한 파일 정보를 원격으로 업데이트";
 
 /* Accessibility label to update products' downloadable files' info remotely */
 "Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
@@ -2695,7 +2734,7 @@
 "View downloadable file settings" = "View downloadable file settings";
 
 /* The action to update downloadable files settings for a product */
-"View downloadable file settings" = "View downloadable file settings";
+"View downloadable file settings" = "다운로드 가능한 파일 설정 보기";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "이전에 제출한 지원 티켓 보기";
@@ -2740,6 +2779,9 @@
 /* shown in promotional screens during first launch */
 "Watch readers from around the world read and interact with your site — in real time." = "전 세계 독자들이 회원님의 사이트를 읽고 상호 작용하는 것을 실시간으로 지켜보세요.";
 
+/* Shown in the prologue carousel (promotional screens) during first launch. */
+"Watch your audience grow with in-depth analytics." = "심층 분석으로 방문자 수가 늘어나는 것을 지켜보세요.";
+
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "스토어 분석을 표시할 수 없습니다.";
 
@@ -2777,9 +2819,6 @@
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "죄송합니다. “%@” 검색 결과를 찾을 수 없습니다.";
 
-/* The info of the Work In Progress top banner on the Products tab. */
-"We've added more editing functionalities to products! You can now update images, see previews and share your products." = "제품에 더 많은 편집 기능을 추가했습니다! 이제 이미지를 업데이트하고, 미리 보기를 실행하고, 제품을 공유할 수 있습니다.";
-
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "새로운 워드프레스닷컴 계정을 만들 수 있는 등록 링크를 이메일로 보내드렸습니다. 이 기기에서 이메일을 확인하고 워드프레스닷컴에서 받은 이메일의 링크를 누르세요.";
 
@@ -2798,6 +2837,9 @@
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "무게: %1$@%2$@";
 
+/* Shown in the prologue carousel (promotional screens) during first launch. */
+"Welcome to the world’s most popular website builder." = "세계에서 가장 인기 있는 웹사이트 빌더에 오신 것을 환영합니다.";
+
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "내 사이트 주소는 무엇인가요?";
 
@@ -2809,6 +2851,9 @@
 
 /* Title of the cell in Product Shipping Settings > Width */
 "Width" = "가로";
+
+/* Shown in the prologue carousel (promotional screens) during first launch. */
+"With this powerful editor you can post on the go." = "이 강력한 편집기로 이동 중에 글을 작성할 수 있습니다.";
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
@@ -2838,7 +2883,7 @@
 /* Yesterday Section Header */
 "Yesterday" = "어제";
 
-/* The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
+/* The info of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
 "You can now edit grouped, external and variable products, change product type and update categories and tags" = "이제 그룹화된 제품, 외부 제품, 선택사항이 있는 제품을 편집하고 제품 유형을 변경하고 카테고리와 태그를 업데이트할 수 있습니다.";
 
 /* No comment provided by engineer. */

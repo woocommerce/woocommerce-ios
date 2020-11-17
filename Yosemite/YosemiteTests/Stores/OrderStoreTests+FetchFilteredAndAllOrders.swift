@@ -193,6 +193,7 @@ private enum Fixtures {
         shippingTax: "0.00",
         total: "31.20",
         totalTax: "1.20",
+        paymentMethodID: "stripe",
         paymentMethodTitle: "Credit Card (Stripe)",
         items: [],
         billingAddress: nil,

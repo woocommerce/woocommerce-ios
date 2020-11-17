@@ -54,6 +54,7 @@
                     "postcode": "94119",
                     "country": "US"
                 },
+                "payment_method": "",
                 "payment_method_title": "",
                 "date_paid_gmt": "{{now format=customformat}}",
                 "line_items": [{
@@ -130,6 +131,7 @@
                     "postcode": "",
                     "country": ""
                 },
+                "payment_method": "",
                 "payment_method_title": "",
                 "date_paid_gmt": "{{now offset='-30 minutes' format=customformat}}",
                 "line_items": [{
@@ -206,6 +208,7 @@
                     "postcode": "",
                     "country": ""
                 },
+                "payment_method": "",
                 "payment_method_title": "",
                 "date_paid_gmt": "{{now offset='-60 minutes' format=customformat}}",
                 "line_items": [{
@@ -267,6 +270,7 @@
                     "postcode": "",
                     "country": ""
                 },
+                "payment_method": "",
                 "payment_method_title": "",
                 "date_paid_gmt": "{{now offset='-1 days' format=customformat}}",
                 "line_items": [{
@@ -328,6 +332,7 @@
                     "postcode": "94119",
                     "country": "US"
                 },
+                "payment_method": "",
                 "payment_method_title": "",
                 "date_paid_gmt": "{{now offset='-25 hours' format=customformat}}",
                 "line_items": [{
@@ -404,6 +409,7 @@
                     "postcode": "94119",
                     "country": "US"
                 },
+                "payment_method": "",
                 "payment_method_title": "",
                 "date_paid_gmt": "{{now offset='-26 hours' format=customformat}}",
                 "line_items": [{
@@ -465,6 +471,7 @@
                     "postcode": "",
                     "country": ""
                 },
+                "payment_method": "",
                 "payment_method_title": "",
                 "date_paid_gmt": "{{now offset='-27 hours' format=customformat}}",
                 "line_items": [{
@@ -526,6 +533,7 @@
                     "postcode": "",
                     "country": ""
                 },
+                "payment_method": "",
                 "payment_method_title": "",
                 "date_paid_gmt": "{{now offset='-2 days' format=customformat}}",
                 "line_items": [{
@@ -587,6 +595,7 @@
                     "postcode": "",
                     "country": ""
                 },
+                "payment_method": "",
                 "payment_method_title": "",
                 "date_paid_gmt": "{{now offset='-2 days' format=customformat}}",
                 "line_items": [{
@@ -663,6 +672,7 @@
                     "postcode": "",
                     "country": ""
                 },
+                "payment_method": "",
                 "payment_method_title": "",
                 "date_paid_gmt": "{{now offset='-2 days' format=customformat}}",
                 "line_items": [{
@@ -724,6 +734,7 @@
                     "postcode": "",
                     "country": ""
                 },
+                "payment_method": "",
                 "payment_method_title": "",
                 "date_paid_gmt": null,
                 "line_items": [{
@@ -785,6 +796,7 @@
                     "postcode": "",
                     "country": ""
                 },
+                "payment_method": "",
                 "payment_method_title": "",
                 "date_paid_gmt": "{{now offset='-3 days' format=customformat}}",
                 "line_items": [{
@@ -850,6 +862,7 @@
                     "postcode": "",
                     "country": ""
                 },
+                "payment_method": "",
                 "payment_method_title": "",
                 "date_paid_gmt": "{{now offset='-3 days' format=customformat}}",
                 "line_items": [{
@@ -911,6 +924,7 @@
                     "postcode": "",
                     "country": ""
                 },
+                "payment_method": "",
                 "payment_method_title": "",
                 "date_paid_gmt": "{{now offset='-3 days' format=customformat}}",
                 "line_items": [{
@@ -987,6 +1001,7 @@
                     "postcode": "",
                     "country": ""
                 },
+                "payment_method": "",
                 "payment_method_title": "",
                 "date_paid_gmt": "{{now offset='-4 days' format=customformat}}",
                 "line_items": [{
@@ -1048,6 +1063,7 @@
                     "postcode": "",
                     "country": ""
                 },
+                "payment_method": "",
                 "payment_method_title": "",
                 "date_paid_gmt": "{{now offset='-4 days' format=customformat}}",
                 "line_items": [{
@@ -1109,6 +1125,7 @@
                     "postcode": "",
                     "country": ""
                 },
+                "payment_method": "",
                 "payment_method_title": "",
                 "date_paid_gmt": "{{now offset='-4 days' format=customformat}}",
                 "line_items": [{
@@ -1200,6 +1217,7 @@
                     "postcode": "",
                     "country": ""
                 },
+                "payment_method": "",
                 "payment_method_title": "",
                 "date_paid_gmt": null,
                 "line_items": [{
@@ -1276,6 +1294,7 @@
                     "postcode": "94110-4929",
                     "country": "US"
                 },
+                "payment_method": "stripe",
                 "payment_method_title": "Credit Card (Stripe)",
                 "date_paid_gmt": "{{now offset='-5 days' format=customformat}}",
                 "line_items": [{
@@ -1352,6 +1371,7 @@
                     "postcode": "",
                     "country": ""
                 },
+                "payment_method": "stripe",
                 "payment_method_title": "Credit Card (Stripe)",
                 "date_paid_gmt": null,
                 "line_items": [{
@@ -1443,6 +1463,7 @@
                     "postcode": "",
                     "country": "US"
                 },
+                "payment_method": "",
                 "payment_method_title": "",
                 "date_paid_gmt": "{{now offset='-6 days' format=customformat}}",
                 "line_items": [{

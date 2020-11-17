@@ -24,6 +24,7 @@ final class MockOrders {
             shippingTax: "",
             total: "",
             totalTax: "",
+            paymentMethodID: "",
             paymentMethodTitle: "",
             items: [],
             billingAddress: nil,
@@ -52,6 +53,7 @@ final class MockOrders {
                      shippingTax: "0.00",
                      total: "31.20",
                      totalTax: "1.20",
+                     paymentMethodID: "stripe",
                      paymentMethodTitle: "Credit Card (Stripe)",
                      items: items,
                      billingAddress: sampleAddress(),
@@ -83,6 +85,7 @@ final class MockOrders {
                      shippingTax: "0.00",
                      total: "31.20",
                      totalTax: "1.20",
+                     paymentMethodID: "stripe",
                      paymentMethodTitle: "Credit Card (Stripe)",
                      items: [],
                      billingAddress: sampleAddress(),
@@ -135,6 +138,7 @@ final class MockOrders {
                      shippingTax: "0.00",
                      total: "0.00",
                      totalTax: "0.00",
+                     paymentMethodID: "",
                      paymentMethodTitle: "", // broken in the sense that there should be a payment title
                      items: [],
                      billingAddress: brokenAddress(), // empty address
@@ -164,6 +168,7 @@ final class MockOrders {
                      shippingTax: "0.00",
                      total: "0.00",
                      totalTax: "0.00",
+                     paymentMethodID: "cod",
                      paymentMethodTitle: "Cash on Delivery",
                      items: [],
                      billingAddress: brokenAddress(), // empty address

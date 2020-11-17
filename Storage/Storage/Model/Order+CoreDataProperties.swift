@@ -31,6 +31,7 @@ extension Order {
     @NSManaged public var number: String?
     @NSManaged public var orderID: Int64
     @NSManaged public var parentID: Int64
+    @NSManaged public var paymentMethodID: String?
     @NSManaged public var paymentMethodTitle: String?
     @NSManaged public var shippingAddress1: String?
     @NSManaged public var shippingAddress2: String?

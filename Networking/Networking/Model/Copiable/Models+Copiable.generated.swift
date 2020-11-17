@@ -22,6 +22,7 @@ extension Order {
         shippingTax: CopiableProp<String> = .copy,
         total: CopiableProp<String> = .copy,
         totalTax: CopiableProp<String> = .copy,
+        paymentMethodID: CopiableProp<String> = .copy,
         paymentMethodTitle: CopiableProp<String> = .copy,
         items: CopiableProp<[OrderItem]> = .copy,
         billingAddress: NullableCopiableProp<Address> = .copy,
@@ -47,6 +48,7 @@ extension Order {
         let shippingTax = shippingTax ?? self.shippingTax
         let total = total ?? self.total
         let totalTax = totalTax ?? self.totalTax
+        let paymentMethodID = paymentMethodID ?? self.paymentMethodID
         let paymentMethodTitle = paymentMethodTitle ?? self.paymentMethodTitle
         let items = items ?? self.items
         let billingAddress = billingAddress ?? self.billingAddress
@@ -73,6 +75,7 @@ extension Order {
             shippingTax: shippingTax,
             total: total,
             totalTax: totalTax,
+            paymentMethodID: paymentMethodID,
             paymentMethodTitle: paymentMethodTitle,
             items: items,
             billingAddress: billingAddress,

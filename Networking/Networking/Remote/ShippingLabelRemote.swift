@@ -14,16 +14,16 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
     /// - Parameters:
     ///   - siteID: Remote ID of the site that owns the shipping label.
     ///   - shippingLabelID: Remote ID of the shipping label.
-    ///   - paperSize: Paper size string (current options are "label", "legal", and "letter").
+    ///   - paperSize: Paper size option (current options are "label", "legal", and "letter").
     ///   - completion: Closure to be executed upon completion.
     public func printShippingLabel(siteID: Int64,
                                    shippingLabelID: Int64,
-                                   paperSize: String,
+                                   paperSize: ShippingLabelPaperSize,
                                    completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
         let parameters = [
-            ParameterKey.paperSize: paperSize,
+            ParameterKey.paperSize: paperSize.rawValue,
             ParameterKey.labelIDCSV: String(shippingLabelID),
-            ParameterKey.cationCSV: "",
+            ParameterKey.captionCSV: "",
             ParameterKey.json: "true" // `json=true` is necessary, otherwise it results in 500 error "no_response_body".
         ]
         let path = "\(Path.shippingLabels)/print"
@@ -43,7 +43,7 @@ private extension ShippingLabelRemote {
     enum ParameterKey {
         static let paperSize = "paper_size"
         static let labelIDCSV = "label_id_csv"
-        static let cationCSV = "caption_csv"
+        static let captionCSV = "caption_csv"
         static let json = "json"
     }
 }

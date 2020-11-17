@@ -2,13 +2,6 @@ import Foundation
 import Networking
 import Storage
 
-/// Paper size options for printing a shipping label.
-public enum ShippingLabelPaperSize {
-    case label
-    case legal
-    case letter
-}
-
 /// Implements `ShippingLabelAction` actions
 ///
 public final class ShippingLabelStore: Store {
@@ -54,19 +47,6 @@ private extension ShippingLabelStore {
                             shippingLabelID: Int64,
                             paperSize: ShippingLabelPaperSize,
                             completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
-        remote.printShippingLabel(siteID: siteID, shippingLabelID: shippingLabelID, paperSize: paperSize.rawValue, completion: completion)
-    }
-}
-
-private extension ShippingLabelPaperSize {
-    var rawValue: String {
-        switch self {
-        case .label:
-            return "label"
-        case .legal:
-            return "legal"
-        case .letter:
-            return "letter"
-        }
+        remote.printShippingLabel(siteID: siteID, shippingLabelID: shippingLabelID, paperSize: paperSize, completion: completion)
     }
 }

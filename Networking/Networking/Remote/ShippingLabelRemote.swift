@@ -4,7 +4,7 @@ import Foundation
 public protocol ShippingLabelRemoteProtocol {
     func printShippingLabel(siteID: Int64,
                             shippingLabelID: Int64,
-                            paperSize: String,
+                            paperSize: ShippingLabelPaperSize,
                             completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void)
 }
 

@@ -1,3 +1,5 @@
+import Networking
+
 public enum ShippingLabelAction: Action {
     /// Generates a shipping label document for printing.
     ///

@@ -28,11 +28,14 @@ final class MockShippingLabelRemote {
 
 // MARK: - ShippingLabelRemoteProtocol
 extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
-    func printShippingLabel(siteID: Int64, shippingLabelID: Int64, paperSize: String, completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
+    func printShippingLabel(siteID: Int64,
+                            shippingLabelID: Int64,
+                            paperSize: ShippingLabelPaperSize,
+                            completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
 
-            let key = PrintResultKey(siteID: siteID, shippingLabelID: shippingLabelID, paperSize: paperSize)
+            let key = PrintResultKey(siteID: siteID, shippingLabelID: shippingLabelID, paperSize: paperSize.rawValue)
             if let result = self.printResults[key] {
                 completion(result)
             } else {

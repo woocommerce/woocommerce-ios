@@ -51,6 +51,13 @@
 		02BDB83723EA9C4D00BCC63E /* String+HTMLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BDB83623EA9C4D00BCC63E /* String+HTMLTests.swift */; };
 		02C1CEF424C6A02B00703EBA /* ProductVariationMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C1CEF324C6A02B00703EBA /* ProductVariationMapper.swift */; };
 		02C2548425635BD000A04423 /* ShippingLabelPaperSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C2548325635BD000A04423 /* ShippingLabelPaperSize.swift */; };
+		02C2549A25636E1500A04423 /* ShippingLabelAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C2549925636E1500A04423 /* ShippingLabelAddress.swift */; };
+		02C254A025636F6900A04423 /* ShippingLabelRefund.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C2549F25636F6900A04423 /* ShippingLabelRefund.swift */; };
+		02C254A4256371B200A04423 /* ShippingLabelSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254A3256371B200A04423 /* ShippingLabelSettings.swift */; };
+		02C254A8256373AB00A04423 /* ShippingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254A7256373AB00A04423 /* ShippingLabel.swift */; };
+		02C254AC2563781800A04423 /* ShippingLabelStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254AB2563781800A04423 /* ShippingLabelStatus.swift */; };
+		02C254B0256378D000A04423 /* ShippingLabelRefundStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254AF256378D000A04423 /* ShippingLabelRefundStatus.swift */; };
+		02C254B925637BA000A04423 /* OrderShippingLabelListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254B825637BA000A04423 /* OrderShippingLabelListMapper.swift */; };
 		02C54CC624D3E938007D658F /* product-variations-load-all-manage-stock-two-states.json in Resources */ = {isa = PBXBuildFile; fileRef = 02C54CC524D3E937007D658F /* product-variations-load-all-manage-stock-two-states.json */; };
 		02DD6492248A3EC00082523E /* product-external.json in Resources */ = {isa = PBXBuildFile; fileRef = 02DD6491248A3EC00082523E /* product-external.json */; };
 		02E7FFCB256218F600C53030 /* ShippingLabelRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E7FFCA256218F600C53030 /* ShippingLabelRemoteTests.swift */; };
@@ -434,6 +441,13 @@
 		02BDB83623EA9C4D00BCC63E /* String+HTMLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+HTMLTests.swift"; sourceTree = "<group>"; };
 		02C1CEF324C6A02B00703EBA /* ProductVariationMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationMapper.swift; sourceTree = "<group>"; };
 		02C2548325635BD000A04423 /* ShippingLabelPaperSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaperSize.swift; sourceTree = "<group>"; };
+		02C2549925636E1500A04423 /* ShippingLabelAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddress.swift; sourceTree = "<group>"; };
+		02C2549F25636F6900A04423 /* ShippingLabelRefund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelRefund.swift; sourceTree = "<group>"; };
+		02C254A3256371B200A04423 /* ShippingLabelSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelSettings.swift; sourceTree = "<group>"; };
+		02C254A7256373AB00A04423 /* ShippingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabel.swift; sourceTree = "<group>"; };
+		02C254AB2563781800A04423 /* ShippingLabelStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelStatus.swift; sourceTree = "<group>"; };
+		02C254AF256378D000A04423 /* ShippingLabelRefundStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelRefundStatus.swift; sourceTree = "<group>"; };
+		02C254B825637BA000A04423 /* OrderShippingLabelListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderShippingLabelListMapper.swift; sourceTree = "<group>"; };
 		02C54CC524D3E937007D658F /* product-variations-load-all-manage-stock-two-states.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variations-load-all-manage-stock-two-states.json"; sourceTree = "<group>"; };
 		02DD6491248A3EC00082523E /* product-external.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-external.json"; sourceTree = "<group>"; };
 		02E7FFCA256218F600C53030 /* ShippingLabelRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelRemoteTests.swift; sourceTree = "<group>"; };
@@ -805,10 +819,24 @@
 		02C2548225635BB500A04423 /* ShippingLabel */ = {
 			isa = PBXGroup;
 			children = (
-				02C2548325635BD000A04423 /* ShippingLabelPaperSize.swift */,
+				02C254B525637A8300A04423 /* Enums */,
 				029BA4F3255D72EC006171FD /* ShippingLabelPrintData.swift */,
+				02C254A7256373AB00A04423 /* ShippingLabel.swift */,
+				02C2549925636E1500A04423 /* ShippingLabelAddress.swift */,
+				02C2549F25636F6900A04423 /* ShippingLabelRefund.swift */,
+				02C254A3256371B200A04423 /* ShippingLabelSettings.swift */,
 			);
 			path = ShippingLabel;
+			sourceTree = "<group>";
+		};
+		02C254B525637A8300A04423 /* Enums */ = {
+			isa = PBXGroup;
+			children = (
+				02C2548325635BD000A04423 /* ShippingLabelPaperSize.swift */,
+				02C254AB2563781800A04423 /* ShippingLabelStatus.swift */,
+				02C254AF256378D000A04423 /* ShippingLabelRefundStatus.swift */,
+			);
+			path = Enums;
 			sourceTree = "<group>";
 		};
 		35C45CCE73A311BE252F6BF4 /* Frameworks */ = {
@@ -1270,6 +1298,7 @@
 				B567AF2A20A0FA4200AB6C62 /* OrderListMapper.swift */,
 				74C8F06720EEB7BC00B6EDC9 /* OrderNotesMapper.swift */,
 				CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */,
+				02C254B825637BA000A04423 /* OrderShippingLabelListMapper.swift */,
 				D8FBFF1022D3B3FC006E3336 /* OrderStatsV4Mapper.swift */,
 				26731336255ACA850026F7EF /* PaymentGatewayListMapper.swift */,
 				74749B96224134FF005C4CF2 /* ProductMapper.swift */,
@@ -1746,6 +1775,7 @@
 				741B950120EBC8A700DD6E2D /* OrderCouponLine.swift in Sources */,
 				020D07BA23D8542000FD9580 /* UploadableMedia.swift in Sources */,
 				74C8F06420EEB44800B6EDC9 /* OrderNote.swift in Sources */,
+				02C254AC2563781800A04423 /* ShippingLabelStatus.swift in Sources */,
 				74ABA1D3213F25AE00FFAD30 /* TopEarnerStatsMapper.swift in Sources */,
 				020D07B823D852BB00FD9580 /* Media.swift in Sources */,
 				B5BB1D0C20A2050300112D92 /* DateFormatter+Woo.swift in Sources */,
@@ -1800,6 +1830,7 @@
 				B557DA0D20975DB1005962F4 /* WordPressAPIVersion.swift in Sources */,
 				7412A8EC21B6E286005D182A /* ReportOrderTotalsMapper.swift in Sources */,
 				5726F72E2460A2820031CAAC /* Copiable.swift in Sources */,
+				02C254A8256373AB00A04423 /* ShippingLabel.swift in Sources */,
 				74A1D26F21189EA100931DFA /* SiteVisitStatsRemote.swift in Sources */,
 				029BA4F4255D72EC006171FD /* ShippingLabelPrintData.swift in Sources */,
 				24F98C562502EA4800F49B68 /* FeatureFlag.swift in Sources */,
@@ -1810,9 +1841,11 @@
 				D823D905223746CE00C90817 /* NewShipmentTrackingMapper.swift in Sources */,
 				743057B5218B6ACD00441A76 /* Queue.swift in Sources */,
 				74A1D26821189A7100931DFA /* SiteVisitStats.swift in Sources */,
+				02C254B0256378D000A04423 /* ShippingLabelRefundStatus.swift in Sources */,
 				4568E2242459D3230007E478 /* Post.swift in Sources */,
 				B557DA0320975500005962F4 /* Remote.swift in Sources */,
 				B53EF53C21814900003E146F /* SuccessResultMapper.swift in Sources */,
+				02C254A4256371B200A04423 /* ShippingLabelSettings.swift in Sources */,
 				B554FA912180BCFC00C54DFF /* NoteHash.swift in Sources */,
 				CE0A0F19223987DF0075ED8D /* ProductListMapper.swift in Sources */,
 				021C7BF723863D1800A3BCBD /* Encodable+Serialization.swift in Sources */,
@@ -1823,6 +1856,7 @@
 				B567AF2920A0FA1E00AB6C62 /* Mapper.swift in Sources */,
 				CE50345E21B571A7007573C6 /* SitePlanMapper.swift in Sources */,
 				D8FBFF2022D52553006E3336 /* OrderStatsV4Totals.swift in Sources */,
+				02C254B925637BA000A04423 /* OrderShippingLabelListMapper.swift in Sources */,
 				261CF1B8255AE62D0090D8D3 /* PaymentGatewayRemote.swift in Sources */,
 				CE0A0F1522396BF00075ED8D /* ProductAttribute.swift in Sources */,
 				026CF620237D69D6009563D4 /* ProductVariationsRemote.swift in Sources */,
@@ -1837,6 +1871,7 @@
 				4568E2222459ADC60007E478 /* SitePostsRemote.swift in Sources */,
 				93D8BBFD226BBEE800AD2EB3 /* AccountSettingsMapper.swift in Sources */,
 				74D522B62113607F00042831 /* StatGranularity.swift in Sources */,
+				02C2549A25636E1500A04423 /* ShippingLabelAddress.swift in Sources */,
 				B518662220A097C200037A38 /* Network.swift in Sources */,
 				B572F69A21AC475C003EEFF0 /* DevicesRemote.swift in Sources */,
 				B518662420A099BF00037A38 /* AlamofireNetwork.swift in Sources */,
@@ -1849,6 +1884,7 @@
 				261870782540A252006522A1 /* ShippingLineTax.swift in Sources */,
 				74046E1B217A684D007DD7BF /* SiteSettingsRemote.swift in Sources */,
 				B5C6FCCF20A3592900A4F8E4 /* OrderItem.swift in Sources */,
+				02C254A025636F6900A04423 /* ShippingLabelRefund.swift in Sources */,
 				26B2F74124C1F2C10065CCC8 /* LeaderboardsRemote.swift in Sources */,
 				B524193F21AC5FE400D6FC0A /* DotcomDeviceMapper.swift in Sources */,
 				021EAA5625493B3600AA8CCD /* OrderItemAttribute.swift in Sources */,

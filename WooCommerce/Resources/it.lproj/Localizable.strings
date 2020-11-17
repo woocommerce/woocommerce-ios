@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-10-26 22:14:23+0000 */
+/* Translation-Revision-Date: 2020-11-13 14:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -54,11 +54,11 @@
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
 "%@ via %@" = "%1$@ tramite %2$@";
 
-/* Refund item price and quantity format. EG: 2 x $10.00 each */
-"%@ x %@ each" = "%@ x %@ each";
-
 /* Title of the label indicating that there are multiple items to refund. */
-"%d items selected" = "%d items selected";
+"%d items selected" = "%d elementi selezionati";
+
+/* Refund item price and quantity format. EG: 2 x $10.00 each */
+"%d x %@ each" = "%1$d x %2$@ ciascuno";
 
 /* Navigation bar title for selecting multiple products when more multiple products have been selected. */
 "%ld Products Selected" = "%ld Prodotti selezionati";
@@ -67,7 +67,7 @@
 "%ld file" = "%ld file";
 
 /* Format of the number of Downloadable Files row in the plural form. Reads, `5 files` */
-"%ld files" = "%ld files";
+"%ld files" = "%ld file";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld in magazzino";
@@ -90,11 +90,14 @@
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld varianti";
 
+/* Product title in Products list when there is no title */
+"(No Title)" = "(senza titolo)";
+
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "1 prodotto selezionato";
 
 /* Title of the label indicating that there is 1 item to refund. */
-"1 item selected" = "1 item selected";
+"1 item selected" = "1 elemento selezionato";
 
 /* Shown when there are more than 99 items of something (e.g. Processing Orders). */
 "99+" = "Più di 99";
@@ -112,7 +115,7 @@
 "A product with variations like color or size" = "Un prodotto con varianti come colore o misura";
 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "A refund will not be issued to the customer. You will need to manually issue the refund through %1$@.";
+"A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "Non verrà emesso alcun rimborso al cliente. Dovrai emettere manualmente il rimborso tramite %1$@.";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "Un articolo unico da vendere";
@@ -139,7 +142,7 @@
 "Active, Autoupdates on" = "Attivo, Aggiornamenti automatici attivi ";
 
 /* A button title used for a shipment tracking unit test
-   A button title used for a unit test - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
+   A button title used for a unit test - Action for adding a Products' downloadable files' info remotely - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "Aggiungi";
 
 /* Action to add category on the Product Categories screen
@@ -147,13 +150,13 @@
 "Add Category" = "Aggiungi categoria";
 
 /* Downloadable file screen navigation title */
-"Add Downloadable File" = "Add Downloadable File";
+"Add Downloadable File" = "Aggiungi file scaricabile";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "Add File";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "Aggiungi file";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Aggiungi foto";
@@ -200,6 +203,9 @@
 
 /* Title for adding grouped products row on Product main screen for a grouped product */
 "Add products to the group" = "Aggiungi i prodotti al gruppo";
+
+/* Accessibility label to add products' downloadable files' info remotely */
+"Add products' downloadable files' info remotely" = "Aggiungi da remoto le informazioni sui file scaricabili dei prodotti";
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Aggiungi peso e dimensioni";
@@ -369,7 +375,7 @@
 "Can Not Request Link" = "Può non essere necessario il collegamento";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
 "Cancel" = "Annulla";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -415,7 +421,7 @@
 "Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Controlla la tua e-mail su questo dispositivo e tocca il link nell'e-mail ricevuta da WordPress.com.";
 
 /* Instructional text on how to open the email containing a magic link. */
-"Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder." = "Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder.";
+"Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder." = "Controlla la tua e-mail su questo dispositivo e tocca il link nell'e-mail ricevuta da WordPress.com.\n\nNon trovi l'e-mail? Controlla la cartella dello spam o della posta indesiderata.";
 
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "Controlla l'e-mail.";
@@ -523,6 +529,12 @@
 /* The button title text for creating a new account. */
 "Create Account" = "Crea account";
 
+/* The title of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
+"Create products from the app!" = "Crea prodotti dall'app!";
+
+/* My Store > Settings > Experimental features > Products */
+"Creating products" = "Creazione di prodotti";
+
 /* Cell title: the current date. */
 "Current" = "Attuale";
 
@@ -562,7 +574,7 @@
 "Default" = "Predefinito";
 
 /* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen
-   Button title Delete in Edit Product More Options Action Sheet */
+   Button title Delete in Downloadable File Options Action Sheet - Button title Delete in Edit Product More Options Action Sheet */
 "Delete" = "Elimina";
 
 /* Delete a Shipment Tracking
@@ -662,37 +674,37 @@
 
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
-"Download Settings" = "Download Settings";
+"Download Settings" = "Impostazioni download";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Download expiration";
+"Download expiration" = "Scadenza download";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Download limit";
 
 /* Title of the cell in Product Download limit > Download limit */
-"Download limit" = "Download limit";
+"Download limit" = "Limite di download";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "Downloadable Files";
 
 /* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "Downloadable Files";
+"Downloadable Files" = "File scaricabili";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "Downloadable Product";
 
 /* Downloadable Product label in Product Settings */
-"Downloadable Product" = "Downloadable Product";
+"Downloadable Product" = "Prodotto scaricabile";
 
 /* Title of the Downloadable Files row on Product main screen */
 "Downloadable files" = "Downloadable files";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "Downloadable files";
+"Downloadable files" = "File scaricabili";
 
 /* Product Details > Purchase Details > Downloads cell title */
 "Downloads" = "Download";
@@ -740,6 +752,9 @@
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Inserisci il nome del corriere";
 
+/* Title of the downloadable file bottom sheet action for adding file from an URL. */
+"Enter file URL" = "Inserisci URL file";
+
 /* Enter password placeholder in Product Visibility */
 "Enter password" = "Inserisci una password";
 
@@ -757,13 +772,13 @@
 "Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
 
 /* Footer text for Download Expiration */
-"Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "Inserisci il numero di giorni precedenti la scadenza del link di download o lascia vuoto se non si ha scadenza";
 
 /* Footer text for Downloadable Limit */
 "Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
 
 /* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Inserisci il numero di volte che il file può essere scaricato o lascia vuoto per download illimitati";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Digita la password per il tuo account WordPress.com.";
@@ -820,7 +835,7 @@
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "File Name";
+"File Name" = "Nome file";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -832,7 +847,7 @@
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
-"File URL" = "File URL";
+"File URL" = "URL del file";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "Inserisci il programma di gestione delle password";
@@ -853,11 +868,20 @@
 /* The hint button's title text to help users find their site address. */
 "Find your site address" = "Trova l'indirizzo per il tuo sito";
 
+/* Shown in the prologue carousel (promotional screens) during first launch. */
+"Follow your favorite sites and discover new reads." = "Segui i tuoi siti preferiti e scopri nuove letture.";
+
 /* User role badge */
 "Follower" = "Follower";
 
 /* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "Da";
+
+/* Title of the downloadable file bottom sheet action for adding file from WordPress Media Library. */
+"From WordPress Media Library" = "Dalla libreria multimediale WordPress";
+
+/* Title of the downloadable file bottom sheet action for adding file from device. */
+"From device" = "Dal dispositivo";
 
 /* Order Fulfillment Title */
 "Fulfill Order #(order.number)" = "Evadi ordine n. (order.number)";
@@ -1049,6 +1073,9 @@
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "Corsivo";
 
+/* The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
+"It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!" = "Dall'app Woo ora puoi creare prodotti semplici, raggruppati \ned esterni anche mentre viaggi. Non sei ancora pronto? Salvali come bozza.";
+
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Continua a modificare";
 
@@ -1131,6 +1158,12 @@
 /* Sign in instructions on the 'log in using email' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Accedi con l'indirizzo e-mail dell'account WordPress.com per gestire i negozi WooCommerce.";
 
+/* Sign in instructions for logging in with a username and password. */
+"Log in with your WordPress.com account to manage your WooCommerce stores." = "Accedi con l'account WordPress.com per gestire i negozi WooCommerce.";
+
+/* Instructions on the WordPress.com username / password log in form. */
+"Log in with your WordPress.com username and password." = "Accedi con il nome utente e la password WordPress.com.";
+
 /* Error message that displays on the 'Log in by entering your site address.' screen. Jetpack is required for logging into the WooCommerce mobile apps. */
 "Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue." = "Sembra che il tuo sito non sia configurato per usare questa app. Assicurati che Jetpack sia installato sul tuo sito per continuare.";
 
@@ -1162,7 +1195,7 @@
 "Manual Offsets" = "Offset manuale";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "Rimborso manuale tramite %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
 "Manual Refund via %1$@" = "Manual Refund via %1$@";
@@ -1251,7 +1284,7 @@
 /* The title for the net amount paid cell */
 "Net" = "Netto";
 
-/* The title of the Work In Progress top banner on the Products tab. */
+/* The title of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
 "New editing options available" = "Nuove opzioni di modifica disponibili";
 
 /* Title of a button.
@@ -1275,7 +1308,7 @@
 "No data available" = "Nessun dato disponibile";
 
 /* Placeholder of the cell text field in Download expiration */
-"No expiration" = "No expiration";
+"No expiration" = "Nessuna scadenza";
 
 /* Placeholder of the cell text field in Download expiration */
 "No expiration" = "No expiration";
@@ -1284,7 +1317,7 @@
 "No files yet" = "No files yet";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "No files yet";
+"No files yet" = "Ancora nessun file";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "Nessuna immagine ancora presente";
@@ -1293,7 +1326,7 @@
 "No limit" = "No limit";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "No limit";
+"No limit" = "Nessun limite";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Nessun prezzo impostato";
@@ -1306,7 +1339,7 @@
 "No products yet" = "Ancora nessun prodotto";
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
-"No results found for (term)\nAdd a custom carrier" = "No results found for (term)\nAdd a custom carrier";
+"No results found for (term)\nAdd a custom carrier" = "Nessun risultato trovato per (termine)\nAggiungi un corriere personalizzato";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Nessuna entrata per questo periodo";
@@ -1539,7 +1572,7 @@
 "Please wait while we publish this product to your store" = "Attendi mentre pubblichiamo questo prodotto nel tuo negozio";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
+"Please wait while we save this product to your store" = "Attendi mentre salviamo questo prodotto nel tuo negozio";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
 "Please wait while we save this product to your store" = "Please wait while we save this product to your store";
@@ -1547,11 +1580,14 @@
 /* Message of the in-progress UI while deleting the Product remotely */
 "Please wait while we update your store details" = "Attendi mentre aggiorniamo i dettagli del negozio";
 
+/* Text on the loading view of the product downloadable file screen indicating the user to wait */
+"Please wait..." = "Attendi…";
+
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Utilizza Automattic";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Previously Refunded";
+"Previously Refunded" = "Precedentemente rimborsato";
 
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "Previously Refunded";
@@ -1614,9 +1650,6 @@
 /* Title of the text field for editing the external URL for an external/affiliate product */
 "Product URL" = "URL del prodotto";
 
-/* My Store > Settings > Experimental features > Product editing */
-"Product editing" = "Modifica del prodotto";
-
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Link del prodotto";
 
@@ -1674,7 +1707,7 @@
 "Quantity" = "Quantità";
 
 /* Navigation title on the quantity item selector screen */
-"Quantity to refund" = "Quantity to refund";
+"Quantity to refund" = "Importo del rimborso";
 
 /* Navigation title on the quantity item selector screen */
 "Quantity to refund" = "Quantity to refund";
@@ -1698,10 +1731,10 @@
 "Reason for Refund (Optional)" = "Reason for Refund (Optional)";
 
 /* A label for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
+"Reason for Refund (Optional)" = "Motivo del rimborso (opzionale)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for refunding order" = "Reason for refunding order";
+"Reason for refunding order" = "Motivo del rimborso ordine";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Reason for refunding order";
@@ -1710,7 +1743,7 @@
 "Refund" = "Refund";
 
 /* The title of the button to confirm the refund. */
-"Refund" = "Refund";
+"Refund" = "Rimborsa";
 
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "Rimborso #%@";
@@ -1723,7 +1756,7 @@
 "Refund Details" = "Dettagli di rimborsod";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Refund Shipping";
+"Refund Shipping" = "Rimborsa spedizione";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
 "Refund Shipping" = "Refund Shipping";
@@ -1732,7 +1765,7 @@
 "Refund Via" = "Refund Via";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Refund Via";
+"Refund Via" = "Rimborsa tramite";
 
 /* The title for the refunded amount cell */
 "Refunded" = "Rimborsato";
@@ -1856,7 +1889,7 @@
 "Saving your product..." = "Saving your product...";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
-"Saving your product..." = "Saving your product...";
+"Saving your product..." = "Salvataggio del tuo prodotto...";
 
 /* Scan Products */
 "Scan products" = "Scansiona prodotti";
@@ -1882,11 +1915,14 @@
 /* Display label for the product's catalog visibility */
 "Search results only" = "Soltanto risultati della ricerca";
 
-/* Select all button title in the issue refund screen */
-"Select All" = "Seleziona tutto";
+/* Shown in the prologue carousel (promotional screens) during first launch. */
+"See comments and notifications in real time." = "Vedi i commenti e le notifiche in tempo reale.";
 
 /* Select all button title in the issue refund screen */
 "Select All" = "Select All";
+
+/* Select all button title in the issue refund screen */
+"Select All" = "Seleziona tutto";
 
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "Seleziona categoria genitore";
@@ -1908,6 +1944,9 @@
 
 /* Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date */
 "Select start date" = "Seleziona la data di inizio";
+
+/* Title of the bottom sheet from the product downloadable file to add a new downloadable file. */
+"Select upload method" = "Seleziona metodo di caricamento";
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "Negozio selezionato";
@@ -1995,11 +2034,11 @@
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show a list of refunded order items for this order." = "Mostra un elenco degli elementi dell'ordine rimborsati per questo ordine.";
 
-/* Accessibility label to show bottom action sheet to delete downloadable file from the list */
-"Show bottom action sheet to delete downloadable file from list" = "Show bottom action sheet to delete downloadable file from list";
+/* Accessibility label to show bottom action sheet options for a downloadable file */
+"Show bottom action sheet options for a downloadable file" = "Mostra le opzioni del foglio delle azioni inferiore per un file scaricabile";
 
 /* Accessibility label to show bottom action sheet to delete downloadable file from the list */
-"Show bottom action sheet to delete downloadable file from list" = "Show bottom action sheet to delete downloadable file from list";
+"Show bottom action sheet to delete downloadable file from list" = "Mostra il foglio delle azioni nella parte inferiore per eliminare il file scaricabile dall'elenco";
 
 /* Accessibility label for the 'Show password' button in the login page's password field.
    Accessibility label for the “Show password“ button in the login page's password field. */
@@ -2278,8 +2317,8 @@
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Termini di Servizio";
 
-/* My Store > Settings > Experimental features > Product editing */
-"Test out new product editing functionalities as we get ready to launch them" = "Testa le nuove funzionalità di modifica del prodotto mentre ci prepariamo a lanciarle";
+/* My Store > Settings > Experimental features > Products */
+"Test out the new product creation as we get ready to launch" = "Testa la creazione del nuovo prodotto mentre ci prepariamo a lanciarlo";
 
 /* Button title
    The button's title text to send a 2FA code via SMS text message. */
@@ -2403,7 +2442,7 @@
 "This is the URL-friendly version of the product title" = "Questa è la versione URL friendly del titolo del prodotto";
 
 /* Footer text for Downloadable File Name */
-"This is the name of the file shown to the customer." = "This is the name of the file shown to the customer.";
+"This is the name of the file shown to the customer." = "Questo è il nome del file mostrato al cliente.";
 
 /* Footer text for Downloadable File Name */
 "This is the name of the file shown to the customer." = "This is the name of the file shown to the customer.";
@@ -2412,7 +2451,7 @@
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
 
 /* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Questo è l'URL del file a cui i clienti avranno accesso. Gli URL inseriti dovrebbero essere già codificati.";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2618,7 +2657,7 @@
 "Update product inventory and SKU" = "Aggiorna inventario dei prodotti e SKU";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "Aggiorna le informazioni dei file scaricabili di prodotti in remoto";
 
 /* Accessibility label to update products' downloadable files' info remotely */
 "Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
@@ -2695,7 +2734,7 @@
 "View downloadable file settings" = "View downloadable file settings";
 
 /* The action to update downloadable files settings for a product */
-"View downloadable file settings" = "View downloadable file settings";
+"View downloadable file settings" = "Visualizza impostazioni del file scaricabile";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Visualizza ticket di supporto inviati in precedenza";
@@ -2740,6 +2779,9 @@
 /* shown in promotional screens during first launch */
 "Watch readers from around the world read and interact with your site — in real time." = "Guarda i lettori da tutto il mondo leggere e interagire con il tuo sito, in tempo reale.";
 
+/* Shown in the prologue carousel (promotional screens) during first launch. */
+"Watch your audience grow with in-depth analytics." = "Guarda il tuo pubblico crescere con analisi approfondite.";
+
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "Non possiamo mostrare le analisi del negozio";
 
@@ -2777,9 +2819,6 @@
    Message for empty Products search results. The %@ is a placeholder for the text entered by the user. */
 "We're sorry, we couldn't find results for “%@”" = "Siamo spiacenti, non è stato possibile trovare risultati per \"%@\"";
 
-/* The info of the Work In Progress top banner on the Products tab. */
-"We've added more editing functionalities to products! You can now update images, see previews and share your products." = "Abbiamo aggiunto più funzionalità di modifica ai prodotti! Ora puoi aggiornare immagini, vedere anteprime e condividere i prodotti.";
-
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Ti abbiamo inviato via e-mail un link di iscrizione per creare il tuo nuovo account WordPress.com. Controlla la tua e-mail su questo dispositivo e tocca il link nell'e-mail ricevuta da WordPress.com.";
 
@@ -2798,6 +2837,9 @@
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Peso: %1$@%2$@";
 
+/* Shown in the prologue carousel (promotional screens) during first launch. */
+"Welcome to the world’s most popular website builder." = "Benvenuto nel costruttore di siti web più popolare del mondo.";
+
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "Qual'è l'indirizzo del mio sito?";
 
@@ -2809,6 +2851,9 @@
 
 /* Title of the cell in Product Shipping Settings > Width */
 "Width" = "Larghezza";
+
+/* Shown in the prologue carousel (promotional screens) during first launch. */
+"With this powerful editor you can post on the go." = "Con questo editor potente puoi pubblicare anche durante i tuoi spostamenti.";
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
@@ -2838,7 +2883,7 @@
 /* Yesterday Section Header */
 "Yesterday" = "Ieri";
 
-/* The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
+/* The info of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
 "You can now edit grouped, external and variable products, change product type and update categories and tags" = "Ora puoi modificare i prodotti variabili, esterni e raggruppati, puoi cambiare il tipo di prodotto e aggiornare categorie e tag";
 
 /* No comment provided by engineer. */

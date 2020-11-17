@@ -49,10 +49,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store wherever you are. The WooCommerce app makes it easy to manage orders and inventory, track sales, and monitor store activity like new orders and reviews."
 msgstr ""
 
-msgctxt "v5.4-whats-new"
+msgctxt "v5.5-whats-new"
 msgid ""
-"* Fixed! The footer in the app's Settings is now centered, draft products now sort from "Newest to Oldest" as expected, and the white background color has been removed from the placeholder view in the top dashboard chart in dark mode on iOS 14.\n"
-"* Enhanced! Use the new date picker in iOS 14 to edit the date shipped in order details > add tracking and edit sale dates in details > price setting. Also, you'll see a "No Title" placeholder for products without a title in the products list.\n"
+"Products: You can now add simple, grouped, and external products and save products as drafts. We’ll have more new features for you to try out soon!\n"
+"\n"
+"Other fixes: The Order Details screen now shows variation attributes for WooCommerce stores on version 4.7 and above. You may also notice that the Product Detail screen now shows the number of product ratings. Previously, it displayed the number of reviews, which was inaccurate.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

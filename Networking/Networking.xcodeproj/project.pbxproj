@@ -806,6 +806,7 @@
 			isa = PBXGroup;
 			children = (
 				02C2548325635BD000A04423 /* ShippingLabelPaperSize.swift */,
+				029BA4F3255D72EC006171FD /* ShippingLabelPrintData.swift */,
 			);
 			path = ShippingLabel;
 			sourceTree = "<group>";
@@ -1126,7 +1127,6 @@
 				74159624224D4045003C21CF /* SiteSettingGroup.swift */,
 				CE50345F21B5799F007573C6 /* SitePlan.swift */,
 				450106842399A7CB00E24722 /* TaxClass.swift */,
-				029BA4F3255D72EC006171FD /* ShippingLabelPrintData.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";

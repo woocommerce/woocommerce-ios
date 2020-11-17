@@ -12,11 +12,10 @@ final class MockShippingLabelRemote {
         let paperSize: String
     }
 
-    /// The results to return based on the given arguments in `loadProduct`
+    /// The results to return based on the given arguments in `printShippingLabel`
     private var printResults = [PrintResultKey: Result<ShippingLabelPrintData, Error>]()
 
     /// Set the value passed to the `completion` block if `printShippingLabel` is called.
-    ///
     func whenPrintingShippingLabel(siteID: Int64,
                                    shippingLabelID: Int64,
                                    paperSize: String,

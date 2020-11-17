@@ -98,7 +98,7 @@ private extension RefundConfirmationViewModel {
     ///
     func makeRefundViaRow() -> RefundConfirmationViewModelRow {
         if gatewaySupportsAutomaticRefunds() {
-            return TitleAndBodyRow(title: details.order.paymentMethodTitle, body: nil)
+            return SimpleTextRow(text: details.order.paymentMethodTitle)
         } else {
             return TitleAndBodyRow(title: Localization.manualRefund(via: details.order.paymentMethodTitle),
                                    body: Localization.refundWillNotBeIssued(paymentMethod: details.order.paymentMethodTitle))
@@ -149,6 +149,11 @@ extension RefundConfirmationViewModel {
     struct TitleAndBodyRow: RefundConfirmationViewModelRow {
         let title: String
         let body: String?
+    }
+
+    /// A row that shows a simple text on it.
+    struct SimpleTextRow: RefundConfirmationViewModelRow {
+        let text: String
     }
 }
 

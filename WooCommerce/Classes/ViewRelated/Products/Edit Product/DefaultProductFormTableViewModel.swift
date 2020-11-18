@@ -432,12 +432,10 @@ private extension DefaultProductFormTableViewModel {
         let icon = UIImage.linkedProductsImage
         let title = Localization.linkedProductsTitle
 
-        var linkedProductsDetails = [String]()
-
-        linkedProductsDetails.append(Localization.upsellProducts(count: product.upsellIDs.count))
-        linkedProductsDetails.append(Localization.crossSellProducts(count: product.crossSellIDs.count))
-
-        let details = linkedProductsDetails.isEmpty ? nil : linkedProductsDetails.joined(separator: "\n")
+        let details = [
+            Localization.upsellProducts(count: product.upsellIDs.count),
+            Localization.crossSellProducts(count: product.crossSellIDs.count),
+        ].joined(separator: "\n")
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,

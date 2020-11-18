@@ -144,11 +144,12 @@ private extension RefundConfirmationViewController {
         let actionSheet = UIAlertController(title: Localization.confirmationTitle(amount: viewModel.refundAmount),
                                             message: Localization.confirmationBody,
                                             preferredStyle: .alert)
+        actionSheet.view.tintColor = .text
         actionSheet.addCancelActionWithTitle(Localization.cancel) { _ in
             onCompletion(false)
         }
 
-        actionSheet.addActionWithTitle(Localization.refund, style: .default) { _ in
+        actionSheet.addDefaultActionWithTitle(Localization.refund) { _ in
             onCompletion(true)
         }
 

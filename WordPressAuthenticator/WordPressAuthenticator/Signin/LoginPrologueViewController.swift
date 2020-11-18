@@ -195,6 +195,15 @@ class LoginPrologueViewController: LoginViewController {
     /// Displays the Unified prologue buttons.
     ///
     private func buildUnifiedPrologueButtons(_ buttonViewController: NUXButtonViewController) {
+        if configuration.continueWithSiteAddressFirst {
+            buildWooUnifiedPrologueButtons(buttonViewController)
+            return
+        }
+        
+        buildDefaultUnifiedPrologueButtons(buttonViewController)
+    }
+    
+    private func buildDefaultUnifiedPrologueButtons(_ buttonViewController: NUXButtonViewController) {
         let loginTitle = NSLocalizedString("Continue with WordPress.com",
                                            comment: "Button title. Takes the user to the login by email flow.")
         let siteAddressTitle = NSLocalizedString("Enter your site address",
@@ -217,6 +226,43 @@ class LoginPrologueViewController: LoginViewController {
             }
         }
 
+        if showCancel {
+            let cancelTitle = NSLocalizedString("Cancel", comment: "Button title. Tapping it cancels the login flow.")
+            buttonViewController.setupTertiaryButton(title: cancelTitle, isPrimary: false) { [weak self] in
+                self?.dismiss(animated: true, completion: nil)
+            }
+        }
+
+        // Set the button background color to clear so the blur effect blurs the Prologue background color.
+        buttonViewController.backgroundColor = .clear
+        buttonBlurEffectView.effect = UIBlurEffect(style: blurEffect)
+    }
+    
+    private func buildWooUnifiedPrologueButtons(_ buttonViewController: NUXButtonViewController) {
+        guard configuration.enableUnifiedAuth == true else {
+            return
+        }
+        
+        let loginTitle = NSLocalizedString("Continue with WordPress.com",
+                                           comment: "Button title. Takes the user to the login by email flow.")
+        let siteAddressTitle = NSLocalizedString("Enter your site address",
+                                                 comment: "Button title. Takes the user to the login by site address flow.")
+
+        setButtonViewMargins(forWidth: view.frame.width)
+        
+        buttonViewController.setupTopButton(title: siteAddressTitle, isPrimary: false, accessibilityIdentifier: "Prologue Self Hosted Button") { [weak self] in
+            self?.siteAddressTapped()
+        }
+        
+        buttonViewController.setupBottomButton(title: loginTitle, isPrimary: true, accessibilityIdentifier: "Prologue Continue Button") { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            self.tracker.track(click: .continueWithWordPressCom)
+            self.continueWithDotCom()
+        }
+        
         if showCancel {
             let cancelTitle = NSLocalizedString("Cancel", comment: "Button title. Tapping it cancels the login flow.")
             buttonViewController.setupTertiaryButton(title: cancelTitle, isPrimary: false) { [weak self] in

@@ -406,6 +406,9 @@
 		451C77732404534000413F73 /* ProductSettingsSections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451C77722404534000413F73 /* ProductSettingsSections.swift */; };
 		4524CD9E242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4524CD9D242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift */; };
 		4524CDA1242D045C00B2F20A /* ProductStatusSettingListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4524CDA0242D045C00B2F20A /* ProductStatusSettingListSelectorCommandTests.swift */; };
+		452FE64B25657EC100EB54A0 /* LinkedProductsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452FE64925657EC100EB54A0 /* LinkedProductsViewController.swift */; };
+		452FE64C25657EC100EB54A0 /* LinkedProductsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 452FE64A25657EC100EB54A0 /* LinkedProductsViewController.xib */; };
+		452FE6522565849B00EB54A0 /* LinkedProductsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452FE6512565849B00EB54A0 /* LinkedProductsViewModel.swift */; };
 		453227B723C4D6EC00D816B3 /* TimeZone+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453227B623C4D6EC00D816B3 /* TimeZone+Woo.swift */; };
 		4535001E2509455100CDE072 /* SiteCountryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4535001D2509455100CDE072 /* SiteCountryTests.swift */; };
 		453770D12431FF4700AC718D /* ProductSettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453770D02431FF4700AC718D /* ProductSettingsViewModelTests.swift */; };
@@ -1445,6 +1448,9 @@
 		451C77722404534000413F73 /* ProductSettingsSections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsSections.swift; sourceTree = "<group>"; };
 		4524CD9D242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStatusSettingListSelectorCommand.swift; sourceTree = "<group>"; };
 		4524CDA0242D045C00B2F20A /* ProductStatusSettingListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStatusSettingListSelectorCommandTests.swift; sourceTree = "<group>"; };
+		452FE64925657EC100EB54A0 /* LinkedProductsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedProductsViewController.swift; sourceTree = "<group>"; };
+		452FE64A25657EC100EB54A0 /* LinkedProductsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LinkedProductsViewController.xib; sourceTree = "<group>"; };
+		452FE6512565849B00EB54A0 /* LinkedProductsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedProductsViewModel.swift; sourceTree = "<group>"; };
 		453227B623C4D6EC00D816B3 /* TimeZone+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeZone+Woo.swift"; sourceTree = "<group>"; };
 		4535001D2509455100CDE072 /* SiteCountryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCountryTests.swift; sourceTree = "<group>"; };
 		453770D02431FF4700AC718D /* ProductSettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsViewModelTests.swift; sourceTree = "<group>"; };
@@ -2195,6 +2201,7 @@
 		021627232379637E000208D2 /* Edit Product */ = {
 			isa = PBXGroup;
 			children = (
+				452FE64825657E5F00EB54A0 /* Linked Products */,
 				77E53EB5250E6972003D385F /* Downloadable Files */,
 				020886582499E64B001D784E /* Edit External Link */,
 				0212275F244989D20042161F /* BottomSheetListSelector */,
@@ -3044,6 +3051,16 @@
 				4524CD9D242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift */,
 			);
 			path = "List Selector Data Source";
+			sourceTree = "<group>";
+		};
+		452FE64825657E5F00EB54A0 /* Linked Products */ = {
+			isa = PBXGroup;
+			children = (
+				452FE64925657EC100EB54A0 /* LinkedProductsViewController.swift */,
+				452FE64A25657EC100EB54A0 /* LinkedProductsViewController.xib */,
+				452FE6512565849B00EB54A0 /* LinkedProductsViewModel.swift */,
+			);
+			path = "Linked Products";
 			sourceTree = "<group>";
 		};
 		453770CF2431FEC400AC718D /* Settings */ = {
@@ -5174,6 +5191,7 @@
 				B59D1EE121907304009D1978 /* ProductReviewTableViewCell.xib in Resources */,
 				021E2A1823A9FE5A00B1DE07 /* ProductInventorySettingsViewController.xib in Resources */,
 				57448D2A242E777700A56A74 /* EmptyStateViewController.xib in Resources */,
+				452FE64C25657EC100EB54A0 /* LinkedProductsViewController.xib in Resources */,
 				0286B27A23C7051F003D784B /* ProductImagesCollectionViewController.xib in Resources */,
 				025C00692550DE4700FAC222 /* BarcodeScannerViewController.xib in Resources */,
 				4512055324655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.xib in Resources */,
@@ -5696,6 +5714,7 @@
 				B5A8532220BDBFAF00FAAB4D /* CircularImageView.swift in Sources */,
 				CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */,
 				0235595324496A93004BE2B8 /* BottomSheetListSelectorViewProperties.swift in Sources */,
+				452FE6522565849B00EB54A0 /* LinkedProductsViewModel.swift in Sources */,
 				0219B03723964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift in Sources */,
 				024DF31923742C3F006658FE /* AztecFormatBarFactory.swift in Sources */,
 				02C2756824F4E77F00286C04 /* ProductShippingSettingsViewModel.swift in Sources */,
@@ -5788,6 +5807,7 @@
 				CE5F462723AAC8C0006B1A5C /* RefundDetailsViewModel.swift in Sources */,
 				453DBF8E2387F34A006762A5 /* UICollectionViewCell+Helpers.swift in Sources */,
 				45B9C63E23A8E50D007FC4C5 /* ProductPriceSettingsViewController.swift in Sources */,
+				452FE64B25657EC100EB54A0 /* LinkedProductsViewController.swift in Sources */,
 				45B9C64123A9139A007FC4C5 /* Product+PriceSettingsViewModels.swift in Sources */,
 				773077ED251E943700178696 /* Product+DownloadFileViewModels.swift in Sources */,
 				743EDD9F214B05350039071B /* TopEarnerStatsItem+Woo.swift in Sources */,

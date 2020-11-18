@@ -82,6 +82,12 @@ public struct WordPressAuthenticatorConfiguration {
     /// If disabled, displays the old carousel.
     /// If enabled, displays the new carousel.
     let enableUnifiedCarousel: Bool
+    
+    /// Flag for the unified login/signup flows.
+    /// If disabled, the "Continue With WordPress" button in the login prologue is shown first.
+    /// If enabled, the "Enter your site Address" button in the login prologue is shown first.
+    /// Default value is disabled
+    let continueWithSiteAddressFirst: Bool
 
     /// Designated Initializer
     ///
@@ -101,7 +107,8 @@ public struct WordPressAuthenticatorConfiguration {
                  enableSignupWithGoogle: Bool = false,
                  enableUnifiedAuth: Bool = false,
                  enableUnifiedCarousel: Bool = false,
-                 displayHintButtons: Bool = true) {
+                 displayHintButtons: Bool = true,
+                 continueWithSiteAddressFirst: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -120,5 +127,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.enableUnifiedCarousel = enableUnifiedCarousel
         self.displayHintButtons = displayHintButtons
         self.enableSignupWithGoogle = enableSignupWithGoogle
+        self.continueWithSiteAddressFirst = continueWithSiteAddressFirst
     }
 }

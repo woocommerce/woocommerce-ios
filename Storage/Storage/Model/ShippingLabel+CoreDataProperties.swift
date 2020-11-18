@@ -24,5 +24,6 @@ extension ShippingLabel {
     @NSManaged public var productNames: [String]
     @NSManaged public var originAddress: ShippingLabelAddress?
     @NSManaged public var destinationAddress: ShippingLabelAddress?
+    @NSManaged public var refund: ShippingLabelRefund?
 
 }

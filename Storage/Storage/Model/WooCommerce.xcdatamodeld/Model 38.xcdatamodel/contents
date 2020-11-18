@@ -447,6 +447,7 @@
         <attribute name="trackingNumber" attributeType="String" defaultValueString=""/>
         <relationship name="destinationAddress" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ShippingLabelAddress" inverseName="destinationShippingLabel" inverseEntity="ShippingLabelAddress"/>
         <relationship name="originAddress" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ShippingLabelAddress" inverseName="originShippingLabel" inverseEntity="ShippingLabelAddress"/>
+        <relationship name="refund" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ShippingLabelRefund" inverseName="shippingLabel" inverseEntity="ShippingLabelRefund"/>
     </entity>
     <entity name="ShippingLabelAddress" representedClassName="ShippingLabelAddress" syncable="YES">
         <attribute name="address1" attributeType="String" defaultValueString=""/>
@@ -464,6 +465,7 @@
     <entity name="ShippingLabelRefund" representedClassName="ShippingLabelRefund" syncable="YES">
         <attribute name="dateRequested" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="status" attributeType="String" defaultValueString=""/>
+        <relationship name="shippingLabel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ShippingLabel" inverseName="refund" inverseEntity="ShippingLabel"/>
     </entity>
     <entity name="ShippingLabelSettings" representedClassName="ShippingLabelSettings" syncable="YES">
         <attribute name="orderID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -573,9 +575,9 @@
         <element name="ShipmentTracking" positionX="-201.47265625" positionY="-109.14453125" width="128" height="148"/>
         <element name="ShipmentTrackingProvider" positionX="248.25" positionY="-117.6640625" width="180.32421875" height="103"/>
         <element name="ShipmentTrackingProviderGroup" positionX="-8.2734375" positionY="-117.890625" width="187.5" height="88"/>
-        <element name="ShippingLabel" positionX="-675" positionY="54" width="128" height="283"/>
+        <element name="ShippingLabel" positionX="-675" positionY="54" width="128" height="298"/>
         <element name="ShippingLabelAddress" positionX="-684" positionY="45" width="128" height="208"/>
-        <element name="ShippingLabelRefund" positionX="-693" positionY="36" width="128" height="73"/>
+        <element name="ShippingLabelRefund" positionX="-693" positionY="36" width="128" height="88"/>
         <element name="ShippingLabelSettings" positionX="-666" positionY="63" width="128" height="88"/>
         <element name="ShippingLine" positionX="-247.203125" positionY="907.53125" width="128" height="148"/>
         <element name="ShippingLineTax" positionX="-693" positionY="36" width="128" height="103"/>

@@ -434,19 +434,9 @@ private extension DefaultProductFormTableViewModel {
 
         var linkedProductsDetails = [String]()
 
-        if product.upsellIDs.count <= 1 {
-            linkedProductsDetails.append(String.localizedStringWithFormat(Localization.singularUpsellProductFormat, product.upsellIDs.count))
-        }
-        else {
-            linkedProductsDetails.append(String.localizedStringWithFormat(Localization.pluralUpsellProductsFormat, product.upsellIDs.count))
-        }
+        linkedProductsDetails.append(Localization.upsellProducts(count: product.upsellIDs.count))
+        linkedProductsDetails.append(Localization.crossSellProducts(count: product.crossSellIDs.count))
 
-        if product.crossSellIDs.count <= 1 {
-            linkedProductsDetails.append(String.localizedStringWithFormat(Localization.singularCrossSellProductFormat, product.crossSellIDs.count))
-        }
-        else {
-            linkedProductsDetails.append(String.localizedStringWithFormat(Localization.pluralCrossSellProductsFormat, product.crossSellIDs.count))
-        }
         let details = linkedProductsDetails.isEmpty ? nil : linkedProductsDetails.joined(separator: "\n")
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
@@ -580,17 +570,31 @@ private extension DefaultProductFormTableViewModel {
         // Linked Products
         static let linkedProductsTitle = NSLocalizedString("Linked products",
                                                            comment: "Title of the Linked Products row on Product main screen")
-        static let singularUpsellProductFormat =
-            NSLocalizedString("%ld upsell product",
-                              comment: "Format of upsell linked products row in the singular form. Reads, `1 upsell product`")
-        static let pluralUpsellProductsFormat =
-            NSLocalizedString("%ld upsell products",
-                              comment: "Format of upsell linked products row in the plural form. Reads, `5 upsell products`")
-        static let singularCrossSellProductFormat =
-            NSLocalizedString("%ld cross-sell product",
-                              comment: "Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product`")
-        static let pluralCrossSellProductsFormat =
-            NSLocalizedString("%ld cross-sell products",
-                              comment: "Format of cross-sell linked products row in the plural form. Reads, `5 cross-sell products`")
+        static func upsellProducts(count: Int) -> String {
+            let format: String = {
+                if count <= 1 {
+                    return NSLocalizedString("%ld upsell product",
+                                             comment: "Format of upsell linked products row in the singular form. Reads, `1 upsell product`")
+                } else {
+                    return NSLocalizedString("%ld upsell products",
+                                             comment: "Format of upsell linked products row in the plural form. Reads, `5 upsell products`")
+                }
+            }()
+
+            return String.localizedStringWithFormat(format, count)
+        }
+        static func crossSellProducts(count: Int) -> String {
+            let format: String = {
+                if count <= 1 {
+                    return NSLocalizedString("%ld cross-sell product",
+                                             comment: "Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product`")
+                } else {
+                    return NSLocalizedString("%ld cross-sell products",
+                                             comment: "Format of cross-sell linked products row in the plural form. Reads, `5 cross-sell products`")
+                }
+            }()
+
+            return String.localizedStringWithFormat(format, count)
+        }
     }
 }

@@ -274,8 +274,14 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
             case .downloadableFiles:
-                //TODO: Add analytics
+                //TODO: Add Analytics M5
                 showDownloadableFiles()
+            case .linkedProducts(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
+                // TODO: Add Analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+                editLinkedProducts()
             case .productType(_, let isEditable):
                 guard isEditable else {
                     return
@@ -535,6 +541,9 @@ private extension ProductFormViewController {
                                                                         case .editSKU:
                                                                             ServiceLocator.analytics.track(.productDetailViewSKUTapped)
                                                                             self?.editSKU()
+                                                                        case .editLinkedProducts:
+                                                                            // TODO: Analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+                                                                            self?.editLinkedProducts()
                                                                         }
                                                                     }
         }
@@ -1134,6 +1143,18 @@ private extension ProductFormViewController {
             return
         }
         viewModel.updateSKU(sku)
+    }
+}
+
+// MARK: Action - Edit Linked Products
+//
+private extension ProductFormViewController {
+    func editLinkedProducts() {
+        // TODO: to be implemented https://github.com/woocommerce/woocommerce-ios/issues/3072
+    }
+
+    func onEditLinkedProductsCompletion() {
+        // TODO: to be implemented https://github.com/woocommerce/woocommerce-ios/issues/3072
     }
 }
 

@@ -87,6 +87,62 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
+    func test_viewModel_for_product_without_linked_products_shows_editLinkedProducts_in_bottom_sheet() {
+        // Arrange
+        let product = Fixtures.physicalSimpleProductWithoutLinkedProducts
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
+                                                isEditProductsRelease5Enabled: true)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
+        XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
+                                                                       .shippingSettings(editable: true),
+                                                                       .inventorySettings(editable: true),
+                                                                       .categories(editable: true),
+                                                                       .tags(editable: true),
+                                                                       .shortDescription(editable: true),
+                                                                       .productType(editable: true)]
+        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editLinkedProducts]
+        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
+
+    func test_viewModel_for_product_with_linked_products_shows_linkedProducts_action_in_settings_section() {
+        // Arrange
+        let product = Fixtures.physicalSimpleProductWithImages
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
+                                                isEditProductsRelease5Enabled: true)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
+        XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
+                                                                       .reviews,
+                                                                       .shippingSettings(editable: true),
+                                                                       .inventorySettings(editable: true),
+                                                                       .categories(editable: true),
+                                                                       .tags(editable: true),
+                                                                       .shortDescription(editable: true),
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: true)]
+        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
+        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
+
     func testViewModelForDownloadableSimpleProduct() {
         // Arrange
         let product = Fixtures.downloadableSimpleProduct
@@ -108,6 +164,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .tags(editable: true),
                                                                        .downloadableFiles,
                                                                        .shortDescription(editable: true),
+                                                                       .linkedProducts(editable: true),
                                                                        .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
@@ -326,6 +383,19 @@ private extension ProductFormActionsFactoryTests {
                                                                                     categories: [category],
                                                                                     tags: [tag],
                                                                                     images: [image])
+        // downloadable: false, virtual: true, reviews: false, with inventory/shipping/categories/tags/short description
+        static let physicalSimpleProductWithoutLinkedProducts = MockProduct().product(downloadable: false,
+                                                                                    shortDescription: "desc", productType: .simple,
+                                                                                    manageStock: true, sku: "uks", stockQuantity: nil,
+                                                                                    dimensions: ProductDimensions(length: "", width: "", height: ""),
+                                                                                    weight: "2",
+                                                                                    virtual: false,
+                                                                                    reviewsAllowed: false,
+                                                                                    categories: [category],
+                                                                                    tags: [tag],
+                                                                                    images: [image],
+                                                                                    upsellIDs: [],
+                                                                                    crossSellIDs: [])
         // downloadable: false, virtual: true, with inventory/shipping/categories/tags/short description
         static let virtualSimpleProduct = MockProduct().product(downloadable: false, shortDescription: "desc", productType: .simple,
                                                                 manageStock: true, sku: "uks", stockQuantity: nil,

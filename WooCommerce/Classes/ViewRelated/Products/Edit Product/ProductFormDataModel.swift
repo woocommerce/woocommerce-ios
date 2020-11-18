@@ -60,6 +60,10 @@ protocol ProductFormDataModel {
     var downloadableFiles: [ProductDownload] { get }
     var downloadLimit: Int64 { get }
     var downloadExpiry: Int64 { get }
+
+    // Linked Products
+    var upsellIDs: [Int64] { get }
+    var crossSellIDs: [Int64] { get }
 }
 
 // MARK: Helpers that can be derived from `ProductFormDataModel`

@@ -217,6 +217,7 @@ private extension ProductFormTableViewDataSource {
              .sku(let viewModel, _),
              .groupedProducts(let viewModel, _),
              .downloadableFiles(let viewModel),
+             .linkedProducts(let viewModel, _),
              .variations(let viewModel):
             configureSettings(cell: cell, viewModel: viewModel)
         case .reviews(let viewModel, let ratingCount, let averageRating):

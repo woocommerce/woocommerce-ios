@@ -42,7 +42,9 @@ final class MockProduct {
                  menuOrder: Int = 0,
                  categories: [ProductCategory] = [],
                  tags: [ProductTag] = [],
-                 images: [ProductImage] = []) -> Product {
+                 images: [ProductImage] = [],
+                 upsellIDs: [Int64] = [99, 1234566],
+                 crossSellIDs: [Int64] = [1234, 234234, 3]) -> Product {
 
     return Product(siteID: testSiteID,
                    productID: testProductID,
@@ -94,8 +96,8 @@ final class MockProduct {
                    averageRating: "4.30",
                    ratingCount: 23,
                    relatedIDs: [31, 22, 369, 414, 56],
-                   upsellIDs: [99, 1234566],
-                   crossSellIDs: [1234, 234234, 3],
+                   upsellIDs: upsellIDs,
+                   crossSellIDs: crossSellIDs,
                    parentID: 0,
                    purchaseNote: "Thank you!",
                    categories: categories,

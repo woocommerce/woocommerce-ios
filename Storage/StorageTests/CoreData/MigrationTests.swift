@@ -305,6 +305,43 @@ final class MigrationTests: XCTestCase {
         XCTAssertNotNil(migratedOrder.entity.attributesByName["paymentMethodID"])
         XCTAssertNil(migratedOrder.value(forKey: "paymentMethodID"))
     }
+
+    func test_migrating_from_37_to_38_enables_creating_new_shipping_labels_entities() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 37")
+        let sourceContext = sourceContainer.viewContext
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 38")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        XCTAssertEqual(try targetContext.count(entityName: "ShippingLabel"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelAddress"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelRefund"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelSettings"), 0)
+
+        // Creates an `ShippingLabel` with all relationships.
+        let originAddress = insertShippingLabelAddress(to: targetContext)
+        let destinationAddress = insertShippingLabelAddress(to: targetContext)
+        let shippingLabelRefund = insertShippingLabelRefund(to: targetContext)
+        let shippingLabel = insertShippingLabel(to: targetContext)
+        shippingLabel.setValue(originAddress, forKey: "originAddress")
+        shippingLabel.setValue(destinationAddress, forKey: "destinationAddress")
+        shippingLabel.setValue(shippingLabelRefund, forKey: "refund")
+
+        // Creates an `ShippingLabelSettings`.
+        _ = insertShippingLabelSettings(to: targetContext)
+
+        try targetContext.save()
+
+        XCTAssertEqual(try targetContext.count(entityName: "ShippingLabel"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelAddress"), 2)
+        XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelRefund"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelSettings"), 1)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -497,6 +534,57 @@ private extension MigrationTests {
             "name": "",
             "variation": false,
             "visible": false
+        ])
+    }
+
+    @discardableResult
+    func insertShippingLabel(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "ShippingLabel", properties: [
+            "siteID": 134,
+            "shippingLabelID": 1216,
+            "carrierID": "fedex",
+            "dateCreated": Date(),
+            "packageName": "Fancy box",
+            "rate": 12.6,
+            "currency": "USD",
+            "trackingNumber": "B134",
+            "serviceName": "Fedex",
+            "refundableAmount": 13.4,
+            "status": "PURCHASED",
+            "productIDs": [1216, 1126],
+            "productNames": ["Choco", "Latte"]
+        ])
+    }
+
+    @discardableResult
+    func insertShippingLabelAddress(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "ShippingLabelAddress", properties: [
+            "company": "Chococo co.",
+            "name": "Choco",
+            "phone": "+16501234567",
+            "country": "USA",
+            "state": "PA",
+            "address1": "123 ABC Street",
+            "address2": "",
+            "city": "Ph",
+            "postcode": "18888"
+        ])
+    }
+
+    @discardableResult
+    func insertShippingLabelRefund(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "ShippingLabelRefund", properties: [
+            "dateRequested": Date(),
+            "status": "pending"
+        ])
+    }
+
+    @discardableResult
+    func insertShippingLabelSettings(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "ShippingLabelSettings", properties: [
+            "siteID": 134,
+            "orderID": 191,
+            "paperSize": "legal"
         ])
     }
 }

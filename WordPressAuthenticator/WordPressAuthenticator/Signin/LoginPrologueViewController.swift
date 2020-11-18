@@ -250,11 +250,11 @@ class LoginPrologueViewController: LoginViewController {
 
         setButtonViewMargins(forWidth: view.frame.width)
         
-        buttonViewController.setupTopButton(title: siteAddressTitle, isPrimary: false, accessibilityIdentifier: "Prologue Self Hosted Button") { [weak self] in
+        buttonViewController.setupTopButton(title: siteAddressTitle, isPrimary: true, accessibilityIdentifier: "Prologue Self Hosted Button") { [weak self] in
             self?.siteAddressTapped()
         }
         
-        buttonViewController.setupBottomButton(title: loginTitle, isPrimary: true, accessibilityIdentifier: "Prologue Continue Button") { [weak self] in
+        buttonViewController.setupBottomButton(title: loginTitle, isPrimary: false, accessibilityIdentifier: "Prologue Continue Button") { [weak self] in
             guard let self = self else {
                 return
             }

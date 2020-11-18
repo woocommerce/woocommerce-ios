@@ -201,7 +201,7 @@ class LoginPrologueViewController: LoginViewController {
                                                  comment: "Button title. Takes the user to the login by site address flow.")
         
         if configuration.continueWithSiteAddressFirst {
-            buildWooUnifiedPrologueButtons(buttonViewController, loginTitle: loginTitle, siteAddressTitle: siteAddressTitle)
+            buildUnifiedPrologueButtonsWithSiteAddressFirst(buttonViewController, loginTitle: loginTitle, siteAddressTitle: siteAddressTitle)
             return
         }
         
@@ -223,7 +223,7 @@ class LoginPrologueViewController: LoginViewController {
         setButtonViewControllerBackground(buttonViewController)
     }
     
-    private func buildWooUnifiedPrologueButtons(_ buttonViewController: NUXButtonViewController, loginTitle: String, siteAddressTitle: String) {
+    private func buildUnifiedPrologueButtonsWithSiteAddressFirst(_ buttonViewController: NUXButtonViewController, loginTitle: String, siteAddressTitle: String) {
         guard configuration.enableUnifiedAuth == true else {
             return
         }

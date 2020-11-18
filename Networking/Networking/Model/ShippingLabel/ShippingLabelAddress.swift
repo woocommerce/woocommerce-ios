@@ -47,6 +47,8 @@ extension ShippingLabelAddress: Decodable {
 }
 
 extension ShippingLabelAddress {
+    /// This empty initializer is used when parsing the API response for shipping labels, because the origin/destination addresses are not available in each
+    /// shipping label response and we have to manually populate them later.
     init() {
         self.init(company: "", name: "", phone: "", country: "", state: "", address1: "", address2: "", city: "", postcode: "")
     }

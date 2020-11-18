@@ -3,10 +3,10 @@ import Foundation
 /// A wrapper of shipping labels and settings from `Load Shipping Labels` response.
 public struct OrderShippingLabelListResponse {
     /// A list of shipping labels.
-    let shippingLabels: [ShippingLabel]
+    public let shippingLabels: [ShippingLabel]
 
     /// Shipping label settings specific to an order's shipping labels.
-    let settings: ShippingLabelSettings
+    public let settings: ShippingLabelSettings
 }
 
 /// Mapper: Order Shipping Label List & Settings

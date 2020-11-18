@@ -1,6 +1,6 @@
 import Foundation
 
-/// Paper size options for printing a shipping label.
+/// The status of shipping label.
 public enum ShippingLabelStatus {
     case purchased
 }
@@ -29,7 +29,7 @@ extension ShippingLabelStatus: RawRepresentable {
     }
 }
 
-/// Contains the supported ShippingLabelPaperSize values.
+/// Contains the supported ShippingLabelStatus values.
 private enum Keys {
     static let purchased = "PURCHASED"
 }

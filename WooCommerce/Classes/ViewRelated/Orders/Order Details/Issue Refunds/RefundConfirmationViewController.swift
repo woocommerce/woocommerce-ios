@@ -11,14 +11,17 @@ final class RefundConfirmationViewController: UIViewController {
 
     private let viewModel: RefundConfirmationViewModel
 
-    private lazy var noticePresenter: NoticePresenter = {
+    private lazy var contextNoticePresenter: NoticePresenter = {
         let noticePresenter = DefaultNoticePresenter()
         noticePresenter.presentingViewController = self
         return noticePresenter
     }()
 
-    init(viewModel: RefundConfirmationViewModel) {
+    private let systemNoticePresenter: NoticePresenter
+
+    init(viewModel: RefundConfirmationViewModel, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.viewModel = viewModel
+        self.systemNoticePresenter = systemNoticePresenter
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -191,7 +194,10 @@ private extension RefundConfirmationViewController {
         // Dismiss the progress view controller
         dismiss(animated: true) { [weak self] in
             // Dismiss the issue refund flow
-            self?.dismiss(animated: true, completion: nil)
+            self?.dismiss(animated: true, completion: {
+                // Show a success notice
+                self?.systemNoticePresenter.enqueue(notice: .init(title: Localization.refundSuccess))
+            })
         }
     }
 
@@ -199,7 +205,7 @@ private extension RefundConfirmationViewController {
     ///
     func dismissProgressViewController(with error: Error) {
         dismiss(animated: true) { [weak self] in
-            self?.noticePresenter.enqueue(notice: .init(title: Localization.refundError))
+            self?.contextNoticePresenter.enqueue(notice: .init(title: Localization.refundError))
             DDLogError("Error issuing refund: \(error)")
         }
     }
@@ -212,7 +218,9 @@ private extension RefundConfirmationViewController {
         static let refund = NSLocalizedString("Refund", comment: "The title of the button to confirm the refund.")
         static let cancel = NSLocalizedString("Cancel", comment: "The title of the button to cancel issuing a refund.")
         static let issuingRefund = NSLocalizedString("Issuing Refund...", comment: "Text of the screen that is displayed while the refund is being created.")
-        static let refundError = NSLocalizedString("There was an error issuing the refund.",
+        static let refundSuccess = NSLocalizedString("🎉 Products sucessfuly refunded",
+                                                   comment: "Text of the notice that is displayed after the refund is created.")
+        static let refundError = NSLocalizedString("There was an error issuing the refund",
                                                    comment: "Text of the notice that is displayed while the refund creation fails.")
         static let confirmationBody = NSLocalizedString("Are you sure you want to issue a refund? This can't be undone.",
                                                         comment: "The text on the confirmation alert before issuing a refund.")

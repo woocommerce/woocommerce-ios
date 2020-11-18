@@ -578,7 +578,7 @@ private extension DefaultProductFormTableViewModel {
                                                            comment: "Format of the number of Downloadable Files row in the plural form. Reads, `5 files`")
 
         // Linked Products
-        static let linkedProductsTitle = NSLocalizedString("Linked Products",
+        static let linkedProductsTitle = NSLocalizedString("Linked products",
                                                            comment: "Title of the Linked Products row on Product main screen")
         static let singularUpsellProductFormat =
             NSLocalizedString("%ld upsell product",

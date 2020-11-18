@@ -87,7 +87,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
-    func test_viewModel_for_physical_simple_product_without_linked_products() {
+    func test_viewModel_for_product_without_linked_products_shows_editLinkedProducts_in_bottom_sheet() {
         // Arrange
         let product = Fixtures.physicalSimpleProductWithoutLinkedProducts
         let model = EditableProductModel(product: product)
@@ -114,7 +114,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
-    func test_viewModel_for_physical_simple_product_with_linked_products() {
+    func test_viewModel_for_product_with_linked_products_shows_linkedProducts_action_in_settings_section() {
         // Arrange
         let product = Fixtures.physicalSimpleProductWithImages
         let model = EditableProductModel(product: product)

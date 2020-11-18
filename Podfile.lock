@@ -163,7 +163,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   WordPressAuthenticator:
-    :commit: a673419f294428599be872f2b203c3b5cb56ee15
+    :commit: 033a16f4641651d23ab9b20d7c5b0c382da7748e
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:

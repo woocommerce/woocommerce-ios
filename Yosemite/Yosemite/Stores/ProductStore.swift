@@ -615,6 +615,7 @@ extension ProductStore {
 /// - duplicatedSKU: the SKU is used by another Product.
 /// - invalidSKU: the SKU is invalid or duplicated.
 /// - passwordCannotBeUpdated: the password of a product cannot be updated.
+/// - variationInvalidImageId: the body struct used for updating a product variation's image has an invalid id.
 /// - unexpected: an error that is not expected to occur.
 /// - unknown: other error cases.
 ///
@@ -623,6 +624,7 @@ public enum ProductUpdateError: Error, Equatable {
     case invalidSKU
     case passwordCannotBeUpdated
     case notFoundInStorage
+    case variationInvalidImageId
     case unexpected
     case unknown(error: AnyError)
 
@@ -645,11 +647,14 @@ public enum ProductUpdateError: Error, Equatable {
 
     private enum ErrorCode: String {
         case invalidSKU = "product_invalid_sku"
+        case variationInvalidImageId = "woocommerce_variation_invalid_image_id"
 
         var error: ProductUpdateError {
             switch self {
             case .invalidSKU:
                 return .invalidSKU
+            case .variationInvalidImageId:
+                return .variationInvalidImageId
             }
         }
     }

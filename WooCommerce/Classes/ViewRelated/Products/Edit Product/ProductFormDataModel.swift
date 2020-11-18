@@ -19,7 +19,6 @@ protocol ProductFormDataModel {
     /// Whether the product model allows multiple images.
     func allowsMultipleImages() -> Bool
     /// Whether the product model's images can be deleted.
-    /// TODO-2576: always allows image deletion when the API issue is fixed for removing an image from a product variation.
     func isImageDeletionEnabled() -> Bool
 
     // Price

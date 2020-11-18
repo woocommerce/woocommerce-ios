@@ -465,6 +465,36 @@ class RefundStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 3)
         XCTAssertNil(retrieveError)
     }
+
+    func test_create_refund_updates_order_condensed_refund() throws {
+        // Given
+        storageManager.insertSampleOrder(readOnlyOrder: sampleOrder())
+        let refund = sampleRefund()
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectedCondensedRefund = OrderRefundCondensed(refundID: refund.refundID, reason: refund.reason, total: refund.amount)
+
+        // When
+        refundStore.upsertStoredRefund(readOnlyRefund: sampleRefund(), in: viewStorage)
+
+        // Then
+        let order = viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)?.toReadOnly()
+        XCTAssertEqual(order?.refunds, [expectedCondensedRefund])
+    }
+
+    func test_create_refund_does_not_duplicate_order_condensed_refund() throws {
+        // Given
+        let refund = sampleRefund()
+        let existingCondensedRefund = OrderRefundCondensed(refundID: refund.refundID, reason: refund.reason, total: refund.amount)
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        storageManager.insertSampleOrder(readOnlyOrder: sampleOrder().copy(refunds: [existingCondensedRefund]))
+
+        // When
+        refundStore.upsertStoredRefund(readOnlyRefund: sampleRefund(), in: viewStorage)
+
+        // Then
+        let order = viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)?.toReadOnly()
+        XCTAssertEqual(order?.refunds, [existingCondensedRefund])
+    }
 }
 
 
@@ -521,6 +551,37 @@ private extension RefundStoreTests {
                       isAutomated: true,
                       createAutomated: false,
                       items: [sampleOrderItem2()])
+    }
+
+    /// Returns an `Order` with empty values. Use `copy()` to modify them.
+    func sampleOrder() -> Networking.Order {
+        Order(
+            siteID: sampleSiteID,
+            orderID: sampleOrderID,
+            parentID: 0,
+            customerID: 0,
+            number: "",
+            status: .pending,
+            currency: "",
+            customerNote: nil,
+            dateCreated: Date(),
+            dateModified: Date(),
+            datePaid: nil,
+            discountTotal: "",
+            discountTax: "",
+            shippingTotal: "",
+            shippingTax: "",
+            total: "",
+            totalTax: "",
+            paymentMethodID: "",
+            paymentMethodTitle: "",
+            items: [],
+            billingAddress: nil,
+            shippingAddress: nil,
+            shippingLines: [],
+            coupons: [],
+            refunds: []
+        )
     }
 
     /// Generate a sample OrderItem

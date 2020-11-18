@@ -1,0 +1,126 @@
+{
+    "data": {
+        "orderId": 3188,
+        "paperSize": "label",
+        "formData": {
+            "is_packed": true,
+            "selected_packages": {
+                "default_box": {
+                    "id": "default_box",
+                    "box_id": "not_selected",
+                    "height": 0,
+                    "length": 0,
+                    "weight": 0,
+                    "width": 0,
+                    "items": [
+                        {
+                            "height": 0,
+                            "product_id": 3013,
+                            "length": 0,
+                            "quantity": 1,
+                            "weight": 0,
+                            "width": 0,
+                            "name": "#3013 - Password protected!",
+                            "url": "https://funtestingusa.wpcomstaging.com/wp-admin/post.php?post=3013&action=edit",
+                            "description": "Password protected secret",
+                            "hs_tariff_number": "",
+                            "origin_country": "US",
+                            "value": 200
+                        }
+                    ]
+                }
+            },
+            "origin": {
+                "company": "fun testing",
+                "name": "Woo seller",
+                "phone": "6501234567",
+                "country": "US",
+                "state": "CA",
+                "address": "9999 19TH AVE",
+                "address_2": "",
+                "city": "SAN FRANCISCO",
+                "postcode": "94121-2303"
+            },
+            "destination": {
+                "company": "",
+                "address_2": "",
+                "city": "Taipei",
+                "state": "Taiwan",
+                "postcode": "100",
+                "country": "TW",
+                "phone": "1650345689",
+                "name": "Woo buyer",
+                "address": "No 70 RA St"
+            },
+            "origin_normalized": true,
+            "destination_normalized": true,
+            "rates": {
+                "selected": {}
+            },
+            "order_id": 3188
+        },
+        "labelsData": [
+            {
+                "label_id": 1149,
+                "tracking": "CM199912222US",
+                "refundable_amount": 58.81,
+                "created": 1603716274809,
+                "carrier_id": "usps",
+                "service_name": "USPS - Priority Mail International",
+                "status": "PURCHASED",
+                "commercial_invoice_url": null,
+                "package_name": "box",
+                "product_names": [
+                    "Password protected!"
+                ],
+                "product_ids": [
+                    3013
+                ],
+                "receipt_item_id": 24448314,
+                "created_date": 1603716279000,
+                "main_receipt_id": 19879722,
+                "rate": 58.81,
+                "currency": "USD",
+                "expiry_date": 1619268278000,
+                "label_cached": 1603716284000
+            },
+            {
+                "label_id": 2511668,
+                "tracking": "EQ12345678US",
+                "refundable_amount": 74.44,
+                "created": 1603715421053,
+                "carrier_id": "usps",
+                "service_name": "USPS - Express Mail International",
+                "status": "PURCHASED",
+                "commercial_invoice_url": null,
+                "package_name": "box",
+                "product_names": [
+                    "Password protected!"
+                ],
+                "product_ids": [
+                    3013
+                ],
+                "receipt_item_id": 66889032,
+                "created_date": 1603715427000,
+                "main_receipt_id": 50738997,
+                "rate": 74.44,
+                "currency": "USD",
+                "expiry_date": 1619267426000,
+                "refund": {
+                    "request_date": 1603715617000,
+                    "status": "pending",
+                    "refund_date": 1
+                },
+                "label_cached": 1603715430000
+            }
+        ],
+        "storeOptions": {
+            "currency_symbol": "$",
+            "dimension_unit": "in",
+            "weight_unit": "kg",
+            "origin_country": "US"
+        },
+        "canChangeCountries": true,
+        "success": true
+    }
+}

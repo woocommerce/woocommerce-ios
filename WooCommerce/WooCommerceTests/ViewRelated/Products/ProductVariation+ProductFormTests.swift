@@ -43,10 +43,10 @@ final class ProductVariation_ProductFormTests: XCTestCase {
         XCTAssertFalse(model.allowsMultipleImages())
     }
 
-    func testProductVariationImageDeletionIsDisabled() {
+    func testProductVariationImageDeletionIsEnabled() {
         let productVariation = MockProductVariation().productVariation().copy(image: nil)
         let model = EditableProductVariationModel(productVariation: productVariation)
-        XCTAssertFalse(model.isImageDeletionEnabled())
+        XCTAssertTrue(model.isImageDeletionEnabled())
     }
 
     // MARK: `productTaxStatus`

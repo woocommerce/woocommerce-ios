@@ -44,7 +44,8 @@ private extension RefundConfirmationViewController {
         [
             SettingTitleAndValueTableViewCell.self,
             TitleAndEditableValueTableViewCell.self,
-            HeadlineLabelTableViewCell.self
+            HeadlineLabelTableViewCell.self,
+            WooBasicTableViewCell.self
         ].forEach(tableView.registerNib)
 
         // Delegation
@@ -105,6 +106,11 @@ extension RefundConfirmationViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(HeadlineLabelTableViewCell.self, for: indexPath)
             cell.update(style: .regular, headline: row.title, body: row.body)
             cell.selectionStyle = .none
+            return cell
+        case let row as RefundConfirmationViewModel.SimpleTextRow:
+            let cell = tableView.dequeueReusableCell(WooBasicTableViewCell.self, for: indexPath)
+            cell.applyPlainTextStyle()
+            cell.bodyLabel.text = row.text
             return cell
         default:
             assertionFailure("Unsupported row.")

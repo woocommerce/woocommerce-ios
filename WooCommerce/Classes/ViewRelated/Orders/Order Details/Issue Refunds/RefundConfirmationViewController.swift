@@ -65,7 +65,12 @@ private extension RefundConfirmationViewController {
 
     func configureButtonTableFooterView() {
         tableView.tableFooterView = ButtonTableFooterView(frame: .zero, title: Localization.refund) { [weak self] in
-            self?.viewModel.submit(onCompletion: { _ in })
+            guard let self = self else { return }
+            self.displayConfirmationAlert { didConfirm in
+                if didConfirm {
+                    self.submitRefund()
+                }
+            }
         }
         tableView.updateFooterHeight()
     }
@@ -123,10 +128,51 @@ extension RefundConfirmationViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - Confirmation And Submission
+private extension RefundConfirmationViewController {
+
+    /// Displays a confirmation alert before issuing a refund.
+    /// - Parameter onCompletion: Closure to be invoked with the user selection. `True` continue with the refund. `False` cancel the refund.
+    func displayConfirmationAlert(onCompletion: @escaping (Bool) -> Void) {
+
+        let actionSheet = UIAlertController(title: Localization.confirmationTitle(amount: viewModel.refundAmount),
+                                            message: Localization.confirmationBody,
+                                            preferredStyle: .alert)
+        actionSheet.addCancelActionWithTitle(Localization.cancel) { _ in
+            onCompletion(false)
+        }
+
+        actionSheet.addActionWithTitle(Localization.refund, style: .default) { _ in
+            onCompletion(true)
+        }
+
+        present(actionSheet, animated: true)
+    }
+
+    /// Submits the refund and dismisses the flow upon successful completion.
+    ///
+    func submitRefund() {
+        self.viewModel.submit { [weak self] result in
+            switch result {
+            case .success:
+                self?.dismiss(animated: true, completion: nil)
+            case .failure(let error):
+                DDLogError("Error issuing refund: \(error)")
+            }
+        }
+    }
+}
+
 // MARK: - Localization
 
 private extension RefundConfirmationViewController {
     enum Localization {
         static let refund = NSLocalizedString("Refund", comment: "The title of the button to confirm the refund.")
+        static let cancel = NSLocalizedString("Cancel", comment: "The title of the button to cancel issuing a refund.")
+        static let confirmationBody = NSLocalizedString("Are you sure you want to issue a refund? This can't be undone.",
+                                                        comment: "The text on the confirmation alert before issuing a refund.")
+        static func confirmationTitle(amount: String) -> String {
+            "\(refund) \(amount)"
+        }
     }
 }

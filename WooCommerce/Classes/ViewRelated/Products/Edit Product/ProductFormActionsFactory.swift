@@ -105,8 +105,8 @@ private extension ProductFormActionsFactory {
             .tags(editable: editable),
             shouldShowDownloadableProduct ? .downloadableFiles: nil,
             .shortDescription(editable: editable),
-            shouldShowProductTypeRow ? .productType(editable: editable): nil,
-            shouldShowLinkedProducts ? .linkedProducts(editable: editable): nil
+            shouldShowLinkedProducts ? .linkedProducts(editable: editable): nil,
+            shouldShowProductTypeRow ? .productType(editable: editable): nil
         ]
         return actions.compactMap { $0 }
     }
@@ -126,8 +126,8 @@ private extension ProductFormActionsFactory {
             .categories(editable: editable),
             .tags(editable: editable),
             .shortDescription(editable: editable),
-            shouldShowProductTypeRow ? .productType(editable: editable): nil,
-            shouldShowLinkedProducts ? .linkedProducts(editable: editable): nil
+            shouldShowLinkedProducts ? .linkedProducts(editable: editable): nil,
+            shouldShowProductTypeRow ? .productType(editable: editable): nil
         ]
         return actions.compactMap { $0 }
     }
@@ -145,8 +145,8 @@ private extension ProductFormActionsFactory {
             .categories(editable: editable),
             .tags(editable: editable),
             .shortDescription(editable: editable),
-            shouldShowProductTypeRow ? .productType(editable: editable): nil,
-            shouldShowLinkedProducts ? .linkedProducts(editable: editable): nil
+            shouldShowLinkedProducts ? .linkedProducts(editable: editable): nil,
+            shouldShowProductTypeRow ? .productType(editable: editable): nil
         ]
         return actions.compactMap { $0 }
     }
@@ -164,8 +164,8 @@ private extension ProductFormActionsFactory {
             .categories(editable: editable),
             .tags(editable: editable),
             .shortDescription(editable: editable),
-            shouldShowProductTypeRow ? .productType(editable: editable): nil,
-            shouldShowLinkedProducts ? .linkedProducts(editable: editable): nil
+            shouldShowLinkedProducts ? .linkedProducts(editable: editable): nil,
+            shouldShowProductTypeRow ? .productType(editable: editable): nil
         ]
         return actions.compactMap { $0 }
     }
@@ -182,8 +182,8 @@ private extension ProductFormActionsFactory {
             .categories(editable: editable),
             .tags(editable: editable),
             .shortDescription(editable: editable),
-            .productType(editable: false),
-            shouldShowLinkedProducts ? .linkedProducts(editable: editable): nil
+            shouldShowLinkedProducts ? .linkedProducts(editable: editable): nil,
+            .productType(editable: false)
         ]
         return actions.compactMap { $0 }
     }

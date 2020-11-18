@@ -135,8 +135,8 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .categories(editable: true),
                                                                        .tags(editable: true),
                                                                        .shortDescription(editable: true),
-                                                                       .productType(editable: true),
-                                                                       .linkedProducts(editable: true)]
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
@@ -164,8 +164,8 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .tags(editable: true),
                                                                        .downloadableFiles,
                                                                        .shortDescription(editable: true),
-                                                                       .productType(editable: true),
-                                                                       .linkedProducts(editable: true)]
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []

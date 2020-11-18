@@ -69,4 +69,14 @@ extension MockupStorageManager {
 
         return newProductTag
     }
+
+    /// Inserts a new (Sample) Order into the specified context.
+    ///
+    @discardableResult
+    func insertSampleOrder(readOnlyOrder: Order) -> StorageOrder {
+        let newOrder = viewStorage.insertNewObject(ofType: StorageOrder.self)
+        newOrder.update(with: readOnlyOrder)
+
+        return newOrder
+    }
 }

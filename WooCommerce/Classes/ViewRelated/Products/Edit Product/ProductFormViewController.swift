@@ -1150,11 +1150,25 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editLinkedProducts() {
-        // TODO: to be implemented https://github.com/woocommerce/woocommerce-ios/issues/3072
+        let linkedProductsViewController = LinkedProductsViewController(product: product) { [weak self] (upsellIDs, crossSellIDs, hasUnsavedChanges) in
+            self?.onEditLinkedProductsCompletion(upsellIDs: upsellIDs, crossSellIDs: crossSellIDs, hasUnsavedChanges: hasUnsavedChanges)
+        }
+        navigationController?.pushViewController(linkedProductsViewController, animated: true)
     }
 
-    func onEditLinkedProductsCompletion() {
-        // TODO: to be implemented https://github.com/woocommerce/woocommerce-ios/issues/3072
+    func onEditLinkedProductsCompletion(upsellIDs: [Int64],
+                                        crossSellIDs: [Int64],
+                                        hasUnsavedChanges: Bool) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+
+        guard hasUnsavedChanges else {
+            return
+        }
+        // TODO: Add Analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+
+        viewModel.updateLinkedProducts(upsellIDs: upsellIDs, crossSellIDs: crossSellIDs)
     }
 }
 

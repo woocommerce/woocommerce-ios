@@ -132,7 +132,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertNoThrow(try XCTUnwrap(result.get()))
 
         let persistedOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: sampleSiteID, orderID: orderID))
-        XCTAssertNil(persistedOrder.shippingLabels)
+        XCTAssertEqual(persistedOrder.shippingLabels ?? [], [])
         XCTAssertNil(persistedOrder.shippingLabelSettings)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabel.self), 0)

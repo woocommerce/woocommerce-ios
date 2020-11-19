@@ -55,6 +55,24 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertTrue(shippingSwitchRow is IssueRefundViewModel.ShippingSwitchViewModel)
     }
 
+    func test_viewModel_does_not_have_shipping_section_on_order_with_shipping_refunds() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let order = MockOrders().makeOrder(shippingLines: MockOrders.sampleShippingLines())
+        let refund = MockRefunds.sampleRefund(shippingLines: [MockRefunds.sampleShippingLine()])
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, refunds: [refund], currencySettings: currencySettings)
+
+        // Then
+        let rows = viewModel.sections.flatMap { $0.rows }
+        XCTAssertFalse(rows.isEmpty)
+        rows.forEach { viewModel in
+            XCTAssertFalse(viewModel is IssueRefundViewModel.ShippingSwitchViewModel)
+            XCTAssertFalse(viewModel is RefundShippingDetailsViewModel)
+        }
+    }
+
     func test_viewModel_inserts_shipping_details_after_toggling_switch() throws {
         // Given
         let currencySettings = CurrencySettings()

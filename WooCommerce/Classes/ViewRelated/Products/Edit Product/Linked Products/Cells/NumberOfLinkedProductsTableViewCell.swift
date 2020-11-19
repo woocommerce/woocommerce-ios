@@ -6,6 +6,8 @@ class NumberOfLinkedProductsTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        applyDefaultBackgroundStyle()
+        configureLabels()
     }
 
     func configure(content: String) {
@@ -14,6 +16,7 @@ class NumberOfLinkedProductsTableViewCell: UITableViewCell {
 }
 
 private extension NumberOfLinkedProductsTableViewCell {
+
     func configureLabels() {
         titleLabel.applySubheadlineStyle()
     }

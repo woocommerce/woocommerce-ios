@@ -83,6 +83,8 @@
         <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderNote" inverseName="order" inverseEntity="OrderNote"/>
         <relationship name="refunds" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderRefundCondensed" inverseName="order" inverseEntity="OrderRefundCondensed"/>
         <relationship name="searchResults" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderSearchResults" inverseName="orders" inverseEntity="OrderSearchResults"/>
+        <relationship name="shippingLabels" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ShippingLabel" inverseName="order" inverseEntity="ShippingLabel"/>
+        <relationship name="shippingLabelSettings" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ShippingLabelSettings" inverseName="order" inverseEntity="ShippingLabelSettings"/>
         <relationship name="shippingLines" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ShippingLine" inverseName="order" inverseEntity="ShippingLine"/>
     </entity>
     <entity name="OrderCount" representedClassName="OrderCount" syncable="YES">
@@ -446,6 +448,7 @@
         <attribute name="status" attributeType="String" defaultValueString=""/>
         <attribute name="trackingNumber" attributeType="String" defaultValueString=""/>
         <relationship name="destinationAddress" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ShippingLabelAddress" inverseName="destinationShippingLabel" inverseEntity="ShippingLabelAddress"/>
+        <relationship name="order" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="shippingLabels" inverseEntity="Order"/>
         <relationship name="originAddress" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ShippingLabelAddress" inverseName="originShippingLabel" inverseEntity="ShippingLabelAddress"/>
         <relationship name="refund" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ShippingLabelRefund" inverseName="shippingLabel" inverseEntity="ShippingLabelRefund"/>
     </entity>
@@ -471,6 +474,7 @@
         <attribute name="orderID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="paperSize" attributeType="String" defaultValueString=""/>
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="order" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="shippingLabelSettings" inverseEntity="Order"/>
     </entity>
     <entity name="ShippingLine" representedClassName="ShippingLine" syncable="YES">
         <attribute name="methodID" optional="YES" attributeType="String"/>
@@ -542,7 +546,7 @@
         <element name="AccountSettings" positionX="-846" positionY="270" width="128" height="75"/>
         <element name="GenericAttribute" positionX="-684" positionY="45" width="128" height="103"/>
         <element name="Note" positionX="-369.61328125" positionY="-95.85546875" width="128" height="283"/>
-        <element name="Order" positionX="-41.5859375" positionY="23.53125" width="128" height="763"/>
+        <element name="Order" positionX="-41.5859375" positionY="23.53125" width="128" height="793"/>
         <element name="OrderCount" positionX="-693" positionY="36" width="128" height="75"/>
         <element name="OrderCountItem" positionX="-684" positionY="45" width="128" height="105"/>
         <element name="OrderCoupon" positionX="-206.01953125" positionY="379.74609375" width="128" height="120"/>
@@ -575,10 +579,10 @@
         <element name="ShipmentTracking" positionX="-201.47265625" positionY="-109.14453125" width="128" height="148"/>
         <element name="ShipmentTrackingProvider" positionX="248.25" positionY="-117.6640625" width="180.32421875" height="103"/>
         <element name="ShipmentTrackingProviderGroup" positionX="-8.2734375" positionY="-117.890625" width="187.5" height="88"/>
-        <element name="ShippingLabel" positionX="-675" positionY="54" width="128" height="298"/>
+        <element name="ShippingLabel" positionX="-675" positionY="54" width="128" height="313"/>
         <element name="ShippingLabelAddress" positionX="-684" positionY="45" width="128" height="208"/>
         <element name="ShippingLabelRefund" positionX="-693" positionY="36" width="128" height="88"/>
-        <element name="ShippingLabelSettings" positionX="-666" positionY="63" width="128" height="88"/>
+        <element name="ShippingLabelSettings" positionX="-666" positionY="63" width="128" height="103"/>
         <element name="ShippingLine" positionX="-247.203125" positionY="907.53125" width="128" height="148"/>
         <element name="ShippingLineTax" positionX="-693" positionY="36" width="128" height="103"/>
         <element name="Site" positionX="-203.6875" positionY="208.0703125" width="128" height="178"/>

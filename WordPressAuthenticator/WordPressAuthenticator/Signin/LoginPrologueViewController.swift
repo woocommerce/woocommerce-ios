@@ -266,7 +266,9 @@ class LoginPrologueViewController: LoginViewController {
     }
     
     private func setButtonViewControllerBackground(_ buttonViewController: NUXButtonViewController) {
-        buttonViewController.backgroundColor = .clear
+        // Fallback to setting the button background color to clear so the blur effect blurs the Prologue background color.
+        let backgroundColor = WordPressAuthenticator.shared.unifiedStyle?.prologueButtonsBackgroundColor ?? .clear
+        buttonViewController.backgroundColor = backgroundColor
         buttonBlurEffectView.effect = UIBlurEffect(style: blurEffect)
     }
 

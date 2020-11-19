@@ -192,6 +192,9 @@ public struct WordPressAuthenticatorUnifiedStyle {
     /// Style: Auth view background colors
     ///
     public let viewControllerBackgroundColor: UIColor
+    
+    /// Style: Auth Prologue buttons background color
+    public let prologueButtonsBackgroundColor: UIColor
 
     /// Style: Status bar style. Defaults to `default`.
     ///
@@ -212,6 +215,7 @@ public struct WordPressAuthenticatorUnifiedStyle {
                 textButtonColor: UIColor,
                 textButtonHighlightColor: UIColor,
                 viewControllerBackgroundColor: UIColor,
+                prologueButtonsBackgroundColor: UIColor = .clear,
                 statusBarStyle: UIStatusBarStyle = .default,
                 navBarBackgroundColor: UIColor,
                 navButtonTextColor: UIColor,
@@ -223,6 +227,7 @@ public struct WordPressAuthenticatorUnifiedStyle {
         self.textButtonColor = textButtonColor
         self.textButtonHighlightColor = textButtonHighlightColor
         self.viewControllerBackgroundColor = viewControllerBackgroundColor
+        self.prologueButtonsBackgroundColor = prologueButtonsBackgroundColor
         self.statusBarStyle = statusBarStyle
         self.navBarBackgroundColor = navBarBackgroundColor
         self.navButtonTextColor = navButtonTextColor

@@ -440,6 +440,7 @@ extension ShippingLabel {
         serviceName: CopiableProp<String> = .copy,
         refundableAmount: CopiableProp<Double> = .copy,
         status: CopiableProp<ShippingLabelStatus> = .copy,
+        refund: NullableCopiableProp<ShippingLabelRefund> = .copy,
         originAddress: CopiableProp<ShippingLabelAddress> = .copy,
         destinationAddress: CopiableProp<ShippingLabelAddress> = .copy,
         productIDs: CopiableProp<[Int64]> = .copy,
@@ -457,6 +458,7 @@ extension ShippingLabel {
         let serviceName = serviceName ?? self.serviceName
         let refundableAmount = refundableAmount ?? self.refundableAmount
         let status = status ?? self.status
+        let refund = refund ?? self.refund
         let originAddress = originAddress ?? self.originAddress
         let destinationAddress = destinationAddress ?? self.destinationAddress
         let productIDs = productIDs ?? self.productIDs
@@ -475,6 +477,7 @@ extension ShippingLabel {
             serviceName: serviceName,
             refundableAmount: refundableAmount,
             status: status,
+            refund: refund,
             originAddress: originAddress,
             destinationAddress: destinationAddress,
             productIDs: productIDs,

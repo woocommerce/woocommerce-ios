@@ -46,18 +46,17 @@ private extension LinkedProductsViewController {
     }
 
     func configureMainView() {
-        view.backgroundColor = .listBackground
+        view.backgroundColor = .listForeground
     }
 
     func configureTableView() {
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.backgroundColor = .listBackground
+        tableView.backgroundColor = .listForeground
         tableView.separatorStyle = .none
 
         registerTableViewCells()
 
         tableView.dataSource = self
-        tableView.delegate = self
     }
 
     func registerTableViewCells() {
@@ -89,59 +88,6 @@ extension LinkedProductsViewController: UITableViewDataSource {
     }
 }
 
-// MARK: - UITableViewDelegate Conformance
-//
-extension LinkedProductsViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-//        let row = rowAtIndexPath(indexPath)
-//
-//        switch row {
-//        case .scheduleSaleFrom:
-//            viewModel.didTapScheduleSaleFromRow()
-//            refreshViewContent()
-//        case .scheduleSaleTo:
-//            viewModel.didTapScheduleSaleToRow()
-//            refreshViewContent()
-//        case .removeSaleTo:
-//            viewModel.handleSaleEndDateChange(nil)
-//            refreshViewContent()
-//        case .taxStatus:
-//            let command = ProductTaxStatusListSelectorCommand(selected: viewModel.taxStatus)
-//            let listSelectorViewController = ListSelectorViewController(command: command) { [weak self] selected in
-//                                                                            if let selected = selected {
-//                                                                                self?.viewModel.handleTaxStatusChange(selected)
-//                                                                            }
-//                                                                            self?.refreshViewContent()
-//            }
-//            navigationController?.pushViewController(listSelectorViewController, animated: true)
-//        case .taxClass:
-//            let dataSource = ProductTaxClassListSelectorDataSource(siteID: siteID, selected: viewModel.taxClass)
-//            let navigationBarTitle = NSLocalizedString("Tax classes", comment: "Navigation bar title of the Product tax class selector screen")
-//            let noResultsPlaceholderText = NSLocalizedString("No tax classes yet",
-//            comment: "The text on the placeholder overlay when there are no tax classes on the Tax Class list picker")
-//            let noResultsPlaceholderImage = UIImage.errorStateImage
-//            let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: navigationBarTitle,
-//                                                                     noResultsPlaceholderText: noResultsPlaceholderText,
-//                                                                     noResultsPlaceholderImage: noResultsPlaceholderImage,
-//                                                                     noResultsPlaceholderImageTintColor: .gray(.shade20),
-//                                                                     tableViewStyle: .grouped)
-//            let selectorViewController =
-//                PaginatedListSelectorViewController(viewProperties: viewProperties,
-//                                                    dataSource: dataSource) { [weak self] selected in
-//                                                        guard let self = self else {
-//                                                            return
-//                                                        }
-//                                                        self.viewModel.handleTaxClassChange(selected)
-//                                                        self.refreshViewContent()
-//            }
-//            navigationController?.pushViewController(selectorViewController, animated: true)
-//        default:
-//            break
-//        }
-    }
-}
-
 // MARK: - Cell configuration
 //
 private extension LinkedProductsViewController {
@@ -157,9 +103,9 @@ private extension LinkedProductsViewController {
             configureUpsellsProducts(cell: cell)
         case let cell as NumberOfLinkedProductsTableViewCell where row == .crossSellsProducts:
             configureCrossSellsProducts(cell: cell)
-        case let cell as BasicTableViewCell where row == .upsellsButton:
+        case let cell as ButtonTableViewCell where row == .upsellsButton:
             configureUpsellsButton(cell: cell)
-        case let cell as BasicTableViewCell where row == .crossSellsButton:
+        case let cell as ButtonTableViewCell where row == .crossSellsButton:
             configureCrossSellsButton(cell: cell)
         default:
             fatalError()
@@ -195,12 +141,18 @@ private extension LinkedProductsViewController {
         cell.configure(content: Localization.upsellAndCrossSellProducts(count: viewModel.crossSellIDs.count))
     }
 
-    func configureUpsellsButton(cell: BasicTableViewCell) {
+    func configureUpsellsButton(cell: ButtonTableViewCell) {
+        let buttonTitle = Localization.buttonTitle(count: viewModel.upsellIDs.count)
+        cell.configure(style: .secondary, title: buttonTitle) {
 
+        }
     }
 
-    func configureCrossSellsButton(cell: BasicTableViewCell) {
+    func configureCrossSellsButton(cell: ButtonTableViewCell) {
+        let buttonTitle = Localization.buttonTitle(count: viewModel.crossSellIDs.count)
+        cell.configure(style: .secondary, title: buttonTitle) {
 
+        }
     }
 }
 
@@ -221,17 +173,7 @@ extension LinkedProductsViewController {
     }
 
     @objc private func completeUpdating() {
-//        viewModel.completeUpdating(
-//            onCompletion: { [weak self] (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges) in
-//                self?.onCompletion(regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges)
-//            }, onError: { [weak self] error in
-//                switch error {
-//                case .salePriceWithoutRegularPrice:
-//                    self?.displaySalePriceWithoutRegularPriceErrorNotice()
-//                case .salePriceHigherThanRegularPrice:
-//                    self?.displaySalePriceErrorNotice()
-//                }
-//        })
+        // TODO: to be implemented in next PRs
     }
 
     private func presentBackNavigationActionSheet() {
@@ -263,7 +205,7 @@ extension LinkedProductsViewController {
             case .upsellsProducts, .crossSellsProducts:
                 return NumberOfLinkedProductsTableViewCell.self
             case .upsellsButton, .crossSellsButton:
-                return BasicTableViewCell.self
+                return ButtonTableViewCell.self
             }
         }
 
@@ -295,6 +237,18 @@ private extension LinkedProductsViewController {
             }()
 
             return String.localizedStringWithFormat(format, count)
+        }
+
+        static func buttonTitle(count: Int) -> String {
+            return {
+                if count == 0 {
+                    return NSLocalizedString("Add Products",
+                           comment: "Add Products button inside the Linked Products screen.")
+                } else {
+                    return NSLocalizedString("Edit Products",
+                           comment: "Edit Products button inside the Linked Products screen.")
+                }
+            }()
         }
     }
 }

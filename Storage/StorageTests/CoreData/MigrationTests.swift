@@ -323,7 +323,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelRefund"), 0)
         XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelSettings"), 0)
 
-        // Creates an `ShippingLabel` with all relationships.
+        // Creates a `ShippingLabel` with all relationships.
         let originAddress = insertShippingLabelAddress(to: targetContext)
         let destinationAddress = insertShippingLabelAddress(to: targetContext)
         let shippingLabelRefund = insertShippingLabelRefund(to: targetContext)
@@ -332,10 +332,10 @@ final class MigrationTests: XCTestCase {
         shippingLabel.setValue(destinationAddress, forKey: "destinationAddress")
         shippingLabel.setValue(shippingLabelRefund, forKey: "refund")
 
-        // Creates an `ShippingLabelSettings`.
+        // Creates a `ShippingLabelSettings`.
         _ = insertShippingLabelSettings(to: targetContext)
 
-        try targetContext.save()
+        XCTAssertNoThrow(try targetContext.save())
 
         XCTAssertEqual(try targetContext.count(entityName: "ShippingLabel"), 1)
         XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelAddress"), 2)

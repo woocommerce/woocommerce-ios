@@ -9,6 +9,17 @@ protocol LinkedProductsViewModelOutput {
     var sections: [Section] { get }
 }
 
+/// Handles actions related to Linked Products..
+///
+protocol LinkedProductsViewModelActionHandler {
+    // Input fields actions
+    func handleUpsellIDsChange(_ upsellIDs: [Int64])
+    func handleCrossSellIDsChange(_ crossSellIDs: [Int64])
+
+    // Navigation actions
+    func hasUnsavedChanges() -> Bool
+}
+
 /// Provides view data for Linked Products, and handles init/UI/navigation actions needed.
 ///
 final class LinkedProductsViewModel: LinkedProductsViewModelOutput {
@@ -40,6 +51,19 @@ final class LinkedProductsViewModel: LinkedProductsViewModelOutput {
         rows.append(.crossSellsButton)
 
         return [Section(rows: rows)]
+    }
+
+
+}
+
+extension LinkedProductsViewModel: LinkedProductsViewModelActionHandler {
+
+    func handleUpsellIDsChange(_ upsellIDs: [Int64]) {
+        self.upsellIDs = upsellIDs
+    }
+
+    func handleCrossSellIDsChange(_ crossSellIDs: [Int64]) {
+        self.crossSellIDs = crossSellIDs
     }
 
     func hasUnsavedChanges() -> Bool {

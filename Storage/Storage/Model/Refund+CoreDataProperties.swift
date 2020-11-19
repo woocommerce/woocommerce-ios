@@ -18,7 +18,7 @@ extension Refund {
     @NSManaged public var isAutomated: Bool
     @NSManaged public var createAutomated: Bool
     @NSManaged public var items: Set<OrderItemRefund>?
-    @NSManaged public var shippingLines: Set<ShippingLine>
+    @NSManaged public var shippingLines: Set<ShippingLine>?
 
 }
 

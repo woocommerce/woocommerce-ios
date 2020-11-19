@@ -226,7 +226,7 @@ extension IssueRefundViewModel {
     ///
     private func createShippingSection() -> Section? {
         // If there is no shipping cost to refund or shipping has already been refunded, then hide the section.
-        guard let shippingLine = state.order.shippingLines.first, !hasShippingBeenRefunded() else {
+        guard let shippingLine = state.order.shippingLines.first, hasShippingBeenRefunded() == false else {
             return nil
         }
 
@@ -285,10 +285,23 @@ extension IssueRefundViewModel {
     }
 
     /// Returns `true` if a shipping refund is found.
+    /// Returns `false`if a shipping refund is not found.
+    /// Returns `nil` if we don't have shipping refund information.
     /// - Discussion: Since we don't support partial refunds, we assume that any refund is a full refund for shipping costs.
     ///
-    private func hasShippingBeenRefunded() -> Bool {
-        state.refunds.first(where: { $0.shippingLines.isNotEmpty }) != nil
+    private func hasShippingBeenRefunded() -> Bool? {
+        // Return false if there are no refunds.
+        guard state.refunds.isNotEmpty else {
+            return false
+        }
+
+        // Return nil if we can't get shipping line refunds information
+        guard state.refunds.first?.shippingLines != nil else {
+            return nil
+        }
+
+        // Return true if there is any non-empty shipping refund
+        return state.refunds.first { $0.shippingLines?.isNotEmpty ?? false } != nil
     }
 
     /// Return an array of `RefundableOrderItems` by taking out all previously refunded items

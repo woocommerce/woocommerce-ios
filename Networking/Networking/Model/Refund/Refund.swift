@@ -24,7 +24,8 @@ public struct Refund: Codable {
 
     public let items: [OrderItemRefund]
 
-    public let shippingLines: [ShippingLine]
+    /// Optional because WC stores with lower versions than `4.8.0` don't return any information about shipping refunds
+    public let shippingLines: [ShippingLine]?
 
     /// Refund struct initializer
     ///
@@ -38,7 +39,7 @@ public struct Refund: Codable {
                 isAutomated: Bool?,
                 createAutomated: Bool?,
                 items: [OrderItemRefund],
-                shippingLines: [ShippingLine]) {
+                shippingLines: [ShippingLine]?) {
         self.refundID = refundID
         self.orderID = orderID
         self.siteID = siteID
@@ -72,7 +73,7 @@ public struct Refund: Codable {
         let refundedByUserID = try container.decode(Int64.self, forKey: .refundedByUserID)
         let isAutomated = try container.decodeIfPresent(Bool.self, forKey: .automatedRefund) ?? false
         let items = try container.decode([OrderItemRefund].self, forKey: .items)
-        let shippingLines = try container.decodeIfPresent([ShippingLine].self, forKey: .shippingLines) ?? []
+        let shippingLines = try container.decodeIfPresent([ShippingLine].self, forKey: .shippingLines)
 
         self.init(refundID: refundID,
                   orderID: orderID,
@@ -149,7 +150,7 @@ extension Refund: Comparable {
             lhs.refundedByUserID == rhs.refundedByUserID &&
             lhs.isAutomated == rhs.isAutomated &&
             lhs.items.sorted() == rhs.items.sorted() &&
-            lhs.shippingLines.sorted() == rhs.shippingLines.sorted()
+            lhs.shippingLines?.sorted() == rhs.shippingLines?.sorted()
     }
 
     public static func < (lhs: Refund, rhs: Refund) -> Bool {

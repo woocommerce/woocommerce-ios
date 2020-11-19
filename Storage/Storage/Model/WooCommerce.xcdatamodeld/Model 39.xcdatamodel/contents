@@ -411,7 +411,7 @@
         <attribute name="refundID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OrderItemRefund" inverseName="refund" inverseEntity="OrderItemRefund"/>
-        <relationship name="shippingLines" toMany="YES" deletionRule="Cascade" destinationEntity="ShippingLine" inverseName="refund" inverseEntity="ShippingLine"/>
+        <relationship name="shippingLines" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ShippingLine" inverseName="refund" inverseEntity="ShippingLine"/>
     </entity>
     <entity name="ShipmentTracking" representedClassName="ShipmentTracking" syncable="YES">
         <attribute name="dateShipped" optional="YES" attributeType="Date" usesScalarValueType="NO"/>

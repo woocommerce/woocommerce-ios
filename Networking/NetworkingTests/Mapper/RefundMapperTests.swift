@@ -64,7 +64,7 @@ final class RefundMapperTests: XCTestCase {
 
     func test_refund_shipping_lines_are_correctly_parsed() {
         guard let refund = mapLoadRefundResponse(),
-              let shippingLine = refund.shippingLines.first,
+              let shippingLine = refund.shippingLines?.first,
               let taxLine = shippingLine.taxes.first else {
             XCTFail("Failed to load `refund-single.json` file.")
             return

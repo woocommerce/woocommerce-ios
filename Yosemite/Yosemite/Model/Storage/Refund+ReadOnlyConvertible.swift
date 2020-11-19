@@ -30,7 +30,7 @@ extension Storage.Refund: ReadOnlyConvertible {
     ///
     public func toReadOnly() -> Yosemite.Refund {
         let orderItems = items?.map { $0.toReadOnly() } ?? [Yosemite.OrderItemRefund]()
-        let readOnlyShippingLines = shippingLines.map { $0.toReadOnly() }
+        let readOnlyShippingLines = shippingLines?.map { $0.toReadOnly() }
 
         return Refund(refundID: refundID,
                       orderID: orderID,

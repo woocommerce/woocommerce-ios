@@ -80,7 +80,8 @@ class AuthenticationManager: Authentication {
                                                                   getStartedInstructions: AuthenticationConstants.getStartedInstructions,
                                                                   jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
                                                                   siteLoginInstructions: AuthenticationConstants.siteInstructions,
-                                                                  usernamePasswordInstructions: AuthenticationConstants.usernamePasswordInstructions)
+                                                                  usernamePasswordInstructions: AuthenticationConstants.usernamePasswordInstructions,
+                                                                  enterYourSiteAddressButtonTitle: AuthenticationConstants.enterYourSiteAddressButtonTitle)
 
         let unifiedStyle = WordPressAuthenticatorUnifiedStyle(borderColor: .divider,
                                                               errorColor: .error,

@@ -9,10 +9,10 @@ protocol LinkedProductsViewModelOutput {
     var sections: [Section] { get }
 }
 
-/// Handles actions related to Linked Products..
+/// Handles actions related to Linked Products.
 ///
 protocol LinkedProductsViewModelActionHandler {
-    // Input fields actions
+    // Actions on properties
     func handleUpsellIDsChange(_ upsellIDs: [Int64])
     func handleCrossSellIDsChange(_ crossSellIDs: [Int64])
 

@@ -55,6 +55,42 @@ public struct ShippingLabel: Equatable, GeneratedCopiable {
     /// A list of product names included in the shipping label.
     /// This is only used to look up a product in case `productIDs` is not available.
     public let productNames: [String]
+
+    public init(siteID: Int64,
+                orderID: Int64,
+                shippingLabelID: Int64,
+                carrierID: String,
+                dateCreated: Date,
+                packageName: String,
+                rate: Double,
+                currency: String,
+                trackingNumber: String,
+                serviceName: String,
+                refundableAmount: Double,
+                status: ShippingLabelStatus,
+                refund: ShippingLabelRefund?,
+                originAddress: ShippingLabelAddress,
+                destinationAddress: ShippingLabelAddress,
+                productIDs: [Int64],
+                productNames: [String]) {
+        self.siteID = siteID
+        self.orderID = orderID
+        self.shippingLabelID = shippingLabelID
+        self.carrierID = carrierID
+        self.dateCreated = dateCreated
+        self.packageName = packageName
+        self.rate = rate
+        self.currency = currency
+        self.trackingNumber = trackingNumber
+        self.serviceName = serviceName
+        self.refundableAmount = refundableAmount
+        self.status = status
+        self.refund = refund
+        self.originAddress = originAddress
+        self.destinationAddress = destinationAddress
+        self.productIDs = productIDs
+        self.productNames = productNames
+    }
 }
 
 // MARK: Decodable

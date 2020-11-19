@@ -29,6 +29,26 @@ public struct ShippingLabelAddress: Equatable {
 
     /// Postal code of the address.
     public let postcode: String
+
+    public init(company: String,
+                name: String,
+                phone: String,
+                country: String,
+                state: String,
+                address1: String,
+                address2: String,
+                city: String,
+                postcode: String) {
+        self.company = company
+        self.name = name
+        self.phone = phone
+        self.country = country
+        self.state = state
+        self.address1 = address1
+        self.address2 = address2
+        self.city = city
+        self.postcode = postcode
+    }
 }
 
 // MARK: Decodable

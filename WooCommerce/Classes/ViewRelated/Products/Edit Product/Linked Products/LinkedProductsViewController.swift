@@ -52,6 +52,7 @@ private extension LinkedProductsViewController {
     func configureTableView() {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
+        tableView.separatorStyle = .none
 
         registerTableViewCells()
 
@@ -152,9 +153,9 @@ private extension LinkedProductsViewController {
             configureUpsells(cell: cell)
         case let cell as ImageAndTitleAndTextTableViewCell where row == .crossSells:
             configureCrossSells(cell: cell)
-        case let cell as BasicTableViewCell where row == .upsellsProducts:
+        case let cell as NumberOfLinkedProductsTableViewCell where row == .upsellsProducts:
             configureUpsellsProducts(cell: cell)
-        case let cell as BasicTableViewCell where row == .crossSellsProducts:
+        case let cell as NumberOfLinkedProductsTableViewCell where row == .crossSellsProducts:
             configureCrossSellsProducts(cell: cell)
         case let cell as BasicTableViewCell where row == .upsellsButton:
             configureUpsellsButton(cell: cell)
@@ -186,12 +187,12 @@ private extension LinkedProductsViewController {
         cell.updateUI(viewModel: viewModel)
     }
 
-    func configureUpsellsProducts(cell: BasicTableViewCell) {
-
+    func configureUpsellsProducts(cell: NumberOfLinkedProductsTableViewCell) {
+        cell.configure(content: Localization.upsellAndCrossSellProducts(count: viewModel.upsellIDs.count))
     }
 
-    func configureCrossSellsProducts(cell: BasicTableViewCell) {
-
+    func configureCrossSellsProducts(cell: NumberOfLinkedProductsTableViewCell) {
+        cell.configure(content: Localization.upsellAndCrossSellProducts(count: viewModel.crossSellIDs.count))
     }
 
     func configureUpsellsButton(cell: BasicTableViewCell) {
@@ -260,7 +261,7 @@ extension LinkedProductsViewController {
             case .upsells, .crossSells:
                 return ImageAndTitleAndTextTableViewCell.self
             case .upsellsProducts, .crossSellsProducts:
-                return BasicTableViewCell.self
+                return NumberOfLinkedProductsTableViewCell.self
             case .upsellsButton, .crossSellsButton:
                 return BasicTableViewCell.self
             }
@@ -281,5 +282,19 @@ private extension LinkedProductsViewController {
         static let crossSellsCellTitle = NSLocalizedString("Cross-sells", comment: "Cell title for Cross-sells products in Linked Products Settings screen")
         static let crossSellsCellDescription = NSLocalizedString("Products promoted in the cart when current product is selected",
                                                                  comment: "Cell description for Cross-sells products in Linked Products Settings screen")
+
+        static func upsellAndCrossSellProducts(count: Int) -> String {
+            let format: String = {
+                if count <= 1 {
+                    return NSLocalizedString("%ld product added",
+                           comment: "Format for number of products added for upsell and cross sell numbers in linked products. Reads, `1 product added`")
+                } else {
+                    return NSLocalizedString("%ld products added",
+                           comment: "Format for number of products added for upsell and cross sell numbers in linked products. Reads, `5 product added`")
+                }
+            }()
+
+            return String.localizedStringWithFormat(format, count)
+        }
     }
 }

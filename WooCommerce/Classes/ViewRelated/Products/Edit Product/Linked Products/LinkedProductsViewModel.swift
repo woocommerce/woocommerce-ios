@@ -15,8 +15,8 @@ final class LinkedProductsViewModel: LinkedProductsViewModelOutput {
 
     private let product: ProductFormDataModel
 
-    private var upsellIDs: [Int64]
-    private var crossSellIDs: [Int64]
+    private(set) var upsellIDs: [Int64]
+    private(set) var crossSellIDs: [Int64]
 
     init(product: ProductFormDataModel) {
         self.product = product

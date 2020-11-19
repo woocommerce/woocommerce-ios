@@ -228,11 +228,11 @@ private extension LinkedProductsViewController {
         static func upsellAndCrossSellProducts(count: Int) -> String {
             let format: String = {
                 if count <= 1 {
-                    return NSLocalizedString("%ld product added",
-                           comment: "Format for number of products added for upsell and cross sell numbers in linked products. Reads, `1 product added`")
+                    return NSLocalizedString("%ld product",
+                           comment: "Format for number of products added for upsell and cross sell numbers in linked products. Reads, `1 product`")
                 } else {
-                    return NSLocalizedString("%ld products added",
-                           comment: "Format for number of products added for upsell and cross sell numbers in linked products. Reads, `5 product added`")
+                    return NSLocalizedString("%ld products",
+                           comment: "Format for number of products added for upsell and cross sell numbers in linked products. Reads, `5 products`")
                 }
             }()
 

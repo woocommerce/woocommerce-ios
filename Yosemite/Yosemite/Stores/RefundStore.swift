@@ -219,16 +219,16 @@ private extension RefundStore {
         readOnlyRefund.shippingLines.forEach { readOnlyShippingLine in
             // Load or create a shipping line from the read only version
             let storageShippingLine: Storage.ShippingLine = {
-                guard let stored = storage.loadShippingLine(siteID: readOnlyRefund.siteID, shippingID: readOnlyShippingLine.shippingID) else {
-                    return storage.insertNewObject(ofType: Storage.ShippingLine.self)
+                guard let existingShippingLine = storage.loadRefundShippingLine(siteID: readOnlyRefund.siteID,
+                                                                                shippingID: readOnlyShippingLine.shippingID) else {
+                    let newShippingLine = storage.insertNewObject(ofType: Storage.ShippingLine.self)
+                    storageRefund.addToShippingLines(newShippingLine)
+                    return newShippingLine
                 }
-                return stored
+                return existingShippingLine
             }()
 
-            // Update it and add it to the storageRefund shipping lines set
             storageShippingLine.update(with: readOnlyShippingLine)
-            storageRefund.addToShippingLines(storageShippingLine)
-
             handleShippingLineTaxes(readOnlyShippingLine, storageShippingLine, storage)
         }
 
@@ -271,17 +271,13 @@ private extension RefundStore {
     private func handleShippingLineTaxes(_ readOnlyShippingLine: Networking.ShippingLine, _ storageShippingLine: Storage.ShippingLine, _ storage: StorageType) {
         // Upsert the taxes from the read-only shipping line
         readOnlyShippingLine.taxes.forEach { readyOnlyTax in
-            // Load or create a shipping line tax from the read only version
-            let storageTax: Storage.ShippingLineTax = {
-                guard let stored = storage.loadShippingLineTax(shippingID: readOnlyShippingLine.shippingID, taxID: readyOnlyTax.taxID) else {
-                    return storage.insertNewObject(ofType: Storage.ShippingLineTax.self)
-                }
-                return stored
-            }()
-
-            // Update it and add it to the storageShippingLine taxes set
-            storageTax.update(with: readyOnlyTax)
-            storageShippingLine.addToTaxes(storageTax)
+            if let storageTax = storage.loadShippingLineTax(shippingID: readOnlyShippingLine.shippingID, taxID: readyOnlyTax.taxID) {
+                storageTax.update(with: readyOnlyTax)
+            } else {
+                let newTax = storage.insertNewObject(ofType: Storage.ShippingLineTax.self)
+                storageShippingLine.addToTaxes(newTax)
+                newTax.update(with: readyOnlyTax)
+            }
         }
 
         // Now, remove any object that exist in storageShippingLine.taxes but not in readOnlyShippingLine.taxes

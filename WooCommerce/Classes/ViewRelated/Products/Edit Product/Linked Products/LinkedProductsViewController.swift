@@ -167,11 +167,23 @@ private extension LinkedProductsViewController {
     }
 
     func configureUpsells(cell: ImageAndTitleAndTextTableViewCell) {
-
+        let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: Localization.upsellsCellTitle,
+                                                                    text: Localization.upsellsCellDescription,
+                                                                    image: UIImage.arrowUp,
+                                                                    imageTintColor: .gray(.shade20),
+                                                                    numberOfLinesForText: 0,
+                                                                    isActionable: false)
+        cell.updateUI(viewModel: viewModel)
     }
 
     func configureCrossSells(cell: ImageAndTitleAndTextTableViewCell) {
-
+        let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: Localization.crossSellsCellTitle,
+                                                                    text: Localization.crossSellsCellDescription,
+                                                                    image: UIImage.syncIcon,
+                                                                    imageTintColor: .gray(.shade20),
+                                                                    numberOfLinesForText: 0,
+                                                                    isActionable: false)
+        cell.updateUI(viewModel: viewModel)
     }
 
     func configureUpsellsProducts(cell: BasicTableViewCell) {
@@ -263,5 +275,11 @@ extension LinkedProductsViewController {
 private extension LinkedProductsViewController {
     enum Localization {
         static let titleView = NSLocalizedString("Linked Products", comment: "Linked Products Settings navigation title")
+        static let upsellsCellTitle = NSLocalizedString("Upsells", comment: "Cell title for Upsells products in Linked Products Settings screen")
+        static let upsellsCellDescription = NSLocalizedString("Products promoted instead of the currently viewed product (ie more profitable products)",
+                                                              comment: "Cell description for Upsells products in Linked Products Settings screen")
+        static let crossSellsCellTitle = NSLocalizedString("Cross-sells", comment: "Cell title for Cross-sells products in Linked Products Settings screen")
+        static let crossSellsCellDescription = NSLocalizedString("Products promoted in the cart when current product is selected",
+                                                                 comment: "Cell description for Cross-sells products in Linked Products Settings screen")
     }
 }

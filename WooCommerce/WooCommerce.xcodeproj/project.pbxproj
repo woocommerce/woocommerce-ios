@@ -3059,6 +3059,7 @@
 				452FE64925657EC100EB54A0 /* LinkedProductsViewController.swift */,
 				452FE64A25657EC100EB54A0 /* LinkedProductsViewController.xib */,
 				452FE6512565849B00EB54A0 /* LinkedProductsViewModel.swift */,
+				45A0E4C825669BF600D4E8C3 /* Cells */,
 			);
 			path = "Linked Products";
 			sourceTree = "<group>";
@@ -3146,6 +3147,13 @@
 				45968544254069AE00D17B90 /* DownloadableFileBottomSheetListSelectorCommand.swift */,
 			);
 			path = BottomSheetListSelector;
+			sourceTree = "<group>";
+		};
+		45A0E4C825669BF600D4E8C3 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		45A24E5C2451DB710050606B /* Menu Order */ = {

@@ -38,6 +38,97 @@ final class ShippingLabelStoreTests: XCTestCase {
         super.tearDown()
     }
 
+    // MARK: - `loadShippingLabels`
+
+    func test_loadShippingLabels_persists_shipping_labels_and_settings_on_success() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        let orderID: Int64 = 22
+        let expectedOriginAddress = Yosemite.ShippingLabelAddress(company: "fun testing",
+                                                                  name: "Woo seller",
+                                                                  phone: "6501234567",
+                                                                  country: "US",
+                                                                  state: "CA",
+                                                                  address1: "9999 19TH AVE",
+                                                                  address2: "",
+                                                                  city: "SAN FRANCISCO",
+                                                                  postcode: "94121-2303")
+        let expectedDestinationAddress = Yosemite.ShippingLabelAddress(company: "",
+                                                                       name: "Woo buyer",
+                                                                       phone: "1650345689",
+                                                                       country: "TW",
+                                                                       state: "Taiwan",
+                                                                       address1: "No 70 RA St",
+                                                                       address2: "",
+                                                                       city: "Taipei",
+                                                                       postcode: "100")
+        let expectedRefund = Yosemite.ShippingLabelRefund(dateRequested: Date(timeIntervalSince1970: 1603716266.809), status: .pending)
+        let expectedShippingLabel = Yosemite.ShippingLabel(siteID: sampleSiteID,
+                                                           orderID: orderID,
+                                                           shippingLabelID: 1149,
+                                                           carrierID: "usps",
+                                                           dateCreated: Date(timeIntervalSince1970: 1603716274.809),
+                                                           packageName: "box",
+                                                           rate: 58.81,
+                                                           currency: "USD",
+                                                           trackingNumber: "CM199912222US",
+                                                           serviceName: "USPS - Priority Mail International",
+                                                           refundableAmount: 58.81,
+                                                           status: .purchased,
+                                                           refund: expectedRefund,
+                                                           originAddress: expectedOriginAddress,
+                                                           destinationAddress: expectedDestinationAddress,
+                                                           productIDs: [3013],
+                                                           productNames: ["Password protected!"])
+        let expectedSettings = Yosemite.ShippingLabelSettings(siteID: sampleSiteID, orderID: orderID, paperSize: .letter)
+        let expectedResponse = OrderShippingLabelListResponse(shippingLabels: [expectedShippingLabel], settings: expectedSettings)
+        remote.whenLoadingShippingLabels(siteID: sampleSiteID, orderID: orderID, thenReturn: .success(expectedResponse))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        insertOrder(siteID: sampleSiteID, orderID: orderID)
+
+        // When
+        let result: Result<Void, Error> = try waitFor { promise in
+            let action = ShippingLabelAction.synchronizeShippingLabels(siteID: self.sampleSiteID, orderID: orderID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertNoThrow(try XCTUnwrap(result.get()))
+
+        let persistedOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: sampleSiteID, orderID: orderID))
+        let persistedShippingLabels = try XCTUnwrap(viewStorage.loadAllShippingLabels(siteID: sampleSiteID, orderID: orderID))
+        XCTAssertEqual(persistedOrder.shippingLabels, Set(persistedShippingLabels))
+        XCTAssertEqual(persistedShippingLabels.map { $0.toReadOnly() }, [expectedShippingLabel])
+
+        let persistedSettings = try XCTUnwrap(viewStorage.loadShippingLabelSettings(siteID: sampleSiteID, orderID: orderID))
+        XCTAssertEqual(persistedOrder.shippingLabelSettings, persistedSettings)
+        XCTAssertEqual(persistedSettings.toReadOnly(), expectedSettings)
+    }
+
+    func test_loadShippingLabels_returns_error_on_failure() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        let orderID: Int64 = 22
+        let expectedError = NetworkError.notFound
+        remote.whenLoadingShippingLabels(siteID: sampleSiteID, orderID: orderID, thenReturn: .failure(expectedError))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Void, Error> = try waitFor { promise in
+            let action = ShippingLabelAction.synchronizeShippingLabels(siteID: self.sampleSiteID, orderID: orderID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
     // MARK: - `printShippingLabel`
 
     func test_printShippingLabel_returns_ShippingLabelPrintData_on_success() throws {
@@ -88,5 +179,14 @@ final class ShippingLabelStoreTests: XCTestCase {
         // Then
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+}
+
+private extension ShippingLabelStoreTests {
+    func insertOrder(siteID: Int64, orderID: Int64) {
+        let order = viewStorage.insertNewObject(ofType: StorageOrder.self)
+        order.siteID = siteID
+        order.orderID = orderID
+        order.statusKey = ""
     }
 }

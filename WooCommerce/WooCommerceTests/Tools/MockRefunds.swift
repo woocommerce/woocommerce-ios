@@ -23,7 +23,8 @@ public struct MockRefunds {
                       refundedByUserID: refundedByUserID,
                       isAutomated: isAutomated,
                       createAutomated: createAutomated,
-                      items: items)
+                      items: items,
+                      shippingLines: [])
     }
 
     public static func sampleRefundItem(itemID: Int64 = 0,

@@ -516,7 +516,8 @@ private extension RefundStoreTests {
                       refundedByUserID: 1,
                       isAutomated: true,
                       createAutomated: false,
-                      items: [sampleOrderItem()])
+                      items: [sampleOrderItem()],
+                      shippingLines: [])
     }
 
     /// Generate a mutated Refund
@@ -533,7 +534,8 @@ private extension RefundStoreTests {
                       refundedByUserID: 3,
                       isAutomated: true,
                       createAutomated: false,
-                      items: [sampleOrderItem(), sampleOrderItem2()])
+                      items: [sampleOrderItem(), sampleOrderItem2()],
+                      shippingLines: [])
     }
 
     /// Generate a single Refund
@@ -550,7 +552,8 @@ private extension RefundStoreTests {
                       refundedByUserID: 1,
                       isAutomated: true,
                       createAutomated: false,
-                      items: [sampleOrderItem2()])
+                      items: [sampleOrderItem2()],
+                      shippingLines: [])
     }
 
     /// Returns an `Order` with empty values. Use `copy()` to modify them.

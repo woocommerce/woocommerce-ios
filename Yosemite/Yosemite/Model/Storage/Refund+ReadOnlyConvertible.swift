@@ -40,6 +40,7 @@ extension Storage.Refund: ReadOnlyConvertible {
                       refundedByUserID: byUserID,
                       isAutomated: isAutomated,
                       createAutomated: createAutomated,
-                      items: orderItems)
+                      items: orderItems,
+                      shippingLines: [])
     }
 }

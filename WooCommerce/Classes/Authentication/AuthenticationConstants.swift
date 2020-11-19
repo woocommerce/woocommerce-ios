@@ -36,9 +36,17 @@ struct AuthenticationConstants {
         comment: "Sign in instructions for logging in with a username and password."
     )
     
+    /// Title of "Continue With WordPress.com" button in Login Prologue
+    //
+    static let continueWithWPButtontitle = NSLocalizedString(
+        "Continue With WordPress.com",
+        comment: "Button title. Takes the user to the login by email flow."
+    )
+    
     /// Title of "Enter your store address" button in Login Prologue
     //
-    static let enterYourSiteAddressButtonTitle = NSLocalizedString("Enter Your Store Address",
-                                                                   comment: "Button title. Takes the user to the login by store address flow."
+    static let enterYourSiteAddressButtonTitle = NSLocalizedString(
+        "Enter Your Store Address",
+        comment: "Button title. Takes the user to the login by store address flow."
     )
 }

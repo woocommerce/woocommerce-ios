@@ -85,6 +85,9 @@ private extension ShippingLabelStore {
             guard let order = derivedStorage.loadOrder(siteID: siteID, orderID: orderID) else {
                 return
             }
+            guard shippingLabels.isEmpty == false else {
+                return
+            }
             self.upsertShippingLabels(siteID: siteID, orderID: orderID, shippingLabels: shippingLabels, storageOrder: order)
             self.upsertShippingLabelSettings(siteID: siteID, orderID: orderID, settings: settings, storageOrder: order)
         }

@@ -108,6 +108,39 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(persistedSettings.toReadOnly(), expectedSettings)
     }
 
+    func test_loadShippingLabels_does_not_persist_shipping_labels_and_settings_on_success_with_empty_shipping_labels() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        let orderID: Int64 = 22
+        let expectedSettings = Yosemite.ShippingLabelSettings(siteID: sampleSiteID, orderID: orderID, paperSize: .letter)
+        // The response has no shipping labels but settings, to simulate an order without shipping labels.
+        let expectedResponse = OrderShippingLabelListResponse(shippingLabels: [], settings: expectedSettings)
+        remote.whenLoadingShippingLabels(siteID: sampleSiteID, orderID: orderID, thenReturn: .success(expectedResponse))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        insertOrder(siteID: sampleSiteID, orderID: orderID)
+
+        // When
+        let result: Result<Void, Error> = try waitFor { promise in
+            let action = ShippingLabelAction.synchronizeShippingLabels(siteID: self.sampleSiteID, orderID: orderID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertNoThrow(try XCTUnwrap(result.get()))
+
+        let persistedOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: sampleSiteID, orderID: orderID))
+        XCTAssertNil(persistedOrder.shippingLabels)
+        XCTAssertNil(persistedOrder.shippingLabelSettings)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabel.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelAddress.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelSettings.self), 0)
+    }
+
     func test_loadShippingLabels_returns_error_on_failure() throws {
         // Given
         let remote = MockShippingLabelRemote()

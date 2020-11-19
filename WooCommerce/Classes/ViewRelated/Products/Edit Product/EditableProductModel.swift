@@ -143,6 +143,14 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.downloadExpiry
     }
 
+    var upsellIDs: [Int64] {
+        product.upsellIDs
+    }
+
+    var crossSellIDs: [Int64] {
+        product.crossSellIDs
+    }
+
     func isStockStatusEnabled() -> Bool {
         // Only a variable product's stock status is not editable.
         productType != .variable

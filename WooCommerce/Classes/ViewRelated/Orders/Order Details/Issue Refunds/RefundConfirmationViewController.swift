@@ -11,8 +11,17 @@ final class RefundConfirmationViewController: UIViewController {
 
     private let viewModel: RefundConfirmationViewModel
 
-    init(viewModel: RefundConfirmationViewModel) {
+    private lazy var contextNoticePresenter: NoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
+    private let systemNoticePresenter: NoticePresenter
+
+    init(viewModel: RefundConfirmationViewModel, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.viewModel = viewModel
+        self.systemNoticePresenter = systemNoticePresenter
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -65,7 +74,12 @@ private extension RefundConfirmationViewController {
 
     func configureButtonTableFooterView() {
         tableView.tableFooterView = ButtonTableFooterView(frame: .zero, title: Localization.refund) { [weak self] in
-            self?.viewModel.submit()
+            guard let self = self else { return }
+            self.displayConfirmationAlert { didConfirm in
+                if didConfirm {
+                    self.submitRefund()
+                }
+            }
         }
         tableView.updateFooterHeight()
     }
@@ -123,10 +137,95 @@ extension RefundConfirmationViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - Confirmation And Submission
+private extension RefundConfirmationViewController {
+
+    /// Displays a confirmation alert before issuing a refund.
+    /// - Parameter onCompletion: Closure to be invoked with the user selection. `True` continue with the refund. `False` cancel the refund.
+    func displayConfirmationAlert(onCompletion: @escaping (Bool) -> Void) {
+
+        let actionSheet = UIAlertController(title: Localization.confirmationTitle(amount: viewModel.refundAmount),
+                                            message: Localization.confirmationBody,
+                                            preferredStyle: .alert)
+        actionSheet.view.tintColor = .text
+        actionSheet.addCancelActionWithTitle(Localization.cancel) { _ in
+            onCompletion(false)
+        }
+
+        actionSheet.addDefaultActionWithTitle(Localization.refund) { _ in
+            onCompletion(true)
+        }
+
+        present(actionSheet, animated: true)
+    }
+
+    /// Submits the refund and dismisses the flow upon successful completion.
+    ///
+    func submitRefund() {
+        presentProgressViewController()
+        self.viewModel.submit { [weak self] result in
+            switch result {
+            case .success:
+                self?.dismissPresentationFlow()
+            case .failure(let error):
+                self?.dismissProgressViewController(with: error)
+            }
+        }
+    }
+
+    /// Shows a progress view while the refund is being created.
+    ///
+    func presentProgressViewController() {
+        let viewProperties = InProgressViewProperties(title: Localization.issuingRefund, message: "")
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+
+        // Before iOS 13, a modal with transparent background requires certain
+        // `modalPresentationStyle` to prevent the view from turning dark after being presented.
+        if #available(iOS 13.0, *) {} else {
+            inProgressViewController.modalPresentationStyle = .overCurrentContext
+        }
+
+        present(inProgressViewController, animated: true)
+    }
+
+    /// Dismisses the whole `IssueRefund` flow.
+    ///
+    func dismissPresentationFlow() {
+        // Dismiss the progress view controller
+        dismiss(animated: true) { [weak self] in
+            // Dismiss the issue refund flow
+            self?.dismiss(animated: true, completion: {
+                // Show a success notice
+                self?.systemNoticePresenter.enqueue(notice: .init(title: Localization.refundSuccess))
+            })
+        }
+    }
+
+    /// Dismisses the progress view and displays a refund error notice.
+    ///
+    func dismissProgressViewController(with error: Error) {
+        dismiss(animated: true) { [weak self] in
+            self?.contextNoticePresenter.enqueue(notice: .init(title: Localization.refundError))
+            DDLogError("Error issuing refund: \(error)")
+        }
+    }
+}
+
 // MARK: - Localization
 
 private extension RefundConfirmationViewController {
     enum Localization {
         static let refund = NSLocalizedString("Refund", comment: "The title of the button to confirm the refund.")
+        static let cancel = NSLocalizedString("Cancel", comment: "The title of the button to cancel issuing a refund.")
+        static let issuingRefund = NSLocalizedString("Issuing Refund...", comment: "Text of the screen that is displayed while the refund is being created.")
+        static let refundSuccess = NSLocalizedString("🎉 Products successfuly refunded",
+                                                   comment: "Text of the notice that is displayed after the refund is created.")
+        static let refundError = NSLocalizedString("There was an error issuing the refund",
+                                                   comment: "Text of the notice that is displayed while the refund creation fails.")
+        static let confirmationBody = NSLocalizedString("Are you sure you want to issue a refund? This can't be undone.",
+                                                        comment: "The text on the confirmation alert before issuing a refund.")
+        static func confirmationTitle(amount: String) -> String {
+            "\(refund) \(amount)"
+        }
     }
 }

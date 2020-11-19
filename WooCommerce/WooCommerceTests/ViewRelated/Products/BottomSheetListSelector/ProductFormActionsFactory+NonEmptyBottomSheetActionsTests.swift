@@ -57,6 +57,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
                                                                        .reviews,
                                                                        .downloadableFiles,
+                                                                       .linkedProducts(editable: true),
                                                                        .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 

@@ -19,6 +19,10 @@ final class RefundConfirmationViewModel {
     ///
     private let currencyFormatter: CurrencyFormatter
 
+    /// StoresManager to dispatch the "Create Refund" action.
+    ///
+    private let actionProcessor: StoresManager
+
     /// Contains the current value of the Reason for Refund text field.
     ///
     private let reasonForRefundCellViewModel =
@@ -44,18 +48,34 @@ final class RefundConfirmationViewModel {
         )
     ]
 
-    init(details: Details, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+    init(details: Details, actionProcessor: StoresManager = ServiceLocator.stores, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.details = details
+        self.actionProcessor = actionProcessor
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
     }
 
     /// Submit the refund.
     ///
-    /// This does not do anything at the moment. XD
-    ///
-    func submit() {
-        print("Submitting refund with reason “\(reasonForRefundCellViewModel.currentValue ?? "")”")
-        print("JUST KIDDING! ʕ•ᴥ•ʔ")
+    func submit(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        // Create refund object
+        let shippingLine = details.refundsShipping ? details.order.shippingLines.first : nil
+        let useCase = RefundCreationUseCase(amount: details.amount,
+                                            reason: reasonForRefundCellViewModel.currentValue,
+                                            automaticallyRefundsPayment: gatewaySupportsAutomaticRefunds(),
+                                            items: details.items,
+                                            shippingLine: shippingLine,
+                                            currencyFormatter: currencyFormatter)
+        let refund = useCase.createRefund()
+
+        // Submit it
+        let action = RefundAction.createRefund(siteID: details.order.siteID, orderID: details.order.orderID, refund: refund) { _, error  in
+            if let error = error {
+                DDLogError("Error creating refund: \(refund)\nWith Error: \(error)")
+                return onCompletion(.failure(error))
+            }
+            onCompletion(.success(()))
+        }
+        actionProcessor.dispatch(action)
     }
 }
 

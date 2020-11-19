@@ -86,4 +86,105 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         XCTAssertEqual(row.title, title)
         XCTAssertEqual(row.body, body)
     }
+
+    func test_view_model_submits_refund_and_completes_successfully() throws {
+        // Given
+        let order = MockOrders().empty()
+        let details = RefundConfirmationViewModel.Details(order: order, amount: "100.0", refundsShipping: false, items: [], paymentGateway: nil)
+        let dispatcher = MockupStoresManager(sessionManager: .testingInstance)
+        dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
+            switch action {
+            case let .createRefund(_, _, _, onCompletion):
+                onCompletion(MockRefunds.sampleRefund(), nil)
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher)
+        let result = try waitFor { promise in
+            viewModel.submit { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_view_model_submits_refund_with_automatic_refund_enabled() throws {
+        // Given
+        let order = MockOrders().empty().copy(paymentMethodID: "stipe", paymentMethodTitle: "Stripe")
+        let gateway = PaymentGateway(siteID: 123, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [.refunds])
+        let details = RefundConfirmationViewModel.Details(order: order, amount: "100.0", refundsShipping: true, items: [], paymentGateway: gateway)
+        let dispatcher = MockupStoresManager(sessionManager: .testingInstance)
+
+        // When
+        let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher)
+        let refund: Refund = try waitFor { promise in
+            dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
+                if case let .createRefund(_, _, refund, _) = action {
+                    promise(refund)
+                }
+            }
+            viewModel.submit(onCompletion: { _ in })
+        }
+
+
+        // Then
+        let wasAutomated = try XCTUnwrap(refund.createAutomated)
+        XCTAssertTrue(wasAutomated)
+    }
+
+    func test_view_model_submits_refund_with_automatic_refund_disabled() throws {
+        // Given
+        let order = MockOrders().empty().copy(paymentMethodID: "stipe", paymentMethodTitle: "Stripe")
+        let gateway = PaymentGateway(siteID: 123, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [.products])
+        let details = RefundConfirmationViewModel.Details(order: order, amount: "100.0", refundsShipping: true, items: [], paymentGateway: gateway)
+        let dispatcher = MockupStoresManager(sessionManager: .testingInstance)
+
+        // When
+        let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher)
+        let refund: Refund = try waitFor { promise in
+            dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
+                if case let .createRefund(_, _, refund, _) = action {
+                    promise(refund)
+                }
+            }
+            viewModel.submit(onCompletion: { _ in })
+        }
+
+        // Then
+        let wasAutomated = try XCTUnwrap(refund.createAutomated)
+        XCTAssertFalse(wasAutomated)
+    }
+
+    func test_view_model_submits_refund_and_relays_error() throws {
+        // Given
+        let order = MockOrders().empty()
+        let details = RefundConfirmationViewModel.Details(order: order, amount: "100.0", refundsShipping: false, items: [], paymentGateway: nil)
+        let expectedError = NSError(domain: "Refund Error", code: 0, userInfo: nil)
+        let dispatcher = MockupStoresManager(sessionManager: .testingInstance)
+        dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
+            switch action {
+            case let .createRefund(_, _, _, onCompletion):
+                onCompletion(nil, expectedError)
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher)
+        let result = try waitFor { promise in
+            viewModel.submit { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure) as NSError
+        XCTAssertEqual(error, expectedError)
+    }
 }

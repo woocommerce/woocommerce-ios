@@ -231,6 +231,12 @@ extension UIImage {
         return UIImage.gridicon(.listCheckmark, size: CGSize(width: 24, height: 24))
     }
 
+    /// Linked Products Icon
+    ///
+    static var linkedProductsImage: UIImage {
+        return UIImage.gridicon(.reblog, size: CGSize(width: 24, height: 24))
+    }
+
     /// Jetpack Logo Image
     ///
     static var jetpackLogoImage: UIImage {

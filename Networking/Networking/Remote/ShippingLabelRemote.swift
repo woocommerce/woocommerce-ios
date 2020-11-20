@@ -10,6 +10,18 @@ public protocol ShippingLabelRemoteProtocol {
 
 /// Shipping Labels Remote Endpoints.
 public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
+    /// Loads shipping labels and settings for an order.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site that owns the order.
+    ///   - orderID: Remote ID of the order that owns the shipping labels.
+    ///   - completion: Closure to be executed upon completion.
+    public func loadShippingLabels(siteID: Int64, orderID: Int64, completion: @escaping (Result<OrderShippingLabelListResponse, Error>) -> Void) {
+        let path = "\(Path.shippingLabels)/\(orderID)"
+        let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .get, siteID: siteID, path: path)
+        let mapper = OrderShippingLabelListMapper(siteID: siteID, orderID: orderID)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
     /// Generates shipping label data for printing.
     /// - Parameters:
     ///   - siteID: Remote ID of the site that owns the shipping label.

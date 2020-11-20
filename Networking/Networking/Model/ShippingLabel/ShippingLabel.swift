@@ -39,6 +39,9 @@ public struct ShippingLabel: Equatable, GeneratedCopiable {
     /// The status of the shipping label (e.g. purchased).
     public let status: ShippingLabelStatus
 
+    /// Optional refund details if the user has requested refund for the shipping label.
+    public let refund: ShippingLabelRefund?
+
     /// The sender (store owner)'s address.
     public let originAddress: ShippingLabelAddress
 
@@ -52,6 +55,42 @@ public struct ShippingLabel: Equatable, GeneratedCopiable {
     /// A list of product names included in the shipping label.
     /// This is only used to look up a product in case `productIDs` is not available.
     public let productNames: [String]
+
+    public init(siteID: Int64,
+                orderID: Int64,
+                shippingLabelID: Int64,
+                carrierID: String,
+                dateCreated: Date,
+                packageName: String,
+                rate: Double,
+                currency: String,
+                trackingNumber: String,
+                serviceName: String,
+                refundableAmount: Double,
+                status: ShippingLabelStatus,
+                refund: ShippingLabelRefund?,
+                originAddress: ShippingLabelAddress,
+                destinationAddress: ShippingLabelAddress,
+                productIDs: [Int64],
+                productNames: [String]) {
+        self.siteID = siteID
+        self.orderID = orderID
+        self.shippingLabelID = shippingLabelID
+        self.carrierID = carrierID
+        self.dateCreated = dateCreated
+        self.packageName = packageName
+        self.rate = rate
+        self.currency = currency
+        self.trackingNumber = trackingNumber
+        self.serviceName = serviceName
+        self.refundableAmount = refundableAmount
+        self.status = status
+        self.refund = refund
+        self.originAddress = originAddress
+        self.destinationAddress = destinationAddress
+        self.productIDs = productIDs
+        self.productNames = productNames
+    }
 }
 
 // MARK: Decodable
@@ -76,6 +115,7 @@ extension ShippingLabel: Decodable {
         let currency = try container.decode(String.self, forKey: .currency)
         let trackingNumber = try container.decode(String.self, forKey: .trackingNumber)
         let serviceName = try container.decode(String.self, forKey: .serviceName)
+        let refund = try container.decodeIfPresent(ShippingLabelRefund.self, forKey: .refund)
         let refundableAmount = try container.decode(Double.self, forKey: .refundableAmount)
 
         let statusRawValue = try container.decode(String.self, forKey: .status)
@@ -96,6 +136,7 @@ extension ShippingLabel: Decodable {
                   serviceName: serviceName,
                   refundableAmount: refundableAmount,
                   status: status,
+                  refund: refund,
                   originAddress: .init(),
                   destinationAddress: .init(),
                   productIDs: productIDs,
@@ -113,6 +154,7 @@ extension ShippingLabel: Decodable {
         case currency
         case trackingNumber = "tracking"
         case serviceName = "service_name"
+        case refund
         case refundableAmount = "refundable_amount"
         case status
         case productIDs = "product_ids"

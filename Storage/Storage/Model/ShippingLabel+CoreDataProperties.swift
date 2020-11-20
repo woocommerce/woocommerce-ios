@@ -20,7 +20,7 @@ extension ShippingLabel {
     @NSManaged public var serviceName: String
     @NSManaged public var refundableAmount: Double
     @NSManaged public var status: String
-    @NSManaged public var productIDs: [Int64]?
+    @NSManaged public var productIDs: [Int64]
     @NSManaged public var productNames: [String]
     @NSManaged public var originAddress: ShippingLabelAddress?
     @NSManaged public var destinationAddress: ShippingLabelAddress?

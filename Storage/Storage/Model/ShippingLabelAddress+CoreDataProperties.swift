@@ -17,5 +17,7 @@ extension ShippingLabelAddress {
     @NSManaged public var address2: String
     @NSManaged public var city: String
     @NSManaged public var postcode: String
+    @NSManaged public var destinationShippingLabel: ShippingLabel?
+    @NSManaged public var originShippingLabel: ShippingLabel?
 
 }

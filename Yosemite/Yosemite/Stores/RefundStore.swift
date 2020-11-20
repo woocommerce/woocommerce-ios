@@ -174,6 +174,7 @@ private extension RefundStore {
             storageRefund.update(with: readOnlyRefund)
 
             handleOrderItemRefunds(readOnlyRefund, storageRefund, storage)
+            handleCondensedRefundsIfNeeded(readOnlyRefund: readOnlyRefund, in: storage)
         }
     }
 
@@ -245,6 +246,24 @@ private extension RefundStore {
             storage.deleteObject(stale)
         }
         storage.saveIfNeeded()
+    }
+
+    /// Create an `Storage.OrderRefundCondensed` if they don't exist already.
+    ///
+    private func handleCondensedRefundsIfNeeded(readOnlyRefund: Refund, in storage: StorageType) {
+        // Do nothing if condensed refund already exists.
+        if storage.loadOrderRefundCondensed(siteID: readOnlyRefund.siteID, refundID: readOnlyRefund.refundID) != nil {
+            return
+        }
+
+        // Create and store the `Storage,OrderRefundCondensed` based on the `ReadOnlyRefund`.
+        let readOnlyRefundCondensed = OrderRefundCondensed(refundID: readOnlyRefund.refundID, reason: readOnlyRefund.reason, total: readOnlyRefund.amount)
+        let storageRefundCondensed = storage.insertNewObject(ofType: Storage.OrderRefundCondensed.self)
+        storageRefundCondensed.update(with: readOnlyRefundCondensed)
+
+        // Update the refunds set if the parent `Order` exists.
+        let order = storage.loadOrder(siteID: readOnlyRefund.siteID, orderID: readOnlyRefund.orderID)
+        order?.addToRefunds(storageRefundCondensed)
     }
 }
 

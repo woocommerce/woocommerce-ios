@@ -310,6 +310,8 @@ final class MigrationTests: XCTestCase {
         // Given
         let sourceContainer = try startPersistentContainer("Model 37")
         let sourceContext = sourceContainer.viewContext
+
+        _ = insertOrder(to: sourceContainer.viewContext)
         try sourceContext.save()
 
         // When
@@ -318,10 +320,13 @@ final class MigrationTests: XCTestCase {
         // Then
         let targetContext = targetContainer.viewContext
 
+        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
         XCTAssertEqual(try targetContext.count(entityName: "ShippingLabel"), 0)
         XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelAddress"), 0)
         XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelRefund"), 0)
         XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelSettings"), 0)
+
+        let order = try XCTUnwrap(targetContext.first(entityName: "Order"))
 
         // Creates a `ShippingLabel` with all relationships.
         let originAddress = insertShippingLabelAddress(to: targetContext)
@@ -331,16 +336,23 @@ final class MigrationTests: XCTestCase {
         shippingLabel.setValue(originAddress, forKey: "originAddress")
         shippingLabel.setValue(destinationAddress, forKey: "destinationAddress")
         shippingLabel.setValue(shippingLabelRefund, forKey: "refund")
+        shippingLabel.setValue(order, forKey: "order")
 
         // Creates a `ShippingLabelSettings`.
-        _ = insertShippingLabelSettings(to: targetContext)
+        let shippingLabelSettings = insertShippingLabelSettings(to: targetContext)
+        shippingLabelSettings.setValue(order, forKey: "order")
 
         XCTAssertNoThrow(try targetContext.save())
 
+        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
         XCTAssertEqual(try targetContext.count(entityName: "ShippingLabel"), 1)
         XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelAddress"), 2)
         XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelRefund"), 1)
         XCTAssertEqual(try targetContext.count(entityName: "ShippingLabelSettings"), 1)
+
+        let savedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+        XCTAssertEqual(savedOrder.value(forKey: "shippingLabels") as? Set<NSManagedObject>, [shippingLabel])
+        XCTAssertEqual(savedOrder.value(forKey: "shippingLabelSettings") as? NSManagedObject, shippingLabelSettings)
     }
 }
 

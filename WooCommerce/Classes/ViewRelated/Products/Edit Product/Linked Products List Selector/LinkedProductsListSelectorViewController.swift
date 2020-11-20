@@ -35,10 +35,16 @@ final class LinkedProductsListSelectorViewController: UIViewController {
     typealias Completion = (_ linkedProductIDs: [Int64]) -> Void
     private let onCompletion: Completion
 
-    init(product: Product, imageService: ImageService = ServiceLocator.imageService, viewConfiguration: ViewConfiguration, completion: @escaping Completion) {
+    init(product: Product,
+         linkedProductIDs: [Int64],
+         imageService: ImageService = ServiceLocator.imageService,
+         viewConfiguration: ViewConfiguration,
+         completion: @escaping Completion) {
         self.productID = product.productID
         self.siteID = product.siteID
-        self.dataSource = LinkedProductListSelectorDataSource(product: product)
+        self.dataSource = LinkedProductListSelectorDataSource(product: product,
+                                                              linkedProductIDs: linkedProductIDs,
+                                                              deleteButtonTappedEvent: viewConfiguration.deleteButtonTappedEvent)
         self.imageService = imageService
         self.viewConfiguration = viewConfiguration
         self.onCompletion = completion
@@ -175,12 +181,18 @@ extension LinkedProductsListSelectorViewController {
         let addButtonEvent: WooAnalyticsStat
         let productsAddedEvent: WooAnalyticsStat
         let doneButtonTappedEvent: WooAnalyticsStat
+        let deleteButtonTappedEvent: WooAnalyticsStat
 
-        init(title: String, addButtonEvent: WooAnalyticsStat, productsAddedEvent: WooAnalyticsStat, doneButtonTappedEvent: WooAnalyticsStat) {
+        init(title: String,
+             addButtonEvent: WooAnalyticsStat,
+             productsAddedEvent: WooAnalyticsStat,
+             doneButtonTappedEvent: WooAnalyticsStat,
+             deleteButtonTappedEvent: WooAnalyticsStat) {
             self.title = title
             self.addButtonEvent = addButtonEvent
             self.productsAddedEvent = productsAddedEvent
             self.doneButtonTappedEvent = doneButtonTappedEvent
+            self.deleteButtonTappedEvent = deleteButtonTappedEvent
         }
     }
 }

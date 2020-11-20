@@ -8,6 +8,11 @@ public struct ShippingLabelRefund: Equatable {
 
     /// The status of the refund (e.g. pending).
     public let status: ShippingLabelRefundStatus
+
+    public init(dateRequested: Date, status: ShippingLabelRefundStatus) {
+        self.dateRequested = dateRequested
+        self.status = status
+    }
 }
 
 // MARK: Decodable

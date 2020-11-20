@@ -14,7 +14,7 @@ public struct MockRefunds {
                                     isAutomated: Bool? = nil,
                                     createAutomated: Bool? = nil,
                                     items: [OrderItemRefund] = [sampleRefundItem()],
-                                    shippingLines: [ShippingLine] = []) -> Refund {
+                                    shippingLines: [ShippingLine]? = []) -> Refund {
         return Refund(refundID: refundID,
                       orderID: orderID,
                       siteID: siteID,

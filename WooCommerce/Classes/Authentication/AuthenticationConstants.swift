@@ -38,7 +38,7 @@ struct AuthenticationConstants {
 
     /// Title of "Continue With WordPress.com" button in Login Prologue
     //
-    static let continueWithWPButtontitle = NSLocalizedString(
+    static let continueWithWPButtonTitle = NSLocalizedString(
         "Continue With WordPress.com",
         comment: "Button title. Takes the user to the login by email flow."
     )

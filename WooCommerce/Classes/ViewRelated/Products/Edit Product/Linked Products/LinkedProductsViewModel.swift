@@ -23,13 +23,13 @@ final class LinkedProductsViewModel {
         var rows = [Row]()
 
         rows.append(.upsells)
-        if upsellIDs.isEmpty {
+        if upsellIDs.isNotEmpty {
             rows.append(.upsellsProducts)
         }
         rows.append(.upsellsButton)
 
         rows.append(.crossSells)
-        if crossSellIDs.isEmpty {
+        if crossSellIDs.isNotEmpty {
             rows.append(.crossSellsProducts)
         }
         rows.append(.crossSellsButton)

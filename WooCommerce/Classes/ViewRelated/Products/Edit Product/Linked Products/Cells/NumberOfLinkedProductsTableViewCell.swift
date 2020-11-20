@@ -1,6 +1,6 @@
 import UIKit
 
-class NumberOfLinkedProductsTableViewCell: UITableViewCell {
+final class NumberOfLinkedProductsTableViewCell: UITableViewCell {
 
     @IBOutlet private weak var titleLabel: UILabel!
 

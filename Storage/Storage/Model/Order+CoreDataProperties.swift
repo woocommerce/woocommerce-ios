@@ -56,6 +56,8 @@ extension Order {
     @NSManaged public var notes: Set<OrderNote>?
     @NSManaged public var searchResults: Set<OrderSearchResults>?
     @NSManaged public var refunds: Set<OrderRefundCondensed>?
+    @NSManaged public var shippingLabels: Set<ShippingLabel>?
+    @NSManaged public var shippingLabelSettings: ShippingLabelSettings?
 
 }
 
@@ -158,5 +160,21 @@ extension Order {
 
     @objc(removeRefunds:)
     @NSManaged public func removeFromRefunds(_ values: NSSet)
+}
+
+// MARK: Generated accessors for shippingLabels
+extension Order {
+
+    @objc(addShippingLabelsObject:)
+    @NSManaged public func addToShippingLabels(_ value: ShippingLabel)
+
+    @objc(removeShippingLabelsObject:)
+    @NSManaged public func removeFromShippingLabels(_ value: ShippingLabel)
+
+    @objc(addShippingLabels:)
+    @NSManaged public func addToShippingLabels(_ values: NSSet)
+
+    @objc(removeShippingLabels:)
+    @NSManaged public func removeFromShippingLabels(_ values: NSSet)
 
 }

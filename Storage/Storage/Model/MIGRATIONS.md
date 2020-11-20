@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 38 (Release 5.6.0.0)
+- @jaclync 2020-11-18
+- Added four entities for shipping labels:  `ShippingLabel`, `ShippingLabelAddress`, `ShippingLabelRefund`, and `ShippingLabelSettings`.
+
 ## Model 37 (Release 5.5.0.0)
 - @ecarrion 2020-12-10
 - Added `paymentMethodID` property to `Order` entity.

@@ -23,13 +23,13 @@ final class LinkedProductsViewModel {
         var rows = [Row]()
 
         rows.append(.upsells)
-        if upsellIDs.count > 0 {
+        if upsellIDs.isEmpty {
             rows.append(.upsellsProducts)
         }
         rows.append(.upsellsButton)
 
         rows.append(.crossSells)
-        if crossSellIDs.count > 0 {
+        if crossSellIDs.isEmpty {
             rows.append(.crossSellsProducts)
         }
         rows.append(.crossSellsButton)
@@ -49,6 +49,7 @@ extension LinkedProductsViewModel {
     }
 
     func hasUnsavedChanges() -> Bool {
+        // Check if the current upsellIDs and crossSellIDs are different from the original data of the product.
         guard upsellIDs != product.upsellIDs || crossSellIDs != product.crossSellIDs else {
             return false
         }

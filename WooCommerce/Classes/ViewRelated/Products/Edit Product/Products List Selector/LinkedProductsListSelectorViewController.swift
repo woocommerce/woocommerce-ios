@@ -20,7 +20,7 @@ final class LinkedProductsListSelectorViewController: UIViewController {
     private lazy var paginatedListSelector: PaginatedListSelectorViewController
         <LinkedProductListSelectorDataSource, Product, StorageProduct, ProductsTabProductTableViewCell> = {
             let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: nil,
-                                                                     noResultsPlaceholderText: Localization.noResultsPlaceholderText,
+                                                                     noResultsPlaceholderText: Localization.noResultsPlaceholder,
                                                                      noResultsPlaceholderImage: .emptyProductsImage,
                                                                      noResultsPlaceholderImageTintColor: .primary,
                                                                      tableViewStyle: .plain,
@@ -32,7 +32,7 @@ final class LinkedProductsListSelectorViewController: UIViewController {
 
     // Completion callback
     //
-    typealias Completion = (_ groupedProductIDs: [Int64]) -> Void
+    typealias Completion = (_ linkedProductIDs: [Int64]) -> Void
     private let onCompletion: Completion
 
     init(product: Product, imageService: ImageService = ServiceLocator.imageService, viewConfiguration: ViewConfiguration, completion: @escaping Completion) {
@@ -66,13 +66,14 @@ final class LinkedProductsListSelectorViewController: UIViewController {
 //
 private extension LinkedProductsListSelectorViewController {
     @objc func addTapped() {
-        ServiceLocator.analytics.track(.groupedProductLinkedProductsAddButtonTapped)
+        ServiceLocator.analytics.track(viewConfiguration.addButtonEvent)
 
         let excludedProductIDs = dataSource.linkedProductIDs + [productID]
         let listSelector = ProductListSelectorViewController(excludedProductIDs: excludedProductIDs,
                                                              siteID: siteID) { [weak self] selectedProductIDs in
-                                                                if selectedProductIDs.isNotEmpty {
-                                                                    ServiceLocator.analytics.track(.groupedProductLinkedProductsAdded)
+                                                                if selectedProductIDs.isNotEmpty,
+                                                                   let productsAddedEvent = self?.viewConfiguration.productsAddedEvent {
+                                                                    ServiceLocator.analytics.track(productsAddedEvent)
                                                                 }
                                                                 self?.dataSource.addProducts(selectedProductIDs)
                                                                 self?.navigationController?.popViewController(animated: true)
@@ -82,7 +83,7 @@ private extension LinkedProductsListSelectorViewController {
 
     @objc func doneButtonTapped() {
         let hasChangedData = dataSource.hasUnsavedChanges()
-        ServiceLocator.analytics.track(.groupedProductLinkedProductsDoneButtonTapped, withProperties: [
+        ServiceLocator.analytics.track(viewConfiguration.doneButtonTappedEvent, withProperties: [
             "has_changed_data": hasChangedData
         ])
 
@@ -171,16 +172,23 @@ private extension LinkedProductsListSelectorViewController {
 extension LinkedProductsListSelectorViewController {
     struct ViewConfiguration {
         let title: String
+        let addButtonEvent: WooAnalyticsStat
+        let productsAddedEvent: WooAnalyticsStat
+        let doneButtonTappedEvent: WooAnalyticsStat
 
-        init(title: String) {
+        init(title: String, addButtonEvent: WooAnalyticsStat, productsAddedEvent: WooAnalyticsStat, doneButtonTappedEvent: WooAnalyticsStat) {
             self.title = title
+            self.addButtonEvent = addButtonEvent
+            self.productsAddedEvent = productsAddedEvent
+            self.doneButtonTappedEvent = doneButtonTappedEvent
         }
     }
 }
 
 private extension LinkedProductsListSelectorViewController {
     enum Localization {
-        static let noResultsPlaceholderText = NSLocalizedString("No products yet", comment: "Placeholder for the linked products list selector screen")
-        static let addButton = NSLocalizedString("Add Products", comment: "Action to add linked products to a product in the Linked Products List Selector screen")
+        static let noResultsPlaceholder = NSLocalizedString("No products yet", comment: "Placeholder for the linked products list selector screen")
+        static let addButton = NSLocalizedString("Add Products",
+                                                 comment: "Action to add linked products to a product in the Linked Products List Selector screen")
     }
 }

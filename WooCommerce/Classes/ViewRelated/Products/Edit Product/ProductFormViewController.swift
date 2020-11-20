@@ -1180,7 +1180,10 @@ private extension ProductFormViewController {
             return
         }
 
-        let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.groupedProductsViewTitle)
+        let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.groupedProductsViewTitle,
+                                                                                           addButtonEvent: .groupedProductLinkedProductsAddButtonTapped,
+                                                                                           productsAddedEvent: .groupedProductLinkedProductsAdded,
+                                                                                           doneButtonTappedEvent: .groupedProductLinkedProductsDoneButtonTapped)
 
         let viewController = LinkedProductsListSelectorViewController(product: product.product,
                                                                       viewConfiguration: viewConfiguration) { [weak self] groupedProductIDs in

@@ -5,7 +5,10 @@ final class LinkedProductsViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
 
+    private let product: ProductFormDataModel
+
     private let viewModel: LinkedProductsViewModel
+
     // Completion callback
     //
     typealias Completion = (_ upsellIDs: [Int64],
@@ -16,6 +19,7 @@ final class LinkedProductsViewController: UIViewController {
     /// Init
     ///
     init(product: ProductFormDataModel, completion: @escaping Completion) {
+        self.product = product
         viewModel = LinkedProductsViewModel(product: product)
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
@@ -142,16 +146,57 @@ private extension LinkedProductsViewController {
     }
 
     func configureUpsellsButton(cell: ButtonTableViewCell) {
-        let buttonTitle = Localization.buttonTitle(count: viewModel.upsellIDs.count)
-        cell.configure(style: .secondary, title: buttonTitle) {
+        guard let product = product as? EditableProductModel else {
+            return
+        }
 
+        // TODO: add analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+        let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.titleScreenAddUpsellProducts,
+                                                                                           addButtonEvent: .groupedProductLinkedProductsAddButtonTapped,
+                                                                                           productsAddedEvent: .groupedProductLinkedProductsAdded,
+                                                                                           doneButtonTappedEvent: .groupedProductLinkedProductsDoneButtonTapped,
+                                                                                           deleteButtonTappedEvent:
+                                                                                            .groupedProductLinkedProductsDeleteButtonTapped)
+
+        let viewController = LinkedProductsListSelectorViewController(product: product.product,
+                                                                      linkedProductIDs: viewModel.upsellIDs,
+                                                                      viewConfiguration: viewConfiguration) { [weak self] upsellIDs in
+            self?.viewModel.handleUpsellIDsChange(upsellIDs)
+            self?.tableView.reloadData()
+            self?.navigationController?.popViewController(animated: true)
+        }
+
+
+        let buttonTitle = Localization.buttonTitle(count: viewModel.upsellIDs.count)
+        cell.configure(style: .secondary, title: buttonTitle) { [weak self] in
+            self?.show(viewController, sender: self)
         }
     }
 
     func configureCrossSellsButton(cell: ButtonTableViewCell) {
-        let buttonTitle = Localization.buttonTitle(count: viewModel.crossSellIDs.count)
-        cell.configure(style: .secondary, title: buttonTitle) {
+        guard let product = product as? EditableProductModel else {
+            return
+        }
 
+        // TODO: add analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+        let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.titleScreenAddUpsellProducts,
+                                                                                           addButtonEvent: .groupedProductLinkedProductsAddButtonTapped,
+                                                                                           productsAddedEvent: .groupedProductLinkedProductsAdded,
+                                                                                           doneButtonTappedEvent: .groupedProductLinkedProductsDoneButtonTapped,
+                                                                                           deleteButtonTappedEvent:
+                                                                                            .groupedProductLinkedProductsDeleteButtonTapped)
+
+        let viewController = LinkedProductsListSelectorViewController(product: product.product,
+                                                                      linkedProductIDs: viewModel.upsellIDs,
+                                                                      viewConfiguration: viewConfiguration) { [weak self] upsellIDs in
+            self?.viewModel.handleUpsellIDsChange(upsellIDs)
+            self?.tableView.reloadData()
+            self?.navigationController?.popViewController(animated: true)
+        }
+
+        let buttonTitle = Localization.buttonTitle(count: viewModel.crossSellIDs.count)
+        cell.configure(style: .secondary, title: buttonTitle) { [weak self] in
+            self?.show(viewController, sender: self)
         }
     }
 }
@@ -250,5 +295,10 @@ private extension LinkedProductsViewController {
                 }
             }()
         }
+
+        static let titleScreenAddUpsellProducts = NSLocalizedString("Upsells Products",
+                                                                    comment: "Navigation bar title for editing linked products for upsell products")
+        static let titleScreenAddCrossSellProducts = NSLocalizedString("Cross-sells Products",
+                                                                       comment: "Navigation bar title for editing linked products for cross-sell products")
     }
 }

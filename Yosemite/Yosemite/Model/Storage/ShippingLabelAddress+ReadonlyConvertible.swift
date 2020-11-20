@@ -7,15 +7,15 @@ extension Storage.ShippingLabelAddress: ReadOnlyConvertible {
     /// Updates the Storage.ShippingLabelAddress with the a ReadOnly ShippingLabelAddress.
     ///
     public func update(with address: Yosemite.ShippingLabelAddress) {
-        self.company = address.company
-        self.name = address.name
-        self.phone = address.phone
-        self.country = address.country
-        self.state = address.state
-        self.address1 = address.address1
-        self.address2 = address.address2
-        self.city = address.city
-        self.postcode = address.postcode
+        company = address.company
+        name = address.name
+        phone = address.phone
+        country = address.country
+        state = address.state
+        address1 = address.address1
+        address2 = address.address2
+        city = address.city
+        postcode = address.postcode
     }
 
     /// Returns a ReadOnly version of the receiver.

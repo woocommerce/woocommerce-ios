@@ -44,42 +44,44 @@ final class ShippingLabelStoreTests: XCTestCase {
         // Given
         let remote = MockShippingLabelRemote()
         let orderID: Int64 = 22
-        let expectedOriginAddress = Yosemite.ShippingLabelAddress(company: "fun testing",
-                                                                  name: "Woo seller",
-                                                                  phone: "6501234567",
-                                                                  country: "US",
-                                                                  state: "CA",
-                                                                  address1: "9999 19TH AVE",
-                                                                  address2: "",
-                                                                  city: "SAN FRANCISCO",
-                                                                  postcode: "94121-2303")
-        let expectedDestinationAddress = Yosemite.ShippingLabelAddress(company: "",
-                                                                       name: "Woo buyer",
-                                                                       phone: "1650345689",
-                                                                       country: "TW",
-                                                                       state: "Taiwan",
-                                                                       address1: "No 70 RA St",
-                                                                       address2: "",
-                                                                       city: "Taipei",
-                                                                       postcode: "100")
-        let expectedRefund = Yosemite.ShippingLabelRefund(dateRequested: Date(timeIntervalSince1970: 1603716266.809), status: .pending)
-        let expectedShippingLabel = Yosemite.ShippingLabel(siteID: sampleSiteID,
-                                                           orderID: orderID,
-                                                           shippingLabelID: 1149,
-                                                           carrierID: "usps",
-                                                           dateCreated: Date(timeIntervalSince1970: 1603716274.809),
-                                                           packageName: "box",
-                                                           rate: 58.81,
-                                                           currency: "USD",
-                                                           trackingNumber: "CM199912222US",
-                                                           serviceName: "USPS - Priority Mail International",
-                                                           refundableAmount: 58.81,
-                                                           status: .purchased,
-                                                           refund: expectedRefund,
-                                                           originAddress: expectedOriginAddress,
-                                                           destinationAddress: expectedDestinationAddress,
-                                                           productIDs: [3013],
-                                                           productNames: ["Password protected!"])
+        let expectedShippingLabel: Yosemite.ShippingLabel = {
+            let origin = ShippingLabelAddress(company: "fun testing",
+                                              name: "Woo seller",
+                                              phone: "6501234567",
+                                              country: "US",
+                                              state: "CA",
+                                              address1: "9999 19TH AVE",
+                                              address2: "",
+                                              city: "SAN FRANCISCO",
+                                              postcode: "94121-2303")
+            let destination = ShippingLabelAddress(company: "",
+                                                   name: "Woo buyer",
+                                                   phone: "1650345689",
+                                                   country: "TW",
+                                                   state: "Taiwan",
+                                                   address1: "No 70 RA St",
+                                                   address2: "",
+                                                   city: "Taipei",
+                                                   postcode: "100")
+            let refund = ShippingLabelRefund(dateRequested: Date(timeIntervalSince1970: 1603716266.809), status: .pending)
+            return ShippingLabel(siteID: sampleSiteID,
+                                 orderID: orderID,
+                                 shippingLabelID: 1149,
+                                 carrierID: "usps",
+                                 dateCreated: Date(timeIntervalSince1970: 1603716274.809),
+                                 packageName: "box",
+                                 rate: 58.81,
+                                 currency: "USD",
+                                 trackingNumber: "CM199912222US",
+                                 serviceName: "USPS - Priority Mail International",
+                                 refundableAmount: 58.81,
+                                 status: .purchased,
+                                 refund: refund,
+                                 originAddress: origin,
+                                 destinationAddress: destination,
+                                 productIDs: [3013],
+                                 productNames: ["Password protected!"])
+        }()
         let expectedSettings = Yosemite.ShippingLabelSettings(siteID: sampleSiteID, orderID: orderID, paperSize: .letter)
         let expectedResponse = OrderShippingLabelListResponse(shippingLabels: [expectedShippingLabel], settings: expectedSettings)
         remote.whenLoadingShippingLabels(siteID: sampleSiteID, orderID: orderID, thenReturn: .success(expectedResponse))
@@ -96,7 +98,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         }
 
         // Then
-        XCTAssertNoThrow(try XCTUnwrap(result.get()))
+        XCTAssertTrue(result.isSuccess)
 
         let persistedOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: sampleSiteID, orderID: orderID))
         let persistedShippingLabels = try XCTUnwrap(viewStorage.loadAllShippingLabels(siteID: sampleSiteID, orderID: orderID))

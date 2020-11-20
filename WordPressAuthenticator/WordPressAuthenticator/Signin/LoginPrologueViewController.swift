@@ -195,10 +195,9 @@ class LoginPrologueViewController: LoginViewController {
     /// Displays the Unified prologue buttons.
     ///
     private func buildUnifiedPrologueButtons(_ buttonViewController: NUXButtonViewController) {
-        let loginTitle = NSLocalizedString("Continue with WordPress.com",
-                                           comment: "Button title. Takes the user to the login by email flow.")
-        let siteAddressTitle = NSLocalizedString("Enter your site address",
-                                                 comment: "Button title. Takes the user to the login by site address flow.")
+        let displayStrings = WordPressAuthenticator.shared.displayStrings
+        let loginTitle = displayStrings.continueWithWPButtonTitle
+        let siteAddressTitle = displayStrings.enterYourSiteAddressButtonTitle
         
         if configuration.continueWithSiteAddressFirst {
             buildUnifiedPrologueButtonsWithSiteAddressFirst(buttonViewController, loginTitle: loginTitle, siteAddressTitle: siteAddressTitle)

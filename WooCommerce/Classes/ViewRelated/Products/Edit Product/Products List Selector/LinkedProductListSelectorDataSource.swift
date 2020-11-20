@@ -3,7 +3,7 @@ import Yosemite
 
 /// Configures the results and cells for a paginated list of linked products of a grouped product, syncs each page of products,
 /// and handles actions that could alter the linked products.
-final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSource {
+final class LinkedProductListSelectorDataSource: PaginatedListSelectorDataSource {
     typealias StorageModel = StorageProduct
 
     lazy var customResultsSortOrder: ((Product, Product) -> Bool)? = { [weak self] (lhs, rhs) in
@@ -12,7 +12,7 @@ final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSourc
         }
         let lhsProductID = lhs.productID
         let rhsProductID = rhs.productID
-        let productIDs = self.groupedProductIDs
+        let productIDs = self.linkedProductIDs
         guard let lhsProductIDIndex = productIDs.firstIndex(of: lhsProductID), let rhsProductIDIndex = productIDs.firstIndex(of: rhsProductID) else {
             return true
         }
@@ -25,10 +25,10 @@ final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSourc
     }
     private let productIDsSubject: PublishSubject<[Int64]> = PublishSubject<[Int64]>()
 
-    private(set) var groupedProductIDs: [Int64] = [] {
+    private(set) var linkedProductIDs: [Int64] = [] {
         didSet {
-            if groupedProductIDs != oldValue {
-                productIDsSubject.send(groupedProductIDs)
+            if linkedProductIDs != oldValue {
+                productIDsSubject.send(linkedProductIDs)
             }
         }
     }
@@ -43,13 +43,13 @@ final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSourc
     init(product: Product, imageService: ImageService = ServiceLocator.imageService) {
         self.siteID = product.siteID
         self.product = product
-        self.groupedProductIDs = product.groupedProducts
+        self.linkedProductIDs = product.groupedProducts
         self.imageService = imageService
     }
 
     func createResultsController() -> ResultsController<StorageProduct> {
         let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", siteID, groupedProductIDs)
+        let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", siteID, linkedProductIDs)
         return ResultsController<StorageProduct>(storageManager: storageManager,
                                                  matching: predicate,
                                                  sortOrder: .nameAscending)
@@ -77,7 +77,7 @@ final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSourc
 
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Result<Bool, Error>) -> Void)?) {
         let action = ProductAction.retrieveProducts(siteID: siteID,
-                                                    productIDs: groupedProductIDs,
+                                                    productIDs: linkedProductIDs,
                                                     pageNumber: pageNumber,
                                                     pageSize: pageSize) { result in
                                                         switch result {
@@ -94,23 +94,23 @@ final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSourc
 
 // MARK: Public actions
 //
-extension GroupedProductListSelectorDataSource {
+extension LinkedProductListSelectorDataSource {
     /// Called when the user deletes a product from the product list.
     func deleteProduct(_ product: Product) {
-        guard let index = groupedProductIDs.firstIndex(where: { $0 == product.productID }) else {
+        guard let index = linkedProductIDs.firstIndex(where: { $0 == product.productID }) else {
             return
         }
-        groupedProductIDs.remove(at: index)
+        linkedProductIDs.remove(at: index)
     }
 
     /// Called when the user adds products to a grouped product.
     /// - Parameter products: a list of products to add to a grouped product.
     func addProducts(_ productIDs: [Int64]) {
-        groupedProductIDs = (groupedProductIDs + productIDs).removingDuplicates()
+        linkedProductIDs = (linkedProductIDs + productIDs).removingDuplicates()
     }
 
     /// Returns whether there are unsaved changes on the grouped products.
     func hasUnsavedChanges() -> Bool {
-        return groupedProductIDs != product.groupedProducts
+        return linkedProductIDs != product.groupedProducts
     }
 }

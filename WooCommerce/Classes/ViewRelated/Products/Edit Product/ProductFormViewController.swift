@@ -1180,7 +1180,10 @@ private extension ProductFormViewController {
             return
         }
 
-        let viewController = GroupedProductsViewController(product: product.product) { [weak self] groupedProductIDs in
+        let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.groupedProductsViewTitle)
+
+        let viewController = LinkedProductsListSelectorViewController(product: product.product,
+                                                                      viewConfiguration: viewConfiguration) { [weak self] groupedProductIDs in
             self?.onEditGroupedProductsCompletion(groupedProductIDs: groupedProductIDs)
         }
         show(viewController, sender: self)
@@ -1269,6 +1272,11 @@ private extension ProductFormViewController {
 
 // MARK: Constants
 //
+private enum Localization {
+    static let groupedProductsViewTitle = NSLocalizedString("Grouped Products",
+                                                            comment: "Navigation bar title for editing linked products for a grouped product")
+}
+
 private enum ActionSheetStrings {
     static let saveProductAsDraft = NSLocalizedString("Save as draft",
                                                       comment: "Button title to save a product as draft in Product More Options Action Sheet")

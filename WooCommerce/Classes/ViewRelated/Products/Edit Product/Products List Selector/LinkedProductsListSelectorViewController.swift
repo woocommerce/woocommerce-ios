@@ -2,8 +2,9 @@ import UIKit
 import WordPressUI
 import Yosemite
 
-/// Displays a paginated list of linked products for a grouped product given product IDs, with a CTA to add more products.
-final class GroupedProductsViewController: UIViewController {
+/// Displays a paginated list of products given product IDs, with a CTA to add more products.
+final class LinkedProductsListSelectorViewController: UIViewController {
+
     @IBOutlet private weak var addButton: UIButton!
     @IBOutlet private weak var addButtonBottomBorderView: UIView!
     @IBOutlet private weak var topContainerView: UIView!
@@ -12,14 +13,14 @@ final class GroupedProductsViewController: UIViewController {
     private let imageService: ImageService
     private let productID: Int64
     private let siteID: Int64
+    private let viewConfiguration: LinkedProductsListSelectorViewController.ViewConfiguration
 
-    private let dataSource: GroupedProductListSelectorDataSource
+    private let dataSource: LinkedProductListSelectorDataSource
 
     private lazy var paginatedListSelector: PaginatedListSelectorViewController
-        <GroupedProductListSelectorDataSource, Product, StorageProduct, ProductsTabProductTableViewCell> = {
-            let noResultsPlaceholderText = NSLocalizedString("No products yet", comment: "Placeholder for editing linked products for a grouped product")
+        <LinkedProductListSelectorDataSource, Product, StorageProduct, ProductsTabProductTableViewCell> = {
             let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: nil,
-                                                                     noResultsPlaceholderText: noResultsPlaceholderText,
+                                                                     noResultsPlaceholderText: Localization.noResultsPlaceholderText,
                                                                      noResultsPlaceholderImage: .emptyProductsImage,
                                                                      noResultsPlaceholderImageTintColor: .primary,
                                                                      tableViewStyle: .plain,
@@ -34,11 +35,12 @@ final class GroupedProductsViewController: UIViewController {
     typealias Completion = (_ groupedProductIDs: [Int64]) -> Void
     private let onCompletion: Completion
 
-    init(product: Product, imageService: ImageService = ServiceLocator.imageService, completion: @escaping Completion) {
+    init(product: Product, imageService: ImageService = ServiceLocator.imageService, viewConfiguration: ViewConfiguration, completion: @escaping Completion) {
         self.productID = product.productID
         self.siteID = product.siteID
-        self.dataSource = GroupedProductListSelectorDataSource(product: product)
+        self.dataSource = LinkedProductListSelectorDataSource(product: product)
         self.imageService = imageService
+        self.viewConfiguration = viewConfiguration
         self.onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
@@ -56,17 +58,17 @@ final class GroupedProductsViewController: UIViewController {
         configureAddButtonBottomBorderView()
         configurePaginatedProductList()
 
-        observeGroupedProductIDs()
+        observeLinkedProductIDs()
     }
 }
 
 // MARK: - Actions
 //
-private extension GroupedProductsViewController {
+private extension LinkedProductsListSelectorViewController {
     @objc func addTapped() {
         ServiceLocator.analytics.track(.groupedProductLinkedProductsAddButtonTapped)
 
-        let excludedProductIDs = dataSource.groupedProductIDs + [productID]
+        let excludedProductIDs = dataSource.linkedProductIDs + [productID]
         let listSelector = ProductListSelectorViewController(excludedProductIDs: excludedProductIDs,
                                                              siteID: siteID) { [weak self] selectedProductIDs in
                                                                 if selectedProductIDs.isNotEmpty {
@@ -90,7 +92,7 @@ private extension GroupedProductsViewController {
 
 // MARK: - Navigation actions handling
 //
-extension GroupedProductsViewController {
+extension LinkedProductsListSelectorViewController {
     override func shouldPopOnBackButton() -> Bool {
         if dataSource.hasUnsavedChanges() {
             presentBackNavigationActionSheet()
@@ -104,7 +106,7 @@ extension GroupedProductsViewController {
     }
 
     private func completeUpdating() {
-        onCompletion(dataSource.groupedProductIDs)
+        onCompletion(dataSource.linkedProductIDs)
     }
 
     private func presentBackNavigationActionSheet() {
@@ -116,7 +118,7 @@ extension GroupedProductsViewController {
 
 // MARK: - UI updates
 //
-private extension GroupedProductsViewController {
+private extension LinkedProductsListSelectorViewController {
     func updateNavigationRightBarButtonItem() {
         if dataSource.hasUnsavedChanges() {
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
@@ -128,20 +130,19 @@ private extension GroupedProductsViewController {
 
 // MARK: - UI configurations
 //
-private extension GroupedProductsViewController {
+private extension LinkedProductsListSelectorViewController {
     func configureMainView() {
         view.backgroundColor = .basicBackground
     }
 
     func configureNavigation() {
-        title = NSLocalizedString("Grouped Products", comment: "Navigation bar title for editing linked products for a grouped product")
+        title = viewConfiguration.title
         updateNavigationRightBarButtonItem()
         removeNavigationBackBarButtonText()
     }
 
     func configureAddButton() {
-        addButton.setTitle(NSLocalizedString("Add Products", comment: "Action to add products to a grouped product on the Grouped Products screen"),
-                           for: .normal)
+        addButton.setTitle(Localization.addButton, for: .normal)
         addButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
         addButton.applySecondaryButtonStyle()
     }
@@ -159,10 +160,27 @@ private extension GroupedProductsViewController {
         productsContainerView.pinSubviewToAllEdges(paginatedListSelector.view)
     }
 
-    func observeGroupedProductIDs() {
+    func observeLinkedProductIDs() {
         cancellable = dataSource.productIDs.subscribe { [weak self] productIDs in
             self?.paginatedListSelector.updateResultsController()
             self?.updateNavigationRightBarButtonItem()
         }
+    }
+}
+
+extension LinkedProductsListSelectorViewController {
+    struct ViewConfiguration {
+        let title: String
+
+        init(title: String) {
+            self.title = title
+        }
+    }
+}
+
+private extension LinkedProductsListSelectorViewController {
+    enum Localization {
+        static let noResultsPlaceholderText = NSLocalizedString("No products yet", comment: "Placeholder for the linked products list selector screen")
+        static let addButton = NSLocalizedString("Add Products", comment: "Action to add linked products to a product in the Linked Products List Selector screen")
     }
 }

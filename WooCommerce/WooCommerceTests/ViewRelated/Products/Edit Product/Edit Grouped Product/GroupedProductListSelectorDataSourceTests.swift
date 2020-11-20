@@ -18,7 +18,7 @@ final class GroupedProductListSelectorDataSourceTests: XCTestCase {
         // Arrange
         let groupedProductIDs: [Int64] = [17, 671]
         let product = MockProduct().product().copy(groupedProducts: groupedProductIDs)
-        let dataSource = GroupedProductListSelectorDataSource(product: product)
+        let dataSource = LinkedProductListSelectorDataSource(product: product)
         var updatedProductIDs: [Int64]?
         cancellable = dataSource.productIDs.subscribe { ids in
             updatedProductIDs = ids
@@ -29,7 +29,7 @@ final class GroupedProductListSelectorDataSourceTests: XCTestCase {
 
         // Assert
         XCTAssertFalse(dataSource.hasUnsavedChanges())
-        XCTAssertEqual(dataSource.groupedProductIDs, groupedProductIDs)
+        XCTAssertEqual(dataSource.linkedProductIDs, groupedProductIDs)
         XCTAssertNil(updatedProductIDs)
     }
 
@@ -37,7 +37,7 @@ final class GroupedProductListSelectorDataSourceTests: XCTestCase {
         // Arrange
         let groupedProductIDs: [Int64] = [17, 671]
         let product = MockProduct().product().copy(groupedProducts: groupedProductIDs)
-        let dataSource = GroupedProductListSelectorDataSource(product: product)
+        let dataSource = LinkedProductListSelectorDataSource(product: product)
         var updatedProductIDs: [Int64]?
         cancellable = dataSource.productIDs.subscribe { ids in
             updatedProductIDs = ids
@@ -50,7 +50,7 @@ final class GroupedProductListSelectorDataSourceTests: XCTestCase {
         // Assert
         XCTAssertTrue(dataSource.hasUnsavedChanges())
         let productIDsAfterAddition = groupedProductIDs + newProductIDs
-        XCTAssertEqual(dataSource.groupedProductIDs, productIDsAfterAddition)
+        XCTAssertEqual(dataSource.linkedProductIDs, productIDsAfterAddition)
         XCTAssertEqual(updatedProductIDs, productIDsAfterAddition)
     }
 
@@ -60,7 +60,7 @@ final class GroupedProductListSelectorDataSourceTests: XCTestCase {
         // Arrange
         let groupedProductIDs: [Int64] = [17, 671]
         let product = MockProduct().product().copy(groupedProducts: groupedProductIDs)
-        let dataSource = GroupedProductListSelectorDataSource(product: product)
+        let dataSource = LinkedProductListSelectorDataSource(product: product)
         var updatedProductIDs: [Int64]?
         cancellable = dataSource.productIDs.subscribe { ids in
             updatedProductIDs = ids
@@ -73,7 +73,7 @@ final class GroupedProductListSelectorDataSourceTests: XCTestCase {
         // Assert
         XCTAssertTrue(dataSource.hasUnsavedChanges())
         let expectedProductIDs = [groupedProductIDs[0]]
-        XCTAssertEqual(dataSource.groupedProductIDs, expectedProductIDs)
+        XCTAssertEqual(dataSource.linkedProductIDs, expectedProductIDs)
         XCTAssertEqual(updatedProductIDs, expectedProductIDs)
     }
 
@@ -81,7 +81,7 @@ final class GroupedProductListSelectorDataSourceTests: XCTestCase {
         // Arrange
         let groupedProductIDs: [Int64] = [17, 671]
         let product = MockProduct().product().copy(groupedProducts: groupedProductIDs)
-        let dataSource = GroupedProductListSelectorDataSource(product: product)
+        let dataSource = LinkedProductListSelectorDataSource(product: product)
         var updatedProductIDs: [Int64]?
         cancellable = dataSource.productIDs.subscribe { ids in
             updatedProductIDs = ids
@@ -93,7 +93,7 @@ final class GroupedProductListSelectorDataSourceTests: XCTestCase {
 
         // Assert
         XCTAssertFalse(dataSource.hasUnsavedChanges())
-        XCTAssertEqual(dataSource.groupedProductIDs, groupedProductIDs)
+        XCTAssertEqual(dataSource.linkedProductIDs, groupedProductIDs)
         XCTAssertNil(updatedProductIDs)
     }
 }

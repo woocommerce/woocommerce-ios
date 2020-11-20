@@ -41,7 +41,7 @@ extension Storage.ShippingLabel: ReadOnlyConvertible {
               refund: refund?.toReadOnly(),
               originAddress: originAddress?.toReadOnly() ?? ShippingLabelAddress.empty,
               destinationAddress: destinationAddress?.toReadOnly() ?? ShippingLabelAddress.empty,
-              productIDs: productIDs ?? [],
+              productIDs: productIDs,
               productNames: productNames)
     }
 }

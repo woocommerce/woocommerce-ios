@@ -1,28 +1,12 @@
 import UIKit
 import Yosemite
 
-/// Provides data needed for Linked Products.
-///
-protocol LinkedProductsViewModelOutput {
-    typealias Section = LinkedProductsViewController.Section
-    typealias Row = LinkedProductsViewController.Row
-    var sections: [Section] { get }
-}
-
-/// Handles actions related to Linked Products.
-///
-protocol LinkedProductsViewModelActionHandler {
-    // Actions on properties
-    func handleUpsellIDsChange(_ upsellIDs: [Int64])
-    func handleCrossSellIDsChange(_ crossSellIDs: [Int64])
-
-    // Navigation actions
-    func hasUnsavedChanges() -> Bool
-}
-
 /// Provides view data for Linked Products, and handles init/UI/navigation actions needed.
 ///
-final class LinkedProductsViewModel: LinkedProductsViewModelOutput {
+final class LinkedProductsViewModel {
+
+    typealias Section = LinkedProductsViewController.Section
+    typealias Row = LinkedProductsViewController.Row
 
     private let product: ProductFormDataModel
 
@@ -52,11 +36,9 @@ final class LinkedProductsViewModel: LinkedProductsViewModelOutput {
 
         return [Section(rows: rows)]
     }
-
-
 }
 
-extension LinkedProductsViewModel: LinkedProductsViewModelActionHandler {
+extension LinkedProductsViewModel {
 
     func handleUpsellIDsChange(_ upsellIDs: [Int64]) {
         self.upsellIDs = upsellIDs

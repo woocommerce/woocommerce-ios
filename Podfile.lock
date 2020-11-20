@@ -107,7 +107,7 @@ DEPENDENCIES:
   - Kingfisher (~> 5.11.0)
   - Sourcery (~> 0.18)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `develop`)
+  - WordPressAuthenticator (from `../WordPressAuthenticator-iOS`)
   - WordPressShared (~> 1.12)
   - WordPressUI (~> 1.7.2)
   - Wormholy (~> 1.6.2)
@@ -158,13 +158,7 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   WordPressAuthenticator:
-    :branch: develop
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
-
-CHECKOUT OPTIONS:
-  WordPressAuthenticator:
-    :commit: f4f47e20e8d812e828a9c5dc8d24c4b599c8e606
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
+    :path: "../WordPressAuthenticator-iOS"
 
 SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
@@ -207,6 +201,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: 5a446e26673eb924c3bbde09c5f4f9de29e90e39
+PODFILE CHECKSUM: 537bce8e89f4aff7cd7c3b2eedad843f3e449c2a
 
 COCOAPODS: 1.9.1

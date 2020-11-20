@@ -113,6 +113,8 @@ private extension ShippingLabelStore {
                 let storageRefund = storageShippingLabel.refund ?? derivedStorage.insertNewObject(ofType: Storage.ShippingLabelRefund.self)
                 storageRefund.update(with: refund)
                 storageShippingLabel.refund = storageRefund
+            } else {
+                storageShippingLabel.refund = nil
             }
 
             let originAddress = storageShippingLabel.originAddress ?? derivedStorage.insertNewObject(ofType: Storage.ShippingLabelAddress.self)
@@ -125,11 +127,11 @@ private extension ShippingLabelStore {
         }
 
         // Now, remove any objects that exist in storage but not in shippingLabels
-        let storedShippingLabels = derivedStorage.loadAllShippingLabels(siteID: siteID, orderID: orderID)
-        storedShippingLabels.forEach { storedShippingLabel in
-            if !shippingLabels.contains(where: { $0.shippingLabelID == storedShippingLabel.shippingLabelID }) {
-                derivedStorage.deleteObject(storedShippingLabel)
-            }
+        let shippingLabelIDs = shippingLabels.map(\.shippingLabelID)
+        derivedStorage.loadAllShippingLabels(siteID: siteID, orderID: orderID).filter {
+            !shippingLabelIDs.contains($0.shippingLabelID)
+        }.forEach {
+            derivedStorage.deleteObject($0)
         }
     }
 

@@ -468,7 +468,7 @@ private extension SiteAddressViewController {
             return
         }
         
-        WordPressAuthenticator.shared.delegate?.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { (error, isSelfHosted) in
+        WordPressAuthenticator.shared.delegate?.shouldPresentUsernamePasswordController(for: siteInfo, navigationController: navigationController, onCompletion: { (error, isSelfHosted) in
             guard let originalError = error else {
 
                 if isSelfHosted {

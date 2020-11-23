@@ -107,10 +107,7 @@ extension IssueRefundViewModel {
     ///
     func toggleRefundShipping() {
         state.shouldRefundShipping.toggle()
-
-        // Analytics
-        let action: WooAnalyticsEvent.IssueRefund.ShippingSwitchState = state.shouldRefundShipping ? .on : .off
-        analytics.track(event: WooAnalyticsEvent.IssueRefund.shippingSwitchTapped(orderID: state.order.orderID, state: action))
+        trackShippingSwitchChanged()
     }
 
     /// Returns the number of items available for refund for the provided item index.
@@ -155,6 +152,13 @@ extension IssueRefundViewModel {
 
 // MARK: Analytics
 extension IssueRefundViewModel {
+    /// Tracks when the shipping swtich state changes
+    ///
+    private func trackShippingSwitchChanged() {
+        let action: WooAnalyticsEvent.IssueRefund.ShippingSwitchState = state.shouldRefundShipping ? .on : .off
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.shippingSwitchTapped(orderID: state.order.orderID, state: action))
+    }
+
     /// Tracks when the user taps the "next" button
     ///
     func trackNextButtonTapped() {
@@ -169,7 +173,7 @@ extension IssueRefundViewModel {
 
     /// Tracks when the user taps the "select all" button
     ///
-    func trackSelectAllButtonTapped() {
+    private func trackSelectAllButtonTapped() {
         analytics.track(event: WooAnalyticsEvent.IssueRefund.selectAllButtonTapped(orderID: state.order.orderID))
     }
 }

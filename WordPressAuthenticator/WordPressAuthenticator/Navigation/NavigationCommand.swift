@@ -6,6 +6,6 @@ import Foundation
 /// 
 /// Concrete implementations of this protocol will decide what that means
 ///
-protocol NavigationCommand {
+public protocol NavigationCommand {
     func execute(with: UINavigationController)
 }

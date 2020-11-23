@@ -99,6 +99,12 @@ final class IssueRefundViewModel {
                                                           paymentGateway: paymentGateway)
         return RefundConfirmationViewModel(details: details, currencySettings: state.currencySettings)
     }
+
+    /// Tracks when the user taps the "next" button
+    ///
+    func trackNextButtonTapped() {
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.nextButtonTapped(orderID: state.order.orderID))
+    }
 }
 
 // MARK: User Actions

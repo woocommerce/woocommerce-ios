@@ -100,6 +100,10 @@ extension WooAnalyticsEvent {
             case off
         }
 
+        static func nextButtonTapped(orderID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .createOrderRefundNextButtonTapped, properties: ["order_id": "\(orderID)"])
+        }
+
         static func summaryButtonTapped(orderID: Int64) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .createOrderRefundSummaryRefundButtonTapped, properties: ["order_id": "\(orderID)"])
         }

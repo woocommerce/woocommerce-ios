@@ -92,7 +92,6 @@ private extension IssueRefundViewController {
             }
             self?.viewModel.updateRefundQuantity(quantity: selectedQuantity, forItemAtIndex: indexPath.row)
         }
-        
         show(selectorViewController, sender: nil)
         viewModel.trackQuantityButtonTapped()
     }

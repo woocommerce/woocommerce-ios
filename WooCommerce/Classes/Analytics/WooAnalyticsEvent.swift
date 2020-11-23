@@ -100,6 +100,10 @@ extension WooAnalyticsEvent {
             case off
         }
 
+        static func selectAllButtonTapped(orderID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .createOrderRefundSelectAllItemsButtonTapped, properties: ["order_id": "\(orderID)"])
+        }
+
         static func quantityDialogOpened(orderID: Int64) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .createOrderRefundItemQuantityDialogOpened, properties: ["order_id": "\(orderID)"])
         }

@@ -148,6 +148,8 @@ extension IssueRefundViewModel {
         state.itemsToRefund.forEach { refundable in
             state.refundQuantityStore.update(quantity: refundable.quantity, for: refundable.item)
         }
+
+        trackSelectAllButtonTapped()
     }
 }
 
@@ -163,6 +165,12 @@ extension IssueRefundViewModel {
     ///
     func trackQuantityButtonTapped() {
         analytics.track(event: WooAnalyticsEvent.IssueRefund.nextButtonTapped(orderID: state.order.orderID))
+    }
+
+    /// Tracks when the user taps the "select all" button
+    ///
+    func trackSelectAllButtonTapped() {
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.selectAllButtonTapped(orderID: state.order.orderID))
     }
 }
 

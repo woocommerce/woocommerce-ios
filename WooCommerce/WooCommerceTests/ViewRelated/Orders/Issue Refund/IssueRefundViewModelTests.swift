@@ -450,4 +450,18 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.createOrderRefundNextButtonTapped.rawValue)
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["order_id"] as? String, "\(order.orderID)")
     }
+
+    func test_viewModel_correctly_tracks_when_the_sellectAll_button_is_tapped() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let order = MockOrders().makeOrder()
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings, analytics: analytics)
+
+        // When
+        viewModel.selectAllOrderItems()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.createOrderRefundSelectAllItemsButtonTapped.rawValue)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["order_id"] as? String, "\(order.orderID)")
+    }
 }

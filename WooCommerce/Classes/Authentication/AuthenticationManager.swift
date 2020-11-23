@@ -186,20 +186,38 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Validates that the self-hosted site contains the correct information
     /// and can proceed to the self-hosted username and password view controller.
     ///
-    func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, onCompletion: @escaping (Error?, Bool) -> Void) {
+    func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, navigationController: UINavigationController?, onCompletion: @escaping (Error?, Bool) -> Void) {
         let isSelfHosted = false
 
+        print("==== site info")
+        print("is wordpress.com ", siteInfo?.isWPCom)
+        print("has jetpack ", siteInfo?.hasJetpack)
+        print("//// site info")
         guard let site = siteInfo, site.hasJetpack == true else {
-            let errorInfo = NSLocalizedString(
-                "Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue.",
-                comment: "Error message that displays on the 'Log in by entering your site address.' screen. " +
-                "Jetpack is required for logging into the WooCommerce mobile apps.")
-            let error = NSError(domain: "WooCommerceAuthenticationErrorDomain",
-                                code: 555,
-                                userInfo: [NSLocalizedDescriptionKey: errorInfo])
-            onCompletion(error, isSelfHosted)
+            let primaryButtonTitle = "Enter Another Site"
+            let secondaryButtonTitle = "Log In With Another Account"
+            let primaryButtonAction = NavigateToEnterSite()
+            let secondaryButtonAction = NavigateToEnterAccount()
+            let exceptionContext = NavigationExceptionContext(primaryButtontitle: primaryButtonTitle,
+                                                              secondaryButtonTitle: secondaryButtonTitle, primaryButtonAction: primaryButtonAction, secondaryButtonAction: secondaryButtonAction)
+            let exceptionViewController = ULExceptionViewController(context: exceptionContext)
+
+            navigationController?.pushViewController(exceptionViewController, animated: true)
+
             return
         }
+
+//        guard let site = siteInfo, site.hasJetpack == true else {
+//            let errorInfo = NSLocalizedString(
+//                "Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue.",
+//                comment: "Error message that displays on the 'Log in by entering your site address.' screen. " +
+//                "Jetpack is required for logging into the WooCommerce mobile apps.")
+//            let error = NSError(domain: "WooCommerceAuthenticationErrorDomain",
+//                                code: 555,
+//                                userInfo: [NSLocalizedDescriptionKey: errorInfo])
+//            onCompletion(error, isSelfHosted)
+//            return
+//        }
 
         onCompletion(nil, isSelfHosted)
     }

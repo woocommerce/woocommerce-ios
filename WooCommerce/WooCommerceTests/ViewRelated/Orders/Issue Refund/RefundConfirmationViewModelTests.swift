@@ -7,6 +7,21 @@ import Yosemite
 /// Tests for `RefundConfirmationViewModel`.
 final class RefundConfirmationViewModelTests: XCTestCase {
 
+    private var analyticsProvider: MockupAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        super.setUp()
+        analyticsProvider = MockupAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
+    override func tearDown() {
+        super.tearDown()
+        analytics = nil
+        analyticsProvider = nil
+    }
+
     func test_sections_includes_a_previously_refunded_row() throws {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .USD,
@@ -186,5 +201,19 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         // Then
         let error = try XCTUnwrap(result.failure) as NSError
         XCTAssertEqual(error, expectedError)
+    }
+
+    func test_viewModel_correctly_logs_when_the_summary_button_is_tapped() {
+        // Given
+        let order = MockOrders().makeOrder()
+        let details = RefundConfirmationViewModel.Details(order: order, amount: "0.0", refundsShipping: false, items: [], paymentGateway: nil)
+        let viewModel = RefundConfirmationViewModel(details: details, analytics: analytics)
+
+        // When
+        viewModel.trackSummaryButtonTapped()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.createOrderRefundSummaryRefundButtonTapped.rawValue)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["order_id"] as? String, "\(order.orderID)")
     }
 }

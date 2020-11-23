@@ -83,6 +83,12 @@ final class RefundConfirmationViewModel {
         }
         actionProcessor.dispatch(action)
     }
+
+    /// Tracks when the user taps the "summary" button
+    ///
+    func trackSummaryButtonTapped() {
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.summaryButtonTapped(orderID: details.order.orderID))
+    }
 }
 
 // MARK: Refund Details

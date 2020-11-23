@@ -41,10 +41,10 @@ private extension ULExceptionViewController {
     }
 
     @objc func didTapPrimaryButton() {
-        context.primaryButtonAction.execute(with: navigationController)
+        context.primaryButtonAction.execute(from: self)
     }
 
     @objc func didTapSecondaryButton() {
-        context.secondaryButtonAction.execute(with: navigationController)
+        context.secondaryButtonAction.execute(from: self)
     }
 }

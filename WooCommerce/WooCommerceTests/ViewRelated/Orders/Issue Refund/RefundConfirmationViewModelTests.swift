@@ -203,7 +203,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         XCTAssertEqual(error, expectedError)
     }
 
-    func test_viewModel_correctly_logs_when_the_summary_button_is_tapped() {
+    func test_viewModel_correctly_tracks_when_the_summary_button_is_tapped() {
         // Given
         let order = MockOrders().makeOrder()
         let details = RefundConfirmationViewModel.Details(order: order, amount: "0.0", refundsShipping: false, items: [], paymentGateway: nil)

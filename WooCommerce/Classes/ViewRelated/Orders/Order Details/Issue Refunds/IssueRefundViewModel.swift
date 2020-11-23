@@ -99,12 +99,6 @@ final class IssueRefundViewModel {
                                                           paymentGateway: paymentGateway)
         return RefundConfirmationViewModel(details: details, currencySettings: state.currencySettings)
     }
-
-    /// Tracks when the user taps the "next" button
-    ///
-    func trackNextButtonTapped() {
-        analytics.track(event: WooAnalyticsEvent.IssueRefund.nextButtonTapped(orderID: state.order.orderID))
-    }
 }
 
 // MARK: User Actions
@@ -156,6 +150,22 @@ extension IssueRefundViewModel {
         }
     }
 }
+
+// MARK: Analytics
+extension IssueRefundViewModel {
+    /// Tracks when the user taps the "next" button
+    ///
+    func trackNextButtonTapped() {
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.nextButtonTapped(orderID: state.order.orderID))
+    }
+
+    /// Tracks when the user taps the "next" button
+    ///
+    func trackQuantityButtonTapped() {
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.nextButtonTapped(orderID: state.order.orderID))
+    }
+}
+
 
 // MARK: Results Controller
 private extension IssueRefundViewModel {

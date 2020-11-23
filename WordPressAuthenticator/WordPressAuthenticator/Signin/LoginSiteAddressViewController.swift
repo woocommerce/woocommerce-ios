@@ -226,7 +226,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     }
 
     func presentNextControllerIfPossible(siteInfo: WordPressComSiteInfo?) {
-        WordPressAuthenticator.shared.delegate?.shouldPresentUsernamePasswordController(for: siteInfo, navigationController: navigationController, onCompletion: { (error, isSelfHosted) in
+        WordPressAuthenticator.shared.delegate?.shouldPresentUsernamePasswordController(for: siteInfo, from: navigationController, onCompletion: { (error, isSelfHosted) in
             guard let originalError = error else {
                 
                 if isSelfHosted {

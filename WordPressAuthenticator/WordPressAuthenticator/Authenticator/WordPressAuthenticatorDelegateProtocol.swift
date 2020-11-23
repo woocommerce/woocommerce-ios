@@ -48,7 +48,7 @@ public protocol WordPressAuthenticatorDelegate: class {
     ///     - site: passes in the site information to the delegate method.
     ///     - onCompletion: Closure to be executed on completion.
     ///
-    func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, navigationController: UINavigationController?, onCompletion: @escaping (Error?, Bool) -> Void)
+    func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, from: UIViewController?, onCompletion: @escaping (Error?, Bool) -> Void)
 
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///

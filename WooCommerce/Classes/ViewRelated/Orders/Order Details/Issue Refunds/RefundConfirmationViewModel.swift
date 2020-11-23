@@ -48,10 +48,16 @@ final class RefundConfirmationViewModel {
         )
     ]
 
-    init(details: Details, actionProcessor: StoresManager = ServiceLocator.stores, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+    private let analytics: Analytics
+
+    init(details: Details,
+         actionProcessor: StoresManager = ServiceLocator.stores,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.details = details
         self.actionProcessor = actionProcessor
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.analytics = analytics
     }
 
     /// Submit the refund.

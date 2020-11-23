@@ -283,4 +283,31 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["order_id"] as? String, "\(order.orderID)")
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["error_description"] as? String, result.failure?.localizedDescription)
     }
+
+    func test_view_model_tracks_when_refund_creation_succeeds() throws {
+        // Given
+        let order = MockOrders().empty()
+        let details = RefundConfirmationViewModel.Details(order: order, amount: "100.0", refundsShipping: false, items: [], paymentGateway: nil)
+        let dispatcher = MockupStoresManager(sessionManager: .testingInstance)
+        dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
+            switch action {
+            case let .createRefund(_, _, refund, onCompletion):
+                onCompletion(refund, nil)
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher, analytics: analytics)
+        waitForExpectation { exp in
+            viewModel.submit { _ in
+                exp.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.refundCreateSuccess.rawValue)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["order_id"] as? String, "\(order.orderID)")
+    }
 }

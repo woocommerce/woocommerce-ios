@@ -82,6 +82,7 @@ final class RefundConfirmationViewModel {
                 return onCompletion(.failure(error))
             }
             onCompletion(.success(()))
+            self.trackCreateRefundRequestSuccess()
         }
 
         actionProcessor.dispatch(action)
@@ -165,6 +166,12 @@ extension RefundConfirmationViewModel {
                                                                           method: .items,
                                                                           gateway: details.order.paymentMethodID,
                                                                           ammount: details.amount))
+    }
+
+    /// Tracks when the create refund request succeeds.
+    ///
+    private func trackCreateRefundRequestSuccess() {
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundSuccess(orderID: details.order.orderID))
     }
 
     /// Tracks when the create refund request fails.

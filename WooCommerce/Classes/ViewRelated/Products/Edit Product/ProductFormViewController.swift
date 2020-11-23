@@ -724,15 +724,6 @@ private extension ProductFormViewController {
 // MARK: Navigation Bar Items
 //
 private extension ProductFormViewController {
-    func updateNavigationBarTitle(productName: String) {
-        navigationItem.title = productName
-        switch presentationStyle {
-        case .contained(let containerViewController):
-            containerViewController.navigationItem.title = productName
-        default:
-            break
-        }
-    }
 
     func updateNavigationBar(isUpdateEnabled: Bool) {
         var rightBarButtonItems = [UIBarButtonItem]()

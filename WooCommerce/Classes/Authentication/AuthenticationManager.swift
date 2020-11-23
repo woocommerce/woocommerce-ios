@@ -186,7 +186,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Validates that the self-hosted site contains the correct information
     /// and can proceed to the self-hosted username and password view controller.
     ///
-    func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, navigationController: UINavigationController?, onCompletion: @escaping (Error?, Bool) -> Void) {
+    func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, from: UIViewController?, onCompletion: @escaping (Error?, Bool) -> Void) {
         let isSelfHosted = false
 
         print("==== site info")
@@ -202,7 +202,11 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                                               secondaryButtonTitle: secondaryButtonTitle, primaryButtonAction: primaryButtonAction, secondaryButtonAction: secondaryButtonAction)
             let exceptionViewController = ULExceptionViewController(context: exceptionContext)
 
-            navigationController?.pushViewController(exceptionViewController, animated: true)
+            guard let navigationController = from as? UINavigationController else {
+                return
+            }
+
+            navigationController.pushViewController(exceptionViewController, animated: true)
 
             return
         }

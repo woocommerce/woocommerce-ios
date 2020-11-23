@@ -186,13 +186,13 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Validates that the self-hosted site contains the correct information
     /// and can proceed to the self-hosted username and password view controller.
     ///
-    func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, from: UIViewController?, onCompletion: @escaping (Error?, Bool) -> Void) {
+    func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, onCompletion: @escaping (Error?, Bool, UIViewController?) -> Void) {
         let isSelfHosted = false
 
-        print("==== site info")
-        print("is wordpress.com ", siteInfo?.isWPCom)
-        print("has jetpack ", siteInfo?.hasJetpack)
-        print("//// site info")
+//        print("==== site info")
+//        print("is wordpress.com ", siteInfo?.isWPCom)
+//        print("has jetpack ", siteInfo?.hasJetpack)
+//        print("//// site info")
         guard let site = siteInfo, site.hasJetpack == true else {
             let primaryButtonTitle = "Enter Another Site"
             let secondaryButtonTitle = "Log In With Another Account"
@@ -202,11 +202,13 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                                               secondaryButtonTitle: secondaryButtonTitle, primaryButtonAction: primaryButtonAction, secondaryButtonAction: secondaryButtonAction)
             let exceptionViewController = ULExceptionViewController(context: exceptionContext)
 
-            guard let navigationController = from as? UINavigationController else {
-                return
-            }
+//            guard let navigationController = from as? UINavigationController else {
+//                return
+//            }
+//
+//            navigationController.pushViewController(exceptionViewController, animated: true)
 
-            navigationController.pushViewController(exceptionViewController, animated: true)
+            onCompletion(nil, isSelfHosted, exceptionViewController)
 
             return
         }
@@ -223,7 +225,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 //            return
 //        }
 
-        onCompletion(nil, isSelfHosted)
+        onCompletion(nil, isSelfHosted, nil)
     }
 
     /// Presents the Login Epilogue, in the specified NavigationController.

@@ -7,5 +7,5 @@ import Foundation
 /// Concrete implementations of this protocol will decide what that means
 ///
 public protocol NavigationCommand {
-    func execute(with: UINavigationController?)
+    func execute(from: UIViewController?)
 }

@@ -100,8 +100,8 @@ extension WooAnalyticsEvent {
             case off
         }
 
-        static func shippingSwitchTapped(orderID: Int64, state: ShippingSwitchState) {
-            WooAnalyticsEvent(statName: .createOrderRefundShippingOptionTapped, properties: ["order_id": orderID, "action": state.rawValue])
+        static func shippingSwitchTapped(orderID: Int64, state: ShippingSwitchState) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .createOrderRefundShippingOptionTapped, properties: ["order_id": "\(orderID)", "action": state.rawValue])
         }
     }
 }

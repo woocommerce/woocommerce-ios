@@ -7,6 +7,21 @@ import Yosemite
 ///
 final class IssueRefundViewModelTests: XCTestCase {
 
+    private var analyticsProvider: MockupAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        super.setUp()
+        analyticsProvider = MockupAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
+    override func tearDown() {
+        super.tearDown()
+        analytics = nil
+        analyticsProvider = nil
+    }
+
     func test_viewModel_does_not_have_shipping_section_on_order_without_shipping() {
         // Given
         let currencySettings = CurrencySettings()
@@ -389,5 +404,22 @@ final class IssueRefundViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.isNextButtonEnabled)
+    }
+
+    // MARK: Analytics
+    //
+    func test_viewModel_tracks_shipping_switch_action_correcly() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let order = MockOrders().makeOrder()
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings, analytics: analytics)
+
+        // When
+        viewModel.toggleRefundShipping()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.createOrderRefundShippingOptionTapped.rawValue)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["order_id"] as? String, "\(order.orderID)")
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["action"] as? String, "on")
     }
 }

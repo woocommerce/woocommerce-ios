@@ -438,4 +438,27 @@ public extension StorageType {
         let predicate = NSPredicate(format: "siteID = %ld AND gatewayID = %@", siteID, gatewayID)
         return firstObject(ofType: PaymentGateway.self, matching: predicate)
     }
+
+    // MARK: - Shipping Labels
+
+    /// Returns all stored shipping labels for a site and order.
+    ///
+    func loadAllShippingLabels(siteID: Int64, orderID: Int64) -> [ShippingLabel] {
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld", siteID, orderID)
+        return allObjects(ofType: ShippingLabel.self, matching: predicate, sortedBy: nil)
+    }
+
+    /// Returns a single shipping label given a `siteID`, `orderID`, and `shippingLabelID`
+    ///
+    func loadShippingLabel(siteID: Int64, orderID: Int64, shippingLabelID: Int64) -> ShippingLabel? {
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld AND shippingLabelID = %ld", siteID, orderID, shippingLabelID)
+        return firstObject(ofType: ShippingLabel.self, matching: predicate)
+    }
+
+    /// Returns a single shipping label settings given a `siteID` and `orderID`
+    ///
+    func loadShippingLabelSettings(siteID: Int64, orderID: Int64) -> ShippingLabelSettings? {
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld", siteID, orderID)
+        return firstObject(ofType: ShippingLabelSettings.self, matching: predicate)
+    }
 }

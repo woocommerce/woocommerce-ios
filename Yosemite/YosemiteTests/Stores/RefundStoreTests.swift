@@ -517,7 +517,7 @@ private extension RefundStoreTests {
                       isAutomated: true,
                       createAutomated: false,
                       items: [sampleOrderItem()],
-                      shippingLines: [])
+                      shippingLines: nil)
     }
 
     /// Generate a mutated Refund

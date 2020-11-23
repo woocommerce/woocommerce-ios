@@ -37,7 +37,7 @@ private extension ULExceptionViewController {
     func configureSecondaryButton() {
         secondaryButton.setTitle(context.secondaryButtonTitle, for: .normal)
 
-        primaryButton.addTarget(self, action: #selector(didTapSecondaryButton), for: .touchUpInside)
+        secondaryButton.addTarget(self, action: #selector(didTapSecondaryButton), for: .touchUpInside)
     }
 
     @objc func didTapPrimaryButton() {

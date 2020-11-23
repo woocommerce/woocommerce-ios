@@ -64,15 +64,23 @@
                         <constraint firstItem="mhI-fa-Yzw" firstAttribute="leading" secondItem="10Z-y1-ZQ6" secondAttribute="leading" constant="20" id="vz3-FU-z4g"/>
                     </constraints>
                 </view>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Custom UI inserted by WooCommerce" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jUd-LI-Zp3">
+                    <rect key="frame" x="20" y="337" width="374" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="10Z-y1-ZQ6" secondAttribute="trailing" id="3Fe-tr-bmb"/>
+                <constraint firstItem="jUd-LI-Zp3" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="PME-3r-Bdy"/>
+                <constraint firstItem="jUd-LI-Zp3" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" id="dJy-XX-2pe"/>
                 <constraint firstItem="10Z-y1-ZQ6" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="r9Z-y5-j3W"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="10Z-y1-ZQ6" secondAttribute="bottom" id="rPP-rT-zVR"/>
             </constraints>
-            <point key="canvasLocation" x="139" y="87"/>
+            <point key="canvasLocation" x="137.68115942028987" y="86.383928571428569"/>
         </view>
     </objects>
     <resources>

@@ -373,6 +373,7 @@ final class MigrationTests: XCTestCase {
         let migratedRefund = try XCTUnwrap(targetContext.first(entityName: "Refund"))
 
         XCTAssertNotNil(migratedRefund.entity.relationshipsByName["shippingLines"])
+        XCTAssertEqual(migratedRefund.value(forKey: "supportShippingRefunds") as? Bool, false)
     }
 }
 

@@ -410,6 +410,7 @@
         <attribute name="reason" optional="YES" attributeType="String"/>
         <attribute name="refundID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="supportShippingRefunds" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OrderItemRefund" inverseName="refund" inverseEntity="OrderItemRefund"/>
         <relationship name="shippingLines" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ShippingLine" inverseName="refund" inverseEntity="ShippingLine"/>
     </entity>
@@ -577,7 +578,7 @@
         <element name="ProductShippingClass" positionX="-693" positionY="36" width="128" height="148"/>
         <element name="ProductTag" positionX="-896.65234375" positionY="645.7421875" width="128" height="118"/>
         <element name="ProductVariation" positionX="-693" positionY="36" width="128" height="598"/>
-        <element name="Refund" positionX="-394.35546875" positionY="-24.296875" width="128" height="194"/>
+        <element name="Refund" positionX="-394.35546875" positionY="-24.296875" width="128" height="209"/>
         <element name="ShipmentTracking" positionX="-201.47265625" positionY="-109.14453125" width="128" height="148"/>
         <element name="ShipmentTrackingProvider" positionX="248.25" positionY="-117.6640625" width="180.32421875" height="103"/>
         <element name="ShipmentTrackingProviderGroup" positionX="-8.2734375" positionY="-117.890625" width="187.5" height="88"/>

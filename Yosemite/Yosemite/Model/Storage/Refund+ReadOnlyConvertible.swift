@@ -16,6 +16,7 @@ extension Storage.Refund: ReadOnlyConvertible {
         amount = fullRefund.amount
         reason = fullRefund.reason
         byUserID = fullRefund.refundedByUserID
+        supportShippingRefunds = fullRefund.shippingLines != nil
 
         if let automated = fullRefund.isAutomated {
             isAutomated = automated
@@ -30,7 +31,14 @@ extension Storage.Refund: ReadOnlyConvertible {
     ///
     public func toReadOnly() -> Yosemite.Refund {
         let orderItems = items?.map { $0.toReadOnly() } ?? [Yosemite.OrderItemRefund]()
-        let readOnlyShippingLines = shippingLines?.map { $0.toReadOnly() }
+
+        // Assign nil if the refund does not support shipping information
+        let readOnlyShippingLines: [ShippingLine]? = {
+            guard supportShippingRefunds else {
+                return nil
+            }
+            return shippingLines?.map { $0.toReadOnly() }
+        }()
 
         return Refund(refundID: refundID,
                       orderID: orderID,

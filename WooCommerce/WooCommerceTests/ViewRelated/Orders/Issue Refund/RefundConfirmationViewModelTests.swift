@@ -254,4 +254,33 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["gateway"] as? String, order.paymentMethodID)
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["ammount"] as? String, details.amount)
     }
+
+    func test_view_model_tracks_when_refund_creation_fails() throws {
+        // Given
+        let order = MockOrders().empty()
+        let details = RefundConfirmationViewModel.Details(order: order, amount: "100.0", refundsShipping: false, items: [], paymentGateway: nil)
+        let expectedError = NSError(domain: "Refund Error", code: 0, userInfo: nil)
+        let dispatcher = MockupStoresManager(sessionManager: .testingInstance)
+        dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
+            switch action {
+            case let .createRefund(_, _, _, onCompletion):
+                onCompletion(nil, expectedError)
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher, analytics: analytics)
+        let result = try waitFor { promise in
+            viewModel.submit { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.refundCreateFailed.rawValue)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["order_id"] as? String, "\(order.orderID)")
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["error_description"] as? String, result.failure?.localizedDescription)
+    }
 }

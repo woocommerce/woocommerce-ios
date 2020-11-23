@@ -116,6 +116,13 @@ extension WooAnalyticsEvent {
             ])
         }
 
+        static func createRefundFailed(orderID: Int64, error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .refundCreateFailed, properties: [
+                "order_id": "\(orderID)",
+                "error_description": error.localizedDescription,
+            ])
+        }
+
         static func selectAllButtonTapped(orderID: Int64) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .createOrderRefundSelectAllItemsButtonTapped, properties: ["order_id": "\(orderID)"])
         }

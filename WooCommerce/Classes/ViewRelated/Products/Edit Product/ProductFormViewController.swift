@@ -107,7 +107,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         handleSwipeBackGesture()
 
         observeProduct()
-        observeProductName()
         observeUpdateCTAVisibility()
 
         productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
@@ -383,7 +382,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 private extension ProductFormViewController {
     func configureNavigationBar() {
         updateNavigationBar(isUpdateEnabled: false)
-        updateNavigationBarTitle(productName: product.name)
         removeNavigationBackBarButtonText()
     }
 
@@ -460,12 +458,6 @@ private extension ProductFormViewController {
     func observeProduct() {
         cancellableProduct = viewModel.observableProduct.subscribe { [weak self] product in
             self?.onProductUpdated(product: product)
-        }
-    }
-
-    func observeProductName() {
-        cancellableProductName = viewModel.productName?.subscribe { [weak self] name in
-            self?.updateNavigationBarTitle(productName: name)
         }
     }
 
@@ -732,15 +724,6 @@ private extension ProductFormViewController {
 // MARK: Navigation Bar Items
 //
 private extension ProductFormViewController {
-    func updateNavigationBarTitle(productName: String) {
-        navigationItem.title = productName
-        switch presentationStyle {
-        case .contained(let containerViewController):
-            containerViewController.navigationItem.title = productName
-        default:
-            break
-        }
-    }
 
     func updateNavigationBar(isUpdateEnabled: Bool) {
         var rightBarButtonItems = [UIBarButtonItem]()

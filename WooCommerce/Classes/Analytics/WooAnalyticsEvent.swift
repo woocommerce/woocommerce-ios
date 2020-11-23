@@ -87,3 +87,21 @@ extension WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .featureFeedbackBanner, properties: ["context": context.rawValue, "action": action.rawValue])
     }
 }
+
+
+// MARK: - Issue Refund
+//
+extension WooAnalyticsEvent {
+    // Namespace
+    enum IssueRefund {
+        /// The state of the "refund shipping" button
+        public enum ShippingSwitchState: String {
+            case on
+            case off
+        }
+
+        static func shippingSwitchTapped(orderID: Int64, state: ShippingSwitchState) {
+            WooAnalyticsEvent(statName: .createOrderRefundShippingOptionTapped, properties: ["order_id": orderID, "action": state.rawValue])
+        }
+    }
+}

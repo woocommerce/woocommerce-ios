@@ -1,30 +1,50 @@
-//
-//  ULExceptionViewController.swift
-//  WooCommerce
-//
-//  Created by Cesar Tardaguila on 23/11/2020.
-//  Copyright © 2020 Automattic. All rights reserved.
-//
 
 import UIKit
+import WordPressAuthenticator
 
-class ULExceptionViewController: UIViewController {
+final class ULExceptionViewController: UIViewController {
+    private let context: NavigationExceptionContext
+
+    @IBOutlet private var primaryButton: FancyAnimatedButton!
+    @IBOutlet private var secondaryButton: FancyAnimatedButton!
+
+    init(context: NavigationExceptionContext) {
+        self.context = context
+
+        super.init(nibName: Self.nibName, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        configurePrimaryButton()
+        configureSecondaryButton()
+    }
+}
+
+
+private extension ULExceptionViewController {
+    func configurePrimaryButton() {
+        primaryButton.setTitle(context.primaryButtontitle, for: .normal)
+
+        primaryButton.addTarget(self, action: #selector(didTapPrimaryButton), for: .touchUpInside)
     }
 
+    func configureSecondaryButton() {
+        secondaryButton.setTitle(context.secondaryButtonTitle, for: .normal)
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        primaryButton.addTarget(self, action: #selector(didTapSecondaryButton), for: .touchUpInside)
     }
-    */
 
+    @objc func didTapPrimaryButton() {
+        context.primaryButtonAction.execute(with: navigationController)
+    }
+
+    @objc func didTapSecondaryButton() {
+        context.secondaryButtonAction.execute(with: navigationController)
+    }
 }

@@ -100,6 +100,22 @@ extension WooAnalyticsEvent {
             case off
         }
 
+        // The method used for the refund
+        public enum RefundMethod: String {
+            case items
+            case ammount
+        }
+
+        static func createRefund(orderID: Int64, fullyRefunded: Bool, method: RefundMethod, gateway: String, ammount: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .refundCreate, properties: [
+                "order_id": "\(orderID)",
+                "is_full": "\(fullyRefunded)",
+                "method": method.rawValue,
+                "gateway": gateway,
+                "ammount": ammount
+            ])
+        }
+
         static func selectAllButtonTapped(orderID: Int64) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .createOrderRefundSelectAllItemsButtonTapped, properties: ["order_id": "\(orderID)"])
         }

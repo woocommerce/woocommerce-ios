@@ -216,4 +216,42 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.createOrderRefundSummaryRefundButtonTapped.rawValue)
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["order_id"] as? String, "\(order.orderID)")
     }
+
+    func test_viewModel_correctly_tracks_full_create_refund_request_when_submit_method_is_called() {
+        // Given
+        let order = MockOrders().empty().copy(orderID: 123, total: "100.0", paymentMethodID: "stripe")
+        let gateway = PaymentGateway(siteID: 234, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [])
+        let details = RefundConfirmationViewModel.Details(order: order, amount: "100.0", refundsShipping: false, items: [], paymentGateway: gateway)
+        let viewModel = RefundConfirmationViewModel(details: details, analytics: analytics)
+
+        // When
+        viewModel.submit(onCompletion: { _ in })
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.refundCreate.rawValue)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["order_id"] as? String, "\(order.orderID)")
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["is_full"] as? String, "true")
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["method"] as? String, WooAnalyticsEvent.IssueRefund.RefundMethod.items.rawValue)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["gateway"] as? String, order.paymentMethodID)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["ammount"] as? String, details.amount)
+    }
+
+    func test_viewModel_correctly_tracks_full_partial_refund_request_when_submit_method_is_called() {
+        // Given
+        let order = MockOrders().empty().copy(orderID: 123, total: "120.0", paymentMethodID: "stripe")
+        let gateway = PaymentGateway(siteID: 234, gatewayID: "stripe", title: "Stripe", description: "", enabled: true, features: [])
+        let details = RefundConfirmationViewModel.Details(order: order, amount: "100.0", refundsShipping: false, items: [], paymentGateway: gateway)
+        let viewModel = RefundConfirmationViewModel(details: details, analytics: analytics)
+
+        // When
+        viewModel.submit(onCompletion: { _ in })
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.refundCreate.rawValue)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["order_id"] as? String, "\(order.orderID)")
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["is_full"] as? String, "false")
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["method"] as? String, WooAnalyticsEvent.IssueRefund.RefundMethod.items.rawValue)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["gateway"] as? String, order.paymentMethodID)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["ammount"] as? String, details.amount)
+    }
 }

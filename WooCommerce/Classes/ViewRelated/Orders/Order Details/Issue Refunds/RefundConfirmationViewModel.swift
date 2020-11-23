@@ -81,13 +81,9 @@ final class RefundConfirmationViewModel {
             }
             onCompletion(.success(()))
         }
-        actionProcessor.dispatch(action)
-    }
 
-    /// Tracks when the user taps the "summary" button
-    ///
-    func trackSummaryButtonTapped() {
-        analytics.track(event: WooAnalyticsEvent.IssueRefund.summaryButtonTapped(orderID: details.order.orderID))
+        actionProcessor.dispatch(action)
+        trackCreateRefundRequest()
     }
 }
 
@@ -148,6 +144,25 @@ private extension RefundConfirmationViewModel {
             return false
         }
         return paymentGateway.features.contains(.refunds)
+    }
+}
+
+// MARK: Analytics
+extension RefundConfirmationViewModel {
+    /// Tracks when the user taps the "summary" button
+    ///
+    func trackSummaryButtonTapped() {
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.summaryButtonTapped(orderID: details.order.orderID))
+    }
+
+    /// Tracks when the create refund request is made.
+    ///
+    func trackCreateRefundRequest() {
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefund(orderID: details.order.orderID,
+                                                                          fullyRefunded: details.amount == details.order.total,
+                                                                          method: .items,
+                                                                          gateway: details.order.paymentMethodID,
+                                                                          ammount: details.amount))
     }
 }
 

@@ -102,8 +102,8 @@ extension WooAnalyticsEvent {
 
         // The method used for the refund
         public enum RefundMethod: String {
-            case items
-            case ammount
+            case items = "ITEMS"
+            case amount = "AMOUNT"
         }
 
         static func createRefund(orderID: Int64, fullyRefunded: Bool, method: RefundMethod, gateway: String, ammount: String) -> WooAnalyticsEvent {

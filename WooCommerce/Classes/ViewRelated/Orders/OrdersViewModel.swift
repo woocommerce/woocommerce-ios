@@ -37,14 +37,6 @@ final class OrdersViewModel {
     ///
     let statusFilter: OrderStatus?
 
-    /// If true, orders created after today's day will be included in the result.
-    ///
-    /// This will generally only be false for the All Orders tab. All other screens should show orders in the future.
-    ///
-    /// Defaults to `true`.
-    ///
-    private let includesFutureOrders: Bool
-
     /// Used for tracking whether the app was _previously_ in the background.
     ///
     private var isAppActive: Bool = true
@@ -73,14 +65,12 @@ final class OrdersViewModel {
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
          statusFilter: OrderStatus?,
-         includesFutureOrders: Bool = true,
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
         self.statusFilter = statusFilter
-        self.includesFutureOrders = includesFutureOrders
         self.stores = stores
     }
 
@@ -121,12 +111,7 @@ final class OrdersViewModel {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
             let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "statusKey = %@", $0.slug) }
 
-            var predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
-            if !includesFutureOrders, let nextMidnight = Date().nextMidnight() {
-                // Exclude orders on and after midnight of today's date
-                let dateSubPredicate = NSPredicate(format: "dateCreated < %@", nextMidnight as NSDate)
-                predicates.append(dateSubPredicate)
-            }
+            let predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
 
             return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         }()
@@ -157,8 +142,7 @@ final class OrdersViewModel {
                                reason: OrderListSyncActionUseCase.SyncReason?,
                                completionHandler: @escaping (Error?) -> Void) -> OrderAction {
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
-                                                 statusFilter: statusFilter,
-                                                 includesFutureOrders: includesFutureOrders)
+                                                 statusFilter: statusFilter)
         return useCase.actionFor(pageNumber: pageNumber,
                                  pageSize: pageSize,
                                  reason: reason,

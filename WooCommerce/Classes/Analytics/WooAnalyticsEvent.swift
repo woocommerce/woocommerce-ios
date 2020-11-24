@@ -87,3 +87,64 @@ extension WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .featureFeedbackBanner, properties: ["context": context.rawValue, "action": action.rawValue])
     }
 }
+
+
+// MARK: - Issue Refund
+//
+extension WooAnalyticsEvent {
+    // Namespace
+    enum IssueRefund {
+        /// The state of the "refund shipping" button
+        enum ShippingSwitchState: String {
+            case on
+            case off
+        }
+
+        // The method used for the refund
+        enum RefundMethod: String {
+            case items = "ITEMS"
+            case amount = "AMOUNT"
+        }
+
+        static func createRefund(orderID: Int64, fullyRefunded: Bool, method: RefundMethod, gateway: String, amount: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .refundCreate, properties: [
+                "order_id": "\(orderID)",
+                "is_full": "\(fullyRefunded)",
+                "method": method.rawValue,
+                "gateway": gateway,
+                "amount": amount
+            ])
+        }
+
+        static func createRefundSuccess(orderID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .refundCreateSuccess, properties: ["order_id": "\(orderID)"])
+        }
+
+        static func createRefundFailed(orderID: Int64, error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .refundCreateFailed, properties: [
+                "order_id": "\(orderID)",
+                "error_description": error.localizedDescription,
+            ])
+        }
+
+        static func selectAllButtonTapped(orderID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .createOrderRefundSelectAllItemsButtonTapped, properties: ["order_id": "\(orderID)"])
+        }
+
+        static func quantityDialogOpened(orderID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .createOrderRefundItemQuantityDialogOpened, properties: ["order_id": "\(orderID)"])
+        }
+
+        static func nextButtonTapped(orderID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .createOrderRefundNextButtonTapped, properties: ["order_id": "\(orderID)"])
+        }
+
+        static func summaryButtonTapped(orderID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .createOrderRefundSummaryRefundButtonTapped, properties: ["order_id": "\(orderID)"])
+        }
+
+        static func shippingSwitchTapped(orderID: Int64, state: ShippingSwitchState) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .createOrderRefundShippingOptionTapped, properties: ["order_id": "\(orderID)", "action": state.rawValue])
+        }
+    }
+}

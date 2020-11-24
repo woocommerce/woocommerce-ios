@@ -12,6 +12,10 @@ final class IssueRefundViewModel {
         ///
         let order: Order
 
+        /// Refunds previously made
+        ///
+        let refunds: [Refund]
+
         /// Items to refund. Order Items - Refunded items
         ///
         let itemsToRefund: [RefundableOrderItem]
@@ -77,9 +81,12 @@ final class IssueRefundViewModel {
         return resultsController.fetchedObjects.first
     }()
 
-    init(order: Order, refunds: [Refund], currencySettings: CurrencySettings) {
+    private let analytics: Analytics
+
+    init(order: Order, refunds: [Refund], currencySettings: CurrencySettings, analytics: Analytics = ServiceLocator.analytics) {
+        self.analytics = analytics
         let items = Self.filterItems(from: order, with: refunds)
-        state = State(order: order, itemsToRefund: items, currencySettings: currencySettings)
+        state = State(order: order, refunds: refunds, itemsToRefund: items, currencySettings: currencySettings)
         sections = createSections()
         title = calculateTitle()
         isNextButtonEnabled = calculateNextButtonEnableState()
@@ -104,6 +111,7 @@ extension IssueRefundViewModel {
     ///
     func toggleRefundShipping() {
         state.shouldRefundShipping.toggle()
+        trackShippingSwitchChanged()
     }
 
     /// Returns the number of items available for refund for the provided item index.
@@ -141,8 +149,39 @@ extension IssueRefundViewModel {
         state.itemsToRefund.forEach { refundable in
             state.refundQuantityStore.update(quantity: refundable.quantity, for: refundable.item)
         }
+
+        trackSelectAllButtonTapped()
     }
 }
+
+// MARK: Analytics
+extension IssueRefundViewModel {
+    /// Tracks when the shipping switch state changes
+    ///
+    private func trackShippingSwitchChanged() {
+        let action: WooAnalyticsEvent.IssueRefund.ShippingSwitchState = state.shouldRefundShipping ? .on : .off
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.shippingSwitchTapped(orderID: state.order.orderID, state: action))
+    }
+
+    /// Tracks when the user taps the "next" button
+    ///
+    func trackNextButtonTapped() {
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.nextButtonTapped(orderID: state.order.orderID))
+    }
+
+    /// Tracks when the user taps the "quantity" button
+    ///
+    func trackQuantityButtonTapped() {
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.quantityDialogOpened(orderID: state.order.orderID))
+    }
+
+    /// Tracks when the user taps the "select all" button
+    ///
+    private func trackSelectAllButtonTapped() {
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.selectAllButtonTapped(orderID: state.order.orderID))
+    }
+}
+
 
 // MARK: Results Controller
 private extension IssueRefundViewModel {
@@ -221,7 +260,8 @@ extension IssueRefundViewModel {
     /// Returns `nil` if there isn't any shipping line available
     ///
     private func createShippingSection() -> Section? {
-        guard let shippingLine = state.order.shippingLines.first else {
+        // If there is no shipping cost to refund or shipping has already been refunded, then hide the section.
+        guard let shippingLine = state.order.shippingLines.first, hasShippingBeenRefunded() == false else {
             return nil
         }
 
@@ -277,6 +317,26 @@ extension IssueRefundViewModel {
     ///
     private func calculateNextButtonEnableState() -> Bool {
         return state.refundQuantityStore.count() > 0 || state.shouldRefundShipping
+    }
+
+    /// Returns `true` if a shipping refund is found.
+    /// Returns `false`if a shipping refund is not found.
+    /// Returns `nil` if we don't have shipping refund information.
+    /// - Discussion: Since we don't support partial refunds, we assume that any refund is a full refund for shipping costs.
+    ///
+    private func hasShippingBeenRefunded() -> Bool? {
+        // Return false if there are no refunds.
+        guard state.refunds.isNotEmpty else {
+            return false
+        }
+
+        // Return nil if we can't get shipping line refunds information
+        guard state.refunds.first?.shippingLines != nil else {
+            return nil
+        }
+
+        // Return true if there is any non-empty shipping refund
+        return state.refunds.first { $0.shippingLines?.isNotEmpty ?? false } != nil
     }
 
     /// Return an array of `RefundableOrderItems` by taking out all previously refunded items

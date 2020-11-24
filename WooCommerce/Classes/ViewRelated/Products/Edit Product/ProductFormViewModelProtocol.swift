@@ -93,6 +93,8 @@ protocol ProductFormViewModelProtocol {
 
     func updateDownloadableFiles(downloadableFiles: [ProductDownload], downloadLimit: Int64, downloadExpiry: Int64)
 
+    func updateLinkedProducts(upsellIDs: [Int64], crossSellIDs: [Int64])
+
     // Remote action
 
     /// Creates/updates a product remotely given an optional product status to override.

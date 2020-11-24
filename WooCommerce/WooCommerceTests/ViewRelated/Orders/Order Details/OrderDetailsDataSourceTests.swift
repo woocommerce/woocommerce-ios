@@ -146,7 +146,8 @@ private extension OrderDetailsDataSourceTests {
                       refundedByUserID: 1,
                       isAutomated: nil,
                       createAutomated: nil,
-                      items: [orderItemRefund])
+                      items: [orderItemRefund],
+                      shippingLines: [])
     }
 
     func insert(refund: Refund) {

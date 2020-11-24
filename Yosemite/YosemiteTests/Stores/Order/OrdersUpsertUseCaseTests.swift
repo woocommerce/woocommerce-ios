@@ -75,7 +75,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(persistedCoupon.toReadOnly(), coupon)
         let persistedRefund = try XCTUnwrap(viewStorage.loadOrderRefundCondensed(siteID: defaultSiteID, refundID: refund.refundID))
         XCTAssertEqual(persistedRefund.toReadOnly(), refund)
-        let persistedShippingLine = try XCTUnwrap(viewStorage.loadShippingLine(siteID: defaultSiteID, shippingID: shippingLine.shippingID))
+        let persistedShippingLine = try XCTUnwrap(viewStorage.loadOrderShippingLine(siteID: defaultSiteID, shippingID: shippingLine.shippingID))
         XCTAssertEqual(persistedShippingLine.toReadOnly(), shippingLine)
     }
 

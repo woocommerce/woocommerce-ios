@@ -354,6 +354,27 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(savedOrder.value(forKey: "shippingLabels") as? Set<NSManagedObject>, [shippingLabel])
         XCTAssertEqual(savedOrder.value(forKey: "shippingLabelSettings") as? NSManagedObject, shippingLabelSettings)
     }
+
+    func test_migrating_from_38_to_39_creates_new_shipping_lines_relationship_on_refund() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 38")
+        let sourceContext = sourceContainer.viewContext
+
+        let order = insertRefund(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(order.entity.relationshipsByName["shippingLines"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 39")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedRefund = try XCTUnwrap(targetContext.first(entityName: "Refund"))
+
+        XCTAssertNotNil(migratedRefund.entity.relationshipsByName["shippingLines"])
+        XCTAssertEqual(migratedRefund.value(forKey: "supportShippingRefunds") as? Bool, false)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -482,6 +503,18 @@ private extension MigrationTests {
             "metaID": 134,
             "name": "Woo",
             "value": "4.7"
+        ])
+    }
+
+    @discardableResult
+    func insertRefund(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "Refund", properties: [
+            "refundID": 123,
+            "orderID": 234,
+            "siteID": 345,
+            "byUserID": 456,
+            "isAutomated": false,
+            "createAutomated": false
         ])
     }
 

@@ -51,6 +51,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
     }
 
     @IBOutlet private weak var contentStackView: UIStackView!
+    @IBOutlet private weak var contentImageStackView: UIStackView!
     @IBOutlet private weak var contentImageView: UIImageView!
     @IBOutlet private weak var titleAndTextStackView: UIStackView!
     @IBOutlet private weak var titleLabel: UILabel!
@@ -78,7 +79,7 @@ extension ImageAndTitleAndTextTableViewCell {
         descriptionLabel.isHidden = viewModel.text == nil || viewModel.text?.isEmpty == true
         descriptionLabel.numberOfLines = viewModel.numberOfLinesForText
         contentImageView.image = viewModel.image
-        contentImageView.isHidden = viewModel.image == nil
+        contentImageStackView.isHidden = viewModel.image == nil
         accessoryType = viewModel.isActionable ? .disclosureIndicator: .none
         selectionStyle = viewModel.isActionable ? .default: .none
         accessoryView = nil

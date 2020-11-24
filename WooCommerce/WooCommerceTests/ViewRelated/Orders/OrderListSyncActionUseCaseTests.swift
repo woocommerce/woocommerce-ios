@@ -25,8 +25,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
     func test_pulling_to_refresh_on_filtered_list_it_deletes_and_performs_dual_fetch() {
         // Arrange
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
-                                                 statusFilter: orderStatus(with: .processing),
-                                                 includesFutureOrders: true)
+                                                 statusFilter: orderStatus(with: .processing))
 
         // Act
         let action = useCase.actionFor(pageNumber: Defaults.pageFirstIndex,
@@ -51,8 +50,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
     func test_first_page_load_on_filtered_list_with_non_pull_to_refresh_reasons_will_only_perform_dual_fetch() {
         // Arrange
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
-                                                 statusFilter: orderStatus(with: .processing),
-                                                 includesFutureOrders: true)
+                                                 statusFilter: orderStatus(with: .processing))
 
         // Act
         let action = useCase.actionFor(pageNumber: Defaults.pageFirstIndex,
@@ -78,8 +76,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
     func test_pulling_to_refresh_on_all_orders_list_deletes_and_fetches_first_page_of_all_orders_only() {
         // Arrange
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
-                                                 statusFilter: nil,
-                                                 includesFutureOrders: true)
+                                                 statusFilter: nil)
 
         // Act
         let action = useCase.actionFor(pageNumber: Defaults.pageFirstIndex,
@@ -104,8 +101,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
     func test_first_page_load_on_all_orders_list_with_non_pull_to_refresh_reasons_will_only_perform_single_fetch() {
         // Arrange
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
-                                                 statusFilter: nil,
-                                                 includesFutureOrders: true)
+                                                 statusFilter: nil)
 
         // Act
         let action = useCase.actionFor(pageNumber: Defaults.pageFirstIndex,
@@ -126,8 +122,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
     func test_subsequent_page_loads_on_filtered_list_will_fetch_the_given_page_on_that_list() {
         // Arrange
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
-                                                 statusFilter: orderStatus(with: .pending),
-                                                 includesFutureOrders: true)
+                                                 statusFilter: orderStatus(with: .pending))
 
         // Act
         let action = useCase.actionFor(pageNumber: Defaults.pageFirstIndex + 3,
@@ -149,8 +144,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
     func test_subsequent_page_loads_on_all_orders_list_will_fetch_the_given_page_on_that_list() {
         // Arrange
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
-                                                 statusFilter: nil,
-                                                 includesFutureOrders: true)
+                                                 statusFilter: nil)
 
         // Act
         let action = useCase.actionFor(pageNumber: Defaults.pageFirstIndex + 5,

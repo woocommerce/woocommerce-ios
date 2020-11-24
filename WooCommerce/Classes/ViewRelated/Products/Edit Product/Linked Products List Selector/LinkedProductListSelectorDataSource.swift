@@ -1,9 +1,9 @@
 import UIKit
 import Yosemite
 
-/// Configures the results and cells for a paginated list of linked products of a grouped product, syncs each page of products,
+/// Configures the results and cells for a paginated list of linked products, syncs each page of products,
 /// and handles actions that could alter the linked products.
-final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSource {
+final class LinkedProductListSelectorDataSource: PaginatedListSelectorDataSource {
     typealias StorageModel = StorageProduct
 
     lazy var customResultsSortOrder: ((Product, Product) -> Bool)? = { [weak self] (lhs, rhs) in
@@ -12,51 +12,58 @@ final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSourc
         }
         let lhsProductID = lhs.productID
         let rhsProductID = rhs.productID
-        let productIDs = self.groupedProductIDs
+        let productIDs = self.linkedProductIDs
         guard let lhsProductIDIndex = productIDs.firstIndex(of: lhsProductID), let rhsProductIDIndex = productIDs.firstIndex(of: rhsProductID) else {
             return true
         }
         return lhsProductIDIndex < rhsProductIDIndex
     }
 
-    // Observable list of the latest grouped product IDs
+    // Observable list of the latest linked product IDs
     var productIDs: Observable<[Int64]> {
         productIDsSubject
     }
     private let productIDsSubject: PublishSubject<[Int64]> = PublishSubject<[Int64]>()
 
-    private(set) var groupedProductIDs: [Int64] = [] {
+    private let originalLinkedProductIDs: [Int64]
+    private(set) var linkedProductIDs: [Int64] = [] {
         didSet {
-            if groupedProductIDs != oldValue {
-                productIDsSubject.send(groupedProductIDs)
+            if linkedProductIDs != oldValue {
+                productIDsSubject.send(linkedProductIDs)
             }
         }
     }
 
-    // Not used: a grouped product's linked product list is not selectable in this use case.
+    // Not used: a product's linked product list is not selectable in this use case.
     var selected: Product?
 
     private let siteID: Int64
     private let product: Product
     private let imageService: ImageService
+    private let deleteButtonTappedEvent: WooAnalyticsStat
 
-    init(product: Product, imageService: ImageService = ServiceLocator.imageService) {
+    init(product: Product,
+         linkedProductIDs: [Int64],
+         imageService: ImageService = ServiceLocator.imageService,
+         deleteButtonTappedEvent: WooAnalyticsStat) {
         self.siteID = product.siteID
         self.product = product
-        self.groupedProductIDs = product.groupedProducts
+        self.originalLinkedProductIDs = linkedProductIDs
+        self.linkedProductIDs = linkedProductIDs
         self.imageService = imageService
+        self.deleteButtonTappedEvent = deleteButtonTappedEvent
     }
 
     func createResultsController() -> ResultsController<StorageProduct> {
         let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", siteID, groupedProductIDs)
+        let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", siteID, linkedProductIDs)
         return ResultsController<StorageProduct>(storageManager: storageManager,
                                                  matching: predicate,
                                                  sortOrder: .nameAscending)
     }
 
     func handleSelectedChange(selected: Product) {
-        // no-op: a grouped product's linked product list is not selectable in this use case.
+        // no-op: a product's linked product list is not selectable in this use case.
     }
 
     func isSelected(model: Product) -> Bool {
@@ -70,21 +77,22 @@ final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSourc
         cell.update(viewModel: viewModel, imageService: imageService)
 
         cell.configureAccessoryDeleteButton { [weak self] in
-            ServiceLocator.analytics.track(.groupedProductLinkedProductsDeleteButtonTapped)
-            self?.deleteProduct(model)
+            guard let self = self else { return }
+            ServiceLocator.analytics.track(self.deleteButtonTappedEvent)
+            self.deleteProduct(model)
         }
     }
 
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Result<Bool, Error>) -> Void)?) {
         let action = ProductAction.retrieveProducts(siteID: siteID,
-                                                    productIDs: groupedProductIDs,
+                                                    productIDs: linkedProductIDs,
                                                     pageNumber: pageNumber,
                                                     pageSize: pageSize) { result in
                                                         switch result {
                                                         case .success((_, let hasNextPage)):
                                                             onCompletion?(.success(hasNextPage))
                                                         case .failure(let error):
-                                                            DDLogError("⛔️ Error synchronizing grouped product's linked products: \(error)")
+                                                            DDLogError("⛔️ Error synchronizing products in linked products list selector: \(error)")
                                                             onCompletion?(.failure(error))
                                                         }
         }
@@ -94,23 +102,23 @@ final class GroupedProductListSelectorDataSource: PaginatedListSelectorDataSourc
 
 // MARK: Public actions
 //
-extension GroupedProductListSelectorDataSource {
+extension LinkedProductListSelectorDataSource {
     /// Called when the user deletes a product from the product list.
     func deleteProduct(_ product: Product) {
-        guard let index = groupedProductIDs.firstIndex(where: { $0 == product.productID }) else {
+        guard let index = linkedProductIDs.firstIndex(where: { $0 == product.productID }) else {
             return
         }
-        groupedProductIDs.remove(at: index)
+        linkedProductIDs.remove(at: index)
     }
 
-    /// Called when the user adds products to a grouped product.
-    /// - Parameter products: a list of products to add to a grouped product.
+    /// Called when the user adds products.
+    /// - Parameter products: a list of products to add to a grouped, upsell, cross-sell product or other product types that support linked products.
     func addProducts(_ productIDs: [Int64]) {
-        groupedProductIDs = (groupedProductIDs + productIDs).removingDuplicates()
+        linkedProductIDs = (linkedProductIDs + productIDs).removingDuplicates()
     }
 
-    /// Returns whether there are unsaved changes on the grouped products.
+    /// Returns whether there are unsaved changes.
     func hasUnsavedChanges() -> Bool {
-        return groupedProductIDs != product.groupedProducts
+        return linkedProductIDs != originalLinkedProductIDs
     }
 }

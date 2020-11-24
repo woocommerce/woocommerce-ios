@@ -4,9 +4,6 @@ import Yosemite
 import Storage
 import Combine
 
-private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
-private typealias Defaults = OrdersViewModel.Defaults
-
 /// Tests for `OrderListViewModel`.
 ///
 @available(iOS 13.0, *)

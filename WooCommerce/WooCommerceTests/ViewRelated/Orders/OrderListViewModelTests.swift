@@ -46,8 +46,6 @@ final class OrderListViewModelTests: XCTestCase {
         let processingOrders = (0..<10).map { insertOrder(id: $0, status: .processing) }
         let completedOrders = (100..<105).map { insertOrder(id: $0, status: .completed) }
 
-        storage.saveIfNeeded()
-
         XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), processingOrders.count + completedOrders.count)
 
         // Act

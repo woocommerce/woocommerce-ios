@@ -444,10 +444,10 @@ final class IssueRefundViewModelTests: XCTestCase {
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings, analytics: analytics)
 
         // When
-        viewModel.trackNextButtonTapped()
+        viewModel.trackQuantityButtonTapped()
 
         // Then
-        XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.createOrderRefundNextButtonTapped.rawValue)
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.createOrderRefundItemQuantityDialogOpened.rawValue)
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["order_id"] as? String, "\(order.orderID)")
     }
 

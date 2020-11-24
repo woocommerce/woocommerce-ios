@@ -95,24 +95,24 @@ extension WooAnalyticsEvent {
     // Namespace
     enum IssueRefund {
         /// The state of the "refund shipping" button
-        public enum ShippingSwitchState: String {
+        enum ShippingSwitchState: String {
             case on
             case off
         }
 
         // The method used for the refund
-        public enum RefundMethod: String {
+        enum RefundMethod: String {
             case items = "ITEMS"
             case amount = "AMOUNT"
         }
 
-        static func createRefund(orderID: Int64, fullyRefunded: Bool, method: RefundMethod, gateway: String, ammount: String) -> WooAnalyticsEvent {
+        static func createRefund(orderID: Int64, fullyRefunded: Bool, method: RefundMethod, gateway: String, amount: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .refundCreate, properties: [
                 "order_id": "\(orderID)",
                 "is_full": "\(fullyRefunded)",
                 "method": method.rawValue,
                 "gateway": gateway,
-                "ammount": ammount
+                "amount": amount
             ])
         }
 

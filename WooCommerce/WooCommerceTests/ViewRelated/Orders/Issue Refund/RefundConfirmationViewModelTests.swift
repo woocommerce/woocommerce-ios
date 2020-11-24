@@ -233,7 +233,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["is_full"] as? String, "true")
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["method"] as? String, WooAnalyticsEvent.IssueRefund.RefundMethod.items.rawValue)
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["gateway"] as? String, order.paymentMethodID)
-        XCTAssertEqual(analyticsProvider.receivedProperties.first?["ammount"] as? String, details.amount)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["amount"] as? String, details.amount)
     }
 
     func test_viewModel_correctly_tracks_full_partial_refund_request_when_submit_method_is_called() {
@@ -252,7 +252,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["is_full"] as? String, "false")
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["method"] as? String, WooAnalyticsEvent.IssueRefund.RefundMethod.items.rawValue)
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["gateway"] as? String, order.paymentMethodID)
-        XCTAssertEqual(analyticsProvider.receivedProperties.first?["ammount"] as? String, details.amount)
+        XCTAssertEqual(analyticsProvider.receivedProperties.first?["amount"] as? String, details.amount)
     }
 
     func test_view_model_tracks_when_refund_creation_fails() throws {

@@ -165,7 +165,7 @@ extension RefundConfirmationViewModel {
                                                                           fullyRefunded: details.amount == details.order.total,
                                                                           method: .items,
                                                                           gateway: details.order.paymentMethodID,
-                                                                          ammount: details.amount))
+                                                                          amount: details.amount))
     }
 
     /// Tracks when the create refund request succeeds.

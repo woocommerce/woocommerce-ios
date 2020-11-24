@@ -10,11 +10,6 @@ import Combine
 final class OrderListViewModelTests: XCTestCase {
     /// The `siteID` value doesn't matter.
     private let siteID: Int64 = 1_000_000
-    private let pageSize = 50
-
-    private let unimportantCompletionHandler: ((Error?) -> Void) = { _ in
-        // noop
-    }
 
     private var storageManager: StorageManagerType!
 

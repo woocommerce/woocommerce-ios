@@ -121,33 +121,40 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertEqual(orderIDs, expectedOrders.orderIDs)
         XCTAssertFalse(orderIDs.contains(ignoredFutureOrder.orderID))
     }
-//
-//    /// Orders with dateCreated in the future should be grouped in an "Upcoming" section.
-//    func test_it_groups_future_orders_in_upcoming_section() {
-//        // Arrange
-//        let viewModel = OrderListViewModel(siteID: siteID, storageManager: storageManager, statusFilter: orderStatus(with: .failed))
-//
-//        let expectedOrders = (
-//            future: [
-//                insertOrder(id: 1_000, status: .failed, dateCreated: Date().adding(days: 3)!),
-//                insertOrder(id: 1_000, status: .failed, dateCreated: Date().adding(days: 4)!),
-//            ],
-//            past: [
-//                insertOrder(id: 4_000, status: .failed, dateCreated: Date().adding(days: -1)!),
-//            ]
-//        )
-//
-//        // Act
-//        viewModel.activateAndForwardUpdates(to: UITableView())
-//
-//        // Assert
-//        XCTAssertEqual(viewModel.numberOfSections, 2)
-//
-//        // The first section should be the Upcoming section
-//        let upcomingSection = viewModel.sectionInfo(at: 0)
-//        XCTAssertEqual(Age(rawValue: upcomingSection.name), .upcoming)
-//        XCTAssertEqual(upcomingSection.numberOfObjects, expectedOrders.future.count)
-//    }
+
+    /// Orders with dateCreated in the future should be grouped in an "Upcoming" section.
+    func test_it_groups_future_orders_in_upcoming_section() throws {
+        // Arrange
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           storageManager: storageManager,
+                                           statusFilter: orderStatus(with: .failed))
+
+        let expectedOrders = (
+            future: [
+                insertOrder(id: 1_000, status: .failed, dateCreated: Date().adding(days: 3)!),
+                insertOrder(id: 1_001, status: .failed, dateCreated: Date().adding(days: 4)!),
+                insertOrder(id: 1_002, status: .failed, dateCreated: Date().adding(days: 5)!),
+            ],
+            past: [
+                insertOrder(id: 4_000, status: .failed, dateCreated: Date().adding(days: -1)!),
+            ]
+        )
+
+        // Act
+        let snapshot = try activateAndRetrieveSnapshot(of: viewModel)
+
+        // Assert
+        XCTAssertEqual(snapshot.numberOfSections, 2)
+
+        // The first section should be the Upcoming section
+        let sectionID = try XCTUnwrap(snapshot.sectionIdentifiers.first)
+        XCTAssertEqual(Age(rawValue: sectionID), .upcoming)
+
+        let sectionTitle = try XCTUnwrap(viewModel.sectionTitleFor(sectionIdentifier: sectionID))
+        XCTAssertEqual(sectionTitle, Age(rawValue: sectionID)?.description)
+
+        XCTAssertEqual(snapshot.numberOfItems(inSection: sectionID), expectedOrders.future.count)
+    }
 //
 //    // MARK: - App Activation
 //

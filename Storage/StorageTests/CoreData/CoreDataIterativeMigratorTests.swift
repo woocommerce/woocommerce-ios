@@ -119,6 +119,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.success)
+        XCTAssertTrue(result.debugMessages.isEmpty)
         XCTAssertEqual(fileManager.fileExistsInvocationCount, 1)
         XCTAssertEqual(fileManager.allMethodsInvocationCount, 1)
     }

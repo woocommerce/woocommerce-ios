@@ -670,13 +670,13 @@ extension OrderDetailsDataSource {
             return Section(category: .refundedProducts, title: Title.refundedProducts, row: row)
         }()
 
-        let shippingLabels: [Section] = {
-            let shippingLabels = resultsControllers.shippingLabels
+        let shippingLabels = resultsControllers.shippingLabels
+        self.shippingLabels = shippingLabels
+
+        let shippingLabelSections: [Section] = {
             guard shippingLabels.isNotEmpty else {
                 return []
             }
-
-            self.shippingLabels = shippingLabels
             let sections = shippingLabels.enumerated().map { index, shippingLabel -> Section in
                 let title = String.localizedStringWithFormat(Title.shippingLabelPackageFormat, index + 1)
                 let isRefunded = shippingLabel.refund != nil
@@ -761,7 +761,7 @@ extension OrderDetailsDataSource {
         sections = ([summary,
                     shippingNotice,
                     products] +
-                    shippingLabels +
+                    shippingLabelSections +
                     [refundedProducts,
                     payment,
                     customerInformation,

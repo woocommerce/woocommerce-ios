@@ -124,8 +124,7 @@ final class OrderListViewModel {
                                reason: OrderListSyncActionUseCase.SyncReason?,
                                completionHandler: @escaping (Error?) -> Void) -> OrderAction {
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
-                                                 statusFilter: statusFilter,
-                                                 includesFutureOrders: includesFutureOrders)
+                                                 statusFilter: statusFilter)
         return useCase.actionFor(pageNumber: pageNumber,
                                  pageSize: pageSize,
                                  reason: reason,

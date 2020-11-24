@@ -48,9 +48,8 @@ final class OrderListViewModelTests: XCTestCase {
     func test_given_a_filter_it_loads_the_orders_matching_that_filter_from_the_DB() {
         // Arrange
         let viewModel = OrderListViewModel(siteID: siteID,
-                                        storageManager: storageManager,
-                                        statusFilter: orderStatus(with: .processing),
-                                        stores: stores)
+                                           storageManager: storageManager,
+                                           statusFilter: orderStatus(with: .processing))
 
         let processingOrders = (0..<10).map { insertOrder(id: $0, status: .processing) }
         let completedOrders = (100..<105).map { insertOrder(id: $0, status: .completed) }
@@ -69,7 +68,7 @@ final class OrderListViewModelTests: XCTestCase {
 
     func test_given_no_filter_it_loads_all_the_today_and_past_orders_from_the_DB() {
         // Arrange
-        let viewModel = OrderListViewModel(siteID: siteID, storageManager: storageManager, statusFilter: nil, stores: stores)
+        let viewModel = OrderListViewModel(siteID: siteID, storageManager: storageManager, statusFilter: nil)
 
         let allInsertedOrders = [
             (0..<10).map { insertOrder(id: $0, status: .processing) },
@@ -94,10 +93,9 @@ final class OrderListViewModelTests: XCTestCase {
     func test_given_including_future_orders_it_also_loads_future_orders_from_the_DB() {
         // Arrange
         let viewModel = OrderListViewModel(siteID: siteID,
-                                        storageManager: storageManager,
-                                        statusFilter: orderStatus(with: .pending),
-                                        includesFutureOrders: true,
-                                        stores: stores)
+                                           storageManager: storageManager,
+                                           statusFilter: orderStatus(with: .pending),
+                                           includesFutureOrders: true)
 
         let expectedOrders = [
             // Future orders
@@ -126,7 +124,7 @@ final class OrderListViewModelTests: XCTestCase {
     /// midnight are included.
     func test_given_excluding_future_orders_it_only_loads_orders_up_to_midnight_from_the_DB() {
         // Arrange
-        let viewModel = OrderListViewModel(siteID: siteID, storageManager: storageManager, statusFilter: nil, includesFutureOrders: false, stores: stores)
+        let viewModel = OrderListViewModel(siteID: siteID, storageManager: storageManager, statusFilter: nil, includesFutureOrders: false)
 
         let ignoredOrders = [
             // Orders in the future
@@ -157,7 +155,7 @@ final class OrderListViewModelTests: XCTestCase {
     /// Orders with dateCreated in the future should be grouped in an "Upcoming" section.
     func test_it_groups_future_orders_in_upcoming_section() {
         // Arrange
-        let viewModel = OrderListViewModel(siteID: siteID, storageManager: storageManager, statusFilter: orderStatus(with: .failed), stores: stores)
+        let viewModel = OrderListViewModel(siteID: siteID, storageManager: storageManager, statusFilter: orderStatus(with: .failed))
 
         let expectedOrders = (
             future: [
@@ -186,7 +184,7 @@ final class OrderListViewModelTests: XCTestCase {
     func test_it_requests_a_resynchronization_when_the_app_is_activated() {
         // Arrange
         let notificationCenter = NotificationCenter()
-        let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, statusFilter: nil, stores: stores)
+        let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, statusFilter: nil)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {
@@ -206,7 +204,7 @@ final class OrderListViewModelTests: XCTestCase {
     func test_given_no_previous_deactivation_it_does_not_request_a_resynchronization_when_the_app_is_activated() {
         // Arrange
         let notificationCenter = NotificationCenter()
-        let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, statusFilter: nil, stores: stores)
+        let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, statusFilter: nil)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {
@@ -227,7 +225,7 @@ final class OrderListViewModelTests: XCTestCase {
     func test_given_a_new_order_notification_it_requests_a_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
-        let viewModel = OrderListViewModel(siteID: siteID, pushNotificationsManager: pushNotificationsManager, statusFilter: nil, stores: stores)
+        let viewModel = OrderListViewModel(siteID: siteID, pushNotificationsManager: pushNotificationsManager, statusFilter: nil)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {
@@ -247,7 +245,7 @@ final class OrderListViewModelTests: XCTestCase {
     func test_given_a_non_order_notification_it_does_not_request_a_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
-        let viewModel = OrderListViewModel(siteID: siteID, pushNotificationsManager: pushNotificationsManager, statusFilter: nil, stores: stores)
+        let viewModel = OrderListViewModel(siteID: siteID, pushNotificationsManager: pushNotificationsManager, statusFilter: nil)
 
         var resynchronizeRequested = false
         viewModel.onShouldResynchronizeIfViewIsVisible = {

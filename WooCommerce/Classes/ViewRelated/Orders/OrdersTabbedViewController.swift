@@ -236,7 +236,7 @@ extension OrdersTabbedViewController {
         let allOrdersVC = OrdersViewController(
             siteID: siteID,
             title: Localization.allOrdersTitle,
-            viewModel: OrdersViewModel(siteID: siteID, statusFilter: nil, includesFutureOrders: false),
+            viewModel: OrdersViewModel(siteID: siteID, statusFilter: nil),
             emptyStateConfig: .withLink(
                 message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
                 image: .emptyOrdersImage,

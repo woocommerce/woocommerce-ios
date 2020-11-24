@@ -212,6 +212,7 @@ final class CoreDataManagerTests: XCTestCase {
         _ = manager.persistentContainer
 
         // Then
+        // The store should still be compatible with the model we used the first time.
         try assertThat(manager, isCompatibleWith: modelsInventory.currentModel)
 
         // The rows should have been kept.

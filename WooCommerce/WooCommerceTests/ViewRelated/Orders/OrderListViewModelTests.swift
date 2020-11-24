@@ -155,28 +155,28 @@ final class OrderListViewModelTests: XCTestCase {
 
         XCTAssertEqual(snapshot.numberOfItems(inSection: sectionID), expectedOrders.future.count)
     }
-//
-//    // MARK: - App Activation
-//
-//    func test_it_requests_a_resynchronization_when_the_app_is_activated() {
-//        // Arrange
-//        let notificationCenter = NotificationCenter()
-//        let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, statusFilter: nil)
-//
-//        var resynchronizeRequested = false
-//        viewModel.onShouldResynchronizeIfViewIsVisible = {
-//            resynchronizeRequested = true
-//        }
-//
-//        viewModel.activateAndForwardUpdates(to: UITableView())
-//
-//        // Act
-//        notificationCenter.post(name: UIApplication.willResignActiveNotification, object: nil)
-//        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
-//
-//        // Assert
-//        XCTAssertTrue(resynchronizeRequested)
-//    }
+
+    // MARK: - App Activation
+
+    func test_it_requests_a_resynchronization_when_the_app_is_activated() {
+        // Arrange
+        let notificationCenter = NotificationCenter()
+        let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, statusFilter: nil)
+
+        var resynchronizeRequested = false
+        viewModel.onShouldResynchronizeIfViewIsVisible = {
+            resynchronizeRequested = true
+        }
+
+        viewModel.activate()
+
+        // Act
+        notificationCenter.post(name: UIApplication.willResignActiveNotification, object: nil)
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        // Assert
+        XCTAssertTrue(resynchronizeRequested)
+    }
 //
 //    func test_given_no_previous_deactivation_it_does_not_request_a_resynchronization_when_the_app_is_activated() {
 //        // Arrange

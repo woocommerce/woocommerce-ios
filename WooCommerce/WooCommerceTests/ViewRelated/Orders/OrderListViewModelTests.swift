@@ -85,8 +85,7 @@ final class OrderListViewModelTests: XCTestCase {
         // Arrange
         let viewModel = OrderListViewModel(siteID: siteID,
                                            storageManager: storageManager,
-                                           statusFilter: orderStatus(with: .pending),
-                                           includesFutureOrders: true)
+                                           statusFilter: orderStatus(with: .pending))
 
         let expectedOrders = [
             // Future orders

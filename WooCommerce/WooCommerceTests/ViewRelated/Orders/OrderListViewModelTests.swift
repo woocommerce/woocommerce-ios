@@ -35,7 +35,7 @@ final class OrderListViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: - Future Orders
+    // MARK: - Orders Loading
 
     func test_given_a_filter_it_loads_the_orders_matching_that_filter_from_the_DB() throws {
         // Arrange

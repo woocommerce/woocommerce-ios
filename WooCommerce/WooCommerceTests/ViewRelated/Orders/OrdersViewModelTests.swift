@@ -36,7 +36,7 @@ final class OrdersViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: - Future Orders
+    // MARK: - Orders Loading
 
     func test_given_a_filter_it_loads_the_orders_matching_that_filter_from_the_DB() {
         // Arrange
@@ -82,8 +82,7 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.fetchedOrders.orderIDs, allInsertedOrders.orderIDs)
     }
 
-    /// If `includeFutureOrders` is `true`, all orders including orders dated in the future (dateCreated) will
-    /// be fetched.
+    /// Test that all orders including orders dated in the future (dateCreated) will be fetched.
     func test_given_including_future_orders_it_also_loads_future_orders_from_the_DB() {
         // Arrange
         let viewModel = OrdersViewModel(siteID: siteID,

@@ -59,14 +59,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), processingOrders.count + completedOrders.count)
 
         // Act
-        let snapshot: FetchResultSnapshot = try waitFor { promise in
-            viewModel.snapshot.dropFirst().sink { snapshot in
-                print(snapshot)
-                promise(snapshot)
-            }.store(in: &self.cancellables)
-
-            viewModel.activate()
-        }
+        let snapshot = try activateAndRetrieveSnapshot(of: viewModel)
 
         // Assert
         XCTAssertTrue(snapshot.itemIdentifiers.isNotEmpty)
@@ -297,6 +290,20 @@ private extension Array where Element == Yosemite.Order {
 
 @available(iOS 13.0, *)
 private extension OrderListViewModelTests {
+
+    /// Activate the viewModel to start fetching and then return the first
+    /// valid `FetchResultSnapshot` triggered.
+    func activateAndRetrieveSnapshot(of viewModel: OrderListViewModel) throws -> FetchResultSnapshot {
+        return try waitFor { promise in
+            // The first snapshot is dropped because it's just the default empty one.
+            viewModel.snapshot.dropFirst().sink { snapshot in
+                promise(snapshot)
+            }.store(in: &self.cancellables)
+
+            viewModel.activate()
+        }
+    }
+
     func orderStatus(with status: OrderStatusEnum) -> Yosemite.OrderStatus {
         OrderStatus(name: nil, siteID: siteID, slug: status.rawValue, total: 0)
     }

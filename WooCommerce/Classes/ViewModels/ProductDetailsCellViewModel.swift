@@ -21,6 +21,8 @@ struct ProductDetailsCellViewModel {
     ///
     private let product: Product?
 
+    private let productImageURL: URL?
+
     /// Currency Formatter
     ///
     private let currencyFormatter: CurrencyFormatter
@@ -90,6 +92,10 @@ struct ProductDetailsCellViewModel {
     /// Grab the first available image for a product.
     ///
     var imageURL: URL? {
+        if let url = productImageURL {
+            return url
+        }
+
         guard let productImageURLString = product?.images.first?.src else {
             return nil
         }
@@ -108,6 +114,7 @@ struct ProductDetailsCellViewModel {
         self.currency = currency
         self.currencyFormatter = formatter
         self.product = product
+        self.productImageURL = nil
         self.name = item.name
         self.positiveQuantity = abs(item.quantity)
         self.positiveTotal = currencyFormatter.convertToDecimal(from: item.total)?.abs() ?? NSDecimalNumber.zero
@@ -125,6 +132,7 @@ struct ProductDetailsCellViewModel {
         self.currency = currency
         self.currencyFormatter = formatter
         self.product = product
+        self.productImageURL = aggregateItem.imageURL
         self.name = aggregateItem.name
         self.positiveQuantity = abs(aggregateItem.quantity)
         self.positiveTotal = aggregateItem.total.abs()
@@ -142,6 +150,7 @@ struct ProductDetailsCellViewModel {
         self.currency = currency
         self.currencyFormatter = formatter
         self.product = product
+        self.productImageURL = nil
         self.name = refundedItem.name
         self.positiveQuantity = abs(refundedItem.quantity)
         self.positiveTotal = currencyFormatter.convertToDecimal(from: refundedItem.total)?.abs() ?? NSDecimalNumber.zero

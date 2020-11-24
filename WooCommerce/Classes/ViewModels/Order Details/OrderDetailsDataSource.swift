@@ -67,6 +67,12 @@ final class OrderDetailsDataSource: NSObject {
         return resultsControllers.products
     }
 
+    /// ProductVariations from an Order
+    ///
+    var productVariations: [ProductVariation] {
+        return resultsControllers.productVariations
+    }
+
     /// OrderItemsRefund Count
     ///
     var refundedProductsCount: Decimal {
@@ -80,6 +86,7 @@ final class OrderDetailsDataSource: NSObject {
     }
 
     private var shippingLabels: [ShippingLabel] = []
+    private var shippingLabelOrderItemsAggregator: ShippingLabelOrderItemsAggregator?
 
     /// Shipping Lines from an Order
     ///
@@ -439,7 +446,16 @@ private extension OrderDetailsDataSource {
     private func configureShippingLabelProduct(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .default
 
-        // TODO-2167: show aggregated order item (product) for a shipping label
+        guard let shippingLabel = shippingLabel(at: indexPath) else {
+            return
+        }
+
+        guard let orderItem = shippingLabelOrderItemsAggregator?.orderItems(of: shippingLabel)[safe: indexPath.row] else {
+            return
+        }
+
+        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: orderItem, currency: order.currency)
+        cell.configure(item: itemViewModel, imageService: imageService)
     }
 
     private func configureShippingLabelTrackingNumber(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
@@ -677,6 +693,10 @@ extension OrderDetailsDataSource {
             }
 
             self.shippingLabels = shippingLabels
+            self.shippingLabelOrderItemsAggregator = ShippingLabelOrderItemsAggregator(shippingLabels: shippingLabels,
+                                                                                       orderItems: items,
+                                                                                       products: self.products,
+                                                                                       productVariations: self.productVariations)
             let sections = shippingLabels.enumerated().map { index, shippingLabel -> Section in
                 let title = String.localizedStringWithFormat(Title.shippingLabelPackageFormat, index + 1)
                 let isRefunded = shippingLabel.refund != nil
@@ -684,8 +704,8 @@ extension OrderDetailsDataSource {
                 if isRefunded {
                     rows = [.shippingLabelTrackingNumber, .shippingLabelDetail]
                 } else {
-                    let orderItemsCount = shippingLabel.productNames.count
-                    // TODO-2167: show aggregated order items (products) for a shipping label
+                    // TODO-2167: show printing instructions
+                    let orderItemsCount = shippingLabelOrderItemsAggregator?.orderItems(of: shippingLabel).count ?? 0
                     rows = Array(repeating: .shippingLabelProduct, count: orderItemsCount)
                         + [.shippingLabelReprintButton, .shippingLabelTrackingNumber, .shippingLabelDetail]
                 }

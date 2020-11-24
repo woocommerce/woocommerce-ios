@@ -30,6 +30,15 @@ final class OrderDetailsResultsControllers {
         return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
+    /// ProductVariation ResultsController.
+    ///
+    private lazy var productVariationResultsController: ResultsController<StorageProductVariation> = {
+        let variationIDs = order.items.map { $0.variationID }.filter { $0 != 0 }
+        let predicate = NSPredicate(format: "siteID == %lld AND productVariationID in %@", siteID, variationIDs)
+
+        return ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
     /// Status Results Controller.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
@@ -79,6 +88,12 @@ final class OrderDetailsResultsControllers {
         return productResultsController.fetchedObjects
     }
 
+    /// ProductVariations from an Order
+    ///
+    var productVariations: [ProductVariation] {
+        return productVariationResultsController.fetchedObjects
+    }
+
     /// Refunds in an Order
     ///
     var refunds: [Refund] {
@@ -102,6 +117,7 @@ final class OrderDetailsResultsControllers {
         configureStatusResultsController()
         configureTrackingResultsController(onReload: onReload)
         configureProductResultsController(onReload: onReload)
+        configureProductVariationResultsController(onReload: onReload)
         configureRefundResultsController(onReload: onReload)
         configureShippingLabelResultsController(onReload: onReload)
     }
@@ -147,6 +163,22 @@ private extension OrderDetailsResultsControllers {
         try? productResultsController.performFetch()
     }
 
+    private func configureProductVariationResultsController(onReload: @escaping () -> Void) {
+        productVariationResultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        productVariationResultsController.onDidResetContent = { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.refetchAllResultsControllers()
+            onReload()
+        }
+
+        try? productVariationResultsController.performFetch()
+    }
+
     private func configureRefundResultsController(onReload: @escaping () -> Void) {
         refundResultsController.onDidChangeContent = {
             onReload()
@@ -181,6 +213,7 @@ private extension OrderDetailsResultsControllers {
     /// involves more than one results controller.
     func refetchAllResultsControllers() {
         try? productResultsController.performFetch()
+        try? productVariationResultsController.performFetch()
         try? refundResultsController.performFetch()
         try? trackingResultsController.performFetch()
         try? statusResultsController.performFetch()

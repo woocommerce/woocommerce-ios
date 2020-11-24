@@ -122,38 +122,6 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertFalse(orderIDs.contains(ignoredFutureOrder.orderID))
     }
 //
-//    /// If `includesFutureOrders` is `false`, only orders created up to the current day are returned. Orders before
-//    /// midnight are included.
-//    func test_given_excluding_future_orders_it_only_loads_orders_up_to_midnight_from_the_DB() {
-//        // Arrange
-//        let viewModel = OrderListViewModel(siteID: siteID, storageManager: storageManager, statusFilter: nil, includesFutureOrders: false)
-//
-//        let ignoredOrders = [
-//            // Orders in the future
-//            insertOrder(id: 1_001, status: .pending, dateCreated: Date().adding(days: 1)!),
-//            insertOrder(id: 1_002, status: .cancelled, dateCreated: Date().adding(days: 3)!),
-//            // Exactly midnight is also ignored because it is technically "tomorrow"
-//            insertOrder(id: 1_003, status: .processing, dateCreated: Date().nextMidnight()!),
-//        ]
-//
-//        let expectedOrders = [
-//            insertOrder(id: 4_001, status: .completed, dateCreated: Date()),
-//            insertOrder(id: 4_002, status: .pending, dateCreated: Date().adding(days: -1)!),
-//            insertOrder(id: 4_003, status: .pending, dateCreated: Date().adding(days: -20)!),
-//            // 1 second before midnight is included because it is technically "today"
-//            insertOrder(id: 4_004, status: .processing, dateCreated: Date().nextMidnight()!.adding(seconds: -1)!),
-//        ]
-//
-//        // Act
-//        viewModel.activateAndForwardUpdates(to: UITableView())
-//
-//        // Assert
-//        XCTAssertTrue(viewModel.fetchedOrders.orderIDs.isDisjoint(with: ignoredOrders.orderIDs))
-//
-//        XCTAssertEqual(viewModel.numberOfObjects, expectedOrders.count)
-//        XCTAssertEqual(viewModel.fetchedOrders.orderIDs, expectedOrders.orderIDs)
-//    }
-//
 //    /// Orders with dateCreated in the future should be grouped in an "Upcoming" section.
 //    func test_it_groups_future_orders_in_upcoming_section() {
 //        // Arrange

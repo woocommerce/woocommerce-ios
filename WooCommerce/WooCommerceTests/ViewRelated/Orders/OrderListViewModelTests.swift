@@ -193,48 +193,48 @@ final class OrderListViewModelTests: XCTestCase {
         // Assert
         XCTAssertFalse(resynchronizeRequested)
     }
-//
-//    // MARK: - Foreground Notifications
-//
-//    func test_given_a_new_order_notification_it_requests_a_resynchronization() {
-//        // Arrange
-//        let pushNotificationsManager = MockPushNotificationsManager()
-//        let viewModel = OrderListViewModel(siteID: siteID, pushNotificationsManager: pushNotificationsManager, statusFilter: nil)
-//
-//        var resynchronizeRequested = false
-//        viewModel.onShouldResynchronizeIfViewIsVisible = {
-//            resynchronizeRequested = true
-//        }
-//
-//        viewModel.activateAndForwardUpdates(to: UITableView())
-//
-//        // Act
-//        let notification = PushNotification(noteID: 1, kind: .storeOrder, message: "")
-//        pushNotificationsManager.sendForegroundNotification(notification)
-//
-//        // Assert
-//        XCTAssertTrue(resynchronizeRequested)
-//    }
-//
-//    func test_given_a_non_order_notification_it_does_not_request_a_resynchronization() {
-//        // Arrange
-//        let pushNotificationsManager = MockPushNotificationsManager()
-//        let viewModel = OrderListViewModel(siteID: siteID, pushNotificationsManager: pushNotificationsManager, statusFilter: nil)
-//
-//        var resynchronizeRequested = false
-//        viewModel.onShouldResynchronizeIfViewIsVisible = {
-//            resynchronizeRequested = true
-//        }
-//
-//        viewModel.activateAndForwardUpdates(to: UITableView())
-//
-//        // Act
-//        let notification = PushNotification(noteID: 1, kind: .comment, message: "")
-//        pushNotificationsManager.sendForegroundNotification(notification)
-//
-//        // Assert
-//        XCTAssertFalse(resynchronizeRequested)
-//    }
+
+    // MARK: - Foreground Notifications
+
+    func test_given_a_new_order_notification_it_requests_a_resynchronization() {
+        // Arrange
+        let pushNotificationsManager = MockPushNotificationsManager()
+        let viewModel = OrderListViewModel(siteID: siteID, pushNotificationsManager: pushNotificationsManager, statusFilter: nil)
+
+        var resynchronizeRequested = false
+        viewModel.onShouldResynchronizeIfViewIsVisible = {
+            resynchronizeRequested = true
+        }
+
+        viewModel.activate()
+
+        // Act
+        let notification = PushNotification(noteID: 1, kind: .storeOrder, message: "")
+        pushNotificationsManager.sendForegroundNotification(notification)
+
+        // Assert
+        XCTAssertTrue(resynchronizeRequested)
+    }
+
+    func test_given_a_non_order_notification_it_does_not_request_a_resynchronization() {
+        // Arrange
+        let pushNotificationsManager = MockPushNotificationsManager()
+        let viewModel = OrderListViewModel(siteID: siteID, pushNotificationsManager: pushNotificationsManager, statusFilter: nil)
+
+        var resynchronizeRequested = false
+        viewModel.onShouldResynchronizeIfViewIsVisible = {
+            resynchronizeRequested = true
+        }
+
+        viewModel.activate()
+
+        // Act
+        let notification = PushNotification(noteID: 1, kind: .comment, message: "")
+        pushNotificationsManager.sendForegroundNotification(notification)
+
+        // Assert
+        XCTAssertFalse(resynchronizeRequested)
+    }
 }
 
 // MARK: - Helpers

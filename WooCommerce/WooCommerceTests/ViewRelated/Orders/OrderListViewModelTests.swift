@@ -20,7 +20,6 @@ final class OrderListViewModelTests: XCTestCase {
     }
 
     private var storageManager: StorageManagerType!
-    private var stores: StoresManager!
 
     private var storage: StorageType {
         storageManager.viewStorage
@@ -31,14 +30,9 @@ final class OrderListViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         storageManager = MockupStorageManager()
-        stores = MockupStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        stores.sessionManager.setStoreId(siteID)
     }
 
     override func tearDown() {
-        // If not resetting store ID back to `nil`, it could cause other test failures since `setStoreId` changes UserDefaults.
-        stores.sessionManager.setStoreId(nil)
-        stores = nil
         storageManager = nil
 
         cancellables.forEach {

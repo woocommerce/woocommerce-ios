@@ -402,6 +402,17 @@ public enum WooAnalyticsStat: String {
     case appFeedbackPrompt = "app_feedback_prompt"
     case surveyScreen = "survey_screen"
     case featureFeedbackBanner = "feature_feedback_banner"
+
+    // MARK: Issue Refund events
+    //
+    case refundCreate = "refund_create"
+    case refundCreateFailed = "refund_create_failed"
+    case refundCreateSuccess = "refund_create_success"
+    case createOrderRefundSelectAllItemsButtonTapped = "create_order_refund_select_all_items_button_tapped"
+    case createOrderRefundItemQuantityDialogOpened = "create_order_refund_item_quantity_dialog_opened"
+    case createOrderRefundNextButtonTapped = "create_order_refund_next_button_tapped"
+    case createOrderRefundSummaryRefundButtonTapped = "create_order_refund_summary_refund_button_tapped"
+    case createOrderRefundShippingOptionTapped = "create_order_refund_shipping_option_tapped"
 }
 
 public extension WooAnalyticsStat {

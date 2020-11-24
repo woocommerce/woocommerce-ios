@@ -265,14 +265,13 @@ final class OrderListViewModelTests: XCTestCase {
 
 // MARK: - Helpers
 
+@available(iOS 13.0, *)
 private extension OrderListViewModel {
-    /// Returns the Order instances for all the rows
+    /// Returns the Order instances for all the given object IDs.
     ///
-    var fetchedOrders: [Yosemite.Order] {
-        (0..<numberOfSections).flatMap { section in
-            (0..<numberOfRows(in: section)).compactMap { row in
-                detailsViewModel(at: IndexPath(row: row, section: section))?.order
-            }
+    func orders(from snapshot: FetchResultSnapshot) -> [Yosemite.Order] {
+        snapshot.itemIdentifiers.compactMap { objectID in
+            detailsViewModel(withID: objectID)?.order
         }
     }
 }

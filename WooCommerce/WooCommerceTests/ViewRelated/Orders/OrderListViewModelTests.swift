@@ -2,6 +2,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 import Storage
+import Combine
 
 private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
 private typealias Defaults = OrdersViewModel.Defaults
@@ -25,6 +26,8 @@ final class OrderListViewModelTests: XCTestCase {
         storageManager.viewStorage
     }
 
+    private var cancellables = Set<AnyCancellable>()
+
     override func setUp() {
         super.setUp()
         storageManager = MockupStorageManager()
@@ -37,6 +40,12 @@ final class OrderListViewModelTests: XCTestCase {
         stores.sessionManager.setStoreId(nil)
         stores = nil
         storageManager = nil
+
+        cancellables.forEach {
+            $0.cancel()
+        }
+        cancellables.removeAll()
+
         super.tearDown()
     }
 

@@ -287,6 +287,7 @@ private extension Array where Element == Yosemite.Order {
 
 // MARK: - Builders
 
+@available(iOS 13.0, *)
 private extension OrderListViewModelTests {
     func orderStatus(with status: OrderStatusEnum) -> Yosemite.OrderStatus {
         OrderStatus(name: nil, siteID: siteID, slug: status.rawValue, total: 0)
@@ -295,32 +296,10 @@ private extension OrderListViewModelTests {
     func insertOrder(id orderID: Int64,
                      status: OrderStatusEnum,
                      dateCreated: Date = Date()) -> Yosemite.Order {
-        let readonlyOrder = Order(siteID: siteID,
-                                  orderID: orderID,
-                                  parentID: 0,
-                                  customerID: 11,
-                                  number: "963",
-                                  status: status,
-                                  currency: "USD",
-                                  customerNote: "",
-                                  dateCreated: dateCreated,
-                                  dateModified: Date(),
-                                  datePaid: nil,
-                                  discountTotal: "30.00",
-                                  discountTax: "1.20",
-                                  shippingTotal: "0.00",
-                                  shippingTax: "0.00",
-                                  total: "31.20",
-                                  totalTax: "1.20",
-                                  paymentMethodID: "stripe",
-                                  paymentMethodTitle: "Credit Card (Stripe)",
-                                  items: [],
-                                  billingAddress: nil,
-                                  shippingAddress: nil,
-                                  shippingLines: [],
-                                  coupons: [],
-                                  refunds: [])
-
+        let readonlyOrder = MockOrders().empty().copy(siteID: siteID,
+                                                      orderID: orderID,
+                                                      status: status,
+                                                      dateCreated: dateCreated)
         let storageOrder = storage.insertNewObject(ofType: StorageOrder.self)
         storageOrder.update(with: readonlyOrder)
 

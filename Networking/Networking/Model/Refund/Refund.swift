@@ -24,6 +24,9 @@ public struct Refund: Codable {
 
     public let items: [OrderItemRefund]
 
+    /// Optional because WC stores with lower versions than `4.8.0` don't return any information about shipping refunds
+    public let shippingLines: [ShippingLine]?
+
     /// Refund struct initializer
     ///
     public init(refundID: Int64,
@@ -35,7 +38,8 @@ public struct Refund: Codable {
                 refundedByUserID: Int64,
                 isAutomated: Bool?,
                 createAutomated: Bool?,
-                items: [OrderItemRefund]) {
+                items: [OrderItemRefund],
+                shippingLines: [ShippingLine]?) {
         self.refundID = refundID
         self.orderID = orderID
         self.siteID = siteID
@@ -46,6 +50,7 @@ public struct Refund: Codable {
         self.isAutomated = isAutomated
         self.createAutomated = createAutomated
         self.items = items
+        self.shippingLines = shippingLines
     }
 
     /// The public initializer for a Refund
@@ -68,6 +73,7 @@ public struct Refund: Codable {
         let refundedByUserID = try container.decode(Int64.self, forKey: .refundedByUserID)
         let isAutomated = try container.decodeIfPresent(Bool.self, forKey: .automatedRefund) ?? false
         let items = try container.decode([OrderItemRefund].self, forKey: .items)
+        let shippingLines = try container.decodeIfPresent([ShippingLine].self, forKey: .shippingLines)
 
         self.init(refundID: refundID,
                   orderID: orderID,
@@ -78,7 +84,8 @@ public struct Refund: Codable {
                   refundedByUserID: refundedByUserID,
                   isAutomated: isAutomated,
                   createAutomated: nil,
-                  items: items)
+                  items: items,
+                  shippingLines: shippingLines)
     }
 
     /// The public initializer for an encodable Refund
@@ -115,6 +122,7 @@ private extension Refund {
         case refundedByUserID       = "refunded_by"
         case automatedRefund        = "refunded_payment"    // read-only
         case items                  = "line_items"
+        case shippingLines          = "shipping_lines"
     }
 
     enum EncodingKeys: String, CodingKey {
@@ -141,7 +149,8 @@ extension Refund: Comparable {
             lhs.reason == rhs.reason &&
             lhs.refundedByUserID == rhs.refundedByUserID &&
             lhs.isAutomated == rhs.isAutomated &&
-            lhs.items.sorted() == rhs.items.sorted()
+            lhs.items.sorted() == rhs.items.sorted() &&
+            lhs.shippingLines?.sorted() == rhs.shippingLines?.sorted()
     }
 
     public static func < (lhs: Refund, rhs: Refund) -> Bool {

@@ -48,10 +48,16 @@ final class RefundConfirmationViewModel {
         )
     ]
 
-    init(details: Details, actionProcessor: StoresManager = ServiceLocator.stores, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+    private let analytics: Analytics
+
+    init(details: Details,
+         actionProcessor: StoresManager = ServiceLocator.stores,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.details = details
         self.actionProcessor = actionProcessor
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.analytics = analytics
     }
 
     /// Submit the refund.
@@ -68,14 +74,19 @@ final class RefundConfirmationViewModel {
         let refund = useCase.createRefund()
 
         // Submit it
-        let action = RefundAction.createRefund(siteID: details.order.siteID, orderID: details.order.orderID, refund: refund) { _, error  in
+        let action = RefundAction.createRefund(siteID: details.order.siteID, orderID: details.order.orderID, refund: refund) { [weak self] _, error  in
+            guard let self = self else { return }
             if let error = error {
                 DDLogError("Error creating refund: \(refund)\nWith Error: \(error)")
+                self.trackCreateRefundRequestFailed(error: error)
                 return onCompletion(.failure(error))
             }
             onCompletion(.success(()))
+            self.trackCreateRefundRequestSuccess()
         }
+
         actionProcessor.dispatch(action)
+        trackCreateRefundRequest()
     }
 }
 
@@ -136,6 +147,37 @@ private extension RefundConfirmationViewModel {
             return false
         }
         return paymentGateway.features.contains(.refunds)
+    }
+}
+
+// MARK: Analytics
+extension RefundConfirmationViewModel {
+    /// Tracks when the user taps the "summary" button
+    ///
+    func trackSummaryButtonTapped() {
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.summaryButtonTapped(orderID: details.order.orderID))
+    }
+
+    /// Tracks when the create refund request is made.
+    ///
+    private func trackCreateRefundRequest() {
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefund(orderID: details.order.orderID,
+                                                                          fullyRefunded: details.amount == details.order.total,
+                                                                          method: .items,
+                                                                          gateway: details.order.paymentMethodID,
+                                                                          amount: details.amount))
+    }
+
+    /// Tracks when the create refund request succeeds.
+    ///
+    private func trackCreateRefundRequestSuccess() {
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundSuccess(orderID: details.order.orderID))
+    }
+
+    /// Tracks when the create refund request fails.
+    ///
+    private func trackCreateRefundRequestFailed(error: Error) {
+        analytics.track(event: WooAnalyticsEvent.IssueRefund.createRefundFailed(orderID: details.order.orderID, error: error))
     }
 }
 

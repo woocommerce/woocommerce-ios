@@ -1133,11 +1133,25 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editLinkedProducts() {
-        // TODO: to be implemented https://github.com/woocommerce/woocommerce-ios/issues/3072
+        let linkedProductsViewController = LinkedProductsViewController(product: product) { [weak self] (upsellIDs, crossSellIDs, hasUnsavedChanges) in
+            self?.onEditLinkedProductsCompletion(upsellIDs: upsellIDs, crossSellIDs: crossSellIDs, hasUnsavedChanges: hasUnsavedChanges)
+        }
+        navigationController?.pushViewController(linkedProductsViewController, animated: true)
     }
 
-    func onEditLinkedProductsCompletion() {
-        // TODO: to be implemented https://github.com/woocommerce/woocommerce-ios/issues/3072
+    func onEditLinkedProductsCompletion(upsellIDs: [Int64],
+                                        crossSellIDs: [Int64],
+                                        hasUnsavedChanges: Bool) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+
+        guard hasUnsavedChanges else {
+            return
+        }
+        // TODO: Add Analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+
+        viewModel.updateLinkedProducts(upsellIDs: upsellIDs, crossSellIDs: crossSellIDs)
     }
 }
 
@@ -1149,7 +1163,16 @@ private extension ProductFormViewController {
             return
         }
 
-        let viewController = GroupedProductsViewController(product: product.product) { [weak self] groupedProductIDs in
+        let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.groupedProductsViewTitle,
+                                                                                           addButtonEvent: .groupedProductLinkedProductsAddButtonTapped,
+                                                                                           productsAddedEvent: .groupedProductLinkedProductsAdded,
+                                                                                           doneButtonTappedEvent: .groupedProductLinkedProductsDoneButtonTapped,
+                                                                                           deleteButtonTappedEvent:
+                                                                                            .groupedProductLinkedProductsDeleteButtonTapped)
+
+        let viewController = LinkedProductsListSelectorViewController(product: product.product,
+                                                                      linkedProductIDs: product.product.groupedProducts,
+                                                                      viewConfiguration: viewConfiguration) { [weak self] groupedProductIDs in
             self?.onEditGroupedProductsCompletion(groupedProductIDs: groupedProductIDs)
         }
         show(viewController, sender: self)
@@ -1238,6 +1261,11 @@ private extension ProductFormViewController {
 
 // MARK: Constants
 //
+private enum Localization {
+    static let groupedProductsViewTitle = NSLocalizedString("Grouped Products",
+                                                            comment: "Navigation bar title for editing linked products for a grouped product")
+}
+
 private enum ActionSheetStrings {
     static let saveProductAsDraft = NSLocalizedString("Save as draft",
                                                       comment: "Button title to save a product as draft in Product More Options Action Sheet")

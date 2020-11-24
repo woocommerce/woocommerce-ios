@@ -221,6 +221,7 @@
 		26DC9F9724FFF0AB00977635 /* Model 30.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 30.xcdatamodel"; sourceTree = "<group>"; };
 		26EA01D024EC3AEA00176A57 /* FeedbackType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackType.swift; sourceTree = "<group>"; };
 		26EA01D424EC44B300176A57 /* GeneralAppSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettingsTests.swift; sourceTree = "<group>"; };
+		26F4E7F12566193500EA633B /* Model 39.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 39.xcdatamodel"; sourceTree = "<group>"; };
 		450106882399AC7400E24722 /* TaxClass+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxClass+CoreDataClass.swift"; sourceTree = "<group>"; };
 		4501068A2399AC9B00E24722 /* TaxClass+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxClass+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		453227B523C4CE9C00D816B3 /* Model 25.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 25.xcdatamodel"; sourceTree = "<group>"; };
@@ -1464,6 +1465,7 @@
 		B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				26F4E7F12566193500EA633B /* Model 39.xcdatamodel */,
 				02C254DE2563AC5500A04423 /* Model 38.xcdatamodel */,
 				261CF32E255D988F0090D8D3 /* Model 37.xcdatamodel */,
 				261CF1C1255AFDC40090D8D3 /* Model 36.xcdatamodel */,
@@ -1503,7 +1505,7 @@
 				746A9D14214071F90013F6FF /* Model 2.xcdatamodel */,
 				B59E11D920A9D00C004121A4 /* Model.xcdatamodel */,
 			);
-			currentVersion = 02C254DE2563AC5500A04423 /* Model 38.xcdatamodel */;
+			currentVersion = 26F4E7F12566193500EA633B /* Model 39.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

@@ -224,6 +224,10 @@ extension ProductVariationFormViewModel {
     func updateDownloadableFiles(downloadableFiles: [ProductDownload], downloadLimit: Int64, downloadExpiry: Int64) {
         // no-op
     }
+
+    func updateLinkedProducts(upsellIDs: [Int64], crossSellIDs: [Int64]) {
+        // no-op
+    }
 }
 
 // MARK: Remote actions

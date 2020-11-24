@@ -20,10 +20,8 @@ final class ProductListSelectorViewController: UIViewController {
 
     private lazy var paginatedListSelector: PaginatedListSelectorViewController
         <ProductListMultiSelectorDataSource, Product, StorageProduct, ProductsTabProductTableViewCell> = {
-            let noResultsPlaceholderText = NSLocalizedString("No products yet",
-                                                             comment: "Placeholder text when there are no products on the product list selector")
             let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: nil,
-                                                                     noResultsPlaceholderText: noResultsPlaceholderText,
+                                                                     noResultsPlaceholderText: Localization.noResultsPlaceholder,
                                                                      noResultsPlaceholderImage: .emptyProductsImage,
                                                                      noResultsPlaceholderImageTintColor: .primary,
                                                                      tableViewStyle: .plain,
@@ -126,11 +124,11 @@ private extension ProductListSelectorViewController {
         let title: String
         switch productIDs.count {
         case 0:
-            title = Strings.titleWithoutSelectedProducts
+            title = Localization.titleWithoutSelectedProducts
         case 1:
-            title = Strings.titleWithOneSelectedProduct
+            title = Localization.titleWithOneSelectedProduct
         default:
-            title = String.localizedStringWithFormat(Strings.titleWithMultipleSelectedProductsFormat, productIDs.count)
+            title = String.localizedStringWithFormat(Localization.titleWithMultipleSelectedProductsFormat, productIDs.count)
         }
         navigationItem.title = title
     }
@@ -170,7 +168,9 @@ private extension ProductListSelectorViewController {
 // MARK: - Constants
 //
 private extension ProductListSelectorViewController {
-    enum Strings {
+    enum Localization {
+        static let noResultsPlaceholder = NSLocalizedString("No products yet",
+                                                                comment: "Placeholder text when there are no products on the product list selector")
         static let titleWithoutSelectedProducts = NSLocalizedString("Add Products", comment: "Navigation bar title for selecting multiple products.")
         static let titleWithOneSelectedProduct =
             NSLocalizedString("1 Product Selected",

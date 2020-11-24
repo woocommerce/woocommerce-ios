@@ -247,6 +247,11 @@ extension ProductFormViewModel {
                                                                      downloadLimit: downloadLimit,
                                                                      downloadExpiry: downloadExpiry))
     }
+
+    func updateLinkedProducts(upsellIDs: [Int64], crossSellIDs: [Int64]) {
+        product = EditableProductModel(product: product.product.copy(upsellIDs: upsellIDs,
+                                                                     crossSellIDs: crossSellIDs))
+    }
 }
 
 // MARK: Remote actions

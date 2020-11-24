@@ -516,7 +516,8 @@ private extension RefundStoreTests {
                       refundedByUserID: 1,
                       isAutomated: true,
                       createAutomated: false,
-                      items: [sampleOrderItem()])
+                      items: [sampleOrderItem()],
+                      shippingLines: nil)
     }
 
     /// Generate a mutated Refund
@@ -533,7 +534,8 @@ private extension RefundStoreTests {
                       refundedByUserID: 3,
                       isAutomated: true,
                       createAutomated: false,
-                      items: [sampleOrderItem(), sampleOrderItem2()])
+                      items: [sampleOrderItem(), sampleOrderItem2()],
+                      shippingLines: [])
     }
 
     /// Generate a single Refund
@@ -550,7 +552,8 @@ private extension RefundStoreTests {
                       refundedByUserID: 1,
                       isAutomated: true,
                       createAutomated: false,
-                      items: [sampleOrderItem2()])
+                      items: [sampleOrderItem2()],
+                      shippingLines: [sampleShippingLine()])
     }
 
     /// Returns an `Order` with empty values. Use `copy()` to modify them.
@@ -618,6 +621,15 @@ private extension RefundStoreTests {
                                taxes: [],
                                total: "-27.00",
                                totalTax: "0.00")
+    }
+
+    func sampleShippingLine() -> Networking.ShippingLine {
+        ShippingLine(shippingID: 189,
+                     methodTitle: "Flat rate",
+                     methodID: "flat_rate",
+                     total: "-7.00",
+                     totalTax: "-0.62",
+                     taxes: [.init(taxID: 1, subtotal: "", total: "-0.62")])
     }
 
     /// Format GMT string to Date type

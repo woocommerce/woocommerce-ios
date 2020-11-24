@@ -636,7 +636,10 @@ extension OrderDetailsDataSource {
                 rows.append(contentsOf: refunds)
                 rows.append(.netAmount)
             }
-            rows.append(.issueRefundButton)
+
+            if !isRefundedStatus {
+                rows.append(.issueRefundButton)
+            }
 
             return Section(title: Title.payment, rows: rows)
         }()

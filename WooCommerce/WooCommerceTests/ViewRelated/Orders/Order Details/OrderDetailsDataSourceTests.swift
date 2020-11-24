@@ -56,24 +56,10 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertEqual(actualTitles, expectedTitles)
     }
 
-    func test_refund_button_is_not_visible_when_feature_is_disabled() throws {
+    func test_refund_button_is_visible() throws {
         // Given
         let order = makeOrder()
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, isIssueRefundsEnabled: false)
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let paymentSection = try section(withTitle: Title.payment, from: dataSource)
-        let issueRefundRow = row(row: .issueRefundButton, in: paymentSection)
-        XCTAssertNil(issueRefundRow)
-    }
-
-    func test_refund_button_is_visible_when_feature_is_enabled() throws {
-        // Given
-        let order = makeOrder()
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, isIssueRefundsEnabled: true)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
 
         // When
         dataSource.reloadSections()
@@ -84,10 +70,10 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(issueRefundRow)
     }
 
-    func test_refund_button_is_not_visible_when_feature_is_enabled_and_order_is_refunded() throws {
+    func test_refund_button_is_not_visible_when_the_order_is_refunded() throws {
         // Given
         let order = MockOrders().makeOrder(status: .refunded, items: [makeOrderItem()])
-        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, isIssueRefundsEnabled: true)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
 
         // When
         dataSource.reloadSections()

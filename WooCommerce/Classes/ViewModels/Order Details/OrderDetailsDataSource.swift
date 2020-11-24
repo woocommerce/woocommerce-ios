@@ -171,6 +171,18 @@ final class OrderDetailsDataSource: NSObject {
     func configureResultsControllers(onReload: @escaping () -> Void) {
         resultsControllers.configureResultsControllers(onReload: onReload)
     }
+
+    func shippingLabelOrderItem(at indexPath: IndexPath) -> AggregateOrderItem? {
+        guard let shippingLabel = shippingLabel(at: indexPath) else {
+            return nil
+        }
+
+        guard let orderItem = shippingLabelOrderItemsAggregator?.orderItems(of: shippingLabel)[safe: indexPath.row] else {
+            return nil
+        }
+
+        return orderItem
+    }
 }
 
 

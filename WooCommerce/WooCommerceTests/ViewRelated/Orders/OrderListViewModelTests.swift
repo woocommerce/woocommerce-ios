@@ -177,25 +177,25 @@ final class OrderListViewModelTests: XCTestCase {
         // Assert
         XCTAssertTrue(resynchronizeRequested)
     }
-//
-//    func test_given_no_previous_deactivation_it_does_not_request_a_resynchronization_when_the_app_is_activated() {
-//        // Arrange
-//        let notificationCenter = NotificationCenter()
-//        let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, statusFilter: nil)
-//
-//        var resynchronizeRequested = false
-//        viewModel.onShouldResynchronizeIfViewIsVisible = {
-//            resynchronizeRequested = true
-//        }
-//
-//        viewModel.activateAndForwardUpdates(to: UITableView())
-//
-//        // Act
-//        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
-//
-//        // Assert
-//        XCTAssertFalse(resynchronizeRequested)
-//    }
+
+    func test_given_no_previous_deactivation_it_does_not_request_a_resynchronization_when_the_app_is_activated() {
+        // Arrange
+        let notificationCenter = NotificationCenter()
+        let viewModel = OrderListViewModel(siteID: siteID, notificationCenter: notificationCenter, statusFilter: nil)
+
+        var resynchronizeRequested = false
+        viewModel.onShouldResynchronizeIfViewIsVisible = {
+            resynchronizeRequested = true
+        }
+
+        viewModel.activate()
+
+        // Act
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        // Assert
+        XCTAssertFalse(resynchronizeRequested)
+    }
 //
 //    // MARK: - Foreground Notifications
 //

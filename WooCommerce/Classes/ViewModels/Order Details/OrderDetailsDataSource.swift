@@ -708,7 +708,7 @@ extension OrderDetailsDataSource {
             self.shippingLabelOrderItemsAggregator = ShippingLabelOrderItemsAggregator(shippingLabels: shippingLabels,
                                                                                        orderItems: items,
                                                                                        products: self.products,
-                                                                                       productVariations: self.productVariations)
+                                                                                       productVariations: productVariations)
             let sections = shippingLabels.enumerated().map { index, shippingLabel -> Section in
                 let title = String.localizedStringWithFormat(Title.shippingLabelPackageFormat, index + 1)
                 let isRefunded = shippingLabel.refund != nil

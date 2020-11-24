@@ -5,7 +5,6 @@ import Yosemite
 ///
 public struct MockShippingLabel {
     /// Consider setting a subset of properties using `.copy`.
-    /// - Returns: <#description#>
     public static func emptyLabel() -> ShippingLabel {
         .init(siteID: 0,
               orderID: 0,

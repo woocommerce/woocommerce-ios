@@ -65,7 +65,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertTrue(snapshot.itemIdentifiers.isNotEmpty)
         XCTAssertEqual(snapshot.numberOfItems, processingOrders.count)
 
-        XCTAssertEqual(viewModel.orders(from: snapshot).orderIDs, processingOrders.orderIDs)
+        XCTAssertEqual(viewModel.orderIDs(from: snapshot), processingOrders.orderIDs)
     }
 
 //    func test_given_no_filter_it_loads_all_the_today_and_past_orders_from_the_DB() {
@@ -269,12 +269,12 @@ final class OrderListViewModelTests: XCTestCase {
 
 @available(iOS 13.0, *)
 private extension OrderListViewModel {
-    /// Returns the Order instances for all the given object IDs.
+    /// Returns the corresponding order IDs instances for all the given FetchResultSnapshot IDs.
     ///
-    func orders(from snapshot: FetchResultSnapshot) -> [Yosemite.Order] {
-        snapshot.itemIdentifiers.compactMap { objectID in
-            detailsViewModel(withID: objectID)?.order
-        }
+    func orderIDs(from snapshot: FetchResultSnapshot) -> Set<Int64> {
+        Set(snapshot.itemIdentifiers.compactMap { objectID in
+            detailsViewModel(withID: objectID)?.order.orderID
+        })
     }
 }
 

@@ -89,38 +89,38 @@ final class OrderListViewModelTests: XCTestCase {
 
         XCTAssertEqual(viewModel.orderIDs(from: snapshot), allInsertedOrders.orderIDs)
     }
-//
-//    /// If `includeFutureOrders` is `true`, all orders including orders dated in the future (dateCreated) will
-//    /// be fetched.
-//    func test_given_including_future_orders_it_also_loads_future_orders_from_the_DB() {
-//        // Arrange
-//        let viewModel = OrderListViewModel(siteID: siteID,
-//                                           storageManager: storageManager,
-//                                           statusFilter: orderStatus(with: .pending),
-//                                           includesFutureOrders: true)
-//
-//        let expectedOrders = [
-//            // Future orders
-//            insertOrder(id: 1_000, status: .pending, dateCreated: Date().adding(days: 1)!),
-//            insertOrder(id: 1_001, status: .pending, dateCreated: Date().adding(days: 2)!),
-//            insertOrder(id: 1_002, status: .pending, dateCreated: Date().adding(days: 3)!),
-//            // Past orders
-//            insertOrder(id: 4_000, status: .pending, dateCreated: Date().adding(days: -1)!),
-//            insertOrder(id: 4_001, status: .pending, dateCreated: Date().adding(days: -20)!),
-//        ]
-//
-//        // This should be ignored because it is not the same filter
-//        let ignoredFutureOrder = insertOrder(id: 2_000, status: .cancelled, dateCreated: Date().adding(days: 1)!)
-//
-//        // Act
-//        viewModel.activateAndForwardUpdates(to: UITableView())
-//
-//        // Assert
-//        XCTAssertEqual(viewModel.numberOfObjects, expectedOrders.count)
-//        XCTAssertEqual(viewModel.fetchedOrders.orderIDs, expectedOrders.orderIDs)
-//
-//        XCTAssertFalse(viewModel.fetchedOrders.orderIDs.contains(ignoredFutureOrder.orderID))
-//    }
+
+    /// Test that all orders including orders dated in the future (dateCreated) will be fetched.
+    func test_it_also_loads_future_orders_from_the_DB() throws {
+        // Arrange
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           storageManager: storageManager,
+                                           statusFilter: orderStatus(with: .pending),
+                                           includesFutureOrders: true)
+
+        let expectedOrders = [
+            // Future orders
+            insertOrder(id: 1_000, status: .pending, dateCreated: Date().adding(days: 1)!),
+            insertOrder(id: 1_001, status: .pending, dateCreated: Date().adding(days: 2)!),
+            insertOrder(id: 1_002, status: .pending, dateCreated: Date().adding(days: 3)!),
+            // Past orders
+            insertOrder(id: 4_000, status: .pending, dateCreated: Date().adding(days: -1)!),
+            insertOrder(id: 4_001, status: .pending, dateCreated: Date().adding(days: -20)!),
+        ]
+
+        // This should be ignored because it is not the same filter
+        let ignoredFutureOrder = insertOrder(id: 2_000, status: .cancelled, dateCreated: Date().adding(days: 1)!)
+
+        // Act
+        let snapshot = try activateAndRetrieveSnapshot(of: viewModel)
+
+        // Assert
+        XCTAssertEqual(snapshot.numberOfItems, expectedOrders.count)
+
+        let orderIDs = viewModel.orderIDs(from: snapshot)
+        XCTAssertEqual(orderIDs, expectedOrders.orderIDs)
+        XCTAssertFalse(orderIDs.contains(ignoredFutureOrder.orderID))
+    }
 //
 //    /// If `includesFutureOrders` is `false`, only orders created up to the current day are returned. Orders before
 //    /// midnight are included.

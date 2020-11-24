@@ -349,11 +349,11 @@ extension OrderDetailsViewModel {
     func syncShippingLabels(onCompletion: ((Error?) -> ())? = nil) {
         let action = ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
             switch result {
+            case .success:
+                onCompletion?(nil)
             case .failure(let error):
                 DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
                 onCompletion?(error)
-            case .success:
-                onCompletion?(nil)
             }
         }
         ServiceLocator.stores.dispatch(action)

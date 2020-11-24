@@ -62,33 +62,33 @@ final class OrderListViewModelTests: XCTestCase {
         let snapshot = try activateAndRetrieveSnapshot(of: viewModel)
 
         // Assert
-        XCTAssertTrue(snapshot.itemIdentifiers.isNotEmpty)
+        XCTAssertTrue(snapshot.numberOfItems > 0)
         XCTAssertEqual(snapshot.numberOfItems, processingOrders.count)
 
         XCTAssertEqual(viewModel.orderIDs(from: snapshot), processingOrders.orderIDs)
     }
 
-//    func test_given_no_filter_it_loads_all_the_today_and_past_orders_from_the_DB() {
-//        // Arrange
-//        let viewModel = OrderListViewModel(siteID: siteID, storageManager: storageManager, statusFilter: nil)
-//
-//        let allInsertedOrders = [
-//            (0..<10).map { insertOrder(id: $0, status: .processing) },
-//            (100..<105).map { insertOrder(id: $0, status: .completed, dateCreated: Date().adding(days: -2)!) },
-//            (200..<203).map { insertOrder(id: $0, status: .pending) },
-//        ].flatMap { $0 }
-//
-//        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), allInsertedOrders.count)
-//
-//        // Act
-//        viewModel.activateAndForwardUpdates(to: UITableView())
-//
-//        // Assert
-//        XCTAssertFalse(viewModel.isEmpty)
-//        XCTAssertEqual(viewModel.numberOfObjects, allInsertedOrders.count)
-//
-//        XCTAssertEqual(viewModel.fetchedOrders.orderIDs, allInsertedOrders.orderIDs)
-//    }
+    func test_given_no_filter_it_loads_all_the_today_and_past_orders_from_the_DB() throws {
+        // Arrange
+        let viewModel = OrderListViewModel(siteID: siteID, storageManager: storageManager, statusFilter: nil)
+
+        let allInsertedOrders = [
+            (0..<10).map { insertOrder(id: $0, status: .processing) },
+            (100..<105).map { insertOrder(id: $0, status: .completed, dateCreated: Date().adding(days: -2)!) },
+            (200..<203).map { insertOrder(id: $0, status: .pending) },
+        ].flatMap { $0 }
+
+        XCTAssertEqual(storage.countObjects(ofType: StorageOrder.self), allInsertedOrders.count)
+
+        // Act
+        let snapshot = try activateAndRetrieveSnapshot(of: viewModel)
+
+        // Assert
+        XCTAssertTrue(snapshot.numberOfItems > 0)
+        XCTAssertEqual(snapshot.numberOfItems, allInsertedOrders.count)
+
+        XCTAssertEqual(viewModel.orderIDs(from: snapshot), allInsertedOrders.orderIDs)
+    }
 //
 //    /// If `includeFutureOrders` is `true`, all orders including orders dated in the future (dateCreated) will
 //    /// be fetched.

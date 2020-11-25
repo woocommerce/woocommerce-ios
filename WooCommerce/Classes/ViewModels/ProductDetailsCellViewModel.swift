@@ -17,12 +17,6 @@ struct ProductDetailsCellViewModel {
     ///
     private let currency: String
 
-    /// Yosemite.Product
-    ///
-    private let product: Product?
-
-    private let productImageURL: URL?
-
     /// Currency Formatter
     ///
     private let currencyFormatter: CurrencyFormatter
@@ -51,6 +45,10 @@ struct ProductDetailsCellViewModel {
     private let attributes: [OrderAttributeViewModel]
 
     // MARK: - Public properties
+
+    /// The first available image for a product/variation.
+    ///
+    let imageURL: URL?
 
     /// Item Name
     ///
@@ -89,20 +87,6 @@ struct ProductDetailsCellViewModel {
         return skuText
     }
 
-    /// Grab the first available image for a product.
-    ///
-    var imageURL: URL? {
-        if let url = productImageURL {
-            return url
-        }
-
-        guard let productImageURLString = product?.images.first?.src else {
-            return nil
-        }
-
-        return URL(string: productImageURLString)
-    }
-
     // MARK: - Initializers
 
     /// Order Item initializer
@@ -113,8 +97,7 @@ struct ProductDetailsCellViewModel {
          product: Product? = nil) {
         self.currency = currency
         self.currencyFormatter = formatter
-        self.product = product
-        self.productImageURL = nil
+        self.imageURL = product?.imageURL
         self.name = item.name
         self.positiveQuantity = abs(item.quantity)
         self.positiveTotal = currencyFormatter.convertToDecimal(from: item.total)?.abs() ?? NSDecimalNumber.zero
@@ -131,8 +114,7 @@ struct ProductDetailsCellViewModel {
          product: Product? = nil) {
         self.currency = currency
         self.currencyFormatter = formatter
-        self.product = product
-        self.productImageURL = aggregateItem.imageURL
+        self.imageURL = aggregateItem.imageURL ?? product?.imageURL
         self.name = aggregateItem.name
         self.positiveQuantity = abs(aggregateItem.quantity)
         self.positiveTotal = aggregateItem.total.abs()
@@ -149,8 +131,7 @@ struct ProductDetailsCellViewModel {
          product: Product? = nil) {
         self.currency = currency
         self.currencyFormatter = formatter
-        self.product = product
-        self.productImageURL = nil
+        self.imageURL = product?.imageURL
         self.name = refundedItem.name
         self.positiveQuantity = abs(refundedItem.quantity)
         self.positiveTotal = currencyFormatter.convertToDecimal(from: refundedItem.total)?.abs() ?? NSDecimalNumber.zero
@@ -188,5 +169,15 @@ private extension ProductDetailsCellViewModel {
 private extension ProductDetailsCellViewModel.OrderAttributeViewModel {
     init(orderItemAttribute: OrderItemAttribute) {
         self.value = orderItemAttribute.value
+    }
+}
+
+private extension Product {
+    /// Returns the URL of the first image, if available. Otherwise, nil is returned.
+    var imageURL: URL? {
+        guard let productImageURLString = images.first?.src else {
+            return nil
+        }
+        return URL(string: productImageURLString)
     }
 }

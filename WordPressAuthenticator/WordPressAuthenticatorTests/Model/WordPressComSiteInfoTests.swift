@@ -38,13 +38,13 @@ final class WordPressComSiteInfoTests: XCTestCase {
 private extension WordPressComSiteInfoTests {
     func mock() -> [AnyHashable: Any] {
         return [
-            "isJetpackActive": "1",
-            "jetpackVersion": "0",
-            "isWordPressDotCom": "0",
+            "isJetpackActive": true,
+            "jetpackVersion": false,
+            "isWordPressDotCom": false,
             "urlAfterRedirects": "https://somewhere.com",
-            "hasJetpack": "1",
-            "isWordPress": "1",
-            "isJetpackConnected": "1"
+            "hasJetpack": true,
+            "isWordPress": true,
+            "isJetpackConnected": true
         ] as [AnyHashable: Any]
     }
 }

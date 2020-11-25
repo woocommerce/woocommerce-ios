@@ -469,7 +469,6 @@ private extension SiteAddressViewController {
         }
         
         WordPressAuthenticator.shared.delegate?.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { (result) in
-
             switch result {
             case let .error(error):
                 self.displayError(message: error.localizedDescription)

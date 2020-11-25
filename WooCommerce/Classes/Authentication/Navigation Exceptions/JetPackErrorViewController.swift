@@ -4,6 +4,7 @@ import WordPressAuthenticator
 import SafariServices
 
 final class JetPackErrorViewController: UIViewController {
+    private let siteURL: String
 
     @IBOutlet private var primaryButton: NUXButton!
     @IBOutlet private var secondaryButton: NUXButton!
@@ -11,7 +12,8 @@ final class JetPackErrorViewController: UIViewController {
     @IBOutlet weak var errorMessage: UILabel!
     @IBOutlet weak var extraInfoButton: UIButton!
 
-    init() {
+    init(siteURL: String) {
+        self.siteURL = siteURL
         super.init(nibName: Self.nibName, bundle: nil)
     }
 
@@ -50,7 +52,9 @@ private extension JetPackErrorViewController {
     }
 
     func configureErrorMessage() {
-        errorMessage.text = Localization.errorMessage
+        print("siteURL ", siteURL)
+        let message = String(format: Localization.errorMessage, siteURL)
+        errorMessage.text = message
     }
 
     func configureImageView() {

@@ -25,6 +25,8 @@ final class JetPackErrorViewController: UIViewController {
         configurePrimaryButton()
         configureSecondaryButton()
 
+        configureErrorMessage()
+
         configureImageView()
     }
 }
@@ -45,6 +47,10 @@ private extension JetPackErrorViewController {
         secondaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapSecondaryButton()
         }
+    }
+
+    func configureErrorMessage() {
+        errorMessage.text = Localization.errorMessage
     }
 
     func configureImageView() {
@@ -81,6 +87,10 @@ private extension JetPackErrorViewController {
         static let secondaryButtonTitle = NSLocalizedString("Refresh After Install",
                                                             comment: "Action button that will restart the login flow."
                                                             + "Presented when logging in with a site address that does not have a valid Jetpack installation")
+
+        static let errorMessage = NSLocalizedString("To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store.",
+                                                    comment: "Message explaining that Jetpack needs to be installed for a particular site. "
+                                                        + "Reads like 'To use this ap for awebsite.com you'll need to have...")
     }
 
     enum Strings {

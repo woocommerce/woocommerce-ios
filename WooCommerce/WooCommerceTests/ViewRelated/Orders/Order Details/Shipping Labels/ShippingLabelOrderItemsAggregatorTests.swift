@@ -10,7 +10,7 @@ final class ShippingLabelOrderItemsAggregatorTests: XCTestCase {
         // Given
         let shippingLabel = MockShippingLabel.emptyLabel().copy(productIDs: [3013], productNames: ["Password protected!"])
         let orderItem = MockOrderItem.sampleItem(productID: 3013)
-        let aggregator = ShippingLabelOrderItemsAggregator(shippingLabels: [shippingLabel], orderItems: [orderItem], products: [], productVariations: [])
+        let aggregator = AggregatedShippingLabelOrderItems(shippingLabels: [shippingLabel], orderItems: [orderItem], products: [], productVariations: [])
 
         // When
         let shippingLabelOrderItems = aggregator.orderItems(of: shippingLabel)
@@ -29,7 +29,7 @@ final class ShippingLabelOrderItemsAggregatorTests: XCTestCase {
         let product1 = MockProduct().product().copy(productID: 2020, name: "Whoa", price: "25.9", images: [createProductImage(src: imageURL1.absoluteString)])
         let product2 = MockProduct().product().copy(productID: 3013, name: "Password", price: "25.9")
         let orderItem1 = MockOrderItem.sampleItem(name: "Woooo", productID: 2020, price: 59.2, sku: "woo")
-        let aggregator = ShippingLabelOrderItemsAggregator(shippingLabels: [shippingLabel],
+        let aggregator = AggregatedShippingLabelOrderItems(shippingLabels: [shippingLabel],
                                                            orderItems: [orderItem1],
                                                            products: [product1, product2],
                                                            productVariations: [])
@@ -72,7 +72,7 @@ final class ShippingLabelOrderItemsAggregatorTests: XCTestCase {
                                                  attributes: [
                                                     .init(metaID: 205, name: "Platform", value: "Digital")
                                                  ])
-        let aggregator = ShippingLabelOrderItemsAggregator(shippingLabels: [shippingLabel],
+        let aggregator = AggregatedShippingLabelOrderItems(shippingLabels: [shippingLabel],
                                                            orderItems: [orderItem],
                                                            products: [],
                                                            productVariations: [variation])
@@ -104,7 +104,7 @@ final class ShippingLabelOrderItemsAggregatorTests: XCTestCase {
                   productVariationID: 3013,
                   image: createProductImage(src: imageURL.absoluteString),
                   price: "62")
-        let aggregator = ShippingLabelOrderItemsAggregator(shippingLabels: [shippingLabel],
+        let aggregator = AggregatedShippingLabelOrderItems(shippingLabels: [shippingLabel],
                                                            orderItems: [],
                                                            products: [],
                                                            productVariations: [variation])

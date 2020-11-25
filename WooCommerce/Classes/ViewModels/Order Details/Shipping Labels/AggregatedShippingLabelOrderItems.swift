@@ -1,7 +1,13 @@
 import Yosemite
 
-/// Aggregates the order items from a shipping label.
-struct ShippingLabelOrderItemsAggregator {
+/// Aggregates the order items included in a shipping label for UI display given the currently available `OrderItem`s, `Product`s,
+/// and `ProductVariation`s from an `Order`.
+/// Because the shipping label API response only returns an array of product names and optional product IDs based on the plugin version
+/// (product IDs are only available in WooCommerce Shipping & Tax v1.24.1+), this struct generates a dictionary that maps a shipping
+/// label to an array of `AggregateOrderItem` for UI display.
+/// An order's current order items, products, and product variations are also provided since we want to display the order item at
+/// the time of order creation in case the product/variation changes over time.
+struct AggregatedShippingLabelOrderItems {
     private let currencyFormatter: CurrencyFormatter
 
     private var orderItemsByShippingLabelID: [Int64: [AggregateOrderItem]] = [:]
@@ -23,13 +29,15 @@ struct ShippingLabelOrderItemsAggregator {
         aggregateProductsToOrderItems(shippingLabels: shippingLabels, orderItems: orderItems, products: products, productVariations: productVariations)
     }
 
+    static let empty: AggregatedShippingLabelOrderItems = .init(shippingLabels: [], orderItems: [], products: [], productVariations: [])
+
     /// Returns an array of order items for a shipping label.
     func orderItems(of shippingLabel: ShippingLabel) -> [AggregateOrderItem] {
         orderItemsByShippingLabelID[shippingLabel.shippingLabelID] ?? []
     }
 }
 
-private extension ShippingLabelOrderItemsAggregator {
+private extension AggregatedShippingLabelOrderItems {
     mutating func aggregateProductsToOrderItems(shippingLabels: [ShippingLabel],
                                                 orderItems: [OrderItem],
                                                 products: [Product],
@@ -137,7 +145,7 @@ private extension ShippingLabelOrderItemsAggregator {
     }
 }
 
-private extension ShippingLabelOrderItemsAggregator {
+private extension AggregatedShippingLabelOrderItems {
     /// Information about a product from `ShippingLabel`. The product ID is only available in WooCommerce Shipping & Tax v1.24.1+.
     struct ProductInformation: Equatable, Hashable {
         let id: Int64?

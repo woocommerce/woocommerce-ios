@@ -80,7 +80,7 @@ final class OrderDetailsDataSource: NSObject {
     }
 
     private var shippingLabels: [ShippingLabel] = []
-    private var shippingLabelOrderItemsAggregator: ShippingLabelOrderItemsAggregator?
+    private var shippingLabelOrderItemsAggregator: AggregatedShippingLabelOrderItems = AggregatedShippingLabelOrderItems.empty
 
     /// Shipping Lines from an Order
     ///
@@ -171,7 +171,7 @@ final class OrderDetailsDataSource: NSObject {
             return nil
         }
 
-        guard let orderItem = shippingLabelOrderItemsAggregator?.orderItems(of: shippingLabel)[safe: indexPath.row] else {
+        guard let orderItem = shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel)[safe: indexPath.row] else {
             return nil
         }
 
@@ -456,7 +456,7 @@ private extension OrderDetailsDataSource {
             return
         }
 
-        guard let orderItem = shippingLabelOrderItemsAggregator?.orderItems(of: shippingLabel)[safe: indexPath.row] else {
+        guard let orderItem = shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel)[safe: indexPath.row] else {
             return
         }
 
@@ -645,7 +645,7 @@ extension OrderDetailsDataSource {
     func reloadSections() {
         // Freezes any data that require lookup after the sections are reloaded, in case the data from a ResultsController changes before the next reload.
         shippingLabels = resultsControllers.shippingLabels
-        shippingLabelOrderItemsAggregator = ShippingLabelOrderItemsAggregator(shippingLabels: shippingLabels,
+        shippingLabelOrderItemsAggregator = AggregatedShippingLabelOrderItems(shippingLabels: shippingLabels,
                                                                                    orderItems: items,
                                                                                    products: products,
                                                                                    productVariations: resultsControllers.productVariations)
@@ -712,7 +712,7 @@ extension OrderDetailsDataSource {
                     rows = [.shippingLabelTrackingNumber, .shippingLabelDetail]
                 } else {
                     // TODO-2167: show printing instructions
-                    let orderItemsCount = shippingLabelOrderItemsAggregator?.orderItems(of: shippingLabel).count ?? 0
+                    let orderItemsCount = shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel).count ?? 0
                     rows = Array(repeating: .shippingLabelProduct, count: orderItemsCount)
                         + [.shippingLabelReprintButton, .shippingLabelTrackingNumber, .shippingLabelDetail]
                 }

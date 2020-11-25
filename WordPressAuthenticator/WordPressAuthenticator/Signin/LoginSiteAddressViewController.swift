@@ -226,19 +226,21 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     }
 
     func presentNextControllerIfPossible(siteInfo: WordPressComSiteInfo?) {
-        WordPressAuthenticator.shared.delegate?.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { (error, isSelfHosted, injectedViewController) in
-            guard let originalError = error else {
-                
+        WordPressAuthenticator.shared.delegate?.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { (result) in
+            switch result {
+            case let .error(error):
+                self.displayError(message: error.localizedDescription)
+            case let .presentPasswordController(isSelfHosted):
                 if isSelfHosted {
                     self.showSelfHostedUsernamePassword()
-                    return
                 }
 
                 self.showWPUsernamePassword()
-                return
-            }
 
-            self.displayError(message: originalError.localizedDescription)
+            case .injectViewController(_):
+                // This case is only used for UL&S
+                break
+            }
         })
     }
 

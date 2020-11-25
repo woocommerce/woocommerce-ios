@@ -154,6 +154,7 @@
 		CEDE0D93242011E000CB3345 /* NSObject+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE0D92242011E000CB3345 /* NSObject+Helpers.swift */; };
 		CEDE0D952420121D00CB3345 /* UIStoryboard+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE0D942420121D00CB3345 /* UIStoryboard+Helpers.swift */; };
 		CEDE0D972420126900CB3345 /* UIViewController+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE0D962420126900CB3345 /* UIViewController+Helpers.swift */; };
+		D85C3653256DEDA900D56E34 /* WordPressAuthenticatorResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85C3652256DEDA900D56E34 /* WordPressAuthenticatorResult.swift */; };
 		D881A30D256B5A7900FE5605 /* NavigationCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = D881A30C256B5A7900FE5605 /* NavigationCommand.swift */; };
 		D881A311256B5B4700FE5605 /* NavigateToEnterSite.swift in Sources */ = {isa = PBXBuildFile; fileRef = D881A310256B5B4700FE5605 /* NavigateToEnterSite.swift */; };
 		D881A315256B5B5800FE5605 /* NavigateToEnterAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = D881A314256B5B5800FE5605 /* NavigateToEnterAccount.swift */; };
@@ -356,6 +357,7 @@
 		CEDE0D92242011E000CB3345 /* NSObject+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Helpers.swift"; sourceTree = "<group>"; };
 		CEDE0D942420121D00CB3345 /* UIStoryboard+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Helpers.swift"; sourceTree = "<group>"; };
 		CEDE0D962420126900CB3345 /* UIViewController+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Helpers.swift"; sourceTree = "<group>"; };
+		D85C3652256DEDA900D56E34 /* WordPressAuthenticatorResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressAuthenticatorResult.swift; sourceTree = "<group>"; };
 		D881A30C256B5A7900FE5605 /* NavigationCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationCommand.swift; sourceTree = "<group>"; };
 		D881A310256B5B4700FE5605 /* NavigateToEnterSite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigateToEnterSite.swift; sourceTree = "<group>"; };
 		D881A314256B5B5800FE5605 /* NavigateToEnterAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigateToEnterAccount.swift; sourceTree = "<group>"; };
@@ -625,6 +627,7 @@
 				CE1B18D120EEC44400BECC3F /* WordPressAuthenticatorStyles.swift */,
 				020BE74923B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift */,
 				CE16177421B6D82200B82A47 /* WordPressAuthenticatorDisplayStrings.swift */,
+				D85C3652256DEDA900D56E34 /* WordPressAuthenticatorResult.swift */,
 			);
 			path = Authenticator;
 			sourceTree = "<group>";
@@ -1207,6 +1210,7 @@
 				B560910F208A54F800399AE4 /* SafariCredentialsService.swift in Sources */,
 				B5CDBED420B4714500BC1EF2 /* UIImage+Assets.swift in Sources */,
 				B5609116208A555600399AE4 /* LoginTextField.swift in Sources */,
+				D85C3653256DEDA900D56E34 /* WordPressAuthenticatorResult.swift in Sources */,
 				F1C96669250BF53400EB529D /* UIViewController+Dismissal.swift in Sources */,
 				CE811D6724EDC0FB00F4CCD6 /* LoginMagicLinkViewController.swift in Sources */,
 				B56090E2208A4F9D00399AE4 /* WPNUXSecondaryButton.m in Sources */,

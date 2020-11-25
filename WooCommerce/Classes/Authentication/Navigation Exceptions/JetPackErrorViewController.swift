@@ -2,7 +2,7 @@
 import UIKit
 import WordPressAuthenticator
 
-final class ULExceptionViewController: UIViewController {
+final class JetPackErrorViewController: UIViewController {
     private let context: NavigationExceptionContext
 
     @IBOutlet private var primaryButton: FancyAnimatedButton!
@@ -27,7 +27,7 @@ final class ULExceptionViewController: UIViewController {
 }
 
 
-private extension ULExceptionViewController {
+private extension JetPackErrorViewController {
     func configurePrimaryButton() {
         primaryButton.setTitle(context.primaryButtontitle, for: .normal)
 

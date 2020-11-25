@@ -332,6 +332,6 @@ private extension AuthenticationManager {
         let secondaryButtonAction = NavigateToEnterAccount()
         let exceptionContext = NavigationExceptionContext(primaryButtontitle: primaryButtonTitle,
                                                           secondaryButtonTitle: secondaryButtonTitle, primaryButtonAction: primaryButtonAction, secondaryButtonAction: secondaryButtonAction)
-        return ULExceptionViewController(context: exceptionContext)
+        return JetPackErrorViewController(context: exceptionContext)
     }
 }

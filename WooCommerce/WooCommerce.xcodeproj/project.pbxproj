@@ -950,8 +950,8 @@
 		D8736B5322EF4F5900A14A29 /* NotificationsBadgeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5222EF4F5900A14A29 /* NotificationsBadgeController.swift */; };
 		D8736B5A22F07D7100A14A29 /* MainTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5922F07D7100A14A29 /* MainTabViewModel.swift */; };
 		D8736B7522F1FE1600A14A29 /* BadgeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B7422F1FE1600A14A29 /* BadgeLabel.swift */; };
-		D881A31B256B5CC500FE5605 /* ULExceptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D881A319256B5CC500FE5605 /* ULExceptionViewController.swift */; };
-		D881A31C256B5CC500FE5605 /* ULExceptionViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D881A31A256B5CC500FE5605 /* ULExceptionViewController.xib */; };
+		D881A31B256B5CC500FE5605 /* JetPackErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D881A319256B5CC500FE5605 /* JetPackErrorViewController.swift */; };
+		D881A31C256B5CC500FE5605 /* JetPackErrorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D881A31A256B5CC500FE5605 /* JetPackErrorViewController.xib */; };
 		D881A322256B5D9E00FE5605 /* NavigationExceptionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = D881A321256B5D9E00FE5605 /* NavigationExceptionContext.swift */; };
 		D88CA756237CE515005D2F44 /* UITabBar+Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88CA755237CE515005D2F44 /* UITabBar+Appearance.swift */; };
 		D88CA758237D1C27005D2F44 /* Ghost+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88CA757237D1C27005D2F44 /* Ghost+Woo.swift */; };
@@ -2013,8 +2013,8 @@
 		D8736B5222EF4F5900A14A29 /* NotificationsBadgeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsBadgeController.swift; sourceTree = "<group>"; };
 		D8736B5922F07D7100A14A29 /* MainTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabViewModel.swift; sourceTree = "<group>"; };
 		D8736B7422F1FE1600A14A29 /* BadgeLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeLabel.swift; sourceTree = "<group>"; };
-		D881A319256B5CC500FE5605 /* ULExceptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ULExceptionViewController.swift; sourceTree = "<group>"; };
-		D881A31A256B5CC500FE5605 /* ULExceptionViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ULExceptionViewController.xib; sourceTree = "<group>"; };
+		D881A319256B5CC500FE5605 /* JetPackErrorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetPackErrorViewController.swift; sourceTree = "<group>"; };
+		D881A31A256B5CC500FE5605 /* JetPackErrorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = JetPackErrorViewController.xib; sourceTree = "<group>"; };
 		D881A321256B5D9E00FE5605 /* NavigationExceptionContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationExceptionContext.swift; sourceTree = "<group>"; };
 		D88CA755237CE515005D2F44 /* UITabBar+Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBar+Appearance.swift"; sourceTree = "<group>"; };
 		D88CA757237D1C27005D2F44 /* Ghost+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ghost+Woo.swift"; sourceTree = "<group>"; };
@@ -4831,8 +4831,8 @@
 		D881A318256B5C9C00FE5605 /* Navigation Exceptions */ = {
 			isa = PBXGroup;
 			children = (
-				D881A319256B5CC500FE5605 /* ULExceptionViewController.swift */,
-				D881A31A256B5CC500FE5605 /* ULExceptionViewController.xib */,
+				D881A319256B5CC500FE5605 /* JetPackErrorViewController.swift */,
+				D881A31A256B5CC500FE5605 /* JetPackErrorViewController.xib */,
 				D881A321256B5D9E00FE5605 /* NavigationExceptionContext.swift */,
 			);
 			path = "Navigation Exceptions";
@@ -5214,7 +5214,7 @@
 				45FBDF39238D3F8800127F77 /* ExtendedAddProductImageCollectionViewCell.xib in Resources */,
 				D8149F542251CFE60006A245 /* EditableOrderTrackingTableViewCell.xib in Resources */,
 				77E53EB9250E6A4E003D385F /* ProductDownloadListViewController.xib in Resources */,
-				D881A31C256B5CC500FE5605 /* ULExceptionViewController.xib in Resources */,
+				D881A31C256B5CC500FE5605 /* JetPackErrorViewController.xib in Resources */,
 				D81D9229222E7F0800FFA585 /* OrderStatusListViewController.xib in Resources */,
 				748D34DE214828DD00E21A2F /* TopPerformerDataViewController.xib in Resources */,
 				CEE006062077D1280079161F /* SummaryTableViewCell.xib in Resources */,
@@ -5587,7 +5587,7 @@
 				02BAB02724D13A6400F8B06E /* ProductVariationFormActionsFactory.swift in Sources */,
 				45CDAFAE2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.swift in Sources */,
 				D85B8333222FABD1002168F3 /* StatusListTableViewCell.swift in Sources */,
-				D881A31B256B5CC500FE5605 /* ULExceptionViewController.swift in Sources */,
+				D881A31B256B5CC500FE5605 /* JetPackErrorViewController.swift in Sources */,
 				CE22E3F72170E23C005A6BEF /* PrivacySettingsViewController.swift in Sources */,
 				57C5FF7A25091A350074EC26 /* OrderListSyncActionUseCase.swift in Sources */,
 				B58B4AB32108F01700076FDD /* DefaultNoticePresenter.swift in Sources */,

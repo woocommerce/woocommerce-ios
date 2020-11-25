@@ -2,10 +2,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 
-final class ShippingLabelOrderItemsAggregatorTests: XCTestCase {
-    private let sampleSiteID: Int64 = 124
-    private let sampleOrderID: Int64 = 630
-
+final class AggregatedShippingLabelOrderItemsTests: XCTestCase {
     func test_order_items_from_shipping_label_without_Product_and_ProductVariation_only_have_name() {
         // Given
         let shippingLabel = MockShippingLabel.emptyLabel().copy(productIDs: [3013], productNames: ["Password protected!"])
@@ -128,7 +125,7 @@ final class ShippingLabelOrderItemsAggregatorTests: XCTestCase {
     }
 }
 
-private extension ShippingLabelOrderItemsAggregatorTests {
+private extension AggregatedShippingLabelOrderItemsTests {
     func createProductImage(src: String) -> ProductImage {
         .init(imageID: 0, dateCreated: Date(), dateModified: nil, src: src, name: nil, alt: nil)
     }

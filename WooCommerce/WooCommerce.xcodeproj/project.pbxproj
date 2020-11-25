@@ -186,7 +186,7 @@
 		0272C00322EE9C3200D7CA2C /* AsyncDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0272C00222EE9C3200D7CA2C /* AsyncDictionary.swift */; };
 		0273707E24C0047800167204 /* SequenceHelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0273707D24C0047800167204 /* SequenceHelpersTests.swift */; };
 		0273708024C0094500167204 /* ProductListMultiSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0273707F24C0094500167204 /* ProductListMultiSelectorDataSource.swift */; };
-		0277AE9B256CA8A200F45C4A /* ShippingLabelOrderItemsAggregatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0277AE9A256CA8A200F45C4A /* ShippingLabelOrderItemsAggregatorTests.swift */; };
+		0277AE9B256CA8A200F45C4A /* AggregatedShippingLabelOrderItemsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0277AE9A256CA8A200F45C4A /* AggregatedShippingLabelOrderItemsTests.swift */; };
 		0277AEA5256CAA4200F45C4A /* MockShippingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0277AEA4256CAA4200F45C4A /* MockShippingLabel.swift */; };
 		0277AEAB256CAA5300F45C4A /* MockShippingLabelAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0277AEAA256CAA5300F45C4A /* MockShippingLabelAddress.swift */; };
 		02784A03238B8BC800BDD6A8 /* UIView+Border.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02784A02238B8BC800BDD6A8 /* UIView+Border.swift */; };
@@ -1232,7 +1232,7 @@
 		0272C00222EE9C3200D7CA2C /* AsyncDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncDictionary.swift; sourceTree = "<group>"; };
 		0273707D24C0047800167204 /* SequenceHelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequenceHelpersTests.swift; sourceTree = "<group>"; };
 		0273707F24C0094500167204 /* ProductListMultiSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListMultiSelectorDataSource.swift; sourceTree = "<group>"; };
-		0277AE9A256CA8A200F45C4A /* ShippingLabelOrderItemsAggregatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelOrderItemsAggregatorTests.swift; sourceTree = "<group>"; };
+		0277AE9A256CA8A200F45C4A /* AggregatedShippingLabelOrderItemsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AggregatedShippingLabelOrderItemsTests.swift; sourceTree = "<group>"; };
 		0277AEA4256CAA4200F45C4A /* MockShippingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShippingLabel.swift; sourceTree = "<group>"; };
 		0277AEAA256CAA5300F45C4A /* MockShippingLabelAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShippingLabelAddress.swift; sourceTree = "<group>"; };
 		02784A02238B8BC800BDD6A8 /* UIView+Border.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Border.swift"; sourceTree = "<group>"; };
@@ -2553,7 +2553,7 @@
 		0277AE99256CA86D00F45C4A /* Shipping Labels */ = {
 			isa = PBXGroup;
 			children = (
-				0277AE9A256CA8A200F45C4A /* ShippingLabelOrderItemsAggregatorTests.swift */,
+				0277AE9A256CA8A200F45C4A /* AggregatedShippingLabelOrderItemsTests.swift */,
 			);
 			path = "Shipping Labels";
 			sourceTree = "<group>";
@@ -6149,7 +6149,7 @@
 				02A275C423FE5B64005C560F /* MockPHAssetImageLoader.swift in Sources */,
 				029700EF24FE38F000D242F8 /* ScrollWatcherTests.swift in Sources */,
 				0236BCA425087B660043EB43 /* ProductFormRemoteActionUseCaseTests.swift in Sources */,
-				0277AE9B256CA8A200F45C4A /* ShippingLabelOrderItemsAggregatorTests.swift in Sources */,
+				0277AE9B256CA8A200F45C4A /* AggregatedShippingLabelOrderItemsTests.swift in Sources */,
 				0225C42A24768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift in Sources */,
 				02691780232600A6002AFC20 /* ProductsTabProductViewModelTests.swift in Sources */,
 				024F1452250B65A40003030A /* AddProductCoordinatorTests.swift in Sources */,

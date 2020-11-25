@@ -170,7 +170,7 @@ final class OrderDetailsDataSource: NSObject {
         guard let shippingLabel = shippingLabel(at: indexPath) else {
             return nil
         }
-        return shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel)[safe: indexPath.row]
+        return shippingLabelOrderItemsAggregator.orderItem(of: shippingLabel, at: indexPath.row)
     }
 }
 
@@ -451,7 +451,7 @@ private extension OrderDetailsDataSource {
             return
         }
 
-        guard let orderItem = shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel)[safe: indexPath.row] else {
+        guard let orderItem = shippingLabelOrderItemsAggregator.orderItem(of: shippingLabel, at: indexPath.row) else {
             return
         }
 
@@ -707,7 +707,7 @@ extension OrderDetailsDataSource {
                     rows = [.shippingLabelTrackingNumber, .shippingLabelDetail]
                 } else {
                     // TODO-2167: show printing instructions
-                    let orderItemsCount = shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel).count ?? 0
+                    let orderItemsCount = shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel).count
                     rows = Array(repeating: .shippingLabelProduct, count: orderItemsCount)
                         + [.shippingLabelReprintButton, .shippingLabelTrackingNumber, .shippingLabelDetail]
                 }

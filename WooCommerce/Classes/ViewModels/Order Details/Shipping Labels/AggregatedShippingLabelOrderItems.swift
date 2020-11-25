@@ -35,6 +35,11 @@ struct AggregatedShippingLabelOrderItems {
     func orderItems(of shippingLabel: ShippingLabel) -> [AggregateOrderItem] {
         orderItemsByShippingLabelID[shippingLabel.shippingLabelID] ?? []
     }
+
+    /// Returns an order item for a shipping label given an index, if available. Otherwise, nil is returned.
+    func orderItem(of shippingLabel: ShippingLabel, at index: Int) -> AggregateOrderItem? {
+        return orderItems(of: shippingLabel)[safe: index]
+    }
 }
 
 private extension AggregatedShippingLabelOrderItems {

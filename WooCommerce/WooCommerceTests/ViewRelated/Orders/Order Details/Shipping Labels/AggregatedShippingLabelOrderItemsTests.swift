@@ -7,15 +7,19 @@ final class AggregatedShippingLabelOrderItemsTests: XCTestCase {
         // Given
         let shippingLabel = MockShippingLabel.emptyLabel().copy(productIDs: [3013], productNames: ["Password protected!"])
         let orderItem = MockOrderItem.sampleItem(productID: 3013)
-        let aggregator = AggregatedShippingLabelOrderItems(shippingLabels: [shippingLabel], orderItems: [orderItem], products: [], productVariations: [])
+        let aggregatedOrderItems = AggregatedShippingLabelOrderItems(shippingLabels: [shippingLabel],
+                                                                     orderItems: [orderItem],
+                                                                     products: [],
+                                                                     productVariations: [])
 
         // When
-        let shippingLabelOrderItems = aggregator.orderItems(of: shippingLabel)
+        let shippingLabelOrderItems = aggregatedOrderItems.orderItems(of: shippingLabel)
 
         // Then
         XCTAssertEqual(shippingLabelOrderItems, [
             .init(productID: 0, variationID: 0, name: "Password protected!", price: 0, quantity: 0, sku: nil, total: 0, attributes: [])
         ])
+        XCTAssertEqual(shippingLabelOrderItems[0], aggregatedOrderItems.orderItem(of: shippingLabel, at: 0))
     }
 
     func test_order_items_from_shipping_label_with_matching_Product_have_expected_properties() {
@@ -26,13 +30,13 @@ final class AggregatedShippingLabelOrderItemsTests: XCTestCase {
         let product1 = MockProduct().product().copy(productID: 2020, name: "Whoa", price: "25.9", images: [createProductImage(src: imageURL1.absoluteString)])
         let product2 = MockProduct().product().copy(productID: 3013, name: "Password", price: "25.9")
         let orderItem1 = MockOrderItem.sampleItem(name: "Woooo", productID: 2020, price: 59.2, sku: "woo")
-        let aggregator = AggregatedShippingLabelOrderItems(shippingLabels: [shippingLabel],
-                                                           orderItems: [orderItem1],
-                                                           products: [product1, product2],
-                                                           productVariations: [])
+        let aggregatedOrderItems = AggregatedShippingLabelOrderItems(shippingLabels: [shippingLabel],
+                                                                     orderItems: [orderItem1],
+                                                                     products: [product1, product2],
+                                                                     productVariations: [])
 
         // When
-        let shippingLabelOrderItems = aggregator.orderItems(of: shippingLabel)
+        let shippingLabelOrderItems = aggregatedOrderItems.orderItems(of: shippingLabel)
 
         // Then
         XCTAssertEqual(shippingLabelOrderItems, [
@@ -50,6 +54,8 @@ final class AggregatedShippingLabelOrderItemsTests: XCTestCase {
             // Since a Product's name could change, the name falls back to the name in shipping label's `productNames`.
             .init(productID: 3013, variationID: 0, name: "PW", price: 25.9, quantity: 3, sku: product2.sku, total: 77.7, attributes: [])
         ])
+        XCTAssertEqual(shippingLabelOrderItems[0], aggregatedOrderItems.orderItem(of: shippingLabel, at: 0))
+        XCTAssertEqual(shippingLabelOrderItems[1], aggregatedOrderItems.orderItem(of: shippingLabel, at: 1))
     }
 
     func test_order_items_from_shipping_label_with_matching_ProductVariation_and_OrderItem_have_expected_properties() {
@@ -69,13 +75,13 @@ final class AggregatedShippingLabelOrderItemsTests: XCTestCase {
                                                  attributes: [
                                                     .init(metaID: 205, name: "Platform", value: "Digital")
                                                  ])
-        let aggregator = AggregatedShippingLabelOrderItems(shippingLabels: [shippingLabel],
-                                                           orderItems: [orderItem],
-                                                           products: [],
-                                                           productVariations: [variation])
+        let aggregatedOrderItems = AggregatedShippingLabelOrderItems(shippingLabels: [shippingLabel],
+                                                                     orderItems: [orderItem],
+                                                                     products: [],
+                                                                     productVariations: [variation])
 
         // When
-        let shippingLabelOrderItems = aggregator.orderItems(of: shippingLabel)
+        let shippingLabelOrderItems = aggregatedOrderItems.orderItems(of: shippingLabel)
 
         // Then
         XCTAssertEqual(shippingLabelOrderItems, [
@@ -90,6 +96,7 @@ final class AggregatedShippingLabelOrderItemsTests: XCTestCase {
                   imageURL: imageURL,
                   attributes: orderItem.attributes)
         ])
+        XCTAssertEqual(shippingLabelOrderItems[0], aggregatedOrderItems.orderItem(of: shippingLabel, at: 0))
     }
 
     func test_order_items_from_shipping_label_with_matching_ProductVariation_and_without_OrderItem_have_expected_properties() {
@@ -101,13 +108,13 @@ final class AggregatedShippingLabelOrderItemsTests: XCTestCase {
                   productVariationID: 3013,
                   image: createProductImage(src: imageURL.absoluteString),
                   price: "62")
-        let aggregator = AggregatedShippingLabelOrderItems(shippingLabels: [shippingLabel],
-                                                           orderItems: [],
-                                                           products: [],
-                                                           productVariations: [variation])
+        let aggregatedOrderItems = AggregatedShippingLabelOrderItems(shippingLabels: [shippingLabel],
+                                                                     orderItems: [],
+                                                                     products: [],
+                                                                     productVariations: [variation])
 
         // When
-        let shippingLabelOrderItems = aggregator.orderItems(of: shippingLabel)
+        let shippingLabelOrderItems = aggregatedOrderItems.orderItems(of: shippingLabel)
 
         // Then
         XCTAssertEqual(shippingLabelOrderItems, [
@@ -122,6 +129,7 @@ final class AggregatedShippingLabelOrderItemsTests: XCTestCase {
                   imageURL: imageURL,
                   attributes: [])
         ])
+        XCTAssertEqual(shippingLabelOrderItems[0], aggregatedOrderItems.orderItem(of: shippingLabel, at: 0))
     }
 }
 

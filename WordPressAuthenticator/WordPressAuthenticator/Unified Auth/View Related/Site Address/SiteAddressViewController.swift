@@ -468,19 +468,20 @@ private extension SiteAddressViewController {
             return
         }
         
-        WordPressAuthenticator.shared.delegate?.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { (error, isSelfHosted) in
-            guard let originalError = error else {
-
+        WordPressAuthenticator.shared.delegate?.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { (result) in
+            switch result {
+            case let .error(error):
+                self.displayError(message: error.localizedDescription)
+            case let .presentPasswordController(isSelfHosted):
                 if isSelfHosted {
                     self.showSelfHostedUsernamePassword()
                     return
                 }
-
+                
                 self.showWPUsernamePassword()
-                return
+            case let .injectViewController(customUI):
+                self.navigationController?.pushViewController(customUI, animated: true)
             }
-
-            self.displayError(message: originalError.localizedDescription)
         })
     }
 

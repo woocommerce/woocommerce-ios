@@ -447,11 +447,9 @@ private extension OrderDetailsDataSource {
     private func configureShippingLabelProduct(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .default
 
-        guard let shippingLabel = shippingLabel(at: indexPath) else {
-            return
-        }
-
-        guard let orderItem = shippingLabelOrderItemsAggregator.orderItem(of: shippingLabel, at: indexPath.row) else {
+        guard let shippingLabel = shippingLabel(at: indexPath),
+              let orderItem = shippingLabelOrderItemsAggregator.orderItem(of: shippingLabel, at: indexPath.row) else {
+            assertionFailure("Cannot access shipping label and/or order item at \(indexPath)")
             return
         }
 

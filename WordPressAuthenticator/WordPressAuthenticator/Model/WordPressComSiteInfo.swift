@@ -62,8 +62,3 @@ public class WordPressComSiteInfo {
         exists              = remote["exists"] as? Int == 1 ? true: false
     }
 }
-
-
-extension Int {
-    var boolValue: Bool { return self != 0 }
-}

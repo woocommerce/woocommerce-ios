@@ -1,5 +1,7 @@
 import Foundation
 
+/// Navigates to the unified "Continue with WordPress.com" flow.
+///
 public struct NavigateToEnterAccount: NavigationCommand {
     public init() {}
     public func execute(from: UIViewController?) {
@@ -9,8 +11,6 @@ public struct NavigateToEnterAccount: NavigationCommand {
 
 
 private extension NavigateToEnterAccount {
-    /// Unified "Continue with WordPress.com" prologue button action.
-    ///
     private func continueWithDotCom(navigationController: UINavigationController?) {
         guard let vc = GetStartedViewController.instantiate(from: .getStarted) else {
             DDLogError("Failed to navigate from LoginPrologueViewController to GetStartedViewController")

@@ -1,16 +1,17 @@
 
 import UIKit
 import WordPressAuthenticator
+import SafariServices
 
 final class JetPackErrorViewController: UIViewController {
-    private let context: NavigationExceptionContext
 
-    @IBOutlet private var primaryButton: FancyAnimatedButton!
-    @IBOutlet private var secondaryButton: FancyAnimatedButton!
+    @IBOutlet private var primaryButton: NUXButton!
+    @IBOutlet private var secondaryButton: NUXButton!
+    @IBOutlet private var imageView: UIImageView!
+    @IBOutlet weak var errorMessage: UILabel!
+    @IBOutlet weak var extraInfoButton: UIButton!
 
-    init(context: NavigationExceptionContext) {
-        self.context = context
-
+    init() {
         super.init(nibName: Self.nibName, bundle: nil)
     }
 
@@ -23,28 +24,66 @@ final class JetPackErrorViewController: UIViewController {
 
         configurePrimaryButton()
         configureSecondaryButton()
+
+        configureImageView()
     }
 }
 
 
+// MARK: - View configuration
 private extension JetPackErrorViewController {
     func configurePrimaryButton() {
-        primaryButton.setTitle(context.primaryButtontitle, for: .normal)
-
-        primaryButton.addTarget(self, action: #selector(didTapPrimaryButton), for: .touchUpInside)
+        primaryButton.isPrimary = true
+        primaryButton.setTitle(Localization.primaryButtonTitle, for: .normal)
+        primaryButton.on(.touchUpInside) { [weak self] _ in
+            self?.didTapPrimaryButton()
+        }
     }
 
     func configureSecondaryButton() {
-        secondaryButton.setTitle(context.secondaryButtonTitle, for: .normal)
-
-        secondaryButton.addTarget(self, action: #selector(didTapSecondaryButton), for: .touchUpInside)
+        secondaryButton.setTitle(Localization.secondaryButtonTitle, for: .normal)
+        secondaryButton.on(.touchUpInside) { [weak self] _ in
+            self?.didTapSecondaryButton()
+        }
     }
 
-    @objc func didTapPrimaryButton() {
-        context.primaryButtonAction.execute(from: self)
+    func configureImageView() {
+        imageView.image = .loginNoJetpackError
+    }
+}
+
+
+// MARK: - Actions
+private extension JetPackErrorViewController {
+    func didTapPrimaryButton() {
+        guard let url = URL(string: Strings.instructionsURLString) else {
+            return
+        }
+
+        let safariViewController = SFSafariViewController(url: url)
+        safariViewController.modalPresentationStyle = .pageSheet
+        present(safariViewController, animated: true)
     }
 
-    @objc func didTapSecondaryButton() {
-        context.secondaryButtonAction.execute(from: self)
+    func didTapSecondaryButton() {
+        let refreshCommand = NavigateToEnterSite()
+        refreshCommand.execute(from: self)
+    }
+}
+
+// MARK: - Strings
+private extension JetPackErrorViewController {
+    enum Localization {
+        static let primaryButtonTitle = NSLocalizedString("See Instructions",
+                                                          comment: "Action button linking to instructions for installing Jetpack."
+                                                          + "Presented when logging in with a site address that does not have a valid Jetpack installation")
+
+        static let secondaryButtonTitle = NSLocalizedString("Refresh After Install",
+                                                            comment: "Action button that will restart the login flow."
+                                                            + "Presented when logging in with a site address that does not have a valid Jetpack installation")
+    }
+
+    enum Strings {
+        static let instructionsURLString = "https://docs.woocommerce.com/document/jetpack-setup-instructions-for-the-woocommerce-mobile-app/"
     }
 }

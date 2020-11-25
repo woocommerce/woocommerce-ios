@@ -323,15 +323,15 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 }
 
 
-// MARK:- Private methods
+// MARK: - Private methods
 private extension AuthenticationManager {
     func jetpackErrorUI() -> UIViewController {
-        let primaryButtonTitle = "Enter Another Site"
-        let secondaryButtonTitle = "Log In With Another Account"
-        let primaryButtonAction = NavigateToEnterSite()
-        let secondaryButtonAction = NavigateToEnterAccount()
-        let exceptionContext = NavigationExceptionContext(primaryButtontitle: primaryButtonTitle,
-                                                          secondaryButtonTitle: secondaryButtonTitle, primaryButtonAction: primaryButtonAction, secondaryButtonAction: secondaryButtonAction)
-        return JetPackErrorViewController(context: exceptionContext)
+//        let primaryButtonTitle = "See Instructions"
+//        let secondaryButtonTitle = "Refresh After Install"
+//        let primaryButtonAction = NavigateToEnterSite()
+//        let secondaryButtonAction = NavigateToEnterAccount()
+//        let exceptionContext = NavigationExceptionContext(primaryButtontitle: primaryButtonTitle,
+//                                                          secondaryButtonTitle: secondaryButtonTitle, primaryButtonAction: primaryButtonAction, secondaryButtonAction: secondaryButtonAction)
+        return JetPackErrorViewController()
     }
 }

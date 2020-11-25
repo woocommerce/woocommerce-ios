@@ -10,14 +10,14 @@ final class PrimarySectionHeaderView: UITableViewHeaderFooterView {
     /// Custom configurations for the CTA.
     struct ActionConfiguration {
         let image: UIImage
-        let actionHandler: () -> Void
+        let actionHandler: (_ sourceView: UIView) -> Void
     }
 
     @IBOutlet private var titleLabel: UILabel!
     @IBOutlet private weak var actionButton: UIButton!
     @IBOutlet private var containerView: UIView!
 
-    private var actionHandler: (() -> Void)?
+    private var actionHandler: ((_ sourceView: UIView) -> Void)?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -43,7 +43,7 @@ final class PrimarySectionHeaderView: UITableViewHeaderFooterView {
         if let action = action {
             actionButton.applyIconButtonStyle(icon: action.image)
             actionHandler = action.actionHandler
-            actionButton.addTarget(self, action: #selector(onAction), for: .touchUpInside)
+            actionButton.addTarget(self, action: #selector(onAction(_:)), for: .touchUpInside)
         }
     }
 
@@ -65,8 +65,8 @@ final class PrimarySectionHeaderView: UITableViewHeaderFooterView {
 }
 
 private extension PrimarySectionHeaderView {
-    @objc func onAction() {
-        actionHandler?()
+    @objc func onAction(_ sourceView: UIView) {
+        actionHandler?(sourceView)
     }
 }
 

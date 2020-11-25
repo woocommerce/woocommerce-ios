@@ -695,7 +695,7 @@ extension OrderDetailsDataSource {
                     // TODO-2167: show aggregated order items (products) for a shipping label
                     rows = Array(repeating: .shippingLabelProduct, count: orderItemsCount)
                         + [.shippingLabelReprintButton, .shippingLabelTrackingNumber, .shippingLabelDetail]
-                    let headerActionConfig = PrimarySectionHeaderView.ActionConfiguration(image: .moreImage) { [weak self] in
+                    let headerActionConfig = PrimarySectionHeaderView.ActionConfiguration(image: .moreImage) { [weak self] sourceView in
                     }
                     headerStyle = .actionablePrimary(actionConfig: headerActionConfig)
                 }

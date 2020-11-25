@@ -53,13 +53,13 @@ public class WordPressComSiteInfo {
         name                = remote["name"] as? String ?? ""
         tagline             = remote["description"] as? String ?? ""
         url                 = remote["urlAfterRedirects"] as? String ?? ""
-        hasJetpack          = remote["hasJetpack"] as? String == "1" ? true: false
-        isJetpackActive     = remote["isJetpackActive"] as? String == "1" ? true: false
-        isJetpackConnected  = remote["isJetpackConnected"] as? String == "1" ? true: false
+        hasJetpack          = remote["hasJetpack"] as? Int == 1 ? true: false
+        isJetpackActive     = remote["isJetpackActive"] as? Int == 1 ? true: false
+        isJetpackConnected  = remote["isJetpackConnected"] as? Int == 1 ? true: false
         icon                = remote["icon.img"] as? String ?? ""
-        isWPCom             = remote["isWordPressDotCom"] as? String == "1" ? true: false
-        isWP                = remote["isWordPress"] as? String == "1" ? true: false
-        exists              = remote["exists"] as? String == "1" ? true: false
+        isWPCom             = remote["isWordPressDotCom"] as? Int == 1 ? true: false
+        isWP                = remote["isWordPress"] as? Int == 1 ? true: false
+        exists              = remote["exists"] as? Int == 1 ? true: false
     }
 }
 

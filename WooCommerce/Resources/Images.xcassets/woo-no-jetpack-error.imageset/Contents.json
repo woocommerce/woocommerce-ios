@@ -3,6 +3,16 @@
     {
       "filename" : "img_light_error_JP.png",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "img_dark_error_JP.png",
+      "idiom" : "universal"
     }
   ],
   "info" : {

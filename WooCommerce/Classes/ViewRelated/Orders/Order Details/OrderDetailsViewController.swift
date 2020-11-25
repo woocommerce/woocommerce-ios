@@ -65,6 +65,7 @@ final class OrderDetailsViewController: UIViewController {
         syncNotes()
         syncProducts()
         syncRefunds()
+        syncShippingLabels()
         syncTrackingsHidingAddButtonIfNecessary()
     }
 
@@ -224,6 +225,11 @@ extension OrderDetailsViewController {
         }
 
         group.enter()
+        syncShippingLabels() { _ in
+            group.leave()
+        }
+
+        group.enter()
         syncNotes { _ in
             group.leave()
         }
@@ -271,6 +277,10 @@ private extension OrderDetailsViewController {
 
     func syncRefunds(onCompletion: ((Error?) -> ())? = nil) {
         viewModel.syncRefunds(onCompletion: onCompletion)
+    }
+
+    func syncShippingLabels(onCompletion: ((Error?) -> ())? = nil) {
+        viewModel.syncShippingLabels(onCompletion: onCompletion)
     }
 
     func deleteTracking(_ tracking: ShipmentTracking) {

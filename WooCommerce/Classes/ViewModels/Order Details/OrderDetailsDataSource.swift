@@ -45,6 +45,10 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var onCellAction: ((CellActionType, IndexPath?) -> Void)?
 
+    /// Closure to be executed when the shipping label more menu is tapped.
+    ///
+    var onShippingLabelMoreMenuTapped: ((_ shippingLabel: ShippingLabel, _ sourceView: UIView) -> Void)?
+
     /// Closure to be executed when the UI needs to be reloaded.
     ///
     var onUIReloadRequired: (() -> Void)?
@@ -696,6 +700,7 @@ extension OrderDetailsDataSource {
                     rows = Array(repeating: .shippingLabelProduct, count: orderItemsCount)
                         + [.shippingLabelReprintButton, .shippingLabelTrackingNumber, .shippingLabelDetail]
                     let headerActionConfig = PrimarySectionHeaderView.ActionConfiguration(image: .moreImage) { [weak self] sourceView in
+                        self?.onShippingLabelMoreMenuTapped?(shippingLabel, sourceView)
                     }
                     headerStyle = .actionablePrimary(actionConfig: headerActionConfig)
                 }

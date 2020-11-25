@@ -116,6 +116,14 @@ final class OrderDetailsViewModel {
         }
     }
 
+    /// Closure to be executed when the shipping label more menu is tapped.
+    ///
+    var onShippingLabelMoreMenuTapped: ((_ shippingLabel: ShippingLabel, _ sourceView: UIView) -> Void)? {
+        didSet {
+            dataSource.onShippingLabelMoreMenuTapped = onShippingLabelMoreMenuTapped
+        }
+    }
+
     /// Helpers
     ///
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {

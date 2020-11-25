@@ -139,6 +139,10 @@ private extension OrderDetailsViewController {
         viewModel.onCellAction = { [weak self] (actionType, indexPath) in
             self?.handleCellAction(actionType, at: indexPath)
         }
+
+        viewModel.onShippingLabelMoreMenuTapped = { [weak self] shippingLabel, sourceView in
+            self?.shippingLabelMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
+        }
     }
 
     /// Reloads the tableView's data, assuming the view has been loaded.
@@ -352,6 +356,22 @@ private extension OrderDetailsViewController {
         let safariViewController = SFSafariViewController(url: url)
         present(safariViewController, animated: true, completion: nil)
     }
+
+    func shippingLabelMoreMenuTapped(shippingLabel: ShippingLabel, sourceView: UIView) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        actionSheet.addCancelActionWithTitle(Localization.ShippingLabelMoreMenu.cancelAction)
+
+        actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.requestRefundAction) { _ in
+            // TODO-2168: refund a shipping label
+        }
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.sourceView = sourceView
+
+        present(actionSheet, animated: true)
+    }
 }
 
 // MARK: - UITableViewDelegate Conformance
@@ -496,6 +516,14 @@ private extension OrderDetailsViewController {
         static let copyTrackingNumber = NSLocalizedString("Copy Tracking Number", comment: "Copy tracking number button title")
         static let trackShipment = NSLocalizedString("Track Shipment", comment: "Track shipment button title")
         static let deleteTracking = NSLocalizedString("Delete Tracking", comment: "Delete tracking button title")
+    }
+
+    enum Localization {
+        enum ShippingLabelMoreMenu {
+            static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the shipping label more menu action sheet")
+            static let requestRefundAction = NSLocalizedString("Request a Refund",
+                                                               comment: "Request a refund on a shipping label from the shipping label more menu action sheet")
+        }
     }
 
     enum Constants {

@@ -71,6 +71,7 @@ private extension ProductDetailsTableViewCell {
 
     func configureSubtitleLabel() {
         subtitleLabel.applySecondaryFootnoteStyle()
+        subtitleLabel?.numberOfLines = 0
         subtitleLabel?.text = ""
     }
 

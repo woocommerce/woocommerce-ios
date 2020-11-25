@@ -57,16 +57,15 @@ private extension AggregatedShippingLabelOrderItems {
         let productInfoArray = shippingLabel.productNames.enumerated().map { index, productName in
             ProductInformation(id: shippingLabel.productIDs[safe: index], name: productName)
         }
+
+        // Generates a dictionary that maps a `ProductInformation` to the number of times (quantity) in a shipping label.
+        let countsByProductInformation = productInfoArray.reduce(into: [ProductInformation: Int]()) { result, productInfo in
+            result[productInfo] = (result[productInfo] ?? 0) + 1
+        }
+
         // In the API, if a product has quantity higher than 1, it is repeated in the `productNames`/`productIDs` array.
         // Note that decimal quantity might have unexpected behavior given the current API design.
         let uniqueProductInfoArray = productInfoArray.removingDuplicates()
-
-        // Generates a dictionary that maps a `ProductInformation` to the number of times (quantity) in a shipping label.
-        let countsByProductInformation = productInfoArray.reduce([:]) { (result, productInfo) -> [ProductInformation: Int] in
-            var countsByProductInfo = result
-            countsByProductInfo[productInfo] = (result[productInfo] ?? 0) + 1
-            return countsByProductInfo
-        }
 
         // Maps each unique `ProductInformation` to an `AggregateOrderItem` given available order items, products, and product variations.
         let aggregateOrderItems = uniqueProductInfoArray
@@ -76,7 +75,7 @@ private extension AggregatedShippingLabelOrderItems {
                                            products: products,
                                            productVariations: productVariations)
                 let quantity = countsByProductInformation[productInfo] ?? 0
-                return orderItem(from: model, quantity: quantity, orderItems: orderItems)
+                return orderItem(from: model, quantity: quantity)
             }
 
         orderItemsByShippingLabelID[shippingLabel.shippingLabelID] = aggregateOrderItems
@@ -101,7 +100,7 @@ private extension AggregatedShippingLabelOrderItems {
         }
     }
 
-    func orderItem(from model: OrderItemModel, quantity: Int, orderItems: [OrderItem]) -> AggregateOrderItem {
+    func orderItem(from model: OrderItemModel, quantity: Int) -> AggregateOrderItem {
         switch model {
         case .productName(let name):
             return .init(productID: 0, variationID: 0, name: name, price: 0, quantity: 0, sku: nil, total: 0, attributes: [])
@@ -137,11 +136,11 @@ private extension AggregatedShippingLabelOrderItems {
     }
 
     func lookUpProduct(by productID: Int64, products: [Product]) -> Product? {
-        products.filter({ $0.productID == productID }).first
+        products.first(where: { $0.productID == productID })
     }
 
     func lookUpProductVariation(by productID: Int64, productVariations: [ProductVariation]) -> ProductVariation? {
-        productVariations.filter({ $0.productVariationID == productID }).first
+        productVariations.first(where: { $0.productVariationID == productID })
     }
 }
 

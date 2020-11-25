@@ -170,12 +170,7 @@ final class OrderDetailsDataSource: NSObject {
         guard let shippingLabel = shippingLabel(at: indexPath) else {
             return nil
         }
-
-        guard let orderItem = shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel)[safe: indexPath.row] else {
-            return nil
-        }
-
-        return orderItem
+        return shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel)[safe: indexPath.row]
     }
 }
 

@@ -33,7 +33,7 @@ final class OrderDetailsResultsControllers {
     /// ProductVariation ResultsController.
     ///
     private lazy var productVariationResultsController: ResultsController<StorageProductVariation> = {
-        let variationIDs = order.items.map { $0.variationID }.filter { $0 != 0 }
+        let variationIDs = order.items.map(\.variationID).filter { $0 != 0 }
         let predicate = NSPredicate(format: "siteID == %lld AND productVariationID in %@", siteID, variationIDs)
 
         return ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [])
@@ -176,7 +176,11 @@ private extension OrderDetailsResultsControllers {
             onReload()
         }
 
-        try? productVariationResultsController.performFetch()
+        do {
+            try productVariationResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Error fetching ProductVariations for Order \(order.orderID): \(error)")
+        }
     }
 
     private func configureRefundResultsController(onReload: @escaping () -> Void) {

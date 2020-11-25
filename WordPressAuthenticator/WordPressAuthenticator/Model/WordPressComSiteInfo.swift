@@ -21,6 +21,14 @@ public class WordPressComSiteInfo {
     ///
     public let hasJetpack: Bool
 
+    /// Indicates if Jetpack is active, or not.
+    ///
+    public let isJetpackActive: Bool
+
+    /// Indicates if Jetpack is connected, or not.
+    ///
+    public let isJetpackConnected: Bool
+
     /// URL of the Site's Blavatar.
     ///
     public let icon: String
@@ -29,17 +37,33 @@ public class WordPressComSiteInfo {
     ///
     public let isWPCom: Bool
 
+    /// Inidcates wheter the site is WordPress, or not.
+    ///
+    public let isWP: Bool
+
+    /// Inidcates whether the site exists, or not.
+    ///
+    public let exists: Bool
+
 
 
     /// Initializes the current SiteInfo instance with a raw dictionary.
     ///
     public init(remote: [AnyHashable: Any]) {
-        name        = remote["name"] as? String         ?? ""
-        tagline     = remote["description"] as? String  ?? ""
-        url         = remote["URL"] as? String          ?? ""
-        hasJetpack  = remote["hasJetpack"] as? Bool     ?? false
-        icon        = remote["icon.img"] as? String     ?? ""
-        isWPCom     = remote["isWordPressDotCom"] as? Bool ?? false
-        
+        name                = remote["name"] as? String ?? ""
+        tagline             = remote["description"] as? String ?? ""
+        url                 = remote["urlAfterRedirects"] as? String ?? ""
+        hasJetpack          = remote["hasJetpack"] as? String == "1" ? true: false
+        isJetpackActive     = remote["isJetpackActive"] as? String == "1" ? true: false
+        isJetpackConnected  = remote["isJetpackConnected"] as? String == "1" ? true: false
+        icon                = remote["icon.img"] as? String ?? ""
+        isWPCom             = remote["isWordPressDotCom"] as? String == "1" ? true: false
+        isWP                = remote["isWordPress"] as? String == "1" ? true: false
+        exists              = remote["exists"] as? String == "1" ? true: false
     }
+}
+
+
+extension Int {
+    var boolValue: Bool { return self != 0 }
 }

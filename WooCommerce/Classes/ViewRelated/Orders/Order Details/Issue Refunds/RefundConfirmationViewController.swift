@@ -75,6 +75,7 @@ private extension RefundConfirmationViewController {
     func configureButtonTableFooterView() {
         tableView.tableFooterView = ButtonTableFooterView(frame: .zero, title: Localization.refund) { [weak self] in
             guard let self = self else { return }
+            self.viewModel.trackSummaryButtonTapped()
             self.displayConfirmationAlert { didConfirm in
                 if didConfirm {
                     self.submitRefund()

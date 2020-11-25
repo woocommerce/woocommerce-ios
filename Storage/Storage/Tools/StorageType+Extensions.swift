@@ -72,7 +72,7 @@ public extension StorageType {
 
     /// Retrieves the Stored Order Shipping Line.
     ///
-    func loadShippingLine(siteID: Int64, shippingID: Int64) -> ShippingLine? {
+    func loadOrderShippingLine(siteID: Int64, shippingID: Int64) -> ShippingLine? {
         let predicate = NSPredicate(format: "order.siteID = %ld AND shippingID = %ld", siteID, shippingID)
         return firstObject(ofType: ShippingLine.self, matching: predicate)
     }
@@ -414,6 +414,13 @@ public extension StorageType {
     func loadRefundItem(siteID: Int64, refundID: Int64, itemID: Int64) -> OrderItemRefund? {
     let predicate = NSPredicate(format: "refund.siteID = %ld AND refund.refundID = %ld AND itemID = %ld", siteID, refundID, itemID)
         return firstObject(ofType: OrderItemRefund.self, matching: predicate)
+    }
+
+    /// Retrieves the Stored Refund Shipping Line.
+    ///
+    func loadRefundShippingLine(siteID: Int64, shippingID: Int64) -> ShippingLine? {
+        let predicate = NSPredicate(format: "refund.siteID = %ld AND shippingID = %ld", siteID, shippingID)
+        return firstObject(ofType: ShippingLine.self, matching: predicate)
     }
 
     /// Retrieves the Stored OrderItemTaxRefund.

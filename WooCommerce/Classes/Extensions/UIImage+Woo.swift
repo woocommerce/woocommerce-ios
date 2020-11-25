@@ -13,6 +13,12 @@ extension UIImage {
         return UIImage.gridicon(.addOutline)
     }
 
+    /// Arrow Up Icon
+    ///
+    static var arrowUp: UIImage {
+        return UIImage.gridicon(.arrowUp)
+    }
+
     /// Notice Icon
     ///
     static var noticeImage: UIImage {
@@ -433,6 +439,12 @@ extension UIImage {
         return UIImage.gridicon(.starOutline, size: starSize)
     }
 
+    /// Sync Icon
+    ///
+    static var syncIcon: UIImage {
+        return UIImage.gridicon(.sync)
+    }
+
     /// Stats Icon
     ///
     static var statsImage: UIImage {
@@ -459,8 +471,7 @@ extension UIImage {
         return UIImage(named: "icon-widgets")!.withRenderingMode(.alwaysTemplate)
     }
 
-
-    static var syncImage: UIImage {
+    static var syncDotIcon: UIImage {
         return UIImage(imageLiteralResourceName: "icon-sync-dot")
     }
 

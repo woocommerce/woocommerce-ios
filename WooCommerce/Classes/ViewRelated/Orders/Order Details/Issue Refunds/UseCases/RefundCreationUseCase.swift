@@ -41,7 +41,8 @@ struct RefundCreationUseCase {
                       refundedByUserID: .min,
                       isAutomated: nil,
                       createAutomated: automaticallyRefundsPayment,
-                      items: createRefundItems())
+                      items: createRefundItems(),
+                      shippingLines: [])
     }
 
     /// Returns an array of `OrderItemRefund` based on the provided refundable items and shipping line

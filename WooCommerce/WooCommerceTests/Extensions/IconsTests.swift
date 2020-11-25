@@ -7,6 +7,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.addOutlineImage)
     }
 
+    func test_arrowUp_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.arrowUp)
+    }
+
     func testNoticeImageIsNotNil() {
         XCTAssertNotNil(UIImage.noticeImage)
     }
@@ -311,8 +315,12 @@ final class IconsTests: XCTestCase {
         XCTAssertEqual(tagsIcon.size, Gridicon.defaultSize)
     }
 
-    func testSyncIconIsNotNil() {
-        XCTAssertNotNil(UIImage.syncImage)
+    func test_sync_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.syncIcon)
+    }
+
+    func test_sync_dot_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.syncDotIcon)
     }
 
     func testNoStoreImageIsNotNil() {

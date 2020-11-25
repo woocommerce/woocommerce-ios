@@ -47,16 +47,18 @@ private extension AggregatedShippingLabelOrderItems {
                                                 orderItems: [OrderItem],
                                                 products: [Product],
                                                 productVariations: [ProductVariation]) {
-        shippingLabels.forEach { aggregateProductsToOrderItems(shippingLabel: $0,
-                                                               orderItems: orderItems,
-                                                               products: products,
-                                                               productVariations: productVariations) }
+        orderItemsByShippingLabelID = shippingLabels.reduce(into: [Int64: [AggregateOrderItem]]()) { result, shippingLabel in
+            result[shippingLabel.shippingLabelID] = aggregateProductsToOrderItems(shippingLabel: shippingLabel,
+                                                                                  orderItems: orderItems,
+                                                                                  products: products,
+                                                                                  productVariations: productVariations)
+        }
     }
 
-    mutating func aggregateProductsToOrderItems(shippingLabel: ShippingLabel,
-                                                orderItems: [OrderItem],
-                                                products: [Product],
-                                                productVariations: [ProductVariation]) {
+    func aggregateProductsToOrderItems(shippingLabel: ShippingLabel,
+                                       orderItems: [OrderItem],
+                                       products: [Product],
+                                       productVariations: [ProductVariation]) -> [AggregateOrderItem] {
         // ShippingLabel's `productNames` is always available, but `productIDs` is only available in WooCommerce Shipping & Tax v1.24.1+.
         // Here we map a ShippingLabel's `productNames` to `ProductInformation` with an optional product ID at the corresponding index.
         let productInfoArray = shippingLabel.productNames.enumerated().map { index, productName in
@@ -73,7 +75,7 @@ private extension AggregatedShippingLabelOrderItems {
         let uniqueProductInfoArray = productInfoArray.removingDuplicates()
 
         // Maps each unique `ProductInformation` to an `AggregateOrderItem` given available order items, products, and product variations.
-        let aggregateOrderItems = uniqueProductInfoArray
+        return uniqueProductInfoArray
             .map { productInfo -> AggregateOrderItem in
                 let model = orderItemModel(productInfo: productInfo,
                                            orderItems: orderItems,
@@ -82,8 +84,6 @@ private extension AggregatedShippingLabelOrderItems {
                 let quantity = countsByProductInformation[productInfo] ?? 0
                 return orderItem(from: model, quantity: quantity)
             }
-
-        orderItemsByShippingLabelID[shippingLabel.shippingLabelID] = aggregateOrderItems
     }
 
     func orderItemModel(productInfo: ProductInformation,

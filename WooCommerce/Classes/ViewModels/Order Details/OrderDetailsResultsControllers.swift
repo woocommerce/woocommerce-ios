@@ -50,6 +50,17 @@ final class OrderDetailsResultsControllers {
         return ResultsController<StorageRefund>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
+    /// ShippingLabel Results Controller.
+    ///
+    private lazy var shippingLabelResultsController: ResultsController<StorageShippingLabel> = {
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld", order.siteID, order.orderID)
+        let dateCreatedDescriptor = NSSortDescriptor(keyPath: \StorageShippingLabel.dateCreated, ascending: false)
+        let shippingLabelIDDescriptor = NSSortDescriptor(keyPath: \StorageShippingLabel.shippingLabelID, ascending: false)
+        return ResultsController<StorageShippingLabel>(storageManager: storageManager,
+                                                       matching: predicate,
+                                                       sortedBy: [dateCreatedDescriptor, shippingLabelIDDescriptor])
+    }()
+
     /// Order shipment tracking list
     ///
     var orderTracking: [ShipmentTracking] {
@@ -74,6 +85,12 @@ final class OrderDetailsResultsControllers {
         return refundResultsController.fetchedObjects
     }
 
+    /// Shipping labels for an Order
+    ///
+    var shippingLabels: [ShippingLabel] {
+        return shippingLabelResultsController.fetchedObjects
+    }
+
     init(order: Order,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.order = order
@@ -86,6 +103,7 @@ final class OrderDetailsResultsControllers {
         configureTrackingResultsController(onReload: onReload)
         configureProductResultsController(onReload: onReload)
         configureRefundResultsController(onReload: onReload)
+        configureShippingLabelResultsController(onReload: onReload)
     }
 }
 
@@ -145,6 +163,20 @@ private extension OrderDetailsResultsControllers {
         try? refundResultsController.performFetch()
     }
 
+    private func configureShippingLabelResultsController(onReload: @escaping () -> Void) {
+        shippingLabelResultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        shippingLabelResultsController.onDidResetContent = { [weak self] in
+            guard let self = self else { return }
+            self.refetchAllResultsControllers()
+            onReload()
+        }
+
+        try? shippingLabelResultsController.performFetch()
+    }
+
     /// Refetching all the results controllers is necessary after a storage reset in `onDidResetContent` callback and before reloading UI that
     /// involves more than one results controller.
     func refetchAllResultsControllers() {
@@ -152,5 +184,6 @@ private extension OrderDetailsResultsControllers {
         try? refundResultsController.performFetch()
         try? trackingResultsController.performFetch()
         try? statusResultsController.performFetch()
+        try? shippingLabelResultsController.performFetch()
     }
 }

@@ -346,6 +346,19 @@ extension OrderDetailsViewModel {
         ServiceLocator.stores.dispatch(action)
     }
 
+    func syncShippingLabels(onCompletion: ((Error?) -> ())? = nil) {
+        let action = ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
+            switch result {
+            case .success:
+                onCompletion?(nil)
+            case .failure(let error):
+                DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
+                onCompletion?(error)
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
     func deleteTracking(_ tracking: ShipmentTracking, onCompletion: @escaping (Error?) -> Void) {
         let siteID = order.siteID
         let orderID = order.orderID

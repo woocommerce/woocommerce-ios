@@ -67,12 +67,6 @@ final class OrderDetailsDataSource: NSObject {
         return resultsControllers.products
     }
 
-    /// ProductVariations from an Order
-    ///
-    var productVariations: [ProductVariation] {
-        return resultsControllers.productVariations
-    }
-
     /// OrderItemsRefund Count
     ///
     var refundedProductsCount: Decimal {
@@ -649,6 +643,13 @@ extension OrderDetailsDataSource {
     /// When: Shipping == nil               >>> Display: Shipping = "No address specified"
     ///
     func reloadSections() {
+        // Freezes any data that require lookup after the sections are reloaded, in case the data from a ResultsController changes before the next reload.
+        shippingLabels = resultsControllers.shippingLabels
+        shippingLabelOrderItemsAggregator = ShippingLabelOrderItemsAggregator(shippingLabels: shippingLabels,
+                                                                                   orderItems: items,
+                                                                                   products: products,
+                                                                                   productVariations: resultsControllers.productVariations)
+
         let summary = Section(category: .summary, row: .summary)
 
         let shippingNotice: Section? = {
@@ -697,13 +698,6 @@ extension OrderDetailsDataSource {
 
             return Section(category: .refundedProducts, title: Title.refundedProducts, row: row)
         }()
-
-        let shippingLabels = resultsControllers.shippingLabels
-        self.shippingLabels = shippingLabels
-        self.shippingLabelOrderItemsAggregator = ShippingLabelOrderItemsAggregator(shippingLabels: shippingLabels,
-                                                                                   orderItems: items,
-                                                                                   products: self.products,
-                                                                                   productVariations: productVariations)
 
         let shippingLabelSections: [Section] = {
             guard shippingLabels.isNotEmpty else {

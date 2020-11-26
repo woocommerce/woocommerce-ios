@@ -1,5 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+5.7
+-----
+- [***] Dropped iOS 12 support. From now we support iOS 13 and later.
+
+
 5.6
 -----
 - [**] Fixed order list sometimes not showing newly submitted orders. 

@@ -2,7 +2,7 @@
 
 5.7
 -----
-- [***] Dropped iOS 12 support. From now we support iOS 13 and later.
+- [***] Dropped iOS 12 support. From now we support iOS 13 and later. [https://github.com/woocommerce/woocommerce-ios/pull/3216]
 
 
 5.6

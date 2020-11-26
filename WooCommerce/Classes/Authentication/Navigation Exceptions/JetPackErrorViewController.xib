@@ -67,7 +67,7 @@
                     </constraints>
                 </view>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="jIt-xb-rrN">
-                    <rect key="frame" x="40" y="277" width="334" height="352.5"/>
+                    <rect key="frame" x="40" y="257" width="334" height="352.5"/>
                     <subviews>
                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="woo-no-jetpack-error" translatesAutoresizingMaskIntoConstraints="NO" id="Osv-Wo-lxW">
                             <rect key="frame" x="26.5" y="0.0" width="281" height="150"/>
@@ -93,8 +93,9 @@
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="10Z-y1-ZQ6" secondAttribute="trailing" id="3Fe-tr-bmb"/>
+                <constraint firstItem="jIt-xb-rrN" firstAttribute="top" relation="greaterThanOrEqual" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="8" id="4vu-ll-3S2"/>
                 <constraint firstAttribute="trailing" secondItem="jIt-xb-rrN" secondAttribute="trailing" constant="40" id="Z7E-hC-lbB"/>
-                <constraint firstItem="jIt-xb-rrN" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" id="ZZg-jd-e4d"/>
+                <constraint firstItem="jIt-xb-rrN" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" constant="-20" id="ZZg-jd-e4d"/>
                 <constraint firstItem="jIt-xb-rrN" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="40" id="jMe-jj-6Bt"/>
                 <constraint firstItem="10Z-y1-ZQ6" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="r9Z-y5-j3W"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="10Z-y1-ZQ6" secondAttribute="bottom" id="rPP-rT-zVR"/>

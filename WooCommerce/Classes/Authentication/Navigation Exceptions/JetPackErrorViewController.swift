@@ -41,6 +41,7 @@ private extension JetPackErrorViewController {
     }
 
     func configureErrorMessage() {
+        errorMessage.applyBodyStyle()
         errorMessage.attributedText = viewModel.text
     }
 

@@ -13,15 +13,10 @@ struct JetpackErrorViewModel: ULErrorViewModel {
     let image: UIImage = .loginNoJetpackError
 
     var text: NSAttributedString {
-        guard let urlComponents = URLComponents(string: siteURL),
-              let host = urlComponents.host else {
-            return NSAttributedString(string: siteURL)
-        }
-
         let font: UIFont = .body
         let boldFont: UIFont = font.bold
 
-        let boldSiteAddress = NSAttributedString(string: host + urlComponents.path,
+        let boldSiteAddress = NSAttributedString(string: siteURL.trimHTTPScheme(),
                                                            attributes: [.font: boldFont])
         let message = NSMutableAttributedString(string: Localization.errorMessage)
 

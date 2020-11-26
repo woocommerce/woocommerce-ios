@@ -12,6 +12,8 @@ final class TitleAndEditableValueTableViewCellViewModel {
     let placeholder: String?
     /// If `false`, the text field will be disabled. Defaults to `true`.
     let allowsEditing: Bool
+    /// If `true`, the keyboard will be dismissed on tapping return. Defaults to `false`.
+    let hidesKeyboardOnReturn: Bool
 
     private let valueSubject: BehaviorSubject<String?>
 
@@ -27,10 +29,11 @@ final class TitleAndEditableValueTableViewCellViewModel {
         valueSubject.value
     }
 
-    init(title: String?, placeholder: String? = nil, initialValue: String? = nil, allowsEditing: Bool = true) {
+    init(title: String?, placeholder: String? = nil, initialValue: String? = nil, allowsEditing: Bool = true, hidesKeyboardOnReturn: Bool = false) {
         self.title = title
         self.placeholder = placeholder
         self.allowsEditing = allowsEditing
+        self.hidesKeyboardOnReturn = hidesKeyboardOnReturn
 
         valueSubject = BehaviorSubject(initialValue)
     }

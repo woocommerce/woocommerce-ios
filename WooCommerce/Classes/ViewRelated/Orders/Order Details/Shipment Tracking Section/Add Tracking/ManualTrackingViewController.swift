@@ -258,7 +258,8 @@ extension ManualTrackingViewController: UITableViewDataSource {
         let cellViewModel = TitleAndEditableValueTableViewCellViewModel(
             title: NSLocalizedString("Tracking number", comment: "Add / Edit shipping carrier. Title of cell presenting tracking number"),
             placeholder: NSLocalizedString("Enter tracking number", comment: "Add custom shipping carrier. Placeholder of cell presenting tracking number"),
-            initialValue: viewModel.trackingNumber
+            initialValue: viewModel.trackingNumber,
+            hidesKeyboardOnReturn: true
         )
         cell.update(viewModel: cellViewModel)
         cell.accessoryType = .none

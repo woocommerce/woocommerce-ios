@@ -1,105 +1,57 @@
-
 import UIKit
-import WordPressAuthenticator
 import SafariServices
+import WordPressAuthenticator
 
-final class JetPackErrorViewController: UIViewController {
+struct JetpackErrorViewModel: ULErrorViewModel {
     private let siteURL: String
-
-    @IBOutlet private var primaryButton: NUXButton!
-    @IBOutlet private var secondaryButton: NUXButton!
-    @IBOutlet private var imageView: UIImageView!
-    @IBOutlet weak var errorMessage: UILabel!
-    @IBOutlet weak var extraInfoButton: UIButton!
 
     init(siteURL: String) {
         self.siteURL = siteURL
-        super.init(nibName: Self.nibName, bundle: nil)
     }
 
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    // MARK: - Queries
+    let image: UIImage = .loginNoJetpackError
+
+    var text: NSAttributedString {
+        NSAttributedString(string: String(format: Localization.errorMessage, siteURL))
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    let isAuxiliaryButtonVisible = true
 
-        configureImageView()
-        configureErrorMessage()
-        configureExtraInfoButton()
+    let auxiliaryButtonTitle = Localization.whatIsJetpack
 
-        configurePrimaryButton()
-        configureSecondaryButton()
-    }
-}
+    let primaryButtonTitle = Localization.primaryButtonTitle
 
+    let secondaryButtonTitle = Localization.secondaryButtonTitle
 
-// MARK: - View configuration
-private extension JetPackErrorViewController {
-    func configureImageView() {
-        imageView.image = .loginNoJetpackError
-    }
-
-    func configureErrorMessage() {
-        let message = String(format: Localization.errorMessage, siteURL)
-        errorMessage.text = message
-    }
-
-    func configureExtraInfoButton() {
-        extraInfoButton.applyLinkButtonStyle()
-        extraInfoButton.setTitle(Localization.whatIsJetpack, for: .normal)
-        extraInfoButton.on(.touchUpInside) { [weak self] _ in
-            self?.didTapAuxiliaryButton()
-        }
-    }
-
-    func configurePrimaryButton() {
-        primaryButton.isPrimary = true
-        primaryButton.setTitle(Localization.primaryButtonTitle, for: .normal)
-        primaryButton.on(.touchUpInside) { [weak self] _ in
-            self?.didTapPrimaryButton()
-        }
-    }
-
-    func configureSecondaryButton() {
-        secondaryButton.setTitle(Localization.secondaryButtonTitle, for: .normal)
-        secondaryButton.on(.touchUpInside) { [weak self] _ in
-            self?.didTapSecondaryButton()
-        }
-    }
-}
-
-
-// MARK: - Actions
-private extension JetPackErrorViewController {
-    func didTapPrimaryButton() {
+    // MARK: - Commands
+    func didTapPrimaryButton(in viewController: UIViewController?) {
         guard let url = URL(string: Strings.instructionsURLString) else {
             return
         }
 
         let safariViewController = SFSafariViewController(url: url)
         safariViewController.modalPresentationStyle = .pageSheet
-        present(safariViewController, animated: true)
+        viewController?.present(safariViewController, animated: true)
     }
 
-    func didTapSecondaryButton() {
+    func didTapSecondaryButton(in viewController: UIViewController?) {
         let refreshCommand = NavigateToEnterSite()
-        refreshCommand.execute(from: self)
+        refreshCommand.execute(from: viewController)
     }
 
-    func didTapAuxiliaryButton() {
+    func didTapAuxiliaryButton(in viewController: UIViewController?) {
         guard let url = URL(string: Strings.whatsJetpackURLString) else {
             return
         }
 
         let safariViewController = SFSafariViewController(url: url)
         safariViewController.modalPresentationStyle = .pageSheet
-        present(safariViewController, animated: true)
+        viewController?.present(safariViewController, animated: true)
     }
 }
 
-// MARK: - Strings
-private extension JetPackErrorViewController {
+private extension JetpackErrorViewModel {
     enum Localization {
         static let errorMessage = NSLocalizedString("To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store.",
                                                     comment: "Message explaining that Jetpack needs to be installed for a particular site. "

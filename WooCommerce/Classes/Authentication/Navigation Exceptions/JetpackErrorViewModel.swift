@@ -13,7 +13,16 @@ struct JetpackErrorViewModel: ULErrorViewModel {
     let image: UIImage = .loginNoJetpackError
 
     var text: NSAttributedString {
-        NSAttributedString(string: String(format: Localization.errorMessage, siteURL))
+        let font: UIFont = .body
+        let boldFont: UIFont = font.bold
+
+        let boldSiteAddress = NSAttributedString(string: siteURL,
+                                                           attributes: [.font: boldFont])
+        let message = NSMutableAttributedString(string: Localization.errorMessage)
+
+        message.replaceFirstOccurrence(of: "%@", with: boldSiteAddress)
+
+        return message
     }
 
     let isAuxiliaryButtonVisible = true

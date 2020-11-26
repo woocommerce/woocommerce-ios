@@ -166,7 +166,7 @@ private extension ProductPriceSettingsViewController {
     /// Displays a Notice onscreen, indicating that you can't add a sale price without adding before the regular price
     ///
     func displaySalePriceWithoutRegularPriceErrorNotice() {
-        UIApplication.shared.keyWindow?.endEditing(true)
+        UIApplication.shared.currentKeyWindow?.endEditing(true)
         let message = NSLocalizedString("The sale price can't be added without the regular price.",
                                         comment: "Product price error notice message, when the sale price is added but the regular price is not")
 
@@ -177,7 +177,7 @@ private extension ProductPriceSettingsViewController {
     /// Displays a Notice onscreen, indicating that the sale price need to be higher than the regular price
     ///
     func displaySalePriceErrorNotice() {
-        UIApplication.shared.keyWindow?.endEditing(true)
+        UIApplication.shared.currentKeyWindow?.endEditing(true)
         let message = NSLocalizedString("The sale price should be lower than the regular price.",
                                         comment: "Product price error notice message, when the sale price is higher than the regular price")
 

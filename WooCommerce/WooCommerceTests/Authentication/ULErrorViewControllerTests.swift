@@ -16,6 +16,19 @@ final class ULErrorViewControllerTests: XCTestCase {
         XCTAssertEqual(image, viewModel.image)
     }
 
+    func test_viewcontroller_presents_text_provided_by_viewmodel() throws {
+        // Given
+        let viewModel = ErrorViewModel()
+        let viewController = ULErrorViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let text = viewController.getLabel().attributedText
+
+        // Then
+        XCTAssertEqual(text, viewModel.text)
+    }
+
     func test_viewcontroller_assigns_title_provided_by_viewmodel_to_auxbutton() throws {
         // Given
         let viewModel = ErrorViewModel()
@@ -58,6 +71,59 @@ final class ULErrorViewControllerTests: XCTestCase {
         XCTAssertTrue(viewModel.auxiliaryButtonTapped)
     }
 
+    func test_viewcontroller_assigns_title_provided_by_viewmodel_to_primary_button() throws {
+        // Given
+        let viewModel = ErrorViewModel()
+        let viewController = ULErrorViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let primaryButtonTitle = viewController.primaryActionButton().title(for: .normal)
+
+        // Then
+        XCTAssertEqual(primaryButtonTitle, viewModel.primaryButtonTitle)
+    }
+
+    func test_viewcontroller_hits_viewmodel_when_primary_button_is_tapped() throws {
+        // Given
+        let viewModel = ErrorViewModel()
+        let viewController = ULErrorViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let primaryButton = viewController.primaryActionButton()
+        primaryButton.sendActions(for: .touchUpInside)
+
+        // Then
+        XCTAssertTrue(viewModel.primaryButtonTapped)
+    }
+
+    func test_viewcontroller_assigns_title_provided_by_viewmodel_to_secondary_button() throws {
+        // Given
+        let viewModel = ErrorViewModel()
+        let viewController = ULErrorViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let secondaryActionButtonTitle = viewController.secondaryActionButton().title(for: .normal)
+
+        // Then
+        XCTAssertEqual(secondaryActionButtonTitle, viewModel.secondaryButtonTitle)
+    }
+
+    func test_viewcontroller_hits_viewmodel_when_secondary_button_is_tapped() throws {
+        // Given
+        let viewModel = ErrorViewModel()
+        let viewController = ULErrorViewController(viewModel: viewModel)
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let secondaryButton = viewController.secondaryActionButton()
+        secondaryButton.sendActions(for: .touchUpInside)
+
+        // Then
+        XCTAssertTrue(viewModel.secondaryButtonTapped)
+    }
 }
 
 
@@ -66,7 +132,7 @@ private final class ErrorViewModel: ULErrorViewModel {
 
     let text: NSAttributedString = NSAttributedString(string: "woocommerce")
 
-    let isAuxiliaryButtonHidden: Bool = true
+    let isAuxiliaryButtonHidden: Bool = false
 
     let auxiliaryButtonTitle: String = "Aux"
 

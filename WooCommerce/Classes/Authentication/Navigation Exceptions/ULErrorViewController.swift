@@ -98,6 +98,10 @@ extension ULErrorViewController {
         return imageView
     }
 
+    func getLabel() -> UILabel {
+        return errorMessage
+    }
+
     func getAuxiliaryButton() -> UIButton {
         return extraInfoButton
     }

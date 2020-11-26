@@ -22,7 +22,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
         let isVisible = viewModel.isAuxiliaryButtonHidden
 
         // Then
-        XCTAssertTrue(isVisible)
+        XCTAssertFalse(isVisible)
     }
 
     func test_viewmodel_provides_expected_title_for_auxiliary_button() {

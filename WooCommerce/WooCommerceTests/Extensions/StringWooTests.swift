@@ -21,4 +21,25 @@ final class StringWooTests: XCTestCase {
 
         XCTAssertEqual(sanitizedURL, expectedResult)
     }
+
+    func testSchemeIsTrimmedForURLWithoutPath() {
+        let expectedResult = "automattic.com"
+        let url = "https://automattic.com"
+
+        XCTAssertEqual(url.trimHTTPScheme(), expectedResult)
+    }
+
+    func testSchemeIsTrimmedForURLWithPath() {
+        let expectedResult = "automattic.com/work-with-us"
+        let url = "https://automattic.com/work-with-us"
+
+        XCTAssertEqual(url.trimHTTPScheme(), expectedResult)
+    }
+
+    func testStringIsNotTrimmerIfItIsNotAURL() {
+        let expectedResult = "regular string"
+        let notAURL = expectedResult
+
+        XCTAssertEqual(notAURL.trimHTTPScheme(), expectedResult)
+    }
 }

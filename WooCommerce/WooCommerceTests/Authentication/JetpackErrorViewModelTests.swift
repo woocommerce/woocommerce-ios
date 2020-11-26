@@ -19,7 +19,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
         let viewModel = JetpackErrorViewModel(siteURL: Expectations.url)
 
         // When
-        let isVisible = viewModel.isAuxiliaryButtonVisible
+        let isVisible = viewModel.isAuxiliaryButtonHidden
 
         // Then
         XCTAssertTrue(isVisible)

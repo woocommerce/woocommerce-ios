@@ -949,6 +949,7 @@
 		D8610BCC256F284700A5DF27 /* ULErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8610BCB256F284700A5DF27 /* ULErrorViewModel.swift */; };
 		D8610BD2256F291000A5DF27 /* JetpackErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8610BD1256F291000A5DF27 /* JetpackErrorViewModel.swift */; };
 		D8610BDD256F5ABF00A5DF27 /* JetpackErrorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8610BDC256F5ABF00A5DF27 /* JetpackErrorViewModelTests.swift */; };
+		D8610BF7256F5F0900A5DF27 /* ULErrorViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8610BF6256F5F0900A5DF27 /* ULErrorViewControllerTests.swift */; };
 		D8736B5122EB69E300A14A29 /* OrderDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5022EB69E300A14A29 /* OrderDetailsViewModelTests.swift */; };
 		D8736B5322EF4F5900A14A29 /* NotificationsBadgeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5222EF4F5900A14A29 /* NotificationsBadgeController.swift */; };
 		D8736B5A22F07D7100A14A29 /* MainTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5922F07D7100A14A29 /* MainTabViewModel.swift */; };
@@ -2014,6 +2015,7 @@
 		D8610BCB256F284700A5DF27 /* ULErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ULErrorViewModel.swift; sourceTree = "<group>"; };
 		D8610BD1256F291000A5DF27 /* JetpackErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackErrorViewModel.swift; sourceTree = "<group>"; };
 		D8610BDC256F5ABF00A5DF27 /* JetpackErrorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackErrorViewModelTests.swift; sourceTree = "<group>"; };
+		D8610BF6256F5F0900A5DF27 /* ULErrorViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ULErrorViewControllerTests.swift; sourceTree = "<group>"; };
 		D8736B5022EB69E300A14A29 /* OrderDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OrderDetailsViewModelTests.swift; path = WooCommerceTests/ViewRelated/OrderDetailsViewModelTests.swift; sourceTree = SOURCE_ROOT; };
 		D8736B5222EF4F5900A14A29 /* NotificationsBadgeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsBadgeController.swift; sourceTree = "<group>"; };
 		D8736B5922F07D7100A14A29 /* MainTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabViewModel.swift; sourceTree = "<group>"; };
@@ -3368,6 +3370,7 @@
 			children = (
 				D8610BDC256F5ABF00A5DF27 /* JetpackErrorViewModelTests.swift */,
 				57C2F6E424C27B1E00131012 /* Epilogue */,
+				D8610BF6256F5F0900A5DF27 /* ULErrorViewControllerTests.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -6067,6 +6070,7 @@
 				02A275C223FE590A005C560F /* MockKingfisherImageDownloader.swift in Sources */,
 				CEEC9B6021E79CAA0055EEF0 /* FeatureFlagTests.swift in Sources */,
 				02AC822C2498BC9700A615FB /* ProductFormViewModel+UpdatesTests.swift in Sources */,
+				D8610BF7256F5F0900A5DF27 /* ULErrorViewControllerTests.swift in Sources */,
 				02279594237A60FD00787C63 /* AztecHeaderFormatBarCommandTests.swift in Sources */,
 				0259EF77246BF4EC00B84FDF /* ProductDetailsFactoryTests.swift in Sources */,
 				4574745F24EA9ADE00CF49BC /* ProductTypeBottomSheetListSelectorCommandTests.swift in Sources */,

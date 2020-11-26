@@ -46,7 +46,7 @@ private extension ULErrorViewController {
     }
 
     func configureExtraInfoButton() {
-        guard viewModel.isAuxiliaryButtonVisible else {
+        guard viewModel.isAuxiliaryButtonHidden == false else {
             extraInfoButton.isHidden = true
 
             return
@@ -88,5 +88,25 @@ private extension ULErrorViewController {
 
     func didTapSecondaryButton() {
         viewModel.didTapSecondaryButton(in: self)
+    }
+}
+
+
+// MARK: - Tests
+extension ULErrorViewController {
+    func getImageView() -> UIImageView {
+        return imageView
+    }
+
+    func getAuxiliaryButton() -> UIButton {
+        return extraInfoButton
+    }
+
+    func primaryActionButton() -> UIButton {
+        return primaryButton
+    }
+
+    func secondaryActionButton() -> UIButton {
+        return secondaryButton
     }
 }

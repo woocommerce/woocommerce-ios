@@ -25,7 +25,7 @@ struct JetpackErrorViewModel: ULErrorViewModel {
         return message
     }
 
-    let isAuxiliaryButtonVisible = true
+    let isAuxiliaryButtonHidden = false
 
     let auxiliaryButtonTitle = Localization.whatIsJetpack
 

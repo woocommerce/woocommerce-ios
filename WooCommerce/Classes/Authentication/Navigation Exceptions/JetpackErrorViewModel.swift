@@ -21,7 +21,7 @@ struct JetpackErrorViewModel: ULErrorViewModel {
         let font: UIFont = .body
         let boldFont: UIFont = font.bold
 
-        let boldSiteAddress = NSAttributedString(string: host,
+        let boldSiteAddress = NSAttributedString(string: host + urlComponents.path,
                                                            attributes: [.font: boldFont])
         let message = NSMutableAttributedString(string: Localization.errorMessage)
 

@@ -3,7 +3,7 @@ import UIKit
 import WordPressAuthenticator
 import SafariServices
 
-final class JetPackErrorViewController: UIViewController {
+final class ULErrorViewController: UIViewController {
     private let viewModel: ULErrorViewModel
 
     @IBOutlet private var primaryButton: NUXButton!
@@ -35,7 +35,7 @@ final class JetPackErrorViewController: UIViewController {
 
 
 // MARK: - View configuration
-private extension JetPackErrorViewController {
+private extension ULErrorViewController {
     func configureImageView() {
         imageView.image = viewModel.image
     }
@@ -77,7 +77,7 @@ private extension JetPackErrorViewController {
 
 
 // MARK: - Actions
-private extension JetPackErrorViewController {
+private extension ULErrorViewController {
     func didTapAuxiliaryButton() {
         viewModel.didTapAuxiliaryButton(in: self)
     }

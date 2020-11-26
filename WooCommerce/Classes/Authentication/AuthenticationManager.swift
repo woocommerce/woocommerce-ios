@@ -190,7 +190,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         guard let site = siteInfo, site.hasJetpack == true else {
             let siteURL = siteInfo?.url ?? "your site"
-            let installJetpackUI = JetPackErrorViewController(siteURL: siteURL)
+            let viewModel = JetpackErrorViewModel(siteURL: siteURL)
+            let installJetpackUI = JetPackErrorViewController(viewModel: viewModel)
+
             let authenticationResult: WordPressAuthenticatorResult = .injectViewController(value: installJetpackUI)
 
             onCompletion(authenticationResult)

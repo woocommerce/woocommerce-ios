@@ -8,7 +8,7 @@ inhibit_all_warnings!
 use_frameworks! # Defaulting to use_frameworks! See pre_install hook below for static linking.
 use_modular_headers!
 
-app_ios_deployment_target = Gem::Version.new('12.0')
+app_ios_deployment_target = Gem::Version.new('13.0')
 
 platform :ios, app_ios_deployment_target.version
 workspace 'WooCommerce.xcworkspace'

@@ -353,6 +353,10 @@ private extension ManualTrackingViewController {
     func executeAction(for indexPath: IndexPath) {
         let row = rowAtIndexPath(indexPath)
 
+        if row == .shippingProvider || row == .dateShipped {
+            view.endEditing(true)
+        }
+
         if row == .dateShipped && viewModel.isAdding {
             displayDatePicker(at: indexPath)
             return

@@ -12,7 +12,7 @@ class FancyAnimatedButton: FancyButton {
     }
 
     @objc let activityIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .gray)
+        let indicator = UIActivityIndicatorView(style: .medium)
         indicator.hidesWhenStopped = true
         return indicator
     }()

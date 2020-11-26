@@ -53,6 +53,15 @@ final class IssueRefundViewController: UIViewController {
     }
 }
 
+// MARK: External Updates
+extension IssueRefundViewController {
+    /// Updates item at the given index path with the new refund quantity.
+    ///
+    func updateRefundQuantity(quantity: Int, forItemAtIndex index: Int) {
+        viewModel.updateRefundQuantity(quantity: quantity, forItemAtIndex: index)
+    }
+}
+
 // MARK: ViewModel observation
 private extension IssueRefundViewController {
     func observeViewModel() {
@@ -93,7 +102,7 @@ private extension IssueRefundViewController {
                 return
         }
 
-        let command = RefundItemQuantityListSelectorCommand(maxRefundQuantity: refundQuantity, currentQuantity: currentQuantity)
+        let command = RefundItemQuantityListSelectorCommand(maxRefundQuantity: refundQuantity, currentQuantity: currentQuantity, itemIndex: indexPath.row)
         onSelectQuantityAction?(command)
 
         viewModel.trackQuantityButtonTapped()

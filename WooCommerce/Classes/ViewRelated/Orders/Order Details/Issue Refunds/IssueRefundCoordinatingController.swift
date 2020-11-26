@@ -32,10 +32,16 @@ private extension IssueRefundCoordinatingController {
     ///
     func startRefundNavigation() {
         let issueRefundViewController = IssueRefundViewController(order: order, refunds: refunds)
+
+        // Select Quantity Action
         issueRefundViewController.onSelectQuantityAction = { [weak self] command in
-            self?.navigateToItemQuantitySelection(using: command)
+            self?.navigateToItemQuantitySelection(using: command) { selectedQuantity in
+                issueRefundViewController.updateRefundQuantity(quantity: selectedQuantity, forItemAtIndex: command.itemIndex)
+            }
 
         }
+
+        // Next Action
         issueRefundViewController.onNextAction = { [weak self] viewModel in
             self?.navigateToRefundConfirmation(with: viewModel)
         }
@@ -44,14 +50,14 @@ private extension IssueRefundCoordinatingController {
     }
 
     /// Navigates to `ListSelectorViewController` with the provided command.
+    /// `onCompletion` will be executed with the "selected quantity" value.
     ///
-    func navigateToItemQuantitySelection(using command: RefundItemQuantityListSelectorCommand) {
-        let selectorViewController = ListSelectorViewController(command: command, tableViewStyle: .plain) { [weak self] selectedQuantity in
+    func navigateToItemQuantitySelection(using command: RefundItemQuantityListSelectorCommand, onCompletion: @escaping (Int) -> Void) {
+        let selectorViewController = ListSelectorViewController(command: command, tableViewStyle: .plain) { selectedQuantity in
             guard let selectedQuantity = selectedQuantity else {
                 return
             }
-            // TODO: Handle Selection
-//            self?.viewModel.updateRefundQuantity(quantity: selectedQuantity, forItemAtIndex: indexPath.row)
+            onCompletion(selectedQuantity)
         }
         show(selectorViewController, sender: nil)
     }

@@ -9,7 +9,7 @@ struct JetpackErrorViewModel: ULErrorViewModel {
         self.siteURL = siteURL
     }
 
-    // MARK: - Queries
+    // MARK: - Data and configuration
     let image: UIImage = .loginNoJetpackError
 
     var text: NSAttributedString {
@@ -33,7 +33,7 @@ struct JetpackErrorViewModel: ULErrorViewModel {
 
     let secondaryButtonTitle = Localization.secondaryButtonTitle
 
-    // MARK: - Commands
+    // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
         guard let url = URL(string: Strings.instructionsURLString) else {
             return
@@ -60,6 +60,8 @@ struct JetpackErrorViewModel: ULErrorViewModel {
     }
 }
 
+
+// MARK: - Private data structures
 private extension JetpackErrorViewModel {
     enum Localization {
         static let errorMessage = NSLocalizedString("To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store.",

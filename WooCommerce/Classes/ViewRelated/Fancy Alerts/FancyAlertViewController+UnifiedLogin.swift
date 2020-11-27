@@ -28,7 +28,8 @@ private extension FancyAlertViewController {
         )
 
         static let longDescription = NSLocalizedString(
-            "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats",
+            "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, "
+            + "including push notifications and stats",
             comment: "Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected"
         )
 

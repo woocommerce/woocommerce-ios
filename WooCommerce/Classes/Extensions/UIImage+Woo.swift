@@ -528,6 +528,12 @@ extension UIImage {
     static var waitingForCustomersImage: UIImage {
         return UIImage(named: "woo-waiting-customers")!
     }
+
+    /// What is Jetpack Image
+    ///
+    static var whatIsJetpackImage: UIImage {
+        return UIImage(named: "woo-what-is-jetpack")!
+    }
 }
 
 private extension UIImage {

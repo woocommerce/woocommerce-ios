@@ -2,6 +2,9 @@ import UIKit
 import SafariServices
 import WordPressAuthenticator
 
+
+/// Configuration and actions for an ULErrorViewController, modelling
+/// an error when Jetpack is not installed or is not connected
 struct JetpackErrorViewModel: ULErrorViewModel {
     private let siteURL: String
 

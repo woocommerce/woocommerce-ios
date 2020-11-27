@@ -3,7 +3,13 @@ import UIKit
 import WordPressAuthenticator
 import SafariServices
 
+
+/// UI presenting errors in the Unified Login flow.
+/// This view controller can either be presented from within WooCommerce
+/// or be injected into WordPressAuthenticator.
 final class ULErrorViewController: UIViewController {
+    /// The view model providing configuration for this view controller
+    /// and support for user actions
     private let viewModel: ULErrorViewModel
 
     @IBOutlet private var primaryButton: NUXButton!

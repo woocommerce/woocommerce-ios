@@ -7,7 +7,7 @@ public extension FancyAlertViewController {
         let moreInfoButton = makeMoreInfoButtonConfig()
         let config = FancyAlertViewController.Config(titleText: Localization.whatIsJetpack,
                                                      bodyText: Localization.longDescription,
-                                                     headerImage: nil,
+                                                     headerImage: .whatIsJetpackImage,
                                                      dividerPosition: .bottom,
                                                      defaultButton: dismissButton,
                                                      cancelButton: nil,

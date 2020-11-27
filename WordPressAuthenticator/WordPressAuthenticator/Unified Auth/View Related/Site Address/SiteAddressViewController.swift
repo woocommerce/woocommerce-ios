@@ -140,6 +140,24 @@ final class SiteAddressViewController: LoginViewController {
         }
     }
 
+    override func displayRemoteError(_ error: Error) {
+        guard authenticationDelegate.shouldDisplayError(error) == true else {
+            super.displayRemoteError(error)
+            return
+        }
+
+        authenticationDelegate.handleError(error) { result in
+            switch result {
+            case .error(_):
+                break
+            case .presentPasswordController(_):
+                break
+            case let .injectViewController(customUI):
+                self.navigationController?.pushViewController(customUI, animated: true)
+            }
+        }
+    }
+
     /// Reload the tableview and show errors, if any.
     ///
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
@@ -418,6 +436,21 @@ private extension SiteAddressViewController {
                 self.configureViewLoading(false)
 
                 let err = self.originalErrorOrError(error: error as NSError)
+
+                if self.authenticationDelegate.shouldDisplayError(err) {
+                    self.authenticationDelegate.handleError(err) { result in
+                        switch result {
+                        case .error(_):
+                            break
+                        case .presentPasswordController(_):
+                            break
+                        case let .injectViewController(customUI):
+                            self.navigationController?.pushViewController(customUI, animated: true)
+                        }
+                    }
+
+                    return
+                }
 
                 if let xmlrpcValidatorError = err as? WordPressOrgXMLRPCValidatorError {
                     self.displayError(message: xmlrpcValidatorError.localizedDescription, moveVoiceOverFocus: true)

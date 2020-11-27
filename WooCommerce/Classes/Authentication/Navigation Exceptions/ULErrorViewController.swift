@@ -9,8 +9,8 @@ final class ULErrorViewController: UIViewController {
     @IBOutlet private var primaryButton: NUXButton!
     @IBOutlet private var secondaryButton: NUXButton!
     @IBOutlet private var imageView: UIImageView!
-    @IBOutlet weak var errorMessage: UILabel!
-    @IBOutlet weak var extraInfoButton: UIButton!
+    @IBOutlet private weak var errorMessage: UILabel!
+    @IBOutlet private weak var extraInfoButton: UIButton!
 
     init(viewModel: ULErrorViewModel) {
         self.viewModel = viewModel

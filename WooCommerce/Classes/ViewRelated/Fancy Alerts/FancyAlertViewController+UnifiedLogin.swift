@@ -8,7 +8,7 @@ public extension FancyAlertViewController {
         let config = FancyAlertViewController.Config(titleText: Localization.whatIsJetpack,
                                                      bodyText: Localization.longDescription,
                                                      headerImage: .whatIsJetpackImage,
-                                                     dividerPosition: .bottom,
+                                                     dividerPosition: .top,
                                                      defaultButton: dismissButton,
                                                      cancelButton: nil,
                                                      moreInfoButton: moreInfoButton,

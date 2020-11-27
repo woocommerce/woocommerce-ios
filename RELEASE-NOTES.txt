@@ -8,6 +8,7 @@
 - [*] removed the Product Title in product screen navigation bar. [https://github.com/woocommerce/woocommerce-ios/pull/3187]
 - [*] the icon of the cells inside the Product Detail are now aligned at 10px from the top margin. [https://github.com/woocommerce/woocommerce-ios/pull/3199]
 - [**] Added the ability to issue refunds from the order screen. Refunds can be done towards products or towards shipping. [https://github.com/woocommerce/woocommerce-ios/pull/3204]
+- [*] Prevent banner dismiss when tapping "give feedback" on products screen. [https://github.com/woocommerce/woocommerce-ios/pull/3221]
 
 
 5.5

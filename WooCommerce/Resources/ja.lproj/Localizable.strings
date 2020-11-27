@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-11-13 15:54:04+0000 */
+/* Translation-Revision-Date: 2020-11-25 10:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -42,6 +42,9 @@
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
+/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
+"%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
+
 /* 1 Item */
 "%@ Item" = "%@個のアイテム";
 
@@ -77,12 +80,6 @@
 
 /* Format of the number of grouped products in plural form */
 "%ld products" = "%ld 商品";
-
-/* Format of the number of product review in singular form */
-"%ld review" = "%ld レビュー";
-
-/* Format of the number of product reviews in plural form */
-"%ld reviews" = "%ld レビュー";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld個のバリエーション";
@@ -153,10 +150,10 @@
 "Add Downloadable File" = "ダウンロード可能なファイルを追加";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "ファイルを追加";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "ファイルを追加";
+"Add File" = "Add File";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "写真を追加";
@@ -670,17 +667,17 @@
 
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
-"Download Settings" = "Download Settings";
+"Download Settings" = "ダウンロード設定";
 
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
-"Download Settings" = "ダウンロード設定";
-
-/* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Download expiration";
+"Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "ダウンロードの有効期限";
+
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Download limit";
@@ -689,16 +686,16 @@
 "Download limit" = "ダウンロード制限";
 
 /* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "Downloadable Files";
-
-/* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "ダウンロード可能なファイル";
 
-/* Downloadable Product label in Product Settings */
-"Downloadable Product" = "Downloadable Product";
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "Downloadable Files";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "ダウンロード可能な商品";
+
+/* Downloadable Product label in Product Settings */
+"Downloadable Product" = "Downloadable Product";
 
 /* Title of the Downloadable Files row on Product main screen */
 "Downloadable files" = "Downloadable files";
@@ -775,10 +772,10 @@
 "Enter the number of days before a download link expires, or leave blank if never it expires" = "ダウンロードリンクの期限が切れるまでの日数を入力するか、期限がない場合は空欄のままにします";
 
 /* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "ファイルのダウンロード可能な回数を入力するか、ダウンロード回数に制限がない場合は空欄のままにします";
 
 /* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "ファイルのダウンロード可能な回数を入力するか、ダウンロード回数に制限がない場合は空欄のままにします";
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "WordPress.com アカウント用のパスワードを入力します。";
@@ -835,11 +832,11 @@
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "ファイル名";
+"File Name" = "File Name";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "File Name";
+"File Name" = "ファイル名";
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
@@ -1195,10 +1192,10 @@
 "Manual Offsets" = "マニュアルオフセット";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "%1$@ 経由で手動返金";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "%1$@ 経由で手動返金";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "マッピング済みドメイン";
@@ -1284,9 +1281,6 @@
 /* The title for the net amount paid cell */
 "Net" = "純額";
 
-/* The title of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
-"New editing options available" = "新しい編集オプションが利用可能";
-
 /* Title of a button.
    Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "次へ";
@@ -1308,25 +1302,25 @@
 "No data available" = "使用可能なデータがありません";
 
 /* Placeholder of the cell text field in Download expiration */
-"No expiration" = "有効期限はありません";
-
-/* Placeholder of the cell text field in Download expiration */
 "No expiration" = "No expiration";
 
-/* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "No files yet";
+/* Placeholder of the cell text field in Download expiration */
+"No expiration" = "有効期限はありません";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "まだファイルはありません";
+
+/* Placeholder for empty Downloadable Files row on Product main screen */
+"No files yet" = "No files yet";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "画像がありません";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "No limit";
+"No limit" = "制限がありません";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "制限がありません";
+"No limit" = "No limit";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "価格未設定";
@@ -1338,14 +1332,14 @@
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "まだ商品がありません";
 
+/* Placeholder for empty product ratings */
+"No ratings" = "評価なし";
+
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
 "No results found for (term)\nAdd a custom carrier" = "(term) の検索結果は0件でした\nカスタムの配送業者を追加";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "この期間には収益がありません";
-
-/* Placeholder for empty product reviews */
-"No reviews yet" = "まだレビューがありません";
 
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "送料区分がまだありません";
@@ -1587,10 +1581,10 @@
 "Powered by Automattic" = "Powered by Automattic";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "過去に返金済み";
+"Previously Refunded" = "Previously Refunded";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Previously Refunded";
+"Previously Refunded" = "過去に返金済み";
 
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
    Product Price Settings navigation title - Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
@@ -1756,10 +1750,10 @@
 "Refund Details" = "返金詳細";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "配送料を返金";
+"Refund Shipping" = "Refund Shipping";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Refund Shipping";
+"Refund Shipping" = "配送料を返金";
 
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "Refund Via";
@@ -1890,6 +1884,12 @@
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "商品を保存しています...";
+
+/* Navigation bar title for scanning a barcode to use as a product's SKU. */
+"Scan barcode to update SKU" = "バーコードをスキャンして SKU を更新";
+
+/* The instruction text below the scan area in the barcode scanner for product SKU. */
+"Scan product barcode" = "商品バーコードのスキャン";
 
 /* Scan Products */
 "Scan products" = "商品をスキャン";
@@ -2363,9 +2363,6 @@
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "この商品の価格。編集可能。";
 
-/* Displayed whenever a review that was onscreen got deleted. */
-"The review has been removed" = "レビューを削除しました";
-
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "セール価格を標準価格なしで追加することはできません。";
 
@@ -2442,16 +2439,16 @@
 "This is the URL-friendly version of the product title" = "これは商品タイトルの URL フレンドリーなバージョンです。";
 
 /* Footer text for Downloadable File Name */
-"This is the name of the file shown to the customer." = "顧客に表示されるファイルの名前です。";
-
-/* Footer text for Downloadable File Name */
 "This is the name of the file shown to the customer." = "This is the name of the file shown to the customer.";
 
-/* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
+/* Footer text for Downloadable File Name */
+"This is the name of the file shown to the customer." = "顧客に表示されるファイルの名前です。";
 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "顧客がアクセスできるファイルの URL です。 入力する URL はエンコード済みである必要があります。";
+
+/* Footer text for Downloadable File URL */
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2657,10 +2654,10 @@
 "Update product inventory and SKU" = "商品在庫と SKU を更新";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "商品のダウンロード可能なファイルの情報をリモートで更新";
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "商品のダウンロード可能なファイルの情報をリモートで更新";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "WooCommerce 3.5に更新して引き続きアプリを使用";
@@ -2883,9 +2880,6 @@
 /* Yesterday Section Header */
 "Yesterday" = "昨日";
 
-/* The info of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
-"You can now edit grouped, external and variable products, change product type and update categories and tags" = "セット販売商品、外部商品、バリエーションの編集と、商品タイプの変更、カテゴリーおよびタグの更新ができるようになりました";
-
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "ご指定のメールアドレスはアカウント登録にご利用いただけません。このメールプロバイダによって、こちらから送信するメールがブロックされる問題が発生することがあるためです。恐れ入りますが、他のメールプロバイダのアドレスをお使いください。";
 
@@ -2922,6 +2916,12 @@
 
 /* No comment provided by engineer. */
 "password" = "パスワード";
+
+/* Format of the number of product ratings in plural form */
+"rated %ld times" = "評価回数%ld回";
+
+/* Format of the number of product ratings in singular form */
+"rated once" = "評価回数1回";
 
 /* Today */
 "today" = "今日";

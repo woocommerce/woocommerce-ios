@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-11-13 14:54:04+0000 */
+/* Translation-Revision-Date: 2020-11-26 10:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -42,6 +42,9 @@
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
+/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
+"%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
+
 /* 1 Item */
 "%@ Item" = "%@ item";
 
@@ -77,12 +80,6 @@
 
 /* Format of the number of grouped products in plural form */
 "%ld products" = "%ld produtos";
-
-/* Format of the number of product review in singular form */
-"%ld review" = "%ld avaliação";
-
-/* Format of the number of product reviews in plural form */
-"%ld reviews" = "%ld avaliações";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld variante";
@@ -153,10 +150,10 @@
 "Add Downloadable File" = "Adicionar arquivo para download";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "Adicionar arquivo";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Adicionar arquivo";
+"Add File" = "Add File";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Adicionar foto";
@@ -670,17 +667,17 @@
 
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
-"Download Settings" = "Download Settings";
+"Download Settings" = "Configurações do botão de download";
 
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
-"Download Settings" = "Configurações do botão de download";
-
-/* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Download expiration";
+"Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "Validade do download";
+
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Download limit";
@@ -689,16 +686,16 @@
 "Download limit" = "Limite de download";
 
 /* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "Downloadable Files";
-
-/* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "Arquivos para download";
 
-/* Downloadable Product label in Product Settings */
-"Downloadable Product" = "Downloadable Product";
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "Downloadable Files";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "Produtos para download";
+
+/* Downloadable Product label in Product Settings */
+"Downloadable Product" = "Downloadable Product";
 
 /* Title of the Downloadable Files row on Product main screen */
 "Downloadable files" = "Downloadable files";
@@ -775,10 +772,10 @@
 "Enter the number of days before a download link expires, or leave blank if never it expires" = "Informe o número de dias antes do link de download expirar ou deixe em branco se ele nunca expira";
 
 /* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Insira o número de vezes que o arquivo pode ser baixado ou deixe em branco para downloads ilimitados";
 
 /* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Insira o número de vezes que o arquivo pode ser baixado ou deixe em branco para downloads ilimitados";
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Digite a senha da sua conta no WordPress.com.";
@@ -835,11 +832,11 @@
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "Nome do arquivo";
+"File Name" = "File Name";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "File Name";
+"File Name" = "Nome do arquivo";
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
@@ -1195,10 +1192,10 @@
 "Manual Offsets" = "Ajustes manuais";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Reembolso manual via %1$@";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "Reembolso manual via %1$@";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Domínio mapeado";
@@ -1284,9 +1281,6 @@
 /* The title for the net amount paid cell */
 "Net" = "Valor líquido";
 
-/* The title of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
-"New editing options available" = "Novas opções de edição disponíveis";
-
 /* Title of a button.
    Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "Próximo";
@@ -1308,25 +1302,25 @@
 "No data available" = "Não há dados disponíveis";
 
 /* Placeholder of the cell text field in Download expiration */
-"No expiration" = "Sem expiração";
-
-/* Placeholder of the cell text field in Download expiration */
 "No expiration" = "No expiration";
 
-/* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "No files yet";
+/* Placeholder of the cell text field in Download expiration */
+"No expiration" = "Sem expiração";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "Sem arquivos ainda";
+
+/* Placeholder for empty Downloadable Files row on Product main screen */
+"No files yet" = "No files yet";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "Nenhuma imagem adicionada";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "No limit";
+"No limit" = "Sem limite";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "Sem limite";
+"No limit" = "No limit";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Nenhum preço definido";
@@ -1338,14 +1332,14 @@
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "Nenhum produto ainda";
 
+/* Placeholder for empty product ratings */
+"No ratings" = "Sem classificações";
+
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
 "No results found for (term)\nAdd a custom carrier" = "Nenhum resultado encontrado para (term)\nAdicionar uma transportadora personalizada";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Nenhuma receita para esse período";
-
-/* Placeholder for empty product reviews */
-"No reviews yet" = "Ainda não há avaliações";
 
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "Não há classes de envio";
@@ -1587,10 +1581,10 @@
 "Powered by Automattic" = "Com tecnologia Automattic";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Já reembolsado";
+"Previously Refunded" = "Previously Refunded";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Previously Refunded";
+"Previously Refunded" = "Já reembolsado";
 
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
    Product Price Settings navigation title - Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
@@ -1756,10 +1750,10 @@
 "Refund Details" = "Detalhes do reembolso";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Reembolsar envio";
+"Refund Shipping" = "Refund Shipping";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Refund Shipping";
+"Refund Shipping" = "Reembolsar envio";
 
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "Refund Via";
@@ -1890,6 +1884,12 @@
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Salvando seu produto...";
+
+/* Navigation bar title for scanning a barcode to use as a product's SKU. */
+"Scan barcode to update SKU" = "Digitalizar código de barras para atualizar a SKU";
+
+/* The instruction text below the scan area in the barcode scanner for product SKU. */
+"Scan product barcode" = "Digitalizar código de barras do produto";
 
 /* Scan Products */
 "Scan products" = "Verificar produtos";
@@ -2363,9 +2363,6 @@
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "O preço deste produto. Editável.";
 
-/* Displayed whenever a review that was onscreen got deleted. */
-"The review has been removed" = "A avaliação foi removida";
-
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "O preço promocional não pode ser adicionado sem o preço normal.";
 
@@ -2442,16 +2439,16 @@
 "This is the URL-friendly version of the product title" = "Esta é a versão compatível com URL para o título do produto";
 
 /* Footer text for Downloadable File Name */
-"This is the name of the file shown to the customer." = "Este é o nome do arquivo exibido para o cliente.";
-
-/* Footer text for Downloadable File Name */
 "This is the name of the file shown to the customer." = "This is the name of the file shown to the customer.";
 
-/* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
+/* Footer text for Downloadable File Name */
+"This is the name of the file shown to the customer." = "Este é o nome do arquivo exibido para o cliente.";
 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Este é o URL do arquivo que os clientes acessarão. Os URLs inseridos já devem estar codificados.";
+
+/* Footer text for Downloadable File URL */
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2657,10 +2654,10 @@
 "Update product inventory and SKU" = "Atualizar inventário de produtos e SKU";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Atualize as informações de arquivos para download dos produtos remotamente";
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "Atualize as informações de arquivos para download dos produtos remotamente";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "Atualize para o WooCommerce 3.5 para continuar a usar esse aplicativo";
@@ -2883,9 +2880,6 @@
 /* Yesterday Section Header */
 "Yesterday" = "Ontem";
 
-/* The info of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
-"You can now edit grouped, external and variable products, change product type and update categories and tags" = "Agora você pode editar produtos externos, e variáveis em grupos, alterar o tipo de produto e atualizar categorias e tags";
-
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Você não pode usar este endereço de e-mail para se inscrever. Esse provedor bloqueia alguns de nossos e-mails. Use outro provedor de e-mail.";
 
@@ -2922,6 +2916,12 @@
 
 /* No comment provided by engineer. */
 "password" = "senha";
+
+/* Format of the number of product ratings in plural form */
+"rated %ld times" = "classificado %ld vezes";
+
+/* Format of the number of product ratings in singular form */
+"rated once" = "classificado 1 vez";
 
 /* Today */
 "today" = "hoje";

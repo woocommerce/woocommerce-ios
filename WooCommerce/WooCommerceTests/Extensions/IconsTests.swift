@@ -168,7 +168,7 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.loginSiteAddressInfoImage)
     }
 
-    func testLoginJetpackErrorIconIsNotNil() {
+    func test_login_Jetpack_error_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.loginNoJetpackError)
     }
 

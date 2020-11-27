@@ -49,7 +49,7 @@ struct JetpackErrorViewModel: ULErrorViewModel {
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        let refreshCommand = NavigateToEnterSite()
+        let refreshCommand = NavigateToRoot()
         refreshCommand.execute(from: viewController)
     }
 

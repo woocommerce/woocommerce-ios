@@ -187,9 +187,9 @@ private extension LinkedProductsViewController {
                                                                                             .groupedProductLinkedProductsDeleteButtonTapped)
 
         let viewController = LinkedProductsListSelectorViewController(product: product.product,
-                                                                      linkedProductIDs: viewModel.upsellIDs,
-                                                                      viewConfiguration: viewConfiguration) { [weak self] upsellIDs in
-            self?.viewModel.handleUpsellIDsChange(upsellIDs)
+                                                                      linkedProductIDs: viewModel.crossSellIDs,
+                                                                      viewConfiguration: viewConfiguration) { [weak self] crossSellIDs in
+            self?.viewModel.handleCrossSellIDsChange(crossSellIDs)
             self?.tableView.reloadData()
             self?.navigationController?.popViewController(animated: true)
         }
@@ -218,7 +218,7 @@ extension LinkedProductsViewController {
     }
 
     @objc private func completeUpdating() {
-        // TODO: to be implemented in next PRs
+        onCompletion(viewModel.upsellIDs, viewModel.crossSellIDs, viewModel.hasUnsavedChanges())
     }
 
     private func presentBackNavigationActionSheet() {

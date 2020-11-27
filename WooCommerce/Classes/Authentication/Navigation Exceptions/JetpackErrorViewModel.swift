@@ -1,6 +1,7 @@
 import UIKit
 import SafariServices
 import WordPressAuthenticator
+import WordPressUI
 
 
 /// Configuration and actions for an ULErrorViewController, modelling
@@ -53,13 +54,10 @@ struct JetpackErrorViewModel: ULErrorViewModel {
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
-        guard let url = URL(string: Strings.whatsJetpackURLString) else {
-            return
-        }
-
-        let safariViewController = SFSafariViewController(url: url)
-        safariViewController.modalPresentationStyle = .pageSheet
-        viewController?.present(safariViewController, animated: true)
+        let fancyAlert = FancyAlertViewController.makeWhatIsJetpackAlertController()
+        fancyAlert.modalPresentationStyle = .custom
+        //fancyAlert.transitioningDelegate = viewController
+        viewController?.present(fancyAlert, animated: true)
     }
 }
 

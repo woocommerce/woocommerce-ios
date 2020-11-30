@@ -370,8 +370,6 @@ private extension DefaultProductFormTableViewModel {
 
     func variationsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.variationsImage
-        print("IS enabled?", isEditProductsRelease5Enabled)
-        print("Is empty?", product.attributes.isEmpty)
         let title = (product.variations.isEmpty && isEditProductsRelease5Enabled) ? Localization.addVariationsTitle : Localization.variationsTitle
 
         let details: String

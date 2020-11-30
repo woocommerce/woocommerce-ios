@@ -514,9 +514,9 @@ private extension DefaultProductFormTableViewModel {
                                                     comment: "Format of the weight on the Shipping Settings row - weight[unit]")
         static let oneDimensionFormat = NSLocalizedString("Dimensions: %1$@%2$@",
                                                           comment: "Format of one dimension on the Shipping Settings row - dimension[unit]")
-        static let twoDimensionsFormat = NSLocalizedString("Dimensions: %1$@ x %2$@%3$@",
+        static let twoDimensionsFormat = NSLocalizedString("Dimensions: %1$@ x %2$@ %3$@",
                                                            comment: "Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit]")
-        static let fullDimensionsFormat = NSLocalizedString("Dimensions: %1$@ x %2$@ x %3$@%4$@",
+        static let fullDimensionsFormat = NSLocalizedString("Dimensions: %1$@ x %2$@ x %3$@ %4$@",
                                                             comment: "Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit]")
 
         // Short description

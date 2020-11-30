@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-11-13 14:54:04+0000 */
+/* Translation-Revision-Date: 2020-11-27 11:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -42,6 +42,9 @@
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
+/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
+"%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
+
 /* 1 Item */
 "%@ Item" = "%@ vara";
 
@@ -77,12 +80,6 @@
 
 /* Format of the number of grouped products in plural form */
 "%ld products" = "%ld produkter";
-
-/* Format of the number of product review in singular form */
-"%ld review" = "%ld recension";
-
-/* Format of the number of product reviews in plural form */
-"%ld reviews" = "%ld recensioner";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld variant";
@@ -670,17 +667,17 @@
 
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
-"Download Settings" = "Download Settings";
+"Download Settings" = "Inställningar för nedladdning";
 
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
-"Download Settings" = "Inställningar för nedladdning";
-
-/* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Download expiration";
+"Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "Tidsgräns för nedladdning";
+
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Download limit";
@@ -689,16 +686,16 @@
 "Download limit" = "Nedladdningsgräns";
 
 /* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "Downloadable Files";
-
-/* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "Nedladdningsbara filer";
 
-/* Downloadable Product label in Product Settings */
-"Downloadable Product" = "Downloadable Product";
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "Downloadable Files";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "Nedladdningsbar produkt";
+
+/* Downloadable Product label in Product Settings */
+"Downloadable Product" = "Downloadable Product";
 
 /* Title of the Downloadable Files row on Product main screen */
 "Downloadable files" = "Downloadable files";
@@ -775,10 +772,10 @@
 "Enter the number of days before a download link expires, or leave blank if never it expires" = "Ange antal dagar tills en nedladdningslänk löper ut, eller lämna fältet tomt om länken aldrig löper ut";
 
 /* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Ange antalet gånger som filen kan laddas ned eller lämna fältet tomt för obegränsade nerladdningar";
 
 /* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Ange antalet gånger som filen kan laddas ned eller lämna fältet tomt för obegränsade nerladdningar";
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Ange lösenordet för ditt konto på WordPress.com.";
@@ -1195,10 +1192,10 @@
 "Manual Offsets" = "Manuella offset-värden";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manuell återbetalning via %1$@";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "Manuell återbetalning via %1$@";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Ompekad domän";
@@ -1284,9 +1281,6 @@
 /* The title for the net amount paid cell */
 "Net" = "Netto";
 
-/* The title of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
-"New editing options available" = "Nya redigeringsalternativ tillgängliga";
-
 /* Title of a button.
    Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "Nästa";
@@ -1308,25 +1302,25 @@
 "No data available" = "Inga data tillgängliga";
 
 /* Placeholder of the cell text field in Download expiration */
-"No expiration" = "Löper inte ut";
-
-/* Placeholder of the cell text field in Download expiration */
 "No expiration" = "No expiration";
 
-/* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "No files yet";
+/* Placeholder of the cell text field in Download expiration */
+"No expiration" = "Löper inte ut";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "Inga filer än";
+
+/* Placeholder for empty Downloadable Files row on Product main screen */
+"No files yet" = "No files yet";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "Inga bilder ännu";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "No limit";
+"No limit" = "Ingen begränsning";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "Ingen begränsning";
+"No limit" = "No limit";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Inget pris angivet";
@@ -1338,14 +1332,14 @@
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "Inga produkter ännu";
 
+/* Placeholder for empty product ratings */
+"No ratings" = "Inga betyg";
+
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
 "No results found for (term)\nAdd a custom carrier" = "Inga resultat hittades för (term)\nLägg till en anpassad transportör";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Inga inkomster för denna period";
-
-/* Placeholder for empty product reviews */
-"No reviews yet" = "Inga recensioner ännu";
 
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "Inga fraktklasser ännu";
@@ -1587,10 +1581,10 @@
 "Powered by Automattic" = "Drivs av Automattic";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Tidigare återbetalt";
+"Previously Refunded" = "Previously Refunded";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Previously Refunded";
+"Previously Refunded" = "Tidigare återbetalt";
 
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
    Product Price Settings navigation title - Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
@@ -1756,10 +1750,10 @@
 "Refund Details" = "Återbetalningsinformation";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Återbetala frakt";
+"Refund Shipping" = "Refund Shipping";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Refund Shipping";
+"Refund Shipping" = "Återbetala frakt";
 
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "Refund Via";
@@ -1890,6 +1884,12 @@
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Sparar din produkt …";
+
+/* Navigation bar title for scanning a barcode to use as a product's SKU. */
+"Scan barcode to update SKU" = "Skanna streckkoden för att uppdatera SKU";
+
+/* The instruction text below the scan area in the barcode scanner for product SKU. */
+"Scan product barcode" = "Skanna produktens streckkod";
 
 /* Scan Products */
 "Scan products" = "Skanna produkter";
@@ -2363,9 +2363,6 @@
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "Priset för denna produkt. Redigerbar.";
 
-/* Displayed whenever a review that was onscreen got deleted. */
-"The review has been removed" = "Recensionen har tagits bort";
-
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "Reapriset kan inte läggas till utan ordinarie pris.";
 
@@ -2442,16 +2439,16 @@
 "This is the URL-friendly version of the product title" = "Detta är den URL-vänliga versionen av produktens rubrik";
 
 /* Footer text for Downloadable File Name */
-"This is the name of the file shown to the customer." = "Det här är namnet på den fil som visas för kunden.";
-
-/* Footer text for Downloadable File Name */
 "This is the name of the file shown to the customer." = "This is the name of the file shown to the customer.";
 
-/* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
+/* Footer text for Downloadable File Name */
+"This is the name of the file shown to the customer." = "Det här är namnet på den fil som visas för kunden.";
 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Det här är URL:en till den fil som kunderna kommer att få tillgång till. URL:er som anges bör redan vara kodade.";
+
+/* Footer text for Downloadable File URL */
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2657,10 +2654,10 @@
 "Update product inventory and SKU" = "Uppdatera produktinventering och SKU";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Fjärruppdatera produkters information om nedladdningsbara filer";
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "Fjärruppdatera produkters information om nedladdningsbara filer";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "Uppdatera till WooCommerce 3.5 för att fortsätta använda den här appen";
@@ -2883,9 +2880,6 @@
 /* Yesterday Section Header */
 "Yesterday" = "Igår";
 
-/* The info of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
-"You can now edit grouped, external and variable products, change product type and update categories and tags" = "Du kan nu redigera grupperade, externa och variabla produkter, ändra produkttyp och uppdatera kategorier och etiketter";
-
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Du kan inte använda den e-postadressen för att skapa ett konto. Vi har problem med att den e-posttjänsten ibland blockerar vår e-post. Vänligen använd en annan e-posttjänst.";
 
@@ -2922,6 +2916,12 @@
 
 /* No comment provided by engineer. */
 "password" = "lösenord";
+
+/* Format of the number of product ratings in plural form */
+"rated %ld times" = "betygsatt %ld gånger";
+
+/* Format of the number of product ratings in singular form */
+"rated once" = "betygsatt en gång";
 
 /* Today */
 "today" = "idag";

@@ -32,6 +32,10 @@ final class TitleAndEditableValueTableViewCell: UITableViewCell {
         value.text = viewModel?.currentValue
         value.isEnabled = viewModel?.allowsEditing ?? false
 
+        if viewModel?.hidesKeyboardOnReturn == true {
+            value.addTarget(value, action: #selector(resignFirstResponder), for: UIControl.Event.editingDidEndOnExit)
+        }
+
         self.viewModel = viewModel
 
         applyStyle(style)

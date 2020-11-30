@@ -1,2 +1,3 @@
-* Solucionado El pie de página de los ajustes de la aplicación ahora aparece centrado, los borradores de productos se muestran "De nuevos a antiguos" como se esperaba, y se ha eliminado el color de fondo blanco de la vista de marcadores de posición en el gráfico del panel de administración superior del modo oscuro de iOS 14.
-* Mejorado Usa el nuevo selector de fechas en iOS 14 para editar la fecha de envío en Información del pedido > añadir seguimiento; y editar las fechas de venta en detalles > configuración de precios. Además, verás un marcador de posición "Sin título" en los productos de la lista de productos que aún no tengan un título.
+Productos: Ahora puedes añadir productos sencillos, agrupados y externos, y guardar productos como borradores. ¡Muy pronto podrás probar nuevas prestaciones!
+
+Otras correcciones: Ahora la pantalla de detalles del pedido muestra atributos de variación para tiendas WooCommerce con la versión 4.7 y posterior. También puedes observar que la pantalla de detalles del producto muestra el número de valoraciones que tiene el producto. Anteriormente, mostraba el número de reseñas y era inexacto.

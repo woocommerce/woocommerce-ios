@@ -550,22 +550,12 @@ private extension ProductsViewController {
         present(filterProductListViewController, animated: true, completion: nil)
     }
 
-    /// Presents products survey and mark feedback as given to update banner visibility
+    /// Presents products survey
     ///
     func presentProductsFeedback() {
         // Present survey
         let navigationController = SurveyCoordinatingController(survey: .productsM4Feedback)
-        present(navigationController, animated: true) { [weak self] in
-
-            // Mark survey as given and update top banner view
-            let action = AppSettingsAction.updateFeedbackStatus(type: .productsM4, status: .given(Date())) { result in
-                if let error = result.failure {
-                    CrashLogging.logError(error)
-                }
-                self?.hideTopBannerView()
-            }
-            ServiceLocator.stores.dispatch(action)
-        }
+        present(navigationController, animated: true, completion: nil)
     }
 
     /// Mark feedback request as dismissed and update banner visibility

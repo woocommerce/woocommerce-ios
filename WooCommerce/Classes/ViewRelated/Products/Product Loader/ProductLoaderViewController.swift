@@ -185,7 +185,7 @@ private extension ProductLoaderViewController {
         }
     }
 
-    /// Presents the ProductDetailsViewController or the ProductFormViewController, as a childViewController, for a given Product.
+    /// Presents the ProductFormViewController, as a childViewController, for a given Product.
     ///
     func presentProductDetails(for product: Product) {
         ProductDetailsFactory.productDetails(product: product,

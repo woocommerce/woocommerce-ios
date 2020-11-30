@@ -1,2 +1,3 @@
-* Corrigido! Agora o rodapé das configurações do aplicativo fica centralizado, os produtos em rascunho são classificados como "Do mais antigo para o mais recente", como esperado, e a cor de fundo branca foi removida da visualização de marcador de posição no gráfico superior do painel no modo escuro para iOS 14.
-* Aprimorado! Use o novo seletor de data no iOS 14 para editar a data de envio em Detalhes do pedido > Adicionar rastreamento e editar datas de promoção em detalhes > configuração de preço. Além disso, terá um marcador de posição "Sem título" para produtos sem um título na lista de produtos.
+Produtos: agora você pode adicionar produtos simples, agrupados e externos e salvá-los como rascunho. Em breve, lançaremos mais funcionalidades para você testar!
+
+Outras correções: a tela "Detalhes do pedido" agora mostra os atributos de variação para as lojas do WooCommerce nas versões 4.7 e posteriores. Além disso, essa tela agora mostra o número de classificações do produto. Anteriormente, ela exibia o número de avaliações, que era impreciso.

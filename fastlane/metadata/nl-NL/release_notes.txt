@@ -1,2 +1,3 @@
-* Opgelost! De voetnoot in de instellingen van de app is nu gecentreerd, conceptproducten worden nu gesorteerd van “Nieuwste naar oudste” zoals bedoeld, en de witte achtergrondkleur is verwijderd uit de tijdelijke weergave in de bovenste dashboardgrafiek in de donkere modus op iOS 14.
-* Verbeterd! Maak gebruik van de nieuwe datumkiezer op iOS 14 om de datum van verzending te bewerken bij bestellingsgegevens > tracking toevoegen, en bewerk verkoopdata bij gegevens > prijsinstellingen. Er wordt daarnaast een placeholder met 'Geen titel' weergegeven voor producten zonder titel in de productlijst.
+Producten: Je kan nu een eenvoudige, gegroepeerde en externe producten toevoegen en als concept opslaan. Binnenkort komen er nog meer nieuwe functies voor je beschikbaar!
+
+Overig: Op het scherm met bestellingsgegevens worden nu variatie-eigenschappen weergegeven voor WooCommerce-winkels op versie 4.7 en nieuwer. Daarnaast wordt er op het scherm met productgegevens nu het aantal productbeoordelingen weergegeven. Voorheen werd het aantal productrecenties weergegeven, wat onnauwkeurig was.

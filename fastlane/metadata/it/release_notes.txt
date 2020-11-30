@@ -1,2 +1,3 @@
-* Risolto! Il piè di pagina nelle Impostazioni dell'app è ora centrato, i prodotti bozza ora vengono ordinati dal "Più recente a più vecchio", come previsto, e lo sfondo bianco è stato rimosso dalla visualizzazione del segnaposto nel grafico della bacheca in alto nella modalità scura in iOS 14.
-* Migliorato! Utilizza il nuovo selettore di date in iOS 14 per modificare la data di spedizione nei dettagli dell'ordine > aggiungi tracciabilità e modifica le date di vendita nei dettagli > impostazione dei prezzi. Inoltre, vedrai un segnaposto "Nessun titolo" per i prodotti senza titolo nell'elenco dei prodotti.
+Prodotti: Ora è possibile aggiungere prodotti semplici, raggruppati ed esterni e salvare i prodotti come bozze. Presto metteremo a disposizione altre nuove funzionalità da provare!
+
+Altre correzioni: La schermata dei dettagli dell'ordine ora mostra gli attributi di varianti per i negozi WooCommerce nella versione 4.7 e superiore. Nota anche che la schermata dei dettagli dei prodotti adesso mostra il numero delle valutazioni dei prodotti. In precedenza, veniva visualizzato il numero delle recensioni, il che era inesatto.

@@ -107,7 +107,7 @@ DEPENDENCIES:
   - Kingfisher (~> 5.11.0)
   - Sourcery (~> 0.18)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (from `../WordPressAuthenticator-iOS`)
+  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `issue/526-help-button`)
   - WordPressShared (~> 1.12)
   - WordPressUI (~> 1.7.2)
   - Wormholy (~> 1.6.2)
@@ -158,7 +158,13 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   WordPressAuthenticator:
-    :path: "../WordPressAuthenticator-iOS"
+    :branch: issue/526-help-button
+    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
+
+CHECKOUT OPTIONS:
+  WordPressAuthenticator:
+    :commit: 3d6292c63036bb4980714f07e8911969fe065709
+    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
@@ -201,6 +207,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: 3d0a3e1e554b574fb028a50eb4b16cc19b126ae4
+PODFILE CHECKSUM: b239ea37a397bc743b9ebb1a059fd6947a1af876
 
 COCOAPODS: 1.9.1

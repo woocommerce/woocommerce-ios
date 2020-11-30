@@ -27,6 +27,8 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let magicLinkButtonTitle: String
     public let openMailButtonTitle: String
     public let createAccountButtonTitle: String
+    public let continueWithWPButtonTitle: String
+    public let enterYourSiteAddressButtonTitle: String
     
     /// Large titles displayed in unified auth flows.
     ///
@@ -72,6 +74,8 @@ public struct WordPressAuthenticatorDisplayStrings {
                 magicLinkButtonTitle: String = defaultStrings.magicLinkButtonTitle,
                 openMailButtonTitle: String = defaultStrings.openMailButtonTitle,
                 createAccountButtonTitle: String = defaultStrings.createAccountButtonTitle,
+                continueWithWPButtonTitle: String = defaultStrings.continueWithWPButtonTitle,
+                enterYourSiteAddressButtonTitle: String = defaultStrings.enterYourSiteAddressButtonTitle,
                 findSiteButtonTitle: String = defaultStrings.findSiteButtonTitle,
                 resetPasswordButtonTitle: String = defaultStrings.resetPasswordButtonTitle,
                 getLoginLinkButtonTitle: String = defaultStrings.getLoginLinkButtonTitle,
@@ -105,6 +109,8 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.magicLinkButtonTitle = magicLinkButtonTitle
         self.openMailButtonTitle = openMailButtonTitle
         self.createAccountButtonTitle = createAccountButtonTitle
+        self.continueWithWPButtonTitle = continueWithWPButtonTitle
+        self.enterYourSiteAddressButtonTitle = enterYourSiteAddressButtonTitle
         self.findSiteButtonTitle = findSiteButtonTitle
         self.resetPasswordButtonTitle = resetPasswordButtonTitle
         self.getLoginLinkButtonTitle = getLoginLinkButtonTitle
@@ -160,6 +166,10 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                    comment: "The button title text for opening the user's preferred email app."),
             createAccountButtonTitle: NSLocalizedString("Create Account",
                                                         comment: "The button title text for creating a new account."),
+            continueWithWPButtonTitle: NSLocalizedString("Continue with WordPress.com",
+                                               comment: "Button title. Takes the user to the login by email flow."),
+            enterYourSiteAddressButtonTitle: NSLocalizedString("Enter your site address",
+                                                               comment: "Button title. Takes the user to the login by site address flow."),
             findSiteButtonTitle: NSLocalizedString("Find your site address",
                                                    comment: "The hint button's title text to help users find their site address."),
             resetPasswordButtonTitle: NSLocalizedString("Reset your password",

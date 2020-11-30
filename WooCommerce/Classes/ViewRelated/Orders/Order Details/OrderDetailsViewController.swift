@@ -65,7 +65,9 @@ final class OrderDetailsViewController: UIViewController {
         syncNotes()
         syncProducts()
         syncRefunds()
-        syncShippingLabels()
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease1) {
+            syncShippingLabels()
+        }
         syncTrackingsHidingAddButtonIfNecessary()
     }
 

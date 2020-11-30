@@ -81,6 +81,7 @@ final class OrderDetailsDataSource: NSObject {
     }
 
     private var shippingLabels: [ShippingLabel] = []
+    private var shippingLabelOrderItemsAggregator: AggregatedShippingLabelOrderItems = AggregatedShippingLabelOrderItems.empty
 
     /// Shipping Lines from an Order
     ///
@@ -162,6 +163,13 @@ final class OrderDetailsDataSource: NSObject {
 
     func configureResultsControllers(onReload: @escaping () -> Void) {
         resultsControllers.configureResultsControllers(onReload: onReload)
+    }
+
+    func shippingLabelOrderItem(at indexPath: IndexPath) -> AggregateOrderItem? {
+        guard let shippingLabel = shippingLabel(at: indexPath) else {
+            return nil
+        }
+        return shippingLabelOrderItemsAggregator.orderItem(of: shippingLabel, at: indexPath.row)
     }
 }
 
@@ -443,7 +451,14 @@ private extension OrderDetailsDataSource {
     private func configureShippingLabelProduct(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .default
 
-        // TODO-2167: show aggregated order item (product) for a shipping label
+        guard let shippingLabel = shippingLabel(at: indexPath),
+              let orderItem = shippingLabelOrderItemsAggregator.orderItem(of: shippingLabel, at: indexPath.row) else {
+            assertionFailure("Cannot access shipping label and/or order item at \(indexPath)")
+            return
+        }
+
+        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: orderItem, currency: order.currency)
+        cell.configure(item: itemViewModel, imageService: imageService)
     }
 
     private func configureShippingLabelTrackingNumber(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
@@ -625,6 +640,13 @@ extension OrderDetailsDataSource {
     /// When: Shipping == nil               >>> Display: Shipping = "No address specified"
     ///
     func reloadSections() {
+        // Freezes any data that require lookup after the sections are reloaded, in case the data from a ResultsController changes before the next reload.
+        shippingLabels = resultsControllers.shippingLabels
+        shippingLabelOrderItemsAggregator = AggregatedShippingLabelOrderItems(shippingLabels: shippingLabels,
+                                                                                   orderItems: items,
+                                                                                   products: products,
+                                                                                   productVariations: resultsControllers.productVariations)
+
         let summary = Section(category: .summary, row: .summary)
 
         let shippingNotice: Section? = {
@@ -674,13 +696,11 @@ extension OrderDetailsDataSource {
             return Section(category: .refundedProducts, title: Title.refundedProducts, row: row)
         }()
 
-        let shippingLabels = resultsControllers.shippingLabels
-        self.shippingLabels = shippingLabels
-
         let shippingLabelSections: [Section] = {
             guard shippingLabels.isNotEmpty else {
                 return []
             }
+
             let sections = shippingLabels.enumerated().map { index, shippingLabel -> Section in
                 let title = String.localizedStringWithFormat(Title.shippingLabelPackageFormat, index + 1)
                 let isRefunded = shippingLabel.refund != nil
@@ -690,8 +710,8 @@ extension OrderDetailsDataSource {
                     rows = [.shippingLabelTrackingNumber, .shippingLabelDetail]
                     headerStyle = .primary
                 } else {
-                    let orderItemsCount = shippingLabel.productNames.count
-                    // TODO-2167: show aggregated order items (products) for a shipping label
+                    // TODO-2167: show printing instructions
+                    let orderItemsCount = shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel).count
                     rows = Array(repeating: .shippingLabelProduct, count: orderItemsCount)
                         + [.shippingLabelReprintButton, .shippingLabelTrackingNumber, .shippingLabelDetail]
                     let headerActionConfig = PrimarySectionHeaderView.ActionConfiguration(image: .moreImage) { [weak self] sourceView in

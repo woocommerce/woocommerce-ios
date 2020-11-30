@@ -456,7 +456,7 @@ private extension OrderDetailsDataSource {
         cell.textLabel?.text = Title.shippingLabelPrintingInfoAction
         cell.textLabel?.textColor = .systemColor(.secondaryLabel)
         cell.textLabel?.applyFootnoteStyle()
-        cell.selectionStyle = .none
+        cell.selectionStyle = .default
 
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = Title.shippingLabelPrintingInfoAction

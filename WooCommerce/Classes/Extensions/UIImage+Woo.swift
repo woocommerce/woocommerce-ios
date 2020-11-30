@@ -285,6 +285,12 @@ extension UIImage {
         return UIImage.gridicon(.link)
     }
 
+    /// Location Image
+    ///
+    static var locationImage: UIImage {
+        UIImage.gridicon(.location)
+    }
+
     /// Login magic link
     ///
     static var loginMagicLinkImage: UIImage {

@@ -1,2 +1,3 @@
-* Telah Diperbaiki! Footer pada Pengaturan aplikasi sekarang sudah di tengah, produk draf sekarang diurutkan dari "Terbaru ke Terlama" sesuai permintaan, dan warna latar putih telah dihapus dari tampilan placeholder di bagan dasbor atas dalam mode gelap pada iOS 14.
-* Ditingkatkan! Gunakan pemilih tanggal yang baru di iOS 14 untuk mengedit tanggal pengiriman pada detail pesanan > tambahkan pelacakan dan edit tanggal penjualan pada detail > pengaturan harga. Anda juga akan melihat placeholder "Tanpa Judul" untuk produk tanpa judul di daftar produk.
+Produk: Sekarang Anda dapat menambahkan produk yang sederhana, dikelompokkan, dan eksternal serta menyimpan produk sebagai draf. Kami akan segera meluncurkan beberapa fitur baru untuk Anda coba!
+
+Perbaikan lainnya: Sekarang layar Detail Pesanan menampilkan beragam atribut untuk toko WooCommerce pada versi 4.7 atau lebih baru. Anda mungkin juga dapat melihat bahwa layar Detail Produk sekarang menampilkan jumlah nilai produk. Sebelumnya, layar ini menampilkan jumlah ulasan yang tidak akurat.

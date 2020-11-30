@@ -1,2 +1,3 @@
-* Fehler behoben! Der Footer in den Einstellungen der App ist jetzt mittig, entworfene Produkte werden jetzt wie erwartet von „Neu zu alt“ sortiert und der weiße Hintergrund wurde von der Platzhalteransicht im oberen Dashboard-Diagramm im Dunkelmodus auf iOS 14 entfernt.
-* Erweitert! Nutze die neue Datumsauswahl auf iOS 14, um das Versanddatum in den Bestelldetails zu bearbeiten > füge Sendeverfolgungen hinzu und bearbeite Verkaufsdaten in den Details > Preiseinstellungen. Außerdem wird dir der Platzhalter „Kein Titel“ für Produkte ohne Titel in deiner Produktliste angezeigt.
+Produkte: Du kannst jetzt auch ein einfaches, gruppiertes oder externes Produkt hinzufügen und es als Entwurf speichern. Bald gibt es noch mehr neue Funktionen für dich!
+
+Weitere Fehlerbehebungen: Auf dem Bildschirm der Bestelldetails werden dir jetzt Eigenschaften der Variationen für WooCommerce-Stores ab Version 4.7 angezeigt. Außerdem siehst du auf dem Bildschirm der Bestelldetails jetzt auch die Anzahl der Produktbewertungen. Vorher wurden die Anzahl der Bewertungen angezeigt, was fehlerhaft war.

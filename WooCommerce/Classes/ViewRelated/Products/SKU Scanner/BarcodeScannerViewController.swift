@@ -206,7 +206,7 @@ private extension BarcodeScannerViewController {
 private extension BarcodeScannerViewController {
     func updatePreviewLayerOrientation() {
         if let connection = previewLayer?.connection, connection.isVideoOrientationSupported {
-            let orientation = UIApplication.shared.statusBarOrientation
+            let orientation = UIApplication.shared.currentKeyWindow?.windowScene?.interfaceOrientation
             let videoOrientation: AVCaptureVideoOrientation
             switch orientation {
             case .portrait:

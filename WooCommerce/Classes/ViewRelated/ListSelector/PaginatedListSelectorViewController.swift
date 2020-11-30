@@ -66,7 +66,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
     /// Footer "Loading More" Spinner.
     ///
     private lazy var footerSpinnerView = {
-        return FooterSpinnerView(tableViewStyle: tableView.style)
+        return FooterSpinnerView()
     }()
 
     private lazy var footerEmptyView = {
@@ -270,6 +270,7 @@ private extension PaginatedListSelectorViewController {
         tableView.estimatedRowHeight = estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
+        tableView.sectionFooterHeight = .leastNonzeroMagnitude
 
         tableView.separatorStyle = viewProperties.separatorStyle
 

@@ -86,7 +86,7 @@ final class ReviewsViewController: UIViewController {
     /// Footer "Loading More" Spinner.
     ///
     private lazy var footerSpinnerView = {
-        return FooterSpinnerView(tableViewStyle: tableView.style)
+        return FooterSpinnerView()
     }()
 
     // MARK: - View Lifecycle
@@ -182,6 +182,7 @@ private extension ReviewsViewController {
         tableView.refreshControl = refreshControl
         tableView.dataSource = viewModel.dataSource
         tableView.tableFooterView = footerSpinnerView
+        tableView.sectionFooterHeight = .leastNonzeroMagnitude
 
         // We decorate the delegate informally, because we want to intercept
         // didSelectItem:at: but delegate the rest of the implementation of

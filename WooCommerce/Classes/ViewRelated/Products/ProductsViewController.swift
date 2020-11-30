@@ -26,7 +26,7 @@ final class ProductsViewController: UIViewController {
     /// Footer "Loading More" Spinner.
     ///
     private lazy var footerSpinnerView = {
-        return FooterSpinnerView(tableViewStyle: tableView.style)
+        return FooterSpinnerView()
     }()
 
     private lazy var footerEmptyView = {

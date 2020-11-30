@@ -60,7 +60,7 @@ final class OrderListViewController: UIViewController {
     /// Footer "Loading More" Spinner.
     ///
     private lazy var footerSpinnerView = {
-        return FooterSpinnerView(tableViewStyle: tableView.style)
+        return FooterSpinnerView()
     }()
 
     /// The configuration to use for the view if the list is empty.

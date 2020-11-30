@@ -245,6 +245,8 @@ private extension OrderDetailsDataSource {
             configureShippingLabelDetail(cell: cell)
         case let cell as TopLeftImageTableViewCell where row == .shippingNotice:
             configureShippingNotice(cell: cell)
+        case let cell as TopLeftImageTableViewCell where row == .shippingLabelPrintingInfo:
+            configureShippingLabelPrintingInfo(cell: cell)
         case let cell as LeftImageTableViewCell where row == .addOrderNote:
             configureNewNote(cell: cell)
         case let cell as OrderNoteHeaderTableViewCell:
@@ -446,6 +448,22 @@ private extension OrderDetailsDataSource {
             "Show the shipment details for this shipping label.",
             comment: "VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details."
         )
+    }
+
+    private func configureShippingLabelPrintingInfo(cell: TopLeftImageTableViewCell) {
+        cell.imageView?.image = .infoOutlineFootnoteImage
+        cell.imageView?.tintColor = .systemColor(.secondaryLabel)
+        cell.textLabel?.text = Title.shippingLabelPrintingInfoAction
+        cell.textLabel?.textColor = .systemColor(.secondaryLabel)
+        cell.textLabel?.applyFootnoteStyle()
+        cell.selectionStyle = .none
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = Title.shippingLabelPrintingInfoAction
+        cell.accessibilityHint =
+            NSLocalizedString("Tap to show instructions on how to print a shipping label on the mobile device",
+                              comment:
+                                "VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device")
     }
 
     private func configureShippingLabelProduct(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
@@ -717,7 +735,7 @@ extension OrderDetailsDataSource {
                     // TODO-2167: show printing instructions
                     let orderItemsCount = shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel).count
                     rows = Array(repeating: .shippingLabelProduct, count: orderItemsCount)
-                        + [.shippingLabelReprintButton, .shippingLabelTrackingNumber, .shippingLabelDetail]
+                        + [.shippingLabelReprintButton, .shippingLabelPrintingInfo, .shippingLabelTrackingNumber, .shippingLabelDetail]
                     let headerActionConfig = PrimarySectionHeaderView.ActionConfiguration(image: .moreImage) { [weak self] sourceView in
                         self?.onShippingLabelMoreMenuTapped?(shippingLabel, sourceView)
                     }
@@ -985,6 +1003,10 @@ extension OrderDetailsDataSource {
         static let shippingLabelPackageFormat =
             NSLocalizedString("Package %d",
                               comment: "Order shipping label package section title format. The number indicates the index of the shipping label package.")
+        static let shippingLabelPrintingInfoAction =
+            NSLocalizedString("Don’t know how to print from your phone?",
+                              comment: "Title of button in order details > shipping label that shows the instructions on how to print " +
+                                "a shipping label on the mobile device.")
     }
 
     enum Footer {
@@ -1094,6 +1116,7 @@ extension OrderDetailsDataSource {
         case tracking
         case trackingAdd
         case shippingLabelDetail
+        case shippingLabelPrintingInfo
         case shippingLabelProduct
         case shippingLabelReprintButton
         case shippingLabelTrackingNumber
@@ -1140,6 +1163,8 @@ extension OrderDetailsDataSource {
                 return LeftImageTableViewCell.reuseIdentifier
             case .shippingLabelDetail:
                 return WooBasicTableViewCell.reuseIdentifier
+            case .shippingLabelPrintingInfo:
+                return TopLeftImageTableViewCell.reuseIdentifier
             case .shippingLabelProduct:
                 return ProductDetailsTableViewCell.reuseIdentifier
             case .shippingLabelTrackingNumber:

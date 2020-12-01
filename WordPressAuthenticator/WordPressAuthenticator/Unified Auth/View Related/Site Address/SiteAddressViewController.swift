@@ -513,6 +513,13 @@ private extension SiteAddressViewController {
                 
                 self.showWPUsernamePassword()
             case let .injectViewController(customUI):
+                /// Assign the help button of the newly injected UI to the same help button we are currently displaying
+                /// We are making a somewhat big assumption here: the chrome of the new UI we insert would look like the UI
+                /// WPAuthenticator is already displaying. Which is risky, but also kind of makes sense, considering
+                /// we are also pushing that injected UI to the current navigation controller.
+                if WordPressAuthenticator.shared.delegate?.supportActionEnabled == true {
+                    customUI.navigationItem.rightBarButtonItems = self.navigationItem.rightBarButtonItems
+                }
                 self.navigationController?.pushViewController(customUI, animated: true)
             }
         })

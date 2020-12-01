@@ -261,6 +261,12 @@ extension UIImage {
         return UIImage.gridicon(.infoOutline)
     }
 
+    /// Info Outline Icon (footnote)
+    ///
+    static var infoOutlineFootnoteImage: UIImage {
+        .gridicon(.infoOutline, size: CGSize(width: 20, height: 20))
+    }
+
     /// Files Download Icon
     ///
     static var cloudImage: UIImage {
@@ -283,6 +289,12 @@ extension UIImage {
     ///
     static var linkImage: UIImage {
         return UIImage.gridicon(.link)
+    }
+
+    /// Location Image
+    ///
+    static var locationImage: UIImage {
+        UIImage.gridicon(.location)
     }
 
     /// Login magic link

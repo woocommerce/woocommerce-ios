@@ -34,7 +34,7 @@ final class LoadingView: UIView {
     /// Extra Large and purple loading indicator
     ///
     private let loadingIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .gray)
+        let indicator = UIActivityIndicatorView(style: .medium)
         indicator.transform = CGAffineTransform(scaleX: Layout.indicatorScaleFactor, y: Layout.indicatorScaleFactor)
         indicator.startAnimating()
         return indicator

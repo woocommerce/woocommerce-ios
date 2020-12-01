@@ -183,17 +183,15 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func createdWordPressComAccount(username: String, authToken: String) { }
 
-    func shouldDisplayError(_ error: Error) -> Bool {
+    func shouldHandleError(_ error: Error) -> Bool {
         return true
     }
 
-    func handleError(_ error: Error, onCompletion: @escaping (WordPressAuthenticatorResult) -> Void) {
+    func handleError(_ error: Error, onCompletion: @escaping (UIViewController) -> Void) {
         let viewModel = NotWPErrorViewModel(siteURL: "http://woocommerce.com")
         let noWPErrorUI = ULErrorViewController(viewModel: viewModel)
 
-        let authenticationResult: WordPressAuthenticatorResult = .injectViewController(value: noWPErrorUI)
-
-        onCompletion(authenticationResult)
+        onCompletion(noWPErrorUI)
     }
 
     /// Validates that the self-hosted site contains the correct information

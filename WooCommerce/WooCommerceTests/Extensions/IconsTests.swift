@@ -144,6 +144,16 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.infoOutlineImage)
     }
 
+    func testInfoOutlineFootnoteImageIsNotNil() {
+        XCTAssertNotNil(UIImage.infoOutlineFootnoteImage)
+    }
+
+    func testInfoOutlineFootnoteImageMatchesExpectedSize() {
+        let size = CGSize(width: 20, height: 20)
+        let image = UIImage.infoOutlineFootnoteImage
+        XCTAssertEqual(size, image.size)
+    }
+
     func testInvisibleImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.invisibleImage)
     }
@@ -158,6 +168,10 @@ final class IconsTests: XCTestCase {
 
     func testLinkImageIsNotNil() {
         XCTAssertNotNil(UIImage.linkImage)
+    }
+
+    func testLocationImageIsNotNil() {
+        XCTAssertNotNil(UIImage.locationImage)
     }
 
     func testLoginMagicLinkImageIsNotNil() {

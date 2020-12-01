@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -15,18 +16,27 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="95D-6l-YMn">
                     <rect key="frame" x="0.0" y="14" width="433" height="104"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Iste Nihil Occaecati" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LhT-W3-uWF">
-                            <rect key="frame" x="16" y="16" width="401" height="88"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                            <nil key="textColor"/>
-                            <nil key="highlightedColor"/>
-                        </label>
+                        <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VUa-Je-20h">
+                            <rect key="frame" x="16" y="16" width="397" height="88"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Iste Nihil Occaecati" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LhT-W3-uWF">
+                                    <rect key="frame" x="0.0" y="0.0" width="198.5" height="88"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="efT-hG-fgb">
+                                    <rect key="frame" x="198.5" y="0.0" width="198.5" height="88"/>
+                                    <state key="normal" title="Button"/>
+                                </button>
+                            </subviews>
+                        </stackView>
                     </subviews>
                     <constraints>
-                        <constraint firstAttribute="trailing" secondItem="LhT-W3-uWF" secondAttribute="trailing" constant="16" id="L9N-Cc-ugv"/>
-                        <constraint firstItem="LhT-W3-uWF" firstAttribute="top" secondItem="95D-6l-YMn" secondAttribute="top" constant="16" id="a7P-6Q-hnP"/>
-                        <constraint firstItem="LhT-W3-uWF" firstAttribute="leading" secondItem="95D-6l-YMn" secondAttribute="leading" constant="16" id="yWp-Om-JcY"/>
-                        <constraint firstAttribute="bottom" secondItem="LhT-W3-uWF" secondAttribute="bottom" id="zaM-cs-of8"/>
+                        <constraint firstAttribute="bottom" secondItem="VUa-Je-20h" secondAttribute="bottom" id="9BP-cM-RlX"/>
+                        <constraint firstItem="VUa-Je-20h" firstAttribute="leading" secondItem="95D-6l-YMn" secondAttribute="leading" constant="16" id="Nll-24-zjn"/>
+                        <constraint firstItem="VUa-Je-20h" firstAttribute="top" secondItem="95D-6l-YMn" secondAttribute="top" constant="16" id="Vvk-xM-Fvj"/>
+                        <constraint firstAttribute="trailing" secondItem="VUa-Je-20h" secondAttribute="trailing" constant="20" id="fiO-iP-ak6"/>
                     </constraints>
                 </view>
             </subviews>
@@ -40,6 +50,7 @@
             <nil key="simulatedBottomBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
+                <outlet property="actionButton" destination="efT-hG-fgb" id="zop-7k-aa5"/>
                 <outlet property="containerView" destination="95D-6l-YMn" id="VNy-Mm-tf1"/>
                 <outlet property="titleLabel" destination="LhT-W3-uWF" id="WpX-KO-aCd"/>
             </connections>

@@ -7,6 +7,8 @@ struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .editProductsRelease5:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .shippingLabelsRelease1:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

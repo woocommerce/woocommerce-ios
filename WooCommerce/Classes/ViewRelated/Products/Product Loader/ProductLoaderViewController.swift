@@ -14,7 +14,7 @@ final class ProductLoaderViewController: UIViewController {
 
     /// UI Spinner
     ///
-    private let activityIndicator = UIActivityIndicatorView(style: .gray)
+    private let activityIndicator = UIActivityIndicatorView(style: .medium)
 
     /// Target model (Product/ProductVariation ID)
     ///

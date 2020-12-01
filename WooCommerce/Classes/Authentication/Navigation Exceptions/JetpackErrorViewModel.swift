@@ -49,10 +49,8 @@ struct JetpackErrorViewModel: ULErrorViewModel {
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        // To be removed when PR #3186 is merged.
-        // It is difficult to keep two repos with sometimes orthogonal changes in sync
-        //let refreshCommand = NavigateToRoot()
-        //refreshCommand.execute(from: viewController)
+        let refreshCommand = NavigateToRoot()
+        refreshCommand.execute(from: viewController)
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {

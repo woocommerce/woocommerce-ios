@@ -320,6 +320,8 @@ private extension OrderDetailsViewController {
             trackingWasPressed(at: indexPath)
         case .issueRefund:
             issueRefundWasPressed()
+        case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
+            shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         }
     }
 
@@ -367,6 +369,26 @@ private extension OrderDetailsViewController {
 
         actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.requestRefundAction) { _ in
             // TODO-2168: refund a shipping label
+        }
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.sourceView = sourceView
+
+        present(actionSheet, animated: true)
+    }
+
+    func shippingLabelTrackingMoreMenuTapped(shippingLabel: ShippingLabel, sourceView: UIView) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        actionSheet.addCancelActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.cancelAction)
+
+        actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.copyTrackingNumberAction) { [weak self] _ in
+            self?.viewModel.dataSource.sendToPasteboard(shippingLabel.trackingNumber, includeTrailingNewline: false)
+        }
+
+        actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.trackShipmentAction) { _ in
+            // TODO-2564: track shipment of a shipping label
         }
 
         let popoverController = actionSheet.popoverPresentationController
@@ -525,6 +547,16 @@ private extension OrderDetailsViewController {
             static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the shipping label more menu action sheet")
             static let requestRefundAction = NSLocalizedString("Request a Refund",
                                                                comment: "Request a refund on a shipping label from the shipping label more menu action sheet")
+        }
+
+        enum ShippingLabelTrackingMoreMenu {
+            static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the shipping label tracking more menu action sheet")
+            static let copyTrackingNumberAction =
+                NSLocalizedString("Copy tracking number",
+                                  comment: "Copy tracking number of a shipping label from the shipping label tracking more menu action sheet")
+            static let trackShipmentAction =
+                NSLocalizedString("Track shipment",
+                                  comment: "Track shipment of a shipping label from the shipping label tracking more menu action sheet")
         }
     }
 

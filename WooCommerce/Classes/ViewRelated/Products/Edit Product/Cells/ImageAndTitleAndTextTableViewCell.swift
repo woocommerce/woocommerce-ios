@@ -9,6 +9,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         let textTintColor: UIColor?
         let image: UIImage?
         let imageTintColor: UIColor?
+        let numberOfLinesForTitle: Int
         let numberOfLinesForText: Int
         let isActionable: Bool
 
@@ -17,6 +18,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
              textTintColor: UIColor? = nil,
              image: UIImage? = nil,
              imageTintColor: UIColor? = nil,
+             numberOfLinesForTitle: Int = 1,
              numberOfLinesForText: Int = 1,
              isActionable: Bool = true) {
             self.title = title
@@ -24,6 +26,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
             self.textTintColor = textTintColor
             self.image = image
             self.imageTintColor = imageTintColor
+            self.numberOfLinesForTitle = numberOfLinesForTitle
             self.numberOfLinesForText = numberOfLinesForText
             self.isActionable = isActionable
         }
@@ -74,6 +77,7 @@ extension ImageAndTitleAndTextTableViewCell {
         titleLabel.text = viewModel.title
         titleLabel.isHidden = viewModel.title == nil || viewModel.title?.isEmpty == true
         titleLabel.textColor = viewModel.text?.isEmpty == false ? .text: .textSubtle
+        titleLabel.numberOfLines = viewModel.numberOfLinesForTitle
         descriptionLabel.text = viewModel.text
         descriptionLabel.textColor = .textSubtle
         descriptionLabel.isHidden = viewModel.text == nil || viewModel.text?.isEmpty == true

@@ -146,6 +146,8 @@ final class OrderDetailsDataSource: NSObject {
         return AsyncDictionary()
     }()
 
+    private lazy var currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+
     private let imageService: ImageService = ServiceLocator.imageService
 
     init(order: Order,
@@ -492,7 +494,6 @@ private extension OrderDetailsDataSource {
         }
 
         let title = String.localizedStringWithFormat(Title.shippingLabelRefundedTitleFormat, shippingLabel.serviceName)
-        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
         let refundedAmount = currencyFormatter.formatAmount(Decimal(shippingLabel.refundableAmount), with: shippingLabel.currency) ?? ""
         let dateRequested = refund.dateRequested.toString(dateStyle: .medium, timeStyle: .short)
         let text = String.localizedStringWithFormat(Title.shippingLabelRefundedDetailsFormat, refundedAmount, dateRequested)

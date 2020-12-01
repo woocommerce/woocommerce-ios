@@ -173,7 +173,8 @@ extension OrderDetailsViewModel {
             OrderTrackingTableViewCell.self,
             SummaryTableViewCell.self,
             ButtonTableViewCell.self,
-            IssueRefundTableViewCell.self
+            IssueRefundTableViewCell.self,
+            ImageAndTitleAndTextTableViewCell.self
         ]
 
         for cellClass in cells {

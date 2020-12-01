@@ -146,6 +146,8 @@ final class OrderDetailsDataSource: NSObject {
         return AsyncDictionary()
     }()
 
+    private lazy var currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+
     private let imageService: ImageService = ServiceLocator.imageService
 
     init(order: Order,
@@ -273,8 +275,10 @@ private extension OrderDetailsDataSource {
             configureReprintShippingLabelButton(cell: cell)
         case let cell as OrderTrackingTableViewCell where row == .tracking:
             configureTracking(cell: cell, at: indexPath)
-        case let cell as OrderTrackingTableViewCell where row == .shippingLabelTrackingNumber:
+        case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelTrackingNumber:
             configureShippingLabelTrackingNumber(cell: cell, at: indexPath)
+        case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelRefunded:
+            configureShippingLabelRefunded(cell: cell, at: indexPath)
         case let cell as LeftImageTableViewCell where row == .trackingAdd:
             configureNewTracking(cell: cell)
         case let cell as SummaryTableViewCell:
@@ -479,14 +483,47 @@ private extension OrderDetailsDataSource {
         cell.configure(item: itemViewModel, imageService: imageService)
     }
 
-    private func configureShippingLabelTrackingNumber(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
+    private func configureShippingLabelTrackingNumber(cell: ImageAndTitleAndTextTableViewCell, at indexPath: IndexPath) {
         guard let shippingLabel = shippingLabel(at: indexPath) else {
             return
         }
 
-        cell.topText = shippingLabel.serviceName
+        let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: Title.shippingLabelTrackingNumberTitle,
+                                                                    text: shippingLabel.trackingNumber,
+                                                                    textTintColor: nil,
+                                                                    image: .locationImage,
+                                                                    imageTintColor: .primary,
+                                                                    numberOfLinesForTitle: 0,
+                                                                    numberOfLinesForText: 0,
+                                                                    isActionable: false)
+        cell.updateUI(viewModel: viewModel)
 
-        // TODO-2167: update design for shipping label tracking number
+        let actionButton = UIButton(type: .detailDisclosure)
+        actionButton.applyIconButtonStyle(icon: .moreImage)
+        actionButton.on(.touchUpInside) { [weak self] sender in
+            self?.onCellAction?(.shippingLabelTrackingMenu(shippingLabel: shippingLabel, sourceView: sender), nil)
+        }
+        cell.accessoryView = actionButton
+    }
+
+    private func configureShippingLabelRefunded(cell: ImageAndTitleAndTextTableViewCell, at indexPath: IndexPath) {
+        guard let shippingLabel = shippingLabel(at: indexPath), let refund = shippingLabel.refund else {
+            return
+        }
+
+        let title = String.localizedStringWithFormat(Title.shippingLabelRefundedTitleFormat, shippingLabel.serviceName)
+        let refundedAmount = currencyFormatter.formatAmount(Decimal(shippingLabel.refundableAmount), with: shippingLabel.currency) ?? ""
+        let dateRequested = refund.dateRequested.toString(dateStyle: .medium, timeStyle: .short)
+        let text = String.localizedStringWithFormat(Title.shippingLabelRefundedDetailsFormat, refundedAmount, dateRequested)
+        let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: title,
+                                                                    text: text,
+                                                                    textTintColor: nil,
+                                                                    image: .locationImage,
+                                                                    imageTintColor: .primary,
+                                                                    numberOfLinesForTitle: 0,
+                                                                    numberOfLinesForText: 0,
+                                                                    isActionable: false)
+        cell.updateUI(viewModel: viewModel)
     }
 
     private func configureReprintShippingLabelButton(cell: ButtonTableViewCell) {
@@ -729,7 +766,7 @@ extension OrderDetailsDataSource {
                 let rows: [Row]
                 let headerStyle: Section.HeaderStyle
                 if isRefunded {
-                    rows = [.shippingLabelTrackingNumber, .shippingLabelDetail]
+                    rows = [.shippingLabelRefunded, .shippingLabelDetail]
                     headerStyle = .primary
                 } else {
                     // TODO-2167: show printing instructions
@@ -1003,6 +1040,14 @@ extension OrderDetailsDataSource {
         static let shippingLabelPackageFormat =
             NSLocalizedString("Package %d",
                               comment: "Order shipping label package section title format. The number indicates the index of the shipping label package.")
+        static let shippingLabelTrackingNumberTitle = NSLocalizedString("Tracking number", comment: "Order shipping label tracking number row title.")
+        static let shippingLabelRefundedDetailsFormat =
+            NSLocalizedString("%1$@ • %2$@",
+                              comment: "Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). " +
+                                "The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM).")
+        static let shippingLabelRefundedTitleFormat =
+            NSLocalizedString("%@ label refund requested",
+                              comment: "Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS).")
         static let shippingLabelPrintingInfoAction =
             NSLocalizedString("Don’t know how to print from your phone?",
                               comment: "Title of button in order details > shipping label that shows the instructions on how to print " +
@@ -1118,6 +1163,7 @@ extension OrderDetailsDataSource {
         case shippingLabelDetail
         case shippingLabelPrintingInfo
         case shippingLabelProduct
+        case shippingLabelRefunded
         case shippingLabelReprintButton
         case shippingLabelTrackingNumber
         case shippingNotice
@@ -1167,8 +1213,8 @@ extension OrderDetailsDataSource {
                 return TopLeftImageTableViewCell.reuseIdentifier
             case .shippingLabelProduct:
                 return ProductDetailsTableViewCell.reuseIdentifier
-            case .shippingLabelTrackingNumber:
-                return OrderTrackingTableViewCell.reuseIdentifier
+            case .shippingLabelTrackingNumber, .shippingLabelRefunded:
+                return ImageAndTitleAndTextTableViewCell.reuseIdentifier
             case .shippingLabelReprintButton:
                 return ButtonTableViewCell.reuseIdentifier
             case .shippingNotice:
@@ -1188,6 +1234,7 @@ extension OrderDetailsDataSource {
         case tracking
         case summary
         case issueRefund
+        case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
     }
 
     struct Constants {

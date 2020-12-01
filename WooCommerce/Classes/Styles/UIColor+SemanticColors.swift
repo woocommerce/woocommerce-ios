@@ -72,61 +72,40 @@ extension UIColor {
         return .accent
     }
 
-    /// Text. Gray-80 (< iOS 13) and `UIColor.label` (> iOS 13)
+    /// Text.
     ///
     static var text: UIColor {
-        if #available(iOS 13, *) {
-            return .label
-        }
-
-        return .gray(.shade80)
+        return .label
     }
 
-    /// Text Subtle. Gray-50 (< iOS 13) and `UIColor.secondaryLabel` (> iOS 13)
+    /// Text Subtle.
     ///
     static var textSubtle: UIColor {
-        if #available(iOS 13, *) {
-            return .secondaryLabel
-        }
-
-        return .gray(.shade50)
+        return .secondaryLabel
     }
 
-    /// Text Tertiary. Gray-20 (< iOS 13) and `UIColor.tertiaryLabel` (> iOS 13)
+    /// Text Tertiary.
     ///
     static var textTertiary: UIColor {
-        if #available(iOS 13, *) {
-            return .tertiaryLabel
-        }
-
-        return .gray(.shade20)
+        return .tertiaryLabel
     }
 
-    /// Text Quaternary. Gray-10 (< iOS 13) and `UIColor.quaternaryLabel` (> iOS 13)
+    /// Text Quaternary.
     ///
     static var textQuaternary: UIColor {
-        if #available(iOS 13, *) {
-            return .quaternaryLabel
-        }
-
-        return .gray(.shade10)
+        return .quaternaryLabel
     }
 
-    /// Text Inverted. White(< iOS 13 and Light Mode) and Gray-90 (Dark Mode)
+    /// Text Inverted.
     ///
     static var textInverted: UIColor {
         return UIColor(light: .white,
                        dark: .withColorStudio(.gray, shade: .shade90))
     }
 
-    /// Text Placeholder. Gray-30 (< iOS 13) and `UIColor.placeholderText` (> iOS 13)
-    ///
+    /// Text Placeholder.
     static var textPlaceholder: UIColor {
-        if #available(iOS 13, *) {
-            return .placeholderText
-        }
-
-        return .gray(.shade30)
+        return .placeholderText
     }
 
     /// Cancel Action Text Color.
@@ -136,7 +115,7 @@ extension UIColor {
                        dark: .systemColor(.label))
     }
 
-    /// Text. WooCommercePurple-60 (< iOS 13 and Light Mode) and WooCommercePurple-30 (Dark Mode)
+    /// Text.
     ///
     static var textBrand: UIColor {
         return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
@@ -156,26 +135,17 @@ extension UIColor {
 
 // MARK: - UI elements.
 extension UIColor {
-    /// Basic Background. White (< iOS 13) and `UIColor.systemBackground` (> iOS 13)
+    /// Basic Background.
     ///
     static var basicBackground: UIColor {
-        if #available(iOS 13, *) {
-            return .systemBackground
-        }
-
-        return .white
+        return .systemBackground
     }
 
-    /// App Navigation Bar. WooCommercePurple-60 (< iOS 13 and Light Mode) and `UIColor.systemThickMaterial` (Dark Mode)
+    /// App Navigation Bar.
     ///
     static var appBar: UIColor {
-        if #available(iOS 13, *) {
-            return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
-                           dark: .systemColor(.secondarySystemGroupedBackground))
-        }
-
-
-        return .withColorStudio(.wooCommercePurple, shade: .shade60)
+        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
+                       dark: .systemColor(.secondarySystemGroupedBackground))
     }
 
     /// App Tab Bar.
@@ -185,14 +155,10 @@ extension UIColor {
         dark: .systemColor(.secondarySystemGroupedBackground))
     }
 
-    /// Divider. Gray-10 (< iOS 13) and `UIColor.separator` (> iOS 13)
+    /// Divider.
     ///
     static var divider: UIColor {
-        if #available(iOS 13, *) {
-            return .separator
-        }
-
-        return .withColorStudio(.gray, shade: .shade10)
+        return .separator
     }
 
     /// Primary Button Background. Resolves to `accent`
@@ -321,44 +287,28 @@ extension UIColor {
 
 // MARK: - Table Views.
 extension UIColor {
-    /// List Icon. Gray-20 (< iOS 13) and `UIColor.secondaryLabel` (> iOS 13)
+    /// List Icon.
     ///
     static var listIcon: UIColor {
-        if #available(iOS 13, *) {
-            return .secondaryLabel
-        }
-
-        return .withColorStudio(.gray, shade: .shade20)
+        return .secondaryLabel
     }
 
-    /// List Small Icon. Gray-20 (< iOS 13) and `UIColor.systemGray` (> iOS 13)
+    /// List Small Icon.
     ///
     static var listSmallIcon: UIColor {
-        if #available(iOS 13, *) {
-            return .systemGray
-        }
-
-        return .withColorStudio(.gray, shade: .shade20)
+        return .systemGray
     }
 
-    /// List BackGround. Gray-0 (< iOS 13) and `UIColor.systemGroupedBackground` (> iOS 13)
+    /// List BackGround.
     ///
     static var listBackground: UIColor {
-        if #available(iOS 13, *) {
-            return .systemGroupedBackground
-        }
-
-        return .withColorStudio(.gray, shade: .shade0)
+        return .systemGroupedBackground
     }
 
-    /// List ForeGround. `UIColor.white` (< iOS 13) and `UIColor.secondarySystemGroupedBackground` (> iOS 13)
+    /// List ForeGround.
     ///
     static var listForeground: UIColor {
-        if #available(iOS 13, *) {
-            return .secondarySystemGroupedBackground
-        }
-
-        return .white
+        return .secondarySystemGroupedBackground
     }
 }
 

@@ -130,21 +130,12 @@ private extension OrderSearchStarterViewController {
         let title = cellViewModel.name ?? Localization.defaultOrderListTitle
         let emptyStateConfig = EmptyStateViewController.Config.simple(message: emptyStateMessage, image: .emptySearchResultsImage)
 
-        if #available(iOS 13, *) {
-            return OrderListViewController(
-                siteID: siteID,
-                title: title,
-                viewModel: .init(siteID: siteID, statusFilter: cellViewModel.orderStatus),
-                emptyStateConfig: emptyStateConfig
-            )
-        } else {
-            return OrdersViewController(
-                siteID: siteID,
-                title: title,
-                viewModel: .init(siteID: siteID, statusFilter: cellViewModel.orderStatus),
-                emptyStateConfig: emptyStateConfig
-            )
-        }
+        return OrderListViewController(
+            siteID: siteID,
+            title: title,
+            viewModel: .init(siteID: siteID, statusFilter: cellViewModel.orderStatus),
+            emptyStateConfig: emptyStateConfig
+        )
     }
 
     enum Localization {

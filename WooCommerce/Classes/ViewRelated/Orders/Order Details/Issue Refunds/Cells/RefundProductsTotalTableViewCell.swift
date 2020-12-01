@@ -98,7 +98,6 @@ private struct RefundProductsTotalTableViewCellRepresentable: UIViewRepresentabl
     }
 }
 
-@available(iOS 13.0, *)
 struct RefundProductsTotalTableViewCell_Previews: PreviewProvider {
 
     private static func makeStack() -> some View {

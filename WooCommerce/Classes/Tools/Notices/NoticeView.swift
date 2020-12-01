@@ -32,11 +32,7 @@ class NoticeView: UIView {
     init(notice: Notice) {
         self.notice = notice
 
-        if #available(iOS 13.0, *) {
-            self.backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .systemThickMaterial))
-        } else {
-            self.backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
-        }
+        self.backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .systemThickMaterial))
 
         super.init(frame: .zero)
 

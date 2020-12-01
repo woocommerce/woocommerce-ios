@@ -7,25 +7,11 @@ import WordPressUI
 /// Configuration and actions for an ULErrorViewController, modelling
 /// an error when the site is not a WordPress site
 struct NotWPErrorViewModel: ULErrorViewModel {
-    private let siteURL: String
-
-    init(siteURL: String) {
-        self.siteURL = siteURL
-    }
-
     // MARK: - Data and configuration
     let image: UIImage = .loginNoWordPressError
 
     var text: NSAttributedString {
-        let font: UIFont = .body
-        let boldFont: UIFont = font.bold
-
-        let boldSiteAddress = NSAttributedString(string: siteURL.trimHTTPScheme(),
-                                                           attributes: [.font: boldFont])
         let message = NSMutableAttributedString(string: Localization.errorMessage)
-
-        message.replaceFirstOccurrence(of: "%@", with: boldSiteAddress)
-
         return message
     }
 
@@ -57,7 +43,7 @@ struct NotWPErrorViewModel: ULErrorViewModel {
 // MARK: - Private data structures
 private extension NotWPErrorViewModel {
     enum Localization {
-        static let errorMessage = NSLocalizedString("The website %@ is not a WordPress site. For us to connect to it, the site must have WordPress installed.",
+        static let errorMessage = NSLocalizedString("The website is not a WordPress site. For us to connect to it, the site must have WordPress installed.",
                                                     comment: "Message explaining that a site is not a WordPress site. "
                                                         + "Reads like 'The website awebsite.com you'll is not a WordPress site...")
 

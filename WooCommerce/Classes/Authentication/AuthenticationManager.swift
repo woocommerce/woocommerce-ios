@@ -196,7 +196,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 
     func handleError(_ error: Error, onCompletion: @escaping (UIViewController) -> Void) {
-        let viewModel = NotWPErrorViewModel(siteURL: "http://woocommerce.com")
+        let viewModel = NotWPErrorViewModel()
         let noWPErrorUI = ULErrorViewController(viewModel: viewModel)
 
         onCompletion(noWPErrorUI)

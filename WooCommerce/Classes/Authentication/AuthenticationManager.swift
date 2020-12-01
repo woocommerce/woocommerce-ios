@@ -184,6 +184,14 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func createdWordPressComAccount(username: String, authToken: String) { }
 
     func shouldHandleError(_ error: Error) -> Bool {
+        let err = error as NSError
+        /// This is the error code that signals that a site is not a WP site.
+        /// It corresponds to WordPressKit.WordPressOrgXMLRPCValidatorError
+        /// However, we do not pull WordPressKit as a dependency
+        guard err.code == 406 else {
+            return false
+        }
+
         return true
     }
 

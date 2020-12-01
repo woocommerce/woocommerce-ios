@@ -239,6 +239,9 @@ extension OrderDetailsViewModel {
                                                                    forceReadOnly: true)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
+        case .shippingLabelPrintingInfo:
+            // TODO-2174: present instructions on how to print shipping labels
+            break
         case .shippingLabelProduct:
             guard let item = dataSource.shippingLabelOrderItem(at: indexPath), item.productOrVariationID > 0 else {
                 return

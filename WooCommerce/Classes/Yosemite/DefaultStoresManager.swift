@@ -70,7 +70,14 @@ class DefaultStoresManager: StoresManager {
     ///
     init(sessionManager: SessionManager) {
         _sessionManager = sessionManager
-        self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
+
+        if ProcessInfo.processInfo.arguments.contains("mocked-network-layer") {
+            let screenshotObjectGraph = ScreenshotObjects()
+            self.state = MockAuthenticatedState(objectGraph: screenshotObjectGraph)
+        }
+        else {
+            self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
+        }
 
         isLoggedInSubject.send(isAuthenticated)
 

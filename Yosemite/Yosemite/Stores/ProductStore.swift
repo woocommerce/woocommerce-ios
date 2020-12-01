@@ -17,7 +17,7 @@ public class ProductStore: Store {
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
     }
 
-    init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: ProductsRemoteProtocol) {
+    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: ProductsRemoteProtocol) {
         self.remote = remote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }

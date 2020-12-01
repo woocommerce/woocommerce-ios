@@ -1,10 +1,21 @@
 import Foundation
 import Alamofire
 
+/// Protocol for `AccountRemote` mainly used for mocking.
+///
+/// The required methods are intentionally incomplete. Feel free to add the other ones.
+///
+public protocol AccountRemoteProtocol {
+    func loadAccount(completion: @escaping (Account?, Error?) -> Void)
+    func loadAccountSettings(for userID: Int64, completion: @escaping (AccountSettings?, Error?) -> Void)
+    func updateAccountSettings(for userID: Int64, tracksOptOut: Bool, completion: @escaping (AccountSettings?, Error?) -> Void)
+    func loadSites(completion: @escaping ([Site]?, Error?) -> Void)
+    func loadSitePlan(for siteID: Int64, completion: @escaping (SitePlan?, Error?) -> Void)
+}
 
 /// Account: Remote Endpoints
 ///
-public class AccountRemote: Remote {
+public class AccountRemote: Remote, AccountRemoteProtocol {
 
     /// Loads the Account Details associated with the Credential's authToken.
     ///

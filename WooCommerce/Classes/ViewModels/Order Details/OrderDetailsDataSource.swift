@@ -42,6 +42,10 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var onCellAction: ((CellActionType, IndexPath?) -> Void)?
 
+    /// Closure to be executed when the shipping label more menu is tapped.
+    ///
+    var onShippingLabelMoreMenuTapped: ((_ shippingLabel: ShippingLabel, _ sourceView: UIView) -> Void)?
+
     /// Closure to be executed when the UI needs to be reloaded.
     ///
     var onUIReloadRequired: (() -> Void)?
@@ -77,6 +81,7 @@ final class OrderDetailsDataSource: NSObject {
     }
 
     private var shippingLabels: [ShippingLabel] = []
+    private var shippingLabelOrderItemsAggregator: AggregatedShippingLabelOrderItems = AggregatedShippingLabelOrderItems.empty
 
     /// Shipping Lines from an Order
     ///
@@ -159,6 +164,13 @@ final class OrderDetailsDataSource: NSObject {
     func configureResultsControllers(onReload: @escaping () -> Void) {
         resultsControllers.configureResultsControllers(onReload: onReload)
     }
+
+    func shippingLabelOrderItem(at indexPath: IndexPath) -> AggregateOrderItem? {
+        guard let shippingLabel = shippingLabel(at: indexPath) else {
+            return nil
+        }
+        return shippingLabelOrderItemsAggregator.orderItem(of: shippingLabel, at: indexPath.row)
+    }
 }
 
 
@@ -196,7 +208,12 @@ extension OrderDetailsDataSource {
 
         switch headerView {
         case let headerView as PrimarySectionHeaderView:
-            headerView.configure(title: section.title)
+            switch section.headerStyle {
+            case .actionablePrimary(let actionConfig):
+                headerView.configure(title: section.title, action: actionConfig)
+            default:
+                headerView.configure(title: section.title)
+            }
         case let headerView as TwoColumnSectionHeaderView:
             headerView.leftText = section.title
             headerView.rightText = section.rightTitle
@@ -434,7 +451,14 @@ private extension OrderDetailsDataSource {
     private func configureShippingLabelProduct(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .default
 
-        // TODO-2167: show aggregated order item (product) for a shipping label
+        guard let shippingLabel = shippingLabel(at: indexPath),
+              let orderItem = shippingLabelOrderItemsAggregator.orderItem(of: shippingLabel, at: indexPath.row) else {
+            assertionFailure("Cannot access shipping label and/or order item at \(indexPath)")
+            return
+        }
+
+        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: orderItem, currency: order.currency)
+        cell.configure(item: itemViewModel, imageService: imageService)
     }
 
     private func configureShippingLabelTrackingNumber(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
@@ -616,6 +640,13 @@ extension OrderDetailsDataSource {
     /// When: Shipping == nil               >>> Display: Shipping = "No address specified"
     ///
     func reloadSections() {
+        // Freezes any data that require lookup after the sections are reloaded, in case the data from a ResultsController changes before the next reload.
+        shippingLabels = resultsControllers.shippingLabels
+        shippingLabelOrderItemsAggregator = AggregatedShippingLabelOrderItems(shippingLabels: shippingLabels,
+                                                                                   orderItems: items,
+                                                                                   products: products,
+                                                                                   productVariations: resultsControllers.productVariations)
+
         let summary = Section(category: .summary, row: .summary)
 
         let shippingNotice: Section? = {
@@ -665,26 +696,34 @@ extension OrderDetailsDataSource {
             return Section(category: .refundedProducts, title: Title.refundedProducts, row: row)
         }()
 
-        let shippingLabels = resultsControllers.shippingLabels
-        self.shippingLabels = shippingLabels
-
         let shippingLabelSections: [Section] = {
+            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease1) else {
+                return []
+            }
+
             guard shippingLabels.isNotEmpty else {
                 return []
             }
+
             let sections = shippingLabels.enumerated().map { index, shippingLabel -> Section in
                 let title = String.localizedStringWithFormat(Title.shippingLabelPackageFormat, index + 1)
                 let isRefunded = shippingLabel.refund != nil
                 let rows: [Row]
+                let headerStyle: Section.HeaderStyle
                 if isRefunded {
                     rows = [.shippingLabelTrackingNumber, .shippingLabelDetail]
+                    headerStyle = .primary
                 } else {
-                    let orderItemsCount = shippingLabel.productNames.count
-                    // TODO-2167: show aggregated order items (products) for a shipping label
+                    // TODO-2167: show printing instructions
+                    let orderItemsCount = shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel).count
                     rows = Array(repeating: .shippingLabelProduct, count: orderItemsCount)
                         + [.shippingLabelReprintButton, .shippingLabelTrackingNumber, .shippingLabelDetail]
+                    let headerActionConfig = PrimarySectionHeaderView.ActionConfiguration(image: .moreImage) { [weak self] sourceView in
+                        self?.onShippingLabelMoreMenuTapped?(shippingLabel, sourceView)
+                    }
+                    headerStyle = .actionablePrimary(actionConfig: headerActionConfig)
                 }
-                return Section(category: .shippingLabel, title: title, rows: rows, headerStyle: .primary)
+                return Section(category: .shippingLabel, title: title, rows: rows, headerStyle: headerStyle)
             }
             return sections
         }()
@@ -974,6 +1013,8 @@ extension OrderDetailsDataSource {
         enum HeaderStyle {
             /// Uses the PrimarySectionHeaderView
             case primary
+            /// Uses the PrimarySectionHeaderView with action configuration
+            case actionablePrimary(actionConfig: PrimarySectionHeaderView.ActionConfiguration)
             /// Uses the TwoColumnSectionHeaderView
             case twoColumn
 
@@ -981,7 +1022,7 @@ extension OrderDetailsDataSource {
             ///
             var viewType: UITableViewHeaderFooterView.Type {
                 switch self {
-                case .primary:
+                case .primary, .actionablePrimary:
                     return PrimarySectionHeaderView.self
                 case .twoColumn:
                     return TwoColumnSectionHeaderView.self

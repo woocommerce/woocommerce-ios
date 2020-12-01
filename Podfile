@@ -8,7 +8,7 @@ inhibit_all_warnings!
 use_frameworks! # Defaulting to use_frameworks! See pre_install hook below for static linking.
 use_modular_headers!
 
-app_ios_deployment_target = Gem::Version.new('12.0')
+app_ios_deployment_target = Gem::Version.new('13.0')
 
 platform :ios, app_ios_deployment_target.version
 workspace 'WooCommerce.xcworkspace'
@@ -40,7 +40,7 @@ target 'WooCommerce' do
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
   # pod 'WordPressAuthenticator', '~> 1.30.0-beta.2'
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
-  pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'issue/523-pop-to-prologue'
+  pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'develop'
   # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
 
   pod 'WordPressShared', '~> 1.12'

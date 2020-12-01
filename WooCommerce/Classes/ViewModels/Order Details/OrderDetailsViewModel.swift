@@ -116,6 +116,14 @@ final class OrderDetailsViewModel {
         }
     }
 
+    /// Closure to be executed when the shipping label more menu is tapped.
+    ///
+    var onShippingLabelMoreMenuTapped: ((_ shippingLabel: ShippingLabel, _ sourceView: UIView) -> Void)? {
+        didSet {
+            dataSource.onShippingLabelMoreMenuTapped = onShippingLabelMoreMenuTapped
+        }
+    }
+
     /// Helpers
     ///
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
@@ -225,6 +233,15 @@ extension OrderDetailsViewModel {
             viewController.present(navController, animated: true, completion: nil)
         case .aggregateOrderItem:
             let item = dataSource.aggregateOrderItems[indexPath.row]
+            let loaderViewController = ProductLoaderViewController(model: .init(aggregateOrderItem: item),
+                                                                   siteID: order.siteID,
+                                                                   forceReadOnly: true)
+            let navController = WooNavigationController(rootViewController: loaderViewController)
+            viewController.present(navController, animated: true, completion: nil)
+        case .shippingLabelProduct:
+            guard let item = dataSource.shippingLabelOrderItem(at: indexPath), item.productOrVariationID > 0 else {
+                return
+            }
             let loaderViewController = ProductLoaderViewController(model: .init(aggregateOrderItem: item),
                                                                    siteID: order.siteID,
                                                                    forceReadOnly: true)

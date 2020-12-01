@@ -146,15 +146,8 @@ final class SiteAddressViewController: LoginViewController {
             return
         }
 
-        authenticationDelegate.handleError(error) { result in
-            switch result {
-            case .error(_):
-                break
-            case .presentPasswordController(_):
-                break
-            case let .injectViewController(customUI):
-                self.navigationController?.pushViewController(customUI, animated: true)
-            }
+        authenticationDelegate.handleError(error) { customUI in
+            self.navigationController?.pushViewController(customUI, animated: true)
         }
     }
 
@@ -437,16 +430,11 @@ private extension SiteAddressViewController {
 
                 let err = self.originalErrorOrError(error: error as NSError)
 
+                /// Check if the host app wants to provide custom UI to handle the error.
+                /// If it does, insert the custom UI provided by the host app and exit early
                 if self.authenticationDelegate.shouldHandleError(err) {
-                    self.authenticationDelegate.handleError(err) { result in
-                        switch result {
-                        case .error(_):
-                            break
-                        case .presentPasswordController(_):
-                            break
-                        case let .injectViewController(customUI):
-                            self.navigationController?.pushViewController(customUI, animated: true)
-                        }
+                    self.authenticationDelegate.handleError(err) { customUI in
+                        self.navigationController?.pushViewController(customUI, animated: true)
                     }
 
                     return

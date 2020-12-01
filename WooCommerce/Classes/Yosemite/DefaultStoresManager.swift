@@ -71,7 +71,7 @@ class DefaultStoresManager: StoresManager {
     init(sessionManager: SessionManager) {
         _sessionManager = sessionManager
 
-        if ProcessInfo.processInfo.arguments.contains("mocked-network-layer") {
+        if BuildConfiguration.shouldUseScreenshotsNetworkLayer {
             let screenshotObjectGraph = ScreenshotObjects()
             self.state = MockAuthenticatedState(objectGraph: screenshotObjectGraph)
         }

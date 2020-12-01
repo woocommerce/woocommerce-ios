@@ -66,6 +66,10 @@
 		02E7FFCF25621C7900C53030 /* shipping-label-print.json in Resources */ = {isa = PBXBuildFile; fileRef = 02E7FFCE25621C7900C53030 /* shipping-label-print.json */; };
 		02F096C22406691100C0C1D5 /* media-library.json in Resources */ = {isa = PBXBuildFile; fileRef = 02F096C12406691100C0C1D5 /* media-library.json */; };
 		21DB5B99C4107CF69C0A57EC /* Pods_NetworkingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */; };
+		241276442576E338006B8CFF /* MockAccountRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 241276422576E338006B8CFF /* MockAccountRemote.swift */; };
+		241276452576E338006B8CFF /* MockProductRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 241276432576E338006B8CFF /* MockProductRemote.swift */; };
+		2412764B2576E34D006B8CFF /* MockObjectGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 241276492576E34D006B8CFF /* MockObjectGraph.swift */; };
+		2412764C2576E34D006B8CFF /* ScreenshotsObjectGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2412764A2576E34D006B8CFF /* ScreenshotsObjectGraph.swift */; };
 		24F98C522502E79800F49B68 /* FeatureFlagsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C512502E79800F49B68 /* FeatureFlagsRemote.swift */; };
 		24F98C542502E8DD00F49B68 /* Bundle+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C532502E8DD00F49B68 /* Bundle+Woo.swift */; };
 		24F98C562502EA4800F49B68 /* FeatureFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C552502EA4800F49B68 /* FeatureFlag.swift */; };
@@ -457,6 +461,10 @@
 		02E7FFCA256218F600C53030 /* ShippingLabelRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelRemoteTests.swift; sourceTree = "<group>"; };
 		02E7FFCE25621C7900C53030 /* shipping-label-print.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-print.json"; sourceTree = "<group>"; };
 		02F096C12406691100C0C1D5 /* media-library.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-library.json"; sourceTree = "<group>"; };
+		241276422576E338006B8CFF /* MockAccountRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAccountRemote.swift; sourceTree = "<group>"; };
+		241276432576E338006B8CFF /* MockProductRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockProductRemote.swift; sourceTree = "<group>"; };
+		241276492576E34D006B8CFF /* MockObjectGraph.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockObjectGraph.swift; sourceTree = "<group>"; };
+		2412764A2576E34D006B8CFF /* ScreenshotsObjectGraph.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenshotsObjectGraph.swift; sourceTree = "<group>"; };
 		24F98C512502E79800F49B68 /* FeatureFlagsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagsRemote.swift; sourceTree = "<group>"; };
 		24F98C532502E8DD00F49B68 /* Bundle+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Woo.swift"; sourceTree = "<group>"; };
 		24F98C552502EA4800F49B68 /* FeatureFlag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlag.swift; sourceTree = "<group>"; };
@@ -843,6 +851,24 @@
 			path = Enums;
 			sourceTree = "<group>";
 		};
+		241276412576E32D006B8CFF /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				241276422576E338006B8CFF /* MockAccountRemote.swift */,
+				241276432576E338006B8CFF /* MockProductRemote.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
+		241276482576E340006B8CFF /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				241276492576E34D006B8CFF /* MockObjectGraph.swift */,
+				2412764A2576E34D006B8CFF /* ScreenshotsObjectGraph.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
 		35C45CCE73A311BE252F6BF4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1061,6 +1087,7 @@
 		B557DA0520975507005962F4 /* Remote */ = {
 			isa = PBXGroup;
 			children = (
+				241276412576E32D006B8CFF /* Mocks */,
 				B557DA0020975500005962F4 /* Remote.swift */,
 				B505F6D020BEE39600BB1B69 /* AccountRemote.swift */,
 				740CF89821937A030023ED3A /* CommentRemote.swift */,
@@ -1120,6 +1147,7 @@
 				5726F72F2460A83D0031CAAC /* Copiable */,
 				B50A583A21AD872E00617455 /* Devices */,
 				020D07B623D852AB00FD9580 /* Media */,
+				241276482576E340006B8CFF /* Mocks */,
 				CE6BFEE62236CF0D005C79FB /* Product */,
 				45AE58142306ADA8001901E3 /* Refund */,
 				02C2548225635BB500A04423 /* ShippingLabel */,
@@ -1773,6 +1801,7 @@
 				02C1CEF424C6A02B00703EBA /* ProductVariationMapper.swift in Sources */,
 				267313312559CC930026F7EF /* PaymentGateway.swift in Sources */,
 				B58E5BEA20FFB3D0003C986E /* CodingUserInfoKey+Woo.swift in Sources */,
+				241276452576E338006B8CFF /* MockProductRemote.swift in Sources */,
 				B59325D3217E4206000B0E8E /* NoteMedia.swift in Sources */,
 				26731337255ACA850026F7EF /* PaymentGatewayListMapper.swift in Sources */,
 				CE227093228DD44C00C0626C /* ProductStatus.swift in Sources */,
@@ -1821,6 +1850,7 @@
 				025CA2C4238EBC4300B05C81 /* ProductShippingClassRemote.swift in Sources */,
 				D88D5A4B230BCF0A007B6E01 /* ProductReviewListMapper.swift in Sources */,
 				93D8BBFB226BBC5100AD2EB3 /* AccountSettings.swift in Sources */,
+				241276442576E338006B8CFF /* MockAccountRemote.swift in Sources */,
 				B53EF53821813806003E146F /* DotcomError.swift in Sources */,
 				45D1CF4923BACA6500945A36 /* ProductTaxStatus.swift in Sources */,
 				D823D91222377DF300C90817 /* ShipmentTrackingProviderListMapper.swift in Sources */,
@@ -1858,6 +1888,7 @@
 				021C7BF723863D1800A3BCBD /* Encodable+Serialization.swift in Sources */,
 				0219B03923964BB3007DCD5E /* ProductShippingClassMapper.swift in Sources */,
 				7452387321124B7700A973CD /* AnyCodable.swift in Sources */,
+				2412764C2576E34D006B8CFF /* ScreenshotsObjectGraph.swift in Sources */,
 				026CF61E237D6985009563D4 /* ProductVariationListMapper.swift in Sources */,
 				CE43066E2347CBA70073CBFF /* OrderItemTaxRefund.swift in Sources */,
 				B567AF2920A0FA1E00AB6C62 /* Mapper.swift in Sources */,
@@ -1885,6 +1916,7 @@
 				CE430676234BA7920073CBFF /* RefundListMapper.swift in Sources */,
 				45551F122523E7F1007EF104 /* UserAgent.swift in Sources */,
 				45CDAFAB2434CA9300F83C22 /* ProductCatalogVisibility.swift in Sources */,
+				2412764B2576E34D006B8CFF /* MockObjectGraph.swift in Sources */,
 				B557DA1820979D51005962F4 /* Credentials.swift in Sources */,
 				CE583A0E2109154500D73C1C /* OrderNoteMapper.swift in Sources */,
 				D8FBFF0D22D3AF4A006E3336 /* StatsGranularityV4.swift in Sources */,

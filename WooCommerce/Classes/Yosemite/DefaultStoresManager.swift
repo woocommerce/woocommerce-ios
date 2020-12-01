@@ -1,6 +1,6 @@
 import Foundation
 import Yosemite
-
+import Networking
 
 
 // MARK: - DefaultStoresManager

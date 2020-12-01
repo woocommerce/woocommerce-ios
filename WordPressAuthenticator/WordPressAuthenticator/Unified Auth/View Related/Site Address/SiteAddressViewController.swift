@@ -362,6 +362,19 @@ private extension SiteAddressViewController {
         }
     }
 
+    /// Push a custom view controller, provided by a host app, to the navigation stack
+    func pushCustomUI(_ customUI: UIViewController) {
+        /// Assign the help button of the newly injected UI to the same help button we are currently displaying
+        /// We are making a somewhat big assumption here: the chrome of the new UI we insert would look like the UI
+        /// WPAuthenticator is already displaying. Which is risky, but also kind of makes sense, considering
+        /// we are also pushing that injected UI to the current navigation controller.
+        if WordPressAuthenticator.shared.delegate?.supportActionEnabled == true {
+            customUI.navigationItem.rightBarButtonItems = self.navigationItem.rightBarButtonItems
+        }
+
+        self.navigationController?.pushViewController(customUI, animated: true)
+    }
+
     // MARK: - Private Constants
 
     /// Rows listed in the order they were created.
@@ -434,7 +447,7 @@ private extension SiteAddressViewController {
                 /// If it does, insert the custom UI provided by the host app and exit early
                 if self.authenticationDelegate.shouldHandleError(err) {
                     self.authenticationDelegate.handleError(err) { customUI in
-                        self.navigationController?.pushViewController(customUI, animated: true)
+                        self.pushCustomUI(customUI)
                     }
 
                     return
@@ -501,14 +514,7 @@ private extension SiteAddressViewController {
                 
                 self.showWPUsernamePassword()
             case let .injectViewController(customUI):
-                /// Assign the help button of the newly injected UI to the same help button we are currently displaying
-                /// We are making a somewhat big assumption here: the chrome of the new UI we insert would look like the UI
-                /// WPAuthenticator is already displaying. Which is risky, but also kind of makes sense, considering
-                /// we are also pushing that injected UI to the current navigation controller.
-                if WordPressAuthenticator.shared.delegate?.supportActionEnabled == true {
-                    customUI.navigationItem.rightBarButtonItems = self.navigationItem.rightBarButtonItems
-                }
-                self.navigationController?.pushViewController(customUI, animated: true)
+                self.pushCustomUI(customUI)
             }
         })
     }

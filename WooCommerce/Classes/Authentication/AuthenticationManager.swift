@@ -93,8 +93,8 @@ class AuthenticationManager: Authentication {
                                                               viewControllerBackgroundColor: .basicBackground,
                                                               prologueButtonsBackgroundColor: .authPrologueBottomBackgroundColor,
                                                               navBarBackgroundColor: .basicBackground,
-                                                              navButtonTextColor: .brand,
-                                                              navTitleTextColor: .text)
+                                                              navButtonTextColor: .accent,
+                                                              navTitleTextColor: .accent)
 
         let displayImages = WordPressAuthenticatorDisplayImages(
             magicLink: .loginMagicLinkImage,

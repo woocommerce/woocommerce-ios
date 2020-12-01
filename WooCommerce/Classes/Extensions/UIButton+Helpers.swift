@@ -52,6 +52,11 @@ extension UIButton {
         setTitleColor(.secondaryButtonTitle, for: .highlighted)
         setTitleColor(.buttonDisabledTitle, for: .disabled)
 
+        let normalBackgroundImage = UIImage.renderBackgroundImage(fill: .secondaryButtonBackground,
+                                                                  border: .secondaryButtonBorder)
+            .applyTintColorToiOS13(.secondaryButtonBackground)
+        setBackgroundImage(normalBackgroundImage, for: .normal)
+
         let highlightedBackgroundImage = UIImage.renderBackgroundImage(fill: .secondaryButtonDownBackground,
                                                                        border: .secondaryButtonDownBorder)
             .applyTintColorToiOS13(.secondaryButtonDownBackground)

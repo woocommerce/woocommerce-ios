@@ -37,6 +37,7 @@ final class RefundConfirmationViewController: UIViewController {
         configureMainView()
         configureTableView()
         configureButtonTableFooterView()
+        configureKeyboardDismissal()
     }
 }
 
@@ -56,6 +57,9 @@ private extension RefundConfirmationViewController {
             HeadlineLabelTableViewCell.self,
             WooBasicTableViewCell.self
         ].forEach(tableView.registerNib)
+
+        // Keyboard handling
+        tableView.keyboardDismissMode = .onDrag
 
         // Delegation
         tableView.dataSource = self
@@ -83,6 +87,14 @@ private extension RefundConfirmationViewController {
             }
         }
         tableView.updateFooterHeight()
+    }
+
+    /// Hides the keyboard by asking the view's first responder to resign on each main view tap.
+    ///
+    func configureKeyboardDismissal() {
+        let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
     }
 }
 
@@ -219,7 +231,7 @@ private extension RefundConfirmationViewController {
         static let refund = NSLocalizedString("Refund", comment: "The title of the button to confirm the refund.")
         static let cancel = NSLocalizedString("Cancel", comment: "The title of the button to cancel issuing a refund.")
         static let issuingRefund = NSLocalizedString("Issuing Refund...", comment: "Text of the screen that is displayed while the refund is being created.")
-        static let refundSuccess = NSLocalizedString("🎉 Products successfuly refunded",
+        static let refundSuccess = NSLocalizedString("🎉 Products successfully refunded",
                                                    comment: "Text of the notice that is displayed after the refund is created.")
         static let refundError = NSLocalizedString("There was an error issuing the refund",
                                                    comment: "Text of the notice that is displayed while the refund creation fails.")

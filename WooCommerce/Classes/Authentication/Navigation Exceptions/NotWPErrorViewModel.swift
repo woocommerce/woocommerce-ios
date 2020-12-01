@@ -39,18 +39,13 @@ struct NotWPErrorViewModel: ULErrorViewModel {
 
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        guard let url = URL(string: Strings.instructionsURLString) else {
-            return
-        }
-
-        let safariViewController = SFSafariViewController(url: url)
-        safariViewController.modalPresentationStyle = .pageSheet
-        viewController?.present(safariViewController, animated: true)
+        let popCommand = NavigateBack()
+        popCommand.execute(from: viewController)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        //let refreshCommand = NavigateToRoot()
-        //refreshCommand.execute(from: viewController)
+        let refreshCommand = NavigateToRoot()
+        refreshCommand.execute(from: viewController)
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {

@@ -14,7 +14,7 @@ struct NotWPErrorViewModel: ULErrorViewModel {
     }
 
     // MARK: - Data and configuration
-    let image: UIImage = .loginNoJetpackError
+    let image: UIImage = .loginNoWordPressError
 
     var text: NSAttributedString {
         let font: UIFont = .body

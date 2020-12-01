@@ -128,6 +128,42 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    func test_view_model_submits_refund_and_updates_order() throws {
+        // Given
+        let order = MockOrders().empty()
+        let details = RefundConfirmationViewModel.Details(order: order, amount: "100.0", refundsShipping: false, items: [], paymentGateway: nil)
+        let dispatcher = MockupStoresManager(sessionManager: .testingInstance)
+        dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
+            switch action {
+            case let .createRefund(_, _, _, onCompletion):
+                onCompletion(MockRefunds.sampleRefund(), nil)
+            default:
+                break
+            }
+        }
+
+        // When
+        let orderUpdated: Bool = try waitFor { promise in
+            // Capture order updated value
+            dispatcher.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .retrieveOrder(_, _, onCompletion):
+                    onCompletion(order.copy(status: .refunded), nil)
+                    promise(true)
+                default:
+                    break
+                }
+            }
+
+            // Submit refund
+            let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher)
+            viewModel.submit(onCompletion: { _ in })
+        }
+
+        // Then
+        XCTAssertTrue(orderUpdated)
+    }
+
     func test_view_model_submits_refund_with_automatic_refund_enabled() throws {
         // Given
         let order = MockOrders().empty().copy(paymentMethodID: "stipe", paymentMethodTitle: "Stripe")

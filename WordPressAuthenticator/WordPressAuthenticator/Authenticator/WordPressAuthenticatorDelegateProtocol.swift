@@ -72,9 +72,9 @@ public protocol WordPressAuthenticatorDelegate: class {
     ///
     func shouldDisplayError(_ error: Error) -> Bool
 
-    /// Signals the Host app that there is an error that needs to be handled.
+    /// Signals the Host app that there is an error that needs to be displayed.
     ///
-    func handleError(_ error: Error, onCompletion: @escaping (WordPressAuthenticatorResult) -> Void)
+    func displayError(_ error: Error, onCompletion: @escaping (WordPressAuthenticatorResult) -> Void)
 
     /// Indicates if the Signup Epilogue should be displayed.
     ///

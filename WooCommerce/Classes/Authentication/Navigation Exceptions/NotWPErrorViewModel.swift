@@ -25,8 +25,10 @@ struct NotWPErrorViewModel: ULErrorViewModel {
 
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        let popCommand = NavigateBack()
-        popCommand.execute(from: viewController)
+        /// Temporarily disabled until the PR adding support for this in WPAuthenticator is merged.
+        /// https://github.com/wordpress-mobile/WordPressAuthenticator-iOS/pull/532
+        //let popCommand = NavigateBack()
+        //popCommand.execute(from: viewController)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

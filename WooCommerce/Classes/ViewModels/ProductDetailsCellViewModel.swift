@@ -47,11 +47,12 @@ struct ProductDetailsCellViewModel {
                  positiveTotal: NSDecimalNumber,
                  positivePrice: NSDecimalNumber,
                  skuText: String?,
+                 shouldHideTotalAndSubtitleIfNumbersAreZero: Bool = false,
                  attributes: [OrderAttributeViewModel]) {
         self.imageURL = imageURL
         self.name = name
-        self.quantity = NumberFormatter.localizedString(from: positiveQuantity as NSDecimalNumber, number: .decimal)
-        self.total = currencyFormatter.formatAmount(positiveTotal, with: currency) ?? String()
+        let quantity = NumberFormatter.localizedString(from: positiveQuantity as NSDecimalNumber, number: .decimal)
+        self.quantity = quantity
         self.sku = {
             guard let sku = skuText, sku.isEmpty == false else {
                 return nil
@@ -59,9 +60,22 @@ struct ProductDetailsCellViewModel {
             return String.localizedStringWithFormat(Localization.skuFormat, sku)
         }()
 
-        // Somehow the subtitle cannot be initialized in a closure like `sku`.
-        let itemPrice = currencyFormatter.formatAmount(positivePrice, with: currency) ?? String()
-        self.subtitle = Localization.subtitle(quantity: quantity, price: itemPrice, attributes: attributes)
+        self.total = {
+            let shouldHideTotalLabel = shouldHideTotalAndSubtitleIfNumbersAreZero && positiveTotal == 0
+            guard shouldHideTotalLabel == false else {
+                return ""
+            }
+            return currencyFormatter.formatAmount(positiveTotal, with: currency) ?? String()
+        }()
+
+        self.subtitle = {
+            let shouldHideSubtitleLabel = shouldHideTotalAndSubtitleIfNumbersAreZero && positivePrice == 0
+            guard shouldHideSubtitleLabel == false else {
+                return ""
+            }
+            let itemPrice = currencyFormatter.formatAmount(positivePrice, with: currency) ?? String()
+            return Localization.subtitle(quantity: quantity, price: itemPrice, attributes: attributes)
+        }()
     }
 
     /// Order Item initializer
@@ -84,6 +98,7 @@ struct ProductDetailsCellViewModel {
     /// Aggregate Order Item initializer
     ///
     init(aggregateItem: AggregateOrderItem,
+         shouldHideTotalAndSubtitleIfNumbersAreZero: Bool = false,
          currency: String,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          product: Product? = nil) {
@@ -95,6 +110,7 @@ struct ProductDetailsCellViewModel {
                   positiveTotal: aggregateItem.total.abs(),
                   positivePrice: aggregateItem.price.abs(),
                   skuText: aggregateItem.sku,
+                  shouldHideTotalAndSubtitleIfNumbersAreZero: shouldHideTotalAndSubtitleIfNumbersAreZero,
                   attributes: aggregateItem.attributes.map { OrderAttributeViewModel(orderItemAttribute: $0) })
     }
 

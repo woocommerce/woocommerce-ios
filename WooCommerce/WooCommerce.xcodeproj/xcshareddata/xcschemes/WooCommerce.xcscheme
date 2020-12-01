@@ -125,7 +125,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "mocked-network-layer"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-force-crash-logging 1"

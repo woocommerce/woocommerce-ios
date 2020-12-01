@@ -733,6 +733,10 @@ extension OrderDetailsDataSource {
         }()
 
         let shippingLabelSections: [Section] = {
+            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease1) else {
+                return []
+            }
+
             guard shippingLabels.isNotEmpty else {
                 return []
             }

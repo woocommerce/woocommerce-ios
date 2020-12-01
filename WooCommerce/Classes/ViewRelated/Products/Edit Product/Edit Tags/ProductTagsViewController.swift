@@ -108,7 +108,7 @@ private extension ProductTagsViewController {
     }
 
     func configureRightBarButtonItemAsSpinner() {
-        let activityIndicator = UIActivityIndicatorView(style: .white)
+        let activityIndicator = UIActivityIndicatorView(style: .medium)
         activityIndicator.hidesWhenStopped = true
         activityIndicator.startAnimating()
 
@@ -271,7 +271,7 @@ private extension ProductTagsViewController {
     func tagsFailedLoading() {
         DDLogError("Error loading product tags")
         dataSource = FailureDataSource()
-        UIApplication.shared.keyWindow?.endEditing(true)
+        UIApplication.shared.currentKeyWindow?.endEditing(true)
         let errorMessage = Strings.errorLoadingTags
         let notice = Notice(title: errorMessage, feedbackType: .error)
         ServiceLocator.noticePresenter.enqueue(notice: notice)

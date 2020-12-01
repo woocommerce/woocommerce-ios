@@ -82,7 +82,7 @@ private extension AddProductCategoryViewController {
     }
 
     func configureRightButtonItemAsSpinner() {
-        let activityIndicator = UIActivityIndicatorView(style: .white)
+        let activityIndicator = UIActivityIndicatorView(style: .medium)
         activityIndicator.hidesWhenStopped = true
         activityIndicator.startAnimating()
 

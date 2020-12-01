@@ -115,6 +115,11 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                 break
             }
         }
+        dispatcher.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .retrieveOrder(_, _, onCompletion) = action {
+                onCompletion(order, nil)
+            }
+        }
 
         // When
         let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher)
@@ -146,12 +151,9 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         let orderUpdated: Bool = try waitFor { promise in
             // Capture order updated value
             dispatcher.whenReceivingAction(ofType: OrderAction.self) { action in
-                switch action {
-                case let .retrieveOrder(_, _, onCompletion):
-                    onCompletion(order.copy(status: .refunded), nil)
+                if case let .retrieveOrder(_, _, onCompletion) = action {
+                    onCompletion(order, nil)
                     promise(true)
-                default:
-                    break
                 }
             }
 
@@ -223,6 +225,11 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                 onCompletion(nil, expectedError)
             default:
                 break
+            }
+        }
+        dispatcher.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .retrieveOrder(_, _, onCompletion) = action {
+                onCompletion(order, nil)
             }
         }
 
@@ -331,6 +338,11 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                 onCompletion(refund, nil)
             default:
                 break
+            }
+        }
+        dispatcher.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .retrieveOrder(_, _, onCompletion) = action {
+                onCompletion(order, nil)
             }
         }
 

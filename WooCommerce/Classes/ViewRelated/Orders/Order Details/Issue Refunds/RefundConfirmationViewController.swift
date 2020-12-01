@@ -37,6 +37,7 @@ final class RefundConfirmationViewController: UIViewController {
         configureMainView()
         configureTableView()
         configureButtonTableFooterView()
+        configureKeyboardDismissal()
     }
 }
 
@@ -56,6 +57,9 @@ private extension RefundConfirmationViewController {
             HeadlineLabelTableViewCell.self,
             WooBasicTableViewCell.self
         ].forEach(tableView.registerNib)
+
+        // Keyboard handling
+        tableView.keyboardDismissMode = .onDrag
 
         // Delegation
         tableView.dataSource = self
@@ -83,6 +87,14 @@ private extension RefundConfirmationViewController {
             }
         }
         tableView.updateFooterHeight()
+    }
+
+    /// Hides the keyboard by asking the view's first responder to resign on each main view tap.
+    ///
+    func configureKeyboardDismissal() {
+        let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
     }
 }
 

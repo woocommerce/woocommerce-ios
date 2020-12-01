@@ -146,7 +146,7 @@ final class SiteAddressViewController: LoginViewController {
             return
         }
 
-        authenticationDelegate.displayError(error) { result in
+        authenticationDelegate.handleError(error) { result in
             switch result {
             case .error(_):
                 break
@@ -438,7 +438,7 @@ private extension SiteAddressViewController {
                 let err = self.originalErrorOrError(error: error as NSError)
 
                 if self.authenticationDelegate.shouldDisplayError(err) {
-                    self.authenticationDelegate.displayError(err) { result in
+                    self.authenticationDelegate.handleError(err) { result in
                         switch result {
                         case .error(_):
                             break

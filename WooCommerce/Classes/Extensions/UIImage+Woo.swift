@@ -297,6 +297,12 @@ extension UIImage {
         return UIImage(named: "login-site-address-info")!
     }
 
+    /// Login error: no jetpack
+    ///
+    static var loginNoJetpackError: UIImage {
+        return UIImage(named: "woo-no-jetpack-error")!
+    }
+
     /// Mail Icon
     ///
     static var mailImage: UIImage {
@@ -521,6 +527,12 @@ extension UIImage {
     ///
     static var waitingForCustomersImage: UIImage {
         return UIImage(named: "woo-waiting-customers")!
+    }
+
+    /// What is Jetpack Image
+    ///
+    static var whatIsJetpackImage: UIImage {
+        return UIImage(named: "woo-what-is-jetpack")!
     }
 }
 

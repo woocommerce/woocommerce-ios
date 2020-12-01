@@ -168,6 +168,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.loginSiteAddressInfoImage)
     }
 
+    func test_login_Jetpack_error_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.loginNoJetpackError)
+    }
+
     func testMailImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.mailImage)
     }
@@ -277,6 +281,10 @@ final class IconsTests: XCTestCase {
 
     func testVisibleImageIsNotNil() {
         XCTAssertNotNil(UIImage.visibilityImage)
+    }
+
+    func test_what_is_Jetpack_image() {
+        XCTAssertNotNil(UIImage.whatIsJetpackImage)
     }
 
     func testWooLogoImageIconIsNotNil() {

@@ -186,22 +186,23 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Validates that the self-hosted site contains the correct information
     /// and can proceed to the self-hosted username and password view controller.
     ///
-    func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, onCompletion: @escaping (Error?, Bool) -> Void) {
-        let isSelfHosted = false
+    func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, onCompletion: @escaping (WordPressAuthenticatorResult) -> Void) {
 
         guard let site = siteInfo, site.hasJetpack == true else {
-            let errorInfo = NSLocalizedString(
-                "Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue.",
-                comment: "Error message that displays on the 'Log in by entering your site address.' screen. " +
-                "Jetpack is required for logging into the WooCommerce mobile apps.")
-            let error = NSError(domain: "WooCommerceAuthenticationErrorDomain",
-                                code: 555,
-                                userInfo: [NSLocalizedDescriptionKey: errorInfo])
-            onCompletion(error, isSelfHosted)
+            let siteURL = siteInfo?.url ?? "your site"
+            let viewModel = JetpackErrorViewModel(siteURL: siteURL)
+            let installJetpackUI = ULErrorViewController(viewModel: viewModel)
+
+            let authenticationResult: WordPressAuthenticatorResult = .injectViewController(value: installJetpackUI)
+
+            onCompletion(authenticationResult)
+
             return
         }
 
-        onCompletion(nil, isSelfHosted)
+        let isSelfHosted = false
+        let authenticationResult: WordPressAuthenticatorResult = .presentPasswordController(value: isSelfHosted)
+        onCompletion(authenticationResult)
     }
 
     /// Presents the Login Epilogue, in the specified NavigationController.

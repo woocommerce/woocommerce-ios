@@ -70,7 +70,7 @@ public protocol WordPressAuthenticatorDelegate: class {
 
     /// Indicates the Host app wants to handle and display a given error.
     ///
-    func shouldDisplayError(_ error: Error) -> Bool
+    func shouldHandleError(_ error: Error) -> Bool
 
     /// Signals the Host app that there is an error that needs to be handled.
     ///

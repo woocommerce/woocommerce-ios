@@ -64,14 +64,12 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sku, String.localizedStringWithFormat(Localization.skuFormat, sku))
     }
 
-    func test_total_and_subtitle_are_empty_if_shouldHideTotalAndSubtitleIfNumbersAreZero_is_on_with_zero_values() {
+    func test_total_and_subtitle_are_empty_if_price_and_total_are_nil() {
         // Given
-        let item = makeAggregateOrderItem(quantity: 2.5, price: 0.0, total: 0.0)
+        let item = makeAggregateOrderItem(quantity: 2.5, price: nil, total: nil)
 
         // When
-        let viewModel = ProductDetailsCellViewModel(aggregateItem: item,
-                                                    shouldHideTotalAndSubtitleIfNumbersAreZero: true,
-                                                    currency: "$")
+        let viewModel = ProductDetailsCellViewModel(aggregateItem: item, currency: "$")
         let total = viewModel.total
         let subtitle = viewModel.subtitle
 
@@ -80,30 +78,12 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
         XCTAssertEqual(subtitle, "")
     }
 
-    func test_total_and_subtitle_are_not_empty_if_shouldHideTotalAndSubtitleIfNumbersAreZero_is_on_with_nonzero_values() {
-        // Given
-        let item = makeAggregateOrderItem(quantity: 2.5, price: 1.0, total: 2.5)
-
-        // When
-        let viewModel = ProductDetailsCellViewModel(aggregateItem: item,
-                                                    shouldHideTotalAndSubtitleIfNumbersAreZero: true,
-                                                    currency: "$")
-        let total = viewModel.total
-        let subtitle = viewModel.subtitle
-
-        // Then
-        XCTAssertNotEqual(total, "")
-        XCTAssertNotEqual(subtitle, "")
-    }
-
-    func test_total_and_subtitle_are_not_empty_if_shouldHideTotalAndSubtitleIfNumbersAreZero_is_off_with_zero_values() {
+    func test_total_and_subtitle_are_not_empty_if_price_and_total_are_not_nil() {
         // Given
         let item = makeAggregateOrderItem(quantity: 2.5, price: 0.0, total: 0.0)
 
         // When
-        let viewModel = ProductDetailsCellViewModel(aggregateItem: item,
-                                                    shouldHideTotalAndSubtitleIfNumbersAreZero: false,
-                                                    currency: "$")
+        let viewModel = ProductDetailsCellViewModel(aggregateItem: item, currency: "$")
         let total = viewModel.total
         let subtitle = viewModel.subtitle
 
@@ -161,8 +141,8 @@ private extension ProductDetailsCellViewModelTests {
     }
 
     func makeAggregateOrderItem(quantity: Decimal,
-                                price: NSDecimalNumber,
-                                total: NSDecimalNumber,
+                                price: NSDecimalNumber?,
+                                total: NSDecimalNumber?,
                                 sku: String = "",
                                 imageURL: URL? = nil,
                                 attributes: [OrderItemAttribute] = []) -> AggregateOrderItem {

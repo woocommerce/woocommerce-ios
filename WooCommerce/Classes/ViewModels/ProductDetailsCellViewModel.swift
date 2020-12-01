@@ -44,10 +44,9 @@ struct ProductDetailsCellViewModel {
                  imageURL: URL?,
                  name: String,
                  positiveQuantity: Decimal,
-                 positiveTotal: NSDecimalNumber,
-                 positivePrice: NSDecimalNumber,
+                 positiveTotal: NSDecimalNumber?,
+                 positivePrice: NSDecimalNumber?,
                  skuText: String?,
-                 shouldHideTotalAndSubtitleIfNumbersAreZero: Bool = false,
                  attributes: [OrderAttributeViewModel]) {
         self.imageURL = imageURL
         self.name = name
@@ -61,16 +60,14 @@ struct ProductDetailsCellViewModel {
         }()
 
         self.total = {
-            let shouldHideTotalLabel = shouldHideTotalAndSubtitleIfNumbersAreZero && positiveTotal == 0
-            guard shouldHideTotalLabel == false else {
+            guard let positiveTotal = positiveTotal else {
                 return ""
             }
             return currencyFormatter.formatAmount(positiveTotal, with: currency) ?? String()
         }()
 
         self.subtitle = {
-            let shouldHideSubtitleLabel = shouldHideTotalAndSubtitleIfNumbersAreZero && positivePrice == 0
-            guard shouldHideSubtitleLabel == false else {
+            guard let positivePrice = positivePrice else {
                 return ""
             }
             let itemPrice = currencyFormatter.formatAmount(positivePrice, with: currency) ?? String()
@@ -98,7 +95,6 @@ struct ProductDetailsCellViewModel {
     /// Aggregate Order Item initializer
     ///
     init(aggregateItem: AggregateOrderItem,
-         shouldHideTotalAndSubtitleIfNumbersAreZero: Bool = false,
          currency: String,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          product: Product? = nil) {
@@ -107,10 +103,9 @@ struct ProductDetailsCellViewModel {
                   imageURL: aggregateItem.imageURL ?? product?.imageURL,
                   name: aggregateItem.name,
                   positiveQuantity: abs(aggregateItem.quantity),
-                  positiveTotal: aggregateItem.total.abs(),
-                  positivePrice: aggregateItem.price.abs(),
+                  positiveTotal: aggregateItem.total?.abs(),
+                  positivePrice: aggregateItem.price?.abs(),
                   skuText: aggregateItem.sku,
-                  shouldHideTotalAndSubtitleIfNumbersAreZero: shouldHideTotalAndSubtitleIfNumbersAreZero,
                   attributes: aggregateItem.attributes.map { OrderAttributeViewModel(orderItemAttribute: $0) })
     }
 

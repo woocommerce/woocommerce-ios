@@ -479,7 +479,7 @@ private extension OrderDetailsDataSource {
             return
         }
 
-        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: orderItem, shouldHideTotalAndSubtitleIfNumbersAreZero: true, currency: order.currency)
+        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: orderItem, currency: order.currency)
         cell.configure(item: itemViewModel, imageService: imageService)
     }
 

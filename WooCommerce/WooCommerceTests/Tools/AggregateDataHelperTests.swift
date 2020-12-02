@@ -95,58 +95,28 @@ final class AggregateDataHelperTests: XCTestCase {
     func test_combining_AggregateOrderItem_with_shipping_labels_with_partial_products() {
         // Given
         // Order items (e.g. after combining with refunded products using `AggregateDataHelper.combineOrderItems`).
-        let orderItemNotInShippingLabels = AggregateOrderItem(productID: 1,
-                                                              variationID: 32,
-                                                              name: "Beach",
-                                                              price: nil,
-                                                              quantity: 2,
-                                                              sku: nil,
-                                                              total: nil,
-                                                              attributes: [])
-        let orderItemPartiallyInShippingLabels = AggregateOrderItem(productID: 1,
-                                                                    variationID: 26,
-                                                                    name: "Beach",
-                                                                    price: nil,
-                                                                    quantity: 2.5,
-                                                                    sku: nil,
-                                                                    total: nil,
-                                                                    attributes: [])
-        let orderItemInShippingLabels = AggregateOrderItem(productID: 1,
-                                                           variationID: 0,
-                                                           name: "Wario",
-                                                           price: nil,
-                                                           quantity: 3.5,
-                                                           sku: nil,
-                                                           total: nil,
-                                                           attributes: [])
+        let orderItemNotInShippingLabels = MockAggregateOrderItem.emptyItem()
+            .copy(productID: 1, variationID: 32, quantity: 2)
+        let orderItemPartiallyInShippingLabels = MockAggregateOrderItem.emptyItem()
+            .copy(productID: 1, variationID: 26, quantity: 2.5)
+        let orderItemInShippingLabels = MockAggregateOrderItem.emptyItem()
+            .copy(productID: 1, variationID: 0, quantity: 3.5)
         let orderItems = [orderItemInShippingLabels, orderItemPartiallyInShippingLabels, orderItemNotInShippingLabels]
 
         // Order items from non-refunded shipping labels.
         let orderItemsInNonRefundedShippingLabels: [AggregateOrderItem] = [
-            .init(productID: orderItemInShippingLabels.productID,
-                  variationID: orderItemInShippingLabels.variationID,
-                  name: "",
-                  price: nil,
-                  quantity: 2.5,
-                  sku: nil,
-                  total: nil,
-                  attributes: []),
-            .init(productID: orderItemPartiallyInShippingLabels.productID,
-                  variationID: orderItemPartiallyInShippingLabels.variationID,
-                  name: "",
-                  price: nil,
-                  quantity: 1,
-                  sku: nil,
-                  total: nil,
-                  attributes: []),
-            .init(productID: orderItemInShippingLabels.productID,
-                  variationID: orderItemInShippingLabels.variationID,
-                  name: "",
-                  price: nil,
-                  quantity: 1,
-                  sku: nil,
-                  total: nil,
-                  attributes: [])
+            MockAggregateOrderItem.emptyItem()
+                .copy(productID: orderItemInShippingLabels.productID,
+                      variationID: orderItemInShippingLabels.variationID,
+                      quantity: 2.5),
+            MockAggregateOrderItem.emptyItem()
+                .copy(productID: orderItemPartiallyInShippingLabels.productID,
+                      variationID: orderItemPartiallyInShippingLabels.variationID,
+                      quantity: 1),
+            MockAggregateOrderItem.emptyItem()
+                .copy(productID: orderItemInShippingLabels.productID,
+                      variationID: orderItemInShippingLabels.variationID,
+                      quantity: 1)
         ]
 
         // When

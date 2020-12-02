@@ -50,6 +50,7 @@
 		020F41E523163C0100776C4D /* TopBannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020F41E323163C0100776C4D /* TopBannerViewModel.swift */; };
 		020F41E623163C0100776C4D /* TopBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020F41E423163C0100776C4D /* TopBannerView.swift */; };
 		0211252825773F220075AD2A /* Models+Copiable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0211252725773F220075AD2A /* Models+Copiable.generated.swift */; };
+		0211252E25773FB00075AD2A /* MockAggregateOrderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0211252D25773FB00075AD2A /* MockAggregateOrderItem.swift */; };
 		0212275C244972660042161F /* BottomSheetListSelectorSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0212275B244972660042161F /* BottomSheetListSelectorSectionHeaderView.swift */; };
 		0212275E2449728A0042161F /* BottomSheetListSelectorSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0212275D2449728A0042161F /* BottomSheetListSelectorSectionHeaderView.xib */; };
 		0212276124498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0212276024498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift */; };
@@ -1095,6 +1096,7 @@
 		020F41E323163C0100776C4D /* TopBannerViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopBannerViewModel.swift; sourceTree = "<group>"; };
 		020F41E423163C0100776C4D /* TopBannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopBannerView.swift; sourceTree = "<group>"; };
 		0211252725773F220075AD2A /* Models+Copiable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Models+Copiable.generated.swift"; sourceTree = "<group>"; };
+		0211252D25773FB00075AD2A /* MockAggregateOrderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAggregateOrderItem.swift; sourceTree = "<group>"; };
 		0212275B244972660042161F /* BottomSheetListSelectorSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetListSelectorSectionHeaderView.swift; sourceTree = "<group>"; };
 		0212275D2449728A0042161F /* BottomSheetListSelectorSectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BottomSheetListSelectorSectionHeaderView.xib; sourceTree = "<group>"; };
 		0212276024498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormBottomSheetListSelectorCommand.swift; sourceTree = "<group>"; };
@@ -3711,6 +3713,7 @@
 				CE50345621B1F26C007573C6 /* ZendeskManagerTests.swift */,
 				0277AEA4256CAA4200F45C4A /* MockShippingLabel.swift */,
 				0277AEAA256CAA5300F45C4A /* MockShippingLabelAddress.swift */,
+				0211252D25773FB00075AD2A /* MockAggregateOrderItem.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -6007,6 +6010,7 @@
 				02404EE42315151400FF1170 /* MockupStatsVersionStoresManager.swift in Sources */,
 				02C2756D24F4EEBF00286C04 /* ProductShippingSettingsViewModelTests.swift in Sources */,
 				025678052575EA1B009D7E6C /* ProductDetailsCellViewModelTests.swift in Sources */,
+				0211252E25773FB00075AD2A /* MockAggregateOrderItem.swift in Sources */,
 				B53B898920D450AF00EDB467 /* SessionManagerTests.swift in Sources */,
 				0279F0E2252DC4BF0098D7DE /* ProductLoaderViewControllerModelTests.swift in Sources */,
 				5761298B24589B84007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlusTests.swift in Sources */,

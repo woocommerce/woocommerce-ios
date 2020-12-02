@@ -92,7 +92,7 @@ final class AggregateDataHelperTests: XCTestCase {
         XCTAssertEqual(aggregatedOrderItems[0].attributes, orderItemAttributes)
     }
 
-    func test_combining_AggregateOrderItem_with_shipping_labels_with_partial_products() {
+    func test_combining_AggregateOrderItem_with_shipping_labels() {
         // Given
         // Order items (e.g. after combining with refunded products using `AggregateDataHelper.combineOrderItems`).
         let orderItemNotInShippingLabels = MockAggregateOrderItem.emptyItem()

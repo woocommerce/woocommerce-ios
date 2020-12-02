@@ -136,7 +136,7 @@ final class AggregateDataHelper {
     ///   - orderItems: an array of aggregate order items, like after combining with refunded products by calling `combineOrderItems`.
     ///   - orderItemsInNonRefundedShippingLabels: an array of aggregate order items from shipping labels that could have duplicate products/variations.
     /// - Returns: an array of aggregate order items based on the given `orderItems` whose elements are removed if fully covered in shipping labels, and the
-    ///           quantity is subtracted by the total quantity from the given order items in shipping labels.
+    ///            quantity is subtracted by the total quantity from the given order items in shipping labels.
     static func combineAggregatedOrderItems(_ orderItems: [AggregateOrderItem],
                                             with orderItemsInNonRefundedShippingLabels: [AggregateOrderItem]) -> [AggregateOrderItem] {
         // Generates a dictionary that maps a unique order item (keyed by `productID` and `variationID`) to the sum of quantity from order items in shipping
@@ -152,7 +152,7 @@ final class AggregateDataHelper {
             guard let orderItemCountInNonRefundedShippingLabels = orderItemCountsByProductAndVariationID[orderItem.hashValue] else {
                 return orderItem
             }
-            // If the order item quantity is <= the sum in the shipping labels, the order item is skipped.
+            // If the order item quantity is <= the sum in the shipping labels, the order item is skipped since it's shown in the shipping label sections.
             guard orderItemCountInNonRefundedShippingLabels < orderItem.quantity else {
                 return nil
             }

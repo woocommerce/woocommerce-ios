@@ -115,6 +115,11 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                 break
             }
         }
+        dispatcher.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .retrieveOrder(_, _, onCompletion) = action {
+                onCompletion(order, nil)
+            }
+        }
 
         // When
         let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher)
@@ -126,6 +131,39 @@ final class RefundConfirmationViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_view_model_submits_refund_and_updates_order() throws {
+        // Given
+        let order = MockOrders().empty()
+        let details = RefundConfirmationViewModel.Details(order: order, amount: "100.0", refundsShipping: false, items: [], paymentGateway: nil)
+        let dispatcher = MockupStoresManager(sessionManager: .testingInstance)
+        dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
+            switch action {
+            case let .createRefund(_, _, _, onCompletion):
+                onCompletion(MockRefunds.sampleRefund(), nil)
+            default:
+                break
+            }
+        }
+
+        // When
+        let orderUpdated: Bool = try waitFor { promise in
+            // Capture order updated value
+            dispatcher.whenReceivingAction(ofType: OrderAction.self) { action in
+                if case let .retrieveOrder(_, _, onCompletion) = action {
+                    onCompletion(order, nil)
+                    promise(true)
+                }
+            }
+
+            // Submit refund
+            let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher)
+            viewModel.submit(onCompletion: { _ in })
+        }
+
+        // Then
+        XCTAssertTrue(orderUpdated)
     }
 
     func test_view_model_submits_refund_with_automatic_refund_enabled() throws {
@@ -187,6 +225,11 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                 onCompletion(nil, expectedError)
             default:
                 break
+            }
+        }
+        dispatcher.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .retrieveOrder(_, _, onCompletion) = action {
+                onCompletion(order, nil)
             }
         }
 
@@ -295,6 +338,11 @@ final class RefundConfirmationViewModelTests: XCTestCase {
                 onCompletion(refund, nil)
             default:
                 break
+            }
+        }
+        dispatcher.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .retrieveOrder(_, _, onCompletion) = action {
+                onCompletion(order, nil)
             }
         }
 

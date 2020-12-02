@@ -81,12 +81,28 @@ final class RefundConfirmationViewModel {
                 self.trackCreateRefundRequestFailed(error: error)
                 return onCompletion(.failure(error))
             }
-            onCompletion(.success(()))
+
+            // We don't care if the "update order" fails. We return .success() as the refund creation already succeeded.
+            self.updateOrder { _ in
+                onCompletion(.success(()))
+            }
             self.trackCreateRefundRequestSuccess()
         }
 
         actionProcessor.dispatch(action)
         trackCreateRefundRequest()
+    }
+
+    /// Updates the order associated with the refund to reflect the latest refund status.
+    ///
+    func updateOrder(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        let action = OrderAction.retrieveOrder(siteID: details.order.siteID, orderID: details.order.orderID) { _, error  in
+            if let error = error {
+                return onCompletion(.failure(error))
+            }
+            onCompletion(.success(()))
+        }
+        actionProcessor.dispatch(action)
     }
 }
 

@@ -171,7 +171,7 @@ private extension TextViewViewController {
     /// Displays a Notice onscreen, indicating that the text didn't pass the validation.
     ///
     func displayErrorNotice(error: String) {
-        UIApplication.shared.keyWindow?.endEditing(true)
+        UIApplication.shared.currentKeyWindow?.endEditing(true)
         let notice = Notice(title: error, feedbackType: .error)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }

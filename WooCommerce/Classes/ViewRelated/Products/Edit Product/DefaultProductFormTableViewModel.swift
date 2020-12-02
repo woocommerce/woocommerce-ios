@@ -12,12 +12,16 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     //
     var siteTimezone: TimeZone = TimeZone.siteTimezone
 
+    private let isEditProductsRelease5Enabled: Bool
+
     init(product: ProductFormDataModel,
          actionsFactory: ProductFormActionsFactoryProtocol,
          currency: String,
-         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
+            self.isEditProductsRelease5Enabled = featureFlagService.isFeatureFlagEnabled(.editProductsRelease5)
         configureSections(product: product, actionsFactory: actionsFactory)
     }
 }
@@ -366,24 +370,31 @@ private extension DefaultProductFormTableViewModel {
 
     func variationsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.variationsImage
-        let title = Localization.variationsTitle
+        let title = (product.variations.isEmpty && isEditProductsRelease5Enabled) ? Localization.addVariationsTitle : Localization.variationsTitle
 
-        let attributes = product.attributes
-
-        let format = NSLocalizedString("%1$@ (%2$ld options)", comment: "Format for each Product attribute")
         let details: String
-        if product.variations.isEmpty {
-            details = Localization.variationsPlaceholder
-        } else {
-            details = attributes
+        let format = NSLocalizedString("%1$@ (%2$ld options)", comment: "Format for each Product attribute")
+
+        switch product.variations.count {
+        case 1...:
+            details = product.attributes
                 .map({ String.localizedStringWithFormat(format, $0.name, $0.options.count) })
                 .joined(separator: "\n")
+        default:
+            if isEditProductsRelease5Enabled {
+                details = ""
+            }
+            else {
+                details = Localization.variationsPlaceholder
+            }
         }
+
+        let isActionable = product.variations.isNotEmpty || (product.variations.isEmpty && isEditProductsRelease5Enabled)
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
                                                         details: details,
-                                                        isActionable: product.variations.isNotEmpty)
+                                                        isActionable: isActionable)
     }
 
     // MARK: Product variation only
@@ -537,6 +548,8 @@ private extension DefaultProductFormTableViewModel {
                                                                    comment: "Format of the number of grouped products in plural form")
 
         // Variations
+        static let addVariationsTitle = NSLocalizedString("Add variations",
+                                                          comment: "Title for adding variations row on Product main screen for a variable product")
         static let variationsTitle =
             NSLocalizedString("Variations",
                               comment: "Title of the Product Variations row on Product main screen for a variable product")

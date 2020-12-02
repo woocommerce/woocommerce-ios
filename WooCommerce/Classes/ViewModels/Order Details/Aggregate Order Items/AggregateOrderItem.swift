@@ -4,7 +4,7 @@ import Yosemite
 /// This model represents a computed summary of order items.
 /// (order items - refunded order items) = aggregate order item data.
 ///
-final class AggregateOrderItem {
+struct AggregateOrderItem: Equatable {
     let productID: Int64
     let variationID: Int64
 
@@ -15,10 +15,12 @@ final class AggregateOrderItem {
     /// for localization and string-to-number conversions.
     /// `Decimal` doesn't have all of the `NSDecimalNumber` APIs (yet).
     ///
-    let price: NSDecimalNumber
+    let price: NSDecimalNumber?
     var quantity: Decimal
     let sku: String?
-    var total: NSDecimalNumber
+    let total: NSDecimalNumber?
+
+    let imageURL: URL?
 
     let attributes: [OrderItemAttribute]
 
@@ -27,10 +29,11 @@ final class AggregateOrderItem {
     init(productID: Int64,
          variationID: Int64,
          name: String,
-         price: NSDecimalNumber,
+         price: NSDecimalNumber?,
          quantity: Decimal,
          sku: String?,
-         total: NSDecimalNumber,
+         total: NSDecimalNumber?,
+         imageURL: URL? = nil,
          attributes: [OrderItemAttribute]) {
         self.productID = productID
         self.variationID = variationID
@@ -39,6 +42,7 @@ final class AggregateOrderItem {
         self.quantity = quantity
         self.sku = sku
         self.total = total
+        self.imageURL = imageURL
         self.attributes = attributes
     }
 }
@@ -47,11 +51,6 @@ final class AggregateOrderItem {
 // MARK: - Comparable Conformance
 //
 extension AggregateOrderItem: Comparable {
-    public static func == (lhs: AggregateOrderItem, rhs: AggregateOrderItem) -> Bool {
-        return lhs.productID == rhs.productID &&
-            lhs.variationID == rhs.variationID
-    }
-
     public static func < (lhs: AggregateOrderItem, rhs: AggregateOrderItem) -> Bool {
         return lhs.productID < rhs.productID ||
             (lhs.productID == rhs.productID && lhs.variationID < rhs.variationID)

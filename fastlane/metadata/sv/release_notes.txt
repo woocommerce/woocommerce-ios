@@ -1,2 +1,3 @@
-* Åtgärdat! Sidfoten i appens inställningar är nu centrerad, utkastprodukter sorteras nu från "nyaste till äldsta" såsom förväntas och den vita bakgrundsfärgen har tagits bort från platshållarvyn i det övre adminpanelsdiagrammet i mörkt läge på iOS 14.
-* Förbättrat! Använd den nya datumväljaren i iOS 14 för att redigera leveransdatumet i Orderdetaljer > Lägg till spårning och för att redigera försäljningsdatum i Detaljer > Prisinställning. Du kommer även att se platshållaren "Ingen titel" för produkter som inte har någon titel i produktlistan.
+Produkter: Du kan nu lägga till enkla, grupperade och externa produkter och spara produkter som utkast. Vi har fler funktioner på gång som du snart kommer att få prova!
+
+Övriga korrigeringar: Skärmen Beställningsinformation visar nu variationsattribut för WooCommerce-butiker med version 4.7 och senare. Du kanske även har noterat att skärmen Beställningsinformation nu visar antalet produktbetyg. Tidigare visade den antalet recensioner, vilket var felaktigt.

@@ -58,6 +58,12 @@
 /* Refund item price and quantity format. EG: 2 x $10.00 each */
 "%d x %@ each" = "%1$d x %2$@ each";
 
+/* Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product` */
+"%ld cross-sell product" = "%ld cross-sell product";
+
+/* Format of cross-sell linked products row in the plural form. Reads, `5 cross-sell products` */
+"%ld cross-sell products" = "%ld cross-sell products";
+
 /* Format of the number of Downloadable Files row in the singular form. Reads, `1 file` */
 "%ld file" = "%ld file";
 
@@ -67,14 +73,22 @@
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld in stock";
 
-/* Format of the number of grouped products in singular form */
+/* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `1 product`
+   Format of the number of grouped products in singular form */
 "%ld product" = "%ld product";
 
-/* Format of the number of grouped products in plural form */
+/* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `5 products`
+   Format of the number of grouped products in plural form */
 "%ld products" = "%ld products";
 
 /* Navigation bar title for selecting multiple products when more multiple products have been selected. */
 "%ld Products Selected" = "%ld Products Selected";
+
+/* Format of upsell linked products row in the singular form. Reads, `1 upsell product` */
+"%ld upsell product" = "%ld upsell product";
+
+/* Format of upsell linked products row in the plural form. Reads, `5 upsell products` */
+"%ld upsell products" = "%ld upsell products";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld variant";
@@ -111,6 +125,9 @@
 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
 "A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "A refund will not be issued to the customer. You will need to manually issue the refund through %1$@.";
+
+/* No comment provided by engineer. */
+"A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "A refund will not be issued to the customer. You will need to manually issue the refund through Stripe.";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "A unique item to sell";
@@ -185,8 +202,8 @@
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Add product link";
 
-/* Action to add products to a grouped product on the Grouped Products screen
-   Navigation bar title for selecting multiple products. */
+/* Action to add linked products to a product in the Linked Products List Selector screen
+   Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
 "Add Products" = "Add Products";
 
 /* Title for adding grouped products row on Product main screen for a grouped product */
@@ -287,6 +304,9 @@
 /* Alert title to confirm the user wants to discard changes in Product Visibility */
 "Are you sure you want to discard your changes?" = "Are you sure you want to discard your changes?";
 
+/* The text on the confirmation alert before issuing a refund. */
+"Are you sure you want to issue a refund? This can't be undone." = "Are you sure you want to issue a refund? This can't be undone.";
+
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Are you sure you want to log out of the account %@?";
 
@@ -370,7 +390,7 @@
 "Can Not Request Link" = "Can Not Request Link";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
 "Cancel" = "Cancel";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -379,7 +399,8 @@
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "Cannot Add Tags";
 
-/* The title of the alert when there is an error updating the product */
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
+   The title of the alert when there is an error updating the product */
 "Cannot update product" = "Cannot update product";
 
 /* The title of the alert when there is an error uploading an image
@@ -529,6 +550,12 @@
 
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "Creating products";
+
+/* Cell title for Cross-sells products in Linked Products Settings screen */
+"Cross-sells" = "Cross-sells";
+
+/* Navigation bar title for editing linked products for cross-sell products */
+"Cross-sells Products" = "Cross-sells Products";
 
 /* Cell title: the current date. */
 "Current" = "Current";
@@ -690,6 +717,9 @@
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Easily identify your products with unique codes";
+
+/* Edit Products button inside the Linked Products screen. */
+"Edit Products" = "Edit Products";
 
 /* Email address text field placeholder */
 "Email" = "Email";
@@ -993,6 +1023,9 @@
 /* An error message shown when a user signed in with incorrect credentials. */
 "Incorrect username or password. Please try entering your login details again." = "Incorrect username or password. Please try entering your login details again.";
 
+/* Subtitle of the product form bottom sheet action for linked products. */
+"Increase sales with upsells and cross-sells" = "Increase sales with upsells and cross-sells";
+
 /* Label action for inserting a link on the editor */
 "Insert" = "Insert";
 
@@ -1029,6 +1062,9 @@
 
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "Issue Refund";
+
+/* Text of the screen that is displayed while the refund is being created. */
+"Issuing Refund..." = "Issuing Refund...";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username/password isn't associated with this site." = "It looks like this username/password isn't associated with this site.";
@@ -1091,6 +1127,13 @@
 /* Label for the text of a link in the editor
    Navigation bar title for editing the text of a text link */
 "Link Text" = "Link Text";
+
+/* Linked Products Settings navigation title */
+"Linked Products" = "Linked Products";
+
+/* Title of the Linked Products row on Product main screen
+   Title of the product form bottom sheet action for editing linked products. */
+"Linked products" = "Linked products";
 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "List of images of the product";
@@ -1168,6 +1211,9 @@
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
 "Manual Refund via %1$@" = "Manual Refund via %1$@";
+
+/* No comment provided by engineer. */
+"Manual Refund via Stripe" = "Manual Refund via Stripe";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Mapped Domain";
@@ -1285,7 +1331,7 @@
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "No product variations yet";
 
-/* Placeholder for editing linked products for a grouped product
+/* Placeholder for the linked products list selector screen
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "No products yet";
 
@@ -1432,6 +1478,9 @@
 
 /* Display label for the product's inventory stock status */
 "Out of stock" = "Out of stock";
+
+/* Order shipping label package section title format. The number indicates the index of the shipping label package. */
+"Package %d" = "Package %d";
 
 /* The title for the customer payment cell */
 "Paid By Customer" = "Paid By Customer";
@@ -1617,6 +1666,12 @@
    Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Products";
 
+/* Cell description for Cross-sells products in Linked Products Settings screen */
+"Products promoted in the cart when current product is selected" = "Products promoted in the cart when current product is selected";
+
+/* Cell description for Upsells products in Linked Products Settings screen */
+"Products promoted instead of the currently viewed product (ie more profitable products)" = "Products promoted instead of the currently viewed product (ie more profitable products)";
+
 /* Label for computed value `product refunds + taxes = subtotal`.
    Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "Products Refund";
@@ -1754,6 +1809,12 @@
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Report Crashes";
+
+/* Text on the button that reprints a shipping label */
+"Reprint Shipping Label" = "Reprint Shipping Label";
+
+/* Request a refund on a shipping label from the shipping label more menu action sheet */
+"Request a Refund" = "Request a Refund";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Reset Activity Log";
@@ -1974,6 +2035,9 @@
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "Show the billing details for this order.";
 
+/* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
+"Show the shipment details for this shipping label." = "Show the shipment details for this shipping label.";
+
 /* Accessibility value if login page's password field is displaying the password. */
 "Shown" = "Shown";
 
@@ -2041,6 +2105,9 @@
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Sorry, but your username contains an invalid phrase%@.";
+
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7 */
+"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site.";
 
 /* No comment provided by engineer. */
 "Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "Sorry, site addresses can only contain lowercase letters (a-z) and numbers.";
@@ -2350,6 +2417,9 @@
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "There was a problem removing the block for specified site.";
 
+/* Text of the notice that is displayed while the refund creation fails. */
+"There was an error issuing the refund" = "There was an error issuing the refund";
+
 /* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, \'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
 "This app requires Jetpack to connect to your Store. <br /> Read the <a href=\"https://jetpack.com/support/getting-started-with-jetpack/\">configuration instructions</a>." = "This app requires Jetpack to connect to your Store. <br /> Read the <a href=\"https://jetpack.com/support/getting-started-with-jetpack/\">configuration instructions</a>.";
 
@@ -2620,6 +2690,12 @@
    Updated on <date> */
 "Updated on %@" = "Updated on %@";
 
+/* Cell title for Upsells products in Linked Products Settings screen */
+"Upsells" = "Upsells";
+
+/* Navigation bar title for editing linked products for upsell products */
+"Upsells Products" = "Upsells Products";
+
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
 "URL" = "URL";
@@ -2680,6 +2756,10 @@
 
 /* Accessibility label for the '<number> Products' button */
 "View refunded order items" = "View refunded order items";
+
+/* Accessibility label for the 'View Shipment Details' button
+   Button on bottom of shipping label package card to show shipping details */
+"View Shipment Details" = "View Shipment Details";
 
 /* User role badge */
 "Viewer" = "Viewer";
@@ -2839,4 +2919,7 @@
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "“%@”";
+
+/* Text of the notice that is displayed after the refund is created. */
+"🎉 Products successfuly refunded" = "🎉 Products successfuly refunded";
 

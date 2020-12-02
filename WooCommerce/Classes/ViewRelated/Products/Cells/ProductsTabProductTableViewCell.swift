@@ -219,7 +219,6 @@ private struct ProductsTabProductTableViewCellRepresentable: UIViewRepresentable
     }
 }
 
-@available(iOS 13.0, *)
 struct ProductsTabProductTableViewCell_Previews: PreviewProvider {
     private static var nonSelectedViewModel = ProductsTabProductViewModel(product: Product(), isSelected: false)
     private static var selectedViewModel = ProductsTabProductViewModel(product: Product().copy(statusKey: ProductStatus.pending.rawValue),

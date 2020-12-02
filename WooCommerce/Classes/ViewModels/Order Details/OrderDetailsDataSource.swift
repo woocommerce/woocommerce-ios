@@ -42,6 +42,10 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var onCellAction: ((CellActionType, IndexPath?) -> Void)?
 
+    /// Closure to be executed when the shipping label more menu is tapped.
+    ///
+    var onShippingLabelMoreMenuTapped: ((_ shippingLabel: ShippingLabel, _ sourceView: UIView) -> Void)?
+
     /// Closure to be executed when the UI needs to be reloaded.
     ///
     var onUIReloadRequired: (() -> Void)?
@@ -77,6 +81,7 @@ final class OrderDetailsDataSource: NSObject {
     }
 
     private var shippingLabels: [ShippingLabel] = []
+    private var shippingLabelOrderItemsAggregator: AggregatedShippingLabelOrderItems = AggregatedShippingLabelOrderItems.empty
 
     /// Shipping Lines from an Order
     ///
@@ -141,6 +146,8 @@ final class OrderDetailsDataSource: NSObject {
         return AsyncDictionary()
     }()
 
+    private lazy var currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+
     private let imageService: ImageService = ServiceLocator.imageService
 
     init(order: Order,
@@ -158,6 +165,13 @@ final class OrderDetailsDataSource: NSObject {
 
     func configureResultsControllers(onReload: @escaping () -> Void) {
         resultsControllers.configureResultsControllers(onReload: onReload)
+    }
+
+    func shippingLabelOrderItem(at indexPath: IndexPath) -> AggregateOrderItem? {
+        guard let shippingLabel = shippingLabel(at: indexPath) else {
+            return nil
+        }
+        return shippingLabelOrderItemsAggregator.orderItem(of: shippingLabel, at: indexPath.row)
     }
 }
 
@@ -196,7 +210,12 @@ extension OrderDetailsDataSource {
 
         switch headerView {
         case let headerView as PrimarySectionHeaderView:
-            headerView.configure(title: section.title)
+            switch section.headerStyle {
+            case .actionablePrimary(let actionConfig):
+                headerView.configure(title: section.title, action: actionConfig)
+            default:
+                headerView.configure(title: section.title)
+            }
         case let headerView as TwoColumnSectionHeaderView:
             headerView.leftText = section.title
             headerView.rightText = section.rightTitle
@@ -228,6 +247,8 @@ private extension OrderDetailsDataSource {
             configureShippingLabelDetail(cell: cell)
         case let cell as TopLeftImageTableViewCell where row == .shippingNotice:
             configureShippingNotice(cell: cell)
+        case let cell as TopLeftImageTableViewCell where row == .shippingLabelPrintingInfo:
+            configureShippingLabelPrintingInfo(cell: cell)
         case let cell as LeftImageTableViewCell where row == .addOrderNote:
             configureNewNote(cell: cell)
         case let cell as OrderNoteHeaderTableViewCell:
@@ -254,8 +275,10 @@ private extension OrderDetailsDataSource {
             configureReprintShippingLabelButton(cell: cell)
         case let cell as OrderTrackingTableViewCell where row == .tracking:
             configureTracking(cell: cell, at: indexPath)
-        case let cell as OrderTrackingTableViewCell where row == .shippingLabelTrackingNumber:
+        case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelTrackingNumber:
             configureShippingLabelTrackingNumber(cell: cell, at: indexPath)
+        case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelRefunded:
+            configureShippingLabelRefunded(cell: cell, at: indexPath)
         case let cell as LeftImageTableViewCell where row == .trackingAdd:
             configureNewTracking(cell: cell)
         case let cell as SummaryTableViewCell:
@@ -431,20 +454,76 @@ private extension OrderDetailsDataSource {
         )
     }
 
+    private func configureShippingLabelPrintingInfo(cell: TopLeftImageTableViewCell) {
+        cell.imageView?.image = .infoOutlineFootnoteImage
+        cell.imageView?.tintColor = .systemColor(.secondaryLabel)
+        cell.textLabel?.text = Title.shippingLabelPrintingInfoAction
+        cell.textLabel?.textColor = .systemColor(.secondaryLabel)
+        cell.textLabel?.applyFootnoteStyle()
+        cell.selectionStyle = .default
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = Title.shippingLabelPrintingInfoAction
+        cell.accessibilityHint =
+            NSLocalizedString("Tap to show instructions on how to print a shipping label on the mobile device",
+                              comment:
+                                "VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device")
+    }
+
     private func configureShippingLabelProduct(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .default
 
-        // TODO-2167: show aggregated order item (product) for a shipping label
+        guard let shippingLabel = shippingLabel(at: indexPath),
+              let orderItem = shippingLabelOrderItemsAggregator.orderItem(of: shippingLabel, at: indexPath.row) else {
+            assertionFailure("Cannot access shipping label and/or order item at \(indexPath)")
+            return
+        }
+
+        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: orderItem, currency: order.currency)
+        cell.configure(item: itemViewModel, imageService: imageService)
     }
 
-    private func configureShippingLabelTrackingNumber(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
+    private func configureShippingLabelTrackingNumber(cell: ImageAndTitleAndTextTableViewCell, at indexPath: IndexPath) {
         guard let shippingLabel = shippingLabel(at: indexPath) else {
             return
         }
 
-        cell.topText = shippingLabel.serviceName
+        let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: Title.shippingLabelTrackingNumberTitle,
+                                                                    text: shippingLabel.trackingNumber,
+                                                                    textTintColor: nil,
+                                                                    image: .locationImage,
+                                                                    imageTintColor: .primary,
+                                                                    numberOfLinesForTitle: 0,
+                                                                    numberOfLinesForText: 0,
+                                                                    isActionable: false)
+        cell.updateUI(viewModel: viewModel)
 
-        // TODO-2167: update design for shipping label tracking number
+        let actionButton = UIButton(type: .detailDisclosure)
+        actionButton.applyIconButtonStyle(icon: .moreImage)
+        actionButton.on(.touchUpInside) { [weak self] sender in
+            self?.onCellAction?(.shippingLabelTrackingMenu(shippingLabel: shippingLabel, sourceView: sender), nil)
+        }
+        cell.accessoryView = actionButton
+    }
+
+    private func configureShippingLabelRefunded(cell: ImageAndTitleAndTextTableViewCell, at indexPath: IndexPath) {
+        guard let shippingLabel = shippingLabel(at: indexPath), let refund = shippingLabel.refund else {
+            return
+        }
+
+        let title = String.localizedStringWithFormat(Title.shippingLabelRefundedTitleFormat, shippingLabel.serviceName)
+        let refundedAmount = currencyFormatter.formatAmount(Decimal(shippingLabel.refundableAmount), with: shippingLabel.currency) ?? ""
+        let dateRequested = refund.dateRequested.toString(dateStyle: .medium, timeStyle: .short)
+        let text = String.localizedStringWithFormat(Title.shippingLabelRefundedDetailsFormat, refundedAmount, dateRequested)
+        let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: title,
+                                                                    text: text,
+                                                                    textTintColor: nil,
+                                                                    image: .locationImage,
+                                                                    imageTintColor: .primary,
+                                                                    numberOfLinesForTitle: 0,
+                                                                    numberOfLinesForText: 0,
+                                                                    isActionable: false)
+        cell.updateUI(viewModel: viewModel)
     }
 
     private func configureReprintShippingLabelButton(cell: ButtonTableViewCell) {
@@ -616,6 +695,13 @@ extension OrderDetailsDataSource {
     /// When: Shipping == nil               >>> Display: Shipping = "No address specified"
     ///
     func reloadSections() {
+        // Freezes any data that require lookup after the sections are reloaded, in case the data from a ResultsController changes before the next reload.
+        shippingLabels = resultsControllers.shippingLabels
+        shippingLabelOrderItemsAggregator = AggregatedShippingLabelOrderItems(shippingLabels: shippingLabels,
+                                                                                   orderItems: items,
+                                                                                   products: products,
+                                                                                   productVariations: resultsControllers.productVariations)
+
         let summary = Section(category: .summary, row: .summary)
 
         let shippingNotice: Section? = {
@@ -665,26 +751,34 @@ extension OrderDetailsDataSource {
             return Section(category: .refundedProducts, title: Title.refundedProducts, row: row)
         }()
 
-        let shippingLabels = resultsControllers.shippingLabels
-        self.shippingLabels = shippingLabels
-
         let shippingLabelSections: [Section] = {
+            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease1) else {
+                return []
+            }
+
             guard shippingLabels.isNotEmpty else {
                 return []
             }
+
             let sections = shippingLabels.enumerated().map { index, shippingLabel -> Section in
                 let title = String.localizedStringWithFormat(Title.shippingLabelPackageFormat, index + 1)
                 let isRefunded = shippingLabel.refund != nil
                 let rows: [Row]
+                let headerStyle: Section.HeaderStyle
                 if isRefunded {
-                    rows = [.shippingLabelTrackingNumber, .shippingLabelDetail]
+                    rows = [.shippingLabelRefunded, .shippingLabelDetail]
+                    headerStyle = .primary
                 } else {
-                    let orderItemsCount = shippingLabel.productNames.count
-                    // TODO-2167: show aggregated order items (products) for a shipping label
+                    // TODO-2167: show printing instructions
+                    let orderItemsCount = shippingLabelOrderItemsAggregator.orderItems(of: shippingLabel).count
                     rows = Array(repeating: .shippingLabelProduct, count: orderItemsCount)
-                        + [.shippingLabelReprintButton, .shippingLabelTrackingNumber, .shippingLabelDetail]
+                        + [.shippingLabelReprintButton, .shippingLabelPrintingInfo, .shippingLabelTrackingNumber, .shippingLabelDetail]
+                    let headerActionConfig = PrimarySectionHeaderView.ActionConfiguration(image: .moreImage) { [weak self] sourceView in
+                        self?.onShippingLabelMoreMenuTapped?(shippingLabel, sourceView)
+                    }
+                    headerStyle = .actionablePrimary(actionConfig: headerActionConfig)
                 }
-                return Section(category: .shippingLabel, title: title, rows: rows, headerStyle: .primary)
+                return Section(category: .shippingLabel, title: title, rows: rows, headerStyle: headerStyle)
             }
             return sections
         }()
@@ -946,6 +1040,18 @@ extension OrderDetailsDataSource {
         static let shippingLabelPackageFormat =
             NSLocalizedString("Package %d",
                               comment: "Order shipping label package section title format. The number indicates the index of the shipping label package.")
+        static let shippingLabelTrackingNumberTitle = NSLocalizedString("Tracking number", comment: "Order shipping label tracking number row title.")
+        static let shippingLabelRefundedDetailsFormat =
+            NSLocalizedString("%1$@ • %2$@",
+                              comment: "Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). " +
+                                "The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM).")
+        static let shippingLabelRefundedTitleFormat =
+            NSLocalizedString("%@ label refund requested",
+                              comment: "Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS).")
+        static let shippingLabelPrintingInfoAction =
+            NSLocalizedString("Don’t know how to print from your phone?",
+                              comment: "Title of button in order details > shipping label that shows the instructions on how to print " +
+                                "a shipping label on the mobile device.")
     }
 
     enum Footer {
@@ -974,6 +1080,8 @@ extension OrderDetailsDataSource {
         enum HeaderStyle {
             /// Uses the PrimarySectionHeaderView
             case primary
+            /// Uses the PrimarySectionHeaderView with action configuration
+            case actionablePrimary(actionConfig: PrimarySectionHeaderView.ActionConfiguration)
             /// Uses the TwoColumnSectionHeaderView
             case twoColumn
 
@@ -981,7 +1089,7 @@ extension OrderDetailsDataSource {
             ///
             var viewType: UITableViewHeaderFooterView.Type {
                 switch self {
-                case .primary:
+                case .primary, .actionablePrimary:
                     return PrimarySectionHeaderView.self
                 case .twoColumn:
                     return TwoColumnSectionHeaderView.self
@@ -1053,7 +1161,9 @@ extension OrderDetailsDataSource {
         case tracking
         case trackingAdd
         case shippingLabelDetail
+        case shippingLabelPrintingInfo
         case shippingLabelProduct
+        case shippingLabelRefunded
         case shippingLabelReprintButton
         case shippingLabelTrackingNumber
         case shippingNotice
@@ -1099,10 +1209,12 @@ extension OrderDetailsDataSource {
                 return LeftImageTableViewCell.reuseIdentifier
             case .shippingLabelDetail:
                 return WooBasicTableViewCell.reuseIdentifier
+            case .shippingLabelPrintingInfo:
+                return TopLeftImageTableViewCell.reuseIdentifier
             case .shippingLabelProduct:
                 return ProductDetailsTableViewCell.reuseIdentifier
-            case .shippingLabelTrackingNumber:
-                return OrderTrackingTableViewCell.reuseIdentifier
+            case .shippingLabelTrackingNumber, .shippingLabelRefunded:
+                return ImageAndTitleAndTextTableViewCell.reuseIdentifier
             case .shippingLabelReprintButton:
                 return ButtonTableViewCell.reuseIdentifier
             case .shippingNotice:
@@ -1122,6 +1234,7 @@ extension OrderDetailsDataSource {
         case tracking
         case summary
         case issueRefund
+        case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
     }
 
     struct Constants {

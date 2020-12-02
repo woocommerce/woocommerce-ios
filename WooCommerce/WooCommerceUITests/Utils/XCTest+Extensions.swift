@@ -9,11 +9,7 @@ var isIpad: Bool {
 }
 
 var isDarkMode: Bool {
-    if #available(iOS 12.0, *) {
-        return UIViewController().traitCollection.userInterfaceStyle == .dark
-    } else {
-        return false
-    }
+    return UIViewController().traitCollection.userInterfaceStyle == .dark
 }
 
 let navBackButton = XCUIApplication().navigationBars.element(boundBy: 0).buttons.element(boundBy: 0)

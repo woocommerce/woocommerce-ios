@@ -116,6 +116,14 @@ final class OrderDetailsViewModel {
         }
     }
 
+    /// Closure to be executed when the shipping label more menu is tapped.
+    ///
+    var onShippingLabelMoreMenuTapped: ((_ shippingLabel: ShippingLabel, _ sourceView: UIView) -> Void)? {
+        didSet {
+            dataSource.onShippingLabelMoreMenuTapped = onShippingLabelMoreMenuTapped
+        }
+    }
+
     /// Helpers
     ///
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
@@ -165,7 +173,8 @@ extension OrderDetailsViewModel {
             OrderTrackingTableViewCell.self,
             SummaryTableViewCell.self,
             ButtonTableViewCell.self,
-            IssueRefundTableViewCell.self
+            IssueRefundTableViewCell.self,
+            ImageAndTitleAndTextTableViewCell.self
         ]
 
         for cellClass in cells {
@@ -225,6 +234,18 @@ extension OrderDetailsViewModel {
             viewController.present(navController, animated: true, completion: nil)
         case .aggregateOrderItem:
             let item = dataSource.aggregateOrderItems[indexPath.row]
+            let loaderViewController = ProductLoaderViewController(model: .init(aggregateOrderItem: item),
+                                                                   siteID: order.siteID,
+                                                                   forceReadOnly: true)
+            let navController = WooNavigationController(rootViewController: loaderViewController)
+            viewController.present(navController, animated: true, completion: nil)
+        case .shippingLabelPrintingInfo:
+            // TODO-2174: present instructions on how to print shipping labels
+            break
+        case .shippingLabelProduct:
+            guard let item = dataSource.shippingLabelOrderItem(at: indexPath), item.productOrVariationID > 0 else {
+                return
+            }
             let loaderViewController = ProductLoaderViewController(model: .init(aggregateOrderItem: item),
                                                                    siteID: order.siteID,
                                                                    forceReadOnly: true)

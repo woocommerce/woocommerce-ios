@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-11-13 14:54:04+0000 */
+/* Translation-Revision-Date: 2020-11-26 16:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -42,6 +42,9 @@
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
+/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
+"%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
+
 /* 1 Item */
 "%@ Item" = "%@ Ürün";
 
@@ -77,12 +80,6 @@
 
 /* Format of the number of grouped products in plural form */
 "%ld products" = "%ld ürünler";
-
-/* Format of the number of product review in singular form */
-"%ld review" = "%ld yorum";
-
-/* Format of the number of product reviews in plural form */
-"%ld reviews" = "%ld yorum";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld varyasyonu";
@@ -153,10 +150,10 @@
 "Add Downloadable File" = "İndirilebilir Dosya Ekle";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "Dosya ekle";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Dosya ekle";
+"Add File" = "Add File";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Fotoğraf Ekle";
@@ -670,17 +667,17 @@
 
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
-"Download Settings" = "Download Settings";
+"Download Settings" = "İndirme Ayarları";
 
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
-"Download Settings" = "İndirme Ayarları";
-
-/* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Download expiration";
+"Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "Son indirme tarihi";
+
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Download limit";
@@ -689,16 +686,16 @@
 "Download limit" = "İndirme sınırı";
 
 /* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "Downloadable Files";
-
-/* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "İndirilebilir Dosyalar";
 
-/* Downloadable Product label in Product Settings */
-"Downloadable Product" = "Downloadable Product";
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "Downloadable Files";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "İndirilebilir Ürün";
+
+/* Downloadable Product label in Product Settings */
+"Downloadable Product" = "Downloadable Product";
 
 /* Title of the Downloadable Files row on Product main screen */
 "Downloadable files" = "Downloadable files";
@@ -775,10 +772,10 @@
 "Enter the number of days before a download link expires, or leave blank if never it expires" = "Bir indirme bağlantısının süresi dolmadan önceki gün sayısını girin veya sona erme tarihi yoksa boş bırakın";
 
 /* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Dosyanın kaç kez indirilebileceğini girin veya sınırsız indirme için boş bırakın";
 
 /* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Dosyanın kaç kez indirilebileceğini girin veya sınırsız indirme için boş bırakın";
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "WordPress.com hesabınız için parola girin.";
@@ -835,11 +832,11 @@
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "Dosya adı";
+"File Name" = "File Name";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "File Name";
+"File Name" = "Dosya adı";
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
@@ -1195,10 +1192,10 @@
 "Manual Offsets" = "Özel saat farkı";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "%1$@ üzerinden manuel para iadesi";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "%1$@ üzerinden manuel para iadesi";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Alan adını yönet";
@@ -1284,9 +1281,6 @@
 /* The title for the net amount paid cell */
 "Net" = "Net";
 
-/* The title of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
-"New editing options available" = "Yeni düzenleme seçenekleri kullanılabilir";
-
 /* Title of a button.
    Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "Sonraki";
@@ -1308,25 +1302,25 @@
 "No data available" = "Veri bulunmuyor";
 
 /* Placeholder of the cell text field in Download expiration */
-"No expiration" = "Sona erme tarihi yok";
-
-/* Placeholder of the cell text field in Download expiration */
 "No expiration" = "No expiration";
 
-/* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "No files yet";
+/* Placeholder of the cell text field in Download expiration */
+"No expiration" = "Sona erme tarihi yok";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "Henüz dosya yok";
+
+/* Placeholder for empty Downloadable Files row on Product main screen */
+"No files yet" = "No files yet";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "Henüz görsel yok";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "No limit";
+"No limit" = "Limit yok";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "Limit yok";
+"No limit" = "No limit";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Fiyat belirtilmemiş";
@@ -1338,14 +1332,14 @@
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "Henüz ürün yok";
 
+/* Placeholder for empty product ratings */
+"No ratings" = "Derecelendirme yok";
+
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
 "No results found for (term)\nAdd a custom carrier" = "(term) için hiçbir sonuç bulunamadı\nÖzel bir kargo şirketi ekleyin";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Bu dönemde hiç gelir yok";
-
-/* Placeholder for empty product reviews */
-"No reviews yet" = "Henüz yorum yapılmadı";
 
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "Henüz bir kargo sınıfı yok";
@@ -1587,10 +1581,10 @@
 "Powered by Automattic" = "Automattic tarafından desteklenmektedir";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Daha Önce Para İadesi Yapıldı";
+"Previously Refunded" = "Previously Refunded";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Previously Refunded";
+"Previously Refunded" = "Daha Önce Para İadesi Yapıldı";
 
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
    Product Price Settings navigation title - Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
@@ -1756,10 +1750,10 @@
 "Refund Details" = "İade Ayrıntıları";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Kargonun Para İadesini Yap";
+"Refund Shipping" = "Refund Shipping";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Refund Shipping";
+"Refund Shipping" = "Kargonun Para İadesini Yap";
 
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "Refund Via";
@@ -1890,6 +1884,12 @@
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Ürününüz kaydediliyor...";
+
+/* Navigation bar title for scanning a barcode to use as a product's SKU. */
+"Scan barcode to update SKU" = "SKU'yu güncellemek için barkodu tarayın";
+
+/* The instruction text below the scan area in the barcode scanner for product SKU. */
+"Scan product barcode" = "Ürün barkodunu tarayın";
 
 /* Scan Products */
 "Scan products" = "Ürünleri tara";
@@ -2363,9 +2363,6 @@
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "Bu ürünün fiyatı. Düzenlenebilir.";
 
-/* Displayed whenever a review that was onscreen got deleted. */
-"The review has been removed" = "İnceleme kaldırıldı";
-
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "Standart fiyat olmadan indirimli fiyat eklenemez.";
 
@@ -2442,16 +2439,16 @@
 "This is the URL-friendly version of the product title" = "Bu, ürün başlığının URL'ye uygun olan versiyonudur";
 
 /* Footer text for Downloadable File Name */
-"This is the name of the file shown to the customer." = "Bu, müşteriye gösterilen dosyanın adıdır.";
-
-/* Footer text for Downloadable File Name */
 "This is the name of the file shown to the customer." = "This is the name of the file shown to the customer.";
 
-/* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
+/* Footer text for Downloadable File Name */
+"This is the name of the file shown to the customer." = "Bu, müşteriye gösterilen dosyanın adıdır.";
 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Bu, müşterilerin erişeceği dosyanın url'sidir. Girilen URL'ler önceden kodlanmış olmalıdır.";
+
+/* Footer text for Downloadable File URL */
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2657,10 +2654,10 @@
 "Update product inventory and SKU" = "Ürün envanterini ve SKU’sunu güncelleme";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Ürünlerin indirilebilir dosyalarının bilgilerini uzaktan güncelleyin";
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "Ürünlerin indirilebilir dosyalarının bilgilerini uzaktan güncelleyin";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "Bu uygulamayı kullanmaya devam etmek için WooCommerce 3.5'e güncelleyin";
@@ -2883,9 +2880,6 @@
 /* Yesterday Section Header */
 "Yesterday" = "Dün";
 
-/* The info of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
-"You can now edit grouped, external and variable products, change product type and update categories and tags" = "Artık gruplanmış, harici ve değişken ürünleri düzenleyebilir, ürün türünü değiştirebilir ve kategorileri ile etiketleri güncelleyebilirsiniz.";
-
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Bu e-posta adresini kayıt olmak için kullanamazsınız. Bazı e-postalarımızın engellenmesiyle ilgili problem yaşıyoruz. Farklı bir e-posta sağlayıcısı kullanın.";
 
@@ -2922,6 +2916,12 @@
 
 /* No comment provided by engineer. */
 "password" = "şifre";
+
+/* Format of the number of product ratings in plural form */
+"rated %ld times" = "%ld kez derecelendirildi";
+
+/* Format of the number of product ratings in singular form */
+"rated once" = "bir kez derecelendirildi";
 
 /* Today */
 "today" = "bugün";

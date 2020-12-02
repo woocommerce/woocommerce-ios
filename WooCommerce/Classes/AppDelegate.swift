@@ -41,7 +41,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
     ///
-    @available(iOS 13.0, *)
     private lazy var appleIDCredentialChecker = AppleIDCredentialChecker()
 
     // MARK: - AppDelegate Methods
@@ -61,9 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupWormholy()
         setupKeyboardStateProvider()
         handleLaunchArguments()
-        if #available(iOS 13.0, *) {
-            appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
-        }
+        appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
 
         // Components that require prior Auth
         setupZendesk()
@@ -329,7 +326,7 @@ private extension AppDelegate {
             UIView.setAnimationsEnabled(false)
 
             /// Trick found at: https://twitter.com/twannl/status/1232966604142653446
-            UIApplication.shared.keyWindow?.layer.speed = 100
+            UIApplication.shared.currentKeyWindow?.layer.speed = 100
         }
     }
 }

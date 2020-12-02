@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-11-13 14:54:04+0000 */
+/* Translation-Revision-Date: 2020-11-27 10:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -42,6 +42,9 @@
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
+/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
+"%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
+
 /* 1 Item */
 "%@ Item" = "%@ Item";
 
@@ -77,12 +80,6 @@
 
 /* Format of the number of grouped products in plural form */
 "%ld products" = "%ld produk";
-
-/* Format of the number of product review in singular form */
-"%ld review" = "%ld ulasan";
-
-/* Format of the number of product reviews in plural form */
-"%ld reviews" = "%ld ulasan";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld varian";
@@ -153,10 +150,10 @@
 "Add Downloadable File" = "Tambahkan File Dapat Diunduh";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "Tambahkan File";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Tambahkan File";
+"Add File" = "Add File";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Tambahkan foto";
@@ -670,17 +667,17 @@
 
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
-"Download Settings" = "Download Settings";
+"Download Settings" = "Pengaturan Unduh";
 
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
-"Download Settings" = "Pengaturan Unduh";
-
-/* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Download expiration";
+"Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "Masa berlaku unduhan";
+
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Download limit";
@@ -689,16 +686,16 @@
 "Download limit" = "Batas unduhan";
 
 /* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "Downloadable Files";
-
-/* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "File Dapat Diunduh";
 
-/* Downloadable Product label in Product Settings */
-"Downloadable Product" = "Downloadable Product";
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "Downloadable Files";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "Produk Dapat Diunduh";
+
+/* Downloadable Product label in Product Settings */
+"Downloadable Product" = "Downloadable Product";
 
 /* Title of the Downloadable Files row on Product main screen */
 "Downloadable files" = "Downloadable files";
@@ -775,10 +772,10 @@
 "Enter the number of days before a download link expires, or leave blank if never it expires" = "Masukkan angka untuk jumlah hari sebelum tautan unduhan kedaluwarsa, atau biarkan kosong jika tidak ada masa berlaku";
 
 /* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Masukkan angka untuk jumlah maksimal file dapat diunduh atau biarkan kosong untuk unduhan tanpa batas";
 
 /* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Masukkan angka untuk jumlah maksimal file dapat diunduh atau biarkan kosong untuk unduhan tanpa batas";
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Masukkan kata sandi akun WordPress.com Anda.";
@@ -835,11 +832,11 @@
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "Nama File";
+"File Name" = "File Name";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "File Name";
+"File Name" = "Nama File";
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
@@ -1195,10 +1192,10 @@
 "Manual Offsets" = "Offset Manual";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Pengembalian Dana Manual via %1$@";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "Pengembalian Dana Manual via %1$@";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Domain Dipetakan";
@@ -1284,9 +1281,6 @@
 /* The title for the net amount paid cell */
 "Net" = "Net";
 
-/* The title of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
-"New editing options available" = "Tersedia pilihan penyuntingan baru";
-
 /* Title of a button.
    Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "Selanjutnya";
@@ -1308,25 +1302,25 @@
 "No data available" = "Tidak ada data yang tersedia";
 
 /* Placeholder of the cell text field in Download expiration */
-"No expiration" = "Tidak ada masa berlaku";
-
-/* Placeholder of the cell text field in Download expiration */
 "No expiration" = "No expiration";
 
-/* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "No files yet";
+/* Placeholder of the cell text field in Download expiration */
+"No expiration" = "Tidak ada masa berlaku";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "File belum ada";
+
+/* Placeholder for empty Downloadable Files row on Product main screen */
+"No files yet" = "No files yet";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "Belum ada gambar";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "No limit";
+"No limit" = "Tanpa batas";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "Tanpa batas";
+"No limit" = "No limit";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Tidak ada harga yang ditentukan";
@@ -1338,14 +1332,14 @@
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "Belum ada produk";
 
+/* Placeholder for empty product ratings */
+"No ratings" = "Belum ada nilai";
+
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
 "No results found for (term)\nAdd a custom carrier" = "Tidak ada hasil yang ditemukan untuk (istilah)\nTambahkan operator kustom";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Tidak ada pendapatan dalam periode ini";
-
-/* Placeholder for empty product reviews */
-"No reviews yet" = "Belum ada ulasan";
 
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "Kelas pengiriman belum ditetapkan";
@@ -1587,10 +1581,10 @@
 "Powered by Automattic" = "Didukung oleh Automattic";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Sebelumnya sudah Dikembalikan";
+"Previously Refunded" = "Previously Refunded";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Previously Refunded";
+"Previously Refunded" = "Sebelumnya sudah Dikembalikan";
 
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
    Product Price Settings navigation title - Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
@@ -1756,10 +1750,10 @@
 "Refund Details" = "Rincian Pengembalian Dana";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Pengembalian Dana Pengiriman";
+"Refund Shipping" = "Refund Shipping";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Refund Shipping";
+"Refund Shipping" = "Pengembalian Dana Pengiriman";
 
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "Refund Via";
@@ -1890,6 +1884,12 @@
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Menyimpan produk Anda...";
+
+/* Navigation bar title for scanning a barcode to use as a product's SKU. */
+"Scan barcode to update SKU" = "Pindai barcode untuk memperbarui SKU";
+
+/* The instruction text below the scan area in the barcode scanner for product SKU. */
+"Scan product barcode" = "Pindai barcode produk";
 
 /* Scan Products */
 "Scan products" = "Pindai produk";
@@ -2363,9 +2363,6 @@
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "Harga untuk produk ini. Dapat disunting.";
 
-/* Displayed whenever a review that was onscreen got deleted. */
-"The review has been removed" = "Ulasan telah dihapus";
-
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "Harga diskon tidak dapat ditambahkan tanpa harga reguler.";
 
@@ -2442,16 +2439,16 @@
 "This is the URL-friendly version of the product title" = "Ini versi judul produk yang ramah URL";
 
 /* Footer text for Downloadable File Name */
-"This is the name of the file shown to the customer." = "Ini adalah nama file yang ditampilkan untuk pelanggan.";
-
-/* Footer text for Downloadable File Name */
 "This is the name of the file shown to the customer." = "This is the name of the file shown to the customer.";
 
-/* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
+/* Footer text for Downloadable File Name */
+"This is the name of the file shown to the customer." = "Ini adalah nama file yang ditampilkan untuk pelanggan.";
 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Ini adalah url file yang akan dapat diakses pelanggan. URL yang dimasukkan harus sudah dikodekan.";
+
+/* Footer text for Downloadable File URL */
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2657,10 +2654,10 @@
 "Update product inventory and SKU" = "Perbarui inventaris produk dan SKU";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Perbarui info dari jarak jauh untuk produk file yang dapat diunduh";
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "Perbarui info dari jarak jauh untuk produk file yang dapat diunduh";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "Perbarui ke WooCommerce 3.5 untuk terus menggunakan aplikasi ini";
@@ -2883,9 +2880,6 @@
 /* Yesterday Section Header */
 "Yesterday" = "Kemarin";
 
-/* The info of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
-"You can now edit grouped, external and variable products, change product type and update categories and tags" = "Anda kini dapat menyunting produk yang dikelompokkan, eksternal, dan variabel; mengubah jenis produk; serta memperbarui kategori dan tag";
-
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Anda tidak dapat menggunakan alamat surel tersebut untuk pendaftaran. Kami mengalami masalah dengan mereka memblokir beberapa surel dari kami. Silahkan gunakan penyedia layanan surel lainnya.";
 
@@ -2922,6 +2916,12 @@
 
 /* No comment provided by engineer. */
 "password" = "Kata sandi";
+
+/* Format of the number of product ratings in plural form */
+"rated %ld times" = "dinilai %ld kali";
+
+/* Format of the number of product ratings in singular form */
+"rated once" = "dinilai sekali";
 
 /* Today */
 "today" = "hari ini";

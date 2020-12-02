@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-11-13 13:54:04+0000 */
+/* Translation-Revision-Date: 2020-11-27 08:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -42,6 +42,9 @@
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
+/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
+"%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
+
 /* 1 Item */
 "%@ Item" = "%@ 个项目";
 
@@ -77,12 +80,6 @@
 
 /* Format of the number of grouped products in plural form */
 "%ld products" = "%ld 个产品";
-
-/* Format of the number of product review in singular form */
-"%ld review" = "%ld 个评论";
-
-/* Format of the number of product reviews in plural form */
-"%ld reviews" = "%ld 个评论";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld 个参数";
@@ -153,10 +150,10 @@
 "Add Downloadable File" = "添加可下载文件";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "添加文件";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "添加文件";
+"Add File" = "Add File";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "添加照片";
@@ -670,17 +667,17 @@
 
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
-"Download Settings" = "Download Settings";
+"Download Settings" = "下载设置";
 
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
-"Download Settings" = "下载设置";
-
-/* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Download expiration";
+"Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "下载有效期";
+
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Download limit";
@@ -689,16 +686,16 @@
 "Download limit" = "下载限制";
 
 /* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "Downloadable Files";
-
-/* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "可下载文件";
 
-/* Downloadable Product label in Product Settings */
-"Downloadable Product" = "Downloadable Product";
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "Downloadable Files";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "可下载产品";
+
+/* Downloadable Product label in Product Settings */
+"Downloadable Product" = "Downloadable Product";
 
 /* Title of the Downloadable Files row on Product main screen */
 "Downloadable files" = "Downloadable files";
@@ -775,10 +772,10 @@
 "Enter the number of days before a download link expires, or leave blank if never it expires" = "输入下载链接的有效天数，或者留空，使其永久有效";
 
 /* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "输入文件可以下载的次数，或者留空以供无限次下载";
 
 /* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "输入文件可以下载的次数，或者留空以供无限次下载";
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "输入您的 WordPress.com 帐户的密码。";
@@ -835,11 +832,11 @@
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "文件名";
+"File Name" = "File Name";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "File Name";
+"File Name" = "文件名";
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
@@ -1195,10 +1192,10 @@
 "Manual Offsets" = "手动选择偏差";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "通过 %1$@ 手动退款";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "通过 %1$@ 手动退款";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "已映射的域";
@@ -1284,9 +1281,6 @@
 /* The title for the net amount paid cell */
 "Net" = "净额";
 
-/* The title of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
-"New editing options available" = "提供新的编辑选项";
-
 /* Title of a button.
    Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "下一步";
@@ -1308,25 +1302,25 @@
 "No data available" = "无可用数据";
 
 /* Placeholder of the cell text field in Download expiration */
-"No expiration" = "永久有效";
-
-/* Placeholder of the cell text field in Download expiration */
 "No expiration" = "No expiration";
 
-/* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "No files yet";
+/* Placeholder of the cell text field in Download expiration */
+"No expiration" = "永久有效";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "暂无文件";
+
+/* Placeholder for empty Downloadable Files row on Product main screen */
+"No files yet" = "No files yet";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "还没有图片";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "No limit";
+"No limit" = "无限制";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "无限制";
+"No limit" = "No limit";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "未设置价格";
@@ -1338,14 +1332,14 @@
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "尚无产品";
 
+/* Placeholder for empty product ratings */
+"No ratings" = "无评分";
+
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
 "No results found for (term)\nAdd a custom carrier" = "找不到符合（术语）的结果\n添加自定义运营商";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "此时期没有收入";
-
-/* Placeholder for empty product reviews */
-"No reviews yet" = "暂无评论";
 
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "尚无运费类";
@@ -1587,10 +1581,10 @@
 "Powered by Automattic" = "由 Automattic 提供支持";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "退款记录";
+"Previously Refunded" = "Previously Refunded";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Previously Refunded";
+"Previously Refunded" = "退款记录";
 
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
    Product Price Settings navigation title - Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
@@ -1756,10 +1750,10 @@
 "Refund Details" = "退款详细信息";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "配送费用退款";
+"Refund Shipping" = "Refund Shipping";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Refund Shipping";
+"Refund Shipping" = "配送费用退款";
 
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "Refund Via";
@@ -1890,6 +1884,12 @@
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "正在保存您的产品...";
+
+/* Navigation bar title for scanning a barcode to use as a product's SKU. */
+"Scan barcode to update SKU" = "扫描条形码以更新 SKU";
+
+/* The instruction text below the scan area in the barcode scanner for product SKU. */
+"Scan product barcode" = "扫描产品条形码";
 
 /* Scan Products */
 "Scan products" = "扫描产品";
@@ -2363,9 +2363,6 @@
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "该产品的价格。可编辑。";
 
-/* Displayed whenever a review that was onscreen got deleted. */
-"The review has been removed" = "已删除评论";
-
 /* Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "无法在未添加正常价格的情况下添加优惠价格。";
 
@@ -2442,16 +2439,16 @@
 "This is the URL-friendly version of the product title" = "这是适合 URL 的产品名称版本";
 
 /* Footer text for Downloadable File Name */
-"This is the name of the file shown to the customer." = "此文件名将面向客户显示。";
-
-/* Footer text for Downloadable File Name */
 "This is the name of the file shown to the customer." = "This is the name of the file shown to the customer.";
 
-/* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
+/* Footer text for Downloadable File Name */
+"This is the name of the file shown to the customer." = "此文件名将面向客户显示。";
 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "这是客户将会访问的文件的 URL。 所输入的 URL 应已编码。";
+
+/* Footer text for Downloadable File URL */
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2657,10 +2654,10 @@
 "Update product inventory and SKU" = "更新产品库存和 SKU";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "远程更新产品的“可下载文件”的信息";
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "远程更新产品的“可下载文件”的信息";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "更新至 WooCommerce 3.5，继续使用此应用程序";
@@ -2883,9 +2880,6 @@
 /* Yesterday Section Header */
 "Yesterday" = "昨天";
 
-/* The info of the Work In Progress top banner on the Products tab when Products feature switch is disabled. */
-"You can now edit grouped, external and variable products, change product type and update categories and tags" = "现在，您可以编辑分组的外部可变产品、更改产品类型，以及更新类别和标签";
-
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "这个 E-mail 地址不可用。我们发现这个 E-mail 提供商会屏蔽我们的邮件，请更换一个。";
 
@@ -2922,6 +2916,12 @@
 
 /* No comment provided by engineer. */
 "password" = "密码";
+
+/* Format of the number of product ratings in plural form */
+"rated %ld times" = "%ld 次评分";
+
+/* Format of the number of product ratings in singular form */
+"rated once" = "1 次评分";
 
 /* Today */
 "today" = "今天";

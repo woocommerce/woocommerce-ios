@@ -97,7 +97,7 @@ private extension RefundConfirmationViewController {
         // Add to view
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToSafeArea(tableView)
+        view.pinSubviewToAllEdges(tableView)
     }
 
     func configureButtonTableFooterView() {

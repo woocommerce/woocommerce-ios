@@ -108,7 +108,7 @@ private extension AggregatedShippingLabelOrderItems {
     func orderItem(from model: OrderItemModel, quantity: Int) -> AggregateOrderItem {
         switch model {
         case .productName(let name):
-            return .init(productID: 0, variationID: 0, name: name, price: 0, quantity: 0, sku: nil, total: 0, attributes: [])
+            return .init(productID: 0, variationID: 0, name: name, price: nil, quantity: 0, sku: nil, total: nil, attributes: [])
         case .product(let product, let orderItem, let name):
             let productName = orderItem?.name ?? name
             let price = orderItem?.price ??

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -18,26 +18,26 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="p6h-Fq-FjW">
-                        <rect key="frame" x="15" y="19" width="44" height="44"/>
+                        <rect key="frame" x="16" y="19" width="44" height="44"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="44" id="9vH-gW-wOd"/>
                             <constraint firstAttribute="height" constant="44" id="hcJ-qM-Kx2"/>
                         </constraints>
                     </imageView>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="En5-gn-p39">
-                        <rect key="frame" x="75" y="19" width="230" height="85"/>
+                        <rect key="frame" x="76" y="19" width="228" height="85"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HX7-V5-bhX">
-                                <rect key="frame" x="0.0" y="0.0" width="230" height="50"/>
+                                <rect key="frame" x="0.0" y="0.0" width="228" height="50"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Title Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="14R-zK-tgC">
-                                        <rect key="frame" x="0.0" y="0.0" width="190.5" height="50"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="188.5" height="50"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" horizontalCompressionResistancePriority="1000" text="893" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pPE-SE-pY7">
-                                        <rect key="frame" x="198.5" y="0.0" width="31.5" height="50"/>
+                                        <rect key="frame" x="196.5" y="0.0" width="31.5" height="50"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -55,7 +55,7 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total price (item price x qty)" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IBM-H2-zE2">
-                                <rect key="frame" x="0.0" y="69" width="230" height="16"/>
+                                <rect key="frame" x="0.0" y="69" width="228" height="16"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -70,6 +70,7 @@
                     <constraint firstItem="En5-gn-p39" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="8" id="VsH-Qa-5gp"/>
                     <constraint firstItem="p6h-Fq-FjW" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="WkU-sH-Aqw"/>
                     <constraint firstItem="En5-gn-p39" firstAttribute="leading" secondItem="p6h-Fq-FjW" secondAttribute="trailing" constant="16" id="Yht-tO-bpS"/>
+                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="p6h-Fq-FjW" secondAttribute="bottom" constant="8" id="n9m-uT-vqx"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

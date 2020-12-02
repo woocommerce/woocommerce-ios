@@ -270,7 +270,7 @@ private extension CoreDataIterativeMigrator {
     /// - Model 13
     ///
     /// We don't really use the descending list at the moment. I'm just keeping this logic
-    /// as is for now so I don't accidentally introduce regressions. Somebody, one brave soul
+    /// as is for now so I don't accidentally introduce regressions. Someday, one brave soul
     /// will refactor this and remove the descending logic.
     ///
     /// - Returns: The list of models to be used for migration, including the `sourceModel` and

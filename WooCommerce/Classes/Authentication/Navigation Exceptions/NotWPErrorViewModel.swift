@@ -55,8 +55,4 @@ private extension NotWPErrorViewModel {
                                                             + "Presented when logging in with a site address that does not have a valid Jetpack installation")
 
     }
-
-    enum Strings {
-        static let instructionsURLString = "https://docs.woocommerce.com/document/jetpack-setup-instructions-for-the-woocommerce-mobile-app/"
-    }
 }

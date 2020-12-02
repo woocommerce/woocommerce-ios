@@ -174,10 +174,10 @@ extension ServiceLocator {
     }
 
     static func setStores(_ mock: StoresManager) {
-        guard isRunningTests() else {
-            return
-        }
-
+//        guard isRunningTests() else {
+//            return
+//        }
+//
         _stores = mock
     }
 

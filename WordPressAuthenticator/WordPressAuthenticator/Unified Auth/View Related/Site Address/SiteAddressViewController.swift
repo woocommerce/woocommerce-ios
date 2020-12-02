@@ -141,7 +141,7 @@ final class SiteAddressViewController: LoginViewController {
     }
 
     override func displayRemoteError(_ error: Error) {
-        guard authenticationDelegate.shouldHandleError(error) == true else {
+        guard authenticationDelegate.shouldHandleError(error) else {
             super.displayRemoteError(error)
             return
         }

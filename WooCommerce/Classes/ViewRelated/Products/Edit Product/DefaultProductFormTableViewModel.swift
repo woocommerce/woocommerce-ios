@@ -389,10 +389,12 @@ private extension DefaultProductFormTableViewModel {
             }
         }
 
+        let isActionable = product.variations.isNotEmpty || (product.variations.isEmpty && isEditProductsRelease5Enabled)
+
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
                                                         details: details,
-                                                        isActionable: product.variations.isNotEmpty)
+                                                        isActionable: isActionable)
     }
 
     // MARK: Product variation only

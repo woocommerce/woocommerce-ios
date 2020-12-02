@@ -161,6 +161,8 @@
 		D85C3882256E3FEC00D56E34 /* WordPressComSiteInfoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85C3881256E3FEC00D56E34 /* WordPressComSiteInfoTests.swift */; };
 		D8610CE82570A5B000A5DF27 /* NavigateToRoot.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8610CE72570A5B000A5DF27 /* NavigateToRoot.swift */; };
 		D8610CEC2570A60C00A5DF27 /* NavigationToRootTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8610CEB2570A60C00A5DF27 /* NavigationToRootTests.swift */; };
+		D8611A63257622ED00A5DF27 /* NavigateBack.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8611A62257622ED00A5DF27 /* NavigateBack.swift */; };
+		D8611A672576236800A5DF27 /* NavigateBackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8611A662576236800A5DF27 /* NavigateBackTests.swift */; };
 		D881A30D256B5A7900FE5605 /* NavigationCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = D881A30C256B5A7900FE5605 /* NavigationCommand.swift */; };
 		D881A311256B5B4700FE5605 /* NavigateToEnterSite.swift in Sources */ = {isa = PBXBuildFile; fileRef = D881A310256B5B4700FE5605 /* NavigateToEnterSite.swift */; };
 		D881A315256B5B5800FE5605 /* NavigateToEnterAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = D881A314256B5B5800FE5605 /* NavigateToEnterAccount.swift */; };
@@ -370,6 +372,8 @@
 		D85C3881256E3FEC00D56E34 /* WordPressComSiteInfoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressComSiteInfoTests.swift; sourceTree = "<group>"; };
 		D8610CE72570A5B000A5DF27 /* NavigateToRoot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigateToRoot.swift; sourceTree = "<group>"; };
 		D8610CEB2570A60C00A5DF27 /* NavigationToRootTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationToRootTests.swift; sourceTree = "<group>"; };
+		D8611A62257622ED00A5DF27 /* NavigateBack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigateBack.swift; sourceTree = "<group>"; };
+		D8611A662576236800A5DF27 /* NavigateBackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigateBackTests.swift; sourceTree = "<group>"; };
 		D881A30C256B5A7900FE5605 /* NavigationCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationCommand.swift; sourceTree = "<group>"; };
 		D881A310256B5B4700FE5605 /* NavigateToEnterSite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigateToEnterSite.swift; sourceTree = "<group>"; };
 		D881A314256B5B5800FE5605 /* NavigateToEnterAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigateToEnterAccount.swift; sourceTree = "<group>"; };
@@ -889,6 +893,7 @@
 				D85C36E5256E0DDE00D56E34 /* NavigationToEnterSiteTests.swift */,
 				D85C36EF256E118D00D56E34 /* NavigationToEnterAccountTests.swift */,
 				D8610CEB2570A60C00A5DF27 /* NavigationToRootTests.swift */,
+				D8611A662576236800A5DF27 /* NavigateBackTests.swift */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -900,6 +905,7 @@
 				D881A310256B5B4700FE5605 /* NavigateToEnterSite.swift */,
 				D881A314256B5B5800FE5605 /* NavigateToEnterAccount.swift */,
 				D8610CE72570A5B000A5DF27 /* NavigateToRoot.swift */,
+				D8611A62257622ED00A5DF27 /* NavigateBack.swift */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -1225,6 +1231,7 @@
 				CE6BCD2E24A3A235001BCDC5 /* TextLabelTableViewCell.swift in Sources */,
 				B56090D3208A4F5400399AE4 /* NUXLinkAuthViewController.swift in Sources */,
 				B5609120208A555E00399AE4 /* SignupNavigationController.swift in Sources */,
+				D8611A63257622ED00A5DF27 /* NavigateBack.swift in Sources */,
 				B5609143208A563800399AE4 /* LoginSocialErrorViewController.swift in Sources */,
 				B56090F8208A533200399AE4 /* WordPressAuthenticator+Notifications.swift in Sources */,
 				98ED483624802F8F00992B2D /* GoogleAuthViewController.swift in Sources */,
@@ -1342,6 +1349,7 @@
 				D85C36F0256E118D00D56E34 /* NavigationToEnterAccountTests.swift in Sources */,
 				D85C36E6256E0DDE00D56E34 /* NavigationToEnterSiteTests.swift in Sources */,
 				D85C3882256E3FEC00D56E34 /* WordPressComSiteInfoTests.swift in Sources */,
+				D8611A672576236800A5DF27 /* NavigateBackTests.swift in Sources */,
 				F12F9FB824D8A7FC00771BCE /* AnalyticsTrackerTests.swift in Sources */,
 				B501C046208FC6A700D1E58F /* WordPressAuthenticatorTests.swift in Sources */,
 			);

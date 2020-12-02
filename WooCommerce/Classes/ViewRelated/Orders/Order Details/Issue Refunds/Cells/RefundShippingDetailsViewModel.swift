@@ -17,7 +17,7 @@ extension RefundShippingDetailsViewModel {
     ///
     init(shippingLine: ShippingLine, currency: String, currencySettings: CurrencySettings) {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        self.carrierRate = shippingLine.methodTitle
+        self.carrierRate = shippingLine.methodTitle.strippedHTML
         self.carrierCost = currencyFormatter.formatAmount(shippingLine.total, with: currency) ?? ""
         self.shippingTax = currencyFormatter.formatAmount(shippingLine.totalTax, with: currency) ?? ""
         self.shippingSubtotal = currencyFormatter.formatAmount(shippingLine.total, with: currency) ?? ""

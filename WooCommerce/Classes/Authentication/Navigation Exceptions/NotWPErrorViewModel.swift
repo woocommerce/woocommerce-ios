@@ -11,8 +11,7 @@ struct NotWPErrorViewModel: ULErrorViewModel {
     let image: UIImage = .loginNoWordPressError
 
     var text: NSAttributedString {
-        let message = NSMutableAttributedString(string: Localization.errorMessage)
-        return message
+        NSMutableAttributedString(string: Localization.errorMessage)
     }
 
     let isAuxiliaryButtonHidden = true

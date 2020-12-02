@@ -191,12 +191,7 @@ private extension RefundConfirmationViewController {
     func presentProgressViewController() {
         let viewProperties = InProgressViewProperties(title: Localization.issuingRefund, message: "")
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
-
-        // Before iOS 13, a modal with transparent background requires certain
-        // `modalPresentationStyle` to prevent the view from turning dark after being presented.
-        if #available(iOS 13.0, *) {} else {
-            inProgressViewController.modalPresentationStyle = .overCurrentContext
-        }
+        inProgressViewController.modalPresentationStyle = .overCurrentContext
 
         present(inProgressViewController, animated: true)
     }

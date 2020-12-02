@@ -158,15 +158,7 @@ final class AggregateDataHelper {
             }
             // If the order item quantity is larger than the sum in the shipping labels, the order item's quantity is deducted by the sum in the shipping
             // labels.
-            return .init(productID: orderItem.productID,
-                         variationID: orderItem.variationID,
-                         name: orderItem.name,
-                         price: orderItem.price,
-                         quantity: orderItem.quantity - orderItemCountInNonRefundedShippingLabels,
-                         sku: orderItem.sku,
-                         total: orderItem.total,
-                         imageURL: orderItem.imageURL,
-                         attributes: orderItem.attributes)
+            return orderItem.copy(quantity: orderItem.quantity - orderItemCountInNonRefundedShippingLabels)
         }
     }
 }

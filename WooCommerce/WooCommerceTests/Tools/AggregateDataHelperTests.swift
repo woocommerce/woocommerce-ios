@@ -94,9 +94,34 @@ final class AggregateDataHelperTests: XCTestCase {
 
     func test_combining_AggregateOrderItem_with_shipping_labels_with_partial_products() {
         // Given
-        let orderItemNotInShippingLabels = AggregateOrderItem(productID: 1, variationID: 32, name: "Beach", price: nil, quantity: 2, sku: nil, total: nil, attributes: [])
-        let orderItemPartiallyInShippingLabels = AggregateOrderItem(productID: 1, variationID: 26, name: "Beach", price: nil, quantity: 2.5, sku: nil, total: nil, attributes: [])
-        let orderItemInShippingLabels = AggregateOrderItem(productID: 1, variationID: 0, name: "Wario", price: nil, quantity: 3.5, sku: nil, total: nil, attributes: [])
+        // Order items (e.g. after combining with refunded products using `AggregateDataHelper.combineOrderItems`).
+        let orderItemNotInShippingLabels = AggregateOrderItem(productID: 1,
+                                                              variationID: 32,
+                                                              name: "Beach",
+                                                              price: nil,
+                                                              quantity: 2,
+                                                              sku: nil,
+                                                              total: nil,
+                                                              attributes: [])
+        let orderItemPartiallyInShippingLabels = AggregateOrderItem(productID: 1,
+                                                                    variationID: 26,
+                                                                    name: "Beach",
+                                                                    price: nil,
+                                                                    quantity: 2.5,
+                                                                    sku: nil,
+                                                                    total: nil,
+                                                                    attributes: [])
+        let orderItemInShippingLabels = AggregateOrderItem(productID: 1,
+                                                           variationID: 0,
+                                                           name: "Wario",
+                                                           price: nil,
+                                                           quantity: 3.5,
+                                                           sku: nil,
+                                                           total: nil,
+                                                           attributes: [])
+        let orderItems = [orderItemInShippingLabels, orderItemPartiallyInShippingLabels, orderItemNotInShippingLabels]
+
+        // Order items from non-refunded shipping labels.
         let orderItemsInNonRefundedShippingLabels: [AggregateOrderItem] = [
             .init(productID: orderItemInShippingLabels.productID,
                   variationID: orderItemInShippingLabels.variationID,
@@ -126,18 +151,10 @@ final class AggregateDataHelperTests: XCTestCase {
 
         // When
         let combinedOrderItems = AggregateDataHelper
-            .combineAggregatedOrderItems([orderItemInShippingLabels, orderItemPartiallyInShippingLabels, orderItemNotInShippingLabels],
-                                         with: orderItemsInNonRefundedShippingLabels)
+            .combineAggregatedOrderItems(orderItems, with: orderItemsInNonRefundedShippingLabels)
 
         // Then
-        let orderItemPartiallyInShippingLabelsWithUpdatedQuantity = AggregateOrderItem(productID: orderItemPartiallyInShippingLabels.productID,
-                                                                          variationID: orderItemPartiallyInShippingLabels.variationID,
-                                                                          name: orderItemPartiallyInShippingLabels.name,
-                                                                          price: orderItemPartiallyInShippingLabels.price,
-                                                                          quantity: 1.5,
-                                                                          sku: orderItemPartiallyInShippingLabels.sku,
-                                                                          total: orderItemPartiallyInShippingLabels.total,
-                                                                          attributes: orderItemPartiallyInShippingLabels.attributes)
+        let orderItemPartiallyInShippingLabelsWithUpdatedQuantity = orderItemPartiallyInShippingLabels.copy(quantity: 1.5)
         XCTAssertEqual(combinedOrderItems, [orderItemPartiallyInShippingLabelsWithUpdatedQuantity, orderItemNotInShippingLabels])
     }
 }

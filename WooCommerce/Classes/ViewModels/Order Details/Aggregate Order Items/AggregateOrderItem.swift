@@ -1,10 +1,11 @@
 import Foundation
+import Networking
 import Yosemite
 
 /// This model represents a computed summary of order items.
 /// (order items - refunded order items) = aggregate order item data.
 ///
-struct AggregateOrderItem: Equatable {
+struct AggregateOrderItem: Equatable, GeneratedCopiable {
     let productID: Int64
     let variationID: Int64
 

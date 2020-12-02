@@ -55,9 +55,9 @@
             <viewLayoutGuide key="safeArea" id="aKJ-SC-KN2"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="omw-71-nel" secondAttribute="trailing" constant="16" id="Iuh-aM-xBR"/>
+                <constraint firstItem="aKJ-SC-KN2" firstAttribute="trailing" secondItem="omw-71-nel" secondAttribute="trailing" constant="16" id="Iuh-aM-xBR"/>
                 <constraint firstItem="omw-71-nel" firstAttribute="top" secondItem="dRH-Gh-qht" secondAttribute="top" id="OpE-fY-xG4"/>
-                <constraint firstItem="omw-71-nel" firstAttribute="leading" secondItem="dRH-Gh-qht" secondAttribute="leading" constant="16" id="TXj-Nj-G5h"/>
+                <constraint firstItem="omw-71-nel" firstAttribute="leading" secondItem="aKJ-SC-KN2" secondAttribute="leading" constant="16" id="TXj-Nj-G5h"/>
                 <constraint firstAttribute="bottom" secondItem="omw-71-nel" secondAttribute="bottom" id="mR7-xj-5tk"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>

@@ -61,14 +61,14 @@ struct ProductDetailsCellViewModel {
 
         self.total = {
             guard let positiveTotal = positiveTotal else {
-                return ""
+                return String()
             }
             return currencyFormatter.formatAmount(positiveTotal, with: currency) ?? String()
         }()
 
         self.subtitle = {
             guard let positivePrice = positivePrice else {
-                return ""
+                return String()
             }
             let itemPrice = currencyFormatter.formatAmount(positivePrice, with: currency) ?? String()
             return Localization.subtitle(quantity: quantity, price: itemPrice, attributes: attributes)

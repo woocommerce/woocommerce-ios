@@ -88,12 +88,12 @@ class AuthenticationManager: Authentication {
                                                               errorColor: .error,
                                                               textColor: .text,
                                                               textSubtleColor: .textSubtle,
-                                                              textButtonColor: .brand,
-                                                              textButtonHighlightColor: .brand,
+                                                              textButtonColor: .accent,
+                                                              textButtonHighlightColor: .accent,
                                                               viewControllerBackgroundColor: .basicBackground,
                                                               prologueButtonsBackgroundColor: .authPrologueBottomBackgroundColor,
                                                               navBarBackgroundColor: .basicBackground,
-                                                              navButtonTextColor: .brand,
+                                                              navButtonTextColor: .accent,
                                                               navTitleTextColor: .text)
 
         let displayImages = WordPressAuthenticatorDisplayImages(

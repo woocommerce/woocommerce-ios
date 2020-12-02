@@ -50,8 +50,10 @@ final class CoreDataIterativeMigrator {
         // Find the current model used by the store.
         let sourceModel = try model(for: sourceMetadata)
 
+        // Get NSManagedObjectModels for each of the model names given.
+        let allModels = try models(for: modelsInventory.versions)
         // Retrieve an inclusive list of models between the source and target models.
-        let modelsToMigrate = try self.modelsToMigrate(from: sourceModel, to: targetModel)
+        let modelsToMigrate = try self.modelsToMigrate(using: allModels, source: sourceModel, target: targetModel)
         guard modelsToMigrate.count > 1 else {
             return (false, ["Skipping migration. Unexpectedly found less than 2 models to perform a migration."])
         }
@@ -67,7 +69,7 @@ final class CoreDataIterativeMigrator {
             let mappingModel = try self.mappingModel(from: modelFrom, to: modelTo)
 
             // Migrate the model to the next step
-            let migrationAttemptMessage = makeMigrationAttemptLogMessage(models: modelsToMigrate,
+            let migrationAttemptMessage = makeMigrationAttemptLogMessage(models: allModels,
                                                                          from: modelFrom,
                                                                          to: modelTo)
             debugMessages.append(migrationAttemptMessage)
@@ -275,16 +277,13 @@ private extension CoreDataIterativeMigrator {
     ///
     /// - Returns: The list of models to be used for migration, including the `sourceModel` and
     ///            the `targetModel`.
-    func modelsToMigrate(from sourceModel: NSManagedObjectModel,
-                         to targetModel: NSManagedObjectModel) throws -> [NSManagedObjectModel] {
-        // Get NSManagedObjectModels for each of the model names given.
-        let objectModels = try models(for: modelsInventory.versions)
-
-        // Build an inclusive list of models between the source and final models.
+    func modelsToMigrate(using allModels: [NSManagedObjectModel],
+                         source sourceModel: NSManagedObjectModel,
+                         target targetModel: NSManagedObjectModel) throws -> [NSManagedObjectModel] {
         var modelsToMigrate = [NSManagedObjectModel]()
         var firstFound = false, lastFound = false, reverse = false
 
-        for model in objectModels {
+        for model in allModels {
             if model.isEqual(sourceModel) || model.isEqual(targetModel) {
                 if firstFound {
                     lastFound = true

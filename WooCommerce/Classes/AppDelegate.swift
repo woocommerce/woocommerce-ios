@@ -51,6 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupCrashLogging()
 
         // Setup Components
+        setupStoresManager()
         setupAnalytics()
         setupAuthenticationManager()
         setupCocoaLumberjack()
@@ -221,6 +222,10 @@ private extension AppDelegate {
     func setupCrashLogging() {
         let eventLogging = EventLogging(dataSource: WCEventLoggingDataSource(), delegate: WCEventLoggingDelegate())
         CrashLogging.start(withDataProvider: WCCrashLoggingDataProvider(), eventLogging: eventLogging)
+    }
+
+    func setupStoresManager() {
+        ServiceLocator.setStores(ScreenshotsStoresManager())
     }
 
     /// Sets up the Zendesk SDK.

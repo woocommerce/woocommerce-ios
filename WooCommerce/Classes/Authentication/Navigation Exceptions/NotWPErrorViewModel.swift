@@ -49,8 +49,8 @@ private extension NotWPErrorViewModel {
                                                     comment: "Message explaining that a site is not a WordPress site. "
                                                         + "Reads like 'The website awebsite.com you'll is not a WordPress site...")
 
-        static let primaryButtonTitle = NSLocalizedString("Enter Another Site",
-                                                          comment: "Action button linking to instructions for enter another site."
+        static let primaryButtonTitle = NSLocalizedString("Enter Another Store",
+                                                          comment: "Action button linking to instructions for enter another store."
                                                           + "Presented when logging in with a site address that is not a WordPress site")
 
         static let secondaryButtonTitle = NSLocalizedString("Log In With Another Account",

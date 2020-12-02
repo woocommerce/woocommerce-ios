@@ -4,7 +4,7 @@ import WordPressAuthenticator
 import WordPressUI
 
 
-/// Configuration and actions for an ULErrorViewController, modelling
+/// Configuration and actions for an ULErrorViewController, modeling
 /// an error when the site is not a WordPress site
 struct NotWPErrorViewModel: ULErrorViewModel {
     // MARK: - Data and configuration

@@ -630,7 +630,7 @@
 		B517EA1D218B41F200730EC4 /* String+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B517EA1C218B41F200730EC4 /* String+Woo.swift */; };
 		B5290ED9219B3FA900A6AF7F /* Date+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5290ED8219B3FA900A6AF7F /* Date+Woo.swift */; };
 		B53A569721123D3B000776C9 /* ResultsControllerUIKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53A569621123D3B000776C9 /* ResultsControllerUIKitTests.swift */; };
-		B53A569B21123E8E000776C9 /* MockupTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53A569A21123E8E000776C9 /* MockupTableView.swift */; };
+		B53A569B21123E8E000776C9 /* MockTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53A569A21123E8E000776C9 /* MockTableView.swift */; };
 		B53A56A42112483E000776C9 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53A56A32112483D000776C9 /* Constants.swift */; };
 		B53B3F37219C75AC00DF1EB6 /* OrderLoaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53B3F36219C75AC00DF1EB6 /* OrderLoaderViewController.swift */; };
 		B53B3F39219C817800DF1EB6 /* UIStoryboard+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53B3F38219C817800DF1EB6 /* UIStoryboard+Woo.swift */; };
@@ -1680,7 +1680,7 @@
 		B517EA1C218B41F200730EC4 /* String+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Woo.swift"; sourceTree = "<group>"; };
 		B5290ED8219B3FA900A6AF7F /* Date+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Woo.swift"; sourceTree = "<group>"; };
 		B53A569621123D3B000776C9 /* ResultsControllerUIKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsControllerUIKitTests.swift; sourceTree = "<group>"; };
-		B53A569A21123E8E000776C9 /* MockupTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupTableView.swift; sourceTree = "<group>"; };
+		B53A569A21123E8E000776C9 /* MockTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTableView.swift; sourceTree = "<group>"; };
 		B53A56A32112483D000776C9 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = ../../Yosemite/YosemiteTests/Settings/Constants.swift; sourceTree = "<group>"; };
 		B53B3F36219C75AC00DF1EB6 /* OrderLoaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderLoaderViewController.swift; sourceTree = "<group>"; };
 		B53B3F38219C817800DF1EB6 /* UIStoryboard+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Woo.swift"; sourceTree = "<group>"; };
@@ -3502,7 +3502,7 @@
 				A650BE552578DA4900C655E0 /* MockStorageManager.swift */,
 				A650BE542578DA4900C655E0 /* MockStorageManager+Sample.swift */,
 				B56C721321B5BBC000E5E85B /* MockStoresManager.swift */,
-				B53A569A21123E8E000776C9 /* MockupTableView.swift */,
+				B53A569A21123E8E000776C9 /* MockTableView.swift */,
 				B509FED421C052D1000076A9 /* MockupSupportManager.swift */,
 				B555531221B57E8800449E71 /* MockupUserNotificationsCenterAdapter.swift */,
 				02404EE32315151400FF1170 /* MockupStatsVersionStoresManager.swift */,
@@ -6047,7 +6047,7 @@
 				020BE76923B4A268007FE54C /* AztecItalicFormatBarCommandTests.swift in Sources */,
 				0271E1642509C66200633F7A /* DefaultProductFormTableViewModelTests.swift in Sources */,
 				02BAB02924D13AA500F8B06E /* ProductVariationFormActionsFactoryTests.swift in Sources */,
-				B53A569B21123E8E000776C9 /* MockupTableView.swift in Sources */,
+				B53A569B21123E8E000776C9 /* MockTableView.swift in Sources */,
 				0259EF79246BF66000B84FDF /* MockProductsAppSettingsStoresManager.swift in Sources */,
 				2667BFE3252FA695008099D4 /* RefundItemQuantityListSelectorCommandTests.swift in Sources */,
 				2611EE59243A473300A74490 /* ProductCategoryListViewModelTests.swift in Sources */,

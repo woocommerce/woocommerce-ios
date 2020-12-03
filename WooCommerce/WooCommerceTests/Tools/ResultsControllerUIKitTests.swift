@@ -17,7 +17,7 @@ final class ResultsControllerUIKitTests: XCTestCase {
 
     /// Mockup TableView
     ///
-    private var tableView: MockupTableView!
+    private var tableView: MockTableView!
 
     /// Sample ResultsController
     ///
@@ -45,7 +45,7 @@ final class ResultsControllerUIKitTests: XCTestCase {
             )
         }()
 
-        tableView = MockupTableView()
+        tableView = MockTableView()
         tableView.dataSource = self
 
         resultsController.startForwardingEvents(to: tableView)

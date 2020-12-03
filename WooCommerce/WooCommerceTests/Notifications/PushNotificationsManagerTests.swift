@@ -26,7 +26,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
     /// Mockup: Support Manager
     ///
-    private var supportManager: MockupSupportManager!
+    private var supportManager: MockSupportManager!
 
     /// Mockup: UserNotificationCenter
     ///
@@ -46,7 +46,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         storesManager = MockStoresManager(sessionManager: .testingInstance)
         storesManager.sessionManager.setStoreId(nil)
 
-        supportManager = MockupSupportManager()
+        supportManager = MockSupportManager()
         userNotificationCenter = MockupUserNotificationsCenterAdapter()
 
         manager = {

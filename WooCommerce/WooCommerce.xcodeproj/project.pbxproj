@@ -622,7 +622,7 @@
 		B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112D2049E27A007D25DC /* DashboardViewController.swift */; };
 		B509FED121C041DF000076A9 /* Locale+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509FED021C041DF000076A9 /* Locale+Woo.swift */; };
 		B509FED321C05121000076A9 /* SupportManagerAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509FED221C05121000076A9 /* SupportManagerAdapter.swift */; };
-		B509FED521C052D1000076A9 /* MockupSupportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509FED421C052D1000076A9 /* MockupSupportManager.swift */; };
+		B509FED521C052D1000076A9 /* MockSupportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509FED421C052D1000076A9 /* MockSupportManager.swift */; };
 		B50BB4162141828F00AF0F3C /* FooterSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50BB4152141828F00AF0F3C /* FooterSpinnerView.swift */; };
 		B511ED27218A660E005787DC /* StringDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B511ED26218A660E005787DC /* StringDescriptor.swift */; };
 		B517EA18218B232700730EC4 /* StringFormatter+Notes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B517EA17218B232700730EC4 /* StringFormatter+Notes.swift */; };
@@ -1672,7 +1672,7 @@
 		B509112D2049E27A007D25DC /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		B509FED021C041DF000076A9 /* Locale+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locale+Woo.swift"; sourceTree = "<group>"; };
 		B509FED221C05121000076A9 /* SupportManagerAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportManagerAdapter.swift; sourceTree = "<group>"; };
-		B509FED421C052D1000076A9 /* MockupSupportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupSupportManager.swift; sourceTree = "<group>"; };
+		B509FED421C052D1000076A9 /* MockSupportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSupportManager.swift; sourceTree = "<group>"; };
 		B50BB4152141828F00AF0F3C /* FooterSpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterSpinnerView.swift; sourceTree = "<group>"; };
 		B511ED26218A660E005787DC /* StringDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringDescriptor.swift; sourceTree = "<group>"; };
 		B517EA17218B232700730EC4 /* StringFormatter+Notes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StringFormatter+Notes.swift"; sourceTree = "<group>"; };
@@ -3503,7 +3503,7 @@
 				A650BE542578DA4900C655E0 /* MockStorageManager+Sample.swift */,
 				B56C721321B5BBC000E5E85B /* MockStoresManager.swift */,
 				B53A569A21123E8E000776C9 /* MockTableView.swift */,
-				B509FED421C052D1000076A9 /* MockupSupportManager.swift */,
+				B509FED421C052D1000076A9 /* MockSupportManager.swift */,
 				B555531221B57E8800449E71 /* MockupUserNotificationsCenterAdapter.swift */,
 				02404EE32315151400FF1170 /* MockupStatsVersionStoresManager.swift */,
 				027B8BBE23FE0F850040944E /* MockMediaStoresManager.swift */,
@@ -6052,7 +6052,7 @@
 				2667BFE3252FA695008099D4 /* RefundItemQuantityListSelectorCommandTests.swift in Sources */,
 				2611EE59243A473300A74490 /* ProductCategoryListViewModelTests.swift in Sources */,
 				0247AAA223A3C5A6007F967E /* DecimalInputFormatterTests.swift in Sources */,
-				B509FED521C052D1000076A9 /* MockupSupportManager.swift in Sources */,
+				B509FED521C052D1000076A9 /* MockSupportManager.swift in Sources */,
 				02691782232605B9002AFC20 /* PaginatedListViewControllerStateCoordinatorTests.swift in Sources */,
 				02564A88246C047C00D6DB2A /* Optional+StringTests.swift in Sources */,
 				0269576D23726401001BA0BF /* KeyboardFrameObserverTests.swift in Sources */,

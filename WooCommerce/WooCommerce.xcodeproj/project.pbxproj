@@ -113,7 +113,7 @@
 		02404EDA2314C36300FF1170 /* StatsVersionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404ED92314C36200FF1170 /* StatsVersionCoordinator.swift */; };
 		02404EE02314FE5900FF1170 /* DashboardUIFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404EDF2314FE5900FF1170 /* DashboardUIFactoryTests.swift */; };
 		02404EE2231501E000FF1170 /* StatsVersionCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404EE1231501E000FF1170 /* StatsVersionCoordinatorTests.swift */; };
-		02404EE42315151400FF1170 /* MockupStatsVersionStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404EE32315151400FF1170 /* MockupStatsVersionStoresManager.swift */; };
+		02404EE42315151400FF1170 /* MockStatsVersionStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404EE32315151400FF1170 /* MockStatsVersionStoresManager.swift */; };
 		0240B3AC230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0240B3AB230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift */; };
 		0245465B24EE7637004F531C /* ProductFormEventLoggerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0245465A24EE7637004F531C /* ProductFormEventLoggerProtocol.swift */; };
 		0245465D24EE779D004F531C /* ProductFormEventLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0245465C24EE779D004F531C /* ProductFormEventLogger.swift */; };
@@ -1153,7 +1153,7 @@
 		02404ED92314C36200FF1170 /* StatsVersionCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatsVersionCoordinator.swift; sourceTree = "<group>"; };
 		02404EDF2314FE5900FF1170 /* DashboardUIFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardUIFactoryTests.swift; sourceTree = "<group>"; };
 		02404EE1231501E000FF1170 /* StatsVersionCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsVersionCoordinatorTests.swift; sourceTree = "<group>"; };
-		02404EE32315151400FF1170 /* MockupStatsVersionStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupStatsVersionStoresManager.swift; sourceTree = "<group>"; };
+		02404EE32315151400FF1170 /* MockStatsVersionStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStatsVersionStoresManager.swift; sourceTree = "<group>"; };
 		0240B3AB230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsV4ChartAxisHelper.swift; sourceTree = "<group>"; };
 		0245465A24EE7637004F531C /* ProductFormEventLoggerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormEventLoggerProtocol.swift; sourceTree = "<group>"; };
 		0245465C24EE779D004F531C /* ProductFormEventLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormEventLogger.swift; sourceTree = "<group>"; };
@@ -3505,7 +3505,7 @@
 				B53A569A21123E8E000776C9 /* MockTableView.swift */,
 				B509FED421C052D1000076A9 /* MockSupportManager.swift */,
 				B555531221B57E8800449E71 /* MockUserNotificationsCenterAdapter.swift */,
-				02404EE32315151400FF1170 /* MockupStatsVersionStoresManager.swift */,
+				02404EE32315151400FF1170 /* MockStatsVersionStoresManager.swift */,
 				027B8BBE23FE0F850040944E /* MockMediaStoresManager.swift */,
 				02A275BF23FE58F6005C560F /* MockImageCache.swift */,
 				02A275C123FE590A005C560F /* MockKingfisherImageDownloader.swift */,
@@ -5978,7 +5978,7 @@
 				02FE89C7231FAA4100E85EF8 /* MainTabBarControllerTests.swift in Sources */,
 				B63AAF4B254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift in Sources */,
 				B57C5C9F21B80E8300FF82B2 /* SampleError.swift in Sources */,
-				02404EE42315151400FF1170 /* MockupStatsVersionStoresManager.swift in Sources */,
+				02404EE42315151400FF1170 /* MockStatsVersionStoresManager.swift in Sources */,
 				02C2756D24F4EEBF00286C04 /* ProductShippingSettingsViewModelTests.swift in Sources */,
 				025678052575EA1B009D7E6C /* ProductDetailsCellViewModelTests.swift in Sources */,
 				B53B898920D450AF00EDB467 /* SessionManagerTests.swift in Sources */,

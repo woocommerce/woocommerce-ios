@@ -186,6 +186,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.loginNoJetpackError)
     }
 
+    func test_login_WP_error_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.loginNoWordPressError)
+    }
+
     func testMailImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.mailImage)
     }

@@ -49,8 +49,8 @@ struct JetpackErrorViewModel: ULErrorViewModel {
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        let refreshCommand = NavigateToRoot()
-        refreshCommand.execute(from: viewController)
+        //let refreshCommand = NavigateToRoot()
+        //refreshCommand.execute(from: viewController)
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {

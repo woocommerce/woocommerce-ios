@@ -32,9 +32,7 @@ final class ShipmentProvidersViewController: UIViewController {
 
     /// Footer spinner shown when loading data for the first time
     ///
-    private lazy var footerSpinnerView = {
-        return FooterSpinnerView(tableViewStyle: table.style)
-    }()
+    private lazy var footerSpinnerView = FooterSpinnerView()
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
         let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
@@ -129,6 +127,7 @@ private extension ShipmentProvidersViewController {
 
         if viewModel.isListEmpty {
             table.tableFooterView = footerSpinnerView
+            table.sectionFooterHeight = .leastNonzeroMagnitude
         }
 
         table.dataSource = self

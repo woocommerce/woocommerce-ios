@@ -10,18 +10,18 @@ class FooterSpinnerView: UIView {
     ///
     private let activityIndicatorView = UIActivityIndicatorView(style: .medium)
 
-    private let tableViewStyle: UITableView.Style
-
     /// Designated Initializer
     ///
-    init(tableViewStyle: UITableView.Style) {
-        self.tableViewStyle = tableViewStyle
+    init() {
         super.init(frame: Settings.defaultFrame)
         setupSubviews()
     }
 
+    /// Required Initializer
+    ///
     required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
+        setupSubviews()
     }
 
     /// Setup: Subview Hierarchy
@@ -32,21 +32,11 @@ class FooterSpinnerView: UIView {
         activityIndicatorView.hidesWhenStopped = true
         activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
 
-        switch tableViewStyle {
-        case .plain:
-            NSLayoutConstraint.activate([
-                leadingAnchor.constraint(equalTo: activityIndicatorView.leadingAnchor),
-                trailingAnchor.constraint(equalTo: activityIndicatorView.trailingAnchor),
-                topAnchor.constraint(equalTo: activityIndicatorView.topAnchor, constant: 10),
-                centerYAnchor.constraint(equalTo: activityIndicatorView.centerYAnchor)
-                ])
-        default:
-            NSLayoutConstraint.activate([
-                leadingAnchor.constraint(equalTo: activityIndicatorView.leadingAnchor),
-                trailingAnchor.constraint(equalTo: activityIndicatorView.trailingAnchor),
-                topAnchor.constraint(equalTo: activityIndicatorView.topAnchor)
-                ])
-        }
+        NSLayoutConstraint.activate([
+            leadingAnchor.constraint(equalTo: activityIndicatorView.leadingAnchor),
+            trailingAnchor.constraint(equalTo: activityIndicatorView.trailingAnchor),
+            centerYAnchor.constraint(equalTo: activityIndicatorView.centerYAnchor)
+            ])
     }
 
     /// Starts the spinner animation

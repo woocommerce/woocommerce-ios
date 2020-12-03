@@ -37,13 +37,11 @@ final class ProductVariationsViewController: UIViewController {
 
     /// Footer "Loading More" Spinner.
     ///
-    private lazy var footerSpinnerView = {
-        return FooterSpinnerView(tableViewStyle: tableView.style)
-    }()
+    private lazy var footerSpinnerView = FooterSpinnerView()
 
-    private lazy var footerEmptyView = {
-        return UIView(frame: .zero)
-    }()
+    /// Empty Footer Placeholder. Replaces spinner view and allows footer to collapse and be completely hidden.
+    ///
+    private lazy var footerEmptyView = UIView(frame: .zero)
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Product Variations in sync.
     ///

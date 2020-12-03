@@ -38,11 +38,7 @@ class Product_ProductFormTests: XCTestCase {
         let categories = ["Pants", "Dress", "Shoes"].map { sampleCategory(name: $0) }
         let product = sampleProduct(categories: categories)
         let expectedDescription: String = {
-            if #available(iOS 13.0, *) {
-                return "Pants, Dress, and Shoes"
-            } else {
-                return "Pants, Dress, Shoes"
-            }
+            "Pants, Dress, and Shoes"
         }()
         let usLocale = Locale(identifier: "en_US")
         XCTAssertEqual(product.categoriesDescription(using: usLocale), expectedDescription)

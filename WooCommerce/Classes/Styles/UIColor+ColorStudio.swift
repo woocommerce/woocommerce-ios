@@ -29,17 +29,12 @@ extension UIColor {
 extension UIColor {
     // A way to create dynamic colors that's compatible with iOS 11 & 12
     convenience init(light: UIColor, dark: UIColor) {
-        if #available(iOS 13, *) {
-            self.init { traitCollection in
-                if traitCollection.userInterfaceStyle == .dark {
-                    return dark
-                } else {
-                    return light
-                }
+        self.init { traitCollection in
+            if traitCollection.userInterfaceStyle == .dark {
+                return dark
+            } else {
+                return light
             }
-        } else {
-            // in older versions of iOS, we assume light mode
-            self.init(color: light)
         }
     }
 
@@ -56,7 +51,7 @@ extension UIColor {
 
 extension UIColor {
     func color(for trait: UITraitCollection?) -> UIColor {
-        if #available(iOS 13, *), let trait = trait {
+        if let trait = trait {
             return resolvedColor(with: trait)
         }
         return self

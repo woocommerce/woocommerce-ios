@@ -11,39 +11,6 @@ struct ProductDetailsCellViewModel {
         let value: String
     }
 
-    // MARK: - Private properties
-
-    /// Yosemite.Order.currency
-    ///
-    private let currency: String
-
-    /// Currency Formatter
-    ///
-    private let currencyFormatter: CurrencyFormatter
-
-    /// Item Quantity
-    /// represented as a positive value
-    ///
-    private let positiveQuantity: Decimal
-
-    /// Item Total
-    /// represented as a positive value
-    ///
-    private let positiveTotal: NSDecimalNumber
-
-    /// Item Price
-    /// represented as a positive value
-    ///
-    private let positivePrice: NSDecimalNumber
-
-    /// Item SKU
-    ///
-    private let skuText: String?
-
-    /// Attributes of an order item.
-    ///
-    private let attributes: [OrderAttributeViewModel]
-
     // MARK: - Public properties
 
     /// The first available image for a product/variation.
@@ -56,38 +23,57 @@ struct ProductDetailsCellViewModel {
 
     /// Item Quantity as a String
     ///
-    var quantity: String {
-        return NumberFormatter.localizedString(from: positiveQuantity as NSDecimalNumber, number: .decimal)
-    }
+    let quantity: String
 
     /// The localized total value of this line item. This is the quantity x price.
     ///
-    var total: String {
-        currencyFormatter.formatAmount(positiveTotal, with: currency) ?? String()
-    }
+    let total: String
 
     /// Returns the localized "quantity x price" to use for the subtitle.
     ///
-    var subtitle: String {
-        let itemPrice = currencyFormatter.formatAmount(positivePrice, with: currency) ?? String()
-
-        return Localization.subtitle(quantity: quantity, price: itemPrice, attributes: attributes)
-    }
+    let subtitle: String
 
     /// Item SKU
     ///
-    var sku: String? {
-        guard let sku = skuText, sku.isEmpty == false else {
-            return nil
-        }
-
-        let skuTemplate = NSLocalizedString("SKU: %@", comment: "SKU label, followed by the SKU")
-        let skuText = String.localizedStringWithFormat(skuTemplate, sku)
-
-        return skuText
-    }
+    let sku: String?
 
     // MARK: - Initializers
+
+    private init(currency: String,
+                 currencyFormatter: CurrencyFormatter,
+                 imageURL: URL?,
+                 name: String,
+                 positiveQuantity: Decimal,
+                 positiveTotal: NSDecimalNumber?,
+                 positivePrice: NSDecimalNumber?,
+                 skuText: String?,
+                 attributes: [OrderAttributeViewModel]) {
+        self.imageURL = imageURL
+        self.name = name
+        let quantity = NumberFormatter.localizedString(from: positiveQuantity as NSDecimalNumber, number: .decimal)
+        self.quantity = quantity
+        self.sku = {
+            guard let sku = skuText, sku.isEmpty == false else {
+                return nil
+            }
+            return String.localizedStringWithFormat(Localization.skuFormat, sku)
+        }()
+
+        self.total = {
+            guard let positiveTotal = positiveTotal else {
+                return String()
+            }
+            return currencyFormatter.formatAmount(positiveTotal, with: currency) ?? String()
+        }()
+
+        self.subtitle = {
+            guard let positivePrice = positivePrice else {
+                return String()
+            }
+            let itemPrice = currencyFormatter.formatAmount(positivePrice, with: currency) ?? String()
+            return Localization.subtitle(quantity: quantity, price: itemPrice, attributes: attributes)
+        }()
+    }
 
     /// Order Item initializer
     ///
@@ -95,15 +81,15 @@ struct ProductDetailsCellViewModel {
          currency: String,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          product: Product? = nil) {
-        self.currency = currency
-        self.currencyFormatter = formatter
-        self.imageURL = product?.imageURL
-        self.name = item.name
-        self.positiveQuantity = abs(item.quantity)
-        self.positiveTotal = currencyFormatter.convertToDecimal(from: item.total)?.abs() ?? NSDecimalNumber.zero
-        self.positivePrice = item.price.abs()
-        self.skuText = item.sku
-        self.attributes = item.attributes.map { OrderAttributeViewModel(orderItemAttribute: $0) }
+        self.init(currency: currency,
+                  currencyFormatter: formatter,
+                  imageURL: product?.imageURL,
+                  name: item.name,
+                  positiveQuantity: abs(item.quantity),
+                  positiveTotal: formatter.convertToDecimal(from: item.total)?.abs() ?? NSDecimalNumber.zero,
+                  positivePrice: item.price.abs(),
+                  skuText: item.sku,
+                  attributes: item.attributes.map { OrderAttributeViewModel(orderItemAttribute: $0) })
     }
 
     /// Aggregate Order Item initializer
@@ -112,15 +98,15 @@ struct ProductDetailsCellViewModel {
          currency: String,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          product: Product? = nil) {
-        self.currency = currency
-        self.currencyFormatter = formatter
-        self.imageURL = aggregateItem.imageURL ?? product?.imageURL
-        self.name = aggregateItem.name
-        self.positiveQuantity = abs(aggregateItem.quantity)
-        self.positiveTotal = aggregateItem.total.abs()
-        self.positivePrice = aggregateItem.price.abs()
-        self.skuText = aggregateItem.sku
-        self.attributes = aggregateItem.attributes.map { OrderAttributeViewModel(orderItemAttribute: $0) }
+        self.init(currency: currency,
+                  currencyFormatter: formatter,
+                  imageURL: aggregateItem.imageURL ?? product?.imageURL,
+                  name: aggregateItem.name,
+                  positiveQuantity: abs(aggregateItem.quantity),
+                  positiveTotal: aggregateItem.total?.abs(),
+                  positivePrice: aggregateItem.price?.abs(),
+                  skuText: aggregateItem.sku,
+                  attributes: aggregateItem.attributes.map { OrderAttributeViewModel(orderItemAttribute: $0) })
     }
 
     /// Refunded Order Item initializer
@@ -129,16 +115,15 @@ struct ProductDetailsCellViewModel {
          currency: String,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          product: Product? = nil) {
-        self.currency = currency
-        self.currencyFormatter = formatter
-        self.imageURL = product?.imageURL
-        self.name = refundedItem.name
-        self.positiveQuantity = abs(refundedItem.quantity)
-        self.positiveTotal = currencyFormatter.convertToDecimal(from: refundedItem.total)?.abs() ?? NSDecimalNumber.zero
-        self.positivePrice = refundedItem.price.abs()
-        self.skuText = refundedItem.sku
-        // Attributes are not supported for a refund item yet.
-        self.attributes = []
+        self.init(currency: currency,
+                  currencyFormatter: formatter,
+                  imageURL: product?.imageURL,
+                  name: refundedItem.name,
+                  positiveQuantity: abs(refundedItem.quantity),
+                  positiveTotal: formatter.convertToDecimal(from: refundedItem.total)?.abs() ?? NSDecimalNumber.zero,
+                  positivePrice: refundedItem.price.abs(),
+                  skuText: refundedItem.sku,
+                  attributes: []) // Attributes are not supported for a refund item yet.
     }
 }
 
@@ -146,6 +131,7 @@ struct ProductDetailsCellViewModel {
 
 private extension ProductDetailsCellViewModel {
     enum Localization {
+        static let skuFormat = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
         static let subtitleFormat =
             NSLocalizedString("%1$@ x %2$@", comment: "In Order Details,"
                                 + " the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”."

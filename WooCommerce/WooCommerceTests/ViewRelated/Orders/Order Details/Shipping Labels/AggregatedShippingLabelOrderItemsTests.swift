@@ -17,7 +17,7 @@ final class AggregatedShippingLabelOrderItemsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(shippingLabelOrderItems, [
-            .init(productID: 0, variationID: 0, name: "Password protected!", price: 0, quantity: 0, sku: nil, total: 0, attributes: [])
+            .init(productID: 0, variationID: 0, name: "Password protected!", price: nil, quantity: 0, sku: nil, total: nil, attributes: [])
         ])
         XCTAssertEqual(shippingLabelOrderItems[0], aggregatedOrderItems.orderItem(of: shippingLabel, at: 0))
     }

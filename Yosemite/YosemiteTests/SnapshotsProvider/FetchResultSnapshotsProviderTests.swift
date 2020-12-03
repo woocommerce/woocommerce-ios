@@ -8,7 +8,7 @@ import Storage
 
 final class FetchResultSnapshotsProviderTests: XCTestCase {
 
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -18,7 +18,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
     }
 
     override func tearDown() {

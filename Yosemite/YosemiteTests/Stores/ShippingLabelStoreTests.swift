@@ -8,8 +8,8 @@ final class ShippingLabelStoreTests: XCTestCase {
     /// Mockup Dispatcher!
     private var dispatcher: Dispatcher!
 
-    /// Mockup Storage: InMemory
-    private var storageManager: MockupStorageManager!
+    /// Mock Storage: InMemory
+    private var storageManager: MockStorageManager!
 
     /// Mockup Network: Allows us to inject predefined responses!
     private var network: MockNetwork!
@@ -27,7 +27,7 @@ final class ShippingLabelStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
         network = MockNetwork()
     }
 

@@ -13,9 +13,9 @@ class AccountStoreTests: XCTestCase {
     ///
     private var dispatcher: Dispatcher!
 
-    /// Mockup Storage: InMemory
+    /// Mock Storage: InMemory
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
     /// Mockup Network: Allows us to inject predefined responses!
     ///
@@ -31,7 +31,7 @@ class AccountStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
         network = MockNetwork()
     }
 

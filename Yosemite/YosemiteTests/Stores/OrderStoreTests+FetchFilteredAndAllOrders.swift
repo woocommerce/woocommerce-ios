@@ -8,7 +8,7 @@ import XCTest
 /// Test cases for `OrderStore.fetchFilteredAndAllOrders`
 ///
 final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
     private var viewStorage: StorageType {
         storageManager.viewStorage
@@ -16,7 +16,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
     }
 
     override func tearDown() {

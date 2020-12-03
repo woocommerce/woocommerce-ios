@@ -14,7 +14,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
     private var notificationsRemote: MockNotificationsRemote!
     private var productReviewsRemote: MockProductReviewsRemote!
     private var productsRemote: MockProductsRemote!
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
     private var viewStorage: StorageType {
         storageManager.viewStorage
@@ -26,7 +26,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         notificationsRemote = MockNotificationsRemote()
         productReviewsRemote = MockProductReviewsRemote()
         productsRemote = MockProductsRemote()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
     }
 
     override func tearDown() {

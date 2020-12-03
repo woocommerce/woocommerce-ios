@@ -11,9 +11,9 @@ class StatsV4AvailabilityStoreTests: XCTestCase {
     ///
     private var network: MockNetwork!
 
-    /// Mockup Storage: InMemory
+    /// Mock Storage: InMemory
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
     /// Dummy Site ID
     ///
@@ -22,7 +22,7 @@ class StatsV4AvailabilityStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
         network = MockNetwork()
     }
 

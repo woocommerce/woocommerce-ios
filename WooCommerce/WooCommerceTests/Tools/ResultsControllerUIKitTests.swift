@@ -11,9 +11,9 @@ import protocol Storage.StorageType
 ///
 final class ResultsControllerUIKitTests: XCTestCase {
 
-    /// Mockup StorageManager
+    /// Mock StorageManager
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
     /// Mockup TableView
     ///
@@ -31,7 +31,7 @@ final class ResultsControllerUIKitTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
 
         resultsController = {
             let viewStorage = storageManager.viewStorage

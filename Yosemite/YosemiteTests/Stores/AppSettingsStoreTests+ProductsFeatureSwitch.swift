@@ -9,9 +9,9 @@ final class AppSettingsStoreTests_ProductsFeatureSwitch: XCTestCase {
     ///
     private var dispatcher: Dispatcher!
 
-    /// Mockup Storage: InMemory
+    /// Mock Storage: InMemory
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
     /// Mockup File Storage: Load data in memory
     ///
@@ -36,7 +36,7 @@ final class AppSettingsStoreTests_ProductsFeatureSwitch: XCTestCase {
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
         fileStorage = MockInMemoryStorage()
         subject = AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: fileStorage)
     }

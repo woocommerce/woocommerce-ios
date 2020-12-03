@@ -186,14 +186,14 @@
 		B52E0030211A439E00700FDE /* Account+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E002F211A439E00700FDE /* Account+ReadOnlyType.swift */; };
 		B52E0032211A440D00700FDE /* Order+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E0031211A440D00700FDE /* Order+ReadOnlyType.swift */; };
 		B52E0034211A449600700FDE /* Site+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E0033211A449600700FDE /* Site+ReadOnlyType.swift */; };
-		B53A56A0211245E0000776C9 /* MockupStorage+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53A569F211245E0000776C9 /* MockupStorage+Sample.swift */; };
+		B53A56A0211245E0000776C9 /* MockStorageManager+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53A569F211245E0000776C9 /* MockStorageManager+Sample.swift */; };
 		B53D89E520E6C22B00F90866 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53D89E420E6C22B00F90866 /* Model.swift */; };
 		B546CCF22093636A007CDA5F /* Yosemite.h in Headers */ = {isa = PBXBuildFile; fileRef = B546CCF12093636A007CDA5F /* Yosemite.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B54EAF2121188C470029C35E /* EntityListenerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B54EAF2021188C470029C35E /* EntityListenerTests.swift */; };
 		B5631ECD2114DF8C008D3535 /* EntityListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5631ECC2114DF8C008D3535 /* EntityListener.swift */; };
 		B56C1EBE20EABD2B00D749F9 /* ResultsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C1EBD20EABD2B00D749F9 /* ResultsController.swift */; };
 		B56C1EC220EAE2E500D749F9 /* ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C1EC120EAE2E500D749F9 /* ReadOnlyConvertible.swift */; };
-		B5A01CA120D19C4700E3207E /* MockupStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A01CA020D19C4700E3207E /* MockupStorage.swift */; };
+		B5A01CA120D19C4700E3207E /* MockStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A01CA020D19C4700E3207E /* MockStorageManager.swift */; };
 		B5B19DE020E6A45900899568 /* Storage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5B19DDF20E6A45900899568 /* Storage.framework */; };
 		B5B19DE220E6A45E00899568 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5B19DE120E6A45E00899568 /* Networking.framework */; };
 		B5B5C797208E49B600642956 /* Action+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B5C796208E49B600642956 /* Action+Internal.swift */; };
@@ -446,14 +446,14 @@
 		B52E002F211A439E00700FDE /* Account+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Account+ReadOnlyType.swift"; sourceTree = "<group>"; };
 		B52E0031211A440D00700FDE /* Order+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+ReadOnlyType.swift"; sourceTree = "<group>"; };
 		B52E0033211A449600700FDE /* Site+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Site+ReadOnlyType.swift"; sourceTree = "<group>"; };
-		B53A569F211245E0000776C9 /* MockupStorage+Sample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockupStorage+Sample.swift"; sourceTree = "<group>"; };
+		B53A569F211245E0000776C9 /* MockStorageManager+Sample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockStorageManager+Sample.swift"; sourceTree = "<group>"; };
 		B53D89E420E6C22B00F90866 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Model.swift; path = Yosemite/Model/Model.swift; sourceTree = SOURCE_ROOT; };
 		B546CCF12093636A007CDA5F /* Yosemite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Yosemite.h; sourceTree = "<group>"; };
 		B54EAF2021188C470029C35E /* EntityListenerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityListenerTests.swift; sourceTree = "<group>"; };
 		B5631ECC2114DF8C008D3535 /* EntityListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityListener.swift; sourceTree = "<group>"; };
 		B56C1EBD20EABD2B00D749F9 /* ResultsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsController.swift; sourceTree = "<group>"; };
 		B56C1EC120EAE2E500D749F9 /* ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadOnlyConvertible.swift; sourceTree = "<group>"; };
-		B5A01CA020D19C4700E3207E /* MockupStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockupStorage.swift; sourceTree = "<group>"; };
+		B5A01CA020D19C4700E3207E /* MockStorageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockStorageManager.swift; sourceTree = "<group>"; };
 		B5B19DDF20E6A45900899568 /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5B19DE120E6A45E00899568 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5B5C796208E49B600642956 /* Action+Internal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Action+Internal.swift"; sourceTree = "<group>"; };
@@ -1121,8 +1121,8 @@
 				02FF056E23E04F320058E6E7 /* MockMediaExportService.swift */,
 				02FF056C23DEDCB90058E6E7 /* MockImageSourceWriter.swift */,
 				B5C9DE212087FF20006B910A /* MockupSite.swift */,
-				B5A01CA020D19C4700E3207E /* MockupStorage.swift */,
-				B53A569F211245E0000776C9 /* MockupStorage+Sample.swift */,
+				B5A01CA020D19C4700E3207E /* MockStorageManager.swift */,
+				B53A569F211245E0000776C9 /* MockStorageManager+Sample.swift */,
 				0202B6962387AFBF00F3EBE0 /* MockInMemoryStorage.swift */,
 				020220E32396969E00290165 /* MockProduct.swift */,
 				020C907C24C729D6001E2BEB /* MockProductVariation.swift */,
@@ -1559,14 +1559,14 @@
 				45AB8B1E24AB363D00B5B36E /* ProductTagStoreTests.swift in Sources */,
 				B5C9DE222087FF20006B910A /* DispatcherTests.swift in Sources */,
 				02E7FFD92562234F00C53030 /* MockShippingLabelRemote.swift in Sources */,
-				B53A56A0211245E0000776C9 /* MockupStorage+Sample.swift in Sources */,
+				B53A56A0211245E0000776C9 /* MockStorageManager+Sample.swift in Sources */,
 				453305FB245AEDCB00264E50 /* SitePostStoreTests.swift in Sources */,
 				020220E42396969E00290165 /* MockProduct.swift in Sources */,
 				572F2B8D247312E4005A5F74 /* StorageManagerConcurrencyTests.swift in Sources */,
 				744914F7224AD2AF00546DE4 /* ProductStoreTests.swift in Sources */,
 				0218B4F2242E09E80083A847 /* MediaTypeTests.swift in Sources */,
 				578CE78C2475E7A500492EBF /* MockNotificationsRemote.swift in Sources */,
-				B5A01CA120D19C4700E3207E /* MockupStorage.swift in Sources */,
+				B5A01CA120D19C4700E3207E /* MockStorageManager.swift in Sources */,
 				578CE7922475EC9200492EBF /* MockProductsRemote.swift in Sources */,
 				7455263022305F88003F8932 /* OrderStatusStoreTests.swift in Sources */,
 				B5C9DE242087FF20006B910A /* StoreTests.swift in Sources */,

@@ -8,7 +8,7 @@ import XCTest
 class StoreTests: XCTestCase {
 
     private let dispatcher = Dispatcher()
-    private let storageManager = MockupStorageManager()
+    private let storageManager = MockStorageManager()
     private let network = MockNetwork()
     private var accountStore: MockupAccountStore!
     private var siteStore: MockupSiteStore!

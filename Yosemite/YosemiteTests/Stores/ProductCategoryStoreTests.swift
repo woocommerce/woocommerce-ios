@@ -11,9 +11,9 @@ final class ProductCategoryStoreTests: XCTestCase {
     ///
     private var network: MockNetwork!
 
-    /// Mockup Storage: InMemory
+    /// Mock Storage: InMemory
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
     /// Convenience Property: Returns the StorageType associated with the main thread.
     ///
@@ -44,7 +44,7 @@ final class ProductCategoryStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         network = MockNetwork(useResponseQueue: true)
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
         store = ProductCategoryStore(dispatcher: Dispatcher(),
                                      storageManager: storageManager,
                                      network: network)

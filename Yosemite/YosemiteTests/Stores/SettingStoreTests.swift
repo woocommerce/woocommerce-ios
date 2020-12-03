@@ -14,7 +14,7 @@ class SettingStoreTests: XCTestCase {
 
     /// Mockup Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
     /// Mockup Storage: InMemory
     ///
@@ -35,7 +35,7 @@ class SettingStoreTests: XCTestCase {
         super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        network = MockNetwork()
     }
 
 

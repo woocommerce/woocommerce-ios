@@ -7,7 +7,7 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = MockupNetwork()
+    let network = MockNetwork()
 
     /// Dummy Site ID
     ///

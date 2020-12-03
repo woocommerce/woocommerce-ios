@@ -18,7 +18,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Mockup Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
     /// Convenience Property: Returns the StorageType associated with the main thread.
     ///
@@ -54,7 +54,7 @@ final class OrderStoreTests: XCTestCase {
         super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        network = MockNetwork()
     }
 
     // MARK: - OrderAction.synchronizeOrders

@@ -17,7 +17,7 @@ final class SitePostStoreTests: XCTestCase {
 
     /// Mockup Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
 
     /// Dummy Site ID
@@ -30,7 +30,7 @@ final class SitePostStoreTests: XCTestCase {
         super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        network = MockNetwork()
     }
 
     /// Verifies that SitePostAction.getSitePostPassword returns the expected result.

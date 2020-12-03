@@ -17,7 +17,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
 
     /// Mockup Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
     /// Testing SiteID
     ///
@@ -37,7 +37,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
         super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        network = MockNetwork()
     }
 
     override func tearDown() {

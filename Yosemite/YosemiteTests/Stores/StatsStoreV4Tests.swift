@@ -13,7 +13,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Mockup Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
     /// Mockup Storage: InMemory
     ///
@@ -34,7 +34,7 @@ final class StatsStoreV4Tests: XCTestCase {
         super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        network = MockNetwork()
     }
 
     // MARK: - StatsActionV4.retrieveStats

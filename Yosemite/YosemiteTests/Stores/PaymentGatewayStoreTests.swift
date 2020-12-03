@@ -19,7 +19,7 @@ final class PaymentGatewayStoreTests: XCTestCase {
 
     /// Mockup Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
     /// Convenience Property: Returns the StorageType associated with the main thread.
     ///
@@ -35,7 +35,7 @@ final class PaymentGatewayStoreTests: XCTestCase {
         super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockupStorageManager()
-        network = MockupNetwork(useResponseQueue: true)
+        network = MockNetwork(useResponseQueue: true)
     }
 
     func test_synchronize_gateways_correctly_persists_payment_gateways() throws {

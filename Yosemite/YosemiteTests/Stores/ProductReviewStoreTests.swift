@@ -19,7 +19,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Mockup Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
     /// Store
     ///
@@ -57,7 +57,7 @@ final class ProductReviewStoreTests: XCTestCase {
         super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        network = MockNetwork()
         store = ProductReviewStore(dispatcher: dispatcher,
                                    storageManager: storageManager,
                                    network: network)

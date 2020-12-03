@@ -18,7 +18,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
 
     /// Mockup Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
     /// Testing SiteID
     ///
@@ -38,7 +38,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
         super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        network = MockNetwork()
     }
 
     // MARK: - ProductAction.synchronizeProducts

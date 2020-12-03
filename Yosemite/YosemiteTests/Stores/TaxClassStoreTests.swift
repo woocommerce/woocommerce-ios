@@ -18,7 +18,7 @@ final class TaxClassStoreTests: XCTestCase {
 
     /// Mockup Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
     /// Store
     ///
@@ -40,7 +40,7 @@ final class TaxClassStoreTests: XCTestCase {
         super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        network = MockNetwork()
         store = TaxClassStore(dispatcher: dispatcher,
                                 storageManager: storageManager,
                                 network: network)

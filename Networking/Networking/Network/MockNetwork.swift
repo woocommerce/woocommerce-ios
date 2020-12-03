@@ -4,7 +4,7 @@ import Alamofire
 
 /// Network Mockup: Allows us to simulate HTTP Responses.
 ///
-class MockupNetwork: Network {
+class MockNetwork: Network {
 
     /// Should this instance use the responseQueue or responseMap
     ///
@@ -91,7 +91,7 @@ class MockupNetwork: Network {
 
 // MARK: - Public Methods
 //
-extension MockupNetwork {
+extension MockNetwork {
 
     /// Whenever a request is enqueued, we'll return the specified JSON Encoded file, whenever the Request's URL suffix matches with
     /// the specified one.
@@ -121,7 +121,7 @@ extension MockupNetwork {
 
 // MARK: - Private Helpers
 //
-private extension MockupNetwork {
+private extension MockNetwork {
 
     /// Adds the URL suffix and response JSON Filename to the response queue
     ///

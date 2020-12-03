@@ -9,7 +9,7 @@ import XCTest
 final class ProductCategoryStoreTests: XCTestCase {
     /// Mockup Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
     /// Mockup Storage: InMemory
     ///
@@ -43,7 +43,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        network = MockupNetwork(useResponseQueue: true)
+        network = MockNetwork(useResponseQueue: true)
         storageManager = MockupStorageManager()
         store = ProductCategoryStore(dispatcher: Dispatcher(),
                                      storageManager: storageManager,

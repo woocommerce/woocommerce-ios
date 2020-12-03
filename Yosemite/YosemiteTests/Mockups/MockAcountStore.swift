@@ -4,24 +4,24 @@ import Yosemite
 
 // MARK: - Represents an Account Action.
 //
-enum MockupAccountAction: Action {
+enum MockAccountAction: Action {
     case authenticate
     case deauthenticate
 }
 
 
-// MARK: - Account Mockup Store.
+// MARK: - Account Mock Store.
 //
-class MockupAccountStore: Store {
+class MockAccountStore: Store {
 
-    var receivedActions = [MockupAccountAction]()
+    var receivedActions = [MockAccountAction]()
 
     override func registerSupportedActions(in dispatcher: Dispatcher) {
-        dispatcher.register(processor: self, for: MockupAccountAction.self)
+        dispatcher.register(processor: self, for: MockAccountAction.self)
     }
 
     override func onAction(_ action: Action) {
-        guard let accountAction = action as? MockupAccountAction else {
+        guard let accountAction = action as? MockAccountAction else {
             fatalError()
         }
 

@@ -34,7 +34,7 @@ class DispatcherTests: XCTestCase {
         dispatcher.dispatch(SiteAction.refreshSites)
         XCTAssertEqual(processor.receivedActions.count, 1)
 
-        dispatcher.dispatch(MockupAccountAction.authenticate)
+        dispatcher.dispatch(MockAccountAction.authenticate)
         XCTAssertEqual(processor.receivedActions.count, 1)
     }
 
@@ -62,7 +62,7 @@ class DispatcherTests: XCTestCase {
 
         dispatcher.unregister(processor: processor)
         dispatcher.dispatch(SiteAction.refreshSites)
-        dispatcher.dispatch(MockupAccountAction.authenticate)
+        dispatcher.dispatch(MockAccountAction.authenticate)
         XCTAssertEqual(processor.receivedActions.count, 1)
     }
 

@@ -1066,7 +1066,7 @@
 				022F00C324728AFB008CD97F /* PListStorage */,
 				B5BC71DA21139CF2005CF5AA /* Responses */,
 				B5BC736C20D1AB3500B5B6FA /* Settings */,
-				B5C9DE1D2087FF20006B910A /* Mockups */,
+				B5C9DE1D2087FF20006B910A /* Mocks */,
 				B5C9DE192087FF20006B910A /* Base */,
 				0225512222FC310200D98613 /* Model */,
 				B5BC736620D1AA8F00B5B6FA /* Stores */,
@@ -1109,7 +1109,7 @@
 			path = Base;
 			sourceTree = "<group>";
 		};
-		B5C9DE1D2087FF20006B910A /* Mockups */ = {
+		B5C9DE1D2087FF20006B910A /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
 				578CE7892475E78C00492EBF /* Networking */,
@@ -1129,7 +1129,7 @@
 				0248B36A2459127200A271A4 /* MockNetwork+Path.swift */,
 				02A098232480D0D8002F8C7A /* MockCrashLogger.swift */,
 			);
-			path = Mockups;
+			path = Mocks;
 			sourceTree = "<group>";
 		};
 		B5DC3CAF20D1B8660063AC41 /* Actions */ = {

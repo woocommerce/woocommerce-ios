@@ -130,18 +130,17 @@ private extension ProductVariationStore {
             }
         }
     }
-    
+
     /// Synchronizes the variations in a specified Order that have not been fetched yet.
     ///
     func requestMissingVariations(for order: Order, onCompletion: @escaping (Error?) -> Void) {
         let orderItems = order.items
-        
+
         let storage = storageManager.viewStorage
         let orderItemsWithMissingVariations = orderItems
             .filter { $0.variationID != 0 }
-            .filter { storage.loadProductVariation(siteID: order.siteID, productVariationID: $0.variationID) == nil
-            }
-        
+            .filter { storage.loadProductVariation(siteID: order.siteID, productVariationID: $0.variationID) == nil }
+
         var results = [Result<ProductVariation, Error>]()
         let group = DispatchGroup()
         orderItemsWithMissingVariations.forEach { orderItem in
@@ -166,7 +165,7 @@ private extension ProductVariationStore {
         }
 
         group.notify(queue: .main) {
-            guard results.filter({ $0.failure != nil }).isEmpty else {
+            guard results.contains(where: { $0.failure != nil }) == false else {
                 onCompletion(ProductVariationLoadError.requestMissingVariations)
                 return
             }

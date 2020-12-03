@@ -354,7 +354,7 @@ extension OrderDetailsViewModel {
     func syncProductVariations(onCompletion: ((Error?) -> ())? = nil) {
         let action = ProductVariationAction.requestMissingVariations(for: order) { error in
             if let error = error {
-                DDLogError("⛔️ Error synchronizing a missing variation in an Order: \(error)")
+                DDLogError("⛔️ Error synchronizing missing variations in an Order: \(error)")
                 onCompletion?(error)
                 return
             }

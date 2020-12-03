@@ -25,12 +25,7 @@ class AuthenticationManager: Authentication {
     /// Initializes the WordPress Authenticator.
     ///
     func initialize() {
-        let isSignInWithAppleEnabled: Bool
-        if #available(iOS 13.0, *) {
-            isSignInWithAppleEnabled = true
-        } else {
-            isSignInWithAppleEnabled = false
-        }
+        let isSignInWithAppleEnabled = true
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,

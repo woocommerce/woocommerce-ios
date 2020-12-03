@@ -6,7 +6,6 @@ import Combine
 @testable import Yosemite
 import Storage
 
-@available(iOS 13.0, *)
 final class FetchResultSnapshotsProviderTests: XCTestCase {
 
     private var storageManager: MockupStorageManager!
@@ -413,7 +412,6 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
     }
 }
 
-@available(iOS 13.0, *)
 private extension FetchResultSnapshotsProviderTests {
     @discardableResult
     func insertAccount(displayName: String, username: String) -> StorageAccount {

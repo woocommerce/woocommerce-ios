@@ -140,22 +140,12 @@ final class BehaviorSubjectTests: XCTestCase {
     // MARK: - Proof of Compatibility with Combine's CurrentValueSubject
 
     func test_Combine_CurrentValueSubject_keeps_the_initial_value() throws {
-        guard #available(iOS 13.0, *) else {
-            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
-            return
-        }
-
         let subject = CurrentValueSubject<String, Error>("dolorem")
 
         XCTAssertEqual(subject.value, "dolorem")
     }
 
     func test_Combine_CurrentValueSubject_keeps_the_last_emitted_value() throws {
-        guard #available(iOS 13.0, *) else {
-            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
-            return
-        }
-
         // Given
         let subject = CurrentValueSubject<String, Error>("dolorem")
 
@@ -167,11 +157,6 @@ final class BehaviorSubjectTests: XCTestCase {
     }
 
     func test_Combine_CurrentValueSubject_will_emit_the_initial_value_to_an_observer() throws {
-        guard #available(iOS 13.0, *) else {
-            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
-            return
-        }
-
         // Given
         let subject = CurrentValueSubject<String, Error>("dolorem")
         var disposeBag = Set<AnyCancellable>()
@@ -189,11 +174,6 @@ final class BehaviorSubjectTests: XCTestCase {
     }
 
     func test_Combine_CurrentValueSubject_will_emit_the_last_value_before_the_subscription() throws {
-        guard #available(iOS 13.0, *) else {
-            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
-            return
-        }
-
         // Given
         let subject = CurrentValueSubject<String, Error>("dolorem")
         var disposeBag = Set<AnyCancellable>()
@@ -215,11 +195,6 @@ final class BehaviorSubjectTests: XCTestCase {
     }
 
     func test_Combine_CurrentValueSubject_emits_values_to_an_observer() throws {
-        guard #available(iOS 13.0, *) else {
-            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
-            return
-        }
-
         // Given
         let subject = CurrentValueSubject<String, Error>("consequatur")
         var disposeBag = Set<AnyCancellable>()
@@ -239,11 +214,6 @@ final class BehaviorSubjectTests: XCTestCase {
     }
 
     func test_Combine_CurrentValueSubject_continuously_emits_values_to_an_observer() throws {
-        guard #available(iOS 13.0, *) else {
-            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
-            return
-        }
-
         // Given
         let subject = CurrentValueSubject<String, Error>("exercitationem")
         var disposeBag = Set<AnyCancellable>()
@@ -265,11 +235,6 @@ final class BehaviorSubjectTests: XCTestCase {
     }
 
     func test_Combine_CurrentValueSubject_emits_values_to_all_observers() throws {
-        guard #available(iOS 13.0, *) else {
-            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
-            return
-        }
-
         // Given
         let subject = CurrentValueSubject<String, Error>("provident")
         var disposeBag = Set<AnyCancellable>()
@@ -300,11 +265,6 @@ final class BehaviorSubjectTests: XCTestCase {
     }
 
     func test_Combine_CurrentValueSubject_does_not_emit_values_to_cancelled_observers() throws {
-        guard #available(iOS 13.0, *) else {
-            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
-            return
-        }
-
         // Given
         // "dicta" will be emitted because it is the initial value
         let subject = CurrentValueSubject<String, Error>("dicta")

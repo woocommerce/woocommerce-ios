@@ -66,11 +66,7 @@ final class RefundDetailsDataSource: NSObject {
     ///
     private var refundMethod: String {
         guard refund.isAutomated == true else {
-            let refundMethodTemplate = NSLocalizedString("Refunded manually via %@",
-                                                         comment: "It reads, 'Refunded manually via <payment method>'")
-            let refundMethodText = String.localizedStringWithFormat(refundMethodTemplate, order.paymentMethodTitle)
-
-            return refundMethodText
+            return NSLocalizedString("Refunded manually", comment: "Title of the refund detail cell when the refund was done manually.")
         }
 
         let refundMethodTemplate = NSLocalizedString("Refunded via %@",

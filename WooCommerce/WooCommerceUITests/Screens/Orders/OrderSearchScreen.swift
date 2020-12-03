@@ -17,14 +17,7 @@ final class OrderSearchScreen: BaseScreen {
     }
 
     init() {
-
-//        if #available(iOS 13.0, *) {
-//            searchField = XCUIApplication().searchFields[ElementStringIDs.searchField]
-//        }
-//        else {
-            searchField = XCUIApplication().otherElements[ElementStringIDs.searchField]
-//        }
-
+        searchField = XCUIApplication().otherElements[ElementStringIDs.searchField]
         cancelButton = XCUIApplication().buttons[ElementStringIDs.cancelButton]
         super.init(element: cancelButton)
 

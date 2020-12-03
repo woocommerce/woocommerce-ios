@@ -207,7 +207,7 @@
 		B5C9DE182087FF0E006B910A /* Assert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE142087FF0E006B910A /* Assert.swift */; };
 		B5C9DE222087FF20006B910A /* DispatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE1A2087FF20006B910A /* DispatcherTests.swift */; };
 		B5C9DE242087FF20006B910A /* StoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE1C2087FF20006B910A /* StoreTests.swift */; };
-		B5C9DE252087FF20006B910A /* MockProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE1E2087FF20006B910A /* MockProcessor.swift */; };
+		B5C9DE252087FF20006B910A /* MockActionsProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE1E2087FF20006B910A /* MockActionsProcessor.swift */; };
 		B5C9DE272087FF20006B910A /* MockAcountStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE202087FF20006B910A /* MockAcountStore.swift */; };
 		B5C9DE282087FF20006B910A /* MockSiteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C9DE212087FF20006B910A /* MockSiteStore.swift */; };
 		B5DC3CB120D1B8720063AC41 /* AccountAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DC3CB020D1B8720063AC41 /* AccountAction.swift */; };
@@ -470,7 +470,7 @@
 		B5C9DE142087FF0E006B910A /* Assert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Assert.swift; sourceTree = "<group>"; };
 		B5C9DE1A2087FF20006B910A /* DispatcherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatcherTests.swift; sourceTree = "<group>"; };
 		B5C9DE1C2087FF20006B910A /* StoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreTests.swift; sourceTree = "<group>"; };
-		B5C9DE1E2087FF20006B910A /* MockProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockProcessor.swift; sourceTree = "<group>"; };
+		B5C9DE1E2087FF20006B910A /* MockActionsProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockActionsProcessor.swift; sourceTree = "<group>"; };
 		B5C9DE202087FF20006B910A /* MockAcountStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAcountStore.swift; sourceTree = "<group>"; };
 		B5C9DE212087FF20006B910A /* MockSiteStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockSiteStore.swift; sourceTree = "<group>"; };
 		B5DC3CB020D1B8720063AC41 /* AccountAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountAction.swift; sourceTree = "<group>"; };
@@ -1115,7 +1115,7 @@
 				578CE7892475E78C00492EBF /* Networking */,
 				D8BD6A4B229D07C8007CAD6C /* custom-shipment-provider.plist */,
 				D87F615F2265B2400031A13B /* shipment-provider.plist */,
-				B5C9DE1E2087FF20006B910A /* MockProcessor.swift */,
+				B5C9DE1E2087FF20006B910A /* MockActionsProcessor.swift */,
 				B5C9DE202087FF20006B910A /* MockAcountStore.swift */,
 				02FF055523D984310058E6E7 /* MockFileManager.swift */,
 				02FF056E23E04F320058E6E7 /* MockMediaExportService.swift */,
@@ -1572,7 +1572,7 @@
 				B5C9DE242087FF20006B910A /* StoreTests.swift in Sources */,
 				02FF055C23D9846A0058E6E7 /* MediaFileManagerTests.swift in Sources */,
 				0248B36B2459127200A271A4 /* MockNetwork+Path.swift in Sources */,
-				B5C9DE252087FF20006B910A /* MockProcessor.swift in Sources */,
+				B5C9DE252087FF20006B910A /* MockActionsProcessor.swift in Sources */,
 				D8C11A5A22DFC21600D4A88D /* StatsStoreV4Tests.swift in Sources */,
 				261CF2C7255C445A0090D8D3 /* PaymentGatewayStoreTests.swift in Sources */,
 				02124DB02431C18700980D74 /* Media+ProductImageTests.swift in Sources */,

@@ -7,20 +7,20 @@ import Yosemite
 class DispatcherTests: XCTestCase {
 
     var dispatcher: Dispatcher!
-    var processor: MockProcessor!
+    var processor: MockActionsProcessor!
 
     override func setUp() {
         super.setUp()
 
         dispatcher = Dispatcher()
-        processor = MockProcessor()
+        processor = MockActionsProcessor()
     }
 
 
     /// Verifies that multiple instances of the same processor get properly registered.
     ///
     func testProcessorEffectivelyGetsRegistered() {
-        let processor = MockProcessor()
+        let processor = MockActionsProcessor()
         dispatcher.register(processor: processor, for: SiteAction.self)
         XCTAssertTrue(dispatcher.isProcessorRegistered(processor, for: SiteAction.self))
     }

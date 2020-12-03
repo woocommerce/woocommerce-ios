@@ -21,7 +21,7 @@ final class SettingTitleAndValueTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         applyDefaultBackgroundStyle()
-
+        enableMultipleLines()
         apply(style: .default)
     }
 }
@@ -57,5 +57,12 @@ extension SettingTitleAndValueTableViewCell {
             titleLabel.applyHeadlineStyle()
             valueLabel.applyHeadlineStyle()
         }
+    }
+
+    /// Needed specially when dealing with big accessibility traits
+    ///
+    func enableMultipleLines() {
+        titleLabel.numberOfLines = 0
+        valueLabel.numberOfLines = 0
     }
 }

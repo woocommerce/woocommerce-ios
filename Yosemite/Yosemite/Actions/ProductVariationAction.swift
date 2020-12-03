@@ -17,4 +17,8 @@ public enum ProductVariationAction: Action {
     /// Updates a specified ProductVariation.
     ///
     case updateProductVariation(productVariation: ProductVariation, onCompletion: (Result<ProductVariation, ProductUpdateError>) -> Void)
+
+    /// Requests the variations in a specified Order that have not been fetched.
+    ///
+    case requestMissingVariations(for: Order, onCompletion: (Error?) -> Void)
 }

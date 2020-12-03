@@ -14,7 +14,6 @@ final class IssueRefundViewController: UIViewController {
     @IBOutlet private var nextButton: UIButton!
     @IBOutlet private var selectAllButton: UIButton!
 
-
     private let imageService: ImageService
 
     private let viewModel: IssueRefundViewModel

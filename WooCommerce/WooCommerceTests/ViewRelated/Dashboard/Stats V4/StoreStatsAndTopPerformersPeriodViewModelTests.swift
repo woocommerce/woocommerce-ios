@@ -9,13 +9,13 @@ import Yosemite
 final class StoreStatsAndTopPerformersPeriodViewModelTests: XCTestCase {
 
     private var storesManager: MockupStoresManager!
-    private var analyticsProvider: MockupAnalyticsProvider!
+    private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
     override func setUp() {
         super.setUp()
         storesManager = MockupStoresManager(sessionManager: SessionManager.testingInstance)
-        analyticsProvider = MockupAnalyticsProvider()
+        analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 

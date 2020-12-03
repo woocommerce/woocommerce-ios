@@ -7,13 +7,13 @@ import Yosemite
 
 final class ProductsTopBannerFactoryTests: XCTestCase {
 
-    private var analyticsProvider: MockupAnalyticsProvider!
+    private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
     private var storesManager: MockupStoresManager!
 
     override func setUp() {
         super.setUp()
-        analyticsProvider = MockupAnalyticsProvider()
+        analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         storesManager = MockupStoresManager(sessionManager: .makeForTesting())
     }

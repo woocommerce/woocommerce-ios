@@ -22,7 +22,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
     /// Mockup: Stores Manager
     ///
-    private var storesManager: MockupStoresManager!
+    private var storesManager: MockStoresManager!
 
     /// Mockup: Support Manager
     ///
@@ -43,7 +43,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         defaults.removePersistentDomain(forName: Sample.defaultSuiteName)
 
         // Most of the test cases expect a nil site ID, otherwise the dispatched actions would not match.
-        storesManager = MockupStoresManager(sessionManager: .testingInstance)
+        storesManager = MockStoresManager(sessionManager: .testingInstance)
         storesManager.sessionManager.setStoreId(nil)
 
         supportManager = MockupSupportManager()

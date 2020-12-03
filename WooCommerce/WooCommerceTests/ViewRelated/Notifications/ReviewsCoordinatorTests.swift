@@ -9,7 +9,7 @@ import Yosemite
 ///
 final class ReviewsCoordinatorTests: XCTestCase {
     private var pushNotificationsManager: MockPushNotificationsManager!
-    private var storesManager: MockupStoresManager!
+    private var storesManager: MockStoresManager!
     private var sessionManager: SessionManager!
     private var noticePresenter: MockNoticePresenter!
     private var switchStoreUseCase: MockSwitchStoreUseCase!
@@ -20,7 +20,7 @@ final class ReviewsCoordinatorTests: XCTestCase {
         pushNotificationsManager = MockPushNotificationsManager()
         sessionManager = SessionManager.testingInstance
 
-        storesManager = MockupStoresManager(sessionManager: sessionManager)
+        storesManager = MockStoresManager(sessionManager: sessionManager)
         // Reset `receivedActions`
         storesManager.reset()
 

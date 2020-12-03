@@ -3,9 +3,9 @@ import Yosemite
 @testable import WooCommerce
 
 
-/// MockupStoresManager: MockupStoresManager Mockup!
+/// MockStoresManager: StoresManager Mockup!
 ///
-final class MockupStoresManager: DefaultStoresManager {
+final class MockStoresManager: DefaultStoresManager {
 
     /// Contains all of the dispatched Actions
     ///
@@ -45,7 +45,7 @@ final class MockupStoresManager: DefaultStoresManager {
 
 // MARK: - Mocking
 
-extension MockupStoresManager {
+extension MockStoresManager {
     /// When an action of type `actionType` is received, then call the given `callback`.
     ///
     /// Example usage:

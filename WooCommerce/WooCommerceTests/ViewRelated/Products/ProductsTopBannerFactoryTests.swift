@@ -9,13 +9,13 @@ final class ProductsTopBannerFactoryTests: XCTestCase {
 
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
-    private var storesManager: MockupStoresManager!
+    private var storesManager: MockStoresManager!
 
     override func setUp() {
         super.setUp()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        storesManager = MockupStoresManager(sessionManager: .makeForTesting())
+        storesManager = MockStoresManager(sessionManager: .makeForTesting())
     }
 
     override func tearDown() {

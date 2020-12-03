@@ -142,22 +142,35 @@ private extension ProductVariationStore {
             .filter { storage.loadProductVariation(siteID: order.siteID, productVariationID: $0.variationID) == nil
             }
         
+        var results = [Result<ProductVariation, Error>]()
+        let group = DispatchGroup()
         orderItemsWithMissingVariations.forEach { orderItem in
+            group.enter()
             remote.loadProductVariation(for: order.siteID,
                                         productID: orderItem.productID,
                                         variationID: orderItem.variationID) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case .failure(let error):
-                    onCompletion(error)
+                    results.append(.failure(error))
+                    group.leave()
                 case .success(let productVariation):
                     self.upsertStoredProductVariationsInBackground(readOnlyProductVariations: [productVariation],
                                                                    siteID: order.siteID,
                                                                    productID: orderItem.productID) {
-                        onCompletion(nil)
+                        results.append(.success(productVariation))
+                        group.leave()
                     }
                 }
             }
+        }
+
+        group.notify(queue: .main) {
+            guard results.filter({ $0.failure != nil }).isEmpty else {
+                onCompletion(ProductVariationLoadError.requestMissingVariations)
+                return
+            }
+            onCompletion(nil)
         }
     }
 }
@@ -280,4 +293,5 @@ private extension ProductVariationStore {
 public enum ProductVariationLoadError: Error, Equatable {
     case notFoundInStorage
     case unexpected
+    case requestMissingVariations
 }

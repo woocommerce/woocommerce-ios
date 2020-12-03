@@ -11,11 +11,11 @@ class StoreTests: XCTestCase {
     private let storageManager = MockStorageManager()
     private let network = MockNetwork()
     private var accountStore: MockAccountStore!
-    private var siteStore: MockupSiteStore!
+    private var siteStore: MockSiteStore!
 
     override func setUp() {
         accountStore = MockAccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        siteStore = MockupSiteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        siteStore = MockSiteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
 

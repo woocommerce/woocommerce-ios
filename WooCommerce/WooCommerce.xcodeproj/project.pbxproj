@@ -49,6 +49,9 @@
 		020DD49123239DD6005822B1 /* PaginatedListViewControllerStateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020DD49023239DD6005822B1 /* PaginatedListViewControllerStateCoordinator.swift */; };
 		020F41E523163C0100776C4D /* TopBannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020F41E323163C0100776C4D /* TopBannerViewModel.swift */; };
 		020F41E623163C0100776C4D /* TopBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020F41E423163C0100776C4D /* TopBannerView.swift */; };
+		0211254125778BDF0075AD2A /* ShippingLabelDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0211253F25778BDF0075AD2A /* ShippingLabelDetailsViewController.swift */; };
+		0211254225778BDF0075AD2A /* ShippingLabelDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0211254025778BDF0075AD2A /* ShippingLabelDetailsViewController.xib */; };
+		021125482577CC650075AD2A /* ShippingLabelDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021125472577CC650075AD2A /* ShippingLabelDetailsViewModel.swift */; };
 		0212275C244972660042161F /* BottomSheetListSelectorSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0212275B244972660042161F /* BottomSheetListSelectorSectionHeaderView.swift */; };
 		0212275E2449728A0042161F /* BottomSheetListSelectorSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0212275D2449728A0042161F /* BottomSheetListSelectorSectionHeaderView.xib */; };
 		0212276124498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0212276024498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift */; };
@@ -1091,6 +1094,9 @@
 		020DD49023239DD6005822B1 /* PaginatedListViewControllerStateCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListViewControllerStateCoordinator.swift; sourceTree = "<group>"; };
 		020F41E323163C0100776C4D /* TopBannerViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopBannerViewModel.swift; sourceTree = "<group>"; };
 		020F41E423163C0100776C4D /* TopBannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopBannerView.swift; sourceTree = "<group>"; };
+		0211253F25778BDF0075AD2A /* ShippingLabelDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelDetailsViewController.swift; sourceTree = "<group>"; };
+		0211254025778BDF0075AD2A /* ShippingLabelDetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShippingLabelDetailsViewController.xib; sourceTree = "<group>"; };
+		021125472577CC650075AD2A /* ShippingLabelDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelDetailsViewModel.swift; sourceTree = "<group>"; };
 		0212275B244972660042161F /* BottomSheetListSelectorSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetListSelectorSectionHeaderView.swift; sourceTree = "<group>"; };
 		0212275D2449728A0042161F /* BottomSheetListSelectorSectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BottomSheetListSelectorSectionHeaderView.xib; sourceTree = "<group>"; };
 		0212276024498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormBottomSheetListSelectorCommand.swift; sourceTree = "<group>"; };
@@ -2473,6 +2479,9 @@
 			isa = PBXGroup;
 			children = (
 				02619857256B53DD00E321E9 /* AggregatedShippingLabelOrderItems.swift */,
+				0211253F25778BDF0075AD2A /* ShippingLabelDetailsViewController.swift */,
+				0211254025778BDF0075AD2A /* ShippingLabelDetailsViewController.xib */,
+				021125472577CC650075AD2A /* ShippingLabelDetailsViewModel.swift */,
 			);
 			path = "Shipping Labels";
 			sourceTree = "<group>";
@@ -5177,6 +5186,7 @@
 				B57C744C20F564B400EEFC87 /* EmptyStoresTableViewCell.xib in Resources */,
 				028296ED237D28B600E84012 /* TextViewViewController.xib in Resources */,
 				451A04F52386F7C900E368C9 /* AddProductImageCollectionViewCell.xib in Resources */,
+				0211254225778BDF0075AD2A /* ShippingLabelDetailsViewController.xib in Resources */,
 				450C2CBB24D3127500D570DD /* ProductReviewsTableViewCell.xib in Resources */,
 				02DD81FC242CAA400060E50B /* WordPressMediaLibraryImagePickerViewController.xib in Resources */,
 				45E9A6E524DAE1EA00A600E8 /* ProductReviewsViewController.xib in Resources */,
@@ -5576,6 +5586,7 @@
 				45CDAFAE2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.swift in Sources */,
 				D85B8333222FABD1002168F3 /* StatusListTableViewCell.swift in Sources */,
 				CE22E3F72170E23C005A6BEF /* PrivacySettingsViewController.swift in Sources */,
+				021125482577CC650075AD2A /* ShippingLabelDetailsViewModel.swift in Sources */,
 				57C5FF7A25091A350074EC26 /* OrderListSyncActionUseCase.swift in Sources */,
 				B58B4AB32108F01700076FDD /* DefaultNoticePresenter.swift in Sources */,
 				4512055224655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.swift in Sources */,
@@ -5917,6 +5928,7 @@
 				02162726237963AF000208D2 /* ProductFormViewController.swift in Sources */,
 				571CDD5A250ACC470076B8CC /* UITableViewDiffableDataSource+Helpers.swift in Sources */,
 				4580BA7423F192D400B5F764 /* ProductSettingsViewController.swift in Sources */,
+				0211254125778BDF0075AD2A /* ShippingLabelDetailsViewController.swift in Sources */,
 				020DD49123239DD6005822B1 /* PaginatedListViewControllerStateCoordinator.swift in Sources */,
 				0202B6952387AD1B00F3EBE0 /* UITabBar+Order.swift in Sources */,
 				024DF31423742B7A006658FE /* AztecUnderlineFormatBarCommand.swift in Sources */,

@@ -3,9 +3,9 @@ import CoreData
 @testable import Storage
 
 
-/// MockupStorageManager: InMemory CoreData Stack.
+/// MockStorageManager: InMemory CoreData Stack.
 ///
-public class MockupStorageManager: StorageManagerType {
+public class MockStorageManager: StorageManagerType {
 
     /// DataModel Name
     ///
@@ -99,7 +99,7 @@ public class MockupStorageManager: StorageManagerType {
 
 // MARK: - Descriptors
 //
-extension MockupStorageManager {
+extension MockStorageManager {
 
     /// Returns the Application's ManagedObjectModel
     ///
@@ -124,7 +124,7 @@ extension MockupStorageManager {
 
 // MARK: - Stack URL's
 //
-extension MockupStorageManager {
+extension MockStorageManager {
 
     /// Returns the ManagedObjectModel's URL: Pick this up from the Storage bundle. OKAY?
     ///

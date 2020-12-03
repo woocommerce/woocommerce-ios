@@ -2,9 +2,9 @@ import Foundation
 import Yosemite
 
 
-// MARK: - Mockup Processor
+// MARK: - Mock ActionsProcessor
 //
-class MockupProcessor: ActionsProcessor {
+class MockActionsProcessor: ActionsProcessor {
 
     var receivedActions = [Action]()
 

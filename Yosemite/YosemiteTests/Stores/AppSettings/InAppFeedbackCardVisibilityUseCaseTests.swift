@@ -13,18 +13,18 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
     private var dateFormatter: DateFormatter!
     private var calendar: Calendar!
-    private var fileManager: MockupFileManager!
+    private var fileManager: MockFileManager!
 
     override func setUp() {
         super.setUp()
         dateFormatter = DateFormatter.Defaults.iso8601
         calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = dateFormatter.timeZone
-        fileManager = MockupFileManager()
+        fileManager = MockFileManager()
     }
 
     override func tearDown() {
-        fileManager = MockupFileManager()
+        fileManager = MockFileManager()
         calendar = nil
         dateFormatter = nil
         super.tearDown()

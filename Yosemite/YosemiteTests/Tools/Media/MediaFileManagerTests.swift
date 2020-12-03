@@ -31,7 +31,7 @@ final class MediaFileManagerTests: XCTestCase {
 
     func testRemovingLocalMediaAtURL() {
         do {
-            let fileManager = MockupFileManager()
+            let fileManager = MockFileManager()
             let data = Data()
             let mediaFileManager = MediaFileManager(fileManager: fileManager)
             let localURL = try mediaFileManager.createLocalMediaURL(filename: "hello", fileExtension: "txt")

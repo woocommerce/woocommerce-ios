@@ -348,7 +348,7 @@ private extension AuthenticationManager {
     /// Maps error codes emitted by WPAuthenticator to a domain error object
     enum AuthenticationError: Int, Error {
         case notWPSite = 406
-        case unkown
+        case unknown
 
         static func make(with error: Error) -> AuthenticationError {
             let error = error as NSError
@@ -357,7 +357,7 @@ private extension AuthenticationManager {
             case notWPSite.rawValue:
                 return .notWPSite
             default:
-                return .unkown
+                return .unknown
             }
         }
     }

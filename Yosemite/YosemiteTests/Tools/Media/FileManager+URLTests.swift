@@ -2,7 +2,7 @@ import XCTest
 @testable import Yosemite
 
 final class FileManager_URLTests: XCTestCase {
-    private lazy var fileManager = MockupFileManager()
+    private lazy var fileManager = MockFileManager()
 
     func testCreatingIncrementalFilenames() {
         let filename = "hello"

@@ -8,7 +8,7 @@ class AccountSettingsRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = MockupNetwork()
+    let network = MockNetwork()
 
     /// Repeat always!
     ///

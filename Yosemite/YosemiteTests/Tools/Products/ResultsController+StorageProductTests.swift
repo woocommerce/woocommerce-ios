@@ -6,7 +6,7 @@ import CoreData
 final class ResultsController_StorageProductTests: XCTestCase {
     /// InMemory Storage!
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
     private let sampleSiteID: Int64 = 134
 
@@ -16,7 +16,7 @@ final class ResultsController_StorageProductTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
     }
 
     // MARK: tests for `init` with a `ProductsSortOrder` param

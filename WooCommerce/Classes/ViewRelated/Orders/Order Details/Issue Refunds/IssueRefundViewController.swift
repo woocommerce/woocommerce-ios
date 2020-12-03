@@ -17,6 +17,14 @@ final class IssueRefundViewController: UIViewController {
 
     private let viewModel: IssueRefundViewModel
 
+    /// Closure invoked when the next button is tapped
+    ///
+    var onNextAction: ((RefundConfirmationViewModel) -> Void)?
+
+    /// Closure invoked when the the quantity button of an item is pressed
+    ///
+    var onSelectQuantityAction: ((RefundItemQuantityListSelectorCommand) -> Void)?
+
     init(order: Order,
          refunds: [Refund],
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
@@ -45,6 +53,15 @@ final class IssueRefundViewController: UIViewController {
     }
 }
 
+// MARK: External Updates
+extension IssueRefundViewController {
+    /// Updates item at the given index path with the new refund quantity.
+    ///
+    func updateRefundQuantity(quantity: Int, forItemAtIndex index: Int) {
+        viewModel.updateRefundQuantity(quantity: quantity, forItemAtIndex: index)
+    }
+}
+
 // MARK: ViewModel observation
 private extension IssueRefundViewController {
     func observeViewModel() {
@@ -65,7 +82,7 @@ private extension IssueRefundViewController {
 private extension IssueRefundViewController {
     @IBAction func nextButtonWasPressed(_ sender: Any) {
         let confirmationViewModel = viewModel.createRefundConfirmationViewModel()
-        show(RefundConfirmationViewController(viewModel: confirmationViewModel), sender: self)
+        onNextAction?(confirmationViewModel)
 
         viewModel.trackNextButtonTapped()
     }
@@ -85,14 +102,9 @@ private extension IssueRefundViewController {
                 return
         }
 
-        let command = RefundItemQuantityListSelectorCommand(maxRefundQuantity: refundQuantity, currentQuantity: currentQuantity)
-        let selectorViewController = ListSelectorViewController(command: command, tableViewStyle: .plain) { [weak self] selectedQuantity in
-            guard let selectedQuantity = selectedQuantity else {
-                return
-            }
-            self?.viewModel.updateRefundQuantity(quantity: selectedQuantity, forItemAtIndex: indexPath.row)
-        }
-        show(selectorViewController, sender: nil)
+        let command = RefundItemQuantityListSelectorCommand(maxRefundQuantity: refundQuantity, currentQuantity: currentQuantity, itemIndex: indexPath.row)
+        onSelectQuantityAction?(command)
+
         viewModel.trackQuantityButtonTapped()
     }
 }

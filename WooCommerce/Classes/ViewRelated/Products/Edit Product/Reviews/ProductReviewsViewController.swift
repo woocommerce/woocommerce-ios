@@ -42,9 +42,7 @@ final class ProductReviewsViewController: UIViewController {
 
     /// Footer "Loading More" Spinner.
     ///
-    private lazy var footerSpinnerView = {
-        return FooterSpinnerView(tableViewStyle: tableView.style)
-    }()
+    private lazy var footerSpinnerView = FooterSpinnerView()
 
     /// Main TableView.
     ///
@@ -108,6 +106,7 @@ private extension ProductReviewsViewController {
         tableView.dataSource = viewModel.dataSource
         tableView.delegate = self
         tableView.tableFooterView = footerSpinnerView
+        tableView.sectionFooterHeight = .leastNonzeroMagnitude
     }
 
     /// Setup: ResultsController

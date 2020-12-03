@@ -17,7 +17,7 @@ final class AppCoordinatorTests: XCTestCase {
         window.rootViewController = tabBarController
         window.makeKeyAndVisible()
 
-        stores = MockupStoresManager(sessionManager: .makeForTesting(authenticated: false))
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         authenticationManager = AuthenticationManager()
         authenticationManager.initialize()
     }

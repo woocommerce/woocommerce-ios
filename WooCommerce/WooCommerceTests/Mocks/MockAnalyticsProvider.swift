@@ -1,7 +1,7 @@
 import Foundation
 @testable import WooCommerce
 
-public class MockupAnalyticsProvider: AnalyticsProvider {
+public class MockAnalyticsProvider: AnalyticsProvider {
     var receivedEvents = [String]()
     var receivedProperties = [[AnyHashable: Any]]()
     var userID: String?
@@ -11,7 +11,7 @@ public class MockupAnalyticsProvider: AnalyticsProvider {
 
 // MARK: - AnalyticsProvider Conformance
 //
-public extension MockupAnalyticsProvider {
+public extension MockAnalyticsProvider {
 
     func refreshUserData() {
         userID = "aGeneratedUserGUID"

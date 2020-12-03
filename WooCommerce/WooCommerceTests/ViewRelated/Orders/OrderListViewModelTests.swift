@@ -6,7 +6,6 @@ import Combine
 
 /// Tests for `OrderListViewModel`.
 ///
-@available(iOS 13.0, *)
 final class OrderListViewModelTests: XCTestCase {
     /// The `siteID` value doesn't matter.
     private let siteID: Int64 = 1_000_000
@@ -21,7 +20,7 @@ final class OrderListViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
     }
 
     override func tearDown() {
@@ -231,7 +230,6 @@ final class OrderListViewModelTests: XCTestCase {
 
 // MARK: - Helpers
 
-@available(iOS 13.0, *)
 private extension OrderListViewModel {
     /// Returns the corresponding order IDs instances for all the given FetchResultSnapshot IDs.
     ///
@@ -252,7 +250,6 @@ private extension Array where Element == Yosemite.Order {
 
 // MARK: - Builders
 
-@available(iOS 13.0, *)
 private extension OrderListViewModelTests {
 
     /// Activate the viewModel to start fetching and then return the first

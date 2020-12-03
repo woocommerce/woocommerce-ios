@@ -32,7 +32,7 @@ At the time of writing this document, these are the subclasses of `Remote`:
 ## [`Network`](../Networking/Networking/Network/Network.swift)
 A protocol that abstracts the networking stack. 
 
-There are two implementations of this protocol: [`AlamofireNetwork`](../Networking/Networking/Network/AlamofireNetwork.swift) which manages a networking stack based on the third party library [Alamofire](https://github.com/Alamofire), and [`MockupNetwork`](../Networking/Networking/Network/MockupNetwork.swift) which is a mock networking stack that does not actually hit the network, to be used in the unit tests.
+There are two implementations of this protocol: [`AlamofireNetwork`](../Networking/Networking/Network/AlamofireNetwork.swift) which manages a networking stack based on the third party library [Alamofire](https://github.com/Alamofire), and [`MockNetwork`](../Networking/Networking/Network/MockNetwork.swift) which is a mock networking stack that does not actually hit the network, to be used in the unit tests.
 
 ## `URLRequestConvertible`
 A protocol the abstracts the actual URL requests. 
@@ -55,8 +55,8 @@ Model objects declared in `Networking` are immutable, and modelled as value type
 Model objects should implement `Comparable`.
 
 ## Unit tests
-As mentioned previously, there is an implementation of the `Network` protocol called [`MockupNetwork`](../Networking/Networking/Network/MockupNetwork.swift) used to mock network requests in the unit tests. This way we prevent the tests from hitting the actual network.
+As mentioned previously, there is an implementation of the `Network` protocol called [`MockNetwork`](../Networking/Networking/Network/MockNetwork.swift) used to mock network requests in the unit tests. This way we prevent the tests from hitting the actual network.
 
-`MockupNetwork` stubs responses (in the form of  the name of a json file) for a given endpoint. Those stubs can be either stored in a FIFO queue, used once and then removed from the queue, or stored to be reused multiple times, according to a value passed as a parameter of this class’ constructor.
+`MockNetwork` stubs responses (in the form of  the name of a json file) for a given endpoint. Those stubs can be either stored in a FIFO queue, used once and then removed from the queue, or stored to be reused multiple times, according to a value passed as a parameter of this class’ constructor.
 
-Also, `MockupNetwork` can stub an error as responde for a given endpoint.
+Also, `MockNetwork` can stub an error as responde for a given endpoint.

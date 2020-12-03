@@ -7,7 +7,7 @@ final class DashboardUIFactoryTests: XCTestCase {
     private let mockSiteID: Int64 = 1134
 
     private var dashboardUIFactory: DashboardUIFactory!
-    private var mockStoresManager: MockupStatsVersionStoresManager!
+    private var mockStoresManager: MockStatsVersionStoresManager!
 
     override func tearDown() {
         dashboardUIFactory = nil
@@ -17,7 +17,7 @@ final class DashboardUIFactoryTests: XCTestCase {
 
     func test_it_loads_only_statsV4_when_V4_is_available_while_no_stats_version_is_saved() {
         // Given
-        mockStoresManager = MockupStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
+        mockStoresManager = MockStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
         dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
@@ -37,7 +37,7 @@ final class DashboardUIFactoryTests: XCTestCase {
 
     func test_it_loads_deprecated_dashboard_when_V4_is_unavailable_while_no_stats_version_is_saved() {
         // Given
-        mockStoresManager = MockupStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
+        mockStoresManager = MockStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
         dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
@@ -62,7 +62,7 @@ final class DashboardUIFactoryTests: XCTestCase {
 
     /// Stats v4 --> v4
     func test_when_V4_is_available_while_stats_V4_is_last_shown() {
-        mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
+        mockStoresManager = MockStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
@@ -81,7 +81,7 @@ final class DashboardUIFactoryTests: XCTestCase {
 
     /// Stats v4 --> v3 --> v4
     func test_when_V4_is_unavailable_and_then_available_while_stats_v4_is_last_shown() {
-        mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
+        mockStoresManager = MockStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
@@ -124,7 +124,7 @@ final class DashboardUIFactoryTests: XCTestCase {
 
     func test_deprecated_stats_screen_is_shown_if_V4_is_unavailable() {
         // Given
-        mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
+        mockStoresManager = MockStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)

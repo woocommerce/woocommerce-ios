@@ -10,7 +10,7 @@ final class MainTabViewModelTests: XCTestCase {
 
     func test_onViewDidAppear_will_save_the_installation_date() throws {
         // Given
-        let storesManager = MockupStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let storesManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         storesManager.reset()
 
         let viewModel = MainTabViewModel(storesManager: storesManager)
@@ -35,7 +35,7 @@ final class MainTabViewModelTests: XCTestCase {
 
     func test_when_user_is_not_logged_in_then_onViewDidAppear_will_not_save_the_installation_date() throws {
         // Given
-        let storesManager = MockupStoresManager(sessionManager: .makeForTesting(authenticated: false))
+        let storesManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         storesManager.reset()
 
         let viewModel = MainTabViewModel(storesManager: storesManager)

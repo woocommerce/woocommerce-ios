@@ -14,7 +14,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
     /// Mockup: UIApplication
     ///
-    private var application: MockupApplicationAdapter!
+    private var application: MockApplicationAdapter!
 
     /// UserDefaults: Testing Suite
     ///
@@ -37,7 +37,7 @@ final class PushNotificationsManagerTests: XCTestCase {
     override func setUp() {
         super.setUp()
 
-        application = MockupApplicationAdapter()
+        application = MockApplicationAdapter()
 
         defaults = UserDefaults(suiteName: Sample.defaultSuiteName)
         defaults.removePersistentDomain(forName: Sample.defaultSuiteName)

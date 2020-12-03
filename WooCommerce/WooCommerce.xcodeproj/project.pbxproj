@@ -651,7 +651,7 @@
 		B554E17B2152F27200F31188 /* UILabel+Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = B554E17A2152F27200F31188 /* UILabel+Appearance.swift */; };
 		B555530D21B57DC300449E71 /* UserNotificationsCenterAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B555530C21B57DC300449E71 /* UserNotificationsCenterAdapter.swift */; };
 		B555530F21B57DE700449E71 /* ApplicationAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B555530E21B57DE700449E71 /* ApplicationAdapter.swift */; };
-		B555531121B57E6F00449E71 /* MockupApplicationAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B555531021B57E6F00449E71 /* MockupApplicationAdapter.swift */; };
+		B555531121B57E6F00449E71 /* MockApplicationAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B555531021B57E6F00449E71 /* MockApplicationAdapter.swift */; };
 		B555531321B57E8800449E71 /* MockupUserNotificationsCenterAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B555531221B57E8800449E71 /* MockupUserNotificationsCenterAdapter.swift */; };
 		B557652B20F681E800185843 /* StoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557652A20F681E800185843 /* StoreTableViewCell.swift */; };
 		B557652D20F6827900185843 /* StoreTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B557652C20F6827900185843 /* StoreTableViewCell.xib */; };
@@ -1701,7 +1701,7 @@
 		B554E17A2152F27200F31188 /* UILabel+Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Appearance.swift"; sourceTree = "<group>"; };
 		B555530C21B57DC300449E71 /* UserNotificationsCenterAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNotificationsCenterAdapter.swift; sourceTree = "<group>"; };
 		B555530E21B57DE700449E71 /* ApplicationAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationAdapter.swift; sourceTree = "<group>"; };
-		B555531021B57E6F00449E71 /* MockupApplicationAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupApplicationAdapter.swift; sourceTree = "<group>"; };
+		B555531021B57E6F00449E71 /* MockApplicationAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockApplicationAdapter.swift; sourceTree = "<group>"; };
 		B555531221B57E8800449E71 /* MockupUserNotificationsCenterAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupUserNotificationsCenterAdapter.swift; sourceTree = "<group>"; };
 		B557652A20F681E800185843 /* StoreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreTableViewCell.swift; sourceTree = "<group>"; };
 		B557652C20F6827900185843 /* StoreTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StoreTableViewCell.xib; sourceTree = "<group>"; };
@@ -3498,7 +3498,7 @@
 				45FBDF33238D33F100127F77 /* MockProduct.swift */,
 				02BAB01E24D0232800F8B06E /* MockProductVariation.swift */,
 				746791652108D87B007CF1DC /* MockAnalyticsProvider.swift */,
-				B555531021B57E6F00449E71 /* MockupApplicationAdapter.swift */,
+				B555531021B57E6F00449E71 /* MockApplicationAdapter.swift */,
 				A650BE552578DA4900C655E0 /* MockStorageManager.swift */,
 				A650BE542578DA4900C655E0 /* MockStorageManager+Sample.swift */,
 				B56C721321B5BBC000E5E85B /* MockupStoresManager.swift */,
@@ -6007,7 +6007,7 @@
 				CEEC9B6621E7C5200055EEF0 /* AppRatingManagerTests.swift in Sources */,
 				263EB409242C58EA00F3A15F /* ProductFormActionsFactoryTests.swift in Sources */,
 				02BA23C022EE9DAF009539E7 /* AsyncDictionaryTests.swift in Sources */,
-				B555531121B57E6F00449E71 /* MockupApplicationAdapter.swift in Sources */,
+				B555531121B57E6F00449E71 /* MockApplicationAdapter.swift in Sources */,
 				021E2A2023AA274700B1DE07 /* ProductBackordersSettingListSelectorCommandTests.swift in Sources */,
 				0235BFDB246E99A700778909 /* ProductFormActionsFactory+NonEmptyBottomSheetActionsTests.swift in Sources */,
 				020BE76723B49FE9007FE54C /* AztecBoldFormatBarCommandTests.swift in Sources */,

@@ -10,6 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="IssueRefundViewController">
             <connections>
+                <outlet property="headerStackView" destination="Tz4-uY-TGt" id="6fc-2R-6b0"/>
                 <outlet property="itemsSelectedLabel" destination="Xkm-ge-1e1" id="1mf-3u-V0q"/>
                 <outlet property="nextButton" destination="omw-71-nel" id="Sgb-5r-DTF"/>
                 <outlet property="selectAllButton" destination="vQB-qj-G36" id="Rhx-j4-fi3"/>
@@ -68,11 +69,11 @@
             <rect key="frame" x="0.0" y="0.0" width="417" height="71"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Tz4-uY-TGt">
+                <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Tz4-uY-TGt">
                     <rect key="frame" x="16" y="10" width="385" height="51"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xkm-ge-1e1">
-                            <rect key="frame" x="0.0" y="0.0" width="339" height="51"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Xkm-ge-1e1">
+                            <rect key="frame" x="0.0" y="0.0" width="331" height="51"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>

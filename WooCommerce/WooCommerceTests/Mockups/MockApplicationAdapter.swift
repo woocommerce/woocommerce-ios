@@ -3,7 +3,7 @@ import UIKit
 @testable import WooCommerce
 
 
-/// MockApplicationAdapter: UIApplication Mockup!
+/// MockApplicationAdapter: UIApplication Mock!
 ///
 class MockApplicationAdapter: ApplicationAdapter {
 

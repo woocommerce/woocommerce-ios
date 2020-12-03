@@ -5,13 +5,13 @@ import XCTest
 
 /// ShippingLabelStore Unit Tests
 final class ShippingLabelStoreTests: XCTestCase {
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     private var dispatcher: Dispatcher!
 
     /// Mock Storage: InMemory
     private var storageManager: MockStorageManager!
 
-    /// Mockup Network: Allows us to inject predefined responses!
+    /// Mock Network: Allows us to inject predefined responses!
     private var network: MockNetwork!
 
     /// Convenience Property: Returns the StorageType associated with the main thread.

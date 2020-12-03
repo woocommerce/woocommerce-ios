@@ -3,7 +3,7 @@ import Yosemite
 @testable import WooCommerce
 
 
-/// MockStoresManager: StoresManager Mockup!
+/// MockStoresManager: StoresManager Mock!
 ///
 final class MockStoresManager: DefaultStoresManager {
 

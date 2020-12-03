@@ -9,7 +9,7 @@ import XCTest
 ///
 class CommentStoreTests: XCTestCase {
 
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     ///
     private var dispatcher: Dispatcher!
 
@@ -17,7 +17,7 @@ class CommentStoreTests: XCTestCase {
     ///
     private var storageManager: MockStorageManager!
 
-    /// Mockup Network: Allows us to inject predefined responses!
+    /// Mock Network: Allows us to inject predefined responses!
     ///
     private var network: MockNetwork!
 

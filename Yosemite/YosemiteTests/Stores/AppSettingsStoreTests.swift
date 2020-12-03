@@ -23,7 +23,7 @@ private struct TestConstants {
 /// AppSettingsStore unit tests
 ///
 final class AppSettingsStoreTests: XCTestCase {
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     ///
     private var dispatcher: Dispatcher?
 
@@ -31,7 +31,7 @@ final class AppSettingsStoreTests: XCTestCase {
     ///
     private var storageManager: MockStorageManager?
 
-    /// Mockup File Storage: Load a plist in the test bundle
+    /// Mock File Storage: Load a plist in the test bundle
     ///
     private var fileStorage: MockInMemoryStorage?
 

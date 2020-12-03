@@ -5,7 +5,7 @@ import XCTest
 
 final class AppSettingsStoreTests_ProductsFeatureSwitch: XCTestCase {
 
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     ///
     private var dispatcher: Dispatcher!
 
@@ -13,7 +13,7 @@ final class AppSettingsStoreTests_ProductsFeatureSwitch: XCTestCase {
     ///
     private var storageManager: MockStorageManager!
 
-    /// Mockup File Storage: Load data in memory
+    /// Mock File Storage: Load data in memory
     ///
     private var fileStorage: MockInMemoryStorage!
 

@@ -15,7 +15,7 @@ final class ResultsControllerUIKitTests: XCTestCase {
     ///
     private var storageManager: MockStorageManager!
 
-    /// Mockup TableView
+    /// Mock TableView
     ///
     private var tableView: MockTableView!
 

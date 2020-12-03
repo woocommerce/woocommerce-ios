@@ -2,7 +2,7 @@ import Foundation
 import Alamofire
 
 
-/// Network Mockup: Allows us to simulate HTTP Responses.
+/// Network Mock: Allows us to simulate HTTP Responses.
 ///
 class MockNetwork: Network {
 
@@ -10,11 +10,11 @@ class MockNetwork: Network {
     ///
     private var useResponseQueue: Bool = false
 
-    /// Mapping between URL Suffix and JSON Mockup responses (in a FIFO queue).
+    /// Mapping between URL Suffix and JSON Mock responses (in a FIFO queue).
     ///
     private var responseQueue = [String: Queue<String>]()
 
-    /// Mapping between URL Suffix and JSON Mockup responses (in a simple array).
+    /// Mapping between URL Suffix and JSON Mock responses (in a simple array).
     ///
     private var responseMap = [String: String]()
 
@@ -138,7 +138,7 @@ private extension MockNetwork {
         responseMap[requestUrlSuffix] = filename
     }
 
-    /// Returns the Mockup JSON Filename for a given URLRequestConvertible from either:
+    /// Returns the Mock JSON Filename for a given URLRequestConvertible from either:
     ///
     ///   * the FIFO response queue (where the response is removed from the queue when this func returns)
     ///   * the responseMap (array)
@@ -158,7 +158,7 @@ private extension MockNetwork {
         return nil
     }
 
-    /// Returns the Mockup Error for a given URLRequestConvertible.
+    /// Returns the Mock Error for a given URLRequestConvertible.
     ///
     private func error(for request: URLRequestConvertible) -> Error? {
         let searchPath = path(for: request)

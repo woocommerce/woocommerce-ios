@@ -4,7 +4,7 @@ import TestKit
 @testable import Yosemite
 
 final class NotificationCountStoreTests: XCTestCase {
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     ///
     private var dispatcher: Dispatcher!
 
@@ -12,7 +12,7 @@ final class NotificationCountStoreTests: XCTestCase {
     ///
     private var storageManager: MockStorageManager!
 
-    /// Mockup File Storage: Load data in memory
+    /// Mock File Storage: Load data in memory
     ///
     private var fileStorage: MockInMemoryStorage!
 

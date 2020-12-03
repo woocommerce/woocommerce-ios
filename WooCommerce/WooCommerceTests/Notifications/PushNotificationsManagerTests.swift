@@ -12,7 +12,7 @@ final class PushNotificationsManagerTests: XCTestCase {
     ///
     private var manager: PushNotificationsManager!
 
-    /// Mockup: UIApplication
+    /// Mock: UIApplication
     ///
     private var application: MockApplicationAdapter!
 
@@ -20,15 +20,15 @@ final class PushNotificationsManagerTests: XCTestCase {
     ///
     private var defaults: UserDefaults!
 
-    /// Mockup: Stores Manager
+    /// Mock: Stores Manager
     ///
     private var storesManager: MockStoresManager!
 
-    /// Mockup: Support Manager
+    /// Mock: Support Manager
     ///
     private var supportManager: MockSupportManager!
 
-    /// Mockup: UserNotificationCenter
+    /// Mock: UserNotificationCenter
     ///
     private var userNotificationCenter: MockUserNotificationsCenterAdapter!
 

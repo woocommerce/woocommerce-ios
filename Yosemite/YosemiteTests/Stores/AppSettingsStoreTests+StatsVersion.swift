@@ -3,7 +3,7 @@ import XCTest
 @testable import Storage
 
 final class AppSettingsStoreTests_StatsVersion: XCTestCase {
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     ///
     private var dispatcher: Dispatcher!
 
@@ -11,7 +11,7 @@ final class AppSettingsStoreTests_StatsVersion: XCTestCase {
     ///
     private var storageManager: MockStorageManager!
 
-    /// Mockup File Storage: Load data in memory
+    /// Mock File Storage: Load data in memory
     ///
     private var fileStorage: MockInMemoryStorage!
 

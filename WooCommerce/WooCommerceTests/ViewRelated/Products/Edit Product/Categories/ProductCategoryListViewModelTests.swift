@@ -93,7 +93,7 @@ private extension ProductCategoryListViewModelTests {
 ///
 private final class MockProductCategoryStoresManager: DefaultStoresManager {
 
-    /// Set mockup responses to be dispatched upon Product Category Actions.
+    /// Set mock responses to be dispatched upon Product Category Actions.
     ///
     var productCategoryResponse: ProductCategoryActionError?
 

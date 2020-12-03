@@ -4,7 +4,7 @@ import XCTest
 @testable import Networking
 
 final class MediaStoreTests: XCTestCase {
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     ///
     private var dispatcher: Dispatcher!
 
@@ -12,7 +12,7 @@ final class MediaStoreTests: XCTestCase {
     ///
     private var storageManager: MockStorageManager!
 
-    /// Mockup Network: Allows us to inject predefined responses!
+    /// Mock Network: Allows us to inject predefined responses!
     ///
     private var network: MockNetwork!
 

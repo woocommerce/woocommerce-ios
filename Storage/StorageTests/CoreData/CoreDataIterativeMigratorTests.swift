@@ -287,7 +287,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
         // There should be no file operations.
         assertEmpty(spyFileManager.deletedItems)
-        XCTAssertEqual(spyFileManager.movedItems.count, 0)
+        assertEmpty(spyFileManager.movedItems)
     }
 }
 

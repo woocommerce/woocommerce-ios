@@ -30,7 +30,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
     /// Mockup: UserNotificationCenter
     ///
-    private var userNotificationCenter: MockupUserNotificationsCenterAdapter!
+    private var userNotificationCenter: MockUserNotificationsCenterAdapter!
 
     // MARK: - Overridden Methods
 
@@ -47,7 +47,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         storesManager.sessionManager.setStoreId(nil)
 
         supportManager = MockSupportManager()
-        userNotificationCenter = MockupUserNotificationsCenterAdapter()
+        userNotificationCenter = MockUserNotificationsCenterAdapter()
 
         manager = {
             let configuration = PushNotificationsConfiguration(application: self.application,

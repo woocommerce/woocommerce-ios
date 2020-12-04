@@ -110,6 +110,7 @@
 		45152825257A8B740076B03C /* product-attribute-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 45152824257A8B740076B03C /* product-attribute-update.json */; };
 		4515282B257A8C010076B03C /* product-attribute-delete.json in Resources */ = {isa = PBXBuildFile; fileRef = 4515282A257A8C010076B03C /* product-attribute-delete.json */; };
 		45152831257A8E1A0076B03C /* ProductAttributeMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45152830257A8E1A0076B03C /* ProductAttributeMapperTests.swift */; };
+		45152835257A8F490076B03C /* ProductAttributeListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45152834257A8F490076B03C /* ProductAttributeListMapperTests.swift */; };
 		4524CD9C242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json in Resources */ = {isa = PBXBuildFile; fileRef = 4524CD9B242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json */; };
 		453305E92459DF2100264E50 /* PostMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305E82459DF2100264E50 /* PostMapper.swift */; };
 		453305EB2459E01A00264E50 /* PostMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305EA2459E01A00264E50 /* PostMapperTests.swift */; };
@@ -510,6 +511,7 @@
 		45152824257A8B740076B03C /* product-attribute-update.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-attribute-update.json"; sourceTree = "<group>"; };
 		4515282A257A8C010076B03C /* product-attribute-delete.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-attribute-delete.json"; sourceTree = "<group>"; };
 		45152830257A8E1A0076B03C /* ProductAttributeMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeMapperTests.swift; sourceTree = "<group>"; };
+		45152834257A8F490076B03C /* ProductAttributeListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeListMapperTests.swift; sourceTree = "<group>"; };
 		4524CD9B242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-on-sale-with-empty-sale-price.json"; sourceTree = "<group>"; };
 		453305E82459DF2100264E50 /* PostMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMapper.swift; sourceTree = "<group>"; };
 		453305EA2459E01A00264E50 /* PostMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMapperTests.swift; sourceTree = "<group>"; };
@@ -1434,6 +1436,7 @@
 				74CF0A8B22414D7800DB993F /* ProductMapperTests.swift */,
 				D88D5A4E230BD276007B6E01 /* ProductReviewListMapperTests.swift */,
 				45152830257A8E1A0076B03C /* ProductAttributeMapperTests.swift */,
+				45152834257A8F490076B03C /* ProductAttributeListMapperTests.swift */,
 				45B204B924890A8C00FE6526 /* ProductCategoryMapperTests.swift */,
 				26615478242DA54D00A31661 /* ProductCategoyListMapperTests.swift */,
 				45D685FB23D0C739005F87D0 /* ProductSkuMapperTests.swift */,
@@ -2009,6 +2012,7 @@
 				26615479242DA54D00A31661 /* ProductCategoyListMapperTests.swift in Sources */,
 				B5C6FCC820A32E4800A4F8E4 /* DateFormatterWooTests.swift in Sources */,
 				74C8F06A20EEBC8C00B6EDC9 /* OrderMapperTests.swift in Sources */,
+				45152835257A8F490076B03C /* ProductAttributeListMapperTests.swift in Sources */,
 				74AB5B4D21AF354E00859C12 /* SiteAPIMapperTests.swift in Sources */,
 				93D8BC01226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift in Sources */,
 				262E5AD5255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift in Sources */,

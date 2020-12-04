@@ -57,7 +57,7 @@ final class BoldableTextViewTests: XCTestCase {
         XCTAssertEqual(text, expectedText)
     }
 
-    func test_text_without_bolded_text() throws {
+    func test_content_without_bolded_text() throws {
         // When
         let view = BoldableTextView("I will never stop learning.")
 

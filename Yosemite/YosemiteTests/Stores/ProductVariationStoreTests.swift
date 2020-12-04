@@ -455,7 +455,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that `ProductVariationAction.updateProductVariation` returns an error whenever there is an error response from the backend.
     ///
-    func testUpdatingProductVariationReturnsErrorUponResponseError() {
+    func test_updateProductVariation_returns_error_upon_response_error() {
         // Given
         let remote = MockProductVariationsRemote()
         let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)

@@ -13,7 +13,7 @@ final class ProductAttributeMapperTests: XCTestCase {
     /// Verifies that all of the ProductAttribute Fields are parsed correctly.
     ///
     func test_ProductAttribute_fields_are_properly_parsed() throws {
-        let productAttribute = try XCTUnwrap(mapProductCategoryResponse())
+        let productAttribute = try XCTUnwrap(mapProductAttributeResponse())
 
         XCTAssertEqual(productAttribute.attributeID, 1)
         XCTAssertEqual(productAttribute.name, "Color")
@@ -42,7 +42,7 @@ private extension ProductAttributeMapperTests {
 
     /// Returns the ProductAttributeMapper output upon receiving `product-attribute-create`
     ///
-    func mapProductCategoryResponse() throws -> ProductAttribute? {
+    func mapProductAttributeResponse() throws -> ProductAttribute? {
         return try mapProductAttribute(from: "product-attribute-create")
     }
 }

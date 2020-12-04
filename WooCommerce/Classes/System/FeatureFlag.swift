@@ -14,6 +14,10 @@ enum FeatureFlag: Int {
     ///
     case editProductsRelease5
 
+    /// Order Creation
+    ///
+    case orderCreation
+
     /// Product Reviews
     ///
     case reviews

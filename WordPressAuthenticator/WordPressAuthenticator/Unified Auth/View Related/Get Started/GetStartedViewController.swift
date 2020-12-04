@@ -410,6 +410,7 @@ private extension GetStartedViewController {
 
         /// Hand over control to the host app.
         authenticationDelegate.handleError(error) { customUI in
+            customUI.navigationItem.rightBarButtonItems = self.navigationItem.rightBarButtonItems
             self.navigationController?.pushViewController(customUI, animated: true)
         }
     }

@@ -154,6 +154,7 @@ private extension IssueRefundViewController {
     func configureHeaderStackView() {
         headerStackView.axis = traitCollection.preferredContentSizeCategory > .extraExtraExtraLarge ? .vertical : .horizontal
         headerStackView.alignment = headerStackView.axis == .vertical ? .center : .fill
+        headerStackView.spacing = 8
     }
 }
 

@@ -32,6 +32,10 @@ struct NotWPAccountViewModel: ULErrorViewModel {
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
+        let fancyAlert = FancyAlertViewController.makeNeedHelpFindingEmailAlertController()
+        fancyAlert.modalPresentationStyle = .custom
+        fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
+        viewController?.present(fancyAlert, animated: true)
     }
 }
 

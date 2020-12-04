@@ -13,7 +13,7 @@ public final class ProductAttributesRemote: Remote {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllProductAttributes(for siteID: Int64,
-                                         completion: @escaping ([ProductAttribute]?, Error?) -> Void) {
+                                         completion: @escaping (Result<[ProductAttribute], Error>) -> Void) {
 
         let path = Path.attributes
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path)

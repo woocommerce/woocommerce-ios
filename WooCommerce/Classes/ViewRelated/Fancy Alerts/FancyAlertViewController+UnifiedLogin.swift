@@ -62,12 +62,14 @@ private extension FancyAlertViewController {
 
         static let whatEmailDoIUse = NSLocalizedString(
             "What email do I use to sign in?",
-            comment: "Title of alert informing users of what email they can use to sign in. Presented when users attempt to log in with an email that does not match a WP.com account"
+            comment: "Title of alert informing users of what email they can use to sign in."
+            + "Presented when users attempt to log in with an email that does not match a WP.com account"
         )
 
         static let whatEmailDoIUseLongDescription = NSLocalizedString(
-            "In your site admin you can fing the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection",
-            comment: "Long descriptions of alert informing users of what email they can use to sign in. Presented when users attempt to log in with an email that does not match a WP.com account"
+            "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection",
+            comment: "Long descriptions of alert informing users of what email they can use to sign in."
+                + "Presented when users attempt to log in with an email that does not match a WP.com account"
         )
 
         static let needMoreHelp = NSLocalizedString(

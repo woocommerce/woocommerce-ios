@@ -357,6 +357,18 @@ extension OrderDetailsViewModel {
         ServiceLocator.stores.dispatch(action)
     }
 
+    func syncProductVariations(onCompletion: ((Error?) -> ())? = nil) {
+        let action = ProductVariationAction.requestMissingVariations(for: order) { error in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing missing variations in an Order: \(error)")
+                onCompletion?(error)
+                return
+            }
+            onCompletion?(nil)
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
     func syncRefunds(onCompletion: ((Error?) -> ())? = nil) {
         let refundIDs = order.refunds.map { $0.refundID }
         let action = RefundAction.retrieveRefunds(siteID: order.siteID, orderID: order.orderID, refundIDs: refundIDs, deleteStaleRefunds: true) { (error) in

@@ -191,29 +191,9 @@ public final class CoreDataManager: StorageManagerType {
     private func migrateDataModelIfNecessary() -> [String] {
         var debugMessages = [String]()
 
-        guard FileManager.default.fileExists(atPath: storeURL.path) else {
-            let noStoreMessage = "No store exists at URL \(storeURL).  Skipping migration."
-            debugMessages.append(noStoreMessage)
-            DDLogInfo(noStoreMessage)
-            return debugMessages
-        }
-
-        let metadata: [String: Any]
-        do {
-            metadata = try NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: NSSQLiteStoreType, at: storeURL, options: nil)
-        } catch {
-            debugMessages.append("Cannot get metadata for persistent store at URL \(storeURL): \(error)")
-            return debugMessages
-        }
-
-        guard modelsInventory.currentModel.isConfiguration(withName: nil, compatibleWithStoreMetadata: metadata) == false else {
-            // Configuration is compatible, no migration necessary.
-            return debugMessages
-        }
-
-        let migrationRequiredMessage = "⚠️ [CoreDataManager] Migration required for persistent store"
-        debugMessages.append(migrationRequiredMessage)
-        DDLogWarn(migrationRequiredMessage)
+        let migrationCheckMessage = "ℹ️ [CoreDataManager] Checking if migration is necessary."
+        debugMessages.append(migrationCheckMessage)
+        DDLogInfo(migrationCheckMessage)
 
         do {
             let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)

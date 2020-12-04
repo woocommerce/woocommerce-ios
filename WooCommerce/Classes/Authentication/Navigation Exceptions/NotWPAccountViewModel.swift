@@ -22,7 +22,7 @@ struct NotWPAccountViewModel: ULErrorViewModel {
 
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        let popCommand = NavigateBack()
+        let popCommand = NavigateToEnterSite()
         popCommand.execute(from: viewController)
     }
 
@@ -32,7 +32,6 @@ struct NotWPAccountViewModel: ULErrorViewModel {
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
-        
     }
 }
 

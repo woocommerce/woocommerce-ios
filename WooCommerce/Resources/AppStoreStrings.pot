@@ -57,11 +57,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v5.5-whats-new"
+msgctxt "v5.6-whats-new"
 msgid ""
-"Products: You can now add simple, grouped, and external products and save products as drafts. We’ll have more new features for you to try out soon!\n"
+"You asked, and we listened! You can now create simple, grouped, and external products for your store directly from your iPhone or iPad. Turn your ideas into products, even when you’re away from your computer.\n"
 "\n"
-"Other fixes: The Order Details screen now shows variation attributes for WooCommerce stores on version 4.7 and above. You may also notice that the Product Detail screen now shows the number of product ratings. Previously, it displayed the number of reviews, which was inaccurate.\n"
+"That’s not all! We fixed problems, including a bug that meant newly submitted orders weren’t always showing up in an order list. We also made improvements. For instance, you can now issue refunds—for products or shipping—directly from the order screen.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

@@ -4,7 +4,7 @@ import Yosemite
 @testable import WooCommerce
 
 final class StatsVersionCoordinatorTests: XCTestCase {
-    private var mockStoresManager: MockupStatsVersionStoresManager!
+    private var mockStoresManager: MockStatsVersionStoresManager!
 
     override func tearDown() {
         mockStoresManager = nil
@@ -13,7 +13,7 @@ final class StatsVersionCoordinatorTests: XCTestCase {
 
     func test_it_returns_v4_version_when_V4_is_available_while_no_stats_version_was_shown_before() {
         // Given
-        mockStoresManager = MockupStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
+        mockStoresManager = MockStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
         mockStoresManager.statsVersionLastShown = nil
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
@@ -30,7 +30,7 @@ final class StatsVersionCoordinatorTests: XCTestCase {
 
     func test_it_transition_from_v4_to_v3_when_V4_is_unavailable_while_no_stats_version_was_shown_before() {
         // Given
-        mockStoresManager = MockupStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
+        mockStoresManager = MockStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
         mockStoresManager.statsVersionLastShown = nil
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
@@ -48,7 +48,7 @@ final class StatsVersionCoordinatorTests: XCTestCase {
     /// Stats v3 --> v4
     func test_when_V4_is_available_while_stats_V3_is_last_shown() {
         // Given
-        mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
+        mockStoresManager = MockStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
@@ -65,7 +65,7 @@ final class StatsVersionCoordinatorTests: XCTestCase {
     /// Stats v3 --> v3
     func test_when_V4_is_unavailable_while_stats_V3_is_last_shown() {
         // Given
-        mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
+        mockStoresManager = MockStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
@@ -83,7 +83,7 @@ final class StatsVersionCoordinatorTests: XCTestCase {
     /// Stats v4 --> v3
     func test_when_V4_is_unavailable_while_stats_V4_is_last_shown() {
         // Given
-        mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
+        mockStoresManager = MockStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
@@ -100,7 +100,7 @@ final class StatsVersionCoordinatorTests: XCTestCase {
     /// V4 --> v4
     func test_when_V4_is_available_while_stats_V4_is_last_shown() {
         // Given
-        mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
+        mockStoresManager = MockStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)

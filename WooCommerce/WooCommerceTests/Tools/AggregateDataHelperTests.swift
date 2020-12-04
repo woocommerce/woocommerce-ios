@@ -91,6 +91,42 @@ final class AggregateDataHelperTests: XCTestCase {
         XCTAssertEqual(aggregatedOrderItems.count, 1)
         XCTAssertEqual(aggregatedOrderItems[0].attributes, orderItemAttributes)
     }
+
+    func test_combining_AggregateOrderItem_with_shipping_labels() {
+        // Given
+        // Order items (e.g. after combining with refunded products using `AggregateDataHelper.combineOrderItems`).
+        let orderItemNotInShippingLabels = MockAggregateOrderItem.emptyItem()
+            .copy(productID: 1, variationID: 32, quantity: 2)
+        let orderItemPartiallyInShippingLabels = MockAggregateOrderItem.emptyItem()
+            .copy(productID: 1, variationID: 26, quantity: 2.5)
+        let orderItemInShippingLabels = MockAggregateOrderItem.emptyItem()
+            .copy(productID: 1, variationID: 0, quantity: 3.5)
+        let orderItems = [orderItemInShippingLabels, orderItemPartiallyInShippingLabels, orderItemNotInShippingLabels]
+
+        // Order items from non-refunded shipping labels.
+        let orderItemsInNonRefundedShippingLabels: [AggregateOrderItem] = [
+            MockAggregateOrderItem.emptyItem()
+                .copy(productID: orderItemInShippingLabels.productID,
+                      variationID: orderItemInShippingLabels.variationID,
+                      quantity: 2.5),
+            MockAggregateOrderItem.emptyItem()
+                .copy(productID: orderItemPartiallyInShippingLabels.productID,
+                      variationID: orderItemPartiallyInShippingLabels.variationID,
+                      quantity: 1),
+            MockAggregateOrderItem.emptyItem()
+                .copy(productID: orderItemInShippingLabels.productID,
+                      variationID: orderItemInShippingLabels.variationID,
+                      quantity: 1)
+        ]
+
+        // When
+        let combinedOrderItems = AggregateDataHelper
+            .combineAggregatedOrderItems(orderItems, with: orderItemsInNonRefundedShippingLabels)
+
+        // Then
+        let orderItemPartiallyInShippingLabelsWithUpdatedQuantity = orderItemPartiallyInShippingLabels.copy(quantity: 1.5)
+        XCTAssertEqual(combinedOrderItems, [orderItemPartiallyInShippingLabelsWithUpdatedQuantity, orderItemNotInShippingLabels])
+    }
 }
 
 

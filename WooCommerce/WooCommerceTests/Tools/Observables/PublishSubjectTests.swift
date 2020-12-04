@@ -116,11 +116,6 @@ final class PublishSubjectTests: XCTestCase {
     // MARK: - Proof of Compatibility with Combine's PassthroughSubject
 
     func testCombinePassthroughSubjectEmitsValuesToAnObserver() throws {
-        guard #available(iOS 13.0, *) else {
-            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
-            return
-        }
-
         // Given
         let subject = PassthroughSubject<String, Error>()
         var disposeBag = Set<AnyCancellable>()
@@ -140,11 +135,6 @@ final class PublishSubjectTests: XCTestCase {
     }
 
     func testCombinePassthroughSubjectContinuouslyEmitsValuesToAnObserver() throws {
-        guard #available(iOS 13.0, *) else {
-            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
-            return
-        }
-
         // Given
         let subject = PassthroughSubject<String, Error>()
         var disposeBag = Set<AnyCancellable>()
@@ -166,11 +156,6 @@ final class PublishSubjectTests: XCTestCase {
     }
 
     func testCombinePassthroughSubjectDoesNotEmitValuesBeforeTheSubscription() throws {
-        guard #available(iOS 13.0, *) else {
-            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
-            return
-        }
-
         // Given
         let subject = PassthroughSubject<String, Error>()
         var disposeBag = Set<AnyCancellable>()
@@ -197,11 +182,6 @@ final class PublishSubjectTests: XCTestCase {
     }
 
     func testCombinePassthroughSubjectEmitsValuesToAllObservers() throws {
-        guard #available(iOS 13.0, *) else {
-            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
-            return
-        }
-
         // Given
         let subject = PassthroughSubject<String, Error>()
         var disposeBag = Set<AnyCancellable>()
@@ -232,11 +212,6 @@ final class PublishSubjectTests: XCTestCase {
     }
 
     func testCombinePassthroughSubjectDoesNotEmitValuesToCancelledObservers() throws {
-        guard #available(iOS 13.0, *) else {
-            try XCTSkipIf(true, "This test is for iOS 13.0+ only")
-            return
-        }
-
         // Given
         let subject = PassthroughSubject<String, Error>()
 

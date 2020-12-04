@@ -12,42 +12,42 @@ final class PushNotificationsManagerTests: XCTestCase {
     ///
     private var manager: PushNotificationsManager!
 
-    /// Mockup: UIApplication
+    /// Mock: UIApplication
     ///
-    private var application: MockupApplicationAdapter!
+    private var application: MockApplicationAdapter!
 
     /// UserDefaults: Testing Suite
     ///
     private var defaults: UserDefaults!
 
-    /// Mockup: Stores Manager
+    /// Mock: Stores Manager
     ///
-    private var storesManager: MockupStoresManager!
+    private var storesManager: MockStoresManager!
 
-    /// Mockup: Support Manager
+    /// Mock: Support Manager
     ///
-    private var supportManager: MockupSupportManager!
+    private var supportManager: MockSupportManager!
 
-    /// Mockup: UserNotificationCenter
+    /// Mock: UserNotificationCenter
     ///
-    private var userNotificationCenter: MockupUserNotificationsCenterAdapter!
+    private var userNotificationCenter: MockUserNotificationsCenterAdapter!
 
     // MARK: - Overridden Methods
 
     override func setUp() {
         super.setUp()
 
-        application = MockupApplicationAdapter()
+        application = MockApplicationAdapter()
 
         defaults = UserDefaults(suiteName: Sample.defaultSuiteName)
         defaults.removePersistentDomain(forName: Sample.defaultSuiteName)
 
         // Most of the test cases expect a nil site ID, otherwise the dispatched actions would not match.
-        storesManager = MockupStoresManager(sessionManager: .testingInstance)
+        storesManager = MockStoresManager(sessionManager: .testingInstance)
         storesManager.sessionManager.setStoreId(nil)
 
-        supportManager = MockupSupportManager()
-        userNotificationCenter = MockupUserNotificationsCenterAdapter()
+        supportManager = MockSupportManager()
+        userNotificationCenter = MockUserNotificationsCenterAdapter()
 
         manager = {
             let configuration = PushNotificationsConfiguration(application: self.application,

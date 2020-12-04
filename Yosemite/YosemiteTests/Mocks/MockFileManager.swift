@@ -3,7 +3,7 @@ import XCTest
 
 /// A subclass of `FileManager` where the file existence is based on a dictionary whose key is the file path.
 ///
-final class MockupFileManager: FileManager {
+final class MockFileManager: FileManager {
     var dataByFilePath: [String: Data] = [:]
 
     /// The mocked results for the `attributesOfItem(atPath:)`.
@@ -34,7 +34,7 @@ final class MockupFileManager: FileManager {
 
 // MARK: - Mocking
 
-extension MockupFileManager {
+extension MockFileManager {
     /// Sets the return value when `attributesOfItem(atPath:)` is called.
     func whenRetrievingAttributesOfItem(atPath path: String, thenReturn: [FileAttributeKey: Any]) {
         attributesOfItemResults[path] = thenReturn

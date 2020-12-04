@@ -7,13 +7,13 @@ import XCTest
 /// ProductCategoryStore Unit Tests
 ///
 final class ProductCategoryStoreTests: XCTestCase {
-    /// Mockup Network: Allows us to inject predefined responses!
+    /// Mock Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
-    /// Mockup Storage: InMemory
+    /// Mock Storage: InMemory
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
     /// Convenience Property: Returns the StorageType associated with the main thread.
     ///
@@ -43,8 +43,8 @@ final class ProductCategoryStoreTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        network = MockupNetwork(useResponseQueue: true)
-        storageManager = MockupStorageManager()
+        network = MockNetwork(useResponseQueue: true)
+        storageManager = MockStorageManager()
         store = ProductCategoryStore(dispatcher: Dispatcher(),
                                      storageManager: storageManager,
                                      network: network)

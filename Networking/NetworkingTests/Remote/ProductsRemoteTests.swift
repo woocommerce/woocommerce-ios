@@ -8,7 +8,7 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = MockupNetwork()
+    let network = MockNetwork()
 
     /// Dummy Site ID
     ///

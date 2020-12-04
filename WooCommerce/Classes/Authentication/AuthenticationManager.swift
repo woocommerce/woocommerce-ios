@@ -366,7 +366,7 @@ private extension AuthenticationManager {
 
         switch wooAuthError {
         case .emailDoesNotMatchWPAcount:
-            return NotWPErrorViewModel()
+            return NotWPAccountViewModel()
         case .notWPSite:
             return NotWPErrorViewModel()
         default:

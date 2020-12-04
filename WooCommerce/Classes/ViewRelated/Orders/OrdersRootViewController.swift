@@ -88,6 +88,10 @@ private extension OrdersRootViewController {
     func configureNavigationButtons() {
         navigationItem.leftBarButtonItem = ordersViewController.createSearchBarButtonItem()
 
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation) {
+            navigationItem.rightBarButtonItem = ordersViewController.createOrderCreationBarButtonItem()
+        }
+
         removeNavigationBackBarButtonText()
     }
 

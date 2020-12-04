@@ -71,6 +71,12 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
         present(navigationController, animated: true, completion: nil)
     }
 
+    /// Shows Order Creation flow.
+    ///
+    @objc private func createOrder() {
+        // TODO-3237: show order creation screen
+    }
+
     // MARK: - ButtonBarPagerTabStripViewController Conformance
 
     /// Return the ViewControllers for "Processing" and "All Orders".
@@ -163,6 +169,18 @@ extension OrdersTabbedViewController {
         return button
     }
 
+    /// Create a `UIBarButtonItem` to be used as order creation trigger on the top-right.
+    ///
+    func createOrderCreationBarButtonItem() -> UIBarButtonItem {
+        let button = UIBarButtonItem(image: .plusImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(createOrder))
+        button.accessibilityTraits = .button
+        button.accessibilityLabel = Localization.orderCreationBarButtonAccessibilityLabel
+        return button
+    }
+
     /// Creates the view controllers to be shown in tabs.
     func makeViewControllers() -> [UIViewController] {
         // TODO This is fake. It's probably better to just pass the `slug` to `OrdersViewController`.
@@ -220,5 +238,7 @@ private extension OrdersTabbedViewController {
             NSLocalizedString("We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales.",
                               comment: "The detailed message shown in the Orders → All Orders tab if the list is empty.")
         static let learnMore = NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty.")
+        static let orderCreationBarButtonAccessibilityLabel = NSLocalizedString("Create order",
+                                                                                comment: "Accessibility label for 'Create order' button")
     }
 }

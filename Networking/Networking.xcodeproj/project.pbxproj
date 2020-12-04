@@ -109,6 +109,7 @@
 		4515281F257A89B90076B03C /* product-attribute-create.json in Resources */ = {isa = PBXBuildFile; fileRef = 4515281E257A89B90076B03C /* product-attribute-create.json */; };
 		45152825257A8B740076B03C /* product-attribute-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 45152824257A8B740076B03C /* product-attribute-update.json */; };
 		4515282B257A8C010076B03C /* product-attribute-delete.json in Resources */ = {isa = PBXBuildFile; fileRef = 4515282A257A8C010076B03C /* product-attribute-delete.json */; };
+		45152831257A8E1A0076B03C /* ProductAttributeMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45152830257A8E1A0076B03C /* ProductAttributeMapperTests.swift */; };
 		4524CD9C242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json in Resources */ = {isa = PBXBuildFile; fileRef = 4524CD9B242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json */; };
 		453305E92459DF2100264E50 /* PostMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305E82459DF2100264E50 /* PostMapper.swift */; };
 		453305EB2459E01A00264E50 /* PostMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453305EA2459E01A00264E50 /* PostMapperTests.swift */; };
@@ -508,6 +509,7 @@
 		4515281E257A89B90076B03C /* product-attribute-create.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-attribute-create.json"; sourceTree = "<group>"; };
 		45152824257A8B740076B03C /* product-attribute-update.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-attribute-update.json"; sourceTree = "<group>"; };
 		4515282A257A8C010076B03C /* product-attribute-delete.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-attribute-delete.json"; sourceTree = "<group>"; };
+		45152830257A8E1A0076B03C /* ProductAttributeMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeMapperTests.swift; sourceTree = "<group>"; };
 		4524CD9B242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-on-sale-with-empty-sale-price.json"; sourceTree = "<group>"; };
 		453305E82459DF2100264E50 /* PostMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMapper.swift; sourceTree = "<group>"; };
 		453305EA2459E01A00264E50 /* PostMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMapperTests.swift; sourceTree = "<group>"; };
@@ -1431,6 +1433,7 @@
 				CE0A0F1C22398D520075ED8D /* ProductListMapperTests.swift */,
 				74CF0A8B22414D7800DB993F /* ProductMapperTests.swift */,
 				D88D5A4E230BD276007B6E01 /* ProductReviewListMapperTests.swift */,
+				45152830257A8E1A0076B03C /* ProductAttributeMapperTests.swift */,
 				45B204B924890A8C00FE6526 /* ProductCategoryMapperTests.swift */,
 				26615478242DA54D00A31661 /* ProductCategoyListMapperTests.swift */,
 				45D685FB23D0C739005F87D0 /* ProductSkuMapperTests.swift */,
@@ -2040,6 +2043,7 @@
 				9387A6F0226E3F15001B53D7 /* AccountSettingsMapperTests.swift in Sources */,
 				B57B1E6721C916850046E764 /* NetworkErrorTests.swift in Sources */,
 				D8FBFF0F22D3B25E006E3336 /* WooAPIVersionTests.swift in Sources */,
+				45152831257A8E1A0076B03C /* ProductAttributeMapperTests.swift in Sources */,
 				26B2F74924C55ACE0065CCC8 /* LeaderboardsRemoteTests.swift in Sources */,
 				74002D6C2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift in Sources */,
 				0212683524C046CB00F8A892 /* MockNetwork+Path.swift in Sources */,

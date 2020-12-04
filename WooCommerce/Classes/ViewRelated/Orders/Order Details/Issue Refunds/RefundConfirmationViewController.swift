@@ -17,7 +17,7 @@ final class RefundConfirmationViewController: UIViewController {
         return noticePresenter
     }()
 
-    /// Needed to scroll content content to a visible area when the keyboard appears.
+    /// Needed to scroll content to a visible area when the keyboard appears.
     ///
     private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] frame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: frame)

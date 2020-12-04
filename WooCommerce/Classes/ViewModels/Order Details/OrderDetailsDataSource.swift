@@ -171,6 +171,14 @@ final class OrderDetailsDataSource: NSObject {
         resultsControllers.configureResultsControllers(onReload: onReload)
     }
 
+    func shippingLabel(at indexPath: IndexPath) -> ShippingLabel? {
+        guard let firstShippingLabelSectionIndex = sections.firstIndex(where: { $0.category == .shippingLabel }) else {
+            return nil
+        }
+        let shippingLabelIndex = indexPath.section - firstShippingLabelSectionIndex
+        return shippingLabels[shippingLabelIndex]
+    }
+
     func shippingLabelOrderItem(at indexPath: IndexPath) -> AggregateOrderItem? {
         guard let shippingLabel = shippingLabel(at: indexPath) else {
             return nil
@@ -534,14 +542,6 @@ private extension OrderDetailsDataSource {
         cell.configure(style: .secondary, title: Titles.reprintShippingLabel) {
             // TODO-2174: reprint shipping label UX
         }
-    }
-
-    private func shippingLabel(at indexPath: IndexPath) -> ShippingLabel? {
-        guard let firstShippingLabelSectionIndex = sections.firstIndex(where: { $0.category == .shippingLabel }) else {
-            return nil
-        }
-        let shippingLabelIndex = indexPath.section - firstShippingLabelSectionIndex
-        return shippingLabels[shippingLabelIndex]
     }
 
     private func configureAggregateOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {

@@ -13,17 +13,17 @@ final class ProductAttributeListMapperTests: XCTestCase {
     /// Verifies that all of the ProductAttribute Fields are parsed correctly.
     ///
     func test_ProductAttribute_fields_are_properly_parsed() throws {
-        let productAttributes = try XCTUnwrap(mapProductAttributesResponse())
+        let productAttributes = try mapProductAttributesResponse()
         XCTAssertEqual(productAttributes.count, 2)
 
-        let firstProductAttribute = productAttributes[1]
+        let secondProductAttribute = productAttributes[1]
 
-        XCTAssertEqual(firstProductAttribute.attributeID, 1)
-        XCTAssertEqual(firstProductAttribute.name, "Color")
-        XCTAssertEqual(firstProductAttribute.position, 0)
-        XCTAssertEqual(firstProductAttribute.visible, true)
-        XCTAssertEqual(firstProductAttribute.variation, true)
-        XCTAssertEqual(firstProductAttribute.options, [])
+        XCTAssertEqual(secondProductAttribute.attributeID, 2)
+        XCTAssertEqual(secondProductAttribute.name, "Size")
+        XCTAssertEqual(secondProductAttribute.position, 0)
+        XCTAssertEqual(secondProductAttribute.visible, true)
+        XCTAssertEqual(secondProductAttribute.variation, true)
+        XCTAssertEqual(secondProductAttribute.options, [])
     }
 
 }
@@ -35,9 +35,9 @@ private extension ProductAttributeListMapperTests {
 
     /// Returns the ProductAttributeMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapProductAttribute(from filename: String) throws -> [ProductAttribute]? {
+    func mapProductAttribute(from filename: String) throws -> [ProductAttribute] {
         guard let response = Loader.contentsOf(filename) else {
-            return nil
+            return []
         }
 
         return try ProductAttributeListMapper(siteID: dummySiteID).map(response: response)
@@ -45,7 +45,7 @@ private extension ProductAttributeListMapperTests {
 
     /// Returns the ProductAttributeListMapper output upon receiving `product-attribute-all`
     ///
-    func mapProductAttributesResponse() throws -> [ProductAttribute]? {
-        return try mapProductAttribute(from: "product-attribute-all")
+    func mapProductAttributesResponse() throws -> [ProductAttribute] {
+        return try mapProductAttribute(from: "product-attributes-all")
     }
 }

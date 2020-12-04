@@ -2,9 +2,9 @@ import Foundation
 import UIKit
 
 
-// MARK: - UITableView Mockup
+// MARK: - UITableView Mock
 //
-class MockupTableView: UITableView {
+class MockTableView: UITableView {
 
     /// Closure to be executed whenever `beginUpdates` is called.
     ///

@@ -64,7 +64,7 @@ class AccountMapperTests: XCTestCase {
 //
 private extension AccountMapperTests {
 
-    /// Returns the AccountMapper output upon receiving `me` mockup response (Data Encoded).
+    /// Returns the AccountMapper output upon receiving `me` mock response (Data Encoded).
     ///
     func mapLoadAccountResponse() -> Account? {
         guard let response = Loader.contentsOf("me") else {
@@ -74,7 +74,7 @@ private extension AccountMapperTests {
         return try? AccountMapper().map(response: response)
     }
 
-    /// Returns the SiteListMapper output upon receiving `me/sites` mockup response (Data Encoded).
+    /// Returns the SiteListMapper output upon receiving `me/sites` mock response (Data Encoded).
     ///
     func mapLoadSitesResponse() -> [Site]? {
         guard let response = Loader.contentsOf("sites") else {
@@ -84,7 +84,7 @@ private extension AccountMapperTests {
         return try? SiteListMapper().map(response: response)
     }
 
-    /// Returns the SitePlanMapper output upon receiving `sites/$site` mockup response (Data Encoded).
+    /// Returns the SitePlanMapper output upon receiving `sites/$site` mock response (Data Encoded).
     ///
     func mapLoadSitePlanResponse() -> SitePlan? {
         guard let response = Loader.contentsOf("site-plan") else {

@@ -6,7 +6,7 @@ import CoreData
 final class ResultsController_FilterProductTests: XCTestCase {
     /// InMemory Storage!
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
     private let sampleSiteID: Int64 = 134
 
@@ -14,7 +14,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
     }
 
     override func tearDown() {

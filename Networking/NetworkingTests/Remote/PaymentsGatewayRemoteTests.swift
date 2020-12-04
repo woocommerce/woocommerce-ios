@@ -9,7 +9,7 @@ final class PaymentsGatewayRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    private let network = MockupNetwork()
+    private let network = MockNetwork()
 
     /// Dummy Site ID
     ///

@@ -129,6 +129,12 @@ extension UIImage {
         return UIImage.gridicon(.comment)
     }
 
+    /// Credit Card Icon
+    ///
+    static var creditCardImage: UIImage {
+        UIImage.gridicon(.creditCard)
+    }
+
     /// Delete Icon
     ///
     static var deleteImage: UIImage {
@@ -223,6 +229,12 @@ extension UIImage {
     ///
     static var heartOutlineImage: UIImage {
         return UIImage.gridicon(.heartOutline)
+    }
+
+    /// House Image
+    ///
+    static var houseImage: UIImage {
+        UIImage.gridicon(.house)
     }
 
     /// Login prologue slanted rectangle

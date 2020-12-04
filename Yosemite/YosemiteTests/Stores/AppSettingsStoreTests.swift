@@ -23,15 +23,15 @@ private struct TestConstants {
 /// AppSettingsStore unit tests
 ///
 final class AppSettingsStoreTests: XCTestCase {
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     ///
     private var dispatcher: Dispatcher?
 
-    /// Mockup Storage: InMemory
+    /// Mock Storage: InMemory
     ///
-    private var storageManager: MockupStorageManager?
+    private var storageManager: MockStorageManager?
 
-    /// Mockup File Storage: Load a plist in the test bundle
+    /// Mock File Storage: Load a plist in the test bundle
     ///
     private var fileStorage: MockInMemoryStorage?
 
@@ -42,7 +42,7 @@ final class AppSettingsStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
         fileStorage = MockInMemoryStorage()
         subject = AppSettingsStore(dispatcher: dispatcher!, storageManager: storageManager!, fileStorage: fileStorage!)
         subject?.selectedProvidersURL = TestConstants.fileURL!
@@ -226,7 +226,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
         // Create our own infrastructure so we can inject `PListFileStorage`.
         let fileStorage = PListFileStorage()
-        let storageManager = MockupStorageManager()
+        let storageManager = MockStorageManager()
         let dispatcher = Dispatcher()
         let store = AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: fileStorage)
 

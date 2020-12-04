@@ -147,9 +147,9 @@ The networking layer is **entirely decoupled** from third party frameworks. We r
 
         Thin wrapper around the Alamofire library.
 
-3.  **MockupNetwork**
+3.  **MockNetwork**
 
-        As the name implies, the Mockup Network is extensively used in Unit Tests. Allows us to simulate backend
+        As the name implies, the Mock Network is extensively used in Unit Tests. Allows us to simulate backend
         responses without requiring third party tools. No more NSURLSession swizzling!
 
 
@@ -181,7 +181,7 @@ of performing this task for us:
 Related Endpoints are expected to be accessible by means of a concrete `Remote` implementation. The `Remote` base class offers few
 convenience methods for enqueuing requests and parsing responses in a standard and cohesive way `(Mappers)`.
 
-`Remote(s)` receive a Network concrete instance via its initializer. This allows us to Unit Test it's behavior, by means of the `MockupNetwork`
+`Remote(s)` receive a Network concrete instance via its initializer. This allows us to Unit Test it's behavior, by means of the `MockNetwork`
 tool, which was designed to simulate Backend Responses.
 
 
@@ -216,7 +216,7 @@ for the iOS platform (and our specific requirements):
         Stores offer sets of related API's that allow you to perform related tasks. Typically each Model Entity will have an
         associated Store.
 
-        References to the `Network` and `StorageManager` instances are received at build time. This allows us to inject Mockup
+        References to the `Network` and `StorageManager` instances are received at build time. This allows us to inject Mock
         Storage and Network layers, for unit testing purposes.
 
         Differing from our Android counterpart, Yosemite.Stores are *only expected process Actions*, and do not expose

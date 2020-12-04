@@ -69,7 +69,7 @@ public final class ProductAttributesRemote: Remote {
             ParameterKey.hasArchives: Default.hasArchives
         ]
 
-        let path = Path.attributes
+        let path = Path.attributes + "/\(productAttributeID)"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .put, siteID: siteID, path: path, parameters: parameters)
         let mapper = ProductAttributeMapper(siteID: siteID)
 

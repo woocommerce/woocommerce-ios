@@ -1,7 +1,7 @@
 import Yosemite
 @testable import WooCommerce
 
-/// MockupMediaStoresManager: allows mocking for stats v4 availability and last shown stats version.
+/// MockMediaStoresManager: allows mocking for stats v4 availability and last shown stats version.
 ///
 final class MockMediaStoresManager: DefaultStoresManager {
 

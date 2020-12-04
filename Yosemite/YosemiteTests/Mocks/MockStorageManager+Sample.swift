@@ -2,9 +2,9 @@ import Foundation
 import Yosemite
 
 
-// MARK: - MockupStorage Sample Entity Insertion Methods
+// MARK: - MockStorageManager Sample Entity Insertion Methods
 //
-extension MockupStorageManager {
+extension MockStorageManager {
 
     /// Inserts a new (Sample) account into the specified context.
     ///

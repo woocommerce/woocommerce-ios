@@ -2,19 +2,19 @@ import Foundation
 import Alamofire
 
 
-/// Network Mockup: Allows us to simulate HTTP Responses.
+/// Network Mock: Allows us to simulate HTTP Responses.
 ///
-class MockupNetwork: Network {
+class MockNetwork: Network {
 
     /// Should this instance use the responseQueue or responseMap
     ///
     private var useResponseQueue: Bool = false
 
-    /// Mapping between URL Suffix and JSON Mockup responses (in a FIFO queue).
+    /// Mapping between URL Suffix and JSON Mock responses (in a FIFO queue).
     ///
     private var responseQueue = [String: Queue<String>]()
 
-    /// Mapping between URL Suffix and JSON Mockup responses (in a simple array).
+    /// Mapping between URL Suffix and JSON Mock responses (in a simple array).
     ///
     private var responseMap = [String: String]()
 
@@ -91,7 +91,7 @@ class MockupNetwork: Network {
 
 // MARK: - Public Methods
 //
-extension MockupNetwork {
+extension MockNetwork {
 
     /// Whenever a request is enqueued, we'll return the specified JSON Encoded file, whenever the Request's URL suffix matches with
     /// the specified one.
@@ -121,7 +121,7 @@ extension MockupNetwork {
 
 // MARK: - Private Helpers
 //
-private extension MockupNetwork {
+private extension MockNetwork {
 
     /// Adds the URL suffix and response JSON Filename to the response queue
     ///
@@ -138,7 +138,7 @@ private extension MockupNetwork {
         responseMap[requestUrlSuffix] = filename
     }
 
-    /// Returns the Mockup JSON Filename for a given URLRequestConvertible from either:
+    /// Returns the Mock JSON Filename for a given URLRequestConvertible from either:
     ///
     ///   * the FIFO response queue (where the response is removed from the queue when this func returns)
     ///   * the responseMap (array)
@@ -158,7 +158,7 @@ private extension MockupNetwork {
         return nil
     }
 
-    /// Returns the Mockup Error for a given URLRequestConvertible.
+    /// Returns the Mock Error for a given URLRequestConvertible.
     ///
     private func error(for request: URLRequestConvertible) -> Error? {
         let searchPath = path(for: request)

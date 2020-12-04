@@ -2,9 +2,9 @@ import XCTest
 @testable import WooCommerce
 
 
-/// MockupSupportManager: SupportManagerAdapter Mockup
+/// MockSupportManager: SupportManagerAdapter Mock
 ///
-class MockupSupportManager: SupportManagerAdapter {
+class MockSupportManager: SupportManagerAdapter {
 
     /// All of the tokens received via `registerDeviceToken`
     ///

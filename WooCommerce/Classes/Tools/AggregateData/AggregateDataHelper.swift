@@ -129,4 +129,36 @@ final class AggregateDataHelper {
 
         return sorted
     }
+
+    /// Combines aggregate order items with order items from non-refunded shipping labels.
+    ///
+    /// - Parameters:
+    ///   - orderItems: an array of aggregate order items, like after combining with refunded products by calling `combineOrderItems`.
+    ///   - orderItemsInNonRefundedShippingLabels: an array of aggregate order items from shipping labels that could have duplicate products/variations.
+    /// - Returns: an array of aggregate order items based on the given `orderItems` whose elements are removed if fully covered in shipping labels, and the
+    ///            quantity is subtracted by the total quantity from the given order items in shipping labels.
+    static func combineAggregatedOrderItems(_ orderItems: [AggregateOrderItem],
+                                            with orderItemsInNonRefundedShippingLabels: [AggregateOrderItem]) -> [AggregateOrderItem] {
+        // Generates a dictionary that maps a unique order item (keyed by `productID` and `variationID`) to the sum of quantity from order items in shipping
+        // labels.
+        let orderItemsByProductAndVariationID = Dictionary(grouping: orderItemsInNonRefundedShippingLabels) { $0.hashValue }
+        let orderItemCountsByProductAndVariationID = orderItemsByProductAndVariationID.mapValues {
+            $0.reduce(into: 0) { result, orderItem in
+                result += orderItem.quantity
+            }
+        }
+        return orderItems.compactMap { orderItem in
+            // If the order item is not in any shipping labels, the original order item is returned.
+            guard let orderItemCountInNonRefundedShippingLabels = orderItemCountsByProductAndVariationID[orderItem.hashValue] else {
+                return orderItem
+            }
+            // If the order item quantity is <= the sum in the shipping labels, the order item is skipped since it's shown in the shipping label sections.
+            guard orderItemCountInNonRefundedShippingLabels < orderItem.quantity else {
+                return nil
+            }
+            // If the order item quantity is larger than the sum in the shipping labels, the order item's quantity is deducted by the sum in the shipping
+            // labels.
+            return orderItem.copy(quantity: orderItem.quantity - orderItemCountInNonRefundedShippingLabels)
+        }
+    }
 }

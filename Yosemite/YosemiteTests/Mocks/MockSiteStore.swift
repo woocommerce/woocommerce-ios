@@ -12,7 +12,7 @@ enum SiteAction: Action {
 
 // MARK: - Account Site Store.
 //
-class MockupSiteStore: Store {
+class MockSiteStore: Store {
 
     var receivedActions = [SiteAction]()
 

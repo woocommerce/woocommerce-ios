@@ -8,7 +8,7 @@ import XCTest
 /// Test cases for `OrderStore.fetchFilteredAndAllOrders`
 ///
 final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
     private var viewStorage: StorageType {
         storageManager.viewStorage
@@ -16,7 +16,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
     }
 
     override func tearDown() {
@@ -31,7 +31,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         XCTAssertNotNil(findOrder(withID: Fixtures.order.orderID))
         XCTAssertEqual(countOrders(), 1)
 
-        let network = MockupNetwork()
+        let network = MockNetwork()
         network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAllJSON.fileName)
 
         // Act
@@ -53,7 +53,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         XCTAssertNotNil(findOrder(withID: Fixtures.order.orderID))
         XCTAssertEqual(countOrders(), 1)
 
-        let network = MockupNetwork()
+        let network = MockNetwork()
         network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAllJSON.fileName)
 
         // Act
@@ -70,7 +70,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
 
     func testWhenGivenAFilterItFetchesBothTheFilteredListAndTheAllOrdersList() {
         // Arrange
-        let network = MockupNetwork(useResponseQueue: true)
+        let network = MockNetwork(useResponseQueue: true)
         network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAllJSON.fileName)
         network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAll2JSON.fileName)
 
@@ -86,7 +86,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
 
     func testWhenNotGivenAFilterItFetchesTheAllOrdersListOnly() {
         // Arrange
-        let network = MockupNetwork(useResponseQueue: true)
+        let network = MockNetwork(useResponseQueue: true)
         network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAllJSON.fileName)
         network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAll2JSON.fileName)
 
@@ -103,7 +103,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         // Arrange
         insert(order: Fixtures.order)
 
-        let network = MockupNetwork()
+        let network = MockNetwork()
         network.simulateError(requestUrlSuffix: "orders", error: NetworkError.timeout)
 
         // Act

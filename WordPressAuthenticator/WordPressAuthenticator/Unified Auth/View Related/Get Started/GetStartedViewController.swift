@@ -364,19 +364,7 @@ private extension GetStartedViewController {
                                         }
                                         self.configureViewLoading(false)
 
-                                        let userInfo = (error as NSError).userInfo
-                                        let errorCode = userInfo[WordPressComRestApi.ErrorKeyErrorCode] as? String
-
-                                        if errorCode == "unknown_user" {
-                                            self.showSignupView()
-                                        } else if errorCode == "email_login_not_allowed" {
-                                                // If we get this error, we know we have a WordPress.com user but their
-                                                // email address is flagged as suspicious.  They need to login via their
-                                                // username instead.
-                                                self.showSelfHostedWithError(error)
-                                        } else {
-                                            self.displayError(error as NSError, sourceTag: self.sourceTag)
-                                        }
+                                        self.handleLoginError(error)
         })
     }
     
@@ -392,6 +380,38 @@ private extension GetStartedViewController {
         vc.trackAsPasswordChallenge = false
         
         navigationController?.pushViewController(vc, animated: true)
+    }
+
+    /// Handle errors when attempting to log in with an email address
+    ///
+    func handleLoginError(_ error: Error) {
+        let userInfo = (error as NSError).userInfo
+        let errorCode = userInfo[WordPressComRestApi.ErrorKeyErrorCode] as? String
+
+        if errorCode == "unknown_user" {
+            self.showSignupViewIfNecessary(error)
+        } else if errorCode == "email_login_not_allowed" {
+                // If we get this error, we know we have a WordPress.com user but their
+                // email address is flagged as suspicious.  They need to login via their
+                // username instead.
+                self.showSelfHostedWithError(error)
+        } else {
+            self.displayError(error as NSError, sourceTag: self.sourceTag)
+        }
+    }
+
+    /// Offer host apps the opportunity to decide if they want to allow signups
+    ///
+    func showSignupViewIfNecessary(_ error: Error) {
+        guard let authenticationDelegate = WordPressAuthenticator.shared.delegate, authenticationDelegate.shouldHandleError(error) else {
+            showSignupView()
+            return
+        }
+
+        /// Hand over control to the host app.
+        authenticationDelegate.handleError(error) { customUI in
+            self.navigationController?.pushViewController(customUI, animated: true)
+        }
     }
     
     /// Show the Sign Up view.

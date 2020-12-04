@@ -183,7 +183,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 
     func handleError(_ error: Error, onCompletion: @escaping (UIViewController) -> Void) {
-        let errorViewModel = viewModel(error)
+        guard let errorViewModel = viewModel(error) else {
+            return
+        }
+
         let noWPErrorUI = ULErrorViewController(viewModel: errorViewModel)
 
         onCompletion(noWPErrorUI)
@@ -361,7 +364,7 @@ private extension AuthenticationManager {
         return wooAuthError == .emailDoesNotMatchWPAcount || wooAuthError == .notWPSite
     }
 
-    func viewModel(_ error: Error) -> ULErrorViewModel {
+    func viewModel(_ error: Error) -> ULErrorViewModel? {
         let wooAuthError = AuthenticationError.make(with: error)
 
         switch wooAuthError {
@@ -370,7 +373,7 @@ private extension AuthenticationManager {
         case .notWPSite:
             return NotWPErrorViewModel()
         default:
-            return NotWPErrorViewModel()
+            return nil
         }
     }
 }

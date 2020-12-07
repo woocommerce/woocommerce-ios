@@ -8,6 +8,7 @@ extension ProductAttribute {
         return NSFetchRequest<ProductAttribute>(entityName: "ProductAttribute")
     }
 
+    @NSManaged public var siteID: Int64
     @NSManaged public var attributeID: Int64
     @NSManaged public var name: String
     @NSManaged public var position: Int64

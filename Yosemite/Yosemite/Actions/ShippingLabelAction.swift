@@ -11,4 +11,11 @@ public enum ShippingLabelAction: Action {
                             shippingLabelID: Int64,
                             paperSize: ShippingLabelPaperSize,
                             completion: (Result<ShippingLabelPrintData, Error>) -> Void)
+
+    /// Requests a refund for a shipping label.
+    ///
+    case refundShippingLabel(siteID: Int64,
+                             orderID: Int64,
+                             shippingLabelID: Int64,
+                             completion: (Result<ShippingLabelRefund, Error>) -> Void)
 }

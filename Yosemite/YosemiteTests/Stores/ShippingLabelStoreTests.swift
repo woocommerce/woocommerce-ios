@@ -215,6 +215,74 @@ final class ShippingLabelStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
+
+    // MARK: - `refundShippingLabel`
+
+    func test_refundShippingLabel_returns_refund_and_updates_local_ShippingLabel_refund_on_success() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        let expectedRefund = Yosemite.ShippingLabelRefund(dateRequested: Date(), status: .pending)
+        let orderID = Int64(134)
+        remote.whenRefundingShippingLabel(siteID: sampleSiteID,
+                                          orderID: orderID,
+                                          shippingLabelID: sampleShippingLabelID,
+                                          thenReturn: .success(expectedRefund))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Inserts a shipping label without a refund.
+        insertShippingLabel(siteID: sampleSiteID, orderID: orderID, shippingLabelID: sampleShippingLabelID)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabel.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 0)
+
+        // When
+        let result: Result<Yosemite.ShippingLabelRefund, Error> = try waitFor { promise in
+            let action = ShippingLabelAction.refundShippingLabel(siteID: self.sampleSiteID,
+                                                                 orderID: orderID,
+                                                                 shippingLabelID: self.sampleShippingLabelID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let refund = try XCTUnwrap(result.get())
+        XCTAssertEqual(refund, expectedRefund)
+
+        let persistedShippingLabel = try XCTUnwrap(viewStorage.loadShippingLabel(siteID: sampleSiteID,
+                                                                                 orderID: orderID,
+                                                                                 shippingLabelID: sampleShippingLabelID))
+        XCTAssertEqual(persistedShippingLabel.refund?.toReadOnly(), expectedRefund)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabel.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 1)
+    }
+
+    func test_refundShippingLabel_returns_error_on_failure() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        let orderID = Int64(134)
+        let expectedError = NetworkError.notFound
+        remote.whenRefundingShippingLabel(siteID: sampleSiteID,
+                                          orderID: orderID,
+                                          shippingLabelID: sampleShippingLabelID,
+                                          thenReturn: .failure(expectedError))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Yosemite.ShippingLabelRefund, Error> = try waitFor { promise in
+            let action = ShippingLabelAction.refundShippingLabel(siteID: self.sampleSiteID,
+                                                                 orderID: orderID,
+                                                                 shippingLabelID: self.sampleShippingLabelID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
 }
 
 private extension ShippingLabelStoreTests {
@@ -223,5 +291,14 @@ private extension ShippingLabelStoreTests {
         order.siteID = siteID
         order.orderID = orderID
         order.statusKey = ""
+    }
+
+    func insertShippingLabel(siteID: Int64, orderID: Int64, shippingLabelID: Int64) {
+        let shippingLabel = viewStorage.insertNewObject(ofType: StorageShippingLabel.self)
+        shippingLabel.siteID = siteID
+        shippingLabel.orderID = orderID
+        shippingLabel.shippingLabelID = shippingLabelID
+        shippingLabel.dateCreated = Date()
+        shippingLabel.productNames = []
     }
 }

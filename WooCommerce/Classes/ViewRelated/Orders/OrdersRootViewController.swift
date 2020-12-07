@@ -89,7 +89,7 @@ private extension OrdersRootViewController {
         navigationItem.leftBarButtonItem = ordersViewController.createSearchBarButtonItem()
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderCreation) {
-            navigationItem.rightBarButtonItem = ordersViewController.createOrderCreationBarButtonItem()
+            navigationItem.rightBarButtonItem = ordersViewController.createNewOrderBarButtonItem()
         }
 
         removeNavigationBackBarButtonText()

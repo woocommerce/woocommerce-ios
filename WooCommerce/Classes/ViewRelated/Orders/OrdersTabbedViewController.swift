@@ -171,7 +171,7 @@ extension OrdersTabbedViewController {
 
     /// Create a `UIBarButtonItem` to be used as order creation trigger on the top-right.
     ///
-    func createOrderCreationBarButtonItem() -> UIBarButtonItem {
+    func createNewOrderBarButtonItem() -> UIBarButtonItem {
         let button = UIBarButtonItem(image: .plusImage,
                                      style: .plain,
                                      target: self,

@@ -41,8 +41,8 @@ final class ProductAttributesRemoteTests: XCTestCase {
         }
 
         // Then
-        let expectedResult = [ProductAttribute(attributeID: 1, name: "Color", position: 0, visible: true, variation: true, options: []),
-                              ProductAttribute(attributeID: 2, name: "Size", position: 0, visible: true, variation: true, options: [])]
+        let expectedResult = [ProductAttribute(siteID: sampleSiteID, attributeID: 1, name: "Color", position: 0, visible: true, variation: true, options: []),
+                              ProductAttribute(siteID: sampleSiteID, attributeID: 2, name: "Size", position: 0, visible: true, variation: true, options: [])]
 
         let response = try XCTUnwrap(result.get())
         XCTAssertEqual(response, expectedResult)

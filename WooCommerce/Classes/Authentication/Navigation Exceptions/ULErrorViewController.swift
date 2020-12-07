@@ -58,6 +58,7 @@ private extension ULErrorViewController {
         }
 
         extraInfoButton.applyLinkButtonStyle()
+        extraInfoButton.contentEdgeInsets = Constants.extraInfoCustomInsets
         extraInfoButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
         extraInfoButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapAuxiliaryButton()
@@ -96,6 +97,13 @@ private extension ULErrorViewController {
     }
 }
 
+
+// MARK: - Constants
+private extension ULErrorViewController {
+    enum Constants {
+        static let extraInfoCustomInsets = UIEdgeInsets(top: 12, left: 10, bottom: 12, right: 10)
+    }
+}
 
 // MARK: - Tests
 extension ULErrorViewController {

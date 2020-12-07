@@ -179,16 +179,15 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func createdWordPressComAccount(username: String, authToken: String) { }
 
     func shouldHandleError(_ error: Error) -> Bool {
-        guard AuthenticationError.make(with: error) == .notWPSite else {
-            return false
-        }
-
-        return true
+        return isSupportedError(error)
     }
 
     func handleError(_ error: Error, onCompletion: @escaping (UIViewController) -> Void) {
-        let viewModel = NotWPErrorViewModel()
-        let noWPErrorUI = ULErrorViewController(viewModel: viewModel)
+        guard let errorViewModel = viewModel(error) else {
+            return
+        }
+
+        let noWPErrorUI = ULErrorViewController(viewModel: errorViewModel)
 
         onCompletion(noWPErrorUI)
     }
@@ -341,6 +340,7 @@ private extension AuthenticationManager {
 
     /// Maps error codes emitted by WPAuthenticator to a domain error object
     enum AuthenticationError: Int, Error {
+        case emailDoesNotMatchWPAccount = 7
         case notWPSite = 406
         case unknown
 
@@ -348,11 +348,31 @@ private extension AuthenticationManager {
             let error = error as NSError
 
             switch error.code {
+            case emailDoesNotMatchWPAccount.rawValue:
+                return .emailDoesNotMatchWPAccount
             case notWPSite.rawValue:
                 return .notWPSite
             default:
                 return .unknown
             }
+        }
+    }
+
+    func isSupportedError(_ error: Error) -> Bool {
+        let wooAuthError = AuthenticationError.make(with: error)
+        return wooAuthError != .unknown
+    }
+
+    func viewModel(_ error: Error) -> ULErrorViewModel? {
+        let wooAuthError = AuthenticationError.make(with: error)
+
+        switch wooAuthError {
+        case .emailDoesNotMatchWPAccount:
+            return NotWPAccountViewModel()
+        case .notWPSite:
+            return NotWPErrorViewModel()
+        default:
+            return nil
         }
     }
 }

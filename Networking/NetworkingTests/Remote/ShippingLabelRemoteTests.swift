@@ -55,4 +55,45 @@ final class ShippingLabelRemoteTests: XCTestCase {
         XCTAssertEqual(printData.mimeType, "application/pdf")
         XCTAssertFalse(printData.base64Content.isEmpty)
     }
+
+    func test_refundShippingLabel_returns_refund_on_success() throws {
+        // Given
+        let orderID = Int64(279)
+        let shippingLabelID = Int64(134)
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/\(orderID)/\(shippingLabelID)/refund", filename: "shipping-label-refund-success")
+
+        // When
+        let result: Result<ShippingLabelRefund, Error> = try waitFor { promise in
+            remote.refundShippingLabel(siteID: self.sampleSiteID,
+                                       orderID: orderID,
+                                       shippingLabelID: shippingLabelID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let refund = try XCTUnwrap(result.get())
+        XCTAssertEqual(refund, .init(dateRequested: Date(timeIntervalSince1970: 1607331363.627), status: .pending))
+    }
+
+    func test_refundShippingLabel_returns_error_on_failure() throws {
+        // Given
+        let orderID = Int64(279)
+        let shippingLabelID = Int64(134)
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/\(orderID)/\(shippingLabelID)/refund", filename: "shipping-label-refund-error")
+
+        // When
+        let result: Result<ShippingLabelRefund, Error> = try waitFor { promise in
+            remote.refundShippingLabel(siteID: self.sampleSiteID,
+                                       orderID: orderID,
+                                       shippingLabelID: shippingLabelID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
 }

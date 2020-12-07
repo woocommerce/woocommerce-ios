@@ -1,0 +1,4 @@
+{
+    "error": "wcc_server_error_response",
+    "message": "Error: The WooCommerce Shipping & Tax server returned: Bad Request Unable to request refund. The parcel has been shipped. ( 400 )"
+}

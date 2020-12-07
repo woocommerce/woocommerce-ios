@@ -258,6 +258,38 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 1)
     }
 
+    func test_refundShippingLabel_returns_refund_on_success_without_storage_changes_if_no_existing_ShippingLabel_in_storage() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        let expectedRefund = Yosemite.ShippingLabelRefund(dateRequested: Date(), status: .pending)
+        let orderID = Int64(134)
+        remote.whenRefundingShippingLabel(siteID: sampleSiteID,
+                                          orderID: orderID,
+                                          shippingLabelID: sampleShippingLabelID,
+                                          thenReturn: .success(expectedRefund))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabel.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 0)
+
+        // When
+        let result: Result<Yosemite.ShippingLabelRefund, Error> = try waitFor { promise in
+            let action = ShippingLabelAction.refundShippingLabel(siteID: self.sampleSiteID,
+                                                                 orderID: orderID,
+                                                                 shippingLabelID: self.sampleShippingLabelID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let refund = try XCTUnwrap(result.get())
+        XCTAssertEqual(refund, expectedRefund)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabel.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 0)
+    }
+
     func test_refundShippingLabel_returns_error_on_failure() throws {
         // Given
         let remote = MockShippingLabelRemote()

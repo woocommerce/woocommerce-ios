@@ -113,6 +113,8 @@
 		45AB8B1E24AB363D00B5B36E /* ProductTagStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AB8B1D24AB363D00B5B36E /* ProductTagStoreTests.swift */; };
 		45E18632237046CB009241F3 /* ShippingLine+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E18631237046CB009241F3 /* ShippingLine+ReadOnlyConvertible.swift */; };
 		45ED4F16239E939A004F1BE3 /* TaxClassStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ED4F15239E939A004F1BE3 /* TaxClassStoreTests.swift */; };
+		45ED6092257E72F4007B4AC6 /* ProductAttributeAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ED6091257E72F4007B4AC6 /* ProductAttributeAction.swift */; };
+		45ED6096257E7472007B4AC6 /* ProductAttributeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ED6095257E7472007B4AC6 /* ProductAttributeStore.swift */; };
 		570B05CF246B6AAD00C186AE /* RetrieveProductReviewFromNoteUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570B05CE246B6AAD00C186AE /* RetrieveProductReviewFromNoteUseCase.swift */; };
 		57150E1124F462D900E81611 /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 57150E1024F462D900E81611 /* TestKit */; };
 		571D7E3F251BB9FA00606E96 /* LogErrorAndExit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571D7E3E251BB9FA00606E96 /* LogErrorAndExit.swift */; };
@@ -368,6 +370,8 @@
 		45AB8B1D24AB363D00B5B36E /* ProductTagStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagStoreTests.swift; sourceTree = "<group>"; };
 		45E18631237046CB009241F3 /* ShippingLine+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLine+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		45ED4F15239E939A004F1BE3 /* TaxClassStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassStoreTests.swift; sourceTree = "<group>"; };
+		45ED6091257E72F4007B4AC6 /* ProductAttributeAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeAction.swift; sourceTree = "<group>"; };
+		45ED6095257E7472007B4AC6 /* ProductAttributeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeStore.swift; sourceTree = "<group>"; };
 		570B05CE246B6AAD00C186AE /* RetrieveProductReviewFromNoteUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetrieveProductReviewFromNoteUseCase.swift; sourceTree = "<group>"; };
 		571D7E3E251BB9FA00606E96 /* LogErrorAndExit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogErrorAndExit.swift; sourceTree = "<group>"; };
 		5726456E250BD4E4005BBD7C /* OrdersUpsertUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersUpsertUseCase.swift; sourceTree = "<group>"; };
@@ -944,6 +948,7 @@
 				CE3B7AD62225ECA90050FE4B /* OrderStatusStore.swift */,
 				261CF1F0255B389F0090D8D3 /* PaymentGatewayStore.swift */,
 				749374FD2249601F007D85D1 /* ProductStore.swift */,
+				45ED6095257E7472007B4AC6 /* ProductAttributeStore.swift */,
 				D831E2E1230E3513000037D0 /* ProductReviewStore.swift */,
 				261F94E5242EFF8700762B58 /* ProductCategoryStore.swift */,
 				45AB8B1624AA4B3D00B5B36E /* ProductTagStore.swift */,
@@ -1146,6 +1151,7 @@
 				CE3B7AD42225EBF10050FE4B /* OrderStatusAction.swift */,
 				261CF1EC255B37B40090D8D3 /* PaymentGatewayAction.swift */,
 				749374FF2249605E007D85D1 /* ProductAction.swift */,
+				45ED6091257E72F4007B4AC6 /* ProductAttributeAction.swift */,
 				D831E2E3230E3524000037D0 /* ProductReviewAction.swift */,
 				261F94E3242EFA6D00762B58 /* ProductCategoryAction.swift */,
 				45AB8B1424AA4A1E00B5B36E /* ProductTagAction.swift */,
@@ -1419,6 +1425,7 @@
 				CE01014F2368C41600783459 /* Refund+ReadOnlyType.swift in Sources */,
 				D8736B6D22F0CE0900A14A29 /* OrderCount+ReadOnlyConvertible.swift in Sources */,
 				0271E1662509CF0100633F7A /* AnyError.swift in Sources */,
+				45ED6096257E7472007B4AC6 /* ProductAttributeStore.swift in Sources */,
 				02FF054D23D983F30058E6E7 /* MediaFileManager.swift in Sources */,
 				B56C1EC220EAE2E500D749F9 /* ReadOnlyConvertible.swift in Sources */,
 				D8C11A5022DF2D9400D4A88D /* StatsStoreV4.swift in Sources */,
@@ -1436,6 +1443,7 @@
 				741F34822195EA71005F5BD9 /* CommentStore.swift in Sources */,
 				74B260212188B5F30041793A /* Note+ReadOnlyType.swift in Sources */,
 				B505254C20EE6491008090F5 /* Site+ReadOnlyConvertible.swift in Sources */,
+				45ED6092257E72F4007B4AC6 /* ProductAttributeAction.swift in Sources */,
 				B52E002B2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift in Sources */,
 				93E7507A226E2D6C00BAF88A /* AccountSettings+ReadOnlyConvertible.swift in Sources */,
 				749374FE2249601F007D85D1 /* ProductStore.swift in Sources */,

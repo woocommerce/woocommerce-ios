@@ -360,7 +360,7 @@ private extension AuthenticationManager {
 
     func isSupportedError(_ error: Error) -> Bool {
         let wooAuthError = AuthenticationError.make(with: error)
-        return wooAuthError == .emailDoesNotMatchWPAccount || wooAuthError == .notWPSite
+        return wooAuthError != .unknown
     }
 
     func viewModel(_ error: Error) -> ULErrorViewModel? {

@@ -23,6 +23,9 @@ final class IssueRefundCoordinatingController: WooNavigationController {
         self.systemNoticePresenter = systemNoticePresenter
         super.init(nibName: nil, bundle: nil)
         startRefundNavigation()
+
+        // Set presentation delegate to define custom behaviour to the user's dismiss action.
+        presentationController?.delegate = self
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -144,6 +147,25 @@ private extension IssueRefundCoordinatingController {
         presentingViewController?.dismiss(animated: true) { [weak self] in
             self?.systemNoticePresenter.enqueue(notice: .init(title: Localization.refundSuccess))
         }
+    }
+}
+
+// MARK: Modal Presentation delegate
+
+/// Conform to this protocol to allow custom behaviour on when to allow an interactive dismiss gesture.
+///
+protocol IssueRefundInteractiveDismissDelegate: class {
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool
+}
+
+extension IssueRefundCoordinatingController: UIAdaptivePresentationControllerDelegate {
+    /// Asks the top view controller if it can be dismissed by an interactive gesture.
+    ///
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        guard let delegate = topViewController as? IssueRefundInteractiveDismissDelegate else {
+            return true
+        }
+        return delegate.presentationControllerShouldDismiss(presentationController)
     }
 }
 

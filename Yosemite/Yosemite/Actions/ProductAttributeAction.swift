@@ -6,7 +6,7 @@ import Networking
 public enum ProductAttributeAction: Action {
 
     /// Synchronizes all ProductAttributes.
-    /// `onCompletion` will be invoked when the sync operation finishes. `error` will be nill if the operation succeed.
+    /// `onCompletion` will be invoked when the sync operation finishes. `error` will be nil if the operation succeed.
     ///
     case synchronizeProductAttributes(siteID: Int64, onCompletion: (Result<[ProductAttribute], Error>) -> Void)
 

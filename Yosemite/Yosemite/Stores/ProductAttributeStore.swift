@@ -33,15 +33,12 @@ public final class ProductAttributeStore: Store {
         switch action {
         case let .synchronizeProductAttributes(siteID, onCompletion):
             synchronizeProductAttributes(siteID: siteID, onCompletion: onCompletion)
-        case .addProductAttribute(siteID: let siteID, name: let name, onCompletion: let onCompletion):
-            // TODO
-            break
+        case .addProductAttribute(let siteID, let name, let onCompletion):
+            addProductAttribute(siteID: siteID, name: name, onCompletion: onCompletion)
         case .updateProductAttribute(siteID: let siteID, productAttributeID: let productAttributeID, name: let name, onCompletion: let onCompletion):
-            // TODO
-            break
+            updateProductAttribute(siteID: siteID, attributeID: productAttributeID, name: name, onCompletion: onCompletion)
         case .deleteProductAttribute(siteID: let siteID, productAttributeID: let productAttributeID, onCompletion: let onCompletion):
-            // TODO
-            break
+            deleteProductAttribute(siteID: siteID, attributeID: productAttributeID, onCompletion: onCompletion)
         }
     }
 }
@@ -53,54 +50,61 @@ private extension ProductAttributeStore {
     /// Synchronizes global product attributes associated with a given Site ID.
     ///
     func synchronizeProductAttributes(siteID: Int64, onCompletion: @escaping (Result<[ProductAttribute], Error>) -> Void) {
-        remote.loadAllProductAttributes(for: siteID) { (result) in
+        remote.loadAllProductAttributes(for: siteID) { [weak self] (result) in
             switch result {
             case .success(let productAttributes):
-                self.upsertStoredProductAttributesInBackground(productAttributes, siteID: siteID) {
+                self?.upsertStoredProductAttributesInBackground(productAttributes, siteID: siteID) {
                     onCompletion(.success(productAttributes))
                 }
             case .failure(let error):
                 onCompletion(.failure(error))
             }
         }
-//        remote.loadAllProductCategories(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (productCategories, error) in
-//            guard let productCategories = productCategories else {
-//                onCompletion(nil, error)
-//                return
-//            }
-//
-//            if pageNumber == Default.firstPageNumber {
-//                self?.deleteUnusedStoredProductCategories(siteID: siteID)
-//            }
-//
-//            self?.upsertStoredProductCategoriesInBackground(productCategories, siteID: siteID) {
-//                onCompletion(productCategories, nil)
-//            }
-//        }
     }
 
-    /// Create a new product category associated with a given Site ID.
+    /// Create a new global product attribute associated with a given Site ID.
     ///
-//    func addProductCategory(siteID: Int64, name: String, parentID: Int64?, onCompletion: @escaping (Result<ProductCategory, Error>) -> Void) {
-//        remote.createProductCategory(for: siteID, name: name, parentID: parentID) { [weak self] result in
-//            switch result {
-//            case .success(let productCategory):
-//                self?.upsertStoredProductCategoriesInBackground([productCategory], siteID: siteID) {
-//                    onCompletion(.success(productCategory))
-//                }
-//            case .failure(let error):
-//                onCompletion(.failure(error))
-//            }
-//        }
-//    }
-//
-//    /// Deletes any Storage.ProductCategory  that is not associated to a product on the specified `siteID`
-//    ///
-//    func deleteUnusedStoredProductCategories(siteID: Int64) {
-//        let storage = storageManager.viewStorage
-//        storage.deleteUnusedProductCategories(siteID: siteID)
-//        storage.saveIfNeeded()
-//    }
+    func addProductAttribute(siteID: Int64, name: String, onCompletion: @escaping (Result<ProductAttribute, Error>) -> Void) {
+        remote.createProductAttribute(for: siteID, name: name) { [weak self] (result) in
+            switch result {
+            case .success(let productAttribute):
+                self?.upsertStoredProductAttributesInBackground([productAttribute], siteID: siteID, onCompletion: {
+                    onCompletion(.success(productAttribute))
+                })
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Update a global product attribute associated with a given Site ID.
+    ///
+    func updateProductAttribute(siteID: Int64, attributeID: Int64, name: String, onCompletion: @escaping (Result<ProductAttribute, Error>) -> Void) {
+        remote.updateProductAttribute(for: siteID, productAttributeID: attributeID, name: name) { [weak self] (result) in
+            switch result {
+            case .success(let productAttribute):
+                self?.upsertStoredProductAttributesInBackground([productAttribute], siteID: siteID, onCompletion: {
+                    onCompletion(.success(productAttribute))
+                })
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Delete a global product attribute associated with a given Site ID.
+    ///
+    func deleteProductAttribute(siteID: Int64, attributeID: Int64, onCompletion: @escaping (Result<ProductAttribute, Error>) -> Void) {
+        remote.deleteProductAttribute(for: siteID, productAttributeID: attributeID) { [weak self] (result) in
+            switch result {
+            case .success(let productAttribute):
+                self?.deleteStoredProductAttribute(siteID: siteID, attributeID: attributeID)
+                onCompletion(.success(productAttribute))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
 }
 
 // MARK: - Storage: ProductAttribute
@@ -144,5 +148,17 @@ private extension ProductAttributeStore {
             }()
             storageProductAttribute.update(with: readOnlyProductAttribute)
         }
+    }
+
+    /// Deletes any Storage.ProductAttribute with the specified `siteID` and `attributeID`
+    ///
+    func deleteStoredProductAttribute(siteID: Int64, attributeID: Int64) {
+        let storage = storageManager.viewStorage
+        guard let productAttribute = storage.loadProductAttribute(attributeID: attributeID) else {
+            return
+        }
+
+        storage.deleteObject(productAttribute)
+        storage.saveIfNeeded()
     }
 }

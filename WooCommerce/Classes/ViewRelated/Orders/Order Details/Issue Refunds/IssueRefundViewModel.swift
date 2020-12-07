@@ -61,6 +61,10 @@ final class IssueRefundViewModel {
     ///
     private(set) var isNextButtonEnabled: Bool = false
 
+    /// Boolean indicating if the "select all" button is visible
+    ///
+    private(set) var isSelectAllButtonVisible: Bool = true
+
     /// The sections and rows to display in the `UITableView`.
     ///
     private(set) var sections: [Section] = []
@@ -90,6 +94,7 @@ final class IssueRefundViewModel {
         sections = createSections()
         title = calculateTitle()
         isNextButtonEnabled = calculateNextButtonEnableState()
+        isSelectAllButtonVisible = calculateSelectAllButtonVisibility()
         selectedItemsTitle = createSelectedItemsCount()
     }
 
@@ -317,6 +322,12 @@ extension IssueRefundViewModel {
     ///
     private func calculateNextButtonEnableState() -> Bool {
         return state.refundQuantityStore.count() > 0 || state.shouldRefundShipping
+    }
+
+    /// Calculates wether the "select all" button should be visible or not.
+    ///
+    private func calculateSelectAllButtonVisibility() -> Bool {
+        return state.itemsToRefund.isNotEmpty
     }
 
     /// Returns `true` if a shipping refund is found.

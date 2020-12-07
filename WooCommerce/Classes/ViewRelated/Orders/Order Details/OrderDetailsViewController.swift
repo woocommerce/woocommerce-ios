@@ -64,6 +64,7 @@ final class OrderDetailsViewController: UIViewController {
         super.viewWillAppear(animated)
         syncNotes()
         syncProducts()
+        syncProductVariations()
         syncRefunds()
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease1) {
             syncShippingLabels()
@@ -226,6 +227,11 @@ extension OrderDetailsViewController {
         }
 
         group.enter()
+        syncProductVariations { _ in
+            group.leave()
+        }
+
+        group.enter()
         syncRefunds() { _ in
             group.leave()
         }
@@ -279,6 +285,10 @@ private extension OrderDetailsViewController {
 
     func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
         viewModel.syncProducts(onCompletion: onCompletion)
+    }
+
+    func syncProductVariations(onCompletion: ((Error?) -> ())? = nil) {
+        viewModel.syncProductVariations(onCompletion: onCompletion)
     }
 
     func syncRefunds(onCompletion: ((Error?) -> ())? = nil) {

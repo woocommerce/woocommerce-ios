@@ -42,6 +42,8 @@ public final class ProductVariationStore: Store {
             retrieveProductVariation(siteID: siteID, productID: productID, variationID: variationID, onCompletion: onCompletion)
         case .updateProductVariation(let productVariation, let onCompletion):
             updateProductVariation(productVariation: productVariation, onCompletion: onCompletion)
+        case .requestMissingVariations(let order, let onCompletion):
+            requestMissingVariations(for: order, onCompletion: onCompletion)
         }
     }
 }
@@ -128,10 +130,52 @@ private extension ProductVariationStore {
             }
         }
     }
+
+    /// Synchronizes the variations in a specified Order that have not been fetched yet.
+    ///
+    func requestMissingVariations(for order: Order, onCompletion: @escaping (Error?) -> Void) {
+        let orderItems = order.items
+
+        let storage = storageManager.viewStorage
+        let orderItemsWithMissingVariations = orderItems
+            .filter { $0.variationID != 0 }
+            .filter { storage.loadProductVariation(siteID: order.siteID, productVariationID: $0.variationID) == nil }
+
+        var results = [Result<ProductVariation, Error>]()
+        let group = DispatchGroup()
+        orderItemsWithMissingVariations.forEach { orderItem in
+            group.enter()
+            remote.loadProductVariation(for: order.siteID,
+                                        productID: orderItem.productID,
+                                        variationID: orderItem.variationID) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .failure(let error):
+                    results.append(.failure(error))
+                    group.leave()
+                case .success(let productVariation):
+                    self.upsertStoredProductVariationsInBackground(readOnlyProductVariations: [productVariation],
+                                                                   siteID: order.siteID,
+                                                                   productID: orderItem.productID) {
+                        results.append(.success(productVariation))
+                        group.leave()
+                    }
+                }
+            }
+        }
+
+        group.notify(queue: .main) {
+            guard results.contains(where: { $0.failure != nil }) == false else {
+                onCompletion(ProductVariationLoadError.requestMissingVariations)
+                return
+            }
+            onCompletion(nil)
+        }
+    }
 }
 
 
-// MARK: - Storage: ProductReview
+// MARK: - Storage: ProductVariation
 //
 private extension ProductVariationStore {
 
@@ -248,4 +292,5 @@ private extension ProductVariationStore {
 public enum ProductVariationLoadError: Error, Equatable {
     case notFoundInStorage
     case unexpected
+    case requestMissingVariations
 }

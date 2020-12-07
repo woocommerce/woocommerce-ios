@@ -17,6 +17,12 @@ final class RefundConfirmationViewController: UIViewController {
         return noticePresenter
     }()
 
+    /// Needed to scroll content to a visible area when the keyboard appears.
+    ///
+    private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] frame in
+        self?.handleKeyboardFrameUpdate(keyboardFrame: frame)
+    })
+
     /// Closure to be invoked when the refund button is pressed.
     ///
     var onRefundButtonAction: (() -> Void)?
@@ -47,6 +53,14 @@ final class RefundConfirmationViewController: UIViewController {
         configureTableView()
         configureButtonTableFooterView()
         configureKeyboardDismissal()
+        keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
+    }
+}
+
+// MARK: KeyboardScrollable
+extension RefundConfirmationViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        tableView
     }
 }
 
@@ -97,7 +111,7 @@ private extension RefundConfirmationViewController {
         // Add to view
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToSafeArea(tableView)
+        view.pinSubviewToAllEdges(tableView)
     }
 
     func configureButtonTableFooterView() {

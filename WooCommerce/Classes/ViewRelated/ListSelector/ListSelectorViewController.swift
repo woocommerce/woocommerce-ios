@@ -132,7 +132,7 @@ private extension ListSelectorViewController {
 
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToSafeArea(tableView)
+        view.pinSubviewToAllEdges(tableView)
 
         registerTableViewCells()
     }

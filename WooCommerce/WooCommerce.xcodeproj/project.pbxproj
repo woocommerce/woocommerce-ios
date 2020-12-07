@@ -962,6 +962,7 @@
 		D8736B5A22F07D7100A14A29 /* MainTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5922F07D7100A14A29 /* MainTabViewModel.swift */; };
 		D8736B7522F1FE1600A14A29 /* BadgeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B7422F1FE1600A14A29 /* BadgeLabel.swift */; };
 		D8810086257DCCF0008DE6F2 /* WordPressComSiteInfo+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8810085257DCCF0008DE6F2 /* WordPressComSiteInfo+Woo.swift */; };
+		D88100D3257DD060008DE6F2 /* WordPressComSiteInfoWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88100D2257DD060008DE6F2 /* WordPressComSiteInfoWooTests.swift */; };
 		D881A31B256B5CC500FE5605 /* ULErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D881A319256B5CC500FE5605 /* ULErrorViewController.swift */; };
 		D881A31C256B5CC500FE5605 /* ULErrorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D881A31A256B5CC500FE5605 /* ULErrorViewController.xib */; };
 		D88CA756237CE515005D2F44 /* UITabBar+Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88CA755237CE515005D2F44 /* UITabBar+Appearance.swift */; };
@@ -2036,6 +2037,7 @@
 		D8736B5922F07D7100A14A29 /* MainTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabViewModel.swift; sourceTree = "<group>"; };
 		D8736B7422F1FE1600A14A29 /* BadgeLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeLabel.swift; sourceTree = "<group>"; };
 		D8810085257DCCF0008DE6F2 /* WordPressComSiteInfo+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WordPressComSiteInfo+Woo.swift"; sourceTree = "<group>"; };
+		D88100D2257DD060008DE6F2 /* WordPressComSiteInfoWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressComSiteInfoWooTests.swift; sourceTree = "<group>"; };
 		D881A319256B5CC500FE5605 /* ULErrorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ULErrorViewController.swift; sourceTree = "<group>"; };
 		D881A31A256B5CC500FE5605 /* ULErrorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ULErrorViewController.xib; sourceTree = "<group>"; };
 		D88CA755237CE515005D2F44 /* UITabBar+Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBar+Appearance.swift"; sourceTree = "<group>"; };
@@ -4025,6 +4027,7 @@
 				0273707D24C0047800167204 /* SequenceHelpersTests.swift */,
 				02CEBB8324C99A10002EDF35 /* Product+ShippingTests.swift */,
 				025C00CB2551524300FAC222 /* BarcodeScannerFrameScalerTests.swift */,
+				D88100D2257DD060008DE6F2 /* WordPressComSiteInfoWooTests.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -6058,6 +6061,7 @@
 				02C2756D24F4EEBF00286C04 /* ProductShippingSettingsViewModelTests.swift in Sources */,
 				025678052575EA1B009D7E6C /* ProductDetailsCellViewModelTests.swift in Sources */,
 				0211252E25773FB00075AD2A /* MockAggregateOrderItem.swift in Sources */,
+				D88100D3257DD060008DE6F2 /* WordPressComSiteInfoWooTests.swift in Sources */,
 				B53B898920D450AF00EDB467 /* SessionManagerTests.swift in Sources */,
 				0279F0E2252DC4BF0098D7DE /* ProductLoaderViewControllerModelTests.swift in Sources */,
 				5761298B24589B84007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlusTests.swift in Sources */,

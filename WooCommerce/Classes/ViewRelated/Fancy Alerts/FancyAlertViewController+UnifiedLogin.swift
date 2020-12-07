@@ -108,7 +108,9 @@ private extension FancyAlertViewController {
     static func makeNeedMoreHelpButton() -> FancyAlertViewController.Config.ButtonConfig {
         return FancyAlertViewController.Config.ButtonConfig(Localization.needMoreHelp) { controller, _ in
             let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
-            guard let supportViewController = UIStoryboard.dashboard.instantiateViewController(withIdentifier: identifier) as? HelpAndSupportViewController else {
+            guard let supportViewController = UIStoryboard
+                    .dashboard
+                    .instantiateViewController(withIdentifier: identifier) as? HelpAndSupportViewController else {
                 return
             }
 

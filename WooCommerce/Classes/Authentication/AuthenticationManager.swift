@@ -197,9 +197,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, onCompletion: @escaping (WordPressAuthenticatorResult) -> Void) {
 
-        guard let site = siteInfo, site.hasJetpack == true else {
-            let siteURL = siteInfo?.url ?? "your site"
-            let viewModel = JetpackErrorViewModel(siteURL: siteURL)
+        guard let site = siteInfo, site.hasValidJetpack == true else {
+            let viewModel = JetpackErrorViewModel(siteURL: siteInfo?.url)
             let installJetpackUI = ULErrorViewController(viewModel: viewModel)
 
             let authenticationResult: WordPressAuthenticatorResult = .injectViewController(value: installJetpackUI)

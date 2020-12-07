@@ -9,8 +9,8 @@ import WordPressUI
 struct JetpackErrorViewModel: ULErrorViewModel {
     private let siteURL: String
 
-    init(siteURL: String) {
-        self.siteURL = siteURL
+    init(siteURL: String?) {
+        self.siteURL = siteURL ?? Localization.yourSite
     }
 
     // MARK: - Data and configuration
@@ -49,8 +49,8 @@ struct JetpackErrorViewModel: ULErrorViewModel {
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        //let refreshCommand = NavigateToRoot()
-        //refreshCommand.execute(from: viewController)
+        let refreshCommand = NavigateToRoot()
+        refreshCommand.execute(from: viewController)
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
@@ -80,6 +80,11 @@ private extension JetpackErrorViewModel {
         static let secondaryButtonTitle = NSLocalizedString("Log In With Another Account",
                                                             comment: "Action button that will restart the login flow."
                                                             + "Presented when logging in with a site address that does not have a valid Jetpack installation")
+
+        static let yourSite = NSLocalizedString("your site",
+                                                comment: "Placeholder for site url, if the url is unknown."
+                                                    + "Presented when logging in with a site address that does not have a valid Jetpack installation."
+                                                + "The error would read: to use this app for your site you'll need...")
 
     }
 

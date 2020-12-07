@@ -82,8 +82,6 @@ private extension FancyAlertViewController {
         static let instructionsURLString = "https://docs.woocommerce.com/document/jetpack-setup-instructions-for-the-woocommerce-mobile-app/"
 
         static let whatsJetpackURLString = "https://jetpack.com/about/"
-
-        static let needMoreHelpURLString = "https://jetpack.com/support/primary-user/"
     }
 }
 
@@ -109,13 +107,17 @@ private extension FancyAlertViewController {
 
     static func makeNeedMoreHelpButton() -> FancyAlertViewController.Config.ButtonConfig {
         return FancyAlertViewController.Config.ButtonConfig(Localization.needMoreHelp) { controller, _ in
-            guard let url = URL(string: Strings.needMoreHelpURLString) else {
+            let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
+            guard let supportViewController = UIStoryboard.dashboard.instantiateViewController(withIdentifier: identifier) as? HelpAndSupportViewController else {
                 return
             }
 
-            let safariViewController = SFSafariViewController(url: url)
-            safariViewController.modalPresentationStyle = .pageSheet
-            controller.present(safariViewController, animated: true)
+            supportViewController.displaysDismissAction = true
+
+            let navController = UINavigationController(rootViewController: supportViewController)
+            navController.modalPresentationStyle = .formSheet
+
+            controller.present(navController, animated: true, completion: nil)
         }
     }
 }

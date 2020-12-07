@@ -278,8 +278,8 @@ public extension StorageType {
     ///
     /// Note: this method is useful to fetch global attributes, which always have a non-zero ID.
     ///
-    func loadProductAttribute(attributeID: Int64) -> ProductAttribute? {
-        let predicate = NSPredicate(format: "attributeID = %ld", attributeID)
+    func loadProductAttribute(siteID: Int64, attributeID: Int64) -> ProductAttribute? {
+        let predicate = NSPredicate(format: "siteID = %ld AND attributeID = %ld", siteID, attributeID)
         return firstObject(ofType: ProductAttribute.self, matching: predicate)
     }
 

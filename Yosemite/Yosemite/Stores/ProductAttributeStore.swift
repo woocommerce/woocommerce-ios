@@ -141,7 +141,7 @@ private extension ProductAttributeStore {
         // Upserts the ProductAttribute models from the read-only version
         for readOnlyProductAttribute in readOnlyProductAttributes {
             let storageProductAttribute: Storage.ProductAttribute = {
-                if let storedAttribute = storage.loadProductAttribute(attributeID: readOnlyProductAttribute.attributeID) {
+                if let storedAttribute = storage.loadProductAttribute(siteID: siteID, attributeID: readOnlyProductAttribute.attributeID) {
                     return storedAttribute
                 }
                 return storage.insertNewObject(ofType: Storage.ProductAttribute.self)
@@ -154,7 +154,7 @@ private extension ProductAttributeStore {
     ///
     func deleteStoredProductAttribute(siteID: Int64, attributeID: Int64) {
         let storage = storageManager.viewStorage
-        guard let productAttribute = storage.loadProductAttribute(attributeID: attributeID) else {
+        guard let productAttribute = storage.loadProductAttribute(siteID: siteID, attributeID: attributeID) else {
             return
         }
 

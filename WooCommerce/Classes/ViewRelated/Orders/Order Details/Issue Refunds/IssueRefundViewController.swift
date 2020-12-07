@@ -223,7 +223,7 @@ extension IssueRefundViewController: IssueRefundInteractiveDismissDelegate {
     /// Allow the interactive dismiss when the user has not selected any items to refund.
     ///
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-        !viewModel.isNextButtonEnabled
+        !viewModel.hasUnsavedChanges
     }
 }
 

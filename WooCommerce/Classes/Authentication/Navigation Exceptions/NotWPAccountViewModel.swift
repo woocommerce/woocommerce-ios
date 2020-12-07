@@ -10,7 +10,7 @@ struct NotWPAccountViewModel: ULErrorViewModel {
     // MARK: - Data and configuration
     let image: UIImage = .loginNoWordPressError
 
-    let text: NSAttributedString = NSMutableAttributedString(string: Localization.errorMessage)
+    let text: NSAttributedString = .init(string: Localization.errorMessage)
 
     let isAuxiliaryButtonHidden = false
 

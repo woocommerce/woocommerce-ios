@@ -119,7 +119,8 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.success)
-        XCTAssertTrue(result.debugMessages.isEmpty)
+        XCTAssertEqual(result.debugMessages.count, 1)
+        assertThat(try XCTUnwrap(result.debugMessages.first), contains: "Skipping migration.")
         XCTAssertEqual(fileManager.fileExistsInvocationCount, 1)
         XCTAssertEqual(fileManager.allMethodsInvocationCount, 1)
     }
@@ -259,6 +260,34 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
             XCTAssertEqual(movedItems[expectedMigrationFolderURL.appendingPathComponent(fileName).path],
                            storeFolderURL.appendingPathComponent(fileName).path)
         }
+    }
+
+    func test_iterativeMigrate_will_not_migrate_if_the_database_and_the_model_are_compatible() throws {
+        // Given
+        let model = try managedObjectModel(for: "Model 28")
+
+        // Start a container to create an existing database file.
+        let storeURL = try urlForStore(withName: "Woo_Compatibility_Test.sqlite", deleteIfExists: true)
+        let _ = try startPersistentContainer(storeURL: storeURL, storeType: NSSQLiteStoreType, model: model)
+
+        let spyFileManager = SpyFileManager()
+        let migrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory, fileManager: spyFileManager)
+
+        // When
+        // Migrate up to the same model version.
+        let (result, debugMessages) = try migrator.iterativeMigrate(sourceStore: storeURL,
+                                                                    storeType: NSSQLiteStoreType,
+                                                                    to: model)
+
+        // Then
+        XCTAssertTrue(result)
+
+        XCTAssertEqual(debugMessages.count, 1)
+        assertThat(try XCTUnwrap(debugMessages.first), contains: "No migration necessary.")
+
+        // There should be no file operations.
+        assertEmpty(spyFileManager.deletedItems)
+        assertEmpty(spyFileManager.movedItems)
     }
 }
 

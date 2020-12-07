@@ -41,7 +41,7 @@ public struct ProductAttribute: Decodable {
     ///
     public init(from decoder: Decoder) throws {
         guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
-            throw ProductCategoryDecodingError.missingSiteID
+            throw ProductAttributeDecodingError.missingSiteID
         }
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -104,4 +104,10 @@ extension ProductAttribute: Comparable {
             (lhs.attributeID == rhs.attributeID && lhs.name < rhs.name) ||
             (lhs.attributeID == rhs.attributeID && lhs.name == rhs.name && lhs.position < rhs.position)
     }
+}
+
+// MARK: - Decoding Errors
+//
+enum ProductAttributeDecodingError: Error {
+    case missingSiteID
 }

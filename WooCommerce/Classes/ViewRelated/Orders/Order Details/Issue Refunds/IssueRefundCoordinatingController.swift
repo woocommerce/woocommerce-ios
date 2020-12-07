@@ -92,7 +92,7 @@ private extension IssueRefundCoordinatingController {
         // Issued refund action
         refundConfirmationViewController.onRefundCompletion = { [weak self] error in
             if error == nil {
-                self?.dismissIssueRefundFlow()
+                self?.dismissIssueRefundFlow(presentSuccessNotice: true)
             } else {
                 self?.dismissProgressViewController()
             }
@@ -120,6 +120,14 @@ private extension IssueRefundCoordinatingController {
         present(actionSheet, animated: true)
     }
 
+    /// Displays a confirmation alert before dismissing the flow by a drag gesture.
+    ///
+    func presentDismissConfirmationAlert() {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self) { [weak self] in
+            self?.dismissIssueRefundFlow(presentSuccessNotice: false)
+        }
+    }
+
     /// Shows a progress view while the refund is being created.
     ///
     func presentProgressViewController() {
@@ -141,11 +149,13 @@ private extension IssueRefundCoordinatingController {
         dismiss(animated: true)
     }
 
-    /// Dismisses the whole `IssueRefund` flow and presents a success notice.
+    /// Dismisses the whole `IssueRefund` flow and presents a success notice if required.
     ///
-    func dismissIssueRefundFlow() {
+    func dismissIssueRefundFlow(presentSuccessNotice: Bool) {
         presentingViewController?.dismiss(animated: true) { [weak self] in
-            self?.systemNoticePresenter.enqueue(notice: .init(title: Localization.refundSuccess))
+            if presentSuccessNotice {
+                self?.systemNoticePresenter.enqueue(notice: .init(title: Localization.refundSuccess))
+            }
         }
     }
 }
@@ -166,6 +176,12 @@ extension IssueRefundCoordinatingController: UIAdaptivePresentationControllerDel
             return true
         }
         return delegate.presentationControllerShouldDismiss(presentationController)
+    }
+
+    /// Present a dismiss flow confirmation alert when the user tried to dismiss the flow while having un-committed changes.
+    ///
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        presentDismissConfirmationAlert()
     }
 }
 

@@ -340,7 +340,7 @@ private extension AuthenticationManager {
 
     /// Maps error codes emitted by WPAuthenticator to a domain error object
     enum AuthenticationError: Int, Error {
-        case emailDoesNotMatchWPAcount = 7
+        case emailDoesNotMatchWPAccount = 7
         case notWPSite = 406
         case unknown
 
@@ -348,8 +348,8 @@ private extension AuthenticationManager {
             let error = error as NSError
 
             switch error.code {
-            case emailDoesNotMatchWPAcount.rawValue:
-                return .emailDoesNotMatchWPAcount
+            case emailDoesNotMatchWPAccount.rawValue:
+                return .emailDoesNotMatchWPAccount
             case notWPSite.rawValue:
                 return .notWPSite
             default:
@@ -360,14 +360,14 @@ private extension AuthenticationManager {
 
     func isSupportedError(_ error: Error) -> Bool {
         let wooAuthError = AuthenticationError.make(with: error)
-        return wooAuthError == .emailDoesNotMatchWPAcount || wooAuthError == .notWPSite
+        return wooAuthError == .emailDoesNotMatchWPAccount || wooAuthError == .notWPSite
     }
 
     func viewModel(_ error: Error) -> ULErrorViewModel? {
         let wooAuthError = AuthenticationError.make(with: error)
 
         switch wooAuthError {
-        case .emailDoesNotMatchWPAcount:
+        case .emailDoesNotMatchWPAccount:
             return NotWPAccountViewModel()
         case .notWPSite:
             return NotWPErrorViewModel()

@@ -17,7 +17,7 @@ struct BoldableTextParser {
         guard let regex = try? NSRegularExpression(pattern: boldTextPattern) else {
             return []
         }
-        let range = NSRange(location: 0, length: string.count)
+        let range = NSRange(string.startIndex..., in: string)
 
         /// Finds all the ranges that match the regex for content within a bold region.
         let matches: [NSTextCheckingResult] = regex.matches(in: string, options: [], range: range)
@@ -30,6 +30,8 @@ struct BoldableTextParser {
 
         var startingIndex = 0
         matches.enumerated().forEach { index, match in
+            // Each `NSTextCheckingResult` has two ranges: the first one (index 0) is the range that includes the bold marks (**..**).
+            // The second one (index 1) is the range that excludes the bold marks, which corresponds to the bolded substring.
             guard match.numberOfRanges == 2 else {
                 return
             }

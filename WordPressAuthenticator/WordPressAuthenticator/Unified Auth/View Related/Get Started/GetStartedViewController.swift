@@ -206,7 +206,11 @@ private extension GetStartedViewController {
     /// Describes how the tableView rows should be rendered.
     ///
     func loadRows() {
-        rows = [.instructions, .email, .tos]
+        rows = [.instructions, .email]
+
+        if let authenticationDelegate = WordPressAuthenticator.shared.delegate, authenticationDelegate.wpcomTermsOfServiceEnabled {
+            rows.append(.tos)
+        }
         
         if let errorText = errorMessage, !errorText.isEmpty {
             rows.append(.errorMessage)

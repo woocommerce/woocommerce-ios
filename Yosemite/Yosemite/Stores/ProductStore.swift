@@ -226,7 +226,7 @@ private extension ProductStore {
 
             switch result {
             case .failure(let originalError):
-                let error = ProductLoadError(underlyingError: originalError) 
+                let error = ProductLoadError(underlyingError: originalError)
 
                 if case ProductLoadError.notFound = error {
                     self.deleteStoredProduct(siteID: siteID, productID: productID)

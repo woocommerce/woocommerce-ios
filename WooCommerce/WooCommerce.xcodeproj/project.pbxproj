@@ -951,6 +951,7 @@
 		D85B8336222FCDA1002168F3 /* StatusListTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B8335222FCDA1002168F3 /* StatusListTableViewCellTests.swift */; };
 		D85B833D2230DC9D002168F3 /* StringWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B833C2230DC9D002168F3 /* StringWooTests.swift */; };
 		D85B833F2230F268002168F3 /* SummaryTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B833E2230F268002168F3 /* SummaryTableViewCellTests.swift */; };
+		D85DD1D7257F359800861AA8 /* NotWPErrorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85DD1D6257F359800861AA8 /* NotWPErrorViewModelTests.swift */; };
 		D8610BCC256F284700A5DF27 /* ULErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8610BCB256F284700A5DF27 /* ULErrorViewModel.swift */; };
 		D8610BD2256F291000A5DF27 /* JetpackErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8610BD1256F291000A5DF27 /* JetpackErrorViewModel.swift */; };
 		D8610BDD256F5ABF00A5DF27 /* JetpackErrorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8610BDC256F5ABF00A5DF27 /* JetpackErrorViewModelTests.swift */; };
@@ -2027,6 +2028,7 @@
 		D85B8335222FCDA1002168F3 /* StatusListTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StatusListTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/StatusListTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
 		D85B833C2230DC9D002168F3 /* StringWooTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StringWooTests.swift; path = WooCommerceTests/Extensions/StringWooTests.swift; sourceTree = SOURCE_ROOT; };
 		D85B833E2230F268002168F3 /* SummaryTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SummaryTableViewCellTests.swift; path = "WooCommerceTests/ViewRelated/Orders/Order Details/Order Summary Section/SummaryTableViewCell/SummaryTableViewCellTests.swift"; sourceTree = SOURCE_ROOT; };
+		D85DD1D6257F359800861AA8 /* NotWPErrorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotWPErrorViewModelTests.swift; sourceTree = "<group>"; };
 		D8610BCB256F284700A5DF27 /* ULErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ULErrorViewModel.swift; sourceTree = "<group>"; };
 		D8610BD1256F291000A5DF27 /* JetpackErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackErrorViewModel.swift; sourceTree = "<group>"; };
 		D8610BDC256F5ABF00A5DF27 /* JetpackErrorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackErrorViewModelTests.swift; sourceTree = "<group>"; };
@@ -3414,6 +3416,7 @@
 				D8610BDC256F5ABF00A5DF27 /* JetpackErrorViewModelTests.swift */,
 				57C2F6E424C27B1E00131012 /* Epilogue */,
 				D8610BF6256F5F0900A5DF27 /* ULErrorViewControllerTests.swift */,
+				D85DD1D6257F359800861AA8 /* NotWPErrorViewModelTests.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -6217,6 +6220,7 @@
 				0225C42A24768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift in Sources */,
 				02691780232600A6002AFC20 /* ProductsTabProductViewModelTests.swift in Sources */,
 				024F1452250B65A40003030A /* AddProductCoordinatorTests.swift in Sources */,
+				D85DD1D7257F359800861AA8 /* NotWPErrorViewModelTests.swift in Sources */,
 				025678C725773399009D7E6C /* Collection+ShippingLabelTests.swift in Sources */,
 				02BC5AA624D27F8900C43326 /* ProductVariationFormViewModel+ChangesTests.swift in Sources */,
 				57C2F6E624C27B3100131012 /* SwitchStoreNoticePresenterTests.swift in Sources */,

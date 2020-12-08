@@ -698,8 +698,10 @@ final class ProductStoreTests: XCTestCase {
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
 
+        let dotComError = DotcomError.unknown(code: ProductLoadError.ErrorCode.invalidId.rawValue, message: nil)
+
         // Action
-        network.simulateError(requestUrlSuffix: "products/282", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "products/282", error: dotComError)
         let result: Result<Yosemite.Product, Error> = try waitFor { promise in
             let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
                 promise(result)

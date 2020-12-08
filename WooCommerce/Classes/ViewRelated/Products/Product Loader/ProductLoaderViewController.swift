@@ -118,7 +118,12 @@ private extension ProductLoaderViewController {
                 self.state = .productLoaded(product: product)
             case .failure(let error):
                 DDLogError("⛔️ Error loading Product for siteID: \(self.siteID) productID:\(productID) error:\(error)")
-                self.state = .failure
+                switch error {
+                case ProductLoadError.notFound:
+                    self.state = .notFound
+                default:
+                    self.state = .failure
+                }
             }
         }
 
@@ -163,7 +168,7 @@ private extension ProductLoaderViewController {
         activityIndicator.stopAnimating()
     }
 
-    /// Displays the Loading Overlay.
+    /// Displays the Failure Overlay.
     ///
     func displayFailureOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
@@ -173,6 +178,18 @@ private extension ProductLoaderViewController {
         overlayView.onAction = { [weak self] in
             self?.loadModel()
         }
+
+        overlayView.attach(to: view)
+    }
+
+    /// Displays the Not Found Overlay.
+    ///
+    func displayNotFoundOverlay() {
+        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
+        overlayView.messageImage = .waitingForCustomersImage
+        overlayView.messageText = NSLocalizedString("This product has been deleted and is no longer visible",
+                                                    comment: "Message displayed when loading a specific product fails because product was deleted")
+        overlayView.actionVisible = false
 
         overlayView.attach(to: view)
     }
@@ -259,6 +276,8 @@ private extension ProductLoaderViewController {
             presentProductVariationDetails(for: productVariation, parentProduct: parentProduct)
         case .failure:
             displayFailureOverlay()
+        case .notFound:
+            displayNotFoundOverlay()
         }
     }
 
@@ -270,7 +289,7 @@ private extension ProductLoaderViewController {
             stopSpinner()
         case .productLoaded, .productVariationLoaded:
             detachChildrenViewControllers()
-        case .failure:
+        case .failure, .notFound:
             removeAllOverlays()
         }
     }
@@ -284,4 +303,5 @@ private enum State {
     case productLoaded(product: Product)
     case productVariationLoaded(productVariation: ProductVariation, parentProduct: Product)
     case failure
+    case notFound
 }

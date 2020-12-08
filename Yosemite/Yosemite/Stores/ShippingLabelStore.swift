@@ -126,6 +126,7 @@ private extension ShippingLabelStore {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
             guard let self = self else { return }
+            // If a shipping label does not exist in storage, skip upserting the refund in storage.
             guard let shippingLabel = derivedStorage.loadShippingLabel(siteID: shippingLabel.siteID,
                                                                        orderID: shippingLabel.orderID,
                                                                        shippingLabelID: shippingLabel.shippingLabelID) else {

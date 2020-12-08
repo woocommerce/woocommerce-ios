@@ -55,5 +55,5 @@ protocol StoresManager {
 
     /// SessionManager: Persistent Storage for Session-Y Properties.
     /// This property is thread safe
-    var sessionManager: SessionManager { get }
+    var sessionManager: SessionManagerProtocol { get }
 }

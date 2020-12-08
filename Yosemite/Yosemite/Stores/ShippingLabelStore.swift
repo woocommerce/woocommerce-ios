@@ -40,10 +40,8 @@ public final class ShippingLabelStore: Store {
             synchronizeShippingLabels(siteID: siteID, orderID: orderID, completion: completion)
         case .printShippingLabel(let siteID, let shippingLabelID, let paperSize, let completion):
             printShippingLabel(siteID: siteID, shippingLabelID: shippingLabelID, paperSize: paperSize, completion: completion)
-        case .refundShippingLabel(let siteID, let orderID, let shippingLabelID, let completion):
-            refundShippingLabel(siteID: siteID,
-                                orderID: orderID,
-                                shippingLabelID: shippingLabelID,
+        case .refundShippingLabel(let shippingLabel, let completion):
+            refundShippingLabel(shippingLabel: shippingLabel,
                                 completion: completion)
         }
     }
@@ -75,20 +73,18 @@ private extension ShippingLabelStore {
         remote.printShippingLabel(siteID: siteID, shippingLabelID: shippingLabelID, paperSize: paperSize, completion: completion)
     }
 
-    func refundShippingLabel(siteID: Int64,
-                             orderID: Int64,
-                             shippingLabelID: Int64,
+    func refundShippingLabel(shippingLabel: ShippingLabel,
                              completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void) {
-        remote.refundShippingLabel(siteID: siteID,
-                                   orderID: orderID,
-                                   shippingLabelID: shippingLabelID) { [weak self] result in
+        remote.refundShippingLabel(siteID: shippingLabel.siteID,
+                                   orderID: shippingLabel.orderID,
+                                   shippingLabelID: shippingLabel.shippingLabelID) { [weak self] result in
             guard let self = self else { return }
 
             switch result {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let refund):
-                self.upsertShippingLabelRefundInBackground(siteID: siteID, orderID: orderID, shippingLabelID: shippingLabelID, refund: refund) {
+                self.upsertShippingLabelRefundInBackground(shippingLabel: shippingLabel, refund: refund) {
                     completion(.success(refund))
                 }
             }
@@ -124,15 +120,15 @@ private extension ShippingLabelStore {
 
     /// Updates/inserts the specified readonly shipping label refund for a shipping label *in a background thread*.
     /// `onCompletion` will be called on the main thread!
-    func upsertShippingLabelRefundInBackground(siteID: Int64,
-                                               orderID: Int64,
-                                               shippingLabelID: Int64,
+    func upsertShippingLabelRefundInBackground(shippingLabel: ShippingLabel,
                                                refund: ShippingLabelRefund,
                                                onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
             guard let self = self else { return }
-            guard let shippingLabel = derivedStorage.loadShippingLabel(siteID: siteID, orderID: orderID, shippingLabelID: shippingLabelID) else {
+            guard let shippingLabel = derivedStorage.loadShippingLabel(siteID: shippingLabel.siteID,
+                                                                       orderID: shippingLabel.orderID,
+                                                                       shippingLabelID: shippingLabel.shippingLabelID) else {
                 return
             }
             self.handleShippingLabelRefund(refund: refund, storageShippingLabel: shippingLabel)

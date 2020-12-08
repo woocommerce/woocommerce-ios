@@ -22,20 +22,20 @@ struct ShippingLabelPrintingInstructionsView: View {
 private extension ShippingLabelPrintingInstructionsView {
     enum Localization {
         static let step1 = NSLocalizedString(
-            "Verify your printer and device are connected to the *same Wi-Fi network*.\n\n"
+            "Verify your printer and device are connected to the **same Wi-Fi network**.\n\n"
                 + "Check your printer's documentation for information on connecting it to your Wi-Fi network.",
-            comment: "Step 1 of shipping label printing instructions screen. The content inside two asterisks *...* denote bolded text.")
+            comment: "Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text.")
         static let step2 = NSLocalizedString(
-            "*Ensure AirPrint is enabled* in your printer settings. You may need to configure this setting on the printer itself.\n\n"
+            "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\n"
             + "See the documentation that came with your printer for details.",
-            comment: "Step 2 of shipping label printing instructions screen. The content inside two asterisks *...* denote bolded text.")
+            comment: "Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text.")
         static let step3 = NSLocalizedString(
-            "Ensure that your *printer firmware is up to date*. See your printer documentation for instructions on updating.",
-            comment: "Step 3 of shipping label printing instructions screen. The content inside two asterisks *...* denote bolded text.")
+            "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating.",
+            comment: "Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text.")
         static let step4 = NSLocalizedString(
-            "If you are still experiencing issues printing from your phone, you can save your label as PDF and *send it by email* "
+            "If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** "
             + "to print it from another device.",
-            comment: "Step 4 of shipping label printing instructions screen. The content inside two asterisks *...* denote bolded text.")
+            comment: "Step 4 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text.")
     }
 }
 

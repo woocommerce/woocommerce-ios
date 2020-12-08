@@ -31,11 +31,11 @@ private extension ShippingLabelPrintingInstructionsView {
             comment: "Step 2 of shipping label printing instructions screen. The content inside two asterisks *...* denote bolded text.")
         static let step3 = NSLocalizedString(
             "Ensure that your *printer firmware is up to date*. See your printer documentation for instructions on updating.",
-            comment: "Step 2 of shipping label printing instructions screen. The content inside two asterisks *...* denote bolded text.")
+            comment: "Step 3 of shipping label printing instructions screen. The content inside two asterisks *...* denote bolded text.")
         static let step4 = NSLocalizedString(
             "If you are still experiencing issues printing from your phone, you can save your label as PDF and *send it by email* "
             + "to print it from another device.",
-            comment: "Step 2 of shipping label printing instructions screen. The content inside two asterisks *...* denote bolded text.")
+            comment: "Step 4 of shipping label printing instructions screen. The content inside two asterisks *...* denote bolded text.")
     }
 }
 

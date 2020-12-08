@@ -154,10 +154,16 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         return false
     }
 
-    /// Indicates whether if the Support Action should be enabled, or not.
+    /// Indicates whether the Support Action should be enabled, or not.
     ///
     var supportActionEnabled: Bool {
         return true
+    }
+
+    /// Indicates whether a link to WP.com TOS should be available, or not.
+    ///
+    var wpcomTermsOfServiceEnabled: Bool {
+        return false
     }
 
     /// Indicates if Support is Enabled.

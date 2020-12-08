@@ -14,7 +14,7 @@ final class TwoFAViewController: LoginViewController {
     
     private var rows = [Row]()
     private var errorMessage: String?
-    private var pasteboardBeforeBackground: String? = nil
+    private var pasteboardChangeCountBeforeBackground: Int? = nil
     private var shouldChangeVoiceOverFocus: Bool = false
 
     override var sourceTag: WordPressSupportSourceTag {
@@ -303,7 +303,7 @@ extension TwoFAViewController: NUXKeyboardResponder {
 private extension TwoFAViewController {
 
     @objc func applicationBecameInactive() {
-        pasteboardBeforeBackground = UIPasteboard.general.string
+        pasteboardChangeCountBeforeBackground = UIPasteboard.general.changeCount
     }
     
     @objc func applicationBecameActive() {
@@ -313,16 +313,37 @@ private extension TwoFAViewController {
         
         let emptyField = codeField.text?.isEmpty ?? true
         guard emptyField,
-            let pasteString = UIPasteboard.general.string,
-            pasteString != pasteboardBeforeBackground else {
+            pasteboardChangeCountBeforeBackground != UIPasteboard.general.changeCount else {
                 return
         }
-        
-        switch isValidCode(code: pasteString) {
+
+        if #available(iOS 14.0, *) {
+            UIPasteboard.general.detect(patterns: [.number]) { [weak self] result in
+                switch result {
+                    case .success(let detections):
+                        if let pasteCode = detections.first?.value as? Int {
+                            let pasteString = String(pasteCode)
+                            DispatchQueue.main.async {
+                                self?.handle(code: pasteString, textField: codeField)
+                            }
+                        }
+                    case .failure(_):
+                        ()
+                }
+            }
+        } else {
+            if let pasteString = UIPasteboard.general.string {
+                handle(code: pasteString, textField: codeField)
+            }
+        }
+    }
+
+    private func handle(code: String, textField: UITextField) {
+        switch isValidCode(code: code) {
         case .valid(let cleanedCode):
             displayError(message: "")
-            codeField.text = cleanedCode
-            handleTextFieldDidChange(codeField)
+            textField.text = cleanedCode
+            handleTextFieldDidChange(textField)
         default:
             break
         }

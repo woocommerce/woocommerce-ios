@@ -1,6 +1,7 @@
 import Photos
 import UIKit
 import Yosemite
+import Observables
 
 /// Displays Product images with edit functionality.
 ///

@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Observables
 
 /// Abstracts the Stores coordination
 ///

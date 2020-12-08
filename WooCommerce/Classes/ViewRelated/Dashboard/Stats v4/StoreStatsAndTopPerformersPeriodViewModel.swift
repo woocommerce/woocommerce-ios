@@ -1,5 +1,6 @@
 import Yosemite
 import class AutomatticTracks.CrashLogging
+import Observables
 
 /// ViewModel for `StoreStatsAndTopPerformersPeriodViewController`.
 ///

@@ -1,9 +1,7 @@
-
 import XCTest
 import Foundation
-@testable import WooCommerce
-
 import Combine
+import Observables
 
 /// Tests cases for `BehaviorSubject`
 ///

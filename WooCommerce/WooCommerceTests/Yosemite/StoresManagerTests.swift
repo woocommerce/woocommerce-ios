@@ -1,5 +1,6 @@
 import XCTest
 import Networking
+import Observables
 @testable import WooCommerce
 
 

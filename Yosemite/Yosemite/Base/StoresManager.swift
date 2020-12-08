@@ -1,10 +1,9 @@
 import Foundation
-import Yosemite
 import Observables
 
 /// Abstracts the Stores coordination
 ///
-protocol StoresManager {
+public protocol StoresManager {
 
     /// Forwards the Action to the current State.
     ///
@@ -53,7 +52,7 @@ protocol StoresManager {
     ///
     var needsDefaultStore: Bool { get }
 
-    /// SessionManager: Persistent Storage for Session-Y Properties.
+    /// SessionManagerProtocol: Persistent Storage for Session-Y Properties.
     /// This property is thread safe
     var sessionManager: SessionManagerProtocol { get }
 }

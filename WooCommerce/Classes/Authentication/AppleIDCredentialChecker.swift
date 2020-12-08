@@ -2,6 +2,7 @@ import Combine
 import KeychainAccess
 import WordPressAuthenticator
 import Observables
+import Yosemite
 
 /// Checks and listens for observations when the Apple ID credential is revoked when the user previously signed in with Apple.
 ///

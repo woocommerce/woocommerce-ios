@@ -5,6 +5,7 @@ import Observables
 import enum Yosemite.ProductReviewAction
 import enum Yosemite.NotificationAction
 import struct Yosemite.ProductReviewFromNoteParcel
+import protocol Yosemite.StoresManager
 
 /// Coordinator for the Reviews tab.
 ///

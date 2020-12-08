@@ -94,6 +94,10 @@ final class ShippingLabelRemoteTests: XCTestCase {
         }
 
         // Then
-        XCTAssertNotNil(result.failure)
+        let expectedError = DotcomError
+            .unknown(code: "wcc_server_error_response",
+                     message: "Error: The WooCommerce Shipping & Tax server returned: Bad Request Unable to request refund. " +
+                        "The parcel has been shipped. ( 400 )")
+        XCTAssertEqual(result.failure as? DotcomError, expectedError)
     }
 }

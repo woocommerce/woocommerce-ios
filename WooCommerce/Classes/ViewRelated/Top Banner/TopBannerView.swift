@@ -187,7 +187,6 @@ private extension TopBannerView {
         buttonsStackView.pinSubviewToAllEdges(separatorBackground)
 
         // Style buttons
-        buttonsStackView.addArrangedSubviews(actionButtons)
         actionButtons.forEach { button in
             button.applyLinkButtonStyle()
             button.backgroundColor = backgroundColor(for: viewModel.type)

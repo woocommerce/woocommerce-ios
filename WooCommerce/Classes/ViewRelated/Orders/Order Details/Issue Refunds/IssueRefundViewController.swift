@@ -9,6 +9,7 @@ final class IssueRefundViewController: UIViewController {
     @IBOutlet private var tableFooterView: UIView!
     @IBOutlet private var tableHeaderView: UIView!
 
+    @IBOutlet private var headerStackView: UIStackView!
     @IBOutlet private var itemsSelectedLabel: UILabel!
     @IBOutlet private var nextButton: UIButton!
     @IBOutlet private var selectAllButton: UIButton!
@@ -140,11 +141,30 @@ private extension IssueRefundViewController {
         selectAllButton.setTitle(Localization.selectAllTitle, for: .normal)
 
         itemsSelectedLabel.applySecondaryBodyStyle()
+        configureHeaderStackView()
     }
 
     func configureFooterView() {
         nextButton.applyPrimaryButtonStyle()
         nextButton.setTitle(Localization.nextTitle, for: .normal)
+    }
+
+    /// Changes the axis and alignment of the stack views that need special treatment on larger size categories.
+    ///
+    func configureHeaderStackView() {
+        headerStackView.axis = traitCollection.preferredContentSizeCategory > .extraExtraExtraLarge ? .vertical : .horizontal
+        headerStackView.alignment = headerStackView.axis == .vertical ? .center : .fill
+        headerStackView.spacing = 8
+    }
+}
+
+// MARK: Accessibility handling
+//
+extension IssueRefundViewController {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        configureHeaderStackView()
+        tableView.updateHeaderHeight()
     }
 }
 

@@ -131,7 +131,7 @@ private extension ShippingLabelStore {
                                                                        shippingLabelID: shippingLabel.shippingLabelID) else {
                 return
             }
-            self.handleShippingLabelRefund(refund: refund, storageShippingLabel: shippingLabel)
+            self.update(shippingLabel: shippingLabel, withRefund: refund)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
@@ -151,7 +151,7 @@ private extension ShippingLabelStore {
             storageShippingLabel.update(with: shippingLabel)
             storageShippingLabel.order = storageOrder
 
-            handleShippingLabelRefund(refund: shippingLabel.refund, storageShippingLabel: storageShippingLabel)
+            update(shippingLabel: storageShippingLabel, withRefund: shippingLabel.refund)
 
             let originAddress = storageShippingLabel.originAddress ?? derivedStorage.insertNewObject(ofType: Storage.ShippingLabelAddress.self)
             originAddress.update(with: shippingLabel.originAddress)
@@ -171,7 +171,7 @@ private extension ShippingLabelStore {
         }
     }
 
-    func handleShippingLabelRefund(refund: ShippingLabelRefund?, storageShippingLabel: StorageShippingLabel) {
+    func update(shippingLabel storageShippingLabel: StorageShippingLabel, withRefund refund: ShippingLabelRefund?) {
         let derivedStorage = sharedDerivedStorage
         if let refund = refund {
             let storageRefund = storageShippingLabel.refund ?? derivedStorage.insertNewObject(ofType: Storage.ShippingLabelRefund.self)

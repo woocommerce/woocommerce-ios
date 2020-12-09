@@ -325,7 +325,7 @@ extension IssueRefundViewModel {
         calculatePendingChangesState()
     }
 
-    /// Calculates wether the are pending changes to commit
+    /// Calculates wether there are pending changes to commit
     ///
     private func calculatePendingChangesState() -> Bool {
         state.refundQuantityStore.count() > 0 || state.shouldRefundShipping

@@ -442,7 +442,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isNextButtonEnabled)
     }
 
-    func test_viewModel_starts_with_no_saved_changes() {
+    func test_viewModel_starts_with_no_unsaved_changes() {
         // Given
         let currencySettings = CurrencySettings()
         let items = [

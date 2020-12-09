@@ -17,11 +17,20 @@ final class MockShippingLabelRemote {
         let paperSize: String
     }
 
+    private struct RefundResultKey: Hashable {
+        let siteID: Int64
+        let orderID: Int64
+        let shippingLabelID: Int64
+    }
+
     /// The results to return based on the given arguments in `loadShippingLabels`
     private var loadAllResults = [LoadAllResultKey: Result<OrderShippingLabelListResponse, Error>]()
 
     /// The results to return based on the given arguments in `printShippingLabel`
     private var printResults = [PrintResultKey: Result<ShippingLabelPrintData, Error>]()
+
+    /// The results to return based on the given arguments in `refundShippingLabel`
+    private var refundResults = [RefundResultKey: Result<ShippingLabelRefund, Error>]()
 
     /// Set the value passed to the `completion` block if `loadShippingLabels` is called.
     func whenLoadingShippingLabels(siteID: Int64,
@@ -38,6 +47,15 @@ final class MockShippingLabelRemote {
                                    thenReturn result: Result<ShippingLabelPrintData, Error>) {
         let key = PrintResultKey(siteID: siteID, shippingLabelID: shippingLabelID, paperSize: paperSize)
         printResults[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `refundShippingLabel` is called.
+    func whenRefundingShippingLabel(siteID: Int64,
+                                    orderID: Int64,
+                                    shippingLabelID: Int64,
+                                    thenReturn result: Result<ShippingLabelRefund, Error>) {
+        let key = RefundResultKey(siteID: siteID, orderID: orderID, shippingLabelID: shippingLabelID)
+        refundResults[key] = result
     }
 }
 
@@ -65,6 +83,19 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
 
             let key = PrintResultKey(siteID: siteID, shippingLabelID: shippingLabelID, paperSize: paperSize.rawValue)
             if let result = self.printResults[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func refundShippingLabel(siteID: Int64, orderID: Int64, shippingLabelID: Int64, completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = RefundResultKey(siteID: siteID, orderID: orderID, shippingLabelID: shippingLabelID)
+            if let result = self.refundResults[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

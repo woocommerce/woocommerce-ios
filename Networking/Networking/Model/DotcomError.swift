@@ -3,7 +3,7 @@ import Foundation
 
 /// WordPress.com Request Error
 ///
-public enum DotcomError: Error, Decodable {
+public enum DotcomError: Error, Decodable, Equatable {
 
     /// Non explicit reason
     ///

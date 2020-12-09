@@ -75,6 +75,9 @@ private extension RefundItemTableViewCell {
         itemQuantityButton.applySecondaryButtonStyle()
         itemQuantityButton.titleLabel?.applyBodyStyle()
         itemQuantityButton.contentEdgeInsets = Constants.quantityButtonInsets
+
+        itemQuantityButton.accessibilityLabel = Localization.quantity
+        itemQuantityButton.accessibilityHint = Localization.quantityHint
     }
 }
 
@@ -136,6 +139,12 @@ private extension RefundItemTableViewCell {
         static let itemImageViewHeight: CGFloat = 39.0
         static let itemImageViewBorderWidth: CGFloat = 0.5
         static let quantityButtonInsets = UIEdgeInsets(top: 8, left: 22, bottom: 8, right: 22)
+    }
+
+    enum Localization {
+        static let quantity = NSLocalizedString("Quantity", comment: "The accessibility label for the quantity button when selecting an item to refund")
+        static let quantityHint = NSLocalizedString("Tap to modify the item refund quantity",
+                                                    comment: "The accessibility hint for the quantity button when selecting an item to refund")
     }
 }
 

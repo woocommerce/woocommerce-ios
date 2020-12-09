@@ -12,6 +12,10 @@ public protocol WordPressAuthenticatorDelegate: class {
     ///
     var supportActionEnabled: Bool { get }
 
+    /// Indicates if the WordPress.com's Terms of Service should be enabled, or not.
+    ///
+    var wpcomTermsOfServiceEnabled: Bool { get }
+
     /// Indicates if the Support notification indicator should be displayed.
     ///
     var showSupportNotificationIndicator: Bool { get }

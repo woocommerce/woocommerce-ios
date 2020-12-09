@@ -500,4 +500,37 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.createOrderRefundSelectAllItemsButtonTapped.rawValue)
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["order_id"] as? String, "\(order.orderID)")
     }
+
+    func test_viewModel_shows_selectAllButton_if_there_are_items_to_refund() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, productID: 1, quantity: 3, price: 11.50, totalTax: "2.97"),
+        ]
+        let order = MockOrders().makeOrder(items: items)
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+
+        // Then
+        XCTAssertTrue(viewModel.isSelectAllButtonVisible)
+    }
+
+    func test_viewModel_hides_selectAllButton_if_there_are_no_items_to_refund() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, productID: 1, quantity: 3, price: 11.50, totalTax: "2.97"),
+        ]
+        let order = MockOrders().makeOrder(items: items)
+        let refund = MockRefunds.sampleRefund(items: [
+            MockRefunds.sampleRefundItem(itemID: 1, productID: 1, quantity: -3),
+        ])
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, refunds: [refund], currencySettings: currencySettings)
+
+        // Then
+        XCTAssertFalse(viewModel.isSelectAllButtonVisible)
+    }
 }

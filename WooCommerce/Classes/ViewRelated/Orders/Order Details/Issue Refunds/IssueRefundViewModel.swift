@@ -41,6 +41,7 @@ final class IssueRefundViewModel {
             title = calculateTitle()
             selectedItemsTitle = createSelectedItemsCount()
             isNextButtonEnabled = calculateNextButtonEnableState()
+            hasUnsavedChanges = calculatePendingChangesState()
             onChange?()
         }
     }
@@ -64,6 +65,10 @@ final class IssueRefundViewModel {
     /// Boolean indicating if the "select all" button is visible
     ///
     private(set) var isSelectAllButtonVisible: Bool = true
+
+    /// Boolean indicating if there are refunds pending to commit
+    ///
+    private(set) var hasUnsavedChanges: Bool = false
 
     /// The sections and rows to display in the `UITableView`.
     ///
@@ -96,6 +101,7 @@ final class IssueRefundViewModel {
         isNextButtonEnabled = calculateNextButtonEnableState()
         isSelectAllButtonVisible = calculateSelectAllButtonVisibility()
         selectedItemsTitle = createSelectedItemsCount()
+        hasUnsavedChanges = calculatePendingChangesState()
     }
 
     /// Creates the `ViewModel` to be used when navigating to the page where the user can
@@ -321,7 +327,13 @@ extension IssueRefundViewModel {
     /// Calculates wether the next button should be enabled or not
     ///
     private func calculateNextButtonEnableState() -> Bool {
-        return state.refundQuantityStore.count() > 0 || state.shouldRefundShipping
+        calculatePendingChangesState()
+    }
+
+    /// Calculates wether there are pending changes to commit
+    ///
+    private func calculatePendingChangesState() -> Bool {
+        state.refundQuantityStore.count() > 0 || state.shouldRefundShipping
     }
 
     /// Calculates wether the "select all" button should be visible or not.

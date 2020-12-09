@@ -219,6 +219,15 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
     }
 }
 
+// MARK: Interactive Dismiss
+extension IssueRefundViewController: IssueRefundInteractiveDismissDelegate {
+    /// Allow the interactive dismiss when the user has not selected any items to refund.
+    ///
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        !viewModel.hasUnsavedChanges
+    }
+}
+
 // MARK: Constants
 private extension IssueRefundViewController {
     enum Localization {

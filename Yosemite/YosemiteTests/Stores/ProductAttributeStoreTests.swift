@@ -103,6 +103,24 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(initialAttribute.options, updatedAttribute?.options)
     }
 
+    func test_synchronize_product_attributes_returns_error_upon_error_response() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "products/attributes", filename: "generic_error")
+        XCTAssertEqual(storedProductAttributesCount, 0)
+
+        // When
+        let result: Result<[Networking.ProductAttribute], Error> = try waitFor { promise in
+            let action = ProductAttributeAction.synchronizeProductAttributes(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(storedProductAttributesCount, 0)
+        XCTAssertTrue(result.isFailure)
+    }
+
     func test_synchronize_product_attributes_returns_error_upon_empty_response() throws {
         // Given
         XCTAssertEqual(storedProductAttributesCount, 0)
@@ -164,27 +182,86 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 0)
     }
 
-//
-//    func testAddProductTagReturnsErrorUponResponseError() {
-//        // Given a stubed generic-error network response
-//        network.simulateResponse(requestUrlSuffix: "products/tags/batch", filename: "generic_error")
-//        XCTAssertEqual(storedProductTagsCount, 0)
-//
-//        // When dispatching a `addProductTags` action
-//        var result: Result<[Networking.ProductTag], Error>?
-//        waitForExpectation { (exp) in
-//            let action = ProductTagAction.addProductTags(siteID: sampleSiteID, tags: ["Round toe", "Flat"]) { (aResult) in
-//                result = aResult
-//                exp.fulfill()
-//            }
-//            store.onAction(action)
-//        }
-//
-//        // Then no tags should be stored
-//        XCTAssertEqual(storedProductTagsCount, 0)
-//        XCTAssertNotNil(result?.failure)
-//    }
-//
+    func test_add_product_attribute_returns_error_upon_empty_response() throws {
+        // Given
+        XCTAssertEqual(storedProductAttributesCount, 0)
+
+        // When
+        let result: Result<Networking.ProductAttribute, Error> = try waitFor { promise in
+            let action = ProductAttributeAction.addProductAttribute(siteID: self.sampleSiteID, name: "Color") { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(storedProductAttributesCount, 0)
+    }
+
+    func test_update_product_attribute_stored_attribute_upon_successful_response() throws {
+        // Given
+        let initialAttribute = sampleProductAttribute(attributeID: 1)
+        storageManager.insertSampleProductAttribute(readOnlyProductAttribute: initialAttribute)
+        network.simulateResponse(requestUrlSuffix: "products/attributes/1", filename: "product-attribute-update")
+        XCTAssertEqual(storedProductAttributesCount, 1)
+
+        // When
+        let result: Result<Networking.ProductAttribute, Error> = try waitFor { promise in
+            let action = ProductAttributeAction.updateProductAttribute(siteID: self.sampleSiteID, productAttributeID: 1, name: "Color") { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(storedProductAttributesCount, 1)
+        let updatedAttribute = viewStorage.loadProductAttribute(siteID: sampleSiteID, attributeID: initialAttribute.attributeID)
+        XCTAssertEqual(initialAttribute.siteID, updatedAttribute?.siteID)
+        XCTAssertEqual(initialAttribute.attributeID, updatedAttribute?.attributeID)
+        XCTAssertNotEqual(initialAttribute.name, updatedAttribute?.name)
+        XCTAssertNotEqual(initialAttribute.visible, updatedAttribute?.visible)
+        XCTAssertNotEqual(initialAttribute.variation, updatedAttribute?.variation)
+        XCTAssertEqual(initialAttribute.options, updatedAttribute?.options)
+    }
+
+    func test_update_product_attribute_returns_error_upon_response_error() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "products/attributes/1", filename: "generic_error")
+        XCTAssertEqual(storedProductAttributesCount, 0)
+
+        // When
+        let result: Result<Networking.ProductAttribute, Error> = try waitFor { promise in
+            let action = ProductAttributeAction.updateProductAttribute(siteID: self.sampleSiteID, productAttributeID: 1, name: "Color") { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(storedProductAttributesCount, 0)
+    }
+
+    func test_update_product_attribute_returns_error_upon_empty_response() throws {
+        // Given
+        XCTAssertEqual(storedProductAttributesCount, 0)
+
+        // When
+        let result: Result<Networking.ProductAttribute, Error> = try waitFor { promise in
+            let action = ProductAttributeAction.updateProductAttribute(siteID: self.sampleSiteID, productAttributeID: 1, name: "Color") { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(storedProductAttributesCount, 0)
+    }
+
+
 //    func testAddProductTagReturnsErrorUponEmptyResponse() {
 //        // Given an empty network response
 //        XCTAssertEqual(storedProductTagsCount, 0)

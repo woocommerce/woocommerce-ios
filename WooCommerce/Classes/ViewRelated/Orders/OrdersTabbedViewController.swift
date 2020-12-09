@@ -74,9 +74,9 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
     /// Shows Order Creation flow.
     ///
     @objc private func displayCreateOrder() {
-        let orderFormVC = OrderFormViewController()
-        orderFormVC.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(orderFormVC, animated: true)
+        let orderCreationFormVC = OrderCreationFormViewController()
+        orderCreationFormVC.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(orderCreationFormVC, animated: true)
     }
 
     // MARK: - ButtonBarPagerTabStripViewController Conformance

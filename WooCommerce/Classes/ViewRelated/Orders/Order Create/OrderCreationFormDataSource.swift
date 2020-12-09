@@ -1,6 +1,6 @@
 import UIKit
 
-final class OrderFormDataSource: NSObject {
+final class OrderCreationFormDataSource: NSObject {
     private(set) var sections: [Section] = []
 
     override init() {
@@ -23,7 +23,7 @@ final class OrderFormDataSource: NSObject {
     }
 }
 
-extension OrderFormDataSource: UITableViewDataSource {
+extension OrderCreationFormDataSource: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return sections.count
     }
@@ -62,7 +62,7 @@ extension OrderFormDataSource: UITableViewDataSource {
     }
 }
 
-extension OrderFormDataSource {
+extension OrderCreationFormDataSource {
 
     struct Section {
         enum Category {
@@ -100,7 +100,7 @@ extension OrderFormDataSource {
     }
 }
 
-private extension OrderFormDataSource {
+private extension OrderCreationFormDataSource {
     func configure(_ cell: UITableViewCell, section: Section, indexPath: IndexPath) {
         let row = section.rows[indexPath.row]
         switch cell {
@@ -156,7 +156,7 @@ private extension OrderFormDataSource {
     }
 }
 
-private extension OrderFormDataSource {
+private extension OrderCreationFormDataSource {
     enum Icons {
         static let addItemIcon = UIImage.plusImage
     }

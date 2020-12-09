@@ -1,11 +1,11 @@
 import UIKit
 
-final class OrderFormViewController: UIViewController {
+final class OrderCreationFormViewController: UIViewController {
 
     /// Main TableView.
     ///
     private lazy var tableView = UITableView(frame: .zero, style: .grouped)
-    private let dataSource: OrderFormDataSource = .init()
+    private let dataSource: OrderCreationFormDataSource = .init()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,7 +21,7 @@ final class OrderFormViewController: UIViewController {
 
 // MARK: - User Interface Initialization
 //
-private extension OrderFormViewController {
+private extension OrderCreationFormViewController {
 
     func configureNavigation() {
         title = Localization.newOrderTitle
@@ -58,7 +58,7 @@ private extension OrderFormViewController {
 
 // MARK: - UITableViewDelegate
 //
-extension OrderFormViewController: UITableViewDelegate {
+extension OrderCreationFormViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -75,7 +75,7 @@ extension OrderFormViewController: UITableViewDelegate {
     }
 }
 
-private extension OrderFormViewController {
+private extension OrderCreationFormViewController {
     enum Localization {
         static let newOrderTitle = NSLocalizedString("New Order", comment: "Title for `Create Order` screen.")
         static let moreOptionsAccessibilityLabel = NSLocalizedString("More options",

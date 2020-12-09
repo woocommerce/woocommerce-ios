@@ -682,7 +682,7 @@ public enum ProductLoadError: Error, Equatable {
 
         var error: ProductLoadError {
             switch self {
-            case .invalidId:
+            case .invalidID:
                 return .notFound
             }
         }

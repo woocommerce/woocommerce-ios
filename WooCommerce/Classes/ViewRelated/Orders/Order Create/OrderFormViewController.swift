@@ -46,7 +46,6 @@ private extension OrderFormViewController {
 
         view.backgroundColor = .listBackground
         tableView.backgroundColor = .listBackground
-        tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.sectionFooterHeight = .leastNonzeroMagnitude
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = UITableView.automaticDimension

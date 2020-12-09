@@ -73,7 +73,7 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
 
     /// Shows Order Creation flow.
     ///
-    @objc private func createOrder() {
+    @objc private func displayCreateOrder() {
         let orderFormVC = OrderFormViewController()
         orderFormVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(orderFormVC, animated: true)
@@ -177,7 +177,7 @@ extension OrdersTabbedViewController {
         let button = UIBarButtonItem(image: .plusImage,
                                      style: .plain,
                                      target: self,
-                                     action: #selector(createOrder))
+                                     action: #selector(displayCreateOrder))
         button.accessibilityTraits = .button
         button.accessibilityLabel = Localization.orderCreationBarButtonAccessibilityLabel
         return button

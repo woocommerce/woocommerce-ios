@@ -3,41 +3,6 @@ import UIKit
 final class OrderFormDataSource: NSObject {
     private(set) var sections: [Section] = []
 
-    struct Section {
-        enum Category {
-            case summary
-            case items
-            case customerInformation
-            case notes
-        }
-
-        let category: Category
-        let title: String?
-        let rows: [Row]
-    }
-
-    /// Rows listed in the order they appear on screen
-    ///
-    enum Row: CaseIterable {
-        case summary
-        case addOrderItem
-        case addCustomer
-        case addOrderNote
-
-        var type: UITableViewCell.Type {
-            switch self {
-            case .summary:
-                return SummaryTableViewCell.self
-            case .addOrderItem, .addCustomer, .addOrderNote:
-                return LeftImageTableViewCell.self
-            }
-        }
-
-        var reuseIdentifier: String {
-            return type.reuseIdentifier
-        }
-    }
-
     override init() {
         super.init()
         sections = [
@@ -97,6 +62,44 @@ extension OrderFormDataSource: UITableViewDataSource {
     }
 }
 
+extension OrderFormDataSource {
+
+    struct Section {
+        enum Category {
+            case summary
+            case items
+            case customerInformation
+            case notes
+        }
+
+        let category: Category
+        let title: String?
+        let rows: [Row]
+    }
+
+    /// Rows listed in the order they appear on screen
+    ///
+    enum Row: CaseIterable {
+        case summary
+        case addOrderItem
+        case addCustomer
+        case addOrderNote
+
+        var type: UITableViewCell.Type {
+            switch self {
+            case .summary:
+                return SummaryTableViewCell.self
+            case .addOrderItem, .addCustomer, .addOrderNote:
+                return LeftImageTableViewCell.self
+            }
+        }
+
+        var reuseIdentifier: String {
+            return type.reuseIdentifier
+        }
+    }
+}
+
 private extension OrderFormDataSource {
     func configure(_ cell: UITableViewCell, section: Section, indexPath: IndexPath) {
         let row = section.rows[indexPath.row]
@@ -110,16 +113,16 @@ private extension OrderFormDataSource {
         case let cell as LeftImageTableViewCell where row == .addOrderNote:
             configureAddNote(cell: cell)
         default:
-            fatalError("Unknown cell in Order Form")
+            fatalError("Unknown cell in Order Creation Form")
         }
     }
 
 
-    private func configureSummary(cell: SummaryTableViewCell) {
+    func configureSummary(cell: SummaryTableViewCell) {
         // TODO: add 'new draft' state
     }
 
-    private func configureAddItem(cell: LeftImageTableViewCell) {
+    func configureAddItem(cell: LeftImageTableViewCell) {
         cell.leftImage = Icons.addItemIcon
         cell.imageView?.tintColor = .accent
         cell.textLabel?.textColor = .accent
@@ -130,7 +133,7 @@ private extension OrderFormDataSource {
         cell.accessibilityHint = Localization.addItemsAccessibilityHint
     }
 
-    private func configureAddCustomer(cell: LeftImageTableViewCell) {
+    func configureAddCustomer(cell: LeftImageTableViewCell) {
         cell.leftImage = Icons.addItemIcon
         cell.imageView?.tintColor = .accent
         cell.textLabel?.textColor = .accent
@@ -141,7 +144,7 @@ private extension OrderFormDataSource {
         cell.accessibilityHint = Localization.addCustomerAccessibilityHint
     }
 
-    private func configureAddNote(cell: LeftImageTableViewCell) {
+    func configureAddNote(cell: LeftImageTableViewCell) {
         cell.leftImage = Icons.addItemIcon
         cell.imageView?.tintColor = .accent
         cell.textLabel?.textColor = .accent

@@ -4,6 +4,7 @@ import Foundation
 /// Represents a ProductAttribute entity.
 ///
 public struct ProductAttribute: Decodable {
+    public let siteID: Int64
     public let attributeID: Int64
     public let name: String
     public let position: Int
@@ -19,12 +20,14 @@ public struct ProductAttribute: Decodable {
 
     /// ProductAttribute initializer.
     ///
-    public init(attributeID: Int64,
+    public init(siteID: Int64,
+                attributeID: Int64,
                 name: String,
                 position: Int,
                 visible: Bool,
                 variation: Bool,
                 options: [String]) {
+        self.siteID = siteID
         self.attributeID = attributeID
         self.name = name
         self.position = position
@@ -37,6 +40,10 @@ public struct ProductAttribute: Decodable {
     /// Public initializer for ProductAttribute.
     ///
     public init(from decoder: Decoder) throws {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
+            throw ProductAttributeDecodingError.missingSiteID
+        }
+
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let attributeID = container.failsafeDecodeIfPresent(Int64.self, forKey: .attributeID) ?? 0
@@ -53,7 +60,8 @@ public struct ProductAttribute: Decodable {
             }
         }
 
-        self.init(attributeID: attributeID,
+        self.init(siteID: siteID,
+                  attributeID: attributeID,
                   name: name,
                   position: position,
                   visible: visible,
@@ -82,7 +90,8 @@ private extension ProductAttribute {
 //
 extension ProductAttribute: Comparable {
     public static func == (lhs: ProductAttribute, rhs: ProductAttribute) -> Bool {
-        return lhs.attributeID == rhs.attributeID &&
+        return lhs.siteID == rhs.siteID &&
+            lhs.attributeID == rhs.attributeID &&
             lhs.name == rhs.name &&
             lhs.position == rhs.position &&
             lhs.visible == rhs.visible &&
@@ -95,4 +104,10 @@ extension ProductAttribute: Comparable {
             (lhs.attributeID == rhs.attributeID && lhs.name < rhs.name) ||
             (lhs.attributeID == rhs.attributeID && lhs.name == rhs.name && lhs.position < rhs.position)
     }
+}
+
+// MARK: - Decoding Errors
+//
+enum ProductAttributeDecodingError: Error {
+    case missingSiteID
 }

@@ -62,6 +62,10 @@ final class IssueRefundViewModel {
     ///
     private(set) var isNextButtonEnabled: Bool = false
 
+    /// Boolean indicating if the "select all" button is visible
+    ///
+    private(set) var isSelectAllButtonVisible: Bool = true
+
     /// Boolean indicating if there are refunds pending to commit
     ///
     private(set) var hasUnsavedChanges: Bool = false
@@ -95,6 +99,7 @@ final class IssueRefundViewModel {
         sections = createSections()
         title = calculateTitle()
         isNextButtonEnabled = calculateNextButtonEnableState()
+        isSelectAllButtonVisible = calculateSelectAllButtonVisibility()
         selectedItemsTitle = createSelectedItemsCount()
         hasUnsavedChanges = calculatePendingChangesState()
     }
@@ -329,6 +334,12 @@ extension IssueRefundViewModel {
     ///
     private func calculatePendingChangesState() -> Bool {
         state.refundQuantityStore.count() > 0 || state.shouldRefundShipping
+    }
+
+    /// Calculates wether the "select all" button should be visible or not.
+    ///
+    private func calculateSelectAllButtonVisibility() -> Bool {
+        return state.itemsToRefund.isNotEmpty
     }
 
     /// Returns `true` if a shipping refund is found.

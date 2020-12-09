@@ -154,14 +154,16 @@ extension MockReviews {
     }
 
     func sampleAttributes() -> [Networking.ProductAttribute] {
-        let attribute1 = ProductAttribute(attributeID: 0,
+        let attribute1 = ProductAttribute(siteID: siteID,
+                                          attributeID: 0,
                                           name: "Color",
                                           position: 1,
                                           visible: true,
                                           variation: true,
                                           options: ["Purple", "Yellow", "Hot Pink", "Lime Green", "Teal"])
 
-        let attribute2 = ProductAttribute(attributeID: 0,
+        let attribute2 = ProductAttribute(siteID: siteID,
+                                          attributeID: 0,
                                           name: "Size",
                                           position: 0,
                                           visible: true,
@@ -300,7 +302,8 @@ extension MockReviews {
     }
 
     func sampleAttributesMutated() -> [Networking.ProductAttribute] {
-        let attribute1 = ProductAttribute(attributeID: 0,
+        let attribute1 = ProductAttribute(siteID: siteID,
+                                          attributeID: 0,
                                           name: "Color",
                                           position: 0,
                                           visible: false,
@@ -397,14 +400,16 @@ extension MockReviews {
     }
 
     func sampleVariationTypeAttributes() -> [Networking.ProductAttribute] {
-        let attribute1 = ProductAttribute(attributeID: 0,
+        let attribute1 = ProductAttribute(siteID: siteID,
+                                          attributeID: 0,
                                           name: "Color",
                                           position: 0,
                                           visible: true,
                                           variation: true,
                                           options: ["Black"])
 
-        let attribute2 = ProductAttribute(attributeID: 0,
+        let attribute2 = ProductAttribute(siteID: siteID,
+                                          attributeID: 0,
                                           name: "Length",
                                           position: 0,
                                           visible: true,

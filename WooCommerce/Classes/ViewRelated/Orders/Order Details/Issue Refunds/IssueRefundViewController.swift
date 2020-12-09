@@ -75,6 +75,7 @@ private extension IssueRefundViewController {
         title = viewModel.title
         itemsSelectedLabel.text = viewModel.selectedItemsTitle
         nextButton.isEnabled = viewModel.isNextButtonEnabled
+        selectAllButton.isHidden = !viewModel.isSelectAllButtonVisible
         tableView.reloadData()
     }
 }

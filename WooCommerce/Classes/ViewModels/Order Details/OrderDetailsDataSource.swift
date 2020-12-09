@@ -275,8 +275,6 @@ private extension OrderDetailsDataSource {
             configureRefund(cell: cell, at: indexPath)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .netAmount:
             configureNetAmount(cell: cell)
-        case let cell as ProductDetailsTableViewCell where row == .orderItem:
-            configureOrderItem(cell: cell, at: indexPath)
         case let cell as ProductDetailsTableViewCell where row == .shippingLabelProduct:
             configureShippingLabelProduct(cell: cell, at: indexPath)
         case let cell as ProductDetailsTableViewCell where row == .aggregateOrderItem:
@@ -435,17 +433,6 @@ private extension OrderDetailsDataSource {
         cell.leftText = Titles.netAmount
         cell.rightText = paymentViewModel.netAmount
         cell.hideFootnote()
-    }
-
-    private func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
-        cell.selectionStyle = .default
-
-        let item = items[indexPath.row]
-        let product = lookUpProduct(by: item.productOrVariationID)
-        let itemViewModel = ProductDetailsCellViewModel(item: item,
-                                                        currency: order.currency,
-                                                        product: product)
-        cell.configure(item: itemViewModel, imageService: imageService)
     }
 
     private func configureShippingLabelDetail(cell: WooBasicTableViewCell) {
@@ -1167,7 +1154,6 @@ extension OrderDetailsDataSource {
     ///
     enum Row {
         case summary
-        case orderItem
         case aggregateOrderItem
         case fulfillButton
         case details
@@ -1198,8 +1184,6 @@ extension OrderDetailsDataSource {
             switch self {
             case .summary:
                 return SummaryTableViewCell.reuseIdentifier
-            case .orderItem:
-                return ProductDetailsTableViewCell.reuseIdentifier
             case .aggregateOrderItem:
                 return ProductDetailsTableViewCell.reuseIdentifier
             case .fulfillButton:

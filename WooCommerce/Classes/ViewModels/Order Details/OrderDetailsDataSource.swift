@@ -548,10 +548,16 @@ private extension OrderDetailsDataSource {
         cell.selectionStyle = .default
 
         let aggregateItem = aggregateOrderItems[indexPath.row]
-        let product = lookUpProduct(by: aggregateItem.productOrVariationID)
-        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem,
-                                                        currency: order.currency,
-                                                        product: product)
+        let imageURL: URL? = {
+            guard let imageURLString = aggregateItem.variationID != 0 ?
+                    lookUpProductVariation(productID: aggregateItem.productID, variationID: aggregateItem.variationID)?.image?.src:
+                    lookUpProduct(by: aggregateItem.productID)?.images.first?.src else {
+                return nil
+            }
+            return URL(string: imageURLString)
+        }()
+        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem.copy(imageURL: imageURL),
+                                                        currency: order.currency)
 
         cell.configure(item: itemViewModel, imageService: imageService)
     }
@@ -678,6 +684,10 @@ extension OrderDetailsDataSource {
 
     func lookUpProduct(by productID: Int64) -> Product? {
         return products.filter({ $0.productID == productID }).first
+    }
+
+    private func lookUpProductVariation(productID: Int64, variationID: Int64) -> ProductVariation? {
+        return resultsControllers.productVariations.filter({ $0.productID == productID && $0.productVariationID == variationID }).first
     }
 
     func lookUpRefund(by refundID: Int64) -> Refund? {

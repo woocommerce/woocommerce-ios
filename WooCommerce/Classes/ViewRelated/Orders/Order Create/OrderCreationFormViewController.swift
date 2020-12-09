@@ -5,7 +5,20 @@ final class OrderCreationFormViewController: UIViewController {
     /// Main TableView.
     ///
     private lazy var tableView = UITableView(frame: .zero, style: .grouped)
-    private let dataSource: OrderCreationFormDataSource = .init()
+    private let viewModel: OrderCreationFormViewModel
+    private let dataSource: OrderCreationFormDataSource
+
+    init() {
+        self.viewModel = OrderCreationFormViewModel()
+        self.dataSource = OrderCreationFormDataSource(viewModel: viewModel)
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        self.viewModel = OrderCreationFormViewModel()
+        self.dataSource = OrderCreationFormDataSource(viewModel: viewModel)
+        super.init(coder: coder)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

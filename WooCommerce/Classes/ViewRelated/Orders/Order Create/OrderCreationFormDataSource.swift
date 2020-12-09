@@ -1,20 +1,15 @@
 import UIKit
 
 final class OrderCreationFormDataSource: NSObject {
-    private(set) var sections: [Section] = []
+    let viewModel: OrderCreationFormViewModel
 
-    override init() {
+    init(viewModel: OrderCreationFormViewModel) {
+        self.viewModel = viewModel
         super.init()
-        sections = [
-            Section(category: .summary, title: nil, rows: [.summary]),
-            Section(category: .items, title: Localization.itemsHeader, rows: [.addOrderItem]),
-            Section(category: .customerInformation, title: Localization.customerHeader, rows: [.addCustomer]),
-            Section(category: .notes, title: Localization.orderNotesHeader, rows: [.addOrderNote])
-        ]
     }
 
     func registerTableViewCells(_ tableView: UITableView) {
-        for row in Row.allCases {
+        for row in OrderCreationFormViewModel.Row.allCases {
             tableView.registerNib(for: row.type)
         }
 
@@ -25,15 +20,15 @@ final class OrderCreationFormDataSource: NSObject {
 
 extension OrderCreationFormDataSource: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return sections.count
+        return viewModel.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sections[section].rows.count
+        return viewModel.sections[section].rows.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let section = sections[indexPath.section]
+        let section = viewModel.sections[indexPath.section]
         let reuseIdentifier = section.rows[indexPath.row].reuseIdentifier
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
         configure(cell, section: section, indexPath: indexPath)
@@ -42,7 +37,7 @@ extension OrderCreationFormDataSource: UITableViewDataSource {
 
     func heightForHeaderInSection(_ section: Int, tableView: UITableView) -> CGFloat {
         // Hide header for summary
-        if sections[section].category == .summary {
+        if viewModel.sections[section].category == .summary {
             return CGFloat.leastNormalMagnitude
         }
 
@@ -55,53 +50,15 @@ extension OrderCreationFormDataSource: UITableViewDataSource {
             return nil
         }
 
-        header.leftText = sections[section].title
+        header.leftText = viewModel.sections[section].title
         header.rightText = nil
 
         return header
     }
 }
 
-extension OrderCreationFormDataSource {
-
-    struct Section {
-        enum Category {
-            case summary
-            case items
-            case customerInformation
-            case notes
-        }
-
-        let category: Category
-        let title: String?
-        let rows: [Row]
-    }
-
-    /// Rows listed in the order they appear on screen
-    ///
-    enum Row: CaseIterable {
-        case summary
-        case addOrderItem
-        case addCustomer
-        case addOrderNote
-
-        var type: UITableViewCell.Type {
-            switch self {
-            case .summary:
-                return SummaryTableViewCell.self
-            case .addOrderItem, .addCustomer, .addOrderNote:
-                return LeftImageTableViewCell.self
-            }
-        }
-
-        var reuseIdentifier: String {
-            return type.reuseIdentifier
-        }
-    }
-}
-
 private extension OrderCreationFormDataSource {
-    func configure(_ cell: UITableViewCell, section: Section, indexPath: IndexPath) {
+    func configure(_ cell: UITableViewCell, section: OrderCreationFormViewModel.Section, indexPath: IndexPath) {
         let row = section.rows[indexPath.row]
         switch cell {
         case let cell as SummaryTableViewCell:
@@ -156,16 +113,27 @@ private extension OrderCreationFormDataSource {
     }
 }
 
+extension OrderCreationFormViewModel.Row {
+    var type: UITableViewCell.Type {
+        switch self {
+        case .summary:
+            return SummaryTableViewCell.self
+        case .addOrderItem, .addCustomer, .addOrderNote:
+            return LeftImageTableViewCell.self
+        }
+    }
+
+    var reuseIdentifier: String {
+        return type.reuseIdentifier
+    }
+}
+
 private extension OrderCreationFormDataSource {
     enum Icons {
         static let addItemIcon = UIImage.plusImage
     }
 
     enum Localization {
-        static let itemsHeader = NSLocalizedString("Items", comment: "Title for items list header of 'Create Order' screen.")
-        static let customerHeader = NSLocalizedString("Customer", comment: "Title for customer info header of 'Create Order' screen.")
-        static let orderNotesHeader = NSLocalizedString("Order Notes", comment: "Title for notes list header of 'Create Order' screen.")
-
         static let addItemsTitle = NSLocalizedString("Add Items", comment: "Button text for adding a new item on 'Create Order' screen.")
         static let addItemsAccessibilityLabel = NSLocalizedString("Add Items", comment: "Accessibility label for the 'Add Items' button.")
         static let addItemsAccessibilityHint = NSLocalizedString(

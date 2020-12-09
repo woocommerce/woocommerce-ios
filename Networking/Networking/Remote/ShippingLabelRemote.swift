@@ -7,6 +7,10 @@ public protocol ShippingLabelRemoteProtocol {
                             shippingLabelID: Int64,
                             paperSize: ShippingLabelPaperSize,
                             completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void)
+    func refundShippingLabel(siteID: Int64,
+                             orderID: Int64,
+                             shippingLabelID: Int64,
+                             completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints.
@@ -43,6 +47,19 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
         let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = ShippingLabelPrintDataMapper()
 
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Requests a refund for a shipping label.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site that owns the shipping label.
+    ///   - orderID: Remote ID of the order that owns the shipping labels.
+    ///   - shippingLabelID: Remote ID of the shipping label.
+    ///   - completion: Closure to be executed upon completion.
+    public func refundShippingLabel(siteID: Int64, orderID: Int64, shippingLabelID: Int64, completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void) {
+        let path = "\(Path.shippingLabels)/\(orderID)/\(shippingLabelID)/refund"
+        let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .post, siteID: siteID, path: path)
+        let mapper = ShippingLabelRefundMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
 }

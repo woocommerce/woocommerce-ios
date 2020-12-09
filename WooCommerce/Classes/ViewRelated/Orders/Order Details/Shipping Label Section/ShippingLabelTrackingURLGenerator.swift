@@ -4,7 +4,7 @@ import struct Yosemite.ShippingLabel
 /// Generates a tracking URL for a shipping label based on the carrier.
 struct ShippingLabelTrackingURLGenerator {
     static func url(for shippingLabel: ShippingLabel) -> URL? {
-        guard let carrier = ShippingLabelCarrier(rawValue: shippingLabel.carrierID) else {
+        guard let carrier = ShippingLabelCarrier(rawValue: shippingLabel.carrierID), shippingLabel.trackingNumber.isNotEmpty else {
             return nil
         }
         return URL(string: carrier.urlString(trackingNumber: shippingLabel.trackingNumber))

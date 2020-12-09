@@ -678,7 +678,7 @@ public enum ProductLoadError: Error, Equatable {
     }
 
     enum ErrorCode: String {
-        case invalidId = "woocommerce_rest_product_invalid_id"
+        case invalidID = "woocommerce_rest_product_invalid_id"
 
         var error: ProductLoadError {
             switch self {

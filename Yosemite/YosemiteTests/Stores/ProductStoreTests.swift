@@ -710,7 +710,8 @@ final class ProductStoreTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertNotNil(result.failure)
+        let error = try XCTUnwrap(result.failure as? ProductLoadError)
+        XCTAssertEqual(error, ProductLoadError.notFound)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
     }
 

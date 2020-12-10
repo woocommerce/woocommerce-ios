@@ -172,7 +172,7 @@ private extension ProductLoaderViewController {
     ///
     func displayFailureOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = .waitingForCustomersImage
+        overlayView.messageImage = .errorImage
         overlayView.messageText = NSLocalizedString("This product couldn't be loaded", comment: "Message displayed when loading a specific product fails")
         overlayView.actionText = NSLocalizedString("Retry", comment: "Retry the last action")
         overlayView.onAction = { [weak self] in
@@ -186,7 +186,7 @@ private extension ProductLoaderViewController {
     ///
     func displayNotFoundOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = .waitingForCustomersImage
+        overlayView.messageImage = .errorImage
         overlayView.messageText = NSLocalizedString("This product has been deleted and is no longer visible",
                                                     comment: "Message displayed when loading a specific product fails because product was deleted")
         overlayView.actionVisible = false

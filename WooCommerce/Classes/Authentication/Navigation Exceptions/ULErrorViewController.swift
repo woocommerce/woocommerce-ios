@@ -18,7 +18,7 @@ final class ULErrorViewController: UIViewController {
     @IBOutlet private weak var extraInfoButton: UIButton!
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return UIDevice.isPad() ? .all : .portrait
+        UIDevice.isPad() ? .all : .portrait
     }
 
     init(viewModel: ULErrorViewModel) {

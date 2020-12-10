@@ -323,12 +323,10 @@ private extension TwoFAViewController {
                     case .success(let detections):
                         if let pasteCode = detections.first?.value as? Int {
                             let pasteString = String(pasteCode)
-                            DispatchQueue.main.async {
-                                self?.handle(code: pasteString, textField: codeField)
-                            }
+                            self?.handle(code: pasteString, textField: codeField)
                         }
-                    case .failure(_):
-                        ()
+                    case .failure:
+                        break
                 }
             }
         } else {

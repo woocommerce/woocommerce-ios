@@ -14,7 +14,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
     @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
     @IBOutlet var verticalCenterConstraint: NSLayoutConstraint?
 
-    private var pasteboardChangeCountBeforeBackground: Int? = nil
+    private var pasteboardChangeCountBeforeBackground: Int = 0
     override var sourceTag: WordPressSupportSourceTag {
         get {
             return .login2FA
@@ -300,12 +300,10 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
                 switch result {
                 case .success(let detections):
                     if let pasteString = detections.first?.value as? String {
-                        DispatchQueue.main.async {
-                            self?.handle(code: pasteString)
-                        }
+                        self?.handle(code: pasteString)
                     }
-                case .failure(let error):
-                    ()
+                case .failure:
+                    break
                 }
             }
         } else {

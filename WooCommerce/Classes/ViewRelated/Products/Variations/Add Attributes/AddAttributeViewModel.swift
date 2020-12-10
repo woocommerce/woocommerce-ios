@@ -17,7 +17,7 @@ final class AddAttributeViewModel {
 
     private lazy var resultController: ResultsController<StorageProductAttribute> = {
         let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID = %ld", self.product.siteID)
+        let predicate = NSPredicate(format: "siteID = %ld", product.siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageProductAttribute.name, ascending: true)
         return ResultsController<StorageProductAttribute>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()

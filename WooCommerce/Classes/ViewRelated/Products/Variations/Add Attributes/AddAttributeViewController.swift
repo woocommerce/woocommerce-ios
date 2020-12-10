@@ -170,7 +170,7 @@ private extension AddAttributeViewController {
         case let cell as TextFieldTableViewCell where row == .attributeTextField:
             configureTextField(cell: cell)
         case let cell as BasicTableViewCell where row == .existingAttribute:
-            configureAttribute(cell: cell)
+            configureAttribute(cell: cell, attribute: viewModel.fetchedAttributes[safe: indexPath.row])
         default:
             fatalError()
             break
@@ -181,8 +181,8 @@ private extension AddAttributeViewController {
 
     }
 
-    func configureAttribute(cell: BasicTableViewCell) {
-        cell.textLabel?.text = "TODO"
+    func configureAttribute(cell: BasicTableViewCell, attribute: ProductAttribute?) {
+        cell.textLabel?.text = attribute?.name
     }
 }
 

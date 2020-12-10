@@ -11,11 +11,19 @@ final class ULErrorViewController: UIViewController {
     /// and support for user actions
     private let viewModel: ULErrorViewModel
 
-    @IBOutlet private var primaryButton: NUXButton!
-    @IBOutlet private var secondaryButton: NUXButton!
-    @IBOutlet private var imageView: UIImageView!
+    @IBOutlet private weak var primaryButton: NUXButton!
+    @IBOutlet private weak var secondaryButton: NUXButton!
+    @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var errorMessage: UILabel!
     @IBOutlet private weak var extraInfoButton: UIButton!
+
+    /// Constraints on the view containing the action buttons
+    /// and the stack view containing the image and error text
+    /// Used to adjust the button width in unified views provided by WPAuthenticator
+    @IBOutlet private weak var buttonViewLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var buttonViewTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var stackViewLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var stackViewTrailingConstraint: NSLayoutConstraint!
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         UIDevice.isPad() ? .all : .portrait
@@ -39,6 +47,18 @@ final class ULErrorViewController: UIViewController {
 
         configurePrimaryButton()
         configureSecondaryButton()
+
+        setUnifiedMargins(forWidth: view.frame.width)
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        setUnifiedMargins(forWidth: view.frame.width)
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        setUnifiedMargins(forWidth: size.width)
     }
 }
 
@@ -82,6 +102,37 @@ private extension ULErrorViewController {
         secondaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapSecondaryButton()
         }
+    }
+
+
+    /// This logic is lifted from WPAuthenticator's LoginPrologueViewController
+    /// This View Controller will be provided to WPAuthenticator. WPAuthenticator
+    /// will insert it into its own navigation stack, where it is applying a similar logic
+    func setUnifiedMargins(forWidth viewWidth: CGFloat) {
+        guard traitCollection.horizontalSizeClass == .regular &&
+                traitCollection.verticalSizeClass == .regular else {
+            buttonViewLeadingConstraint?.constant = ButtonViewMarginMultipliers.defaultButtonViewMargin
+            buttonViewTrailingConstraint?.constant = ButtonViewMarginMultipliers.defaultButtonViewMargin
+            return
+        }
+
+        let marginMultiplier = UIDevice.current.orientation.isLandscape ?
+            ButtonViewMarginMultipliers.ipadLandscape :
+            ButtonViewMarginMultipliers.ipadPortrait
+
+        let margin = viewWidth * marginMultiplier
+
+        buttonViewLeadingConstraint?.constant = margin
+        buttonViewTrailingConstraint?.constant = margin
+
+        stackViewLeadingConstraint?.constant = margin
+        stackViewTrailingConstraint?.constant = margin
+    }
+
+    private enum ButtonViewMarginMultipliers {
+        static let ipadPortrait: CGFloat = 0.1667
+        static let ipadLandscape: CGFloat = 0.25
+        static let defaultButtonViewMargin: CGFloat = 0.0
     }
 }
 

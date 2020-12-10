@@ -11,11 +11,15 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ULErrorViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="buttonViewLeadingConstraint" destination="r9Z-y5-j3W" id="bWb-vV-0U2"/>
+                <outlet property="buttonViewTrailingConstraint" destination="3Fe-tr-bmb" id="DjF-95-KFx"/>
                 <outlet property="errorMessage" destination="a2d-le-aKc" id="YgT-Ex-Gwh"/>
                 <outlet property="extraInfoButton" destination="GOR-hg-dbC" id="I7z-hN-FAo"/>
                 <outlet property="imageView" destination="Osv-Wo-lxW" id="yIN-vL-DOA"/>
                 <outlet property="primaryButton" destination="ZHa-is-GJK" id="wzn-TJ-1Sm"/>
                 <outlet property="secondaryButton" destination="9Ap-Te-Fsi" id="07U-PT-JrQ"/>
+                <outlet property="stackViewLeadingConstraint" destination="jMe-jj-6Bt" id="JnU-my-QgI"/>
+                <outlet property="stackViewTrailingConstraint" destination="Z7E-hC-lbB" id="RHp-Ac-R58"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>

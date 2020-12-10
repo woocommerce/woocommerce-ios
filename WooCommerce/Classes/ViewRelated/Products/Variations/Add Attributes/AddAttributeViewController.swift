@@ -191,7 +191,6 @@ private extension AddAttributeViewController {
 //
 extension AddAttributeViewController {
 
-
     @objc private func completeUpdating() {
         // TODO: to be implemented
     }
@@ -226,8 +225,8 @@ extension AddAttributeViewController {
 
 private extension AddAttributeViewController {
     enum Localization {
-        static let titleView = NSLocalizedString("Add attribute", comment: "Add Attribute screen navigation title")
-        static let nextNavBarButton = NSLocalizedString("Next", comment: "Next nav bar button title in Add Attribute screen")
+        static let titleView = NSLocalizedString("Add attribute", comment: "Add Product Attribute screen navigation title")
+        static let nextNavBarButton = NSLocalizedString("Next", comment: "Next nav bar button title in Add Product Attribute screen")
         static let syncErrorMessage = NSLocalizedString("Unable to load product attributes", comment: "Load Product Attributes Action Failed")
         static let retryAction = NSLocalizedString("Retry", comment: "Retry Action")
     }

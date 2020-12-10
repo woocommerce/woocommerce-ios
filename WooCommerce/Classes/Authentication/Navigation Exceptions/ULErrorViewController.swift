@@ -19,6 +19,8 @@ final class ULErrorViewController: UIViewController {
 
     @IBOutlet private weak var buttonViewLeadingConstraint: NSLayoutConstraint!
     @IBOutlet private weak var buttonViewTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var stackViewLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var stackViewTrailingConstraint: NSLayoutConstraint!
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         UIDevice.isPad() ? .all : .portrait
@@ -101,10 +103,10 @@ private extension ULErrorViewController {
 
     func setButtonViewMargins(forWidth viewWidth: CGFloat) {
         guard traitCollection.horizontalSizeClass == .regular &&
-            traitCollection.verticalSizeClass == .regular else {
+                traitCollection.verticalSizeClass == .regular else {
             buttonViewLeadingConstraint?.constant = ButtonViewMarginMultipliers.defaultButtonViewMargin
-                buttonViewTrailingConstraint?.constant = ButtonViewMarginMultipliers.defaultButtonViewMargin
-                return
+            buttonViewTrailingConstraint?.constant = ButtonViewMarginMultipliers.defaultButtonViewMargin
+            return
         }
 
         let marginMultiplier = UIDevice.current.orientation.isLandscape ?
@@ -115,6 +117,9 @@ private extension ULErrorViewController {
 
         buttonViewLeadingConstraint?.constant = margin
         buttonViewTrailingConstraint?.constant = margin
+
+        stackViewLeadingConstraint?.constant = margin
+        stackViewTrailingConstraint?.constant = margin
     }
 
     private enum ButtonViewMarginMultipliers {
@@ -122,7 +127,6 @@ private extension ULErrorViewController {
         static let ipadLandscape: CGFloat = 0.25
         static let defaultButtonViewMargin: CGFloat = 0.0
     }
-
 }
 
 

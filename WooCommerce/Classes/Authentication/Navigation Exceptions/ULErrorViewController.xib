@@ -18,6 +18,8 @@
                 <outlet property="imageView" destination="Osv-Wo-lxW" id="yIN-vL-DOA"/>
                 <outlet property="primaryButton" destination="ZHa-is-GJK" id="wzn-TJ-1Sm"/>
                 <outlet property="secondaryButton" destination="9Ap-Te-Fsi" id="07U-PT-JrQ"/>
+                <outlet property="stackViewLeadingConstraint" destination="jMe-jj-6Bt" id="JnU-my-QgI"/>
+                <outlet property="stackViewTrailingConstraint" destination="Z7E-hC-lbB" id="RHp-Ac-R58"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>

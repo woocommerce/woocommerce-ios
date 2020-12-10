@@ -14,15 +14,10 @@ class WooCommerceScreenshots: XCTestCase {
         let app = XCUIApplication()
         setupSnapshot(app)
 
-        app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api"]
+        app.launchArguments = ["mocked-wpcom-api", "disable-animations", ]
         app.launch()
 
-        WelcomeScreen()
-            .selectLogin()
-            .proceedWith(email: ScreenshotCredentials.emailAddress)
-            .proceedWithPassword()
-            .proceedWith(password: ScreenshotCredentials.password)
-            .continueWithSelectedSite()
+        MyStoreScreen()
 
             // My Store
             .dismissTopBannerIfNeeded()

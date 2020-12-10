@@ -327,6 +327,10 @@ private extension AppDelegate {
           ServiceLocator.stores.deauthenticate()
         }
 
+        if ProcessInfo.processInfo.arguments.contains("mocked-network-layer") {
+            ServiceLocator.setStores(ScreenshotsStoresManager())
+        }
+
         if ProcessInfo.processInfo.arguments.contains("disable-animations") {
             UIView.setAnimationsEnabled(false)
 

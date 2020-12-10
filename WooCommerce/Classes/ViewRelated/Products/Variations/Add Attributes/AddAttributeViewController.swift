@@ -26,9 +26,10 @@ final class AddAttributeViewController: UIViewController {
         super.viewDidLoad()
         configureNavigationBar()
         configureMainView()
+        registerTableViewHeaderSections()
+        registerTableViewCells()
         configureTableView()
         configureGhostTableView()
-        registerTableViewCells()
         configureViewModel()
     }
 
@@ -48,15 +49,13 @@ private extension AddAttributeViewController {
     }
 
     func configureMainView() {
-        view.backgroundColor = .listForeground
+        view.backgroundColor = .listBackground
     }
 
     func configureTableView() {
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.backgroundColor = .listForeground
-        tableView.separatorStyle = .none
-
-        registerTableViewCells()
+        tableView.sectionFooterHeight = UITableView.automaticDimension
+        tableView.backgroundColor = .listBackground
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -69,6 +68,11 @@ private extension AddAttributeViewController {
         ghostTableView.pinSubviewToAllEdges(view)
         ghostTableView.backgroundColor = .listBackground
         ghostTableView.removeLastCellSeparator()
+    }
+
+    func registerTableViewHeaderSections() {
+        let headerNib = UINib(nibName: TwoColumnSectionHeaderView.reuseIdentifier, bundle: nil)
+        tableView.register(headerNib, forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
     }
 
     func registerTableViewCells() {
@@ -157,6 +161,34 @@ extension AddAttributeViewController: UITableViewDataSource {
 extension AddAttributeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        return 44
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let leftText = viewModel.sections[section].header else {
+            return nil
+        }
+
+        let headerID = TwoColumnSectionHeaderView.reuseIdentifier
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
+            fatalError()
+        }
+
+        headerView.leftText = leftText
+        headerView.rightText = nil
+
+        return headerView
+    }
+
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        return viewModel.sections[section].footer
     }
 }
 

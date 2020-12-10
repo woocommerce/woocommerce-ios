@@ -31,7 +31,7 @@ public final class ProductAttributeStore: Store {
         }
 
         switch action {
-        case let .synchronizeProductAttributes(siteID, onCompletion):
+        case .synchronizeProductAttributes(let siteID, let onCompletion):
             synchronizeProductAttributes(siteID: siteID, onCompletion: onCompletion)
         case .addProductAttribute(let siteID, let name, let onCompletion):
             addProductAttribute(siteID: siteID, name: name, onCompletion: onCompletion)

@@ -35,9 +35,9 @@ private extension ShippingLabelPaperSizeOptionsView {
     }
 
     enum PaperSizeImage {
-        static let label = Image("shipping-label-paper-size-legal")
+        static let label = Image("shipping-label-paper-size-label")
         static let legal = Image("shipping-label-paper-size-legal")
-        static let letter = Image("shipping-label-paper-size-legal")
+        static let letter = Image("shipping-label-paper-size-letter")
     }
 }
 

@@ -174,13 +174,7 @@ extension DefaultStoresManager {
     /// Returns a StoresManager instance with testing Keychain/UserDefaults
     ///
     static var testingInstance: DefaultStoresManager {
-        return DefaultStoresManager(concreteSessionManager: .testingInstance)
-    }
-
-    /// Allow initializing a test `DefaultStoresManager` using a concrete implementation of `SessionManager`
-    ///
-    convenience init(concreteSessionManager: SessionManager) {
-        self.init(sessionManager: concreteSessionManager)
+        return DefaultStoresManager(sessionManager: SessionManager.testingInstance)
     }
 }
 

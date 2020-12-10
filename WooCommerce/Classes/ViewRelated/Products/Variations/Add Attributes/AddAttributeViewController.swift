@@ -10,6 +10,12 @@ final class AddAttributeViewController: UIViewController {
     private let product: Product
     private let viewModel: AddAttributeViewModel
 
+    /// Keyboard management
+    ///
+    private lazy var keyboardFrameObserver: KeyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+        self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
+    }
+
     /// Init
     ///
     init(product: Product) {
@@ -24,6 +30,7 @@ final class AddAttributeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        startListeningToNotifications()
         configureNavigationBar()
         configureMainView()
         registerTableViewHeaderSections()
@@ -210,11 +217,35 @@ private extension AddAttributeViewController {
     }
 
     func configureTextField(cell: TextFieldTableViewCell) {
+        let viewModel = TextFieldTableViewCell.ViewModel(text: nil,
+                                                         placeholder: Localization.titleCellPlaceholder,
+                                                         onTextChange: { newAttributeName in
+                                                            // TODO: handle new attribute
 
+            }, onTextDidBeginEditing: {
+        }, inputFormatter: nil, keyboardType: .default)
+        cell.configure(viewModel: viewModel)
+        cell.applyStyle(style: .body)
     }
 
     func configureAttribute(cell: BasicTableViewCell, attribute: ProductAttribute?) {
         cell.textLabel?.text = attribute?.name
+    }
+}
+
+// MARK: - Keyboard management
+//
+private extension AddAttributeViewController {
+    /// Registers for all of the related Notifications
+    ///
+    func startListeningToNotifications() {
+        keyboardFrameObserver.startObservingKeyboardFrame()
+    }
+}
+
+extension AddAttributeViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        return tableView
     }
 }
 
@@ -259,6 +290,8 @@ private extension AddAttributeViewController {
     enum Localization {
         static let titleView = NSLocalizedString("Add attribute", comment: "Add Product Attribute screen navigation title")
         static let nextNavBarButton = NSLocalizedString("Next", comment: "Next nav bar button title in Add Product Attribute screen")
+        static let titleCellPlaceholder = NSLocalizedString("Attribute name",
+                                                            comment: "Add Product Attribute. Placeholder of cell presenting the title of the new attribute.")
         static let syncErrorMessage = NSLocalizedString("Unable to load product attributes", comment: "Load Product Attributes Action Failed")
         static let retryAction = NSLocalizedString("Retry", comment: "Retry Action")
     }

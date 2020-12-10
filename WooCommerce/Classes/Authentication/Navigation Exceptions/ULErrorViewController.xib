@@ -11,6 +11,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ULErrorViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="buttonViewLeadingConstraint" destination="r9Z-y5-j3W" id="bWb-vV-0U2"/>
+                <outlet property="buttonViewTrailingConstraint" destination="3Fe-tr-bmb" id="DjF-95-KFx"/>
                 <outlet property="errorMessage" destination="a2d-le-aKc" id="YgT-Ex-Gwh"/>
                 <outlet property="extraInfoButton" destination="GOR-hg-dbC" id="I7z-hN-FAo"/>
                 <outlet property="imageView" destination="Osv-Wo-lxW" id="yIN-vL-DOA"/>

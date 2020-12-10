@@ -11,11 +11,14 @@ final class ULErrorViewController: UIViewController {
     /// and support for user actions
     private let viewModel: ULErrorViewModel
 
-    @IBOutlet private var primaryButton: NUXButton!
-    @IBOutlet private var secondaryButton: NUXButton!
-    @IBOutlet private var imageView: UIImageView!
+    @IBOutlet private weak var primaryButton: NUXButton!
+    @IBOutlet private weak var secondaryButton: NUXButton!
+    @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var errorMessage: UILabel!
     @IBOutlet private weak var extraInfoButton: UIButton!
+
+    @IBOutlet private weak var buttonViewLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var buttonViewTrailingConstraint: NSLayoutConstraint!
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         UIDevice.isPad() ? .all : .portrait
@@ -39,6 +42,18 @@ final class ULErrorViewController: UIViewController {
 
         configurePrimaryButton()
         configureSecondaryButton()
+
+        setButtonViewMargins(forWidth: view.frame.width)
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        setButtonViewMargins(forWidth: view.frame.width)
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        setButtonViewMargins(forWidth: size.width)
     }
 }
 
@@ -83,6 +98,31 @@ private extension ULErrorViewController {
             self?.didTapSecondaryButton()
         }
     }
+
+    func setButtonViewMargins(forWidth viewWidth: CGFloat) {
+        guard traitCollection.horizontalSizeClass == .regular &&
+            traitCollection.verticalSizeClass == .regular else {
+            buttonViewLeadingConstraint?.constant = ButtonViewMarginMultipliers.defaultButtonViewMargin
+                buttonViewTrailingConstraint?.constant = ButtonViewMarginMultipliers.defaultButtonViewMargin
+                return
+        }
+
+        let marginMultiplier = UIDevice.current.orientation.isLandscape ?
+            ButtonViewMarginMultipliers.ipadLandscape :
+            ButtonViewMarginMultipliers.ipadPortrait
+
+        let margin = viewWidth * marginMultiplier
+
+        buttonViewLeadingConstraint?.constant = margin
+        buttonViewTrailingConstraint?.constant = margin
+    }
+
+    private enum ButtonViewMarginMultipliers {
+        static let ipadPortrait: CGFloat = 0.1667
+        static let ipadLandscape: CGFloat = 0.25
+        static let defaultButtonViewMargin: CGFloat = 0.0
+    }
+
 }
 
 

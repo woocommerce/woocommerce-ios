@@ -1,5 +1,4 @@
 import Foundation
-import SwiftUI
 import UIKit
 import Gridicons
 import Yosemite

@@ -53,6 +53,7 @@ private extension ProductAttributeStore {
         remote.loadAllProductAttributes(for: siteID) { [weak self] (result) in
             switch result {
             case .success(let productAttributes):
+                self?.deleteUnusedStoredProductAttributes(siteID: siteID)
                 self?.upsertStoredProductAttributesInBackground(productAttributes, siteID: siteID) {
                     onCompletion(.success(productAttributes))
                 }
@@ -159,6 +160,14 @@ private extension ProductAttributeStore {
         }
 
         storage.deleteObject(productAttribute)
+        storage.saveIfNeeded()
+    }
+
+    /// Deletes any Storage.ProductAttribute that is not associated to a product on the specified `siteID`
+    ///
+    func deleteUnusedStoredProductAttributes(siteID: Int64) {
+        let storage = storageManager.viewStorage
+        storage.deleteUnusedProductAttributes(siteID: siteID)
         storage.saveIfNeeded()
     }
 }

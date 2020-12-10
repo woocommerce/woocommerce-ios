@@ -70,6 +70,16 @@ extension MockStorageManager {
         return newProductTag
     }
 
+    /// Inserts a new (Sample) ProductAttribute into the specified context.
+    ///
+    @discardableResult
+    func insertSampleProductAttribute(readOnlyProductAttribute: ProductAttribute) -> StorageProductAttribute {
+        let newProductAttribute = viewStorage.insertNewObject(ofType: StorageProductAttribute.self)
+        newProductAttribute.update(with: readOnlyProductAttribute)
+
+        return newProductAttribute
+    }
+
     /// Inserts a new (Sample) Order into the specified context.
     ///
     @discardableResult

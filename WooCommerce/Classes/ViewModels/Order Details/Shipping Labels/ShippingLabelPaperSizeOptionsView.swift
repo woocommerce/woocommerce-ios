@@ -14,7 +14,7 @@ struct ShippingLabelPaperSizeOptionsView: View {
 
     var body: some View {
         ScrollView {
-            GridStack(rows: numberOfRows, columns: numberOfColumnsPerRow) { row, col in
+            GridStackView(rows: numberOfRows, columns: numberOfColumnsPerRow) { row, col in
                 let index = row * numberOfColumnsPerRow + col
                 if let paperSize = paperSizeOptions[safe: index] {
                     ShippingLabelPaperSizeOptionView(paperSize: paperSize)

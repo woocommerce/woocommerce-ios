@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Displays a grid view where the caller generates a view for each coordinate.
-struct GridStack<Content: View>: View {
+struct GridStackView<Content: View>: View {
     private let rows: Int
     private let columns: Int
     private let content: (Int, Int) -> Content
@@ -35,7 +35,7 @@ struct GridStack<Content: View>: View {
 
 struct GridStackView_Previews: PreviewProvider {
     static var previews: some View {
-        GridStack(rows: 4, columns: 4) { row, col in
+        GridStackView(rows: 4, columns: 4) { row, col in
             Image(systemName: "\(row * 4 + col).circle")
             Text("Row \(row) Col \(col)")
         }

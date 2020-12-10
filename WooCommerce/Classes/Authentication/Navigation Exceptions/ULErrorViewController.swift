@@ -17,6 +17,9 @@ final class ULErrorViewController: UIViewController {
     @IBOutlet private weak var errorMessage: UILabel!
     @IBOutlet private weak var extraInfoButton: UIButton!
 
+    /// Constraints on the view containing the action buttons
+    /// and the stack view containing the image and error text
+    /// Used to adjust the button width in unified views provided by WPAuthenticator
     @IBOutlet private weak var buttonViewLeadingConstraint: NSLayoutConstraint!
     @IBOutlet private weak var buttonViewTrailingConstraint: NSLayoutConstraint!
     @IBOutlet private weak var stackViewLeadingConstraint: NSLayoutConstraint!
@@ -45,17 +48,17 @@ final class ULErrorViewController: UIViewController {
         configurePrimaryButton()
         configureSecondaryButton()
 
-        setButtonViewMargins(forWidth: view.frame.width)
+        setUnifiedMargins(forWidth: view.frame.width)
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        setButtonViewMargins(forWidth: view.frame.width)
+        setUnifiedMargins(forWidth: view.frame.width)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        setButtonViewMargins(forWidth: size.width)
+        setUnifiedMargins(forWidth: size.width)
     }
 }
 
@@ -101,7 +104,11 @@ private extension ULErrorViewController {
         }
     }
 
-    func setButtonViewMargins(forWidth viewWidth: CGFloat) {
+
+    /// This logic is lifted from WPAuthenticator's LoginPrologueViewController
+    /// This View Controller will be provided to WPAuthenticator. WPAuthenticator
+    /// will insert it into its own navigation stack, where it is applying a similar logic
+    func setUnifiedMargins(forWidth viewWidth: CGFloat) {
         guard traitCollection.horizontalSizeClass == .regular &&
                 traitCollection.verticalSizeClass == .regular else {
             buttonViewLeadingConstraint?.constant = ButtonViewMarginMultipliers.defaultButtonViewMargin

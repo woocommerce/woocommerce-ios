@@ -10,6 +10,8 @@ import WordPressKit
 import WordPressAuthenticator
 import AutomatticTracks
 
+import class Yosemite.ScreenshotStoresManager
+
 #if DEBUG
 import Wormholy
 #endif
@@ -51,7 +53,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupCrashLogging()
 
         // Setup Components
-        setupStoresManager()
         setupAnalytics()
         setupAuthenticationManager()
         setupCocoaLumberjack()
@@ -224,10 +225,6 @@ private extension AppDelegate {
         CrashLogging.start(withDataProvider: WCCrashLoggingDataProvider(), eventLogging: eventLogging)
     }
 
-    func setupStoresManager() {
-        ServiceLocator.setStores(ScreenshotsStoresManager())
-    }
-
     /// Sets up the Zendesk SDK.
     ///
     func setupZendesk() {
@@ -328,7 +325,7 @@ private extension AppDelegate {
         }
 
         if ProcessInfo.processInfo.arguments.contains("mocked-network-layer") {
-            ServiceLocator.setStores(ScreenshotsStoresManager())
+            ServiceLocator.setStores(ScreenshotStoresManager(storageManager: ServiceLocator.storageManager))
         }
 
         if ProcessInfo.processInfo.arguments.contains("disable-animations") {

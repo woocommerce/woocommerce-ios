@@ -17,6 +17,10 @@ final class ULErrorViewController: UIViewController {
     @IBOutlet private weak var errorMessage: UILabel!
     @IBOutlet private weak var extraInfoButton: UIButton!
 
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        UIDevice.isPad() ? .all : .portrait
+    }
+
     init(viewModel: ULErrorViewModel) {
         self.viewModel = viewModel
         super.init(nibName: Self.nibName, bundle: nil)

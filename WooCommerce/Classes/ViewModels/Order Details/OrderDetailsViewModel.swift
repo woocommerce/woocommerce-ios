@@ -225,13 +225,6 @@ extension OrderDetailsViewModel {
             let addTracking = ManualTrackingViewController(viewModel: addTrackingViewModel)
             let navController = WooNavigationController(rootViewController: addTracking)
             viewController.present(navController, animated: true, completion: nil)
-        case .orderItem:
-            let item = items[indexPath.row]
-            let loaderViewController = ProductLoaderViewController(model: .init(orderItem: item),
-                                                                   siteID: order.siteID,
-                                                                   forceReadOnly: true)
-            let navController = WooNavigationController(rootViewController: loaderViewController)
-            viewController.present(navController, animated: true, completion: nil)
         case .aggregateOrderItem:
             let item = dataSource.aggregateOrderItems[indexPath.row]
             let loaderViewController = ProductLoaderViewController(model: .init(aggregateOrderItem: item),

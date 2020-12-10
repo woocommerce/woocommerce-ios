@@ -225,13 +225,6 @@ extension OrderDetailsViewModel {
             let addTracking = ManualTrackingViewController(viewModel: addTrackingViewModel)
             let navController = WooNavigationController(rootViewController: addTracking)
             viewController.present(navController, animated: true, completion: nil)
-        case .orderItem:
-            let item = items[indexPath.row]
-            let loaderViewController = ProductLoaderViewController(model: .init(orderItem: item),
-                                                                   siteID: order.siteID,
-                                                                   forceReadOnly: true)
-            let navController = WooNavigationController(rootViewController: loaderViewController)
-            viewController.present(navController, animated: true, completion: nil)
         case .aggregateOrderItem:
             let item = dataSource.aggregateOrderItems[indexPath.row]
             let loaderViewController = ProductLoaderViewController(model: .init(aggregateOrderItem: item),
@@ -239,6 +232,12 @@ extension OrderDetailsViewModel {
                                                                    forceReadOnly: true)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
+        case .shippingLabelDetail:
+            guard let shippingLabel = dataSource.shippingLabel(at: indexPath) else {
+                return
+            }
+            let shippingLabelDetailsViewController = ShippingLabelDetailsViewController(shippingLabel: shippingLabel)
+            viewController.show(shippingLabelDetailsViewController, sender: viewController)
         case .shippingLabelPrintingInfo:
             // TODO-2174: present instructions on how to print shipping labels
             break
@@ -348,6 +347,18 @@ extension OrderDetailsViewModel {
             onCompletion?(nil)
         }
 
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func syncProductVariations(onCompletion: ((Error?) -> ())? = nil) {
+        let action = ProductVariationAction.requestMissingVariations(for: order) { error in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing missing variations in an Order: \(error)")
+                onCompletion?(error)
+                return
+            }
+            onCompletion?(nil)
+        }
         ServiceLocator.stores.dispatch(action)
     }
 

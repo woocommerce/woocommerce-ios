@@ -64,6 +64,7 @@ final class OrderDetailsViewController: UIViewController {
         super.viewWillAppear(animated)
         syncNotes()
         syncProducts()
+        syncProductVariations()
         syncRefunds()
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease1) {
             syncShippingLabels()
@@ -226,6 +227,11 @@ extension OrderDetailsViewController {
         }
 
         group.enter()
+        syncProductVariations { _ in
+            group.leave()
+        }
+
+        group.enter()
         syncRefunds() { _ in
             group.leave()
         }
@@ -279,6 +285,10 @@ private extension OrderDetailsViewController {
 
     func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
         viewModel.syncProducts(onCompletion: onCompletion)
+    }
+
+    func syncProductVariations(onCompletion: ((Error?) -> ())? = nil) {
+        viewModel.syncProductVariations(onCompletion: onCompletion)
     }
 
     func syncRefunds(onCompletion: ((Error?) -> ())? = nil) {
@@ -350,10 +360,8 @@ private extension OrderDetailsViewController {
     }
 
     func issueRefundWasPressed() {
-        // TODO: Migrate to a CoordinatingController https://github.com/woocommerce/woocommerce-ios/issues/2844
-        let issueRefundViewController = IssueRefundViewController(order: viewModel.order, refunds: viewModel.refunds)
-        let navigationController = WooNavigationController(rootViewController: issueRefundViewController)
-        present(navigationController, animated: true)
+        let issueRefundCoordinatingController = IssueRefundCoordinatingController(order: viewModel.order, refunds: viewModel.refunds)
+        present(issueRefundCoordinatingController, animated: true)
     }
 
     func displayWebView(url: URL) {
@@ -387,8 +395,14 @@ private extension OrderDetailsViewController {
             self?.viewModel.dataSource.sendToPasteboard(shippingLabel.trackingNumber, includeTrailingNewline: false)
         }
 
-        actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.trackShipmentAction) { _ in
-            // TODO-2564: track shipment of a shipping label
+        // Only shows the tracking action when there is a tracking URL.
+        if let url = ShippingLabelTrackingURLGenerator.url(for: shippingLabel) {
+            actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.trackShipmentAction) { [weak self] _ in
+                guard let self = self else { return }
+                let safariViewController = SFSafariViewController(url: url)
+                safariViewController.modalPresentationStyle = .pageSheet
+                self.present(safariViewController, animated: true, completion: nil)
+            }
         }
 
         let popoverController = actionSheet.popoverPresentationController

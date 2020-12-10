@@ -111,7 +111,11 @@ final class OrderDetailsDataSource: NSObject {
     /// Calculate the new order item quantities and totals after refunded products have altered the fields
     ///
     var aggregateOrderItems: [AggregateOrderItem] {
-        return AggregateDataHelper.combineOrderItems(items, with: refunds)
+        let orderItemsAfterCombiningWithRefunds = AggregateDataHelper.combineOrderItems(items, with: refunds)
+        let orderItemsAfterCombiningWithRefundsAndShippingLabels = AggregateDataHelper
+            .combineAggregatedOrderItems(orderItemsAfterCombiningWithRefunds,
+                                         with: shippingLabelOrderItemsAggregator.orderItemsOfNonRefundedShippingLabels(shippingLabels))
+        return orderItemsAfterCombiningWithRefundsAndShippingLabels
     }
 
     /// All the condensed refunds in an order
@@ -165,6 +169,14 @@ final class OrderDetailsDataSource: NSObject {
 
     func configureResultsControllers(onReload: @escaping () -> Void) {
         resultsControllers.configureResultsControllers(onReload: onReload)
+    }
+
+    func shippingLabel(at indexPath: IndexPath) -> ShippingLabel? {
+        guard let firstShippingLabelSectionIndex = sections.firstIndex(where: { $0.category == .shippingLabel }) else {
+            return nil
+        }
+        let shippingLabelIndex = indexPath.section - firstShippingLabelSectionIndex
+        return shippingLabels[shippingLabelIndex]
     }
 
     func shippingLabelOrderItem(at indexPath: IndexPath) -> AggregateOrderItem? {
@@ -263,8 +275,6 @@ private extension OrderDetailsDataSource {
             configureRefund(cell: cell, at: indexPath)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .netAmount:
             configureNetAmount(cell: cell)
-        case let cell as ProductDetailsTableViewCell where row == .orderItem:
-            configureOrderItem(cell: cell, at: indexPath)
         case let cell as ProductDetailsTableViewCell where row == .shippingLabelProduct:
             configureShippingLabelProduct(cell: cell, at: indexPath)
         case let cell as ProductDetailsTableViewCell where row == .aggregateOrderItem:
@@ -425,17 +435,6 @@ private extension OrderDetailsDataSource {
         cell.hideFootnote()
     }
 
-    private func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
-        cell.selectionStyle = .default
-
-        let item = items[indexPath.row]
-        let product = lookUpProduct(by: item.productOrVariationID)
-        let itemViewModel = ProductDetailsCellViewModel(item: item,
-                                                        currency: order.currency,
-                                                        product: product)
-        cell.configure(item: itemViewModel, imageService: imageService)
-    }
-
     private func configureShippingLabelDetail(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Footer.showShippingLabelDetails
         cell.applyPlainTextStyle()
@@ -532,22 +531,20 @@ private extension OrderDetailsDataSource {
         }
     }
 
-    private func shippingLabel(at indexPath: IndexPath) -> ShippingLabel? {
-        guard let firstShippingLabelSectionIndex = sections.firstIndex(where: { $0.category == .shippingLabel }) else {
-            return nil
-        }
-        let shippingLabelIndex = indexPath.section - firstShippingLabelSectionIndex
-        return shippingLabels[shippingLabelIndex]
-    }
-
     private func configureAggregateOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .default
 
         let aggregateItem = aggregateOrderItems[indexPath.row]
-        let product = lookUpProduct(by: aggregateItem.productOrVariationID)
-        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem,
-                                                        currency: order.currency,
-                                                        product: product)
+        let imageURL: URL? = {
+            guard let imageURLString = aggregateItem.variationID != 0 ?
+                    lookUpProductVariation(productID: aggregateItem.productID, variationID: aggregateItem.variationID)?.image?.src:
+                    lookUpProduct(by: aggregateItem.productID)?.images.first?.src else {
+                return nil
+            }
+            return URL(string: imageURLString)
+        }()
+        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem.copy(imageURL: imageURL),
+                                                        currency: order.currency)
 
         cell.configure(item: itemViewModel, imageService: imageService)
     }
@@ -676,6 +673,10 @@ extension OrderDetailsDataSource {
         return products.filter({ $0.productID == productID }).first
     }
 
+    private func lookUpProductVariation(productID: Int64, variationID: Int64) -> ProductVariation? {
+        return resultsControllers.productVariations.filter({ $0.productID == productID && $0.productVariationID == variationID }).first
+    }
+
     func lookUpRefund(by refundID: Int64) -> Refund? {
         return refunds.filter({ $0.refundID == refundID }).first
     }
@@ -719,13 +720,12 @@ extension OrderDetailsDataSource {
                 return nil
             }
 
-            var rows = [Row]()
-
-            if refundedProductsCount > 0 {
-                rows = Array(repeating: .aggregateOrderItem, count: aggregateOrderItems.count)
-            } else {
-                rows = Array(repeating: .orderItem, count: items.count)
+            let aggregateOrderItemCount = aggregateOrderItems.count
+            guard aggregateOrderItemCount > 0 else {
+                return nil
             }
+
+            var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
             if isProcessingPayment {
                 rows.append(.fulfillButton)
@@ -821,6 +821,11 @@ extension OrderDetailsDataSource {
         }()
 
         let tracking: Section? = {
+            // Tracking section is hidden if there are non-empty non-refunded shipping labels.
+            guard shippingLabels.nonRefunded.isEmpty else {
+                return nil
+            }
+
             guard orderTracking.count > 0 else {
                 return nil
             }
@@ -830,6 +835,11 @@ extension OrderDetailsDataSource {
         }()
 
         let addTracking: Section? = {
+            // Add tracking section is hidden if there are non-empty non-refunded shipping labels.
+            guard shippingLabels.nonRefunded.isEmpty else {
+                return nil
+            }
+
             // Hide the section if the shipment
             // tracking plugin is not installed
             guard trackingIsReachable else {
@@ -1144,7 +1154,6 @@ extension OrderDetailsDataSource {
     ///
     enum Row {
         case summary
-        case orderItem
         case aggregateOrderItem
         case fulfillButton
         case details
@@ -1175,8 +1184,6 @@ extension OrderDetailsDataSource {
             switch self {
             case .summary:
                 return SummaryTableViewCell.reuseIdentifier
-            case .orderItem:
-                return ProductDetailsTableViewCell.reuseIdentifier
             case .aggregateOrderItem:
                 return ProductDetailsTableViewCell.reuseIdentifier
             case .fulfillButton:

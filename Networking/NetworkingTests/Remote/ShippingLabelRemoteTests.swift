@@ -6,7 +6,7 @@ import TestKit
 ///
 final class ShippingLabelRemoteTests: XCTestCase {
     /// Dummy Network Wrapper
-    private let network = MockupNetwork()
+    private let network = MockNetwork()
 
     /// Dummy Site ID
     private let sampleSiteID: Int64 = 1234
@@ -54,5 +54,50 @@ final class ShippingLabelRemoteTests: XCTestCase {
         // Then
         XCTAssertEqual(printData.mimeType, "application/pdf")
         XCTAssertFalse(printData.base64Content.isEmpty)
+    }
+
+    func test_refundShippingLabel_returns_refund_on_success() throws {
+        // Given
+        let orderID = Int64(279)
+        let shippingLabelID = Int64(134)
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/\(orderID)/\(shippingLabelID)/refund", filename: "shipping-label-refund-success")
+
+        // When
+        let result: Result<ShippingLabelRefund, Error> = try waitFor { promise in
+            remote.refundShippingLabel(siteID: self.sampleSiteID,
+                                       orderID: orderID,
+                                       shippingLabelID: shippingLabelID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let refund = try XCTUnwrap(result.get())
+        XCTAssertEqual(refund, .init(dateRequested: Date(timeIntervalSince1970: 1607331363.627), status: .pending))
+    }
+
+    func test_refundShippingLabel_returns_error_on_failure() throws {
+        // Given
+        let orderID = Int64(279)
+        let shippingLabelID = Int64(134)
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/\(orderID)/\(shippingLabelID)/refund", filename: "shipping-label-refund-error")
+
+        // When
+        let result: Result<ShippingLabelRefund, Error> = try waitFor { promise in
+            remote.refundShippingLabel(siteID: self.sampleSiteID,
+                                       orderID: orderID,
+                                       shippingLabelID: shippingLabelID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let expectedError = DotcomError
+            .unknown(code: "wcc_server_error_response",
+                     message: "Error: The WooCommerce Shipping & Tax server returned: Bad Request Unable to request refund. " +
+                        "The parcel has been shipped. ( 400 )")
+        XCTAssertEqual(result.failure as? DotcomError, expectedError)
     }
 }

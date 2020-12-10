@@ -5,14 +5,14 @@ import XCTest
 
 /// ShippingLabelStore Unit Tests
 final class ShippingLabelStoreTests: XCTestCase {
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     private var dispatcher: Dispatcher!
 
-    /// Mockup Storage: InMemory
-    private var storageManager: MockupStorageManager!
+    /// Mock Storage: InMemory
+    private var storageManager: MockStorageManager!
 
-    /// Mockup Network: Allows us to inject predefined responses!
-    private var network: MockupNetwork!
+    /// Mock Network: Allows us to inject predefined responses!
+    private var network: MockNetwork!
 
     /// Convenience Property: Returns the StorageType associated with the main thread.
     private var viewStorage: StorageType {
@@ -27,8 +27,8 @@ final class ShippingLabelStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
-        storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        storageManager = MockStorageManager()
+        network = MockNetwork()
     }
 
     override func tearDown() {
@@ -215,6 +215,100 @@ final class ShippingLabelStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
+
+    // MARK: - `refundShippingLabel`
+
+    func test_refundShippingLabel_returns_refund_and_updates_local_ShippingLabel_refund_on_success() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        let expectedRefund = Yosemite.ShippingLabelRefund(dateRequested: Date(), status: .pending)
+        let shippingLabel = MockShippingLabel.emptyLabel().copy(siteID: sampleSiteID, orderID: 134, shippingLabelID: sampleShippingLabelID)
+        remote.whenRefundingShippingLabel(siteID: shippingLabel.siteID,
+                                          orderID: shippingLabel.orderID,
+                                          shippingLabelID: shippingLabel.shippingLabelID,
+                                          thenReturn: .success(expectedRefund))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Inserts a shipping label without a refund.
+        insertShippingLabel(shippingLabel)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabel.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 0)
+
+        // When
+        let result: Result<Yosemite.ShippingLabelRefund, Error> = try waitFor { promise in
+            let action = ShippingLabelAction.refundShippingLabel(shippingLabel: shippingLabel) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let refund = try XCTUnwrap(result.get())
+        XCTAssertEqual(refund, expectedRefund)
+
+        let persistedShippingLabel = try XCTUnwrap(viewStorage.loadShippingLabel(siteID: shippingLabel.siteID,
+                                                                                 orderID: shippingLabel.orderID,
+                                                                                 shippingLabelID: shippingLabel.shippingLabelID))
+        XCTAssertEqual(persistedShippingLabel.refund?.toReadOnly(), expectedRefund)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabel.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 1)
+    }
+
+    func test_refundShippingLabel_returns_refund_on_success_without_storage_changes_if_no_existing_ShippingLabel_in_storage() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        let expectedRefund = Yosemite.ShippingLabelRefund(dateRequested: Date(), status: .pending)
+        let shippingLabel = MockShippingLabel.emptyLabel().copy(siteID: sampleSiteID, orderID: 134, shippingLabelID: sampleShippingLabelID)
+        remote.whenRefundingShippingLabel(siteID: shippingLabel.siteID,
+                                          orderID: shippingLabel.orderID,
+                                          shippingLabelID: shippingLabel.shippingLabelID,
+                                          thenReturn: .success(expectedRefund))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabel.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 0)
+
+        // When
+        let result: Result<Yosemite.ShippingLabelRefund, Error> = try waitFor { promise in
+            let action = ShippingLabelAction.refundShippingLabel(shippingLabel: shippingLabel) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let refund = try XCTUnwrap(result.get())
+        XCTAssertEqual(refund, expectedRefund)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabel.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 0)
+    }
+
+    func test_refundShippingLabel_returns_error_on_failure() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        let expectedError = NetworkError.notFound
+        let shippingLabel = MockShippingLabel.emptyLabel().copy(siteID: sampleSiteID, orderID: 134, shippingLabelID: sampleShippingLabelID)
+        remote.whenRefundingShippingLabel(siteID: shippingLabel.siteID,
+                                          orderID: shippingLabel.orderID,
+                                          shippingLabelID: shippingLabel.shippingLabelID,
+                                          thenReturn: .failure(expectedError))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Yosemite.ShippingLabelRefund, Error> = try waitFor { promise in
+            let action = ShippingLabelAction.refundShippingLabel(shippingLabel: shippingLabel) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
 }
 
 private extension ShippingLabelStoreTests {
@@ -223,5 +317,10 @@ private extension ShippingLabelStoreTests {
         order.siteID = siteID
         order.orderID = orderID
         order.statusKey = ""
+    }
+
+    func insertShippingLabel(_ readOnlyShippingLabel: Yosemite.ShippingLabel) {
+        let shippingLabel = viewStorage.insertNewObject(ofType: StorageShippingLabel.self)
+        shippingLabel.update(with: readOnlyShippingLabel)
     }
 }

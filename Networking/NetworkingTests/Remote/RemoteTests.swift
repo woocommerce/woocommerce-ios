@@ -16,7 +16,7 @@ class RemoteTests: XCTestCase {
     /// the remote credentials.
     ///
     func testEnqueueProperlyWrapsUpDataRequestsIntoAuthenticatedRequestWithCredentials() {
-        let network = MockupNetwork()
+        let network = MockNetwork()
         let mapper = DummyMapper()
         let remote = Remote(network: network)
         let expectation = self.expectation(description: "Enqueue with Mapper")
@@ -45,7 +45,7 @@ class RemoteTests: XCTestCase {
     ///
     func testEnqueueWithResultProperlyWrapsUpDataRequestsIntoAuthenticatedRequestWithCredentials() throws {
         // Given
-        let network = MockupNetwork()
+        let network = MockNetwork()
         let mapper = DummyMapper()
         let remote = Remote(network: network)
 
@@ -70,7 +70,7 @@ class RemoteTests: XCTestCase {
     /// Verifies that `enqueue:mapper:` relays any received payload over to the Mapper.
     ///
     func testEnqueueWithMapperProperlyRelaysReceivedPayloadToMapper() {
-        let network = MockupNetwork()
+        let network = MockNetwork()
         let mapper = DummyMapper()
         let remote = Remote(network: network)
 
@@ -91,7 +91,7 @@ class RemoteTests: XCTestCase {
     ///
     func testEnqueueWithMapperAndResultCallbackProperlyRelaysReceivedPayloadToMapper() {
         // Given
-        let network = MockupNetwork()
+        let network = MockNetwork()
         let mapper = DummyMapper()
         let remote = Remote(network: network)
 
@@ -113,7 +113,7 @@ class RemoteTests: XCTestCase {
     /// Request Timeout error.
     ///
     func testEnqueueRequestWithoutMapperPostJetpackTimeoutNotificationWhenTheResponseContainsTimeoutError() {
-        let network = MockupNetwork()
+        let network = MockNetwork()
         let remote = Remote(network: network)
 
         let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJetpackTimeoutError, object: nil, handler: nil)
@@ -134,7 +134,7 @@ class RemoteTests: XCTestCase {
     /// Request Timeout error.
     ///
     func testEnqueueRequestWithMapperPostsJetpackTimeoutNotificationWhenTheResponseContainsTimeoutError() {
-        let network = MockupNetwork()
+        let network = MockNetwork()
         let mapper = DummyMapper()
         let remote = Remote(network: network)
 
@@ -157,7 +157,7 @@ class RemoteTests: XCTestCase {
     ///
     func testEnqueueRequestWithResultWithMapperPostsJetpackTimeoutNotificationWhenTheResponseContainsTimeoutError() throws {
         // Given
-        let network = MockupNetwork()
+        let network = MockNetwork()
         let mapper = DummyMapper()
         let remote = Remote(network: network)
 

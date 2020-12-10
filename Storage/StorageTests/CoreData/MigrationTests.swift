@@ -375,6 +375,33 @@ final class MigrationTests: XCTestCase {
         XCTAssertNotNil(migratedRefund.entity.relationshipsByName["shippingLines"])
         XCTAssertEqual(migratedRefund.value(forKey: "supportShippingRefunds") as? Bool, false)
     }
+
+    func test_migrating_from_39_to_40_deletes_ProductAttribute_objects() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 39")
+        let sourceContext = sourceContainer.viewContext
+
+        insertAccount(to: sourceContext)
+        let product = insertProduct(to: sourceContext, forModel: 39)
+        let productAttribute = insertProductAttribute(to: sourceContext)
+        product.mutableSetValue(forKey: "attributes").add(productAttribute)
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "Account"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "Product"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "ProductAttribute"), 1)
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 40")
+        let targetContext = targetContainer.viewContext
+
+        // Assert
+        XCTAssertEqual(try targetContext.count(entityName: "Account"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
+        // Product attributes should be deleted.
+        XCTAssertEqual(try targetContext.count(entityName: "ProductAttribute"), 0)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

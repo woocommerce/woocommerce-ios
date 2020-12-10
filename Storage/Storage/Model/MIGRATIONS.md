@@ -2,6 +2,12 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 40 (Release 5.7.0.0)
+- @pmusolino 2020-12-07
+- Add `siteID` attribute to `ProductAttribute` entity.
+- Update `Product`'s `attributes` relationship with `nullify` as delete rule.
+- Used mapping model: `WooCommerceModelV39toV40.xcmappingmodel` to remove product attributes without `siteID`.
+
 ## Model 39 (Release 5.6.0.0)
 - @ecarrion 2020-11-19
 - Added  `shippingLines` relationship on `Refund` entity. 

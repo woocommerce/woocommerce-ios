@@ -5,11 +5,11 @@ import Yosemite
 
 final class ProductFormRemoteActionUseCaseTests: XCTestCase {
     typealias ResultData = ProductFormRemoteActionUseCase.ResultData
-    private var storesManager: MockupStoresManager!
+    private var storesManager: MockStoresManager!
 
     override func setUp() {
         super.setUp()
-        storesManager = MockupStoresManager(sessionManager: SessionManager.testingInstance)
+        storesManager = MockStoresManager(sessionManager: SessionManager.testingInstance)
     }
 
     override func tearDown() {

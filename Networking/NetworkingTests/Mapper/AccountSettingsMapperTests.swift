@@ -25,7 +25,7 @@ class AccountSettingsMapperTests: XCTestCase {
 //
 private extension AccountSettingsMapperTests {
 
-    /// Returns the AccountSettingsMapper output upon receiving `me-settings` mockup response (Data Encoded).
+    /// Returns the AccountSettingsMapper output upon receiving `me-settings` mock response (Data Encoded).
     ///
     func mapLoadAccountSettingsResponse() -> AccountSettings? {
         guard let response = Loader.contentsOf("me-settings") else {

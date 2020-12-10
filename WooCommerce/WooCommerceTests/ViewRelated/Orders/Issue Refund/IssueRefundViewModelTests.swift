@@ -7,12 +7,12 @@ import Yosemite
 ///
 final class IssueRefundViewModelTests: XCTestCase {
 
-    private var analyticsProvider: MockupAnalyticsProvider!
+    private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
     override func setUp() {
         super.setUp()
-        analyticsProvider = MockupAnalyticsProvider()
+        analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
@@ -442,6 +442,37 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isNextButtonEnabled)
     }
 
+    func test_viewModel_starts_with_no_unsaved_changes() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
+        ]
+        let order = MockOrders().makeOrder(items: items)
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+
+        // Then
+        XCTAssertFalse(viewModel.hasUnsavedChanges)
+    }
+
+    func test_viewModel_unsaved_changes_states_becomes_true_after_selecting_items() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3, price: 11.50),
+        ]
+        let order = MockOrders().makeOrder(items: items)
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+
+        // When
+        viewModel.selectAllOrderItems()
+
+        // Then
+        XCTAssertTrue(viewModel.hasUnsavedChanges)
+    }
+
     // MARK: Analytics
     //
     func test_viewModel_tracks_shipping_switch_action_correcly() {
@@ -499,5 +530,38 @@ final class IssueRefundViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.createOrderRefundSelectAllItemsButtonTapped.rawValue)
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["order_id"] as? String, "\(order.orderID)")
+    }
+
+    func test_viewModel_shows_selectAllButton_if_there_are_items_to_refund() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, productID: 1, quantity: 3, price: 11.50, totalTax: "2.97"),
+        ]
+        let order = MockOrders().makeOrder(items: items)
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+
+        // Then
+        XCTAssertTrue(viewModel.isSelectAllButtonVisible)
+    }
+
+    func test_viewModel_hides_selectAllButton_if_there_are_no_items_to_refund() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, productID: 1, quantity: 3, price: 11.50, totalTax: "2.97"),
+        ]
+        let order = MockOrders().makeOrder(items: items)
+        let refund = MockRefunds.sampleRefund(items: [
+            MockRefunds.sampleRefundItem(itemID: 1, productID: 1, quantity: -3),
+        ])
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, refunds: [refund], currencySettings: currencySettings)
+
+        // Then
+        XCTAssertFalse(viewModel.isSelectAllButtonVisible)
     }
 }

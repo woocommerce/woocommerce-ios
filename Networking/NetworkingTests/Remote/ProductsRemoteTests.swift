@@ -8,7 +8,7 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = MockupNetwork()
+    let network = MockNetwork()
 
     /// Dummy Site ID
     ///
@@ -605,14 +605,16 @@ private extension ProductsRemoteTests {
     }
 
     func sampleAttributes() -> [Networking.ProductAttribute] {
-        let attribute1 = ProductAttribute(attributeID: 0,
+        let attribute1 = ProductAttribute(siteID: sampleSiteID,
+                                          attributeID: 0,
                                           name: "Color",
                                           position: 1,
                                           visible: true,
                                           variation: true,
                                           options: ["Purple", "Yellow", "Hot Pink", "Lime Green", "Teal"])
 
-        let attribute2 = ProductAttribute(attributeID: 0,
+        let attribute2 = ProductAttribute(siteID: sampleSiteID,
+                                          attributeID: 0,
                                           name: "Size",
                                           position: 0,
                                           visible: true,

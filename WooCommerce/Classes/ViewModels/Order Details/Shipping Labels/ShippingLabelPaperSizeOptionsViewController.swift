@@ -8,7 +8,7 @@ final class ShippingLabelPaperSizeOptionsViewController: UIHostingController<Shi
     /// - Parameter onCloseButtonTapped: Called when the user taps on the close button in the navigation bar.
     init(onCloseButtonTapped: @escaping () -> Void) {
         self.onCloseButtonTapped = onCloseButtonTapped
-        super.init(rootView: ShippingLabelPaperSizeOptionsView())
+        super.init(rootView: ShippingLabelPaperSizeOptionsView(paperSizeOptions: [.legal, .letter, .label]))
         configureNavigationBar()
     }
 

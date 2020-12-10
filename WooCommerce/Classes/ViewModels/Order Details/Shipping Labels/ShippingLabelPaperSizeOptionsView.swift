@@ -1,24 +1,25 @@
+import Networking
 import SwiftUI
 
 /// Displays a grid view of all available paper size options for printing a shipping label.
 struct ShippingLabelPaperSizeOptionsView: View {
+    private let paperSizeOptions: [ShippingLabelPaperSize]
+    private let numberOfColumnsPerRow = 2
+    private let numberOfRows: Int
+
+    init(paperSizeOptions: [ShippingLabelPaperSize]) {
+        self.paperSizeOptions = paperSizeOptions
+        self.numberOfRows = Int(ceil(Double(paperSizeOptions.count) * 1.0 / Double(numberOfColumnsPerRow)))
+    }
+
     var body: some View {
         ScrollView {
-            GridStack(rows: 2, columns: 2) { row, col in
-                switch (row, col) {
-                case (0, 0):
-                    ShippingLabelPaperSizeOptionView(viewModel: .init(title: Localization.legalSizeTitle,
-                                                                      image: PaperSizeImage.legal))
+            GridStack(rows: numberOfRows, columns: numberOfColumnsPerRow) { row, col in
+                let index = row * numberOfColumnsPerRow + col
+                if let paperSize = paperSizeOptions[safe: index] {
+                    ShippingLabelPaperSizeOptionView(paperSize: paperSize)
                         .frame(maxWidth: .infinity)
-                case (0, 1):
-                    ShippingLabelPaperSizeOptionView(viewModel: .init(title: Localization.letterSizeTitle,
-                                                                      image: PaperSizeImage.letter))
-                        .frame(maxWidth: .infinity)
-                case (1, 0):
-                    ShippingLabelPaperSizeOptionView(viewModel: .init(title: Localization.labelSizeTitle,
-                                                                      image: PaperSizeImage.label))
-                        .frame(maxWidth: .infinity)
-                default:
+                } else {
                     Spacer()
                         .frame(minWidth: 0, maxWidth: .infinity)
                 }
@@ -27,32 +28,23 @@ struct ShippingLabelPaperSizeOptionsView: View {
     }
 }
 
-private extension ShippingLabelPaperSizeOptionsView {
-    enum Localization {
-        static let labelSizeTitle = NSLocalizedString("Label (4 x 6 in)", comment: "Title of label paper size option for printing a shipping label")
-        static let legalSizeTitle = NSLocalizedString("Legal (8.5 x 14 in)", comment: "Title of legal paper size option for printing a shipping label")
-        static let letterSizeTitle = NSLocalizedString("Letter (8.5 x 11 in)", comment: "Title of letter paper size option for printing a shipping label")
-    }
-
-    enum PaperSizeImage {
-        static let label = Image("shipping-label-paper-size-label")
-        static let legal = Image("shipping-label-paper-size-legal")
-        static let letter = Image("shipping-label-paper-size-letter")
-    }
-}
-
 // MARK: - Previews
 
 #if DEBUG
 
 struct ShippingLabelPaperSizeOptionsView_Previews: PreviewProvider {
+    private static let paperSizeOptions: [ShippingLabelPaperSize] = [.legal, .letter, .letter]
     static var previews: some View {
-        ShippingLabelPaperSizeOptionsView()
+        ShippingLabelPaperSizeOptionsView(paperSizeOptions: paperSizeOptions)
             .environment(\.colorScheme, .light)
-        ShippingLabelPaperSizeOptionsView()
+        ShippingLabelPaperSizeOptionsView(paperSizeOptions: paperSizeOptions)
             .environment(\.colorScheme, .dark)
-        ShippingLabelPaperSizeOptionsView()
+        ShippingLabelPaperSizeOptionsView(paperSizeOptions: paperSizeOptions)
             .previewLayout(.fixed(width: 1024, height: 768))
+        ShippingLabelPaperSizeOptionsView(paperSizeOptions: [.legal, .letter])
+            .environment(\.colorScheme, .dark)
+        ShippingLabelPaperSizeOptionsView(paperSizeOptions: [.label])
+        ShippingLabelPaperSizeOptionsView(paperSizeOptions: [])
     }
 }
 

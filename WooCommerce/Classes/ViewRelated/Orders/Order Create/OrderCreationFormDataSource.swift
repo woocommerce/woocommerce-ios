@@ -1,7 +1,7 @@
 import UIKit
 
 final class OrderCreationFormDataSource: NSObject {
-    let viewModel: OrderCreationFormViewModel
+    private let viewModel: OrderCreationFormViewModel
 
     init(viewModel: OrderCreationFormViewModel) {
         self.viewModel = viewModel

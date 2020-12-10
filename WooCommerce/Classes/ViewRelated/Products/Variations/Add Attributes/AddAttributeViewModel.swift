@@ -15,15 +15,6 @@ final class AddAttributeViewModel {
     private let product: Product
     private(set) var fetchedAttributes: [ProductAttribute] = []
 
-    /// We fetch stored Product Attributes wtih attributeID different from zero, since global attributes have an ID greater than zero
-    ///
-    private lazy var resultController: ResultsController<StorageProductAttribute> = {
-        let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID = %ld AND attributeID > 0", product.siteID)
-        let descriptor = NSSortDescriptor(keyPath: \StorageProductAttribute.name, ascending: true)
-        return ResultsController<StorageProductAttribute>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
-
     var sections: [Section] = []
 
     /// Represents the current state of `synchronizeProductAttributes` action. Useful for the consumer to update it's UI upon changes
@@ -59,7 +50,6 @@ final class AddAttributeViewModel {
     ///
     func performFetch() {
         synchronizeAllProductAttributes()
-        try? resultController.performFetch()
     }
 
     /// Observes and notifies of changes made to product attributes. The current state will be dispatched upon subscription.
@@ -74,15 +64,14 @@ final class AddAttributeViewModel {
 // MARK: - Synchronize global Product Attributes
 //
 private extension AddAttributeViewModel {
-    /// Synchronizes all global  product attributes.
+    /// Synchronizes all global product attributes.
     ///
     func synchronizeAllProductAttributes() {
         syncProductAttributesState = .syncing
         let action = ProductAttributeAction.synchronizeProductAttributes(siteID: product.siteID) { [weak self] result in
-            self?.updateSections()
-
             switch result {
-            case .success:
+            case .success(let attributes):
+                self?.updateSections(attributes: attributes)
                 self?.syncProductAttributesState = .synced
             case .failure(let error):
                 DDLogError("⛔️ Error fetching product attributes: \(error.localizedDescription)")
@@ -92,10 +81,10 @@ private extension AddAttributeViewModel {
         storesManager.dispatch(action)
     }
 
-    /// Updates  data from  the resultController's fetched objects.
+    /// Updates  data from the remote fetched objects.
     ///
-    func updateSections() {
-        fetchedAttributes = resultController.fetchedObjects
+    func updateSections(attributes: [ProductAttribute]) {
+        fetchedAttributes = attributes
         var attributesRows = [Row]()
         for _ in 0..<fetchedAttributes.count {
             attributesRows.append(.existingAttribute)

@@ -29,7 +29,11 @@ private extension BoldableElement {
     }
 }
 
-struct RichTextView_Previews: PreviewProvider {
+// MARK: - Previews
+
+#if DEBUG
+
+struct BoldableTextView_Previews: PreviewProvider {
     static var previews: some View {
         VStack(alignment: .leading) {
             BoldableTextView("Not a bold text.")
@@ -39,3 +43,5 @@ struct RichTextView_Previews: PreviewProvider {
         }
     }
 }
+
+#endif

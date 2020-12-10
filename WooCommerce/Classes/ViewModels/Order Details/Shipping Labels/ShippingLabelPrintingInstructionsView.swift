@@ -39,6 +39,10 @@ private extension ShippingLabelPrintingInstructionsView {
     }
 }
 
+// MARK: - Previews
+
+#if DEBUG
+
 struct ShippingLabelPrintingInstructionsView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
@@ -49,3 +53,5 @@ struct ShippingLabelPrintingInstructionsView_Previews: PreviewProvider {
         }
     }
 }
+
+#endif

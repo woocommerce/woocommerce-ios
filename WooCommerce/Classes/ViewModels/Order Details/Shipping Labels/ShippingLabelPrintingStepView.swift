@@ -37,6 +37,10 @@ struct ShippingLabelPrintingStepView: View {
     }
 }
 
+// MARK: - Previews
+
+#if DEBUG
+
 struct ShippingLabelPrintingStepView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
@@ -45,3 +49,5 @@ struct ShippingLabelPrintingStepView_Previews: PreviewProvider {
         }
     }
 }
+
+#endif

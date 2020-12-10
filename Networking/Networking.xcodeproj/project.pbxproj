@@ -245,6 +245,7 @@
 		93D8BBFD226BBEE800AD2EB3 /* AccountSettingsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D8BBFC226BBEE800AD2EB3 /* AccountSettingsMapper.swift */; };
 		93D8BBFF226BC1DA00AD2EB3 /* me-settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 93D8BBFE226BC1DA00AD2EB3 /* me-settings.json */; };
 		93D8BC01226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D8BC00226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift */; };
+		AE2D0E932582321C00B8EC48 /* CustomerRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2D0E922582321B00B8EC48 /* CustomerRole.swift */; };
 		AE6E02702580BA8E00EDB637 /* Customer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6E026F2580BA8E00EDB637 /* Customer.swift */; };
 		AE6E02742580C03400EDB637 /* CustomersListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6E02732580C03400EDB637 /* CustomersListMapper.swift */; };
 		AE7AB5E8257FF2E5005E3E21 /* CustomerRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7AB5E7257FF2E5005E3E21 /* CustomerRemote.swift */; };
@@ -657,6 +658,7 @@
 		93D8BBFE226BC1DA00AD2EB3 /* me-settings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "me-settings.json"; sourceTree = "<group>"; };
 		93D8BC00226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingsRemoteTests.swift; sourceTree = "<group>"; };
 		9BD9C6C44CAC220B3C3B90B7 /* Pods-Networking.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		AE2D0E922582321B00B8EC48 /* CustomerRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerRole.swift; sourceTree = "<group>"; };
 		AE6E026F2580BA8E00EDB637 /* Customer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Customer.swift; sourceTree = "<group>"; };
 		AE6E02732580C03400EDB637 /* CustomersListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomersListMapper.swift; sourceTree = "<group>"; };
 		AE7AB5E7257FF2E5005E3E21 /* CustomerRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerRemote.swift; sourceTree = "<group>"; };
@@ -1170,6 +1172,7 @@
 				93D8BBFA226BBC5100AD2EB3 /* AccountSettings.swift */,
 				B5BB1D0F20A237FB00112D92 /* Address.swift */,
 				AE6E026F2580BA8E00EDB637 /* Customer.swift */,
+				AE2D0E922582321B00B8EC48 /* CustomerRole.swift */,
 				B53EF53721813806003E146F /* DotcomError.swift */,
 				24F98C552502EA4800F49B68 /* FeatureFlag.swift */,
 				B5A2417C217F9ECC00595DEF /* MetaContainer.swift */,
@@ -2002,6 +2005,7 @@
 				45152811257A81730076B03C /* ProductAttributeMapper.swift in Sources */,
 				B505F6D120BEE39600BB1B69 /* AccountRemote.swift in Sources */,
 				B567AF2B20A0FA4200AB6C62 /* OrderListMapper.swift in Sources */,
+				AE2D0E932582321C00B8EC48 /* CustomerRole.swift in Sources */,
 				021A84DA257DF92800BC71D1 /* ShippingLabelRefundMapper.swift in Sources */,
 				02BDB83523EA98C800BCC63E /* String+HTML.swift in Sources */,
 				B505F6CF20BEE38B00BB1B69 /* Account.swift in Sources */,

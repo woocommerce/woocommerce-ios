@@ -53,6 +53,7 @@ final class CustomersListMapperTests: XCTestCase {
                                firstName: "John",
                                lastName: "Doe",
                                gravatarUrl: "https://secure.gravatar.com/avatar/8eb1b522f60d11fa897de1dc6351b7e8?s=96",
+                               role: .customer,
                                isPaying: false,
                                billingAddress: billingAddress,
                                shippingAddress: shippingAddress)

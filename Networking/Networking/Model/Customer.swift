@@ -16,6 +16,7 @@ public struct Customer: Decodable {
     public let lastName: String?
     public let gravatarUrl: String?
 
+    public let role: Role
     public let isPaying: Bool
 
     public let billingAddress: Address?
@@ -33,6 +34,7 @@ public struct Customer: Decodable {
                 firstName: String?,
                 lastName: String?,
                 gravatarUrl: String?,
+                role: Role,
                 isPaying: Bool,
                 billingAddress: Address?,
                 shippingAddress: Address?) {
@@ -48,6 +50,7 @@ public struct Customer: Decodable {
         self.lastName = lastName
         self.gravatarUrl = gravatarUrl
 
+        self.role = role
         self.isPaying = isPaying
 
         self.billingAddress = billingAddress
@@ -74,6 +77,7 @@ public struct Customer: Decodable {
         let lastName = try container.decodeIfPresent(String.self, forKey: .lastName)
         let gravatarUrl = try container.decodeIfPresent(String.self, forKey: .gravatarUrl)
 
+        let role = try container.decode(Role.self, forKey: .role)
         let isPaying = try container.decode(Bool.self, forKey: .isPaying)
 
         let billingAddress = try container.decodeIfPresent(Address.self, forKey: .billingAddress)
@@ -88,6 +92,7 @@ public struct Customer: Decodable {
                   firstName: firstName,
                   lastName: lastName,
                   gravatarUrl: gravatarUrl,
+                  role: role,
                   isPaying: isPaying,
                   billingAddress: billingAddress,
                   shippingAddress: shippingAddress)
@@ -108,6 +113,7 @@ extension Customer: Equatable {
             lhs.firstName == rhs.firstName &&
             lhs.lastName == rhs.lastName &&
             lhs.gravatarUrl == rhs.gravatarUrl &&
+            lhs.role == rhs.role &&
             lhs.isPaying == rhs.isPaying &&
             lhs.billingAddress == rhs.billingAddress &&
             lhs.shippingAddress == rhs.shippingAddress
@@ -129,6 +135,8 @@ private extension Customer {
         case firstName = "first_name"
         case lastName = "last_name"
         case gravatarUrl = "avatar_url"
+
+        case role
         case isPaying = "is_paying_customer"
 
         case billingAddress = "billing"

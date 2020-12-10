@@ -75,6 +75,7 @@ private extension IssueRefundViewController {
         title = viewModel.title
         itemsSelectedLabel.text = viewModel.selectedItemsTitle
         nextButton.isEnabled = viewModel.isNextButtonEnabled
+        selectAllButton.isHidden = !viewModel.isSelectAllButtonVisible
         tableView.reloadData()
     }
 }
@@ -215,6 +216,15 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
         default:
             return UITableViewCell()
         }
+    }
+}
+
+// MARK: Interactive Dismiss
+extension IssueRefundViewController: IssueRefundInteractiveDismissDelegate {
+    /// Allow the interactive dismiss when the user has not selected any items to refund.
+    ///
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        !viewModel.hasUnsavedChanges
     }
 }
 

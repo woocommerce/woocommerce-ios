@@ -16,4 +16,8 @@ public enum ShippingLabelAction: Action {
     ///
     case refundShippingLabel(shippingLabel: ShippingLabel,
                              completion: (Result<ShippingLabelRefund, Error>) -> Void)
+
+    /// Loads the settings for a shipping label.
+    ///
+    case loadShippingLabelSettings(shippingLabel: ShippingLabel, completion: (ShippingLabelSettings?) -> Void)
 }

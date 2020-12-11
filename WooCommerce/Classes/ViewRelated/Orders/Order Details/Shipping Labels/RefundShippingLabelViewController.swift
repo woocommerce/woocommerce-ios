@@ -10,17 +10,17 @@ final class RefundShippingLabelViewController: UIViewController {
     private let viewModel: RefundShippingLabelViewModel
     private let rows: [Row]
     private let noticePresenter: NoticePresenter
-    private let onDismiss: () -> Void
+    private let onComplete: () -> Void
 
     init(shippingLabel: ShippingLabel,
          currencyFormatter: CurrencyFormatter = .init(currencySettings: ServiceLocator.currencySettings),
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         onDismiss: @escaping () -> Void) {
+         onComplete: @escaping () -> Void) {
         self.shippingLabel = shippingLabel
         self.viewModel = RefundShippingLabelViewModel(shippingLabel: shippingLabel, currencyFormatter: currencyFormatter)
         self.rows = [.purchaseDate, .refundableAmount]
         self.noticePresenter = noticePresenter
-        self.onDismiss = onDismiss
+        self.onComplete = onComplete
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -44,7 +44,7 @@ private extension RefundShippingLabelViewController {
             self.showRefundResultNotice(result: result)
         }
         ServiceLocator.stores.dispatch(action)
-        onDismiss()
+        onComplete()
     }
 
     func showRefundResultNotice(result: Result<Yosemite.ShippingLabelRefund, Error>) {
@@ -72,7 +72,7 @@ private extension RefundShippingLabelViewController {
         tableView.delegate = self
         registerTableViewCellsAndHeader()
 
-        tableView.tableFooterView = UIView()
+        tableView.applyFooterViewForHidingExtraRowPlaceholders()
         tableView.backgroundColor = .basicBackground
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
@@ -113,14 +113,10 @@ extension RefundShippingLabelViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = rowAtIndexPath(indexPath)
+        let row = rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
         configure(cell, for: row)
         return cell
-    }
-
-    private func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
-        rows[indexPath.row]
     }
 }
 

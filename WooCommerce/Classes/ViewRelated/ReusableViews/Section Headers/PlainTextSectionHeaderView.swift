@@ -26,6 +26,12 @@ private extension PlainTextSectionHeaderView {
         label.numberOfLines = 0
 
         contentView.addSubview(label)
-        contentView.pinSubviewToAllEdges(label, insets: .init(top: 16, left: 16, bottom: 16, right: 16))
+        contentView.pinSubviewToAllEdges(label, insets: Constants.contentViewMargin)
+    }
+}
+
+private extension PlainTextSectionHeaderView {
+    enum Constants {
+        static let contentViewMargin = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     }
 }

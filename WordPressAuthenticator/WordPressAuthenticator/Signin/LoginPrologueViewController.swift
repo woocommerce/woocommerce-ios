@@ -403,7 +403,7 @@ class LoginPrologueViewController: LoginViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
 
-    /// Unified "Enter your site address" prologue button action.
+    /// Unified "Enter your existing site address" prologue button action.
     ///
     private func siteAddressTapped() {
         tracker.track(click: .loginWithSiteAddress)

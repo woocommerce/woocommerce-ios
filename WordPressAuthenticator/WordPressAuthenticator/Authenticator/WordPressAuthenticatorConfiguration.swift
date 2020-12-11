@@ -85,7 +85,7 @@ public struct WordPressAuthenticatorConfiguration {
     
     /// Flag for the unified login/signup flows.
     /// If disabled, the "Continue With WordPress" button in the login prologue is shown first.
-    /// If enabled, the "Enter your site Address" button in the login prologue is shown first.
+    /// If enabled, the "Enter your existing site address" button in the login prologue is shown first.
     /// Default value is disabled
     let continueWithSiteAddressFirst: Bool
 

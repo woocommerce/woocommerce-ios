@@ -214,6 +214,7 @@
 		027D4A8D2526FD1800108626 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027D4A8B2526FD1700108626 /* SettingsViewController.swift */; };
 		027D4A8E2526FD1800108626 /* SettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 027D4A8C2526FD1700108626 /* SettingsViewController.xib */; };
 		027D67D1245ADDF40036B8DB /* FilterTypeViewModel+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027D67D0245ADDF40036B8DB /* FilterTypeViewModel+Helpers.swift */; };
+		027F240C258371150021DB06 /* RefundShippingLabelViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027F240B258371150021DB06 /* RefundShippingLabelViewModelTests.swift */; };
 		02817B39242B34560050AD8B /* ToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02817B38242B34560050AD8B /* ToolbarView.swift */; };
 		02820F3422C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02820F3322C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift */; };
 		028296EC237D28B600E84012 /* TextViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028296EA237D28B600E84012 /* TextViewViewController.swift */; };
@@ -1267,6 +1268,7 @@
 		027D4A8B2526FD1700108626 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		027D4A8C2526FD1700108626 /* SettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsViewController.xib; sourceTree = "<group>"; };
 		027D67D0245ADDF40036B8DB /* FilterTypeViewModel+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FilterTypeViewModel+Helpers.swift"; sourceTree = "<group>"; };
+		027F240B258371150021DB06 /* RefundShippingLabelViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingLabelViewModelTests.swift; sourceTree = "<group>"; };
 		02817B38242B34560050AD8B /* ToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarView.swift; sourceTree = "<group>"; };
 		02820F3322C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+HeaderFooterHelpers.swift"; sourceTree = "<group>"; };
 		028296EA237D28B600E84012 /* TextViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewViewController.swift; sourceTree = "<group>"; };
@@ -2949,6 +2951,7 @@
 			isa = PBXGroup;
 			children = (
 				02F67FF425806E0100C3BAD2 /* ShippingLabelTrackingURLGeneratorTests.swift */,
+				027F240B258371150021DB06 /* RefundShippingLabelViewModelTests.swift */,
 			);
 			path = "Shipping Label";
 			sourceTree = "<group>";
@@ -6274,6 +6277,7 @@
 				D816DDBC22265DA300903E59 /* OrderTrackingTableViewCellTests.swift in Sources */,
 				573D0ACF2458665C004DE614 /* OrderSearchStarterViewModelTests.swift in Sources */,
 				262A2C2B2537A3330086C1BE /* MockRefunds.swift in Sources */,
+				027F240C258371150021DB06 /* RefundShippingLabelViewModelTests.swift in Sources */,
 				D85136DD231E613900DD0539 /* ReviewsViewModelTests.swift in Sources */,
 				02B2C831249C4C8D0040C83C /* TextFieldTextAlignmentTests.swift in Sources */,
 				D85B833D2230DC9D002168F3 /* StringWooTests.swift in Sources */,

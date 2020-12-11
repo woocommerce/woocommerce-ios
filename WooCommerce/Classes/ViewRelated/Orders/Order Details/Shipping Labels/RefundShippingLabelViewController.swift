@@ -40,14 +40,13 @@ final class RefundShippingLabelViewController: UIViewController {
 // MARK: Action Handling
 private extension RefundShippingLabelViewController {
     func refundShippingLabel() {
-        let action = ShippingLabelAction.refundShippingLabel(shippingLabel: shippingLabel) { result in
+        viewModel.refundShippingLabel { result in
             self.showRefundResultNotice(result: result)
         }
-        ServiceLocator.stores.dispatch(action)
         onComplete()
     }
 
-    func showRefundResultNotice(result: Result<Yosemite.ShippingLabelRefund, Error>) {
+    func showRefundResultNotice(result: Result<ShippingLabelRefund, Error>) {
         let notice: Notice
         switch result {
         case .success:

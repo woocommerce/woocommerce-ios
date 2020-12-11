@@ -371,7 +371,7 @@
 		02FE89C7231FAA4100E85EF8 /* MainTabBarControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests.swift */; };
 		02FE89C9231FB31400E85EF8 /* FeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89C8231FB31400E85EF8 /* FeatureFlagService.swift */; };
 		02FE89CB231FB36600E85EF8 /* DefaultFeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89CA231FB36600E85EF8 /* DefaultFeatureFlagService.swift */; };
-		247CE89C2583402A00F9D9D1 /* Embassy in Frameworks */ = {isa = PBXBuildFile; productRef = 247CE89B2583402A00F9D9D1 /* Embassy */; };
+		247CE89C2583402A00F9D9D1 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 247CE89B2583402A00F9D9D1 /* SwiftPackageProductDependency */; };
 		247CE8A6258340E600F9D9D1 /* ScreenshotImages.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 247CE8A5258340E600F9D9D1 /* ScreenshotImages.xcassets */; };
 		24F98C502502AEE200F49B68 /* EventLogging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C4F2502AEE200F49B68 /* EventLogging.swift */; };
 		260C315E2523CC4000157BC2 /* RefundProductsTotalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260C315D2523CC4000157BC2 /* RefundProductsTotalViewModel.swift */; };
@@ -542,7 +542,7 @@
 		45FBDF3A238D3F8B00127F77 /* ExtendedAddProductImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBDF35238D3C7500127F77 /* ExtendedAddProductImageCollectionViewCell.swift */; };
 		45FBDF3C238D4EA800127F77 /* ExtendedAddProductImageCollectionViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBDF3B238D4EA800127F77 /* ExtendedAddProductImageCollectionViewCellTests.swift */; };
 		570AAB052472FACB00516C0C /* OrderDetailsDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570AAB042472FACB00516C0C /* OrderDetailsDataSourceTests.swift */; };
-		57150E0F24F462C200E81611 /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 57150E0E24F462C200E81611 /* TestKit */; };
+		57150E0F24F462C200E81611 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 57150E0E24F462C200E81611 /* SwiftPackageProductDependency */; };
 		5718852C2465D9EC00E2486F /* ReviewsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5718852B2465D9EC00E2486F /* ReviewsCoordinator.swift */; };
 		571B850224CF7E3100CF58A7 /* InAppFeedbackCardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571B850124CF7E3100CF58A7 /* InAppFeedbackCardViewController.swift */; };
 		571B850424CF7ECD00CF58A7 /* InAppFeedbackCardViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 571B850324CF7ECD00CF58A7 /* InAppFeedbackCardViewController.xib */; };
@@ -2195,7 +2195,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */,
-				57150E0F24F462C200E81611 /* TestKit in Frameworks */,
+				57150E0F24F462C200E81611 /* BuildFile in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2203,7 +2203,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				247CE89C2583402A00F9D9D1 /* Embassy in Frameworks */,
+				247CE89C2583402A00F9D9D1 /* BuildFile in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5191,7 +5191,7 @@
 				B5650B1020A4CD7F009702D0 /* Embed Frameworks */,
 				B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */,
 				CE1445302188ED0300A991D8 /* Zendesk Strip Frameworks */,
-				8D8E4AE002344B3131D3EB29 /* [CP] Copy Pods Resources */,
+				59DF5B32D7C07692EC8B4C59 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -5199,8 +5199,6 @@
 				B55D4C1520B6131400D7A50F /* PBXTargetDependency */,
 			);
 			name = WooCommerce;
-			packageProductDependencies = (
-			);
 			productName = WooCommerce;
 			productReference = B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */;
 			productType = "com.apple.product-type.application";
@@ -5221,7 +5219,7 @@
 			);
 			name = WooCommerceTests;
 			packageProductDependencies = (
-				57150E0E24F462C200E81611 /* TestKit */,
+				57150E0E24F462C200E81611 /* SwiftPackageProductDependency */,
 			);
 			productName = WooCommerceTests;
 			productReference = B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */;
@@ -5261,7 +5259,7 @@
 			);
 			name = WooCommerceScreenshots;
 			packageProductDependencies = (
-				247CE89B2583402A00F9D9D1 /* Embassy */,
+				247CE89B2583402A00F9D9D1 /* SwiftPackageProductDependency */,
 			);
 			productName = WooCommerceScreenshots;
 			productReference = F997170223DBB97500592D8E /* WooCommerceScreenshots.xctest */;
@@ -5344,7 +5342,7 @@
 			);
 			mainGroup = B56DB3BD2049BFAA00D4AA8E;
 			packageReferences = (
-				247CE89A2583402A00F9D9D1 /* XCRemoteSwiftPackageReference "Embassy" */,
+				247CE89A2583402A00F9D9D1 /* RemoteSwiftPackageReference */,
 			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
 			projectDirPath = "";
@@ -5590,7 +5588,7 @@
 			shellPath = /bin/bash;
 			shellScript = "$SRCROOT/../Scripts/build-phases/swiftlint.sh\n";
 		};
-		8D8E4AE002344B3131D3EB29 /* [CP] Copy Pods Resources */ = {
+		59DF5B32D7C07692EC8B4C59 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -7230,7 +7228,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		247CE89A2583402A00F9D9D1 /* XCRemoteSwiftPackageReference "Embassy" */ = {
+		247CE89A2583402A00F9D9D1 /* RemoteSwiftPackageReference */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/envoy/Embassy";
 			requirement = {
@@ -7241,12 +7239,12 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		247CE89B2583402A00F9D9D1 /* Embassy */ = {
+		247CE89B2583402A00F9D9D1 /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 247CE89A2583402A00F9D9D1 /* XCRemoteSwiftPackageReference "Embassy" */;
+			package = 247CE89A2583402A00F9D9D1 /* RemoteSwiftPackageReference */;
 			productName = Embassy;
 		};
-		57150E0E24F462C200E81611 /* TestKit */ = {
+		57150E0E24F462C200E81611 /* SwiftPackageProductDependency */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TestKit;
 		};

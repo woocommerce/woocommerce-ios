@@ -1,4 +1,5 @@
 import XCTest
+import Observables
 
 @testable import Storage
 @testable import WooCommerce

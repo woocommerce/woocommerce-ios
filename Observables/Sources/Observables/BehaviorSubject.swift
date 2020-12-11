@@ -66,7 +66,7 @@ import Foundation
 /// - https://developer.apple.com/documentation/combine/currentvaluesubject
 /// - http://reactivex.io/documentation/subject.html
 ///
-final class BehaviorSubject<Element>: Observable<Element> {
+public final class BehaviorSubject<Element>: Observable<Element> {
 
     private typealias OnCancel = () -> ()
 
@@ -76,15 +76,15 @@ final class BehaviorSubject<Element>: Observable<Element> {
 
     /// The last value that was emitted or the initial value passed in `init()`.
     ///
-    private(set) var value: Element
+    public private(set) var value: Element
 
     /// Create an instance of `self` and set the initial `value`.
-    init(_ initialValue: Element) {
+    public init(_ initialValue: Element) {
         self.value = initialValue
         super.init()
     }
 
-    override func subscribe(_ onNext: @escaping OnNext<Element>) -> ObservationToken {
+    public override func subscribe(_ onNext: @escaping OnNext<Element>) -> ObservationToken {
         let uuid = UUID()
 
         let observer = Observer(onNext: onNext)
@@ -103,7 +103,7 @@ final class BehaviorSubject<Element>: Observable<Element> {
 
     /// Emit a new value. All observers are immediately called with the given value.
     ///
-    func send(_ element: Element) {
+    public func send(_ element: Element) {
 
         // Save as the last value so we can send this to new subscribers.
         value = element

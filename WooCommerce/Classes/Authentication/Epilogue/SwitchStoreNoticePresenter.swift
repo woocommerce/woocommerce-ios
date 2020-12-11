@@ -1,13 +1,14 @@
 import Foundation
+import Yosemite
 
 /// Constructs and enqueues a `Notice` for informing the user that the selected site was changed.
 ///
 final class SwitchStoreNoticePresenter {
 
-    private let sessionManager: SessionManager
+    private let sessionManager: SessionManagerProtocol
     private let noticePresenter: NoticePresenter
 
-    init(sessionManager: SessionManager = ServiceLocator.stores.sessionManager,
+    init(sessionManager: SessionManagerProtocol = ServiceLocator.stores.sessionManager,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.sessionManager = sessionManager
         self.noticePresenter = noticePresenter

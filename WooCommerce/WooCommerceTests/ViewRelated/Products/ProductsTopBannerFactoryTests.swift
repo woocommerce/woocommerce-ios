@@ -1,5 +1,6 @@
 import XCTest
 import TestKit
+import Observables
 
 @testable import WooCommerce
 

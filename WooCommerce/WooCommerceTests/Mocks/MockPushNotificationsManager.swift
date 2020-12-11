@@ -3,6 +3,7 @@ import Foundation
 import UIKit
 @testable import WooCommerce
 import Yosemite
+import Observables
 
 final class MockPushNotificationsManager: PushNotesManager {
 

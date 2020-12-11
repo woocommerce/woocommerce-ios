@@ -14,6 +14,9 @@
       location = "group:Networking/Networking.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:Observables">
+   </FileRef>
+   <FileRef
       location = "group:TestKit">
    </FileRef>
    <FileRef

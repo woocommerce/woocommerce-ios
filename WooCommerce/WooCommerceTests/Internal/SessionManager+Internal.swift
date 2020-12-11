@@ -25,7 +25,11 @@ extension SessionManager {
         manager.setStoreId(nil)
         return manager
     }
+}
 
+// MARK: - SessionManagerProtocol: Testing Methods
+//
+extension SessionManagerProtocol {
     func setStoreId(_ id: Int64?) {
         UserDefaults(suiteName: "storesManagerTests")!.set(id, forKey: .defaultStoreID)
     }

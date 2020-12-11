@@ -127,7 +127,6 @@ jobs:
 
     - name: Archive Generated Screenshots
       run: |
-        brew list awscli &> /dev/null || brew install awscli
         cd fastlane && mkdir $GITHUB_RUN_ID && mv screenshots $GITHUB_RUN_ID
         aws s3 cp $GITHUB_RUN_ID s3://$S3_BUCKET/$GITHUB_RUN_ID --recursive --exclude "*.html"
 
@@ -162,8 +161,6 @@ jobs:
 
     - name: Download Generated Screenshots
       run: |
-        # Install awscli if needed
-        brew list awscli &> /dev/null || brew install awscli
         cd fastlane
         aws s3 cp s3://$S3_BUCKET/$GITHUB_RUN_ID/screenshots screenshots/  --recursive --exclude "*.html"
     

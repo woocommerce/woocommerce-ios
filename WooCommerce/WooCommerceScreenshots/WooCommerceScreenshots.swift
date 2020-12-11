@@ -14,7 +14,7 @@ class WooCommerceScreenshots: XCTestCase {
         let app = XCUIApplication()
         setupSnapshot(app)
 
-        app.launchArguments = ["mocked-wpcom-api", "disable-animations", ]
+        app.launchArguments = ["mocked-network-layer", "disable-animations", ]
         app.launch()
 
         MyStoreScreen()

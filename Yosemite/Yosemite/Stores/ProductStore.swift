@@ -320,7 +320,7 @@ private extension ProductStore {
 
 // MARK: - Storage: Product
 //
-private extension ProductStore {
+extension ProductStore {
 
     /// Deletes any Storage.Product with the specified `siteID` and `productID`
     ///

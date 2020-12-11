@@ -1,5 +1,6 @@
 import Foundation
 import Storage
+import Networking
 
 struct MockProductActionHandler: MockActionHandler {
 
@@ -7,6 +8,15 @@ struct MockProductActionHandler: MockActionHandler {
 
     let objectGraph: MockObjectGraph
     let storageManager: StorageManagerType
+
+    private let productStore: ProductStore
+
+    init(objectGraph: MockObjectGraph, storageManager: StorageManagerType) {
+        self.objectGraph = objectGraph
+        self.storageManager = storageManager
+
+        productStore = ProductStore(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
+    }
 
     func handle(action: ActionType) {
         switch action {
@@ -22,12 +32,7 @@ struct MockProductActionHandler: MockActionHandler {
 
     func synchronizeProducts(siteID: Int64, excludedProductIDs: [Int64], onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         let products = objectGraph.products(forSiteId: siteID, without: excludedProductIDs)
-        save(mocks: products, as: StorageProduct.self) { error in
-            if let error = error {
-                onCompletion(.failure(error))
-                return
-            }
-
+        upsert(products: products) {
             /// Indicate that no more products are coming
             onCompletion(.success(false))
         }
@@ -39,12 +44,7 @@ struct MockProductActionHandler: MockActionHandler {
         onCompletion: @escaping (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void
     ) {
         let products = objectGraph.products(forSiteId: siteId, productIds: productIds)
-        save(mocks: products, as: StorageProduct.self) { (error) in
-            if let error = error {
-                onCompletion(.failure(error))
-                return
-            }
-
+        upsert(products: products) {
             onCompletion(.success((products, false)))
         }
     }
@@ -52,6 +52,21 @@ struct MockProductActionHandler: MockActionHandler {
     func requestMissingProducts(for order: Order, onCompletion: @escaping (Error?) -> Void) {
         let productIds = order.items.map { $0.productID }.uniqued()
         let products = objectGraph.products(forSiteId: order.siteID, productIds: productIds)
-        save(mocks: products, as: StorageProduct.self, onCompletion: onCompletion)
+
+        upsert(products: products) {
+            onCompletion(nil)
+        }
+    }
+
+    func upsert(products: [Product], onCompletion: @escaping () -> ()) {
+        let storage = storageManager.newDerivedStorage()
+
+        storage.perform {
+            productStore.upsertStoredProducts(readOnlyProducts: products, in: storage)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: storage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
     }
 }

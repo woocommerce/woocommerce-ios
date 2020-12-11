@@ -78,7 +78,7 @@ let priceFormatter = NumberFormatter()
 
 extension MockObjectGraph {
 
-    static func orderItem(from product: Product, count: Decimal) -> OrderItem {
+    static func createOrderItem(from product: Product, count: Decimal) -> OrderItem {
 
         let price = priceFormatter.number(from: product.price)!.decimalValue as NSDecimalNumber
         let total = priceFormatter.number(from: product.price)!.decimalValue * count
@@ -113,9 +113,22 @@ extension MockObjectGraph {
         image: ProductImage? = nil
     ) -> Product {
 
-        Product(
+        let productId = ProductId.next
+
+        let defaultImage = ProductImage(
+            imageID: productId,
+            dateCreated: Date(),
+            dateModified: nil,
+            src: mockResourceUrlHost + name.slugified!,
+            name: name,
+            alt: name
+        )
+
+        let images = image != nil ? [image!] : [defaultImage]
+
+        return Product(
             siteID: siteId,
-            productID: ProductId.next,
+            productID: productId,
             name: name,
             slug: name.slugified!,
             permalink: "",
@@ -170,7 +183,7 @@ extension MockObjectGraph {
             purchaseNote: nil,
             categories: [],
             tags: [],
-            images: image != nil ? [image!] : [],
+            images: images,
             attributes: [],
             defaultAttributes: [],
             variations: [],

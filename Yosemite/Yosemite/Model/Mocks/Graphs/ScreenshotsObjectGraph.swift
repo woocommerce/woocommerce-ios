@@ -1,6 +1,19 @@
 import Foundation
 import Storage
 
+struct i18n {
+    struct DefaultAccount {
+        static let displayName = NSLocalizedString("My Account", comment: "displayName for the screenshot demo account")
+        static let email = NSLocalizedString("woocommercestore@example.com", comment: "email address for the screenshot demo account")
+        static let username = NSLocalizedString("test account", comment: "username for the screenshot demo account")
+    }
+
+    struct DefaultSite {
+        static let name = NSLocalizedString("Your WooCommerce Store", comment: "Store Name for the screenshot demo account")
+        static let url = NSLocalizedString("example.com", comment: "")
+    }
+}
+
 struct ScreenshotObjectGraph: MockObjectGraph {
 
      public let userCredentials = Credentials(
@@ -64,8 +77,8 @@ struct ScreenshotObjectGraph: MockObjectGraph {
             status: .processing,
             total: 1310.00,
             items: [
-                orderItem(from: Products.malayaShades, count: 4),
-                orderItem(from: Products.blackCoralShades, count: 5),
+                createOrderItem(from: Products.malayaShades, count: 4),
+                createOrderItem(from: Products.blackCoralShades, count: 5),
             ]
         ),
         createOrder(
@@ -164,19 +177,6 @@ struct ScreenshotObjectGraph: MockObjectGraph {
             verified: true
         )
     ]
-}
-
-struct i18n {
-    struct DefaultAccount {
-        static let displayName = NSLocalizedString("My Account", comment: "displayName for the screenshot demo account")
-        static let email = NSLocalizedString("woocommercestore@example.com", comment: "email address for the screenshot demo account")
-        static let username = NSLocalizedString("test account", comment: "username for the screenshot demo account")
-    }
-
-    struct DefaultSite {
-        static let name = NSLocalizedString("Your WooCommerce Store", comment: "Store Name for the screenshot demo account")
-        static let url = NSLocalizedString("example.com", comment: "")
-    }
 }
 
 protocol MockCustomerConvertable {

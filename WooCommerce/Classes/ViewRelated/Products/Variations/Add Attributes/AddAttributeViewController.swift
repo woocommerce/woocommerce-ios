@@ -209,7 +209,7 @@ private extension AddAttributeViewController {
         case let cell as TextFieldTableViewCell where row == .attributeTextField:
             configureTextField(cell: cell)
         case let cell as BasicTableViewCell where row == .existingAttribute:
-            configureAttribute(cell: cell, attribute: viewModel.fetchedAttributes[safe: indexPath.row])
+            configureAttribute(cell: cell, attribute: viewModel.localAndGlobalAttributes[safe: indexPath.row])
         default:
             fatalError()
             break

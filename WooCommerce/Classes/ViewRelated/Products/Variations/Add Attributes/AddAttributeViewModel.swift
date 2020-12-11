@@ -13,7 +13,7 @@ final class AddAttributeViewModel {
     private let storesManager: StoresManager
 
     private let product: Product
-    private(set) var fetchedAttributes: [ProductAttribute] = []
+    private(set) var localAndGlobalAttributes: [ProductAttribute] = []
 
     var sections: [Section] = []
 
@@ -84,9 +84,16 @@ private extension AddAttributeViewModel {
     /// Updates  data from the remote fetched objects.
     ///
     func updateSections(attributes: [ProductAttribute]) {
-        fetchedAttributes = attributes
+
+        /// Sum fetched attributes + attributes inside the product (global + local), and remove duplicated product attributes, then sort it
+        localAndGlobalAttributes = attributes + product.attributes.filter { element in
+            return !attributes.contains { $0.attributeID == element.attributeID }
+        }.sorted(by: { (attribute1, attribute2) -> Bool in
+            attribute1 > attribute2
+        })
+
         var attributesRows = [Row]()
-        for _ in 0..<fetchedAttributes.count {
+        for _ in 0..<localAndGlobalAttributes.count {
             attributesRows.append(.existingAttribute)
         }
         let attributesSection = Section(header: Localization.headerAttributes, footer: nil, rows: attributesRows)

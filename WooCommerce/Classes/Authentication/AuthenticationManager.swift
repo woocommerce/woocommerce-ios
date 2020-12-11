@@ -77,7 +77,8 @@ class AuthenticationManager: Authentication {
                                                                   siteLoginInstructions: AuthenticationConstants.siteInstructions,
                                                                   usernamePasswordInstructions: AuthenticationConstants.usernamePasswordInstructions,
                                                                   continueWithWPButtonTitle: AuthenticationConstants.continueWithWPButtonTitle,
-                                                                  enterYourSiteAddressButtonTitle: AuthenticationConstants.enterYourSiteAddressButtonTitle)
+                                                                  enterYourSiteAddressButtonTitle: AuthenticationConstants.enterYourSiteAddressButtonTitle,
+                                                                  findSiteButtonTitle: AuthenticationConstants.findYourStoreAddressButtonTitle)
 
         let unifiedStyle = WordPressAuthenticatorUnifiedStyle(borderColor: .divider,
                                                               errorColor: .error,

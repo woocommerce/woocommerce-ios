@@ -76,7 +76,10 @@ jobs:
     - uses: actions/setup-ruby@v1
       with:
         ruby-version: '2.6.x'
-    
+
+    - name: Select Xcode ruby-version
+      run: sudo xcode-select --switch /Applications/Xcode_12.app
+
     - name: Install Bundler
       run: gem install bundler
     

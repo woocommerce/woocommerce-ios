@@ -177,6 +177,48 @@ struct ScreenshotObjectGraph: MockObjectGraph {
             verified: true
         )
     ]
+
+
+    public let thisYearVisitStats: SiteVisitStats = createStats(
+        granularity: .month,
+        items: ( 0 ..< Date().month ).map {
+            createVisitStatsItem(
+                granularity: .month,
+                ago: $0,
+                visitors: Int.random(in: 100 ... 1000)
+            )
+        }
+    )
+
+    public var yearlyVisitStats: SiteVisitStats {
+        Self.createStats(
+            granularity: .year,
+            items: [
+                Self.createVisitStatsItem(
+                    granularity: .year,
+                    ago: 0,
+                    visitors: thisYearVisitStats.totalVisitors
+                )
+            ]
+        )
+    }
+
+    let orderProbabilityRange = 0.1...0.5
+    let orderValueRange = 100 ..< 500
+
+    public var thisYearOrderStats: OrderStatsV4 {
+        Self.createStats(
+            siteID: 1,
+            granularity: .yearly,
+            intervals: thisYearVisitStats.items!.enumerated().map {
+                Self.createInterval(
+                    monthsAgo: $0.offset,
+                    orderCount: Int(Double($0.element.visitors) * Double.random(in: orderProbabilityRange)),
+                    revenue: Decimal($0.element.visitors) * Decimal.random(in: orderValueRange)
+                )
+            }
+        )
+    }
 }
 
 protocol MockCustomerConvertable {
@@ -301,6 +343,15 @@ extension ScreenshotObjectGraph {
             price: 110,
             quantity: 23
         )
+    }
+}
+
+extension Decimal {
+    static func random(in range: Range<Int>) -> Decimal {
+        let lowerBound = NSDecimalNumber(value: range.lowerBound).doubleValue
+        let upperBound = NSDecimalNumber(value: range.upperBound).doubleValue
+        let number = Double.random(in: lowerBound...upperBound)
+        return Decimal(number)
     }
 }
 

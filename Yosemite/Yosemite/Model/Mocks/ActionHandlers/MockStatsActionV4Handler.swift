@@ -1,5 +1,6 @@
 import Foundation
 import Storage
+import Networking
 
 struct MockStatsActionV4Handler: MockActionHandler {
     typealias ActionType = StatsActionV4
@@ -9,14 +10,43 @@ struct MockStatsActionV4Handler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-            case .retrieveStats(_, _, _, _, _, let onCompletion):
-                success(onCompletion)
-            case .retrieveSiteVisitStats(_, _, _, _, let onCompletion):
-                success(onCompletion)
+            case .retrieveStats(let siteID, let timeRange, _, _, _, let onCompletion):
+                retrieveStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
+            case .retrieveSiteVisitStats(let siteID, _, let timeRange, _, let onCompletion):
+                debugPrint("Fetching visitor stats for \(timeRange)")
+                retrieveSiteVisitStats(siteID: siteID, timeRange: timeRange, onCompletion: onCompletion)
             case .retrieveTopEarnerStats(_, _, _, _, let onCompletion):
                 success(onCompletion)
 
             default: unimplementedAction(action: action)
+        }
+    }
+
+    func retrieveStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Error?) -> ()) {
+        let store = StatsStoreV4(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
+
+        switch timeRange {
+            case .today: success(onCompletion)
+            case .thisWeek: success(onCompletion)
+            case .thisMonth: success(onCompletion)
+            case .thisYear:
+                store.upsertStoredOrderStats(readOnlyStats: objectGraph.thisYearOrderStats, timeRange: timeRange)
+                onCompletion(nil)
+        }
+    }
+
+    func retrieveSiteVisitStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Error?) -> ()) {
+        let store = StatsStoreV4(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
+
+        store.upsertStoredSiteVisitStats(readOnlyStats: objectGraph.yearlyVisitStats)
+
+        switch timeRange {
+            case .today: success(onCompletion)
+            case .thisWeek: success(onCompletion)
+            case .thisMonth: success(onCompletion)
+            case .thisYear:
+                store.upsertStoredSiteVisitStats(readOnlyStats: objectGraph.thisYearVisitStats)
+                onCompletion(nil)
         }
     }
 }

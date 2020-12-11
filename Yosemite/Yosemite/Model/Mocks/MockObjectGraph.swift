@@ -12,6 +12,11 @@ public protocol MockObjectGraph {
     var products: [Product] { get }
     var reviews: [ProductReview] { get }
 
+    var yearlyVisitStats: SiteVisitStats { get }
+
+    var thisYearOrderStats: OrderStatsV4 { get }
+    var thisYearVisitStats: SiteVisitStats { get }
+
     func accountWithId(id: Int64) -> Account
     func accountSettingsWithUserId(userId: Int64) -> AccountSettings
 
@@ -258,5 +263,177 @@ extension MockObjectGraph {
             rating: rating,
             verified: verified
         )
+    }
+}
+
+struct DateRange {
+    let start: Date
+    let end: Date
+
+    static func from(start: String, end: String) -> DateRange {
+
+        return DateRange(
+            start: Date.from(dateString: start),
+            end: Date.from(dateString: end)
+        )
+    }
+}
+
+// MARK: Stats Creation Helpers
+extension MockObjectGraph {
+
+    static func createInterval(
+        monthsAgo: Int,
+        orderCount: Int,
+        revenue: Decimal
+    ) -> OrderStatsV4Interval {
+
+        let startDate = Date().subtractingMonths(monthsAgo).monthStart
+
+        return OrderStatsV4Interval(
+            interval: String(startDate.month),
+            dateStart: startDate.asOrderStatsString,
+            dateEnd: startDate.monthEnd.asOrderStatsString,
+            subtotals: createTotal(orderCount: orderCount, revenue: revenue)
+        )
+    }
+
+    static func createVisitStatsItem(granularity: StatGranularity, ago count: Int, visitors: Int) -> SiteVisitStatsItem {
+        switch granularity {
+            case .month:
+                let period = Date().subtractingMonths(count).monthStart
+                return SiteVisitStatsItem(period: period.asVisitStatsMonthString, visitors: visitors)
+            case .year:
+                let period = Date().subtracingYears(count).yearStart
+                return SiteVisitStatsItem(period: period.asVisitStatsMonthString, visitors: visitors)
+            default:
+                fatalError("Not implemented yet")
+        }
+    }
+
+    static func createTotal(orderCount: Int, revenue: Decimal) -> OrderStatsV4Totals {
+        return OrderStatsV4Totals(
+            totalOrders: orderCount,
+            totalItemsSold: 0,
+            grossRevenue: revenue,
+            couponDiscount: 0,
+            totalCoupons: 0,
+            refunds: 0,
+            taxes: 0,
+            shipping: 0,
+            netRevenue: 0,
+            totalProducts: 0
+        )
+    }
+
+    static func createStats(
+        siteID: Int64,
+        granularity: StatsGranularityV4,
+        intervals: [OrderStatsV4Interval]
+    ) -> OrderStatsV4 {
+        OrderStatsV4(
+            siteID: siteID,
+            granularity: granularity,
+            totals: intervals.aggregateTotals,
+            intervals: intervals
+        )
+    }
+
+    static func createStats(granularity: StatGranularity, items: [SiteVisitStatsItem]) -> SiteVisitStats {
+        SiteVisitStats(
+            date: Date().monthEnd.asVisitStatsMonthString,
+            granularity: granularity,
+            items: items
+        )
+    }
+}
+
+private extension Array where Element == OrderStatsV4Interval {
+    var aggregateTotals: OrderStatsV4Totals {
+
+        let totalOrders = self.reduce(0) { $0 + $1.subtotals.totalOrders }
+        let totalRevenue = self.reduce(0) { $0 + $1.subtotals.grossRevenue }
+
+        return OrderStatsV4Totals(
+            totalOrders: totalOrders,
+            totalItemsSold: 0,
+            grossRevenue: totalRevenue,
+            couponDiscount: 0,
+            totalCoupons: 0,
+            refunds: 0,
+            taxes: 0,
+            shipping: 0,
+            netRevenue: 0,
+            totalProducts: 0
+        )
+    }
+}
+
+ extension Date {
+
+    func addingYears(_ count: Int) -> Date {
+        return NSCalendar.current.date(byAdding: .year, value: count, to: self)!
+    }
+
+    func subtracingYears(_ count: Int) -> Date {
+        addingYears(count * -1)
+    }
+
+    func addingMonths(_ count: Int) -> Date {
+        return NSCalendar.current.date(byAdding: .month, value: count, to: self)!
+    }
+
+    func subtractingMonths(_ count: Int) -> Date {
+        addingMonths(count * -1)
+    }
+
+    func addingDays(_ count: Int) -> Date {
+        return NSCalendar.current.date(byAdding: .day, value: count, to: self)!
+    }
+
+    func subtractingDays(_ count: Int) -> Date {
+        addingDays(count * -1)
+    }
+
+    var year: Int {
+        let components = Calendar.current.dateComponents(in: .current, from: self)
+        return components.year ?? 0
+    }
+
+    var month: Int {
+        let components = Calendar.current.dateComponents(in: .current, from: self)
+        return components.month ?? 0
+    }
+
+    var yearStart: Date {
+        let year = Calendar.current.component(.year, from: self)
+        return Calendar.current.date(from: DateComponents(year: year, month: 1, day: 1))!
+    }
+
+    var monthStart: Date {
+        let components = DateComponents(year: self.year, month: self.month, day: 1)
+        return Calendar.current.date(from: components)!
+    }
+
+    var monthEnd: Date {
+        monthStart.addingMonths(1).subtractingDays(1)
+    }
+
+    var asVisitStatsMonthString: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: self)
+    }
+
+    var asOrderStatsString: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:MM:ss"
+        return formatter.string(from: self)
+    }
+
+    static func from(dateString: String) -> Date {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.date(from: dateString)!
     }
 }

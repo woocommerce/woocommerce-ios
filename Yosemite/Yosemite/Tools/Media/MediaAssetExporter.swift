@@ -76,7 +76,7 @@ final class MediaAssetExporter: MediaExporter {
         }
 
         // Request the image.
-        imageManager.requestImageData(for: asset,
+        imageManager.requestImageDataAndOrientation(for: asset,
                                       options: options,
                                       resultHandler: { [weak self] (data, uti, orientation, info) in
                                         guard let self = self else {

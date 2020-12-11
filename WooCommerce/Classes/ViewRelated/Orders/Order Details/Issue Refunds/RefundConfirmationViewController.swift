@@ -193,6 +193,15 @@ private extension RefundConfirmationViewController {
     }
 }
 
+// MARK: Interactive Dismiss
+extension RefundConfirmationViewController: IssueRefundInteractiveDismissDelegate {
+    /// Don't allow interactive dismiss gesture.
+    ///
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        false
+    }
+}
+
 // MARK: - Localization
 
 private extension RefundConfirmationViewController {

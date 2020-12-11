@@ -400,8 +400,14 @@ private extension OrderDetailsViewController {
             self?.viewModel.dataSource.sendToPasteboard(shippingLabel.trackingNumber, includeTrailingNewline: false)
         }
 
-        actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.trackShipmentAction) { _ in
-            // TODO-2564: track shipment of a shipping label
+        // Only shows the tracking action when there is a tracking URL.
+        if let url = ShippingLabelTrackingURLGenerator.url(for: shippingLabel) {
+            actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.trackShipmentAction) { [weak self] _ in
+                guard let self = self else { return }
+                let safariViewController = SFSafariViewController(url: url)
+                safariViewController.modalPresentationStyle = .pageSheet
+                self.present(safariViewController, animated: true, completion: nil)
+            }
         }
 
         let popoverController = actionSheet.popoverPresentationController

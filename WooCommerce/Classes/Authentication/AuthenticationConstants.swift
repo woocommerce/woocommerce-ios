@@ -50,6 +50,13 @@ struct AuthenticationConstants {
         comment: "Button title. Takes the user to the login by store address flow."
     )
 
+    /// Title of views in Unified Login
+    //
+    static let loginTitle = NSLocalizedString(
+        "Log In",
+        comment: "View title during the log in process."
+    )
+
     /// Title of "Find your store address" button in Unified Login flow
     //
     static let findYourStoreAddressButtonTitle = NSLocalizedString(

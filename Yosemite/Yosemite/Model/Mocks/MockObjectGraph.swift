@@ -23,7 +23,7 @@ public protocol MockObjectGraph {
     func statsV4ShouldBeAvailable(forSiteId: Int64) -> Bool
 }
 
-let mockResourceUrlHost = "http://localhost:9285/"
+let mockResourceUrlHost = "http://localhost:\(UserDefaults.standard.integer(forKey: "mocks-port"))/"
 
 // MARK: Product Accessors
 extension MockObjectGraph {

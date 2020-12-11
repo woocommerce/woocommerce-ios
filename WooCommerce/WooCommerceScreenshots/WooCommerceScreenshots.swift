@@ -3,20 +3,29 @@ import Embassy
 
 class WooCommerceScreenshots: XCTestCase {
 
-    override func setUp() {
+    override func setUpWithError() throws {
         super.setUp()
         continueAfterFailure = false
 
         XCUIDevice.shared.orientation = UIDeviceOrientation.portrait
 
+        startWebServer()
+    }
+
+    override func tearDown() {
+        super.tearDown()
+        stopWebServer()
     }
 
     func testScreenshots() {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         setupSnapshot(app)
+        app.launchArguments.append("mocked-network-layer")
+        app.launchArguments.append("disable-animations")
+        app.launchArguments.append("-mocks-port")
+        app.launchArguments.append("\(port)")
 
-        app.launchArguments = ["mocked-network-layer", "disable-animations", ]
         app.launch()
 
         MyStoreScreen()
@@ -52,66 +61,66 @@ class WooCommerceScreenshots: XCTestCase {
             .thenTakeScreenshot(named: "product-details")
     }
 
-    ///
-    /// Screenshots Web Server
-    ///
-    override static func setUp() {
-        startWebServer()
-    }
+    private let port = Int.random(in: 2048...65535)
 
-    private static let loop = try! SelectorEventLoop(selector: try! KqueueSelector())
+    private let loop = try! SelectorEventLoop(selector: try! KqueueSelector())
 
-    private static func startWebServer() {
-        /// Run the web server on a background queue
-        DispatchQueue.global(qos: .userInitiated).async {
+    private let queue = DispatchQueue(label: "screenshots-asset-server")
 
-            let server = DefaultHTTPServer(eventLoop: self.loop, port: 9285) {
-                (env: [String: Any], startResponse: ((String, [(String, String)]) -> Void), sendBody: ((Data) -> Void)
-                ) in
+    private lazy var server = DefaultHTTPServer(eventLoop: loop, port: port, app: handleWebRequest)
 
-                /// Extract the path, so http://localhost:9285/foo-bar would be `/foo-bar` here.
-                guard let path = env["PATH_INFO"] as? String else {
-                    startResponse("404 Not Found", [])
-                    sendBody(Data())
-                    return
-                }
-
-                /// Remove the leading `/`, so we're left with `foo-bar`
-                let assetName = path.replacingOccurrences(of: "/", with: "")
-
-                /// Lookup the `assetName` in this bundle
-                let bundle = Bundle(for: Self.self)
-
-                guard
-                    let image = UIImage(named: assetName, in: bundle, compatibleWith: nil),
-                    let data = image.pngData()
-                else {
-                    startResponse("404 Not Found", [])
-                    sendBody(Data())
-                    return
-                }
-
-                /// HTTP Header
-                startResponse("200 OK", [
-                    ("Content-Type", "image/png"),
-                    ("Content-Length", "\(data.count)")
-                ])
-
-                /// HTTP Body Data
-                sendBody(data)
-
-                /// HTTP EOF
-                sendBody(Data())
-            }
-
+    func startWebServer() {
+        queue.async {
             /// Start HTTP server to listen on the port
-            try! server.start()
+            try! self.server.start()
 
             /// Run event loop
             self.loop.runForever()
+
+            debugPrint("Web Server running on port \(self.port)")
         }
     }
 
+    func handleWebRequest(env: [String: Any], startResponse: ((String, [(String, String)]) -> ()), sendBody: ((Data) -> ())) {
+        /// Extract the path, so http://localhost:9285/foo-bar would be `/foo-bar` here.
+        guard let path = env["PATH_INFO"] as? String else {
+            startResponse("404 Not Found", [])
+            sendBody(Data())
+            return
+        }
+
+        /// Remove the leading `/`, so we're left with `foo-bar`
+        let assetName = path.replacingOccurrences(of: "/", with: "")
+
+        /// Lookup the `assetName` in this bundle
+        let bundle = Bundle(for: Self.self)
+
+        guard
+            let image = UIImage(named: assetName, in: bundle, compatibleWith: nil),
+            let data = image.pngData()
+        else {
+            startResponse("404 Not Found", [])
+            sendBody(Data())
+            return
+        }
+
+        /// HTTP Header
+        startResponse("200 OK", [
+            ("Content-Type", "image/png"),
+            ("Content-Length", "\(data.count)")
+        ])
+
+        /// HTTP Body Data
+        sendBody(data)
+
+        /// HTTP EOF
+        sendBody(Data())
+    }
+
+    func stopWebServer() {
+        self.server.stop()
+        self.loop.stop()
+    }
 }
 
 fileprivate var screenshotCount = 0

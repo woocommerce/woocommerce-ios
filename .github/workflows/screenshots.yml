@@ -77,7 +77,7 @@ jobs:
       with:
         ruby-version: '2.6.x'
 
-    - name: Select Xcode ruby-version
+    - name: Select Xcode Version
       run: sudo xcode-select --switch /Applications/Xcode_12.app
 
     - name: Install Bundler
@@ -109,9 +109,6 @@ jobs:
       with:
         name: screenshot-runner
         path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerceScreenshots-Runner.app
-
-    - name: Start Mocks
-      run: rake mocks &
 
     - name: Generate Screenshots
       run: |
@@ -165,7 +162,8 @@ jobs:
 
     - name: Download Generated Screenshots
       run: |
-        brew install awscli
+        # Install awscli if needed
+        brew list awscli &> /dev/null || brew install awscli
         cd fastlane
         aws s3 cp s3://$S3_BUCKET/$GITHUB_RUN_ID/screenshots screenshots/  --recursive --exclude "*.html"
     

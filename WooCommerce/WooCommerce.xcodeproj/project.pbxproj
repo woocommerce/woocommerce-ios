@@ -628,6 +628,10 @@
 		93FA787421CD7E9E00B663E5 /* CurrencySettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93FA787321CD7E9E00B663E5 /* CurrencySettings.swift */; };
 		A650BE862578E76600C655E0 /* MockStorageManager+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = A650BE842578E76600C655E0 /* MockStorageManager+Sample.swift */; };
 		A650BE872578E76600C655E0 /* MockStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A650BE852578E76600C655E0 /* MockStorageManager.swift */; };
+		AE8E827225812A32007FB7F9 /* OrderCreationFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8E827125812A32007FB7F9 /* OrderCreationFormViewModel.swift */; };
+		AE8E827925813B48007FB7F9 /* OrderCreationFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8E827825813B48007FB7F9 /* OrderCreationFormViewModelTests.swift */; };
+		AE90229B257E694C00BBA17B /* OrderCreationFormDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE90229A257E694C00BBA17B /* OrderCreationFormDataSource.swift */; };
+		AEE72A85257E5B6F0099FFD6 /* OrderCreationFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE72A84257E5B6F0099FFD6 /* OrderCreationFormViewController.swift */; };
 		B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112D2049E27A007D25DC /* DashboardViewController.swift */; };
 		B509FED121C041DF000076A9 /* Locale+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509FED021C041DF000076A9 /* Locale+Woo.swift */; };
 		B509FED321C05121000076A9 /* SupportManagerAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509FED221C05121000076A9 /* SupportManagerAdapter.swift */; };
@@ -1687,6 +1691,10 @@
 		9D2992FEF3D1246B8CCC2EBB /* Pods-WooCommerceTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.debug.xcconfig"; sourceTree = "<group>"; };
 		A650BE842578E76600C655E0 /* MockStorageManager+Sample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MockStorageManager+Sample.swift"; path = "../../../Yosemite/YosemiteTests/Mocks/MockStorageManager+Sample.swift"; sourceTree = "<group>"; };
 		A650BE852578E76600C655E0 /* MockStorageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockStorageManager.swift; path = ../../../Yosemite/YosemiteTests/Mocks/MockStorageManager.swift; sourceTree = "<group>"; };
+		AE8E827125812A32007FB7F9 /* OrderCreationFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCreationFormViewModel.swift; sourceTree = "<group>"; };
+		AE8E827825813B48007FB7F9 /* OrderCreationFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCreationFormViewModelTests.swift; sourceTree = "<group>"; };
+		AE90229A257E694C00BBA17B /* OrderCreationFormDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCreationFormDataSource.swift; sourceTree = "<group>"; };
+		AEE72A84257E5B6F0099FFD6 /* OrderCreationFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCreationFormViewController.swift; sourceTree = "<group>"; };
 		B509112D2049E27A007D25DC /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		B509FED021C041DF000076A9 /* Locale+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locale+Woo.swift"; sourceTree = "<group>"; };
 		B509FED221C05121000076A9 /* SupportManagerAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportManagerAdapter.swift; sourceTree = "<group>"; };
@@ -3471,6 +3479,7 @@
 			children = (
 				2667BFD5252E5D4C008099D4 /* Issue Refund */,
 				57F2C6C9246DEBB10074063B /* Order Details */,
+				AE8E827725813B2D007FB7F9 /* Order Create */,
 				570AAB042472FACB00516C0C /* OrderDetailsDataSourceTests.swift */,
 				57C5FF7B25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift */,
 				5767E93F256D9A4A00CFA652 /* OrderListViewModelTests.swift */,
@@ -3693,6 +3702,24 @@
 			);
 			name = config;
 			path = ../config;
+			sourceTree = "<group>";
+		};
+		AE8E827725813B2D007FB7F9 /* Order Create */ = {
+			isa = PBXGroup;
+			children = (
+				AE8E827825813B48007FB7F9 /* OrderCreationFormViewModelTests.swift */,
+			);
+			path = "Order Create";
+			sourceTree = "<group>";
+		};
+		AEE72A83257E5AD40099FFD6 /* Order Create */ = {
+			isa = PBXGroup;
+			children = (
+				AEE72A84257E5B6F0099FFD6 /* OrderCreationFormViewController.swift */,
+				AE8E827125812A32007FB7F9 /* OrderCreationFormViewModel.swift */,
+				AE90229A257E694C00BBA17B /* OrderCreationFormDataSource.swift */,
+			);
+			path = "Order Create";
 			sourceTree = "<group>";
 		};
 		B53A569521123D27000776C9 /* Tools */ = {
@@ -4395,6 +4422,7 @@
 			children = (
 				CEE006022077D0F80079161F /* Cells */,
 				CE35F1092343E482007B2A6B /* Order Details */,
+				AEE72A83257E5AD40099FFD6 /* Order Create */,
 				CEE005F52076C4040079161F /* Orders.storyboard */,
 				57C503DB23E8C70C00EC0790 /* OrdersTabbedViewController.swift */,
 				57C503DD23E8CE0D00EC0790 /* OrdersTabbedViewController.xib */,
@@ -5715,6 +5743,7 @@
 				B586906621A5F4B1001F1EFC /* UINavigationController+Woo.swift in Sources */,
 				45FBDF3A238D3F8B00127F77 /* ExtendedAddProductImageCollectionViewCell.swift in Sources */,
 				02C0CD2A23B5BB1C00F880B1 /* ImageService.swift in Sources */,
+				AE8E827225812A32007FB7F9 /* OrderCreationFormViewModel.swift in Sources */,
 				26ABCE532518EAF300721CB0 /* IssueRefundTableViewCell.swift in Sources */,
 				02482A8B237BE8C7007E73ED /* LinkSettingsViewController.swift in Sources */,
 				CE227097228F152400C0626C /* WooBasicTableViewCell.swift in Sources */,
@@ -5936,6 +5965,7 @@
 				260C32BE2527A2DE00157BC2 /* IssueRefundViewModel.swift in Sources */,
 				450C2CBA24D3127500D570DD /* ProductReviewsTableViewCell.swift in Sources */,
 				029D444922F13F8A00DEFA8A /* DashboardUIFactory.swift in Sources */,
+				AEE72A85257E5B6F0099FFD6 /* OrderCreationFormViewController.swift in Sources */,
 				D8C2A28F231BD00500F503E9 /* ReviewsViewModel.swift in Sources */,
 				021AEF9E2407F55C00029D28 /* PHAssetImageLoader.swift in Sources */,
 				020BE74D23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.swift in Sources */,
@@ -6020,6 +6050,7 @@
 				02A65301246AA63600755A01 /* ProductDetailsFactory.swift in Sources */,
 				02C8876D24501FAC00E4470F /* FilterListViewController.swift in Sources */,
 				021FB44C24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift in Sources */,
+				AE90229B257E694C00BBA17B /* OrderCreationFormDataSource.swift in Sources */,
 				773077EE251E943700178696 /* ProductDownloadFileViewController.swift in Sources */,
 				45D1CF4523BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift in Sources */,
 				6856D31F941A33BAE66F394D /* KeyboardFrameAdjustmentProvider.swift in Sources */,
@@ -6116,6 +6147,7 @@
 				0269576D23726401001BA0BF /* KeyboardFrameObserverTests.swift in Sources */,
 				26FE09E424DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift in Sources */,
 				0215320D2423309B003F2BBD /* UIStackView+SubviewsTests.swift in Sources */,
+				AE8E827925813B48007FB7F9 /* OrderCreationFormViewModelTests.swift in Sources */,
 				027B8BBD23FE0DE10040944E /* ProductImageActionHandlerTests.swift in Sources */,
 				B5980A6521AC905C00EBF596 /* UIDeviceWooTests.swift in Sources */,
 				45EF798624509B4C00B22BA2 /* ArrayIndexPathTests.swift in Sources */,

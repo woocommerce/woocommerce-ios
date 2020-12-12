@@ -203,7 +203,18 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         )
     }
 
+    public var thisYearTopProducts: TopEarnerStats = createStats(granularity: .year, items: [
+        createTopEarningItem(product: Products.akoyaPearlShades, quantity: 17),
+        createTopEarningItem(product: Products.blackCoralShades, quantity: 11),
+        createTopEarningItem(product: Products.coloradoShades, quantity: 5),
+    ])
+
+    /// The probability of a sale for each visit when generating random stats
+    ///
     let orderProbabilityRange = 0.1...0.5
+
+    /// The possible value of an order when generating random stats
+    ///
     let orderValueRange = 100 ..< 500
 
     public var thisYearOrderStats: OrderStatsV4 {

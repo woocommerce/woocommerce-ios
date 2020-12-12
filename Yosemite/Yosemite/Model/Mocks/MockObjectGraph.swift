@@ -16,6 +16,7 @@ public protocol MockObjectGraph {
 
     var thisYearOrderStats: OrderStatsV4 { get }
     var thisYearVisitStats: SiteVisitStats { get }
+    var thisYearTopProducts: TopEarnerStats { get }
 
     func accountWithId(id: Int64) -> Account
     func accountSettingsWithUserId(userId: Int64) -> AccountSettings
@@ -344,6 +345,30 @@ extension MockObjectGraph {
             date: Date().monthEnd.asVisitStatsMonthString,
             granularity: granularity,
             items: items
+        )
+    }
+
+    static func createStats(granularity: StatGranularity, items: [TopEarnerStatsItem]) -> TopEarnerStats {
+        TopEarnerStats(
+            date: String(Date().year),
+            granularity: granularity,
+            limit: "",
+            items: items
+        )
+    }
+
+    static func createTopEarningItem(product: Product, quantity: Int, price: Double? = nil) -> TopEarnerStatsItem {
+
+        let averagePrice = price ?? Double(product.price) ?? 100.00
+
+        return TopEarnerStatsItem(
+            productID: product.productID,
+            productName: product.name,
+            quantity: quantity,
+            price: averagePrice,
+            total: Double(quantity) * averagePrice,
+            currency: "USD",
+            imageUrl: product.images.first?.src
         )
     }
 }

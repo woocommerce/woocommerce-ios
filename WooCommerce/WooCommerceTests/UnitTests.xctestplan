@@ -50,6 +50,13 @@
         "identifier" : "B5C9DDFD2087FEC0006B910A",
         "name" : "YosemiteTests"
       }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Observables",
+        "identifier" : "ObservablesTests",
+        "name" : "ObservablesTests"
+      }
     }
   ],
   "version" : 1

@@ -60,7 +60,7 @@ class AuthenticatedState: StoresManagerState {
 
     /// Convenience Initializer
     ///
-    convenience init?(sessionManager: SessionManager) {
+    convenience init?(sessionManager: SessionManagerProtocol) {
         guard let credentials = sessionManager.defaultCredentials else {
             return nil
         }

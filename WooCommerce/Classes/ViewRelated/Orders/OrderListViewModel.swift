@@ -2,6 +2,7 @@ import Combine
 import Yosemite
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
+import Observables
 
 /// ViewModel for `OrderListViewController`.
 ///

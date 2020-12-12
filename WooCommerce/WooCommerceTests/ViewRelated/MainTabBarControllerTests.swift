@@ -1,6 +1,7 @@
 import TestKit
 import XCTest
 @testable import WooCommerce
+import Yosemite
 
 final class MainTabBarControllerTests: XCTestCase {
     private var stores: StoresManager!

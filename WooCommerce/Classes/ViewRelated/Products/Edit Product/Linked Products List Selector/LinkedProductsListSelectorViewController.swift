@@ -1,6 +1,7 @@
 import UIKit
 import WordPressUI
 import Yosemite
+import Observables
 
 /// Displays a paginated list of products given product IDs, with a CTA to add more products.
 final class LinkedProductsListSelectorViewController: UIViewController {

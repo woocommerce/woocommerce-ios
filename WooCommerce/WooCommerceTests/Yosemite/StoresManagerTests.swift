@@ -1,5 +1,6 @@
 import XCTest
 import Networking
+import Observables
 @testable import WooCommerce
 
 
@@ -173,7 +174,7 @@ extension DefaultStoresManager {
     /// Returns a StoresManager instance with testing Keychain/UserDefaults
     ///
     static var testingInstance: DefaultStoresManager {
-        return DefaultStoresManager(sessionManager: .testingInstance)
+        return DefaultStoresManager(sessionManager: SessionManager.testingInstance)
     }
 }
 

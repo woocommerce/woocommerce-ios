@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Observables
 
 /// Configures the results and cells for a paginated list of linked products, syncs each page of products,
 /// and handles actions that could alter the linked products.

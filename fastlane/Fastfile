@@ -471,7 +471,10 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       stop_after_first_error: true,
 
       # Allow the caller to invoke dark mode
-      dark_mode: options[:mode].to_s.downcase == "dark"
+      dark_mode: options[:mode].to_s.downcase == "dark",
+
+      # Make the status bar pretty
+      override_status_bar: true,
     )
 
   end

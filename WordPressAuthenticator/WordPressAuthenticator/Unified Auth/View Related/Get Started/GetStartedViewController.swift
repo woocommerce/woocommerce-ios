@@ -195,7 +195,8 @@ private extension GetStartedViewController {
         let cells = [
             TextLabelTableViewCell.reuseIdentifier: TextLabelTableViewCell.loadNib(),
             TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib(),
-            TextWithLinkTableViewCell.reuseIdentifier: TextWithLinkTableViewCell.loadNib()
+            TextWithLinkTableViewCell.reuseIdentifier: TextWithLinkTableViewCell.loadNib(),
+            SpacerTableViewCell.reuseIdentifier: SpacerTableViewCell.loadNib()
         ]
         
         for (reuseIdentifier, nib) in cells {
@@ -206,7 +207,13 @@ private extension GetStartedViewController {
     /// Describes how the tableView rows should be rendered.
     ///
     func loadRows() {
-        rows = [.instructions, .email, .tos]
+        rows = [.instructions, .email]
+
+        if let authenticationDelegate = WordPressAuthenticator.shared.delegate, authenticationDelegate.wpcomTermsOfServiceEnabled {
+            rows.append(.tos)
+        } else {
+            rows.append(.spacer)
+        }
 
         if let errorText = errorMessage, !errorText.isEmpty {
             rows.append(.errorMessage)
@@ -223,6 +230,8 @@ private extension GetStartedViewController {
             configureEmailField(cell)
         case let cell as TextWithLinkTableViewCell:
             configureTextWithLink(cell)
+        case cell as SpacerTableViewCell:
+            break
         case let cell as TextLabelTableViewCell where row == .errorMessage:
             configureErrorLabel(cell)
         default:
@@ -273,11 +282,6 @@ private extension GetStartedViewController {
     /// Configure the link cell.
     ///
     func configureTextWithLink(_ cell: TextWithLinkTableViewCell) {
-        guard let authenticationDelegate = WordPressAuthenticator.shared.delegate, authenticationDelegate.wpcomTermsOfServiceEnabled else {
-            cell.hideButton()
-            return
-        }
-
         cell.configureButton(markedText: WordPressAuthenticator.shared.displayStrings.loginTermsOfService)
         
         cell.actionHandler = { [weak self] in
@@ -301,6 +305,7 @@ private extension GetStartedViewController {
         case instructions
         case email
         case tos
+        case spacer
         case errorMessage
         
         var reuseIdentifier: String {
@@ -311,6 +316,8 @@ private extension GetStartedViewController {
                 return TextFieldTableViewCell.reuseIdentifier
             case .tos:
                 return TextWithLinkTableViewCell.reuseIdentifier
+            case .spacer:
+                return SpacerTableViewCell.reuseIdentifier
             }
         }
     }

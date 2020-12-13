@@ -42,4 +42,8 @@ class TextWithLinkTableViewCell: UITableViewCell {
         button.accessibilityTraits = accessibilityTrait
     }
 
+    func hideButton() {
+        button.isHidden = true
+    }
+
 }

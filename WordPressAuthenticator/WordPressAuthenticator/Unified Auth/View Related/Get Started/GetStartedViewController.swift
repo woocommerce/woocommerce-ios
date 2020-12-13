@@ -206,12 +206,8 @@ private extension GetStartedViewController {
     /// Describes how the tableView rows should be rendered.
     ///
     func loadRows() {
-        rows = [.instructions, .email]
+        rows = [.instructions, .email, .tos]
 
-        if let authenticationDelegate = WordPressAuthenticator.shared.delegate, authenticationDelegate.wpcomTermsOfServiceEnabled {
-            rows.append(.tos)
-        }
-        
         if let errorText = errorMessage, !errorText.isEmpty {
             rows.append(.errorMessage)
         }
@@ -277,6 +273,11 @@ private extension GetStartedViewController {
     /// Configure the link cell.
     ///
     func configureTextWithLink(_ cell: TextWithLinkTableViewCell) {
+        guard let authenticationDelegate = WordPressAuthenticator.shared.delegate, authenticationDelegate.wpcomTermsOfServiceEnabled else {
+            cell.hideButton()
+            return
+        }
+
         cell.configureButton(markedText: WordPressAuthenticator.shared.displayStrings.loginTermsOfService)
         
         cell.actionHandler = { [weak self] in

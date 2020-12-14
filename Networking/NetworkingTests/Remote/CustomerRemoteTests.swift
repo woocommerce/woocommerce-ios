@@ -41,4 +41,19 @@ final class CustomerRemoteTests: XCTestCase {
         XCTAssertEqual(expectedCustomer.siteID, self.sampleSiteID)
         XCTAssertEqual(expectedCustomer.username, "john.doe")
     }
+
+    func test_getAllCustomers_relays_networking_error() throws {
+        // Given
+        let remote = CustomerRemote(network: network)
+
+        // When
+        let result = try waitFor { promise in
+            remote.getAllCustomers(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
 }

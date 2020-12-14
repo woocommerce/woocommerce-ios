@@ -3,17 +3,14 @@ import Yosemite
 
 /// View model for `ReprintShippingLabelViewController`.
 /// Performs and handles actions that might change data for UI display.
-final class ReprintShippingLabelViewModel {
+final class ReprintShippingLabelViewModel: ObservableObject {
     /// Paper size options that we support for reprinting a shipping label.
     /// In the future, the options could be different per geographical region.
     let paperSizeOptions: [ShippingLabelPaperSize] = [.legal, .letter, .label]
 
     /// Observable selected paper size.
-    var selectedPaperSize: AnyPublisher<ShippingLabelPaperSize?, Never> {
-        selectedPaperSizeSubject.eraseToAnyPublisher()
-    }
+    @Published private(set) var selectedPaperSize: ShippingLabelPaperSize?
 
-    private let selectedPaperSizeSubject = CurrentValueSubject<ShippingLabelPaperSize?, Never>(nil)
     private let shippingLabel: ShippingLabel
     private let stores: StoresManager
 
@@ -30,13 +27,13 @@ extension ReprintShippingLabelViewModel {
     func loadShippingLabelSettingsForDefaultPaperSize() {
         let action = ShippingLabelAction.loadShippingLabelSettings(shippingLabel: shippingLabel) { [weak self] settings in
             guard let self = self else { return }
-            guard let settings = settings, self.selectedPaperSizeSubject.value == nil else {
+            guard let settings = settings, self.selectedPaperSize == nil else {
                 return
             }
             // It is possible for the paper size setting (e.g. A4) to be unavailable in the paper sizes we support now (label, legal, and letter).
             // More details in: https://github.com/woocommerce/woocommerce-ios/issues/3340
             let defaultPaperSize = self.paperSizeOptions.contains(settings.paperSize) ? settings.paperSize: self.paperSizeOptions[0]
-            self.selectedPaperSizeSubject.send(defaultPaperSize)
+            self.selectedPaperSize = defaultPaperSize
         }
         stores.dispatch(action)
     }

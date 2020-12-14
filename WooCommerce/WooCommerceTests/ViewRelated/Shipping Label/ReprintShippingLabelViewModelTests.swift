@@ -35,7 +35,7 @@ final class ReprintShippingLabelViewModelTests: XCTestCase {
 
         // When
         var paperSizeValues = [ShippingLabelPaperSize?]()
-        viewModel.selectedPaperSize.sink { paperSize in
+        viewModel.$selectedPaperSize.sink { paperSize in
             paperSizeValues.append(paperSize)
         }.store(in: &cancellables)
 
@@ -59,7 +59,7 @@ final class ReprintShippingLabelViewModelTests: XCTestCase {
         }
 
         var paperSizeValues = [ShippingLabelPaperSize?]()
-        viewModel.selectedPaperSize.sink { paperSize in
+        viewModel.$selectedPaperSize.sink { paperSize in
             paperSizeValues.append(paperSize)
         }.store(in: &cancellables)
 

@@ -88,9 +88,7 @@ private extension AddAttributeViewModel {
         /// Sum fetched attributes + attributes inside the product (global + local), and remove duplicated product attributes, then sort it
         localAndGlobalAttributes = attributes + product.attributes.filter { element in
             return !attributes.contains { $0.attributeID == element.attributeID }
-        }.sorted(by: { (attribute1, attribute2) -> Bool in
-            attribute1 > attribute2
-        })
+        }.sorted(by: > )
 
         var attributesRows = [Row]()
         for _ in 0..<localAndGlobalAttributes.count {

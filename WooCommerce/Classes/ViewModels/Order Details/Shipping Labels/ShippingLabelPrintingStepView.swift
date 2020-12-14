@@ -2,12 +2,6 @@ import SwiftUI
 
 /// Displays one of the steps on how to print a shipping label on an iOS device.
 struct ShippingLabelPrintingStepView: View {
-    struct ViewModel {
-        let stepIndex: Int
-        let text: String
-        let isLastStep: Bool
-    }
-
     private let stepIndex: Int
     private let text: String
     private let isLastStep: Bool

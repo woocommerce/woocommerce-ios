@@ -74,7 +74,7 @@ private extension PrimarySectionHeaderView {
 
 private extension PrimarySectionHeaderView {
     enum Colors {
-        static let containerViewBackgroundColor = UIColor.basicBackground
+        static let containerViewBackgroundColor = UIColor.listForeground
     }
 }
 

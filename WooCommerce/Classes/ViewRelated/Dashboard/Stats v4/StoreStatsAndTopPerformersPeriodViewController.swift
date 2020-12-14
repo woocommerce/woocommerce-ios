@@ -1,6 +1,7 @@
 import UIKit
 import XLPagerTabStrip
 import Yosemite
+import Observables
 
 /// Container view controller for a stats v4 time range that consists of a scrollable stack view of:
 /// - Store stats data view (managed by child view controller `StoreStatsV4PeriodViewController`)

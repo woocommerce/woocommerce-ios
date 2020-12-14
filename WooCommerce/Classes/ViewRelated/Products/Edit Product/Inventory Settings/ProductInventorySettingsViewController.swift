@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Observables
 
 final class ProductInventorySettingsViewController: UIViewController {
 

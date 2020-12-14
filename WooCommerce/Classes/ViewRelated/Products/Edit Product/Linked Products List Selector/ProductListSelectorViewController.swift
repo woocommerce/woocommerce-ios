@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Observables
 
 /// Displays a paginated list of products where the user can select.
 final class ProductListSelectorViewController: UIViewController {

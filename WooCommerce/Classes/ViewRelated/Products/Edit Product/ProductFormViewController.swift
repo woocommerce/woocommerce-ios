@@ -2,6 +2,7 @@ import Photos
 import UIKit
 import WordPressUI
 import Yosemite
+import Observables
 
 /// The entry UI for adding/editing a Product.
 final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: UIViewController, UITableViewDelegate {

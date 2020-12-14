@@ -3,7 +3,7 @@ import Foundation
 
 /// Signature of a block called for every emitted Observable value.
 ///
-typealias OnNext<Element> = (Element) -> ()
+public typealias OnNext<Element> = (Element) -> ()
 
 /// Emits values over time.
 ///
@@ -17,7 +17,7 @@ typealias OnNext<Element> = (Element) -> ()
 /// - https://developer.apple.com/documentation/combine/publisher
 /// - http://reactivex.io/documentation/observable.html
 ///
-class Observable<Element> {
+public class Observable<Element> {
     /// Subscribe to values emitted by this `Observable`.
     ///
     /// The given `onNext` is called a "Observer" or "Subscriber".
@@ -37,7 +37,7 @@ class Observable<Element> {
     /// }
     /// ```
     ///
-    func subscribe(_ onNext: @escaping OnNext<Element>) -> ObservationToken {
+    public func subscribe(_ onNext: @escaping OnNext<Element>) -> ObservationToken {
         fatalError("Abstract method. This must be implemented by subclasses.")
     }
 }

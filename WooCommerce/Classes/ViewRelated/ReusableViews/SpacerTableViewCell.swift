@@ -19,5 +19,6 @@ final class SpacerTableViewCell: UITableViewCell {
         applyDefaultBackgroundStyle()
         hideSeparator()
         view.backgroundColor = .clear
+        selectionStyle = .none
     }
 }

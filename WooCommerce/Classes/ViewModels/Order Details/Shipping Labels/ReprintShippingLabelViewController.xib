@@ -9,6 +9,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ReprintShippingLabelViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="reprintButton" destination="oIN-xw-L7c" id="QEX-ZK-4Hg"/>
+                <outlet property="tableView" destination="Lwb-OO-Vek" id="1ln-2f-zfn"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -20,73 +22,15 @@
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="8qq-8l-MSy">
                     <rect key="frame" x="0.0" y="44" width="414" height="818"/>
                     <subviews>
-                        <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Cni-Pm-WvM">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="768"/>
-                            <subviews>
-                                <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="4Aq-L3-2AG">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="404.5"/>
-                                    <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z39-wY-J2c">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="20.5"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1kV-Mz-VQ8">
-                                            <rect key="frame" x="0.0" y="20.5" width="414" height="128"/>
-                                            <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="6Q3-Sc-kzC">
-                                                    <rect key="frame" x="0.0" y="0.0" width="372" height="128"/>
-                                                </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5uz-ZY-GhK">
-                                                    <rect key="frame" x="372" y="0.0" width="42" height="128"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                        </stackView>
-                                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dCO-9N-qbs">
-                                            <rect key="frame" x="0.0" y="148.5" width="414" height="128"/>
-                                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                        </view>
-                                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QNk-3E-fbM">
-                                            <rect key="frame" x="0.0" y="276.5" width="414" height="128"/>
-                                            <subviews>
-                                                <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="RMV-cb-oty">
-                                                    <rect key="frame" x="152" y="-36.5" width="46" height="60"/>
-                                                    <subviews>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lnx-f5-9IE">
-                                                            <rect key="frame" x="0.0" y="0.0" width="46" height="30"/>
-                                                            <state key="normal" title="Button"/>
-                                                        </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FVb-rg-Gd9">
-                                                            <rect key="frame" x="0.0" y="30" width="46" height="30"/>
-                                                            <state key="normal" title="Button"/>
-                                                        </button>
-                                                    </subviews>
-                                                </stackView>
-                                            </subviews>
-                                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                        </view>
-                                    </subviews>
-                                </stackView>
-                            </subviews>
-                            <constraints>
-                                <constraint firstItem="4Aq-L3-2AG" firstAttribute="width" secondItem="Cni-Pm-WvM" secondAttribute="width" id="4H0-x2-p7n"/>
-                                <constraint firstAttribute="bottom" secondItem="4Aq-L3-2AG" secondAttribute="bottom" id="9zy-w7-aVW"/>
-                                <constraint firstItem="4Aq-L3-2AG" firstAttribute="top" secondItem="Cni-Pm-WvM" secondAttribute="top" id="BwS-fu-sbo"/>
-                                <constraint firstItem="4Aq-L3-2AG" firstAttribute="leading" secondItem="Cni-Pm-WvM" secondAttribute="leading" id="Oaa-yJ-2Lc"/>
-                                <constraint firstAttribute="trailing" secondItem="4Aq-L3-2AG" secondAttribute="trailing" id="Rvp-87-GOn"/>
-                            </constraints>
-                            <viewLayoutGuide key="contentLayoutGuide" id="pop-ay-blg"/>
-                            <viewLayoutGuide key="frameLayoutGuide" id="VBT-S7-qbM"/>
-                        </scrollView>
+                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Lwb-OO-Vek">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="128"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        </tableView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ITA-7L-O8W">
-                            <rect key="frame" x="0.0" y="768" width="414" height="50"/>
+                            <rect key="frame" x="0.0" y="128" width="414" height="690"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oIN-xw-L7c">
-                                    <rect key="frame" x="16" y="16" width="382" height="18"/>
+                                    <rect key="frame" x="16" y="16" width="382" height="658"/>
                                     <state key="normal" title="Button"/>
                                 </button>
                             </subviews>

@@ -1,10 +1,249 @@
+import Yosemite
 import UIKit
 
 final class ReprintShippingLabelViewController: UIViewController {
+    @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var reprintButton: UIButton!
+
+    private let shippingLabel: ShippingLabel
+    private let paperSizeOptions: [ShippingLabelPaperSize] = [.legal, .letter, .label]
+    private let rows: [Row]
+    private let onDismiss: () -> Void
+
+    private var selectedPaperSize: ShippingLabelPaperSize?
+
+    init(shippingLabel: ShippingLabel,
+         onDismiss: @escaping () -> Void) {
+        self.shippingLabel = shippingLabel
+        self.rows = [.headerText, .infoText, .paperSize, .spacer, .paperSizeOptions, .printingInstructions]
+        self.onDismiss = onDismiss
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        configureNavigationBar()
+        configureTableView()
+        configureReprintButton()
+        loadShippingLabelSettings()
+    }
+
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+
+        tableView.updateHeaderHeight()
+        tableView.updateFooterHeight()
+    }
+}
+
+// MARK: Action Handling
+private extension ReprintShippingLabelViewController {
+    func reprintShippingLabel() {
+        // TODO-2169: reprint action
+    }
+}
+
+// MARK: Configuration
+private extension ReprintShippingLabelViewController {
+    func configureNavigationBar() {
+        navigationItem.title = Localization.navigationBarTitle
+    }
+
+    func configureTableView() {
+        tableView.dataSource = self
+        tableView.delegate = self
+        registerTableViewCells()
+
+        tableView.tableFooterView = UIView()
+        tableView.backgroundColor = .basicBackground
+    }
+
+    func registerTableViewCells() {
+        for row in Row.allCases {
+            tableView.registerNib(for: row.type)
+        }
+    }
+
+    func configureReprintButton() {
+        reprintButton.applyPrimaryButtonStyle()
+        reprintButton.setTitle(Localization.reprintButtonTitle, for: .normal)
+        reprintButton.on(.touchUpInside) { [weak self] _ in
+            self?.reprintShippingLabel()
+        }
+    }
+
+    func loadShippingLabelSettings() {
+        let action = ShippingLabelAction.loadShippingLabelSettings(shippingLabel: shippingLabel) { [weak self] settings in
+            guard let self = self else { return }
+            guard let settings = settings, self.selectedPaperSize == nil else {
+                return
+            }
+            self.selectedPaperSize = self.paperSizeOptions.contains(settings.paperSize) ? settings.paperSize: self.paperSizeOptions[0]
+            self.tableView.reloadData()
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+}
+
+extension ReprintShippingLabelViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        1
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        rows.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let row = rows[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
+        configure(cell, for: row)
+        return cell
+    }
+}
+
+extension ReprintShippingLabelViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        let row = rows[indexPath.row]
+        switch row {
+        case .paperSize:
+            // TODO-2169: Navigate to paper size selector
+            break
+        case .paperSizeOptions:
+            // TODO-2169: Present paper size options modal
+            break
+        case .printingInstructions:
+            // TODO-2169: Present printing instructions modal
+            break
+        default:
+            return
+        }
+    }
+}
+
+private extension ReprintShippingLabelViewController {
+    func configure(_ cell: UITableViewCell, for row: Row) {
+        switch cell {
+        case let cell as BasicTableViewCell where row == .headerText:
+            configureHeaderText(cell: cell)
+        case let cell as TopLeftImageTableViewCell where row == .infoText:
+            configureInfoText(cell: cell)
+        case let cell as SettingTitleAndValueTableViewCell where row == .paperSize:
+            configurePaperSize(cell: cell)
+        case let cell as SpacerTableViewCell where row == .spacer:
+            configureSpacer(cell: cell)
+        case let cell as TopLeftImageTableViewCell where row == .paperSizeOptions:
+            configurePaperSizeOptions(cell: cell)
+        case let cell as TopLeftImageTableViewCell where row == .printingInstructions:
+            configurePrintingInstructions(cell: cell)
+        default:
+            break
+        }
+    }
+
+    func configureHeaderText(cell: BasicTableViewCell) {
+        cell.textLabel?.text = Localization.headerText
+        cell.textLabel?.numberOfLines = 0
+        cell.textLabel?.applyBodyStyle()
+        cell.hideSeparator()
+    }
+
+    func configureInfoText(cell: TopLeftImageTableViewCell) {
+        cell.imageView?.image = .infoOutlineImage
+        cell.imageView?.tintColor = .systemColor(.secondaryLabel)
+        cell.textLabel?.text = Localization.infoText
+        cell.textLabel?.applyBodyStyle()
+        cell.textLabel?.textColor = .systemColor(.secondaryLabel)
+        cell.hideSeparator()
+    }
+
+    func configurePaperSize(cell: SettingTitleAndValueTableViewCell) {
+        cell.updateUI(title: Localization.paperSizeSelectorTitle, value: selectedPaperSize?.description)
+        cell.accessoryType = .disclosureIndicator
+    }
+
+    func configureSpacer(cell: SpacerTableViewCell) {
+        cell.height = Constants.verticalSpacingBetweenPaperSizeSelectorAndInfoLinks
+    }
+
+    func configurePaperSizeOptions(cell: TopLeftImageTableViewCell) {
+        cell.imageView?.image = .pagesImage
+        cell.textLabel?.text = Localization.paperSizeOptionsButtonTitle
+        configureCommonStylesForInfoLinkCell(cell)
+    }
+
+    func configurePrintingInstructions(cell: TopLeftImageTableViewCell) {
+        cell.imageView?.image = .infoOutlineFootnoteImage
+        cell.textLabel?.text = Localization.printingInstructionsButtonTitle
+        configureCommonStylesForInfoLinkCell(cell)
+    }
+
+    func configureCommonStylesForInfoLinkCell(_ cell: TopLeftImageTableViewCell) {
+        cell.imageView?.tintColor = .systemColor(.secondaryLabel)
+        cell.textLabel?.applyFootnoteStyle()
+        cell.textLabel?.textColor = .systemColor(.secondaryLabel)
+        cell.hideSeparator()
+        cell.selectionStyle = .default
+    }
+}
+
+private extension ReprintShippingLabelViewController {
+    enum Constants {
+        static let cellValueTextColor = UIColor.systemColor(.secondaryLabel)
+        static let verticalSpacingBetweenPaperSizeSelectorAndInfoLinks = CGFloat(8)
+    }
+
+    enum Localization {
+        static let navigationBarTitle = NSLocalizedString("Reprint Shipping Label",
+                                                          comment: "Navigation bar title to reprint a shipping label")
+        static let reprintButtonTitle = NSLocalizedString("Print Shipping Label",
+                                                          comment: "Button title to generate a shipping label document for printing")
+        static let paperSizeSelectorTitle = NSLocalizedString("Paper Size", comment: "Title of the paper size selector row for reprinting a shipping label")
+        static let headerText = NSLocalizedString(
+            "If there was a printing error when you purchased the label, you can print it again.",
+            comment: "Header text when reprinting a shipping label")
+        static let infoText = NSLocalizedString(
+            "If you already used the label in a package, printing and using it again is a violation of our terms of service",
+            comment: "Info text when reprinting a shipping label")
+        static let paperSizeOptionsButtonTitle = NSLocalizedString("See layout and paper sizes options", comment: "Link title to see all paper size options")
+        static let printingInstructionsButtonTitle = NSLocalizedString("Don’t know how to print from your device?",
+                                                                       comment: "Link title to see instructions for printing a shipping label on an iOS device")
+    }
+}
+
+private extension ReprintShippingLabelViewController {
+    enum Row: CaseIterable {
+        case headerText
+        case infoText
+        case paperSize
+        case spacer
+        case paperSizeOptions
+        case printingInstructions
+
+        var type: UITableViewCell.Type {
+            switch self {
+            case .headerText:
+                return BasicTableViewCell.self
+            case .infoText:
+                return TopLeftImageTableViewCell.self
+            case .spacer:
+                return SpacerTableViewCell.self
+            case .paperSize:
+                return SettingTitleAndValueTableViewCell.self
+            case .paperSizeOptions, .printingInstructions:
+                return TopLeftImageTableViewCell.self
+            }
+        }
+
+        var reuseIdentifier: String {
+            type.reuseIdentifier
+        }
     }
 }

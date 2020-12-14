@@ -2,6 +2,8 @@ import Combine
 import Yosemite
 import UIKit
 
+/// Allows the user to select a paper size and reprint a shipping label given the selected paper size.
+/// Informational links are displayed for printing instructions and paper size options.
 final class ReprintShippingLabelViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var reprintButton: UIButton!
@@ -93,6 +95,7 @@ private extension ReprintShippingLabelViewController {
     }
 }
 
+// MARK: UITableViewDataSource
 extension ReprintShippingLabelViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         1
@@ -110,6 +113,7 @@ extension ReprintShippingLabelViewController: UITableViewDataSource {
     }
 }
 
+// MARK: UITableViewDelegate
 extension ReprintShippingLabelViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -131,6 +135,7 @@ extension ReprintShippingLabelViewController: UITableViewDelegate {
     }
 }
 
+// MARK: Cell configuration
 private extension ReprintShippingLabelViewController {
     func configure(_ cell: UITableViewCell, for row: Row) {
         switch cell {

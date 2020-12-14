@@ -2,7 +2,7 @@ import Foundation
 
 /// Represent a Customer Entity.
 ///
-public struct Customer: Decodable {
+public struct Customer: Decodable, Equatable {
 
     public let siteID: Int64
     public let userID: Int64
@@ -96,27 +96,6 @@ public struct Customer: Decodable {
                   isPaying: isPaying,
                   billingAddress: billingAddress,
                   shippingAddress: shippingAddress)
-    }
-}
-
-// MARK: - Equatable Conformance
-//
-extension Customer: Equatable {
-
-    public static func == (lhs: Customer, rhs: Customer) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.userID == rhs.userID &&
-            lhs.dateCreated == rhs.dateCreated &&
-            lhs.dateModified == rhs.dateModified &&
-            lhs.email == rhs.email &&
-            lhs.username == rhs.username &&
-            lhs.firstName == rhs.firstName &&
-            lhs.lastName == rhs.lastName &&
-            lhs.gravatarUrl == rhs.gravatarUrl &&
-            lhs.role == rhs.role &&
-            lhs.isPaying == rhs.isPaying &&
-            lhs.billingAddress == rhs.billingAddress &&
-            lhs.shippingAddress == rhs.shippingAddress
     }
 }
 

@@ -1,3 +1,4 @@
+import Combine
 import Yosemite
 import UIKit
 
@@ -5,14 +6,15 @@ final class ReprintShippingLabelViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var reprintButton: UIButton!
 
-    private let shippingLabel: ShippingLabel
-    private let paperSizeOptions: [ShippingLabelPaperSize] = [.legal, .letter, .label]
+    private let viewModel: ReprintShippingLabelViewModel
     private let rows: [Row]
 
     private var selectedPaperSize: ShippingLabelPaperSize?
 
+    private var cancellables = Set<AnyCancellable>()
+
     init(shippingLabel: ShippingLabel) {
-        self.shippingLabel = shippingLabel
+        self.viewModel = ReprintShippingLabelViewModel(shippingLabel: shippingLabel)
         self.rows = [.headerText, .infoText, .paperSize, .spacer, .paperSizeOptions, .printingInstructions]
         super.init(nibName: nil, bundle: nil)
     }
@@ -21,13 +23,19 @@ final class ReprintShippingLabelViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        cancellables.forEach {
+            $0.cancel()
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         configureNavigationBar()
         configureTableView()
         configureReprintButton()
-        loadShippingLabelSettings()
+        observeSelectedPaperSize()
     }
 
     override func viewWillLayoutSubviews() {
@@ -74,16 +82,14 @@ private extension ReprintShippingLabelViewController {
         }
     }
 
-    func loadShippingLabelSettings() {
-        let action = ShippingLabelAction.loadShippingLabelSettings(shippingLabel: shippingLabel) { [weak self] settings in
+    func observeSelectedPaperSize() {
+        viewModel.loadShippingLabelSettingsForDefaultPaperSize()
+        viewModel.selectedPaperSize.sink { [weak self] paperSize in
             guard let self = self else { return }
-            guard let settings = settings, self.selectedPaperSize == nil else {
-                return
-            }
-            self.selectedPaperSize = self.paperSizeOptions.contains(settings.paperSize) ? settings.paperSize: self.paperSizeOptions[0]
+            self.selectedPaperSize = paperSize
             self.tableView.reloadData()
-        }
-        ServiceLocator.stores.dispatch(action)
+            self.reprintButton.isEnabled = paperSize != nil
+        }.store(in: &cancellables)
     }
 }
 

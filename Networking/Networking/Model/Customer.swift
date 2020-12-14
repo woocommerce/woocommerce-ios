@@ -14,7 +14,7 @@ public struct Customer: Decodable, Equatable {
     public let username: String?
     public let firstName: String?
     public let lastName: String?
-    public let gravatarUrl: String?
+    public let avatarUrl: String?
 
     public let role: Role
     public let isPaying: Bool
@@ -33,7 +33,7 @@ public struct Customer: Decodable, Equatable {
                 username: String?,
                 firstName: String?,
                 lastName: String?,
-                gravatarUrl: String?,
+                avatarUrl: String?,
                 role: Role,
                 isPaying: Bool,
                 billingAddress: Address?,
@@ -48,7 +48,7 @@ public struct Customer: Decodable, Equatable {
         self.username = username
         self.firstName = firstName
         self.lastName = lastName
-        self.gravatarUrl = gravatarUrl
+        self.avatarUrl = avatarUrl
 
         self.role = role
         self.isPaying = isPaying
@@ -75,7 +75,7 @@ public struct Customer: Decodable, Equatable {
         let username = try container.decodeIfPresent(String.self, forKey: .username)
         let firstName = try container.decodeIfPresent(String.self, forKey: .firstName)
         let lastName = try container.decodeIfPresent(String.self, forKey: .lastName)
-        let gravatarUrl = try container.decodeIfPresent(String.self, forKey: .gravatarUrl)
+        let avatarUrl = try container.decodeIfPresent(String.self, forKey: .avatarUrl)
 
         let role = try container.decode(Role.self, forKey: .role)
         let isPaying = try container.decode(Bool.self, forKey: .isPaying)
@@ -91,7 +91,7 @@ public struct Customer: Decodable, Equatable {
                   username: username,
                   firstName: firstName,
                   lastName: lastName,
-                  gravatarUrl: gravatarUrl,
+                  avatarUrl: avatarUrl,
                   role: role,
                   isPaying: isPaying,
                   billingAddress: billingAddress,
@@ -113,7 +113,7 @@ private extension Customer {
         case username
         case firstName = "first_name"
         case lastName = "last_name"
-        case gravatarUrl = "avatar_url"
+        case avatarUrl = "avatar_url"
 
         case role
         case isPaying = "is_paying_customer"

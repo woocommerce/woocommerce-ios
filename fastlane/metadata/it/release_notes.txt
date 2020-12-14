@@ -1,3 +1,3 @@
-Prodotti: Ora è possibile aggiungere prodotti semplici, raggruppati ed esterni e salvare i prodotti come bozze. Presto metteremo a disposizione altre nuove funzionalità da provare!
+Tu hai chiesto e noi abbiamo ascoltato. Ora puoi creare prodotti semplici, raggruppati ed esterni per il tuo negozio direttamente dal tuo iPhone o iPad. Trasforma le tue idee in prodotti, anche quando sei lontano dal tuo computer.
 
-Altre correzioni: La schermata dei dettagli dell'ordine ora mostra gli attributi di varianti per i negozi WooCommerce nella versione 4.7 e superiore. Nota anche che la schermata dei dettagli dei prodotti adesso mostra il numero delle valutazioni dei prodotti. In precedenza, veniva visualizzato il numero delle recensioni, il che era inesatto.
+Non è tutto! Abbiamo risolto alcuni problemi, incluso un bug per cui gli ordini appena inviati non venivano sempre visualizzati in un elenco di ordini. Abbiamo anche apportato miglioramenti. Ad esempio, è ora possibile emettere rimborsi-per i prodotti o la spedizione direttamente dalla schermata dell'ordine.

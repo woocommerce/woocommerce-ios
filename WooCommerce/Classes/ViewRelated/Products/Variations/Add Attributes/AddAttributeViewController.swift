@@ -183,7 +183,8 @@ extension AddAttributeViewController: UITableViewDelegate {
 
         let headerID = TwoColumnSectionHeaderView.reuseIdentifier
         guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
-            fatalError()
+            assertionFailure("Could not find section header view for reuseIdentifier \(headerID)")
+            return nil
         }
 
         headerView.leftText = leftText

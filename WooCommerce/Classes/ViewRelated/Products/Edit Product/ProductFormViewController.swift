@@ -346,7 +346,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 guard product.product.variations.isNotEmpty else {
                     if isEditProductsRelease5Enabled {
-                        let addAttributeViewController = AddAttributeViewController(product: product.product)
+                        let viewModel = AddAttributeViewModel(product: product.product)
+                        let addAttributeViewController = AddAttributeViewController(viewModel: viewModel)
                         navigationController?.pushViewController(addAttributeViewController, animated: true)
                     }
                     return

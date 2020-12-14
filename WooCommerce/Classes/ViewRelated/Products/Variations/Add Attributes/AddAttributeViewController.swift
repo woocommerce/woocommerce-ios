@@ -7,7 +7,6 @@ final class AddAttributeViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
     private let ghostTableView = UITableView()
 
-    private let product: Product
     private let viewModel: AddAttributeViewModel
 
     /// Keyboard management
@@ -18,9 +17,8 @@ final class AddAttributeViewController: UIViewController {
 
     /// Init
     ///
-    init(product: Product) {
-        self.product = product
-        viewModel = AddAttributeViewModel(product: product)
+    init(viewModel: AddAttributeViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
 

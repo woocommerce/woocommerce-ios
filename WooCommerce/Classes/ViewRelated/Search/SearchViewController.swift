@@ -179,7 +179,9 @@ where Cell.SearchModel == Command.CellViewModel {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let model = resultsController.object(at: indexPath)
+        guard let model = resultsController.safeObject(at: indexPath) else {
+            return
+        }
         searchUICommand.didSelectSearchResult(model: model, from: self, reloadData: { [weak self] in
             self?.tableView.reloadData()
         }, updateActionButton: { [weak self] in

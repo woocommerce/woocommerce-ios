@@ -330,6 +330,9 @@ private extension OrderDetailsViewController {
             trackingWasPressed(at: indexPath)
         case .issueRefund:
             issueRefundWasPressed()
+        case .reprintShippingLabel(let shippingLabel):
+            let reprintViewController = ReprintShippingLabelViewController(shippingLabel: shippingLabel)
+            show(reprintViewController, sender: self)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         }

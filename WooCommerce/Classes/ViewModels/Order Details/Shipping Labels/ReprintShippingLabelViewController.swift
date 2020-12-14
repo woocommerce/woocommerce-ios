@@ -8,15 +8,12 @@ final class ReprintShippingLabelViewController: UIViewController {
     private let shippingLabel: ShippingLabel
     private let paperSizeOptions: [ShippingLabelPaperSize] = [.legal, .letter, .label]
     private let rows: [Row]
-    private let onDismiss: () -> Void
 
     private var selectedPaperSize: ShippingLabelPaperSize?
 
-    init(shippingLabel: ShippingLabel,
-         onDismiss: @escaping () -> Void) {
+    init(shippingLabel: ShippingLabel) {
         self.shippingLabel = shippingLabel
         self.rows = [.headerText, .infoText, .paperSize, .spacer, .paperSizeOptions, .printingInstructions]
-        self.onDismiss = onDismiss
         super.init(nibName: nil, bundle: nil)
     }
 

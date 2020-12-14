@@ -2,7 +2,7 @@ import SwiftUI
 
 /// A text view that takes in a string whose substrings within two asterisks are bolded.
 ///
-/// For example, initializing with a string "*Never* will I *stop learning*." will bold the substrings "Never" and "stop learning".
+/// For example, initializing with a string "**Never** will I **stop learning**." will bold the substrings "Never" and "stop learning".
 ///
 struct BoldableTextView: View {
     private let elements: [BoldableElement]

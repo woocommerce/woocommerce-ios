@@ -15,7 +15,7 @@ struct BoldableTextParser {
     /// - Returns: A collection of boldable elements.
     func parseBoldableElements(string: String) -> [BoldableElement] {
         guard let regex = try? NSRegularExpression(pattern: boldTextPattern) else {
-            return []
+            return [.init(content: string, isBold: false)]
         }
         let range = NSRange(string.startIndex..., in: string)
 
@@ -48,7 +48,7 @@ struct BoldableTextParser {
             }
 
             // Adds an element for the matching range which should be bold.
-            let matchContent = String(string[boldedContentRange.lowerBound..<boldedContentRange.upperBound])
+            let matchContent = String(string[boldedContentRange])
             elements.append(.init(content: matchContent, isBold: true))
 
             // Updates the last starting index so that the next range starts after the end of current matching range.

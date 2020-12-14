@@ -2,13 +2,13 @@ import SwiftUI
 import UIKit
 
 /// Displays a grid view of all available paper size options for printing a shipping label.
-final class ShippingLabelPaperSizeOptionsViewController: UIHostingController<ShippingLabelPaperSizeOptionsView> {
+final class ShippingLabelPaperSizeOptionsViewController: UIHostingController<ShippingLabelPaperSizeOptionListView> {
     private let onCloseButtonTapped: () -> Void
 
     /// - Parameter onCloseButtonTapped: Called when the user taps on the close button in the navigation bar.
     init(onCloseButtonTapped: @escaping () -> Void) {
         self.onCloseButtonTapped = onCloseButtonTapped
-        super.init(rootView: ShippingLabelPaperSizeOptionsView(paperSizeOptions: [.legal, .letter, .label]))
+        super.init(rootView: ShippingLabelPaperSizeOptionListView(paperSizeOptions: [.legal, .letter, .label]))
         configureNavigationBar()
     }
 

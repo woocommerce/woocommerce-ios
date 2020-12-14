@@ -2,7 +2,7 @@ import Networking
 import SwiftUI
 
 /// Displays a grid view of all available paper size options for printing a shipping label.
-struct ShippingLabelPaperSizeOptionsView: View {
+struct ShippingLabelPaperSizeOptionListView: View {
     private let paperSizeOptions: [ShippingLabelPaperSize]
     private let numberOfColumnsPerRow = 2
     private let numberOfRows: Int
@@ -35,16 +35,16 @@ struct ShippingLabelPaperSizeOptionsView: View {
 struct ShippingLabelPaperSizeOptionsView_Previews: PreviewProvider {
     private static let paperSizeOptions: [ShippingLabelPaperSize] = [.legal, .letter, .letter]
     static var previews: some View {
-        ShippingLabelPaperSizeOptionsView(paperSizeOptions: paperSizeOptions)
+        ShippingLabelPaperSizeOptionListView(paperSizeOptions: paperSizeOptions)
             .environment(\.colorScheme, .light)
-        ShippingLabelPaperSizeOptionsView(paperSizeOptions: paperSizeOptions)
+        ShippingLabelPaperSizeOptionListView(paperSizeOptions: paperSizeOptions)
             .environment(\.colorScheme, .dark)
-        ShippingLabelPaperSizeOptionsView(paperSizeOptions: paperSizeOptions)
+        ShippingLabelPaperSizeOptionListView(paperSizeOptions: paperSizeOptions)
             .previewLayout(.fixed(width: 1024, height: 768))
-        ShippingLabelPaperSizeOptionsView(paperSizeOptions: [.legal, .letter])
+        ShippingLabelPaperSizeOptionListView(paperSizeOptions: [.legal, .letter])
             .environment(\.colorScheme, .dark)
-        ShippingLabelPaperSizeOptionsView(paperSizeOptions: [.label])
-        ShippingLabelPaperSizeOptionsView(paperSizeOptions: [])
+        ShippingLabelPaperSizeOptionListView(paperSizeOptions: [.label])
+        ShippingLabelPaperSizeOptionListView(paperSizeOptions: [])
     }
 }
 

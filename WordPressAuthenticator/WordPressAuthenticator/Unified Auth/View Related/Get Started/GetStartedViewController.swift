@@ -206,7 +206,11 @@ private extension GetStartedViewController {
     /// Describes how the tableView rows should be rendered.
     ///
     func loadRows() {
-        rows = [.instructions, .email, .tos]
+        rows = [.instructions, .email]
+
+        if let authenticationDelegate = WordPressAuthenticator.shared.delegate, authenticationDelegate.wpcomTermsOfServiceEnabled {
+            rows.append(.tos)
+        }
         
         if let errorText = errorMessage, !errorText.isEmpty {
             rows.append(.errorMessage)
@@ -364,19 +368,7 @@ private extension GetStartedViewController {
                                         }
                                         self.configureViewLoading(false)
 
-                                        let userInfo = (error as NSError).userInfo
-                                        let errorCode = userInfo[WordPressComRestApi.ErrorKeyErrorCode] as? String
-
-                                        if errorCode == "unknown_user" {
-                                            self.showSignupView()
-                                        } else if errorCode == "email_login_not_allowed" {
-                                                // If we get this error, we know we have a WordPress.com user but their
-                                                // email address is flagged as suspicious.  They need to login via their
-                                                // username instead.
-                                                self.showSelfHostedWithError(error)
-                                        } else {
-                                            self.displayError(error as NSError, sourceTag: self.sourceTag)
-                                        }
+                                        self.handleLoginError(error)
         })
     }
     
@@ -392,6 +384,44 @@ private extension GetStartedViewController {
         vc.trackAsPasswordChallenge = false
         
         navigationController?.pushViewController(vc, animated: true)
+    }
+
+    /// Handle errors when attempting to log in with an email address
+    ///
+    func handleLoginError(_ error: Error) {
+        let userInfo = (error as NSError).userInfo
+        let errorCode = userInfo[WordPressComRestApi.ErrorKeyErrorCode] as? String
+
+        if errorCode == "unknown_user" {
+            self.showSignupViewIfNecessary(error)
+        } else if errorCode == "email_login_not_allowed" {
+                // If we get this error, we know we have a WordPress.com user but their
+                // email address is flagged as suspicious.  They need to login via their
+                // username instead.
+                self.showSelfHostedWithError(error)
+        } else {
+            self.displayError(error as NSError, sourceTag: self.sourceTag)
+        }
+    }
+
+    /// Offer host apps the opportunity to decide if they want to allow signups
+    ///
+    func showSignupViewIfNecessary(_ error: Error) {
+        guard let authenticationDelegate = WordPressAuthenticator.shared.delegate, authenticationDelegate.shouldHandleError(error) else {
+            showSignupView()
+            return
+        }
+
+        /// Hand over control to the host app.
+        authenticationDelegate.handleError(error) { customUI in
+            // Setting the rightBarButtonItems of the custom UI before pushing the view controller
+            // and resetting the navigationController's navigationItem after the push seems to be the
+            // only combination that gets the Help button to show up.
+            customUI.navigationItem.rightBarButtonItems = self.navigationItem.rightBarButtonItems
+            self.navigationController?.navigationItem.rightBarButtonItems = self.navigationItem.rightBarButtonItems
+
+            self.navigationController?.pushViewController(customUI, animated: true)
+        }
     }
     
     /// Show the Sign Up view.

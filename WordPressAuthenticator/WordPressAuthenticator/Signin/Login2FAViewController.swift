@@ -13,7 +13,8 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
     @IBOutlet weak var sendCodeButton: UIButton!
     @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
     @IBOutlet var verticalCenterConstraint: NSLayoutConstraint?
-    @objc var pasteboardBeforeBackground: String? = nil
+
+    private var pasteboardChangeCountBeforeBackground: Int = 0
     override var sourceTag: WordPressSupportSourceTag {
         get {
             return .login2FA
@@ -283,19 +284,37 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
 
 
     @objc func applicationBecameInactive() {
-        pasteboardBeforeBackground = UIPasteboard.general.string
+        pasteboardChangeCountBeforeBackground = UIPasteboard.general.changeCount
     }
 
 
     @objc func applicationBecameActive() {
         let emptyField = verificationCodeField.text?.isEmpty ?? true
         guard emptyField,
-            let pasteString = UIPasteboard.general.string,
-            pasteString != pasteboardBeforeBackground else {
+            pasteboardChangeCountBeforeBackground != UIPasteboard.general.changeCount else {
                 return
         }
 
-        switch isValidCode(code: pasteString) {
+        if #available(iOS 14.0, *) {
+            UIPasteboard.general.detect(patterns: [.number]) { [weak self] result in
+                switch result {
+                case .success(let detections):
+                    if let pasteString = detections.first?.value as? String {
+                        self?.handle(code: pasteString)
+                    }
+                case .failure:
+                    break
+                }
+            }
+        } else {
+            if let pasteString = UIPasteboard.general.string {
+                handle(code: pasteString)
+            }
+        }
+    }
+
+    private func handle(code: String) {
+        switch isValidCode(code: code) {
         case .valid(let cleanedCode):
             displayError(message: "")
             verificationCodeField.text = cleanedCode

@@ -12,6 +12,10 @@ public protocol WordPressAuthenticatorDelegate: class {
     ///
     var supportActionEnabled: Bool { get }
 
+    /// Indicates if the WordPress.com's Terms of Service should be enabled, or not.
+    ///
+    var wpcomTermsOfServiceEnabled: Bool { get }
+
     /// Indicates if the Support notification indicator should be displayed.
     ///
     var showSupportNotificationIndicator: Bool { get }
@@ -67,6 +71,14 @@ public protocol WordPressAuthenticatorDelegate: class {
     /// - Parameter isJetpackLogin: Indicates if we've just logged into a WordPress.com account for Jetpack purposes!.
     ///
     func shouldPresentLoginEpilogue(isJetpackLogin: Bool) -> Bool
+
+    /// Indicates the Host app wants to handle and display a given error.
+    ///
+    func shouldHandleError(_ error: Error) -> Bool
+
+    /// Signals the Host app that there is an error that needs to be handled.
+    ///
+    func handleError(_ error: Error, onCompletion: @escaping (UIViewController) -> Void)
 
     /// Indicates if the Signup Epilogue should be displayed.
     ///

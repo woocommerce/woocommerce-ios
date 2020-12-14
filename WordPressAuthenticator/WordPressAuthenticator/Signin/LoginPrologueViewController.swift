@@ -266,9 +266,21 @@ class LoginPrologueViewController: LoginViewController {
     
     private func setButtonViewControllerBackground(_ buttonViewController: NUXButtonViewController) {
         // Fallback to setting the button background color to clear so the blur effect blurs the Prologue background color.
-        let backgroundColor = WordPressAuthenticator.shared.unifiedStyle?.prologueButtonsBackgroundColor ?? .clear
-        buttonViewController.backgroundColor = backgroundColor
-        buttonBlurEffectView.effect = UIBlurEffect(style: blurEffect)
+        let buttonsBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.prologueButtonsBackgroundColor ?? .clear
+        buttonViewController.backgroundColor = buttonsBackgroundColor
+
+        /// If host apps provide a background color for the prologue buttons:
+        /// 1. Hide the blur effect
+        /// 2. Set the background color of the view controller to prologueViewBackgroundColor
+        let prologueViewBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.prologueViewBackgroundColor ?? .clear
+
+        guard prologueViewBackgroundColor == buttonsBackgroundColor else {
+            buttonBlurEffectView.effect = UIBlurEffect(style: blurEffect)
+            return
+        }
+
+        buttonBlurEffectView.isHidden = true
+        view.backgroundColor = prologueViewBackgroundColor
     }
 
     // MARK: - Actions
@@ -391,7 +403,7 @@ class LoginPrologueViewController: LoginViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
 
-    /// Unified "Enter your site address" prologue button action.
+    /// Unified "Enter your existing site address" prologue button action.
     ///
     private func siteAddressTapped() {
         tracker.track(click: .loginWithSiteAddress)

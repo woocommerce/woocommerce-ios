@@ -4,10 +4,10 @@ import SwiftUI
 struct ShippingLabelPrintingStepsView: View {
     var body: some View {
         VStack {
-            ShippingLabelPrintingStepView(viewModel: .init(stepIndex: 1, text: Localization.step1, isLastStep: false))
-            ShippingLabelPrintingStepView(viewModel: .init(stepIndex: 2, text: Localization.step2, isLastStep: false))
-            ShippingLabelPrintingStepView(viewModel: .init(stepIndex: 3, text: Localization.step3, isLastStep: false))
-            ShippingLabelPrintingStepView(viewModel: .init(stepIndex: 4, text: Localization.step4, isLastStep: true))
+            ShippingLabelPrintingStepView(stepIndex: 1, text: Localization.step1, isLastStep: false)
+            ShippingLabelPrintingStepView(stepIndex: 2, text: Localization.step2, isLastStep: false)
+            ShippingLabelPrintingStepView(stepIndex: 3, text: Localization.step3, isLastStep: false)
+            ShippingLabelPrintingStepView(stepIndex: 4, text: Localization.step4, isLastStep: true)
         }
     }
 }

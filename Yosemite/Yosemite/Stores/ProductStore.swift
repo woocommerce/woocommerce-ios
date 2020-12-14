@@ -225,10 +225,13 @@ private extension ProductStore {
             }
 
             switch result {
-            case .failure(let error):
-                if case NetworkError.notFound = error {
+            case .failure(let originalError):
+                let error = ProductLoadError(underlyingError: originalError)
+
+                if case ProductLoadError.notFound = error {
                     self.deleteStoredProduct(siteID: siteID, productID: productID)
                 }
+
                 onCompletion(.failure(error))
             case .success(let product):
                 self.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
@@ -661,5 +664,27 @@ public enum ProductUpdateError: Error, Equatable {
 }
 
 public enum ProductLoadError: Error, Equatable {
+    case notFound
     case notFoundInStorage
+    case unknown(error: AnyError)
+
+    init(underlyingError error: Error) {
+        guard case let DotcomError.unknown(code, _) = error else {
+            self = .unknown(error: error.toAnyError)
+            return
+        }
+
+        self = ErrorCode(rawValue: code)?.error ?? .unknown(error: error.toAnyError)
+    }
+
+    enum ErrorCode: String {
+        case invalidID = "woocommerce_rest_product_invalid_id"
+
+        var error: ProductLoadError {
+            switch self {
+            case .invalidID:
+                return .notFound
+            }
+        }
+    }
 }

@@ -535,6 +535,12 @@ extension UIImage {
         return UIImage(imageLiteralResourceName: "megaphone").imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Error image
+    ///
+    static var errorImage: UIImage {
+        return UIImage(imageLiteralResourceName: "woo-error").imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Creates a bitmap image of the Woo "bubble" logo based on a vector image in our asset catalog.
     ///
     /// - Parameters:

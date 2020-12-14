@@ -86,7 +86,7 @@ private extension ReprintShippingLabelViewController {
 
     func observeSelectedPaperSize() {
         viewModel.loadShippingLabelSettingsForDefaultPaperSize()
-        viewModel.selectedPaperSize.sink { [weak self] paperSize in
+        viewModel.$selectedPaperSize.sink { [weak self] paperSize in
             guard let self = self else { return }
             self.selectedPaperSize = paperSize
             self.tableView.reloadData()

@@ -10,7 +10,7 @@ struct ShippingLabelPrintingInstructionsView: View {
                 Image("woo-shipping-label-printing-instructions")
                 Spacer()
                     .frame(height: 30)
-                ShippingLabelPrintingStepsView()
+                ShippingLabelPrintingStepListView()
             }
         }.background(Color(UIColor.basicBackground))
     }

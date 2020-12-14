@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Displays a list of steps on how to print a shipping label on an iOS device.
-struct ShippingLabelPrintingStepsView: View {
+struct ShippingLabelPrintingStepListView: View {
     var body: some View {
         VStack {
             ShippingLabelPrintingStepView(stepIndex: 1, text: Localization.step1, isLastStep: false)
@@ -12,7 +12,7 @@ struct ShippingLabelPrintingStepsView: View {
     }
 }
 
-private extension ShippingLabelPrintingStepsView {
+private extension ShippingLabelPrintingStepListView {
     enum Localization {
         static let step1 = NSLocalizedString(
             "Verify your printer and device are connected to the **same Wi-Fi network**.\n\n"
@@ -38,7 +38,7 @@ private extension ShippingLabelPrintingStepsView {
 
 struct ShippingLabelPrintingStepsView_Previews: PreviewProvider {
     static var previews: some View {
-        ShippingLabelPrintingStepsView()
+        ShippingLabelPrintingStepListView()
     }
 }
 

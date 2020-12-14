@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-12-02 12:48:49+0000 */
+/* Translation-Revision-Date: 2020-12-10 17:54:54+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -67,10 +67,10 @@
 "%ld Products Selected" = "%ld produker valda";
 
 /* Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product` */
-"%ld cross-sell product" = "%ld cross-sell product";
+"%ld cross-sell product" = "%ld korsförsäljningsprodukt";
 
 /* Format of cross-sell linked products row in the plural form. Reads, `5 cross-sell products` */
-"%ld cross-sell products" = "%ld cross-sell products";
+"%ld cross-sell products" = "%ld korsförsäljningsprodukter";
 
 /* Format of the number of Downloadable Files row in the singular form. Reads, `1 file` */
 "%ld file" = "%ld fil";
@@ -90,10 +90,10 @@
 "%ld products" = "%ld produkter";
 
 /* Format of upsell linked products row in the singular form. Reads, `1 upsell product` */
-"%ld upsell product" = "%ld upsell product";
+"%ld upsell product" = "%ld merförsäljningsprodukt";
 
 /* Format of upsell linked products row in the plural form. Reads, `5 upsell products` */
-"%ld upsell products" = "%ld upsell products";
+"%ld upsell products" = "%ld merförsäljningsprodukter";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld variant";
@@ -129,7 +129,7 @@
 "A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "Ingen återbetalning kommer att utfärdas till kunden. Du kan behöva utfärda återbetalningen manuellt via %1$@.";
 
 /* No comment provided by engineer. */
-"A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "A refund will not be issued to the customer. You will need to manually issue the refund through Stripe.";
+"A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "Ingen återbetalning kommer att utfärdas till kunden. Du kommer att behöva utfärda återbetalningen manuellt via Stripe.";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "En unik artikel att sälja";
@@ -307,7 +307,7 @@
 "Are you sure you want to discard your changes?" = "Är du säker på att du vill åsidosätta dina ändringar?";
 
 /* The text on the confirmation alert before issuing a refund. */
-"Are you sure you want to issue a refund? This can't be undone." = "Are you sure you want to issue a refund? This can't be undone.";
+"Are you sure you want to issue a refund? This can't be undone." = "Är du säker på att du vill utfärda en återbetalning? Det här kan inte ångras.";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Är du säker på att du vill logga ut från kontot %@?";
@@ -554,10 +554,10 @@
 "Creating products" = "Skapar produkter";
 
 /* Cell title for Cross-sells products in Linked Products Settings screen */
-"Cross-sells" = "Cross-sells";
+"Cross-sells" = "Korsförsäljning";
 
 /* Navigation bar title for editing linked products for cross-sell products */
-"Cross-sells Products" = "Cross-sells Products";
+"Cross-sells Products" = "Korsförsäljningsprodukter";
 
 /* Cell title: the current date. */
 "Current" = "Nuvarande";
@@ -1055,7 +1055,7 @@
 "Incorrect username or password. Please try entering your login details again." = "Felaktigt användarnamn eller lösenord. Vänligen ange dina inloggningsuppgifter igen.";
 
 /* Subtitle of the product form bottom sheet action for linked products. */
-"Increase sales with upsells and cross-sells" = "Increase sales with upsells and cross-sells";
+"Increase sales with upsells and cross-sells" = "Öka försäljningen med merförsäljning och korsförsäljning";
 
 /* Label action for inserting a link on the editor */
 "Insert" = "Infoga";
@@ -1095,7 +1095,7 @@
 "Issue Refund" = "Utfärda återbetalning";
 
 /* Text of the screen that is displayed while the refund is being created. */
-"Issuing Refund..." = "Issuing Refund...";
+"Issuing Refund..." = "Utfärdar återbetalning...";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Detta användarnamn och lösenord verkar inte fungera på denna webbplats.";
@@ -1241,7 +1241,7 @@
 "Manual Refund via %1$@" = "Manual Refund via %1$@";
 
 /* No comment provided by engineer. */
-"Manual Refund via Stripe" = "Manual Refund via Stripe";
+"Manual Refund via Stripe" = "Manuell återbetalning via Stripe";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Ompekad domän";
@@ -1517,7 +1517,7 @@
 "PRODUCT" = "PRODUKT";
 
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
-"Package %d" = "Package %d";
+"Package %d" = "Förpackning %d";
 
 /* The title for the customer payment cell */
 "Paid By Customer" = "Betald av kund";
@@ -1708,10 +1708,10 @@
 "Products Refund" = "Produktåterbetalning";
 
 /* Cell description for Cross-sells products in Linked Products Settings screen */
-"Products promoted in the cart when current product is selected" = "Products promoted in the cart when current product is selected";
+"Products promoted in the cart when current product is selected" = "Produkter som marknadsförs i kundvagnen när den nuvarande produkten är vald";
 
 /* Cell description for Upsells products in Linked Products Settings screen */
-"Products promoted instead of the currently viewed product (ie more profitable products)" = "Products promoted instead of the currently viewed product (ie more profitable products)";
+"Products promoted instead of the currently viewed product (ie more profitable products)" = "Produkter som marknadsförs istället för den för närvarande visade produkten (dvs. mer lönsamma produkter)";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Anvisningar med alternativet att ringa eller skicka meddelande till faktureringskunden.";
@@ -1860,10 +1860,10 @@
 "Report Crashes" = "Rapportera krascher";
 
 /* Text on the button that reprints a shipping label */
-"Reprint Shipping Label" = "Reprint Shipping Label";
+"Reprint Shipping Label" = "Skriv ut fraktetikett";
 
 /* Request a refund on a shipping label from the shipping label more menu action sheet */
-"Request a Refund" = "Request a Refund";
+"Request a Refund" = "Begär en återbetalning";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Återställ aktivitetslogg";
@@ -2109,7 +2109,7 @@
 "Show the billing details for this order." = "Visa faktureringsinformationen för den här ordern.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
-"Show the shipment details for this shipping label." = "Show the shipment details for this shipping label.";
+"Show the shipment details for this shipping label." = "Visa försändelseinformationen för den här fraktetiketten.";
 
 /* Accessibility value if login page's password field is displaying the password. */
 "Shown" = "Visas";
@@ -2162,7 +2162,7 @@
 "Sorry, but your username contains an invalid phrase%@." = "Tyvärr innehåller ditt användarnamn en ogiltig fras %@.";
 
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7 */
-"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site.";
+"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "Bildborttagning på produktvarianter stöds i WooCommerce 4.7 eller senare. Uppdatera din webbplats.";
 
 /* No comment provided by engineer. */
 "Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "Adressen till webbplatsen kan endast innehålla gemener (a-z) och siffror.";
@@ -2473,7 +2473,7 @@
 "There was a problem removing the block for specified site." = "Blockeringar för angiven webbplats kunde inte tas bort.";
 
 /* Text of the notice that is displayed while the refund creation fails. */
-"There was an error issuing the refund" = "There was an error issuing the refund";
+"There was an error issuing the refund" = "Det gick inte att utfärda återbetalningen";
 
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
@@ -2799,7 +2799,7 @@
 
 /* Accessibility label for the 'View Shipment Details' button
    Button on bottom of shipping label package card to show shipping details */
-"View Shipment Details" = "View Shipment Details";
+"View Shipment Details" = "Visa försändelseinformation";
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "Visa relaterad produkt";
@@ -3016,5 +3016,5 @@
 "“%@”" = "”%@”";
 
 /* Text of the notice that is displayed after the refund is created. */
-"🎉 Products successfuly refunded" = "";
+"🎉 Products successfuly refunded" = "🎉 produkter har återbetalats";
 

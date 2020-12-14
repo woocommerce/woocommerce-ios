@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-11-26 16:54:04+0000 */
+/* Translation-Revision-Date: 2020-12-10 12:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -67,10 +67,10 @@
 "%ld Products Selected" = "%ld Prodotti selezionati";
 
 /* Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product` */
-"%ld cross-sell product" = "%ld cross-sell product";
+"%ld cross-sell product" = "%ld prodotto di cross-sell";
 
 /* Format of cross-sell linked products row in the plural form. Reads, `5 cross-sell products` */
-"%ld cross-sell products" = "%ld cross-sell products";
+"%ld cross-sell products" = "%ld prodotti di cross-sell";
 
 /* Format of the number of Downloadable Files row in the singular form. Reads, `1 file` */
 "%ld file" = "%ld file";
@@ -90,10 +90,10 @@
 "%ld products" = "%ld prodotti";
 
 /* Format of upsell linked products row in the singular form. Reads, `1 upsell product` */
-"%ld upsell product" = "%ld upsell product";
+"%ld upsell product" = "%ld prodotto di upsell";
 
 /* Format of upsell linked products row in the plural form. Reads, `5 upsell products` */
-"%ld upsell products" = "%ld upsell products";
+"%ld upsell products" = "%ld prodotti di upsell";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld variante";
@@ -129,7 +129,7 @@
 "A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "Non verrà emesso alcun rimborso al cliente. Dovrai emettere manualmente il rimborso tramite %1$@.";
 
 /* No comment provided by engineer. */
-"A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "A refund will not be issued to the customer. You will need to manually issue the refund through Stripe.";
+"A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "Non verrà emesso alcun rimborso al cliente. Dovrai emettere manualmente il rimborso tramite Stripe.";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "Un articolo unico da vendere";
@@ -307,7 +307,7 @@
 "Are you sure you want to discard your changes?" = "Desideri eliminare le modifiche?";
 
 /* The text on the confirmation alert before issuing a refund. */
-"Are you sure you want to issue a refund? This can't be undone." = "Are you sure you want to issue a refund? This can't be undone.";
+"Are you sure you want to issue a refund? This can't be undone." = "Desideri emettere un rimborso? Questa operazione non può essere annullata.";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Vuoi davvero disconnetterti dal tuo account %@?";
@@ -554,10 +554,10 @@
 "Creating products" = "Creazione di prodotti";
 
 /* Cell title for Cross-sells products in Linked Products Settings screen */
-"Cross-sells" = "Cross-sells";
+"Cross-sells" = "Cross-sell";
 
 /* Navigation bar title for editing linked products for cross-sell products */
-"Cross-sells Products" = "Cross-sells Products";
+"Cross-sells Products" = "Cross-sell di prodotti";
 
 /* Cell title: the current date. */
 "Current" = "Attuale";
@@ -740,7 +740,7 @@
 "Easily identify your products with unique codes" = "Identifica facilmente i tuoi prodotti con codici univoci";
 
 /* Edit Products button inside the Linked Products screen. */
-"Edit Products" = "Edit Products";
+"Edit Products" = "Modifica prodotti";
 
 /* Email address text field placeholder */
 "Email" = "E-mail";
@@ -1055,7 +1055,7 @@
 "Incorrect username or password. Please try entering your login details again." = "Nome utente o password non corretti. Inserisci di nuovo le informazioni di accesso.";
 
 /* Subtitle of the product form bottom sheet action for linked products. */
-"Increase sales with upsells and cross-sells" = "Increase sales with upsells and cross-sells";
+"Increase sales with upsells and cross-sells" = "Incrementa le vendite con upsell e cross-sell";
 
 /* Label action for inserting a link on the editor */
 "Insert" = "Inserisci";
@@ -1095,7 +1095,7 @@
 "Issue Refund" = "Emetti rimborso";
 
 /* Text of the screen that is displayed while the refund is being created. */
-"Issuing Refund..." = "Issuing Refund...";
+"Issuing Refund..." = "Emissione del rimborso...";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Sembra che questo nome utente\/questa password non sia associato\/a a questo sito.";
@@ -1157,11 +1157,11 @@
 "Link a product to an external website" = "Collega il prodotto a un sito web esterno";
 
 /* Linked Products Settings navigation title */
-"Linked Products" = "Linked Products";
+"Linked Products" = "Prodotti collegati";
 
 /* Title of the Linked Products row on Product main screen
    Title of the product form bottom sheet action for editing linked products. */
-"Linked products" = "Linked products";
+"Linked products" = "Prodotti collegati";
 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "Elenco di immagini del prodotto";
@@ -1241,7 +1241,7 @@
 "Manual Refund via %1$@" = "Manual Refund via %1$@";
 
 /* No comment provided by engineer. */
-"Manual Refund via Stripe" = "Manual Refund via Stripe";
+"Manual Refund via Stripe" = "Rimborso manuale tramite Stripe";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Dominio mappato";
@@ -1517,7 +1517,7 @@
 "PRODUCT" = "PRODOTTO";
 
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
-"Package %d" = "Package %d";
+"Package %d" = "Pacco %d";
 
 /* The title for the customer payment cell */
 "Paid By Customer" = "Pagato dal cliente";
@@ -1708,10 +1708,10 @@
 "Products Refund" = "Rimborso dei prodotti";
 
 /* Cell description for Cross-sells products in Linked Products Settings screen */
-"Products promoted in the cart when current product is selected" = "Products promoted in the cart when current product is selected";
+"Products promoted in the cart when current product is selected" = "Prodotti promossi nel carrello quando viene selezionato il prodotto corrente";
 
 /* Cell description for Upsells products in Linked Products Settings screen */
-"Products promoted instead of the currently viewed product (ie more profitable products)" = "Products promoted instead of the currently viewed product (ie more profitable products)";
+"Products promoted instead of the currently viewed product (ie more profitable products)" = "Prodotti promossi al posto del prodotto attualmente visualizzato (ossia i prodotti più redditizi)";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Richiede l'opzione per chiamare o inviare messaggi al cliente della fatturazione.";
@@ -1860,10 +1860,10 @@
 "Report Crashes" = "Segnala arresti anomali";
 
 /* Text on the button that reprints a shipping label */
-"Reprint Shipping Label" = "Reprint Shipping Label";
+"Reprint Shipping Label" = "Ristampa etichetta di spedizione";
 
 /* Request a refund on a shipping label from the shipping label more menu action sheet */
-"Request a Refund" = "Request a Refund";
+"Request a Refund" = "Richiedi un rimborso";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Azzera log attività";
@@ -2109,7 +2109,7 @@
 "Show the billing details for this order." = "Mostra i dettagli di fatturazione per questo ordine.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
-"Show the shipment details for this shipping label." = "Show the shipment details for this shipping label.";
+"Show the shipment details for this shipping label." = "Mostra i dettagli di spedizione per questa etichetta.";
 
 /* Accessibility value if login page's password field is displaying the password. */
 "Shown" = "Mostrata";
@@ -2162,7 +2162,7 @@
 "Sorry, but your username contains an invalid phrase%@." = "Il tuo nome utente contiene una parola non valida%@.";
 
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7 */
-"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site.";
+"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "Siamo spiacenti, la rimozione delle immagini sulle variazioni dei prodotti è supportata in WooCommerce 4.7 o superiore. Aggiorna il sito.";
 
 /* No comment provided by engineer. */
 "Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "Spiacenti, l'indirizzo del sito può solo contenere lettere minuscole (da a a z) e numeri.";
@@ -2473,7 +2473,7 @@
 "There was a problem removing the block for specified site." = "Si è verificato un problema rimuovendo il blocco per il sito indicato.";
 
 /* Text of the notice that is displayed while the refund creation fails. */
-"There was an error issuing the refund" = "There was an error issuing the refund";
+"There was an error issuing the refund" = "Si è verificato un errore durante il rimborso";
 
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
@@ -2753,10 +2753,10 @@
 "Updated on %@" = "Aggiornamento effettuato il giorno %@";
 
 /* Cell title for Upsells products in Linked Products Settings screen */
-"Upsells" = "Upsells";
+"Upsells" = "Upsell";
 
 /* Navigation bar title for editing linked products for upsell products */
-"Upsells Products" = "Upsells Products";
+"Upsells Products" = "Upsell di prodotti";
 
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
@@ -2799,7 +2799,7 @@
 
 /* Accessibility label for the 'View Shipment Details' button
    Button on bottom of shipping label package card to show shipping details */
-"View Shipment Details" = "View Shipment Details";
+"View Shipment Details" = "Visualizza dettagli di spedizione";
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "Visualizza il prodotto affiliato";
@@ -3016,5 +3016,5 @@
 "“%@”" = "\"%@\"";
 
 /* Text of the notice that is displayed after the refund is created. */
-"🎉 Products successfuly refunded" = "";
+"🎉 Products successfuly refunded" = "🎉 prodotti rimborsati";
 

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-11-26 16:54:04+0000 */
+/* Translation-Revision-Date: 2020-12-10 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -67,10 +67,10 @@
 "%ld Products Selected" = "%ld Producten geselecteerd";
 
 /* Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product` */
-"%ld cross-sell product" = "%ld cross-sell product";
+"%ld cross-sell product" = "%ld cross-sellproduct";
 
 /* Format of cross-sell linked products row in the plural form. Reads, `5 cross-sell products` */
-"%ld cross-sell products" = "%ld cross-sell products";
+"%ld cross-sell products" = "%ld cross-sellproducten";
 
 /* Format of the number of Downloadable Files row in the singular form. Reads, `1 file` */
 "%ld file" = "%ld bestand";
@@ -90,10 +90,10 @@
 "%ld products" = "%ld producten";
 
 /* Format of upsell linked products row in the singular form. Reads, `1 upsell product` */
-"%ld upsell product" = "%ld upsell product";
+"%ld upsell product" = "%ld upsell-product";
 
 /* Format of upsell linked products row in the plural form. Reads, `5 upsell products` */
-"%ld upsell products" = "%ld upsell products";
+"%ld upsell products" = "%ld upsell-producten";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld varianten";
@@ -129,7 +129,7 @@
 "A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "De klant ontvangt geen restitutie. Je moet handmatig terugbetalen via %1$@.";
 
 /* No comment provided by engineer. */
-"A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "A refund will not be issued to the customer. You will need to manually issue the refund through Stripe.";
+"A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "De klant ontvangt geen terugbetaling. Je moet handmatig terugbetalen via Stripe.";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "Een uniek artikel om te verkopen";
@@ -307,7 +307,7 @@
 "Are you sure you want to discard your changes?" = "Weet je zeker dat je je wijzigingen wilt verwerpen?";
 
 /* The text on the confirmation alert before issuing a refund. */
-"Are you sure you want to issue a refund? This can't be undone." = "Are you sure you want to issue a refund? This can't be undone.";
+"Are you sure you want to issue a refund? This can't be undone." = "Weet je zeker dat je terugbetaling wil aanvragen? Dit kan niet ongedaan worden gemaakt.";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Weet je zeker dat je wilt uitloggen bij het account %@?";
@@ -557,7 +557,7 @@
 "Cross-sells" = "Cross-sells";
 
 /* Navigation bar title for editing linked products for cross-sell products */
-"Cross-sells Products" = "Cross-sells Products";
+"Cross-sells Products" = "Cross-sellsproducten";
 
 /* Cell title: the current date. */
 "Current" = "Huidig";
@@ -740,7 +740,7 @@
 "Easily identify your products with unique codes" = "Identificeer je producten eenvoudig met unieke codes";
 
 /* Edit Products button inside the Linked Products screen. */
-"Edit Products" = "Edit Products";
+"Edit Products" = "Producten bewerken";
 
 /* Email address text field placeholder */
 "Email" = "E-mail";
@@ -1055,7 +1055,7 @@
 "Incorrect username or password. Please try entering your login details again." = "Gebruikersnaam of wachtwoord onjuist. Probeer nogmaals je inloggegevens in te voeren.";
 
 /* Subtitle of the product form bottom sheet action for linked products. */
-"Increase sales with upsells and cross-sells" = "Increase sales with upsells and cross-sells";
+"Increase sales with upsells and cross-sells" = "Meer verkopen met upselling en cross-selling";
 
 /* Label action for inserting a link on the editor */
 "Insert" = "Invoegen";
@@ -1095,7 +1095,7 @@
 "Issue Refund" = "Restitueren";
 
 /* Text of the screen that is displayed while the refund is being created. */
-"Issuing Refund..." = "Issuing Refund...";
+"Issuing Refund..." = "Terugbetalen";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Het lijkt erop dat deze gebruikersnaam\/dit wachtwoord niet aan deze site is gekoppeld.";
@@ -1157,11 +1157,11 @@
 "Link a product to an external website" = "Koppel een product aan een externe website";
 
 /* Linked Products Settings navigation title */
-"Linked Products" = "Linked Products";
+"Linked Products" = "Gekoppelde producten";
 
 /* Title of the Linked Products row on Product main screen
    Title of the product form bottom sheet action for editing linked products. */
-"Linked products" = "Linked products";
+"Linked products" = "Gekoppelde producten";
 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "Lijst met afbeeldingen van het product";
@@ -1241,7 +1241,7 @@
 "Manual Refund via %1$@" = "Manual Refund via %1$@";
 
 /* No comment provided by engineer. */
-"Manual Refund via Stripe" = "Manual Refund via Stripe";
+"Manual Refund via Stripe" = "Handmatige terugbetaling via Stripe";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Toegewezen domein";
@@ -1517,7 +1517,7 @@
 "PRODUCT" = "PRODUCT";
 
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
-"Package %d" = "Package %d";
+"Package %d" = "Pakket %d";
 
 /* The title for the customer payment cell */
 "Paid By Customer" = "Betaald door klant";
@@ -1708,10 +1708,10 @@
 "Products Refund" = "Productvergoeding";
 
 /* Cell description for Cross-sells products in Linked Products Settings screen */
-"Products promoted in the cart when current product is selected" = "Products promoted in the cart when current product is selected";
+"Products promoted in the cart when current product is selected" = "Gepromote producten in de winkelwagen als het huidige product is geselecteerd";
 
 /* Cell description for Upsells products in Linked Products Settings screen */
-"Products promoted instead of the currently viewed product (ie more profitable products)" = "Products promoted instead of the currently viewed product (ie more profitable products)";
+"Products promoted instead of the currently viewed product (ie more profitable products)" = "Gepromote producten in plaats van de momenteel weergegeven producten (ofwel winstgevendere producten)";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Dialoogvenster met de optie om de gefactureerde klant te bellen of een bericht te sturen.";
@@ -1860,10 +1860,10 @@
 "Report Crashes" = "Crashes melden";
 
 /* Text on the button that reprints a shipping label */
-"Reprint Shipping Label" = "Reprint Shipping Label";
+"Reprint Shipping Label" = "Verzendlabel opnieuw afdrukken";
 
 /* Request a refund on a shipping label from the shipping label more menu action sheet */
-"Request a Refund" = "Request a Refund";
+"Request a Refund" = "Een terugbetaling aanvragen";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Activiteitenlog herstellen";
@@ -2109,7 +2109,7 @@
 "Show the billing details for this order." = "Toon factuurdetails van deze bestelling.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
-"Show the shipment details for this shipping label." = "Show the shipment details for this shipping label.";
+"Show the shipment details for this shipping label." = "Toon verzendingsgegevens van dit verzendlabel.";
 
 /* Accessibility value if login page's password field is displaying the password. */
 "Shown" = "Weergegeven";
@@ -2162,7 +2162,7 @@
 "Sorry, but your username contains an invalid phrase%@." = "Sorry, je gebruikersnaam bevat een onjuiste zin%@.";
 
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7 */
-"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site.";
+"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "Verwijderen van afbeeldingen bij productvariaties wordt helaas alleen ondersteund in WooCommerce 4.7 of nieuwer. Werk je website bij.";
 
 /* No comment provided by engineer. */
 "Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "Sorry, site adressen kunnen alleen kleine letters (a-z) en nummer bevatten.";
@@ -2473,7 +2473,7 @@
 "There was a problem removing the block for specified site." = "Er is een probleem opgetreden bij het opheffen van de blokkering voor opgegeven site.";
 
 /* Text of the notice that is displayed while the refund creation fails. */
-"There was an error issuing the refund" = "There was an error issuing the refund";
+"There was an error issuing the refund" = "Er is een fout opgetreden tijdens de terugbetaling";
 
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
@@ -2756,7 +2756,7 @@
 "Upsells" = "Upsells";
 
 /* Navigation bar title for editing linked products for upsell products */
-"Upsells Products" = "Upsells Products";
+"Upsells Products" = "Upsells-producten";
 
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
@@ -2799,7 +2799,7 @@
 
 /* Accessibility label for the 'View Shipment Details' button
    Button on bottom of shipping label package card to show shipping details */
-"View Shipment Details" = "View Shipment Details";
+"View Shipment Details" = "Verzendingsgegevens bekijken";
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "Verwant product weergeven";
@@ -3016,5 +3016,5 @@
 "“%@”" = "“%@”";
 
 /* Text of the notice that is displayed after the refund is created. */
-"🎉 Products successfuly refunded" = "";
+"🎉 Products successfuly refunded" = "🎉 Producten zijn terugbetaald";
 

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-12-02 17:01:19+0000 */
+/* Translation-Revision-Date: 2020-12-10 14:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -67,10 +67,10 @@
 "%ld Products Selected" = "%ld تم تحديد المنتجات";
 
 /* Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product` */
-"%ld cross-sell product" = "%ld cross-sell product";
+"%ld cross-sell product" = "%ld منتج تسويقي";
 
 /* Format of cross-sell linked products row in the plural form. Reads, `5 cross-sell products` */
-"%ld cross-sell products" = "%ld cross-sell products";
+"%ld cross-sell products" = "%ld من المنتجات التسويقية";
 
 /* Format of the number of Downloadable Files row in the singular form. Reads, `1 file` */
 "%ld file" = "%ld ملف";
@@ -90,10 +90,10 @@
 "%ld products" = "%ld المنتجات";
 
 /* Format of upsell linked products row in the singular form. Reads, `1 upsell product` */
-"%ld upsell product" = "%ld upsell product";
+"%ld upsell product" = "%ld منتج موصى به";
 
 /* Format of upsell linked products row in the plural form. Reads, `5 upsell products` */
-"%ld upsell products" = "%ld upsell products";
+"%ld upsell products" = "%ld من المنتجات الموصى بها";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld من المتغيرات";
@@ -129,7 +129,7 @@
 "A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "لن يتم إصدار استرداد الأموال. سيتعين عليك إصدار استرداد الأموال يدويًا من خلال %1$@.";
 
 /* No comment provided by engineer. */
-"A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "A refund will not be issued to the customer. You will need to manually issue the refund through Stripe.";
+"A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "لن يتم إصدار استرداد الأموال. سيتعين عليك إصدار استرداد الأموال يدويًا من خلال Stripe.";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "عنصر فريد للبيع";
@@ -307,7 +307,7 @@
 "Are you sure you want to discard your changes?" = "هل تريد بالتأكيد تجاهل التغييرات التي أجريتها؟";
 
 /* The text on the confirmation alert before issuing a refund. */
-"Are you sure you want to issue a refund? This can't be undone." = "Are you sure you want to issue a refund? This can't be undone.";
+"Are you sure you want to issue a refund? This can't be undone." = "هل تريد بالتأكيد إرسال مبلغ الاسترداد؟ يتعذر التراجع عن هذا.";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "هل أنت متأكد من رغبتك في تسجيل الخروج من الحساب %@؟";
@@ -554,10 +554,10 @@
 "Creating products" = "إنشاء المنتجات";
 
 /* Cell title for Cross-sells products in Linked Products Settings screen */
-"Cross-sells" = "Cross-sells";
+"Cross-sells" = "منتجات تسويقية";
 
 /* Navigation bar title for editing linked products for cross-sell products */
-"Cross-sells Products" = "Cross-sells Products";
+"Cross-sells Products" = "منتجات تسويقية";
 
 /* Cell title: the current date. */
 "Current" = "الحالي";
@@ -740,7 +740,7 @@
 "Easily identify your products with unique codes" = "حدِّد منتجاتك التي تحتوي على أكواد مميزة بسهولة.";
 
 /* Edit Products button inside the Linked Products screen. */
-"Edit Products" = "Edit Products";
+"Edit Products" = "تحرير المنتجات";
 
 /* Email address text field placeholder */
 "Email" = "البريد الإلكتروني";
@@ -1055,7 +1055,7 @@
 "Incorrect username or password. Please try entering your login details again." = "اسم المستخدم أو كلمة المرور غير صحيحين. يُرجى محاولة إدخال بيانات تسجيل دخولك مرة أخرى.";
 
 /* Subtitle of the product form bottom sheet action for linked products. */
-"Increase sales with upsells and cross-sells" = "Increase sales with upsells and cross-sells";
+"Increase sales with upsells and cross-sells" = "زيادة المبيعات من خلال عمليات البيع والبيع المتبادل";
 
 /* Label action for inserting a link on the editor */
 "Insert" = "إدراج";
@@ -1095,7 +1095,7 @@
 "Issue Refund" = "نشر مبلغ الاسترداد";
 
 /* Text of the screen that is displayed while the refund is being created. */
-"Issuing Refund..." = "Issuing Refund...";
+"Issuing Refund..." = "جارٍ إصدار أمر باسترداد الأموال...";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "يبدو أن اسم المستخدم هذا \/ كلمة المرور هذه غير مقترنين بهذه الموقع.";
@@ -1157,11 +1157,11 @@
 "Link a product to an external website" = "ربط أحد المنتجات بموقع خارجي على الويب";
 
 /* Linked Products Settings navigation title */
-"Linked Products" = "Linked Products";
+"Linked Products" = "المنتجات المرتبطة";
 
 /* Title of the Linked Products row on Product main screen
    Title of the product form bottom sheet action for editing linked products. */
-"Linked products" = "Linked products";
+"Linked products" = "المنتجات المرتبطة";
 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "قائمة صور المنتج";
@@ -1241,7 +1241,7 @@
 "Manual Refund via %1$@" = "Manual Refund via %1$@";
 
 /* No comment provided by engineer. */
-"Manual Refund via Stripe" = "Manual Refund via Stripe";
+"Manual Refund via Stripe" = "استرداد الأموال اليدوي بواسطة Stripe";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "النطاق المعيّن";
@@ -1517,7 +1517,7 @@
 "PRODUCT" = "المنتج";
 
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
-"Package %d" = "Package %d";
+"Package %d" = "الحزمة %d";
 
 /* The title for the customer payment cell */
 "Paid By Customer" = "يدفعه العميل";
@@ -1708,10 +1708,10 @@
 "Products Refund" = "استرداد المنتجات";
 
 /* Cell description for Cross-sells products in Linked Products Settings screen */
-"Products promoted in the cart when current product is selected" = "Products promoted in the cart when current product is selected";
+"Products promoted in the cart when current product is selected" = "يتم الترويج للمنتجات في عربة التسوق عند تحديد المنتج الحالي";
 
 /* Cell description for Upsells products in Linked Products Settings screen */
-"Products promoted instead of the currently viewed product (ie more profitable products)" = "Products promoted instead of the currently viewed product (ie more profitable products)";
+"Products promoted instead of the currently viewed product (ie more profitable products)" = "المنتجات التي يتم الترويج لها بدلاً من المنتج المعروض حاليًا (على سبيل المثال: المنتجات الأكثر ربحية)";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "مطالبات مع خيار الاتصال بعميل الفوترة أو إرسال رسالة إليه.";
@@ -1860,10 +1860,10 @@
 "Report Crashes" = "الإبلاغ عن الأعطال";
 
 /* Text on the button that reprints a shipping label */
-"Reprint Shipping Label" = "Reprint Shipping Label";
+"Reprint Shipping Label" = "إعادة طباعة بطاقة الشحن";
 
 /* Request a refund on a shipping label from the shipping label more menu action sheet */
-"Request a Refund" = "Request a Refund";
+"Request a Refund" = "طلب استرداد الأموال";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "إعادة تعيين سجل النشاط";
@@ -2109,7 +2109,7 @@
 "Show the billing details for this order." = "اعرض تفاصيل الفوترة لهذا الطلب.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
-"Show the shipment details for this shipping label." = "Show the shipment details for this shipping label.";
+"Show the shipment details for this shipping label." = "اعرض تفاصيل الشحنة لبطاقة الشحن هذه.";
 
 /* Accessibility value if login page's password field is displaying the password. */
 "Shown" = "معروض";
@@ -2162,7 +2162,7 @@
 "Sorry, but your username contains an invalid phrase%@." = "عذرًا، اسم المستخدم الخاص بك يحتوي على عبارة غير صالحة %@.";
 
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7 */
-"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site.";
+"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "عذرًا، إنَّ إزالة الصورة بشأن مجموعات المنتج المتنوعة مدعومة في WooCommerce الإصدار 4.7 أو أعلى، يرجى تحديث موقعك.";
 
 /* No comment provided by engineer. */
 "Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "عذرًا، يمكن أن تحتوي عناوين المواقع فقط على حروف أبجدية صغيرة (a-z) وأرقام.";
@@ -2473,7 +2473,7 @@
 "There was a problem removing the block for specified site." = "حدثت مشكلة أثناء إزالة حظر الموقع المحدد.";
 
 /* Text of the notice that is displayed while the refund creation fails. */
-"There was an error issuing the refund" = "There was an error issuing the refund";
+"There was an error issuing the refund" = "حدث خطأ في أثناء إصدار أمر استرداد الأموال";
 
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
@@ -2753,10 +2753,10 @@
 "Updated on %@" = "تم التحديث في %@";
 
 /* Cell title for Upsells products in Linked Products Settings screen */
-"Upsells" = "Upsells";
+"Upsells" = "منتجات يوصى بها";
 
 /* Navigation bar title for editing linked products for upsell products */
-"Upsells Products" = "Upsells Products";
+"Upsells Products" = "منتجات موصى بها";
 
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
@@ -2799,7 +2799,7 @@
 
 /* Accessibility label for the 'View Shipment Details' button
    Button on bottom of shipping label package card to show shipping details */
-"View Shipment Details" = "View Shipment Details";
+"View Shipment Details" = "عرض تفاصيل الشحن";
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "عرض منتج تابع";
@@ -3016,5 +3016,5 @@
 "“%@”" = "\"%@\"";
 
 /* Text of the notice that is displayed after the refund is created. */
-"🎉 Products successfuly refunded" = "";
+"🎉 Products successfuly refunded" = "تم استرداد أموال 🎉 من المنتجات بنجاح ";
 

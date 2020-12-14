@@ -84,7 +84,7 @@ private extension AddAttributeViewController {
         for row in Row.allCases {
             tableView.registerNib(for: row.type)
         }
-        ghostTableView.registerNib(for: BasicTableViewCell.self)
+        ghostTableView.registerNib(for: WooBasicTableViewCell.self)
     }
 
     func configureViewModel() {
@@ -114,7 +114,7 @@ private extension AddAttributeViewController {
     func displayGhostTableView() {
         let placeholderProductAttributesPerSection = [3]
         let options = GhostOptions(displaysSectionHeader: false,
-                                   reuseIdentifier: BasicTableViewCell.reuseIdentifier,
+                                   reuseIdentifier: WooBasicTableViewCell.reuseIdentifier,
                                    rowsPerSection: placeholderProductAttributesPerSection)
         ghostTableView.displayGhostContent(options: options,
                                            style: .wooDefaultGhostStyle)

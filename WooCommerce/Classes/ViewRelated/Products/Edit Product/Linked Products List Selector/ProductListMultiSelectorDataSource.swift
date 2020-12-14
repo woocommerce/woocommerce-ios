@@ -1,4 +1,5 @@
 import Yosemite
+import Observables
 
 /// Enables the user to select multiple products from a paginated list.
 final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource {

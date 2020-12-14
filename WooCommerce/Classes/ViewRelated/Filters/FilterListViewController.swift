@@ -1,4 +1,5 @@
 import UIKit
+import Observables
 
 /// The view model protocol for filtering a list of models with generic filters.
 ///

@@ -1,4 +1,5 @@
 import Yosemite
+import Observables
 
 /// Provides data needed for inventory settings.
 ///

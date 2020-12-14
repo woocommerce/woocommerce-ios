@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import Photos
+import Observables
 
 final class ProductDownloadListViewController: UIViewController {
     private let product: ProductFormDataModel

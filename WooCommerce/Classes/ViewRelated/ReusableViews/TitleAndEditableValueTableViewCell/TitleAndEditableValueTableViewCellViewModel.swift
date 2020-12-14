@@ -1,4 +1,5 @@
 import Foundation
+import Observables
 
 /// Observable ViewModel for `TitleAndEditableValueTableViewCell`.
 ///

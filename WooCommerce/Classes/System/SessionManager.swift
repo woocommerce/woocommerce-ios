@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import KeychainAccess
+import Observables
 
 
 
@@ -29,7 +30,7 @@ private extension UserDefaults {
 
 /// SessionManager provides persistent storage for Session-Y Properties.
 ///
-final class SessionManager {
+final class SessionManager: SessionManagerProtocol {
 
     /// Standard Session Manager
     ///

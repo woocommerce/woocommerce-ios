@@ -1,5 +1,6 @@
 import Photos
 import Yosemite
+import Observables
 
 /// Encapsulates the implementation of Product images actions from the UI.
 ///

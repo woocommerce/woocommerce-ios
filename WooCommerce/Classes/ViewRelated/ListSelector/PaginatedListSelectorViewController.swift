@@ -1,6 +1,7 @@
 import UIKit
 import WordPressUI
 import Yosemite
+import Observables
 
 import class AutomatticTracks.CrashLogging
 

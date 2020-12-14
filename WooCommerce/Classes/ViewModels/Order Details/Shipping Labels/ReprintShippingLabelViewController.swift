@@ -177,7 +177,7 @@ private extension ReprintShippingLabelViewController {
     }
 
     func configurePaperSizeOptions(cell: TopLeftImageTableViewCell) {
-        cell.imageView?.image = .pagesImage
+        cell.imageView?.image = .pagesFootnoteImage
         cell.textLabel?.text = Localization.paperSizeOptionsButtonTitle
         configureCommonStylesForInfoLinkCell(cell)
     }

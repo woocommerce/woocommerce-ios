@@ -240,6 +240,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.pagesImage)
     }
 
+    func testPagesFootnoteImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.pagesFootnoteImage)
+    }
+
     func testScanImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.scanImage)
     }

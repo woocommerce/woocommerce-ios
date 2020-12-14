@@ -3,30 +3,21 @@ import SwiftUI
 
 /// Displays a title and image for a shipping label paper size option (e.g. legal, label, letter).
 struct ShippingLabelPaperSizeOptionView: View {
-    struct ViewModel {
-        let title: String
-        let image: Image
-    }
-
-    private let viewModel: ViewModel
+    private let title: String
+    private let image: Image
 
     init(paperSize: ShippingLabelPaperSize) {
-        self.viewModel = {
-            let title: String
-            let image: Image
-            switch paperSize {
-            case .label:
-                title = Localization.labelSizeTitle
-                image = PaperSizeImage.label
-            case .legal:
-                title = Localization.legalSizeTitle
-                image = PaperSizeImage.legal
-            case .letter:
-                title = Localization.letterSizeTitle
-                image = PaperSizeImage.letter
-            }
-            return .init(title: title, image: image)
-        }()
+        switch paperSize {
+        case .label:
+            title = Localization.labelSizeTitle
+            image = PaperSizeImage.label
+        case .legal:
+            title = Localization.legalSizeTitle
+            image = PaperSizeImage.legal
+        case .letter:
+            title = Localization.letterSizeTitle
+            image = PaperSizeImage.letter
+        }
     }
 
     var body: some View {

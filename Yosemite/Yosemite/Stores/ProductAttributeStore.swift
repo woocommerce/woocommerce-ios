@@ -31,7 +31,7 @@ public final class ProductAttributeStore: Store {
         }
 
         switch action {
-        case let .synchronizeProductAttributes(siteID, onCompletion):
+        case .synchronizeProductAttributes(let siteID, let onCompletion):
             synchronizeProductAttributes(siteID: siteID, onCompletion: onCompletion)
         case .addProductAttribute(let siteID, let name, let onCompletion):
             addProductAttribute(siteID: siteID, name: name, onCompletion: onCompletion)
@@ -53,6 +53,7 @@ private extension ProductAttributeStore {
         remote.loadAllProductAttributes(for: siteID) { [weak self] (result) in
             switch result {
             case .success(let productAttributes):
+                self?.deleteUnusedStoredProductAttributes(siteID: siteID)
                 self?.upsertStoredProductAttributesInBackground(productAttributes, siteID: siteID) {
                     onCompletion(.success(productAttributes))
                 }
@@ -159,6 +160,14 @@ private extension ProductAttributeStore {
         }
 
         storage.deleteObject(productAttribute)
+        storage.saveIfNeeded()
+    }
+
+    /// Deletes any Storage.ProductAttribute that is not associated to a product on the specified `siteID`
+    ///
+    func deleteUnusedStoredProductAttributes(siteID: Int64) {
+        let storage = storageManager.viewStorage
+        storage.deleteUnusedProductAttributes(siteID: siteID)
         storage.saveIfNeeded()
     }
 }

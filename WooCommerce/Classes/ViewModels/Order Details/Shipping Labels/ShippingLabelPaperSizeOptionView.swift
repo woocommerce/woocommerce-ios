@@ -23,8 +23,8 @@ struct ShippingLabelPaperSizeOptionView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Spacer().frame(height: 25)
-            Text(viewModel.title)
-            viewModel.image
+            Text(title)
+            image
         }
     }
 }

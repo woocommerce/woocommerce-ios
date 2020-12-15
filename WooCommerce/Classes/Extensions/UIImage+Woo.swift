@@ -321,6 +321,18 @@ extension UIImage {
         return UIImage(named: "login-site-address-info")!
     }
 
+    /// Login error: no Jetpack
+    ///
+    static var loginNoJetpackError: UIImage {
+        return UIImage(named: "woo-no-jetpack-error")!.imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Login error: no WordPress
+    ///
+    static var loginNoWordPressError: UIImage {
+        return UIImage(named: "woo-wp-no-site")!.imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Mail Icon
     ///
     static var mailImage: UIImage {
@@ -551,6 +563,12 @@ extension UIImage {
     ///
     static var waitingForCustomersImage: UIImage {
         return UIImage(named: "woo-waiting-customers")!
+    }
+
+    /// What is Jetpack Image
+    ///
+    static var whatIsJetpackImage: UIImage {
+        return UIImage(named: "woo-what-is-jetpack")!
     }
 }
 

@@ -21,7 +21,7 @@ struct ShippingLabelPaperSizeOptionListView: View {
                         .frame(maxWidth: .infinity)
                 } else {
                     Spacer()
-                        .frame(minWidth: 0, maxWidth: .infinity)
+                        .frame(maxWidth: .infinity)
                 }
             }
         }.background(Color(UIColor.basicBackground))

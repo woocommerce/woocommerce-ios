@@ -29,21 +29,21 @@ class LoginSiteAddressScreen: BaseScreen {
         super.init(element: siteAddressTextField)
     }
 
-//    func proceedWith(siteUrl: String) -> LoginUsernamePasswordScreen {
-//        siteAddressTextField.tap()
-//        siteAddressTextField.typeText(siteUrl)
-//        nextButton.tap()
-//
-//        return LoginUsernamePasswordScreen()
-//    }
-
-    func proceedWithWP(siteUrl: String) -> GetStartedScreen {
+    func proceedWith(siteUrl: String) -> LoginUsernamePasswordScreen {
         siteAddressTextField.tap()
         siteAddressTextField.typeText(siteUrl)
         nextButton.tap()
 
-        return GetStartedScreen()
+        return LoginUsernamePasswordScreen()
     }
+
+//    func proceedWithWP(siteUrl: String) -> GetStartedScreen {
+//        siteAddressTextField.tap()
+//        siteAddressTextField.typeText(siteUrl)
+//        nextButton.tap()
+//
+//        return GetStartedScreen()
+//    }
 
     static func isLoaded() -> Bool {
         return XCUIApplication().buttons[ElementStringIDs.nextButton].exists

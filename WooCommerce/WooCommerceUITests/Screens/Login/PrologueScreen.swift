@@ -17,11 +17,11 @@ class PrologueScreen: BaseScreen {
         super.init(element: continueButton)
     }
 
-//    func selectContinue() -> GetStartedScreen {
-//        continueButton.tap()
-//
-//        return GetStartedScreen()
-//    }
+    func selectContinue() -> GetStartedScreen {
+        continueButton.tap()
+
+        return GetStartedScreen()
+    }
 
     func selectSiteAddress() -> LoginSiteAddressScreen {
         siteAddressButton.tap()

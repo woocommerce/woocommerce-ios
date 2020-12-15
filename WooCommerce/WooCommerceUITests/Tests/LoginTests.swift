@@ -53,6 +53,22 @@ class LoginTests: XCTestCase {
 //        XCTAssert(WelcomeScreen.isLoaded())
 //    }
 
+    func testEmailPasswordLoginLogout() {
+        let prologue = PrologueScreen().selectSiteAddress()
+            .proceedWith(siteUrl: TestCredentials.siteUrl)
+            .proceedWith(username: TestCredentials.emailAddress, password: TestCredentials.password)
+            .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)
+            .continueWithSelectedSite()
+
+            // Log out
+            .openSettingsPane()
+            .verifySelectedStoreDisplays(siteUrl: TestCredentials.siteUrl, displayName: TestCredentials.displayName)
+            .logOut()
+
+        XCTAssert(prologue.isLoaded())
+    }
+
+    /**
     // Unified WordPress.com login/out
     // Replaces testWpcomUsernamePasswordLogin
     func testWpcomLogin() {
@@ -66,6 +82,22 @@ class LoginTests: XCTestCase {
             //.dismissNotificationAlertIfNeeded()
 
         //XCTAssert(MySiteScreen().isLoaded())
+
+            // Log out
+            .openSettingsPane()
+            .verifySelectedStoreDisplays(siteUrl: TestCredentials.siteUrl, displayName: TestCredentials.displayName)
+            .logOut()
+
+        XCTAssert(prologue.isLoaded())
+    }
+    */
+
+    func testWPComLoginLogout() {
+        let prologue = PrologueScreen().selectContinue()
+            .proceedWith(email: TestCredentials.emailAddress)
+            .proceedWith(password: TestCredentials.password)
+            .continueWithSelectedSite()
+            //.dismissNotificationAlertIfNeeded()
 
             // Log out
             .openSettingsPane()

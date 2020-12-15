@@ -115,7 +115,6 @@
 		023A059A24135F2600E3FC99 /* ReviewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023A059824135F2600E3FC99 /* ReviewsViewController.swift */; };
 		023A059B24135F2600E3FC99 /* ReviewsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 023A059924135F2600E3FC99 /* ReviewsViewController.xib */; };
 		023D1DD124AB2D05002B03A3 /* ProductListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023D1DD024AB2D05002B03A3 /* ProductListSelectorViewController.swift */; };
-		023D692E2588BF0900F7DA72 /* ShippingLabelPaperSizeListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023D692D2588BF0900F7DA72 /* ShippingLabelPaperSizeListSelectorCommand.swift */; };
 		023EC2E024DA87460021DA91 /* ProductInventorySettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023EC2DF24DA87460021DA91 /* ProductInventorySettingsViewModelTests.swift */; };
 		023EC2E224DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023EC2E124DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift */; };
 		023EC2E424DA95DB0021DA91 /* ProductInventorySettingsViewModel+VariationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023EC2E324DA95DB0021DA91 /* ProductInventorySettingsViewModel+VariationTests.swift */; };
@@ -1187,7 +1186,6 @@
 		023A059824135F2600E3FC99 /* ReviewsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsViewController.swift; sourceTree = "<group>"; };
 		023A059924135F2600E3FC99 /* ReviewsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReviewsViewController.xib; sourceTree = "<group>"; };
 		023D1DD024AB2D05002B03A3 /* ProductListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListSelectorViewController.swift; sourceTree = "<group>"; };
-		023D692D2588BF0900F7DA72 /* ShippingLabelPaperSizeListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaperSizeListSelectorCommand.swift; sourceTree = "<group>"; };
 		023EC2DF24DA87460021DA91 /* ProductInventorySettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInventorySettingsViewModelTests.swift; sourceTree = "<group>"; };
 		023EC2E124DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductSKUValidationStoresManager.swift; sourceTree = "<group>"; };
 		023EC2E324DA95DB0021DA91 /* ProductInventorySettingsViewModel+VariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductInventorySettingsViewModel+VariationTests.swift"; sourceTree = "<group>"; };
@@ -2560,7 +2558,6 @@
 				0259D65B2582248D003B1CD6 /* ReprintShippingLabelViewController.swift */,
 				0259D65C2582248D003B1CD6 /* ReprintShippingLabelViewController.xib */,
 				02535CBA25823F7A00E137BB /* ShippingLabelPaperSize+UI.swift */,
-				023D692D2588BF0900F7DA72 /* ShippingLabelPaperSizeListSelectorCommand.swift */,
 			);
 			path = "Shipping Labels";
 			sourceTree = "<group>";
@@ -6040,7 +6037,6 @@
 				D8C2A28F231BD00500F503E9 /* ReviewsViewModel.swift in Sources */,
 				021AEF9E2407F55C00029D28 /* PHAssetImageLoader.swift in Sources */,
 				020BE74D23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.swift in Sources */,
-				023D692E2588BF0900F7DA72 /* ShippingLabelPaperSizeListSelectorCommand.swift in Sources */,
 				77E53EC52510C193003D385F /* ProductDownloadListViewController+Droppable.swift in Sources */,
 				D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */,
 				575472812452185300A94C3C /* PushNotification.swift in Sources */,

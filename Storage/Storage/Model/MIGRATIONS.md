@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 41 (Release TBD)
+- @ealeksandrov 2020-12-15
+- Add `Customer` entity.
+
 ## Model 40 (Release 5.7.0.0)
 - @pmusolino 2020-12-07
 - Add `siteID` attribute to `ProductAttribute` entity.

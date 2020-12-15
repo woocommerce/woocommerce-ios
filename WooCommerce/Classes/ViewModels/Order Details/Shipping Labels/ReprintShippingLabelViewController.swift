@@ -160,9 +160,9 @@ private extension ReprintShippingLabelViewController {
     func configureInfoText(cell: TopLeftImageTableViewCell) {
         cell.imageView?.image = .infoOutlineImage
         cell.imageView?.tintColor = .systemColor(.secondaryLabel)
-        cell.textLabel?.text = Localization.infoText
-        cell.textLabel?.applyBodyStyle()
         cell.textLabel?.textColor = .systemColor(.secondaryLabel)
+        cell.textLabel?.text = Localization.infoText
+        cell.apply(style: .body)
         cell.hideSeparator()
     }
 
@@ -188,8 +188,8 @@ private extension ReprintShippingLabelViewController {
     }
 
     func configureCommonStylesForInfoLinkCell(_ cell: TopLeftImageTableViewCell) {
+        cell.apply(style: .footnote)
         cell.imageView?.tintColor = .systemColor(.secondaryLabel)
-        cell.textLabel?.applyFootnoteStyle()
         cell.textLabel?.textColor = .systemColor(.secondaryLabel)
         cell.hideSeparator()
         cell.selectionStyle = .default

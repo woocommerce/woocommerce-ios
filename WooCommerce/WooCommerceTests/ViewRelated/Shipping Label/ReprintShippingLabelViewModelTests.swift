@@ -69,4 +69,23 @@ final class ReprintShippingLabelViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(paperSizeValues, [nil, .letter])
     }
+
+    func test_updateSelectedPaperSize_sets_selectedPaperSize_to_selected_value() {
+        // Given
+        let shippingLabel = MockShippingLabel.emptyLabel()
+        let viewModel = ReprintShippingLabelViewModel(shippingLabel: shippingLabel)
+        var paperSizeValues = [ShippingLabelPaperSize?]()
+        viewModel.$selectedPaperSize.sink { paperSize in
+            paperSizeValues.append(paperSize)
+        }.store(in: &cancellables)
+
+        // When
+        viewModel.updateSelectedPaperSize(.label)
+        viewModel.updateSelectedPaperSize(nil)
+        viewModel.updateSelectedPaperSize(.legal)
+        viewModel.updateSelectedPaperSize(.letter)
+
+        // Then
+        XCTAssertEqual(paperSizeValues, [nil, .label, nil, .legal, .letter])
+    }
 }

@@ -59,7 +59,7 @@ private extension ReprintShippingLabelViewController {
         tableView.delegate = self
         registerTableViewCells()
 
-        tableView.tableFooterView = UIView()
+        tableView.removeLastCellSeparator()
         tableView.backgroundColor = .basicBackground
     }
 
@@ -95,7 +95,9 @@ extension ReprintShippingLabelViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = rows[indexPath.row]
+        guard let row = rows[safe: indexPath.row] else {
+            return UITableViewCell()
+        }
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
         configure(cell, for: row)
         return cell
@@ -107,7 +109,10 @@ extension ReprintShippingLabelViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        let row = rows[indexPath.row]
+        guard let row = rows[safe: indexPath.row] else {
+            return
+        }
+
         switch row {
         case .paperSize:
             // TODO-2169: Navigate to paper size selector
@@ -167,7 +172,7 @@ private extension ReprintShippingLabelViewController {
     }
 
     func configureSpacer(cell: SpacerTableViewCell) {
-        cell.height = Constants.verticalSpacingBetweenPaperSizeSelectorAndInfoLinks
+        cell.configure(height: Constants.verticalSpacingBetweenPaperSizeSelectorAndInfoLinks)
     }
 
     func configurePaperSizeOptions(cell: TopLeftImageTableViewCell) {

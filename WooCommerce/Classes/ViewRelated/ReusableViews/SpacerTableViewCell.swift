@@ -3,8 +3,7 @@ import UIKit
 /// Used for variable vertical spacing between two table view cells.
 /// The cell currently has default cell background color (`.listForeground`).
 final class SpacerTableViewCell: UITableViewCell {
-    /// The height of the spacer cell.
-    var height: CGFloat = 0 {
+    private var height: CGFloat = 0 {
         didSet {
             heightConstraint.constant = height
         }
@@ -20,5 +19,11 @@ final class SpacerTableViewCell: UITableViewCell {
         hideSeparator()
         view.backgroundColor = .clear
         selectionStyle = .none
+        configure(height: height)
+    }
+
+    /// Configures the height of the spacer cell.
+    func configure(height: CGFloat) {
+        self.height = height
     }
 }

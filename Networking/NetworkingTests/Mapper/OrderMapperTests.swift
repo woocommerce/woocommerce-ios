@@ -197,6 +197,23 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(partialRefund2.total, "-8.10")
     }
 
+    /// Verifies that an Order ignores deleted refunds.
+    ///
+    func test_Order_deleted_refund_fields_are_ignored() {
+        guard let order = mapLoadOrderWithDeletedRefundsResponse() else {
+            XCTFail()
+            return
+        }
+
+        let refunds = order.refunds
+        XCTAssertEqual(refunds.count, 1)
+
+        let refund = refunds[0]
+        XCTAssertEqual(refund.refundID, 73)
+        XCTAssertEqual(refund.reason, "Cap!")
+        XCTAssertEqual(refund.total, "-16.00")
+    }
+
     func test_taxes_are_parsed_correctly() throws {
         // When
         let order = try XCTUnwrap(mapLoadOrderResponse())
@@ -291,4 +308,11 @@ private extension OrderMapperTests {
     func mapLoadOrderWithLineItemAttributesBeforeAPISupportResponse() -> Order? {
         return mapOrder(from: "order-with-line-item-attributes-before-API-support")
     }
+
+    /// Returns the OrderMapper output upon receiving `order-with-deleted-refunds`
+    ///
+    func mapLoadOrderWithDeletedRefundsResponse() -> Order? {
+        return mapOrder(from: "order-with-deleted-refunds")
+    }
+
 }

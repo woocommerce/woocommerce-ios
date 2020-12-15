@@ -187,6 +187,7 @@
 		AE9CEC302589034D000F3CAB /* Customer+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9CEC2F2589034D000F3CAB /* Customer+ReadOnlyConvertible.swift */; };
 		AE9CEC34258906C0000F3CAB /* CustomerAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9CEC33258906C0000F3CAB /* CustomerAction.swift */; };
 		AE9CEC38258906E1000F3CAB /* CustomerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9CEC37258906E1000F3CAB /* CustomerStore.swift */; };
+		AE9CEC75258908BE000F3CAB /* CustomerStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9CEC74258908BE000F3CAB /* CustomerStoreTests.swift */; };
 		B505254C20EE6491008090F5 /* Site+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */; };
 		B52E002B2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E002A2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift */; };
 		B52E002E211A3F5500700FDE /* ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52E002D211A3F5500700FDE /* ReadOnlyType.swift */; };
@@ -454,6 +455,7 @@
 		AE9CEC2F2589034D000F3CAB /* Customer+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Customer+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		AE9CEC33258906C0000F3CAB /* CustomerAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerAction.swift; sourceTree = "<group>"; };
 		AE9CEC37258906E1000F3CAB /* CustomerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerStore.swift; sourceTree = "<group>"; };
+		AE9CEC74258908BE000F3CAB /* CustomerStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerStoreTests.swift; sourceTree = "<group>"; };
 		B505254B20EE6491008090F5 /* Site+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Site+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		B52E002A2119E64800700FDE /* ManagedObjectsDidChangeNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedObjectsDidChangeNotification.swift; sourceTree = "<group>"; };
 		B52E002D211A3F5500700FDE /* ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadOnlyType.swift; sourceTree = "<group>"; };
@@ -989,6 +991,7 @@
 				02DA641A2313D6D200284168 /* AppSettingsStoreTests+StatsVersion.swift */,
 				B5BC736720D1AA8F00B5B6FA /* AccountStoreTests.swift */,
 				741F34832195F752005F5BD9 /* CommentStoreTests.swift */,
+				AE9CEC74258908BE000F3CAB /* CustomerStoreTests.swift */,
 				748525AB218A45360036DF75 /* NotificationStoreTests.swift */,
 				74A7688D20D45ED400F9D437 /* OrderStoreTests.swift */,
 				573B448A2424082B00E71ADC /* OrderStoreTests+FetchFilteredAndAllOrders.swift */,
@@ -1591,6 +1594,7 @@
 				020220E42396969E00290165 /* MockProduct.swift in Sources */,
 				572F2B8D247312E4005A5F74 /* StorageManagerConcurrencyTests.swift in Sources */,
 				744914F7224AD2AF00546DE4 /* ProductStoreTests.swift in Sources */,
+				AE9CEC75258908BE000F3CAB /* CustomerStoreTests.swift in Sources */,
 				0218B4F2242E09E80083A847 /* MediaTypeTests.swift in Sources */,
 				578CE78C2475E7A500492EBF /* MockNotificationsRemote.swift in Sources */,
 				B5A01CA120D19C4700E3207E /* MockStorageManager.swift in Sources */,

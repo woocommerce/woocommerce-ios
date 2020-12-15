@@ -28,7 +28,7 @@ final class ShippingLabelPaperSizeListSelectorCommand: ListSelectorCommand {
     }
 
     func configureCell(cell: BasicTableViewCell, model: ShippingLabelPaperSize) {
-        cell.textLabel?.text = "\(model.description)"
+        cell.textLabel?.text = model.description
     }
 
     init(paperSizeOptions: [ShippingLabelPaperSize], selected: ShippingLabelPaperSize?) {

@@ -8,10 +8,10 @@ private struct ElementStringIDs {
     static let errorLabel = "Password Error"
 }
 
-class PasswordScreen: BaseScreen {
-    let navBar: XCUIElement
-    let passwordTextField: XCUIElement
-    let continueButton: XCUIElement
+final class PasswordScreen: BaseScreen {
+    private let navBar: XCUIElement
+    private let passwordTextField: XCUIElement
+    private let continueButton: XCUIElement
 
     init() {
         let app = XCUIApplication()

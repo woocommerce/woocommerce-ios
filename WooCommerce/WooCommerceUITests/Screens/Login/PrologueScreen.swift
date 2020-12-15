@@ -6,9 +6,9 @@ private struct ElementStringIDs {
     static let siteAddressButton = "Prologue Self Hosted Button"
 }
 
-class PrologueScreen: BaseScreen {
-    let continueButton: XCUIElement
-    let siteAddressButton: XCUIElement
+final class PrologueScreen: BaseScreen {
+    private let continueButton: XCUIElement
+    private let siteAddressButton: XCUIElement
 
     init() {
         continueButton = XCUIApplication().buttons[ElementStringIDs.continueButton]

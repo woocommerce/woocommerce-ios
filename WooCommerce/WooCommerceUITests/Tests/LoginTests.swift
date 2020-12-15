@@ -1,6 +1,6 @@
 import XCTest
 
-class LoginTests: XCTestCase {
+final class LoginTests: XCTestCase {
 
     override func setUp() {
         continueAfterFailure = false

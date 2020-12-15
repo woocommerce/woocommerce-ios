@@ -7,10 +7,10 @@ private struct ElementStringIDs {
     static let continueButton = "Get Started Email Continue Button"
 }
 
-class GetStartedScreen: BaseScreen {
-    let navBar: XCUIElement
-    let emailTextField: XCUIElement
-    let continueButton: XCUIElement
+final class GetStartedScreen: BaseScreen {
+    private let navBar: XCUIElement
+    private let emailTextField: XCUIElement
+    private let continueButton: XCUIElement
 
     init() {
         let app = XCUIApplication()

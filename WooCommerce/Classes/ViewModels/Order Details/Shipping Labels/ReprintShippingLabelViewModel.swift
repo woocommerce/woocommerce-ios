@@ -37,9 +37,4 @@ extension ReprintShippingLabelViewModel {
         }
         stores.dispatch(action)
     }
-
-    /// Updates the selected paper size (e.g. from paper size list selector).
-    func updateSelectedPaperSize(_ selectedPaperSize: ShippingLabelPaperSize?) {
-        self.selectedPaperSize = selectedPaperSize
-    }
 }

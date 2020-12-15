@@ -32,7 +32,7 @@ struct ShippingLabelPaperSizeOptionListView: View {
 
 #if DEBUG
 
-struct ShippingLabelPaperSizeOptionsView_Previews: PreviewProvider {
+struct ShippingLabelPaperSizeOptionListView_Previews: PreviewProvider {
     private static let paperSizeOptions: [ShippingLabelPaperSize] = [.legal, .letter, .letter]
     static var previews: some View {
         ShippingLabelPaperSizeOptionListView(paperSizeOptions: paperSizeOptions)

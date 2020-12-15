@@ -18,6 +18,9 @@
                 <autoresizingMask key="autoresizingMask"/>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <accessibility key="accessibilityConfiguration">
+                <accessibilityTraits key="traits" notEnabled="YES"/>
+            </accessibility>
             <point key="canvasLocation" x="-83" y="95"/>
         </tableViewCell>
     </objects>

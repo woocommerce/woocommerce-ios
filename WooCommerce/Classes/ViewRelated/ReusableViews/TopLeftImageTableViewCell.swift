@@ -35,7 +35,7 @@ class TopLeftImageTableViewCell: UITableViewCell {
          case .body:
             textLabel?.applyBodyStyle()
          }
-     } 
+     }
 }
 
 

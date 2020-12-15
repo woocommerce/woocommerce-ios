@@ -17,7 +17,9 @@ final class ReprintShippingLabelViewController: UIViewController {
 
     init(shippingLabel: ShippingLabel) {
         self.viewModel = ReprintShippingLabelViewModel(shippingLabel: shippingLabel)
-        self.rows = [.headerText, .infoText, .paperSize, .spacer, .paperSizeOptions, .printingInstructions]
+        self.rows = [.headerText, .infoText,
+                     .spacerBetweenInfoTextAndPaperSizeSelector, .paperSize, .spacerBetweenPaperSizeSelectorAndInfoLinks,
+                     .paperSizeOptions, .printingInstructions]
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -139,8 +141,10 @@ private extension ReprintShippingLabelViewController {
             configureInfoText(cell: cell)
         case let cell as SettingTitleAndValueTableViewCell where row == .paperSize:
             configurePaperSize(cell: cell)
-        case let cell as SpacerTableViewCell where row == .spacer:
-            configureSpacer(cell: cell)
+        case let cell as SpacerTableViewCell where row == .spacerBetweenInfoTextAndPaperSizeSelector:
+            configureSpacerBetweenInfoTextAndPaperSizeSelector(cell: cell)
+        case let cell as SpacerTableViewCell where row == .spacerBetweenPaperSizeSelectorAndInfoLinks:
+            configureSpacerBetweenPaperSizeSelectorAndInfoLinks(cell: cell)
         case let cell as TopLeftImageTableViewCell where row == .paperSizeOptions:
             configurePaperSizeOptions(cell: cell)
         case let cell as TopLeftImageTableViewCell where row == .printingInstructions:
@@ -171,7 +175,11 @@ private extension ReprintShippingLabelViewController {
         cell.accessoryType = .disclosureIndicator
     }
 
-    func configureSpacer(cell: SpacerTableViewCell) {
+    func configureSpacerBetweenInfoTextAndPaperSizeSelector(cell: SpacerTableViewCell) {
+        cell.configure(height: Constants.verticalSpacingBetweenInfoTextAndPaperSizeSelector)
+    }
+
+    func configureSpacerBetweenPaperSizeSelectorAndInfoLinks(cell: SpacerTableViewCell) {
         cell.configure(height: Constants.verticalSpacingBetweenPaperSizeSelectorAndInfoLinks)
     }
 
@@ -198,6 +206,7 @@ private extension ReprintShippingLabelViewController {
 
 private extension ReprintShippingLabelViewController {
     enum Constants {
+        static let verticalSpacingBetweenInfoTextAndPaperSizeSelector = CGFloat(8)
         static let verticalSpacingBetweenPaperSizeSelectorAndInfoLinks = CGFloat(8)
     }
 
@@ -223,8 +232,9 @@ private extension ReprintShippingLabelViewController {
     enum Row: CaseIterable {
         case headerText
         case infoText
+        case spacerBetweenInfoTextAndPaperSizeSelector
         case paperSize
-        case spacer
+        case spacerBetweenPaperSizeSelectorAndInfoLinks
         case paperSizeOptions
         case printingInstructions
 
@@ -234,7 +244,7 @@ private extension ReprintShippingLabelViewController {
                 return BasicTableViewCell.self
             case .infoText:
                 return TopLeftImageTableViewCell.self
-            case .spacer:
+            case .spacerBetweenInfoTextAndPaperSizeSelector, .spacerBetweenPaperSizeSelectorAndInfoLinks:
                 return SpacerTableViewCell.self
             case .paperSize:
                 return SettingTitleAndValueTableViewCell.self

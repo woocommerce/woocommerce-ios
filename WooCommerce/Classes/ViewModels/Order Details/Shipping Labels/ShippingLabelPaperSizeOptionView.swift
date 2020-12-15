@@ -24,6 +24,7 @@ struct ShippingLabelPaperSizeOptionView: View {
         VStack(alignment: .leading) {
             Spacer().frame(height: 25)
             Text(title)
+                .fixedSize(horizontal: false, vertical: true)
             image
         }
     }

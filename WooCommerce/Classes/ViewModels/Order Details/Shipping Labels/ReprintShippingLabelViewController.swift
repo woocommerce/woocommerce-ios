@@ -39,13 +39,6 @@ final class ReprintShippingLabelViewController: UIViewController {
         configureReprintButton()
         observeSelectedPaperSize()
     }
-
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-
-        tableView.updateHeaderHeight()
-        tableView.updateFooterHeight()
-    }
 }
 
 // MARK: Action Handling
@@ -97,10 +90,6 @@ private extension ReprintShippingLabelViewController {
 
 // MARK: UITableViewDataSource
 extension ReprintShippingLabelViewController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        1
-    }
-
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         rows.count
     }
@@ -204,7 +193,6 @@ private extension ReprintShippingLabelViewController {
 
 private extension ReprintShippingLabelViewController {
     enum Constants {
-        static let cellValueTextColor = UIColor.systemColor(.secondaryLabel)
         static let verticalSpacingBetweenPaperSizeSelectorAndInfoLinks = CGFloat(8)
     }
 

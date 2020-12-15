@@ -80,17 +80,6 @@ extension UIButton {
         setTitleColor(.accentDark, for: .highlighted)
     }
 
-    /// Applies the Footnote Link Button Style: Clear BG / Footnote font / Secondary Label Text Color
-    ///
-    func applyFootnoteLinkButtonStyle() {
-        backgroundColor = .clear
-        tintColor = .systemColor(.secondaryLabel)
-        titleLabel?.applyFootnoteStyle()
-        titleLabel?.textAlignment = .natural
-        setTitleColor(.systemColor(.secondaryLabel), for: .normal)
-        setTitleColor(.systemColor(.tertiaryLabel), for: .highlighted)
-    }
-
     /// Applies the Modal Cancel Button Style
     ///
     func applyModalCancelButtonStyle() {

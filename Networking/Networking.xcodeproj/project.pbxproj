@@ -245,6 +245,7 @@
 		93D8BBFD226BBEE800AD2EB3 /* AccountSettingsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D8BBFC226BBEE800AD2EB3 /* AccountSettingsMapper.swift */; };
 		93D8BBFF226BC1DA00AD2EB3 /* me-settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 93D8BBFE226BC1DA00AD2EB3 /* me-settings.json */; };
 		93D8BC01226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D8BC00226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift */; };
+		A69FE19D2588D70E0059A96B /* order-with-deleted-refunds.json in Resources */ = {isa = PBXBuildFile; fileRef = A69FE19C2588D70E0059A96B /* order-with-deleted-refunds.json */; };
 		B505F6CD20BEE37E00BB1B69 /* AccountMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6CC20BEE37E00BB1B69 /* AccountMapper.swift */; };
 		B505F6CF20BEE38B00BB1B69 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6CE20BEE38B00BB1B69 /* Account.swift */; };
 		B505F6D120BEE39600BB1B69 /* AccountRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6D020BEE39600BB1B69 /* AccountRemote.swift */; };
@@ -651,6 +652,7 @@
 		93D8BBFE226BC1DA00AD2EB3 /* me-settings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "me-settings.json"; sourceTree = "<group>"; };
 		93D8BC00226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingsRemoteTests.swift; sourceTree = "<group>"; };
 		9BD9C6C44CAC220B3C3B90B7 /* Pods-Networking.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		A69FE19C2588D70E0059A96B /* order-with-deleted-refunds.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-with-deleted-refunds.json"; sourceTree = "<group>"; };
 		B505F6CC20BEE37E00BB1B69 /* AccountMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountMapper.swift; sourceTree = "<group>"; };
 		B505F6CE20BEE38B00BB1B69 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		B505F6D020BEE39600BB1B69 /* AccountRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountRemote.swift; sourceTree = "<group>"; };
@@ -1246,6 +1248,7 @@
 				CE19CB10222486A500E8AF7A /* order-statuses.json */,
 				0272E3F4254AA48F00436277 /* order-with-line-item-attributes.json */,
 				0272E3FA254AABB800436277 /* order-with-line-item-attributes-before-API-support.json */,
+				A69FE19C2588D70E0059A96B /* order-with-deleted-refunds.json */,
 				261CF1B3255AD6B30090D8D3 /* payment-gateway-list.json */,
 				261CF2CA255C50010090D8D3 /* payment-gateway-list-half.json */,
 				74749B98224135C4005C4CF2 /* product.json */,
@@ -1710,6 +1713,7 @@
 				74ABA1C5213F17AA00FFAD30 /* top-performers-day.json in Resources */,
 				26B2F74724C55A6E0065CCC8 /* leaderboards-year.json in Resources */,
 				2683D71024456EE4002A1589 /* categories-extra.json in Resources */,
+				A69FE19D2588D70E0059A96B /* order-with-deleted-refunds.json in Resources */,
 				453305F52459ED2700264E50 /* site-post-update.json in Resources */,
 				CECC759E23D6231A00486676 /* order-560-all-refunds.json in Resources */,
 				02E7FFCF25621C7900C53030 /* shipping-label-print.json in Resources */,

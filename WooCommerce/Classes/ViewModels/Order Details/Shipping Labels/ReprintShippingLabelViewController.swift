@@ -48,6 +48,14 @@ private extension ReprintShippingLabelViewController {
     func reprintShippingLabel() {
         // TODO-2169: reprint action
     }
+
+    func showPaperSizeSelector() {
+        let command = ShippingLabelPaperSizeListSelectorCommand(paperSizeOptions: viewModel.paperSizeOptions, selected: selectedPaperSize)
+        let listSelector = ListSelectorViewController(command: command) { [weak self] paperSize in
+            self?.viewModel.updateSelectedPaperSize(paperSize)
+        }
+        show(listSelector, sender: self)
+    }
 }
 
 // MARK: Configuration
@@ -81,7 +89,7 @@ private extension ReprintShippingLabelViewController {
 
     func observeSelectedPaperSize() {
         viewModel.loadShippingLabelSettingsForDefaultPaperSize()
-        viewModel.$selectedPaperSize.sink { [weak self] paperSize in
+        viewModel.$selectedPaperSize.removeDuplicates().sink { [weak self] paperSize in
             guard let self = self else { return }
             self.selectedPaperSize = paperSize
             self.tableView.reloadData()
@@ -117,8 +125,7 @@ extension ReprintShippingLabelViewController: UITableViewDelegate {
 
         switch row {
         case .paperSize:
-            // TODO-2169: Navigate to paper size selector
-            break
+            showPaperSizeSelector()
         case .paperSizeOptions:
             // TODO-2169: Present paper size options modal
             break

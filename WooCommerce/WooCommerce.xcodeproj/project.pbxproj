@@ -997,6 +997,9 @@
 		D8CD710F237A49DB007148B9 /* UIColor+SemanticColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CD710E237A49DB007148B9 /* UIColor+SemanticColors.swift */; };
 		D8D15F83230A17A000D48B3F /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F82230A17A000D48B3F /* ServiceLocator.swift */; };
 		D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F84230A18AB00D48B3F /* Analytics.swift */; };
+		D8F3A973258862BE0085859B /* PrologueScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F3A972258862BE0085859B /* PrologueScreen.swift */; };
+		D8F3A9792588659E0085859B /* GetStartedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F3A9782588659E0085859B /* GetStartedScreen.swift */; };
+		D8F3A97F258865BD0085859B /* PasswordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F3A97E258865BD0085859B /* PasswordScreen.swift */; };
 		D8F82AC522AF903700B67E4B /* IconsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F82AC422AF903700B67E4B /* IconsTests.swift */; };
 		F93E8E5324087FDA0057FF21 /* BetaFeaturesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */; };
 		F93E8E5424087FDA0057FF21 /* BetaFeaturesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */; };
@@ -2077,6 +2080,9 @@
 		D8CD710E237A49DB007148B9 /* UIColor+SemanticColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+SemanticColors.swift"; sourceTree = "<group>"; };
 		D8D15F82230A17A000D48B3F /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
 		D8D15F84230A18AB00D48B3F /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
+		D8F3A972258862BE0085859B /* PrologueScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrologueScreen.swift; sourceTree = "<group>"; };
+		D8F3A9782588659E0085859B /* GetStartedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetStartedScreen.swift; sourceTree = "<group>"; };
+		D8F3A97E258865BD0085859B /* PasswordScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordScreen.swift; sourceTree = "<group>"; };
 		D8F82AC422AF903700B67E4B /* IconsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IconsTests.swift; path = WooCommerceTests/Extensions/IconsTests.swift; sourceTree = SOURCE_ROOT; };
 		D8FBFF1622D4CC2F006E3336 /* docs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = docs; path = ../docs; sourceTree = "<group>"; };
 		F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BetaFeaturesScreen.swift; sourceTree = "<group>"; };
@@ -5000,6 +5006,9 @@
 				F997172123DBCD6100592D8E /* LoginSiteAddressScreen.swift */,
 				F997171923DBCD6000592D8E /* LoginUsernamePasswordScreen.swift */,
 				F997172023DBCD6100592D8E /* WelcomeScreen.swift */,
+				D8F3A972258862BE0085859B /* PrologueScreen.swift */,
+				D8F3A9782588659E0085859B /* GetStartedScreen.swift */,
+				D8F3A97E258865BD0085859B /* PasswordScreen.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -6365,15 +6374,18 @@
 				CCDC49E22400011F003166BA /* LoginEmailScreen.swift in Sources */,
 				CCDC49E32400011F003166BA /* LoginEpilogueScreen.swift in Sources */,
 				CCDC49E42400011F003166BA /* LoginPasswordScreen.swift in Sources */,
+				D8F3A97F258865BD0085859B /* PasswordScreen.swift in Sources */,
 				CCDC49E52400011F003166BA /* LoginSiteAddressScreen.swift in Sources */,
 				CCDC49E62400011F003166BA /* LoginUsernamePasswordScreen.swift in Sources */,
 				CCDC49E72400011F003166BA /* WelcomeScreen.swift in Sources */,
+				D8F3A9792588659E0085859B /* GetStartedScreen.swift in Sources */,
 				CCDC49E92400011F003166BA /* BaseScreen.swift in Sources */,
 				CCDC49EA2400011F003166BA /* PeriodStatsTable.swift in Sources */,
 				CCDC49EB2400011F003166BA /* TabNavComponent.swift in Sources */,
 				CCDC49ED24000533003166BA /* TestCredentials.swift in Sources */,
 				CCDC49D724000095003166BA /* XCTest+Extensions.swift in Sources */,
 				CCDC49CD23FFFFF4003166BA /* LoginTests.swift in Sources */,
+				D8F3A973258862BE0085859B /* PrologueScreen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

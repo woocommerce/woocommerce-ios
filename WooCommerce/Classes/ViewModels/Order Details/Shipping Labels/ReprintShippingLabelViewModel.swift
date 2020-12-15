@@ -3,7 +3,7 @@ import Yosemite
 
 /// View model for `ReprintShippingLabelViewController`.
 /// Performs and handles actions that might change data for UI display.
-final class ReprintShippingLabelViewModel: ObservableObject {
+final class ReprintShippingLabelViewModel {
     /// Paper size options that we support for reprinting a shipping label.
     /// In the future, the options could be different per geographical region.
     let paperSizeOptions: [ShippingLabelPaperSize] = [.legal, .letter, .label]

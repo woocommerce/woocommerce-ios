@@ -26,6 +26,15 @@ public extension StorageType {
         return firstObject(ofType: Site.self, matching: predicate)
     }
 
+    // MARK: - Customers
+
+    /// Returns all stored customers for a site.
+    ///
+    func loadCustomers(siteID: Int64) -> [Customer] {
+        let predicate = NSPredicate(format: "siteID = %ld", siteID)
+        return allObjects(ofType: Customer.self, matching: predicate, sortedBy: nil)
+    }
+
     // MARK: - Orders
 
     /// Retrieves the Stored Order.

@@ -5,6 +5,18 @@ import Foundation
 //
 public extension StorageType {
 
+    // MARK: - Customers
+
+    /// Deletes all of the stored Customers for the provided siteID.
+    ///
+    func deleteCustomers(siteID: Int64) {
+        let customers = loadCustomers(siteID: siteID)
+
+        for customer in customers {
+            deleteObject(customer)
+        }
+    }
+
     // MARK: - Products
 
     /// Deletes all of the stored Products for the provided siteID.

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-11-26 10:54:04+0000 */
+/* Translation-Revision-Date: 2020-12-09 09:54:51+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -66,6 +66,12 @@
 /* Navigation bar title for selecting multiple products when more multiple products have been selected. */
 "%ld Products Selected" = "%ld produtos selecionados";
 
+/* Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product` */
+"%ld cross-sell product" = "%ld produto para venda cruzada";
+
+/* Format of cross-sell linked products row in the plural form. Reads, `5 cross-sell products` */
+"%ld cross-sell products" = "%ld produtos para venda cruzada";
+
 /* Format of the number of Downloadable Files row in the singular form. Reads, `1 file` */
 "%ld file" = "%ld arquivo";
 
@@ -75,11 +81,19 @@
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld em estoque";
 
-/* Format of the number of grouped products in singular form */
+/* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `1 product`
+   Format of the number of grouped products in singular form */
 "%ld product" = "%ld produto";
 
-/* Format of the number of grouped products in plural form */
+/* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `5 products`
+   Format of the number of grouped products in plural form */
 "%ld products" = "%ld produtos";
+
+/* Format of upsell linked products row in the singular form. Reads, `1 upsell product` */
+"%ld upsell product" = "%ld produto para aumentar venda";
+
+/* Format of upsell linked products row in the plural form. Reads, `5 upsell products` */
+"%ld upsell products" = "%ld produtos para aumentar venda";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld variante";
@@ -113,6 +127,9 @@
 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
 "A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "Um reembolso não será emitido para o cliente. Você precisará emitir o reembolso manualmente usando %1$@.";
+
+/* No comment provided by engineer. */
+"A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "O reembolso não será emitido para o cliente. Você precisará emitir o reembolso manualmente usando o Stripe.";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "Um item único a ser vendido";
@@ -150,10 +167,10 @@
 "Add Downloadable File" = "Adicionar arquivo para download";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Adicionar arquivo";
+"Add File" = "Add File";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "Adicionar arquivo";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Adicionar foto";
@@ -164,8 +181,8 @@
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "Adicionar preço";
 
-/* Action to add products to a grouped product on the Grouped Products screen
-   Navigation bar title for selecting multiple products. */
+/* Action to add linked products to a product in the Linked Products List Selector screen
+   Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
 "Add Products" = "Adicionar produtos";
 
 /* A title used for a shipment tracking unit test
@@ -289,6 +306,9 @@
 /* Alert title to confirm the user wants to discard changes in Product Visibility */
 "Are you sure you want to discard your changes?" = "Tem certeza de que deseja descartar suas alterações?";
 
+/* The text on the confirmation alert before issuing a refund. */
+"Are you sure you want to issue a refund? This can't be undone." = "Tem certeza de que deseja pedir o reembolso? Esta ação não pode ser desfeita.";
+
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Tem certeza de que deseja fazer logout da conta %@?";
 
@@ -372,7 +392,7 @@
 "Can Not Request Link" = "Não pode requisitar link";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
 "Cancel" = "Cancelar";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -381,7 +401,8 @@
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "Não é possível adicionar tags";
 
-/* The title of the alert when there is an error updating the product */
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
+   The title of the alert when there is an error updating the product */
 "Cannot update product" = "Não foi possível atualizar o produto";
 
 /* The title of the alert when there is an error uploading an image
@@ -532,6 +553,12 @@
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "Criação de produtos";
 
+/* Cell title for Cross-sells products in Linked Products Settings screen */
+"Cross-sells" = "Venda cruzada";
+
+/* Navigation bar title for editing linked products for cross-sell products */
+"Cross-sells Products" = "Venda cruzada de produtos";
+
 /* Cell title: the current date. */
 "Current" = "Atual";
 
@@ -674,22 +701,22 @@
 "Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Validade do download";
-
-/* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "Download expiration";
 
-/* Title of the cell in Product Download limit > Download limit */
-"Download limit" = "Download limit";
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "Validade do download";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Limite de download";
 
-/* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "Arquivos para download";
+/* Title of the cell in Product Download limit > Download limit */
+"Download limit" = "Download limit";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "Downloadable Files";
+
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "Arquivos para download";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "Produtos para download";
@@ -698,10 +725,10 @@
 "Downloadable Product" = "Downloadable Product";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "Downloadable files";
+"Downloadable files" = "Arquivos para download";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "Arquivos para download";
+"Downloadable files" = "Downloadable files";
 
 /* Product Details > Purchase Details > Downloads cell title */
 "Downloads" = "Downloads";
@@ -711,6 +738,9 @@
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Identifique com facilidade seus produtos usando códigos exclusivos";
+
+/* Edit Products button inside the Linked Products screen. */
+"Edit Products" = "Editar produtos";
 
 /* Email address text field placeholder */
 "Email" = "E-mail";
@@ -1024,6 +1054,9 @@
 /* An error message shown when a user signed in with incorrect credentials. */
 "Incorrect username or password. Please try entering your login details again." = "Nome de usuário ou senha incorretos. Tente digitar seus dados de login novamente.";
 
+/* Subtitle of the product form bottom sheet action for linked products. */
+"Increase sales with upsells and cross-sells" = "Aumente as vendas com vendas adicionais e cruzadas";
+
 /* Label action for inserting a link on the editor */
 "Insert" = "Inserir";
 
@@ -1060,6 +1093,9 @@
 
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "Emitir reembolso";
+
+/* Text of the screen that is displayed while the refund is being created. */
+"Issuing Refund..." = "Emitindo reembolso...";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Parece que esse usuário\/senha não está associado a esse site.";
@@ -1119,6 +1155,13 @@
 
 /* Description of the Action sheet option when the user wants to change the Product type to external product */
 "Link a product to an external website" = "Vincule um produto a um site externo";
+
+/* Linked Products Settings navigation title */
+"Linked Products" = "Produtos relacionados";
+
+/* Title of the Linked Products row on Product main screen
+   Title of the product form bottom sheet action for editing linked products. */
+"Linked products" = "Produtos relacionados";
 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "Lista de imagens do produto";
@@ -1192,10 +1235,13 @@
 "Manual Offsets" = "Ajustes manuais";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "Reembolso manual via %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Reembolso manual via %1$@";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
+
+/* No comment provided by engineer. */
+"Manual Refund via Stripe" = "Reembolso manual via Stripe";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Domínio mapeado";
@@ -1302,16 +1348,16 @@
 "No data available" = "Não há dados disponíveis";
 
 /* Placeholder of the cell text field in Download expiration */
-"No expiration" = "No expiration";
-
-/* Placeholder of the cell text field in Download expiration */
 "No expiration" = "Sem expiração";
 
-/* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "Sem arquivos ainda";
+/* Placeholder of the cell text field in Download expiration */
+"No expiration" = "No expiration";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "No files yet";
+
+/* Placeholder for empty Downloadable Files row on Product main screen */
+"No files yet" = "Sem arquivos ainda";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "Nenhuma imagem adicionada";
@@ -1328,7 +1374,7 @@
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "Ainda não há variações de produto";
 
-/* Placeholder for editing linked products for a grouped product
+/* Placeholder for the linked products list selector screen
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "Nenhum produto ainda";
 
@@ -1470,6 +1516,9 @@
 /* Product section title */
 "PRODUCT" = "PRODUTO";
 
+/* Order shipping label package section title format. The number indicates the index of the shipping label package. */
+"Package %d" = "Pacote %d";
+
 /* The title for the customer payment cell */
 "Paid By Customer" = "Pago pelo cliente";
 
@@ -1566,10 +1615,10 @@
 "Please wait while we publish this product to your store" = "Aguarde enquanto publicamos o produto na sua loja";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Aguarde enquanto salvamos o produto na sua loja";
+"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
+"Please wait while we save this product to your store" = "Aguarde enquanto salvamos o produto na sua loja";
 
 /* Message of the in-progress UI while deleting the Product remotely */
 "Please wait while we update your store details" = "Aguarde enquanto atualizamos os detalhes da sua loja";
@@ -1658,6 +1707,12 @@
    Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "Reembolso de produtos";
 
+/* Cell description for Cross-sells products in Linked Products Settings screen */
+"Products promoted in the cart when current product is selected" = "Produtos divulgados no carrinho quando um produto está selecionado";
+
+/* Cell description for Upsells products in Linked Products Settings screen */
+"Products promoted instead of the currently viewed product (ie more profitable products)" = "Produtos divulgados em vez do produto visualizado no momento (isto é, produtos mais rentáveis)";
+
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Exibe a opção de ligar ou enviar uma mensagem para o cliente da cobrança.";
 
@@ -1722,10 +1777,10 @@
 "Reason for Refund" = "Motivo do reembolso";
 
 /* A label for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
+"Reason for Refund (Optional)" = "Razão do reembolso (opcional):";
 
 /* A label for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for Refund (Optional)" = "Razão do reembolso (opcional):";
+"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Motivo do reembolso do pedido";
@@ -1756,10 +1811,10 @@
 "Refund Shipping" = "Reembolsar envio";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Refund Via";
+"Refund Via" = "Reembolsar via";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Reembolsar via";
+"Refund Via" = "Refund Via";
 
 /* The title for the refunded amount cell */
 "Refunded" = "Reembolsado";
@@ -1803,6 +1858,12 @@
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Reportar travamentos";
+
+/* Text on the button that reprints a shipping label */
+"Reprint Shipping Label" = "Reimprimir etiqueta de envio";
+
+/* Request a refund on a shipping label from the shipping label more menu action sheet */
+"Request a Refund" = "Solicitar um reembolso";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Excluir log de atividades";
@@ -2037,9 +2098,6 @@
 /* Accessibility label to show bottom action sheet options for a downloadable file */
 "Show bottom action sheet options for a downloadable file" = "Mostrar opções de ações na parte inferior da tela para um arquivo para download";
 
-/* Accessibility label to show bottom action sheet to delete downloadable file from the list */
-"Show bottom action sheet to delete downloadable file from list" = "Mostrar folha de ação do botão para excluir o arquivo para download da lista";
-
 /* Accessibility label for the 'Show password' button in the login page's password field.
    Accessibility label for the “Show password“ button in the login page's password field. */
 "Show password" = "Mostrar senha";
@@ -2049,6 +2107,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "Exibe os detalhes de cobrança para este pedido.";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
+"Show the shipment details for this shipping label." = "Mostrar detalhes do envio para esta etiqueta.";
 
 /* Accessibility value if login page's password field is displaying the password. */
 "Shown" = "Visível";
@@ -2099,6 +2160,9 @@
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Desculpe, mas seu nome de usuário contém uma frase inválida%@.";
+
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7 */
+"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "A remoção de imagens nas variações do produto só é permitida no WooCommerce 4.7 ou versões posteriores. Atualize seu site.";
 
 /* No comment provided by engineer. */
 "Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "Desculpe, endereços de sites só podem conter letras minúsculas (a-z) e números.";
@@ -2408,6 +2472,9 @@
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Houve um problema removendo o bloco para o site especificado.";
 
+/* Text of the notice that is displayed while the refund creation fails. */
+"There was an error issuing the refund" = "Ocorreu um erro no pedido de reembolso";
+
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
 "This Month" = "Este mês";
@@ -2685,6 +2752,12 @@
    Updated on <date> */
 "Updated on %@" = "Atualizado em %@";
 
+/* Cell title for Upsells products in Linked Products Settings screen */
+"Upsells" = "Aumentar vendas";
+
+/* Navigation bar title for editing linked products for upsell products */
+"Upsells Products" = "Aumentar vendas de produtos";
+
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
 "Username" = "Nome de usuário";
@@ -2723,6 +2796,10 @@
 
 /* Button title View product in store in Edit Product More Options Action Sheet */
 "View Product in Store" = "Visualizar produto na loja";
+
+/* Accessibility label for the 'View Shipment Details' button
+   Button on bottom of shipping label package card to show shipping details */
+"View Shipment Details" = "Visualizar detalhes de envio";
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "Visualizar produto afiliado";
@@ -2937,4 +3014,7 @@
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "“%@”";
+
+/* Text of the notice that is displayed after the refund is created. */
+"🎉 Products successfuly refunded" = "Reembolso de 🎉 produtos feito com sucesso";
 

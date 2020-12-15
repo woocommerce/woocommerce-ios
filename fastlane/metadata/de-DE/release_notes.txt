@@ -1,3 +1,3 @@
-Produkte: Du kannst jetzt auch ein einfaches, gruppiertes oder externes Produkt hinzufügen und es als Entwurf speichern. Bald gibt es noch mehr neue Funktionen für dich!
+Dein Wunsch ist uns Befehl! Du kannst ab sofort einfache, gruppierte und externe Produkte für deinen Store direkt mit deinem iPhone oder iPad erstellen. Wandle Ideen in Produkte um – auch wenn du nicht an deinem Computer sitzt.
 
-Weitere Fehlerbehebungen: Auf dem Bildschirm der Bestelldetails werden dir jetzt Eigenschaften der Variationen für WooCommerce-Stores ab Version 4.7 angezeigt. Außerdem siehst du auf dem Bildschirm der Bestelldetails jetzt auch die Anzahl der Produktbewertungen. Vorher wurden die Anzahl der Bewertungen angezeigt, was fehlerhaft war.
+Und es gibt noch mehr! Wir haben Probleme behoben, darunter auch einen Bug, der dazu führte, dass neue Bestellungen nicht immer in der Bestellliste angezeigt wurden. Außerdem haben wir Verbesserungen vorgenommen. Zum Beispiel kannst du jetzt Rückerstattungen für Produkte oder Versandkosten direkt im Bestellbildschirm bearbeiten.

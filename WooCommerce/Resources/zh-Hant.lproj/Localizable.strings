@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-11-25 10:54:04+0000 */
+/* Translation-Revision-Date: 2020-12-10 13:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -66,6 +66,12 @@
 /* Navigation bar title for selecting multiple products when more multiple products have been selected. */
 "%ld Products Selected" = "已選取　%ld 件商品";
 
+/* Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product` */
+"%ld cross-sell product" = "%ld 個交叉銷售產品";
+
+/* Format of cross-sell linked products row in the plural form. Reads, `5 cross-sell products` */
+"%ld cross-sell products" = "%ld 個交叉銷售產品";
+
 /* Format of the number of Downloadable Files row in the singular form. Reads, `1 file` */
 "%ld file" = "%ld 個檔案";
 
@@ -75,11 +81,19 @@
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld 尚有存貨";
 
-/* Format of the number of grouped products in singular form */
+/* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `1 product`
+   Format of the number of grouped products in singular form */
 "%ld product" = "%ld 件產品";
 
-/* Format of the number of grouped products in plural form */
+/* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `5 products`
+   Format of the number of grouped products in plural form */
 "%ld products" = "%ld 件產品";
+
+/* Format of upsell linked products row in the singular form. Reads, `1 upsell product` */
+"%ld upsell product" = "%ld 個追加銷售產品";
+
+/* Format of upsell linked products row in the plural form. Reads, `5 upsell products` */
+"%ld upsell products" = "%ld 個追加銷售產品";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld 的子類選項";
@@ -113,6 +127,9 @@
 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
 "A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "不會發放退款給顧客。 你需要透過 %1$@ 手動退款。";
+
+/* No comment provided by engineer. */
+"A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "不會發放退款給顧客。 你需要透過 Stripe 手動退款。";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "獨特的銷售商品";
@@ -150,10 +167,10 @@
 "Add Downloadable File" = "新增可下載的檔案";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "新增檔案";
+"Add File" = "Add File";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "新增檔案";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "新增相片";
@@ -164,8 +181,8 @@
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "新增價格";
 
-/* Action to add products to a grouped product on the Grouped Products screen
-   Navigation bar title for selecting multiple products. */
+/* Action to add linked products to a product in the Linked Products List Selector screen
+   Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
 "Add Products" = "新增商品";
 
 /* A title used for a shipment tracking unit test
@@ -289,6 +306,9 @@
 /* Alert title to confirm the user wants to discard changes in Product Visibility */
 "Are you sure you want to discard your changes?" = "確定要放棄變更嗎？";
 
+/* The text on the confirmation alert before issuing a refund. */
+"Are you sure you want to issue a refund? This can't be undone." = "確定要申請退款？ 此動作無法復原。";
+
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "你確定要登出帳號 %@ 嗎？";
 
@@ -372,7 +392,7 @@
 "Can Not Request Link" = "無法要求連結";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
 "Cancel" = "取消";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -381,7 +401,8 @@
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "無法新增標籤";
 
-/* The title of the alert when there is an error updating the product */
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
+   The title of the alert when there is an error updating the product */
 "Cannot update product" = "無法更新商品";
 
 /* The title of the alert when there is an error uploading an image
@@ -532,6 +553,12 @@
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "正在建立商品";
 
+/* Cell title for Cross-sells products in Linked Products Settings screen */
+"Cross-sells" = "交叉銷售";
+
+/* Navigation bar title for editing linked products for cross-sell products */
+"Cross-sells Products" = "交叉銷售產品";
+
 /* Cell title: the current date. */
 "Current" = "最新";
 
@@ -674,22 +701,22 @@
 "Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "下載到期";
-
-/* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "Download expiration";
 
-/* Title of the cell in Product Download limit > Download limit */
-"Download limit" = "Download limit";
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "下載到期";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "下載限制";
 
-/* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "可下載的檔案";
+/* Title of the cell in Product Download limit > Download limit */
+"Download limit" = "Download limit";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "Downloadable Files";
+
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "可下載的檔案";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "可下載的商品";
@@ -698,10 +725,10 @@
 "Downloadable Product" = "Downloadable Product";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "Downloadable files";
+"Downloadable files" = "可下載的檔案";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "可下載的檔案";
+"Downloadable files" = "Downloadable files";
 
 /* Product Details > Purchase Details > Downloads cell title */
 "Downloads" = "下載";
@@ -711,6 +738,9 @@
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "使用唯一代碼輕鬆識別你的產品";
+
+/* Edit Products button inside the Linked Products screen. */
+"Edit Products" = "編輯產品";
 
 /* Email address text field placeholder */
 "Email" = "電子郵件";
@@ -1024,6 +1054,9 @@
 /* An error message shown when a user signed in with incorrect credentials. */
 "Incorrect username or password. Please try entering your login details again." = "錯誤的使用者名稱或密碼。請再次嘗試輸入你的登入詳細資料。";
 
+/* Subtitle of the product form bottom sheet action for linked products. */
+"Increase sales with upsells and cross-sells" = "透過追加銷售和交叉銷售提高銷售額";
+
 /* Label action for inserting a link on the editor */
 "Insert" = "插入";
 
@@ -1060,6 +1093,9 @@
 
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "核發退款";
+
+/* Text of the screen that is displayed while the refund is being created. */
+"Issuing Refund..." = "正在核發退款…";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "使用者名稱\/密碼似乎不適用於這個網站。";
@@ -1119,6 +1155,13 @@
 
 /* Description of the Action sheet option when the user wants to change the Product type to external product */
 "Link a product to an external website" = "將商品連結至外部網站";
+
+/* Linked Products Settings navigation title */
+"Linked Products" = "連結商品";
+
+/* Title of the Linked Products row on Product main screen
+   Title of the product form bottom sheet action for editing linked products. */
+"Linked products" = "連結商品";
 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "商品圖片清單";
@@ -1192,10 +1235,13 @@
 "Manual Offsets" = "手動時差";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "透過 %1$@ 手動退款";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "透過 %1$@ 手動退款";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
+
+/* No comment provided by engineer. */
+"Manual Refund via Stripe" = "透過 Stripe 手動退款";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "對應網域";
@@ -1302,16 +1348,16 @@
 "No data available" = "目前沒有資料";
 
 /* Placeholder of the cell text field in Download expiration */
-"No expiration" = "No expiration";
-
-/* Placeholder of the cell text field in Download expiration */
 "No expiration" = "無到期日";
 
-/* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "尚無任何檔案";
+/* Placeholder of the cell text field in Download expiration */
+"No expiration" = "No expiration";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "No files yet";
+
+/* Placeholder for empty Downloadable Files row on Product main screen */
+"No files yet" = "尚無任何檔案";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "尚未有圖片";
@@ -1328,7 +1374,7 @@
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "尚未有任何不同型號產品";
 
-/* Placeholder for editing linked products for a grouped product
+/* Placeholder for the linked products list selector screen
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "尚未有任何產品";
 
@@ -1470,6 +1516,9 @@
 /* Product section title */
 "PRODUCT" = "產品";
 
+/* Order shipping label package section title format. The number indicates the index of the shipping label package. */
+"Package %d" = "包裹 %d";
+
 /* The title for the customer payment cell */
 "Paid By Customer" = "顧客付款";
 
@@ -1566,10 +1615,10 @@
 "Please wait while we publish this product to your store" = "請稍候，我們正在將此商品上架到你的商店";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "請稍候，我們正在將此商品儲存到你的商店";
+"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
+"Please wait while we save this product to your store" = "請稍候，我們正在將此商品儲存到你的商店";
 
 /* Message of the in-progress UI while deleting the Product remotely */
 "Please wait while we update your store details" = "請稍候，我們正在更新你的商店詳細資料";
@@ -1658,6 +1707,12 @@
    Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "商品退款";
 
+/* Cell description for Cross-sells products in Linked Products Settings screen */
+"Products promoted in the cart when current product is selected" = "客戶選購目前商品時於購物車推銷其他商品";
+
+/* Cell description for Upsells products in Linked Products Settings screen */
+"Products promoted instead of the currently viewed product (ie more profitable products)" = "客戶檢視目前商品時推銷其他商品 (例如：獲利更高的商品)";
+
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "提示致電或傳簡訊給帳單客戶的選項。";
 
@@ -1722,10 +1777,10 @@
 "Reason for Refund" = "退款原因";
 
 /* A label for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
+"Reason for Refund (Optional)" = "退款原因 (選填)";
 
 /* A label for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for Refund (Optional)" = "退款原因 (選填)";
+"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "退還訂單費用原因";
@@ -1756,10 +1811,10 @@
 "Refund Shipping" = "退還運費";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Refund Via";
+"Refund Via" = "退款方式：";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "退款方式：";
+"Refund Via" = "Refund Via";
 
 /* The title for the refunded amount cell */
 "Refunded" = "已退款";
@@ -1803,6 +1858,12 @@
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "報告當機";
+
+/* Text on the button that reprints a shipping label */
+"Reprint Shipping Label" = "重新列印郵寄標籤";
+
+/* Request a refund on a shipping label from the shipping label more menu action sheet */
+"Request a Refund" = "要求退款";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "重設活動記錄";
@@ -2037,9 +2098,6 @@
 /* Accessibility label to show bottom action sheet options for a downloadable file */
 "Show bottom action sheet options for a downloadable file" = "顯示可下載檔案的底部操作列表選項";
 
-/* Accessibility label to show bottom action sheet to delete downloadable file from the list */
-"Show bottom action sheet to delete downloadable file from list" = "顯示底部操作表，以便從清單刪除可下載的檔案";
-
 /* Accessibility label for the 'Show password' button in the login page's password field.
    Accessibility label for the “Show password“ button in the login page's password field. */
 "Show password" = "顯示密碼";
@@ -2049,6 +2107,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "顯示此訂單的帳單詳細資料。";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
+"Show the shipment details for this shipping label." = "顯示此郵寄標籤的貨件詳細資訊。";
 
 /* Accessibility value if login page's password field is displaying the password. */
 "Shown" = "顯示";
@@ -2099,6 +2160,9 @@
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "很抱歉，你的使用者名稱含有無效的字詞 %@。";
+
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7 */
+"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "很抱歉，WooCommerce 4.7 或更新版本才支援移除產品變化圖片的功能，請更新你的網站。";
 
 /* No comment provided by engineer. */
 "Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "很抱歉，網站位址只能包含小寫字母 (a-z) 和數字。";
@@ -2408,6 +2472,9 @@
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "移除指定網站的封鎖時發生問題。";
 
+/* Text of the notice that is displayed while the refund creation fails. */
+"There was an error issuing the refund" = "核發退款時發生錯誤";
+
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
 "This Month" = "本月";
@@ -2685,6 +2752,12 @@
    Updated on <date> */
 "Updated on %@" = "更新日期：%@";
 
+/* Cell title for Upsells products in Linked Products Settings screen */
+"Upsells" = "追加銷售";
+
+/* Navigation bar title for editing linked products for upsell products */
+"Upsells Products" = "追加銷售產品";
+
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
 "Username" = "使用者名稱";
@@ -2723,6 +2796,10 @@
 
 /* Button title View product in store in Edit Product More Options Action Sheet */
 "View Product in Store" = "查看商店產品";
+
+/* Accessibility label for the 'View Shipment Details' button
+   Button on bottom of shipping label package card to show shipping details */
+"View Shipment Details" = "檢視貨件詳細資訊";
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "查看附屬商品";
@@ -2937,4 +3014,7 @@
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "「%@」";
+
+/* Text of the notice that is displayed after the refund is created. */
+"🎉 Products successfuly refunded" = "🎉 產品已成功退款";
 

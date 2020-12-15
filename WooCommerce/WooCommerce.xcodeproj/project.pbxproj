@@ -5200,7 +5200,7 @@
 				};
 			};
 			buildConfigurationList = B56DB3C12049BFAA00D4AA8E /* Build configuration list for PBXProject "WooCommerce" */;
-			compatibilityVersion = "Xcode 8.0";
+			compatibilityVersion = "Xcode 11.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (

@@ -1,3 +1,3 @@
-Producten: Je kan nu een eenvoudige, gegroepeerde en externe producten toevoegen en als concept opslaan. Binnenkort komen er nog meer nieuwe functies voor je beschikbaar!
+Jij vraagt, wij draaien! Je kan nu rechtstreeks vanaf je iPhone of iPad eenvoudige, gegroepeerde en externe producten voor je winkel aanmaken. Maak meteen werk van je ingevingen, zelfs als je onderweg bent.
 
-Overig: Op het scherm met bestellingsgegevens worden nu variatie-eigenschappen weergegeven voor WooCommerce-winkels op versie 4.7 en nieuwer. Daarnaast wordt er op het scherm met productgegevens nu het aantal productbeoordelingen weergegeven. Voorheen werd het aantal productrecenties weergegeven, wat onnauwkeurig was.
+En er is meer! We hebben problemen opgelost, waaronder een bug waardoor nieuw ingediende bestellingen niet altijd in een bestellijst werden weergegeven. Daarnaast hebben we enkele verbeteringen doorgevoerd. Je kan nu bijvoorbeeld rechtstreeks vanuit het bestelscherm terugbetalingen aanbieden, voor zowel producten als verzendingen.

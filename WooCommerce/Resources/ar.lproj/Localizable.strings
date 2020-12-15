@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-11-27 09:54:08+0000 */
+/* Translation-Revision-Date: 2020-12-10 14:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -13,7 +13,7 @@
 "%1$@ %2$@" = "%1$@ %2$@";
 
 /* Format for each Product attribute */
-"%1$@ (%2$ld options)" = "%1$@ (%2$l من الخيارات)";
+"%1$@ (%2$ld options)" = "%1$@ (%2$ld من الخيارات)";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
 "%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (خاص)";
@@ -66,6 +66,12 @@
 /* Navigation bar title for selecting multiple products when more multiple products have been selected. */
 "%ld Products Selected" = "%ld تم تحديد المنتجات";
 
+/* Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product` */
+"%ld cross-sell product" = "%ld منتج تسويقي";
+
+/* Format of cross-sell linked products row in the plural form. Reads, `5 cross-sell products` */
+"%ld cross-sell products" = "%ld من المنتجات التسويقية";
+
 /* Format of the number of Downloadable Files row in the singular form. Reads, `1 file` */
 "%ld file" = "%ld ملف";
 
@@ -75,11 +81,19 @@
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld متوافرة";
 
-/* Format of the number of grouped products in singular form */
+/* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `1 product`
+   Format of the number of grouped products in singular form */
 "%ld product" = "%ld المنتج";
 
-/* Format of the number of grouped products in plural form */
+/* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `5 products`
+   Format of the number of grouped products in plural form */
 "%ld products" = "%ld المنتجات";
+
+/* Format of upsell linked products row in the singular form. Reads, `1 upsell product` */
+"%ld upsell product" = "%ld منتج موصى به";
+
+/* Format of upsell linked products row in the plural form. Reads, `5 upsell products` */
+"%ld upsell products" = "%ld من المنتجات الموصى بها";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld من المتغيرات";
@@ -113,6 +127,9 @@
 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
 "A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "لن يتم إصدار استرداد الأموال. سيتعين عليك إصدار استرداد الأموال يدويًا من خلال %1$@.";
+
+/* No comment provided by engineer. */
+"A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "لن يتم إصدار استرداد الأموال. سيتعين عليك إصدار استرداد الأموال يدويًا من خلال Stripe.";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "عنصر فريد للبيع";
@@ -150,10 +167,10 @@
 "Add Downloadable File" = "إضافة ملف قابل للتنزيل";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "إضافة ملف";
+"Add File" = "Add File";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "إضافة ملف";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "إضافة صورة";
@@ -164,8 +181,8 @@
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "إضافة سعر";
 
-/* Action to add products to a grouped product on the Grouped Products screen
-   Navigation bar title for selecting multiple products. */
+/* Action to add linked products to a product in the Linked Products List Selector screen
+   Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
 "Add Products" = "إضافة المنتجات";
 
 /* A title used for a shipment tracking unit test
@@ -289,6 +306,9 @@
 /* Alert title to confirm the user wants to discard changes in Product Visibility */
 "Are you sure you want to discard your changes?" = "هل تريد بالتأكيد تجاهل التغييرات التي أجريتها؟";
 
+/* The text on the confirmation alert before issuing a refund. */
+"Are you sure you want to issue a refund? This can't be undone." = "هل تريد بالتأكيد إرسال مبلغ الاسترداد؟ يتعذر التراجع عن هذا.";
+
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "هل أنت متأكد من رغبتك في تسجيل الخروج من الحساب %@؟";
 
@@ -372,7 +392,7 @@
 "Can Not Request Link" = "يتعذر طلب رابط";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
 "Cancel" = "إلغاء";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -381,7 +401,8 @@
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "تتعذر إضافة وسوم";
 
-/* The title of the alert when there is an error updating the product */
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
+   The title of the alert when there is an error updating the product */
 "Cannot update product" = "يتعذر تحديث المنتج";
 
 /* The title of the alert when there is an error uploading an image
@@ -532,6 +553,12 @@
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "إنشاء المنتجات";
 
+/* Cell title for Cross-sells products in Linked Products Settings screen */
+"Cross-sells" = "منتجات تسويقية";
+
+/* Navigation bar title for editing linked products for cross-sell products */
+"Cross-sells Products" = "منتجات تسويقية";
+
 /* Cell title: the current date. */
 "Current" = "الحالي";
 
@@ -674,22 +701,22 @@
 "Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "انتهاء صلاحية التنزيل";
-
-/* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "Download expiration";
 
-/* Title of the cell in Product Download limit > Download limit */
-"Download limit" = "Download limit";
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "انتهاء صلاحية التنزيل";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "حدود التنزيل";
 
-/* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "ملفات قابلة للتنزيل";
+/* Title of the cell in Product Download limit > Download limit */
+"Download limit" = "Download limit";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "Downloadable Files";
+
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "ملفات قابلة للتنزيل";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "منتج قابل للتنزيل";
@@ -698,10 +725,10 @@
 "Downloadable Product" = "Downloadable Product";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "Downloadable files";
+"Downloadable files" = "ملفات قابلة للتنزيل";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "ملفات قابلة للتنزيل";
+"Downloadable files" = "Downloadable files";
 
 /* Product Details > Purchase Details > Downloads cell title */
 "Downloads" = "التنزيلات";
@@ -711,6 +738,9 @@
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "حدِّد منتجاتك التي تحتوي على أكواد مميزة بسهولة.";
+
+/* Edit Products button inside the Linked Products screen. */
+"Edit Products" = "تحرير المنتجات";
 
 /* Email address text field placeholder */
 "Email" = "البريد الإلكتروني";
@@ -1024,6 +1054,9 @@
 /* An error message shown when a user signed in with incorrect credentials. */
 "Incorrect username or password. Please try entering your login details again." = "اسم المستخدم أو كلمة المرور غير صحيحين. يُرجى محاولة إدخال بيانات تسجيل دخولك مرة أخرى.";
 
+/* Subtitle of the product form bottom sheet action for linked products. */
+"Increase sales with upsells and cross-sells" = "زيادة المبيعات من خلال عمليات البيع والبيع المتبادل";
+
 /* Label action for inserting a link on the editor */
 "Insert" = "إدراج";
 
@@ -1060,6 +1093,9 @@
 
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "نشر مبلغ الاسترداد";
+
+/* Text of the screen that is displayed while the refund is being created. */
+"Issuing Refund..." = "جارٍ إصدار أمر باسترداد الأموال...";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "يبدو أن اسم المستخدم هذا \/ كلمة المرور هذه غير مقترنين بهذه الموقع.";
@@ -1119,6 +1155,13 @@
 
 /* Description of the Action sheet option when the user wants to change the Product type to external product */
 "Link a product to an external website" = "ربط أحد المنتجات بموقع خارجي على الويب";
+
+/* Linked Products Settings navigation title */
+"Linked Products" = "المنتجات المرتبطة";
+
+/* Title of the Linked Products row on Product main screen
+   Title of the product form bottom sheet action for editing linked products. */
+"Linked products" = "المنتجات المرتبطة";
 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "قائمة صور المنتج";
@@ -1192,10 +1235,13 @@
 "Manual Offsets" = "تعديلات يدويّة";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "استرداد الأموال اليدوي بواسطة %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "استرداد الأموال اليدوي بواسطة %1$@";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
+
+/* No comment provided by engineer. */
+"Manual Refund via Stripe" = "استرداد الأموال اليدوي بواسطة Stripe";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "النطاق المعيّن";
@@ -1302,16 +1348,16 @@
 "No data available" = "لا توجد بيانات متاحة";
 
 /* Placeholder of the cell text field in Download expiration */
-"No expiration" = "No expiration";
-
-/* Placeholder of the cell text field in Download expiration */
 "No expiration" = "لا يوجد انتهاء صلاحية";
 
-/* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "لا توجد ملفات حتى الآن";
+/* Placeholder of the cell text field in Download expiration */
+"No expiration" = "No expiration";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "No files yet";
+
+/* Placeholder for empty Downloadable Files row on Product main screen */
+"No files yet" = "لا توجد ملفات حتى الآن";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "لا توجد صور حتى الآن";
@@ -1328,7 +1374,7 @@
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "لا توجد تباينات في المنتجات حتى الآن";
 
-/* Placeholder for editing linked products for a grouped product
+/* Placeholder for the linked products list selector screen
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "لا توجد منتجات حتى الآن";
 
@@ -1470,6 +1516,9 @@
 /* Product section title */
 "PRODUCT" = "المنتج";
 
+/* Order shipping label package section title format. The number indicates the index of the shipping label package. */
+"Package %d" = "الحزمة %d";
+
 /* The title for the customer payment cell */
 "Paid By Customer" = "يدفعه العميل";
 
@@ -1566,10 +1615,10 @@
 "Please wait while we publish this product to your store" = "يرجى الانتظار بينما ننشر هذا المنتج في المخزن الخاص بك";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "يرجى الانتظار بينما نحفظ هذا المنتج في مخزنك";
+"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
+"Please wait while we save this product to your store" = "يرجى الانتظار بينما نحفظ هذا المنتج في مخزنك";
 
 /* Message of the in-progress UI while deleting the Product remotely */
 "Please wait while we update your store details" = "يرجى الانتظار حينما نقوم بتحديث تفاصيل مخزنك";
@@ -1658,6 +1707,12 @@
    Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "استرداد المنتجات";
 
+/* Cell description for Cross-sells products in Linked Products Settings screen */
+"Products promoted in the cart when current product is selected" = "يتم الترويج للمنتجات في عربة التسوق عند تحديد المنتج الحالي";
+
+/* Cell description for Upsells products in Linked Products Settings screen */
+"Products promoted instead of the currently viewed product (ie more profitable products)" = "المنتجات التي يتم الترويج لها بدلاً من المنتج المعروض حاليًا (على سبيل المثال: المنتجات الأكثر ربحية)";
+
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "مطالبات مع خيار الاتصال بعميل الفوترة أو إرسال رسالة إليه.";
 
@@ -1722,10 +1777,10 @@
 "Reason for Refund" = "سبب الاسترداد";
 
 /* A label for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
+"Reason for Refund (Optional)" = "سبب استرداد الأموال (اختياري)";
 
 /* A label for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for Refund (Optional)" = "سبب استرداد الأموال (اختياري)";
+"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "سبب طلب استرداد الأموال";
@@ -1756,10 +1811,10 @@
 "Refund Shipping" = "استرداد مبلغ الشحن";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Refund Via";
+"Refund Via" = "استرداد الأموال بواسطة";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "استرداد الأموال بواسطة";
+"Refund Via" = "Refund Via";
 
 /* The title for the refunded amount cell */
 "Refunded" = "تم رد المبلغ";
@@ -1803,6 +1858,12 @@
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "الإبلاغ عن الأعطال";
+
+/* Text on the button that reprints a shipping label */
+"Reprint Shipping Label" = "إعادة طباعة بطاقة الشحن";
+
+/* Request a refund on a shipping label from the shipping label more menu action sheet */
+"Request a Refund" = "طلب استرداد الأموال";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "إعادة تعيين سجل النشاط";
@@ -2037,9 +2098,6 @@
 /* Accessibility label to show bottom action sheet options for a downloadable file */
 "Show bottom action sheet options for a downloadable file" = "عرض خيارات ورقة الإجراءات السفلية لملف قابل للتنزيل";
 
-/* Accessibility label to show bottom action sheet to delete downloadable file from the list */
-"Show bottom action sheet to delete downloadable file from list" = "عرض ورقة العمل السفلية لحذف ملف قابل للتنزيل من القائمة";
-
 /* Accessibility label for the 'Show password' button in the login page's password field.
    Accessibility label for the “Show password“ button in the login page's password field. */
 "Show password" = "عرض كلمة المرور";
@@ -2049,6 +2107,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "اعرض تفاصيل الفوترة لهذا الطلب.";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
+"Show the shipment details for this shipping label." = "اعرض تفاصيل الشحنة لبطاقة الشحن هذه.";
 
 /* Accessibility value if login page's password field is displaying the password. */
 "Shown" = "معروض";
@@ -2099,6 +2160,9 @@
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "عذرًا، اسم المستخدم الخاص بك يحتوي على عبارة غير صالحة %@.";
+
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7 */
+"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "عذرًا، إنَّ إزالة الصورة بشأن مجموعات المنتج المتنوعة مدعومة في WooCommerce الإصدار 4.7 أو أعلى، يرجى تحديث موقعك.";
 
 /* No comment provided by engineer. */
 "Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "عذرًا، يمكن أن تحتوي عناوين المواقع فقط على حروف أبجدية صغيرة (a-z) وأرقام.";
@@ -2408,6 +2472,9 @@
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "حدثت مشكلة أثناء إزالة حظر الموقع المحدد.";
 
+/* Text of the notice that is displayed while the refund creation fails. */
+"There was an error issuing the refund" = "حدث خطأ في أثناء إصدار أمر استرداد الأموال";
+
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
 "This Month" = "هذا الشهر";
@@ -2685,6 +2752,12 @@
    Updated on <date> */
 "Updated on %@" = "تم التحديث في %@";
 
+/* Cell title for Upsells products in Linked Products Settings screen */
+"Upsells" = "منتجات يوصى بها";
+
+/* Navigation bar title for editing linked products for upsell products */
+"Upsells Products" = "منتجات موصى بها";
+
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
 "Username" = "اسم المستخدم";
@@ -2723,6 +2796,10 @@
 
 /* Button title View product in store in Edit Product More Options Action Sheet */
 "View Product in Store" = "عرض منتج في المتجر";
+
+/* Accessibility label for the 'View Shipment Details' button
+   Button on bottom of shipping label package card to show shipping details */
+"View Shipment Details" = "عرض تفاصيل الشحن";
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "عرض منتج تابع";
@@ -2937,4 +3014,7 @@
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "\"%@\"";
+
+/* Text of the notice that is displayed after the refund is created. */
+"🎉 Products successfuly refunded" = "تم استرداد أموال 🎉 من المنتجات بنجاح ";
 

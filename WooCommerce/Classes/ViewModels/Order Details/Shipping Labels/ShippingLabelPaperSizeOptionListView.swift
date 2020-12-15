@@ -9,7 +9,7 @@ struct ShippingLabelPaperSizeOptionListView: View {
 
     init(paperSizeOptions: [ShippingLabelPaperSize]) {
         self.paperSizeOptions = paperSizeOptions
-        self.numberOfRows = Int(ceil(Double(paperSizeOptions.count) * 1.0 / Double(numberOfColumnsPerRow)))
+        self.numberOfRows = Int(ceil(Double(paperSizeOptions.count) / Double(numberOfColumnsPerRow)))
     }
 
     var body: some View {

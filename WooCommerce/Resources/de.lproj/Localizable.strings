@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-11-26 09:54:04+0000 */
+/* Translation-Revision-Date: 2020-12-10 17:54:56+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -66,6 +66,12 @@
 /* Navigation bar title for selecting multiple products when more multiple products have been selected. */
 "%ld Products Selected" = "%ld Ausgewählte Produkte";
 
+/* Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product` */
+"%ld cross-sell product" = "%ld Nutze Cross-Sell-Möglichkeiten für ein Produkt";
+
+/* Format of cross-sell linked products row in the plural form. Reads, `5 cross-sell products` */
+"%ld cross-sell products" = "%ld Nutze Cross-Sell-Möglichkeiten für Produkte";
+
 /* Format of the number of Downloadable Files row in the singular form. Reads, `1 file` */
 "%ld file" = "%ld Datei";
 
@@ -75,11 +81,19 @@
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld auf Lager";
 
-/* Format of the number of grouped products in singular form */
+/* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `1 product`
+   Format of the number of grouped products in singular form */
 "%ld product" = "%ld Produkt";
 
-/* Format of the number of grouped products in plural form */
+/* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `5 products`
+   Format of the number of grouped products in plural form */
 "%ld products" = "%ld Produkte";
+
+/* Format of upsell linked products row in the singular form. Reads, `1 upsell product` */
+"%ld upsell product" = "%ld Verkaufe ein zusätzliches Produkt";
+
+/* Format of upsell linked products row in the plural form. Reads, `5 upsell products` */
+"%ld upsell products" = "%ld Verkaufe zusätzliche Produkte";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld Variante";
@@ -113,6 +127,9 @@
 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
 "A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "Der Kunde erhält keine Rückerstattung. Du musst die Rückerstattung manuell über %1$@ ausstellen.";
+
+/* No comment provided by engineer. */
+"A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "Der Kunde erhält keine Rückerstattung. Du musst die Rückerstattung manuell über Stripe ausstellen.";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "Ein einzelner Artikel zum Verkaufen";
@@ -150,10 +167,10 @@
 "Add Downloadable File" = "Herunterladbare Datei hinzufügen";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Datei hinzufügen";
+"Add File" = "Add File";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "Datei hinzufügen";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Foto hinzufügen";
@@ -164,8 +181,8 @@
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "Preis hinzufügen";
 
-/* Action to add products to a grouped product on the Grouped Products screen
-   Navigation bar title for selecting multiple products. */
+/* Action to add linked products to a product in the Linked Products List Selector screen
+   Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
 "Add Products" = "Produkte hinzufügen";
 
 /* A title used for a shipment tracking unit test
@@ -289,6 +306,9 @@
 /* Alert title to confirm the user wants to discard changes in Product Visibility */
 "Are you sure you want to discard your changes?" = "Bist du sicher, dass du deine Änderungen verwerfen möchtest?";
 
+/* The text on the confirmation alert before issuing a refund. */
+"Are you sure you want to issue a refund? This can't be undone." = "Möchtest du wirklich eine Rückerstattung ausstellen? Dies kann nicht rückgängig gemacht werden.";
+
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Möchtest du dich wirklich vom Konto %@ abmelden?";
 
@@ -320,7 +340,7 @@
 "Back" = "Zurück";
 
 /* Title of a button to dismiss the survey complete screen */
-"Back to store" = "Zurück zum Store";
+"Back to store" = "Zurück zum Shop";
 
 /* Application's Background State */
 "Background" = "Hintergrund";
@@ -372,7 +392,7 @@
 "Can Not Request Link" = "Kann den Link nicht anfordern.";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
 "Cancel" = "Abbrechen";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -381,7 +401,8 @@
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "Schlagwörter können nicht hinzugefügt werden";
 
-/* The title of the alert when there is an error updating the product */
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
+   The title of the alert when there is an error updating the product */
 "Cannot update product" = "Produkt kann nicht aktualisiert werden";
 
 /* The title of the alert when there is an error uploading an image
@@ -439,7 +460,7 @@
 "Composes a new order note." = "Verfasst einen neuen Bestellhinweis.";
 
 /* Link on the store picker when there are no stores available. Opens a webview about Jetpack setup. */
-"Connect your store with Jetpack" = "Verbinde deinen Store mit Jetpack";
+"Connect your store with Jetpack" = "Verbinde deinen Shop mit Jetpack";
 
 /* Title shown when a user logs in with Google but no matching WordPress.com account is found */
 "Connected But…" = "Verbunden, aber …";
@@ -531,6 +552,12 @@
 
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "Produkte erstellen";
+
+/* Cell title for Cross-sells products in Linked Products Settings screen */
+"Cross-sells" = "Cross-Sells (Querverkäufe)";
+
+/* Navigation bar title for editing linked products for cross-sell products */
+"Cross-sells Products" = "Für Cross-Sells (Querverkäufe) von Produkten";
 
 /* Cell title: the current date. */
 "Current" = "Aktuell";
@@ -674,22 +701,22 @@
 "Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Ablauf des Downloads";
-
-/* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "Download expiration";
 
-/* Title of the cell in Product Download limit > Download limit */
-"Download limit" = "Download limit";
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "Ablauf des Downloads";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Downloadlimit";
 
-/* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "Herunterladbare Dateien";
+/* Title of the cell in Product Download limit > Download limit */
+"Download limit" = "Download limit";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "Downloadable Files";
+
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "Herunterladbare Dateien";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "Herunterladbares Produkt";
@@ -698,10 +725,10 @@
 "Downloadable Product" = "Downloadable Product";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "Downloadable files";
+"Downloadable files" = "Herunterladbare Dateien";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "Herunterladbare Dateien";
+"Downloadable files" = "Downloadable files";
 
 /* Product Details > Purchase Details > Downloads cell title */
 "Downloads" = "Downloads";
@@ -711,6 +738,9 @@
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Identifiziere deine Produkte problemlos mit eindeutigen Codes";
+
+/* Edit Products button inside the Linked Products screen. */
+"Edit Products" = "Produkte bearbeiten";
 
 /* Email address text field placeholder */
 "Email" = "E-Mail";
@@ -1000,7 +1030,7 @@
 "If disabled the note will be private" = "Bei Deaktivierung wird der Hinweis privat";
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
-"If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "Wenn du bereits einen Store hast, musst du das kostenlose Jetpack-Plugin installieren und deinen Store mit deinem WordPress.com-Konto verbinden.";
+"If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "Wenn du bereits einen Shop hast, musst du das kostenlose Jetpack-Plugin installieren und deinen Store mit deinem WordPress.com-Konto verbinden.";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Wenn du mit Apple oder Google fortfährst und noch kein WordPress.com-Konto hast, erstellst du damit ein Konto und stimmst unseren _Geschäftsbedingungen_ zu.";
@@ -1023,6 +1053,9 @@
 
 /* An error message shown when a user signed in with incorrect credentials. */
 "Incorrect username or password. Please try entering your login details again." = "Falsche Benutzername oder Passwort. Bitte gib deine Zugangsdaten erneut ein.";
+
+/* Subtitle of the product form bottom sheet action for linked products. */
+"Increase sales with upsells and cross-sells" = "Erhöhe deine Einnahmen mit Upsell- und Cross-Sell-Möglichkeiten";
 
 /* Label action for inserting a link on the editor */
 "Insert" = "Einfügen";
@@ -1060,6 +1093,9 @@
 
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "Rückerstattung ausstellen";
+
+/* Text of the screen that is displayed while the refund is being created. */
+"Issuing Refund..." = "Rückerstattungen wird ausgestellt …";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Dieser Benutzername\/dieses Passwort ist anscheinend nicht mit dieser Website verknüpft.";
@@ -1120,6 +1156,13 @@
 /* Description of the Action sheet option when the user wants to change the Product type to external product */
 "Link a product to an external website" = "Ein Produkt mit einer externen Website verknüpfen";
 
+/* Linked Products Settings navigation title */
+"Linked Products" = "Verlinkte Produkte";
+
+/* Title of the Linked Products row on Product main screen
+   Title of the product form bottom sheet action for editing linked products. */
+"Linked products" = "Verlinkte Produkte";
+
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "Liste der Bilder des Produkts";
 
@@ -1156,7 +1199,7 @@
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Melde dich mit der E-Mail-Adresse deines WordPress.com-Kontos an, um deine WooCommerce-Shops zu verwalten.";
 
 /* Sign in instructions for logging in with a username and password. */
-"Log in with your WordPress.com account to manage your WooCommerce stores." = "Melde dich mit deinem WordPress.com-Konto an, um deine WooCommerce-Stores zu verwalten.";
+"Log in with your WordPress.com account to manage your WooCommerce stores." = "Melde dich mit deinem WordPress.com-Konto an, um deine WooCommerce-Shops zu verwalten.";
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "Logge dich mit deinem WordPress.com-Benutzernamen und Passwort ein.";
@@ -1192,10 +1235,13 @@
 "Manual Offsets" = "Manueller Versatz";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "Manuelle Rückerstattung per %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manuelle Rückerstattung per %1$@";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
+
+/* No comment provided by engineer. */
+"Manual Refund via Stripe" = "Manuelle Rückerstattung über Stripe";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Gemappte Domain";
@@ -1302,16 +1348,16 @@
 "No data available" = "Keine Daten verfügbar";
 
 /* Placeholder of the cell text field in Download expiration */
-"No expiration" = "No expiration";
-
-/* Placeholder of the cell text field in Download expiration */
 "No expiration" = "Kein Ablauf";
 
-/* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "Noch keine Dateien";
+/* Placeholder of the cell text field in Download expiration */
+"No expiration" = "No expiration";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "No files yet";
+
+/* Placeholder for empty Downloadable Files row on Product main screen */
+"No files yet" = "Noch keine Dateien";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "Noch keine Bilder";
@@ -1328,7 +1374,7 @@
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "Noch keine Produktvarianten";
 
-/* Placeholder for editing linked products for a grouped product
+/* Placeholder for the linked products list selector screen
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "Noch keine Produkte";
 
@@ -1470,6 +1516,9 @@
 /* Product section title */
 "PRODUCT" = "PRODUKT";
 
+/* Order shipping label package section title format. The number indicates the index of the shipping label package. */
+"Package %d" = "Paket %d";
+
 /* The title for the customer payment cell */
 "Paid By Customer" = "Vom Kunden bezahlt";
 
@@ -1566,13 +1615,13 @@
 "Please wait while we publish this product to your store" = "Bitte warte, während wir dieses Produkt in deinem Shop veröffentlichen.";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Bitte warte, während wir dieses Produkt in deinem Store speichern.";
-
-/* Message of the in-progress UI while saving a Product as draft remotely */
 "Please wait while we save this product to your store" = "Please wait while we save this product to your store";
 
+/* Message of the in-progress UI while saving a Product as draft remotely */
+"Please wait while we save this product to your store" = "Bitte warte, während wir dieses Produkt in deinem Shop speichern.";
+
 /* Message of the in-progress UI while deleting the Product remotely */
-"Please wait while we update your store details" = "Bitte warten, während deine Store-Details aktualisiert werden";
+"Please wait while we update your store details" = "Bitte warten, während deine Shop-Details aktualisiert werden";
 
 /* Text on the loading view of the product downloadable file screen indicating the user to wait */
 "Please wait..." = "Bitte warten …";
@@ -1658,6 +1707,12 @@
    Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "Rückerstattung für Produkte";
 
+/* Cell description for Cross-sells products in Linked Products Settings screen */
+"Products promoted in the cart when current product is selected" = "Produkte, die im Warenkorb beworben werden, wenn das aktuelle Produkt ausgewählt wird";
+
+/* Cell description for Upsells products in Linked Products Settings screen */
+"Products promoted instead of the currently viewed product (ie more profitable products)" = "Produkte, die anstelle des Produktes beworben werden, das gerade angesehen wird (z. B. rentablere Produkte)";
+
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Zeigt eine Aufforderung mit der Option an, den Rechnungskunden anzurufen oder diesem eine Nachricht zu senden.";
 
@@ -1722,10 +1777,10 @@
 "Reason for Refund" = "Grund der Rückerstattung";
 
 /* A label for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
+"Reason for Refund (Optional)" = "Grund der Rückerstattung (optional)";
 
 /* A label for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for Refund (Optional)" = "Grund der Rückerstattung (optional)";
+"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Grund für die Rückerstattung der Bestellung";
@@ -1756,10 +1811,10 @@
 "Refund Shipping" = "Rückerstattung für Versand";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Refund Via";
+"Refund Via" = "Rückerstattung per";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Rückerstattung per";
+"Refund Via" = "Refund Via";
 
 /* The title for the refunded amount cell */
 "Refunded" = "Rückerstattet";
@@ -1803,6 +1858,12 @@
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Abstürze melden";
+
+/* Text on the button that reprints a shipping label */
+"Reprint Shipping Label" = "Versandetikett erneut drucken";
+
+/* Request a refund on a shipping label from the shipping label more menu action sheet */
+"Request a Refund" = "Rückerstattung anfordern";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Aktivitätsprotokoll zurücksetzen";
@@ -2037,9 +2098,6 @@
 /* Accessibility label to show bottom action sheet options for a downloadable file */
 "Show bottom action sheet options for a downloadable file" = "Optionen für unteres Action Sheet bei herunterladbaren Dateien anzeigen";
 
-/* Accessibility label to show bottom action sheet to delete downloadable file from the list */
-"Show bottom action sheet to delete downloadable file from list" = "Unteres Action Sheet anzeigen, um herunterladbare Datei aus Liste zu löschen";
-
 /* Accessibility label for the 'Show password' button in the login page's password field.
    Accessibility label for the “Show password“ button in the login page's password field. */
 "Show password" = "Passwort anzeigen";
@@ -2049,6 +2107,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "Zeigt die Abrechnungsdetails dieser Bestellung an";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
+"Show the shipment details for this shipping label." = "Sendungsdetails für dieses Versandetikett anzeigen.";
 
 /* Accessibility value if login page's password field is displaying the password. */
 "Shown" = "Angezeigt";
@@ -2099,6 +2160,9 @@
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Bedaure, aber dein Benutzername enthält einen ungültigen Ausdruck%@.";
+
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7 */
+"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "Das Entfernen von Fotos auf Produktvarianten wird erst ab WooCommerce 4.7 oder höher unterstützt. Bitte aktualisiere deine Website auf die neueste Version.";
 
 /* No comment provided by engineer. */
 "Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "Website-Adressen können leider nur Kleinbuchstaben (a-z) und Zahlen enthalten.";
@@ -2408,6 +2472,9 @@
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Es gab ein Problem die Blockierung dieser spezifischen Website zu entfernen.";
 
+/* Text of the notice that is displayed while the refund creation fails. */
+"There was an error issuing the refund" = "Beim Bearbeiten der Rückerstattung ist ein Fehler aufgetreten.";
+
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
 "This Month" = "Diesen Monat";
@@ -2685,6 +2752,12 @@
    Updated on <date> */
 "Updated on %@" = "Aktualisiert am %@";
 
+/* Cell title for Upsells products in Linked Products Settings screen */
+"Upsells" = "Zusatzverkäufe";
+
+/* Navigation bar title for editing linked products for upsell products */
+"Upsells Products" = "Für Zusatzverkäufe von Produkten";
+
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
 "Username" = "Benutzername";
@@ -2703,10 +2776,10 @@
 "Variations" = "Variationen";
 
 /* Banner caption in my store when the stats will be deprecated */
-"Variations without price will not be shown in your store." = "Varianten ohne Preise werden in deinem Store nicht angezeigt.";
+"Variations without price will not be shown in your store." = "Varianten ohne Preise werden in deinem Shop nicht angezeigt.";
 
 /* Title of the no price warning row on Product Variation main screen when a variation is enabled without a price */
-"Variations without price won’t be shown in your store" = "Varianten ohne Preise werden in deinem Store nicht angezeigt";
+"Variations without price won’t be shown in your store" = "Varianten ohne Preise werden in deinem Shop nicht angezeigt";
 
 /* two factor code placeholder */
 "Verification code" = "Verifizierungscode";
@@ -2723,6 +2796,10 @@
 
 /* Button title View product in store in Edit Product More Options Action Sheet */
 "View Product in Store" = "Produkt im Shop anzeigen";
+
+/* Accessibility label for the 'View Shipment Details' button
+   Button on bottom of shipping label package card to show shipping details */
+"View Shipment Details" = "Sendungsdetails anzeigen";
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "Affiliate-Produkt anzeigen";
@@ -2780,7 +2857,7 @@
 "Watch your audience grow with in-depth analytics." = "Sieh mithilfe von umfassenden Analysen dabei zu, wie deine Zielgruppe wächst.";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
-"We can’t display your store’s analytics" = "Die Analysen deines Stores können nicht angezeigt werden.";
+"We can’t display your store’s analytics" = "Die Analysen deines Shops können nicht angezeigt werden.";
 
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "Wir haben gerade an %@ einen Link gesendet. Sieh bitte in deiner E-Mail-App nach und tippe zum Anmelden auf den Link.";
@@ -2937,4 +3014,7 @@
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "„%@“";
+
+/* Text of the notice that is displayed after the refund is created. */
+"🎉 Products successfuly refunded" = "🎉 Produkte erfolgreich rückerstattet";
 

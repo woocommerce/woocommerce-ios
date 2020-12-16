@@ -1,6 +1,6 @@
 source 'https://rubygems.org' do
   gem 'rake'
-  gem 'cocoapods', '1.9.1'
+  gem 'cocoapods', '~> 1.10'
   gem 'xcpretty-travis-formatter'
   gem 'dotenv'
   gem 'fastlane', '~> 2'

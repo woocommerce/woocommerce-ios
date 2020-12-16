@@ -275,8 +275,6 @@ private extension OrderDetailsDataSource {
             configureRefund(cell: cell, at: indexPath)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .netAmount:
             configureNetAmount(cell: cell)
-        case let cell as ProductDetailsTableViewCell where row == .orderItem:
-            configureOrderItem(cell: cell, at: indexPath)
         case let cell as ProductDetailsTableViewCell where row == .shippingLabelProduct:
             configureShippingLabelProduct(cell: cell, at: indexPath)
         case let cell as ProductDetailsTableViewCell where row == .aggregateOrderItem:
@@ -284,7 +282,7 @@ private extension OrderDetailsDataSource {
         case let cell as ButtonTableViewCell where row == .fulfillButton:
             configureFulfillmentButton(cell: cell)
         case let cell as ButtonTableViewCell where row == .shippingLabelReprintButton:
-            configureReprintShippingLabelButton(cell: cell)
+            configureReprintShippingLabelButton(cell: cell, at: indexPath)
         case let cell as OrderTrackingTableViewCell where row == .tracking:
             configureTracking(cell: cell, at: indexPath)
         case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelTrackingNumber:
@@ -437,17 +435,6 @@ private extension OrderDetailsDataSource {
         cell.hideFootnote()
     }
 
-    private func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
-        cell.selectionStyle = .default
-
-        let item = items[indexPath.row]
-        let product = lookUpProduct(by: item.productOrVariationID)
-        let itemViewModel = ProductDetailsCellViewModel(item: item,
-                                                        currency: order.currency,
-                                                        product: product)
-        cell.configure(item: itemViewModel, imageService: imageService)
-    }
-
     private func configureShippingLabelDetail(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Footer.showShippingLabelDetails
         cell.applyPlainTextStyle()
@@ -538,9 +525,13 @@ private extension OrderDetailsDataSource {
         cell.updateUI(viewModel: viewModel)
     }
 
-    private func configureReprintShippingLabelButton(cell: ButtonTableViewCell) {
-        cell.configure(style: .secondary, title: Titles.reprintShippingLabel) {
-            // TODO-2174: reprint shipping label UX
+    private func configureReprintShippingLabelButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
+        cell.configure(style: .secondary, title: Titles.reprintShippingLabel) { [weak self] in
+            guard let self = self else { return }
+            guard let shippingLabel = self.shippingLabel(at: indexPath) else {
+                return
+            }
+            self.onCellAction?(.reprintShippingLabel(shippingLabel: shippingLabel), nil)
         }
     }
 
@@ -548,10 +539,16 @@ private extension OrderDetailsDataSource {
         cell.selectionStyle = .default
 
         let aggregateItem = aggregateOrderItems[indexPath.row]
-        let product = lookUpProduct(by: aggregateItem.productOrVariationID)
-        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem,
-                                                        currency: order.currency,
-                                                        product: product)
+        let imageURL: URL? = {
+            guard let imageURLString = aggregateItem.variationID != 0 ?
+                    lookUpProductVariation(productID: aggregateItem.productID, variationID: aggregateItem.variationID)?.image?.src:
+                    lookUpProduct(by: aggregateItem.productID)?.images.first?.src else {
+                return nil
+            }
+            return URL(string: imageURLString)
+        }()
+        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem.copy(imageURL: imageURL),
+                                                        currency: order.currency)
 
         cell.configure(item: itemViewModel, imageService: imageService)
     }
@@ -678,6 +675,10 @@ extension OrderDetailsDataSource {
 
     func lookUpProduct(by productID: Int64) -> Product? {
         return products.filter({ $0.productID == productID }).first
+    }
+
+    private func lookUpProductVariation(productID: Int64, variationID: Int64) -> ProductVariation? {
+        return resultsControllers.productVariations.filter({ $0.productID == productID && $0.productVariationID == variationID }).first
     }
 
     func lookUpRefund(by refundID: Int64) -> Refund? {
@@ -1157,7 +1158,6 @@ extension OrderDetailsDataSource {
     ///
     enum Row {
         case summary
-        case orderItem
         case aggregateOrderItem
         case fulfillButton
         case details
@@ -1188,8 +1188,6 @@ extension OrderDetailsDataSource {
             switch self {
             case .summary:
                 return SummaryTableViewCell.reuseIdentifier
-            case .orderItem:
-                return ProductDetailsTableViewCell.reuseIdentifier
             case .aggregateOrderItem:
                 return ProductDetailsTableViewCell.reuseIdentifier
             case .fulfillButton:
@@ -1247,6 +1245,7 @@ extension OrderDetailsDataSource {
         case tracking
         case summary
         case issueRefund
+        case reprintShippingLabel(shippingLabel: ShippingLabel)
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
     }
 

@@ -43,6 +43,8 @@ public final class ShippingLabelStore: Store {
         case .refundShippingLabel(let shippingLabel, let completion):
             refundShippingLabel(shippingLabel: shippingLabel,
                                 completion: completion)
+        case .loadShippingLabelSettings(let shippingLabel, let completion):
+            loadShippingLabelSettings(shippingLabel: shippingLabel, completion: completion)
         }
     }
 }
@@ -89,6 +91,10 @@ private extension ShippingLabelStore {
                 }
             }
         }
+    }
+
+    func loadShippingLabelSettings(shippingLabel: ShippingLabel, completion: (ShippingLabelSettings?) -> Void) {
+        completion(storageManager.viewStorage.loadShippingLabelSettings(siteID: shippingLabel.siteID, orderID: shippingLabel.orderID)?.toReadOnly())
     }
 }
 

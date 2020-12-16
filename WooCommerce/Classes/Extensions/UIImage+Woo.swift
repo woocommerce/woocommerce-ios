@@ -321,6 +321,18 @@ extension UIImage {
         return UIImage(named: "login-site-address-info")!
     }
 
+    /// Login error: no Jetpack
+    ///
+    static var loginNoJetpackError: UIImage {
+        return UIImage(named: "woo-no-jetpack-error")!.imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Login error: no WordPress
+    ///
+    static var loginNoWordPressError: UIImage {
+        return UIImage(named: "woo-wp-no-site")!.imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Mail Icon
     ///
     static var mailImage: UIImage {
@@ -395,6 +407,13 @@ extension UIImage {
     ///
     static var pagesImage: UIImage {
         return UIImage.gridicon(.pages)
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Pages Icon (footnote)
+    ///
+    static var pagesFootnoteImage: UIImage {
+        return UIImage.gridicon(.pages, size: CGSize(width: 20, height: 20))
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
@@ -523,6 +542,12 @@ extension UIImage {
         return UIImage(imageLiteralResourceName: "megaphone").imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Error image
+    ///
+    static var errorImage: UIImage {
+        return UIImage(imageLiteralResourceName: "woo-error").imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Creates a bitmap image of the Woo "bubble" logo based on a vector image in our asset catalog.
     ///
     /// - Parameters:
@@ -545,6 +570,12 @@ extension UIImage {
     ///
     static var waitingForCustomersImage: UIImage {
         return UIImage(named: "woo-waiting-customers")!
+    }
+
+    /// What is Jetpack Image
+    ///
+    static var whatIsJetpackImage: UIImage {
+        return UIImage(named: "woo-what-is-jetpack")!
     }
 }
 

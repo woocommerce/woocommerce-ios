@@ -1,4 +1,5 @@
 import Yosemite
+import Observables
 
 /// The type of product form: adding a new one or editing an existing one.
 enum ProductFormType {

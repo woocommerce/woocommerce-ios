@@ -19,6 +19,11 @@ final class MockStoresManager: DefaultStoresManager {
     ///
     var shouldDispatchActionsForReal = false
 
+    /// Accept a concrete implementation (in addition to the pre-existing Protocol-based initializer)
+    ///
+    init(sessionManager: SessionManager) {
+        super.init(sessionManager: sessionManager)
+    }
 
     // MARK: - Overridden Methods
 

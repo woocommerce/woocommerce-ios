@@ -330,6 +330,9 @@ private extension OrderDetailsViewController {
             trackingWasPressed(at: indexPath)
         case .issueRefund:
             issueRefundWasPressed()
+        case .reprintShippingLabel(let shippingLabel):
+            let reprintViewController = ReprintShippingLabelViewController(shippingLabel: shippingLabel)
+            show(reprintViewController, sender: self)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         }
@@ -375,8 +378,13 @@ private extension OrderDetailsViewController {
 
         actionSheet.addCancelActionWithTitle(Localization.ShippingLabelMoreMenu.cancelAction)
 
-        actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.requestRefundAction) { _ in
-            // TODO-2168: refund a shipping label
+        actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.requestRefundAction) { [weak self] _ in
+            let refundViewController = RefundShippingLabelViewController(shippingLabel: shippingLabel) { [weak self] in
+                self?.navigationController?.popViewController(animated: true)
+            }
+            // Disables the bottom bar (tab bar) when requesting a refund.
+            refundViewController.hidesBottomBarWhenPushed = true
+            self?.show(refundViewController, sender: self)
         }
 
         let popoverController = actionSheet.popoverPresentationController

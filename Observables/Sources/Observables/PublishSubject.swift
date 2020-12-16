@@ -66,7 +66,7 @@ import Foundation
 /// - https://developer.apple.com/documentation/combine/passthroughsubject
 /// - http://reactivex.io/documentation/subject.html
 ///
-final class PublishSubject<Element>: Observable<Element> {
+public final class PublishSubject<Element>: Observable<Element> {
 
     private typealias OnCancel = () -> ()
 
@@ -74,7 +74,13 @@ final class PublishSubject<Element>: Observable<Element> {
     ///
     private var observers = [UUID: Observer<Element>]()
 
-    override func subscribe(_ onNext: @escaping OnNext<Element>) -> ObservationToken {
+    /// Initialize a new PublishSubject
+    ///
+    public override init() {
+        /// Empty initializer required because observables are in their own package
+    }
+
+    public override func subscribe(_ onNext: @escaping OnNext<Element>) -> ObservationToken {
         let uuid = UUID()
 
         observers[uuid] = Observer(onNext: onNext)
@@ -88,7 +94,7 @@ final class PublishSubject<Element>: Observable<Element> {
 
     /// Emit a new value. All observers are immediately called with the given value.
     ///
-    func send(_ element: Element) {
+    public func send(_ element: Element) {
         observers.values.forEach { observer in
             observer.send(element)
         }

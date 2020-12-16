@@ -2,6 +2,7 @@ import TestKit
 import WordPressAuthenticator
 import XCTest
 @testable import WooCommerce
+import Yosemite
 
 final class AppCoordinatorTests: XCTestCase {
     private var tabBarController: MainTabBarController!

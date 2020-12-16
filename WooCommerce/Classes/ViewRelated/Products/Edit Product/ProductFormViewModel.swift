@@ -1,4 +1,5 @@
 import Yosemite
+import Observables
 
 /// Provides data for product form UI, and handles product editing actions.
 final class ProductFormViewModel: ProductFormViewModelProtocol {

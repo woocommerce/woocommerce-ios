@@ -100,6 +100,8 @@
 		933A27302222344D00C2143A /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A272F2222344D00C2143A /* Logging.swift */; };
 		937D6C47226E1D1F004FB8A5 /* AccountSettings+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 937D6C45226E1D1F004FB8A5 /* AccountSettings+CoreDataClass.swift */; };
 		937D6C48226E1D1F004FB8A5 /* AccountSettings+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 937D6C46226E1D1F004FB8A5 /* AccountSettings+CoreDataProperties.swift */; };
+		AE9CEC2B258901BE000F3CAB /* Customer+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9CEC29258901BE000F3CAB /* Customer+CoreDataClass.swift */; };
+		AE9CEC2C258901BE000F3CAB /* Customer+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9CEC2A258901BE000F3CAB /* Customer+CoreDataProperties.swift */; };
 		B505255420EE6914008090F5 /* StorageType+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505255320EE6914008090F5 /* StorageType+Extensions.swift */; };
 		B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6D820BEEA3100BB1B69 /* Account+CoreDataProperties.swift */; };
 		B505F6DB20BEEA3200BB1B69 /* Account+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B505F6D920BEEA3200BB1B69 /* Account+CoreDataClass.swift */; };
@@ -299,6 +301,9 @@
 		937D6C46226E1D1F004FB8A5 /* AccountSettings+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AccountSettings+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		93D8BBF9226A6B3200AD2EB3 /* Model 14.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 14.xcdatamodel"; sourceTree = "<group>"; };
 		A3821B262583F14863740A37 /* Pods-Storage.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Storage.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Storage/Pods-Storage.debug.xcconfig"; sourceTree = "<group>"; };
+		AE9CEC262588F65F000F3CAB /* Model 41.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 41.xcdatamodel"; sourceTree = "<group>"; };
+		AE9CEC29258901BE000F3CAB /* Customer+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Customer+CoreDataClass.swift"; sourceTree = "<group>"; };
+		AE9CEC2A258901BE000F3CAB /* Customer+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Customer+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B505255320EE6914008090F5 /* StorageType+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StorageType+Extensions.swift"; sourceTree = "<group>"; };
 		B505F6D820BEEA3100BB1B69 /* Account+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Account+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B505F6D920BEEA3200BB1B69 /* Account+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Account+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -614,6 +619,8 @@
 		B59E11D720A9CFF3004121A4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				AE9CEC29258901BE000F3CAB /* Customer+CoreDataClass.swift */,
+				AE9CEC2A258901BE000F3CAB /* Customer+CoreDataProperties.swift */,
 				02C254E32563B12E00A04423 /* ShippingLabelSettings+CoreDataClass.swift */,
 				02C254E42563B12E00A04423 /* ShippingLabelSettings+CoreDataProperties.swift */,
 				02C254E52563B12E00A04423 /* ShippingLabel+CoreDataClass.swift */,
@@ -994,6 +1001,7 @@
 				B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */,
 				D8736B6A22F0AC9000A14A29 /* OrderCount+CoreDataClass.swift in Sources */,
 				CE4FD44D2350EB7600A16B31 /* Refund+CoreDataClass.swift in Sources */,
+				AE9CEC2B258901BE000F3CAB /* Customer+CoreDataClass.swift in Sources */,
 				02DA64192313C2AA00284168 /* StatsVersion.swift in Sources */,
 				2618707325409C65006522A1 /* ShippingLineTax+CoreDataClass.swift in Sources */,
 				7474539E2242C85E00E0B5EE /* ProductAttribute+CoreDataProperties.swift in Sources */,
@@ -1035,6 +1043,7 @@
 				45E1863023704519009241F3 /* ShippingLine+CoreDataProperties.swift in Sources */,
 				B5FD111F21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift in Sources */,
 				02C254EE2563B12E00A04423 /* ShippingLabel+CoreDataProperties.swift in Sources */,
+				AE9CEC2C258901BE000F3CAB /* Customer+CoreDataProperties.swift in Sources */,
 				D8550D02230D3F8B00AAC4F8 /* ProductReview+CoreDataProperties.swift in Sources */,
 				9302E3A6220DC3AE00DA5018 /* CoreDataIterativeMigrator.swift in Sources */,
 				D821645E2239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataProperties.swift in Sources */,
@@ -1470,6 +1479,7 @@
 		B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				AE9CEC262588F65F000F3CAB /* Model 41.xcdatamodel */,
 				45ED6099257EB11B007B4AC6 /* Model 40.xcdatamodel */,
 				26F4E7F12566193500EA633B /* Model 39.xcdatamodel */,
 				02C254DE2563AC5500A04423 /* Model 38.xcdatamodel */,
@@ -1511,7 +1521,7 @@
 				746A9D14214071F90013F6FF /* Model 2.xcdatamodel */,
 				B59E11D920A9D00C004121A4 /* Model.xcdatamodel */,
 			);
-			currentVersion = 45ED6099257EB11B007B4AC6 /* Model 40.xcdatamodel */;
+			currentVersion = AE9CEC262588F65F000F3CAB /* Model 41.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

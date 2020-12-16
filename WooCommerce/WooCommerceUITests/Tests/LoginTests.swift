@@ -25,4 +25,22 @@ final class LoginTests: XCTestCase {
 
         XCTAssert(prologue.isLoaded())
     }
+
+    func testSiteAddressLoginLogout() {
+        let prologue = PrologueScreen().selectSiteAddress()
+            .proceedWith(siteUrl: TestCredentials.siteUrl)
+            .proceedWith(email: TestCredentials.emailAddress)
+            .proceedWith(password: TestCredentials.password)
+            .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)
+            .continueWithSelectedSite()
+            //.dismissNotificationAlertIfNeeded()
+
+            // Log out
+            .openSettingsPane()
+            .verifySelectedStoreDisplays(siteUrl: TestCredentials.siteUrl, displayName: TestCredentials.displayName)
+            .logOut()
+
+
+        XCTAssert(prologue.isLoaded())
+    }
 }

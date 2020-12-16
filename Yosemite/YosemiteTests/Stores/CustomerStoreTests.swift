@@ -34,6 +34,7 @@ final class CustomerStoreTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         network = MockNetwork(useResponseQueue: true)
@@ -84,7 +85,6 @@ final class CustomerStoreTests: XCTestCase {
                 promise(result)
             }
             store.onAction(action)
-
         }
 
         // Then
@@ -101,6 +101,7 @@ final class CustomerStoreTests: XCTestCase {
         let store = CustomerStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectedError = NetworkError.notFound
         network.simulateError(requestUrlSuffix: "customers", error: expectedError)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Customer.self), 0)
 
         // When
         let result: Result<Void, Error> = try waitFor { promise in
@@ -113,6 +114,7 @@ final class CustomerStoreTests: XCTestCase {
         // Then
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Customer.self), 0)
     }
 }
 

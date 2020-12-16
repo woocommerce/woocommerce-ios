@@ -558,17 +558,19 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       "zh-cn" => "zh-Hans",
       "zh-tw" => "zh-Hant"
     }.each do |source, destination|
-      source_dir = Dir.pwd + "/metadata/" + source
-      Dir.children(source_dir).select { |file| 
-        FileUtils.mv source_dir + "/" + file, Dir.pwd + "/metadata/" + destination + "/" + file
+      source_dir = File.join(Dir.pwd, "metadata", source)
+      Dir.children(source_dir).each { |file| 
+        source_file = File.join(source_dir, file)
+        destination_file = File.join(Dir.pwd, "metadata", destination, file)
+        FileUtils.mv(source_file, destination_file)
       }
       FileUtils.remove_dir(source_dir)
     end
 
     # Copy source files into `en-US`
-    enUS_path = Dir.pwd + "/metadata/en-US/"
+    enUS_path = File.join(Dir.pwd, 'metadata', 'en-US')
 
-    FileUtils.mkdir_p(enUS_path) unless File.directory?(enUS_path)
+    FileUtils.mkdir_p(enUS_path)
 
     [
       "promo_screenshot_1.txt",
@@ -576,17 +578,19 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       "promo_screenshot_3.txt",
       "promo_screenshot_4.txt",
       "promo_screenshot_5.txt",
-    ].each { |source|
-      FileUtils.cp( Dir.pwd + "/appstoreres/metadata/source/" + source, enUS_path + source)
+    ].each { |filename|
+      source = File.join(Dir.pwd, 'appstoreres', 'metadata', 'source', filename)
+      destination = File.join(enUS_path, filename)
+      FileUtils.cp(source, destination)
     }
 
     # Replace the `default` directory with the contents of `en-US`
-    default_path = Dir.pwd + "/metadata/default/"
+    default_path = File.join(Dir.pwd, 'metadata', 'default')
     FileUtils.remove_dir(default_path) if File.directory?(default_path)
     FileUtils.copy_entry(enUS_path, default_path)
 
     # Never store review information (it contains passwords and PII)
-    review_info_path = Dir.pwd + "/metadata/review_information/"
+    review_info_path = File.join(Dir.pwd, 'metadata', 'review_information')
     FileUtils.remove_dir(review_info_path) if File.directory?(review_info_path)
   end
 

@@ -11,21 +11,7 @@ final class LoginTests: XCTestCase {
         app.launch()
     }
 
-    func testWordPressLoginLogout() {
-        let prologue = PrologueScreen().selectContinueWithWordPress()
-            .proceedWith(email: TestCredentials.emailAddress)
-            .proceedWith(password: TestCredentials.password)
-            .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)
-            .continueWithSelectedSite()
-
-            // Log out
-            .openSettingsPane()
-            .verifySelectedStoreDisplays(siteUrl: TestCredentials.siteUrl, displayName: TestCredentials.displayName)
-            .logOut()
-
-        XCTAssert(prologue.isLoaded())
-    }
-
+    // Login with Store Address and log out.
     func testSiteAddressLoginLogout() {
         let prologue = PrologueScreen().selectSiteAddress()
             .proceedWith(siteUrl: TestCredentials.siteUrl)
@@ -39,6 +25,22 @@ final class LoginTests: XCTestCase {
             .verifySelectedStoreDisplays(siteUrl: TestCredentials.siteUrl, displayName: TestCredentials.displayName)
             .logOut()
 
+
+        XCTAssert(prologue.isLoaded())
+    }
+
+    //Login with WordPress.com account and log out
+    func testWordPressLoginLogout() {
+        let prologue = PrologueScreen().selectContinueWithWordPress()
+            .proceedWith(email: TestCredentials.emailAddress)
+            .proceedWith(password: TestCredentials.password)
+            .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)
+            .continueWithSelectedSite()
+
+            // Log out
+            .openSettingsPane()
+            .verifySelectedStoreDisplays(siteUrl: TestCredentials.siteUrl, displayName: TestCredentials.displayName)
+            .logOut()
 
         XCTAssert(prologue.isLoaded())
     }

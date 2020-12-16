@@ -16,7 +16,7 @@ public class CustomerRemote: Remote {
     ///
     public func getAllCustomers(for siteID: Int64,
                                 context: ContextType = Default.context,
-                                pageNumber: Int = Default.pageNumber,
+                                pageNumber: Int = Default.firstPageNumber,
                                 pageSize: Int = Default.pageSize,
                                 completion: @escaping (Result<[Customer], Error>) -> Void) {
         let parameters = [
@@ -45,7 +45,7 @@ public extension CustomerRemote {
     enum Default {
         public static let context: ContextType = .view
         public static let pageSize: Int        = 25
-        public static let pageNumber: Int      = Remote.Default.firstPageNumber
+        public static let firstPageNumber: Int = Remote.Default.firstPageNumber
     }
 
     private enum Path {

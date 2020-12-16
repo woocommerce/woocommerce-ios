@@ -12,6 +12,7 @@ public typealias Address = Networking.Address
 public typealias APNSDevice = Networking.APNSDevice
 public typealias CommentStatus = Networking.CommentStatus
 public typealias Credentials = Networking.Credentials
+public typealias Customer = Networking.Customer
 public typealias DotcomDevice = Networking.DotcomDevice
 public typealias Leaderboard = Networking.Leaderboard
 public typealias LeaderboardRow = Networking.LeaderboardRow

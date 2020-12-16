@@ -12,7 +12,7 @@ final class LoginTests: XCTestCase {
     }
 
     func testWordPressLoginLogout() {
-        let prologue = PrologueScreen().selectContinue()
+        let prologue = PrologueScreen().selectContinueWithWordPress()
             .proceedWith(email: TestCredentials.emailAddress)
             .proceedWith(password: TestCredentials.password)
             .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)

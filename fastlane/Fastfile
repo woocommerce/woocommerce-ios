@@ -557,13 +557,13 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       "nl" => "nl-NL",
       "zh-cn" => "zh-Hans",
       "zh-tw" => "zh-Hant"
-    }.each { |source, destination|
+    }.each do |source, destination|
       source_dir = Dir.pwd + "/metadata/" + source
       Dir.children(source_dir).select { |file| 
         FileUtils.mv source_dir + "/" + file, Dir.pwd + "/metadata/" + destination + "/" + file
       }
       FileUtils.remove_dir(source_dir)
-    }
+    end
 
     # Copy source files into `en-US`
     enUS_path = Dir.pwd + "/metadata/en-US/"

@@ -282,7 +282,7 @@ private extension OrderDetailsDataSource {
         case let cell as ButtonTableViewCell where row == .fulfillButton:
             configureFulfillmentButton(cell: cell)
         case let cell as ButtonTableViewCell where row == .shippingLabelReprintButton:
-            configureReprintShippingLabelButton(cell: cell)
+            configureReprintShippingLabelButton(cell: cell, at: indexPath)
         case let cell as OrderTrackingTableViewCell where row == .tracking:
             configureTracking(cell: cell, at: indexPath)
         case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelTrackingNumber:
@@ -525,9 +525,13 @@ private extension OrderDetailsDataSource {
         cell.updateUI(viewModel: viewModel)
     }
 
-    private func configureReprintShippingLabelButton(cell: ButtonTableViewCell) {
-        cell.configure(style: .secondary, title: Titles.reprintShippingLabel) {
-            // TODO-2174: reprint shipping label UX
+    private func configureReprintShippingLabelButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
+        cell.configure(style: .secondary, title: Titles.reprintShippingLabel) { [weak self] in
+            guard let self = self else { return }
+            guard let shippingLabel = self.shippingLabel(at: indexPath) else {
+                return
+            }
+            self.onCellAction?(.reprintShippingLabel(shippingLabel: shippingLabel), nil)
         }
     }
 
@@ -1241,6 +1245,7 @@ extension OrderDetailsDataSource {
         case tracking
         case summary
         case issueRefund
+        case reprintShippingLabel(shippingLabel: ShippingLabel)
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
     }
 

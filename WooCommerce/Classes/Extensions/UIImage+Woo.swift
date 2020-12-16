@@ -410,6 +410,13 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Pages Icon (footnote)
+    ///
+    static var pagesFootnoteImage: UIImage {
+        return UIImage.gridicon(.pages, size: CGSize(width: 20, height: 20))
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Plus Icon
     ///
     static var plusImage: UIImage {

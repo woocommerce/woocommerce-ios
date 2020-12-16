@@ -37,6 +37,11 @@ final class OrderDetailsViewController: UIViewController {
 
     private let notices = OrderDetailsNotices()
 
+    /// Timer is used to delay popping the screen and showing a message to the user.
+    /// It is used to prevent a dismiss when all orders are temporarily deleted during sync.
+    ///
+    private var orderDeletedTimer: Timer?
+
     // MARK: - View Lifecycle
 
     /// Create an instance of `Self` from its corresponding storyboard.
@@ -70,6 +75,11 @@ final class OrderDetailsViewController: UIViewController {
             syncShippingLabels()
         }
         syncTrackingsHidingAddButtonIfNecessary()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        invalidateOrderDeletedTimer()
     }
 
     private func syncTrackingsHidingAddButtonIfNecessary() {
@@ -117,16 +127,12 @@ private extension OrderDetailsViewController {
             guard let self = self else {
                 return
             }
+            self.invalidateOrderDeletedTimer()
             self.viewModel.updateOrderStatus(order: order)
             self.reloadTableViewSectionsAndData()
         }
         entityListener.onDelete = { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            self.navigationController?.popViewController(animated: true)
-            self.displayOrderDeletedNotice(order: self.viewModel.order)
+            self?.handleDeletedOrderDelayed()
         }
     }
 
@@ -175,6 +181,31 @@ private extension OrderDetailsViewController {
     ///
     func registerTableViewHeaderFooters() {
         viewModel.registerTableViewHeaderFooters(tableView)
+    }
+}
+
+
+// MARK: - Handling deleted order
+//
+private extension OrderDetailsViewController {
+
+    func handleDeletedOrderDelayed() {
+        invalidateOrderDeletedTimer()
+        orderDeletedTimer = Timer.scheduledTimer(withTimeInterval: Constants.orderDeletedTimeout, repeats: false) { [weak self] (_) in
+            self?.handleDeletedOrder()
+        }
+    }
+
+    func handleDeletedOrder() {
+        invalidateOrderDeletedTimer()
+
+        navigationController?.popViewController(animated: true)
+        displayOrderDeletedNotice(order: viewModel.order)
+    }
+
+    func invalidateOrderDeletedTimer() {
+        orderDeletedTimer?.invalidate()
+        orderDeletedTimer = nil
     }
 }
 
@@ -583,6 +614,7 @@ private extension OrderDetailsViewController {
     }
 
     enum Constants {
+        static let orderDeletedTimeout = TimeInterval(0.5)
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
     }

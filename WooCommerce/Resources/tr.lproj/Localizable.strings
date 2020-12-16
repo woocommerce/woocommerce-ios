@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-11-26 16:54:04+0000 */
+/* Translation-Revision-Date: 2020-12-10 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -61,10 +61,16 @@
 "%d items selected" = "%d ürün seçildi";
 
 /* Refund item price and quantity format. EG: 2 x $10.00 each */
-"%d x %@ each" = "%1$d x %2$ her biri";
+"%d x %@ each" = "%1$d x %2$@ her biri";
 
 /* Navigation bar title for selecting multiple products when more multiple products have been selected. */
 "%ld Products Selected" = "%ld Ürünler Seçildi";
+
+/* Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product` */
+"%ld cross-sell product" = "%ld çapraz satış ürünü";
+
+/* Format of cross-sell linked products row in the plural form. Reads, `5 cross-sell products` */
+"%ld cross-sell products" = "%ld çapraz satış ürünü";
 
 /* Format of the number of Downloadable Files row in the singular form. Reads, `1 file` */
 "%ld file" = "%ld dosya";
@@ -75,11 +81,19 @@
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "Stokta %ld";
 
-/* Format of the number of grouped products in singular form */
+/* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `1 product`
+   Format of the number of grouped products in singular form */
 "%ld product" = "%ld ürün";
 
-/* Format of the number of grouped products in plural form */
+/* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `5 products`
+   Format of the number of grouped products in plural form */
 "%ld products" = "%ld ürünler";
+
+/* Format of upsell linked products row in the singular form. Reads, `1 upsell product` */
+"%ld upsell product" = "%ld yukarı satış ürünü";
+
+/* Format of upsell linked products row in the plural form. Reads, `5 upsell products` */
+"%ld upsell products" = "%ld yukarı satış ürünü";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld varyasyonu";
@@ -113,6 +127,9 @@
 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
 "A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "Müşteriye para iadesi yapılmayacaktır. Para iadesini %1$@ üzerinden manuel olarak yapmanız gerekecektir.";
+
+/* No comment provided by engineer. */
+"A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "Müşteriye para iadesi yapılmayacaktır. Para iadesini Stripe üzerinden manuel olarak yapmanız gerekecektir.";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "Satılacak benzersiz bir ürün";
@@ -150,10 +167,10 @@
 "Add Downloadable File" = "İndirilebilir Dosya Ekle";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Dosya ekle";
+"Add File" = "Add File";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "Dosya ekle";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Fotoğraf Ekle";
@@ -164,8 +181,8 @@
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "Fiyat Ekle";
 
-/* Action to add products to a grouped product on the Grouped Products screen
-   Navigation bar title for selecting multiple products. */
+/* Action to add linked products to a product in the Linked Products List Selector screen
+   Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
 "Add Products" = "Ürün Ekle";
 
 /* A title used for a shipment tracking unit test
@@ -289,6 +306,9 @@
 /* Alert title to confirm the user wants to discard changes in Product Visibility */
 "Are you sure you want to discard your changes?" = "Değişikliklerinizi iptal etmek istediğinizden emin misiniz?";
 
+/* The text on the confirmation alert before issuing a refund. */
+"Are you sure you want to issue a refund? This can't be undone." = "Para iadesi yapmak istediğinizden emin misiniz? Bu işlem geri alınamaz.";
+
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "%@ hesabının oturumunu kapatmak istediğinizden emin misiniz?";
 
@@ -372,7 +392,7 @@
 "Can Not Request Link" = "Bağlantı istenemiyor";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
 "Cancel" = "İptal";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -381,7 +401,8 @@
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "Etiketler Eklenemiyor";
 
-/* The title of the alert when there is an error updating the product */
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
+   The title of the alert when there is an error updating the product */
 "Cannot update product" = "Ürün güncellenemiyor";
 
 /* The title of the alert when there is an error uploading an image
@@ -532,6 +553,12 @@
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "Ürün oluşturma";
 
+/* Cell title for Cross-sells products in Linked Products Settings screen */
+"Cross-sells" = "Çapraz satışlar";
+
+/* Navigation bar title for editing linked products for cross-sell products */
+"Cross-sells Products" = "Çapraz Satış Ürünleri";
+
 /* Cell title: the current date. */
 "Current" = "Geçerli";
 
@@ -674,22 +701,22 @@
 "Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Son indirme tarihi";
-
-/* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "Download expiration";
 
-/* Title of the cell in Product Download limit > Download limit */
-"Download limit" = "Download limit";
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "Son indirme tarihi";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "İndirme sınırı";
 
-/* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "İndirilebilir Dosyalar";
+/* Title of the cell in Product Download limit > Download limit */
+"Download limit" = "Download limit";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "Downloadable Files";
+
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "İndirilebilir Dosyalar";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "İndirilebilir Ürün";
@@ -698,10 +725,10 @@
 "Downloadable Product" = "Downloadable Product";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "Downloadable files";
+"Downloadable files" = "İndirilebilir dosyalar";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "İndirilebilir dosyalar";
+"Downloadable files" = "Downloadable files";
 
 /* Product Details > Purchase Details > Downloads cell title */
 "Downloads" = "İndirmeler";
@@ -711,6 +738,9 @@
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Ürünlerinizi benzersiz kodlarla kolayca tanımlayın";
+
+/* Edit Products button inside the Linked Products screen. */
+"Edit Products" = "Ürünleri Düzenle";
 
 /* Email address text field placeholder */
 "Email" = "E-posta";
@@ -1024,6 +1054,9 @@
 /* An error message shown when a user signed in with incorrect credentials. */
 "Incorrect username or password. Please try entering your login details again." = "Yanlış kullanıcı adı ya da parola. Lütfen giriş detaylarınızı girerek tekrar deneyin.";
 
+/* Subtitle of the product form bottom sheet action for linked products. */
+"Increase sales with upsells and cross-sells" = "Yukarı satış ve çapraz satış ile satışları artırın";
+
 /* Label action for inserting a link on the editor */
 "Insert" = "Ekle";
 
@@ -1060,6 +1093,9 @@
 
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "Geri Ödeme Yap";
+
+/* Text of the screen that is displayed while the refund is being created. */
+"Issuing Refund..." = "Para İadeleri Düzenleniyor...";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Bu kullanıcı adı\/parola bu siteyle ilişkili değil gibi görünüyor.";
@@ -1119,6 +1155,13 @@
 
 /* Description of the Action sheet option when the user wants to change the Product type to external product */
 "Link a product to an external website" = "Bir ürünü harici bir web sitesine bağlayın";
+
+/* Linked Products Settings navigation title */
+"Linked Products" = "Bağlantılı ürünler";
+
+/* Title of the Linked Products row on Product main screen
+   Title of the product form bottom sheet action for editing linked products. */
+"Linked products" = "Bağlı ürünler";
 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "Ürüne ait görsellerin listesi";
@@ -1192,10 +1235,13 @@
 "Manual Offsets" = "Özel saat farkı";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "%1$@ üzerinden manuel para iadesi";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "%1$@ üzerinden manuel para iadesi";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
+
+/* No comment provided by engineer. */
+"Manual Refund via Stripe" = "Stripe Üzerinden Manuel Para İadesi";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Alan adını yönet";
@@ -1302,16 +1348,16 @@
 "No data available" = "Veri bulunmuyor";
 
 /* Placeholder of the cell text field in Download expiration */
-"No expiration" = "No expiration";
-
-/* Placeholder of the cell text field in Download expiration */
 "No expiration" = "Sona erme tarihi yok";
 
-/* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "Henüz dosya yok";
+/* Placeholder of the cell text field in Download expiration */
+"No expiration" = "No expiration";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "No files yet";
+
+/* Placeholder for empty Downloadable Files row on Product main screen */
+"No files yet" = "Henüz dosya yok";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "Henüz görsel yok";
@@ -1328,7 +1374,7 @@
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "Henüz ürün değişikliği yok";
 
-/* Placeholder for editing linked products for a grouped product
+/* Placeholder for the linked products list selector screen
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "Henüz ürün yok";
 
@@ -1470,6 +1516,9 @@
 /* Product section title */
 "PRODUCT" = "ÜRÜN";
 
+/* Order shipping label package section title format. The number indicates the index of the shipping label package. */
+"Package %d" = "Paket %d";
+
 /* The title for the customer payment cell */
 "Paid By Customer" = "Müşteri Tarafından Ödenen";
 
@@ -1566,10 +1615,10 @@
 "Please wait while we publish this product to your store" = "Bu ürün mağazanızda yayımlanırken lütfen bekleyin";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Bu ürünü mağazanıza kaydederken lütfen bekleyin";
+"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
+"Please wait while we save this product to your store" = "Bu ürünü mağazanıza kaydederken lütfen bekleyin";
 
 /* Message of the in-progress UI while deleting the Product remotely */
 "Please wait while we update your store details" = "Mağaza bilgileriniz güncellenirken lütfen bekleyin";
@@ -1658,6 +1707,12 @@
    Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "Ürün İadesi";
 
+/* Cell description for Cross-sells products in Linked Products Settings screen */
+"Products promoted in the cart when current product is selected" = "Mevcut ürün seçildiğinde alışveriş sepetinde tanıtılan ürünler";
+
+/* Cell description for Upsells products in Linked Products Settings screen */
+"Products promoted instead of the currently viewed product (ie more profitable products)" = "Şu anda görüntülenen ürün yerine tanıtılan ürünler (yani daha kârlı ürünler)";
+
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Müşteriyi arama veya müşteriye mesaj gönderme seçenekli istemler.";
 
@@ -1722,10 +1777,10 @@
 "Reason for Refund" = "İade Nedeni";
 
 /* A label for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
+"Reason for Refund (Optional)" = "Para İadesinin Nedeni (İsteğe Bağlı)";
 
 /* A label for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for Refund (Optional)" = "Para İadesinin Nedeni (İsteğe Bağlı)";
+"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Siparişin para iadesinin nedeni";
@@ -1756,10 +1811,10 @@
 "Refund Shipping" = "Kargonun Para İadesini Yap";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Refund Via";
+"Refund Via" = "Şununla Para İadesi Yap:";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Şununla Para İadesi Yap:";
+"Refund Via" = "Refund Via";
 
 /* The title for the refunded amount cell */
 "Refunded" = "İade Edildi";
@@ -1803,6 +1858,12 @@
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Çökmeleri bildirin";
+
+/* Text on the button that reprints a shipping label */
+"Reprint Shipping Label" = "Gönderi Etiketini Yeniden Yazdır";
+
+/* Request a refund on a shipping label from the shipping label more menu action sheet */
+"Request a Refund" = "Geri Ödeme İste";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Etkinlik Günlüğü’nü Sıfırla";
@@ -2037,9 +2098,6 @@
 /* Accessibility label to show bottom action sheet options for a downloadable file */
 "Show bottom action sheet options for a downloadable file" = "İndirilebilir bir dosya için alt işlem sayfası seçeneklerini göster";
 
-/* Accessibility label to show bottom action sheet to delete downloadable file from the list */
-"Show bottom action sheet to delete downloadable file from list" = "İndirilebilir dosyayı listeden silmek için alt eylem sayfasını göster";
-
 /* Accessibility label for the 'Show password' button in the login page's password field.
    Accessibility label for the “Show password“ button in the login page's password field. */
 "Show password" = "Şifreyi göster";
@@ -2049,6 +2107,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "Bu siparişin fatura bilgilerini göster.";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
+"Show the shipment details for this shipping label." = "Bu gönderi etiketi için gönderi ayrıntılarını gösterin.";
 
 /* Accessibility value if login page's password field is displaying the password. */
 "Shown" = "Gösteriliyor";
@@ -2099,6 +2160,9 @@
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Üzgünüm, kullanıcı adınız geçersiz bir ifade içeriyor %@.";
+
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7 */
+"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "Maalesef ürün varyasyonlarında resim kaldırma WooCommerce 4.7 veya sonraki sürümlerde desteklenmektedir, lütfen sitenizi güncelleyin.";
 
 /* No comment provided by engineer. */
 "Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "Üzgünüz, site adresleri, yalnızca küçük harfler (a-z) ve numaralar içerebilir.";
@@ -2408,6 +2472,9 @@
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Belirtilen sitenin engeli kaldırılırken hata oluştu.";
 
+/* Text of the notice that is displayed while the refund creation fails. */
+"There was an error issuing the refund" = "Geri ödeme yapılırken bir hata oluştu";
+
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
 "This Month" = "Bu Ay";
@@ -2586,7 +2653,7 @@
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Belirtilen adresteki WordPress sitesi okunamadı. 'Yardım lazım mı?' tuşuna tıklayarak SSS'i görüntüleyebilirsiniz.";
 
 /* Notice displayed when an error occurs while refreshing a product. It reads: Unable to refresh product #{product number} */
-"Unable to refresh Product #%ld" = "# numaralı ürün yenilenemiyor";
+"Unable to refresh Product #%ld" = "#%ld numaralı ürün yenilenemiyor";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "Liste yenilenemedi";
@@ -2685,6 +2752,12 @@
    Updated on <date> */
 "Updated on %@" = "Son güncelleme zamanı: %@";
 
+/* Cell title for Upsells products in Linked Products Settings screen */
+"Upsells" = "Yukarı satışlar";
+
+/* Navigation bar title for editing linked products for upsell products */
+"Upsells Products" = "Yukarı Satış Ürünleri";
+
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
 "Username" = "Kullanıcı adı";
@@ -2723,6 +2796,10 @@
 
 /* Button title View product in store in Edit Product More Options Action Sheet */
 "View Product in Store" = "Ürünü Mağazada Görüntüleyin";
+
+/* Accessibility label for the 'View Shipment Details' button
+   Button on bottom of shipping label package card to show shipping details */
+"View Shipment Details" = "Gönderi Ayrıntılarını Görüntüle";
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "Satış ortağı ürününü görüntüleyin";
@@ -2937,4 +3014,7 @@
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "“%@”";
+
+/* Text of the notice that is displayed after the refund is created. */
+"🎉 Products successfuly refunded" = "🎉 ürünün geri ödemesi başarıyla yapıldı";
 

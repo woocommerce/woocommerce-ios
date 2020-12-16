@@ -1,3 +1,3 @@
-Produits : vous pouvez maintenant ajouter des produits simples, groupés et externes, et enregistrer des brouillons de produits. Vous pourrez tester de nouvelles fonctionnalités sous peu !
+Vous l’avez demandé, nous vous avons écouté ! Vous pouvez désormais créer des produits simples, groupés et externes pour votre boutique directement depuis votre iPhone ou votre iPad. Transformez vos idées en produits, même sans votre ordinateur sous la main.
 
-Autres correctifs : l’écran Détails de la commande affiche maintenant les attributs des variantes pour les boutiques WooCommerce sur la version 4.7 et au-delà. Vous remarquerez également que l’écran Détails du produit affiche maintenant le nombre d’évaluations du produit. Celui-ci affichait auparavant le nombre d’avis, ce qui n’était pas approprié.
+Ce n’est pas tout ! Nous avons résolu des problèmes dont un bug qui faisait que les dernières commandes envoyées ne s’affichaient pas toujours dans la liste des commandes. Nous avons également apporté des améliorations. Par exemple, vous pouvez désormais émettre des remboursements (concernant des produits ou la livraison), directement à partir de l’écran de la facture.

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-11-25 10:54:04+0000 */
+/* Translation-Revision-Date: 2020-12-10 14:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -66,6 +66,12 @@
 /* Navigation bar title for selecting multiple products when more multiple products have been selected. */
 "%ld Products Selected" = "%ld 選択済みの商品";
 
+/* Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product` */
+"%ld cross-sell product" = "%ldクロスセル商品";
+
+/* Format of cross-sell linked products row in the plural form. Reads, `5 cross-sell products` */
+"%ld cross-sell products" = "%ldクロスセル商品";
+
 /* Format of the number of Downloadable Files row in the singular form. Reads, `1 file` */
 "%ld file" = "%ld ファイル";
 
@@ -75,11 +81,19 @@
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "在庫%ld個";
 
-/* Format of the number of grouped products in singular form */
+/* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `1 product`
+   Format of the number of grouped products in singular form */
 "%ld product" = "%ld 商品";
 
-/* Format of the number of grouped products in plural form */
+/* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `5 products`
+   Format of the number of grouped products in plural form */
 "%ld products" = "%ld 商品";
+
+/* Format of upsell linked products row in the singular form. Reads, `1 upsell product` */
+"%ld upsell product" = "%ldアップセル商品";
+
+/* Format of upsell linked products row in the plural form. Reads, `5 upsell products` */
+"%ld upsell products" = "%ldアップセル商品";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld個のバリエーション";
@@ -113,6 +127,9 @@
 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
 "A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "顧客への返金は行われません。 %1$@ 経由での返金を手動で行う必要があります。";
+
+/* No comment provided by engineer. */
+"A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "顧客への返金は行われません。 Stripe 経由での返金を手動で行う必要があります。";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "ユニークな商品の販売";
@@ -150,10 +167,10 @@
 "Add Downloadable File" = "ダウンロード可能なファイルを追加";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "ファイルを追加";
+"Add File" = "Add File";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "ファイルを追加";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "写真を追加";
@@ -164,8 +181,8 @@
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "価格を追加";
 
-/* Action to add products to a grouped product on the Grouped Products screen
-   Navigation bar title for selecting multiple products. */
+/* Action to add linked products to a product in the Linked Products List Selector screen
+   Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
 "Add Products" = "すべての商品";
 
 /* A title used for a shipment tracking unit test
@@ -289,6 +306,9 @@
 /* Alert title to confirm the user wants to discard changes in Product Visibility */
 "Are you sure you want to discard your changes?" = "変更内容を破棄してもよいですか ?";
 
+/* The text on the confirmation alert before issuing a refund. */
+"Are you sure you want to issue a refund? This can't be undone." = "返金を受けますか ? この操作は元に戻すことができません。";
+
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "アカウント %@ からログアウトしてもよいですか ?";
 
@@ -372,7 +392,7 @@
 "Can Not Request Link" = "リンクをリクエストできません";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
 "Cancel" = "キャンセル";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -381,7 +401,8 @@
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "タグを追加できません";
 
-/* The title of the alert when there is an error updating the product */
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
+   The title of the alert when there is an error updating the product */
 "Cannot update product" = "商品を更新できません";
 
 /* The title of the alert when there is an error uploading an image
@@ -532,6 +553,12 @@
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "商品を作成中";
 
+/* Cell title for Cross-sells products in Linked Products Settings screen */
+"Cross-sells" = "クロスセル";
+
+/* Navigation bar title for editing linked products for cross-sell products */
+"Cross-sells Products" = "クロスセル商品";
+
 /* Cell title: the current date. */
 "Current" = "Current";
 
@@ -674,22 +701,22 @@
 "Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "ダウンロードの有効期限";
-
-/* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "Download expiration";
 
-/* Title of the cell in Product Download limit > Download limit */
-"Download limit" = "Download limit";
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "ダウンロードの有効期限";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "ダウンロード制限";
 
-/* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "ダウンロード可能なファイル";
+/* Title of the cell in Product Download limit > Download limit */
+"Download limit" = "Download limit";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "Downloadable Files";
+
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "ダウンロード可能なファイル";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "ダウンロード可能な商品";
@@ -698,10 +725,10 @@
 "Downloadable Product" = "Downloadable Product";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "Downloadable files";
+"Downloadable files" = "ダウンロード可能なファイル";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "ダウンロード可能なファイル";
+"Downloadable files" = "Downloadable files";
 
 /* Product Details > Purchase Details > Downloads cell title */
 "Downloads" = "ダウンロード";
@@ -711,6 +738,9 @@
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "一意のコードで商品を簡単に特定";
+
+/* Edit Products button inside the Linked Products screen. */
+"Edit Products" = "商品を編集";
 
 /* Email address text field placeholder */
 "Email" = "メール";
@@ -1024,6 +1054,9 @@
 /* An error message shown when a user signed in with incorrect credentials. */
 "Incorrect username or password. Please try entering your login details again." = "ユーザー名またはパスワードが間違っています。もう一度ログイン詳細を入力し直してください。";
 
+/* Subtitle of the product form bottom sheet action for linked products. */
+"Increase sales with upsells and cross-sells" = "アップセルとクロスセルで販売を伸ばしましょう";
+
 /* Label action for inserting a link on the editor */
 "Insert" = "挿入";
 
@@ -1060,6 +1093,9 @@
 
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "返金を実行";
+
+/* Text of the screen that is displayed while the refund is being created. */
+"Issuing Refund..." = "返金を実行しています...";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "このユーザー名またはパスワードは、このサイトに関連付けられていないようです。";
@@ -1119,6 +1155,13 @@
 
 /* Description of the Action sheet option when the user wants to change the Product type to external product */
 "Link a product to an external website" = "商品を外部サイトにリンク";
+
+/* Linked Products Settings navigation title */
+"Linked Products" = "関連商品";
+
+/* Title of the Linked Products row on Product main screen
+   Title of the product form bottom sheet action for editing linked products. */
+"Linked products" = "関連商品";
 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "商品画像のリスト";
@@ -1192,10 +1235,13 @@
 "Manual Offsets" = "マニュアルオフセット";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "%1$@ 経由で手動返金";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "%1$@ 経由で手動返金";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
+
+/* No comment provided by engineer. */
+"Manual Refund via Stripe" = "Stripe 経由で手動返金";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "マッピング済みドメイン";
@@ -1302,16 +1348,16 @@
 "No data available" = "使用可能なデータがありません";
 
 /* Placeholder of the cell text field in Download expiration */
-"No expiration" = "No expiration";
-
-/* Placeholder of the cell text field in Download expiration */
 "No expiration" = "有効期限はありません";
 
-/* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "まだファイルはありません";
+/* Placeholder of the cell text field in Download expiration */
+"No expiration" = "No expiration";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "No files yet";
+
+/* Placeholder for empty Downloadable Files row on Product main screen */
+"No files yet" = "まだファイルはありません";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "画像がありません";
@@ -1328,7 +1374,7 @@
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "商品のバリエーションはまだありません";
 
-/* Placeholder for editing linked products for a grouped product
+/* Placeholder for the linked products list selector screen
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "まだ商品がありません";
 
@@ -1470,6 +1516,9 @@
 /* Product section title */
 "PRODUCT" = "商品";
 
+/* Order shipping label package section title format. The number indicates the index of the shipping label package. */
+"Package %d" = "荷物 %d";
+
 /* The title for the customer payment cell */
 "Paid By Customer" = "顧客から支払われた金額";
 
@@ -1566,10 +1615,10 @@
 "Please wait while we publish this product to your store" = "この製品をストアに公開するまでしばらくお待ちください";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "ストアにこの商品を保存しています。しばらくお待ちください";
+"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
+"Please wait while we save this product to your store" = "ストアにこの商品を保存しています。しばらくお待ちください";
 
 /* Message of the in-progress UI while deleting the Product remotely */
 "Please wait while we update your store details" = "ストアの詳細を更新しています。しばらくお待ちください";
@@ -1658,6 +1707,12 @@
    Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "商品の返金";
 
+/* Cell description for Cross-sells products in Linked Products Settings screen */
+"Products promoted in the cart when current product is selected" = "現在の商品が選択された際にカートで宣伝される商品です";
+
+/* Cell description for Upsells products in Linked Products Settings screen */
+"Products promoted instead of the currently viewed product (ie more profitable products)" = "現在表示中の商品の代わりに宣伝される商品です (より安価な商品など)";
+
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "請求対象の顧客に電話で連絡するかメッセージを送信するか選択するよう求めます。";
 
@@ -1722,10 +1777,10 @@
 "Reason for Refund" = "返金の理由";
 
 /* A label for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
+"Reason for Refund (Optional)" = "返金の理由 (オプション)";
 
 /* A label for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for Refund (Optional)" = "返金の理由 (オプション)";
+"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "﻿注文返金﻿の理由";
@@ -1756,10 +1811,10 @@
 "Refund Shipping" = "配送料を返金";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Refund Via";
+"Refund Via" = "返金方法";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "返金方法";
+"Refund Via" = "Refund Via";
 
 /* The title for the refunded amount cell */
 "Refunded" = "返金済み";
@@ -1803,6 +1858,12 @@
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "クラッシュをレポート";
+
+/* Text on the button that reprints a shipping label */
+"Reprint Shipping Label" = "配送ラベルを再印刷";
+
+/* Request a refund on a shipping label from the shipping label more menu action sheet */
+"Request a Refund" = "返金をリクエスト";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "アクティビティログをリセット";
@@ -2037,9 +2098,6 @@
 /* Accessibility label to show bottom action sheet options for a downloadable file */
 "Show bottom action sheet options for a downloadable file" = "ダウンロード可能なファイルに下部アクションシートのオプションを表示";
 
-/* Accessibility label to show bottom action sheet to delete downloadable file from the list */
-"Show bottom action sheet to delete downloadable file from list" = "﻿下部﻿アクション﻿シート﻿を表示してリストからダウンロード可能なファイルを削除";
-
 /* Accessibility label for the 'Show password' button in the login page's password field.
    Accessibility label for the “Show password“ button in the login page's password field. */
 "Show password" = "パスワードを表示";
@@ -2049,6 +2107,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "この注文の請求詳細を表示";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
+"Show the shipment details for this shipping label." = "この配送ラベルの配送状況の詳細を表示します。";
 
 /* Accessibility value if login page's password field is displaying the password. */
 "Shown" = "表示内容";
@@ -2099,6 +2160,9 @@
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "ユーザー名に利用できない単語%@が含まれています。";
+
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7 */
+"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "商品バリエーションの画像削除は、WooCommerce 4.7以上が対象となっています。サイトを更新してください。";
 
 /* No comment provided by engineer. */
 "Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "サイトアドレスに含められるのは半角英字の小文字 (a-z) と半角数字のみです。";
@@ -2408,6 +2472,9 @@
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "指定したサイトのブロックを解除する際に問題が発生しました。";
 
+/* Text of the notice that is displayed while the refund creation fails. */
+"There was an error issuing the refund" = "返金の実行中にエラーが発生しました";
+
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
 "This Month" = "今月";
@@ -2685,6 +2752,12 @@
    Updated on <date> */
 "Updated on %@" = "%@ に更新";
 
+/* Cell title for Upsells products in Linked Products Settings screen */
+"Upsells" = "アップセル";
+
+/* Navigation bar title for editing linked products for upsell products */
+"Upsells Products" = "アップセル商品";
+
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
 "Username" = "ユーザー名";
@@ -2723,6 +2796,10 @@
 
 /* Button title View product in store in Edit Product More Options Action Sheet */
 "View Product in Store" = "ストアで商品を表示";
+
+/* Accessibility label for the 'View Shipment Details' button
+   Button on bottom of shipping label package card to show shipping details */
+"View Shipment Details" = "配送状況の詳細を表示";
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "アフィリエイト向け商品を表示";
@@ -2937,4 +3014,7 @@
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "“%@”";
+
+/* Text of the notice that is displayed after the refund is created. */
+"🎉 Products successfuly refunded" = "🎉商品は正常に返金されました";
 

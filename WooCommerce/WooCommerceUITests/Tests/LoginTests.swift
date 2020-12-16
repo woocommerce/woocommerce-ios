@@ -1,6 +1,6 @@
 import XCTest
 
-class LoginTests: XCTestCase {
+final class LoginTests: XCTestCase {
 
     override func setUp() {
         continueAfterFailure = false
@@ -11,23 +11,18 @@ class LoginTests: XCTestCase {
         app.launch()
     }
 
-    func testEmailPasswordLoginLogout() {
-        // Log in with email and password
-        WelcomeScreen()
-        .selectLogin()
-        .proceedWith(email: TestCredentials.emailAddress)
-        .proceedWithPassword()
-        .proceedWith(password: TestCredentials.password)
+    func testWordPressLoginLogout() {
+        let prologue = PrologueScreen().selectContinue()
+            .proceedWith(email: TestCredentials.emailAddress)
+            .proceedWith(password: TestCredentials.password)
+            .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)
+            .continueWithSelectedSite()
 
-        // Login epilogue
-        .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)
-        .continueWithSelectedSite()
+            // Log out
+            .openSettingsPane()
+            .verifySelectedStoreDisplays(siteUrl: TestCredentials.siteUrl, displayName: TestCredentials.displayName)
+            .logOut()
 
-        // Log out
-        .openSettingsPane()
-        .verifySelectedStoreDisplays(siteUrl: TestCredentials.siteUrl, displayName: TestCredentials.displayName)
-        .logOut()
-
-        XCTAssert(WelcomeScreen.isLoaded())
+        XCTAssert(prologue.isLoaded())
     }
 }

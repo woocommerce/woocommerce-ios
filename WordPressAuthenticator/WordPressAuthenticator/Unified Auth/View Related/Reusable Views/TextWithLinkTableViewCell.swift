@@ -41,5 +41,4 @@ class TextWithLinkTableViewCell: UITableViewCell {
         button.setAttributedTitle(highlightAttributedString, for: .highlighted)
         button.accessibilityTraits = accessibilityTrait
     }
-
 }

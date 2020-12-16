@@ -43,7 +43,9 @@ private extension CustomerStore {
 
     /// Retrieves all of the customers associated with a given Site ID (if any!).
     ///
-    func synchronizeAllCustomers(siteID: Int64, fromPageNumber: Int = CustomerRemote.Default.pageNumber, completion: @escaping (Result<Void, Error>) -> Void) {
+    func synchronizeAllCustomers(siteID: Int64,
+                                 fromPageNumber: Int = CustomerRemote.Default.firstPageNumber,
+                                 completion: @escaping (Result<Void, Error>) -> Void) {
         synchronizeCustomersPage(siteID: siteID, pageNumber: fromPageNumber, pageSize: CustomerRemote.Default.pageSize) { [weak self] result in
             guard let self = self else { return }
 
@@ -66,7 +68,7 @@ private extension CustomerStore {
         remote.getAllCustomers(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
             guard let self = self else { return }
 
-            if pageNumber == CustomerRemote.Default.pageNumber {
+            if pageNumber == CustomerRemote.Default.firstPageNumber {
                 self.deleteStoredCustomers(siteID: siteID)
             }
 

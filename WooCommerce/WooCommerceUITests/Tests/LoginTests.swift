@@ -44,4 +44,11 @@ final class LoginTests: XCTestCase {
 
         XCTAssert(prologue.isLoaded())
     }
+
+    func testWordPressUnsuccessfulLogin() {
+        _ = PrologueScreen().selectContinueWithWordPress()
+            .proceedWith(email: TestCredentials.emailAddress)
+            .tryProceed(password: "invalidPswd")
+            .verifyLoginError()
+    }
 }

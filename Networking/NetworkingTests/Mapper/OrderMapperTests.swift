@@ -199,16 +199,14 @@ final class OrderMapperTests: XCTestCase {
 
     /// Verifies that an Order ignores deleted refunds.
     ///
-    func test_Order_deleted_refund_fields_are_ignored() {
-        guard let order = mapLoadOrderWithDeletedRefundsResponse() else {
-            XCTFail()
-            return
-        }
+    func test_Order_deleted_refund_fields_are_ignored() throws {
+        // When
+        let order = try XCTUnwrap(mapLoadOrderWithDeletedRefundsResponse())
 
-        let refunds = order.refunds
-        XCTAssertEqual(refunds.count, 1)
+        // Then
+        XCTAssertEqual(order.refunds.count, 1)
 
-        let refund = refunds[0]
+        let refund = try XCTUnwrap(order.refunds.first)
         XCTAssertEqual(refund.refundID, 73)
         XCTAssertEqual(refund.reason, "Cap!")
         XCTAssertEqual(refund.total, "-16.00")

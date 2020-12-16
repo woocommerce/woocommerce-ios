@@ -33,7 +33,6 @@ final class LoginTests: XCTestCase {
             .proceedWith(password: TestCredentials.password)
             .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)
             .continueWithSelectedSite()
-            //.dismissNotificationAlertIfNeeded()
 
             // Log out
             .openSettingsPane()

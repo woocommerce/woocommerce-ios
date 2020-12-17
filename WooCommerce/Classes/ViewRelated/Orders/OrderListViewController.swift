@@ -158,9 +158,9 @@ final class OrderListViewController: UIViewController {
                 return cell
             }
 
-            let detailsViewModel = self.viewModel.detailsViewModel(withID: objectID)
-            let orderStatus = self.lookUpOrderStatus(for: detailsViewModel?.order)
-            cell.configureCell(viewModel: detailsViewModel, orderStatus: orderStatus)
+            let cellViewModel = self.viewModel.cellViewModel(withID: objectID)
+            let orderStatus = self.lookUpOrderStatus(for: cellViewModel?.order)
+            cell.configureCell(viewModel: cellViewModel, orderStatus: orderStatus)
             cell.layoutIfNeeded()
             return cell
         }

@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 
 struct OrderListCellViewModel {
-    private let order: Order
+    let order: Order
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     init(order: Order) {

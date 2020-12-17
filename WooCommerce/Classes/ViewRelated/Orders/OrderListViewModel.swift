@@ -166,6 +166,16 @@ private extension OrderListViewModel {
 // MARK: - TableView Support
 
 extension OrderListViewModel {
+
+    /// Creates an `OrderListCellViewModel` for the `Order` pointed to by `objectID`.
+    func cellViewModel(withID objectID: FetchResultSnapshotObjectID) -> OrderListCellViewModel? {
+        guard let order = snapshotsProvider.object(withID: objectID) else {
+            return nil
+        }
+
+        return OrderListCellViewModel(order: order)
+    }
+
     /// Creates an `OrderDetailsViewModel` for the `Order` pointed to by `objectID`.
     func detailsViewModel(withID objectID: FetchResultSnapshotObjectID) -> OrderDetailsViewModel? {
         guard let order = snapshotsProvider.object(withID: objectID) else {

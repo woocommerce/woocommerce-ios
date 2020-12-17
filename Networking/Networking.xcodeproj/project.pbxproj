@@ -246,6 +246,10 @@
 		93D8BBFF226BC1DA00AD2EB3 /* me-settings.json in Resources */ = {isa = PBXBuildFile; fileRef = 93D8BBFE226BC1DA00AD2EB3 /* me-settings.json */; };
 		93D8BC01226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D8BC00226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift */; };
 		AE0C144D258BC4E80023C0F8 /* CustomerMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0C144C258BC4E80023C0F8 /* CustomerMapper.swift */; };
+		AE0C1451258BCA0E0023C0F8 /* CustomerMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0C1450258BCA0E0023C0F8 /* CustomerMapperTests.swift */; };
+		AE0C1457258BCB700023C0F8 /* customer.json in Resources */ = {isa = PBXBuildFile; fileRef = AE0C1454258BCAA50023C0F8 /* customer.json */; };
+		AE0C149B258BCB7A0023C0F8 /* customers-extra.json in Resources */ = {isa = PBXBuildFile; fileRef = AE9CEC78258913D5000F3CAB /* customers-extra.json */; };
+		AE0C149C258BCB7D0023C0F8 /* customers-empty.json in Resources */ = {isa = PBXBuildFile; fileRef = AE9CEC79258913D8000F3CAB /* customers-empty.json */; };
 		AE2D0E932582321C00B8EC48 /* CustomerRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2D0E922582321B00B8EC48 /* CustomerRole.swift */; };
 		AE6E02702580BA8E00EDB637 /* Customer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6E026F2580BA8E00EDB637 /* Customer.swift */; };
 		AE6E02742580C03400EDB637 /* CustomersListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6E02732580C03400EDB637 /* CustomersListMapper.swift */; };
@@ -660,6 +664,8 @@
 		93D8BC00226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingsRemoteTests.swift; sourceTree = "<group>"; };
 		9BD9C6C44CAC220B3C3B90B7 /* Pods-Networking.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		AE0C144C258BC4E80023C0F8 /* CustomerMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerMapper.swift; sourceTree = "<group>"; };
+		AE0C1450258BCA0E0023C0F8 /* CustomerMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerMapperTests.swift; sourceTree = "<group>"; };
+		AE0C1454258BCAA50023C0F8 /* customer.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = customer.json; sourceTree = "<group>"; };
 		AE2D0E922582321B00B8EC48 /* CustomerRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerRole.swift; sourceTree = "<group>"; };
 		AE6E026F2580BA8E00EDB637 /* Customer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Customer.swift; sourceTree = "<group>"; };
 		AE6E02732580C03400EDB637 /* CustomersListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomersListMapper.swift; sourceTree = "<group>"; };
@@ -1236,6 +1242,7 @@
 				74C9477E2193A6C60024CB60 /* comment-moderate-trash.json */,
 				74C947812193A6C70024CB60 /* comment-moderate-unapproved.json */,
 				740211DE2193985A002248DA /* comment-moderate-spam.json */,
+				AE0C1454258BCAA50023C0F8 /* customer.json */,
 				AE6E02772580C31A00EDB637 /* customers-all.json */,
 				AE9CEC78258913D5000F3CAB /* customers-extra.json */,
 				AE9CEC79258913D8000F3CAB /* customers-empty.json */,
@@ -1460,6 +1467,7 @@
 				B505F6D220BEE3A500BB1B69 /* AccountMapperTests.swift */,
 				9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */,
 				74AB0AC921948CE4008220CD /* CommentResultMapperTests.swift */,
+				AE0C1450258BCA0E0023C0F8 /* CustomerMapperTests.swift */,
 				AE6E02812580C89C00EDB637 /* CustomersListMapperTests.swift */,
 				B524194221AC622500D6FC0A /* DotcomDeviceMapperTests.swift */,
 				B554FA922180C17200C54DFF /* NoteHashListMapperTests.swift */,
@@ -1644,6 +1652,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE0C1457258BCB700023C0F8 /* customer.json in Resources */,
 				74C8F07020EEC3A800B6EDC9 /* broken-notes.json in Resources */,
 				74C8F06C20EEBD5D00B6EDC9 /* broken-order.json in Resources */,
 				45D685FA23D0C3CF005F87D0 /* product-search-sku.json in Resources */,
@@ -1705,6 +1714,7 @@
 				022902D622E2436400059692 /* no_stats_permission_error.json in Resources */,
 				261CF2CB255C50010090D8D3 /* payment-gateway-list-half.json in Resources */,
 				02C254D72563999300A04423 /* order-shipping-labels.json in Resources */,
+				AE0C149B258BCB7A0023C0F8 /* customers-extra.json in Resources */,
 				45B204BC24890B1200FE6526 /* category.json in Resources */,
 				022902D422E2436400059692 /* stats_module_disabled_error.json in Resources */,
 				025CA2C8238F4FF400B05C81 /* product-shipping-classes-load-all.json in Resources */,
@@ -1764,6 +1774,7 @@
 				020D07C223D858BB00FD9580 /* media-upload.json in Resources */,
 				74ABA1CA213F19FE00FFAD30 /* top-performers-year.json in Resources */,
 				45AB8B0F24AA29DC00B5B36E /* product-tags-created.json in Resources */,
+				AE0C149C258BCB7D0023C0F8 /* customers-empty.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2083,6 +2094,7 @@
 				74C8F06E20EEC1E800B6EDC9 /* OrderNotesMapperTests.swift in Sources */,
 				45ED4F10239E8A54004F1BE3 /* TaxClassListMapperTest.swift in Sources */,
 				020C907F24C7D359001E2BEB /* ProductVariationMapperTests.swift in Sources */,
+				AE0C1451258BCA0E0023C0F8 /* CustomerMapperTests.swift in Sources */,
 				AE6E027C2580C35C00EDB637 /* CustomerRemoteTests.swift in Sources */,
 				74ABA1D5213F26B300FFAD30 /* TopEarnerStatsMapperTests.swift in Sources */,
 				74AB5B5121AF426D00859C12 /* SiteAPIRemoteTests.swift in Sources */,

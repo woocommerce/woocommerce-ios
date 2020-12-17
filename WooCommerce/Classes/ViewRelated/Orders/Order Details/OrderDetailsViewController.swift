@@ -120,14 +120,6 @@ private extension OrderDetailsViewController {
             self.viewModel.updateOrderStatus(order: order)
             self.reloadTableViewSectionsAndData()
         }
-        entityListener.onDelete = { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            self.navigationController?.popViewController(animated: true)
-            self.displayOrderDeletedNotice(order: self.viewModel.order)
-        }
     }
 
     private func configureViewModel() {
@@ -192,12 +184,6 @@ private extension OrderDetailsViewController {
 // MARK: - Notices
 //
 private extension OrderDetailsViewController {
-
-    /// Displays a Notice onscreen, indicating that the current Order has been deleted from the Store.
-    ///
-    func displayOrderDeletedNotice(order: Order) {
-        notices.displayOrderDeletedNotice(order: order)
-    }
 
     /// Displays the `Unable to delete tracking` Notice.
     ///

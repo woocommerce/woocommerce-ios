@@ -60,8 +60,6 @@ import AuthenticationServices
     ///
     private enum Constants {
         static let authenticationInfoKey    = "authenticationInfoKey"
-        static let jetpackBlogXMLRPC        = "jetpackBlogXMLRPC"
-        static let jetpackBlogUsername      = "jetpackBlogUsername"
         static let username                 = "username"
         static let emailMagicLinkSource     = "emailMagicLinkSource"
         static let magicLinkUrlPath         = "magic-login"
@@ -140,8 +138,8 @@ import AuthenticationServices
 
     /// Attempts to process the specified URL as a WordPress Authentication Link. Returns *true* on success.
     ///
-    @objc public func handleWordPressAuthUrl(_ url: URL, allowWordPressComAuth: Bool, rootViewController: UIViewController) -> Bool {
-        return WordPressAuthenticator.openAuthenticationURL(url, allowWordPressComAuth: allowWordPressComAuth, fromRootViewController: rootViewController)
+    @objc public func handleWordPressAuthUrl(_ url: URL, rootViewController: UIViewController) -> Bool {
+        return WordPressAuthenticator.openAuthenticationURL(url, fromRootViewController: rootViewController)
     }
 
 
@@ -179,31 +177,30 @@ import AuthenticationServices
     }
 
     /// Used to present the new wpcom-only login flow from the app delegate
-    @objc public class func showLoginForJustWPCom(from presenter: UIViewController, xmlrpc: String? = nil, username: String? = nil, connectedEmail: String? = nil) {
+    @objc public class func showLoginForJustWPCom(from presenter: UIViewController, jetpackLogin: Bool = false, connectedEmail: String? = nil) {
         defer {
             trackOpenedLogin()
         }
 
         guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
-            showEmailLogin(from: presenter, xmlrpc: xmlrpc, username: username, connectedEmail: connectedEmail)
+            showEmailLogin(from: presenter, jetpackLogin: jetpackLogin, connectedEmail: connectedEmail)
             return
         }
         
-        showGetStarted(from: presenter, xmlrpc: xmlrpc, username: username, connectedEmail: connectedEmail)
+        showGetStarted(from: presenter, jetpackLogin: jetpackLogin, connectedEmail: connectedEmail)
     }
 
     /// Shows the unified Login/Signup flow.
     ///
-    private class func showGetStarted(from presenter: UIViewController, xmlrpc: String? = nil, username: String? = nil, connectedEmail: String? = nil) {
+    private class func showGetStarted(from presenter: UIViewController, jetpackLogin: Bool, connectedEmail: String? = nil) {
         guard let controller = GetStartedViewController.instantiate(from: .getStarted) else {
             DDLogError("Failed to navigate from LoginPrologueViewController to GetStartedViewController")
             return
         }
         
         controller.loginFields.restrictToWPCom = true
-        controller.loginFields.meta.jetpackBlogXMLRPC = xmlrpc
-        controller.loginFields.meta.jetpackBlogUsername = username
         controller.loginFields.username = connectedEmail ?? String()
+        controller.loginFields.meta.jetpackLogin = jetpackLogin
         
         let navController = LoginNavigationController(rootViewController: controller)
         navController.modalPresentationStyle = .fullScreen
@@ -212,14 +209,13 @@ import AuthenticationServices
     
     /// Shows the Email Login view with Signup option.
     ///
-    private class func showEmailLogin(from presenter: UIViewController, xmlrpc: String? = nil, username: String? = nil, connectedEmail: String? = nil) {
+    private class func showEmailLogin(from presenter: UIViewController, jetpackLogin: Bool, connectedEmail: String? = nil) {
         guard let controller = LoginEmailViewController.instantiate(from: .login) else {
             return
         }
 
         controller.loginFields.restrictToWPCom = true
-        controller.loginFields.meta.jetpackBlogXMLRPC = xmlrpc
-        controller.loginFields.meta.jetpackBlogUsername = username
+        controller.loginFields.meta.jetpackLogin = jetpackLogin
 
         if let email = connectedEmail {
             controller.loginFields.username = email
@@ -318,11 +314,10 @@ import AuthenticationServices
     ///
     /// - Parameters:
     ///     - url: The authentication URL
-    ///     - allowWordPressComAuth: Indicates if WordPress.com Authentication Links should be handled, or not.
     ///     - rootViewController: The view controller to act as the presenter for the signin view controller.
     ///                           By convention this is the app's root vc.
     ///
-    @objc public class func openAuthenticationURL(_ url: URL, allowWordPressComAuth: Bool, fromRootViewController rootViewController: UIViewController) -> Bool {
+    @objc public class func openAuthenticationURL(_ url: URL, fromRootViewController rootViewController: UIViewController) -> Bool {
         guard let token = url.query?.dictionaryFromQueryString().string(forKey: "token") else {
             DDLogError("Signin Error: The authentication URL did not have the expected path.")
             return false
@@ -330,11 +325,8 @@ import AuthenticationServices
 
         let loginFields = retrieveLoginInfoForTokenAuth()
 
-        // The only time we should expect a magic link login when there is already a default wpcom account
-        // is when a user is logging into Jetpack.
-        if allowWordPressComAuth == false && loginFields.meta.jetpackLogin == false {
-            DDLogInfo("App opened with authentication link but there is already an existing wpcom account.")
-            return false
+        if url.isJetpackConnect() {
+            loginFields.meta.jetpackLogin = true
         }
 
         let storyboard = Storyboard.emailMagicLink.instance
@@ -428,13 +420,6 @@ import AuthenticationServices
         var dict: [String: String] = [
             Constants.username: loginFields.username
         ]
-        if let xmlrpc = loginFields.meta.jetpackBlogXMLRPC {
-            dict[Constants.jetpackBlogXMLRPC] = xmlrpc
-        }
-
-        if let username = loginFields.meta.jetpackBlogUsername {
-            dict[Constants.jetpackBlogUsername] = username
-        }
 
         if let linkSource = loginFields.meta.emailMagicLinkSource {
             dict[Constants.emailMagicLinkSource] = String(linkSource.rawValue)
@@ -463,14 +448,6 @@ import AuthenticationServices
         if let linkSource = dict[Constants.emailMagicLinkSource] as? String,
             let linkSourceRawValue = Int(linkSource) {
             loginFields.meta.emailMagicLinkSource = EmailMagicLinkSource(rawValue: linkSourceRawValue)
-        }
-
-        if let xmlrpc = dict[Constants.jetpackBlogXMLRPC] as? String {
-            loginFields.meta.jetpackBlogXMLRPC = xmlrpc
-        }
-
-        if let username = dict[Constants.jetpackBlogUsername] as? String {
-            loginFields.meta.jetpackBlogUsername = username
         }
 
         return loginFields
@@ -573,5 +550,4 @@ public extension WordPressAuthenticator {
         }
         appleIDCredentialObserver = nil
     }
-
 }

@@ -45,12 +45,13 @@ class WordPressComAccountService {
 
     /// Requests a WordPress.com Authentication Link to be sent to the specified email address.
     ///
-    func requestAuthenticationLink(for email: String, success: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+    func requestAuthenticationLink(for email: String, jetpackLogin: Bool, success: @escaping () -> Void, failure: @escaping (Error) -> Void) {
         let remote = AccountServiceRemoteREST(wordPressComRestApi: anonymousAPI)
-
+        
         remote.requestWPComAuthLink(forEmail: email,
                                     clientID: configuration.wpcomClientId,
                                     clientSecret: configuration.wpcomSecret,
+                                    jetpackLogin: jetpackLogin,
                                     wpcomScheme: configuration.wpcomScheme,
                                     success: success,
                                     failure: { error in

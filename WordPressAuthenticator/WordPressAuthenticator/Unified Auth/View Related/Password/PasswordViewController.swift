@@ -467,6 +467,7 @@ private extension PasswordViewController {
         configureViewLoading(true)
         let service = WordPressComAccountService()
         service.requestAuthenticationLink(for: email,
+                                          jetpackLogin: loginFields.meta.jetpackLogin,
                                           success: { [weak self] in
                                             self?.didRequestAuthenticationLink()
                                             self?.configureViewLoading(false)

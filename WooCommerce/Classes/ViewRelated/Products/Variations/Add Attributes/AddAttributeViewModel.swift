@@ -15,7 +15,7 @@ final class AddAttributeViewModel {
     private let product: Product
     private(set) var localAndGlobalAttributes: [ProductAttribute] = []
 
-    var sections: [Section] = []
+    private(set) var sections: [Section] = []
     private(set) var newAttributeName: String?
 
     /// Represents the current state of `synchronizeProductAttributes` action. Useful for the consumer to update it's UI upon changes

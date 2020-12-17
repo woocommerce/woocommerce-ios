@@ -117,6 +117,7 @@
 		023D1DD124AB2D05002B03A3 /* ProductListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023D1DD024AB2D05002B03A3 /* ProductListSelectorViewController.swift */; };
 		023D692E2588BF0900F7DA72 /* ShippingLabelPaperSizeListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023D692D2588BF0900F7DA72 /* ShippingLabelPaperSizeListSelectorCommand.swift */; };
 		023D69442588C6BD00F7DA72 /* ShippingLabelPaperSizeListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023D69432588C6BD00F7DA72 /* ShippingLabelPaperSizeListSelectorCommandTests.swift */; };
+		023D69BC2589BF5900F7DA72 /* ReprintShippingLabelCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023D69BB2589BF5900F7DA72 /* ReprintShippingLabelCoordinator.swift */; };
 		023EC2E024DA87460021DA91 /* ProductInventorySettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023EC2DF24DA87460021DA91 /* ProductInventorySettingsViewModelTests.swift */; };
 		023EC2E224DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023EC2E124DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift */; };
 		023EC2E424DA95DB0021DA91 /* ProductInventorySettingsViewModel+VariationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023EC2E324DA95DB0021DA91 /* ProductInventorySettingsViewModel+VariationTests.swift */; };
@@ -1193,6 +1194,7 @@
 		023D1DD024AB2D05002B03A3 /* ProductListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListSelectorViewController.swift; sourceTree = "<group>"; };
 		023D692D2588BF0900F7DA72 /* ShippingLabelPaperSizeListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaperSizeListSelectorCommand.swift; sourceTree = "<group>"; };
 		023D69432588C6BD00F7DA72 /* ShippingLabelPaperSizeListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaperSizeListSelectorCommandTests.swift; sourceTree = "<group>"; };
+		023D69BB2589BF5900F7DA72 /* ReprintShippingLabelCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReprintShippingLabelCoordinator.swift; sourceTree = "<group>"; };
 		023EC2DF24DA87460021DA91 /* ProductInventorySettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInventorySettingsViewModelTests.swift; sourceTree = "<group>"; };
 		023EC2E124DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductSKUValidationStoresManager.swift; sourceTree = "<group>"; };
 		023EC2E324DA95DB0021DA91 /* ProductInventorySettingsViewModel+VariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductInventorySettingsViewModel+VariationTests.swift"; sourceTree = "<group>"; };
@@ -2329,9 +2331,8 @@
 		021A84DD257DFBDA00BC71D1 /* Shipping Labels */ = {
 			isa = PBXGroup;
 			children = (
-				021A84DE257DFC2A00BC71D1 /* RefundShippingLabelViewController.swift */,
-				021A84DF257DFC2A00BC71D1 /* RefundShippingLabelViewController.xib */,
-				028FA465257E021100F88A48 /* RefundShippingLabelViewModel.swift */,
+				023D69BA2589BF2500F7DA72 /* Refund Shipping Label */,
+				023D69C52589BF5F00F7DA72 /* Reprint Shipping Label */,
 			);
 			path = "Shipping Labels";
 			sourceTree = "<group>";
@@ -2453,6 +2454,27 @@
 			path = BottomSheetListSelector;
 			sourceTree = "<group>";
 		};
+		023D69BA2589BF2500F7DA72 /* Refund Shipping Label */ = {
+			isa = PBXGroup;
+			children = (
+				021A84DE257DFC2A00BC71D1 /* RefundShippingLabelViewController.swift */,
+				021A84DF257DFC2A00BC71D1 /* RefundShippingLabelViewController.xib */,
+				028FA465257E021100F88A48 /* RefundShippingLabelViewModel.swift */,
+			);
+			path = "Refund Shipping Label";
+			sourceTree = "<group>";
+		};
+		023D69C52589BF5F00F7DA72 /* Reprint Shipping Label */ = {
+			isa = PBXGroup;
+			children = (
+				02307923258731B2008EADEE /* ReprintShippingLabelViewModel.swift */,
+				0259D65B2582248D003B1CD6 /* ReprintShippingLabelViewController.swift */,
+				0259D65C2582248D003B1CD6 /* ReprintShippingLabelViewController.xib */,
+				023D69BB2589BF5900F7DA72 /* ReprintShippingLabelCoordinator.swift */,
+			);
+			path = "Reprint Shipping Label";
+			sourceTree = "<group>";
+		};
 		02404EE52315272C00FF1170 /* Top Banner */ = {
 			isa = PBXGroup;
 			children = (
@@ -2560,13 +2582,10 @@
 			isa = PBXGroup;
 			children = (
 				02619857256B53DD00E321E9 /* AggregatedShippingLabelOrderItems.swift */,
-				02307923258731B2008EADEE /* ReprintShippingLabelViewModel.swift */,
 				0211253F25778BDF0075AD2A /* ShippingLabelDetailsViewController.swift */,
 				0211254025778BDF0075AD2A /* ShippingLabelDetailsViewController.xib */,
 				021125472577CC650075AD2A /* ShippingLabelDetailsViewModel.swift */,
 				025678C025773236009D7E6C /* Collection+ShippingLabel.swift */,
-				0259D65B2582248D003B1CD6 /* ReprintShippingLabelViewController.swift */,
-				0259D65C2582248D003B1CD6 /* ReprintShippingLabelViewController.xib */,
 				02535CBA25823F7A00E137BB /* ShippingLabelPaperSize+UI.swift */,
 				023D692D2588BF0900F7DA72 /* ShippingLabelPaperSizeListSelectorCommand.swift */,
 			);
@@ -5766,6 +5785,7 @@
 				0212275C244972660042161F /* BottomSheetListSelectorSectionHeaderView.swift in Sources */,
 				02FE89CB231FB36600E85EF8 /* DefaultFeatureFlagService.swift in Sources */,
 				450C2CB024CF006A00D570DD /* ProductTagsDataSource.swift in Sources */,
+				023D69BC2589BF5900F7DA72 /* ReprintShippingLabelCoordinator.swift in Sources */,
 				45F627B8253603AE00894B86 /* ProductDownloadSettingsViewController.swift in Sources */,
 				D843D5D322485009001BFA55 /* ShipmentProvidersViewController.swift in Sources */,
 				02482A8E237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift in Sources */,

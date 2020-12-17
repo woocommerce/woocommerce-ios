@@ -15,11 +15,16 @@ final class ReprintShippingLabelViewController: UIViewController {
 
     private var cancellables = Set<AnyCancellable>()
 
-    init(shippingLabel: ShippingLabel) {
+    /// Handles reprint UX navigation.
+    private weak var coordinator: ReprintShippingLabelCoordinatorProtocol?
+
+    init(shippingLabel: ShippingLabel,
+         coordinator: ReprintShippingLabelCoordinatorProtocol) {
         self.viewModel = ReprintShippingLabelViewModel(shippingLabel: shippingLabel)
         self.rows = [.headerText, .infoText,
                      .spacerBetweenInfoTextAndPaperSizeSelector, .paperSize, .spacerBetweenPaperSizeSelectorAndInfoLinks,
                      .paperSizeOptions, .printingInstructions]
+        self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -46,15 +51,17 @@ final class ReprintShippingLabelViewController: UIViewController {
 // MARK: Action Handling
 private extension ReprintShippingLabelViewController {
     func reprintShippingLabel() {
-        // TODO-2169: reprint action
+        coordinator?.presentReprintInProgressUI()
+        viewModel.requestDocumentForPrinting { [weak self] result in
+            self?.coordinator?.dismissReprintInProgressUIAndPresentPrintingResult(result)
+        }
     }
 
     func showPaperSizeSelector() {
-        let command = ShippingLabelPaperSizeListSelectorCommand(paperSizeOptions: viewModel.paperSizeOptions, selected: selectedPaperSize)
-        let listSelector = ListSelectorViewController(command: command) { [weak self] paperSize in
+        coordinator?.showPaperSizeSelector(paperSizeOptions: viewModel.paperSizeOptions,
+                                           selectedPaperSize: selectedPaperSize) { [weak self] paperSize in
             self?.viewModel.updateSelectedPaperSize(paperSize)
         }
-        show(listSelector, sender: self)
     }
 }
 

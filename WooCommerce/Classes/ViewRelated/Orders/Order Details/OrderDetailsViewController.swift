@@ -27,6 +27,10 @@ final class OrderDetailsViewController: UIViewController {
         return EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: viewModel.order)
     }()
 
+    /// Coordinator for shipping label reprint UX navigation.
+    ///
+    private lazy var reprintShippingLabelCoordinator = ReprintShippingLabelCoordinator(sourceViewController: self)
+
     /// Order to be rendered!
     ///
     var viewModel: OrderDetailsViewModel! {
@@ -331,8 +335,7 @@ private extension OrderDetailsViewController {
         case .issueRefund:
             issueRefundWasPressed()
         case .reprintShippingLabel(let shippingLabel):
-            let reprintViewController = ReprintShippingLabelViewController(shippingLabel: shippingLabel)
-            show(reprintViewController, sender: self)
+            reprintShippingLabelCoordinator.showReprintUI(shippingLabel: shippingLabel)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         }

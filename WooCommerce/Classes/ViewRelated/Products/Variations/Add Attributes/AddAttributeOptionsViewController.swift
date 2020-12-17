@@ -1,10 +1,13 @@
 import UIKit
 
-class AddAttributeOptionsViewController: UIViewController {
+final class AddAttributeOptionsViewController: UIViewController {
+
+    private let viewModel: AddAttributeOptionsViewModel
 
     /// Init
     ///
-    init() {
+    init(viewModel: AddAttributeOptionsViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -16,5 +19,34 @@ class AddAttributeOptionsViewController: UIViewController {
         super.viewDidLoad()
 
     }
+}
 
+extension AddAttributeOptionsViewController {
+
+    struct Section: Equatable {
+        let header: String?
+        let footer: String?
+        let rows: [Row]
+    }
+
+    enum Row: CaseIterable {
+        case termTextField
+        case selectedTerms
+        case existingTerms
+
+        fileprivate var type: UITableViewCell.Type {
+            switch self {
+            case .termTextField:
+                return TextFieldTableViewCell.self
+            case .selectedTerms:
+                return BasicTableViewCell.self
+            case .existingTerms:
+                return BasicTableViewCell.self
+            }
+        }
+
+        fileprivate var reuseIdentifier: String {
+            return type.reuseIdentifier
+        }
+    }
 }

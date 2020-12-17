@@ -46,6 +46,7 @@ extension ReprintShippingLabelViewModel {
     /// Requests document data for reprinting a shipping label with the selected paper size.
     func requestDocumentForPrinting(completion: @escaping (Result<ShippingLabelPrintData, ReprintShippingLabelError>) -> Void) {
         guard let selectedPaperSize = selectedPaperSize else {
+            // This is a highly unlikely scenario, because the reprint CTA is disabled when there is no selected paper size.
             completion(.failure(ReprintShippingLabelError.noSelectedPaperSize))
             return
         }
@@ -57,7 +58,7 @@ extension ReprintShippingLabelViewModel {
             case .success(let data):
                 completion(.success(data))
             case .failure(let error):
-                completion(.failure(.other(error: error)))
+                completion(.failure(.other(error: .init(error))))
             }
         }
         stores.dispatch(action)
@@ -65,7 +66,7 @@ extension ReprintShippingLabelViewModel {
 }
 
 /// Known error cases when reprinting a shipping label.
-enum ReprintShippingLabelError: Error {
+enum ReprintShippingLabelError: Error, Equatable {
     case noSelectedPaperSize
-    case other(error: Error)
+    case other(error: AnyError)
 }

@@ -8,6 +8,11 @@ public struct ShippingLabelPrintData: Decodable, Equatable {
 
     /// The content of shipping label document for printing, with Base64 encoding.
     public let base64Content: String
+
+    public init(mimeType: String, base64Content: String) {
+        self.mimeType = mimeType
+        self.base64Content = base64Content
+    }
 }
 
 /// Defines all of the ShippingLabelPrintData CodingKeys

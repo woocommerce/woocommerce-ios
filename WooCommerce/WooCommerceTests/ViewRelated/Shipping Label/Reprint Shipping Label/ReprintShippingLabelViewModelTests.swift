@@ -2,6 +2,7 @@ import Combine
 import XCTest
 @testable import WooCommerce
 import Yosemite
+import TestKit
 
 final class ReprintShippingLabelViewModelTests: XCTestCase {
     private var cancellables = Set<AnyCancellable>()
@@ -87,5 +88,77 @@ final class ReprintShippingLabelViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(paperSizeValues, [nil, .label, nil, .legal, .letter])
+    }
+
+    // MARK: `requestDocumentForPrinting`
+
+    func test_requestDocumentForPrinting_returns_failure_if_no_selected_paper_size() throws {
+        // Given
+        let shippingLabel = MockShippingLabel.emptyLabel()
+        let viewModel = ReprintShippingLabelViewModel(shippingLabel: shippingLabel)
+
+        // When
+        let result = try waitFor { promise in
+            viewModel.requestDocumentForPrinting { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(result, .failure(ReprintShippingLabelError.noSelectedPaperSize))
+    }
+
+    func test_requestDocumentForPrinting_returns_ShippingLabelPrintData_on_success() throws {
+        // Given
+        let shippingLabel = MockShippingLabel.emptyLabel()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = ReprintShippingLabelViewModel(shippingLabel: shippingLabel, stores: stores)
+        let printData = ShippingLabelPrintData(mimeType: "application/pdf", base64Content: "////")
+        stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
+            switch action {
+            case let .printShippingLabel(_, _, _, completion):
+                completion(.success(printData))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.updateSelectedPaperSize(.label)
+        let result = try waitFor { promise in
+            viewModel.requestDocumentForPrinting { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(result, .success(printData))
+    }
+
+    func test_requestDocumentForPrinting_returns_error_on_failure() throws {
+        // Given
+        let shippingLabel = MockShippingLabel.emptyLabel()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = ReprintShippingLabelViewModel(shippingLabel: shippingLabel, stores: stores)
+        let error = ReprintShippingLabelError.other(error: .init(SampleError.first))
+        stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
+            switch action {
+            case let .printShippingLabel(_, _, _, completion):
+                completion(.failure(error))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.updateSelectedPaperSize(.label)
+        let result = try waitFor { promise in
+            viewModel.requestDocumentForPrinting { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(result, .failure(error))
     }
 }

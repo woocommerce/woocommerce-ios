@@ -1,7 +1,7 @@
 import Foundation
 
 extension URL {
-    public func isJetpackConnect() -> Bool {
+    public var isJetpackConnect: Bool {
         query?.contains("&source=jetpack") ?? false
     }
 }

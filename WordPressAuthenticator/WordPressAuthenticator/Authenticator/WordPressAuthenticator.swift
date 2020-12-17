@@ -325,7 +325,7 @@ import AuthenticationServices
 
         let loginFields = retrieveLoginInfoForTokenAuth()
 
-        if url.isJetpackConnect() {
+        if url.isJetpackConnect {
             loginFields.meta.jetpackLogin = true
         }
 

@@ -62,6 +62,28 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
         }
     }
 
+    func configureCell(viewModel: OrderListCellViewModel?, orderStatus: OrderStatus?) {
+        guard let viewModel = viewModel else {
+            resetLabels()
+            return
+        }
+
+        titleLabel.text = viewModel.title
+        totalLabel.text = viewModel.total
+        dateCreatedLabel.text = viewModel.dateCreated
+
+        if let orderStatus = orderStatus {
+            paymentStatusLabel.applyStyle(for: orderStatus.status)
+            paymentStatusLabel.text = orderStatus.name
+        } else {
+            // There are unsupported extensions with even more statuses available.
+            // So let's use the order.status to display those as slugs.
+            let status = viewModel.orderStatus
+            paymentStatusLabel.applyStyle(for: status)
+            paymentStatusLabel.text = status.rawValue
+        }
+    }
+
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         if traitCollection.preferredContentSizeCategory > .extraExtraLarge {

@@ -121,7 +121,7 @@ final class OrderDetailsDataSource: NSObject {
     /// All the condensed refunds in an order
     ///
     var condensedRefunds: [OrderRefundCondensed] {
-        return order.refunds
+        return order.refunds.sorted(by: { $0.refundID > $1.refundID })
     }
 
     /// Notes of an Order
@@ -811,8 +811,8 @@ extension OrderDetailsDataSource {
 
         let payment: Section = {
             var rows: [Row] = [.payment, .customerPaid]
-            if order.refunds.count > 0 {
-                let refunds = Array<Row>(repeating: .refund, count: order.refunds.count)
+            if condensedRefunds.isNotEmpty {
+                let refunds = Array<Row>(repeating: .refund, count: condensedRefunds.count)
                 rows.append(contentsOf: refunds)
                 rows.append(.netAmount)
             }
@@ -877,7 +877,7 @@ extension OrderDetailsDataSource {
 
     func refund(at indexPath: IndexPath) -> Refund? {
         let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
-        let condensedRefund = order.refunds[index]
+        let condensedRefund = condensedRefunds[index]
         let refund = refunds.first { $0.refundID == condensedRefund.refundID }
 
         guard let refundFound = refund else {

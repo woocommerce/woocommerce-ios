@@ -53,9 +53,9 @@ final class OrderSearchUICommand: SearchUICommand {
     }
 
     func createCellViewModel(model: Order) -> OrderSearchCellViewModel {
-        let orderDetailsViewModel = OrderDetailsViewModel(order: model)
+        let orderCellViewModel = OrderListCellViewModel(order: model)
         let orderStatus = lookUpOrderStatus(for: model)
-        return OrderSearchCellViewModel(orderDetailsViewModel: orderDetailsViewModel,
+        return OrderSearchCellViewModel(orderCellViewModel: orderCellViewModel,
                                         orderStatus: orderStatus)
     }
 

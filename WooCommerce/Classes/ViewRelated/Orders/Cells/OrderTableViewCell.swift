@@ -32,34 +32,8 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
     }
 
     func configureCell(searchModel: OrderSearchCellViewModel) {
-        configureCell(viewModel: searchModel.orderDetailsViewModel,
+        configureCell(viewModel: searchModel.orderCellViewModel,
                       orderStatus: searchModel.orderStatus)
-    }
-
-    /// Renders the specified Order ViewModel
-    ///
-    /// If the `viewModel` is not given, then the UI will be set to empty.
-    ///
-    func configureCell(viewModel: OrderDetailsViewModel?, orderStatus: OrderStatus?) {
-        guard let viewModel = viewModel else {
-            resetLabels()
-            return
-        }
-
-        titleLabel.text = title(for: viewModel.order)
-        totalLabel.text = viewModel.totalFriendlyString
-        dateCreatedLabel.text = viewModel.formattedDateCreated
-
-        if let orderStatus = orderStatus {
-            paymentStatusLabel.applyStyle(for: orderStatus.status)
-            paymentStatusLabel.text = orderStatus.name
-        } else {
-            // There are unsupported extensions with even more statuses available.
-            // So let's use the order.status to display those as slugs.
-            let status = viewModel.order.status
-            paymentStatusLabel.applyStyle(for: status)
-            paymentStatusLabel.text = status.rawValue
-        }
     }
 
     func configureCell(viewModel: OrderListCellViewModel?, orderStatus: OrderStatus?) {

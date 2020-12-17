@@ -217,7 +217,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
 
-        let isSelfHosted = false
+        let isSelfHosted = site.isWP && !site.isWPCom
         let authenticationResult: WordPressAuthenticatorResult = .presentPasswordController(value: isSelfHosted)
         onCompletion(authenticationResult)
     }

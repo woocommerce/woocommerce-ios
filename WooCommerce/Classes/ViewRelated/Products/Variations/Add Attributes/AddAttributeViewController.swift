@@ -36,6 +36,7 @@ final class AddAttributeViewController: UIViewController {
         configureTableView()
         configureGhostTableView()
         configureViewModel()
+        enableDoneButton(false)
     }
 
 }
@@ -102,6 +103,10 @@ private extension AddAttributeViewController {
                 self?.removeGhostTableView()
             }
         }
+    }
+
+    func enableDoneButton(_ enabled: Bool) {
+        navigationItem.rightBarButtonItem?.isEnabled = enabled
     }
 }
 
@@ -218,8 +223,9 @@ private extension AddAttributeViewController {
     func configureTextField(cell: TextFieldTableViewCell) {
         let viewModel = TextFieldTableViewCell.ViewModel(text: nil,
                                                          placeholder: Localization.titleCellPlaceholder,
-                                                         onTextChange: { newAttributeName in
-                                                            // TODO: handle new attribute
+                                                         onTextChange: { [weak self] newAttributeName in
+                                                            self?.viewModel.handleNewAttributeNameChange(newAttributeName)
+                                                            self?.enableDoneButton(self?.viewModel.newAttributeName != nil)
 
             }, onTextDidBeginEditing: {
         }, inputFormatter: nil, keyboardType: .default)

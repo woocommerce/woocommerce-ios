@@ -436,6 +436,7 @@
 		451A04F52386F7C900E368C9 /* AddProductImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451A04F32386F7C900E368C9 /* AddProductImageCollectionViewCell.xib */; };
 		451B1740258B7EFB00836277 /* AddAttributeOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451B173E258B7EFB00836277 /* AddAttributeOptionsViewController.swift */; };
 		451B1741258B7EFB00836277 /* AddAttributeOptionsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451B173F258B7EFB00836277 /* AddAttributeOptionsViewController.xib */; };
+		451B1747258BD7B600836277 /* AddAttributeOptionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451B1746258BD7B600836277 /* AddAttributeOptionsViewModel.swift */; };
 		451C77712404518600413F73 /* ProductSettingsRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451C77702404518600413F73 /* ProductSettingsRows.swift */; };
 		451C77732404534000413F73 /* ProductSettingsSections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451C77722404534000413F73 /* ProductSettingsSections.swift */; };
 		4524CD9E242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4524CD9D242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift */; };
@@ -1517,6 +1518,7 @@
 		451A04F32386F7C900E368C9 /* AddProductImageCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddProductImageCollectionViewCell.xib; sourceTree = "<group>"; };
 		451B173E258B7EFB00836277 /* AddAttributeOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAttributeOptionsViewController.swift; sourceTree = "<group>"; };
 		451B173F258B7EFB00836277 /* AddAttributeOptionsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddAttributeOptionsViewController.xib; sourceTree = "<group>"; };
+		451B1746258BD7B600836277 /* AddAttributeOptionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAttributeOptionsViewModel.swift; sourceTree = "<group>"; };
 		451C77702404518600413F73 /* ProductSettingsRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsRows.swift; sourceTree = "<group>"; };
 		451C77722404534000413F73 /* ProductSettingsSections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsSections.swift; sourceTree = "<group>"; };
 		4524CD9D242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStatusSettingListSelectorCommand.swift; sourceTree = "<group>"; };
@@ -3164,6 +3166,7 @@
 				451526382577D89E0076B03C /* AddAttributeViewModel.swift */,
 				451B173E258B7EFB00836277 /* AddAttributeOptionsViewController.swift */,
 				451B173F258B7EFB00836277 /* AddAttributeOptionsViewController.xib */,
+				451B1746258BD7B600836277 /* AddAttributeOptionsViewModel.swift */,
 			);
 			path = "Add Attributes";
 			sourceTree = "<group>";
@@ -6081,6 +6084,7 @@
 				B5980A6321AC879F00EBF596 /* Bundle+Woo.swift in Sources */,
 				B59D1EE5219080B4009D1978 /* Note+Woo.swift in Sources */,
 				02913E9523A774C500707A0C /* UnitInputFormatter.swift in Sources */,
+				451B1747258BD7B600836277 /* AddAttributeOptionsViewModel.swift in Sources */,
 				02F49ADC23BF3A0100FA0BFA /* ErrorSectionHeaderView.swift in Sources */,
 				265BCA052430E611004E53EE /* ProductCategoryListViewController.swift in Sources */,
 				CE4DA5CA21DEA78E00074607 /* NSDecimalNumber+Helpers.swift in Sources */,

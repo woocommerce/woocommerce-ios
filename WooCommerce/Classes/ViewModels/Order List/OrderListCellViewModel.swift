@@ -9,6 +9,8 @@ struct OrderListCellViewModel {
         self.order = order
     }
 
+    /// For example, #560 Pamela Nguyen
+    ///
     var title: String {
         if let billingAddress = order.billingAddress, billingAddress.firstName.isNotEmpty || billingAddress.lastName.isNotEmpty {
             return Localization.title(orderNumber: order.number,
@@ -19,10 +21,16 @@ struct OrderListCellViewModel {
         return Localization.title(orderNumber: order.number)
     }
 
+    /// The localized unabbreviated total which includes the currency.
+    ///
+    /// Example: $48,415,504.20
+    ///
     var total: String? {
         return currencyFormatter.formatAmount(order.total, with: order.currency)
     }
 
+    /// The value will only include the year if the `createdDate` is not from the current year.
+    ///
     var dateCreated: String {
         let isSameYear = order.dateCreated.isSameYear(as: Date())
         let formatter: DateFormatter = isSameYear ? .monthAndDayFormatter : .mediumLengthLocalizedDateFormatter

@@ -4,6 +4,31 @@ import Foundation
 ///
 public class CustomerRemote: Remote {
 
+    /// Create a customer.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll create a customer.
+    ///     - customer: The Customer model used to create the custom entity for the request.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func createCustomer(for siteID: Int64,
+                               customer: Customer,
+                               completion: @escaping (Result<Customer, Error>) -> Void) {
+        let path = Path.customers
+        let mapper = CustomerMapper(siteID: siteID)
+
+        do {
+            let encodedJson = try mapper.map(customer: customer)
+            let parameters: [String: Any]? = try JSONSerialization.jsonObject(with: encodedJson, options: []) as? [String: Any]
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+            DDLogError("Unable to serialize data for refunds: \(error)")
+        }
+    }
+
     /// Retrieves all of the customers available.
     ///
     /// - Parameters:

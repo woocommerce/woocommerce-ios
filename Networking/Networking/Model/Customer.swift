@@ -2,7 +2,7 @@ import Foundation
 
 /// Represent a Customer Entity.
 ///
-public struct Customer: Decodable, Equatable {
+public struct Customer: Codable, Equatable {
 
     public let siteID: Int64
     public let userID: Int64

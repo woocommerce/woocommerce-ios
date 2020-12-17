@@ -51,7 +51,7 @@ private extension AddAttributeViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.nextNavBarButton,
                                                            style: .plain,
                                                            target: self,
-                                                           action: #selector(completeUpdating))
+                                                           action: #selector(doneButtonPressed))
     }
 
     func configureMainView() {
@@ -171,6 +171,12 @@ extension AddAttributeViewController: UITableViewDataSource {
 extension AddAttributeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+
+        let row = viewModel.sections[indexPath.section].rows[indexPath.row]
+        guard row == .existingAttribute else {
+            return
+        }
+        presentAddAttributeOptions(for: viewModel.localAndGlobalAttributes[indexPath.row])
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -259,8 +265,19 @@ extension AddAttributeViewController: KeyboardScrollable {
 //
 extension AddAttributeViewController {
 
-    @objc private func completeUpdating() {
-        let addAttributeOptionsVC = AddAttributeOptionsViewController()
+    @objc private func doneButtonPressed() {
+        presentAddAttributeOptions(for: self.viewModel.newAttributeName)
+    }
+
+    private func presentAddAttributeOptions(for newAttribute: String?) {
+        let viewModel = AddAttributeOptionsViewModel(newAttribute: newAttribute)
+        let addAttributeOptionsVC = AddAttributeOptionsViewController(viewModel: viewModel)
+        navigationController?.pushViewController(addAttributeOptionsVC, animated: true)
+    }
+
+    private func presentAddAttributeOptions(for existingAttribute: ProductAttribute) {
+        let viewModel = AddAttributeOptionsViewModel(newAttribute: self.viewModel.newAttributeName)
+        let addAttributeOptionsVC = AddAttributeOptionsViewController(viewModel: viewModel)
         navigationController?.pushViewController(addAttributeOptionsVC, animated: true)
     }
 }

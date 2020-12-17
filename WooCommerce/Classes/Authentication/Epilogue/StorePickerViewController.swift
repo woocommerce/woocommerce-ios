@@ -185,13 +185,13 @@ class StorePickerViewController: UIViewController {
 private extension StorePickerViewController {
 
     func setupMainView() {
-        view.backgroundColor = .listBackground
+        view.backgroundColor = backgroundColor()
     }
 
     func setupTableView() {
         tableView.registerNib(for: EmptyStoresTableViewCell.self)
         tableView.registerNib(for: StoreTableViewCell.self)
-        tableView.backgroundColor = .listBackground
+        tableView.backgroundColor = backgroundColor()
     }
 
     func setupAccountHeader() {
@@ -242,6 +242,10 @@ private extension StorePickerViewController {
     func stateWasUpdated() {
         preselectStoreIfPossible()
         reloadInterface()
+    }
+
+    func backgroundColor() -> UIColor {
+        return WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor ?? .listBackground
     }
 }
 

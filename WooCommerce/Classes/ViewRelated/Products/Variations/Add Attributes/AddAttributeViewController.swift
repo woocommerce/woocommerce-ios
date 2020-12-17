@@ -260,7 +260,8 @@ extension AddAttributeViewController: KeyboardScrollable {
 extension AddAttributeViewController {
 
     @objc private func completeUpdating() {
-        // TODO: to be implemented
+        let addAttributeOptionsVC = AddAttributeOptionsViewController()
+        navigationController?.pushViewController(addAttributeOptionsVC, animated: true)
     }
 }
 

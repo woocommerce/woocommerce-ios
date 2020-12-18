@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents an Address Entity.
 ///
-public struct Address: Decodable {
+public struct Address: Codable {
     public let firstName: String
     public let lastName: String
     public let company: String?

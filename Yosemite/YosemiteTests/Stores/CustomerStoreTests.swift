@@ -116,6 +116,50 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Customer.self), 0)
     }
+
+    // MARK: - CustomerAction.createCustomer
+
+    func test_createCustomer_persists_customer() throws {
+        // Given
+        let store = CustomerStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "customers", filename: "customer")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Customer.self), 0)
+
+        // When
+        let customer = try sampleCustomer()
+        let result: Result<Networking.Customer, Error> = try waitFor { promise in
+            let action = CustomerAction.createCustomer(siteID: self.sampleSiteID, customer: customer) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Customer.self), 1)
+    }
+
+    func test_createCustomer_returns_error_on_failure() throws {
+        // Given
+        let store = CustomerStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectedError = NetworkError.notFound
+        network.simulateError(requestUrlSuffix: "customers", error: expectedError)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Customer.self), 0)
+
+        // When
+        let customer = try sampleCustomer()
+        let result: Result<Networking.Customer, Error> = try waitFor { promise in
+            let action = CustomerAction.createCustomer(siteID: self.sampleSiteID, customer: customer) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Customer.self), 0)
+    }
 }
 
 

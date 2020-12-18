@@ -1,23 +1,32 @@
 import XCTest
 @testable import Networking
 
-/// CustomersListMapper Unit Tests
+/// CustomersMapper Unit Tests
 ///
-final class CustomersListMapperTests: XCTestCase {
+final class CustomerMapperTests: XCTestCase {
 
     /// Site ID for testing.
     private let sampleSiteID: Int64 = 1234
 
-    func test_customers_list_is_properly_parsed() throws {
+    func test_customer_is_properly_parsed() throws {
         // Given
-        let jsonData = try XCTUnwrap(Loader.contentsOf("customers-all"))
+        let jsonData = try XCTUnwrap(Loader.contentsOf("customer"))
 
         // When
-        let response = try CustomersListMapper(siteID: sampleSiteID).map(response: jsonData)
+        let responseCustomer = try CustomerMapper(siteID: sampleSiteID).map(response: jsonData)
 
         // Then
-        XCTAssertEqual(response.count, 2)
+        let johnDoe = try sampleCustomer()
+        XCTAssertEqual(responseCustomer, johnDoe)
+    }
+}
 
+
+// MARK: - Private Helpers
+//
+private extension CustomerMapperTests {
+
+    func sampleCustomer() throws -> Customer {
         let billingAddress = Address(firstName: "John",
                                      lastName: "Doe",
                                      company: "",
@@ -59,10 +68,6 @@ final class CustomersListMapperTests: XCTestCase {
                                billingAddress: billingAddress,
                                shippingAddress: shippingAddress)
 
-        guard let expectedCustomer = response.first(where: { $0.userID == johnDoeID }) else {
-            XCTFail("Customer with id \(johnDoeID) should exist")
-            return
-        }
-        XCTAssertEqual(expectedCustomer, johnDoe)
+        return johnDoe
     }
 }

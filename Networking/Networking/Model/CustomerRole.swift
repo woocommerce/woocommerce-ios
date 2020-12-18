@@ -3,7 +3,7 @@ import Foundation
 /// Represents a Customer.Role Entity.
 ///
 extension Customer {
-    public enum Role: Decodable, Hashable {
+    public enum Role: Codable, Hashable {
         case administrator
         case editor
         case author

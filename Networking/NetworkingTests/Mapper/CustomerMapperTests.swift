@@ -19,20 +19,6 @@ final class CustomerMapperTests: XCTestCase {
         let johnDoe = try sampleCustomer()
         XCTAssertEqual(responseCustomer, johnDoe)
     }
-
-    func test_customer_is_correctly_encoded() throws {
-        // Given
-        let johnDoe = try sampleCustomer()
-
-        // When
-        let encodedCustomerData = try CustomerMapper(siteID: sampleSiteID).map(customer: johnDoe)
-        let customerDictionary = try JSONSerialization.jsonObject(with: encodedCustomerData) as? [String: Any]
-
-        // Then
-        XCTAssertEqual(customerDictionary?["first_name"] as? String, "John")
-        let billingAddressDictionary = try XCTUnwrap(customerDictionary?["billing"] as? [String: Any])
-        XCTAssertEqual(billingAddressDictionary["first_name"] as? String, "John")
-    }
 }
 
 

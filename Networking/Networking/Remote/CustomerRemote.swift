@@ -18,14 +18,13 @@ public class CustomerRemote: Remote {
         let mapper = CustomerMapper(siteID: siteID)
 
         do {
-            let encodedJson = try mapper.map(customer: customer)
-            let parameters: [String: Any]? = try JSONSerialization.jsonObject(with: encodedJson, options: []) as? [String: Any]
+            let parameters = try customer.toDictionary()
             let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
 
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))
-            DDLogError("Unable to serialize data for refunds: \(error)")
+            DDLogError("Unable to serialize data for customer: \(error)")
         }
     }
 

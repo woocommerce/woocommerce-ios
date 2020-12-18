@@ -22,14 +22,6 @@ struct CustomerMapper: Mapper {
 
         return try decoder.decode(CustomerEnvelope.self, from: response).customer
     }
-
-    /// (Attempts) to encode a Customer object into JSONEncoded data.
-    ///
-    func map(customer: Customer) throws -> Data {
-        let encoder = JSONEncoder()
-
-        return try encoder.encode(customer)
-    }
 }
 
 

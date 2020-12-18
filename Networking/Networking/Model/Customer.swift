@@ -97,6 +97,18 @@ public struct Customer: Codable, Equatable {
                   billingAddress: billingAddress,
                   shippingAddress: shippingAddress)
     }
+
+    /// The public encoder for Customer.
+    ///
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(email, forKey: .email)
+        try container.encode(firstName, forKey: .firstName)
+        try container.encode(lastName, forKey: .lastName)
+        try container.encode(billingAddress, forKey: .billingAddress)
+        try container.encode(shippingAddress, forKey: .shippingAddress)
+    }
 }
 
 /// Defines all of the Customer CodingKeys

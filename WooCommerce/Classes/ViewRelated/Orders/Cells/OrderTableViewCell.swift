@@ -5,7 +5,7 @@ import Yosemite
 // MARK: - OrderTableViewCell
 //
 final class OrderTableViewCell: UITableViewCell & SearchResultCell {
-    typealias SearchModel = OrderSearchCellViewModel
+    typealias SearchModel = OrderListCellViewModel
 
     /// Order's Title
     ///
@@ -31,12 +31,11 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
         tableView.registerNib(for: self)
     }
 
-    func configureCell(searchModel: OrderSearchCellViewModel) {
-        configureCell(viewModel: searchModel.orderCellViewModel,
-                      orderStatus: searchModel.orderStatus)
+    func configureCell(searchModel: OrderListCellViewModel) {
+        configureCell(viewModel: searchModel)
     }
 
-    func configureCell(viewModel: OrderListCellViewModel?, orderStatus: OrderStatus?) {
+    func configureCell(viewModel: OrderListCellViewModel?) {
         guard let viewModel = viewModel else {
             resetLabels()
             return
@@ -46,16 +45,8 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
         totalLabel.text = viewModel.total
         dateCreatedLabel.text = viewModel.dateCreated
 
-        if let orderStatus = orderStatus {
-            paymentStatusLabel.applyStyle(for: orderStatus.status)
-            paymentStatusLabel.text = orderStatus.name
-        } else {
-            // There are unsupported extensions with even more statuses available.
-            // So let's use the order.status to display those as slugs.
-            let status = viewModel.orderStatus
-            paymentStatusLabel.applyStyle(for: status)
-            paymentStatusLabel.text = status.rawValue
-        }
+        paymentStatusLabel.applyStyle(for: viewModel.status)
+        paymentStatusLabel.text = viewModel.statusString
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

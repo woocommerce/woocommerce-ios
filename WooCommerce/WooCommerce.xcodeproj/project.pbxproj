@@ -228,7 +228,6 @@
 		0282DD94233C9465006A5FDB /* SearchUICommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0282DD93233C9465006A5FDB /* SearchUICommand.swift */; };
 		0282DD96233C960C006A5FDB /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0282DD95233C960C006A5FDB /* SearchResultCell.swift */; };
 		0282DD98233CA093006A5FDB /* OrderSearchUICommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0282DD97233CA093006A5FDB /* OrderSearchUICommand.swift */; };
-		0282DD9A233CA32D006A5FDB /* OrderSearchCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0282DD99233CA32D006A5FDB /* OrderSearchCellViewModel.swift */; };
 		0285BF7022FBD91C003A2525 /* TopPerformersSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0285BF6F22FBD91C003A2525 /* TopPerformersSectionHeaderView.swift */; };
 		0286B27A23C7051F003D784B /* ProductImagesCollectionViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0286B27623C7051F003D784B /* ProductImagesCollectionViewController.xib */; };
 		0286B27B23C7051F003D784B /* ProductImagesCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0286B27723C7051F003D784B /* ProductImagesCollectionViewController.swift */; };
@@ -1306,7 +1305,6 @@
 		0282DD93233C9465006A5FDB /* SearchUICommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUICommand.swift; sourceTree = "<group>"; };
 		0282DD95233C960C006A5FDB /* SearchResultCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
 		0282DD97233CA093006A5FDB /* OrderSearchUICommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchUICommand.swift; sourceTree = "<group>"; };
-		0282DD99233CA32D006A5FDB /* OrderSearchCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchCellViewModel.swift; sourceTree = "<group>"; };
 		0285BF6F22FBD91C003A2525 /* TopPerformersSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopPerformersSectionHeaderView.swift; sourceTree = "<group>"; };
 		0286B27623C7051F003D784B /* ProductImagesCollectionViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProductImagesCollectionViewController.xib; sourceTree = "<group>"; };
 		0286B27723C7051F003D784B /* ProductImagesCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductImagesCollectionViewController.swift; sourceTree = "<group>"; };
@@ -2824,7 +2822,6 @@
 			isa = PBXGroup;
 			children = (
 				0282DD97233CA093006A5FDB /* OrderSearchUICommand.swift */,
-				0282DD99233CA32D006A5FDB /* OrderSearchCellViewModel.swift */,
 				5795F22B23E26A8D00F6707C /* OrderSearchStarterViewController.xib */,
 				5795F22D23E26A9E00F6707C /* OrderSearchStarterViewController.swift */,
 				5795F22F23E26B5300F6707C /* OrderSearchStarterViewModel.swift */,
@@ -5772,7 +5769,6 @@
 				747AA08B2107CF8D0047A89B /* TracksProvider.swift in Sources */,
 				CE1EC8F120B8A408009762BF /* OrderNoteTableViewCell.swift in Sources */,
 				D8C11A5E22E2440400D4A88D /* OrderPaymentDetailsViewModel.swift in Sources */,
-				0282DD9A233CA32D006A5FDB /* OrderSearchCellViewModel.swift in Sources */,
 				021E2A1E23AA24C600B1DE07 /* StringInputFormatter.swift in Sources */,
 				D8D15F83230A17A000D48B3F /* ServiceLocator.swift in Sources */,
 				CE583A0421076C0100D73C1C /* NewNoteViewController.swift in Sources */,

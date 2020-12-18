@@ -2,11 +2,14 @@ import Foundation
 import Yosemite
 
 struct OrderListCellViewModel {
-    let order: Order
+    private let order: Order
+    private let orderStatus: OrderStatus?
+
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
-    init(order: Order) {
+    init(order: Order, status: OrderStatus?) {
         self.order = order
+        orderStatus = status
     }
 
     /// For example, #560 Pamela Nguyen
@@ -37,8 +40,12 @@ struct OrderListCellViewModel {
         return formatter.string(from: order.dateCreated)
     }
 
-    var orderStatus: OrderStatusEnum {
-        return order.status
+    var status: OrderStatusEnum {
+        return orderStatus?.status ?? order.status
+    }
+
+    var statusString: String {
+        return orderStatus?.name ?? order.status.rawValue
     }
 }
 

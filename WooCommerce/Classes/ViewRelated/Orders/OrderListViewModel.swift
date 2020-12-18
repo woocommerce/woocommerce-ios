@@ -43,6 +43,23 @@ final class OrderListViewModel {
     ///
     private var isAppActive: Bool = true
 
+    /// Used for looking up the `OrderStatus` to show in the `OrderTableViewCell`.
+    ///
+    /// The `OrderStatus` data is fetched from the API by `OrdersTabbedViewModel`.
+    ///
+    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
+        let storageManager = ServiceLocator.storageManager
+        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+
+        return ResultsController<StorageOrderStatus>(storageManager: storageManager, sortedBy: [descriptor])
+    }()
+
+    /// The current list of order statuses for the default site
+    ///
+    private var currentSiteStatuses: [OrderStatus] {
+        return statusResultsController.fetchedObjects
+    }
+
     private lazy var snapshotsProvider: FetchResultSnapshotsProvider<StorageOrder> = .init(storageManager: self.storageManager, query: createQuery())
 
     /// Emits snapshots of orders that should be displayed in the table view.
@@ -72,6 +89,7 @@ final class OrderListViewModel {
     /// And only when the corresponding view was loaded.
     ///
     func activate() {
+        configureStatusResultsController()
         startReceivingSnapshots()
 
         notificationCenter.addObserver(self, selector: #selector(handleAppDeactivation),
@@ -163,6 +181,21 @@ private extension OrderListViewModel {
     }
 }
 
+// MARK: - Order Status
+
+private extension OrderListViewModel {
+    /// Setup: Status Results Controller
+    ///
+    func configureStatusResultsController() {
+        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", siteID)
+        try? statusResultsController.performFetch()
+    }
+
+    func lookUpOrderStatus(for order: Order) -> OrderStatus? {
+        return currentSiteStatuses.first(where: { $0.status == order.status })
+    }
+}
+
 // MARK: - TableView Support
 
 extension OrderListViewModel {
@@ -173,7 +206,9 @@ extension OrderListViewModel {
             return nil
         }
 
-        return OrderListCellViewModel(order: order)
+        let status = lookUpOrderStatus(for: order)
+
+        return OrderListCellViewModel(order: order, status: status)
     }
 
     /// Creates an `OrderDetailsViewModel` for the `Order` pointed to by `objectID`.

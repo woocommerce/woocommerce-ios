@@ -67,6 +67,7 @@ public typealias ShipmentTrackingProvider = Networking.ShipmentTrackingProvider
 public typealias ShipmentTrackingProviderGroup = Networking.ShipmentTrackingProviderGroup
 public typealias ShippingLabel = Networking.ShippingLabel
 public typealias ShippingLabelAddress = Networking.ShippingLabelAddress
+public typealias ShippingLabelPaperSize = Networking.ShippingLabelPaperSize
 public typealias ShippingLabelPrintData = Networking.ShippingLabelPrintData
 public typealias ShippingLabelRefund = Networking.ShippingLabelRefund
 public typealias ShippingLabelSettings = Networking.ShippingLabelSettings

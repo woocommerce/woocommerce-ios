@@ -1,8 +1,13 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+5.8
+-----
+
+
 5.7
 -----
 - [***] Dropped iOS 12 support. From now we support iOS 13 and later. [https://github.com/woocommerce/woocommerce-ios/pull/3216]
+- [**] Improved login flow, including better error handling. [https://github.com/woocommerce/woocommerce-ios/pull/3332]
 - [*] Fixed spinner appearance in the footer of orders list. [https://github.com/woocommerce/woocommerce-ios/pull/3249]
 - [*] In order details, the image for a line item associated with a variation is shown now after the variation has been synced. [https://github.com/woocommerce/woocommerce-ios/pull/3314]
 - [internal] Refactored Core Data stack so more errors will be propagated. [https://github.com/woocommerce/woocommerce-ios/pull/3267]

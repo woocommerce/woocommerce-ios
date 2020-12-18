@@ -1,13 +1,21 @@
-AFFICHER ET GÉRER LES COMMANDES
-Faites défiler, filtrez ou recherchez des commandes spécifiques. Appuyez pour voir des informations sur la commande (produit(s), valeur, données client, détails de livraison et remarques).
+Gérez votre entreprise où que vous soyez grâce à l’application mobile WooCommerce. Créez des produits, traitez les commandes et suivez les statistiques clés en temps réel.
 
-SUIVRE VOTRE BOUTIQUE
-Voyez les produits qui se vendent le mieux. Consultez vos revenus globaux et affichez les données sur les commandes et les visiteurs par semaine, par mois et par année.
+AJOUTEZ DES PRODUITS
+Créez, regroupez et publiez des produits directement à partir de votre iPhone ou iPad. Saisissez un instantané de votre créativité : transformez vos idées en produits en quelques secondes, ou enregistrez-les sous forme de brouillons et revenez-y plus tard.
 
-ALERTES DE COMMANDE EN TEMPS RÉEL
-Recevez des notifications sur l’activité de votre boutique, notamment des nouvelles commandes et des avis sur vos produits.
+RECEVEZ DES NOTIFICATIONS
+Ne passez jamais à côté d’une commande ou d’un avis laissé par un acheteur. Pour ne pas être victime du syndrome FOMO, activez les alertes en temps réel. Et ne manquez pas ce son « gling-gling » addictif qui retentit chaque fois qu'une vente est conclue !
 
-WooCommerce est la plateforme d’eCommerce la plus personnalisable pour développer votre boutique en ligne. Conçu sur WordPress, il contient les meilleurs outils de gestion de contenu au monde.
+VISUALISEZ ET MODIFIEZ LES COMMANDES
+Faites défiler les résumés ou effectuez une recherche par client ou par commande spécifique. Appuyez sur les détails pour voir la facturation par article, commencer l’exécution et modifier le statut d’une commande. Ajoutez des notes à la commande ou envoyez directement un e-mail aux clients pour en assurer le suivi.
+
+SUIVEZ VOS STATISTIQUES
+Affichez les produits les plus vendus en un clin d’œil. Surveillez facilement les revenus globaux, le nombre de commandes et les données sur les visiteurs par semaine, mois et année. Savoir est synonyme de pouvoir !
+
+PASSEZ D’UNE BOUTIQUE À L’AUTRE
+Si vous en avez plusieurs, passez d’une entreprise à l’autre en quelques secondes.
+
+WooCommerce est la plateforme de commerce électronique Open-Source la plus personnalisable au monde. Que vous lanciez une activité, basculiez un magasin physique en ligne ou développiez des sites pour vos clients, WooCommerce permet d’obtenir une boutique qui allie puissamment contenu et commerce.
 
 Conditions requises : WooCommerce v3.5+, l'extension Jetpack.
 

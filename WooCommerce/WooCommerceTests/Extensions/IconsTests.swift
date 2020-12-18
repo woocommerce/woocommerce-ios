@@ -190,6 +190,14 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.loginSiteAddressInfoImage)
     }
 
+    func test_login_Jetpack_error_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.loginNoJetpackError)
+    }
+
+    func test_login_WP_error_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.loginNoWordPressError)
+    }
+
     func testMailImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.mailImage)
     }
@@ -238,6 +246,10 @@ final class IconsTests: XCTestCase {
 
     func testPagesImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.pagesImage)
+    }
+
+    func testPagesFootnoteImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.pagesFootnoteImage)
     }
 
     func testScanImageIconIsNotNil() {
@@ -299,6 +311,10 @@ final class IconsTests: XCTestCase {
 
     func testVisibleImageIsNotNil() {
         XCTAssertNotNil(UIImage.visibilityImage)
+    }
+
+    func test_what_is_Jetpack_image() {
+        XCTAssertNotNil(UIImage.whatIsJetpackImage)
     }
 
     func testWooLogoImageIconIsNotNil() {
@@ -363,5 +379,9 @@ final class IconsTests: XCTestCase {
 
     func test_wordPressLogoImage_is_not_nil() {
         XCTAssertNotNil(UIImage.wordPressLogoImage)
+    }
+
+    func test_errorImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.errorImage)
     }
 }

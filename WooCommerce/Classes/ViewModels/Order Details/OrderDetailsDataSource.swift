@@ -121,7 +121,7 @@ final class OrderDetailsDataSource: NSObject {
     /// All the condensed refunds in an order
     ///
     var condensedRefunds: [OrderRefundCondensed] {
-        return order.refunds
+        return order.refunds.sorted(by: { $0.refundID > $1.refundID })
     }
 
     /// Notes of an Order
@@ -282,7 +282,7 @@ private extension OrderDetailsDataSource {
         case let cell as ButtonTableViewCell where row == .fulfillButton:
             configureFulfillmentButton(cell: cell)
         case let cell as ButtonTableViewCell where row == .shippingLabelReprintButton:
-            configureReprintShippingLabelButton(cell: cell)
+            configureReprintShippingLabelButton(cell: cell, at: indexPath)
         case let cell as OrderTrackingTableViewCell where row == .tracking:
             configureTracking(cell: cell, at: indexPath)
         case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelTrackingNumber:
@@ -525,9 +525,13 @@ private extension OrderDetailsDataSource {
         cell.updateUI(viewModel: viewModel)
     }
 
-    private func configureReprintShippingLabelButton(cell: ButtonTableViewCell) {
-        cell.configure(style: .secondary, title: Titles.reprintShippingLabel) {
-            // TODO-2174: reprint shipping label UX
+    private func configureReprintShippingLabelButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
+        cell.configure(style: .secondary, title: Titles.reprintShippingLabel) { [weak self] in
+            guard let self = self else { return }
+            guard let shippingLabel = self.shippingLabel(at: indexPath) else {
+                return
+            }
+            self.onCellAction?(.reprintShippingLabel(shippingLabel: shippingLabel), nil)
         }
     }
 
@@ -807,8 +811,8 @@ extension OrderDetailsDataSource {
 
         let payment: Section = {
             var rows: [Row] = [.payment, .customerPaid]
-            if order.refunds.count > 0 {
-                let refunds = Array<Row>(repeating: .refund, count: order.refunds.count)
+            if condensedRefunds.isNotEmpty {
+                let refunds = Array<Row>(repeating: .refund, count: condensedRefunds.count)
                 rows.append(contentsOf: refunds)
                 rows.append(.netAmount)
             }
@@ -873,7 +877,7 @@ extension OrderDetailsDataSource {
 
     func refund(at indexPath: IndexPath) -> Refund? {
         let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
-        let condensedRefund = order.refunds[index]
+        let condensedRefund = condensedRefunds[index]
         let refund = refunds.first { $0.refundID == condensedRefund.refundID }
 
         guard let refundFound = refund else {
@@ -1241,6 +1245,7 @@ extension OrderDetailsDataSource {
         case tracking
         case summary
         case issueRefund
+        case reprintShippingLabel(shippingLabel: ShippingLabel)
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
     }
 

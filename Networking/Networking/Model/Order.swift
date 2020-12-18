@@ -139,7 +139,10 @@ public struct Order: Decodable, GeneratedCopiable {
         let coupons = try container.decode([OrderCouponLine].self, forKey: .couponLines)
 
         // The refunds field will not always exist in the response, so let's default to an empty array.
-        let refunds = try container.decodeIfPresent([OrderRefundCondensed].self, forKey: .refunds) ?? []
+        var refunds = try container.decodeIfPresent([OrderRefundCondensed].self, forKey: .refunds) ?? []
+
+        // Filter out refunds with ID equal to 0 (deleted).
+        refunds = refunds.filter({ $0.refundID != 0 })
 
         self.init(siteID: siteID,
                   orderID: orderID,

@@ -342,7 +342,15 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 break
             case .variations:
                 ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
-                guard let product = product as? EditableProductModel, product.product.variations.isNotEmpty else {
+                guard let product = product as? EditableProductModel else {
+                    return
+                }
+                guard product.product.variations.isNotEmpty else {
+                    if isEditProductsRelease5Enabled {
+                        let viewModel = AddAttributeViewModel(product: product.product)
+                        let addAttributeViewController = AddAttributeViewController(viewModel: viewModel)
+                        navigationController?.pushViewController(addAttributeViewController, animated: true)
+                    }
                     return
                 }
                 let variationsViewController = ProductVariationsViewController(product: product.product,

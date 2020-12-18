@@ -38,6 +38,7 @@ class AuthenticationManager: Authentication {
                                                                 showLoginOptions: true,
                                                                 enableSignUp: false,
                                                                 enableSignInWithApple: isSignInWithAppleEnabled,
+                                                                enableSignupWithGoogle: false,
                                                                 enableUnifiedAuth: true,
                                                                 continueWithSiteAddressFirst: true)
 

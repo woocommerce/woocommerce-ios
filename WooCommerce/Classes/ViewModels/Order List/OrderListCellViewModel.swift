@@ -1,6 +1,8 @@
 import Foundation
 import Yosemite
 
+// MARK: - View Model for individual cells on the Order List screen
+//
 struct OrderListCellViewModel {
     private let order: Order
     private let orderStatus: OrderStatus?
@@ -40,10 +42,16 @@ struct OrderListCellViewModel {
         return formatter.string(from: order.dateCreated)
     }
 
+    /// Status of the order
+    ///
     var status: OrderStatusEnum {
         return orderStatus?.status ?? order.status
     }
 
+    /// Textual representation of the status
+    ///
+    /// There are unsupported extensions with even more statuses available.
+    /// So if orderStatus doesn't have a name, let's use the order.status to display those as slugs.
     var statusString: String {
         return orderStatus?.name ?? order.status.rawValue
     }

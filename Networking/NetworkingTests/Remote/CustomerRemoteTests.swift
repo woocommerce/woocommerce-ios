@@ -17,42 +17,6 @@ final class CustomerRemoteTests: XCTestCase {
         network.removeAllSimulatedResponses()
     }
 
-    // MARK: - Create Customer
-
-    func test_createCustomers_returns_parsed_customer() throws {
-        // Given
-        let remote = CustomerRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "customers", filename: "customer")
-
-        // When
-        let customer = try sampleCustomer()
-        let result = try waitFor { promise in
-            remote.createCustomer(for: self.sampleSiteID, customer: customer) { result in
-                promise(result)
-            }
-        }
-
-        // Then
-        let responseCustomer = try XCTUnwrap(result.get())
-        XCTAssertEqual(responseCustomer, customer)
-    }
-
-    func test_createCustomer_relays_networking_error() throws {
-        // Given
-        let remote = CustomerRemote(network: network)
-
-        // When
-        let customer = try sampleCustomer()
-        let result = try waitFor { promise in
-            remote.createCustomer(for: self.sampleSiteID, customer: customer) { result in
-                promise(result)
-            }
-        }
-
-        // Then
-        XCTAssertTrue(result.isFailure)
-    }
-
     // MARK: - Get All Customers
 
     func test_getAllCustomers_returns_parsed_customers() throws {
@@ -87,6 +51,42 @@ final class CustomerRemoteTests: XCTestCase {
         // When
         let result = try waitFor { promise in
             remote.getAllCustomers(for: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    // MARK: - Create Customer
+
+    func test_createCustomers_returns_parsed_customer() throws {
+        // Given
+        let remote = CustomerRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "customers", filename: "customer")
+
+        // When
+        let customer = try sampleCustomer()
+        let result = try waitFor { promise in
+            remote.createCustomer(for: self.sampleSiteID, customer: customer) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let responseCustomer = try XCTUnwrap(result.get())
+        XCTAssertEqual(responseCustomer, customer)
+    }
+
+    func test_createCustomer_relays_networking_error() throws {
+        // Given
+        let remote = CustomerRemote(network: network)
+
+        // When
+        let customer = try sampleCustomer()
+        let result = try waitFor { promise in
+            remote.createCustomer(for: self.sampleSiteID, customer: customer) { result in
                 promise(result)
             }
         }

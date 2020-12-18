@@ -4,30 +4,6 @@ import Foundation
 ///
 public class CustomerRemote: Remote {
 
-    /// Create a customer.
-    ///
-    /// - Parameters:
-    ///     - siteID: Site for which we'll create a customer.
-    ///     - customer: The Customer model used to create the custom entity for the request.
-    ///     - completion: Closure to be executed upon completion.
-    ///
-    public func createCustomer(for siteID: Int64,
-                               customer: Customer,
-                               completion: @escaping (Result<Customer, Error>) -> Void) {
-        let path = Path.customers
-        let mapper = CustomerMapper(siteID: siteID)
-
-        do {
-            let parameters = try customer.toDictionary()
-            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
-
-            enqueue(request, mapper: mapper, completion: completion)
-        } catch {
-            completion(.failure(error))
-            DDLogError("Unable to serialize data for customer: \(error)")
-        }
-    }
-
     /// Retrieves all of the customers available.
     ///
     /// - Parameters:
@@ -53,6 +29,30 @@ public class CustomerRemote: Remote {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = CustomersListMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Create a customer.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll create a customer.
+    ///     - customer: The Customer model used to create the custom entity for the request.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func createCustomer(for siteID: Int64,
+                               customer: Customer,
+                               completion: @escaping (Result<Customer, Error>) -> Void) {
+        let path = Path.customers
+        let mapper = CustomerMapper(siteID: siteID)
+
+        do {
+            let parameters = try customer.toDictionary()
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+            DDLogError("Unable to serialize data for customer: \(error)")
+        }
     }
 }
 

@@ -31,10 +31,10 @@ public class CustomerStore: Store {
         }
 
         switch action {
-        case .createCustomer(let siteID, let customer, let completion):
-            createCustomer(siteID: siteID, customer: customer, completion: completion)
         case .synchronizeAllCustomers(let siteID, let completion):
             synchronizeAllCustomers(siteID: siteID, completion: completion)
+        case .createCustomer(let siteID, let customer, let completion):
+            createCustomer(siteID: siteID, customer: customer, completion: completion)
         }
     }
 }
@@ -43,22 +43,7 @@ public class CustomerStore: Store {
 //
 private extension CustomerStore {
 
-    /// Creates a new Customer.
-    ///
-    func createCustomer(siteID: Int64, customer: Customer, completion: @escaping (Result<Customer, Error>) -> Void) {
-        remote.createCustomer(for: siteID, customer: customer) { [weak self] result in
-            guard let self = self else { return }
-
-            switch result {
-            case .failure(let error):
-                completion(.failure(error))
-            case .success(let response):
-                self.upsertCustomersInBackground(siteID: siteID, customers: [response]) {
-                    completion(.success(response))
-                }
-            }
-        }
-    }
+    // MARK: - Synchronize Customers
 
     /// Retrieves all of the customers associated with a given Site ID (if any!).
     ///
@@ -96,6 +81,25 @@ private extension CustomerStore {
                 completion(.failure(error))
             case .success(let response):
                 self.upsertCustomersInBackground(siteID: siteID, customers: response) {
+                    completion(.success(response))
+                }
+            }
+        }
+    }
+
+    // MARK: - Create Customer
+
+    /// Creates a new Customer.
+    ///
+    func createCustomer(siteID: Int64, customer: Customer, completion: @escaping (Result<Customer, Error>) -> Void) {
+        remote.createCustomer(for: siteID, customer: customer) { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let response):
+                self.upsertCustomersInBackground(siteID: siteID, customers: [response]) {
                     completion(.success(response))
                 }
             }

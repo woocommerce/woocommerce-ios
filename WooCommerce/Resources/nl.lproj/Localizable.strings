@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-11-26 16:54:04+0000 */
+/* Translation-Revision-Date: 2020-12-10 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -66,6 +66,12 @@
 /* Navigation bar title for selecting multiple products when more multiple products have been selected. */
 "%ld Products Selected" = "%ld Producten geselecteerd";
 
+/* Format of cross-sell linked products row in the singular form. Reads, `1 cross-sell product` */
+"%ld cross-sell product" = "%ld cross-sellproduct";
+
+/* Format of cross-sell linked products row in the plural form. Reads, `5 cross-sell products` */
+"%ld cross-sell products" = "%ld cross-sellproducten";
+
 /* Format of the number of Downloadable Files row in the singular form. Reads, `1 file` */
 "%ld file" = "%ld bestand";
 
@@ -75,11 +81,19 @@
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld op voorraad";
 
-/* Format of the number of grouped products in singular form */
+/* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `1 product`
+   Format of the number of grouped products in singular form */
 "%ld product" = "%ld product";
 
-/* Format of the number of grouped products in plural form */
+/* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `5 products`
+   Format of the number of grouped products in plural form */
 "%ld products" = "%ld producten";
+
+/* Format of upsell linked products row in the singular form. Reads, `1 upsell product` */
+"%ld upsell product" = "%ld upsell-product";
+
+/* Format of upsell linked products row in the plural form. Reads, `5 upsell products` */
+"%ld upsell products" = "%ld upsell-producten";
 
 /* Label about one product variation shown on Products tab */
 "%ld variant" = "%ld varianten";
@@ -113,6 +127,9 @@
 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
 "A refund will not be issued to the customer. You will need to manually issue the refund through %1$@." = "De klant ontvangt geen restitutie. Je moet handmatig terugbetalen via %1$@.";
+
+/* No comment provided by engineer. */
+"A refund will not be issued to the customer. You will need to manually issue the refund through Stripe." = "De klant ontvangt geen terugbetaling. Je moet handmatig terugbetalen via Stripe.";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple product */
 "A unique item to sell" = "Een uniek artikel om te verkopen";
@@ -150,10 +167,10 @@
 "Add Downloadable File" = "Downloadbaar bestand toevoegen";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Bestand toevoegen";
+"Add File" = "Add File";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "Bestand toevoegen";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Foto toevoegen";
@@ -164,8 +181,8 @@
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "Prijs toevoegen";
 
-/* Action to add products to a grouped product on the Grouped Products screen
-   Navigation bar title for selecting multiple products. */
+/* Action to add linked products to a product in the Linked Products List Selector screen
+   Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
 "Add Products" = "Producten toevoegen";
 
 /* A title used for a shipment tracking unit test
@@ -289,6 +306,9 @@
 /* Alert title to confirm the user wants to discard changes in Product Visibility */
 "Are you sure you want to discard your changes?" = "Weet je zeker dat je je wijzigingen wilt verwerpen?";
 
+/* The text on the confirmation alert before issuing a refund. */
+"Are you sure you want to issue a refund? This can't be undone." = "Weet je zeker dat je terugbetaling wil aanvragen? Dit kan niet ongedaan worden gemaakt.";
+
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Weet je zeker dat je wilt uitloggen bij het account %@?";
 
@@ -372,7 +392,7 @@
 "Can Not Request Link" = "Kan link niet aanvragen";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
 "Cancel" = "Annuleren";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -381,7 +401,8 @@
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "Kan geen tags toevoegen";
 
-/* The title of the alert when there is an error updating the product */
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
+   The title of the alert when there is an error updating the product */
 "Cannot update product" = "Kan product niet bijwerken";
 
 /* The title of the alert when there is an error uploading an image
@@ -532,6 +553,12 @@
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "Producten aanmaken";
 
+/* Cell title for Cross-sells products in Linked Products Settings screen */
+"Cross-sells" = "Cross-sells";
+
+/* Navigation bar title for editing linked products for cross-sell products */
+"Cross-sells Products" = "Cross-sellsproducten";
+
 /* Cell title: the current date. */
 "Current" = "Huidig";
 
@@ -674,22 +701,22 @@
 "Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Verloopdatum download";
-
-/* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "Download expiration";
 
-/* Title of the cell in Product Download limit > Download limit */
-"Download limit" = "Download limit";
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "Verloopdatum download";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Downloadlimiet";
 
-/* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "Downloadbare bestanden";
+/* Title of the cell in Product Download limit > Download limit */
+"Download limit" = "Download limit";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "Downloadable Files";
+
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "Downloadbare bestanden";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "Downloadbaar product";
@@ -698,10 +725,10 @@
 "Downloadable Product" = "Downloadable Product";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "Downloadable files";
+"Downloadable files" = "Downloadbare bestanden";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "Downloadbare bestanden";
+"Downloadable files" = "Downloadable files";
 
 /* Product Details > Purchase Details > Downloads cell title */
 "Downloads" = "Downloads";
@@ -711,6 +738,9 @@
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Identificeer je producten eenvoudig met unieke codes";
+
+/* Edit Products button inside the Linked Products screen. */
+"Edit Products" = "Producten bewerken";
 
 /* Email address text field placeholder */
 "Email" = "E-mail";
@@ -1024,6 +1054,9 @@
 /* An error message shown when a user signed in with incorrect credentials. */
 "Incorrect username or password. Please try entering your login details again." = "Gebruikersnaam of wachtwoord onjuist. Probeer nogmaals je inloggegevens in te voeren.";
 
+/* Subtitle of the product form bottom sheet action for linked products. */
+"Increase sales with upsells and cross-sells" = "Meer verkopen met upselling en cross-selling";
+
 /* Label action for inserting a link on the editor */
 "Insert" = "Invoegen";
 
@@ -1060,6 +1093,9 @@
 
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "Restitueren";
+
+/* Text of the screen that is displayed while the refund is being created. */
+"Issuing Refund..." = "Terugbetalen";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Het lijkt erop dat deze gebruikersnaam\/dit wachtwoord niet aan deze site is gekoppeld.";
@@ -1119,6 +1155,13 @@
 
 /* Description of the Action sheet option when the user wants to change the Product type to external product */
 "Link a product to an external website" = "Koppel een product aan een externe website";
+
+/* Linked Products Settings navigation title */
+"Linked Products" = "Gekoppelde producten";
+
+/* Title of the Linked Products row on Product main screen
+   Title of the product form bottom sheet action for editing linked products. */
+"Linked products" = "Gekoppelde producten";
 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "Lijst met afbeeldingen van het product";
@@ -1192,10 +1235,13 @@
 "Manual Offsets" = "Handmatige offsets";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "Handmatige restitutie via %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Handmatige restitutie via %1$@";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
+
+/* No comment provided by engineer. */
+"Manual Refund via Stripe" = "Handmatige terugbetaling via Stripe";
 
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Toegewezen domein";
@@ -1302,16 +1348,16 @@
 "No data available" = "Geen gegevens beschikbaar";
 
 /* Placeholder of the cell text field in Download expiration */
-"No expiration" = "No expiration";
-
-/* Placeholder of the cell text field in Download expiration */
 "No expiration" = "Onbeperkt";
 
-/* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "Nog geen bestanden";
+/* Placeholder of the cell text field in Download expiration */
+"No expiration" = "No expiration";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "No files yet";
+
+/* Placeholder for empty Downloadable Files row on Product main screen */
+"No files yet" = "Nog geen bestanden";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "Nog geen afbeeldingen";
@@ -1328,7 +1374,7 @@
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "Nog geen productvariaties";
 
-/* Placeholder for editing linked products for a grouped product
+/* Placeholder for the linked products list selector screen
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "Nog geen producten";
 
@@ -1470,6 +1516,9 @@
 /* Product section title */
 "PRODUCT" = "PRODUCT";
 
+/* Order shipping label package section title format. The number indicates the index of the shipping label package. */
+"Package %d" = "Pakket %d";
+
 /* The title for the customer payment cell */
 "Paid By Customer" = "Betaald door klant";
 
@@ -1566,10 +1615,10 @@
 "Please wait while we publish this product to your store" = "Een moment geduld terwijl we dit product in je winkel publiceren";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Een moment geduld terwijl we dit product in je winkel opslaan";
+"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
+"Please wait while we save this product to your store" = "Een moment geduld terwijl we dit product in je winkel opslaan";
 
 /* Message of the in-progress UI while deleting the Product remotely */
 "Please wait while we update your store details" = "Even geduld terwijl we je winkelgegevens bijwerken";
@@ -1658,6 +1707,12 @@
    Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "Productvergoeding";
 
+/* Cell description for Cross-sells products in Linked Products Settings screen */
+"Products promoted in the cart when current product is selected" = "Gepromote producten in de winkelwagen als het huidige product is geselecteerd";
+
+/* Cell description for Upsells products in Linked Products Settings screen */
+"Products promoted instead of the currently viewed product (ie more profitable products)" = "Gepromote producten in plaats van de momenteel weergegeven producten (ofwel winstgevendere producten)";
+
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Dialoogvenster met de optie om de gefactureerde klant te bellen of een bericht te sturen.";
 
@@ -1722,10 +1777,10 @@
 "Reason for Refund" = "Reden voor restitutie";
 
 /* A label for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
+"Reason for Refund (Optional)" = "Reden voor terugbetalen (optioneel)";
 
 /* A label for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for Refund (Optional)" = "Reden voor terugbetalen (optioneel)";
+"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Reden voor terugbetalen bestelling";
@@ -1756,10 +1811,10 @@
 "Refund Shipping" = "Verzendkosten vergoeden";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Refund Via";
+"Refund Via" = "Terugbetalen via";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Terugbetalen via";
+"Refund Via" = "Refund Via";
 
 /* The title for the refunded amount cell */
 "Refunded" = "Terugbetaald";
@@ -1803,6 +1858,12 @@
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Crashes melden";
+
+/* Text on the button that reprints a shipping label */
+"Reprint Shipping Label" = "Verzendlabel opnieuw afdrukken";
+
+/* Request a refund on a shipping label from the shipping label more menu action sheet */
+"Request a Refund" = "Een terugbetaling aanvragen";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Activiteitenlog herstellen";
@@ -2037,9 +2098,6 @@
 /* Accessibility label to show bottom action sheet options for a downloadable file */
 "Show bottom action sheet options for a downloadable file" = "Opties voor het onderste actieblad weergeven voor een downloadbaar bestand";
 
-/* Accessibility label to show bottom action sheet to delete downloadable file from the list */
-"Show bottom action sheet to delete downloadable file from list" = "Het onderste actieblad weergeven om het downloadbare bestand uit de lijst te verwijderen";
-
 /* Accessibility label for the 'Show password' button in the login page's password field.
    Accessibility label for the “Show password“ button in the login page's password field. */
 "Show password" = "Wachtwoord weergeven";
@@ -2049,6 +2107,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "Toon factuurdetails van deze bestelling.";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view shipping label shipment details. */
+"Show the shipment details for this shipping label." = "Toon verzendingsgegevens van dit verzendlabel.";
 
 /* Accessibility value if login page's password field is displaying the password. */
 "Shown" = "Weergegeven";
@@ -2099,6 +2160,9 @@
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Sorry, je gebruikersnaam bevat een onjuiste zin%@.";
+
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7 */
+"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "Verwijderen van afbeeldingen bij productvariaties wordt helaas alleen ondersteund in WooCommerce 4.7 of nieuwer. Werk je website bij.";
 
 /* No comment provided by engineer. */
 "Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "Sorry, site adressen kunnen alleen kleine letters (a-z) en nummer bevatten.";
@@ -2408,6 +2472,9 @@
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Er is een probleem opgetreden bij het opheffen van de blokkering voor opgegeven site.";
 
+/* Text of the notice that is displayed while the refund creation fails. */
+"There was an error issuing the refund" = "Er is een fout opgetreden tijdens de terugbetaling";
+
 /* Tab selector title that shows the statistics for this month
    Top Performers section title - this month */
 "This Month" = "Deze maand";
@@ -2685,6 +2752,12 @@
    Updated on <date> */
 "Updated on %@" = "Bijgewerkt op %@";
 
+/* Cell title for Upsells products in Linked Products Settings screen */
+"Upsells" = "Upsells";
+
+/* Navigation bar title for editing linked products for upsell products */
+"Upsells Products" = "Upsells-producten";
+
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
 "Username" = "Gebruikersnaam";
@@ -2723,6 +2796,10 @@
 
 /* Button title View product in store in Edit Product More Options Action Sheet */
 "View Product in Store" = "Product in winkel weergeven";
+
+/* Accessibility label for the 'View Shipment Details' button
+   Button on bottom of shipping label package card to show shipping details */
+"View Shipment Details" = "Verzendingsgegevens bekijken";
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "Verwant product weergeven";
@@ -2937,4 +3014,7 @@
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "“%@”";
+
+/* Text of the notice that is displayed after the refund is created. */
+"🎉 Products successfuly refunded" = "🎉 Producten zijn terugbetaald";
 

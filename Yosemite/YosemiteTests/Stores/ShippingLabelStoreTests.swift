@@ -309,6 +309,45 @@ final class ShippingLabelStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
+
+    // MARK: `loadShippingLabelSettings`
+
+    func test_loadShippingLabelSettings_returns_settings_if_it_exists_in_storage() throws {
+        // Given
+        let shippingLabel = MockShippingLabel.emptyLabel().copy(siteID: sampleSiteID, orderID: 208)
+        let shippingLabelSettings = Yosemite.ShippingLabelSettings(siteID: shippingLabel.siteID, orderID: shippingLabel.orderID, paperSize: .letter)
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        insertShippingLabelSettings(shippingLabelSettings)
+
+        // When
+        let result: Yosemite.ShippingLabelSettings? = try waitFor { promise in
+            let action = ShippingLabelAction.loadShippingLabelSettings(shippingLabel: shippingLabel) { settings in
+                promise(settings)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(result, shippingLabelSettings)
+    }
+
+    func test_loadShippingLabelSettings_returns_nil_if_it_does_not_exist_in_storage() throws {
+        // Given
+        let shippingLabel = MockShippingLabel.emptyLabel().copy(siteID: sampleSiteID, orderID: 208)
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Yosemite.ShippingLabelSettings? = try waitFor { promise in
+            let action = ShippingLabelAction.loadShippingLabelSettings(shippingLabel: shippingLabel) { settings in
+                promise(settings)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(result, nil)
+    }
 }
 
 private extension ShippingLabelStoreTests {
@@ -322,5 +361,10 @@ private extension ShippingLabelStoreTests {
     func insertShippingLabel(_ readOnlyShippingLabel: Yosemite.ShippingLabel) {
         let shippingLabel = viewStorage.insertNewObject(ofType: StorageShippingLabel.self)
         shippingLabel.update(with: readOnlyShippingLabel)
+    }
+
+    func insertShippingLabelSettings(_ readOnlyShippingLabelSettings: Yosemite.ShippingLabelSettings) {
+        let shippingLabelSettings = viewStorage.insertNewObject(ofType: StorageShippingLabelSettings.self)
+        shippingLabelSettings.update(with: readOnlyShippingLabelSettings)
     }
 }

@@ -1,3 +1,3 @@
-Ürünler: Artık basit, gruplanmış ve harici ürünler ekleyebilir ve ürünleri taslak olarak kaydedebilirsiniz. Yakında deneyebileceğiniz daha fazla yeni özellik sunacağız.
+Siz istediniz, biz de sizi dinledik. Artık doğrudan iPhone veya iPad'inizden mağazanız için basit, gruplanmış ve harici ürünler oluşturabilirsiniz. Bilgisayarınızdan uzakta olsanız bile fikirlerinizi ürünlere dönüştürün.
 
-Diğer düzeltmeler: Sipariş Ayrıntıları ekranında artık sürüm 4.7 ve üzeri WooCommerce mağazaları için varyasyon özellikleri de gösterilmektedir. Ayrıca Ürün Detayı ekranında artık ürün puanlarının sayısının gösterildiğini de fark edebilirsiniz. Daha önce, hatalı olan yorum sayısını gösteriyordu.
+Hepsi bu değil. Yeni gönderilen siparişlerin her zaman bir sipariş listesinde görünmemesine neden olan bir hata da dahil olmak üzere sorunları düzelttik. Ayrıca iyileştirmeler yaptık. Örneğin, artık doğrudan sipariş ekranından ürünler veya gönderim için geri ödeme yapabilirsiniz.

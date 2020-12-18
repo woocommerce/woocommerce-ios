@@ -1,14 +1,22 @@
-VIEW AND MANAGE ORDERS
-Scroll through, filter, or look up specific orders. Tap to view order information – including product(s), value, customer data, shipping details, and notes.
+Manage your business on the go with the WooCommerce Mobile App. Create products, process orders, and keep an eye on key stats in real-time.
 
-TRACK YOUR STORE
-See which products are performing best. Check your overall revenue and view order and visitor data by week, month, and year.
+ADD PRODUCTS
+Create, group, and publish products directly from your iPhone or iPad. Capture your creativity in the moment – turn your ideas into products in seconds, or save them as drafts for later.
 
-REAL-TIME ORDER ALERTS
-Get notifications about store activity – including new orders and product reviews.
+GET NOTIFIED
+Never miss an order or a review. Keep that FOMO at bay by enabling real-time alerts – and listen out for that addictive “cha-ching” sound that comes with every new sale!
 
-WooCommerce is the most customizable eCommerce platform for building your online business. Built on WordPress, it is integrated with the world’s best content management tools.
+VIEW AND MODIFY ORDERS
+Scroll the summaries, or search by customer or order specifics. Tap into the details to see itemized billing, begin fulfillment, and change order status. Add notes to the order or email customers directly to follow up.
+
+TRACK YOUR STATS
+See which products are winning at a glance. Keep tabs on overall revenue, order count, and visitor data by week, month, and year. Knowledge = power!
+
+SWITCH BETWEEN STORES
+For those with more than one, toggle seamlessly between your businesses in seconds.
+
+WooCommerce is the world’s most customizable open-source eCommerce platform. Whether you’re launching a business, taking brick-and-mortar retail online, or developing sites for clients, use WooCommerce for a store that powerfully blends content and commerce.
 
 Requirements: WooCommerce v3.5+, the Jetpack plugin.
 
-View the Privacy Notice for California Users at https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.
+View the Privacy Notice for California users at https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

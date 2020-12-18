@@ -239,8 +239,11 @@ extension OrderDetailsViewModel {
             let shippingLabelDetailsViewController = ShippingLabelDetailsViewController(shippingLabel: shippingLabel)
             viewController.show(shippingLabelDetailsViewController, sender: viewController)
         case .shippingLabelPrintingInfo:
-            // TODO-2174: present instructions on how to print shipping labels
-            break
+            let printingInstructionsViewController = ShippingLabelPrintingInstructionsViewController { [weak viewController] in
+                viewController?.dismiss(animated: true, completion: nil)
+            }
+            let navigationController = WooNavigationController(rootViewController: printingInstructionsViewController)
+            viewController.present(navigationController, animated: true, completion: nil)
         case .shippingLabelProduct:
             guard let item = dataSource.shippingLabelOrderItem(at: indexPath), item.productOrVariationID > 0 else {
                 return

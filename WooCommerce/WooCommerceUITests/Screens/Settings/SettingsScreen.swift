@@ -27,7 +27,7 @@ final class SettingsScreen: BaseScreen {
     }
 
     @discardableResult
-    func logOut() -> WelcomeScreen {
+    func logOut() -> PrologueScreen {
         logOutButton.tap()
 
         // Some localizations have very long "log out" text, which causes the UIAlertView
@@ -39,7 +39,7 @@ final class SettingsScreen: BaseScreen {
             logOutAlert.buttons.element(boundBy: 1).tap()
         }
 
-        return WelcomeScreen()
+        return PrologueScreen()
     }
 }
 

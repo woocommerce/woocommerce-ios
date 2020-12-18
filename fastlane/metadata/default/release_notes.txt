@@ -1,3 +1,3 @@
-Products: You can now add simple, grouped, and external products and save products as drafts. We’ll have more new features for you to try out soon!
+You asked, and we listened! You can now create simple, grouped, and external products for your store directly from your iPhone or iPad. Turn your ideas into products, even when you’re away from your computer.
 
-Other fixes: The Order Details screen now shows variation attributes for WooCommerce stores on version 4.7 and above. You may also notice that the Product Detail screen now shows the number of product ratings. Previously, it displayed the number of reviews, which was inaccurate.
+That’s not all! We fixed problems, including a bug that meant newly submitted orders weren’t always showing up in an order list. We also made improvements. For instance, you can now issue refunds—for products or shipping—directly from the order screen.

@@ -1,13 +1,21 @@
-VISUALIZE E GERENCIE PEDIDOS
-Procure, filtre ou navegue por pedidos específicos Toque para visualizar as informações do pedido, incluindo o(s) produto(s), o valor, os dados do cliente, detalhes de envio e observações.
+Gerencie seu negócio de onde você estiver, com o aplicativo móvel WooCommerce. Crie produtos, processe pedidos e acompanhe as principais estatísticas em tempo real.
 
-MONITORE SUA LOJA
-Veja quais produtos têm o melhor desempenho. Verifique sua receita geral, visualize os dados semanais, mensais e anuais dos pedidos e visitantes.
+ADICIONE PRODUTOS
+Crie, agrupe e publique produtos diretamente do seu iPad ou iPhone. Aproveite sua criatividade quando ela entrar em ação: transforme suas ideias em produtos em questão de segundos ou salve-as como rascunho para mais tarde.
 
-RECEBA ALERTAS DE PEDIDOS EM TEMPO REAL
-Receba notificações sobre as atividades da loja, incluindo novos pedidos e avaliações de produtos.
+RECEBA NOTIFICAÇÕES
+Nunca perca um pedido ou avaliação. Não precisa se preocupar em perder oportunidades. Ative os alertas em tempo real e ouça o som de notificações para cada nova venda!
 
-O WooCommerce é a plataforma mais personalizável de comércio eletrônico para criar seu negócio online. Criada no WordPress, ela é integrada às melhores ferramentas de gerenciamento de conteúdo do mundo.
+VISUALIZE E MODIFIQUE PEDIDOS
+Role a tela dos resumos ou pesquise por detalhes do cliente ou do pedido. Toque nos detalhes para ver a cobrança por item, iniciar a conclusão e alterar o status do pedido. Adicione anotações ao pedido ou envie um e-mail diretamente aos clientes para acompanhamento.
+
+MONITORE SUAS ESTATÍSTICAS
+Veja quais produtos são mais populares, em um piscar de olhos. Acompanhe sua receita geral, contagem de pedidos e dados semanais, mensais e anuais dos visitantes. Conhecimento é poder!
+
+ALTERNE ENTRE LOJAS
+Para quem tem mais de uma loja, é fácil alternar entre os negócios em questão de segundos.
+
+O WooCommerce é a plataforma de e-commerce de código aberto mais personalizável do mundo. Esteja você lançando um negócio, tendo varejo online tradicional ou desenvolvendo sites para clientes, use o WooCommerce para uma loja que combina conteúdo e comércio de maneira poderosa.
 
 Requisitos: WooCommerce versão 3.5 ou posterior e o plugin do Jetpack.
 

@@ -1,14 +1,22 @@
-BESTELLUNGEN ANSEHEN UND VERWALTEN
-Scrolle durch deine Bestellungen, filtere oder durchsuche sie. Tippe zum Anzeigen von Bestellinformationen wie Produkt(e), Wert, Kundendaten, Versanddetails und Hinweisen.
+Verwalte dein Business von unterwegs aus – mit der WooCommerce Mobile App. Erstelle Produkte, verarbeite Bestellungen und behalte wichtige Statistiken im Überblick – alles in Echtzeit.
 
-DEINEN SHOP VERFOLGEN
-Erfahre, welche Produkte am beliebtesten sind. Überprüfe deine Gesamteinnahmen und lasse dir Bestellungen und Besucherdaten nach Woche, Monat und Jahr sortiert anzeigen.
+FÜGE PRODUKTE HINZU
+Erstelle, gruppiere und veröffentliche Produkte direkt über dein iPhone oder iPad. Lasse deiner Kreativität freien Lauf – wandle deine Ideen innerhalb weniger Sekunden in Produkte um oder speichere sie als Entwürfe für später.
 
-BESTELLBENACHRICHTIGUNGEN IN ECHTZEIT
-Erhalte Benachrichtigungen zu Shopaktivitäten wie neuen Bestellungen und Produktbewertungen.
+ERHALTE BENACHRICHTIGUNGEN
+Verpasse keine Bestellungen oder Bewertungen. Aktiviere Echtzeitbenachrichtigungen und bleibe stets über alle Geschehnisse auf dem Laufenden. So kannst du dich ganz entspannt auf's Geldverdienen konzentrieren!
 
-WooCommerce bietet die flexibelste E-Commerce-Plattform zum Aufbau deines Online-Geschäfts. Sie ist mit WordPress erstellt und in die weltweit besten Content-Management-Tools integriert.
+ZEIGE BESTELLUNGEN AN UND BEARBEITE SIE
+Scrolle durch die Zusammenfassungen oder Suche nach Kunden oder Bestellspezifika. Nutze die Detailansicht, um dir Einzelabrechnungen anzusehen, die Auftragsabwicklung zu starten oder den Bestellstatus zu ändern. Füge der Bestellung Notizen hinzu oder sende Kunden eine Follow-up-E-Mail.
 
-Anforderungen: WooCommerce v3.5+, das Jetpack-Plugin
+VERFOLGE DEINE STATISTIKEN NACH
+Erfahre auf einen Blick, welche Produkte besonders erfolgreich sind. Kontrolliere deine Gesamteinnahmen, die Anzahl der Bestellungen und die Besucherdaten pro Woche, Monat und Jahr. Wissen = Macht!
 
-Den Datenschutzhinweis für Benutzer in Kalifornien kannst du unter  https://automattic.com/privacy/#california-consumer-privacy-act-ccpa anzeigen.
+WECHSLE ZWISCHEN DEN STORES
+Wenn du mehr als ein Business hast, kannst du binnen weniger Sekunden nahtlos zwischen deinen Stores umschalten.
+
+WooCommerce ist die weltweit anpassbarste Open-Source E-Commerce-Plattform. Ganz gleich, ob du ein Business eröffnest, einen Onlineauftritt für ein bereits bestehendes Geschäft aufbaust oder Websites für Kunden designst: Mit WooCommerce bietet dein Store eine attraktive Mischung aus Inhalten und Commerce.
+
+Anforderungen: WooCommerce Version 3.5 und höher; Jetpack-Plugin.
+
+Den Datenschutzhinweis für Benutzer in Kalifornien findest du unter https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

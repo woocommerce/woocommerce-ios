@@ -1,3 +1,3 @@
-Productos: Ahora puedes añadir productos sencillos, agrupados y externos, y guardar productos como borradores. ¡Muy pronto podrás probar nuevas prestaciones!
+Hemos respondido a tus peticiones. Ahora, puedes crear productos simples, agrupados y externos para tu tienda directamente desde tu iPhone o iPad. Convierte tus ideas en productos, incluso cuando no estés usando tu computadora.
 
-Otras correcciones: Ahora la pantalla de detalles del pedido muestra atributos de variación para tiendas WooCommerce con la versión 4.7 y posterior. También puedes observar que la pantalla de detalles del producto muestra el número de valoraciones que tiene el producto. Anteriormente, mostraba el número de reseñas y era inexacto.
+¡Y eso no es todo! Hemos corregido problemas, como un error que hacía que los pedidos nuevos no siempre aparecieran en una lista de pedidos. También hemos hecho mejoras. Por ejemplo, ahora puedes emitir reembolsos de productos o envíos directamente desde la pantalla de pedidos.

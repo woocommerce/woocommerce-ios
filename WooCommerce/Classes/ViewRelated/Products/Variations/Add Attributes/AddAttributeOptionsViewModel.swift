@@ -30,7 +30,21 @@ private extension AddAttributeOptionsViewModel {
 
     /// Updates  data in sections
     ///
-    func updateSections(attributes: [ProductAttribute]) {
-        //TODO: to be implemented
+    func updateSections(attribute: ProductAttribute) {
+        let textFieldSection = Section(header: nil, footer: Localization.footerTextField, rows: [.termTextField])
+        let selectedTermsSection = Section(header: Localization.headerSelectedTerms, footer: nil, rows: [.selectedTerms])
+        let existingTermsSection = Section(header: Localization.headerExistingTerms, footer: nil, rows: [.existingTerms])
+        sections = [textFieldSection, selectedTermsSection, existingTermsSection].compactMap { $0 }
+    }
+}
+
+private extension AddAttributeOptionsViewModel {
+    enum Localization {
+        static let footerTextField = NSLocalizedString("Add each option and press enter",
+                                                       comment: "Footer of text field section in Add Attribute Options screen")
+        static let headerSelectedTerms = NSLocalizedString("OPTIONS OFFERED",
+                                                           comment: "Header of selected attribute option section in Add Attribute Options screen")
+        static let headerExistingTerms = NSLocalizedString("ADD OPTIONS",
+                                                           comment: "Header of existing attribute option section in Add Attribute Options screen")
     }
 }

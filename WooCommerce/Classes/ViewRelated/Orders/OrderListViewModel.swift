@@ -49,7 +49,8 @@ final class OrderListViewModel {
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
-
+        // TODO We should also include a siteID predicate here.
+        
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, sortedBy: [descriptor])
     }()
 

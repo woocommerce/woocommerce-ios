@@ -49,9 +49,9 @@ final class OrderListViewModel {
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
-        // TODO We should also include a siteID predicate here.
-        
-        return ResultsController<StorageOrderStatus>(storageManager: storageManager, sortedBy: [descriptor])
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+
+        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
     /// The current list of order statuses for the default site
@@ -89,7 +89,7 @@ final class OrderListViewModel {
     /// And only when the corresponding view was loaded.
     ///
     func activate() {
-        configureStatusResultsController()
+        setupStatusResultsController()
         startReceivingSnapshots()
 
         notificationCenter.addObserver(self, selector: #selector(handleAppDeactivation),
@@ -186,9 +186,12 @@ private extension OrderListViewModel {
 private extension OrderListViewModel {
     /// Setup: Status Results Controller
     ///
-    func configureStatusResultsController() {
-        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", siteID)
-        try? statusResultsController.performFetch()
+    func setupStatusResultsController() {
+        do {
+            try statusResultsController.performFetch()
+        } catch {
+            CrashLogging.logError(error)
+        }
     }
 
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {

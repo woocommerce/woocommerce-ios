@@ -276,7 +276,7 @@ extension AddAttributeViewController {
     }
 
     private func presentAddAttributeOptions(for existingAttribute: ProductAttribute) {
-        let viewModel = AddAttributeOptionsViewModel(newAttribute: self.viewModel.newAttributeName)
+        let viewModel = AddAttributeOptionsViewModel(existingAttribute: existingAttribute)
         let addAttributeOptionsVC = AddAttributeOptionsViewController(viewModel: viewModel)
         navigationController?.pushViewController(addAttributeOptionsVC, animated: true)
     }

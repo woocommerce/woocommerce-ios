@@ -48,7 +48,6 @@ final class OrderListViewModel {
     /// The `OrderStatus` data is fetched from the API by `OrdersTabbedViewModel`.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-        let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
 
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, sortedBy: [descriptor])

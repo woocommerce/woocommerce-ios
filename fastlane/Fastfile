@@ -559,11 +559,11 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       "zh-tw" => "zh-Hant"
     }.each do |source, destination|
       source_dir = File.join(Dir.pwd, "metadata", source)
-      Dir.children(source_dir).each { |file| 
+      Dir.children(source_dir).each do |file| 
         source_file = File.join(source_dir, file)
         destination_file = File.join(Dir.pwd, "metadata", destination, file)
         FileUtils.mv(source_file, destination_file)
-      }
+      end
       FileUtils.remove_dir(source_dir)
     end
 
@@ -578,11 +578,11 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       "promo_screenshot_3.txt",
       "promo_screenshot_4.txt",
       "promo_screenshot_5.txt",
-    ].each { |filename|
+    ].each do |filename|
       source = File.join(Dir.pwd, 'appstoreres', 'metadata', 'source', filename)
       destination = File.join(enUS_path, filename)
       FileUtils.cp(source, destination)
-    }
+    end
 
     # Replace the `default` directory with the contents of `en-US`
     default_path = File.join(Dir.pwd, 'metadata', 'default')

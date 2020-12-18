@@ -46,6 +46,7 @@ private extension AddAttributeOptionsViewController {
                                                            style: .plain,
                                                            target: self,
                                                            action: #selector(doneButtonPressed))
+        removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {

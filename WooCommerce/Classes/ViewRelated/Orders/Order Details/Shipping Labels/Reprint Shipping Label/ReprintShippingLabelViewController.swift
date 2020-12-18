@@ -48,6 +48,7 @@ final class ReprintShippingLabelViewController: UIViewController {
 }
 
 extension ReprintShippingLabelViewController {
+    /// Actions that can be triggered from the reprint UI.
     enum ActionType {
         /// Called when the paper size row is selected.
         case showPaperSizeSelector(paperSizeOptions: [ShippingLabelPaperSize],

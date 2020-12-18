@@ -2,7 +2,6 @@ import Combine
 import XCTest
 @testable import WooCommerce
 import Yosemite
-import TestKit
 
 final class ReprintShippingLabelViewModelTests: XCTestCase {
     private var cancellables = Set<AnyCancellable>()

@@ -15,9 +15,7 @@ final class ReprintShippingLabelCoordinator {
         self.sourceViewController = sourceViewController
         self.stores = stores
     }
-}
 
-extension ReprintShippingLabelCoordinator {
     /// Shows the main screen for reprinting a shipping label.
     func showReprintUI() {
         let reprintViewController = ReprintShippingLabelViewController(shippingLabel: shippingLabel)
@@ -49,7 +47,7 @@ extension ReprintShippingLabelCoordinator {
     }
 }
 
-// MARK: Navigation calls
+// MARK: Navigation actions
 private extension ReprintShippingLabelCoordinator {
     func showPaperSizeSelector(paperSizeOptions: [ShippingLabelPaperSize],
                                selectedPaperSize: ShippingLabelPaperSize?,
@@ -80,6 +78,7 @@ private extension ReprintShippingLabelCoordinator {
     }
 }
 
+// MARK: Store actions
 private extension ReprintShippingLabelCoordinator {
     /// Requests document data for reprinting a shipping label with the selected paper size.
     func requestDocumentForPrinting(paperSize: ShippingLabelPaperSize, completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
@@ -92,6 +91,7 @@ private extension ReprintShippingLabelCoordinator {
     }
 }
 
+// MARK: Private helpers
 private extension ReprintShippingLabelCoordinator {
     func presentErrorAlert(title: String?) {
         let alertController = UIAlertController(title: title, message: nil, preferredStyle: .alert)
@@ -109,9 +109,6 @@ private extension ReprintShippingLabelCoordinator {
                                                        comment: "Title of in-progress modal when requesting shipping label document for reprinting")
         static let inProgressMessage = NSLocalizedString("Please wait",
                                                          comment: "Message of in-progress modal when requesting shipping label document for reprinting")
-        static let reprintWithoutSelectedPaperSizeErrorAlertTitle =
-            NSLocalizedString("Please select a paper size for printing",
-                              comment: "Alert title when there is an error requesting shipping label document for reprinting")
         static let reprintErrorAlertTitle = NSLocalizedString("Error previewing shipping label",
                                                          comment: "Alert title when there is an error requesting shipping label document for reprinting")
         static let reprintErrorAlertDismissAction = NSLocalizedString(

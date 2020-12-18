@@ -15,10 +15,12 @@ final class AddAttributeOptionsViewModel {
 
     init(newAttribute: String?) {
         self.newAttributeName = newAttribute
+        updateSections()
     }
 
     init(existingAttribute: ProductAttribute) {
         self.attribute = existingAttribute
+        updateSections()
     }
 
 }
@@ -30,7 +32,7 @@ private extension AddAttributeOptionsViewModel {
 
     /// Updates  data in sections
     ///
-    func updateSections(attribute: ProductAttribute) {
+    func updateSections() {
         let textFieldSection = Section(header: nil, footer: Localization.footerTextField, rows: [.termTextField])
         let selectedTermsSection = Section(header: Localization.headerSelectedTerms, footer: nil, rows: [.selectedTerms])
         let existingTermsSection = Section(header: Localization.headerExistingTerms, footer: nil, rows: [.existingTerms])

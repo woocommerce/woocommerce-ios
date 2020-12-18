@@ -42,31 +42,4 @@ extension ReprintShippingLabelViewModel {
     func updateSelectedPaperSize(_ selectedPaperSize: ShippingLabelPaperSize?) {
         self.selectedPaperSize = selectedPaperSize
     }
-
-    /// Requests document data for reprinting a shipping label with the selected paper size.
-    func requestDocumentForPrinting(completion: @escaping (Result<ShippingLabelPrintData, ReprintShippingLabelError>) -> Void) {
-        guard let selectedPaperSize = selectedPaperSize else {
-            // This is a highly unlikely scenario, because the reprint CTA is disabled when there is no selected paper size.
-            completion(.failure(ReprintShippingLabelError.noSelectedPaperSize))
-            return
-        }
-
-        let action = ShippingLabelAction.printShippingLabel(siteID: shippingLabel.siteID,
-                                                            shippingLabelID: shippingLabel.shippingLabelID,
-                                                            paperSize: selectedPaperSize) { result in
-            switch result {
-            case .success(let data):
-                completion(.success(data))
-            case .failure(let error):
-                completion(.failure(.other(error: .init(error))))
-            }
-        }
-        stores.dispatch(action)
-    }
-}
-
-/// Known error cases when reprinting a shipping label.
-enum ReprintShippingLabelError: Error, Equatable {
-    case noSelectedPaperSize
-    case other(error: AnyError)
 }

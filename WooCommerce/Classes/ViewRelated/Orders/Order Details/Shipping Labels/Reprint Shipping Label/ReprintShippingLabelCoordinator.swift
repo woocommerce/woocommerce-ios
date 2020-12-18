@@ -1,51 +1,56 @@
 import UIKit
-import struct Yosemite.ShippingLabel
-import struct Yosemite.ShippingLabelPrintData
-import enum Yosemite.ShippingLabelPaperSize
+import Yosemite
 
-/// Coordinates navigation for reprinting a shipping label.
-protocol ReprintShippingLabelCoordinatorProtocol: class {
-    /// Shows the main reprint screen given a shipping label.
-    /// - Parameter shippingLabel: The shipping label to reprint.
-    func showReprintUI(shippingLabel: ShippingLabel)
-
-    /// Allows the user to select a paper size from supported options.
-    /// - Parameters:
-    ///   - paperSizeOptions: All paper sizes that we support for reprinting.
-    ///   - selectedPaperSize: The currently selected paper size.
-    ///   - onPaperSizeSelected: Called when the user leaves the paper size selector with the selected value.
-    func showPaperSizeSelector(paperSizeOptions: [ShippingLabelPaperSize],
-                               selectedPaperSize: ShippingLabelPaperSize?,
-                               onPaperSizeSelected: @escaping (ShippingLabelPaperSize?) -> Void)
-
-    /// Presents an in-progress modal when requesting shipping label document for reprinting.
-    func presentReprintInProgressUI()
-
-    /// Dismisses the in-progress modal when the shipping label document result is ready.
-    /// When the result is successful, we present an AirPrint modal.
-    /// If the result fails with an error, we present an error alert.
-    /// - Parameter result: The result of shipping label document request, could be `ShippingLabelPrintData` on success or an error.
-    func dismissReprintInProgressUIAndPresentPrintingResult(_ result: Result<ShippingLabelPrintData, ReprintShippingLabelError>)
-}
-
-/// Implements `ReprintShippingLabelCoordinatorProtocol` that handles all navigation actions.
+/// Coordinates navigation actions for reprinting a shipping label.
 final class ReprintShippingLabelCoordinator {
     private let sourceViewController: UIViewController
+    private let shippingLabel: ShippingLabel
+    private let stores: StoresManager
 
+    /// - Parameter shippingLabel: The shipping label to reprint.
     /// - Parameter sourceViewController: The view controller that shows the reprint UI in the first place.
-    init(sourceViewController: UIViewController) {
+    /// - Parameter stores: Handles Yosemite store actions.
+    init(shippingLabel: ShippingLabel, sourceViewController: UIViewController, stores: StoresManager = ServiceLocator.stores) {
+        self.shippingLabel = shippingLabel
         self.sourceViewController = sourceViewController
+        self.stores = stores
     }
 }
 
-extension ReprintShippingLabelCoordinator: ReprintShippingLabelCoordinatorProtocol {
-    func showReprintUI(shippingLabel: ShippingLabel) {
-        let reprintViewController = ReprintShippingLabelViewController(shippingLabel: shippingLabel, coordinator: self)
+extension ReprintShippingLabelCoordinator {
+    /// Shows the main screen for reprinting a shipping label.
+    func showReprintUI() {
+        let reprintViewController = ReprintShippingLabelViewController(shippingLabel: shippingLabel)
+
+        reprintViewController.onAction = { actionType in
+            switch actionType {
+            case .showPaperSizeSelector(let paperSizeOptions, let selectedPaperSize, let onSelection):
+                self.showPaperSizeSelector(paperSizeOptions: paperSizeOptions,
+                                           selectedPaperSize: selectedPaperSize,
+                                           onPaperSizeSelected: onSelection)
+            case .reprint(let paperSize):
+                self.presentReprintInProgressUI()
+                self.requestDocumentForPrinting(paperSize: paperSize) { result in
+                    self.dismissReprintInProgressUI()
+                    switch result {
+                    case .success(let printData):
+                        self.presentAirPrint(printData: printData)
+                    case .failure(let error):
+                        DDLogError("Error generating shipping label document for printing: \(error)")
+                        self.presentErrorAlert(title: Localization.reprintErrorAlertTitle)
+                    }
+                }
+            }
+        }
+
         // Since the reprint UI could make an API request for printing data, disables the bottom bar (tab bar) to simplify app states.
         reprintViewController.hidesBottomBarWhenPushed = true
         sourceViewController.show(reprintViewController, sender: sourceViewController)
     }
+}
 
+// MARK: Navigation calls
+private extension ReprintShippingLabelCoordinator {
     func showPaperSizeSelector(paperSizeOptions: [ShippingLabelPaperSize],
                                selectedPaperSize: ShippingLabelPaperSize?,
                                onPaperSizeSelected: @escaping (ShippingLabelPaperSize?) -> Void) {
@@ -63,23 +68,27 @@ extension ReprintShippingLabelCoordinator: ReprintShippingLabelCoordinatorProtoc
         sourceViewController.present(inProgressViewController, animated: true, completion: nil)
     }
 
-    func dismissReprintInProgressUIAndPresentPrintingResult(_ result: Result<ShippingLabelPrintData, ReprintShippingLabelError>) {
+    func dismissReprintInProgressUI() {
         sourceViewController.dismiss(animated: true)
-        switch result {
-        case .success(let printData):
-            let data = Data(base64Encoded: printData.base64Content)
-            let printController = UIPrintInteractionController()
-            printController.printingItem = data
-            printController.present(animated: true, completionHandler: nil)
-        case .failure(let error):
-            DDLogError("Error generating shipping label document for printing: \(error)")
-            switch error {
-            case .noSelectedPaperSize:
-                presentErrorAlert(title: Localization.reprintWithoutSelectedPaperSizeErrorAlertTitle)
-            default:
-                presentErrorAlert(title: Localization.reprintErrorAlertTitle)
-            }
+    }
+
+    func presentAirPrint(printData: ShippingLabelPrintData) {
+        let data = Data(base64Encoded: printData.base64Content)
+        let printController = UIPrintInteractionController()
+        printController.printingItem = data
+        printController.present(animated: true, completionHandler: nil)
+    }
+}
+
+private extension ReprintShippingLabelCoordinator {
+    /// Requests document data for reprinting a shipping label with the selected paper size.
+    func requestDocumentForPrinting(paperSize: ShippingLabelPaperSize, completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
+        let action = ShippingLabelAction.printShippingLabel(siteID: shippingLabel.siteID,
+                                                            shippingLabelID: shippingLabel.shippingLabelID,
+                                                            paperSize: paperSize) { result in
+            completion(result)
         }
+        stores.dispatch(action)
     }
 }
 

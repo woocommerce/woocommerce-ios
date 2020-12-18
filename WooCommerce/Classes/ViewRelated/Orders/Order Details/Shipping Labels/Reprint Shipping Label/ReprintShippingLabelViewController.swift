@@ -15,16 +15,15 @@ final class ReprintShippingLabelViewController: UIViewController {
 
     private var cancellables = Set<AnyCancellable>()
 
-    /// Handles reprint UX navigation.
-    private weak var coordinator: ReprintShippingLabelCoordinatorProtocol?
+    /// Closure to be executed when an action is triggered.
+    ///
+    var onAction: ((ActionType) -> Void)?
 
-    init(shippingLabel: ShippingLabel,
-         coordinator: ReprintShippingLabelCoordinatorProtocol) {
+    init(shippingLabel: ShippingLabel) {
         self.viewModel = ReprintShippingLabelViewModel(shippingLabel: shippingLabel)
         self.rows = [.headerText, .infoText,
                      .spacerBetweenInfoTextAndPaperSizeSelector, .paperSize, .spacerBetweenPaperSizeSelectorAndInfoLinks,
                      .paperSizeOptions, .printingInstructions]
-        self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -48,20 +47,32 @@ final class ReprintShippingLabelViewController: UIViewController {
     }
 }
 
+extension ReprintShippingLabelViewController {
+    enum ActionType {
+        /// Called when the paper size row is selected.
+        case showPaperSizeSelector(paperSizeOptions: [ShippingLabelPaperSize],
+                                   selectedPaperSize: ShippingLabelPaperSize?,
+                                   onSelection: (ShippingLabelPaperSize?) -> Void)
+        /// Called when the Reprint CTA is tapped.
+        case reprint(paperSize: ShippingLabelPaperSize)
+    }
+}
+
 // MARK: Action Handling
 private extension ReprintShippingLabelViewController {
     func reprintShippingLabel() {
-        coordinator?.presentReprintInProgressUI()
-        viewModel.requestDocumentForPrinting { [weak self] result in
-            self?.coordinator?.dismissReprintInProgressUIAndPresentPrintingResult(result)
+        guard let selectedPaperSize = selectedPaperSize else {
+            return
         }
+        onAction?(.reprint(paperSize: selectedPaperSize))
     }
 
     func showPaperSizeSelector() {
-        coordinator?.showPaperSizeSelector(paperSizeOptions: viewModel.paperSizeOptions,
-                                           selectedPaperSize: selectedPaperSize) { [weak self] paperSize in
-            self?.viewModel.updateSelectedPaperSize(paperSize)
-        }
+        onAction?(.showPaperSizeSelector(paperSizeOptions: viewModel.paperSizeOptions,
+                                         selectedPaperSize: selectedPaperSize,
+                                         onSelection: { [weak self] paperSize in
+                                            self?.viewModel.updateSelectedPaperSize(paperSize)
+                                         }))
     }
 }
 

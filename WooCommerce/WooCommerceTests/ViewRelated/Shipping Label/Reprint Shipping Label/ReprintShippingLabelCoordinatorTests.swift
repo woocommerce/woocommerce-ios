@@ -7,68 +7,102 @@ final class ReprintShippingLabelCoordinatorTests: XCTestCase {
     func test_showReprintUI_shows_ReprintShippingLabelViewController() {
         // Given
         let viewController = MockSourceViewController()
-        let coordinator = ReprintShippingLabelCoordinator(sourceViewController: viewController)
         let shippingLabel = MockShippingLabel.emptyLabel()
+        let coordinator = ReprintShippingLabelCoordinator(shippingLabel: shippingLabel, sourceViewController: viewController)
 
         // When
-        coordinator.showReprintUI(shippingLabel: shippingLabel)
+        coordinator.showReprintUI()
 
         // Then
         XCTAssertEqual(viewController.shownViewControllers.count, 1)
         assertThat(viewController.shownViewControllers[0], isAnInstanceOf: ReprintShippingLabelViewController.self)
     }
 
-    func test_showPaperSizeSelector_shows_ListSelectorViewController() {
+    // MARK: `showPaperSizeSelector`
+
+    func test_showPaperSizeSelector_shows_ListSelectorViewController() throws {
         // Given
         let viewController = MockSourceViewController()
-        let coordinator = ReprintShippingLabelCoordinator(sourceViewController: viewController)
+        let coordinator = ReprintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(), sourceViewController: viewController)
+        coordinator.showReprintUI()
+        let reprintViewController = try XCTUnwrap(viewController.shownViewControllers.first as? ReprintShippingLabelViewController)
 
         // When
-        coordinator.showPaperSizeSelector(paperSizeOptions: [.label], selectedPaperSize: nil) { _ in }
+        reprintViewController.onAction?(.showPaperSizeSelector(paperSizeOptions: [.label], selectedPaperSize: nil, onSelection: { _ in }))
 
         // Then
-        XCTAssertEqual(viewController.shownViewControllers.count, 1)
-        assertThat(viewController.shownViewControllers[0],
+        XCTAssertEqual(viewController.shownViewControllers.count, 2)
+        assertThat(viewController.shownViewControllers[1],
                    isAnInstanceOf: ListSelectorViewController<ShippingLabelPaperSizeListSelectorCommand, ShippingLabelPaperSize, BasicTableViewCell>.self)
     }
 
-    func test_presentReprintInProgressUI_presents_InProgressViewController() {
+    // MARK: `reprint`
+
+    func test_reprint_without_result_presents_InProgressViewController() throws {
         // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewController = MockSourceViewController()
-        let coordinator = ReprintShippingLabelCoordinator(sourceViewController: viewController)
+        let coordinator = ReprintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(), sourceViewController: viewController, stores: stores)
+        coordinator.showReprintUI()
+        let reprintViewController = try XCTUnwrap(viewController.shownViewControllers.first as? ReprintShippingLabelViewController)
 
         // When
-        coordinator.presentReprintInProgressUI()
+        reprintViewController.onAction?(.reprint(paperSize: .label))
 
         // Then
         XCTAssertEqual(viewController.presentedViewControllers.count, 1)
         assertThat(viewController.presentedViewControllers[0], isAnInstanceOf: InProgressViewController.self)
     }
 
-    func test_dismissReprintInProgressUIAndPresentPrintingResult_dismisses_modal_on_success() {
+    func test_reprint_on_success_dismisses_InProgressViewController() throws {
         // Given
-        let viewController = MockSourceViewController()
-        let coordinator = ReprintShippingLabelCoordinator(sourceViewController: viewController)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
         let printData = ShippingLabelPrintData(mimeType: "application/pdf", base64Content: "////")
+        stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
+            switch action {
+            case let .printShippingLabel(_, _, _, completion):
+                completion(.success(printData))
+            default:
+                break
+            }
+        }
+
+        let viewController = MockSourceViewController()
+        let coordinator = ReprintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(), sourceViewController: viewController, stores: stores)
+        coordinator.showReprintUI()
+        let reprintViewController = try XCTUnwrap(viewController.shownViewControllers.first as? ReprintShippingLabelViewController)
 
         // When
-        coordinator.presentReprintInProgressUI()
-        coordinator.dismissReprintInProgressUIAndPresentPrintingResult(.success(printData))
+        reprintViewController.onAction?(.reprint(paperSize: .label))
 
         // Then
-        // Since `UIPrintInteractionController` does not conform to `UIViewController`, its presentation is hard to test.
-        XCTAssertEqual(viewController.presentedViewControllers.count, 0)
+        waitUntil {
+            // Since `UIPrintInteractionController` does not conform to `UIViewController`, its presentation is hard to test.
+            // Here we wait for the in-progress UI to be presented then dismissed.
+            viewController.presentedViewControllers.count == 0
+        }
     }
 
-    func test_dismissReprintInProgressUIAndPresentPrintingResult_dismisses_modal_and_presents_alert_on_failure() {
+    func test_reprint_on_failure_presents_error_alert() throws {
         // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let error = SampleError.first
+        stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
+            switch action {
+            case let .printShippingLabel(_, _, _, completion):
+                completion(.failure(error))
+            default:
+                break
+            }
+        }
+
         let viewController = MockSourceViewController()
-        let coordinator = ReprintShippingLabelCoordinator(sourceViewController: viewController)
-        let error = ReprintShippingLabelError.other(error: .init(SampleError.first))
+        let coordinator = ReprintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(), sourceViewController: viewController, stores: stores)
+        coordinator.showReprintUI()
+        let reprintViewController = try XCTUnwrap(viewController.shownViewControllers.first as? ReprintShippingLabelViewController)
 
         // When
-        coordinator.presentReprintInProgressUI()
-        coordinator.dismissReprintInProgressUIAndPresentPrintingResult(.failure(error))
+        reprintViewController.onAction?(.reprint(paperSize: .label))
 
         // Then
         XCTAssertEqual(viewController.presentedViewControllers.count, 1)

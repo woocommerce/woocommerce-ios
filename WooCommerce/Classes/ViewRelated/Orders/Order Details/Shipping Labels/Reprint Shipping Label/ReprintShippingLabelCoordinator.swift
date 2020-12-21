@@ -71,9 +71,8 @@ private extension ReprintShippingLabelCoordinator {
     }
 
     func presentAirPrint(printData: ShippingLabelPrintData) {
-        let data = Data(base64Encoded: printData.base64Content)
         let printController = UIPrintInteractionController()
-        printController.printingItem = data
+        printController.printingItem = printData.data
         printController.present(animated: true, completionHandler: nil)
     }
 }

@@ -48,7 +48,7 @@ private extension AddAttributeOptionsViewModel {
         static let footerTextField = NSLocalizedString("Add each option and press enter",
                                                        comment: "Footer of text field section in Add Attribute Options screen")
         static let headerSelectedTerms = NSLocalizedString("OPTIONS OFFERED",
-                                                           comment: "Header of selected attribute option section in Add Attribute Options screen")
+                                                           comment: "Header of selected attribute options section in Add Attribute Options screen")
         static let headerExistingTerms = NSLocalizedString("ADD OPTIONS",
                                                            comment: "Header of existing attribute option section in Add Attribute Options screen")
     }

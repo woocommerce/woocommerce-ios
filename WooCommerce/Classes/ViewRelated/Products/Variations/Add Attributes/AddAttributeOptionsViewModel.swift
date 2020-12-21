@@ -50,6 +50,6 @@ private extension AddAttributeOptionsViewModel {
         static let headerSelectedTerms = NSLocalizedString("OPTIONS OFFERED",
                                                            comment: "Header of selected attribute options section in Add Attribute Options screen")
         static let headerExistingTerms = NSLocalizedString("ADD OPTIONS",
-                                                           comment: "Header of existing attribute option section in Add Attribute Options screen")
+                                                           comment: "Header of existing attribute options section in Add Attribute Options screen")
     }
 }

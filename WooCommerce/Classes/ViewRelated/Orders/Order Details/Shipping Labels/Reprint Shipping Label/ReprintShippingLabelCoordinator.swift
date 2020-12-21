@@ -27,17 +27,7 @@ final class ReprintShippingLabelCoordinator {
                                            selectedPaperSize: selectedPaperSize,
                                            onPaperSizeSelected: onSelection)
             case .reprint(let paperSize):
-                self.presentReprintInProgressUI()
-                self.requestDocumentForPrinting(paperSize: paperSize) { result in
-                    self.dismissReprintInProgressUI()
-                    switch result {
-                    case .success(let printData):
-                        self.presentAirPrint(printData: printData)
-                    case .failure(let error):
-                        DDLogError("Error generating shipping label document for printing: \(error)")
-                        self.presentErrorAlert(title: Localization.reprintErrorAlertTitle)
-                    }
-                }
+                self.reprintShippingLabel(paperSize: paperSize)
             }
         }
 
@@ -57,6 +47,20 @@ private extension ReprintShippingLabelCoordinator {
             onPaperSizeSelected(paperSize)
         }
         sourceViewController.show(listSelector, sender: sourceViewController)
+    }
+
+    func reprintShippingLabel(paperSize: ShippingLabelPaperSize) {
+        presentReprintInProgressUI()
+        requestDocumentForPrinting(paperSize: paperSize) { result in
+            self.dismissReprintInProgressUI()
+            switch result {
+            case .success(let printData):
+                self.presentAirPrint(printData: printData)
+            case .failure(let error):
+                DDLogError("Error generating shipping label document for printing: \(error)")
+                self.presentErrorAlert(title: Localization.reprintErrorAlertTitle)
+            }
+        }
     }
 
     func presentReprintInProgressUI() {

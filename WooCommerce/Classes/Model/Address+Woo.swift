@@ -7,7 +7,7 @@ import Yosemite
 //
 extension Address {
 
-    /// Returns the First + LastName combined according to users Locale.
+    /// Returns the First + LastName combined according to language rules and Locale.
     ///
     var fullName: String {
         var components = PersonNameComponents()

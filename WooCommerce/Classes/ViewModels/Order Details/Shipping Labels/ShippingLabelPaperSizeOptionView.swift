@@ -17,6 +17,8 @@ struct ShippingLabelPaperSizeOptionView: View {
         case .letter:
             title = Localization.letterSizeTitle
             image = PaperSizeImage.letter
+        default:
+            fatalError("Unexpected paper size: \(paperSize)")
         }
     }
 

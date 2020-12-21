@@ -3456,7 +3456,6 @@
 			isa = PBXGroup;
 			children = (
 				5791FB4124EC834300117FD6 /* MainTabViewModelTests.swift */,
-				A655725C258B91AE008AE7CA /* OrderListCellViewModelTests.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -3552,6 +3551,7 @@
 				570AAB042472FACB00516C0C /* OrderDetailsDataSourceTests.swift */,
 				57C5FF7B25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift */,
 				5767E93F256D9A4A00CFA652 /* OrderListViewModelTests.swift */,
+				A655725C258B91AE008AE7CA /* OrderListCellViewModelTests.swift */,
 			);
 			path = Orders;
 			sourceTree = "<group>";
@@ -3772,14 +3772,6 @@
 			);
 			name = config;
 			path = ../config;
-			sourceTree = "<group>";
-		};
-		A6557216258B7458008AE7CA /* Order List */ = {
-			isa = PBXGroup;
-			children = (
-				A6557217258B7510008AE7CA /* OrderListCellViewModel.swift */,
-			);
-			path = "Order List";
 			sourceTree = "<group>";
 		};
 		B53A569521123D27000776C9 /* Tools */ = {
@@ -4740,7 +4732,6 @@
 		CE85535B209B5B6A00938BDC /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				A6557216258B7458008AE7CA /* Order List */,
 				D817585C22BB5E6900289CFE /* Order Details */,
 				D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */,
 				CECC758B23D2227000486676 /* ProductDetailsCellViewModel.swift */,
@@ -4903,6 +4894,7 @@
 			children = (
 				CE1CCB4A20570B1F000EE3AC /* OrderTableViewCell.swift */,
 				B5FD110D21D3CB8500560344 /* OrderTableViewCell.xib */,
+				A6557217258B7510008AE7CA /* OrderListCellViewModel.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";

@@ -153,7 +153,7 @@ private extension AddAttributeOptionsViewController {
 
     func configureTextField(cell: TextFieldTableViewCell) {
         let viewModel = TextFieldTableViewCell.ViewModel(text: nil,
-                                                         placeholder: Localization.titleCellPlaceholder,
+                                                         placeholder: Localization.optionNameCellPlaceholder,
                                                          onTextChange: { newAttributeOption in
 
             }, onTextDidBeginEditing: {
@@ -226,7 +226,7 @@ extension AddAttributeOptionsViewController {
 private extension AddAttributeOptionsViewController {
     enum Localization {
         static let nextNavBarButton = NSLocalizedString("Next", comment: "Next nav bar button title in Add Product Attribute Options screen")
-        static let titleCellPlaceholder = NSLocalizedString("Option name",
+        static let optionNameCellPlaceholder = NSLocalizedString("Option name",
                                                             comment: "Placeholder of cell presenting the title of the new attribute option.")
     }
 }

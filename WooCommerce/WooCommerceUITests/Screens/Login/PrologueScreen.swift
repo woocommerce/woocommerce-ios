@@ -17,7 +17,7 @@ final class PrologueScreen: BaseScreen {
         super.init(element: continueButton)
     }
 
-    func selectContinue() -> GetStartedScreen {
+    func selectContinueWithWordPress() -> GetStartedScreen {
         continueButton.tap()
 
         return GetStartedScreen()

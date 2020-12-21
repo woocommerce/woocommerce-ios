@@ -217,7 +217,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
 
-        let isSelfHosted = false
+        let isSelfHosted = site.isWP && !site.isWPCom
         let authenticationResult: WordPressAuthenticatorResult = .presentPasswordController(value: isSelfHosted)
         onCompletion(authenticationResult)
     }
@@ -351,6 +351,7 @@ private extension AuthenticationManager {
     enum AuthenticationError: Int, Error {
         case emailDoesNotMatchWPAccount = 7
         case notWPSite = 406
+        case notValidAddress = -1022
         case unknown
 
         static func make(with error: Error) -> AuthenticationError {
@@ -361,6 +362,8 @@ private extension AuthenticationManager {
                 return .emailDoesNotMatchWPAccount
             case notWPSite.rawValue:
                 return .notWPSite
+            case notValidAddress.rawValue:
+                return .notValidAddress
             default:
                 return .unknown
             }
@@ -378,7 +381,8 @@ private extension AuthenticationManager {
         switch wooAuthError {
         case .emailDoesNotMatchWPAccount:
             return NotWPAccountViewModel()
-        case .notWPSite:
+        case .notWPSite,
+             .notValidAddress:
             return NotWPErrorViewModel()
         default:
             return nil

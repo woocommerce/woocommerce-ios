@@ -266,7 +266,7 @@ extension AddAttributeViewController: KeyboardScrollable {
 extension AddAttributeViewController {
 
     @objc private func doneButtonPressed() {
-        presentAddAttributeOptions(for: self.viewModel.newAttributeName)
+        presentAddAttributeOptions(for: viewModel.newAttributeName)
     }
 
     private func presentAddAttributeOptions(for newAttribute: String?) {

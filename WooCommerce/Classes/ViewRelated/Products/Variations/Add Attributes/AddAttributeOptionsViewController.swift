@@ -210,9 +210,7 @@ extension AddAttributeOptionsViewController {
             switch self {
             case .termTextField:
                 return TextFieldTableViewCell.self
-            case .selectedTerms:
-                return BasicTableViewCell.self
-            case .existingTerms:
+            case .selectedTerms, .existingTerms:
                 return BasicTableViewCell.self
             }
         }

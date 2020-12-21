@@ -3,7 +3,7 @@ import Yosemite
 
 final class AddAttributeOptionsViewController: UIViewController {
 
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak private var tableView: UITableView!
 
     private let viewModel: AddAttributeOptionsViewModel
 
@@ -40,7 +40,7 @@ final class AddAttributeOptionsViewController: UIViewController {
 private extension AddAttributeOptionsViewController {
 
     func configureNavigationBar() {
-        title = viewModel.newAttributeName ?? viewModel.attribute?.name
+        title = viewModel.titleView
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.nextNavBarButton,
                                                            style: .plain,

@@ -8,6 +8,9 @@ final class AddAttributeOptionsViewModel {
     typealias Section = AddAttributeOptionsViewController.Section
     typealias Row = AddAttributeOptionsViewController.Row
 
+    var titleView: String? {
+        newAttributeName ?? attribute?.name
+    }
     private(set) var newAttributeName: String?
     private(set) var attribute: ProductAttribute?
 

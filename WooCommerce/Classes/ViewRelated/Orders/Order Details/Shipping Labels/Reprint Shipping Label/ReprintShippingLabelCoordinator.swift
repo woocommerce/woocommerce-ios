@@ -17,6 +17,8 @@ final class ReprintShippingLabelCoordinator {
     }
 
     /// Shows the main screen for reprinting a shipping label.
+    /// `self` is retained in the action callbacks so that the coordinator has the same life cycle as the main view controller
+    /// (`ReprintShippingLabelViewController`).
     func showReprintUI() {
         let reprintViewController = ReprintShippingLabelViewController(shippingLabel: shippingLabel)
 

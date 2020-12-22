@@ -317,8 +317,12 @@ private extension OrderDetailsViewController {
         case .issueRefund:
             issueRefundWasPressed()
         case .reprintShippingLabel(let shippingLabel):
-            let reprintViewController = ReprintShippingLabelViewController(shippingLabel: shippingLabel)
-            show(reprintViewController, sender: self)
+            guard let navigationController = navigationController else {
+                assertionFailure("Cannot reprint a shipping label because `navigationController` is nil")
+                return
+            }
+            let coordinator = ReprintShippingLabelCoordinator(shippingLabel: shippingLabel, sourceViewController: navigationController)
+            coordinator.showReprintUI()
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         }

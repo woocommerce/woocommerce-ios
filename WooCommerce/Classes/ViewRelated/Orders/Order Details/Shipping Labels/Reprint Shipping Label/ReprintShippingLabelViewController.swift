@@ -15,6 +15,10 @@ final class ReprintShippingLabelViewController: UIViewController {
 
     private var cancellables = Set<AnyCancellable>()
 
+    /// Closure to be executed when an action is triggered.
+    ///
+    var onAction: ((ActionType) -> Void)?
+
     init(shippingLabel: ShippingLabel) {
         self.viewModel = ReprintShippingLabelViewModel(shippingLabel: shippingLabel)
         self.rows = [.headerText, .infoText,
@@ -43,18 +47,33 @@ final class ReprintShippingLabelViewController: UIViewController {
     }
 }
 
+extension ReprintShippingLabelViewController {
+    /// Actions that can be triggered from the reprint UI.
+    enum ActionType {
+        /// Called when the paper size row is selected.
+        case showPaperSizeSelector(paperSizeOptions: [ShippingLabelPaperSize],
+                                   selectedPaperSize: ShippingLabelPaperSize?,
+                                   onSelection: (ShippingLabelPaperSize?) -> Void)
+        /// Called when the Reprint CTA is tapped.
+        case reprint(paperSize: ShippingLabelPaperSize)
+    }
+}
+
 // MARK: Action Handling
 private extension ReprintShippingLabelViewController {
     func reprintShippingLabel() {
-        // TODO-2169: reprint action
+        guard let selectedPaperSize = selectedPaperSize else {
+            return
+        }
+        onAction?(.reprint(paperSize: selectedPaperSize))
     }
 
     func showPaperSizeSelector() {
-        let command = ShippingLabelPaperSizeListSelectorCommand(paperSizeOptions: viewModel.paperSizeOptions, selected: selectedPaperSize)
-        let listSelector = ListSelectorViewController(command: command) { [weak self] paperSize in
-            self?.viewModel.updateSelectedPaperSize(paperSize)
-        }
-        show(listSelector, sender: self)
+        onAction?(.showPaperSizeSelector(paperSizeOptions: viewModel.paperSizeOptions,
+                                         selectedPaperSize: selectedPaperSize,
+                                         onSelection: { [weak self] paperSize in
+                                            self?.viewModel.updateSelectedPaperSize(paperSize)
+                                         }))
     }
 }
 

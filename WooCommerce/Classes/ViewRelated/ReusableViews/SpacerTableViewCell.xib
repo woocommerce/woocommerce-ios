@@ -14,7 +14,7 @@
         <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="SpacerTableViewCell" customModule="WooCommerce" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
@@ -28,8 +28,8 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="7uK-Kn-8bT" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="2Mq-tO-4bZ"/>
+                    <constraint firstItem="7uK-Kn-8bT" firstAttribute="height" secondItem="H2p-sc-9uM" secondAttribute="height" priority="750" id="A21-ZR-8Ov"/>
                     <constraint firstAttribute="trailing" secondItem="7uK-Kn-8bT" secondAttribute="trailing" id="jsV-wr-lSM"/>
-                    <constraint firstAttribute="bottom" secondItem="7uK-Kn-8bT" secondAttribute="bottom" id="r3n-UN-9qJ"/>
                     <constraint firstItem="7uK-Kn-8bT" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="uDd-y3-ap8"/>
                 </constraints>
             </tableViewCellContentView>

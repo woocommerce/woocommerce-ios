@@ -24,9 +24,11 @@ final class SwitchStoreNoticePresenter {
             return
         }
 
-        let message = NSLocalizedString("Switched to \(newStoreName). You will only receive notifications from this store.",
-            comment: "Message presented after users switch to a new store. "
-                + "Reads like: Switched to {store name}. You will only receive notifications from this store.")
+        let messageFormat = NSLocalizedString("Switched to %1$@. You will only receive notifications from this store.",
+                                              comment: "Message presented after users switch to a new store. "
+                                                + "Reads like: Switched to {store name}. You will only receive notifications from this store. "
+                                                + "Parameters: %1$@ - store name")
+        let message = String.localizedStringWithFormat(messageFormat, newStoreName)
         let notice = Notice(title: message, feedbackType: .success)
 
         noticePresenter.enqueue(notice: notice)

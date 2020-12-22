@@ -30,7 +30,8 @@ private extension ProductListViewController {
     /// Setup: Main View
     ///
     func configureMainView() {
-        title = NSLocalizedString("Details Order #\(viewModel.order.number)", comment: "Screen title: Details Order number (number)")
+        let titleFormat = NSLocalizedString("Details Order #%1$@", comment: "Screen title: Details Order number. Parameters: %1$@ - order number")
+        title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
         view.backgroundColor = .listBackground
 
         // Don't show the Order details title in the next-view's back button

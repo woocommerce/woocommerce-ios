@@ -113,7 +113,11 @@ extension DotcomError: CustomStringConvertible {
             return NSLocalizedString("Dotcom Stats Module Disabled", comment: "WordPress.com error thrown when the Jetpack site stats module is disabled.")
         case .unknown(let code, let message):
             let theMessage = message ?? String()
-            return NSLocalizedString("Dotcom Error: [\(code)] \(theMessage)", comment: "WordPress.com (unmapped!) error")
+            let messageFormat = NSLocalizedString(
+                "Dotcom Error: [%1$@] %2$@",
+                comment: "WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message"
+            )
+            return String.localizedStringWithFormat(messageFormat, code, theMessage)
         }
     }
 }

@@ -169,11 +169,11 @@ private extension ReprintShippingLabelViewController {
     }
 
     func configureInfoText(cell: TopLeftImageTableViewCell) {
+        cell.apply(style: .body)
         cell.configure(image: .infoOutlineImage,
                        imageTintColor: .systemColor(.secondaryLabel),
                        text: Localization.infoText,
                        textColor: .systemColor(.secondaryLabel))
-        cell.apply(style: .body)
         cell.hideSeparator()
     }
 

@@ -13,27 +13,40 @@ class TopLeftImageTableViewCell: UITableViewCell {
         fileprivate static let `default` = Self.body
     }
 
+    @IBOutlet private weak var stackView: UIStackView!
+    @IBOutlet private weak var customImageView: UIImageView!
+    @IBOutlet private weak var label: UILabel!
+
     override func awakeFromNib() {
         super.awakeFromNib()
 
         configureBackground()
+        configureStackView()
+        configureImageView()
         configureTextLabel()
     }
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
-        imageView?.frame.size = CGSize(width: Constants.iconW, height: Constants.iconH)
-        imageView?.frame.origin.y = Constants.iconY
+    func configure(image: UIImage?,
+                   imageTintColor: UIColor? = nil,
+                   text: String?,
+                   textColor: UIColor? = nil) {
+        customImageView.image = image
+        if let imageTintColor = imageTintColor {
+            customImageView.tintColor = imageTintColor
+        }
+        label.text = text
+        if let textColor = textColor {
+            label.textColor = textColor
+        }
     }
 
     /// Applies the style for the cell.
     func apply(style: Style) {
          switch style {
          case .footnote:
-            textLabel?.applyFootnoteStyle()
+            label.applyFootnoteStyle()
          case .body:
-            textLabel?.applyBodyStyle()
+            label.applyBodyStyle()
          }
      }
 }
@@ -44,16 +57,26 @@ private extension TopLeftImageTableViewCell {
         applyDefaultBackgroundStyle()
     }
 
+    func configureStackView() {
+        stackView.spacing = Constants.stackViewSpacing
+        stackView.alignment = .top
+    }
+
+    func configureImageView() {
+        customImageView.setContentHuggingPriority(.required, for: .horizontal)
+        customImageView.setContentHuggingPriority(.required, for: .vertical)
+        customImageView.setContentCompressionResistancePriority(.required, for: .horizontal)
+        customImageView.setContentCompressionResistancePriority(.required, for: .vertical)
+    }
+
     func configureTextLabel() {
         apply(style: .default)
-        textLabel?.numberOfLines = 0
+        label.numberOfLines = 0
     }
 }
 
-extension TopLeftImageTableViewCell {
-    struct Constants {
-        static let iconW = CGFloat(24)
-        static let iconH = CGFloat(24)
-        static let iconY = CGFloat(11)
+private extension TopLeftImageTableViewCell {
+    enum Constants {
+        static let stackViewSpacing = CGFloat(16)
     }
 }

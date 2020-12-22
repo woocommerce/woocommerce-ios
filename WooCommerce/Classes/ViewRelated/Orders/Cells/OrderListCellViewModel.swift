@@ -70,6 +70,6 @@ private extension OrderListCellViewModel {
             return String.localizedStringWithFormat(format, orderNumber, customerName)
         }
 
-        static let guestName = NSLocalizedString("Guest", comment: "In Order List, the name of the billed person when there are no name and last name.")
+        static let guestName = NSLocalizedString("Guest", comment: "In Order List, the name of the billed person when there are no first and last name.")
     }
 }

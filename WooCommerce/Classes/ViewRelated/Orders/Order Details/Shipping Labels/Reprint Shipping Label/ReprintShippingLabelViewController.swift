@@ -56,6 +56,10 @@ extension ReprintShippingLabelViewController {
                                    onSelection: (ShippingLabelPaperSize?) -> Void)
         /// Called when the Reprint CTA is tapped.
         case reprint(paperSize: ShippingLabelPaperSize)
+        /// Called when the "layout and paper size options" row is selected.
+        case presentPaperSizeOptions
+        /// Called when the printing instructions row is selected.
+        case presentPrintingInstructions
     }
 }
 
@@ -74,6 +78,14 @@ private extension ReprintShippingLabelViewController {
                                          onSelection: { [weak self] paperSize in
                                             self?.viewModel.updateSelectedPaperSize(paperSize)
                                          }))
+    }
+
+    func presentPaperSizeOptions() {
+        onAction?(.presentPaperSizeOptions)
+    }
+
+    func presentPrintingInstructions() {
+        onAction?(.presentPrintingInstructions)
     }
 }
 
@@ -146,11 +158,9 @@ extension ReprintShippingLabelViewController: UITableViewDelegate {
         case .paperSize:
             showPaperSizeSelector()
         case .paperSizeOptions:
-            // TODO-2169: Present paper size options modal
-            break
+            presentPaperSizeOptions()
         case .printingInstructions:
-            // TODO-2169: Present printing instructions modal
-            break
+            presentPrintingInstructions()
         default:
             return
         }

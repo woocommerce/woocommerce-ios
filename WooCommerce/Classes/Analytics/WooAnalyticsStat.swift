@@ -339,7 +339,7 @@ public enum WooAnalyticsStat: String {
     case groupedProductLinkedProductsAddButtonTapped = "grouped_product_linked_products_add_tapped"
     case groupedProductLinkedProductsAdded = "grouped_product_linked_products_added"
     case groupedProductLinkedProductsDoneButtonTapped = "grouped_product_linked_products_done_button_tapped"
-    
+
     // Edit Linked Products Events
     //
     case linkedProducts = "linked_products"

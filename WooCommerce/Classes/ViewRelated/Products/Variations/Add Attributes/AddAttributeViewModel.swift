@@ -15,7 +15,8 @@ final class AddAttributeViewModel {
     private let product: Product
     private(set) var localAndGlobalAttributes: [ProductAttribute] = []
 
-    var sections: [Section] = []
+    private(set) var sections: [Section] = []
+    private(set) var newAttributeName: String?
 
     /// Represents the current state of `synchronizeProductAttributes` action. Useful for the consumer to update it's UI upon changes
     ///
@@ -97,6 +98,20 @@ private extension AddAttributeViewModel {
         let attributesSection = attributesRows.count > 0 ? Section(header: Localization.headerAttributes, footer: nil, rows: attributesRows) : nil
 
         sections = [Section(header: nil, footer: Localization.footerTextField, rows: [.attributeTextField]), attributesSection].compactMap { $0 }
+    }
+}
+
+
+// MARK: Actions
+extension AddAttributeViewModel {
+
+    func handleNewAttributeNameChange(_ name: String?) {
+        guard name != nil && name?.isNotEmpty == true else {
+            newAttributeName = nil
+            return
+        }
+
+        newAttributeName = name
     }
 }
 

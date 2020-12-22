@@ -65,6 +65,37 @@ final class AddAttributeViewModelTests: XCTestCase {
         XCTAssertTrue(result)
         XCTAssertEqual(storesManager.numberOfResponsesConsumed, 1)
     }
+
+    func test_handle_valid_new_attribute_name() {
+        // Given
+        let product = MockProduct().product()
+        let viewModel = AddAttributeViewModel(storesManager: storesManager, product: product)
+
+
+        // When
+        viewModel.handleNewAttributeNameChange("Color")
+
+
+        // Then
+        XCTAssertEqual(viewModel.newAttributeName, "Color")
+    }
+
+    func test_handle_invalid_new_attribute_name() {
+        // Given
+        let product = MockProduct().product()
+        let viewModel = AddAttributeViewModel(storesManager: storesManager, product: product)
+
+
+        // When
+        viewModel.handleNewAttributeNameChange(nil)
+            // Then
+            XCTAssertNil(viewModel.newAttributeName)
+
+        // When
+        viewModel.handleNewAttributeNameChange("")
+            // Then
+            XCTAssertNil(viewModel.newAttributeName)
+    }
 }
 
 /// Mock Product Attribute Store Manager

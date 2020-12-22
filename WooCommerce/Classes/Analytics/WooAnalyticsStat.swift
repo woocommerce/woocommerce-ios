@@ -342,7 +342,7 @@ public enum WooAnalyticsStat: String {
     
     // Edit Linked Products Events
     //
-    
+    case linkedProducts = "linked_products"
 
     // Edit External/Affiliate Product Event
     //

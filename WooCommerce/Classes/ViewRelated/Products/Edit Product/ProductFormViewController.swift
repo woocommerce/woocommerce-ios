@@ -1153,8 +1153,6 @@ private extension ProductFormViewController {
         guard hasUnsavedChanges else {
             return
         }
-        // TODO: Add Analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
-
         viewModel.updateLinkedProducts(upsellIDs: upsellIDs, crossSellIDs: crossSellIDs)
     }
 }

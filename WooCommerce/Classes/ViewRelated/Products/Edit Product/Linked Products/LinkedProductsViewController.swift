@@ -35,6 +35,7 @@ final class LinkedProductsViewController: UIViewController {
         configureMainView()
         configureTableView()
         registerTableViewCells()
+        ServiceLocator.analytics.track(.linkedProducts, withProperties: ["action": "shown"])
     }
 }
 
@@ -218,6 +219,9 @@ extension LinkedProductsViewController {
     }
 
     @objc private func completeUpdating() {
+        if viewModel.hasUnsavedChanges() {
+            ServiceLocator.analytics.track(.linkedProducts, withProperties: ["action": "done"])
+        }
         onCompletion(viewModel.upsellIDs, viewModel.crossSellIDs, viewModel.hasUnsavedChanges())
     }
 

@@ -26,6 +26,7 @@ class TopLeftImageTableViewCell: UITableViewCell {
         configureTextLabel()
     }
 
+    /// Configures the image and text with optional color for customization.
     func configure(image: UIImage?,
                    imageTintColor: UIColor? = nil,
                    text: String?,

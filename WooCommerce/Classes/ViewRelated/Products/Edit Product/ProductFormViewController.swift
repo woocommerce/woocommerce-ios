@@ -1259,6 +1259,7 @@ private extension ProductFormViewController {
         guard hasUnsavedChanges else {
             return
         }
+        ServiceLocator.analytics.track(.productDownloadableFilesSettingsChanged)
         viewModel.updateDownloadableFiles(downloadableFiles: data.downloadableFiles, downloadLimit: data.downloadLimit, downloadExpiry: data.downloadExpiry)
     }
 }

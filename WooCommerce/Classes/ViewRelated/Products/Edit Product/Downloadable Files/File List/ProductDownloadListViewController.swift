@@ -148,7 +148,6 @@ extension ProductDownloadListViewController {
     }
 
     @objc private func doneButtonTapped() {
-        // TODO: - add analytics
         viewModel.completeUpdating(onCompletion: onCompletion)
     }
 

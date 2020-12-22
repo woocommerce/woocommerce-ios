@@ -340,6 +340,9 @@ public enum WooAnalyticsStat: String {
     case groupedProductLinkedProductsAdded = "grouped_product_linked_products_added"
     case groupedProductLinkedProductsDoneButtonTapped = "grouped_product_linked_products_done_button_tapped"
 
+    // Edit Downloadable Products Events
+    case productDownloadableFilesSettingsChanged = "product_downloadable_files_settings_changed"
+
     // Edit External/Affiliate Product Event
     //
     case externalProductLinkSettingsDoneButtonTapped = "external_product_link_settings_done_button_tapped"

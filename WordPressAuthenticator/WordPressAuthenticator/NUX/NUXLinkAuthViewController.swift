@@ -52,8 +52,4 @@ class NUXLinkAuthViewController: LoginViewController {
     override func configureStatusLabel(_ message: String) {
         statusLabel?.text = message
     }
-
-    override func updateSafariCredentialsIfNeeded() {
-        // Noop
-    }
 }

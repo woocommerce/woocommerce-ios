@@ -220,12 +220,6 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         
         presentUnified2FA()
     }
-
-    // Update safari stored credentials. Call after a successful sign in.
-    ///
-    func updateSafariCredentialsIfNeeded() {
-        SafariCredentialsService.updateSafariCredentialsIfNeeded(with: loginFields)
-    }
     
     private enum LocalizedText {
         static let loginError = NSLocalizedString("Whoops, something went wrong and we couldn't log you in. Please try again!", comment: "An error message shown when a wpcom user provides the wrong password.")
@@ -261,8 +255,6 @@ extension LoginViewController {
     /// Signals the Main App to synchronize the specified WordPress.com account.
     ///
     private func syncWPCom(credentials: AuthenticatorCredentials, completion: (() -> ())? = nil) {
-        SafariCredentialsService.updateSafariCredentialsIfNeeded(with: loginFields)
-
         configureStatusLabel(LocalizedText.gettingAccountInfo)
 
         authenticationDelegate.sync(credentials: credentials) { [weak self] in

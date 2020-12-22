@@ -152,8 +152,6 @@ extension ProductDownloadListViewController {
     }
 
     @objc private func addButtonTapped(_ sender: UIButton) {
-        // TODO: - add analytics M5
-
         let title = Localization.bottomSheetTitle
         let viewProperties = BottomSheetListSelectorViewProperties(title: title)
         let actions = viewModel.bottomSheetActions
@@ -271,7 +269,6 @@ private extension ProductDownloadListViewController {
     }
 
     func showDownloadableFilesSettings() {
-        // TODO: - add analytics
         let viewController = ProductDownloadSettingsViewController(product: product) { [weak self]
             (downloadLimit, downloadExpiry, hasUnsavedChanges) in
             self?.onDownloadSettingsCompletion(downloadLimit: downloadLimit,

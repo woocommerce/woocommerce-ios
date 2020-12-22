@@ -46,7 +46,7 @@ final class OrderSearchStarterViewController: UIViewController, KeyboardFrameAdj
     }
 
     private func configureTableView() {
-        tableView.registerNib(for: SettingTitleAndValueTableViewCell.self)
+        tableView.registerNib(for: TitleAndValueTableViewCell.self)
 
         tableView.backgroundColor = .listBackground
         tableView.delegate = self
@@ -64,7 +64,7 @@ extension OrderSearchStarterViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(SettingTitleAndValueTableViewCell.self, for: indexPath)
+        let cell = tableView.dequeueReusableCell(TitleAndValueTableViewCell.self, for: indexPath)
 
         let cellViewModel = viewModel.cellViewModel(at: indexPath)
 

@@ -165,7 +165,7 @@ private extension ReprintShippingLabelViewController {
             configureHeaderText(cell: cell)
         case let cell as TopLeftImageTableViewCell where row == .infoText:
             configureInfoText(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .paperSize:
+        case let cell as TitleAndValueTableViewCell where row == .paperSize:
             configurePaperSize(cell: cell)
         case let cell as SpacerTableViewCell where row == .spacerBetweenInfoTextAndPaperSizeSelector:
             configureSpacerBetweenInfoTextAndPaperSizeSelector(cell: cell)
@@ -196,7 +196,7 @@ private extension ReprintShippingLabelViewController {
         cell.hideSeparator()
     }
 
-    func configurePaperSize(cell: SettingTitleAndValueTableViewCell) {
+    func configurePaperSize(cell: TitleAndValueTableViewCell) {
         cell.updateUI(title: Localization.paperSizeSelectorTitle, value: selectedPaperSize?.description)
         cell.accessoryType = .disclosureIndicator
     }
@@ -273,7 +273,7 @@ private extension ReprintShippingLabelViewController {
             case .spacerBetweenInfoTextAndPaperSizeSelector, .spacerBetweenPaperSizeSelectorAndInfoLinks:
                 return SpacerTableViewCell.self
             case .paperSize:
-                return SettingTitleAndValueTableViewCell.self
+                return TitleAndValueTableViewCell.self
             case .paperSizeOptions, .printingInstructions:
                 return TopLeftImageTableViewCell.self
             }

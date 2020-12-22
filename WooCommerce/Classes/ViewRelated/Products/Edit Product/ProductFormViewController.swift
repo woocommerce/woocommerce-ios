@@ -280,7 +280,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard isEditable else {
                     return
                 }
-                // TODO: Add Analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+                ServiceLocator.analytics.track(.productDetailViewLinkedProductsTapped)
                 editLinkedProducts()
             case .productType(_, let isEditable):
                 guard isEditable else {
@@ -543,7 +543,7 @@ private extension ProductFormViewController {
                                                                             ServiceLocator.analytics.track(.productDetailViewSKUTapped)
                                                                             self?.editSKU()
                                                                         case .editLinkedProducts:
-                                                                            // TODO: Analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+                                                                            ServiceLocator.analytics.track(.productDetailViewLinkedProductsTapped)
                                                                             self?.editLinkedProducts()
                                                                         }
                                                                     }

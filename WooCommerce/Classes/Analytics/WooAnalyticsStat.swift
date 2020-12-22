@@ -284,6 +284,7 @@ public enum WooAnalyticsStat: String {
     case productDetailViewReviewsTapped = "product_detail_view_product_reviews_tapped"
     case productDetailViewProductTypeTapped = "product_detail_view_product_type_tapped"
     case productDetailViewGroupedProductsTapped = "product_detail_view_grouped_products_tapped"
+    case productDetailViewLinkedProductsTapped = "product_detail_view_linked_products_tapped"
     case productDetailViewExternalProductLinkTapped = "product_detail_view_external_product_link_tapped"
     case productDetailViewSKUTapped = "product_detail_view_sku_tapped"
     case productDetailViewVariationsTapped = "product_detail_view_product_variants_tapped"
@@ -338,6 +339,10 @@ public enum WooAnalyticsStat: String {
     case groupedProductLinkedProductsAddButtonTapped = "grouped_product_linked_products_add_tapped"
     case groupedProductLinkedProductsAdded = "grouped_product_linked_products_added"
     case groupedProductLinkedProductsDoneButtonTapped = "grouped_product_linked_products_done_button_tapped"
+    
+    // Edit Linked Products Events
+    //
+    
 
     // Edit External/Affiliate Product Event
     //

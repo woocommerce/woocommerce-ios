@@ -91,6 +91,14 @@ public protocol WordPressAuthenticatorDelegate: class {
     ///     - onCompletion: Closure to be executed on completion.
     ///
     func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void)
+    
+    /// Asks the delegate to synchronize the active account with the specified credentials.
+    ///
+    /// - Parameters:
+    ///     - credentials: WordPressCom Credentials.
+    ///     - onCompletion: Closure to be executed on completion.
+    ///
+    func syncWPCom(credentials: WordPressComCredentials, onCompletion: @escaping () -> Void)
 
     /// Signals the Host App that a given Analytics Event has occurred.
     ///

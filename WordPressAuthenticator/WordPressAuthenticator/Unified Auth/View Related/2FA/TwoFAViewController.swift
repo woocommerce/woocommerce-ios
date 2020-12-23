@@ -190,8 +190,7 @@ private extension TwoFAViewController {
     }
     
     func finishedLogin(withNonceAuthToken authToken: String) {
-        let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: true, siteURL: loginFields.siteAddress)
-        let credentials = AuthenticatorCredentials(wpcom: wpcom)
+        let credentials = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: true, siteURL: loginFields.siteAddress)
         syncWPComAndPresentEpilogue(credentials: credentials)
     }
     

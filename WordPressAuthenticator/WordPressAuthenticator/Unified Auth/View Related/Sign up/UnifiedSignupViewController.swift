@@ -242,8 +242,6 @@ extension UnifiedSignupViewController {
     }
 
     func didRequestSignupLink() {
-        WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
-
         guard let vc = SignupMagicLinkViewController.instantiate(from: .unifiedSignup) else {
             DDLogError("Failed to navigate from UnifiedSignupViewController to SignupMagicLinkViewController")
             return

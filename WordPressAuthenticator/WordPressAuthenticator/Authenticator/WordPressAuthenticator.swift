@@ -56,14 +56,9 @@ import AuthenticationServices
     ///
     @objc public static let WPSigninDidFinishNotification = "WPSigninDidFinishNotification"
 
-    /// Internal Constants.
+    /// The host name that identifies magic link URLs
     ///
-    private enum Constants {
-        static let authenticationInfoKey    = "authenticationInfoKey"
-        static let username                 = "username"
-        static let emailMagicLinkSource     = "emailMagicLinkSource"
-        static let magicLinkUrlPath         = "magic-login"
-    }
+    private static let magicLinkUrlHostname = "magic-login"
 
     // MARK: - Initialization
 
@@ -126,7 +121,7 @@ import AuthenticationServices
     /// Indicates if the received URL is a WordPress.com Authentication Callback.
     ///
     @objc public func isWordPressAuthUrl(_ url: URL) -> Bool {
-        let expectedPrefix = configuration.wpcomScheme + "://" + Constants.magicLinkUrlPath
+        let expectedPrefix = configuration.wpcomScheme + "://" + Self.magicLinkUrlHostname
         return url.absoluteString.hasPrefix(expectedPrefix)
     }
 
@@ -309,7 +304,6 @@ import AuthenticationServices
 
     // MARK: - Authentication Link Helpers
 
-
     /// Present a signin view controller to handle an authentication link.
     ///
     /// - Parameters:
@@ -318,13 +312,47 @@ import AuthenticationServices
     ///                           By convention this is the app's root vc.
     ///
     @objc public class func openAuthenticationURL(_ url: URL, fromRootViewController rootViewController: UIViewController) -> Bool {
-        guard let token = url.query?.dictionaryFromQueryString().string(forKey: "token") else {
+        guard let authToken = url.query?.dictionaryFromQueryString().string(forKey: "token") else {
             DDLogError("Signin Error: The authentication URL did not have the expected path.")
             return false
         }
+        
+        let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: url.isJetpackConnect, multifactor: false)
+        let credentials = AuthenticatorCredentials(wpcom: wpcom)
+        
+        let storyboard = Storyboard.emailMagicLink.instance
+        guard let loginVC = storyboard.instantiateViewController(withIdentifier: "LinkAuthView") as? NUXLinkAuthViewController else {
+            DDLogInfo("App opened with authentication link but couldn't create login screen.")
+            return false
+        }
+        
+        let loginFields = loginVC.loginFields
+        
+        if url.isJetpackConnect {
+            loginFields.meta.jetpackLogin = true
+        }
+        
+        loginVC.syncWPComAndPresentEpilogue(credentials: credentials)
 
-        let loginFields = retrieveLoginInfoForTokenAuth()
-
+        // Count this as success since we're authed. Even if there is a glitch
+        // while syncing the user has valid credentials.
+        if let linkSource = loginFields.meta.emailMagicLinkSource {
+            switch linkSource {
+            case .signup:
+                // This stat is part of a funnel that provides critical information.  Before
+                // making ANY modification to this stat please refer to: p4qSXL-35X-p2
+                WordPressAuthenticator.track(.createdAccount, properties: ["source": "email"])
+                WordPressAuthenticator.track(.signupMagicLinkSucceeded)
+            case .login:
+                WordPressAuthenticator.track(.loginMagicLinkSucceeded)
+            }
+        }
+        
+        
+        
+        
+        
+/*
         if url.isJetpackConnect {
             loginFields.meta.jetpackLogin = true
         }
@@ -370,8 +398,7 @@ import AuthenticationServices
             presenter.present(navController, animated: false, completion: nil)
         }
 
-        deleteLoginInfoForTokenAuth()
-        return true
+        return true*/
     }
 
 
@@ -408,58 +435,6 @@ import AuthenticationServices
 
         return path
     }
-
-
-    // MARK: - Helpers for Saved Magic Link Info
-
-    /// Saves certain login information in NSUserDefaults
-    ///
-    /// - Parameter loginFields: The loginFields instance from which to save.
-    ///
-    class func storeLoginInfoForTokenAuth(_ loginFields: LoginFields) {
-        var dict: [String: String] = [
-            Constants.username: loginFields.username
-        ]
-
-        if let linkSource = loginFields.meta.emailMagicLinkSource {
-            dict[Constants.emailMagicLinkSource] = String(linkSource.rawValue)
-        }
-
-        UserDefaults.standard.set(dict, forKey: Constants.authenticationInfoKey)
-    }
-
-
-    /// Retrieves stored login information if any.
-    ///
-    /// - Returns: A loginFields instance or nil.
-    ///
-    class func retrieveLoginInfoForTokenAuth() -> LoginFields {
-
-        let loginFields = LoginFields()
-
-        guard let dict = UserDefaults.standard.dictionary(forKey: Constants.authenticationInfoKey) else {
-            return loginFields
-        }
-
-        if let username = dict[Constants.username] as? String {
-            loginFields.username = username
-        }
-
-        if let linkSource = dict[Constants.emailMagicLinkSource] as? String,
-            let linkSourceRawValue = Int(linkSource) {
-            loginFields.meta.emailMagicLinkSource = EmailMagicLinkSource(rawValue: linkSourceRawValue)
-        }
-
-        return loginFields
-    }
-
-
-    /// Removes stored login information from NSUserDefaults
-    ///
-    class func deleteLoginInfoForTokenAuth() {
-        UserDefaults.standard.removeObject(forKey: Constants.authenticationInfoKey)
-    }
-
 
     // MARK: - Other Helpers
 

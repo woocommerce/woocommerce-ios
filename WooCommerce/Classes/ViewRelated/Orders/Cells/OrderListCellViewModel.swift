@@ -17,13 +17,14 @@ struct OrderListCellViewModel {
     /// For example, #560 Pamela Nguyen
     ///
     var title: String {
-        if let billingAddress = order.billingAddress, billingAddress.firstName.isNotEmpty || billingAddress.lastName.isNotEmpty {
-            return Localization.title(orderNumber: order.number,
-                                      firstName: billingAddress.firstName,
-                                      lastName: billingAddress.lastName)
-        }
+        let customerName: String = {
+            if let fullName = order.billingAddress?.fullName, fullName.isNotEmpty {
+                return fullName
+            }
+            return Localization.guestName
+        }()
 
-        return Localization.title(orderNumber: order.number)
+        return Localization.title(orderNumber: order.number, customerName: customerName)
     }
 
     /// The localized unabbreviated total which includes the currency.
@@ -61,22 +62,14 @@ struct OrderListCellViewModel {
 
 private extension OrderListCellViewModel {
     enum Localization {
-        static func title(orderNumber: String, firstName: String, lastName: String) -> String {
-            let format = NSLocalizedString("#%1$@ %2$@ %3$@", comment: "In Order List,"
-                + " the pattern to show the order number and the full name. For example, “#123 John Doe”."
-                + " The %1$@ is the order number. The %2$@ is the first name. The %3$@ is the last name.")
-
-            return String.localizedStringWithFormat(format, orderNumber, firstName, lastName)
-        }
-
-        static func title(orderNumber: String) -> String {
+        static func title(orderNumber: String, customerName: String) -> String {
             let format = NSLocalizedString("#%@ %@", comment: "In Order List,"
                 + " the pattern to show the order number. For example, “#123456”."
                 + " The %@ placeholder is the order number.")
 
-            let guestName: String = NSLocalizedString("Guest", comment: "In Order List, the name of the billed person when there are no name and last name.")
-
-            return String.localizedStringWithFormat(format, orderNumber, guestName)
+            return String.localizedStringWithFormat(format, orderNumber, customerName)
         }
+
+        static let guestName = NSLocalizedString("Guest", comment: "In Order List, the name of the billed person when there are no first and last name.")
     }
 }

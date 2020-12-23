@@ -340,6 +340,7 @@ private extension OrderDetailsDataSource {
                                                                                 title: cellTextContent,
                                                                                 isFootnoteStyle: false)
         cell.updateUI(topLeftImageViewModel: viewModel)
+
         cell.selectionStyle = .none
 
         cell.accessibilityTraits = .staticText
@@ -463,6 +464,7 @@ private extension OrderDetailsDataSource {
                                                                                 isFootnoteStyle: true)
 
         cell.updateUI(topLeftImageViewModel: viewModel)
+
         cell.selectionStyle = .default
 
         cell.accessibilityTraits = .button

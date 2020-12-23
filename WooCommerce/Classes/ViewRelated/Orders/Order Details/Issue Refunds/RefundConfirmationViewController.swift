@@ -90,7 +90,7 @@ private extension RefundConfirmationViewController {
     func configureTableView() {
         // Register cells
         [
-            SettingTitleAndValueTableViewCell.self,
+            TitleAndValueTableViewCell.self,
             TitleAndEditableValueTableViewCell.self,
             HeadlineLabelTableViewCell.self,
             WooBasicTableViewCell.self
@@ -150,7 +150,7 @@ extension RefundConfirmationViewController: UITableViewDataSource {
 
         switch row {
         case let row as RefundConfirmationViewModel.TwoColumnRow:
-            let cell = tableView.dequeueReusableCell(SettingTitleAndValueTableViewCell.self, for: indexPath)
+            let cell = tableView.dequeueReusableCell(TitleAndValueTableViewCell.self, for: indexPath)
             cell.updateUI(title: row.title, value: row.value)
             if row.isHeadline {
                 cell.apply(style: .headline)

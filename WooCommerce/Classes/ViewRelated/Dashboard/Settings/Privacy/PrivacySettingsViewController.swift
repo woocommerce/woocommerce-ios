@@ -138,21 +138,21 @@ private extension PrivacySettingsViewController {
         switch cell {
         case let cell as SwitchTableViewCell where row == .collectInfo:
             configureCollectInfo(cell: cell)
-        case let cell as TopLeftImageTableViewCell where row == .shareInfo:
+        case let cell as BasicTableViewCell where row == .shareInfo:
             configureShareInfo(cell: cell)
         case let cell as BasicTableViewCell where row == .shareInfoPolicy:
             configureCookiePolicy(cell: cell)
-        case let cell as TopLeftImageTableViewCell where row == .privacyInfo:
+        case let cell as BasicTableViewCell where row == .privacyInfo:
             configurePrivacyInfo(cell: cell)
         case let cell as BasicTableViewCell where row == .privacyPolicy:
             configurePrivacyPolicy(cell: cell)
-        case let cell as TopLeftImageTableViewCell where row == .thirdPartyInfo:
+        case let cell as BasicTableViewCell where row == .thirdPartyInfo:
             configureCookieInfo(cell: cell)
         case let cell as BasicTableViewCell where row == .thirdPartyPolicy:
             configureCookiePolicy(cell: cell)
         case let cell as SwitchTableViewCell where row == .reportCrashes:
             configureReportCrashes(cell: cell)
-        case let cell as TopLeftImageTableViewCell where row == .crashInfo:
+        case let cell as BasicTableViewCell where row == .crashInfo:
             configureCrashInfo(cell: cell)
         default:
             fatalError()
@@ -177,7 +177,7 @@ private extension PrivacySettingsViewController {
         }
     }
 
-    func configureShareInfo(cell: TopLeftImageTableViewCell) {
+    func configureShareInfo(cell: BasicTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .listForeground
@@ -185,6 +185,7 @@ private extension PrivacySettingsViewController {
             "Share information with our analytics tool about your use of services while logged in to your WordPress.com account.",
             comment: "Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting"
         )
+        configureInfo(cell: cell)
     }
 
     func configureCookiePolicy(cell: BasicTableViewCell) {
@@ -195,7 +196,7 @@ private extension PrivacySettingsViewController {
         cell.textLabel?.textColor = .accent
     }
 
-    func configurePrivacyInfo(cell: TopLeftImageTableViewCell) {
+    func configurePrivacyInfo(cell: BasicTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .listForeground
@@ -204,6 +205,7 @@ private extension PrivacySettingsViewController {
             "and more as detailed in our privacy policy.",
             comment: "Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect."
         )
+        configureInfo(cell: cell)
     }
 
     func configurePrivacyPolicy(cell: BasicTableViewCell) {
@@ -217,7 +219,7 @@ private extension PrivacySettingsViewController {
         cell.textLabel?.textColor = .accent
     }
 
-    func configureCookieInfo(cell: TopLeftImageTableViewCell) {
+    func configureCookieInfo(cell: BasicTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .listForeground
@@ -225,6 +227,7 @@ private extension PrivacySettingsViewController {
             "We use other tracking tools, including some from third parties. Read about these and how to control them.",
             comment: "Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect."
         )
+        configureInfo(cell: cell)
     }
 
     func configureReportCrashes(cell: SwitchTableViewCell) {
@@ -245,7 +248,7 @@ private extension PrivacySettingsViewController {
         }
     }
 
-    func configureCrashInfo(cell: TopLeftImageTableViewCell) {
+    func configureCrashInfo(cell: BasicTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .listForeground
@@ -253,8 +256,12 @@ private extension PrivacySettingsViewController {
             "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports.",
             comment: "Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does"
         )
+        configureInfo(cell: cell)
     }
 
+    func configureInfo(cell: BasicTableViewCell) {
+        cell.textLabel?.numberOfLines = 0
+    }
 
     // MARK: Actions
     //
@@ -405,21 +412,21 @@ private enum Row: CaseIterable {
         case .collectInfo:
             return SwitchTableViewCell.self
         case .privacyInfo:
-            return TopLeftImageTableViewCell.self
+            return BasicTableViewCell.self
         case .privacyPolicy:
             return BasicTableViewCell.self
         case .shareInfo:
-            return TopLeftImageTableViewCell.self
+            return BasicTableViewCell.self
         case .shareInfoPolicy:
             return BasicTableViewCell.self
         case .thirdPartyInfo:
-            return TopLeftImageTableViewCell.self
+            return BasicTableViewCell.self
         case .thirdPartyPolicy:
             return BasicTableViewCell.self
         case .reportCrashes:
             return SwitchTableViewCell.self
         case .crashInfo:
-            return TopLeftImageTableViewCell.self
+            return BasicTableViewCell.self
         }
     }
 

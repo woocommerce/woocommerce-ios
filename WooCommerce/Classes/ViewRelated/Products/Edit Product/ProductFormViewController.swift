@@ -40,6 +40,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let currency: String
     private let isEditProductsRelease5Enabled: Bool
+    private let isAddProductVariationsEnabled: Bool
 
     private lazy var exitForm: () -> Void = {
         presentationStyle.createExitForm(viewController: self)
@@ -59,12 +60,14 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
-         isEditProductsRelease5Enabled: Bool) {
+         isEditProductsRelease5Enabled: Bool,
+         isAddProductVariationsEnabled: Bool) {
         self.viewModel = viewModel
         self.eventLogger = eventLogger
         self.currency = currency
         self.presentationStyle = presentationStyle
         self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
+        self.isAddProductVariationsEnabled = isAddProductVariationsEnabled
         self.productImageActionHandler = productImageActionHandler
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
@@ -346,7 +349,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                     return
                 }
                 guard product.product.variations.isNotEmpty else {
-                    if isEditProductsRelease5Enabled {
+                    if isAddProductVariationsEnabled {
                         let viewModel = AddAttributeViewModel(product: product.product)
                         let addAttributeViewController = AddAttributeViewController(viewModel: viewModel)
                         navigationController?.pushViewController(addAttributeViewController, animated: true)
@@ -355,7 +358,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 let variationsViewController = ProductVariationsViewController(product: product.product,
                                                                                formType: viewModel.formType,
-                                                                               isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
+                                                                               isEditProductsRelease5Enabled: isEditProductsRelease5Enabled,
+                                                                               isAddProductVariationsEnabled: isAddProductVariationsEnabled)
                 show(variationsViewController, sender: self)
             case .status, .noPriceWarning:
                 break

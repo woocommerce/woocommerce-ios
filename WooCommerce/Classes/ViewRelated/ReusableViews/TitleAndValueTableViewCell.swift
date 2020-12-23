@@ -1,6 +1,6 @@
 import UIKit
 
-final class SettingTitleAndValueTableViewCell: UITableViewCell {
+final class TitleAndValueTableViewCell: UITableViewCell {
 
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var valueLabel: UILabel!
@@ -28,7 +28,7 @@ final class SettingTitleAndValueTableViewCell: UITableViewCell {
 
 // MARK: Updates
 //
-extension SettingTitleAndValueTableViewCell {
+extension TitleAndValueTableViewCell {
     func updateUI(title: String, value: String?) {
         titleLabel.text = title
         valueLabel.text = value

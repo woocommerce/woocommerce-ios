@@ -104,7 +104,7 @@ private extension ShippingLabelDetailsViewController {
     func configureShipTo(cell: ImageAndTitleAndTextTableViewCell) {
         let cellViewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: Localization.shipToTitle,
                                                                         text: viewModel.destinationAddress,
-                                                                        image: .houseImage,
+                                                                        image: .houseOutlinedImage,
                                                                         imageTintColor: Constants.cellImageColor,
                                                                         numberOfLinesForTitle: 0,
                                                                         numberOfLinesForText: 0,

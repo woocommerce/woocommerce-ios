@@ -285,7 +285,7 @@ private extension FilterListViewController {
 
 private extension FilterListViewController {
     final class FilterListSelectorCommand: ListSelectorCommand {
-        typealias Cell = SettingTitleAndValueTableViewCell
+        typealias Cell = TitleAndValueTableViewCell
         typealias Model = FilterTypeViewModel
 
         var navigationBarTitle: String?
@@ -311,7 +311,7 @@ private extension FilterListViewController {
             onItemSelectedSubject.send(selected)
         }
 
-        func configureCell(cell: SettingTitleAndValueTableViewCell, model: FilterTypeViewModel) {
+        func configureCell(cell: TitleAndValueTableViewCell, model: FilterTypeViewModel) {
             cell.selectionStyle = .default
             cell.updateUI(title: model.cellViewModel.title, value: model.cellViewModel.value)
             cell.accessoryType = .disclosureIndicator

@@ -30,6 +30,10 @@ final class ReprintShippingLabelCoordinator {
                                            onPaperSizeSelected: onSelection)
             case .reprint(let paperSize):
                 self.reprintShippingLabel(paperSize: paperSize)
+            case .presentPaperSizeOptions:
+                self.presentPaperSizeOptions()
+            case .presentPrintingInstructions:
+                self.presentPrintingInstructions()
             }
         }
 
@@ -80,6 +84,18 @@ private extension ReprintShippingLabelCoordinator {
         let printController = UIPrintInteractionController()
         printController.printingItem = printData.data
         printController.present(animated: true, completionHandler: nil)
+    }
+
+    func presentPaperSizeOptions() {
+        let paperSizeOptionsViewController = ShippingLabelPaperSizeOptionsViewController()
+        let navigationController = WooNavigationController(rootViewController: paperSizeOptionsViewController)
+        sourceViewController.present(navigationController, animated: true, completion: nil)
+    }
+
+    func presentPrintingInstructions() {
+        let printingInstructionsViewController = ShippingLabelPrintingInstructionsViewController()
+        let navigationController = WooNavigationController(rootViewController: printingInstructionsViewController)
+        sourceViewController.present(navigationController, animated: true, completion: nil)
     }
 }
 

@@ -198,11 +198,11 @@ private extension ReprintShippingLabelViewController {
     }
 
     func configureInfoText(cell: TopLeftImageTableViewCell) {
-        cell.imageView?.image = .infoOutlineImage
-        cell.imageView?.tintColor = .systemColor(.secondaryLabel)
-        cell.textLabel?.textColor = .systemColor(.secondaryLabel)
-        cell.textLabel?.text = Localization.infoText
         cell.apply(style: .body)
+        cell.configure(image: .infoOutlineImage,
+                       imageTintColor: .systemColor(.secondaryLabel),
+                       text: Localization.infoText,
+                       textColor: .systemColor(.secondaryLabel))
         cell.hideSeparator()
     }
 
@@ -220,21 +220,23 @@ private extension ReprintShippingLabelViewController {
     }
 
     func configurePaperSizeOptions(cell: TopLeftImageTableViewCell) {
-        cell.imageView?.image = .pagesFootnoteImage
-        cell.textLabel?.text = Localization.paperSizeOptionsButtonTitle
+        cell.configure(image: .pagesFootnoteImage,
+                       imageTintColor: .systemColor(.secondaryLabel),
+                       text: Localization.paperSizeOptionsButtonTitle,
+                       textColor: .systemColor(.secondaryLabel))
         configureCommonStylesForInfoLinkCell(cell)
     }
 
     func configurePrintingInstructions(cell: TopLeftImageTableViewCell) {
-        cell.imageView?.image = .infoOutlineFootnoteImage
-        cell.textLabel?.text = Localization.printingInstructionsButtonTitle
+        cell.configure(image: .infoOutlineFootnoteImage,
+                       imageTintColor: .systemColor(.secondaryLabel),
+                       text: Localization.printingInstructionsButtonTitle,
+                       textColor: .systemColor(.secondaryLabel))
         configureCommonStylesForInfoLinkCell(cell)
     }
 
     func configureCommonStylesForInfoLinkCell(_ cell: TopLeftImageTableViewCell) {
         cell.apply(style: .footnote)
-        cell.imageView?.tintColor = .systemColor(.secondaryLabel)
-        cell.textLabel?.textColor = .systemColor(.secondaryLabel)
         cell.hideSeparator()
         cell.selectionStyle = .default
     }

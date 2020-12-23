@@ -334,9 +334,9 @@ private extension OrderDetailsDataSource {
         let cellTextContent = NSLocalizedString(
             "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.",
             comment: "Shipping notice row label when there is more than one shipping method")
-        cell.imageView?.image = Icons.shippingNoticeIcon
-        cell.imageView?.tintColor = .accent
-        cell.textLabel?.text = cellTextContent
+        cell.configure(image: Icons.shippingNoticeIcon,
+                       imageTintColor: .accent,
+                       text: cellTextContent)
         cell.selectionStyle = .none
 
         cell.accessibilityTraits = .staticText
@@ -454,11 +454,11 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureShippingLabelPrintingInfo(cell: TopLeftImageTableViewCell) {
-        cell.imageView?.image = .infoOutlineFootnoteImage
-        cell.imageView?.tintColor = .systemColor(.secondaryLabel)
-        cell.textLabel?.text = Title.shippingLabelPrintingInfoAction
-        cell.textLabel?.textColor = .systemColor(.secondaryLabel)
-        cell.textLabel?.applyFootnoteStyle()
+        cell.configure(image: .infoOutlineFootnoteImage,
+                       imageTintColor: .systemColor(.secondaryLabel),
+                       text: Title.shippingLabelPrintingInfoAction,
+                       textColor: .systemColor(.secondaryLabel))
+        cell.apply(style: .footnote)
         cell.selectionStyle = .default
 
         cell.accessibilityTraits = .button

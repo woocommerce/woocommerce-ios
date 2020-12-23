@@ -156,7 +156,7 @@ private extension ProductFormTableViewDataSource {
             self?.onNameChange?(newName)
             },
                                                             style: .headline,
-                                                            edgeInsets: UIEdgeInsets(top: 8, left: 11, bottom: 8, right: 11))
+                                                            edgeInsets: UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0))
 
         cell.configure(with: cellViewModel)
         cell.accessibilityLabel = NSLocalizedString(

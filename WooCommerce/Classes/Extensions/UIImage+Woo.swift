@@ -237,6 +237,12 @@ extension UIImage {
         UIImage.gridicon(.house)
     }
 
+    /// House Outlined Image
+    ///
+    static var houseOutlinedImage: UIImage {
+        UIImage(imageLiteralResourceName: "icon-house-outlined")
+    }
+
     /// Login prologue slanted rectangle
     ///
     static var slantedRectangle: UIImage {

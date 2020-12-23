@@ -49,23 +49,6 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssert(url == punycode)
     }
 
-    func testEmailAddressTokenHandling() {
-        let email = "example@email.com"
-        let loginFields = LoginFields()
-        loginFields.username = email
-        WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
-
-        var retrievedLoginFields = WordPressAuthenticator.retrieveLoginInfoForTokenAuth()
-        var retrievedEmail = retrievedLoginFields.username
-        XCTAssert(email == retrievedEmail, "The email retrived should match the email that was saved.")
-
-        WordPressAuthenticator.deleteLoginInfoForTokenAuth()
-        retrievedLoginFields = WordPressAuthenticator.retrieveLoginInfoForTokenAuth()
-        retrievedEmail = retrievedLoginFields.username
-
-        XCTAssert(email != retrievedEmail, "Saved loginFields should be deleted after calling deleteLoginInfoForTokenAuth.")
-    }
-
     // MARK: WordPressAuthenticator Notification Tests
     func testDispatchesSupportPushNotificationReceived() {
         let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()

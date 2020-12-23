@@ -248,7 +248,7 @@ extension LoginViewController {
 
     /// Signals the Main App to synchronize the specified WordPress.com account. On completion, the epilogue will be pushed (if needed).
     ///
-    func syncWPComAndPresentEpilogue(credentials: WordPressComCredentials) {
+    func syncWPComAndPresentEpilogue(credentials: AuthenticatorCredentials) {
         configureStatusLabel(LocalizedText.gettingAccountInfo)
         
         syncWPCom(credentials: credentials) { [weak self] in
@@ -256,19 +256,17 @@ extension LoginViewController {
                 return
             }
             
-            let authenticationCredentials = AuthenticatorCredentials(wpcom: credentials)
-            
-            self.presentEpilogue(credentials: authenticationCredentials)
+            self.presentEpilogue(credentials: credentials)
             self.configureStatusLabel("")
             self.configureViewLoading(false)
-            self.trackSignIn(credentials: authenticationCredentials)
+            self.trackSignIn(credentials: credentials)
         }
     }
 
     /// Signals the Main App to synchronize the specified WordPress.com account.
     ///
-    func syncWPCom(credentials: WordPressComCredentials, completion: (() -> ())? = nil) {
-        authenticationDelegate.syncWPCom(credentials: credentials) {
+    func syncWPCom(credentials: AuthenticatorCredentials, completion: (() -> ())? = nil) {
+        authenticationDelegate.sync(credentials: credentials) {
             completion?()
         }
     }

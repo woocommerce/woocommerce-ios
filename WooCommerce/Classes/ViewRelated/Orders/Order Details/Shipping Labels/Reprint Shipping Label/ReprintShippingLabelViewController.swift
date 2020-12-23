@@ -15,6 +15,10 @@ final class ReprintShippingLabelViewController: UIViewController {
 
     private var cancellables = Set<AnyCancellable>()
 
+    /// Closure to be executed when an action is triggered.
+    ///
+    var onAction: ((ActionType) -> Void)?
+
     init(shippingLabel: ShippingLabel) {
         self.viewModel = ReprintShippingLabelViewModel(shippingLabel: shippingLabel)
         self.rows = [.headerText, .infoText,
@@ -43,18 +47,45 @@ final class ReprintShippingLabelViewController: UIViewController {
     }
 }
 
+extension ReprintShippingLabelViewController {
+    /// Actions that can be triggered from the reprint UI.
+    enum ActionType {
+        /// Called when the paper size row is selected.
+        case showPaperSizeSelector(paperSizeOptions: [ShippingLabelPaperSize],
+                                   selectedPaperSize: ShippingLabelPaperSize?,
+                                   onSelection: (ShippingLabelPaperSize?) -> Void)
+        /// Called when the Reprint CTA is tapped.
+        case reprint(paperSize: ShippingLabelPaperSize)
+        /// Called when the "layout and paper size options" row is selected.
+        case presentPaperSizeOptions
+        /// Called when the printing instructions row is selected.
+        case presentPrintingInstructions
+    }
+}
+
 // MARK: Action Handling
 private extension ReprintShippingLabelViewController {
     func reprintShippingLabel() {
-        // TODO-2169: reprint action
+        guard let selectedPaperSize = selectedPaperSize else {
+            return
+        }
+        onAction?(.reprint(paperSize: selectedPaperSize))
     }
 
     func showPaperSizeSelector() {
-        let command = ShippingLabelPaperSizeListSelectorCommand(paperSizeOptions: viewModel.paperSizeOptions, selected: selectedPaperSize)
-        let listSelector = ListSelectorViewController(command: command) { [weak self] paperSize in
-            self?.viewModel.updateSelectedPaperSize(paperSize)
-        }
-        show(listSelector, sender: self)
+        onAction?(.showPaperSizeSelector(paperSizeOptions: viewModel.paperSizeOptions,
+                                         selectedPaperSize: selectedPaperSize,
+                                         onSelection: { [weak self] paperSize in
+                                            self?.viewModel.updateSelectedPaperSize(paperSize)
+                                         }))
+    }
+
+    func presentPaperSizeOptions() {
+        onAction?(.presentPaperSizeOptions)
+    }
+
+    func presentPrintingInstructions() {
+        onAction?(.presentPrintingInstructions)
     }
 }
 
@@ -127,11 +158,9 @@ extension ReprintShippingLabelViewController: UITableViewDelegate {
         case .paperSize:
             showPaperSizeSelector()
         case .paperSizeOptions:
-            // TODO-2169: Present paper size options modal
-            break
+            presentPaperSizeOptions()
         case .printingInstructions:
-            // TODO-2169: Present printing instructions modal
-            break
+            presentPrintingInstructions()
         default:
             return
         }
@@ -146,7 +175,7 @@ private extension ReprintShippingLabelViewController {
             configureHeaderText(cell: cell)
         case let cell as TopLeftImageTableViewCell where row == .infoText:
             configureInfoText(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .paperSize:
+        case let cell as TitleAndValueTableViewCell where row == .paperSize:
             configurePaperSize(cell: cell)
         case let cell as SpacerTableViewCell where row == .spacerBetweenInfoTextAndPaperSizeSelector:
             configureSpacerBetweenInfoTextAndPaperSizeSelector(cell: cell)
@@ -177,7 +206,7 @@ private extension ReprintShippingLabelViewController {
         cell.hideSeparator()
     }
 
-    func configurePaperSize(cell: SettingTitleAndValueTableViewCell) {
+    func configurePaperSize(cell: TitleAndValueTableViewCell) {
         cell.updateUI(title: Localization.paperSizeSelectorTitle, value: selectedPaperSize?.description)
         cell.accessoryType = .disclosureIndicator
     }
@@ -256,7 +285,7 @@ private extension ReprintShippingLabelViewController {
             case .spacerBetweenInfoTextAndPaperSizeSelector, .spacerBetweenPaperSizeSelectorAndInfoLinks:
                 return SpacerTableViewCell.self
             case .paperSize:
-                return SettingTitleAndValueTableViewCell.self
+                return TitleAndValueTableViewCell.self
             case .paperSizeOptions, .printingInstructions:
                 return TopLeftImageTableViewCell.self
             }

@@ -43,6 +43,23 @@ final class OrderListViewModel {
     ///
     private var isAppActive: Bool = true
 
+    /// Used for looking up the `OrderStatus` to show in the `OrderTableViewCell`.
+    ///
+    /// The `OrderStatus` data is fetched from the API by `OrdersTabbedViewModel`.
+    ///
+    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
+        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+
+        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
+    /// The current list of order statuses for the default site
+    ///
+    private var currentSiteStatuses: [OrderStatus] {
+        return statusResultsController.fetchedObjects
+    }
+
     private lazy var snapshotsProvider: FetchResultSnapshotsProvider<StorageOrder> = .init(storageManager: self.storageManager, query: createQuery())
 
     /// Emits snapshots of orders that should be displayed in the table view.
@@ -72,6 +89,7 @@ final class OrderListViewModel {
     /// And only when the corresponding view was loaded.
     ///
     func activate() {
+        setupStatusResultsController()
         startReceivingSnapshots()
 
         notificationCenter.addObserver(self, selector: #selector(handleAppDeactivation),
@@ -163,9 +181,39 @@ private extension OrderListViewModel {
     }
 }
 
+// MARK: - Order Status
+
+private extension OrderListViewModel {
+    /// Setup: Status Results Controller
+    ///
+    func setupStatusResultsController() {
+        do {
+            try statusResultsController.performFetch()
+        } catch {
+            CrashLogging.logError(error)
+        }
+    }
+
+    func lookUpOrderStatus(for order: Order) -> OrderStatus? {
+        return currentSiteStatuses.first(where: { $0.status == order.status })
+    }
+}
+
 // MARK: - TableView Support
 
 extension OrderListViewModel {
+
+    /// Creates an `OrderListCellViewModel` for the `Order` pointed to by `objectID`.
+    func cellViewModel(withID objectID: FetchResultSnapshotObjectID) -> OrderListCellViewModel? {
+        guard let order = snapshotsProvider.object(withID: objectID) else {
+            return nil
+        }
+
+        let status = lookUpOrderStatus(for: order)
+
+        return OrderListCellViewModel(order: order, status: status)
+    }
+
     /// Creates an `OrderDetailsViewModel` for the `Order` pointed to by `objectID`.
     func detailsViewModel(withID objectID: FetchResultSnapshotObjectID) -> OrderDetailsViewModel? {
         guard let order = snapshotsProvider.object(withID: objectID) else {

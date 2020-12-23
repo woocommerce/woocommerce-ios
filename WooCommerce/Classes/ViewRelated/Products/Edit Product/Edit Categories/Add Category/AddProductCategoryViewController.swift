@@ -216,7 +216,7 @@ private extension AddProductCategoryViewController {
         switch cell {
         case let cell as TextFieldTableViewCell where row == .title:
             configureTitle(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .parentCategory:
+        case let cell as TitleAndValueTableViewCell where row == .parentCategory:
             configureParentCategory(cell: cell)
         default:
             fatalError()
@@ -236,7 +236,7 @@ private extension AddProductCategoryViewController {
         cell.applyStyle(style: .body)
     }
 
-    func configureParentCategory(cell: SettingTitleAndValueTableViewCell) {
+    func configureParentCategory(cell: TitleAndValueTableViewCell) {
         cell.updateUI(title: Strings.parentCellTitle, value: selectedParentCategory?.name ?? Strings.parentCellPlaceholder)
         cell.selectionStyle = .none
         cell.accessoryType = .disclosureIndicator
@@ -260,7 +260,7 @@ private extension AddProductCategoryViewController {
             case .title:
                 return TextFieldTableViewCell.self
             case .parentCategory:
-                return SettingTitleAndValueTableViewCell.self
+                return TitleAndValueTableViewCell.self
             }
         }
 

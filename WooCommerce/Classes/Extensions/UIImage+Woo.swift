@@ -240,7 +240,7 @@ extension UIImage {
     /// House Outlined Image
     ///
     static var houseOutlinedImage: UIImage {
-        UIImage(named: "icon-house-outlined")!
+        UIImage(imageLiteralResourceName: "icon-house-outlined")
     }
 
     /// Login prologue slanted rectangle

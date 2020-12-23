@@ -57,14 +57,24 @@ final class EnhancedTextView: UITextView {
 //
 private extension EnhancedTextView {
     func configurePlaceholderLabel() {
-        let frameRect = CGRect(x: Constants.margin, y: Constants.margin, width: bounds.width, height: bounds.height)
-        placeholderLabel = UILabel(frame: frameRect)
-        if let unwrappedLabel = placeholderLabel {
-            addSubview(unwrappedLabel)
-        }
-        placeholderLabel?.numberOfLines = 0
-        placeholderLabel?.applyBodyStyle()
-        placeholderLabel?.textColor = .textSubtle
+        placeholderLabel = {
+            let label = UILabel(frame: bounds)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(label)
+
+            // Make placeholder left/right margins same as for the text container
+            NSLayoutConstraint.activate([
+                label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: textContainer.lineFragmentPadding + textContainerInset.left),
+                label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -(textContainer.lineFragmentPadding + textContainerInset.right)),
+                label.topAnchor.constraint(equalTo: topAnchor, constant: Constants.margin)
+            ])
+
+            label.numberOfLines = 0
+            label.applyBodyStyle()
+            label.textColor = .textSubtle
+
+            return label
+        }()
     }
 }
 

@@ -9,6 +9,11 @@ import WordPressShared
 ///
 class NUXLinkAuthViewController: LoginViewController {
     @IBOutlet weak var statusLabel: UILabel?
+    
+    enum Flow {
+        case signup
+        case login
+    }
 
     /// Displays the specified text in the status label.
     ///
@@ -16,5 +21,24 @@ class NUXLinkAuthViewController: LoginViewController {
     ///
     override func configureStatusLabel(_ message: String) {
         statusLabel?.text = message
+    }
+    
+    func syncAndContinue(authToken: String, flow: Flow, isJetpackConnect: Bool) {
+        let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackConnect, multifactor: false)
+        let credentials = AuthenticatorCredentials(wpcom: wpcom)
+        
+        syncWPComAndPresentEpilogue(credentials: credentials) {
+            self.tracker.track(step: .success)
+            
+            switch flow {
+            case .signup:
+                // This stat is part of a funnel that provides critical information.  Before
+                // making ANY modification to this stat please refer to: p4qSXL-35X-p2
+                WordPressAuthenticator.track(.createdAccount, properties: ["source": "email"])
+                WordPressAuthenticator.track(.signupMagicLinkSucceeded)
+            case .login:
+                WordPressAuthenticator.track(.loginMagicLinkSucceeded)
+            }
+        }
     }
 }

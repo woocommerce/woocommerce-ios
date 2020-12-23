@@ -1,10 +1,11 @@
-import UIKit
+import AuthenticationServices
 import CocoaLumberjack
-import NSURL_IDN
 import GoogleSignIn
+import NSURL_IDN
+import UIKit
 import WordPressShared
 import WordPressUI
-import AuthenticationServices
+import WordPressKit
 
 // MARK: - WordPressAuthenticator: Public API to deal with WordPress.com and WordPress.org authentication.
 //
@@ -312,74 +313,56 @@ import AuthenticationServices
     ///                           By convention this is the app's root vc.
     ///
     @objc public class func openAuthenticationURL(_ url: URL, fromRootViewController rootViewController: UIViewController) -> Bool {
-        guard let authToken = url.query?.dictionaryFromQueryString().string(forKey: "token") else {
-            DDLogError("Signin Error: The authentication URL did not have the expected path.")
+
+        guard let queryDictionary = url.query?.dictionaryFromQueryString() else {
+            DDLogError("Magic link error: we couldn't retrieve the query dictionary from the sign-in URL.")
             return false
         }
         
-        let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: url.isJetpackConnect, multifactor: false)
-        let credentials = AuthenticatorCredentials(wpcom: wpcom)
+        guard let authToken = queryDictionary.string(forKey: "token") else {
+            DDLogError("Magic link error: we couldn't retrieve the authentication token from the sign-in URL.")
+            return false
+        }
+        
+        guard let flowRawValue = queryDictionary.string(forKey: "flow") else {
+            DDLogError("Magic link error: we couldn't retrieve the flow from the sign-in URL.")
+            return false
+        }
+        
+        let loginFields = LoginFields()
+        
+        if url.isJetpackConnect {
+            loginFields.meta.jetpackLogin = true
+        }
+        
+        // We could just use the flow, but since `MagicLinkFlow` is an ObjC enum, it always
+        // allows a `default` value.  By mapping the ObjC enum to a Swift enum we can avoid that afterwards.
+        let flow: NUXLinkAuthViewController.Flow
+        
+        switch MagicLinkFlow(rawValue: flowRawValue) {
+        case .signup:
+            flow = .signup
+            loginFields.meta.emailMagicLinkSource = .signup
+            Self.track(.signupMagicLinkOpened)
+        case .login:
+            flow = .login
+            loginFields.meta.emailMagicLinkSource = .login
+            Self.track(.loginMagicLinkOpened)
+        default:
+            DDLogError("Magic link error: the flow should be either `signup` or `login`. We can't handle an unsupported flow.")
+            return false
+        }
         
         let storyboard = Storyboard.emailMagicLink.instance
         guard let loginVC = storyboard.instantiateViewController(withIdentifier: "LinkAuthView") as? NUXLinkAuthViewController else {
             DDLogInfo("App opened with authentication link but couldn't create login screen.")
             return false
         }
+        loginVC.loginFields = loginFields
         
-        let loginFields = loginVC.loginFields
-        
-        if url.isJetpackConnect {
-            loginFields.meta.jetpackLogin = true
-        }
-        
-        loginVC.syncWPComAndPresentEpilogue(credentials: credentials)
-
-        // Count this as success since we're authed. Even if there is a glitch
-        // while syncing the user has valid credentials.
-        if let linkSource = loginFields.meta.emailMagicLinkSource {
-            switch linkSource {
-            case .signup:
-                // This stat is part of a funnel that provides critical information.  Before
-                // making ANY modification to this stat please refer to: p4qSXL-35X-p2
-                WordPressAuthenticator.track(.createdAccount, properties: ["source": "email"])
-                WordPressAuthenticator.track(.signupMagicLinkSucceeded)
-            case .login:
-                WordPressAuthenticator.track(.loginMagicLinkSucceeded)
-            }
-        }
-        
-        return true
-        
-        
-        
-        
-        
-/*
-        if url.isJetpackConnect {
-            loginFields.meta.jetpackLogin = true
-        }
-
-        let storyboard = Storyboard.emailMagicLink.instance
-        guard let loginController = storyboard.instantiateViewController(withIdentifier: "LinkAuthView") as? NUXLinkAuthViewController else {
-            DDLogInfo("App opened with authentication link but couldn't create login screen.")
-            return false
-        }
-        loginController.loginFields = loginFields
-        loginController.token = token
-        let controller = loginController
-
-        if let linkSource = loginFields.meta.emailMagicLinkSource {
-            switch linkSource {
-            case .signup:
-                WordPressAuthenticator.track(.signupMagicLinkOpened)
-            case .login:
-                WordPressAuthenticator.track(.loginMagicLinkOpened)
-            }
-        }
-
-        let navController = LoginNavigationController(rootViewController: controller)
+        let navController = LoginNavigationController(rootViewController: loginVC)
         navController.modalPresentationStyle = .fullScreen
-
+        
         // The way the magic link flow works some view controller might
         // still be presented when the app is resumed by tapping on the auth link.
         // We need to do a little work to present the SigninLinkAuth controller
@@ -399,8 +382,10 @@ import AuthenticationServices
         } else {
             presenter.present(navController, animated: false, completion: nil)
         }
-
-        return true*/
+        
+        loginVC.syncAndContinue(authToken: authToken, flow: flow, isJetpackConnect: url.isJetpackConnect)
+        
+        return true
     }
 
 

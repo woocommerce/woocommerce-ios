@@ -248,13 +248,18 @@ extension LoginViewController {
 
     /// Signals the Main App to synchronize the specified WordPress.com account. On completion, the epilogue will be pushed (if needed).
     ///
-    func syncWPComAndPresentEpilogue(credentials: AuthenticatorCredentials) {
+    func syncWPComAndPresentEpilogue(
+        credentials: AuthenticatorCredentials,
+        completion: (() -> ())? = nil) {
+        
         configureStatusLabel(LocalizedText.gettingAccountInfo)
         
         syncWPCom(credentials: credentials) { [weak self] in
             guard let self = self else {
                 return
             }
+            
+            completion?()
             
             self.presentEpilogue(credentials: credentials)
             self.configureStatusLabel("")

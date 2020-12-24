@@ -9,17 +9,23 @@ struct RefundShippingLabelViewModel {
 
     private let shippingLabel: ShippingLabel
     private let stores: StoresManager
+    private let analytics: Analytics
 
-    init(shippingLabel: ShippingLabel, currencyFormatter: CurrencyFormatter, stores: StoresManager = ServiceLocator.stores) {
+    init(shippingLabel: ShippingLabel,
+         currencyFormatter: CurrencyFormatter,
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.purchaseDate = shippingLabel.dateCreated.toString(dateStyle: .medium, timeStyle: .short)
         self.refundableAmount = currencyFormatter.formatAmount(Decimal(shippingLabel.refundableAmount), with: shippingLabel.currency) ?? ""
         self.refundButtonTitle = String.localizedStringWithFormat(Localization.refundButtonTitleFormat, refundableAmount)
         self.shippingLabel = shippingLabel
         self.stores = stores
+        self.analytics = analytics
     }
 
     /// Requests a refund for a shipping label remotely.
     func refundShippingLabel(completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void) {
+        analytics.track(.shippingLabelRefundRequested)
         let action = ShippingLabelAction.refundShippingLabel(shippingLabel: shippingLabel) { result in
             completion(result)
         }

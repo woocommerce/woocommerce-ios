@@ -390,6 +390,7 @@ private extension OrderDetailsViewController {
         actionSheet.addCancelActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.cancelAction)
 
         actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.copyTrackingNumberAction) { [weak self] _ in
+            ServiceLocator.analytics.track(event: .shipmentTrackingMenu(action: .copy))
             self?.viewModel.dataSource.sendToPasteboard(shippingLabel.trackingNumber, includeTrailingNewline: false)
         }
 
@@ -397,6 +398,7 @@ private extension OrderDetailsViewController {
         if let url = ShippingLabelTrackingURLGenerator.url(for: shippingLabel) {
             actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.trackShipmentAction) { [weak self] _ in
                 guard let self = self else { return }
+                ServiceLocator.analytics.track(event: .shipmentTrackingMenu(action: .track))
                 let safariViewController = SFSafariViewController(url: url)
                 safariViewController.modalPresentationStyle = .pageSheet
                 self.present(safariViewController, animated: true, completion: nil)

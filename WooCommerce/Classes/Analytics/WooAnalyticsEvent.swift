@@ -60,8 +60,7 @@ extension WooAnalyticsEvent {
         /// Shown in products banner for Milestone 4 features. New product banners should have
         /// their own `FeedbackContext` option.
         case productsM4 = "products_m4"
-        /// Shown in shipping labels banner for Milestone 1 features. New product banners should have
-        /// their own `FeedbackContext` option.
+        /// Shown in shipping labels banner for Milestone 1 features.
         case shippingLabelsRelease1 = "shipping_labels_m1"
     }
 

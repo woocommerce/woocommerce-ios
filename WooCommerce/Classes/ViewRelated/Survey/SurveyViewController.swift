@@ -64,6 +64,7 @@ extension SurveyViewController {
     enum Source {
         case inAppFeedback
         case productsM4Feedback
+        case shippingLabelsRelease1Feedback
 
         fileprivate var url: URL {
             switch self {
@@ -77,6 +78,10 @@ extension SurveyViewController {
                     .asURL()
                     .tagPlatform("ios")
                     .tagProductMilestone("4")
+            case .shippingLabelsRelease1Feedback:
+                return WooConstants.URLs.shippingLabelsRelease1Feedback
+                    .asURL()
+                    .tagPlatform("ios")
             }
         }
 
@@ -84,7 +89,7 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return Localization.title
-            case .productsM4Feedback:
+            case .productsM4Feedback, .shippingLabelsRelease1Feedback:
                 return Localization.giveFeedback
             }
         }
@@ -96,6 +101,8 @@ extension SurveyViewController {
                 return .general
             case .productsM4Feedback:
                 return .productsM4
+            case .shippingLabelsRelease1Feedback:
+                return .shippingLabelsRelease1
             }
         }
     }

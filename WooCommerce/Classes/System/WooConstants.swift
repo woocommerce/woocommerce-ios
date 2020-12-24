@@ -83,6 +83,10 @@ extension WooConstants {
         ///
         case productsM4Feedback = "https://automattic.survey.fm/woo-app-feature-feedback-products"
 
+        /// URL for the shipping labels M1 feedback survey
+        ///
+        case shippingLabelsRelease1Feedback = "https://automattic.survey.fm/woo-app-feature-feedback-shipping-labels"
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

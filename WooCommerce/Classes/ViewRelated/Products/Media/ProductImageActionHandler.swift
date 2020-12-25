@@ -1,5 +1,6 @@
 import Photos
 import Yosemite
+import Observables
 
 /// Encapsulates the implementation of Product images actions from the UI.
 ///
@@ -148,6 +149,10 @@ final class ProductImageActionHandler {
                                                 self?.queue.async { [weak self] in
                                                     guard let self = self else {
                                                         return
+                                                    }
+
+                                                    if let error = error {
+                                                        ServiceLocator.analytics.track(.productImageUploadFailed, withError: error)
                                                     }
 
                                                     guard let index = self.index(of: asset) else {

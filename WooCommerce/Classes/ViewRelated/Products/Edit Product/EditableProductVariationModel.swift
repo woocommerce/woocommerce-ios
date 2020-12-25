@@ -171,6 +171,14 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         productVariation.downloadExpiry
     }
 
+    var upsellIDs: [Int64] {
+        []
+    }
+
+    var crossSellIDs: [Int64] {
+        []
+    }
+
     // Visibility logic
 
     func allowsMultipleImages() -> Bool {
@@ -178,7 +186,7 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
     }
 
     func isImageDeletionEnabled() -> Bool {
-        false
+        true
     }
 
     func isShippingEnabled() -> Bool {

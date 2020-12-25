@@ -1,4 +1,5 @@
 import UIKit
+import Observables
 
 /// The view model protocol for filtering a list of models with generic filters.
 ///
@@ -192,9 +193,7 @@ private extension FilterListViewController {
         clearAllBarButtonItem = UIBarButtonItem(title: clearAllButtonTitle, style: .plain, target: self, action: #selector(clearAllButtonTapped))
 
         // Disables interactive dismiss action so that we can prompt the discard changes alert.
-        if #available(iOS 13.0, *) {
-            isModalInPresentation = true
-        }
+        isModalInPresentation = true
 
         listSelector.removeNavigationBackBarButtonText()
     }
@@ -286,7 +285,7 @@ private extension FilterListViewController {
 
 private extension FilterListViewController {
     final class FilterListSelectorCommand: ListSelectorCommand {
-        typealias Cell = SettingTitleAndValueTableViewCell
+        typealias Cell = TitleAndValueTableViewCell
         typealias Model = FilterTypeViewModel
 
         var navigationBarTitle: String?
@@ -312,7 +311,7 @@ private extension FilterListViewController {
             onItemSelectedSubject.send(selected)
         }
 
-        func configureCell(cell: SettingTitleAndValueTableViewCell, model: FilterTypeViewModel) {
+        func configureCell(cell: TitleAndValueTableViewCell, model: FilterTypeViewModel) {
             cell.selectionStyle = .default
             cell.updateUI(title: model.cellViewModel.title, value: model.cellViewModel.value)
             cell.accessoryType = .disclosureIndicator

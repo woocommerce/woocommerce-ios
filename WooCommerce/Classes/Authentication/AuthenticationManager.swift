@@ -25,12 +25,7 @@ class AuthenticationManager: Authentication {
     /// Initializes the WordPress Authenticator.
     ///
     func initialize() {
-        let isSignInWithAppleEnabled: Bool
-        if #available(iOS 13.0, *) {
-            isSignInWithAppleEnabled = true
-        } else {
-            isSignInWithAppleEnabled = false
-        }
+        let isSignInWithAppleEnabled = true
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
@@ -42,7 +37,9 @@ class AuthenticationManager: Authentication {
                                                                 userAgent: UserAgent.defaultUserAgent,
                                                                 showLoginOptions: true,
                                                                 enableSignUp: false,
-                                                                enableSignInWithApple: isSignInWithAppleEnabled)
+                                                                enableSignInWithApple: isSignInWithAppleEnabled,
+                                                                enableUnifiedAuth: true,
+                                                                continueWithSiteAddressFirst: true)
 
         let systemGray3LightModeColor = UIColor(red: 199/255.0, green: 199/255.0, blue: 204/255.0, alpha: 1)
         let systemLabelLightModeColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
@@ -75,18 +72,26 @@ class AuthenticationManager: Authentication {
                                                 statusBarStyle: .default)
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
+                                                                  getStartedInstructions: AuthenticationConstants.getStartedInstructions,
                                                                   jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
-                                                                  siteLoginInstructions: AuthenticationConstants.siteInstructions)
+                                                                  siteLoginInstructions: AuthenticationConstants.siteInstructions,
+                                                                  usernamePasswordInstructions: AuthenticationConstants.usernamePasswordInstructions,
+                                                                  continueWithWPButtonTitle: AuthenticationConstants.continueWithWPButtonTitle,
+                                                                  enterYourSiteAddressButtonTitle: AuthenticationConstants.enterYourSiteAddressButtonTitle,
+                                                                  findSiteButtonTitle: AuthenticationConstants.findYourStoreAddressButtonTitle,
+                                                                  getStartedTitle: AuthenticationConstants.loginTitle)
 
         let unifiedStyle = WordPressAuthenticatorUnifiedStyle(borderColor: .divider,
                                                               errorColor: .error,
                                                               textColor: .text,
                                                               textSubtleColor: .textSubtle,
-                                                              textButtonColor: .brand,
-                                                              textButtonHighlightColor: .brand,
+                                                              textButtonColor: .accent,
+                                                              textButtonHighlightColor: .accent,
                                                               viewControllerBackgroundColor: .basicBackground,
+                                                              prologueButtonsBackgroundColor: .authPrologueBottomBackgroundColor,
+                                                              prologueViewBackgroundColor: .authPrologueBottomBackgroundColor,
                                                               navBarBackgroundColor: .basicBackground,
-                                                              navButtonTextColor: .brand,
+                                                              navButtonTextColor: .accent,
                                                               navTitleTextColor: .text)
 
         let displayImages = WordPressAuthenticatorDisplayImages(
@@ -152,10 +157,16 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         return false
     }
 
-    /// Indicates whether if the Support Action should be enabled, or not.
+    /// Indicates whether the Support Action should be enabled, or not.
     ///
     var supportActionEnabled: Bool {
         return true
+    }
+
+    /// Indicates whether a link to WP.com TOS should be available, or not.
+    ///
+    var wpcomTermsOfServiceEnabled: Bool {
+        return false
     }
 
     /// Indicates if Support is Enabled.
@@ -176,25 +187,39 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func createdWordPressComAccount(username: String, authToken: String) { }
 
-    /// Validates that the self-hosted site contains the correct information
-    /// and can proceed to the self-hosted username and password view controller.
-    ///
-    func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, onCompletion: @escaping (Error?, Bool) -> Void) {
-        let isSelfHosted = false
+    func shouldHandleError(_ error: Error) -> Bool {
+        return isSupportedError(error)
+    }
 
-        guard let site = siteInfo, site.hasJetpack == true else {
-            let errorInfo = NSLocalizedString(
-                "Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue.",
-                comment: "Error message that displays on the 'Log in by entering your site address.' screen. " +
-                "Jetpack is required for logging into the WooCommerce mobile apps.")
-            let error = NSError(domain: "WooCommerceAuthenticationErrorDomain",
-                                code: 555,
-                                userInfo: [NSLocalizedDescriptionKey: errorInfo])
-            onCompletion(error, isSelfHosted)
+    func handleError(_ error: Error, onCompletion: @escaping (UIViewController) -> Void) {
+        guard let errorViewModel = viewModel(error) else {
             return
         }
 
-        onCompletion(nil, isSelfHosted)
+        let noWPErrorUI = ULErrorViewController(viewModel: errorViewModel)
+
+        onCompletion(noWPErrorUI)
+    }
+
+    /// Validates that the self-hosted site contains the correct information
+    /// and can proceed to the self-hosted username and password view controller.
+    ///
+    func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, onCompletion: @escaping (WordPressAuthenticatorResult) -> Void) {
+
+        guard let site = siteInfo, site.hasValidJetpack == true else {
+            let viewModel = JetpackErrorViewModel(siteURL: siteInfo?.url)
+            let installJetpackUI = ULErrorViewController(viewModel: viewModel)
+
+            let authenticationResult: WordPressAuthenticatorResult = .injectViewController(value: installJetpackUI)
+
+            onCompletion(authenticationResult)
+
+            return
+        }
+
+        let isSelfHosted = site.isWP && !site.isWPCom
+        let authenticationResult: WordPressAuthenticatorResult = .presentPasswordController(value: isSelfHosted)
+        onCompletion(authenticationResult)
     }
 
     /// Presents the Login Epilogue, in the specified NavigationController.
@@ -315,5 +340,52 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
         ServiceLocator.analytics.track(wooEvent, withError: error)
+    }
+}
+
+
+// MARK: - Error handling
+private extension AuthenticationManager {
+
+    /// Maps error codes emitted by WPAuthenticator to a domain error object
+    enum AuthenticationError: Int, Error {
+        case emailDoesNotMatchWPAccount = 7
+        case notWPSite = 406
+        case notValidAddress = -1022
+        case unknown
+
+        static func make(with error: Error) -> AuthenticationError {
+            let error = error as NSError
+
+            switch error.code {
+            case emailDoesNotMatchWPAccount.rawValue:
+                return .emailDoesNotMatchWPAccount
+            case notWPSite.rawValue:
+                return .notWPSite
+            case notValidAddress.rawValue:
+                return .notValidAddress
+            default:
+                return .unknown
+            }
+        }
+    }
+
+    func isSupportedError(_ error: Error) -> Bool {
+        let wooAuthError = AuthenticationError.make(with: error)
+        return wooAuthError != .unknown
+    }
+
+    func viewModel(_ error: Error) -> ULErrorViewModel? {
+        let wooAuthError = AuthenticationError.make(with: error)
+
+        switch wooAuthError {
+        case .emailDoesNotMatchWPAccount:
+            return NotWPAccountViewModel()
+        case .notWPSite,
+             .notValidAddress:
+            return NotWPErrorViewModel()
+        default:
+            return nil
+        }
     }
 }

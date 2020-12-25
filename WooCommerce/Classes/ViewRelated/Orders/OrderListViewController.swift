@@ -19,12 +19,6 @@ protocol OrderListViewControllerDelegate: class {
 
 /// OrderListViewController: Displays the list of Orders associated to the active Store / Account.
 ///
-/// ## Work In Progress
-///
-/// This does not do much at the moment. This will replace `OrdersViewController` later when
-/// iOS 13 is the minimum.
-///
-@available(iOS 13.0, *)
 final class OrderListViewController: UIViewController {
 
     weak var delegate: OrderListViewControllerDelegate?
@@ -47,7 +41,7 @@ final class OrderListViewController: UIViewController {
 
     /// Ghostable TableView.
     ///
-    private(set) var ghostableTableView = UITableView()
+    private(set) var ghostableTableView = UITableView(frame: .zero, style: .grouped)
 
     /// Pull To Refresh Support.
     ///
@@ -59,9 +53,7 @@ final class OrderListViewController: UIViewController {
 
     /// Footer "Loading More" Spinner.
     ///
-    private lazy var footerSpinnerView = {
-        return FooterSpinnerView(tableViewStyle: tableView.style)
-    }()
+    private lazy var footerSpinnerView = FooterSpinnerView()
 
     /// The configuration to use for the view if the list is empty.
     ///
@@ -71,26 +63,10 @@ final class OrderListViewController: UIViewController {
     ///
     private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
 
-    /// Used for looking up the `OrderStatus` to show in the `OrderTableViewCell`.
-    ///
-    /// The `OrderStatus` data is fetched from the API by `OrdersMasterViewModel`.
-    ///
-    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-        let storageManager = ServiceLocator.storageManager
-        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
-
-        return ResultsController<StorageOrderStatus>(storageManager: storageManager, sortedBy: [descriptor])
-    }()
-
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
     private let syncingCoordinator = SyncingCoordinator()
 
-    /// The current list of order statuses for the default site
-    ///
-    private var currentSiteStatuses: [OrderStatus] {
-        return statusResultsController.fetchedObjects
-    }
 
     /// UI Active State
     ///
@@ -140,8 +116,6 @@ final class OrderListViewController: UIViewController {
         configureTableView()
         configureGhostableTableView()
 
-        configureStatusResultsController()
-
         configureViewModel()
         configureSyncingCoordinator()
     }
@@ -166,9 +140,9 @@ final class OrderListViewController: UIViewController {
                 return cell
             }
 
-            let detailsViewModel = self.viewModel.detailsViewModel(withID: objectID)
-            let orderStatus = self.lookUpOrderStatus(for: detailsViewModel?.order)
-            cell.configureCell(viewModel: detailsViewModel, orderStatus: orderStatus)
+            let cellViewModel = self.viewModel.cellViewModel(withID: objectID)
+
+            cell.configureCell(viewModel: cellViewModel)
             cell.layoutIfNeeded()
             return cell
         }
@@ -178,7 +152,6 @@ final class OrderListViewController: UIViewController {
 
 // MARK: - User Interface Initialization
 //
-@available(iOS 13.0, *)
 private extension OrderListViewController {
     /// Initialize ViewModel operations
     ///
@@ -200,13 +173,6 @@ private extension OrderListViewController {
         viewModel.snapshot.sink { [weak self] snapshot in
             self?.dataSource.apply(snapshot)
         }.store(in: &cancellables)
-    }
-
-    /// Setup: Status Results Controller
-    ///
-    func configureStatusResultsController() {
-        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", siteID)
-        try? statusResultsController.performFetch()
     }
 
     /// Setup: Sync'ing Coordinator
@@ -268,7 +234,6 @@ private extension OrderListViewController {
 
 // MARK: - Actions
 //
-@available(iOS 13.0, *)
 extension OrderListViewController {
     @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
@@ -281,7 +246,6 @@ extension OrderListViewController {
 
 // MARK: - Sync'ing Helpers
 //
-@available(iOS 13.0, *)
 extension OrderListViewController: SyncingCoordinatorDelegate {
 
     /// Synchronizes the Orders for the Default Store (if any).
@@ -317,7 +281,6 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
 // MARK: - Spinner Helpers
 //
-@available(iOS 13.0, *)
 extension OrderListViewController {
 
     /// Starts the Footer Spinner animation, whenever `mustStartFooterSpinner` returns *true*.
@@ -350,13 +313,14 @@ extension OrderListViewController {
 
 // MARK: - Placeholders & Ghostable Table
 //
-@available(iOS 13.0, *)
 private extension OrderListViewController {
 
     /// Renders the Placeholder Orders
     ///
     func displayPlaceholderOrders() {
-        let options = GhostOptions(reuseIdentifier: OrderTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
+        let options = GhostOptions(displaysSectionHeader: false,
+                                   reuseIdentifier: OrderTableViewCell.reuseIdentifier,
+                                   rowsPerSection: Settings.placeholderRowsPerSection)
 
         // If the ghostable table view gets stuck for any reason,
         // let's reset the state before using it again
@@ -435,27 +399,8 @@ private extension OrderListViewController {
 }
 
 
-// MARK: - Convenience Methods
-//
-@available(iOS 13.0, *)
-private extension OrderListViewController {
-
-    func lookUpOrderStatus(for order: Order?) -> OrderStatus? {
-        guard let order = order else {
-            return nil
-        }
-
-        for orderStatus in currentSiteStatuses where orderStatus.status == order.status {
-            return orderStatus
-        }
-
-        return nil
-    }
-}
-
 // MARK: - UITableViewDelegate Conformance
 //
-@available(iOS 13.0, *)
 extension OrderListViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -513,7 +458,6 @@ extension OrderListViewController: UITableViewDelegate {
 
 // MARK: - Finite State Machine Management
 //
-@available(iOS 13.0, *)
 private extension OrderListViewController {
 
     func didEnter(state: State) {
@@ -560,9 +504,8 @@ private extension OrderListViewController {
 // MARK: - IndicatorInfoProvider Conformance
 
 // This conformance is not used directly by `OrderListViewController`. We only need this because
-// `Self` is used as a child of `OrdersMasterViewController` which is a
+// `Self` is used as a child of `OrdersTabbedViewController` which is a
 // `ButtonBarPagerTabStripViewController`.
-@available(iOS 13.0, *)
 extension OrderListViewController: IndicatorInfoProvider {
     /// Return `self.title` under `IndicatorInfo`.
     ///
@@ -574,7 +517,6 @@ extension OrderListViewController: IndicatorInfoProvider {
 
 // MARK: - Nested Types
 //
-@available(iOS 13.0, *)
 private extension OrderListViewController {
 
     enum Settings {

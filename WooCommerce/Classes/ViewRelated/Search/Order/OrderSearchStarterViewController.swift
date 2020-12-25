@@ -46,7 +46,7 @@ final class OrderSearchStarterViewController: UIViewController, KeyboardFrameAdj
     }
 
     private func configureTableView() {
-        tableView.registerNib(for: SettingTitleAndValueTableViewCell.self)
+        tableView.registerNib(for: TitleAndValueTableViewCell.self)
 
         tableView.backgroundColor = .listBackground
         tableView.delegate = self
@@ -64,7 +64,7 @@ extension OrderSearchStarterViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(SettingTitleAndValueTableViewCell.self, for: indexPath)
+        let cell = tableView.dequeueReusableCell(TitleAndValueTableViewCell.self, for: indexPath)
 
         let cellViewModel = viewModel.cellViewModel(at: indexPath)
 
@@ -130,21 +130,12 @@ private extension OrderSearchStarterViewController {
         let title = cellViewModel.name ?? Localization.defaultOrderListTitle
         let emptyStateConfig = EmptyStateViewController.Config.simple(message: emptyStateMessage, image: .emptySearchResultsImage)
 
-        if #available(iOS 13, *) {
-            return OrderListViewController(
-                siteID: siteID,
-                title: title,
-                viewModel: .init(siteID: siteID, statusFilter: cellViewModel.orderStatus),
-                emptyStateConfig: emptyStateConfig
-            )
-        } else {
-            return OrdersViewController(
-                siteID: siteID,
-                title: title,
-                viewModel: .init(siteID: siteID, statusFilter: cellViewModel.orderStatus),
-                emptyStateConfig: emptyStateConfig
-            )
-        }
+        return OrderListViewController(
+            siteID: siteID,
+            title: title,
+            viewModel: .init(siteID: siteID, statusFilter: cellViewModel.orderStatus),
+            emptyStateConfig: emptyStateConfig
+        )
     }
 
     enum Localization {

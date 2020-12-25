@@ -2,6 +2,7 @@ import TestKit
 import WordPressAuthenticator
 import XCTest
 @testable import WooCommerce
+import Yosemite
 
 final class AppCoordinatorTests: XCTestCase {
     private var tabBarController: MainTabBarController!
@@ -17,7 +18,7 @@ final class AppCoordinatorTests: XCTestCase {
         window.rootViewController = tabBarController
         window.makeKeyAndVisible()
 
-        stores = MockupStoresManager(sessionManager: .makeForTesting(authenticated: false))
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         authenticationManager = AuthenticationManager()
         authenticationManager.initialize()
     }

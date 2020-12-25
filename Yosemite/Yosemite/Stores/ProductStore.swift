@@ -225,10 +225,13 @@ private extension ProductStore {
             }
 
             switch result {
-            case .failure(let error):
-                if case NetworkError.notFound = error {
+            case .failure(let originalError):
+                let error = ProductLoadError(underlyingError: originalError)
+
+                if case ProductLoadError.notFound = error {
                     self.deleteStoredProduct(siteID: siteID, productID: productID)
                 }
+
                 onCompletion(.failure(error))
             case .success(let product):
                 self.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
@@ -615,6 +618,7 @@ extension ProductStore {
 /// - duplicatedSKU: the SKU is used by another Product.
 /// - invalidSKU: the SKU is invalid or duplicated.
 /// - passwordCannotBeUpdated: the password of a product cannot be updated.
+/// - variationInvalidImageId: the body struct used for updating a product variation's image has an invalid id.
 /// - unexpected: an error that is not expected to occur.
 /// - unknown: other error cases.
 ///
@@ -623,6 +627,7 @@ public enum ProductUpdateError: Error, Equatable {
     case invalidSKU
     case passwordCannotBeUpdated
     case notFoundInStorage
+    case variationInvalidImageId
     case unexpected
     case unknown(error: AnyError)
 
@@ -645,16 +650,41 @@ public enum ProductUpdateError: Error, Equatable {
 
     private enum ErrorCode: String {
         case invalidSKU = "product_invalid_sku"
+        case variationInvalidImageId = "woocommerce_variation_invalid_image_id"
 
         var error: ProductUpdateError {
             switch self {
             case .invalidSKU:
                 return .invalidSKU
+            case .variationInvalidImageId:
+                return .variationInvalidImageId
             }
         }
     }
 }
 
 public enum ProductLoadError: Error, Equatable {
+    case notFound
     case notFoundInStorage
+    case unknown(error: AnyError)
+
+    init(underlyingError error: Error) {
+        guard case let DotcomError.unknown(code, _) = error else {
+            self = .unknown(error: error.toAnyError)
+            return
+        }
+
+        self = ErrorCode(rawValue: code)?.error ?? .unknown(error: error.toAnyError)
+    }
+
+    enum ErrorCode: String {
+        case invalidID = "woocommerce_rest_product_invalid_id"
+
+        var error: ProductLoadError {
+            switch self {
+            case .invalidID:
+                return .notFound
+            }
+        }
+    }
 }

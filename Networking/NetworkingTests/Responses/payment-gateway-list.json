@@ -1,0 +1,53 @@
+{
+  "data": [
+    {
+      "id": "bacs",
+      "title": "Direct bank transfer",
+      "description": "Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.",
+      "order": "",
+      "enabled": false,
+      "method_title": "Direct bank transfer",
+      "method_description": "Take payments in person via BACS. More commonly known as direct bank/wire transfer",
+      "method_supports": [
+        "products"
+      ]
+    },
+    {
+      "id": "cheque",
+      "title": "Check payments",
+      "description": "Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.",
+      "order": "",
+      "enabled": false,
+      "method_title": "Check payments",
+      "method_description": "Take payments in person via checks. This offline gateway can also be useful to test purchases.",
+      "method_supports": [
+        "products"
+      ]
+    },
+    {
+      "id": "cod",
+      "title": "Cash on delivery",
+      "description": "Pay with cash upon delivery.",
+      "order": "",
+      "enabled": true,
+      "method_title": "Cash on delivery",
+      "method_description": "Have your customers pay with cash (or by other means) upon delivery.",
+      "method_supports": [
+        "products"
+      ]
+    },
+    {
+      "id": "paypal",
+      "title": "PayPal",
+      "description": "Pay via PayPal; you can pay with your credit card if you don't have a PayPal account.",
+      "order": "",
+      "enabled": false,
+      "method_title": "PayPal Standard",
+      "method_description": "PayPal Standard redirects customers to PayPal to enter their payment information.",
+      "method_supports": [
+        "products",
+        "refunds"
+      ]
+    }
+  ]
+}

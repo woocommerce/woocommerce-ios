@@ -344,8 +344,7 @@ private extension FulfillViewController {
             fatalError()
         }
 
-        cell.imageView?.image = UIImage.quoteImage.imageWithTintColor(.black)
-        cell.textLabel?.text = note
+        cell.configure(image: UIImage.quoteImage.imageWithTintColor(.text), text: note)
 
         cell.isAccessibilityElement = true
         cell.accessibilityLabel = note

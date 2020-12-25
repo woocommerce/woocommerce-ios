@@ -22,27 +22,9 @@ final class OrderDetailsViewModel {
         dataSource.update(order: order)
     }
 
-    /// The date displayed on the Orders List.
-    ///
-    /// The value will only include the year if the `createdDate` is not from the current year.
-    ///
-    var formattedDateCreated: String {
-        let isSameYear = order.dateCreated.isSameYear(as: Date())
-        let formatter: DateFormatter = isSameYear ? .monthAndDayFormatter : .mediumLengthLocalizedDateFormatter
-        return formatter.string(from: order.dateCreated)
-    }
-
     let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")
 
     let productRightTitle = NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")
-
-    /// The localized unabbreviated total which includes the currency.
-    ///
-    /// Example: $48,415,504.20
-    ///
-    var totalFriendlyString: String? {
-        currencyFormatter.formatAmount(order.total, with: order.currency)
-    }
 
     /// Products from an Order
     ///
@@ -116,6 +98,14 @@ final class OrderDetailsViewModel {
         }
     }
 
+    /// Closure to be executed when the shipping label more menu is tapped.
+    ///
+    var onShippingLabelMoreMenuTapped: ((_ shippingLabel: ShippingLabel, _ sourceView: UIView) -> Void)? {
+        didSet {
+            dataSource.onShippingLabelMoreMenuTapped = onShippingLabelMoreMenuTapped
+        }
+    }
+
     /// Helpers
     ///
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
@@ -165,7 +155,8 @@ extension OrderDetailsViewModel {
             OrderTrackingTableViewCell.self,
             SummaryTableViewCell.self,
             ButtonTableViewCell.self,
-            IssueRefundTableViewCell.self
+            IssueRefundTableViewCell.self,
+            ImageAndTitleAndTextTableViewCell.self
         ]
 
         for cellClass in cells {
@@ -216,15 +207,27 @@ extension OrderDetailsViewModel {
             let addTracking = ManualTrackingViewController(viewModel: addTrackingViewModel)
             let navController = WooNavigationController(rootViewController: addTracking)
             viewController.present(navController, animated: true, completion: nil)
-        case .orderItem:
-            let item = items[indexPath.row]
-            let loaderViewController = ProductLoaderViewController(model: .init(orderItem: item),
+        case .aggregateOrderItem:
+            let item = dataSource.aggregateOrderItems[indexPath.row]
+            let loaderViewController = ProductLoaderViewController(model: .init(aggregateOrderItem: item),
                                                                    siteID: order.siteID,
                                                                    forceReadOnly: true)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
-        case .aggregateOrderItem:
-            let item = dataSource.aggregateOrderItems[indexPath.row]
+        case .shippingLabelDetail:
+            guard let shippingLabel = dataSource.shippingLabel(at: indexPath) else {
+                return
+            }
+            let shippingLabelDetailsViewController = ShippingLabelDetailsViewController(shippingLabel: shippingLabel)
+            viewController.show(shippingLabelDetailsViewController, sender: viewController)
+        case .shippingLabelPrintingInfo:
+            let printingInstructionsViewController = ShippingLabelPrintingInstructionsViewController()
+            let navigationController = WooNavigationController(rootViewController: printingInstructionsViewController)
+            viewController.present(navigationController, animated: true, completion: nil)
+        case .shippingLabelProduct:
+            guard let item = dataSource.shippingLabelOrderItem(at: indexPath), item.productOrVariationID > 0 else {
+                return
+            }
             let loaderViewController = ProductLoaderViewController(model: .init(aggregateOrderItem: item),
                                                                    siteID: order.siteID,
                                                                    forceReadOnly: true)
@@ -330,6 +333,18 @@ extension OrderDetailsViewModel {
         ServiceLocator.stores.dispatch(action)
     }
 
+    func syncProductVariations(onCompletion: ((Error?) -> ())? = nil) {
+        let action = ProductVariationAction.requestMissingVariations(for: order) { error in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing missing variations in an Order: \(error)")
+                onCompletion?(error)
+                return
+            }
+            onCompletion?(nil)
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
     func syncRefunds(onCompletion: ((Error?) -> ())? = nil) {
         let refundIDs = order.refunds.map { $0.refundID }
         let action = RefundAction.retrieveRefunds(siteID: order.siteID, orderID: order.orderID, refundIDs: refundIDs, deleteStaleRefunds: true) { (error) in
@@ -343,6 +358,19 @@ extension OrderDetailsViewModel {
             onCompletion?(nil)
         }
 
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func syncShippingLabels(onCompletion: ((Error?) -> ())? = nil) {
+        let action = ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
+            switch result {
+            case .success:
+                onCompletion?(nil)
+            case .failure(let error):
+                DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
+                onCompletion?(error)
+            }
+        }
         ServiceLocator.stores.dispatch(action)
     }
 

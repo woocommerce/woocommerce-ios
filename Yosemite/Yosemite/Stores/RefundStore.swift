@@ -174,6 +174,8 @@ private extension RefundStore {
             storageRefund.update(with: readOnlyRefund)
 
             handleOrderItemRefunds(readOnlyRefund, storageRefund, storage)
+            handleShippingLines(readOnlyRefund, storageRefund, storage)
+            handleCondensedRefundsIfNeeded(readOnlyRefund: readOnlyRefund, in: storage)
         }
     }
 
@@ -210,6 +212,35 @@ private extension RefundStore {
         }
     }
 
+    /// Updates, inserts, or prunes the provided StorageRefund's shipping lines.
+    ///
+    func handleShippingLines(_ readOnlyRefund: Networking.Refund, _ storageRefund: Storage.Refund, _ storage: StorageType) {
+        // Upsert shipping lines from the read-only refund
+        for readOnlyShippingLine in readOnlyRefund.shippingLines ?? [] {
+            // Load or create a shipping line from the read only version
+            let storageShippingLine: Storage.ShippingLine = {
+                guard let existingShippingLine = storage.loadRefundShippingLine(siteID: readOnlyRefund.siteID,
+                                                                                shippingID: readOnlyShippingLine.shippingID) else {
+                    let newShippingLine = storage.insertNewObject(ofType: Storage.ShippingLine.self)
+                    storageRefund.addToShippingLines(newShippingLine)
+                    return newShippingLine
+                }
+                return existingShippingLine
+            }()
+
+            storageShippingLine.update(with: readOnlyShippingLine)
+            handleShippingLineTaxes(readOnlyShippingLine, storageShippingLine, storage)
+        }
+
+        // Now, remove any object that exist in storageRefund.shippingLines but not in readOnlyRefund.shippingLines
+        storageRefund.shippingLines?.forEach { storedShippingLine in
+            if let shippingLines = readOnlyRefund.shippingLines, !shippingLines.contains(where: { $0.shippingID == storedShippingLine.shippingID }) {
+                storageRefund.removeFromShippingLines(storedShippingLine)
+                storage.deleteObject(storedShippingLine)
+            }
+        }
+    }
+
     /// Updates, inserts, or prunes the provided StorageOrderItemRefund's taxes using the provided read-only OrderItemRefund
     ///
     private func handleOrderItemTaxRefunds(_ readOnlyItem: Networking.OrderItemRefund, _ storageItem: Storage.OrderItemRefund, _ storage: StorageType) {
@@ -235,6 +266,29 @@ private extension RefundStore {
         }
     }
 
+    /// Updates, inserts, or prunes the provided StorageShippingLine's taxes using the provided read-only ShippingLine
+    ///
+    private func handleShippingLineTaxes(_ readOnlyShippingLine: Networking.ShippingLine, _ storageShippingLine: Storage.ShippingLine, _ storage: StorageType) {
+        // Upsert the taxes from the read-only shipping line
+        readOnlyShippingLine.taxes.forEach { readyOnlyTax in
+            if let storageTax = storage.loadShippingLineTax(shippingID: readOnlyShippingLine.shippingID, taxID: readyOnlyTax.taxID) {
+                storageTax.update(with: readyOnlyTax)
+            } else {
+                let newTax = storage.insertNewObject(ofType: Storage.ShippingLineTax.self)
+                storageShippingLine.addToTaxes(newTax)
+                newTax.update(with: readyOnlyTax)
+            }
+        }
+
+        // Now, remove any object that exist in storageShippingLine.taxes but not in readOnlyShippingLine.taxes
+        storageShippingLine.taxes?.forEach { storedTax in
+            if !readOnlyShippingLine.taxes.contains(where: { $0.taxID == storedTax.taxID }) {
+                storageShippingLine.removeFromTaxes(storedTax)
+                storage.deleteObject(storedTax)
+            }
+        }
+    }
+
     /// Deletes all refunds from an order when their IDs are not contained in the provided `newRefundIDs`array.
     ///
     private func deleteStaleRefunds(siteID: Int64, orderID: Int64, newRefundIDs: [Int64]) {
@@ -245,6 +299,24 @@ private extension RefundStore {
             storage.deleteObject(stale)
         }
         storage.saveIfNeeded()
+    }
+
+    /// Create an `Storage.OrderRefundCondensed` if they don't exist already.
+    ///
+    private func handleCondensedRefundsIfNeeded(readOnlyRefund: Refund, in storage: StorageType) {
+        // Do nothing if condensed refund already exists.
+        if storage.loadOrderRefundCondensed(siteID: readOnlyRefund.siteID, refundID: readOnlyRefund.refundID) != nil {
+            return
+        }
+
+        // Create and store the `Storage,OrderRefundCondensed` based on the `ReadOnlyRefund`.
+        let readOnlyRefundCondensed = OrderRefundCondensed(refundID: readOnlyRefund.refundID, reason: readOnlyRefund.reason, total: readOnlyRefund.amount)
+        let storageRefundCondensed = storage.insertNewObject(ofType: Storage.OrderRefundCondensed.self)
+        storageRefundCondensed.update(with: readOnlyRefundCondensed)
+
+        // Update the refunds set if the parent `Order` exists.
+        let order = storage.loadOrder(siteID: readOnlyRefund.siteID, orderID: readOnlyRefund.orderID)
+        order?.addToRefunds(storageRefundCondensed)
     }
 }
 

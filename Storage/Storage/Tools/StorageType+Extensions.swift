@@ -52,7 +52,7 @@ public extension StorageType {
     /// Retrieves the Stored Order Item Tax.
     ///
     func loadOrderItemTax(itemID: Int64, taxID: Int64) -> OrderItemTax? {
-        let predicate = NSPredicate(format: "item.itemID = %ld AND taxID = %ld", taxID)
+        let predicate = NSPredicate(format: "item.itemID = %ld AND taxID = %ld", itemID, taxID)
         return firstObject(ofType: OrderItemTax.self, matching: predicate)
     }
 
@@ -72,7 +72,7 @@ public extension StorageType {
 
     /// Retrieves the Stored Order Shipping Line.
     ///
-    func loadShippingLine(siteID: Int64, shippingID: Int64) -> ShippingLine? {
+    func loadOrderShippingLine(siteID: Int64, shippingID: Int64) -> ShippingLine? {
         let predicate = NSPredicate(format: "order.siteID = %ld AND shippingID = %ld", siteID, shippingID)
         return firstObject(ofType: ShippingLine.self, matching: predicate)
     }
@@ -274,6 +274,22 @@ public extension StorageType {
         return firstObject(ofType: ProductAttribute.self, matching: predicate)
     }
 
+    /// Retrieves the Stored Product Attribute by ID.
+    ///
+    /// Note: this method is useful to fetch global attributes, which always have a non-zero ID.
+    ///
+    func loadProductAttribute(siteID: Int64, attributeID: Int64) -> ProductAttribute? {
+        let predicate = NSPredicate(format: "siteID = %ld AND attributeID = %ld", siteID, attributeID)
+        return firstObject(ofType: ProductAttribute.self, matching: predicate)
+    }
+
+    /// Retrieves the all of the stored Product Attributes for a `siteID`.
+    ///
+    func loadProductAttributes(siteID: Int64) -> [ProductAttribute] {
+        let predicate = NSPredicate(format: "siteID = %ld", siteID)
+        return allObjects(ofType: ProductAttribute.self, matching: predicate, sortedBy: nil)
+    }
+
     /// Retrieves the Stored Product Default Attribute.
     ///
     /// Note: WC default attribute ID's often have an ID of `0`, so we need to also look them up by name 😏
@@ -416,10 +432,56 @@ public extension StorageType {
         return firstObject(ofType: OrderItemRefund.self, matching: predicate)
     }
 
+    /// Retrieves the Stored Refund Shipping Line.
+    ///
+    func loadRefundShippingLine(siteID: Int64, shippingID: Int64) -> ShippingLine? {
+        let predicate = NSPredicate(format: "refund.siteID = %ld AND shippingID = %ld", siteID, shippingID)
+        return firstObject(ofType: ShippingLine.self, matching: predicate)
+    }
+
     /// Retrieves the Stored OrderItemTaxRefund.
     ///
     func loadRefundItemTax(itemID: Int64, taxID: Int64) -> OrderItemTaxRefund? {
         let predicate = NSPredicate(format: "item.itemID = %ld AND taxID = %ld", itemID, taxID)
         return firstObject(ofType: OrderItemTaxRefund.self, matching: predicate)
+    }
+
+    // MARK: - Payment Gateways
+
+    /// Returns all stored payment gateways for a site.
+    ///
+    func loadAllPaymentGateways(siteID: Int64) -> [PaymentGateway] {
+        let predicate = NSPredicate(format: "siteID = %ld", siteID)
+        return allObjects(ofType: PaymentGateway.self, matching: predicate, sortedBy: nil)
+    }
+
+    /// Returns a single payment gateway given a `siteID` and a `gatewayID`
+    ///
+    func loadPaymentGateway(siteID: Int64, gatewayID: String) -> PaymentGateway? {
+        let predicate = NSPredicate(format: "siteID = %ld AND gatewayID = %@", siteID, gatewayID)
+        return firstObject(ofType: PaymentGateway.self, matching: predicate)
+    }
+
+    // MARK: - Shipping Labels
+
+    /// Returns all stored shipping labels for a site and order.
+    ///
+    func loadAllShippingLabels(siteID: Int64, orderID: Int64) -> [ShippingLabel] {
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld", siteID, orderID)
+        return allObjects(ofType: ShippingLabel.self, matching: predicate, sortedBy: nil)
+    }
+
+    /// Returns a single shipping label given a `siteID`, `orderID`, and `shippingLabelID`
+    ///
+    func loadShippingLabel(siteID: Int64, orderID: Int64, shippingLabelID: Int64) -> ShippingLabel? {
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld AND shippingLabelID = %ld", siteID, orderID, shippingLabelID)
+        return firstObject(ofType: ShippingLabel.self, matching: predicate)
+    }
+
+    /// Returns a single shipping label settings given a `siteID` and `orderID`
+    ///
+    func loadShippingLabelSettings(siteID: Int64, orderID: Int64) -> ShippingLabelSettings? {
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld", siteID, orderID)
+        return firstObject(ofType: ShippingLabelSettings.self, matching: predicate)
     }
 }

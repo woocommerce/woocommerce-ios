@@ -1,11 +1,53 @@
+*** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
+
+5.8
+-----
+
+
+5.7
+-----
+- [***] Dropped iOS 12 support. From now we support iOS 13 and later. [https://github.com/woocommerce/woocommerce-ios/pull/3216]
+- [**] Improved login flow, including better error handling. [https://github.com/woocommerce/woocommerce-ios/pull/3332]
+- [*] Fixed spinner appearance in the footer of orders list. [https://github.com/woocommerce/woocommerce-ios/pull/3249]
+- [*] In order details, the image for a line item associated with a variation is shown now after the variation has been synced. [https://github.com/woocommerce/woocommerce-ios/pull/3314]
+- [internal] Refactored Core Data stack so more errors will be propagated. [https://github.com/woocommerce/woocommerce-ios/pull/3267]
+
+
+5.6
+-----
+- [**] Fixed order list sometimes not showing newly submitted orders. 
+- [*] now the date pickers on iOS 14 are opened as modal view. [https://github.com/woocommerce/woocommerce-ios/pull/3148]
+- [*] now it's possible to remove an image from a Product Variation if the WC version 4.7+. [https://github.com/woocommerce/woocommerce-ios/pull/3159]
+- [*] removed the Product Title in product screen navigation bar. [https://github.com/woocommerce/woocommerce-ios/pull/3187]
+- [*] the icon of the cells inside the Product Detail are now aligned at 10px from the top margin. [https://github.com/woocommerce/woocommerce-ios/pull/3199]
+- [**] Added the ability to issue refunds from the order screen. Refunds can be done towards products or towards shipping. [https://github.com/woocommerce/woocommerce-ios/pull/3204]
+- [*] Prevent banner dismiss when tapping "give feedback" on products screen. [https://github.com/woocommerce/woocommerce-ios/pull/3221]
+- [*] Add keyboard dismiss in Add Tracking screen [https://github.com/woocommerce/woocommerce-ios/pull/3220]
+
+
+5.5
+----- 
+- [**] Products M4 features are now available to all. Products M4 features: add a simple/grouped/external product with actions to publish or save as draft. [https://github.com/woocommerce/woocommerce-ios/pull/3133]
+- [*] enhancement: Order details screen now shows variation attributes for WC version 4.7+. [https://github.com/woocommerce/woocommerce-ios/pull/3109]
+- [*] fix: Product detail screen now includes the number of ratings for that product. [https://github.com/woocommerce/woocommerce-ios/pull/3089]
+- [*] fix: Product subtitle now wraps correctly in order details. [https://github.com/woocommerce/woocommerce-ios/pull/3201]
+
+
+5.4
+-----
+- [*] fix: text headers on Product price screen are no more clipped with large text sizes. [https://github.com/woocommerce/woocommerce-ios/pull/3090]
+
+
 5.4
 -----
 - [*] fix: the footer in app Settings is now correctly centered.
 - [*] fix: Products tab: earlier draft products now show up in the same order as in core when sorting by "Newest to Oldest".
-- [*] enhancement: in product details > price settings, the sale date pickers can be edited inline in iOS 14 now like in iOS 13 and before. Also, the sale end date picker editing does not automatically end on changes anymore.
+- [*] enhancement: in product details > price settings, the sale dates can be edited inline in iOS 14 using the new date picker. Also, the sale end date picker editing does not automatically end on changes anymore. [https://github.com/woocommerce/woocommerce-ios/pull/3044]
+- [*] enhancement: in order details > add tracking, the date shipped can be edited inline in iOS 14 using the new date picker. [https://github.com/woocommerce/woocommerce-ios/pull/3044]
+- [*] enhancement: in products list, the "(No Title)" placeholder will be showed when a product doesn't have the title set. [https://github.com/woocommerce/woocommerce-ios/pull/3068]
+- [*] fix: the placeholder views in the top dashboard chart and orders tab do not have unexpected white background color in Dark mode in iOS 14 anymore. [https://github.com/woocommerce/woocommerce-ios/pull/3063]
 
 
- 
 5.3
 -----
 - [**] In Settings > Experimental Features, a Products switch is now available for turning Products M4 features on and off (default off). Products M4 features: add a simple/grouped/external product with actions to publish or save as draft.
@@ -14,10 +56,11 @@
 - [*] Enhancement: when not saving a product as "published", the in-progress modal now shows title and message like "saving your product" instead of "publishing your product".
 - [*] In product and variation list, the stock quantity is not shown anymore when stock management is disabled.
 - [*] Enhancement: when the user attempts to dismiss the product selector search modal while at least one product is selected for a grouped product's linked products, a discard changes action sheet is shown.
-- [internal] [https://github.com/woocommerce/woocommerce-ios/pull/2883] Renamed a product database table (Attribute) to GenericAttribute. This adds a new database migration. 
-- [internal] [https://github.com/woocommerce/woocommerce-ios/pull/2979] Refactored the text fields in the Manual Shipment Tracking page. 
+- [internal] Renamed a product database table (Attribute) to GenericAttribute. This adds a new database migration.  [https://github.com/woocommerce/woocommerce-ios/pull/2883]
+- [internal] Refactored the text fields in the Manual Shipment Tracking page. [https://github.com/woocommerce/woocommerce-ios/pull/2979]
+- [internal] Attempt fix for startup crashes. [https://github.com/woocommerce/woocommerce-ios/pull/3069]
 
- 
+
 5.2
 -----
 - [**] Products: now you can editing basic fields for non-core products (whose product type is not simple/external/variable/grouped) - images, name, description, readonly price, readonly inventory, tags, categories, short description, and product settings.

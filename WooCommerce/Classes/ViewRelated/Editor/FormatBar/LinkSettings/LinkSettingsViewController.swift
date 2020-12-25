@@ -216,9 +216,9 @@ private extension LinkSettingsViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as SettingTitleAndValueTableViewCell where row == .url:
+        case let cell as TitleAndValueTableViewCell where row == .url:
             configureURL(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .text:
+        case let cell as TitleAndValueTableViewCell where row == .text:
             configureText(cell: cell)
         case let cell as SwitchTableViewCell where row == .openInNewWindow:
             configureOpenInNewWindow(cell: cell)
@@ -229,14 +229,14 @@ private extension LinkSettingsViewController {
         }
     }
 
-    func configureURL(cell: SettingTitleAndValueTableViewCell) {
+    func configureURL(cell: TitleAndValueTableViewCell) {
         let title = NSLocalizedString("URL", comment: "URL text field placeholder")
         let value = linkSettings.url
         cell.updateUI(title: title, value: value)
         cell.accessoryType = .disclosureIndicator
     }
 
-    func configureText(cell: SettingTitleAndValueTableViewCell) {
+    func configureText(cell: TitleAndValueTableViewCell) {
         let title = NSLocalizedString("Link Text", comment: "Label for the text of a link in the editor")
         let value = linkSettings.text
         cell.updateUI(title: title, value: value)
@@ -278,9 +278,9 @@ private extension LinkSettingsViewController {
         var type: UITableViewCell.Type {
             switch self {
             case .url:
-                return SettingTitleAndValueTableViewCell.self
+                return TitleAndValueTableViewCell.self
             case .text:
-                return SettingTitleAndValueTableViewCell.self
+                return TitleAndValueTableViewCell.self
             case .openInNewWindow:
                 return SwitchTableViewCell.self
             case .removeLink:

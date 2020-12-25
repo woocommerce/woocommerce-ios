@@ -13,7 +13,8 @@ public struct MockRefunds {
                                     refundedByUserID: Int64 = 0,
                                     isAutomated: Bool? = nil,
                                     createAutomated: Bool? = nil,
-                                    items: [OrderItemRefund] = [sampleRefundItem()]) -> Refund {
+                                    items: [OrderItemRefund] = [sampleRefundItem()],
+                                    shippingLines: [ShippingLine]? = []) -> Refund {
         return Refund(refundID: refundID,
                       orderID: orderID,
                       siteID: siteID,
@@ -23,7 +24,8 @@ public struct MockRefunds {
                       refundedByUserID: refundedByUserID,
                       isAutomated: isAutomated,
                       createAutomated: createAutomated,
-                      items: items)
+                      items: items,
+                      shippingLines: shippingLines)
     }
 
     public static func sampleRefundItem(itemID: Int64 = 0,
@@ -52,5 +54,14 @@ public struct MockRefunds {
                                taxes: taxes,
                                total: total,
                                totalTax: totalTax)
+    }
+
+    public static func sampleShippingLine() -> ShippingLine {
+        ShippingLine(shippingID: 0,
+                     methodTitle: "",
+                     methodID: "",
+                     total: "",
+                     totalTax: "",
+                     taxes: [ShippingLineTax(taxID: 0, subtotal: "", total: "")])
     }
 }

@@ -9,6 +9,7 @@ final class IssueRefundViewController: UIViewController {
     @IBOutlet private var tableFooterView: UIView!
     @IBOutlet private var tableHeaderView: UIView!
 
+    @IBOutlet private var headerStackView: UIStackView!
     @IBOutlet private var itemsSelectedLabel: UILabel!
     @IBOutlet private var nextButton: UIButton!
     @IBOutlet private var selectAllButton: UIButton!
@@ -16,6 +17,14 @@ final class IssueRefundViewController: UIViewController {
     private let imageService: ImageService
 
     private let viewModel: IssueRefundViewModel
+
+    /// Closure invoked when the next button is tapped
+    ///
+    var onNextAction: ((RefundConfirmationViewModel) -> Void)?
+
+    /// Closure invoked when the the quantity button of an item is pressed
+    ///
+    var onSelectQuantityAction: ((RefundItemQuantityListSelectorCommand) -> Void)?
 
     init(order: Order,
          refunds: [Refund],
@@ -45,6 +54,15 @@ final class IssueRefundViewController: UIViewController {
     }
 }
 
+// MARK: External Updates
+extension IssueRefundViewController {
+    /// Updates item at the given index path with the new refund quantity.
+    ///
+    func updateRefundQuantity(quantity: Int, forItemAtIndex index: Int) {
+        viewModel.updateRefundQuantity(quantity: quantity, forItemAtIndex: index)
+    }
+}
+
 // MARK: ViewModel observation
 private extension IssueRefundViewController {
     func observeViewModel() {
@@ -56,6 +74,8 @@ private extension IssueRefundViewController {
     func updateWithViewModelContent() {
         title = viewModel.title
         itemsSelectedLabel.text = viewModel.selectedItemsTitle
+        nextButton.isEnabled = viewModel.isNextButtonEnabled
+        selectAllButton.isHidden = !viewModel.isSelectAllButtonVisible
         tableView.reloadData()
     }
 }
@@ -64,7 +84,9 @@ private extension IssueRefundViewController {
 private extension IssueRefundViewController {
     @IBAction func nextButtonWasPressed(_ sender: Any) {
         let confirmationViewModel = viewModel.createRefundConfirmationViewModel()
-        show(RefundConfirmationViewController(viewModel: confirmationViewModel), sender: self)
+        onNextAction?(confirmationViewModel)
+
+        viewModel.trackNextButtonTapped()
     }
 
     @IBAction func selectAllButtonWasPressed(_ sender: Any) {
@@ -82,14 +104,10 @@ private extension IssueRefundViewController {
                 return
         }
 
-        let command = RefundItemQuantityListSelectorCommand(maxRefundQuantity: refundQuantity, currentQuantity: currentQuantity)
-        let selectorViewController = ListSelectorViewController(command: command, tableViewStyle: .plain) { [weak self] selectedQuantity in
-            guard let selectedQuantity = selectedQuantity else {
-                return
-            }
-            self?.viewModel.updateRefundQuantity(quantity: selectedQuantity, forItemAtIndex: indexPath.row)
-        }
-        show(selectorViewController, sender: nil)
+        let command = RefundItemQuantityListSelectorCommand(maxRefundQuantity: refundQuantity, currentQuantity: currentQuantity, itemIndex: indexPath.row)
+        onSelectQuantityAction?(command)
+
+        viewModel.trackQuantityButtonTapped()
     }
 }
 
@@ -124,11 +142,30 @@ private extension IssueRefundViewController {
         selectAllButton.setTitle(Localization.selectAllTitle, for: .normal)
 
         itemsSelectedLabel.applySecondaryBodyStyle()
+        configureHeaderStackView()
     }
 
     func configureFooterView() {
         nextButton.applyPrimaryButtonStyle()
         nextButton.setTitle(Localization.nextTitle, for: .normal)
+    }
+
+    /// Changes the axis and alignment of the stack views that need special treatment on larger size categories.
+    ///
+    func configureHeaderStackView() {
+        headerStackView.axis = traitCollection.preferredContentSizeCategory > .extraExtraExtraLarge ? .vertical : .horizontal
+        headerStackView.alignment = headerStackView.axis == .vertical ? .center : .fill
+        headerStackView.spacing = 8
+    }
+}
+
+// MARK: Accessibility handling
+//
+extension IssueRefundViewController {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        configureHeaderStackView()
+        tableView.updateHeaderHeight()
     }
 }
 
@@ -179,6 +216,15 @@ extension IssueRefundViewController: UITableViewDelegate, UITableViewDataSource 
         default:
             return UITableViewCell()
         }
+    }
+}
+
+// MARK: Interactive Dismiss
+extension IssueRefundViewController: IssueRefundInteractiveDismissDelegate {
+    /// Allow the interactive dismiss when the user has not selected any items to refund.
+    ///
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        !viewModel.hasUnsavedChanges
     }
 }
 

@@ -8,19 +8,19 @@ class WooAnalyticsTests: XCTestCase {
 
     /// CredentialsStorage Unit-Testing Instance
     ///
-    private var analytics = WooAnalytics(analyticsProvider: MockupAnalyticsProvider())
+    private var analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider())
 
 
     /// CredentialsStorage Unit-Testing Instance
     ///
-    private var testingProvider: MockupAnalyticsProvider?
+    private var testingProvider: MockAnalyticsProvider?
 
 
     // MARK: - Overridden Methods
 
     override func setUp() {
         super.setUp()
-        testingProvider = analytics.analyticsProvider as? MockupAnalyticsProvider
+        testingProvider = analytics.analyticsProvider as? MockAnalyticsProvider
     }
 
     /// Verifies basic events are received by the AnalyticsProvider

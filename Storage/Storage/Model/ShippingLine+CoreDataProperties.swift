@@ -15,6 +15,7 @@ extension ShippingLine {
     @NSManaged public var totalTax: String?
     @NSManaged public var order: Order?
     @NSManaged public var taxes: Set<ShippingLineTax>?
+    @NSManaged public var refund: Refund?
 
 }
 

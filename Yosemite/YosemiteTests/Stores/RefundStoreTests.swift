@@ -8,17 +8,17 @@ import XCTest
 ///
 class RefundStoreTests: XCTestCase {
 
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     ///
     private var dispatcher: Dispatcher!
 
-    /// Mockup Storage: InMemory
+    /// Mock Storage: InMemory
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
-    /// Mockup Network: Allows us to inject predefined responses!
+    /// Mock Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
     /// Convenience Property: Returns the StorageType associated with the main thread.
     ///
@@ -60,8 +60,8 @@ class RefundStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
-        storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        storageManager = MockStorageManager()
+        network = MockNetwork()
     }
 
     override func tearDown() {
@@ -465,6 +465,36 @@ class RefundStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 3)
         XCTAssertNil(retrieveError)
     }
+
+    func test_create_refund_updates_order_condensed_refund() throws {
+        // Given
+        storageManager.insertSampleOrder(readOnlyOrder: sampleOrder())
+        let refund = sampleRefund()
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectedCondensedRefund = OrderRefundCondensed(refundID: refund.refundID, reason: refund.reason, total: refund.amount)
+
+        // When
+        refundStore.upsertStoredRefund(readOnlyRefund: sampleRefund(), in: viewStorage)
+
+        // Then
+        let order = viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)?.toReadOnly()
+        XCTAssertEqual(order?.refunds, [expectedCondensedRefund])
+    }
+
+    func test_create_refund_does_not_duplicate_order_condensed_refund() throws {
+        // Given
+        let refund = sampleRefund()
+        let existingCondensedRefund = OrderRefundCondensed(refundID: refund.refundID, reason: refund.reason, total: refund.amount)
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        storageManager.insertSampleOrder(readOnlyOrder: sampleOrder().copy(refunds: [existingCondensedRefund]))
+
+        // When
+        refundStore.upsertStoredRefund(readOnlyRefund: sampleRefund(), in: viewStorage)
+
+        // Then
+        let order = viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)?.toReadOnly()
+        XCTAssertEqual(order?.refunds, [existingCondensedRefund])
+    }
 }
 
 
@@ -486,7 +516,8 @@ private extension RefundStoreTests {
                       refundedByUserID: 1,
                       isAutomated: true,
                       createAutomated: false,
-                      items: [sampleOrderItem()])
+                      items: [sampleOrderItem()],
+                      shippingLines: nil)
     }
 
     /// Generate a mutated Refund
@@ -503,7 +534,8 @@ private extension RefundStoreTests {
                       refundedByUserID: 3,
                       isAutomated: true,
                       createAutomated: false,
-                      items: [sampleOrderItem(), sampleOrderItem2()])
+                      items: [sampleOrderItem(), sampleOrderItem2()],
+                      shippingLines: [])
     }
 
     /// Generate a single Refund
@@ -520,7 +552,39 @@ private extension RefundStoreTests {
                       refundedByUserID: 1,
                       isAutomated: true,
                       createAutomated: false,
-                      items: [sampleOrderItem2()])
+                      items: [sampleOrderItem2()],
+                      shippingLines: [sampleShippingLine()])
+    }
+
+    /// Returns an `Order` with empty values. Use `copy()` to modify them.
+    func sampleOrder() -> Networking.Order {
+        Order(
+            siteID: sampleSiteID,
+            orderID: sampleOrderID,
+            parentID: 0,
+            customerID: 0,
+            number: "",
+            status: .pending,
+            currency: "",
+            customerNote: nil,
+            dateCreated: Date(),
+            dateModified: Date(),
+            datePaid: nil,
+            discountTotal: "",
+            discountTax: "",
+            shippingTotal: "",
+            shippingTax: "",
+            total: "",
+            totalTax: "",
+            paymentMethodID: "",
+            paymentMethodTitle: "",
+            items: [],
+            billingAddress: nil,
+            shippingAddress: nil,
+            shippingLines: [],
+            coupons: [],
+            refunds: []
+        )
     }
 
     /// Generate a sample OrderItem
@@ -557,6 +621,15 @@ private extension RefundStoreTests {
                                taxes: [],
                                total: "-27.00",
                                totalTax: "0.00")
+    }
+
+    func sampleShippingLine() -> Networking.ShippingLine {
+        ShippingLine(shippingID: 189,
+                     methodTitle: "Flat rate",
+                     methodID: "flat_rate",
+                     total: "-7.00",
+                     totalTax: "-0.62",
+                     taxes: [.init(taxID: 1, subtotal: "", total: "-0.62")])
     }
 
     /// Format GMT string to Date type

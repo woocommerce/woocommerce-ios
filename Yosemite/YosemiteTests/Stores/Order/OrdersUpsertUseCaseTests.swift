@@ -15,7 +15,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storageManager = MockupStorageManager()
+        storageManager = MockStorageManager()
     }
 
     override func tearDown() {
@@ -75,8 +75,29 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(persistedCoupon.toReadOnly(), coupon)
         let persistedRefund = try XCTUnwrap(viewStorage.loadOrderRefundCondensed(siteID: defaultSiteID, refundID: refund.refundID))
         XCTAssertEqual(persistedRefund.toReadOnly(), refund)
-        let persistedShippingLine = try XCTUnwrap(viewStorage.loadShippingLine(siteID: defaultSiteID, shippingID: shippingLine.shippingID))
+        let persistedShippingLine = try XCTUnwrap(viewStorage.loadOrderShippingLine(siteID: defaultSiteID, shippingID: shippingLine.shippingID))
         XCTAssertEqual(persistedShippingLine.toReadOnly(), shippingLine)
+    }
+
+    func test_it_persists_order_item_taxes_in_storage() throws {
+        // Given
+        let taxes = [
+            Networking.OrderItemTax(taxID: 2, subtotal: "", total: "0.2"),
+            Networking.OrderItemTax(taxID: 3, subtotal: "", total: "0.6")
+        ]
+        let item = makeOrderItem(itemID: 22, taxes: taxes)
+        let order = makeOrder().copy(orderID: 98).copy(items: [item])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+
+        // When
+        useCase.upsert([order])
+
+        // Then
+        let tax1 = try XCTUnwrap(viewStorage.loadOrderItemTax(itemID: 22, taxID: 2))
+        XCTAssertEqual(tax1.toReadOnly(), taxes[0])
+
+        let tax2 = try XCTUnwrap(viewStorage.loadOrderItemTax(itemID: 22, taxID: 3))
+        XCTAssertEqual(tax2.toReadOnly(), taxes[1])
     }
 
     func test_it_persists_shipping_line_taxes_in_storage() throws {
@@ -99,9 +120,66 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         let tax2 = try XCTUnwrap(viewStorage.loadShippingLineTax(shippingID: 25, taxID: 3))
         XCTAssertEqual(tax2.toReadOnly(), taxes[1])
     }
+
+    func test_it_persists_order_item_attributes_in_storage() throws {
+        // Given
+        let attributes = [
+            Networking.OrderItemAttribute(metaID: 2, name: "Type", value: "Water"),
+            Networking.OrderItemAttribute(metaID: 2, name: "Strong against", value: "Fire")
+        ]
+        let orderItem = makeOrderItem(itemID: 76, attributes: attributes)
+        let order = makeOrder().copy(siteID: 3, orderID: 98, items: [orderItem])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+
+        // When
+        useCase.upsert([order])
+
+        // Then
+        let storageOrderItem = try XCTUnwrap(viewStorage.loadOrderItem(siteID: 3, orderID: 98, itemID: 76))
+        XCTAssertEqual(storageOrderItem.toReadOnly(), orderItem)
+    }
+
+    func test_it_replaces_existing_order_item_attributes_in_storage() throws {
+        // Given
+        let originalAttributes = [Networking.OrderItemAttribute(metaID: 2, name: "Type", value: "Water")]
+        let originalOrderItem = makeOrderItem(itemID: 76, attributes: originalAttributes)
+        let order = makeOrder().copy(siteID: 3, orderID: 98, items: [originalOrderItem])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+        useCase.upsert([order])
+
+        // When
+        let attributes = [
+            Networking.OrderItemAttribute(metaID: 2, name: "Type", value: "Flying"),
+            Networking.OrderItemAttribute(metaID: 2, name: "Strong against", value: "Rock")
+        ]
+        let orderItem = makeOrderItem(itemID: 76, attributes: attributes)
+        useCase.upsert([order.copy(items: [orderItem])])
+
+        // Then
+        let storageOrderItem = try XCTUnwrap(viewStorage.loadOrderItem(siteID: 3, orderID: 98, itemID: 76))
+        XCTAssertEqual(storageOrderItem.toReadOnly(), orderItem)
+    }
 }
 
 private extension OrdersUpsertUseCaseTests {
+
+    func makeOrderItem(itemID: Int64, taxes: [Networking.OrderItemTax]) -> Networking.OrderItem {
+        OrderItem(itemID: itemID,
+                  name: "",
+                  productID: 0,
+                  variationID: 0,
+                  quantity: 0,
+                  price: 0,
+                  sku: nil,
+                  subtotal: "",
+                  subtotalTax: "",
+                  taxClass: "",
+                  taxes: taxes,
+                  total: "",
+                  totalTax: "",
+                  attributes: [])
+    }
+
     func makeOrder() -> Networking.Order {
         Order(siteID: defaultSiteID,
               orderID: 0,
@@ -120,6 +198,7 @@ private extension OrdersUpsertUseCaseTests {
               shippingTax: "",
               total: "",
               totalTax: "",
+              paymentMethodID: "",
               paymentMethodTitle: "",
               items: [],
               billingAddress: nil,
@@ -127,5 +206,22 @@ private extension OrdersUpsertUseCaseTests {
               shippingLines: [],
               coupons: [],
               refunds: [])
+    }
+
+    func makeOrderItem(itemID: Int64 = 76, attributes: [Networking.OrderItemAttribute] = []) -> Networking.OrderItem {
+        .init(itemID: itemID,
+              name: "Poke",
+              productID: 22,
+              variationID: 0,
+              quantity: -1,
+              price: 18,
+              sku: "poke-month",
+              subtotal: "-18.0",
+              subtotalTax: "0.00",
+              taxClass: "",
+              taxes: [],
+              total: "-18.00",
+              totalTax: "0.00",
+              attributes: attributes)
     }
 }

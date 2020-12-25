@@ -37,13 +37,11 @@ final class ProductVariationsViewController: UIViewController {
 
     /// Footer "Loading More" Spinner.
     ///
-    private lazy var footerSpinnerView = {
-        return FooterSpinnerView(tableViewStyle: tableView.style)
-    }()
+    private lazy var footerSpinnerView = FooterSpinnerView()
 
-    private lazy var footerEmptyView = {
-        return UIView(frame: .zero)
-    }()
+    /// Empty Footer Placeholder. Replaces spinner view and allows footer to collapse and be completely hidden.
+    ///
+    private lazy var footerEmptyView = UIView(frame: .zero)
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Product Variations in sync.
     ///
@@ -84,14 +82,16 @@ final class ProductVariationsViewController: UIViewController {
 
     private let imageService: ImageService = ServiceLocator.imageService
     private let isEditProductsRelease5Enabled: Bool
+    private let isAddProductVariationsEnabled: Bool
 
-    init(product: Product, formType: ProductFormType, isEditProductsRelease5Enabled: Bool) {
+    init(product: Product, formType: ProductFormType, isEditProductsRelease5Enabled: Bool, isAddProductVariationsEnabled: Bool) {
         self.siteID = product.siteID
         self.productID = product.productID
         self.allAttributes = product.attributes
         self.parentProductSKU = product.sku
         self.formType = formType
         self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
+        self.isAddProductVariationsEnabled = isAddProductVariationsEnabled
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -304,7 +304,8 @@ extension ProductVariationsViewController: UITableViewDelegate {
                                                        productImageActionHandler: productImageActionHandler,
                                                        currency: currency,
                                                        presentationStyle: .navigationStack,
-                                                       isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
+                                                       isEditProductsRelease5Enabled: isEditProductsRelease5Enabled,
+                                                       isAddProductVariationsEnabled: isAddProductVariationsEnabled)
         navigationController?.pushViewController(viewController, animated: true)
     }
 

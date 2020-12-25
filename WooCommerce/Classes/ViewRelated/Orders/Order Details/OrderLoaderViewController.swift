@@ -10,7 +10,7 @@ class OrderLoaderViewController: UIViewController {
 
     /// UI Spinner
     ///
-    private let activityIndicator = UIActivityIndicatorView(style: .gray)
+    private let activityIndicator = UIActivityIndicatorView(style: .medium)
 
     /// Source push notification `Note`
     ///

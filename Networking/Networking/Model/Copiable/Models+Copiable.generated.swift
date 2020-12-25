@@ -22,6 +22,7 @@ extension Order {
         shippingTax: CopiableProp<String> = .copy,
         total: CopiableProp<String> = .copy,
         totalTax: CopiableProp<String> = .copy,
+        paymentMethodID: CopiableProp<String> = .copy,
         paymentMethodTitle: CopiableProp<String> = .copy,
         items: CopiableProp<[OrderItem]> = .copy,
         billingAddress: NullableCopiableProp<Address> = .copy,
@@ -47,6 +48,7 @@ extension Order {
         let shippingTax = shippingTax ?? self.shippingTax
         let total = total ?? self.total
         let totalTax = totalTax ?? self.totalTax
+        let paymentMethodID = paymentMethodID ?? self.paymentMethodID
         let paymentMethodTitle = paymentMethodTitle ?? self.paymentMethodTitle
         let items = items ?? self.items
         let billingAddress = billingAddress ?? self.billingAddress
@@ -73,6 +75,7 @@ extension Order {
             shippingTax: shippingTax,
             total: total,
             totalTax: totalTax,
+            paymentMethodID: paymentMethodID,
             paymentMethodTitle: paymentMethodTitle,
             items: items,
             billingAddress: billingAddress,
@@ -419,6 +422,66 @@ extension ProductVariation {
             shippingClass: shippingClass,
             shippingClassID: shippingClassID,
             menuOrder: menuOrder
+        )
+    }
+}
+
+extension ShippingLabel {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        orderID: CopiableProp<Int64> = .copy,
+        shippingLabelID: CopiableProp<Int64> = .copy,
+        carrierID: CopiableProp<String> = .copy,
+        dateCreated: CopiableProp<Date> = .copy,
+        packageName: CopiableProp<String> = .copy,
+        rate: CopiableProp<Double> = .copy,
+        currency: CopiableProp<String> = .copy,
+        trackingNumber: CopiableProp<String> = .copy,
+        serviceName: CopiableProp<String> = .copy,
+        refundableAmount: CopiableProp<Double> = .copy,
+        status: CopiableProp<ShippingLabelStatus> = .copy,
+        refund: NullableCopiableProp<ShippingLabelRefund> = .copy,
+        originAddress: CopiableProp<ShippingLabelAddress> = .copy,
+        destinationAddress: CopiableProp<ShippingLabelAddress> = .copy,
+        productIDs: CopiableProp<[Int64]> = .copy,
+        productNames: CopiableProp<[String]> = .copy
+    ) -> ShippingLabel {
+        let siteID = siteID ?? self.siteID
+        let orderID = orderID ?? self.orderID
+        let shippingLabelID = shippingLabelID ?? self.shippingLabelID
+        let carrierID = carrierID ?? self.carrierID
+        let dateCreated = dateCreated ?? self.dateCreated
+        let packageName = packageName ?? self.packageName
+        let rate = rate ?? self.rate
+        let currency = currency ?? self.currency
+        let trackingNumber = trackingNumber ?? self.trackingNumber
+        let serviceName = serviceName ?? self.serviceName
+        let refundableAmount = refundableAmount ?? self.refundableAmount
+        let status = status ?? self.status
+        let refund = refund ?? self.refund
+        let originAddress = originAddress ?? self.originAddress
+        let destinationAddress = destinationAddress ?? self.destinationAddress
+        let productIDs = productIDs ?? self.productIDs
+        let productNames = productNames ?? self.productNames
+
+        return ShippingLabel(
+            siteID: siteID,
+            orderID: orderID,
+            shippingLabelID: shippingLabelID,
+            carrierID: carrierID,
+            dateCreated: dateCreated,
+            packageName: packageName,
+            rate: rate,
+            currency: currency,
+            trackingNumber: trackingNumber,
+            serviceName: serviceName,
+            refundableAmount: refundableAmount,
+            status: status,
+            refund: refund,
+            originAddress: originAddress,
+            destinationAddress: destinationAddress,
+            productIDs: productIDs,
+            productNames: productNames
         )
     }
 }

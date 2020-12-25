@@ -73,6 +73,20 @@ public extension StorageType {
         }
     }
 
+    /// Deletes all of the stored Product Attributes that don't have an active product relationship
+    ///
+    func deleteUnusedProductAttributes(siteID: Int64) {
+        let attributesWithNoAssociatedProduct = loadProductAttributes(siteID: siteID).filter { attribute in
+            guard attribute.product != nil else {
+                return true
+            }
+            return false
+        }
+        attributesWithNoAssociatedProduct.forEach { attribute in
+            deleteObject(attribute)
+        }
+    }
+
     // MARK: - Product Reviews
 
     /// Deletes all of the stored Reviews for the provided siteID.

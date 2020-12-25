@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Observables
 
 
 
@@ -15,11 +16,11 @@ class DefaultStoresManager: StoresManager {
     /// This seems to fix a crash:
     /// `Thread 1: Simultaneous accesses to <MEMORY_ADDESS>, but modification requires exclusive access`
     /// https://github.com/woocommerce/woocommerce-ios/issues/878
-    private var _sessionManager: SessionManager
+    private var _sessionManager: SessionManagerProtocol
 
     /// SessionManager: Persistent Storage for Session-Y Properties.
     /// This property is thread safe
-    private(set) var sessionManager: SessionManager {
+    private(set) var sessionManager: SessionManagerProtocol {
         get {
             return sessionManagerLockQueue.sync {
                 return _sessionManager
@@ -68,7 +69,7 @@ class DefaultStoresManager: StoresManager {
 
     /// Designated Initializer
     ///
-    init(sessionManager: SessionManager) {
+    init(sessionManager: SessionManagerProtocol) {
         _sessionManager = sessionManager
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
 
@@ -309,6 +310,17 @@ private extension DefaultStoresManager {
         }
     }
 
+    /// Synchronizes all payment gateways.
+    ///
+    func synchronizePaymentGateways(siteID: Int64) {
+        let action = PaymentGatewayAction.synchronizePaymentGateways(siteID: siteID) { result in
+            if let error = result.failure {
+                DDLogError("⛔️ Failed to sync payment gateways for siteID: \(siteID). Error: \(error)")
+            }
+        }
+        dispatch(action)
+    }
+
     /// Synchronizes the order statuses, if possible.
     ///
     func retrieveOrderStatus(with siteID: Int64) {
@@ -339,6 +351,7 @@ private extension DefaultStoresManager {
             ServiceLocator.shippingSettingsService.update(siteID: siteID)
         }
         retrieveOrderStatus(with: siteID)
+        synchronizePaymentGateways(siteID: siteID)
     }
 
     /// Loads the specified siteID into the Session, if possible.

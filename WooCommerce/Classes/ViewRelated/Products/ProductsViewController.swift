@@ -25,13 +25,11 @@ final class ProductsViewController: UIViewController {
 
     /// Footer "Loading More" Spinner.
     ///
-    private lazy var footerSpinnerView = {
-        return FooterSpinnerView(tableViewStyle: tableView.style)
-    }()
+    private lazy var footerSpinnerView = FooterSpinnerView()
 
-    private lazy var footerEmptyView = {
-        return UIView(frame: .zero)
-    }()
+    /// Empty Footer Placeholder. Replaces spinner view and allows footer to collapse and be completely hidden.
+    ///
+    private lazy var footerEmptyView = UIView(frame: .zero)
 
     /// Top stack view that is shown above the table view as the table header view.
     ///
@@ -156,7 +154,6 @@ final class ProductsViewController: UIViewController {
         registerTableViewCells()
 
         updateTopBannerView()
-        observeProductsFeatureSwitchChange()
 
         syncingCoordinator.resynchronize()
     }
@@ -234,31 +231,21 @@ private extension ProductsViewController {
             return button
         }()
 
-        updateNavigationBarRightButtonItems()
+        configureNavigationBarRightButtonItems()
     }
 
-    /// Fetches the feature switch value from app settings and updates its navigation bar right button items.
-    func updateNavigationBarRightButtonItems() {
-        let action = AppSettingsAction.loadProductsFeatureSwitch { [weak self] isFeatureSwitchOn in
-            self?.updateNavigationBarRightButtonItems(isProductsFeatureSwitchOn: isFeatureSwitchOn)
-        }
-        ServiceLocator.stores.dispatch(action)
-    }
-
-    func updateNavigationBarRightButtonItems(isProductsFeatureSwitchOn: Bool) {
+    func configureNavigationBarRightButtonItems() {
         var rightBarButtonItems = [UIBarButtonItem]()
-        if isProductsFeatureSwitchOn {
-            let buttonItem: UIBarButtonItem = {
-                let button = UIBarButtonItem(image: .plusImage,
-                                             style: .plain,
-                                             target: self,
-                                             action: #selector(addProduct(_:)))
-                button.accessibilityTraits = .button
-                button.accessibilityLabel = NSLocalizedString("Add a product", comment: "The action to add a product")
-                return button
-            }()
-            rightBarButtonItems.append(buttonItem)
-        }
+        let buttonItem: UIBarButtonItem = {
+            let button = UIBarButtonItem(image: .plusImage,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(addProduct(_:)))
+            button.accessibilityTraits = .button
+            button.accessibilityLabel = NSLocalizedString("Add a product", comment: "The action to add a product")
+            return button
+        }()
+        rightBarButtonItems.append(buttonItem)
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.barcodeScanner) {
             let buttonItem: UIBarButtonItem = {
@@ -367,14 +354,6 @@ private extension ProductsViewController {
 // MARK: - Updates
 //
 private extension ProductsViewController {
-    func observeProductsFeatureSwitchChange() {
-        NotificationCenter.default.addObserver(forName: .ProductsFeatureSwitchDidChange, object: nil, queue: nil) { [weak self] _ in
-            guard let self = self else { return }
-            self.updateTopBannerView()
-            self.updateNavigationBarRightButtonItems()
-        }
-    }
-
     /// Fetches products feedback visibility from AppSettingsStore and update products top banner accordingly
     ///
     func updateTopBannerView() {
@@ -569,22 +548,12 @@ private extension ProductsViewController {
         present(filterProductListViewController, animated: true, completion: nil)
     }
 
-    /// Presents products survey and mark feedback as given to update banner visibility
+    /// Presents products survey
     ///
     func presentProductsFeedback() {
         // Present survey
         let navigationController = SurveyCoordinatingController(survey: .productsM4Feedback)
-        present(navigationController, animated: true) { [weak self] in
-
-            // Mark survey as given and update top banner view
-            let action = AppSettingsAction.updateFeedbackStatus(type: .productsM4, status: .given(Date())) { result in
-                if let error = result.failure {
-                    CrashLogging.logError(error)
-                }
-                self?.hideTopBannerView()
-            }
-            ServiceLocator.stores.dispatch(action)
-        }
+        present(navigationController, animated: true, completion: nil)
     }
 
     /// Mark feedback request as dismissed and update banner visibility

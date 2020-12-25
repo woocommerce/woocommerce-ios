@@ -30,6 +30,10 @@ public enum WooAPIVersion: String {
     ///
     case wcAnalytics = "wc-analytics"
 
+    /// WooCommerce Connect Server API v1 from WooCommerce Shipping plugin.
+    ///
+    case wcConnectV1 = "wc/v1/connect"
+
     /// Returns the path for the current API Version
     ///
     var path: String {

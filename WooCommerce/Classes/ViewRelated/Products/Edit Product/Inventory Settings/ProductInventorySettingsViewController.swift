@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import Observables
 
 final class ProductInventorySettingsViewController: UIViewController {
 
@@ -258,9 +259,9 @@ private extension ProductInventorySettingsViewController {
             configureLimitOnePerOrder(cell: cell)
         case let cell as UnitInputTableViewCell where row == .stockQuantity:
             configureStockQuantity(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .backorders:
+        case let cell as TitleAndValueTableViewCell where row == .backorders:
             configureBackordersSetting(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .stockStatus:
+        case let cell as TitleAndValueTableViewCell where row == .stockStatus:
             configureStockStatus(cell: cell)
         default:
             fatalError()
@@ -270,10 +271,7 @@ private extension ProductInventorySettingsViewController {
     func configureSKU(cell: TitleAndTextFieldTableViewCell) {
         var cellViewModel = Product.createSKUViewModel(sku: viewModel.sku) { [weak self] value in
             self?.viewModel.handleSKUChange(value) { [weak self] (isValid, shouldBringUpKeyboard) in
-                self?.enableDoneButton(isValid)
-                if shouldBringUpKeyboard {
-                    self?.getSkuCell()?.textFieldBecomeFirstResponder()
-                }
+                self?.handleSKUValidation(isValid: isValid, shouldBringUpKeyboard: shouldBringUpKeyboard)
             }
         }
         switch viewModel.error {
@@ -283,6 +281,15 @@ private extension ProductInventorySettingsViewController {
             break
         }
         cell.configure(viewModel: cellViewModel)
+
+        // Configures accessory view for adding SKU from barcode scanner.
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.barcodeScanner) {
+            let button = UIButton(type: .detailDisclosure)
+            button.applyIconButtonStyle(icon: .scanImage)
+            button.addTarget(self, action: #selector(scanSKUButtonTapped), for: .touchUpInside)
+
+            cell.accessoryView = button
+        }
     }
 
     func configureManageStock(cell: SwitchTableViewCell) {
@@ -310,7 +317,7 @@ private extension ProductInventorySettingsViewController {
         cell.configure(viewModel: cellViewModel)
     }
 
-    func configureBackordersSetting(cell: SettingTitleAndValueTableViewCell) {
+    func configureBackordersSetting(cell: TitleAndValueTableViewCell) {
         let title = NSLocalizedString("Backorders", comment: "Title of the cell in Product Inventory Settings > Backorders")
         cell.updateUI(title: title, value: viewModel.backordersSetting?.description)
         cell.accessoryType = .disclosureIndicator
@@ -318,10 +325,37 @@ private extension ProductInventorySettingsViewController {
 
     // Manage stock disabled.
 
-    func configureStockStatus(cell: SettingTitleAndValueTableViewCell) {
+    func configureStockStatus(cell: TitleAndValueTableViewCell) {
         let title = NSLocalizedString("Stock status", comment: "Title of the cell in Product Inventory Settings > Stock status")
         cell.updateUI(title: title, value: viewModel.stockStatus?.description)
         cell.accessoryType = .disclosureIndicator
+    }
+}
+
+// MARK: - SKU Scanner
+//
+private extension ProductInventorySettingsViewController {
+    @objc func scanSKUButtonTapped() {
+        let scannerViewController = ProductSKUInputScannerViewController(onBarcodeScanned: { [weak self] barcode in
+            self?.onSKUBarcodeScanned(barcode: barcode)
+            self?.navigationController?.popViewController(animated: true)
+        })
+        show(scannerViewController, sender: self)
+    }
+
+    func onSKUBarcodeScanned(barcode: String) {
+        viewModel.handleSKUFromBarcodeScanner(barcode) { [weak self] (isValid, shouldBringUpKeyboard) in
+            self?.handleSKUValidation(isValid: isValid, shouldBringUpKeyboard: shouldBringUpKeyboard)
+        }
+    }
+}
+
+private extension ProductInventorySettingsViewController {
+    func handleSKUValidation(isValid: Bool, shouldBringUpKeyboard: Bool) {
+        enableDoneButton(isValid)
+        if shouldBringUpKeyboard {
+            getSkuCell()?.textFieldBecomeFirstResponder()
+        }
     }
 }
 
@@ -378,7 +412,7 @@ extension ProductInventorySettingsViewController {
             case .stockQuantity:
                 return UnitInputTableViewCell.self
             case .stockStatus, .backorders:
-                return SettingTitleAndValueTableViewCell.self
+                return TitleAndValueTableViewCell.self
             }
         }
 

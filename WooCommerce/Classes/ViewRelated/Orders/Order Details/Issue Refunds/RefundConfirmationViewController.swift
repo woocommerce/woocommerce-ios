@@ -11,6 +11,30 @@ final class RefundConfirmationViewController: UIViewController {
 
     private let viewModel: RefundConfirmationViewModel
 
+    private lazy var contextNoticePresenter: NoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
+    /// Needed to scroll content to a visible area when the keyboard appears.
+    ///
+    private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] frame in
+        self?.handleKeyboardFrameUpdate(keyboardFrame: frame)
+    })
+
+    /// Closure to be invoked when the refund button is pressed.
+    ///
+    var onRefundButtonAction: (() -> Void)?
+
+    /// Closure to be invoked when the refund is about to be issued.
+    ///
+    var onRefundCreationAction: (() -> Void)?
+
+    /// Closure to be invoked after the refund has been issued.
+    ///
+    var onRefundCompletion: ((Error?) -> Void)?
+
     init(viewModel: RefundConfirmationViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -28,6 +52,30 @@ final class RefundConfirmationViewController: UIViewController {
         configureMainView()
         configureTableView()
         configureButtonTableFooterView()
+        configureKeyboardDismissal()
+        keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
+    }
+}
+
+// MARK: KeyboardScrollable
+extension RefundConfirmationViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        tableView
+    }
+}
+
+// MARK: External Updates
+extension RefundConfirmationViewController {
+    /// Submits the refund and dismisses the flow upon successful completion.
+    ///
+    func submitRefund() {
+        onRefundCreationAction?()
+        viewModel.submit { [weak self] result in
+            if let error = result.failure {
+                self?.displayNotice(with: error)
+            }
+            self?.onRefundCompletion?(result.failure)
+        }
     }
 }
 
@@ -42,10 +90,14 @@ private extension RefundConfirmationViewController {
     func configureTableView() {
         // Register cells
         [
-            SettingTitleAndValueTableViewCell.self,
+            TitleAndValueTableViewCell.self,
             TitleAndEditableValueTableViewCell.self,
-            HeadlineLabelTableViewCell.self
+            HeadlineLabelTableViewCell.self,
+            WooBasicTableViewCell.self
         ].forEach(tableView.registerNib)
+
+        // Keyboard handling
+        tableView.keyboardDismissMode = .onDrag
 
         // Delegation
         tableView.dataSource = self
@@ -59,14 +111,24 @@ private extension RefundConfirmationViewController {
         // Add to view
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToSafeArea(tableView)
+        view.pinSubviewToAllEdges(tableView)
     }
 
     func configureButtonTableFooterView() {
         tableView.tableFooterView = ButtonTableFooterView(frame: .zero, title: Localization.refund) { [weak self] in
-            self?.viewModel.submit()
+            guard let self = self else { return }
+            self.onRefundButtonAction?()
+            self.viewModel.trackSummaryButtonTapped()
         }
         tableView.updateFooterHeight()
+    }
+
+    /// Hides the keyboard by asking the view's first responder to resign on each main view tap.
+    ///
+    func configureKeyboardDismissal() {
+        let tap = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
     }
 }
 
@@ -88,7 +150,7 @@ extension RefundConfirmationViewController: UITableViewDataSource {
 
         switch row {
         case let row as RefundConfirmationViewModel.TwoColumnRow:
-            let cell = tableView.dequeueReusableCell(SettingTitleAndValueTableViewCell.self, for: indexPath)
+            let cell = tableView.dequeueReusableCell(TitleAndValueTableViewCell.self, for: indexPath)
             cell.updateUI(title: row.title, value: row.value)
             if row.isHeadline {
                 cell.apply(style: .headline)
@@ -106,6 +168,11 @@ extension RefundConfirmationViewController: UITableViewDataSource {
             cell.update(style: .regular, headline: row.title, body: row.body)
             cell.selectionStyle = .none
             return cell
+        case let row as RefundConfirmationViewModel.SimpleTextRow:
+            let cell = tableView.dequeueReusableCell(WooBasicTableViewCell.self, for: indexPath)
+            cell.applyPlainTextStyle()
+            cell.bodyLabel.text = row.text
+            return cell
         default:
             assertionFailure("Unsupported row.")
             return UITableViewCell()
@@ -117,10 +184,30 @@ extension RefundConfirmationViewController: UITableViewDataSource {
     }
 }
 
+// MARK: Submission
+private extension RefundConfirmationViewController {
+    /// Displays a refund error notice.
+    ///
+    func displayNotice(with error: Error) {
+        contextNoticePresenter.enqueue(notice: .init(title: Localization.refundError))
+    }
+}
+
+// MARK: Interactive Dismiss
+extension RefundConfirmationViewController: IssueRefundInteractiveDismissDelegate {
+    /// Don't allow interactive dismiss gesture.
+    ///
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        false
+    }
+}
+
 // MARK: - Localization
 
 private extension RefundConfirmationViewController {
     enum Localization {
         static let refund = NSLocalizedString("Refund", comment: "The title of the button to confirm the refund.")
+        static let refundError = NSLocalizedString("There was an error issuing the refund",
+                                                   comment: "Text of the notice that is displayed while the refund creation fails.")
     }
 }

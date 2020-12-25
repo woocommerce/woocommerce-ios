@@ -124,7 +124,7 @@ private extension ManualTrackingViewController {
     }
 
     func configureRightButtonItemAsSpinner() {
-        let activityIndicator = UIActivityIndicatorView(style: .white)
+        let activityIndicator = UIActivityIndicatorView(style: .medium)
         activityIndicator.hidesWhenStopped = true
         activityIndicator.startAnimating()
 
@@ -258,7 +258,8 @@ extension ManualTrackingViewController: UITableViewDataSource {
         let cellViewModel = TitleAndEditableValueTableViewCellViewModel(
             title: NSLocalizedString("Tracking number", comment: "Add / Edit shipping carrier. Title of cell presenting tracking number"),
             placeholder: NSLocalizedString("Enter tracking number", comment: "Add custom shipping carrier. Placeholder of cell presenting tracking number"),
-            initialValue: viewModel.trackingNumber
+            initialValue: viewModel.trackingNumber,
+            hidesKeyboardOnReturn: true
         )
         cell.update(viewModel: cellViewModel)
         cell.accessoryType = .none
@@ -337,21 +338,7 @@ extension ManualTrackingViewController: UITableViewDelegate {
             return CGFloat.leastNonzeroMagnitude
         }
 
-        return Constants.pickerRowHeight
-    }
-
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        let row = rowAtIndexPath(indexPath)
-
-        guard row == .datePicker else {
-            return Constants.rowHeight
-        }
-
-        guard datePickerVisible else {
-            return CGFloat.leastNonzeroMagnitude
-        }
-
-        return Constants.pickerRowHeight
+        return DatePickerTableViewCell.getDefaultCellHeight()
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -366,6 +353,10 @@ extension ManualTrackingViewController: UITableViewDelegate {
 private extension ManualTrackingViewController {
     func executeAction(for indexPath: IndexPath) {
         let row = rowAtIndexPath(indexPath)
+
+        if row == .shippingProvider || row == .dateShipped {
+            view.endEditing(true)
+        }
 
         if row == .dateShipped && viewModel.isAdding {
             displayDatePicker(at: indexPath)

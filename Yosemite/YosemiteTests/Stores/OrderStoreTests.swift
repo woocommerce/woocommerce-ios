@@ -8,17 +8,17 @@ import XCTest
 ///
 final class OrderStoreTests: XCTestCase {
 
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     ///
     private var dispatcher: Dispatcher!
 
-    /// Mockup Storage: InMemory
+    /// Mock Storage: InMemory
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
-    /// Mockup Network: Allows us to inject predefined responses!
+    /// Mock Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
     /// Convenience Property: Returns the StorageType associated with the main thread.
     ///
@@ -53,8 +53,8 @@ final class OrderStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
-        storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        storageManager = MockStorageManager()
+        network = MockNetwork()
     }
 
     // MARK: - OrderAction.synchronizeOrders
@@ -344,7 +344,7 @@ final class OrderStoreTests: XCTestCase {
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 2)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated(), in: viewStorage)
@@ -360,7 +360,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder2?.toReadOnly(), sampleOrderMutated2())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 1)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 5)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 4)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
     }
 
@@ -699,6 +699,7 @@ private extension OrderStoreTests {
                      shippingTax: "0.00",
                      total: "31.20",
                      totalTax: "1.20",
+                     paymentMethodID: "stripe",
                      paymentMethodTitle: "Credit Card (Stripe)",
                      items: sampleItems(),
                      billingAddress: sampleAddress(),
@@ -726,6 +727,7 @@ private extension OrderStoreTests {
                      shippingTax: "0.00",
                      total: "41.20",
                      totalTax: "1.20",
+                     paymentMethodID: "stripe",
                      paymentMethodTitle: "Credit Card (Stripe)",
                      items: sampleItemsMutated(),
                      billingAddress: sampleAddress(),
@@ -753,6 +755,7 @@ private extension OrderStoreTests {
                      shippingTax: "0.00",
                      total: "41.20",
                      totalTax: "1.20",
+                     paymentMethodID: "stripe",
                      paymentMethodTitle: "Credit Card (Stripe)",
                      items: sampleItemsMutated2(),
                      billingAddress: sampleAddress(),
@@ -818,9 +821,10 @@ private extension OrderStoreTests {
                               subtotal: "50.00",
                               subtotalTax: "2.00",
                               taxClass: "",
-                              taxes: [],
+                              taxes: [.init(taxID: 1, subtotal: "2", total: "1.2")],
                               total: "30.00",
-                              totalTax: "1.20")
+                              totalTax: "1.20",
+                              attributes: [])
 
         let item2 = OrderItem(itemID: 891,
                               name: "Fruits Bundle",
@@ -832,9 +836,10 @@ private extension OrderStoreTests {
                               subtotal: "10.00",
                               subtotalTax: "0.40",
                               taxClass: "",
-                              taxes: [],
+                              taxes: [.init(taxID: 1, subtotal: "0.4", total: "0")],
                               total: "0.00",
-                              totalTax: "0.00")
+                              totalTax: "0.00",
+                              attributes: [])
 
         return [item1, item2]
     }
@@ -852,7 +857,8 @@ private extension OrderStoreTests {
                               taxClass: "",
                               taxes: taxes(),
                               total: "64.00",
-                              totalTax: "4.00")
+                              totalTax: "4.00",
+                              attributes: [])
 
         let item2 = OrderItem(itemID: 891,
                               name: "Fruits Bundle 2",
@@ -866,7 +872,8 @@ private extension OrderStoreTests {
                               taxClass: "",
                               taxes: taxes(),
                               total: "30.40",
-                              totalTax: "0.40")
+                              totalTax: "0.40",
+                              attributes: [])
 
         let item3 = OrderItem(itemID: 23,
                               name: "Some new product",
@@ -880,7 +887,8 @@ private extension OrderStoreTests {
                               taxClass: "",
                               taxes: taxes(),
                               total: "140.40",
-                              totalTax: "10.40")
+                              totalTax: "10.40",
+                              attributes: [])
 
         return [item1, item2, item3]
     }
@@ -898,7 +906,8 @@ private extension OrderStoreTests {
                               taxClass: "",
                               taxes: taxesMutated(),
                               total: "64.00",
-                              totalTax: "4.00")
+                              totalTax: "4.00",
+                              attributes: [])
 
         return [item1]
     }
@@ -915,7 +924,7 @@ private extension OrderStoreTests {
     }
 
     func taxesMutated() -> [Networking.OrderItemTax] {
-        return [Networking.OrderItemTax(taxID: 75, subtotal: "0.45", total: "0.45"),
-                Networking.OrderItemTax(taxID: 73, subtotal: "0.9", total: "0.9")]
+        [Networking.OrderItemTax(taxID: 73, subtotal: "0.9", total: "0.9"),
+         Networking.OrderItemTax(taxID: 75, subtotal: "0.45", total: "0.45")]
     }
 }

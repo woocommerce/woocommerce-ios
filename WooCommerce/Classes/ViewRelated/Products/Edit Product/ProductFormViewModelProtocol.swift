@@ -1,4 +1,5 @@
 import Yosemite
+import Observables
 
 /// The type of product form: adding a new one or editing an existing one.
 enum ProductFormType {
@@ -92,6 +93,8 @@ protocol ProductFormViewModelProtocol {
     func updateStatus(_ isEnabled: Bool)
 
     func updateDownloadableFiles(downloadableFiles: [ProductDownload], downloadLimit: Int64, downloadExpiry: Int64)
+
+    func updateLinkedProducts(upsellIDs: [Int64], crossSellIDs: [Int64])
 
     // Remote action
 

@@ -2,8 +2,7 @@ import Photos
 import UIKit
 import WordPressUI
 import Yosemite
-
-import class AutomatticTracks.CrashLogging
+import Observables
 
 /// The entry UI for adding/editing a Product.
 final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: UIViewController, UITableViewDelegate {
@@ -41,6 +40,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let currency: String
     private let isEditProductsRelease5Enabled: Bool
+    private let isAddProductVariationsEnabled: Bool
 
     private lazy var exitForm: () -> Void = {
         presentationStyle.createExitForm(viewController: self)
@@ -60,12 +60,14 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
-         isEditProductsRelease5Enabled: Bool) {
+         isEditProductsRelease5Enabled: Bool,
+         isAddProductVariationsEnabled: Bool) {
         self.viewModel = viewModel
         self.eventLogger = eventLogger
         self.currency = currency
         self.presentationStyle = presentationStyle
         self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
+        self.isAddProductVariationsEnabled = isAddProductVariationsEnabled
         self.productImageActionHandler = productImageActionHandler
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
@@ -109,7 +111,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         handleSwipeBackGesture()
 
         observeProduct()
-        observeProductName()
         observeUpdateCTAVisibility()
 
         productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
@@ -276,8 +277,14 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
             case .downloadableFiles:
-                //TODO: Add analytics
+                //TODO: Add Analytics M5
                 showDownloadableFiles()
+            case .linkedProducts(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
+                // TODO: Add Analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+                editLinkedProducts()
             case .productType(_, let isEditable):
                 guard isEditable else {
                     return
@@ -338,12 +345,21 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 break
             case .variations:
                 ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
-                guard let product = product as? EditableProductModel, product.product.variations.isNotEmpty else {
+                guard let product = product as? EditableProductModel else {
+                    return
+                }
+                guard product.product.variations.isNotEmpty else {
+                    if isAddProductVariationsEnabled {
+                        let viewModel = AddAttributeViewModel(product: product.product)
+                        let addAttributeViewController = AddAttributeViewController(viewModel: viewModel)
+                        navigationController?.pushViewController(addAttributeViewController, animated: true)
+                    }
                     return
                 }
                 let variationsViewController = ProductVariationsViewController(product: product.product,
                                                                                formType: viewModel.formType,
-                                                                               isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
+                                                                               isEditProductsRelease5Enabled: isEditProductsRelease5Enabled,
+                                                                               isAddProductVariationsEnabled: isAddProductVariationsEnabled)
                 show(variationsViewController, sender: self)
             case .status, .noPriceWarning:
                 break
@@ -379,7 +395,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 private extension ProductFormViewController {
     func configureNavigationBar() {
         updateNavigationBar(isUpdateEnabled: false)
-        updateNavigationBarTitle(productName: product.name)
         removeNavigationBackBarButtonText()
     }
 
@@ -459,12 +474,6 @@ private extension ProductFormViewController {
         }
     }
 
-    func observeProductName() {
-        cancellableProductName = viewModel.productName?.subscribe { [weak self] name in
-            self?.updateNavigationBarTitle(productName: name)
-        }
-    }
-
     func observeUpdateCTAVisibility() {
         cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { [weak self] isUpdateEnabled in
             self?.updateNavigationBar(isUpdateEnabled: isUpdateEnabled)
@@ -537,6 +546,9 @@ private extension ProductFormViewController {
                                                                         case .editSKU:
                                                                             ServiceLocator.analytics.track(.productDetailViewSKUTapped)
                                                                             self?.editSKU()
+                                                                        case .editLinkedProducts:
+                                                                            // TODO: Analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+                                                                            self?.editLinkedProducts()
                                                                         }
                                                                     }
         }
@@ -607,7 +619,7 @@ private extension ProductFormViewController {
             switch result {
             case .failure(let error):
                 DDLogError("⛔️ Error updating Product: \(error)")
-                CrashLogging.logError(error)
+
                 // Dismisses the in-progress UI then presents the error alert.
                 self?.navigationController?.dismiss(animated: true) {
                     self?.displayError(error: error)
@@ -622,12 +634,7 @@ private extension ProductFormViewController {
     func displayInProgressView(title: String, message: String) {
         let viewProperties = InProgressViewProperties(title: title, message: message)
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
-
-        // Before iOS 13, a modal with transparent background requires certain
-        // `modalPresentationStyle` to prevent the view from turning dark after being presented.
-        if #available(iOS 13.0, *) {} else {
-            inProgressViewController.modalPresentationStyle = .overCurrentContext
-        }
+        inProgressViewController.modalPresentationStyle = .overCurrentContext
 
         navigationController?.present(inProgressViewController, animated: true, completion: nil)
     }
@@ -686,7 +693,6 @@ private extension ProductFormViewController {
                 switch result {
                 case .failure(let error):
                     DDLogError("⛔️ Error deleting Product: \(error)")
-                    CrashLogging.logError(error)
 
                     // Dismisses the in-progress UI then presents the error alert.
                     self.navigationController?.dismiss(animated: true) { [weak self] in
@@ -726,15 +732,6 @@ private extension ProductFormViewController {
 // MARK: Navigation Bar Items
 //
 private extension ProductFormViewController {
-    func updateNavigationBarTitle(productName: String) {
-        navigationItem.title = productName
-        switch presentationStyle {
-        case .contained(let containerViewController):
-            containerViewController.navigationItem.title = productName
-        default:
-            break
-        }
-    }
 
     func updateNavigationBar(isUpdateEnabled: Bool) {
         var rightBarButtonItems = [UIBarButtonItem]()
@@ -1140,6 +1137,32 @@ private extension ProductFormViewController {
     }
 }
 
+// MARK: Action - Edit Linked Products
+//
+private extension ProductFormViewController {
+    func editLinkedProducts() {
+        let linkedProductsViewController = LinkedProductsViewController(product: product) { [weak self] (upsellIDs, crossSellIDs, hasUnsavedChanges) in
+            self?.onEditLinkedProductsCompletion(upsellIDs: upsellIDs, crossSellIDs: crossSellIDs, hasUnsavedChanges: hasUnsavedChanges)
+        }
+        navigationController?.pushViewController(linkedProductsViewController, animated: true)
+    }
+
+    func onEditLinkedProductsCompletion(upsellIDs: [Int64],
+                                        crossSellIDs: [Int64],
+                                        hasUnsavedChanges: Bool) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+
+        guard hasUnsavedChanges else {
+            return
+        }
+        // TODO: Add Analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+
+        viewModel.updateLinkedProducts(upsellIDs: upsellIDs, crossSellIDs: crossSellIDs)
+    }
+}
+
 // MARK: Action - Edit Grouped Products (Grouped Products Only)
 //
 private extension ProductFormViewController {
@@ -1148,7 +1171,16 @@ private extension ProductFormViewController {
             return
         }
 
-        let viewController = GroupedProductsViewController(product: product.product) { [weak self] groupedProductIDs in
+        let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.groupedProductsViewTitle,
+                                                                                           addButtonEvent: .groupedProductLinkedProductsAddButtonTapped,
+                                                                                           productsAddedEvent: .groupedProductLinkedProductsAdded,
+                                                                                           doneButtonTappedEvent: .groupedProductLinkedProductsDoneButtonTapped,
+                                                                                           deleteButtonTappedEvent:
+                                                                                            .groupedProductLinkedProductsDeleteButtonTapped)
+
+        let viewController = LinkedProductsListSelectorViewController(product: product.product,
+                                                                      linkedProductIDs: product.product.groupedProducts,
+                                                                      viewConfiguration: viewConfiguration) { [weak self] groupedProductIDs in
             self?.onEditGroupedProductsCompletion(groupedProductIDs: groupedProductIDs)
         }
         show(viewController, sender: self)
@@ -1237,6 +1269,11 @@ private extension ProductFormViewController {
 
 // MARK: Constants
 //
+private enum Localization {
+    static let groupedProductsViewTitle = NSLocalizedString("Grouped Products",
+                                                            comment: "Navigation bar title for editing linked products for a grouped product")
+}
+
 private enum ActionSheetStrings {
     static let saveProductAsDraft = NSLocalizedString("Save as draft",
                                                       comment: "Button title to save a product as draft in Product More Options Action Sheet")

@@ -5,12 +5,12 @@ import Networking
 
 final class ProductVariationLoadUseCaseTests: XCTestCase {
     typealias ResultData = ProductVariationLoadUseCase.ResultData
-    private var stores: MockupStoresManager!
+    private var stores: MockStoresManager!
     private let siteID: Int64 = 208
 
     override func setUp() {
         super.setUp()
-        stores = MockupStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
+        stores = MockStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
     }
 
     override func tearDown() {

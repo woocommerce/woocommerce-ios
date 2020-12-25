@@ -4,7 +4,7 @@ import XCTest
 final class MediaRemoteTests: XCTestCase {
     /// Dummy Network Wrapper
     ///
-    let network = MockupNetwork()
+    let network = MockNetwork()
 
     /// Dummy Site ID
     ///

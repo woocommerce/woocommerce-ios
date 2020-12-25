@@ -5,17 +5,17 @@ import XCTest
 @testable import Yosemite
 
 final class ProductVariationStoreTests: XCTestCase {
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     ///
     private var dispatcher: Dispatcher!
 
-    /// Mockup Storage: InMemory
+    /// Mock Storage: InMemory
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
-    /// Mockup Network: Allows us to inject predefined responses!
+    /// Mock Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
     /// Convenience Property: Returns the StorageType associated with the main thread.
     ///
@@ -42,8 +42,8 @@ final class ProductVariationStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
-        storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        storageManager = MockStorageManager()
+        network = MockNetwork()
     }
 
     // MARK: - ProductVariationAction.synchronizeProductVariations
@@ -455,7 +455,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that `ProductVariationAction.updateProductVariation` returns an error whenever there is an error response from the backend.
     ///
-    func testUpdatingProductVariationReturnsErrorUponReponseError() {
+    func test_updateProductVariation_returns_error_upon_response_error() {
         // Given
         let remote = MockProductVariationsRemote()
         let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
@@ -484,6 +484,119 @@ final class ProductVariationStoreTests: XCTestCase {
 
         // The existing ProductVariation should not be deleted.
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+    }
+
+    // MARK: `requestMissingVariations`
+
+    func test_requestMissingVariations_only_completes_when_all_missing_variations_are_returned() throws {
+        // Given
+        let remote = MockProductVariationsRemote()
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let variation1 = MockProductVariation().productVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: 1)
+        let variation2 = MockProductVariation().productVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: 2)
+        // Saves a variation into storage.
+        let variationInStorage = MockProductVariation().productVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: 280)
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: variationInStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProductVariation.self), 1)
+
+        // Mocks remote result for missing variations.
+        remote.whenLoadingProductVariation(siteID: sampleSiteID,
+                                           productID: sampleProductID,
+                                           productVariationID: variation1.productVariationID,
+                                           thenReturn: .success(variation1))
+        remote.whenLoadingProductVariation(siteID: sampleSiteID,
+                                           productID: sampleProductID,
+                                           productVariationID: variation2.productVariationID,
+                                           thenReturn: .success(variation2))
+
+        let orderItems = [
+            sampleOrderItem(productID: sampleProductID, variationID: variation1.productVariationID),
+            sampleOrderItem(productID: sampleProductID, variationID: variation2.productVariationID),
+            sampleOrderItem(productID: sampleProductID, variationID: variationInStorage.productVariationID)
+        ]
+        let order = sampleOrder(items: orderItems)
+
+        // When
+        var error: Error?
+        waitForExpectation(count: 1) { expectation in
+            let action = ProductVariationAction.requestMissingVariations(for: order, onCompletion: { anError in
+                error = anError
+                expectation.fulfill()
+            })
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertNil(error)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 3)
+    }
+
+    func test_requestMissingVariations_does_not_make_network_requests_when_all_variations_are_in_storage() throws {
+        // Given
+        let remote = MockProductVariationsRemote()
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let variation1 = MockProductVariation().productVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: 1)
+        let variation2 = MockProductVariation().productVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: 2)
+        [variation1, variation2].forEach { storageManager.insertSampleProductVariation(readOnlyProductVariation: $0) }
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProductVariation.self), 2)
+
+        let orderItems = [
+            sampleOrderItem(productID: sampleProductID, variationID: variation1.productVariationID),
+            sampleOrderItem(productID: sampleProductID, variationID: variation2.productVariationID)
+        ]
+        let order = sampleOrder(items: orderItems)
+
+        // When
+        var error: Error?
+        waitForExpectation(count: 1) { expectation in
+            let action = ProductVariationAction.requestMissingVariations(for: order, onCompletion: { anError in
+                error = anError
+                expectation.fulfill()
+            })
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertNil(error)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 2)
+    }
+
+    func test_requestMissingVariations_returns_error_on_any_variation() throws {
+        // Given
+        let remote = MockProductVariationsRemote()
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let variation1 = MockProductVariation().productVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: 1)
+        let variation2 = MockProductVariation().productVariation(siteID: sampleSiteID, productID: sampleProductID, variationID: 2)
+        remote.whenLoadingProductVariation(siteID: sampleSiteID,
+                                           productID: sampleProductID,
+                                           productVariationID: variation1.productVariationID,
+                                           thenReturn: .success(variation1))
+        remote.whenLoadingProductVariation(siteID: sampleSiteID,
+                                           productID: sampleProductID,
+                                           productVariationID: variation2.productVariationID,
+                                           thenReturn: .failure(ProductVariationLoadError.unexpected))
+
+        let orderItems = [
+            sampleOrderItem(productID: sampleProductID, variationID: variation1.productVariationID),
+            sampleOrderItem(productID: sampleProductID, variationID: variation2.productVariationID)
+        ]
+        let order = sampleOrder(items: orderItems)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+
+        // When
+        var error: Error?
+        waitForExpectation(count: 1) { expectation in
+            let action = ProductVariationAction.requestMissingVariations(for: order, onCompletion: { anError in
+                error = anError
+                expectation.fulfill()
+            })
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(error as? ProductVariationLoadError, .requestMissingVariations)
+        // The successfully loaded variation should still be saved to storage.
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
     }
 }
 
@@ -550,6 +663,51 @@ private extension ProductVariationStoreTests {
                                 shippingClass: "",
                                 shippingClassID: 0,
                                 menuOrder: 8)
+    }
+
+    func sampleOrder(items: [Yosemite.OrderItem]) -> Yosemite.Order {
+        .init(siteID: sampleSiteID,
+              orderID: 963,
+              parentID: 0,
+              customerID: 11,
+              number: "963",
+              status: .processing,
+              currency: "USD",
+              customerNote: "",
+              dateCreated: dateFromGMT("2018-04-03T23:05:12"),
+              dateModified: dateFromGMT("2018-04-03T23:05:14"),
+              datePaid: dateFromGMT("2018-04-03T23:05:14"),
+              discountTotal: "30.00",
+              discountTax: "1.20",
+              shippingTotal: "0.00",
+              shippingTax: "0.00",
+              total: "31.20",
+              totalTax: "1.20",
+              paymentMethodID: "stripe",
+              paymentMethodTitle: "Credit Card (Stripe)",
+              items: items,
+              billingAddress: nil,
+              shippingAddress: nil,
+              shippingLines: [],
+              coupons: [],
+              refunds: [])
+    }
+
+    func sampleOrderItem(productID: Int64, variationID: Int64) -> Yosemite.OrderItem {
+        .init(itemID: 890,
+              name: "Fruits Basket (Mix & Match Product)",
+              productID: productID,
+              variationID: variationID,
+              quantity: 2,
+              price: NSDecimalNumber(integerLiteral: 30),
+              sku: "",
+              subtotal: "50.00",
+              subtotalTax: "2.00",
+              taxClass: "",
+              taxes: [.init(taxID: 1, subtotal: "2", total: "1.2")],
+              total: "30.00",
+              totalTax: "1.20",
+              attributes: [])
     }
 
     func dateFromGMT(_ dateStringInGMT: String) -> Date {

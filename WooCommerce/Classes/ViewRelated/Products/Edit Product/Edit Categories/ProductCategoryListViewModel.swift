@@ -128,10 +128,10 @@ private extension ProductCategoryListViewModel {
             self?.updateViewModelsArray()
 
             if let error = error {
-                ServiceLocator.analytics.track(.productCategoriyListLoadFailed, withError: error)
+                ServiceLocator.analytics.track(.productCategoryListLoadFailed, withError: error)
                 self?.handleSychronizeAllCategoriesError(error)
             } else {
-                ServiceLocator.analytics.track(.productCategoriyListLoaded)
+                ServiceLocator.analytics.track(.productCategoryListLoaded)
                 self?.syncCategoriesState = .synced
             }
         }

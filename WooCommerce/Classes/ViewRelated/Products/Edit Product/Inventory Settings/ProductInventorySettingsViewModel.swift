@@ -1,4 +1,5 @@
 import Yosemite
+import Observables
 
 /// Provides data needed for inventory settings.
 ///
@@ -39,6 +40,7 @@ protocol ProductInventorySettingsViewModelOutput {
 protocol ProductInventorySettingsActionHandler {
     // Input field actions
     func handleSKUChange(_ sku: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
+    func handleSKUFromBarcodeScanner(_ sku: String?, onValidation: @escaping (_ isValid: Bool, _ shouldBringUpKeyboard: Bool) -> Void)
     func handleManageStockEnabledChange(_ manageStockEnabled: Bool)
     func handleSoldIndividuallyChange(_ soldIndividually: Bool?)
     func handleStockQuantityChange(_ stockQuantity: String?)
@@ -145,6 +147,13 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
                 self?.stores.dispatch(action)
             }
         }
+    }
+
+    func handleSKUFromBarcodeScanner(_ sku: String?, onValidation: @escaping (Bool, Bool) -> Void) {
+        // Displays SKU before validation.
+        self.sku = sku
+        reloadSections()
+        handleSKUChange(sku, onValidation: onValidation)
     }
 
     func handleManageStockEnabledChange(_ manageStockEnabled: Bool) {

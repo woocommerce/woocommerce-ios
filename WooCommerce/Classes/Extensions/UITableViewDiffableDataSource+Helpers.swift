@@ -2,7 +2,6 @@ import UIKit
 
 /// Additional utilities for `UITableViewDiffableDataSource`.
 ///
-@available(iOS 13.0, *)
 extension UITableViewDiffableDataSource {
     /// Returns the index of the item pointed to by `indexPath` relative to the number of
     /// items in `snapshot()`.

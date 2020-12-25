@@ -41,7 +41,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
     ///
-    @available(iOS 13.0, *)
     private lazy var appleIDCredentialChecker = AppleIDCredentialChecker()
 
     // MARK: - AppDelegate Methods
@@ -51,27 +50,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // As first thing, setup the crash logging
         setupCrashLogging()
 
-        // Setup the Interface!
-        setupMainWindow()
-        setupComponentsAppearance()
-
         // Setup Components
         setupAnalytics()
         setupAuthenticationManager()
         setupCocoaLumberjack()
         setupLogLevel(.verbose)
-        setupNoticePresenter()
         setupPushNotificationsManagerIfPossible()
         setupAppRatingManager()
         setupWormholy()
         setupKeyboardStateProvider()
         handleLaunchArguments()
-        if #available(iOS 13.0, *) {
-            appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
-        }
-
-        // Start app navigation.
-        appCoordinator?.start()
+        appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
 
         // Components that require prior Auth
         setupZendesk()
@@ -86,6 +75,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+        // Setup the Interface!
+        setupMainWindow()
+        setupComponentsAppearance()
+        setupNoticePresenter()
+
+        // Start app navigation.
+        appCoordinator?.start()
+
         return true
     }
 
@@ -328,7 +326,7 @@ private extension AppDelegate {
             UIView.setAnimationsEnabled(false)
 
             /// Trick found at: https://twitter.com/twannl/status/1232966604142653446
-            UIApplication.shared.keyWindow?.layer.speed = 100
+            UIApplication.shared.currentKeyWindow?.layer.speed = 100
         }
     }
 }

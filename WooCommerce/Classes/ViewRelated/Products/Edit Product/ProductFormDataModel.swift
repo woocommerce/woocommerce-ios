@@ -19,7 +19,6 @@ protocol ProductFormDataModel {
     /// Whether the product model allows multiple images.
     func allowsMultipleImages() -> Bool
     /// Whether the product model's images can be deleted.
-    /// TODO-2576: always allows image deletion when the API issue is fixed for removing an image from a product variation.
     func isImageDeletionEnabled() -> Bool
 
     // Price
@@ -61,6 +60,10 @@ protocol ProductFormDataModel {
     var downloadableFiles: [ProductDownload] { get }
     var downloadLimit: Int64 { get }
     var downloadExpiry: Int64 { get }
+
+    // Linked Products
+    var upsellIDs: [Int64] { get }
+    var crossSellIDs: [Int64] { get }
 }
 
 // MARK: Helpers that can be derived from `ProductFormDataModel`

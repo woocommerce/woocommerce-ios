@@ -8,17 +8,17 @@ import XCTest
 ///
 final class ProductStoreTests: XCTestCase {
 
-    /// Mockup Dispatcher!
+    /// Mock Dispatcher!
     ///
     private var dispatcher: Dispatcher!
 
-    /// Mockup Storage: InMemory
+    /// Mock Storage: InMemory
     ///
-    private var storageManager: MockupStorageManager!
+    private var storageManager: MockStorageManager!
 
-    /// Mockup Network: Allows us to inject predefined responses!
+    /// Mock Network: Allows us to inject predefined responses!
     ///
-    private var network: MockupNetwork!
+    private var network: MockNetwork!
 
     /// Convenience Property: Returns the StorageType associated with the main thread.
     ///
@@ -56,8 +56,8 @@ final class ProductStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
-        storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        storageManager = MockStorageManager()
+        network = MockNetwork()
     }
 
     // MARK: - ProductAction.addProduct
@@ -68,7 +68,13 @@ final class ProductStoreTests: XCTestCase {
         let mockImage = ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
         let mockTag = ProductTag(siteID: 123, tagID: 1, name: "", slug: "")
         let mockDefaultAttribute = ProductDefaultAttribute(attributeID: 0, name: "Color", option: "Purple")
-        let mockAttribute = ProductAttribute(attributeID: 0, name: "Brand", position: 1, visible: true, variation: true, options: ["Unknown", "House"])
+        let mockAttribute = ProductAttribute(siteID: sampleSiteID,
+                                             attributeID: 0,
+                                             name: "Brand",
+                                             position: 1,
+                                             visible: true,
+                                             variation: true,
+                                             options: ["Unknown", "House"])
         let mockCategory = ProductCategory(categoryID: 36, siteID: 2, parentID: 1, name: "Events", slug: "events")
         let expectedProduct = MockProduct().product().copy(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -140,7 +146,13 @@ final class ProductStoreTests: XCTestCase {
         let mockImage = ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
         let mockTag = ProductTag(siteID: 123, tagID: 1, name: "", slug: "")
         let mockDefaultAttribute = ProductDefaultAttribute(attributeID: 0, name: "Color", option: "Purple")
-        let mockAttribute = ProductAttribute(attributeID: 0, name: "Brand", position: 1, visible: true, variation: true, options: ["Unknown", "House"])
+        let mockAttribute = ProductAttribute(siteID: sampleSiteID,
+                                             attributeID: 0,
+                                             name: "Brand",
+                                             position: 1,
+                                             visible: true,
+                                             variation: true,
+                                             options: ["Unknown", "House"])
         let mockCategory = ProductCategory(categoryID: 36, siteID: 2, parentID: 1, name: "Events", slug: "events")
         let expectedProduct = MockProduct().product().copy(siteID: sampleSiteID,
                                                            productID: sampleProductID,
@@ -183,7 +195,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductCategory.self), 1)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductImage.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 0)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 1)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
     }
@@ -698,8 +710,10 @@ final class ProductStoreTests: XCTestCase {
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
 
+        let dotComError = DotcomError.unknown(code: ProductLoadError.ErrorCode.invalidID.rawValue, message: nil)
+
         // Action
-        network.simulateError(requestUrlSuffix: "products/282", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "products/282", error: dotComError)
         let result: Result<Yosemite.Product, Error> = try waitFor { promise in
             let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
                 promise(result)
@@ -708,7 +722,8 @@ final class ProductStoreTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertNotNil(result.failure)
+        let error = try XCTUnwrap(result.failure as? ProductLoadError)
+        XCTAssertEqual(error, ProductLoadError.notFound)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
     }
 
@@ -1518,14 +1533,16 @@ private extension ProductStoreTests {
     }
 
     func sampleAttributes() -> [Networking.ProductAttribute] {
-        let attribute1 = ProductAttribute(attributeID: 0,
+        let attribute1 = ProductAttribute(siteID: sampleSiteID,
+                                          attributeID: 0,
                                           name: "Color",
                                           position: 1,
                                           visible: true,
                                           variation: true,
                                           options: ["Purple", "Yellow", "Hot Pink", "Lime Green", "Teal"])
 
-        let attribute2 = ProductAttribute(attributeID: 0,
+        let attribute2 = ProductAttribute(siteID: sampleSiteID,
+                                          attributeID: 0,
                                           name: "Size",
                                           position: 0,
                                           visible: true,
@@ -1674,7 +1691,8 @@ private extension ProductStoreTests {
     }
 
     func sampleAttributesMutated() -> [Networking.ProductAttribute] {
-        let attribute1 = ProductAttribute(attributeID: 0,
+        let attribute1 = ProductAttribute(siteID: sampleSiteID,
+                                          attributeID: 0,
                                           name: "Color",
                                           position: 0,
                                           visible: false,
@@ -1780,14 +1798,16 @@ private extension ProductStoreTests {
     }
 
     func sampleVariationTypeAttributes() -> [Networking.ProductAttribute] {
-        let attribute1 = ProductAttribute(attributeID: 0,
+        let attribute1 = ProductAttribute(siteID: sampleSiteID,
+                                          attributeID: 0,
                                           name: "Color",
                                           position: 0,
                                           visible: true,
                                           variation: true,
                                           options: ["Black"])
 
-        let attribute2 = ProductAttribute(attributeID: 0,
+        let attribute2 = ProductAttribute(siteID: sampleSiteID,
+                                          attributeID: 0,
                                           name: "Length",
                                           position: 0,
                                           visible: true,

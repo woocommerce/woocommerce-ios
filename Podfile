@@ -8,7 +8,9 @@ inhibit_all_warnings!
 use_frameworks! # Defaulting to use_frameworks! See pre_install hook below for static linking.
 use_modular_headers!
 
-platform :ios, '12.0'
+app_ios_deployment_target = Gem::Version.new('13.0')
+
+platform :ios, app_ios_deployment_target.version
 workspace 'WooCommerce.xcworkspace'
 
 ## Pods shared between all the targets
@@ -36,7 +38,7 @@ target 'WooCommerce' do
   pod 'Gridicons', '~> 1.0'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressAuthenticator', '~> 1.26.0'
+  pod 'WordPressAuthenticator', '~> 1.32.0'
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => ''
   # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
@@ -61,7 +63,7 @@ target 'WooCommerce' do
   pod 'Charts', '~> 3.6.0'
   pod 'ZendeskSupportSDK', '~> 5.0'
   pod 'Kingfisher', '~> 5.11.0'
-  pod 'Wormholy', '~> 1.6.2', :configurations => ['Debug']
+  pod 'Wormholy', '~> 1.6.4', :configurations => ['Debug']
 
   # Unit Tests
   # ==========
@@ -202,4 +204,16 @@ post_install do |installer|
   installer.pods_project.build_configuration_list.build_configurations.each do |configuration|
     configuration.build_settings['VALID_ARCHS'] = '$(ARCHS_STANDARD_64_BIT)'
   end
+
+  # Let Pods targets inherit deployment target from the app
+  # This solution is suggested here: https://github.com/CocoaPods/CocoaPods/issues/4859
+  # =====================================
+  #
+  installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |configuration|
+         pod_ios_deployment_target = Gem::Version.new(configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET'])
+         configuration.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET' if pod_ios_deployment_target <= app_ios_deployment_target
+      end
+  end
 end
+

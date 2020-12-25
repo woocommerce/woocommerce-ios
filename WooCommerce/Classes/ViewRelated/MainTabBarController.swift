@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import WordPressUI
+import Observables
 
 
 /// Enum representing the individual tabs

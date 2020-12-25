@@ -19,7 +19,20 @@ final class SurveyViewControllerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(mirror.webView.isLoading)
-        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.inAppFeedback.asURL())
+        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.inAppFeedback.asURL().tagPlatform("ios"))
+    }
+
+    func test_it_loads_the_correct_product_feedback_survey() throws {
+        // Given
+        let viewController = SurveyViewController(survey: .productsM4Feedback, onCompletion: {})
+
+        // When
+        _ = try XCTUnwrap(viewController.view)
+        let mirror = try self.mirror(of: viewController)
+
+        //Then
+        XCTAssertTrue(mirror.webView.isLoading)
+        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.productsM4Feedback.asURL().tagPlatform("ios").tagProductMilestone("4"))
     }
 
     func test_it_completes_after_receiving_a_form_submitted_completed_callback_request() throws {
@@ -125,14 +138,14 @@ final class SurveyViewControllerTests: XCTestCase {
 private extension SurveyViewControllerTests {
     struct SurveyViewControllerMirror {
         let webView: WKWebView
-        let loadingView: SurveyLoadingView
+        let loadingView: LoadingView
     }
 
     func mirror(of viewController: SurveyViewController) throws -> SurveyViewControllerMirror {
         let mirror = Mirror(reflecting: viewController)
         return SurveyViewControllerMirror(
             webView: try XCTUnwrap(mirror.descendant("webView") as? WKWebView),
-            loadingView: try XCTUnwrap(mirror.descendant("loadingView") as? SurveyLoadingView)
+            loadingView: try XCTUnwrap(mirror.descendant("loadingView") as? LoadingView)
         )
     }
 }

@@ -1,4 +1,5 @@
 import Yosemite
+import Observables
 
 /// Provides data for product form UI, and handles product editing actions.
 final class ProductFormViewModel: ProductFormViewModelProtocol {
@@ -246,6 +247,11 @@ extension ProductFormViewModel {
         product = EditableProductModel(product: product.product.copy(downloads: downloadableFiles,
                                                                      downloadLimit: downloadLimit,
                                                                      downloadExpiry: downloadExpiry))
+    }
+
+    func updateLinkedProducts(upsellIDs: [Int64], crossSellIDs: [Int64]) {
+        product = EditableProductModel(product: product.product.copy(upsellIDs: upsellIDs,
+                                                                     crossSellIDs: crossSellIDs))
     }
 }
 

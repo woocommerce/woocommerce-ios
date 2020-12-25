@@ -1,4 +1,5 @@
 import Yosemite
+import Observables
 
 /// Provides data for product form UI on a `ProductVariation`, and handles product editing actions.
 final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
@@ -222,6 +223,10 @@ extension ProductVariationFormViewModel {
     }
 
     func updateDownloadableFiles(downloadableFiles: [ProductDownload], downloadLimit: Int64, downloadExpiry: Int64) {
+        // no-op
+    }
+
+    func updateLinkedProducts(upsellIDs: [Int64], crossSellIDs: [Int64]) {
         // no-op
     }
 }

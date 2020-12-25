@@ -31,10 +31,7 @@ final class InProgressViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Deactivates the swipe to dismiss behavior for iOS 13+ card-like UI.
-        if #available(iOS 13.0, *) {
-            isModalInPresentation = true
-        }
+        isModalInPresentation = true
 
         configureBackgroundView()
         configureStackView()
@@ -73,11 +70,7 @@ private extension InProgressViewController {
     }
 
     func configureActivityIndicator() {
-        if #available(iOS 13.0, *) {
-            activityIndicatorView.style = .medium
-        } else {
-            activityIndicatorView.style = .gray
-        }
+        activityIndicatorView.style = .medium
         activityIndicatorView.color = .gray(.shade10)
     }
 

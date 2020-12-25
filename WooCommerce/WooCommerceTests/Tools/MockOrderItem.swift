@@ -16,7 +16,8 @@ public struct MockOrderItem {
                                   taxClass: String = "",
                                   taxes: [OrderItemTax] = [],
                                   total: String = "0",
-                                  totalTax: String = "0") -> OrderItem {
+                                  totalTax: String = "0",
+                                  attributes: [OrderItemAttribute] = []) -> OrderItem {
         return OrderItem(itemID: itemID,
                          name: name,
                          productID: productID,
@@ -29,6 +30,7 @@ public struct MockOrderItem {
                          taxClass: taxClass,
                          taxes: taxes,
                          total: total,
-                         totalTax: totalTax)
+                         totalTax: totalTax,
+                         attributes: attributes)
     }
 }

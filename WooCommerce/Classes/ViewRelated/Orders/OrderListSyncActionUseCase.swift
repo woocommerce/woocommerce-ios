@@ -83,10 +83,6 @@ struct OrderListSyncActionUseCase {
     let siteID: Int64
     /// The current filter mode of the Order List.
     let statusFilter: OrderStatus?
-    /// If true, orders created after today's day will be included in the result.
-    ///
-    /// This will generally only be false for the All Orders tab. All other screens should show orders in the future.
-    let includesFutureOrders: Bool
 
     /// Returns the action to use when synchronizing.
     func actionFor(pageNumber: Int,
@@ -94,7 +90,6 @@ struct OrderListSyncActionUseCase {
                    reason: SyncReason?,
                    completionHandler: @escaping (Error?) -> Void) -> OrderAction {
         let statusKey = statusFilter?.slug
-        let before = includesFutureOrders ? nil : Date().nextMidnight()
 
         if pageNumber == Defaults.pageFirstIndex {
             let deleteAllBeforeSaving = reason == SyncReason.pullToRefresh
@@ -102,7 +97,7 @@ struct OrderListSyncActionUseCase {
             return OrderAction.fetchFilteredAndAllOrders(
                 siteID: siteID,
                 statusKey: statusKey,
-                before: before,
+                before: nil,
                 deleteAllBeforeSaving: deleteAllBeforeSaving,
                 pageSize: pageSize,
                 onCompletion: completionHandler
@@ -112,7 +107,7 @@ struct OrderListSyncActionUseCase {
         return OrderAction.synchronizeOrders(
             siteID: siteID,
             statusKey: statusKey,
-            before: before,
+            before: nil,
             pageNumber: pageNumber,
             pageSize: pageSize,
             onCompletion: completionHandler

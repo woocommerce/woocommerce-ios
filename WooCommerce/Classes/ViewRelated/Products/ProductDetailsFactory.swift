@@ -20,7 +20,8 @@ struct ProductDetailsFactory {
                                 presentationStyle: presentationStyle,
                                 currencySettings: currencySettings,
                                 isEditProductsEnabled: forceReadOnly ? false: true,
-                                isEditProductsRelease5Enabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5))
+                                isEditProductsRelease5Enabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease5),
+                                isAddProductVariationsEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.addProductVariations))
         onCompletion(vc)
     }
 }
@@ -30,7 +31,8 @@ private extension ProductDetailsFactory {
                                presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings,
                                isEditProductsEnabled: Bool,
-                               isEditProductsRelease5Enabled: Bool) -> UIViewController {
+                               isEditProductsRelease5Enabled: Bool,
+                               isAddProductVariationsEnabled: Bool) -> UIViewController {
         let vc: UIViewController
         let productModel = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
@@ -44,7 +46,8 @@ private extension ProductDetailsFactory {
                                        eventLogger: ProductFormEventLogger(),
                                        productImageActionHandler: productImageActionHandler,
                                        presentationStyle: presentationStyle,
-                                       isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
+                                       isEditProductsRelease5Enabled: isEditProductsRelease5Enabled,
+                                       isAddProductVariationsEnabled: isAddProductVariationsEnabled)
         // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         vc.hidesBottomBarWhenPushed = true
         return vc

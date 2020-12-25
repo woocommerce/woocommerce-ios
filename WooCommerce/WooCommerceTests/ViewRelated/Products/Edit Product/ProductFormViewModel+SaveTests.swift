@@ -7,11 +7,11 @@ import Yosemite
 final class ProductFormViewModel_SaveTests: XCTestCase {
     private let defaultSiteID: Int64 = 134
 
-    private var storesManager: MockupStoresManager!
+    private var storesManager: MockStoresManager!
 
     override func setUp() {
         super.setUp()
-        storesManager = MockupStoresManager(sessionManager: SessionManager.testingInstance)
+        storesManager = MockStoresManager(sessionManager: SessionManager.testingInstance)
         ServiceLocator.setStores(storesManager)
     }
 

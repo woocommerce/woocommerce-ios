@@ -64,7 +64,11 @@ final class OrderDetailsViewController: UIViewController {
         super.viewWillAppear(animated)
         syncNotes()
         syncProducts()
+        syncProductVariations()
         syncRefunds()
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease1) {
+            syncShippingLabels()
+        }
         syncTrackingsHidingAddButtonIfNecessary()
     }
 
@@ -116,14 +120,6 @@ private extension OrderDetailsViewController {
             self.viewModel.updateOrderStatus(order: order)
             self.reloadTableViewSectionsAndData()
         }
-        entityListener.onDelete = { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            self.navigationController?.popViewController(animated: true)
-            self.displayOrderDeletedNotice(order: self.viewModel.order)
-        }
     }
 
     private func configureViewModel() {
@@ -137,6 +133,10 @@ private extension OrderDetailsViewController {
 
         viewModel.onCellAction = { [weak self] (actionType, indexPath) in
             self?.handleCellAction(actionType, at: indexPath)
+        }
+
+        viewModel.onShippingLabelMoreMenuTapped = { [weak self] shippingLabel, sourceView in
+            self?.shippingLabelMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         }
     }
 
@@ -185,12 +185,6 @@ private extension OrderDetailsViewController {
 //
 private extension OrderDetailsViewController {
 
-    /// Displays a Notice onscreen, indicating that the current Order has been deleted from the Store.
-    ///
-    func displayOrderDeletedNotice(order: Order) {
-        notices.displayOrderDeletedNotice(order: order)
-    }
-
     /// Displays the `Unable to delete tracking` Notice.
     ///
     func displayDeleteErrorNotice(order: Order, tracking: ShipmentTracking) {
@@ -219,7 +213,17 @@ extension OrderDetailsViewController {
         }
 
         group.enter()
+        syncProductVariations { _ in
+            group.leave()
+        }
+
+        group.enter()
         syncRefunds() { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncShippingLabels() { _ in
             group.leave()
         }
 
@@ -269,8 +273,16 @@ private extension OrderDetailsViewController {
         viewModel.syncProducts(onCompletion: onCompletion)
     }
 
+    func syncProductVariations(onCompletion: ((Error?) -> ())? = nil) {
+        viewModel.syncProductVariations(onCompletion: onCompletion)
+    }
+
     func syncRefunds(onCompletion: ((Error?) -> ())? = nil) {
         viewModel.syncRefunds(onCompletion: onCompletion)
+    }
+
+    func syncShippingLabels(onCompletion: ((Error?) -> ())? = nil) {
+        viewModel.syncShippingLabels(onCompletion: onCompletion)
     }
 
     func deleteTracking(_ tracking: ShipmentTracking) {
@@ -304,6 +316,15 @@ private extension OrderDetailsViewController {
             trackingWasPressed(at: indexPath)
         case .issueRefund:
             issueRefundWasPressed()
+        case .reprintShippingLabel(let shippingLabel):
+            guard let navigationController = navigationController else {
+                assertionFailure("Cannot reprint a shipping label because `navigationController` is nil")
+                return
+            }
+            let coordinator = ReprintShippingLabelCoordinator(shippingLabel: shippingLabel, sourceViewController: navigationController)
+            coordinator.showReprintUI()
+        case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
+            shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         }
     }
 
@@ -332,15 +353,60 @@ private extension OrderDetailsViewController {
     }
 
     func issueRefundWasPressed() {
-        // TODO: Migrate to a CoordinatingController https://github.com/woocommerce/woocommerce-ios/issues/2844
-        let issueRefundViewController = IssueRefundViewController(order: viewModel.order, refunds: viewModel.refunds)
-        let navigationController = WooNavigationController(rootViewController: issueRefundViewController)
-        present(navigationController, animated: true)
+        let issueRefundCoordinatingController = IssueRefundCoordinatingController(order: viewModel.order, refunds: viewModel.refunds)
+        present(issueRefundCoordinatingController, animated: true)
     }
 
     func displayWebView(url: URL) {
         let safariViewController = SFSafariViewController(url: url)
         present(safariViewController, animated: true, completion: nil)
+    }
+
+    func shippingLabelMoreMenuTapped(shippingLabel: ShippingLabel, sourceView: UIView) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        actionSheet.addCancelActionWithTitle(Localization.ShippingLabelMoreMenu.cancelAction)
+
+        actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.requestRefundAction) { [weak self] _ in
+            let refundViewController = RefundShippingLabelViewController(shippingLabel: shippingLabel) { [weak self] in
+                self?.navigationController?.popViewController(animated: true)
+            }
+            // Disables the bottom bar (tab bar) when requesting a refund.
+            refundViewController.hidesBottomBarWhenPushed = true
+            self?.show(refundViewController, sender: self)
+        }
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.sourceView = sourceView
+
+        present(actionSheet, animated: true)
+    }
+
+    func shippingLabelTrackingMoreMenuTapped(shippingLabel: ShippingLabel, sourceView: UIView) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        actionSheet.addCancelActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.cancelAction)
+
+        actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.copyTrackingNumberAction) { [weak self] _ in
+            self?.viewModel.dataSource.sendToPasteboard(shippingLabel.trackingNumber, includeTrailingNewline: false)
+        }
+
+        // Only shows the tracking action when there is a tracking URL.
+        if let url = ShippingLabelTrackingURLGenerator.url(for: shippingLabel) {
+            actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.trackShipmentAction) { [weak self] _ in
+                guard let self = self else { return }
+                let safariViewController = SFSafariViewController(url: url)
+                safariViewController.modalPresentationStyle = .pageSheet
+                self.present(safariViewController, animated: true, completion: nil)
+            }
+        }
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.sourceView = sourceView
+
+        present(actionSheet, animated: true)
     }
 }
 
@@ -486,6 +552,24 @@ private extension OrderDetailsViewController {
         static let copyTrackingNumber = NSLocalizedString("Copy Tracking Number", comment: "Copy tracking number button title")
         static let trackShipment = NSLocalizedString("Track Shipment", comment: "Track shipment button title")
         static let deleteTracking = NSLocalizedString("Delete Tracking", comment: "Delete tracking button title")
+    }
+
+    enum Localization {
+        enum ShippingLabelMoreMenu {
+            static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the shipping label more menu action sheet")
+            static let requestRefundAction = NSLocalizedString("Request a Refund",
+                                                               comment: "Request a refund on a shipping label from the shipping label more menu action sheet")
+        }
+
+        enum ShippingLabelTrackingMoreMenu {
+            static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the shipping label tracking more menu action sheet")
+            static let copyTrackingNumberAction =
+                NSLocalizedString("Copy tracking number",
+                                  comment: "Copy tracking number of a shipping label from the shipping label tracking more menu action sheet")
+            static let trackShipmentAction =
+                NSLocalizedString("Track shipment",
+                                  comment: "Track shipment of a shipping label from the shipping label tracking more menu action sheet")
+        }
     }
 
     enum Constants {

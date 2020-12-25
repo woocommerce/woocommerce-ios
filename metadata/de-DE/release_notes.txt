@@ -1,5 +1,0 @@
-- Du kannst jetzt Rückerstattungen zu einer Bestellung anzeigen.
-- Das Badge „Auszuführende Bestellungen“ hat jetzt einen Maximalwert von 99 und zeigt für alle Werte über 99 „99+“ an. Vorher wurde „9+“ angezeigt.
-- Einen Fehler behoben, bei dem lange Produktnamen bewirken konnten, dass die Produktmenge bei der Anzeige einer Bestellung verschwinden.
-- Produktnamen mit HTML-Escape-Zeichen sollten jetzt korrekt angezeigt werden.
-- Wenn eine Bestellung aus mehreren Produkten besteht, sollte durch Tippen auf ein Produkt das korrekte Produkt geöffnet werden.

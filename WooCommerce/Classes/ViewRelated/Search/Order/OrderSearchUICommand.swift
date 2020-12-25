@@ -3,7 +3,7 @@ import Yosemite
 /// Implementation of `SearchUICommand` for Order search.
 final class OrderSearchUICommand: SearchUICommand {
     typealias Model = Order
-    typealias CellViewModel = OrderSearchCellViewModel
+    typealias CellViewModel = OrderListCellViewModel
     typealias ResultsControllerModel = StorageOrder
 
     private lazy var featureFlagService = ServiceLocator.featureFlagService
@@ -52,11 +52,9 @@ final class OrderSearchUICommand: SearchUICommand {
         viewController.configure(.simple(message: message, image: .emptySearchResultsImage))
     }
 
-    func createCellViewModel(model: Order) -> OrderSearchCellViewModel {
-        let orderDetailsViewModel = OrderDetailsViewModel(order: model)
+    func createCellViewModel(model: Order) -> OrderListCellViewModel {
         let orderStatus = lookUpOrderStatus(for: model)
-        return OrderSearchCellViewModel(orderDetailsViewModel: orderDetailsViewModel,
-                                        orderStatus: orderStatus)
+        return OrderListCellViewModel(order: model, status: orderStatus)
     }
 
     /// Synchronizes the Orders matching a given Keyword

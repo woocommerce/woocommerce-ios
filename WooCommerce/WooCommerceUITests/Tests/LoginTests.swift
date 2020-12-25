@@ -1,6 +1,6 @@
 import XCTest
 
-class LoginTests: XCTestCase {
+final class LoginTests: XCTestCase {
 
     override func setUp() {
         continueAfterFailure = false
@@ -11,23 +11,44 @@ class LoginTests: XCTestCase {
         app.launch()
     }
 
-    func testEmailPasswordLoginLogout() {
-        // Log in with email and password
-        WelcomeScreen()
-        .selectLogin()
-        .proceedWith(email: TestCredentials.emailAddress)
-        .proceedWithPassword()
-        .proceedWith(password: TestCredentials.password)
+    // Login with Store Address and log out.
+    func test_site_address_login_logout() {
+        let prologue = PrologueScreen().selectSiteAddress()
+            .proceedWith(siteUrl: TestCredentials.siteUrl)
+            .proceedWith(email: TestCredentials.emailAddress)
+            .proceedWith(password: TestCredentials.password)
+            .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)
+            .continueWithSelectedSite()
 
-        // Login epilogue
-        .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)
-        .continueWithSelectedSite()
+            // Log out
+            .openSettingsPane()
+            .verifySelectedStoreDisplays(siteUrl: TestCredentials.siteUrl, displayName: TestCredentials.displayName)
+            .logOut()
 
-        // Log out
-        .openSettingsPane()
-        .verifySelectedStoreDisplays(siteUrl: TestCredentials.siteUrl, displayName: TestCredentials.displayName)
-        .logOut()
 
-        XCTAssert(WelcomeScreen.isLoaded())
+        XCTAssert(prologue.isLoaded())
+    }
+
+    //Login with WordPress.com account and log out
+    func test_WordPress_login_logout() {
+        let prologue = PrologueScreen().selectContinueWithWordPress()
+            .proceedWith(email: TestCredentials.emailAddress)
+            .proceedWith(password: TestCredentials.password)
+            .verifyEpilogueDisplays(displayName: TestCredentials.displayName, siteUrl: TestCredentials.siteUrl)
+            .continueWithSelectedSite()
+
+            // Log out
+            .openSettingsPane()
+            .verifySelectedStoreDisplays(siteUrl: TestCredentials.siteUrl, displayName: TestCredentials.displayName)
+            .logOut()
+
+        XCTAssert(prologue.isLoaded())
+    }
+
+    func test_WordPress_unsuccessfull_login() {
+        _ = PrologueScreen().selectContinueWithWordPress()
+            .proceedWith(email: TestCredentials.emailAddress)
+            .tryProceed(password: "invalidPswd")
+            .verifyLoginError()
     }
 }

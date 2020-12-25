@@ -13,6 +13,12 @@ extension UIImage {
         return UIImage.gridicon(.addOutline)
     }
 
+    /// Arrow Up Icon
+    ///
+    static var arrowUp: UIImage {
+        return UIImage.gridicon(.arrowUp)
+    }
+
     /// Notice Icon
     ///
     static var noticeImage: UIImage {
@@ -123,6 +129,12 @@ extension UIImage {
         return UIImage.gridicon(.comment)
     }
 
+    /// Credit Card Icon
+    ///
+    static var creditCardImage: UIImage {
+        UIImage.gridicon(.creditCard)
+    }
+
     /// Delete Icon
     ///
     static var deleteImage: UIImage {
@@ -219,6 +231,18 @@ extension UIImage {
         return UIImage.gridicon(.heartOutline)
     }
 
+    /// House Image
+    ///
+    static var houseImage: UIImage {
+        UIImage.gridicon(.house)
+    }
+
+    /// House Outlined Image
+    ///
+    static var houseOutlinedImage: UIImage {
+        UIImage(imageLiteralResourceName: "icon-house-outlined")
+    }
+
     /// Login prologue slanted rectangle
     ///
     static var slantedRectangle: UIImage {
@@ -229,6 +253,12 @@ extension UIImage {
     ///
     static var inventoryImage: UIImage {
         return UIImage.gridicon(.listCheckmark, size: CGSize(width: 24, height: 24))
+    }
+
+    /// Linked Products Icon
+    ///
+    static var linkedProductsImage: UIImage {
+        return UIImage.gridicon(.reblog, size: CGSize(width: 24, height: 24))
     }
 
     /// Jetpack Logo Image
@@ -247,6 +277,12 @@ extension UIImage {
     ///
     static var infoOutlineImage: UIImage {
         return UIImage.gridicon(.infoOutline)
+    }
+
+    /// Info Outline Icon (footnote)
+    ///
+    static var infoOutlineFootnoteImage: UIImage {
+        .gridicon(.infoOutline, size: CGSize(width: 20, height: 20))
     }
 
     /// Files Download Icon
@@ -273,6 +309,12 @@ extension UIImage {
         return UIImage.gridicon(.link)
     }
 
+    /// Location Image
+    ///
+    static var locationImage: UIImage {
+        UIImage.gridicon(.location)
+    }
+
     /// Login magic link
     ///
     static var loginMagicLinkImage: UIImage {
@@ -283,6 +325,18 @@ extension UIImage {
     ///
     static var loginSiteAddressInfoImage: UIImage {
         return UIImage(named: "login-site-address-info")!
+    }
+
+    /// Login error: no Jetpack
+    ///
+    static var loginNoJetpackError: UIImage {
+        return UIImage(named: "woo-no-jetpack-error")!.imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Login error: no WordPress
+    ///
+    static var loginNoWordPressError: UIImage {
+        return UIImage(named: "woo-wp-no-site")!.imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Mail Icon
@@ -362,6 +416,13 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Pages Icon (footnote)
+    ///
+    static var pagesFootnoteImage: UIImage {
+        return UIImage.gridicon(.pages, size: CGSize(width: 20, height: 20))
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Plus Icon
     ///
     static var plusImage: UIImage {
@@ -427,6 +488,12 @@ extension UIImage {
         return UIImage.gridicon(.starOutline, size: starSize)
     }
 
+    /// Sync Icon
+    ///
+    static var syncIcon: UIImage {
+        return UIImage.gridicon(.sync)
+    }
+
     /// Stats Icon
     ///
     static var statsImage: UIImage {
@@ -453,8 +520,7 @@ extension UIImage {
         return UIImage(named: "icon-widgets")!.withRenderingMode(.alwaysTemplate)
     }
 
-
-    static var syncImage: UIImage {
+    static var syncDotIcon: UIImage {
         return UIImage(imageLiteralResourceName: "icon-sync-dot")
     }
 
@@ -482,6 +548,12 @@ extension UIImage {
         return UIImage(imageLiteralResourceName: "megaphone").imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Error image
+    ///
+    static var errorImage: UIImage {
+        return UIImage(imageLiteralResourceName: "woo-error").imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Creates a bitmap image of the Woo "bubble" logo based on a vector image in our asset catalog.
     ///
     /// - Parameters:
@@ -504,6 +576,12 @@ extension UIImage {
     ///
     static var waitingForCustomersImage: UIImage {
         return UIImage(named: "woo-waiting-customers")!
+    }
+
+    /// What is Jetpack Image
+    ///
+    static var whatIsJetpackImage: UIImage {
+        return UIImage(named: "woo-what-is-jetpack")!
     }
 }
 

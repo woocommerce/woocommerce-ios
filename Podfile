@@ -38,7 +38,7 @@ target 'WooCommerce' do
   pod 'Gridicons', '~> 1.0'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressAuthenticator', '~> 1.32.0'
+  pod 'WordPressAuthenticator', '~> 1.28.0'
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
   # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => ''
   # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
@@ -47,6 +47,10 @@ target 'WooCommerce' do
 
   pod 'WordPressUI', '~> 1.7.2'
   # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
+
+  # Necessary to make WordPressAuthenticator pin its dependency with WordPressKit to a version that does not break WPAuthenticator itself. Otherwise WPAuthenticator will pull a beta of WPKit. 
+  # This will be removed when UL&S is added back again.
+  pod 'WordPressKit', '4.23.0'
 
   aztec
 

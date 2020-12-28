@@ -9,11 +9,16 @@ extension UINavigationBar {
     /// Applies the default WC's Appearance
     ///
     class func applyWooAppearance() {
-        let appearance = UINavigationBar.appearance()
-        appearance.barTintColor = .basicBackground
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .appBar
         appearance.titleTextAttributes = [.foregroundColor: UIColor.text]
-        appearance.isTranslucent = false
-        appearance.tintColor = .accent
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.text]
+
+        UINavigationBar.appearance().tintColor = .accent
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().compactAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
 
     /// Applies UIKit's Default Appearance

@@ -18,6 +18,10 @@ enum FeatureFlag: Int {
     ///
     case addProductVariations
 
+    /// Large titles on the main tabs
+    ///
+    case largeTitles
+
     /// Product Reviews
     ///
     case reviews

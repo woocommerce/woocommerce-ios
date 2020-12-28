@@ -33,11 +33,6 @@ class WooTabNavigationController: UINavigationController {
         self.delegate = navigationControllerDelegate
     }
 
-    override init(rootViewController: UIViewController) {
-        super.init(rootViewController: rootViewController)
-        self.delegate = navigationControllerDelegate
-    }
-
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -46,9 +41,11 @@ class WooTabNavigationController: UINavigationController {
         return .default
     }
 
-    func addViewControllerWithLargeTitle(_ viewController: UIViewController) {
+    func addViewController(_ viewController: UIViewController, isLargeTitlesEnabled: Bool) {
         viewControllers.append(viewController)
-        navigationControllerDelegate.addViewControllerWithLargeTitle(viewController)
+        if isLargeTitlesEnabled {
+            navigationControllerDelegate.addViewControllerWithLargeTitle(viewController)
+        }
     }
 }
 

@@ -70,7 +70,7 @@ final class MainTabBarController: UITabBarController {
     /// Used for overriding the status bar style for all child view controllers
     ///
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .default
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) ? .default: StyleManager.statusBarLight
     }
 
     /// Notifications badge
@@ -369,15 +369,17 @@ private extension MainTabBarController {
             return
         }
 
+        let isLargeTitlesEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles)
+
         // Initialize each tab's root view controller
         let dashboardViewController = createDashboardViewController(siteID: siteID)
-        dashboardNavigationController.addViewControllerWithLargeTitle(dashboardViewController)
+        dashboardNavigationController.addViewController(dashboardViewController, isLargeTitlesEnabled: isLargeTitlesEnabled)
 
         let ordersViewController = createOrdersViewController(siteID: siteID)
-        ordersNavigationController.addViewControllerWithLargeTitle(ordersViewController)
+        ordersNavigationController.addViewController(ordersViewController, isLargeTitlesEnabled: isLargeTitlesEnabled)
 
         let productsViewController = createProductsViewController(siteID: siteID)
-        productsNavigationController.addViewControllerWithLargeTitle(productsViewController)
+        productsNavigationController.addViewController(productsViewController, isLargeTitlesEnabled: isLargeTitlesEnabled)
 
         let reviewsTabCoordinator = createReviewsTabCoordinator(siteID: siteID)
         self.reviewsTabCoordinator = reviewsTabCoordinator

@@ -37,7 +37,8 @@ final class ReviewsCoordinator: Coordinator {
 
         self.navigationController = navigationController
         let reviewsViewController = ReviewsViewController(siteID: siteID)
-        navigationController.addViewControllerWithLargeTitle(reviewsViewController)
+        navigationController.addViewController(reviewsViewController,
+                                               isLargeTitlesEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles))
     }
 
     convenience init(siteID: Int64, navigationController: WooTabNavigationController, willPresentReviewDetailsFromPushNotification: @escaping () -> Void) {

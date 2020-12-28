@@ -144,8 +144,13 @@ extension UIColor {
     /// App Navigation Bar.
     ///
     static var appBar: UIColor {
-        return UIColor(light: .white,
-                       dark: .black)
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
+            return UIColor(light: .white,
+                           dark: .black)
+        } else {
+            return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
+                           dark: .systemColor(.secondarySystemGroupedBackground))
+        }
     }
 
     /// App Tab Bar.

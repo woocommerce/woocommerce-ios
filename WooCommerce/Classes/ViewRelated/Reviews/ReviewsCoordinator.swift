@@ -22,7 +22,7 @@ final class ReviewsCoordinator: Coordinator {
     private let willPresentReviewDetailsFromPushNotification: () -> Void
 
     init(siteID: Int64,
-         navigationController: UINavigationController,
+         navigationController: WooTabNavigationController,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          storesManager: StoresManager = ServiceLocator.stores,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
@@ -36,10 +36,11 @@ final class ReviewsCoordinator: Coordinator {
         self.willPresentReviewDetailsFromPushNotification = willPresentReviewDetailsFromPushNotification
 
         self.navigationController = navigationController
-        navigationController.viewControllers = [ReviewsViewController(siteID: siteID)]
+        let reviewsViewController = ReviewsViewController(siteID: siteID)
+        navigationController.addViewControllerWithLargeTitle(reviewsViewController)
     }
 
-    convenience init(siteID: Int64, navigationController: UINavigationController, willPresentReviewDetailsFromPushNotification: @escaping () -> Void) {
+    convenience init(siteID: Int64, navigationController: WooTabNavigationController, willPresentReviewDetailsFromPushNotification: @escaping () -> Void) {
         let storesManager = ServiceLocator.stores
         self.init(siteID: siteID,
                   navigationController: navigationController,

@@ -70,7 +70,7 @@ final class MainTabBarController: UITabBarController {
     /// Used for overriding the status bar style for all child view controllers
     ///
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return StyleManager.statusBarLight
+        return .default
     }
 
     /// Notifications badge
@@ -83,10 +83,10 @@ final class MainTabBarController: UITabBarController {
 
     /// Tab view controllers
     ///
-    private let dashboardNavigationController: UINavigationController = WooNavigationController()
-    private let ordersNavigationController: UINavigationController = WooNavigationController()
-    private let productsNavigationController: UINavigationController = WooNavigationController()
-    private let reviewsNavigationController: UINavigationController = WooNavigationController()
+    private let dashboardNavigationController = WooTabNavigationController()
+    private let ordersNavigationController = WooTabNavigationController()
+    private let productsNavigationController = WooTabNavigationController()
+    private let reviewsNavigationController = WooTabNavigationController()
     private var reviewsTabCoordinator: Coordinator?
 
     private var cancellableSiteID: ObservationToken?
@@ -336,11 +336,6 @@ extension MainTabBarController {
 //
 private extension MainTabBarController {
     func configureTabViewControllers() {
-        [dashboardNavigationController, ordersNavigationController, productsNavigationController, reviewsNavigationController].forEach { navigationController in
-            navigationController.navigationBar.prefersLargeTitles = true
-            navigationController.view.backgroundColor = .basicBackground
-        }
-
         viewControllers = {
             var controllers = [UIViewController]()
 
@@ -376,13 +371,13 @@ private extension MainTabBarController {
 
         // Initialize each tab's root view controller
         let dashboardViewController = createDashboardViewController(siteID: siteID)
-        dashboardNavigationController.viewControllers = [dashboardViewController]
+        dashboardNavigationController.addViewControllerWithLargeTitle(dashboardViewController)
 
         let ordersViewController = createOrdersViewController(siteID: siteID)
-        ordersNavigationController.viewControllers = [ordersViewController]
+        ordersNavigationController.addViewControllerWithLargeTitle(ordersViewController)
 
         let productsViewController = createProductsViewController(siteID: siteID)
-        productsNavigationController.viewControllers = [productsViewController]
+        productsNavigationController.addViewControllerWithLargeTitle(productsViewController)
 
         let reviewsTabCoordinator = createReviewsTabCoordinator(siteID: siteID)
         self.reviewsTabCoordinator = reviewsTabCoordinator

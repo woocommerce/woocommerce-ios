@@ -144,8 +144,8 @@ extension UIColor {
     /// App Navigation Bar.
     ///
     static var appBar: UIColor {
-        return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
-                       dark: .systemColor(.secondarySystemGroupedBackground))
+        return UIColor(light: .white,
+                       dark: .black)
     }
 
     /// App Tab Bar.

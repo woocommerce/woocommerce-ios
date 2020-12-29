@@ -1,0 +1,2 @@
+Appen har nu stöd för iOS 13 och uppåt, vilket möjliggör snabbare funktionsutveckling.
+Vi har förbättrat felhanteringen i inloggningsflödet, åtgärdat ett fel som förhindrade att miniatyrbilder för produktvariationer visades på beställningsinformationsskärmen och centrerat sidfotens spinnare vertikalt och horisontellt.

@@ -1,0 +1,2 @@
+Uygulama artık daha hızlı özellik geliştirmeye olanak tanıyacak olan iOS 13 ve üzerini destekliyor.
+Giriş akışındaki hata işlemeyi iyileştirdik, sipariş ayrıntıları ekranında ürün varyasyonları için küçük resimlerin görünmesini engelleyen bir hatayı düzelttik ve altbilgi döndürücüyü dikey ve yatay olarak ortaladık.

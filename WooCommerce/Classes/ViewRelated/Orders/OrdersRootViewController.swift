@@ -25,6 +25,9 @@ final class OrdersRootViewController: UIViewController {
         return UIView(frame: .zero)
     }()
 
+    // Used to trick the navigation bar for large title.
+    private let hiddenScrollView = UIScrollView()
+
     private let siteID: Int64
 
     // MARK: View Lifecycle
@@ -92,6 +95,14 @@ private extension OrdersRootViewController {
     }
 
     func configureContainerView() {
+        hiddenScrollView.contentInsetAdjustmentBehavior = .never
+        hiddenScrollView.isHidden = true
+        hiddenScrollView.bounces = false
+        // Add the "hidden" scroll view to the root of the UIViewController.
+        view.addSubview(hiddenScrollView)
+        hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToAllEdges(hiddenScrollView, insets: .init(top: 44, left: 0, bottom: 0, right: 0))
+
         // A container view is added to respond to safe area insets from the view controller.
         // This is needed when the child view controller's view has to use a frame-based layout
         // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
@@ -105,5 +116,15 @@ private extension OrdersRootViewController {
         addChild(ordersViewController)
         containerView.addSubview(contentView)
         ordersViewController.didMove(toParent: self)
+
+        ordersViewController.scrollDelegate = self
+    }
+}
+
+extension OrdersRootViewController: OrdersTabbedViewControllerScrollDelegate {
+    func orderListScrollViewDidScroll(_ scrollView: UIScrollView) {
+        hiddenScrollView.contentSize = scrollView.contentSize
+        hiddenScrollView.contentOffset = scrollView.contentOffset
+        hiddenScrollView.panGestureRecognizer.state = scrollView.panGestureRecognizer.state
     }
 }

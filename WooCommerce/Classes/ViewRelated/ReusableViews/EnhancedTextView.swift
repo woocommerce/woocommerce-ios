@@ -10,7 +10,6 @@ final class EnhancedTextView: UITextView {
     var placeholder: String? {
         didSet {
             placeholderLabel?.text = placeholder
-            placeholderLabel?.sizeToFit()
         }
     }
     private var placeholderLabel: UILabel?
@@ -63,10 +62,13 @@ private extension EnhancedTextView {
             addSubview(label)
 
             // Make placeholder left/right margins same as for the text container
+            let leftPadding = textContainer.lineFragmentPadding + textContainerInset.left
+            let rightPadding = textContainer.lineFragmentPadding + textContainerInset.right
             NSLayoutConstraint.activate([
-                label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: textContainer.lineFragmentPadding + textContainerInset.left),
-                label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -(textContainer.lineFragmentPadding + textContainerInset.right)),
-                label.topAnchor.constraint(equalTo: topAnchor, constant: Constants.margin)
+                label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: leftPadding),
+                label.widthAnchor.constraint(equalTo: widthAnchor, constant: -(leftPadding + rightPadding)),
+                label.topAnchor.constraint(equalTo: topAnchor, constant: Constants.margin),
+                label.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor, constant: -Constants.margin)
             ])
 
             label.numberOfLines = 0

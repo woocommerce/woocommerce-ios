@@ -20,12 +20,10 @@ class TabbedViewController: UIViewController {
     }
 
     private let items: [TabbedItem]
-    private let onDismiss: (() -> Void)?
 
-    private lazy var tabBar: FilterTabBar = {
+    private(set) lazy var tabBar: FilterTabBar = {
         let bar = FilterTabBar()
         configureFilterTabBar(bar)
-        bar.tabSizingStyle = .equalWidths
         bar.translatesAutoresizingMaskIntoConstraints = false
         bar.addTarget(self, action: #selector(changedItem(sender:)), for: .valueChanged)
         return bar
@@ -50,24 +48,19 @@ class TabbedViewController: UIViewController {
         }
     }
 
-    init(items: [TabbedItem], onDismiss: (() -> Void)? = nil) {
+    init(items: [TabbedItem], tabSizingStyle: FilterTabBar.TabSizingStyle) {
         self.items = items
-        self.onDismiss = onDismiss
-        super.init(nibName: nil, bundle: nil)
-        tabBar.items = items
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(donePressed))
+        super.init(nibName: nil, bundle: nil)
+
+        tabBar.tabSizingStyle = tabSizingStyle
+        tabBar.items = items
 
         stackView.addArrangedSubview(tabBar)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    @objc func donePressed() {
-        onDismiss?()
-        dismiss(animated: true, completion: nil)
     }
 
     override func viewDidLoad() {

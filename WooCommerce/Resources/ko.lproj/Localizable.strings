@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-12-10 15:54:04+0000 */
+/* Translation-Revision-Date: 2020-12-24 10:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -31,7 +31,7 @@
 "%1$@ left a review on %2$@" = "%1$@ left a review on %2$@";
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
-"%1$@ refund requested (%2$@)" = "%1$@ refund requested (%2$@)";
+"%1$@ refund requested (%2$@)" = "%1$@ 환불 요청됨(%2$@)";
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%2$@을(를) 통한 %1$@";
@@ -40,7 +40,7 @@
 "%1$@ x %2$@" = "%1$@ x %2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
-"%1$@ • %2$@" = "%1$@ • %2$@";
+"%1$@ • %2$@" = "%1$@• %2$@";
 
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
@@ -58,7 +58,7 @@
 "%@ Items" = "%@개 항목";
 
 /* Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS). */
-"%@ label refund requested" = "%@ label refund requested";
+"%@ label refund requested" = "%@ 레이블 환불 요청됨";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%@ left a review on %@" = "%@ left a review on %@";
@@ -215,7 +215,7 @@
 "Add a tracking" = "추적 추가";
 
 /* Add Product Attribute screen navigation title */
-"Add attribute" = "Add attribute";
+"Add attribute" = "속성 추가";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -234,7 +234,7 @@
 "Add products' downloadable files' info remotely" = "원격으로 제품의 다운로드 가능한 파일의 정보 입력";
 
 /* Title for adding variations row on Product main screen for a variable product */
-"Add variations" = "Add variations";
+"Add variations" = "변형 추가";
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "무게 및 치수 추가";
@@ -270,7 +270,7 @@
 "Alternatively:" = "또는:";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
-"Amount Eligible For Refund" = "Amount Eligible For Refund";
+"Amount Eligible For Refund" = "환불 가능 금액";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "메뉴를 만드는 중에 오류가 발생했습니다.";
@@ -334,7 +334,7 @@
 "Are you sure you want to remove this image?" = "이 이미지를 제거하시겠습니까?";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
-"Attribute name" = "Attribute name";
+"Attribute name" = "속성 이름";
 
 /* No comment provided by engineer. */
 "Authenticating" = "인증하기";
@@ -506,7 +506,7 @@
 "Continue" = "계속";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
-"Continue With WordPress.com" = "Continue With WordPress.com";
+"Continue With WordPress.com" = "워드프레스닷컴 계속";
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "계속 읽기";
@@ -534,7 +534,7 @@
 "Copy email address" = "이메일 주소 복사";
 
 /* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
-"Copy tracking number" = "Copy tracking number";
+"Copy tracking number" = "추적 번호 복사";
 
 /* The title of the button for giving a negative feedback for the app. */
 "Could Be Better" = "별로";
@@ -579,7 +579,7 @@
 "Creating products" = "제품 만들기";
 
 /* Credit card payment method for shipping label. */
-"Credit card" = "Credit card";
+"Credit card" = "신용카드";
 
 /* Cell title for Cross-sells products in Linked Products Settings screen */
 "Cross-sells" = "교차 판매";
@@ -691,10 +691,10 @@
 "Done" = "완료";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
-"Don’t know how to print from your device?" = "Don’t know how to print from your device?";
+"Don’t know how to print from your device?" = "장치에서 인쇄하는 방법을 모르시나요?";
 
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
-"Don’t know how to print from your phone?" = "Don’t know how to print from your phone?";
+"Don’t know how to print from your phone?" = "휴대폰에서 인쇄하는 방법을 모르시나요?";
 
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [(code)] (theMessage)" = "닷컴 오류: [(code)] (theMessage)";
@@ -805,14 +805,14 @@
 "Enjoying the WooCommerce app?" = "WooCommerce 앱이 마음에 드시나요?";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
-"Enter Another Store" = "Enter Another Store";
+"Enter Another Store" = "다른 스토어 입력";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "URL 입력";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account
    Button title. Takes the user to the login by store address flow. */
-"Enter Your Store Address" = "Enter Your Store Address";
+"Enter Your Store Address" = "스토어 주소 입력";
 
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "운송업체 이름 입력";
@@ -861,7 +861,7 @@
 "Enter your email address to log in or create a WordPress.com account." = "이메일 주소를 입력하여 로그인하거나 워드프레스닷컴 계정을 만드세요.";
 
 /* Button title. Takes the user to the login by site address flow. */
-"Enter your existing site address" = "Enter your existing site address";
+"Enter your existing site address" = "이미 있는 사이트 주소 입력";
 
 /* Title of a button on the magic link screen.
    Title of a button. */
@@ -928,7 +928,7 @@
 "Find your site address" = "사이트 주소 찾기";
 
 /* The hint button's title text to help users find their store address. */
-"Find your store address" = "Find your store address";
+"Find your store address" = "스토어 주소 찾기";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new reads." = "즐겨 찾는 사이트를 팔로우하고 새 읽을거리를 발견하세요.";
@@ -1065,13 +1065,13 @@
 "If disabled the note will be private" = "해제된 경우 메모는 비공개가 됩니다.";
 
 /* Header text when reprinting a shipping label */
-"If there was a printing error when you purchased the label, you can print it again." = "If there was a printing error when you purchased the label, you can print it again.";
+"If there was a printing error when you purchased the label, you can print it again." = "레이블을 구매할 때 인쇄 오류가 발생한 경우 다시 인쇄할 수 있습니다.";
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "이미 스토어를 가지고 있다면 무료로 이용할 수 있는 젯팩 플러그인을 설치하여 워드프레스닷컴 계정에 연동해야 합니다.";
 
 /* Info text when reprinting a shipping label */
-"If you already used the label in a package, printing and using it again is a violation of our terms of service" = "If you already used the label in a package, printing and using it again is a violation of our terms of service";
+"If you already used the label in a package, printing and using it again is a violation of our terms of service" = "패키지에 이미 레이블을 사용한 경우 해당 레이블을 다시 인쇄하여 사용하면 서비스 약관을 위반하는 것입니다.";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "워드프레스닷컴 계정이 없는 경우 Apple 또는 Google을 계속 사용하면 계정이 만들어지고 _서비스 약관_에 동의하는 것으로 간주합니다.";
@@ -1081,7 +1081,7 @@
 "In stock" = "재고 있음";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
-"In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection";
+"In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "사이트 관리자의 연결 > 계정 연결 아래 Jetpack 대시보드에서 워드프레스닷컴에 연결하는 데 사용한 이메일을 찾을 수 있습니다.";
 
 /* Application's Inactive State */
 "Inactive" = "비활성";
@@ -1142,7 +1142,7 @@
 "Issuing Refund..." = "환불 발행 중...";
 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
-"It looks like this email isn't associated with a WordPress.com account." = "It looks like this email isn't associated with a WordPress.com account.";
+"It looks like this email isn't associated with a WordPress.com account." = "이 이메일은 워드프레스닷컴 계정과 연결되지 않은 것으로 보입니다.";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "이 사용자명\/비밀번호가 이 사이트에 연결되어 있지 않은 것 같습니다.";
@@ -1157,7 +1157,7 @@
 "It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!" = "이제 이동 중에 Woo 앱에서 간단하고 그룹화된 \n외부 제품을 생성할 수 있습니다. 아직 준비되지 않으셨나요? 임시글로 저장하세요!";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
-"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats";
+"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack은 스토어를 최고의 모바일 환경을 제공하는 데 필요한 푸시 알림, 통계 등의 도구와 연결하는 무료 워드프레스 플러그인입니다.";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "편집 계속";
@@ -1166,7 +1166,7 @@
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "이것은 지원 티켓이 아니며 저희는 개별적인 피드백을 해결할 수 없습니다.";
 
 /* Title of label paper size option for printing a shipping label */
-"Label (4 x 6 in)" = "Label (4 x 6 in)";
+"Label (4 x 6 in)" = "레이블(4 x 6in)";
 
 /* Last 24 hours section header */
 "Last 24 hours" = "최근 24시간";
@@ -1182,16 +1182,16 @@
 "Learn more" = "더 알아보기";
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
-"Learn more about Jetpack" = "Learn more about Jetpack";
+"Learn more about Jetpack" = "Jetpack에 대해 자세히 알아보기";
 
 /* Title of legal paper size option for printing a shipping label */
-"Legal (8.5 x 14 in)" = "Legal (8.5 x 14 in)";
+"Legal (8.5 x 14 in)" = "법률 문서(8.5 x 14in)";
 
 /* Title of the cell in Product Shipping Settings > Length */
 "Length" = "길이";
 
 /* Title of letter paper size option for printing a shipping label */
-"Letter (8.5 x 11 in)" = "Letter (8.5 x 11 in)";
+"Letter (8.5 x 11 in)" = "편지지(8.5 x 11in)";
 
 /* Licenses (information page title) */
 "Licenses" = "라이선스";
@@ -1237,7 +1237,7 @@
 
 /* Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
-"Log In With Another Account" = "Log In With Another Account";
+"Log In With Another Account" = "다른 계정으로 로그인";
 
 /* Alert button title - confirms and logs out the user
    Log out button title */
@@ -1371,7 +1371,7 @@
 "Navigates to Settings." = "설정으로 이동합니다.";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
-"Need help finding the connected email?" = "Need help finding the connected email?";
+"Need help finding the connected email?" = "연결된 이메일을 찾는 데 도움이 필요하신가요?";
 
 /* A button title. */
 "Need help finding your site address?" = "사이트 주소를 찾는 데 도움이 필요하세요?";
@@ -1534,7 +1534,7 @@
 "Or log in by _entering your site address_." = "또는 사이트 주소를 입력하여 로그인하세요.";
 
 /* Header of attributes section in Add Attribute screen */
-"Or tap to select existing attribute" = "Or tap to select existing attribute";
+"Or tap to select existing attribute" = "또는 기존 속성을 눌러서 선택";
 
 /* Add a note screen - title. Example: Order #15
    Order number title */
@@ -1582,13 +1582,13 @@
 "Package %d" = "패키지 %d";
 
 /* Title of package details in shipping label details */
-"Package Details" = "Package Details";
+"Package Details" = "패키지 상세 정보";
 
 /* The title for the customer payment cell */
 "Paid By Customer" = "고객 결제";
 
 /* Title of the paper size selector row for reprinting a shipping label */
-"Paper Size" = "Paper Size";
+"Paper Size" = "용지 크기";
 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "상위 카테고리";
@@ -1607,7 +1607,7 @@
 "Payment" = "결제";
 
 /* Title of payment method in shipping label details */
-"Payment Method" = "Payment Method";
+"Payment Method" = "지불 수단";
 
 /* Display label for the review's pending status */
 "Pending" = "대기중";
@@ -1711,7 +1711,7 @@
 "Price" = "가격";
 
 /* Button title to generate a shipping label document for printing */
-"Print Shipping Label" = "Print Shipping Label";
+"Print Shipping Label" = "배송 레이블 인쇄";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "캘리포니아 사용자를 위한 개인정보 공지";
@@ -1803,7 +1803,7 @@
 "Publishing your product..." = "제품을 게시하는 중...";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */
-"Purchase Date" = "Purchase Date";
+"Purchase Date" = "구매 날짜";
 
 /* Product Note navigation title
    Purchase note label in Product Settings */
@@ -1870,7 +1870,7 @@
 "Refund Details" = "환불 정보";
 
 /* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
-"Refund Label (%1$@)" = "Refund Label (%1$@)";
+"Refund Label (%1$@)" = "환불 레이블(%1$@)";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
 "Refund Shipping" = "배송비 환불";
@@ -1892,7 +1892,7 @@
 "Refunded Products" = "환불된 제품";
 
 /* Title of the refund detail cell when the refund was done manually. */
-"Refunded manually" = "Refunded manually";
+"Refunded manually" = "수동으로 환불됨";
 
 /* It reads, 'Refunded manually via <payment method>' */
 "Refunded manually via %@" = "%@을 통해 수동으로 환불됨";
@@ -2042,13 +2042,13 @@
 "Search results only" = "검색 결과만";
 
 /* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
-"See Instructions" = "See Instructions";
+"See Instructions" = "지침 참조";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "See comments and notifications in real time." = "댓글과 알림이 실시간으로 표시됩니다.";
 
 /* Link title to see all paper size options */
-"See layout and paper sizes options" = "See layout and paper sizes options";
+"See layout and paper sizes options" = "레이아웃 및 용지 크기 옵션 참조";
 
 /* Select all button title in the issue refund screen */
 "Select All" = "Select All";
@@ -2109,17 +2109,17 @@
 "Share your Store" = "스토어 공유";
 
 /* Title of origin address in shipping label details */
-"Ship from" = "Ship from";
+"Ship from" = "출발지";
 
 /* Title of destination address in shipping label details */
-"Ship to" = "Ship to";
+"Ship to" = "배송지";
 
 /* A unit test string for order tracking. Reads as: 'Shipment Company HK Post'
    Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
 "Shipment Company %@" = "배송 회사 %@";
 
 /* Navigation bar title of shipping label details */
-"Shipment Details" = "Shipment Details";
+"Shipment Details" = "배송 상세 정보";
 
 /* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
    Date an item was shipped */
@@ -2130,7 +2130,7 @@
 "Shipping" = "배송";
 
 /* Title of shipping carrier and rates in shipping label details */
-"Shipping Carrier and Rates" = "Shipping Carrier and Rates";
+"Shipping Carrier and Rates" = "운송업체 및 요금";
 
 /* Title of view displaying all available Shipment Tracking Carriers */
 "Shipping Carriers" = "운송업체";
@@ -2236,7 +2236,7 @@
 "Someone" = "다른 사람";
 
 /* Notice format when a shipping label refund request fails. */
-"Something went wrong with the refund. Please try again." = "Something went wrong with the refund. Please try again.";
+"Something went wrong with the refund. Please try again." = "환불에 문제가 발생했습니다. 다시 시도하세요.";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "죄송합니다, 사용자명에 잘못된 구문 %@이 포함되어 있습니다";
@@ -2383,10 +2383,10 @@
 "Tap to insert a Link" = "링크를 삽입하려면 누르세요.";
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
-"Tap to modify the item refund quantity" = "Tap to modify the item refund quantity";
+"Tap to modify the item refund quantity" = "아이템 환불 수량을 눌러서 수정";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
-"Tap to show instructions on how to print a shipping label on the mobile device" = "Tap to show instructions on how to print a shipping label on the mobile device";
+"Tap to show instructions on how to print a shipping label on the mobile device" = "모바일 장치에서 배송 레이블을 인쇄하는 방법에 대한 지침을 눌러서 표시";
 
 /* Accessibility hint for block quote button on formatting toolbar. */
 "Tap to toggle Block Quote" = "인용 차단을 전환하려면 누르세요.";
@@ -2547,7 +2547,7 @@
 "The stock quantity for this product. Editable." = "이 제품의 재고 수량입니다. 편집 가능합니다.";
 
 /* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
-"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "The website is not a WordPress site. For us to connect to it, the site must have WordPress installed.";
+"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "웹사이트가 워드프레스 사이트가 아닙니다. 워드프레스에서 연결하려면 사이트에 워드프레스가 설치되어 있어야 합니다.";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "지정된 사이트에서 게시물 차단 중 문제가 발생했습니다.";
@@ -2605,7 +2605,7 @@
 "This product couldn't be loaded" = "이 제품을 로드할 수 없음";
 
 /* Message displayed when loading a specific product fails because product was deleted */
-"This product has been deleted and is no longer visible" = "This product has been deleted and is no longer visible";
+"This product has been deleted and is no longer visible" = "이 제품은 삭제되었으며 더는 표시되지 않음";
 
 /* Footer text in Product Catalog Visibility */
 "This setting determines which shop pages products will be listed on." = "이 설정은 제품이 어떤 상점 페이지에 등록될지 결정합니다.";
@@ -2642,7 +2642,7 @@
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "이 Google 계정을 진행하려면 먼저 워드프레스닷컴 비밀번호로 로그인하세요. 이 메시지는 한 번만 표시됩니다.";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
-"To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store.";
+"To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "%@에 이 앱을 사용하려면 스토어에 설치되고 연결된 Jetpack 플러그인이 있어야 합니다.";
 
 /* Tab selector title that shows the statistics for today
    Today Section Header - Top Performers section title - today */
@@ -2670,7 +2670,7 @@
 "Track Shipment" = "배송 추적";
 
 /* Track shipment of a shipping label from the shipping label tracking more menu action sheet */
-"Track shipment" = "Track shipment";
+"Track shipment" = "배송 추적";
 
 /* Order tracking section title */
 "Tracking" = "추적";
@@ -2737,7 +2737,7 @@
 "Unable to load content" = "콘텐츠를 로드할 수 없음";
 
 /* Load Product Attributes Action Failed */
-"Unable to load product attributes" = "Unable to load product attributes";
+"Unable to load product attributes" = "제품 속성을 로드할 수 없음";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "리뷰를 %@(으)로 표시할 수 없습니다.";
@@ -2862,7 +2862,7 @@
 "Variable product" = "옵션 상품";
 
 /* Footer of text field section in Add Attribute screen */
-"Variation type (ie Color, Size)" = "Variation type (ie Color, Size)";
+"Variation type (ie Color, Size)" = "변형 유형(즉, 색상, 크기)";
 
 /* Title of the Product Variations row on Product main screen for a variable product
    Title that appears on top of the Product Variation List screen. */
@@ -2999,13 +2999,13 @@
 "Welcome to the world’s most popular website builder." = "세계에서 가장 인기 있는 웹사이트 빌더에 오신 것을 환영합니다.";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
-"What email do I use to sign in?" = "What email do I use to sign in?";
+"What email do I use to sign in?" = "로그인할 때 어떤 이메일을 사용하나요?";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
-"What is Jetpack" = "What is Jetpack";
+"What is Jetpack" = "Jetpack이란";
 
 /* Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
-"What is Jetpack?" = "What is Jetpack?";
+"What is Jetpack?" = "Jetpack이란 무엇인가요?";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "내 사이트 주소는 무엇인가요?";
@@ -3051,7 +3051,7 @@
 "Yesterday" = "어제";
 
 /* Header text in Refund Shipping Label screen */
-"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process.";
+"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "패키지를 배송하는 데 사용되지 않은 배송 레이블은 환불을 요청할 수 있습니다.\n처리되는 데 14일 이상 걸립니다.";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "해당 이메일 주소를 회원가입하는데 사용할 수 없습니다. 우리의 이메일을 차단하는 문제를 일으킵니다. 다른 이메일 제공자를 사용하세요.";
@@ -3097,7 +3097,7 @@
 "unknown url" = "알 수 없는 url";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need... */
-"your site" = "your site";
+"your site" = "내 사이트";
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Google로 로그인합니다.";
@@ -3109,5 +3109,5 @@
 "“%@”" = "“%@”";
 
 /* Text of the notice that is displayed after the refund is created. */
-"🎉 Products successfully refunded" = "";
+"🎉 Products successfully refunded" = "🎉개 제품이 환불되었음";
 

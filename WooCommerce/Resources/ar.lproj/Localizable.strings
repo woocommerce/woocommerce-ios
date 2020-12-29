@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-12-10 14:54:04+0000 */
+/* Translation-Revision-Date: 2020-12-24 09:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -31,7 +31,7 @@
 "%1$@ left a review on %2$@" = "تركَ %1$@ مراجعة حول %2$@";
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
-"%1$@ refund requested (%2$@)" = "%1$@ refund requested (%2$@)";
+"%1$@ refund requested (%2$@)" = "تم طلب استرداد الأموال %1$@ (%2$@)";
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ بواسطة %2$@";
@@ -40,7 +40,7 @@
 "%1$@ x %2$@" = "%1$@ x %2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
-"%1$@ • %2$@" = "%1$@ • %2$@";
+"%1$@ • %2$@" = "%1$@• %2$@";
 
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
@@ -58,7 +58,7 @@
 "%@ Items" = "%@ من العناصر";
 
 /* Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS). */
-"%@ label refund requested" = "%@ label refund requested";
+"%@ label refund requested" = "تم طلب استرداد أموال الملصق %@";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%@ left a review on %@" = "تركَ %1$@ مراجعة حول %2$@";
@@ -215,7 +215,7 @@
 "Add a tracking" = "إضافة التتبع";
 
 /* Add Product Attribute screen navigation title */
-"Add attribute" = "Add attribute";
+"Add attribute" = "إضافة سمة";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -234,7 +234,7 @@
 "Add products' downloadable files' info remotely" = "إضافة معلومات الملفات القابلة للتنزيل للمنتجات عن بُعد";
 
 /* Title for adding variations row on Product main screen for a variable product */
-"Add variations" = "Add variations";
+"Add variations" = "إضافة أنواع";
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "إضافة الوزن والأبعاد";
@@ -270,7 +270,7 @@
 "Alternatively:" = "بدلاً من ذلك:";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
-"Amount Eligible For Refund" = "Amount Eligible For Refund";
+"Amount Eligible For Refund" = "المبلغ الذي يستحق الاسترداد";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "حدث خطأ أثناء إنشاء القائمة.";
@@ -334,7 +334,7 @@
 "Are you sure you want to remove this image?" = "هل أنت متأكد من رغبتك في إزالة هذه الصورة؟";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
-"Attribute name" = "Attribute name";
+"Attribute name" = "اسم السمة";
 
 /* No comment provided by engineer. */
 "Authenticating" = "مصادقة";
@@ -506,7 +506,7 @@
 "Continue" = "المتابعة";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
-"Continue With WordPress.com" = "Continue With WordPress.com";
+"Continue With WordPress.com" = "المتابعة باستخدام ووردبريس.كوم";
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "الاستمرار بالقراءة";
@@ -534,7 +534,7 @@
 "Copy email address" = "نسخ عنوان البريد الإلكتروني";
 
 /* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
-"Copy tracking number" = "Copy tracking number";
+"Copy tracking number" = "نسخ رقم التعقُّب";
 
 /* The title of the button for giving a negative feedback for the app. */
 "Could Be Better" = "قد يكون أفضل";
@@ -579,7 +579,7 @@
 "Creating products" = "إنشاء المنتجات";
 
 /* Credit card payment method for shipping label. */
-"Credit card" = "Credit card";
+"Credit card" = "بطاقة إئتمان";
 
 /* Cell title for Cross-sells products in Linked Products Settings screen */
 "Cross-sells" = "منتجات تسويقية";
@@ -691,10 +691,10 @@
 "Done" = "تم";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
-"Don’t know how to print from your device?" = "Don’t know how to print from your device?";
+"Don’t know how to print from your device?" = "ألا تعرف كيفية الطباعة من جهازك؟";
 
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
-"Don’t know how to print from your phone?" = "Don’t know how to print from your phone?";
+"Don’t know how to print from your phone?" = "ألا تعرف كيفية الطباعة من هاتفك؟";
 
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [(code)] (theMessage)" = "خطأ في الدوت كوم: [(رمز)] (theMessage)";
@@ -805,14 +805,14 @@
 "Enjoying the WooCommerce app?" = "هل تستمتع بتطبيق WooCommerce؟";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
-"Enter Another Store" = "Enter Another Store";
+"Enter Another Store" = "إدخال متجر آخر";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "إدخال عنوان URL";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account
    Button title. Takes the user to the login by store address flow. */
-"Enter Your Store Address" = "Enter Your Store Address";
+"Enter Your Store Address" = "إدخال عنوان متجرك";
 
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "إدخال اسم شركة النقل";
@@ -861,7 +861,7 @@
 "Enter your email address to log in or create a WordPress.com account." = "أدخل عنوان بريدك الإلكتروني لتسجيل الدخول، أو أنشئ حسابًا على ووردبريس.كوم.";
 
 /* Button title. Takes the user to the login by site address flow. */
-"Enter your existing site address" = "Enter your existing site address";
+"Enter your existing site address" = "أدخل رابط موقعك الحالي";
 
 /* Title of a button on the magic link screen.
    Title of a button. */
@@ -928,7 +928,7 @@
 "Find your site address" = "العثور على عنوان الموقع";
 
 /* The hint button's title text to help users find their store address. */
-"Find your store address" = "Find your store address";
+"Find your store address" = "العثور على عنوان متجرك";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new reads." = "تابع مواقعك المفضَّلة واكتشف مواضيع جديدة.";
@@ -1065,13 +1065,13 @@
 "If disabled the note will be private" = "في حالة تعطيلها، فستكون الملاحظة خاصة";
 
 /* Header text when reprinting a shipping label */
-"If there was a printing error when you purchased the label, you can print it again." = "If there was a printing error when you purchased the label, you can print it again.";
+"If there was a printing error when you purchased the label, you can print it again." = "إذا كان ثمَّة خطأ في الطباعة عند شراء الملصق، فيمكنك طباعته مجددًا.";
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "إذا كان لديك مخزن بالفعل، سيتعين عليك تثبيت إضافة Jetpack المجانية وربطها بحسابك على ووردبريس.كوم.";
 
 /* Info text when reprinting a shipping label */
-"If you already used the label in a package, printing and using it again is a violation of our terms of service" = "If you already used the label in a package, printing and using it again is a violation of our terms of service";
+"If you already used the label in a package, printing and using it again is a violation of our terms of service" = "إذا كنتَ تستخدم الملصق بالفعل في حزمة، فإنَّ طباعته واستخدامه مجددًا يُعد انتهاكًا لشروط الخدمة لدينا";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "إذا استمررت في استخدام Apple أو غوغل وليس لديك حساب على ووردبريس.كوم بالفعل، فستنشئ حسابًا جديدًا، وتوافق على شروط الخدمة التي نقرها.";
@@ -1081,7 +1081,7 @@
 "In stock" = "متوفِّر";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
-"In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection";
+"In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "في صفحة مسؤول موقعك، يمكنك العثور على البريد الإلكتروني الذي استخدمته للاتصال بووردبريس.كوم من لوحة تحكم Jetpack أسفل الاتصالات > الاتصال بالحساب";
 
 /* Application's Inactive State */
 "Inactive" = "غير نشط";
@@ -1142,7 +1142,7 @@
 "Issuing Refund..." = "جارٍ إصدار أمر باسترداد الأموال...";
 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
-"It looks like this email isn't associated with a WordPress.com account." = "It looks like this email isn't associated with a WordPress.com account.";
+"It looks like this email isn't associated with a WordPress.com account." = "يبدو أنَّ هذا البريد الإلكتروني غير مرتبط بحساب على ووردبريس.كوم.";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "يبدو أن اسم المستخدم هذا \/ كلمة المرور هذه غير مقترنين بهذه الموقع.";
@@ -1157,7 +1157,7 @@
 "It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!" = "أصبح من الممكن الآن إنشاء منتجات بسيطة ومجمَّعة \nوخارجية في أثناء التنقل من تطبيق Woo. أليست جاهزة حتى الآن؟ احفظها كمسودة!";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
-"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats";
+"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack هو إضافة مجانية على ووردبريس تربط متجرك بالأدوات اللازمة لمنحك أفضل تجربة على الهاتف المحمول، بما في ذلك تنبيهات الدفع والإحصاءات.";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "متابعة التحرير";
@@ -1166,7 +1166,7 @@
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "ضع في الحسبان أنَّ هذه ليست تذكرة دعم، وأنَّنا لن نتمكن من معالجة الملاحظات الفردية";
 
 /* Title of label paper size option for printing a shipping label */
-"Label (4 x 6 in)" = "Label (4 x 6 in)";
+"Label (4 x 6 in)" = "ملصق (4 × 6 بوصات)";
 
 /* Last 24 hours section header */
 "Last 24 hours" = "آخر 24 ساعة";
@@ -1182,16 +1182,16 @@
 "Learn more" = "تعرف على المزيد";
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
-"Learn more about Jetpack" = "Learn more about Jetpack";
+"Learn more about Jetpack" = "معرفة المزيد عن Jetpack";
 
 /* Title of legal paper size option for printing a shipping label */
-"Legal (8.5 x 14 in)" = "Legal (8.5 x 14 in)";
+"Legal (8.5 x 14 in)" = "قانوني (8.5 × 14 بوصة)";
 
 /* Title of the cell in Product Shipping Settings > Length */
 "Length" = "المدة";
 
 /* Title of letter paper size option for printing a shipping label */
-"Letter (8.5 x 11 in)" = "Letter (8.5 x 11 in)";
+"Letter (8.5 x 11 in)" = "خطاب (8.5 × 11 بوصة)";
 
 /* Licenses (information page title) */
 "Licenses" = "تراخيص";
@@ -1237,7 +1237,7 @@
 
 /* Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
-"Log In With Another Account" = "Log In With Another Account";
+"Log In With Another Account" = "تسجيل الدخول باستخدام حساب آخر";
 
 /* Alert button title - confirms and logs out the user
    Log out button title */
@@ -1371,7 +1371,7 @@
 "Navigates to Settings." = "الانتقال إلى الإعدادات.";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
-"Need help finding the connected email?" = "Need help finding the connected email?";
+"Need help finding the connected email?" = "هل تحتاج إلى مساعدة على العثور على البريد الإلكتروني المتصل؟";
 
 /* A button title. */
 "Need help finding your site address?" = "هل تحتاج إلى المساعدة في العثور على عنوان موقعك؟";
@@ -1534,7 +1534,7 @@
 "Or log in by _entering your site address_." = "أو سجِّل الدخول عن طريق إدخال عنوان موقعك.";
 
 /* Header of attributes section in Add Attribute screen */
-"Or tap to select existing attribute" = "Or tap to select existing attribute";
+"Or tap to select existing attribute" = "أو اضغط لتحديد السمة الموجودة";
 
 /* Add a note screen - title. Example: Order #15
    Order number title */
@@ -1582,13 +1582,13 @@
 "Package %d" = "الحزمة %d";
 
 /* Title of package details in shipping label details */
-"Package Details" = "Package Details";
+"Package Details" = "تفاصيل الحزمة";
 
 /* The title for the customer payment cell */
 "Paid By Customer" = "يدفعه العميل";
 
 /* Title of the paper size selector row for reprinting a shipping label */
-"Paper Size" = "Paper Size";
+"Paper Size" = "مقاس الورقة";
 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "التصنيف الأب";
@@ -1607,7 +1607,7 @@
 "Payment" = "السداد";
 
 /* Title of payment method in shipping label details */
-"Payment Method" = "Payment Method";
+"Payment Method" = "وسيلة الدفع";
 
 /* Display label for the review's pending status */
 "Pending" = "انتظار";
@@ -1711,7 +1711,7 @@
 "Price" = "السعر";
 
 /* Button title to generate a shipping label document for printing */
-"Print Shipping Label" = "Print Shipping Label";
+"Print Shipping Label" = "طباعة ملصق الشحن";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "إشعار الخصوصية الخاص بالمستخدمين في كاليفورنيا";
@@ -1803,7 +1803,7 @@
 "Publishing your product..." = "جارٍ نشر منتجك...";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */
-"Purchase Date" = "Purchase Date";
+"Purchase Date" = "تاريخ الشراء";
 
 /* Product Note navigation title
    Purchase note label in Product Settings */
@@ -1870,7 +1870,7 @@
 "Refund Details" = "تفاصيل الاسترداد";
 
 /* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
-"Refund Label (%1$@)" = "Refund Label (%1$@)";
+"Refund Label (%1$@)" = "بطاقة استرداد الأموال (%1$@)";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
 "Refund Shipping" = "استرداد مبلغ الشحن";
@@ -1892,7 +1892,7 @@
 "Refunded Products" = "المنتجات المستردة";
 
 /* Title of the refund detail cell when the refund was done manually. */
-"Refunded manually" = "Refunded manually";
+"Refunded manually" = "تم استرداد الأموال يدويًا";
 
 /* It reads, 'Refunded manually via <payment method>' */
 "Refunded manually via %@" = "تم الاسترداد يدويًا بواسطة %@";
@@ -1972,7 +1972,7 @@
 "SKU already in use by another product" = "وحدة SKU قيد الاستخدام بالفعل بواسطة منتج آخر";
 
 /* SKU label in order details > product row. The variable shows the SKU of the product. */
-"SKU: %1$@" = "SKU: %1$@";
+"SKU: %1$@" = "وحدة SKU: %1$@";
 
 /* Format of the SKU on the Inventory Settings row */
 "SKU: %@" = "وحدة SKU: %@";
@@ -2042,13 +2042,13 @@
 "Search results only" = "نتائج البحث فقط";
 
 /* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
-"See Instructions" = "See Instructions";
+"See Instructions" = "الاطلاع على الإرشادات";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "See comments and notifications in real time." = "انظر التعليقات والتنبيهات في الوقت الفعلي.";
 
 /* Link title to see all paper size options */
-"See layout and paper sizes options" = "See layout and paper sizes options";
+"See layout and paper sizes options" = "الاطلاع على خيارات التخطيط ومقاسات الورقة";
 
 /* Select all button title in the issue refund screen */
 "Select All" = "Select All";
@@ -2109,17 +2109,17 @@
 "Share your Store" = "مشاركة متجرك";
 
 /* Title of origin address in shipping label details */
-"Ship from" = "Ship from";
+"Ship from" = "الشحن من";
 
 /* Title of destination address in shipping label details */
-"Ship to" = "Ship to";
+"Ship to" = "الشحن إلى";
 
 /* A unit test string for order tracking. Reads as: 'Shipment Company HK Post'
    Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
 "Shipment Company %@" = "شركة الشحن %@";
 
 /* Navigation bar title of shipping label details */
-"Shipment Details" = "Shipment Details";
+"Shipment Details" = "تفاصيل الشحن";
 
 /* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
    Date an item was shipped */
@@ -2130,7 +2130,7 @@
 "Shipping" = "الشحن";
 
 /* Title of shipping carrier and rates in shipping label details */
-"Shipping Carrier and Rates" = "Shipping Carrier and Rates";
+"Shipping Carrier and Rates" = "شركة الشحن وأسعارها";
 
 /* Title of view displaying all available Shipment Tracking Carriers */
 "Shipping Carriers" = "شركات النقل المخصصة للشحن";
@@ -2236,7 +2236,7 @@
 "Someone" = "شخص ما";
 
 /* Notice format when a shipping label refund request fails. */
-"Something went wrong with the refund. Please try again." = "Something went wrong with the refund. Please try again.";
+"Something went wrong with the refund. Please try again." = "حدث خطأ ما في عملية استرداد الأموال. يُرجى المحاولة مرة أخرى.";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "عذرًا، اسم المستخدم الخاص بك يحتوي على عبارة غير صالحة %@.";
@@ -2383,10 +2383,10 @@
 "Tap to insert a Link" = "الضغط لإدراج رابط";
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
-"Tap to modify the item refund quantity" = "Tap to modify the item refund quantity";
+"Tap to modify the item refund quantity" = "اضغط لتعديل كمية استرداد العنصر";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
-"Tap to show instructions on how to print a shipping label on the mobile device" = "Tap to show instructions on how to print a shipping label on the mobile device";
+"Tap to show instructions on how to print a shipping label on the mobile device" = "اضغط لعرض الإرشادات حول كيفية طباعة تسمية الشحن على جهازك المحمول";
 
 /* Accessibility hint for block quote button on formatting toolbar. */
 "Tap to toggle Block Quote" = "الضغط لتبديل مكوّن الاقتباس";
@@ -2547,7 +2547,7 @@
 "The stock quantity for this product. Editable." = "كمية المخزون لهذا المنتج. قابل للتحرير.";
 
 /* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
-"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "The website is not a WordPress site. For us to connect to it, the site must have WordPress installed.";
+"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "موقع الويب ليس موقع ووردبريس. لكي نتصل بالموقع، يجب تثبيته على وردبرس.";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "حدثت مشكلة أثناء حظر المقالات من الموقع المحدد.";
@@ -2605,7 +2605,7 @@
 "This product couldn't be loaded" = "تعذر تحميل هذا المنتج";
 
 /* Message displayed when loading a specific product fails because product was deleted */
-"This product has been deleted and is no longer visible" = "This product has been deleted and is no longer visible";
+"This product has been deleted and is no longer visible" = "تم حذف هذا المنتج ولم يعد مرئيًا بعد";
 
 /* Footer text in Product Catalog Visibility */
 "This setting determines which shop pages products will be listed on." = "يحدد هذا الإعداد المنتجات التي ستعرضها الصفحات.";
@@ -2642,7 +2642,7 @@
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "للاستمرار باستخدام حساب Google هذا، يُرجى تسجيل الدخول أولاً باستخدام كلمة مرور وردبرس.كوم. سيُطلب منك هذا مرة واحدة فقط.";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
-"To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store.";
+"To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "لاستخدام هذا التطبيق مقابل %@، ستحتاج إلى تثبيت إضافة Jetpack واتصالها بمتجرك.";
 
 /* Tab selector title that shows the statistics for today
    Today Section Header - Top Performers section title - today */
@@ -2670,7 +2670,7 @@
 "Track Shipment" = "تعقب الشحنة";
 
 /* Track shipment of a shipping label from the shipping label tracking more menu action sheet */
-"Track shipment" = "Track shipment";
+"Track shipment" = "تعقب الشحنة";
 
 /* Order tracking section title */
 "Tracking" = "التعقب";
@@ -2737,7 +2737,7 @@
 "Unable to load content" = "تعذر تحميل المحتوى";
 
 /* Load Product Attributes Action Failed */
-"Unable to load product attributes" = "Unable to load product attributes";
+"Unable to load product attributes" = "يتعذر تحميل سمات المنتج";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Unable to mark review as %@";
@@ -2862,7 +2862,7 @@
 "Variable product" = "منتج متعدد الأنواع";
 
 /* Footer of text field section in Add Attribute screen */
-"Variation type (ie Color, Size)" = "Variation type (ie Color, Size)";
+"Variation type (ie Color, Size)" = "نوع التباين (على سبيل المثال اللون والحجم)";
 
 /* Title of the Product Variations row on Product main screen for a variable product
    Title that appears on top of the Product Variation List screen. */
@@ -2999,13 +2999,13 @@
 "Welcome to the world’s most popular website builder." = "مرحبًا بك في منشئ مواقع الويب الأكثر رواجًا في العالم.";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
-"What email do I use to sign in?" = "What email do I use to sign in?";
+"What email do I use to sign in?" = "ما البريد الإلكتروني الذي أستخدمه لتسجيل الدخول؟";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
-"What is Jetpack" = "What is Jetpack";
+"What is Jetpack" = "ما المقصود بـ Jetpack";
 
 /* Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
-"What is Jetpack?" = "What is Jetpack?";
+"What is Jetpack?" = "ما المقصود بـ Jetpack؟";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "ما عنوان الموقع الخاص بي؟";
@@ -3051,7 +3051,7 @@
 "Yesterday" = "أمس";
 
 /* Header text in Refund Shipping Label screen */
-"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process.";
+"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "يمكنك طلب استرداد أموال بطاقة الشحن التي لم يتم استخدامها لشحن طرد.\nسيستغرق الأمر 14 يومًا على الأقل للمعالجة.";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "لا يمكنك استخدام عنوان البريد الإلكتروني هذا للتسجيل. تواجهنا مشكلات مع العناوين التي تحظر البريد الإلكتروني لدينا. يُرجى استخدام مزود بريد إلكتروني آخر.";
@@ -3097,7 +3097,7 @@
 "unknown url" = "عنوان url غير معروف";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need... */
-"your site" = "your site";
+"your site" = "موقعك";
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} تسجيل الدخول باستخدام Google.";
@@ -3109,5 +3109,5 @@
 "“%@”" = "\"%@\"";
 
 /* Text of the notice that is displayed after the refund is created. */
-"🎉 Products successfully refunded" = "";
+"🎉 Products successfully refunded" = "تم استرداد أموال 🎉 من المنتجات بنجاح";
 

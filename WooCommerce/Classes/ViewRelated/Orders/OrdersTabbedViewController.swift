@@ -7,7 +7,7 @@ import struct Yosemite.Note
 
 /// The main Orders view controller that is shown when the Orders tab is accessed.
 ///
-final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
+final class OrdersTabbedViewController: TabbedViewController {
 
     private lazy var analytics = ServiceLocator.analytics
 
@@ -17,7 +17,56 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
 
     init(siteID: Int64) {
         self.siteID = siteID
-        super.init(nibName: Self.nibName, bundle: nil)
+        let processingOrdersVC: OrderListViewController = {
+            // TODO This is fake. It's probably better to just pass the `slug` to `OrdersViewController`.
+            let processingOrderStatus = OrderStatus(
+                name: OrderStatusEnum.processing.rawValue,
+                siteID: siteID,
+                slug: OrderStatusEnum.processing.rawValue,
+                total: 0
+            )
+
+            // We're intentionally not using `processingOrderStatus` as the source of the "Processing"
+            // text in here. We want the string to be translated.
+            let processingOrdersVC = OrderListViewController(
+                siteID: siteID,
+                title: Localization.processingTitle,
+                viewModel: OrderListViewModel(siteID: siteID, statusFilter: processingOrderStatus),
+                emptyStateConfig: .simple(
+                    message: NSAttributedString(string: Localization.processingEmptyStateMessage),
+                    image: .waitingForCustomersImage
+                )
+            )
+            return processingOrdersVC
+        }()
+        let allOrdersVC: OrderListViewController = {
+            let allOrdersVC = OrderListViewController(
+                siteID: siteID,
+                title: Localization.allOrdersTitle,
+                viewModel: OrderListViewModel(siteID: siteID, statusFilter: nil),
+                emptyStateConfig: .withLink(
+                    message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
+                    image: .emptyOrdersImage,
+                    details: Localization.allOrdersEmptyStateDetail,
+                    linkTitle: Localization.learnMore,
+                    linkURL: WooConstants.URLs.blog.asURL()
+                )
+            )
+            return allOrdersVC
+        }()
+        // TODO: accessibility
+        let tabItems: [TabbedItem] = [
+            .init(title: Localization.processingTitle,
+                  viewController: processingOrdersVC,
+                  accessibilityIdentifier: Localization.processingTitle),
+            .init(title: Localization.allOrdersTitle,
+                  viewController: allOrdersVC,
+                  accessibilityIdentifier: Localization.allOrdersTitle),
+        ]
+        super.init(items: tabItems)
+
+        processingOrdersVC.delegate = self
+        allOrdersVC.delegate = self
     }
 
     required init?(coder: NSCoder) {
@@ -25,10 +74,6 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
     }
 
     override func viewDidLoad() {
-        // `configureTabStrip` must be called before `super.viewDidLoad()` or else the selection
-        // highlight will be black. ¯\_(ツ)_/¯
-        configureTabStrip()
-
         super.viewDidLoad()
 
         viewModel.activate()
@@ -71,14 +116,6 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
         present(navigationController, animated: true, completion: nil)
     }
 
-    // MARK: - ButtonBarPagerTabStripViewController Conformance
-
-    /// Return the ViewControllers for "Processing" and "All Orders".
-    ///
-    override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
-        return makeViewControllers()
-    }
-
 }
 
 // MARK: - OrdersViewControllerDelegate
@@ -95,27 +132,27 @@ private extension OrdersTabbedViewController {
     /// Initialize the tab bar containing the "Processing" and "All Orders" buttons.
     ///
     func configureTabStrip() {
-        settings.style.buttonBarBackgroundColor = .listForeground
-        settings.style.buttonBarItemBackgroundColor = .listForeground
-        settings.style.selectedBarBackgroundColor = .primary
-        settings.style.buttonBarItemFont = StyleManager.subheadlineFont
-        settings.style.selectedBarHeight = TabStripDimensions.selectedBarHeight
-        settings.style.buttonBarItemTitleColor = .text
-        settings.style.buttonBarItemLeftRightMargin = TabStripDimensions.buttonLeftRightMargin
-
-        changeCurrentIndexProgressive = {
-            (oldCell: ButtonBarViewCell?,
-            newCell: ButtonBarViewCell?,
-            progressPercentage: CGFloat,
-            changeCurrentIndex: Bool,
-            animated: Bool) -> Void in
-
-            guard changeCurrentIndex == true else { return }
-            oldCell?.label.textColor = .textSubtle
-            newCell?.label.textColor = .primary
-        }
-
-        addBottomBorderToTabStripButtonBarView(buttonBarView)
+//        settings.style.buttonBarBackgroundColor = .listForeground
+//        settings.style.buttonBarItemBackgroundColor = .listForeground
+//        settings.style.selectedBarBackgroundColor = .primary
+//        settings.style.buttonBarItemFont = StyleManager.subheadlineFont
+//        settings.style.selectedBarHeight = TabStripDimensions.selectedBarHeight
+//        settings.style.buttonBarItemTitleColor = .text
+//        settings.style.buttonBarItemLeftRightMargin = TabStripDimensions.buttonLeftRightMargin
+//
+//        changeCurrentIndexProgressive = {
+//            (oldCell: ButtonBarViewCell?,
+//            newCell: ButtonBarViewCell?,
+//            progressPercentage: CGFloat,
+//            changeCurrentIndex: Bool,
+//            animated: Bool) -> Void in
+//
+//            guard changeCurrentIndex == true else { return }
+//            oldCell?.label.textColor = .textSubtle
+//            newCell?.label.textColor = .primary
+//        }
+//
+//        addBottomBorderToTabStripButtonBarView(buttonBarView)
     }
 
     /// Helper for `configureTabStrip()`.
@@ -161,46 +198,6 @@ extension OrdersTabbedViewController {
         button.accessibilityIdentifier = "order-search-button"
 
         return button
-    }
-
-    /// Creates the view controllers to be shown in tabs.
-    func makeViewControllers() -> [UIViewController] {
-        // TODO This is fake. It's probably better to just pass the `slug` to `OrdersViewController`.
-        let processingOrderStatus = OrderStatus(
-            name: OrderStatusEnum.processing.rawValue,
-            siteID: siteID,
-            slug: OrderStatusEnum.processing.rawValue,
-            total: 0
-        )
-
-        // We're intentionally not using `processingOrderStatus` as the source of the "Processing"
-        // text in here. We want the string to be translated.
-        let processingOrdersVC = OrderListViewController(
-            siteID: siteID,
-            title: Localization.processingTitle,
-            viewModel: OrderListViewModel(siteID: siteID, statusFilter: processingOrderStatus),
-            emptyStateConfig: .simple(
-                message: NSAttributedString(string: Localization.processingEmptyStateMessage),
-                image: .waitingForCustomersImage
-            )
-        )
-        processingOrdersVC.delegate = self
-
-        let allOrdersVC = OrderListViewController(
-            siteID: siteID,
-            title: Localization.allOrdersTitle,
-            viewModel: OrderListViewModel(siteID: siteID, statusFilter: nil),
-            emptyStateConfig: .withLink(
-                message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
-                image: .emptyOrdersImage,
-                details: Localization.allOrdersEmptyStateDetail,
-                linkTitle: Localization.learnMore,
-                linkURL: WooConstants.URLs.blog.asURL()
-            )
-        )
-        allOrdersVC.delegate = self
-
-        return [processingOrdersVC, allOrdersVC]
     }
 }
 

@@ -575,7 +575,6 @@
 		57B374B6245B331100D58BE0 /* EmptyStateViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B374B5245B331100D58BE0 /* EmptyStateViewControllerTests.swift */; };
 		57C2F6E624C27B3100131012 /* SwitchStoreNoticePresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C2F6E524C27B3100131012 /* SwitchStoreNoticePresenterTests.swift */; };
 		57C503DC23E8C70C00EC0790 /* OrdersTabbedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C503DB23E8C70C00EC0790 /* OrdersTabbedViewController.swift */; };
-		57C503DE23E8CE0D00EC0790 /* OrdersTabbedViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 57C503DD23E8CE0D00EC0790 /* OrdersTabbedViewController.xib */; };
 		57C503E023E8D4D600EC0790 /* OrdersTabbedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C503DF23E8D4D600EC0790 /* OrdersTabbedViewModel.swift */; };
 		57C5FF7A25091A350074EC26 /* OrderListSyncActionUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C5FF7925091A350074EC26 /* OrderListSyncActionUseCase.swift */; };
 		57C5FF7C25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C5FF7B25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift */; };
@@ -1674,7 +1673,6 @@
 		57B374B5245B331100D58BE0 /* EmptyStateViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateViewControllerTests.swift; sourceTree = "<group>"; };
 		57C2F6E524C27B3100131012 /* SwitchStoreNoticePresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchStoreNoticePresenterTests.swift; sourceTree = "<group>"; };
 		57C503DB23E8C70C00EC0790 /* OrdersTabbedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersTabbedViewController.swift; sourceTree = "<group>"; };
-		57C503DD23E8CE0D00EC0790 /* OrdersTabbedViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrdersTabbedViewController.xib; sourceTree = "<group>"; };
 		57C503DF23E8D4D600EC0790 /* OrdersTabbedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersTabbedViewModel.swift; sourceTree = "<group>"; };
 		57C5FF7925091A350074EC26 /* OrderListSyncActionUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListSyncActionUseCase.swift; sourceTree = "<group>"; };
 		57C5FF7B25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListSyncActionUseCaseTests.swift; sourceTree = "<group>"; };
@@ -4568,7 +4566,6 @@
 				CE35F1092343E482007B2A6B /* Order Details */,
 				CEE005F52076C4040079161F /* Orders.storyboard */,
 				57C503DB23E8C70C00EC0790 /* OrdersTabbedViewController.swift */,
-				57C503DD23E8CE0D00EC0790 /* OrdersTabbedViewController.xib */,
 				57C503DF23E8D4D600EC0790 /* OrdersTabbedViewModel.swift */,
 				0206483923FA4160008441BB /* OrdersRootViewController.swift */,
 				57C5FF7925091A350074EC26 /* OrderListSyncActionUseCase.swift */,
@@ -5439,7 +5436,6 @@
 				74A95B5821C403EA00FEE953 /* pure-min.css in Resources */,
 				0262DA5423A238460029AF30 /* UnitInputTableViewCell.xib in Resources */,
 				B5BE75DD213F1D3D00909A14 /* OverlayMessageView.xib in Resources */,
-				57C503DE23E8CE0D00EC0790 /* OrdersTabbedViewController.xib in Resources */,
 				02F4F510237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.xib in Resources */,
 				45AE150324A23F03005AA948 /* ProductParentCategoriesViewController.xib in Resources */,
 				45A0E4CC2566B56000D4E8C3 /* NumberOfLinkedProductsTableViewCell.xib in Resources */,

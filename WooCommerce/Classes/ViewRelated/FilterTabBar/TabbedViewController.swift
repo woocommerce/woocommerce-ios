@@ -1,3 +1,5 @@
+import UIKit
+
 /// Contains multiple Child View Controllers with a Filter Tab Bar to switch between them.
 class TabbedViewController: UIViewController {
 
@@ -22,7 +24,7 @@ class TabbedViewController: UIViewController {
 
     private lazy var tabBar: FilterTabBar = {
         let bar = FilterTabBar()
-        WPStyleGuide.configureFilterTabBar(bar)
+        configureFilterTabBar(bar)
         bar.tabSizingStyle = .equalWidths
         bar.translatesAutoresizingMaskIntoConstraints = false
         bar.addTarget(self, action: #selector(changedItem(sender:)), for: .valueChanged)
@@ -85,5 +87,15 @@ class TabbedViewController: UIViewController {
     @objc func changedItem(sender: FilterTabBar) {
         let item = items[sender.selectedIndex]
         child = item.viewController
+    }
+}
+
+private extension TabbedViewController {
+    func configureFilterTabBar(_ filterTabBar: FilterTabBar) {
+        filterTabBar.backgroundColor = .listForeground
+        filterTabBar.tintColor = .primary
+        filterTabBar.selectedTitleColor = .primary
+        filterTabBar.deselectedTabColor = .textSubtle
+        filterTabBar.dividerColor = .systemColor(.separator)
     }
 }

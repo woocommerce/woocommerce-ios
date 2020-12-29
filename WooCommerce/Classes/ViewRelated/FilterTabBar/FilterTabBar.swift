@@ -465,8 +465,8 @@ class FilterTabBar: UIControl {
 
     private enum AppearanceMetrics {
         static let height: CGFloat = 46.0
-        static let bottomDividerHeight: CGFloat = .hairlineBorderWidth
-        static let selectionIndicatorHeight: CGFloat = 2.0
+        static let bottomDividerHeight: CGFloat = 0.5
+        static let selectionIndicatorHeight: CGFloat = 3.0
         static let horizontalPadding: CGFloat = 0.0
         static let buttonInsets = UIEdgeInsets(top: 14.0, left: 12.0, bottom: 14.0, right: 12.0)
         static let buttonInsetsAttributedTitle = UIEdgeInsets(top: 10.0, left: 2.0, bottom: 10.0, right: 2.0)
@@ -497,7 +497,7 @@ private class TabBarButton: UIButton {
     }
 
     private func setFont() {
-        titleLabel?.font = WPStyleGuide.fontForTextStyle(.subheadline, symbolicTraits: .traitBold, maximumPointSize: TabFont.maxSize)
+        titleLabel?.applySubheadlineStyle()
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -509,9 +509,10 @@ private class TabBarButton: UIButton {
     }
 }
 
-extension FilterTabBar: Accessible {
-    func prepareForVoiceOver() {
-        isAccessibilityElement = false
-        accessibilityTraits = [super.accessibilityTraits, .tabBar]
-    }
-}
+// TODO: accessibility
+//extension FilterTabBar: Accessible {
+//    func prepareForVoiceOver() {
+//        isAccessibilityElement = false
+//        accessibilityTraits = [super.accessibilityTraits, .tabBar]
+//    }
+//}

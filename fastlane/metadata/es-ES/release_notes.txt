@@ -1,0 +1,2 @@
+Ahora, la aplicación es compatible con iOS 13 y versiones posteriores. Esto permitirá desarrollar las funciones más rápidamente.
+Hemos mejorado la gestión de errores en el proceso de inicio de sesión, corregido un error que hacía que las miniaturas de imagen no aparecieran en las variaciones de producto en la pantalla Detalles del pedido y centrado el indicador giratorio del pie de página tanto vertical como horizontalmente.

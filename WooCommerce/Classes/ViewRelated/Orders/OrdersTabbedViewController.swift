@@ -63,7 +63,7 @@ final class OrdersTabbedViewController: TabbedViewController {
                   viewController: allOrdersVC,
                   accessibilityIdentifier: Localization.allOrdersTitle),
         ]
-        super.init(items: tabItems)
+        super.init(items: tabItems, tabSizingStyle: .equalWidths)
 
         processingOrdersVC.delegate = self
         allOrdersVC.delegate = self

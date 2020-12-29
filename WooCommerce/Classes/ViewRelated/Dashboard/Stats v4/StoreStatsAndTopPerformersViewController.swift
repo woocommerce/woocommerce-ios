@@ -5,7 +5,7 @@ import Yosemite
 /// Top-level stats container view controller that consists of a button bar with 4 time ranges.
 /// Each time range tab is managed by a `StoreStatsAndTopPerformersPeriodViewController`.
 ///
-final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewController {
+final class StoreStatsAndTopPerformersViewController: TabbedViewController {
 
     // MARK: - DashboardUI protocol
 
@@ -22,19 +22,32 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
     // MARK: - Calculated Properties
 
     private var visibleChildViewController: StoreStatsAndTopPerformersPeriodViewController {
-        return periodVCs[currentIndex]
+        return periodVCs[selection]
     }
 
     // MARK: - Private Properties
 
-    private var periodVCs = [StoreStatsAndTopPerformersPeriodViewController]()
+    private let periodVCs: [StoreStatsAndTopPerformersPeriodViewController]
     private let siteID: Int64
 
     // MARK: - View Lifecycle
 
     init(siteID: Int64) {
         self.siteID = siteID
-        super.init(nibName: nil, bundle: nil)
+
+        let timeRanges: [StatsTimeRangeV4] = [.today, .thisWeek, .thisMonth, .thisYear]
+        let currentDate = Date()
+        let tabItems: [TabbedItem] = timeRanges.map { timeRange in
+            let viewController = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+                                                                                timeRange: timeRange,
+                                                                                currentDate: currentDate,
+                                                                                canDisplayInAppFeedbackCard: timeRange == .today)
+            return .init(title: timeRange.tabTitle,
+                  viewController: viewController,
+                  accessibilityIdentifier: "period-data-" + timeRange.rawValue + "-tab")
+        }
+        periodVCs = tabItems.compactMap { $0.viewController as? StoreStatsAndTopPerformersPeriodViewController }
+        super.init(items: tabItems, tabSizingStyle: .fitting)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -42,47 +55,16 @@ final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripView
     }
 
     override func viewDidLoad() {
-        configurePeriodViewControllers()
-        configureTabStrip()
-        // 👆 must be called before super.viewDidLoad()
-
         super.viewDidLoad()
+
         configureView()
+        configurePeriodViewControllers()
+        configureTabBar()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         ensureGhostContentIsAnimated()
-    }
-
-    // MARK: - RTL support
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        /// ButtonBarView is a collection view, and it should flip to support
-        /// RTL languages automatically. And yet it doesn't.
-        /// So, for RTL languages, we flip it. This also flips the cells
-        if traitCollection.layoutDirection == .rightToLeft {
-            buttonBarView.transform = CGAffineTransform(scaleX: -1, y: 1)
-        }
-    }
-
-    // MARK: - PagerTabStripDataSource
-
-    override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
-        return periodVCs
-    }
-
-    override func configureCell(_ cell: ButtonBarViewCell, indicatorInfo: IndicatorInfo) {
-        /// Hide the ImageView:
-        /// We don't use it, and if / when "Ghostified" produces a quite awful placeholder UI!
-        cell.imageView.isHidden = true
-        cell.accessibilityIdentifier = indicatorInfo.accessibilityIdentifier
-
-        /// Flip the cells back to their proper state for RTL languages.
-        if traitCollection.layoutDirection == .rightToLeft {
-            cell.transform = CGAffineTransform(scaleX: -1, y: 1)
-        }
     }
 }
 
@@ -210,7 +192,7 @@ private extension StoreStatsAndTopPerformersViewController {
     ///
     func displayGhostContent() {
         view.isUserInteractionEnabled = false
-        buttonBarView.startGhostAnimation(style: .wooDefaultGhostStyle)
+        tabBar.startGhostAnimation(style: .wooDefaultGhostStyle)
         visibleChildViewController.displayGhostContent()
     }
 
@@ -218,7 +200,7 @@ private extension StoreStatsAndTopPerformersViewController {
     ///
     func removeGhostContent() {
         view.isUserInteractionEnabled = true
-        buttonBarView.stopGhostAnimation()
+        tabBar.stopGhostAnimation()
         visibleChildViewController.removeGhostContent()
     }
 
@@ -243,47 +225,11 @@ private extension StoreStatsAndTopPerformersViewController {
         return view
     }
 
-    func configureButtonBarBottomBorder() {
-        view.addSubview(buttonBarBottomBorder)
-        NSLayoutConstraint.activate([
-            buttonBarBottomBorder.topAnchor.constraint(equalTo: buttonBarView.bottomAnchor),
-            buttonBarBottomBorder.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            buttonBarBottomBorder.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-            ])
-    }
-
     func configureView() {
         view.backgroundColor = .systemColor(.systemGroupedBackground)
-        configureButtonBarBottomBorder()
-
-        // Disables any content inset adjustment since `XLPagerTabStrip` doesn't seem to support safe area insets.
-        containerView.contentInsetAdjustmentBehavior = .never
     }
 
     func configurePeriodViewControllers() {
-        let currentDate = Date()
-        let dayVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                   timeRange: .today,
-                                                                   currentDate: currentDate,
-                                                                   canDisplayInAppFeedbackCard: true)
-        let weekVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                    timeRange: .thisWeek,
-                                                                    currentDate: currentDate,
-                                                                    canDisplayInAppFeedbackCard: false)
-        let monthVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                     timeRange: .thisMonth,
-                                                                     currentDate: currentDate,
-                                                                     canDisplayInAppFeedbackCard: false)
-        let yearVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
-                                                                    timeRange: .thisYear,
-                                                                    currentDate: currentDate,
-                                                                    canDisplayInAppFeedbackCard: false)
-
-        periodVCs.append(dayVC)
-        periodVCs.append(weekVC)
-        periodVCs.append(monthVC)
-        periodVCs.append(yearVC)
-
         periodVCs.forEach { (vc) in
             vc.onPullToRefresh = { [weak self] in
                 self?.onPullToRefresh()
@@ -291,27 +237,8 @@ private extension StoreStatsAndTopPerformersViewController {
         }
     }
 
-    func configureTabStrip() {
-        settings.style.buttonBarBackgroundColor = .systemColor(.secondarySystemGroupedBackground)
-        settings.style.buttonBarItemBackgroundColor = .systemColor(.secondarySystemGroupedBackground)
-        settings.style.selectedBarBackgroundColor = .primary
-        settings.style.buttonBarItemFont = StyleManager.subheadlineFont
-        settings.style.selectedBarHeight = TabStrip.selectedBarHeight
-        settings.style.buttonBarItemTitleColor = .textSubtle
-        settings.style.buttonBarItemsShouldFillAvailableWidth = false
-        settings.style.buttonBarItemLeftRightMargin = TabStrip.buttonLeftRightMargin
-
-        changeCurrentIndexProgressive = {
-            (oldCell: ButtonBarViewCell?,
-            newCell: ButtonBarViewCell?,
-            progressPercentage: CGFloat,
-            changeCurrentIndex: Bool,
-            animated: Bool) -> Void in
-
-            guard changeCurrentIndex == true else { return }
-            oldCell?.label.textColor = .textSubtle
-            newCell?.label.textColor = .primary
-        }
+    func configureTabBar() {
+        tabBar.equalWidthSpacing = TabStrip.buttonLeftRightMargin
     }
 }
 

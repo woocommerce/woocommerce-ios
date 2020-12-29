@@ -2,10 +2,15 @@ import UIKit
 import XLPagerTabStrip
 import Yosemite
 
+protocol DashboardUIScrollDelegate: class {
+    func dashboardUIScrollViewDidScroll(_ scrollView: UIScrollView)
+}
+
 /// Top-level stats container view controller that consists of a button bar with 4 time ranges.
 /// Each time range tab is managed by a `StoreStatsAndTopPerformersPeriodViewController`.
 ///
 final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewController {
+    weak var scrollDelegate: DashboardUIScrollDelegate?
 
     // MARK: - DashboardUI protocol
 
@@ -285,6 +290,7 @@ private extension StoreStatsAndTopPerformersViewController {
         periodVCs.append(yearVC)
 
         periodVCs.forEach { (vc) in
+            vc.scrollDelegate = scrollDelegate
             vc.onPullToRefresh = { [weak self] in
                 self?.onPullToRefresh()
             }

@@ -4,6 +4,7 @@ import UIKit
 /// Empty state screen shown when the store stats version is not supported
 ///
 final class DeprecatedDashboardStatsViewController: UIViewController {
+    weak var scrollDelegate: DashboardUIScrollDelegate?
 
     /// Empty state screen
     ///

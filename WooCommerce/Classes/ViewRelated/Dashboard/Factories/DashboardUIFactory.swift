@@ -5,6 +5,8 @@ import Yosemite
 /// Contains all UI content to show on Dashboard
 ///
 protocol DashboardUI: UIViewController {
+    var scrollDelegate: DashboardUIScrollDelegate? { get set }
+
     /// Called when the Dashboard should display syncing error
     var displaySyncingErrorNotice: () -> Void { get set }
 

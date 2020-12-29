@@ -22,7 +22,7 @@ struct ProductAttributeTermListMapper: Mapper {
 }
 
 /// ProductAttributeTermListEnvelope Disposable Entity:
-/// `Load All Products Categories` endpoint returns the updated products document in the `data` key.
+/// `Load All ProductsAttributeTerm` endpoint returns the updated products document in the `data` key.
 /// This entity allows us to do parse all the things with JSONDecoder.
 ///
 private struct ProductAttributeTermListEnvelope: Decodable {

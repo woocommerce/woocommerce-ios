@@ -103,6 +103,8 @@
 		26B6453C259B8C0D00EF3FB3 /* ProductAttributeTerm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B6453B259B8C0D00EF3FB3 /* ProductAttributeTerm.swift */; };
 		26B64540259BCDFE00EF3FB3 /* ProductAttributeTermMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B6453F259BCDFE00EF3FB3 /* ProductAttributeTermMapper.swift */; };
 		26B64544259BCE0F00EF3FB3 /* ProductAttributeTermListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B64543259BCE0F00EF3FB3 /* ProductAttributeTermListMapper.swift */; };
+		26B64548259BF2B900EF3FB3 /* ProductAttributeTermListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B64547259BF2B900EF3FB3 /* ProductAttributeTermListMapperTests.swift */; };
+		26B6454E259BF81400EF3FB3 /* product-attribute-terms.json in Resources */ = {isa = PBXBuildFile; fileRef = 26B6454D259BF81400EF3FB3 /* product-attribute-terms.json */; };
 		450106852399A7CB00E24722 /* TaxClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106842399A7CB00E24722 /* TaxClass.swift */; };
 		4501068F2399B19500E24722 /* TaxClassRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4501068E2399B19500E24722 /* TaxClassRemote.swift */; };
 		450106912399B2C800E24722 /* TaxClassListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106902399B2C800E24722 /* TaxClassListMapper.swift */; };
@@ -511,6 +513,8 @@
 		26B6453B259B8C0D00EF3FB3 /* ProductAttributeTerm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeTerm.swift; sourceTree = "<group>"; };
 		26B6453F259BCDFE00EF3FB3 /* ProductAttributeTermMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeTermMapper.swift; sourceTree = "<group>"; };
 		26B64543259BCE0F00EF3FB3 /* ProductAttributeTermListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeTermListMapper.swift; sourceTree = "<group>"; };
+		26B64547259BF2B900EF3FB3 /* ProductAttributeTermListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeTermListMapperTests.swift; sourceTree = "<group>"; };
+		26B6454D259BF81400EF3FB3 /* product-attribute-terms.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-attribute-terms.json"; sourceTree = "<group>"; };
 		450106842399A7CB00E24722 /* TaxClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClass.swift; sourceTree = "<group>"; };
 		4501068E2399B19500E24722 /* TaxClassRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassRemote.swift; sourceTree = "<group>"; };
 		450106902399B2C800E24722 /* TaxClassListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassListMapper.swift; sourceTree = "<group>"; };
@@ -1218,6 +1222,7 @@
 				2683D70F24456EE4002A1589 /* categories-extra.json */,
 				2683D70D24456DB7002A1589 /* categories-empty.json */,
 				45B204BB24890B1200FE6526 /* category.json */,
+				26B6454D259BF81400EF3FB3 /* product-attribute-terms.json */,
 				74C9477F2193A6C60024CB60 /* comment-moderate-approved.json */,
 				74C9477E2193A6C60024CB60 /* comment-moderate-trash.json */,
 				74C947812193A6C70024CB60 /* comment-moderate-unapproved.json */,
@@ -1457,6 +1462,7 @@
 				D88D5A4E230BD276007B6E01 /* ProductReviewListMapperTests.swift */,
 				45152830257A8E1A0076B03C /* ProductAttributeMapperTests.swift */,
 				45152834257A8F490076B03C /* ProductAttributeListMapperTests.swift */,
+				26B64547259BF2B900EF3FB3 /* ProductAttributeTermListMapperTests.swift */,
 				45B204B924890A8C00FE6526 /* ProductCategoryMapperTests.swift */,
 				26615478242DA54D00A31661 /* ProductCategoyListMapperTests.swift */,
 				45D685FB23D0C739005F87D0 /* ProductSkuMapperTests.swift */,
@@ -1703,6 +1709,7 @@
 				D823D90722376B4800C90817 /* shipment_tracking_new_custom_provider.json in Resources */,
 				268B68FD24C87E37007EBF1D /* leaderboards-year-alt.json in Resources */,
 				74A1D264211898F000931DFA /* site-visits-week.json in Resources */,
+				26B6454E259BF81400EF3FB3 /* product-attribute-terms.json in Resources */,
 				B53EF53621813681003E146F /* generic_success.json in Resources */,
 				D8FBFF2922D52AFB006E3336 /* order-stats-v4-year.json in Resources */,
 				02BA23CA22EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json in Resources */,
@@ -2058,6 +2065,7 @@
 				453305EB2459E01A00264E50 /* PostMapperTests.swift in Sources */,
 				CE0A0F1D22398D520075ED8D /* ProductListMapperTests.swift in Sources */,
 				025CA2C6238F4F3500B05C81 /* ProductShippingClassRemoteTests.swift in Sources */,
+				26B64548259BF2B900EF3FB3 /* ProductAttributeTermListMapperTests.swift in Sources */,
 				B554FA8B2180B1D500C54DFF /* NotificationsRemoteTests.swift in Sources */,
 				B518662A20A09C6F00037A38 /* OrdersRemoteTests.swift in Sources */,
 				B5969E1520A47F99005E9DF1 /* RemoteTests.swift in Sources */,

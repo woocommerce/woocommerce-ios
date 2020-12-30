@@ -402,6 +402,26 @@ final class MigrationTests: XCTestCase {
         // Product attributes should be deleted.
         XCTAssertEqual(try targetContext.count(entityName: "ProductAttribute"), 0)
     }
+
+    func test_migrating_from_40_to_41_allow_use_to_create_ProductAttribute_terms() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 40")
+
+        let targetContainer = try migrate(sourceContainer, to: "Model 41")
+        let targetContext = targetContainer.viewContext
+
+        // When
+        let attribute = insertProductAttribute(to: targetContext)
+        let term = insertProductAttributeTerm(to: targetContext)
+        attribute.mutableSetValue(forKey: "terms").add(term)
+        try targetContext.save()
+
+        // Then
+        let fetchedTerm = try XCTUnwrap(targetContext.first(entityName: "ProductAttributeTerm"))
+
+        XCTAssertEqual(fetchedTerm, term)
+        XCTAssertEqual(fetchedTerm.value(forKey: "attribute") as? NSManagedObject, attribute)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -588,6 +608,13 @@ private extension MigrationTests {
         context.insert(entityName: "ProductCategory", properties: [
             "name": "",
             "slug": ""
+        ])
+    }
+
+    func insertProductAttributeTerm(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "ProductAttributeTerm", properties: [
+            "name": "New Term",
+            "slug": "new_term"
         ])
     }
 

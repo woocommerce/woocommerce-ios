@@ -1,61 +1,61 @@
 {
   "data": [
     {
-      "id": 26,
-      "name": "Large",
-      "slug": "large",
+      "id": 104,
+      "name": "Dress",
+      "slug": "Shirt",
+      "parent": 0,
       "description": "",
+      "display": "default",
+      "image": {
+        "id": 1310,
+        "date_created": "2018-08-28T13:09:22",
+        "date_created_gmt": "2018-08-28T17:09:22",
+        "date_modified": "2018-08-28T13:09:22",
+        "date_modified_gmt": "2018-08-28T17:09:22",
+        "src": "https://some-website.com/2018.jpg",
+        "name": "2018",
+        "alt": ""
+      },
       "menu_order": 0,
       "count": 1,
       "_links": {
         "self": [
           {
-            "href": "https://dulces.mystagingwebsite.com/wp-json/wc/v3/products/attributes/2/terms/26"
+            "href": "https://some-website.com/products/categories/104"
           }
         ],
         "collection": [
           {
-            "href": "https://dulces.mystagingwebsite.com/wp-json/wc/v3/products/attributes/2/terms"
+            "href": "https://some-website.com/products/categories"
           }
         ]
       }
     },
     {
-      "id": 27,
-      "name": "Medium",
-      "slug": "medium",
+      "id": 20,
+      "name": "American",
+      "slug": "american",
+      "parent": 17,
       "description": "",
-      "menu_order": 0,
-      "count": 1,
+      "display": "default",
+      "image": null,
+      "menu_order": 5,
+      "count": 0,
       "_links": {
         "self": [
           {
-            "href": "https://dulces.mystagingwebsite.com/wp-json/wc/v3/products/attributes/2/terms/27"
+            "href": "https://some-website.com/products/categories/20"
           }
         ],
         "collection": [
           {
-            "href": "https://dulces.mystagingwebsite.com/wp-json/wc/v3/products/attributes/2/terms"
-          }
-        ]
-      }
-    },
-    {
-      "id": 28,
-      "name": "Small",
-      "slug": "small",
-      "description": "",
-      "menu_order": 0,
-      "count": 1,
-      "_links": {
-        "self": [
-          {
-            "href": "https://dulces.mystagingwebsite.com/wp-json/wc/v3/products/attributes/2/terms/28"
+            "href": "https://some-website.com/products/categories"
           }
         ],
-        "collection": [
+        "up": [
           {
-            "href": "https://dulces.mystagingwebsite.com/wp-json/wc/v3/products/attributes/2/terms"
+            "href": "https://some-website.com/products/categories/17"
           }
         ]
       }

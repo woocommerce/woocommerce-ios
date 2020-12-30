@@ -5,9 +5,14 @@ import struct Yosemite.OrderStatus
 import enum Yosemite.OrderStatusEnum
 import struct Yosemite.Note
 
+protocol OrdersTabbedViewControllerScrollDelegate: class {
+    func orderListScrollViewDidScroll(_ scrollView: UIScrollView)
+}
+
 /// The main Orders view controller that is shown when the Orders tab is accessed.
 ///
 final class OrdersTabbedViewController: TabbedViewController {
+    weak var scrollDelegate: OrdersTabbedViewControllerScrollDelegate?
 
     private lazy var analytics = ServiceLocator.analytics
 
@@ -123,6 +128,10 @@ final class OrdersTabbedViewController: TabbedViewController {
 extension OrdersTabbedViewController: OrderListViewControllerDelegate {
     func orderListViewControllerWillSynchronizeOrders(_ viewController: UIViewController) {
         viewModel.syncOrderStatuses()
+    }
+
+    func orderListScrollViewDidScroll(_ scrollView: UIScrollView) {
+        scrollDelegate?.orderListScrollViewDidScroll(scrollView)
     }
 }
 

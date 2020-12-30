@@ -42,10 +42,11 @@ final class WooTabNavigationController: UINavigationController {
     /// Adds a view controller to the navigation stack with large title enabled or disabled.
     /// - Parameters:
     ///   - viewController: view controller to add to the navigation stack.
-    ///   - isLargeTitlesEnabled: whether large title is enabled for the given view controller.
-    func addViewController(_ viewController: UIViewController, isLargeTitlesEnabled: Bool) {
+    ///   - isLargeTitleEnabled: whether large title is enabled for the given view controller.
+    ///   - isLargeTitlesFeatureFlagEnabled: whether large titles feature flag is enabled.
+    func addViewController(_ viewController: UIViewController, isLargeTitleEnabled: Bool, isLargeTitlesFeatureFlagEnabled: Bool) {
         viewControllers.append(viewController)
-        if isLargeTitlesEnabled {
+        if isLargeTitleEnabled && isLargeTitlesFeatureFlagEnabled {
             navigationControllerDelegate.addViewControllerWithLargeTitle(viewController)
         }
     }

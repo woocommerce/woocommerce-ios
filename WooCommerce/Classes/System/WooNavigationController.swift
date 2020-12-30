@@ -1,31 +1,29 @@
 import UIKit
 
-final class WooTabNavigationControllerDelegate: NSObject, UINavigationControllerDelegate {
-    private var viewControllersWithLargeTitle: [UIViewController] = []
+/// Keeps track of a weak set of view controllers with large title enabled, so that any view controllers shown that are not
+/// in the set won't have large title in the navigation bar.
+final class WooTabNavigationControllerDelegate: NSObject {
+    private var viewControllersWithLargeTitle = NSHashTable<UIViewController>.weakObjects()
 
     func addViewControllerWithLargeTitle(_ viewController: UIViewController) {
-        viewControllersWithLargeTitle.append(viewController)
-        viewController.navigationItem.largeTitleDisplayMode = .always
+        viewControllersWithLargeTitle.add(viewController)
         viewController.navigationController?.navigationBar.prefersLargeTitles = true
     }
 }
 
-extension WooTabNavigationControllerDelegate {
+extension WooTabNavigationControllerDelegate: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
         if viewControllersWithLargeTitle.contains(viewController) {
-            return
+            viewController.navigationItem.largeTitleDisplayMode = .always
+        } else {
+            viewController.navigationItem.largeTitleDisplayMode = .never
         }
-
-        guard let indexOfViewController = navigationController.viewControllers.lastIndex(of: viewController),
-              let previousViewController = navigationController.viewControllers[safe: indexOfViewController - 1],
-              viewControllersWithLargeTitle.contains(previousViewController) && viewControllersWithLargeTitle.contains(viewController) == false else {
-            return
-        }
-        viewController.navigationItem.largeTitleDisplayMode = .never
     }
 }
 
-class WooTabNavigationController: UINavigationController {
+/// Navigation controller for a Woo tab.
+/// The difference from `UINavigationController` is that it keeps track of which view controllers with large title enabled.
+final class WooTabNavigationController: UINavigationController {
     private let navigationControllerDelegate = WooTabNavigationControllerDelegate()
 
     init() {
@@ -38,9 +36,13 @@ class WooTabNavigationController: UINavigationController {
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .default
+        .default
     }
 
+    /// Adds a view controller to the navigation stack with large title enabled or disabled.
+    /// - Parameters:
+    ///   - viewController: view controller to add to the navigation stack.
+    ///   - isLargeTitlesEnabled: whether large title is enabled for the given view controller.
     func addViewController(_ viewController: UIViewController, isLargeTitlesEnabled: Bool) {
         viewControllers.append(viewController)
         if isLargeTitlesEnabled {

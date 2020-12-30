@@ -14,5 +14,4 @@ extension ProductAttributeTerm {
     @NSManaged public var count: Int32
     @NSManaged public var siteID: Int64
     @NSManaged public var attribute: ProductAttribute?
-
 }

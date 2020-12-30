@@ -290,7 +290,7 @@
         <attribute name="variation" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="visible" attributeType="Boolean" usesScalarValueType="YES"/>
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="attributes" inverseEntity="Product"/>
-        <relationship name="terms" toMany="YES" deletionRule="Nullify" destinationEntity="ProductAttributeTerm" inverseName="attribute" inverseEntity="ProductAttributeTerm"/>
+        <relationship name="terms" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductAttributeTerm" inverseName="attribute" inverseEntity="ProductAttributeTerm"/>
     </entity>
     <entity name="ProductAttributeTerm" representedClassName="ProductAttributeTerm" syncable="YES">
         <attribute name="count" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
@@ -578,6 +578,7 @@
         <element name="PaymentGateway" positionX="-693" positionY="36" width="128" height="133"/>
         <element name="Product" positionX="-692.92578125" positionY="1193.70703125" width="128" height="1003"/>
         <element name="ProductAttribute" positionX="-733.52734375" positionY="-73.046875" width="128" height="164"/>
+        <element name="ProductAttributeTerm" positionX="-693" positionY="45" width="128" height="119"/>
         <element name="ProductCategory" positionX="-885.69921875" positionY="65.46484375" width="128" height="133"/>
         <element name="ProductDefaultAttribute" positionX="-819.42578125" positionY="224.1171875" width="145.12109375" height="103"/>
         <element name="ProductDimensions" positionX="-830.15234375" positionY="345.6328125" width="128" height="118"/>
@@ -605,6 +606,5 @@
         <element name="TaxClass" positionX="-529.7734375" positionY="-56.109375" width="128" height="88"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
-        <element name="ProductAttributeTerm" positionX="-693" positionY="45" width="128" height="119"/>
     </elements>
 </model>

@@ -11,6 +11,7 @@ import Observables
 final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     // MARK: Public Interface
+    weak var scrollDelegate: DashboardUIScrollDelegate?
 
     /// Time range for this period
     let timeRange: StatsTimeRangeV4
@@ -134,6 +135,12 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     }
 }
 
+extension StoreStatsAndTopPerformersPeriodViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        scrollDelegate?.dashboardUIScrollViewDidScroll(scrollView)
+    }
+}
+
 // MARK: Public Interface
 extension StoreStatsAndTopPerformersPeriodViewController {
     func clearAllFields() {
@@ -212,6 +219,7 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         view.pinSubviewToSafeArea(scrollView)
 
         scrollView.refreshControl = refreshControl
+        scrollView.delegate = self
 
         scrollView.addSubview(stackView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false

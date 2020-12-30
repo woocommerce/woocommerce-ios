@@ -21,6 +21,9 @@ final class DashboardViewController: UIViewController {
         return UIView(frame: .zero)
     }()
 
+    // Used to trick the navigation bar for large title.
+    private let hiddenScrollView = UIScrollView()
+
     // MARK: View Lifecycle
 
     init(siteID: Int64) {
@@ -102,6 +105,15 @@ private extension DashboardViewController {
     }
 
     func configureDashboardUIContainer() {
+        hiddenScrollView.contentInsetAdjustmentBehavior = .never
+        hiddenScrollView.isHidden = true
+        hiddenScrollView.bounces = false
+        // Adds the "hidden" scroll view to the root of the UIViewController for large titles.
+        view.addSubview(hiddenScrollView)
+        hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
+        // TODO: update top constraint to the button bar height
+        view.pinSubviewToAllEdges(hiddenScrollView, insets: .init(top: 44, left: 0, bottom: 0, right: 0))
+
         // A container view is added to respond to safe area insets from the view controller.
         // This is needed when the child view controller's view has to use a frame-based layout
         // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
@@ -112,8 +124,17 @@ private extension DashboardViewController {
 
     func reloadDashboardUIStatsVersion() {
         dashboardUIFactory.reloadDashboardUI(onUIUpdate: { [weak self] dashboardUI in
+            dashboardUI.scrollDelegate = self
             self?.onDashboardUIUpdate(updatedDashboardUI: dashboardUI)
         })
+    }
+}
+
+extension DashboardViewController: DashboardUIScrollDelegate {
+    func dashboardUIScrollViewDidScroll(_ scrollView: UIScrollView) {
+        hiddenScrollView.contentSize = scrollView.contentSize
+        hiddenScrollView.contentOffset = scrollView.contentOffset
+        hiddenScrollView.panGestureRecognizer.state = scrollView.panGestureRecognizer.state
     }
 }
 

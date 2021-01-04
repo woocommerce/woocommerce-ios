@@ -234,6 +234,8 @@ private extension OrderDetailsViewController {
         }
 
         self.topBannerView = topBannerView
+        // A frame-based container view is needed for table view's `tableHeaderView` and its height is recalculated in `viewDidLayoutSubviews`, so that the
+        // top banner view can be Auto Layout based with dynamic height.
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
         headerContainer.addSubview(topBannerView)
         headerContainer.pinSubviewToSafeArea(topBannerView, insets: Constants.headerContainerInsets)

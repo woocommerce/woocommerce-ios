@@ -2,7 +2,7 @@
 
 5.8
 -----
-- [***] Products M5 features are now available to all. Products M5 features: add and edit linked products, add and edit downloadable files, product deletion.
+- [***] Products M5 features are now available to all. Products M5 features: add and edit linked products, add and edit downloadable files, product deletion. [https://github.com/woocommerce/woocommerce-ios/pull/3420]
 
 
 5.7

@@ -59,8 +59,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             }
 
             actionsFactory = ProductFormActionsFactory(product: product,
-                                                       formType: formType,
-                                                       isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
+                                                       formType: formType)
             productSubject.send(product)
         }
     }
@@ -81,22 +80,18 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     }
 
     private let productImageActionHandler: ProductImageActionHandler
-    private let isEditProductsRelease5Enabled: Bool
 
     private var cancellable: ObservationToken?
 
     init(product: EditableProductModel,
          formType: ProductFormType,
-         productImageActionHandler: ProductImageActionHandler,
-         isEditProductsRelease5Enabled: Bool) {
+         productImageActionHandler: ProductImageActionHandler) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
-        self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
         self.originalProduct = product
         self.product = product
         self.actionsFactory = ProductFormActionsFactory(product: product,
-                                                        formType: formType,
-                                                        isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
+                                                        formType: formType)
         self.isUpdateEnabledSubject = PublishSubject<Bool>()
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
@@ -135,7 +130,6 @@ extension ProductFormViewModel {
     }
 
     func canDeleteProduct() -> Bool {
-        isEditProductsRelease5Enabled &&
         formType == .edit
     }
 }

@@ -12,8 +12,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                                                    stockStatusKey: ProductStockStatus.onBackOrder.rawValue)
         let model = EditableProductModel(product: product)
         let actionsFactory = ProductFormActionsFactory(product: model,
-                                                       formType: .edit,
-                                                       isEditProductsRelease5Enabled: false)
+                                                       formType: .edit)
 
         // Action
         let tableViewModel = DefaultProductFormTableViewModel(product: model, actionsFactory: actionsFactory, currency: "")
@@ -41,8 +40,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                                                    stockStatusKey: ProductStockStatus.onBackOrder.rawValue)
         let model = EditableProductModel(product: product)
         let actionsFactory = ProductFormActionsFactory(product: model,
-                                                       formType: .edit,
-                                                       isEditProductsRelease5Enabled: false)
+                                                       formType: .edit)
 
         // Action
         let tableViewModel = DefaultProductFormTableViewModel(product: model, actionsFactory: actionsFactory, currency: "")

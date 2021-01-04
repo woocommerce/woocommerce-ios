@@ -57,11 +57,10 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v5.6-whats-new"
+msgctxt "v5.7-whats-new"
 msgid ""
-"You asked, and we listened! You can now create simple, grouped, and external products for your store directly from your iPhone or iPad. Turn your ideas into products, even when you’re away from your computer.\n"
-"\n"
-"That’s not all! We fixed problems, including a bug that meant newly submitted orders weren’t always showing up in an order list. We also made improvements. For instance, you can now issue refunds—for products or shipping—directly from the order screen.\n"
+"The app now supports iOS 13 and up which will allow for more rapid feature development.\n"
+"We've fixed a bug that prevented thumbnail images from appearing for product variations on the order details screen, and centered the footer spinner vertically and horizontally.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

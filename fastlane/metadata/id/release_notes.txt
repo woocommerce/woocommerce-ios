@@ -1,3 +1,2 @@
-Anda meminta, kami menyediakannya! Sekarang Anda dapat membuat produk sederhana, dikelompokkan, dan eksternal untuk toko langsung dari iPhone atau iPad Anda. Ubah ide Anda jadi produk nyata, bahkan tanpa mesti duduk di depan komputer.
-
-Tunggu! Itu belum semua. Kami memperbaiki masalah termasuk bug yang menyebabkan pesanan yang baru dikirimkan tidak selalu muncul dalam daftar pesanan. Kami juga melakukan peningkatan. Contohnya, sekarang Anda dapat meminta pengembalian dana—untuk produk atau pengiriman—langsung dari layar pesanan.
+Aplikasi kini mendukung iOS 13 dan di atasnya, sehingga pengembangan fitur dapat dilakukan dengan lebih cepat.
+Kami memperbaiki proses penanganan error di proses login, memperbaiki bug yang menyebabkan gambar thumbnail variasi produk tidak muncul di layar rincian pesanan, dan meletakkan spinner footer tepat di tengah dalam posisi vertikal maupun horizontal.

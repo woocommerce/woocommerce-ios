@@ -1,3 +1,2 @@
-Vous l’avez demandé, nous vous avons écouté ! Vous pouvez désormais créer des produits simples, groupés et externes pour votre boutique directement depuis votre iPhone ou votre iPad. Transformez vos idées en produits, même sans votre ordinateur sous la main.
-
-Ce n’est pas tout ! Nous avons résolu des problèmes dont un bug qui faisait que les dernières commandes envoyées ne s’affichaient pas toujours dans la liste des commandes. Nous avons également apporté des améliorations. Par exemple, vous pouvez désormais émettre des remboursements (concernant des produits ou la livraison), directement à partir de l’écran de la facture.
+L’application prend désormais en charge iOS 13 et versions supérieures qui permettent un développement plus rapide des fonctionnalités.
+Nous avons amélioré la prise en charge des erreurs dans le flux de connexion, résolu un bug qui empêchait l’affichage des miniatures des variantes du produit sur l’écran Détails de la commande, et centré le compteur de pied de page verticalement et horizontalement.

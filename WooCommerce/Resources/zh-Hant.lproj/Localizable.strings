@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-12-10 13:54:04+0000 */
+/* Translation-Revision-Date: 2020-12-23 11:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -30,11 +30,17 @@
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ 在 %2$@ 上留下了評論";
 
+/* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
+"%1$@ refund requested (%2$@)" = "已提出 %1$@ 退款要求 (%2$@)";
+
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "已在 %1$@ 收到 %2$@ 付款";
 
 /* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@ x %2$@" = "%1$@ x %2$@";
+
+/* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
+"%1$@ • %2$@" = "%1$@• %2$@";
 
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
@@ -50,6 +56,9 @@
 
 /* For example, '5 Items' */
 "%@ Items" = "%@ 個品項";
+
+/* Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS). */
+"%@ label refund requested" = "已提出 %@ 標籤退款要求";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%@ left a review on %@" = "%1$@ 在 %2$@ 上留下了評論";
@@ -205,6 +214,9 @@
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "新增追蹤";
 
+/* Add Product Attribute screen navigation title */
+"Add attribute" = "新增屬性";
+
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "新增更多詳細資料";
@@ -220,6 +232,9 @@
 
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "遠端新增商品的「可下載檔案」資訊";
+
+/* Title for adding variations row on Product main screen for a variable product */
+"Add variations" = "新增款式類型";
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "新增重量和尺寸";
@@ -253,6 +268,9 @@
 
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "替代作法：";
+
+/* Title of shipping label eligible refund amount in Refund Shipping Label screen */
+"Amount Eligible For Refund" = "符合退款資格的金額";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "建立「選單」時發生錯誤。";
@@ -315,6 +333,9 @@
 /* Message on the alert when the user taps to delete a Product image */
 "Are you sure you want to remove this image?" = "確定要移除此圖片？";
 
+/* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
+"Attribute name" = "屬性名稱";
+
 /* No comment provided by engineer. */
 "Authenticating" = "驗證中";
 
@@ -348,9 +369,6 @@
 /* Product backorders setting list selector navigation title
    Title of the cell in Product Inventory Settings > Backorders */
 "Backorders" = "無庫存下單";
-
-/* A descriptive label prefix. Example: 'Backorders: not allowed' */
-"Backorders:" = "無庫存下單：";
 
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "長條數目 %1$i, %2$@,";
@@ -392,7 +410,7 @@
 "Can Not Request Link" = "無法要求連結";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
 "Cancel" = "取消";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -483,8 +501,12 @@
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "在此處聯絡我們";
 
-/* The button title text when there is a next step for logging in or signing up. */
+/* The button title text when there is a next step for logging in or signing up.
+   Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
 "Continue" = "繼續";
+
+/* Button title. Takes the user to the login with WordPress.com flow. */
+"Continue With WordPress.com" = "繼續使用 WordPress.com";
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "繼續閱讀";
@@ -510,6 +532,9 @@
 
 /* Copy email address button title */
 "Copy email address" = "複製電子郵件地址";
+
+/* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
+"Copy tracking number" = "複製追蹤號碼";
 
 /* The title of the button for giving a negative feedback for the app. */
 "Could Be Better" = "可以再好一點";
@@ -552,6 +577,9 @@
 
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "正在建立商品";
+
+/* Credit card payment method for shipping label. */
+"Credit card" = "信用卡";
 
 /* Cell title for Cross-sells products in Linked Products Settings screen */
 "Cross-sells" = "交叉銷售";
@@ -624,11 +652,11 @@
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "決定產品在目錄中的位置。數值越低，品項在產品清單中的位置越前面。您也可以輸入負數值";
 
-/* Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit] */
-"Dimensions: %1$@ x %2$@ x %3$@%4$@" = "尺寸：%1$@ x %2$@ x %3$@%4$@";
-
 /* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
-"Dimensions: %1$@ x %2$@%3$@" = "尺寸：%1$@ x %2$@%3$@";
+"Dimensions: %1$@ x %2$@ %3$@" = "尺寸：%1$@ x %2$@%3$@";
+
+/* Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit] */
+"Dimensions: %1$@ x %2$@ x %3$@ %4$@" = "尺寸：%1$@ x %2$@ x %3$@%4$@";
 
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "尺寸：%1$@%2$@";
@@ -661,6 +689,12 @@
 /* Action title to select products to add to a grouped product from search results
    Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
 "Done" = "完成";
+
+/* Link title to see instructions for printing a shipping label on an iOS device */
+"Don’t know how to print from your device?" = "不知道如何從裝置列印？";
+
+/* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
+"Don’t know how to print from your phone?" = "不知道如何從手機列印？";
 
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [(code)] (theMessage)" = "Dotcom 錯誤：[(code)] (theMessage)";
@@ -701,10 +735,10 @@
 "Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Download expiration";
+"Download expiration" = "下載到期";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "下載到期";
+"Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "下載限制";
@@ -729,9 +763,6 @@
 
 /* Title of the Downloadable Files row on Product main screen */
 "Downloadable files" = "Downloadable files";
-
-/* Product Details > Purchase Details > Downloads cell title */
-"Downloads" = "下載";
 
 /* Display label for the product's draft status */
 "Draft" = "草稿";
@@ -773,8 +804,15 @@
 /* The title used when asking the user for feedback for the app. */
 "Enjoying the WooCommerce app?" = "喜歡 WooCommerce 應用程式嗎？";
 
+/* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
+"Enter Another Store" = "輸入其他商店";
+
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "輸入 URL";
+
+/* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account
+   Button title. Takes the user to the login by store address flow. */
+"Enter Your Store Address" = "輸入你的商店地址";
 
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "輸入貨運業者名稱";
@@ -796,10 +834,10 @@
 "Enter the external URL to the product." = "請輸入此產品的外部 URL。";
 
 /* Footer text for Download Expiration */
-"Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "輸入下載連結過期前的天數，保留空白則表示永久有效";
 
 /* Footer text for Download Expiration */
-"Enter the number of days before a download link expires, or leave blank if never it expires" = "輸入下載連結過期前的天數，保留空白則表示永久有效";
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
 
 /* Footer text for Downloadable Limit */
 "Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "輸入可以下載檔案的次數，保留空白則表示下載次數無限制";
@@ -822,22 +860,16 @@
 /* Instruction text on the initial email address entry screen. */
 "Enter your email address to log in or create a WordPress.com account." = "請輸入你的電子郵件地址以登入或建立 WordPress.com 帳號。";
 
+/* Button title. Takes the user to the login by site address flow. */
+"Enter your existing site address" = "輸入你現有的網址";
+
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "請改為輸入你的密碼。";
 
-/* Button title. Takes the user to the login by site address flow. */
-"Enter your site address" = "請輸入你的網站位址";
-
 /* Experimental features navigation title
    Navigates to experimental features screen */
 "Experimental Features" = "實驗性功能";
-
-/* Expiry: 1 day */
-"Expiry: %ld day" = "到期：%ld 天";
-
-/* For example: 'Expiry: 30 days' */
-"Expiry: %ld days" = "到期：%ld 天";
 
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "外部商品";
@@ -894,6 +926,9 @@
 
 /* The hint button's title text to help users find their site address. */
 "Find your site address" = "尋找你的網站位址";
+
+/* The hint button's title text to help users find their store address. */
+"Find your store address" = "尋找你的商店地址";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new reads." = "關注你喜歡的網站並發掘新讀物。";
@@ -1029,8 +1064,14 @@
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "若停用，此備註將變成私人狀態";
 
+/* Header text when reprinting a shipping label */
+"If there was a printing error when you purchased the label, you can print it again." = "如果購買標籤時發生列印錯誤，可以重新列印。";
+
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "若你已擁有商店，則需要安裝免費 Jetpack 外掛程式，並連結至你的 WordPress.com 帳號。";
+
+/* Info text when reprinting a shipping label */
+"If you already used the label in a package, printing and using it again is a violation of our terms of service" = "若你已在包裝中使用過該標籤，重複列印和使用會違反我們的服務條款";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "如果你繼續使用 Apple 或 Google 操作且尚未擁有 WordPress.com 帳號，即表示你正在建立帳號，並同意我們的_服務條款_。";
@@ -1038,6 +1079,9 @@
 /* Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "尚有存貨";
+
+/* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
+"In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "在你的網站管理中，你可以從 Jetpack 控制台的「連結」>「帳號連結」找到用於連結 WordPress.com 的電子郵件。";
 
 /* Application's Inactive State */
 "Inactive" = "未啟用";
@@ -1087,8 +1131,8 @@
 /* No comment provided by engineer. */
 "Invalid username" = "無效的使用者名稱";
 
-/* Product Details - inventory section title
-   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
+/* Product Inventory Settings navigation title
+   Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "庫存";
 
 /* Text on the button that starts a new refund process */
@@ -1096,6 +1140,9 @@
 
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "正在核發退款…";
+
+/* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
+"It looks like this email isn't associated with a WordPress.com account." = "電子郵件與 WordPress.com 帳號似乎無關聯。";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "使用者名稱\/密碼似乎不適用於這個網站。";
@@ -1109,11 +1156,17 @@
 /* The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
 "It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!" = "你現在可以透過 Woo 應用程式隨時隨地建立\n簡單、組合和外部商品。尚未建立完成嗎？ 將它們儲存為草稿！";
 
+/* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
+"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack 是一款免費的 WordPress 外掛程式，能夠透過所需工具連結你的商店，為你提供最佳行動裝置體驗，包含推播通知和統計資料";
+
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "繼續編輯";
 
 /* Information text when the survey is completed */
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "請注意，這不是客服支援表單，我們將無法針對個人意見給予回覆";
+
+/* Title of label paper size option for printing a shipping label */
+"Label (4 x 6 in)" = "標籤 (4 x 6 吋)";
 
 /* Last 24 hours section header */
 "Last 24 hours" = "過去 24 小時";
@@ -1128,8 +1181,17 @@
    Title of button shown in the Orders → All Orders tab if the list is empty. */
 "Learn more" = "瞭解更多";
 
+/* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
+"Learn more about Jetpack" = "深入瞭解 Jetpack";
+
+/* Title of legal paper size option for printing a shipping label */
+"Legal (8.5 x 14 in)" = "法律文件紙 (8.5 x 14 吋)";
+
 /* Title of the cell in Product Shipping Settings > Length */
 "Length" = "長度";
+
+/* Title of letter paper size option for printing a shipping label */
+"Letter (8.5 x 11 in)" = "信紙 (8.5 x 11 吋)";
 
 /* Licenses (information page title) */
 "Licenses" = "授權";
@@ -1139,12 +1201,6 @@
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "已達限制。你可以在 1 分鐘後再試一次。如果在 1 分鐘不到之前重試，只會延長你必須等候繼續進行的時間。如果你覺得這是錯誤，請聯絡支援團隊。";
-
-/* 'Limit: 1 download', for example. */
-"Limit: %ld download" = "限制：%ld 下載";
-
-/* 'Limit: 2 downloads', for example. */
-"Limit: %ld downloads" = "限制：%ld 下載";
 
 /* Title for screen in editor that allows to configure link options */
 "Link Settings" = "連結設定";
@@ -1179,6 +1235,10 @@
    Log In button label. - View title during the log in process. */
 "Log In" = "登入";
 
+/* Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
+   Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+"Log In With Another Account" = "使用其他帳號登入";
+
 /* Alert button title - confirms and logs out the user
    Log out button title */
 "Log Out" = "登出";
@@ -1195,7 +1255,8 @@
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "使用電子郵件地址登入 WordPress.com 帳號。";
 
-/* Sign in instructions on the 'log in using email' screen. */
+/* Sign in instructions on the 'log in using email' screen.
+   Sign in instructions on the 'log in using WordPress.com account' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "使用 WordPress.com 帳號電子郵件地址登入，即可管理 WooCommerce 商店。";
 
 /* Sign in instructions for logging in with a username and password. */
@@ -1203,9 +1264,6 @@
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "請使用你的 WordPress.com 使用者名稱和密碼登入。";
-
-/* Error message that displays on the 'Log in by entering your site address.' screen. Jetpack is required for logging into the WooCommerce mobile apps. */
-"Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue." = "你的網站似乎並未準備好使用此應用程式。請確保你的網站已安裝 Jetpack 再繼續操作。";
 
 /* Title of a button. */
 "Lost your password?" = "忘記密碼？";
@@ -1235,10 +1293,10 @@
 "Manual Offsets" = "手動時差";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "透過 %1$@ 手動退款";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "透過 %1$@ 手動退款";
 
 /* No comment provided by engineer. */
 "Manual Refund via Stripe" = "透過 Stripe 手動退款";
@@ -1312,13 +1370,17 @@
 /* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
 "Navigates to Settings." = "瀏覽至「設定」。";
 
+/* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
+"Need help finding the connected email?" = "需要協助找出連結的電子郵件嗎？";
+
 /* A button title. */
 "Need help finding your site address?" = "需要幫你找網站位址嗎？";
 
 /* Takes the user to get help */
 "Need help?" = "需要協助嗎？";
 
-/* Title of the more help button on alert helping users understand their site address */
+/* Title of button to learn more presented when users attempt to log in with an email address that does not match a WP.com account
+   Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "需要更多協助嗎？";
 
 /* Text preceding the Contact Us button in the survey completed screen */
@@ -1327,8 +1389,8 @@
 /* The title for the net amount paid cell */
 "Net" = "淨額";
 
-/* Title of a button.
-   Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
+/* Next nav bar button title in Add Product Attribute screen
+   Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "下一步";
 
 /* Empty Product Reviews List Message */
@@ -1354,10 +1416,10 @@
 "No expiration" = "No expiration";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "No files yet";
+"No files yet" = "尚無任何檔案";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "尚無任何檔案";
+"No files yet" = "No files yet";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "尚未有圖片";
@@ -1410,9 +1472,6 @@
 
 /* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "給顧客的備註";
-
-/* Label prefix. Example: 'Number of files: 2' */
-"Number of files:" = "檔案數量：";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -1474,6 +1533,9 @@
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "或輸入網站位址登入。";
 
+/* Header of attributes section in Add Attribute screen */
+"Or tap to select existing attribute" = "或點選以選取現有屬性";
+
 /* Add a note screen - title. Example: Order #15
    Order number title */
 "Order #(viewModel.order.number)" = "訂單編號 (viewModel.order.number)";
@@ -1519,8 +1581,14 @@
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
 "Package %d" = "包裹 %d";
 
+/* Title of package details in shipping label details */
+"Package Details" = "包裹詳細資訊";
+
 /* The title for the customer payment cell */
 "Paid By Customer" = "顧客付款";
+
+/* Title of the paper size selector row for reprinting a shipping label */
+"Paper Size" = "紙張大小";
 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "上層分類";
@@ -1537,6 +1605,9 @@
 
 /* Payment section title */
 "Payment" = "付款";
+
+/* Title of payment method in shipping label details */
+"Payment Method" = "付款方式";
 
 /* Display label for the review's pending status */
 "Pending" = "待審核";
@@ -1635,12 +1706,12 @@
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "之前已退款";
 
-/* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
-   Product Price Settings navigation title - Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
+/* Product Price Settings navigation title
+   Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
 "Price" = "價格";
 
-/* Product Details - pricing and inventory section title */
-"Pricing and Inventory" = "定價和庫存";
+/* Button title to generate a shipping label document for printing */
+"Print Shipping Label" = "列印郵寄標籤";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "加州使用者的隱私權聲明";
@@ -1667,9 +1738,6 @@
 /* Description for Top Performers left column header
    Product section title - Product section title if there is only one product. - Section header title for the product */
 "Product" = "產品";
-
-/* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
-"Product %ld has been removed from your store" = "已從你的商店移除產品 %ld";
 
 /* Edit Product External Link navigation title */
 "Product Link" = "產品連結";
@@ -1734,15 +1802,14 @@
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "正在上架你的商品…";
 
-/* Product Details - purchase details section title */
-"Purchase Details" = "購買詳細資料";
+/* Title of shipping label purchase date in Refund Shipping Label screen */
+"Purchase Date" = "購買日期";
 
 /* Product Note navigation title
    Purchase note label in Product Settings */
 "Purchase Note" = "購買備註";
 
-/* Product Details > Purchase Details > Purchase note cell title
-   Title for purchase note alert. */
+/* Title for purchase note alert. */
 "Purchase note" = "購買備註";
 
 /* Quantity abbreviation for section title */
@@ -1752,23 +1819,21 @@
    Section header title - abbreviation for quantity */
 "Qty" = "數量";
 
-/* Title of the cell in Product Inventory Settings > Quantity */
+/* The accessibility label for the quantity button when selecting an item to refund
+   Title of the cell in Product Inventory Settings > Quantity */
 "Quantity" = "數量";
 
 /* Navigation title on the quantity item selector screen */
-"Quantity to refund" = "退款數量";
+"Quantity to refund" = "Quantity to refund";
 
 /* Navigation title on the quantity item selector screen */
-"Quantity to refund" = "Quantity to refund";
+"Quantity to refund" = "退款數量";
 
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %ld" = "數量：%ld";
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "聯絡我們的 happiness engineer，他們很樂於協助解決疑難問題。";
-
-/* Read more of the purchase note. Only the first two lines of text are displayed. */
-"Read more" = "閱讀更多";
 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "閱讀隱私權政策";
@@ -1789,10 +1854,10 @@
 "Reason for refunding order" = "Reason for refunding order";
 
 /* The title of the button to confirm the refund. */
-"Refund" = "Refund";
+"Refund" = "退費";
 
 /* The title of the button to confirm the refund. */
-"Refund" = "退費";
+"Refund" = "Refund";
 
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "退款 #%@";
@@ -1804,17 +1869,20 @@
 /* Refund Details section title */
 "Refund Details" = "退款詳細資料";
 
-/* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Refund Shipping";
+/* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
+"Refund Label (%1$@)" = "退款標籤 (%1$@)";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
 "Refund Shipping" = "退還運費";
 
-/* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "退款方式：";
+/* Title of the switch in the IssueRefund screen to refund shipping */
+"Refund Shipping" = "Refund Shipping";
 
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "Refund Via";
+
+/* The title of the section containing information about how the refund will be processed. */
+"Refund Via" = "退款方式：";
 
 /* The title for the refunded amount cell */
 "Refunded" = "已退款";
@@ -1822,6 +1890,9 @@
 /* Order > Order Details > 'N Items' cell tapped > Refunded Products title
    Refunded Products section title - Section title */
 "Refunded Products" = "已退款的商品";
+
+/* Title of the refund detail cell when the refund was done manually. */
+"Refunded manually" = "手動退款";
 
 /* It reads, 'Refunded manually via <payment method>' */
 "Refunded manually via %@" = "已透過 %@ 手動退款";
@@ -1831,9 +1902,6 @@
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "已註冊的網域";
-
-/* A descriptive label prefix. Example: 'Regular price: $20.00' */
-"Regular price:" = "原價：";
 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "原價：%@";
@@ -1859,10 +1927,12 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "報告當機";
 
-/* Text on the button that reprints a shipping label */
+/* Navigation bar title to reprint a shipping label
+   Text on the button that reprints a shipping label */
 "Reprint Shipping Label" = "重新列印郵寄標籤";
 
-/* Request a refund on a shipping label from the shipping label more menu action sheet */
+/* Navigation bar title to request a refund for a shipping label
+   Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "要求退款";
 
 /* Deletes all activity logs except for the marked 'Current'. */
@@ -1887,26 +1957,24 @@
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "已將評論標記為%@";
 
-/* Reviews descriptive label
-   Title of the Reviews row on Product main screen - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). - Title that appears on top of the Product Reviews screen. */
+/* Title of the Reviews row on Product main screen
+   Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). - Title that appears on top of the Product Reviews screen. */
 "Reviews" = "評論";
 
 /* Post Rich content */
 "Rich Content" = "豐富內容";
 
-/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products.
-   Edit Product SKU navigation title - Title of the cell in Product Inventory Settings > SKU - Title of the product form bottom sheet action for editing short description. - Title of the SKU row on Product main screen */
+/* Edit Product SKU navigation title
+   Title of the cell in Product Inventory Settings > SKU - Title of the product form bottom sheet action for editing short description. - Title of the SKU row on Product main screen */
 "SKU" = "貨號";
 
 /* The message of the alert when there is an error updating the product SKU */
 "SKU already in use by another product" = "其他商品已使用此貨號";
 
-/* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
-   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' */
-"SKU:" = "貨號：";
+/* SKU label in order details > product row. The variable shows the SKU of the product. */
+"SKU: %1$@" = "貨號：%1$@";
 
-/* Format of the SKU on the Inventory Settings row
-   SKU label, followed by the SKU */
+/* Format of the SKU on the Inventory Settings row */
 "SKU: %@" = "貨號：%@";
 
 /* One Time Code has been sent via SMS */
@@ -1923,9 +1991,6 @@
 
 /* Title of the cell in Product Price Settings > Sale price */
 "Sale price" = "折扣價";
-
-/* A descriptive label prefix. Example: 'Sale price: $18.00' */
-"Sale price:" = "折扣價：";
 
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "折扣價格：%@";
@@ -1976,14 +2041,20 @@
 /* Display label for the product's catalog visibility */
 "Search results only" = "僅限搜尋結果";
 
+/* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
+"See Instructions" = "查看說明";
+
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "See comments and notifications in real time." = "即時查看留言和通知。";
 
-/* Select all button title in the issue refund screen */
-"Select All" = "全部選取";
+/* Link title to see all paper size options */
+"See layout and paper sizes options" = "查看版面配置和紙張大小選項";
 
 /* Select all button title in the issue refund screen */
 "Select All" = "Select All";
+
+/* Select all button title in the issue refund screen */
+"Select All" = "全部選取";
 
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "選取上層類別";
@@ -2037,17 +2108,29 @@
 /* Action: Opens the Store in a browser */
 "Share your Store" = "分享你的商店";
 
+/* Title of origin address in shipping label details */
+"Ship from" = "出貨地址";
+
+/* Title of destination address in shipping label details */
+"Ship to" = "運送至";
+
 /* A unit test string for order tracking. Reads as: 'Shipment Company HK Post'
    Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
 "Shipment Company %@" = "貨件公司 %@";
+
+/* Navigation bar title of shipping label details */
+"Shipment Details" = "貨件詳細資訊";
 
 /* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
    Date an item was shipped */
 "Shipped %@" = "已運送 %@";
 
-/* Product Details > Purchase Details > Shipping cell title
-   Product Shipping Settings navigation title - Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
+/* Product Shipping Settings navigation title
+   Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "運送方式";
+
+/* Title of shipping carrier and rates in shipping label details */
+"Shipping Carrier and Rates" = "貨運業者與費率";
 
 /* Title of view displaying all available Shipment Tracking Carriers */
 "Shipping Carriers" = "貨運業者";
@@ -2063,9 +2146,6 @@
 
 /* Title of the cell in Product Shipping Settings > Shipping class */
 "Shipping class" = "運送類別";
-
-/* Label prefix. Example: 'Shipping class: Free Shipping' */
-"Shipping class:" = "運送類別：";
 
 /* Navigation bar title of the Product shipping class selector screen */
 "Shipping classes" = "運送類別";
@@ -2144,9 +2224,6 @@
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "網站位址至少必須為 4 個字元。";
 
-/* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
-"Size:" = "大小：";
-
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title - Slug label in Product Settings */
 "Slug" = "代稱";
@@ -2157,6 +2234,9 @@
 /* A unit test for reviews, checking that anonymous users are added as the author named `someone`
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "某人";
+
+/* Notice format when a shipping label refund request fails. */
+"Something went wrong with the refund. Please try again." = "退款發生錯誤。 請再試一次。";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "很抱歉，你的使用者名稱含有無效的字詞 %@。";
@@ -2236,15 +2316,9 @@
 /* Row title for filtering products by stock status. */
 "Stock Status" = "庫存狀態";
 
-/* A descriptive label prefix. Example: 'Stock quantity: 19' */
-"Stock quantity:" = "存貨數量：";
-
 /* Product stock status list selector navigation title
    Title of the cell in Product Inventory Settings > Stock status */
 "Stock status" = "庫存狀態";
-
-/* A descriptive label prefix. Example: 'Stock status: In stock' */
-"Stock status:" = "存貨狀態：";
 
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "商店收益圖";
@@ -2307,6 +2381,12 @@
 
 /* Accessibility hint for insert link button on formatting toolbar. */
 "Tap to insert a Link" = "點選以插入連結";
+
+/* The accessibility hint for the quantity button when selecting an item to refund */
+"Tap to modify the item refund quantity" = "點選以修改項目退款數量";
+
+/* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
+"Tap to show instructions on how to print a shipping label on the mobile device" = "點選以顯示如何在行動裝置上列印郵寄標籤的說明";
 
 /* Accessibility hint for block quote button on formatting toolbar. */
 "Tap to toggle Block Quote" = "點選以切換封鎖引文";
@@ -2466,6 +2546,9 @@
 /* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
 "The stock quantity for this product. Editable." = "此產品的存貨數量。可編輯。";
 
+/* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
+"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "這不是 WordPress 網站。 若需要我們連結網站，網站必須安裝 WordPress。";
+
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "封鎖指定網站的文章時發生問題。";
 
@@ -2490,9 +2573,6 @@
    Top Performers section title - this year */
 "This Year" = "今年";
 
-/* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, \'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
-"This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "此應用程式需要 Jetpack 才能連結至你的商店。<br \/>請閱讀<a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">設定說明<\/a>。";
-
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "此應用程式要求你在伺服器上安裝 WooCommerce 3.5，否則無法正常運作。請儘快更新以繼續使用此應用程式。";
 
@@ -2512,10 +2592,10 @@
 "This is the name of the file shown to the customer." = "這是向顧客顯示的檔案名稱";
 
 /* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "這是顧客能夠存取的檔案 URL。 輸入的 URL 應該已編碼。";
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
 
 /* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "這是顧客能夠存取的檔案 URL。 輸入的 URL 應該已編碼。";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2524,6 +2604,9 @@
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "無法載入此產品";
 
+/* Message displayed when loading a specific product fails because product was deleted */
+"This product has been deleted and is no longer visible" = "此商品已刪除，不再顯示";
+
 /* Footer text in Product Catalog Visibility */
 "This setting determines which shop pages products will be listed on." = "此設定可決定產品要在哪個商店頁面顯示。";
 
@@ -2531,7 +2614,7 @@
 "This text will be shown on the button linking to the external product." = "這些文字會顯示在連結至外部商品的按鈕上。";
 
 /* Add Product Category. Placeholder of cell presenting the title of the category.
-   Placeholder in the Product Title row on Product form screen. - Product details screen — product title descriptive label */
+   Placeholder in the Product Title row on Product form screen. */
 "Title" = "標題";
 
 /* VoiceOver accessibility hint, informing the user about the title of a product in product detail screen. */
@@ -2558,6 +2641,9 @@
 /* Instructional text shown when requesting the user's password for Google login. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "若要繼續使用這個 Google 帳號，請先使用你的 WordPress.com 密碼登入。系統只會向你要求一次。";
 
+/* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
+"To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "若要將此應用程式用於 %@，你需要在自己的商店安裝並連結 Jetpack 外掛程式。";
+
 /* Tab selector title that shows the statistics for today
    Today Section Header - Top Performers section title - today */
 "Today" = "今天";
@@ -2583,13 +2669,17 @@
 /* Track shipment button title */
 "Track Shipment" = "追蹤貨件";
 
+/* Track shipment of a shipping label from the shipping label tracking more menu action sheet */
+"Track shipment" = "追蹤貨件";
+
 /* Order tracking section title */
 "Tracking" = "追蹤中";
 
 /* Add custom shipping carrier. Title of cell presenting carrier link */
 "Tracking link (optional)" = "追蹤連結 (選用)";
 
-/* Add / Edit shipping carrier. Title of cell presenting tracking number */
+/* Add / Edit shipping carrier. Title of cell presenting tracking number
+   Order shipping label tracking number row title. */
 "Tracking number" = "追蹤號碼";
 
 /* A unit test string. Reads as: 'Trackin number XXX_YYY_ZZZ'
@@ -2646,14 +2736,14 @@
 /* Load Action Failed */
 "Unable to load content" = "無法載入內容";
 
+/* Load Product Attributes Action Failed */
+"Unable to load product attributes" = "無法載入商品屬性";
+
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "無法將評論標記為%@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "無法透過該 URL 讀取 WordPress 網站。點選「需要說明？」即可檢視常見問題集。";
-
-/* Notice displayed when an error occurs while refreshing a product. It reads: Unable to refresh product #{product number} */
-"Unable to refresh Product #%ld" = "無法重新整理產品 #%ld";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "無法重新整理清單";
@@ -2721,10 +2811,10 @@
 "Update product inventory and SKU" = "更新產品庫存和 SKU";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "遠端更新商品的「可下載的檔案」資訊";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "遠端更新商品的「可下載的檔案」資訊";
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "更新至 WooCommerce 3.5 以繼續使用此應用程式";
@@ -2771,8 +2861,11 @@
 /* Action sheet option when the user wants to change the Product type to varible product */
 "Variable product" = "變化商品";
 
-/* Product Details > descriptive label for the Product Variants cell.
-   Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
+/* Footer of text field section in Add Attribute screen */
+"Variation type (ie Color, Size)" = "款式類型 (亦即顏色、尺寸)";
+
+/* Title of the Product Variations row on Product main screen for a variable product
+   Title that appears on top of the Product Variation List screen. */
 "Variations" = "不同型號";
 
 /* Banner caption in my store when the stats will be deprecated */
@@ -2801,20 +2894,14 @@
    Button on bottom of shipping label package card to show shipping details */
 "View Shipment Details" = "檢視貨件詳細資訊";
 
-/* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
-"View affiliate product" = "查看附屬商品";
+/* The action to update downloadable files settings for a product */
+"View downloadable file settings" = "查看可下載的檔案設定";
 
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "View downloadable file settings";
 
-/* The action to update downloadable files settings for a product */
-"View downloadable file settings" = "查看可下載的檔案設定";
-
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "檢視先前提交的支援票證";
-
-/* The descriptive label. Tapping the row will open the product's page in a web view. */
-"View product on store" = "查看商店商品";
 
 /* Accessibility label for the 'View details' refund button */
 "View refund details" = "檢視退款詳細資料";
@@ -2905,14 +2992,20 @@
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "重量";
 
-/* Label prefix. Example: 'Weight: 1kg' */
-"Weight:" = "重量：";
-
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "重量：%1$@%2$@";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Welcome to the world’s most popular website builder." = "歡迎使用全球最受歡迎的網站建置工具。";
+
+/* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
+"What email do I use to sign in?" = "我該使用什麼電子郵件登入？";
+
+/* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
+"What is Jetpack" = "什麼是 Jetpack";
+
+/* Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
+"What is Jetpack?" = "什麼是 Jetpack？";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "我的網站位址是？";
@@ -2957,6 +3050,9 @@
 /* Yesterday Section Header */
 "Yesterday" = "昨天";
 
+/* Header text in Refund Shipping Label screen */
+"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "你可以針對尚未用於運送包裹的郵寄標籤要求退款。\n需要至少 14 天來處理。";
+
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "你無法使用該電子郵件地址註冊。我們無法使用這些電子郵件地址，因為它們會阻擋我們的某些郵件。請使用其他電子郵件供應商。";
 
@@ -2975,9 +3071,6 @@
 /* Comment Attachment Label */
 "[COMMENT]" = "[留言]";
 
-/* Backorders status. Example: 'Backorders: allowed' */
-"allowed" = "允許";
-
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
@@ -2987,9 +3080,6 @@
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "手動退款";
-
-/* Backorders status. Example: 'Backorders: not allowed' */
-"not allowed" = "不允許";
 
 /* No comment provided by engineer. */
 "password" = "密碼";
@@ -3006,6 +3096,9 @@
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "不明的 URL";
 
+/* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need... */
+"your site" = "你的網站";
+
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} 透過 Google 登入。";
 
@@ -3016,5 +3109,5 @@
 "“%@”" = "「%@」";
 
 /* Text of the notice that is displayed after the refund is created. */
-"🎉 Products successfuly refunded" = "🎉 產品已成功退款";
+"🎉 Products successfully refunded" = "🎉 已成功退還商品款項";
 

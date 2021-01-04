@@ -1,3 +1,2 @@
-Siz istediniz, biz de sizi dinledik. Artık doğrudan iPhone veya iPad'inizden mağazanız için basit, gruplanmış ve harici ürünler oluşturabilirsiniz. Bilgisayarınızdan uzakta olsanız bile fikirlerinizi ürünlere dönüştürün.
-
-Hepsi bu değil. Yeni gönderilen siparişlerin her zaman bir sipariş listesinde görünmemesine neden olan bir hata da dahil olmak üzere sorunları düzelttik. Ayrıca iyileştirmeler yaptık. Örneğin, artık doğrudan sipariş ekranından ürünler veya gönderim için geri ödeme yapabilirsiniz.
+Uygulama artık daha hızlı özellik geliştirmeye olanak tanıyacak olan iOS 13 ve üzerini destekliyor.
+Giriş akışındaki hata işlemeyi iyileştirdik, sipariş ayrıntıları ekranında ürün varyasyonları için küçük resimlerin görünmesini engelleyen bir hatayı düzelttik ve altbilgi döndürücüyü dikey ve yatay olarak ortaladık.

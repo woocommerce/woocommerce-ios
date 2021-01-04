@@ -230,10 +230,13 @@ extension NewNoteViewController: UITableViewDelegate {
 //
 private extension NewNoteViewController {
     func displayErrorNotice() {
-        let title = NSLocalizedString(
-            "Unable to add note to order #\(viewModel.order.orderID)",
-            comment: "Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}"
+        let titleFormat = NSLocalizedString(
+            "Unable to add note to order #%1$d",
+            comment: "Content of error presented when Add Note Action Failed. "
+                + "It reads: Unable to add note to order #{order number}. "
+                + "Parameters: %1$d - order number"
         )
+        let title = String.localizedStringWithFormat(titleFormat, viewModel.order.orderID)
 
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
@@ -254,8 +257,8 @@ private extension NewNoteViewController {
     }
 
     func configureTitle() {
-        title = NSLocalizedString("Order #\(viewModel.order.number)",
-            comment: "Add a note screen - title. Example: Order #15")
+        let titleFormat = NSLocalizedString("Order #%1$@", comment: "Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number")
+        title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
     }
 
     func configureDismissButton() {

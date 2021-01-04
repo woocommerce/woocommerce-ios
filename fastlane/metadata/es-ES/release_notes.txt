@@ -1,3 +1,2 @@
-Hemos respondido a tus peticiones. Ahora, puedes crear productos simples, agrupados y externos para tu tienda directamente desde tu iPhone o iPad. Convierte tus ideas en productos, incluso cuando no estés usando tu computadora.
-
-¡Y eso no es todo! Hemos corregido problemas, como un error que hacía que los pedidos nuevos no siempre aparecieran en una lista de pedidos. También hemos hecho mejoras. Por ejemplo, ahora puedes emitir reembolsos de productos o envíos directamente desde la pantalla de pedidos.
+Ahora, la aplicación es compatible con iOS 13 y versiones posteriores. Esto permitirá desarrollar las funciones más rápidamente.
+Hemos mejorado la gestión de errores en el proceso de inicio de sesión, corregido un error que hacía que las miniaturas de imagen no aparecieran en las variaciones de producto en la pantalla Detalles del pedido y centrado el indicador giratorio del pie de página tanto vertical como horizontalmente.

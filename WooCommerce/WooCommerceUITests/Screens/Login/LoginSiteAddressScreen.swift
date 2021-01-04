@@ -29,12 +29,12 @@ final class LoginSiteAddressScreen: BaseScreen {
         super.init(element: siteAddressTextField)
     }
 
-    func proceedWith(siteUrl: String) -> LoginUsernamePasswordScreen {
+    func proceedWith(siteUrl: String) -> GetStartedScreen {
         siteAddressTextField.tap()
         siteAddressTextField.typeText(siteUrl)
         nextButton.tap()
 
-        return LoginUsernamePasswordScreen()
+        return GetStartedScreen()
     }
 
     static func isLoaded() -> Bool {

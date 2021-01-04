@@ -63,26 +63,10 @@ final class OrderListViewController: UIViewController {
     ///
     private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
 
-    /// Used for looking up the `OrderStatus` to show in the `OrderTableViewCell`.
-    ///
-    /// The `OrderStatus` data is fetched from the API by `OrdersTabbedViewModel`.
-    ///
-    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-        let storageManager = ServiceLocator.storageManager
-        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
-
-        return ResultsController<StorageOrderStatus>(storageManager: storageManager, sortedBy: [descriptor])
-    }()
-
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
     private let syncingCoordinator = SyncingCoordinator()
 
-    /// The current list of order statuses for the default site
-    ///
-    private var currentSiteStatuses: [OrderStatus] {
-        return statusResultsController.fetchedObjects
-    }
 
     /// UI Active State
     ///
@@ -132,8 +116,6 @@ final class OrderListViewController: UIViewController {
         configureTableView()
         configureGhostableTableView()
 
-        configureStatusResultsController()
-
         configureViewModel()
         configureSyncingCoordinator()
     }
@@ -158,9 +140,9 @@ final class OrderListViewController: UIViewController {
                 return cell
             }
 
-            let detailsViewModel = self.viewModel.detailsViewModel(withID: objectID)
-            let orderStatus = self.lookUpOrderStatus(for: detailsViewModel?.order)
-            cell.configureCell(viewModel: detailsViewModel, orderStatus: orderStatus)
+            let cellViewModel = self.viewModel.cellViewModel(withID: objectID)
+
+            cell.configureCell(viewModel: cellViewModel)
             cell.layoutIfNeeded()
             return cell
         }
@@ -191,13 +173,6 @@ private extension OrderListViewController {
         viewModel.snapshot.sink { [weak self] snapshot in
             self?.dataSource.apply(snapshot)
         }.store(in: &cancellables)
-    }
-
-    /// Setup: Status Results Controller
-    ///
-    func configureStatusResultsController() {
-        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", siteID)
-        try? statusResultsController.performFetch()
     }
 
     /// Setup: Sync'ing Coordinator
@@ -423,23 +398,6 @@ private extension OrderListViewController {
     }
 }
 
-
-// MARK: - Convenience Methods
-//
-private extension OrderListViewController {
-
-    func lookUpOrderStatus(for order: Order?) -> OrderStatus? {
-        guard let order = order else {
-            return nil
-        }
-
-        for orderStatus in currentSiteStatuses where orderStatus.status == order.status {
-            return orderStatus
-        }
-
-        return nil
-    }
-}
 
 // MARK: - UITableViewDelegate Conformance
 //

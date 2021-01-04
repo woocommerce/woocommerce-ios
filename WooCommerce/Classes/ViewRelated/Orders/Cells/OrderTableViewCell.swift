@@ -5,7 +5,7 @@ import Yosemite
 // MARK: - OrderTableViewCell
 //
 final class OrderTableViewCell: UITableViewCell & SearchResultCell {
-    typealias SearchModel = OrderSearchCellViewModel
+    typealias SearchModel = OrderListCellViewModel
 
     /// Order's Title
     ///
@@ -31,35 +31,26 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
         tableView.registerNib(for: self)
     }
 
-    func configureCell(searchModel: OrderSearchCellViewModel) {
-        configureCell(viewModel: searchModel.orderDetailsViewModel,
-                      orderStatus: searchModel.orderStatus)
+    func configureCell(searchModel: OrderListCellViewModel) {
+        configureCell(viewModel: searchModel)
     }
 
     /// Renders the specified Order ViewModel
     ///
     /// If the `viewModel` is not given, then the UI will be set to empty.
     ///
-    func configureCell(viewModel: OrderDetailsViewModel?, orderStatus: OrderStatus?) {
+    func configureCell(viewModel: OrderListCellViewModel?) {
         guard let viewModel = viewModel else {
             resetLabels()
             return
         }
 
-        titleLabel.text = title(for: viewModel.order)
-        totalLabel.text = viewModel.totalFriendlyString
-        dateCreatedLabel.text = viewModel.formattedDateCreated
+        titleLabel.text = viewModel.title
+        totalLabel.text = viewModel.total
+        dateCreatedLabel.text = viewModel.dateCreated
 
-        if let orderStatus = orderStatus {
-            paymentStatusLabel.applyStyle(for: orderStatus.status)
-            paymentStatusLabel.text = orderStatus.name
-        } else {
-            // There are unsupported extensions with even more statuses available.
-            // So let's use the order.status to display those as slugs.
-            let status = viewModel.order.status
-            paymentStatusLabel.applyStyle(for: status)
-            paymentStatusLabel.text = status.rawValue
-        }
+        paymentStatusLabel.applyStyle(for: viewModel.status)
+        paymentStatusLabel.text = viewModel.statusString
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -123,18 +114,6 @@ private extension OrderTableViewCell {
         paymentStatusLabel.backgroundColor = paymentColor
         paymentStatusLabel.layer.borderColor = borderColor
     }
-
-    /// For example, #560 Pamela Nguyen
-    ///
-    func title(for order: Order) -> String {
-        if let billingAddress = order.billingAddress, billingAddress.firstName.isNotEmpty || billingAddress.lastName.isNotEmpty {
-            return Localization.title(orderNumber: order.number,
-                                      firstName: billingAddress.firstName,
-                                      lastName: billingAddress.lastName)
-        }
-
-        return Localization.title(orderNumber: order.number)
-    }
 }
 
 // MARK: - Setup
@@ -156,29 +135,5 @@ private extension OrderTableViewCell {
         paymentStatusLabel.numberOfLines = 0
 
         dateCreatedLabel.applyCaption1Style()
-    }
-}
-
-// MARK: - Constants
-
-private extension OrderTableViewCell {
-    enum Localization {
-        static func title(orderNumber: String, firstName: String, lastName: String) -> String {
-            let format = NSLocalizedString("#%1$@ %2$@ %3$@", comment: "In Order List,"
-                + " the pattern to show the order number and the full name. For example, “#123 John Doe”."
-                + " The %1$@ is the order number. The %2$@ is the first name. The %3$@ is the last name.")
-
-            return String.localizedStringWithFormat(format, orderNumber, firstName, lastName)
-        }
-
-        static func title(orderNumber: String) -> String {
-            let format = NSLocalizedString("#%@ %@", comment: "In Order List,"
-                + " the pattern to show the order number. For example, “#123456”."
-                + " The %@ placeholder is the order number.")
-
-            let guestName: String = NSLocalizedString("Guest", comment: "In Order List, the name of the billed person when there are no name and last name.")
-
-            return String.localizedStringWithFormat(format, orderNumber, guestName)
-        }
     }
 }

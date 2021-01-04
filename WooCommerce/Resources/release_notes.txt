@@ -1,3 +1,2 @@
-You asked, and we listened! You can now create simple, grouped, and external products for your store directly from your iPhone or iPad. Turn your ideas into products, even when you’re away from your computer.
-
-That’s not all! We fixed problems, including a bug that meant newly submitted orders weren’t always showing up in an order list. We also made improvements. For instance, you can now issue refunds—for products or shipping—directly from the order screen.
+The app now supports iOS 13 and up which will allow for more rapid feature development.
+We've fixed a bug that prevented thumbnail images from appearing for product variations on the order details screen, and centered the footer spinner vertically and horizontally.

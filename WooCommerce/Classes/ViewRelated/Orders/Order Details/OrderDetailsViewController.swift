@@ -104,7 +104,8 @@ private extension OrderDetailsViewController {
     /// Setup: Navigation
     ///
     func configureNavigation() {
-        title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Order number title")
+        let titleFormat = NSLocalizedString("Order #%1$@", comment: "Order number title. Parameters: %1$@ - order number")
+        title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
 
         // Don't show the Order details title in the next-view's back button
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
@@ -119,14 +120,6 @@ private extension OrderDetailsViewController {
             }
             self.viewModel.updateOrderStatus(order: order)
             self.reloadTableViewSectionsAndData()
-        }
-        entityListener.onDelete = { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            self.navigationController?.popViewController(animated: true)
-            self.displayOrderDeletedNotice(order: self.viewModel.order)
         }
     }
 
@@ -192,12 +185,6 @@ private extension OrderDetailsViewController {
 // MARK: - Notices
 //
 private extension OrderDetailsViewController {
-
-    /// Displays a Notice onscreen, indicating that the current Order has been deleted from the Store.
-    ///
-    func displayOrderDeletedNotice(order: Order) {
-        notices.displayOrderDeletedNotice(order: order)
-    }
 
     /// Displays the `Unable to delete tracking` Notice.
     ///
@@ -331,8 +318,12 @@ private extension OrderDetailsViewController {
         case .issueRefund:
             issueRefundWasPressed()
         case .reprintShippingLabel(let shippingLabel):
-            let reprintViewController = ReprintShippingLabelViewController(shippingLabel: shippingLabel)
-            show(reprintViewController, sender: self)
+            guard let navigationController = navigationController else {
+                assertionFailure("Cannot reprint a shipping label because `navigationController` is nil")
+                return
+            }
+            let coordinator = ReprintShippingLabelCoordinator(shippingLabel: shippingLabel, sourceViewController: navigationController)
+            coordinator.showReprintUI()
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         }

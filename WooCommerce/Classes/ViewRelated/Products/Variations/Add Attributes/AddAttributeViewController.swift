@@ -36,6 +36,7 @@ final class AddAttributeViewController: UIViewController {
         configureTableView()
         configureGhostTableView()
         configureViewModel()
+        enableDoneButton(false)
     }
 
 }
@@ -50,7 +51,7 @@ private extension AddAttributeViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.nextNavBarButton,
                                                            style: .plain,
                                                            target: self,
-                                                           action: #selector(completeUpdating))
+                                                           action: #selector(doneButtonPressed))
     }
 
     func configureMainView() {
@@ -102,6 +103,10 @@ private extension AddAttributeViewController {
                 self?.removeGhostTableView()
             }
         }
+    }
+
+    func enableDoneButton(_ enabled: Bool) {
+        navigationItem.rightBarButtonItem?.isEnabled = enabled
     }
 }
 
@@ -166,6 +171,12 @@ extension AddAttributeViewController: UITableViewDataSource {
 extension AddAttributeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+
+        let row = viewModel.sections[indexPath.section].rows[indexPath.row]
+        guard row == .existingAttribute else {
+            return
+        }
+        presentAddAttributeOptions(for: viewModel.localAndGlobalAttributes[indexPath.row])
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -218,8 +229,9 @@ private extension AddAttributeViewController {
     func configureTextField(cell: TextFieldTableViewCell) {
         let viewModel = TextFieldTableViewCell.ViewModel(text: nil,
                                                          placeholder: Localization.titleCellPlaceholder,
-                                                         onTextChange: { newAttributeName in
-                                                            // TODO: handle new attribute
+                                                         onTextChange: { [weak self] newAttributeName in
+                                                            self?.viewModel.handleNewAttributeNameChange(newAttributeName)
+                                                            self?.enableDoneButton(self?.viewModel.newAttributeName != nil)
 
             }, onTextDidBeginEditing: {
         }, inputFormatter: nil, keyboardType: .default)
@@ -253,8 +265,20 @@ extension AddAttributeViewController: KeyboardScrollable {
 //
 extension AddAttributeViewController {
 
-    @objc private func completeUpdating() {
-        // TODO: to be implemented
+    @objc private func doneButtonPressed() {
+        presentAddAttributeOptions(for: viewModel.newAttributeName)
+    }
+
+    private func presentAddAttributeOptions(for newAttribute: String?) {
+        let viewModel = AddAttributeOptionsViewModel(newAttribute: newAttribute)
+        let addAttributeOptionsVC = AddAttributeOptionsViewController(viewModel: viewModel)
+        navigationController?.pushViewController(addAttributeOptionsVC, animated: true)
+    }
+
+    private func presentAddAttributeOptions(for existingAttribute: ProductAttribute) {
+        let viewModel = AddAttributeOptionsViewModel(existingAttribute: existingAttribute)
+        let addAttributeOptionsVC = AddAttributeOptionsViewController(viewModel: viewModel)
+        navigationController?.pushViewController(addAttributeOptionsVC, animated: true)
     }
 }
 

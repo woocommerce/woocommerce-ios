@@ -15,6 +15,10 @@ final class ReprintShippingLabelViewController: UIViewController {
 
     private var cancellables = Set<AnyCancellable>()
 
+    /// Closure to be executed when an action is triggered.
+    ///
+    var onAction: ((ActionType) -> Void)?
+
     init(shippingLabel: ShippingLabel) {
         self.viewModel = ReprintShippingLabelViewModel(shippingLabel: shippingLabel)
         self.rows = [.headerText, .infoText,
@@ -43,10 +47,45 @@ final class ReprintShippingLabelViewController: UIViewController {
     }
 }
 
+extension ReprintShippingLabelViewController {
+    /// Actions that can be triggered from the reprint UI.
+    enum ActionType {
+        /// Called when the paper size row is selected.
+        case showPaperSizeSelector(paperSizeOptions: [ShippingLabelPaperSize],
+                                   selectedPaperSize: ShippingLabelPaperSize?,
+                                   onSelection: (ShippingLabelPaperSize?) -> Void)
+        /// Called when the Reprint CTA is tapped.
+        case reprint(paperSize: ShippingLabelPaperSize)
+        /// Called when the "layout and paper size options" row is selected.
+        case presentPaperSizeOptions
+        /// Called when the printing instructions row is selected.
+        case presentPrintingInstructions
+    }
+}
+
 // MARK: Action Handling
 private extension ReprintShippingLabelViewController {
     func reprintShippingLabel() {
-        // TODO-2169: reprint action
+        guard let selectedPaperSize = selectedPaperSize else {
+            return
+        }
+        onAction?(.reprint(paperSize: selectedPaperSize))
+    }
+
+    func showPaperSizeSelector() {
+        onAction?(.showPaperSizeSelector(paperSizeOptions: viewModel.paperSizeOptions,
+                                         selectedPaperSize: selectedPaperSize,
+                                         onSelection: { [weak self] paperSize in
+                                            self?.viewModel.updateSelectedPaperSize(paperSize)
+                                         }))
+    }
+
+    func presentPaperSizeOptions() {
+        onAction?(.presentPaperSizeOptions)
+    }
+
+    func presentPrintingInstructions() {
+        onAction?(.presentPrintingInstructions)
     }
 }
 
@@ -81,7 +120,7 @@ private extension ReprintShippingLabelViewController {
 
     func observeSelectedPaperSize() {
         viewModel.loadShippingLabelSettingsForDefaultPaperSize()
-        viewModel.$selectedPaperSize.sink { [weak self] paperSize in
+        viewModel.$selectedPaperSize.removeDuplicates().sink { [weak self] paperSize in
             guard let self = self else { return }
             self.selectedPaperSize = paperSize
             self.tableView.reloadData()
@@ -117,14 +156,11 @@ extension ReprintShippingLabelViewController: UITableViewDelegate {
 
         switch row {
         case .paperSize:
-            // TODO-2169: Navigate to paper size selector
-            break
+            showPaperSizeSelector()
         case .paperSizeOptions:
-            // TODO-2169: Present paper size options modal
-            break
+            presentPaperSizeOptions()
         case .printingInstructions:
-            // TODO-2169: Present printing instructions modal
-            break
+            presentPrintingInstructions()
         default:
             return
         }
@@ -139,7 +175,7 @@ private extension ReprintShippingLabelViewController {
             configureHeaderText(cell: cell)
         case let cell as TopLeftImageTableViewCell where row == .infoText:
             configureInfoText(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .paperSize:
+        case let cell as TitleAndValueTableViewCell where row == .paperSize:
             configurePaperSize(cell: cell)
         case let cell as SpacerTableViewCell where row == .spacerBetweenInfoTextAndPaperSizeSelector:
             configureSpacerBetweenInfoTextAndPaperSizeSelector(cell: cell)
@@ -162,15 +198,15 @@ private extension ReprintShippingLabelViewController {
     }
 
     func configureInfoText(cell: TopLeftImageTableViewCell) {
-        cell.imageView?.image = .infoOutlineImage
-        cell.imageView?.tintColor = .systemColor(.secondaryLabel)
-        cell.textLabel?.textColor = .systemColor(.secondaryLabel)
-        cell.textLabel?.text = Localization.infoText
         cell.apply(style: .body)
+        cell.configure(image: .infoOutlineImage,
+                       imageTintColor: .systemColor(.secondaryLabel),
+                       text: Localization.infoText,
+                       textColor: .systemColor(.secondaryLabel))
         cell.hideSeparator()
     }
 
-    func configurePaperSize(cell: SettingTitleAndValueTableViewCell) {
+    func configurePaperSize(cell: TitleAndValueTableViewCell) {
         cell.updateUI(title: Localization.paperSizeSelectorTitle, value: selectedPaperSize?.description)
         cell.accessoryType = .disclosureIndicator
     }
@@ -184,21 +220,23 @@ private extension ReprintShippingLabelViewController {
     }
 
     func configurePaperSizeOptions(cell: TopLeftImageTableViewCell) {
-        cell.imageView?.image = .pagesFootnoteImage
-        cell.textLabel?.text = Localization.paperSizeOptionsButtonTitle
+        cell.configure(image: .pagesFootnoteImage,
+                       imageTintColor: .systemColor(.secondaryLabel),
+                       text: Localization.paperSizeOptionsButtonTitle,
+                       textColor: .systemColor(.secondaryLabel))
         configureCommonStylesForInfoLinkCell(cell)
     }
 
     func configurePrintingInstructions(cell: TopLeftImageTableViewCell) {
-        cell.imageView?.image = .infoOutlineFootnoteImage
-        cell.textLabel?.text = Localization.printingInstructionsButtonTitle
+        cell.configure(image: .infoOutlineFootnoteImage,
+                       imageTintColor: .systemColor(.secondaryLabel),
+                       text: Localization.printingInstructionsButtonTitle,
+                       textColor: .systemColor(.secondaryLabel))
         configureCommonStylesForInfoLinkCell(cell)
     }
 
     func configureCommonStylesForInfoLinkCell(_ cell: TopLeftImageTableViewCell) {
         cell.apply(style: .footnote)
-        cell.imageView?.tintColor = .systemColor(.secondaryLabel)
-        cell.textLabel?.textColor = .systemColor(.secondaryLabel)
         cell.hideSeparator()
         cell.selectionStyle = .default
     }
@@ -247,7 +285,7 @@ private extension ReprintShippingLabelViewController {
             case .spacerBetweenInfoTextAndPaperSizeSelector, .spacerBetweenPaperSizeSelectorAndInfoLinks:
                 return SpacerTableViewCell.self
             case .paperSize:
-                return SettingTitleAndValueTableViewCell.self
+                return TitleAndValueTableViewCell.self
             case .paperSizeOptions, .printingInstructions:
                 return TopLeftImageTableViewCell.self
             }

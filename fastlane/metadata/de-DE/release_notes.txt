@@ -1,3 +1,2 @@
-Dein Wunsch ist uns Befehl! Du kannst ab sofort einfache, gruppierte und externe Produkte für deinen Store direkt mit deinem iPhone oder iPad erstellen. Wandle Ideen in Produkte um – auch wenn du nicht an deinem Computer sitzt.
-
-Und es gibt noch mehr! Wir haben Probleme behoben, darunter auch einen Bug, der dazu führte, dass neue Bestellungen nicht immer in der Bestellliste angezeigt wurden. Außerdem haben wir Verbesserungen vorgenommen. Zum Beispiel kannst du jetzt Rückerstattungen für Produkte oder Versandkosten direkt im Bestellbildschirm bearbeiten.
+Die App unterstützt jetzt iOS 13 und höher, was eine schnellere Entwicklung von Funktionen ermöglicht.
+Wir haben die Fehlerbehandlung im Anmeldevorgang verbessert, einen Fehler behoben, der dazu geführt hat, dass auf dem Bildschirm mit den Bestelldetails für Produktvarianten keine Vorschaubilder angezeigt wurden, und die Statusanzeige für die Fußzeile vertikal und horizontal zentriert.

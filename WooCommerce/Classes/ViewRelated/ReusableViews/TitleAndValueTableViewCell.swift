@@ -1,9 +1,10 @@
 import UIKit
 
-final class SettingTitleAndValueTableViewCell: UITableViewCell {
+final class TitleAndValueTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var valueLabel: UILabel!
+    @IBOutlet private weak var stackView: UIStackView!
+    @IBOutlet private weak var titleLabel: UILabel!
+    @IBOutlet private weak var valueLabel: UILabel!
 
     enum Style {
         /// Title and value use body styles. The value uses a subtle color. This is the default.
@@ -23,12 +24,13 @@ final class SettingTitleAndValueTableViewCell: UITableViewCell {
         applyDefaultBackgroundStyle()
         enableMultipleLines()
         apply(style: .default)
+        configureStackView()
     }
 }
 
 // MARK: Updates
 //
-extension SettingTitleAndValueTableViewCell {
+extension TitleAndValueTableViewCell {
     func updateUI(title: String, value: String?) {
         titleLabel.text = title
         valueLabel.text = value
@@ -64,5 +66,18 @@ extension SettingTitleAndValueTableViewCell {
     func enableMultipleLines() {
         titleLabel.numberOfLines = 0
         valueLabel.numberOfLines = 0
+    }
+}
+
+private extension TitleAndValueTableViewCell {
+    func configureStackView() {
+        stackView.spacing = Constants.spacingBetweenTitleAndValue
+        stackView.alignment = .center
+    }
+}
+
+private extension TitleAndValueTableViewCell {
+    enum Constants {
+        static let spacingBetweenTitleAndValue = CGFloat(12)
     }
 }

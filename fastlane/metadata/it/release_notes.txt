@@ -1,3 +1,2 @@
-Tu hai chiesto e noi abbiamo ascoltato. Ora puoi creare prodotti semplici, raggruppati ed esterni per il tuo negozio direttamente dal tuo iPhone o iPad. Trasforma le tue idee in prodotti, anche quando sei lontano dal tuo computer.
-
-Non è tutto! Abbiamo risolto alcuni problemi, incluso un bug per cui gli ordini appena inviati non venivano sempre visualizzati in un elenco di ordini. Abbiamo anche apportato miglioramenti. Ad esempio, è ora possibile emettere rimborsi-per i prodotti o la spedizione direttamente dalla schermata dell'ordine.
+L'app ora supporta iOS 13 e versioni successive per un più rapido sviluppo delle funzionalità.
+Abbiamo migliorato la gestione degli errori nel flusso di accesso, corretto un bug che impediva la visualizzazione di immagini in miniatura relative alle varianti del prodotto sulla schermata dei dettagli dell'ordine e centrato la casella di selezione del piè di pagina verticalmente e orizzontalmente.

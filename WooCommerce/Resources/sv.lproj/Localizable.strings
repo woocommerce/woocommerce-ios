@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-12-10 17:54:54+0000 */
+/* Translation-Revision-Date: 2020-12-24 23:22:23+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -30,11 +30,17 @@
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ lämnade en recension om %2$@";
 
+/* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
+"%1$@ refund requested (%2$@)" = "%1$@ återbetalning begärd (%2$@)";
+
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ via %2$@";
 
 /* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@ x %2$@" = "%1$@ x %2$@";
+
+/* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
+"%1$@ • %2$@" = "%1$@• %2$@";
 
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
@@ -50,6 +56,9 @@
 
 /* For example, '5 Items' */
 "%@ Items" = "%@ varor";
+
+/* Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS). */
+"%@ label refund requested" = "%@ etikettåterbetalning begärd";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%@ left a review on %@" = "%1$@ lämnade en recension om %2$@";
@@ -205,6 +214,9 @@
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "Lägg till en spårning";
 
+/* Add Product Attribute screen navigation title */
+"Add attribute" = "Lägg till attribut";
+
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "Lägg till fler detaljer";
@@ -220,6 +232,9 @@
 
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Lägg till produktinformation för nedladdningsbara filer på distans";
+
+/* Title for adding variations row on Product main screen for a variable product */
+"Add variations" = "Lägg till variationer";
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Lägg till vikt och dimensioner";
@@ -253,6 +268,9 @@
 
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "Alternativt:";
+
+/* Title of shipping label eligible refund amount in Refund Shipping Label screen */
+"Amount Eligible For Refund" = "Belopp berättigat för återbetalning";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "Ett fel uppstod vid skapandet av menyn.";
@@ -315,6 +333,9 @@
 /* Message on the alert when the user taps to delete a Product image */
 "Are you sure you want to remove this image?" = "Är du säker på att du vill ta bort den här bilden?";
 
+/* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
+"Attribute name" = "Attributnamn";
+
 /* No comment provided by engineer. */
 "Authenticating" = "Autentiserar";
 
@@ -348,9 +369,6 @@
 /* Product backorders setting list selector navigation title
    Title of the cell in Product Inventory Settings > Backorders */
 "Backorders" = "Restordrar";
-
-/* A descriptive label prefix. Example: 'Backorders: not allowed' */
-"Backorders:" = "Beställningsvaror:";
 
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "Fältnummer %1$i, %2$@, ";
@@ -392,7 +410,7 @@
 "Can Not Request Link" = "Kan inte begära länk";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
 "Cancel" = "Avbryt";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -483,8 +501,12 @@
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "Kontakta oss här";
 
-/* The button title text when there is a next step for logging in or signing up. */
+/* The button title text when there is a next step for logging in or signing up.
+   Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
 "Continue" = "Fortsätt";
+
+/* Button title. Takes the user to the login with WordPress.com flow. */
+"Continue With WordPress.com" = "Fortsätt med WordPress.com";
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Fortsätt läsa";
@@ -510,6 +532,9 @@
 
 /* Copy email address button title */
 "Copy email address" = "Kopiera e-postadressen";
+
+/* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
+"Copy tracking number" = "Kopiera spårningsnummer";
 
 /* The title of the button for giving a negative feedback for the app. */
 "Could Be Better" = "Kunde vara bättre";
@@ -552,6 +577,9 @@
 
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "Skapar produkter";
+
+/* Credit card payment method for shipping label. */
+"Credit card" = "Kreditkort";
 
 /* Cell title for Cross-sells products in Linked Products Settings screen */
 "Cross-sells" = "Korsförsäljning";
@@ -624,11 +652,11 @@
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "Bestämmer produktens placering i katalogen. Ju lägre siffervärdet är desto högre kommer artikeln att vara i produktlistan. Du kan också använda negativa värden";
 
-/* Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit] */
-"Dimensions: %1$@ x %2$@ x %3$@%4$@" = "Dimensioner: %1$@ x %2$@ x %3$@%4$@";
-
 /* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
-"Dimensions: %1$@ x %2$@%3$@" = "Dimensioner: %1$@ x %2$@%3$@";
+"Dimensions: %1$@ x %2$@ %3$@" = "Dimensioner: %1$@ x %2$@%3$@";
+
+/* Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit] */
+"Dimensions: %1$@ x %2$@ x %3$@ %4$@" = "Dimensioner: %1$@ x %2$@ x %3$@%4$@";
 
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "Dimensioner: %1$@%2$@";
@@ -661,6 +689,12 @@
 /* Action title to select products to add to a grouped product from search results
    Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
 "Done" = "Klar";
+
+/* Link title to see instructions for printing a shipping label on an iOS device */
+"Don’t know how to print from your device?" = "Vet du inte hur man skriver ut från din enhet?";
+
+/* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
+"Don’t know how to print from your phone?" = "Vet du inte hur man skriver ut från din telefon?";
 
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [(code)] (theMessage)" = "Dotcom-fel: [(code)] (theMessage)";
@@ -701,10 +735,10 @@
 "Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Download expiration";
+"Download expiration" = "Tidsgräns för nedladdning";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Tidsgräns för nedladdning";
+"Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Nedladdningsgräns";
@@ -729,9 +763,6 @@
 
 /* Title of the Downloadable Files row on Product main screen */
 "Downloadable files" = "Nedladdningsbara filer";
-
-/* Product Details > Purchase Details > Downloads cell title */
-"Downloads" = "Nedladdningar";
 
 /* Display label for the product's draft status */
 "Draft" = "Utkast";
@@ -773,8 +804,15 @@
 /* The title used when asking the user for feedback for the app. */
 "Enjoying the WooCommerce app?" = "Tycker du om WooCommerce-appen?";
 
+/* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
+"Enter Another Store" = "Ange en annan butik";
+
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "Ange URL";
+
+/* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account
+   Button title. Takes the user to the login by store address flow. */
+"Enter Your Store Address" = "Ange din butiksadress";
 
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Ange transportföretagsnamn";
@@ -796,10 +834,10 @@
 "Enter the external URL to the product." = "Ange den externa URL:en till produkten.";
 
 /* Footer text for Download Expiration */
-"Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "Ange antal dagar tills en nedladdningslänk löper ut, eller lämna fältet tomt om länken aldrig löper ut";
 
 /* Footer text for Download Expiration */
-"Enter the number of days before a download link expires, or leave blank if never it expires" = "Ange antal dagar tills en nedladdningslänk löper ut, eller lämna fältet tomt om länken aldrig löper ut";
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
 
 /* Footer text for Downloadable Limit */
 "Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Ange antalet gånger som filen kan laddas ned eller lämna fältet tomt för obegränsade nerladdningar";
@@ -822,22 +860,16 @@
 /* Instruction text on the initial email address entry screen. */
 "Enter your email address to log in or create a WordPress.com account." = "Ange din e-postadress för att logga in eller skapa ett WordPress.com-konto.";
 
+/* Button title. Takes the user to the login by site address flow. */
+"Enter your existing site address" = "Ange din befintliga webbplatsadress";
+
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Skriv in ditt lösenord istället.";
 
-/* Button title. Takes the user to the login by site address flow. */
-"Enter your site address" = "Ange din webbplatsadress";
-
 /* Experimental features navigation title
    Navigates to experimental features screen */
 "Experimental Features" = "Experimentella funktioner";
-
-/* Expiry: 1 day */
-"Expiry: %ld day" = "Löper ut: %ld dag";
-
-/* For example: 'Expiry: 30 days' */
-"Expiry: %ld days" = "Löper ut: %ld dagar";
 
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "Extern produkt";
@@ -894,6 +926,9 @@
 
 /* The hint button's title text to help users find their site address. */
 "Find your site address" = "Hitta din webbplatsadress";
+
+/* The hint button's title text to help users find their store address. */
+"Find your store address" = "Hitta din butiksadress";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new reads." = "Följ dina favoritwebbplatser och hitta nya saker att läsa.";
@@ -1029,8 +1064,14 @@
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Om detta inaktiveras kommer noteringen att vara privat";
 
+/* Header text when reprinting a shipping label */
+"If there was a printing error when you purchased the label, you can print it again." = "Om det inträffade ett utskriftsfel när du köpte etiketten kan du skriva ut den igen.";
+
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "Om du redan har en butik kommer du att behöva installera det kostnadsfria Jetpack-tillägget och ansluta det till ditt WordPress.com-konto.";
+
+/* Info text when reprinting a shipping label */
+"If you already used the label in a package, printing and using it again is a violation of our terms of service" = "Om du redan har använt etiketten på ett paket bryter du mot våra användarvillkor om du skriver ut och använder den igen.";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Om du fortsätter med Apple eller Google och inte redan har ett WordPress.com-konto, skapar du ett konto och samtycker till våra _användarvillkor_.";
@@ -1038,6 +1079,9 @@
 /* Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "I lager";
+
+/* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
+"In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "Du kan hitta e-postadressen som du använde för att ansluta till WordPress.com i Jetpack-instrumentpanelen under Anslutningar > Kontoanslutning";
 
 /* Application's Inactive State */
 "Inactive" = "Inaktiv";
@@ -1087,8 +1131,8 @@
 /* No comment provided by engineer. */
 "Invalid username" = "Ogiltigt användarnamn";
 
-/* Product Details - inventory section title
-   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
+/* Product Inventory Settings navigation title
+   Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Lagersaldo";
 
 /* Text on the button that starts a new refund process */
@@ -1096,6 +1140,9 @@
 
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "Utfärdar återbetalning...";
+
+/* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
+"It looks like this email isn't associated with a WordPress.com account." = "Det verkar som att den här e-postadressen inte har associerats med något WordPress.com-konto.";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Detta användarnamn och lösenord verkar inte fungera på denna webbplats.";
@@ -1109,11 +1156,17 @@
 /* The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
 "It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!" = "Det är nu möjligt att skapa enkla, grupperade \noch externa produkter i farten med hjälp av Woo-appen. Är du inte klar än? Spara dem som utkast!";
 
+/* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
+"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack är ett gratis WordPress-tillägg som ansluter din butik till de verktyg som behövs för att ge dig den bästa möjliga mobilupplevelsen, inklusive pushmeddelanden och statistik";
+
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Fortsätt redigera";
 
 /* Information text when the survey is completed */
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "Kom ihåg att detta inte är ett supportärende och vi kommer inte att kunna adressera enskild feedback";
+
+/* Title of label paper size option for printing a shipping label */
+"Label (4 x 6 in)" = "Etikett (4 x 6 tum)";
 
 /* Last 24 hours section header */
 "Last 24 hours" = "Senaste 24 timmarna";
@@ -1128,8 +1181,17 @@
    Title of button shown in the Orders → All Orders tab if the list is empty. */
 "Learn more" = "Läs mer";
 
+/* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
+"Learn more about Jetpack" = "Läs mer om Jetpack";
+
+/* Title of legal paper size option for printing a shipping label */
+"Legal (8.5 x 14 in)" = "Legal (8,5 x 14 tum)";
+
 /* Title of the cell in Product Shipping Settings > Length */
 "Length" = "Längd";
+
+/* Title of letter paper size option for printing a shipping label */
+"Letter (8.5 x 11 in)" = "Letter (8,5 x 11 tum)";
 
 /* Licenses (information page title) */
 "Licenses" = "Licenser";
@@ -1139,12 +1201,6 @@
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Gräns nådd. Du kan försöka igen om 1 minut. Att försöka igen innan kommer bara öka tiden du måste vänta innan förbudet är upphävt. Vänligen kontakta support om du tror detta är ett fel.";
-
-/* 'Limit: 1 download', for example. */
-"Limit: %ld download" = "Gräns: %ld nedladdning";
-
-/* 'Limit: 2 downloads', for example. */
-"Limit: %ld downloads" = "Gräns: %ld nedladdningar";
 
 /* Title for screen in editor that allows to configure link options */
 "Link Settings" = "Länkinställningar";
@@ -1179,6 +1235,10 @@
    Log In button label. - View title during the log in process. */
 "Log In" = "Logga in";
 
+/* Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
+   Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+"Log In With Another Account" = "Logga in med ett annat konto";
+
 /* Alert button title - confirms and logs out the user
    Log out button title */
 "Log Out" = "Logga ut";
@@ -1195,7 +1255,8 @@
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "Logga in på ditt WordPress.com-konto med din e-postadress.";
 
-/* Sign in instructions on the 'log in using email' screen. */
+/* Sign in instructions on the 'log in using email' screen.
+   Sign in instructions on the 'log in using WordPress.com account' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Logga in med e-postadressen för ditt WordPress.com-konto för att hantera dina WooCommerce-butiker.";
 
 /* Sign in instructions for logging in with a username and password. */
@@ -1203,9 +1264,6 @@
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "Logga in med ditt WordPress.com-användarnamn och lösenord.";
-
-/* Error message that displays on the 'Log in by entering your site address.' screen. Jetpack is required for logging into the WooCommerce mobile apps. */
-"Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue." = "Det verkar som om din webbplats inte är inställd för att använda den här appen. Se till att din webbplats har Jetpack installerat för att fortsätta.";
 
 /* Title of a button. */
 "Lost your password?" = "Glömt ditt lösenord?";
@@ -1235,10 +1293,10 @@
 "Manual Offsets" = "Manuella offset-värden";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manuell återbetalning via %1$@";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "Manuell återbetalning via %1$@";
 
 /* No comment provided by engineer. */
 "Manual Refund via Stripe" = "Manuell återbetalning via Stripe";
@@ -1312,13 +1370,17 @@
 /* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
 "Navigates to Settings." = "Navigerar till Inställningar.";
 
+/* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
+"Need help finding the connected email?" = "Behöver du hjälp med att hitta den anslutna e-postadressen?";
+
 /* A button title. */
 "Need help finding your site address?" = "Behöver du hjälp att hitta adressen till din webbplats?";
 
 /* Takes the user to get help */
 "Need help?" = "Behöver du hjälp?";
 
-/* Title of the more help button on alert helping users understand their site address */
+/* Title of button to learn more presented when users attempt to log in with an email address that does not match a WP.com account
+   Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "Behöver du mer hjälp?";
 
 /* Text preceding the Contact Us button in the survey completed screen */
@@ -1327,8 +1389,8 @@
 /* The title for the net amount paid cell */
 "Net" = "Netto";
 
-/* Title of a button.
-   Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
+/* Next nav bar button title in Add Product Attribute screen
+   Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "Nästa";
 
 /* Empty Product Reviews List Message */
@@ -1411,9 +1473,6 @@
 /* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Kundmeddelande";
 
-/* Label prefix. Example: 'Number of files: 2' */
-"Number of files:" = "Antal filer:";
-
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "OK";
@@ -1474,6 +1533,9 @@
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "Eller logga in genom att _ange din webbplatsadress_.";
 
+/* Header of attributes section in Add Attribute screen */
+"Or tap to select existing attribute" = "Eller tryck för att välja befintligt attribut";
+
 /* Add a note screen - title. Example: Order #15
    Order number title */
 "Order #(viewModel.order.number)" = "Order med nummer (viewModel.order.number)";
@@ -1519,8 +1581,14 @@
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
 "Package %d" = "Förpackning %d";
 
+/* Title of package details in shipping label details */
+"Package Details" = "Förpackningsinformation";
+
 /* The title for the customer payment cell */
 "Paid By Customer" = "Betald av kund";
+
+/* Title of the paper size selector row for reprinting a shipping label */
+"Paper Size" = "Pappersstorlek";
 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "Förälder";
@@ -1537,6 +1605,9 @@
 
 /* Payment section title */
 "Payment" = "Betalning";
+
+/* Title of payment method in shipping label details */
+"Payment Method" = "Betalningsmetod";
 
 /* Display label for the review's pending status */
 "Pending" = "Inväntar granskning";
@@ -1635,12 +1706,12 @@
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "Tidigare återbetalt";
 
-/* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
-   Product Price Settings navigation title - Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
+/* Product Price Settings navigation title
+   Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
 "Price" = "Pris";
 
-/* Product Details - pricing and inventory section title */
-"Pricing and Inventory" = "Prissättning och lagersaldo:";
+/* Button title to generate a shipping label document for printing */
+"Print Shipping Label" = "Skriv ut fraktetikett";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "Integritetsnotis för användare i Kalifornien";
@@ -1667,9 +1738,6 @@
 /* Description for Top Performers left column header
    Product section title - Product section title if there is only one product. - Section header title for the product */
 "Product" = "Produkt";
-
-/* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
-"Product %ld has been removed from your store" = "Produkt %ld har tagits bort från din butik";
 
 /* Edit Product External Link navigation title */
 "Product Link" = "Produktlänk";
@@ -1734,15 +1802,14 @@
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "Publicerar din produkt ...";
 
-/* Product Details - purchase details section title */
-"Purchase Details" = "Köpinformation";
+/* Title of shipping label purchase date in Refund Shipping Label screen */
+"Purchase Date" = "Inköpsdatum";
 
 /* Product Note navigation title
    Purchase note label in Product Settings */
 "Purchase Note" = "Köpmeddelande";
 
-/* Product Details > Purchase Details > Purchase note cell title
-   Title for purchase note alert. */
+/* Title for purchase note alert. */
 "Purchase note" = "Köpmeddelande";
 
 /* Quantity abbreviation for section title */
@@ -1752,23 +1819,21 @@
    Section header title - abbreviation for quantity */
 "Qty" = "Antal";
 
-/* Title of the cell in Product Inventory Settings > Quantity */
+/* The accessibility label for the quantity button when selecting an item to refund
+   Title of the cell in Product Inventory Settings > Quantity */
 "Quantity" = "Antal";
 
 /* Navigation title on the quantity item selector screen */
-"Quantity to refund" = "Belopp att återbetala";
+"Quantity to refund" = "Quantity to refund";
 
 /* Navigation title on the quantity item selector screen */
-"Quantity to refund" = "Quantity to refund";
+"Quantity to refund" = "Belopp att återbetala";
 
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %ld" = "Antal: %ld";
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Kontakta våra supporttekniker för att få svar på svåra frågor";
-
-/* Read more of the purchase note. Only the first two lines of text are displayed. */
-"Read more" = "Läs mer";
 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "Läs integritetspolicyn";
@@ -1789,10 +1854,10 @@
 "Reason for refunding order" = "Reason for refunding order";
 
 /* The title of the button to confirm the refund. */
-"Refund" = "Refund";
+"Refund" = "Återbetalning";
 
 /* The title of the button to confirm the refund. */
-"Refund" = "Återbetalning";
+"Refund" = "Återbetala";
 
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "Återbetala #%@";
@@ -1804,17 +1869,20 @@
 /* Refund Details section title */
 "Refund Details" = "Återbetalningsinformation";
 
-/* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Refund Shipping";
+/* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
+"Refund Label (%1$@)" = "Återbetala etikett (%1$@)";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
 "Refund Shipping" = "Återbetala frakt";
 
-/* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Återbetala via";
+/* Title of the switch in the IssueRefund screen to refund shipping */
+"Refund Shipping" = "Refund Shipping";
 
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "Refund Via";
+
+/* The title of the section containing information about how the refund will be processed. */
+"Refund Via" = "Återbetala via";
 
 /* The title for the refunded amount cell */
 "Refunded" = "Återbetalad";
@@ -1822,6 +1890,9 @@
 /* Order > Order Details > 'N Items' cell tapped > Refunded Products title
    Refunded Products section title - Section title */
 "Refunded Products" = "Återbetalda produkter";
+
+/* Title of the refund detail cell when the refund was done manually. */
+"Refunded manually" = "Återbetalad manuellt";
 
 /* It reads, 'Refunded manually via <payment method>' */
 "Refunded manually via %@" = "Återbetald manuellt via %@";
@@ -1831,9 +1902,6 @@
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Registrerad domän";
-
-/* A descriptive label prefix. Example: 'Regular price: $20.00' */
-"Regular price:" = "Ordinarie pris:";
 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Ordinarie pris: %@";
@@ -1859,10 +1927,12 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Rapportera krascher";
 
-/* Text on the button that reprints a shipping label */
+/* Navigation bar title to reprint a shipping label
+   Text on the button that reprints a shipping label */
 "Reprint Shipping Label" = "Skriv ut fraktetikett";
 
-/* Request a refund on a shipping label from the shipping label more menu action sheet */
+/* Navigation bar title to request a refund for a shipping label
+   Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "Begär en återbetalning";
 
 /* Deletes all activity logs except for the marked 'Current'. */
@@ -1887,26 +1957,24 @@
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "Recension markerad som %@";
 
-/* Reviews descriptive label
-   Title of the Reviews row on Product main screen - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). - Title that appears on top of the Product Reviews screen. */
+/* Title of the Reviews row on Product main screen
+   Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). - Title that appears on top of the Product Reviews screen. */
 "Reviews" = "Recensioner";
 
 /* Post Rich content */
 "Rich Content" = "Formaterat innehåll";
 
-/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products.
-   Edit Product SKU navigation title - Title of the cell in Product Inventory Settings > SKU - Title of the product form bottom sheet action for editing short description. - Title of the SKU row on Product main screen */
+/* Edit Product SKU navigation title
+   Title of the cell in Product Inventory Settings > SKU - Title of the product form bottom sheet action for editing short description. - Title of the SKU row on Product main screen */
 "SKU" = "Artikelnr";
 
 /* The message of the alert when there is an error updating the product SKU */
 "SKU already in use by another product" = "SKU används redan av en annan produkt";
 
-/* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
-   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' */
-"SKU:" = "Artikelnr:";
+/* SKU label in order details > product row. The variable shows the SKU of the product. */
+"SKU: %1$@" = "SKU: %1$@";
 
-/* Format of the SKU on the Inventory Settings row
-   SKU label, followed by the SKU */
+/* Format of the SKU on the Inventory Settings row */
 "SKU: %@" = "Artikelnr: %@";
 
 /* One Time Code has been sent via SMS */
@@ -1923,9 +1991,6 @@
 
 /* Title of the cell in Product Price Settings > Sale price */
 "Sale price" = "Reapris";
-
-/* A descriptive label prefix. Example: 'Sale price: $18.00' */
-"Sale price:" = "Reapris:";
 
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Reapris: %@";
@@ -1976,14 +2041,20 @@
 /* Display label for the product's catalog visibility */
 "Search results only" = "Endast sökresultat";
 
+/* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
+"See Instructions" = "Se instruktionerna";
+
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "See comments and notifications in real time." = "Se kommentarer och aviseringar i realtid.";
 
-/* Select all button title in the issue refund screen */
-"Select All" = "Välj alla";
+/* Link title to see all paper size options */
+"See layout and paper sizes options" = "Se alternativen för layout och pappersstorlek";
 
 /* Select all button title in the issue refund screen */
 "Select All" = "Select All";
+
+/* Select all button title in the issue refund screen */
+"Select All" = "Välj alla";
 
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "Välj överordnad kategori";
@@ -2037,17 +2108,29 @@
 /* Action: Opens the Store in a browser */
 "Share your Store" = "Dela din butik";
 
+/* Title of origin address in shipping label details */
+"Ship from" = "Avsändare";
+
+/* Title of destination address in shipping label details */
+"Ship to" = "Leverans";
+
 /* A unit test string for order tracking. Reads as: 'Shipment Company HK Post'
    Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
 "Shipment Company %@" = "Leveransföretag %@";
+
+/* Navigation bar title of shipping label details */
+"Shipment Details" = "Försändelseinformation";
 
 /* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
    Date an item was shipped */
 "Shipped %@" = "Skickad %@";
 
-/* Product Details > Purchase Details > Shipping cell title
-   Product Shipping Settings navigation title - Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
+/* Product Shipping Settings navigation title
+   Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Frakt";
+
+/* Title of shipping carrier and rates in shipping label details */
+"Shipping Carrier and Rates" = "Transportföretag och avgifter";
 
 /* Title of view displaying all available Shipment Tracking Carriers */
 "Shipping Carriers" = "Transportföretag";
@@ -2063,9 +2146,6 @@
 
 /* Title of the cell in Product Shipping Settings > Shipping class */
 "Shipping class" = "Fraktklass";
-
-/* Label prefix. Example: 'Shipping class: Free Shipping' */
-"Shipping class:" = "Fraktklass:";
 
 /* Navigation bar title of the Product shipping class selector screen */
 "Shipping classes" = "Fraktklasser";
@@ -2144,9 +2224,6 @@
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "Adressen till webbplatsen måste bestå av minst 4 bokstäver.";
 
-/* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
-"Size:" = "Storlek:";
-
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title - Slug label in Product Settings */
 "Slug" = "Permalänk";
@@ -2157,6 +2234,9 @@
 /* A unit test for reviews, checking that anonymous users are added as the author named `someone`
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "Någon";
+
+/* Notice format when a shipping label refund request fails. */
+"Something went wrong with the refund. Please try again." = "Något gick fel med återbetalningen. Försök igen.";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Tyvärr innehåller ditt användarnamn en ogiltig fras %@.";
@@ -2236,15 +2316,9 @@
 /* Row title for filtering products by stock status. */
 "Stock Status" = "Lagerstatus";
 
-/* A descriptive label prefix. Example: 'Stock quantity: 19' */
-"Stock quantity:" = "Lagerantal:";
-
 /* Product stock status list selector navigation title
    Title of the cell in Product Inventory Settings > Stock status */
 "Stock status" = "Lagerstatus";
-
-/* A descriptive label prefix. Example: 'Stock status: In stock' */
-"Stock status:" = "Lagerstatus:";
 
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "Diagram över butiksintäkter";
@@ -2307,6 +2381,12 @@
 
 /* Accessibility hint for insert link button on formatting toolbar. */
 "Tap to insert a Link" = "Tryck för att infoga en länk";
+
+/* The accessibility hint for the quantity button when selecting an item to refund */
+"Tap to modify the item refund quantity" = "Tryck för att ändra kvantiteten för varuåterbetalning";
+
+/* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
+"Tap to show instructions on how to print a shipping label on the mobile device" = "Tryck för att visa instruktioner om hur man skriver ut en fraktetikett på en mobilenhet.";
 
 /* Accessibility hint for block quote button on formatting toolbar. */
 "Tap to toggle Block Quote" = "Tryck för att slå på\/av blockcitat";
@@ -2466,6 +2546,9 @@
 /* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
 "The stock quantity for this product. Editable." = "Lagermängden för den här produkten. Redigerbar.";
 
+/* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
+"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "Den här webbplatsen är inte en WordPress-webbplats. Webbplatsen måste använda WordPress för att vi ska kunna ansluta till den.";
+
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "Det gick inte att blockera inlägg från angiven webbplats.";
 
@@ -2490,9 +2573,6 @@
    Top Performers section title - this year */
 "This Year" = "Det här året";
 
-/* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, \'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
-"This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "Den här appen kräver Jetpack för att ansluta till din butik. <br \/> Läs <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">konfigurationsanvisningarna<\/a>.";
-
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Du behöver installera WooCommerce 3.5 på din server för att kunna använda den här appen, annars kommer den inte att fungera korrekt. Uppdatera så snart möjligt för att kunna fortsätta använda den här appen.";
 
@@ -2512,10 +2592,10 @@
 "This is the name of the file shown to the customer." = "Det här är namnet på den fil som visas för kunden.";
 
 /* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Det här är URL:en till den fil som kunderna kommer att få tillgång till. URL:er som anges bör redan vara kodade.";
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
 
 /* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Det här är URL:en till den fil som kunderna kommer att få tillgång till. URL:er som anges bör redan vara kodade.";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2524,6 +2604,9 @@
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "Det gick inte att hämta produkten";
 
+/* Message displayed when loading a specific product fails because product was deleted */
+"This product has been deleted and is no longer visible" = "Den här produkten har tagits bort och är inte längre synlig";
+
 /* Footer text in Product Catalog Visibility */
 "This setting determines which shop pages products will be listed on." = "Denna inställning avgör vilka butiksidor som produkterna ska listas på.";
 
@@ -2531,7 +2614,7 @@
 "This text will be shown on the button linking to the external product." = "Denna text kommer visas på knappen som länkar till den externa produkten.";
 
 /* Add Product Category. Placeholder of cell presenting the title of the category.
-   Placeholder in the Product Title row on Product form screen. - Product details screen — product title descriptive label */
+   Placeholder in the Product Title row on Product form screen. */
 "Title" = "Rubrik";
 
 /* VoiceOver accessibility hint, informing the user about the title of a product in product detail screen. */
@@ -2558,6 +2641,9 @@
 /* Instructional text shown when requesting the user's password for Google login. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "För att fortsätta med detta Google-konto måste du först logga in med ditt lösenord för WordPress.com. Detta behövs bara en gång.";
 
+/* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
+"To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "För att använda den här appen för %@ måste du ha installerat och anslutit Jetpack-tillägget på din butik.";
+
 /* Tab selector title that shows the statistics for today
    Today Section Header - Top Performers section title - today */
 "Today" = "Idag";
@@ -2583,13 +2669,17 @@
 /* Track shipment button title */
 "Track Shipment" = "Spåra leverans";
 
+/* Track shipment of a shipping label from the shipping label tracking more menu action sheet */
+"Track shipment" = "Spåra försändelse";
+
 /* Order tracking section title */
 "Tracking" = "Spårning";
 
 /* Add custom shipping carrier. Title of cell presenting carrier link */
 "Tracking link (optional)" = "Spårningslänk (tillval)";
 
-/* Add / Edit shipping carrier. Title of cell presenting tracking number */
+/* Add / Edit shipping carrier. Title of cell presenting tracking number
+   Order shipping label tracking number row title. */
 "Tracking number" = "Spårningsnummer";
 
 /* A unit test string. Reads as: 'Trackin number XXX_YYY_ZZZ'
@@ -2646,14 +2736,14 @@
 /* Load Action Failed */
 "Unable to load content" = "Det gick inte att ladda innehållet";
 
+/* Load Product Attributes Action Failed */
+"Unable to load product attributes" = "Det gick inte att läsa in produktattributen";
+
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Kan inte markera recension som %@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Kunde inte läsa WordPress-webbplatsen på denna URL. Ttryck på \"Behöver du hjälp?\" för att se FAQ.";
-
-/* Notice displayed when an error occurs while refreshing a product. It reads: Unable to refresh product #{product number} */
-"Unable to refresh Product #%ld" = "Kunde inte uppdatera Produktnr %ld";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "Kunde inte uppdatera listan";
@@ -2721,10 +2811,10 @@
 "Update product inventory and SKU" = "Uppdatera produktinventering och SKU";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "Fjärruppdatera produkters information om nedladdningsbara filer";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Fjärruppdatera produkters information om nedladdningsbara filer";
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "Uppdatera till WooCommerce 3.5 för att fortsätta använda den här appen";
@@ -2771,8 +2861,11 @@
 /* Action sheet option when the user wants to change the Product type to varible product */
 "Variable product" = "Variabel produkt";
 
-/* Product Details > descriptive label for the Product Variants cell.
-   Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
+/* Footer of text field section in Add Attribute screen */
+"Variation type (ie Color, Size)" = "Variationstyp (dvs. färg, storlek)";
+
+/* Title of the Product Variations row on Product main screen for a variable product
+   Title that appears on top of the Product Variation List screen. */
 "Variations" = "Varianter";
 
 /* Banner caption in my store when the stats will be deprecated */
@@ -2801,20 +2894,14 @@
    Button on bottom of shipping label package card to show shipping details */
 "View Shipment Details" = "Visa försändelseinformation";
 
-/* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
-"View affiliate product" = "Visa relaterad produkt";
+/* The action to update downloadable files settings for a product */
+"View downloadable file settings" = "Visa inställningar för nedladdningsbar fil";
 
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "View downloadable file settings";
 
-/* The action to update downloadable files settings for a product */
-"View downloadable file settings" = "Visa inställningar för nedladdningsbar fil";
-
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Visa tidigare inskickade supportärenden";
-
-/* The descriptive label. Tapping the row will open the product's page in a web view. */
-"View product on store" = "Visa produkt i butik";
 
 /* Accessibility label for the 'View details' refund button */
 "View refund details" = "Visa återbetalningsinformation";
@@ -2905,14 +2992,20 @@
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "Vikt";
 
-/* Label prefix. Example: 'Weight: 1kg' */
-"Weight:" = "Vikt:";
-
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Vikt: %1$@%2$@";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Welcome to the world’s most popular website builder." = "Välkommen till världens mest kraftfulla webbplatsverktyg.";
+
+/* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
+"What email do I use to sign in?" = "Vilken e-post ska jag använda för att logga in?";
+
+/* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
+"What is Jetpack" = "Vad är Jetpack";
+
+/* Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
+"What is Jetpack?" = "Vad är Jetpack?";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "Vilken adress har min webbplats?";
@@ -2957,6 +3050,9 @@
 /* Yesterday Section Header */
 "Yesterday" = "Igår";
 
+/* Header text in Refund Shipping Label screen */
+"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "Du kan begära en återbetalning för en fraktetikett som inte har använts för att skicka ett paket.\nDen kommer att ta minst 14 dagar att behandla.";
+
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Du kan inte använda den e-postadressen för att skapa ett konto. Vi har problem med att den e-posttjänsten ibland blockerar vår e-post. Vänligen använd en annan e-posttjänst.";
 
@@ -2975,9 +3071,6 @@
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMMENT]";
 
-/* Backorders status. Example: 'Backorders: allowed' */
-"allowed" = "tillåtet";
-
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "exempel.com";
@@ -2987,9 +3080,6 @@
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "manuell återbetalning";
-
-/* Backorders status. Example: 'Backorders: not allowed' */
-"not allowed" = "inte tillåtet";
 
 /* No comment provided by engineer. */
 "password" = "lösenord";
@@ -3006,6 +3096,9 @@
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "okänd URL";
 
+/* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need... */
+"your site" = "din webbplats";
+
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Logga in med Google.";
 
@@ -3016,5 +3109,5 @@
 "“%@”" = "”%@”";
 
 /* Text of the notice that is displayed after the refund is created. */
-"🎉 Products successfuly refunded" = "🎉 produkter har återbetalats";
+"🎉 Products successfully refunded" = "🎉 produkter återbetalades";
 

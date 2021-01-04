@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-12-09 09:54:51+0000 */
+/* Translation-Revision-Date: 2020-12-24 08:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -30,11 +30,17 @@
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ fez uma avaliação sobre %2$@";
 
+/* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
+"%1$@ refund requested (%2$@)" = "Reembolso de %1$@ solicitado (%2$@)";
+
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ via %2$@";
 
 /* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@ x %2$@" = "%1$@ x %2$@";
+
+/* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
+"%1$@ • %2$@" = "%1$@• %2$@";
 
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
@@ -50,6 +56,9 @@
 
 /* For example, '5 Items' */
 "%@ Items" = "%@ itens";
+
+/* Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS). */
+"%@ label refund requested" = "Reembolso da etiqueta de %@ solicitado";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%@ left a review on %@" = "%1$@ fez uma avaliação sobre %2$@";
@@ -205,6 +214,9 @@
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "Adicionar um rastreamento";
 
+/* Add Product Attribute screen navigation title */
+"Add attribute" = "Adicionar atributo";
+
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "Adicionar mais detalhes";
@@ -220,6 +232,9 @@
 
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Adicione as informações de arquivos para download referentes a produtos remotamente";
+
+/* Title for adding variations row on Product main screen for a variable product */
+"Add variations" = "Adicionar variações";
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Adicionar peso e dimensões";
@@ -253,6 +268,9 @@
 
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "Ou:";
+
+/* Title of shipping label eligible refund amount in Refund Shipping Label screen */
+"Amount Eligible For Refund" = "Valor elegível para reembolso";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "Ocorreu um erro ao criar o menu.";
@@ -315,6 +333,9 @@
 /* Message on the alert when the user taps to delete a Product image */
 "Are you sure you want to remove this image?" = "Tem certeza de que deseja remover esta imagem?";
 
+/* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
+"Attribute name" = "Nome do atributo";
+
 /* No comment provided by engineer. */
 "Authenticating" = "Autenticando";
 
@@ -348,9 +369,6 @@
 /* Product backorders setting list selector navigation title
    Title of the cell in Product Inventory Settings > Backorders */
 "Backorders" = "Pedidos em atraso";
-
-/* A descriptive label prefix. Example: 'Backorders: not allowed' */
-"Backorders:" = "Pedidos em espera:";
 
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "Número da barra %1$i, %2$@, ";
@@ -392,7 +410,7 @@
 "Can Not Request Link" = "Não pode requisitar link";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
 "Cancel" = "Cancelar";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -483,8 +501,12 @@
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "Fale conosco aqui";
 
-/* The button title text when there is a next step for logging in or signing up. */
+/* The button title text when there is a next step for logging in or signing up.
+   Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
 "Continue" = "Continuar";
+
+/* Button title. Takes the user to the login with WordPress.com flow. */
+"Continue With WordPress.com" = "Continuar com o WordPress.com";
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Continuar lendo";
@@ -510,6 +532,9 @@
 
 /* Copy email address button title */
 "Copy email address" = "Copiar endereço de e-mail";
+
+/* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
+"Copy tracking number" = "Copie o número de rastreamento";
 
 /* The title of the button for giving a negative feedback for the app. */
 "Could Be Better" = "Poderia ser melhor";
@@ -552,6 +577,9 @@
 
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "Criação de produtos";
+
+/* Credit card payment method for shipping label. */
+"Credit card" = "Cartão de crédito";
 
 /* Cell title for Cross-sells products in Linked Products Settings screen */
 "Cross-sells" = "Venda cruzada";
@@ -624,11 +652,11 @@
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "Determina a posição dos produtos no catálogo. Quanto menor for o valor do número, maior será a posição do item na lista de produtos. Também é possível usar valores negativos.";
 
-/* Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit] */
-"Dimensions: %1$@ x %2$@ x %3$@%4$@" = "Dimensões: %1$@ x %2$@ x %3$@ %4$@";
-
 /* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
-"Dimensions: %1$@ x %2$@%3$@" = "Dimensões: %1$@ x %2$@ %3$@";
+"Dimensions: %1$@ x %2$@ %3$@" = "Dimensões: %1$@ x %2$@ %3$@";
+
+/* Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit] */
+"Dimensions: %1$@ x %2$@ x %3$@ %4$@" = "Dimensões: %1$@ x %2$@ x %3$@ %4$@";
 
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "Dimensões: %1$@%2$@";
@@ -661,6 +689,12 @@
 /* Action title to select products to add to a grouped product from search results
    Edit product categories screen - button title to apply categories selection - Edit product downloadable files screen - button title to apply changes to downloadable files */
 "Done" = "Concluído";
+
+/* Link title to see instructions for printing a shipping label on an iOS device */
+"Don’t know how to print from your device?" = "Não sabe como imprimir do seu dispositivo?";
+
+/* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
+"Don’t know how to print from your phone?" = "Não sabe como imprimir do seu celular?";
 
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [(code)] (theMessage)" = "Erro Dotcom: [(code)] (theMessage)";
@@ -701,10 +735,10 @@
 "Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Download expiration";
+"Download expiration" = "Validade do download";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Validade do download";
+"Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Limite de download";
@@ -729,9 +763,6 @@
 
 /* Title of the Downloadable Files row on Product main screen */
 "Downloadable files" = "Downloadable files";
-
-/* Product Details > Purchase Details > Downloads cell title */
-"Downloads" = "Downloads";
 
 /* Display label for the product's draft status */
 "Draft" = "Rascunho";
@@ -773,8 +804,15 @@
 /* The title used when asking the user for feedback for the app. */
 "Enjoying the WooCommerce app?" = "O que você acha do aplicativo WooCommerce?";
 
+/* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
+"Enter Another Store" = "Insira outra loja";
+
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "Inserir URL";
+
+/* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account
+   Button title. Takes the user to the login by store address flow. */
+"Enter Your Store Address" = "Insira o endereço da sua loja";
 
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Insira o nome da transportadora";
@@ -796,10 +834,10 @@
 "Enter the external URL to the product." = "Informe a URL externa do produto.";
 
 /* Footer text for Download Expiration */
-"Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "Informe o número de dias antes do link de download expirar ou deixe em branco se ele nunca expira";
 
 /* Footer text for Download Expiration */
-"Enter the number of days before a download link expires, or leave blank if never it expires" = "Informe o número de dias antes do link de download expirar ou deixe em branco se ele nunca expira";
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
 
 /* Footer text for Downloadable Limit */
 "Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Insira o número de vezes que o arquivo pode ser baixado ou deixe em branco para downloads ilimitados";
@@ -822,22 +860,16 @@
 /* Instruction text on the initial email address entry screen. */
 "Enter your email address to log in or create a WordPress.com account." = "Insira seu endereço de e-mail para fazer login ou criar uma conta do WordPress.com.";
 
+/* Button title. Takes the user to the login by site address flow. */
+"Enter your existing site address" = "Insira o endereço do seu site já existente";
+
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Digitar sua senha.";
 
-/* Button title. Takes the user to the login by site address flow. */
-"Enter your site address" = "Insira o endereço do seu site";
-
 /* Experimental features navigation title
    Navigates to experimental features screen */
 "Experimental Features" = "Recursos experimentais";
-
-/* Expiry: 1 day */
-"Expiry: %ld day" = "Expira em: %ld dia";
-
-/* For example: 'Expiry: 30 days' */
-"Expiry: %ld days" = "Expira em: %ld dias";
 
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "Produto externo";
@@ -894,6 +926,9 @@
 
 /* The hint button's title text to help users find their site address. */
 "Find your site address" = "Encontrar um endereço para seu site";
+
+/* The hint button's title text to help users find their store address. */
+"Find your store address" = "Encontre um endereço para sua loja";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new reads." = "Siga seus sites favoritos e descubra novas leituras.";
@@ -1029,8 +1064,14 @@
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Se estiverem desativadas, a observação será em caráter privado";
 
+/* Header text when reprinting a shipping label */
+"If there was a printing error when you purchased the label, you can print it again." = "Caso tenha ocorrido um erro de impressão ao comprar a etiqueta, você pode imprimi-la novamente.";
+
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "Se você já tem uma loja, instale o plugin gratuito do Jetpack e conecte-o à sua conta do WordPress.com.";
+
+/* Info text when reprinting a shipping label */
+"If you already used the label in a package, printing and using it again is a violation of our terms of service" = "Se você já usou a etiqueta em um pacote, imprimi-la e usá-la novamente é uma violação dos nossos termos de serviço";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Ao prosseguir com a Apple ou o Google, se ainda não tiver uma conta do WordPress.com, você criará uma conta e concordará com os nossos _Termos de Serviço_.";
@@ -1038,6 +1079,9 @@
 /* Display label for the product's inventory stock status
    Label about product's inventory stock status shown on Products tab */
 "In stock" = "em estoque";
+
+/* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
+"In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "Na administração do seu site, é possível encontrar o e-mail utilizado para se conectar ao WordPress.com no painel do Jetpack em Conexões > Conexão da conta";
 
 /* Application's Inactive State */
 "Inactive" = "Inativas";
@@ -1087,8 +1131,8 @@
 /* No comment provided by engineer. */
 "Invalid username" = "Nome de usuário inválido";
 
-/* Product Details - inventory section title
-   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
+/* Product Inventory Settings navigation title
+   Title of the Inventory Settings row on Product main screen - Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Estoque";
 
 /* Text on the button that starts a new refund process */
@@ -1096,6 +1140,9 @@
 
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "Emitindo reembolso...";
+
+/* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
+"It looks like this email isn't associated with a WordPress.com account." = "Parece que não há nenhuma conta do WordPress.com associada a este e-mail.";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Parece que esse usuário\/senha não está associado a esse site.";
@@ -1109,11 +1156,17 @@
 /* The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
 "It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!" = "É possível criar produtos simples, em grupo \ne externos de onde você estiver por meio do aplicativo do WooCommerce. Ainda não está pronto? Salve como rascunho!";
 
+/* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
+"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "O Jetpack é um plugin gratuito do WordPress que conecta sua loja às ferramentas necessárias para proporcionar a você a melhor experiência em dispositivos móveis, incluindo notificações push e estatísticas";
+
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Continuar editando";
 
 /* Information text when the survey is completed */
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "Lembre-se de que isso não é um tíquete de suporte e nós não poderemos analisar feedbacks individuais";
+
+/* Title of label paper size option for printing a shipping label */
+"Label (4 x 6 in)" = "Etiqueta (10 x 15 cm)";
 
 /* Last 24 hours section header */
 "Last 24 hours" = "Últimas 24 horas";
@@ -1128,8 +1181,17 @@
    Title of button shown in the Orders → All Orders tab if the list is empty. */
 "Learn more" = "Saiba mais";
 
+/* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
+"Learn more about Jetpack" = "Saiba mais sobre o Jetpack";
+
+/* Title of legal paper size option for printing a shipping label */
+"Legal (8.5 x 14 in)" = "Legal (22 x 36 cm)";
+
 /* Title of the cell in Product Shipping Settings > Length */
 "Length" = "Comprimento";
+
+/* Title of letter paper size option for printing a shipping label */
+"Letter (8.5 x 11 in)" = "Carta (22 x 28 cm)";
 
 /* Licenses (information page title) */
 "Licenses" = "Licenças";
@@ -1139,12 +1201,6 @@
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limite atingido Tente novamente em 1 minuto. Tentar novamente antes disso aumentará o tempo que precisa esperar antes de a restrição ser eliminada. Se acha que isso é um erro, contate o suporte.";
-
-/* 'Limit: 1 download', for example. */
-"Limit: %ld download" = "Limite: %ld download";
-
-/* 'Limit: 2 downloads', for example. */
-"Limit: %ld downloads" = "Limite: %ld downloads";
 
 /* Title for screen in editor that allows to configure link options */
 "Link Settings" = "Configurações de links";
@@ -1179,6 +1235,10 @@
    Log In button label. - View title during the log in process. */
 "Log In" = "Fazer login";
 
+/* Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
+   Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
+"Log In With Another Account" = "Faça login com outra conta";
+
 /* Alert button title - confirms and logs out the user
    Log out button title */
 "Log Out" = "Fazer logout";
@@ -1195,7 +1255,8 @@
 /* Instruction text on the login's email address screen. */
 "Log in to your WordPress.com account with your email address." = "Faça login na sua conta do WordPress.com com seu endereço de e-mail.";
 
-/* Sign in instructions on the 'log in using email' screen. */
+/* Sign in instructions on the 'log in using email' screen.
+   Sign in instructions on the 'log in using WordPress.com account' screen. */
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Faça login com o seu endereço de e-mail da conta do WordPress.com para gerenciar suas lojas WooCommerce.";
 
 /* Sign in instructions for logging in with a username and password. */
@@ -1203,9 +1264,6 @@
 
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "Faça login com seu nome de usuário e sua senha do WordPress.com.";
-
-/* Error message that displays on the 'Log in by entering your site address.' screen. Jetpack is required for logging into the WooCommerce mobile apps. */
-"Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue." = "Parece que seu site não está configurado para usar este aplicativo. Certifique-se de que o Jetpack está instalado no site para prosseguir.";
 
 /* Title of a button. */
 "Lost your password?" = "Esqueceu sua senha?";
@@ -1235,10 +1293,10 @@
 "Manual Offsets" = "Ajustes manuais";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Reembolso manual via %1$@";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "Reembolso manual via %1$@";
 
 /* No comment provided by engineer. */
 "Manual Refund via Stripe" = "Reembolso manual via Stripe";
@@ -1312,13 +1370,17 @@
 /* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
 "Navigates to Settings." = "Vai até as Configurações.";
 
+/* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
+"Need help finding the connected email?" = "Precisa de ajuda para encontrar o e-mail conectado?";
+
 /* A button title. */
 "Need help finding your site address?" = "Precisa de ajuda para encontrar o endereço do seu site?";
 
 /* Takes the user to get help */
 "Need help?" = "Precisa de ajuda?";
 
-/* Title of the more help button on alert helping users understand their site address */
+/* Title of button to learn more presented when users attempt to log in with an email address that does not match a WP.com account
+   Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "Precisa de ajuda?";
 
 /* Text preceding the Contact Us button in the survey completed screen */
@@ -1327,8 +1389,8 @@
 /* The title for the net amount paid cell */
 "Net" = "Valor líquido";
 
-/* Title of a button.
-   Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
+/* Next nav bar button title in Add Product Attribute screen
+   Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "Próximo";
 
 /* Empty Product Reviews List Message */
@@ -1354,10 +1416,10 @@
 "No expiration" = "No expiration";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "No files yet";
+"No files yet" = "Sem arquivos ainda";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "Sem arquivos ainda";
+"No files yet" = "No files yet";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "Nenhuma imagem adicionada";
@@ -1410,9 +1472,6 @@
 
 /* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Nota para o cliente";
-
-/* Label prefix. Example: 'Number of files: 2' */
-"Number of files:" = "Número de arquivos:";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -1474,6 +1533,9 @@
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "Ou faça login ao _inserir o endereço do seu site_.";
 
+/* Header of attributes section in Add Attribute screen */
+"Or tap to select existing attribute" = "Ou toque para selecionar um atributo existente";
+
 /* Add a note screen - title. Example: Order #15
    Order number title */
 "Order #(viewModel.order.number)" = "Pedido nº (viewModel.order.number)";
@@ -1519,8 +1581,14 @@
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
 "Package %d" = "Pacote %d";
 
+/* Title of package details in shipping label details */
+"Package Details" = "Detalhes do pacote";
+
 /* The title for the customer payment cell */
 "Paid By Customer" = "Pago pelo cliente";
+
+/* Title of the paper size selector row for reprinting a shipping label */
+"Paper Size" = "Tamanho do papel";
 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "Categoria mãe";
@@ -1537,6 +1605,9 @@
 
 /* Payment section title */
 "Payment" = "Pagamento";
+
+/* Title of payment method in shipping label details */
+"Payment Method" = "Forma de pagamento";
 
 /* Display label for the review's pending status */
 "Pending" = "Pendente";
@@ -1635,12 +1706,12 @@
 /* A label representing the amount that was previously refunded for the order. */
 "Previously Refunded" = "Já reembolsado";
 
-/* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
-   Product Price Settings navigation title - Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
+/* Product Price Settings navigation title
+   Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
 "Price" = "Preço";
 
-/* Product Details - pricing and inventory section title */
-"Pricing and Inventory" = "Precificação e estoque";
+/* Button title to generate a shipping label document for printing */
+"Print Shipping Label" = "Imprimir etiqueta de envio";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "Aviso de privacidade para usuários residentes da Califórnia";
@@ -1667,9 +1738,6 @@
 /* Description for Top Performers left column header
    Product section title - Product section title if there is only one product. - Section header title for the product */
 "Product" = "Produto";
-
-/* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
-"Product %ld has been removed from your store" = "O produto %ld foi removido da sua loja";
 
 /* Edit Product External Link navigation title */
 "Product Link" = "Link do produto";
@@ -1734,15 +1802,14 @@
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "Publicando o produto...";
 
-/* Product Details - purchase details section title */
-"Purchase Details" = "Detalhes da compra";
+/* Title of shipping label purchase date in Refund Shipping Label screen */
+"Purchase Date" = "Data da compra";
 
 /* Product Note navigation title
    Purchase note label in Product Settings */
 "Purchase Note" = "Observação de compra";
 
-/* Product Details > Purchase Details > Purchase note cell title
-   Title for purchase note alert. */
+/* Title for purchase note alert. */
 "Purchase note" = "Nota de compra";
 
 /* Quantity abbreviation for section title */
@@ -1752,23 +1819,21 @@
    Section header title - abbreviation for quantity */
 "Qty" = "Qtd";
 
-/* Title of the cell in Product Inventory Settings > Quantity */
+/* The accessibility label for the quantity button when selecting an item to refund
+   Title of the cell in Product Inventory Settings > Quantity */
 "Quantity" = "Quantidade";
 
 /* Navigation title on the quantity item selector screen */
-"Quantity to refund" = "Quantidade a ser reembolsada";
+"Quantity to refund" = "Quantity to refund";
 
 /* Navigation title on the quantity item selector screen */
-"Quantity to refund" = "Quantity to refund";
+"Quantity to refund" = "Quantidade a ser reembolsada";
 
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %ld" = "Quantidade: %ld";
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Fale com a nossa equipe de suporte, que pode ajudá-lo nas suas dúvidas mais difíceis";
-
-/* Read more of the purchase note. Only the first two lines of text are displayed. */
-"Read more" = "Leia mais";
 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "Ler política de privacidade";
@@ -1789,10 +1854,10 @@
 "Reason for refunding order" = "Reason for refunding order";
 
 /* The title of the button to confirm the refund. */
-"Refund" = "Refund";
+"Refund" = "Reembolso";
 
 /* The title of the button to confirm the refund. */
-"Refund" = "Reembolso";
+"Refund" = "Refund";
 
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "Reembolsar #%@";
@@ -1804,17 +1869,20 @@
 /* Refund Details section title */
 "Refund Details" = "Detalhes do reembolso";
 
-/* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Refund Shipping";
+/* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
+"Refund Label (%1$@)" = "Reembolsar etiqueta (%1$@)";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
 "Refund Shipping" = "Reembolsar envio";
 
-/* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Reembolsar via";
+/* Title of the switch in the IssueRefund screen to refund shipping */
+"Refund Shipping" = "Refund Shipping";
 
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "Refund Via";
+
+/* The title of the section containing information about how the refund will be processed. */
+"Refund Via" = "Reembolsar via";
 
 /* The title for the refunded amount cell */
 "Refunded" = "Reembolsado";
@@ -1822,6 +1890,9 @@
 /* Order > Order Details > 'N Items' cell tapped > Refunded Products title
    Refunded Products section title - Section title */
 "Refunded Products" = "Produtos reembolsados";
+
+/* Title of the refund detail cell when the refund was done manually. */
+"Refunded manually" = "Reembolsado manualmente";
 
 /* It reads, 'Refunded manually via <payment method>' */
 "Refunded manually via %@" = "Reembolsado manualmente por %@";
@@ -1831,9 +1902,6 @@
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Domínio registrado";
-
-/* A descriptive label prefix. Example: 'Regular price: $20.00' */
-"Regular price:" = "Preço normal:";
 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Preço normal: %@";
@@ -1859,10 +1927,12 @@
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Reportar travamentos";
 
-/* Text on the button that reprints a shipping label */
+/* Navigation bar title to reprint a shipping label
+   Text on the button that reprints a shipping label */
 "Reprint Shipping Label" = "Reimprimir etiqueta de envio";
 
-/* Request a refund on a shipping label from the shipping label more menu action sheet */
+/* Navigation bar title to request a refund for a shipping label
+   Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "Solicitar um reembolso";
 
 /* Deletes all activity logs except for the marked 'Current'. */
@@ -1887,26 +1957,24 @@
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "Avaliação marcada como %@";
 
-/* Reviews descriptive label
-   Title of the Reviews row on Product main screen - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). - Title that appears on top of the Product Reviews screen. */
+/* Title of the Reviews row on Product main screen
+   Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). - Title that appears on top of the Product Reviews screen. */
 "Reviews" = "Avaliações";
 
 /* Post Rich content */
 "Rich Content" = "Conteúdo avançado";
 
-/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products.
-   Edit Product SKU navigation title - Title of the cell in Product Inventory Settings > SKU - Title of the product form bottom sheet action for editing short description. - Title of the SKU row on Product main screen */
+/* Edit Product SKU navigation title
+   Title of the cell in Product Inventory Settings > SKU - Title of the product form bottom sheet action for editing short description. - Title of the SKU row on Product main screen */
 "SKU" = "SKU";
 
 /* The message of the alert when there is an error updating the product SKU */
 "SKU already in use by another product" = "O SKU já foi usado por outro produto";
 
-/* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
-   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' */
-"SKU:" = "SKU:";
+/* SKU label in order details > product row. The variable shows the SKU of the product. */
+"SKU: %1$@" = "SKU: %1$@";
 
-/* Format of the SKU on the Inventory Settings row
-   SKU label, followed by the SKU */
+/* Format of the SKU on the Inventory Settings row */
 "SKU: %@" = "SKU: %@";
 
 /* One Time Code has been sent via SMS */
@@ -1923,9 +1991,6 @@
 
 /* Title of the cell in Product Price Settings > Sale price */
 "Sale price" = "Preço com desconto";
-
-/* A descriptive label prefix. Example: 'Sale price: $18.00' */
-"Sale price:" = "Preço promocional:";
 
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Preço promocional: %@";
@@ -1976,14 +2041,20 @@
 /* Display label for the product's catalog visibility */
 "Search results only" = "Apenas resultados da busca";
 
+/* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
+"See Instructions" = "Ver as instruções";
+
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "See comments and notifications in real time." = "Veja comentários e notificações em tempo real.";
 
-/* Select all button title in the issue refund screen */
-"Select All" = "Selecionar todos";
+/* Link title to see all paper size options */
+"See layout and paper sizes options" = "Consulte as opções de layout e tamanho do papel";
 
 /* Select all button title in the issue refund screen */
 "Select All" = "Select All";
+
+/* Select all button title in the issue refund screen */
+"Select All" = "Selecionar todos";
 
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "Selecionar categoria principal";
@@ -2037,17 +2108,29 @@
 /* Action: Opens the Store in a browser */
 "Share your Store" = "Compartilhe sua loja";
 
+/* Title of origin address in shipping label details */
+"Ship from" = "Remetente";
+
+/* Title of destination address in shipping label details */
+"Ship to" = "Enviar para";
+
 /* A unit test string for order tracking. Reads as: 'Shipment Company HK Post'
    Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
 "Shipment Company %@" = "Transportadora %@";
+
+/* Navigation bar title of shipping label details */
+"Shipment Details" = "Detalhes de envio";
 
 /* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
    Date an item was shipped */
 "Shipped %@" = "Enviado em %@";
 
-/* Product Details > Purchase Details > Shipping cell title
-   Product Shipping Settings navigation title - Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
+/* Product Shipping Settings navigation title
+   Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Envio";
+
+/* Title of shipping carrier and rates in shipping label details */
+"Shipping Carrier and Rates" = "Transportadora e tarifas";
 
 /* Title of view displaying all available Shipment Tracking Carriers */
 "Shipping Carriers" = "Transportadoras";
@@ -2063,9 +2146,6 @@
 
 /* Title of the cell in Product Shipping Settings > Shipping class */
 "Shipping class" = "Classe de envio";
-
-/* Label prefix. Example: 'Shipping class: Free Shipping' */
-"Shipping class:" = "Classe de envio:";
 
 /* Navigation bar title of the Product shipping class selector screen */
 "Shipping classes" = "Classes de envio";
@@ -2144,9 +2224,6 @@
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "O endereço do site deve ter pelo menos 4 caracteres.";
 
-/* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
-"Size:" = "Dimensão:";
-
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title - Slug label in Product Settings */
 "Slug" = "Slug";
@@ -2157,6 +2234,9 @@
 /* A unit test for reviews, checking that anonymous users are added as the author named `someone`
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "Alguém";
+
+/* Notice format when a shipping label refund request fails. */
+"Something went wrong with the refund. Please try again." = "Ocorreu um erro no reembolso. Tente novamente.";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Desculpe, mas seu nome de usuário contém uma frase inválida%@.";
@@ -2236,15 +2316,9 @@
 /* Row title for filtering products by stock status. */
 "Stock Status" = "Status do estoque";
 
-/* A descriptive label prefix. Example: 'Stock quantity: 19' */
-"Stock quantity:" = "Quantidade em estoque:";
-
 /* Product stock status list selector navigation title
    Title of the cell in Product Inventory Settings > Stock status */
 "Stock status" = "Status do estoque";
-
-/* A descriptive label prefix. Example: 'Stock status: In stock' */
-"Stock status:" = "Status do estoque:";
 
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "Gráfico com a receita da loja";
@@ -2307,6 +2381,12 @@
 
 /* Accessibility hint for insert link button on formatting toolbar. */
 "Tap to insert a Link" = "Toque para inserir um link";
+
+/* The accessibility hint for the quantity button when selecting an item to refund */
+"Tap to modify the item refund quantity" = "Toque para modificar a quantidade para itens para reembolso";
+
+/* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
+"Tap to show instructions on how to print a shipping label on the mobile device" = "Toque para ver as instruções de como imprimir uma etiqueta de envio no dispositivo móvel";
 
 /* Accessibility hint for block quote button on formatting toolbar. */
 "Tap to toggle Block Quote" = "Toque para alternar Bloco de citação";
@@ -2466,6 +2546,9 @@
 /* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
 "The stock quantity for this product. Editable." = "A quantidade em estoque deste produto. Editável.";
 
+/* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
+"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "O site não é um site do WordPress. Para que possamos nos conectar a ele, o site precisa ter o WordPress instalado.";
+
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "Houve um problema ao bloquear os posts do site especificado.";
 
@@ -2490,9 +2573,6 @@
    Top Performers section title - this year */
 "This Year" = "Este ano";
 
-/* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, \'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
-"This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "Este aplicativo requer que o Jetpack se conecte a sua loja. <br \/> Leia as <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">instruções de configuração<\/a>.";
-
 /* Body text of alert warning users to upgrade to WC 3.5. */
 "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Esse aplicativo requer a instalação do WooCommerce 3.5 no seu servidor e não funcionará adequadamente sem ele. Atualize o quanto antes para continuar a usar esse aplicativo.";
 
@@ -2512,10 +2592,10 @@
 "This is the name of the file shown to the customer." = "Este é o nome do arquivo exibido para o cliente.";
 
 /* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Este é o URL do arquivo que os clientes acessarão. Os URLs inseridos já devem estar codificados.";
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
 
 /* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Este é o URL do arquivo que os clientes acessarão. Os URLs inseridos já devem estar codificados.";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2524,6 +2604,9 @@
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "Não foi possível carregar este produto";
 
+/* Message displayed when loading a specific product fails because product was deleted */
+"This product has been deleted and is no longer visible" = "Esse produto foi excluído e não está mais visível";
+
 /* Footer text in Product Catalog Visibility */
 "This setting determines which shop pages products will be listed on." = "Esta configuração determina em quais páginas o produto estará listado.";
 
@@ -2531,7 +2614,7 @@
 "This text will be shown on the button linking to the external product." = "Este texto será mostrado no botão que leva ao produto externo.";
 
 /* Add Product Category. Placeholder of cell presenting the title of the category.
-   Placeholder in the Product Title row on Product form screen. - Product details screen — product title descriptive label */
+   Placeholder in the Product Title row on Product form screen. */
 "Title" = "Titulo";
 
 /* VoiceOver accessibility hint, informing the user about the title of a product in product detail screen. */
@@ -2558,6 +2641,9 @@
 /* Instructional text shown when requesting the user's password for Google login. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "Para continuar usando esta conta do Google, primeiro faça login com a sua senha do WordPress.com. Isto só será solicitado uma vez.";
 
+/* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
+"To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "Para usar esse aplicativo para %@, é necessário ter o plugin do Jetpack conectado à sua loja.";
+
 /* Tab selector title that shows the statistics for today
    Today Section Header - Top Performers section title - today */
 "Today" = "Hoje";
@@ -2583,13 +2669,17 @@
 /* Track shipment button title */
 "Track Shipment" = "Rastrear envio";
 
+/* Track shipment of a shipping label from the shipping label tracking more menu action sheet */
+"Track shipment" = "Rastrear envio";
+
 /* Order tracking section title */
 "Tracking" = "Rastreamento";
 
 /* Add custom shipping carrier. Title of cell presenting carrier link */
 "Tracking link (optional)" = "Link de rastreamento (opcional)";
 
-/* Add / Edit shipping carrier. Title of cell presenting tracking number */
+/* Add / Edit shipping carrier. Title of cell presenting tracking number
+   Order shipping label tracking number row title. */
 "Tracking number" = "Número de rastreamento";
 
 /* A unit test string. Reads as: 'Trackin number XXX_YYY_ZZZ'
@@ -2646,14 +2736,14 @@
 /* Load Action Failed */
 "Unable to load content" = "Não foi possível carregar o conteúdo";
 
+/* Load Product Attributes Action Failed */
+"Unable to load product attributes" = "Não foi possível carregar atributos do produto";
+
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Não foi possível marcar a avaliação como %@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Não foi possível encontrar um site WordPress na URL. Toque em 'Precisa de ajuda?' para exibir as perguntas frequentes.";
-
-/* Notice displayed when an error occurs while refreshing a product. It reads: Unable to refresh product #{product number} */
-"Unable to refresh Product #%ld" = "Não foi possível atualizar o produto de n° %ld";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "Não foi possível atualizar a lista";
@@ -2721,10 +2811,10 @@
 "Update product inventory and SKU" = "Atualizar inventário de produtos e SKU";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "Atualize as informações de arquivos para download dos produtos remotamente";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Atualize as informações de arquivos para download dos produtos remotamente";
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "Atualize para o WooCommerce 3.5 para continuar a usar esse aplicativo";
@@ -2771,8 +2861,11 @@
 /* Action sheet option when the user wants to change the Product type to varible product */
 "Variable product" = "Produto variável";
 
-/* Product Details > descriptive label for the Product Variants cell.
-   Title of the Product Variations row on Product main screen for a variable product - Title that appears on top of the Product Variation List screen. */
+/* Footer of text field section in Add Attribute screen */
+"Variation type (ie Color, Size)" = "Tipo de variação (por exemplo, cor, tamanho)";
+
+/* Title of the Product Variations row on Product main screen for a variable product
+   Title that appears on top of the Product Variation List screen. */
 "Variations" = "Variações";
 
 /* Banner caption in my store when the stats will be deprecated */
@@ -2801,20 +2894,14 @@
    Button on bottom of shipping label package card to show shipping details */
 "View Shipment Details" = "Visualizar detalhes de envio";
 
-/* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
-"View affiliate product" = "Visualizar produto afiliado";
+/* The action to update downloadable files settings for a product */
+"View downloadable file settings" = "Veja as configurações do arquivo para download";
 
 /* The action to update downloadable files settings for a product */
 "View downloadable file settings" = "View downloadable file settings";
 
-/* The action to update downloadable files settings for a product */
-"View downloadable file settings" = "Veja as configurações do arquivo para download";
-
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Visualizar tíquetes de suporte enviados anteriormente";
-
-/* The descriptive label. Tapping the row will open the product's page in a web view. */
-"View product on store" = "Visualizar produto na loja";
 
 /* Accessibility label for the 'View details' refund button */
 "View refund details" = "Ver detalhes do reembolso";
@@ -2905,14 +2992,20 @@
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "Peso";
 
-/* Label prefix. Example: 'Weight: 1kg' */
-"Weight:" = "Peso:";
-
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Peso: %1$@%2$@";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Welcome to the world’s most popular website builder." = "Boas-vindas ao criador de sites mais popular do mundo.";
+
+/* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
+"What email do I use to sign in?" = "Qual e-mail posso usar para me conectar?";
+
+/* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
+"What is Jetpack" = "O que é o Jetpack";
+
+/* Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
+"What is Jetpack?" = "O que é o Jetpack?";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "O que é o endereço do meu site?";
@@ -2957,6 +3050,9 @@
 /* Yesterday Section Header */
 "Yesterday" = "Ontem";
 
+/* Header text in Refund Shipping Label screen */
+"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "É possível solicitar o reembolso de uma etiqueta de envio que não tenha sido usada para enviar um pacote.\nO processamento levará pelo menos 14 dias.";
+
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Você não pode usar este endereço de e-mail para se inscrever. Esse provedor bloqueia alguns de nossos e-mails. Use outro provedor de e-mail.";
 
@@ -2975,9 +3071,6 @@
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMENTÁRIO]";
 
-/* Backorders status. Example: 'Backorders: allowed' */
-"allowed" = "permitidos";
-
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "exemplo.com";
@@ -2987,9 +3080,6 @@
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "reembolso manual";
-
-/* Backorders status. Example: 'Backorders: not allowed' */
-"not allowed" = "não permitidos";
 
 /* No comment provided by engineer. */
 "password" = "senha";
@@ -3006,6 +3096,9 @@
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "URL desconhecida";
 
+/* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need... */
+"your site" = "seu site";
+
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Acessar com o Google.";
 
@@ -3016,5 +3109,5 @@
 "“%@”" = "“%@”";
 
 /* Text of the notice that is displayed after the refund is created. */
-"🎉 Products successfuly refunded" = "Reembolso de 🎉 produtos feito com sucesso";
+"🎉 Products successfully refunded" = "🎉 produtos reembolsados com êxito";
 

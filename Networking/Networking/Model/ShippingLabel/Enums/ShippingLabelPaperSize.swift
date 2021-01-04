@@ -2,6 +2,7 @@ import Foundation
 
 /// Paper size options for printing a shipping label.
 public enum ShippingLabelPaperSize {
+    case a4
     case label
     case legal
     case letter
@@ -13,6 +14,8 @@ extension ShippingLabelPaperSize: RawRepresentable {
     ///
     public init(rawValue: String) {
         switch rawValue {
+        case Keys.a4:
+            self = .a4
         case Keys.label:
             self = .label
         case Keys.legal:
@@ -29,6 +32,8 @@ extension ShippingLabelPaperSize: RawRepresentable {
     ///
     public var rawValue: String {
         switch self {
+        case .a4:
+            return Keys.a4
         case .label:
             return Keys.label
         case .legal:
@@ -41,6 +46,7 @@ extension ShippingLabelPaperSize: RawRepresentable {
 
 /// Contains the supported ShippingLabelPaperSize values.
 private enum Keys {
+    static let a4 = "a4"
     static let label = "label"
     static let legal = "legal"
     static let letter = "letter"

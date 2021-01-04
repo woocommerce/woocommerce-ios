@@ -85,7 +85,11 @@ extension WooConstants {
 
         /// URL for the shipping labels M1 feedback survey
         ///
+#if DEBUG
+        case shippingLabelsRelease1Feedback = "http://automattic.survey.fm/woo-app-testing-feature-feedback-shipping-labels"
+#else
         case shippingLabelsRelease1Feedback = "https://automattic.survey.fm/woo-app-feature-feedback-shipping-labels"
+#endif
 
         /// Returns the URL version of the receiver
         ///

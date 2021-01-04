@@ -11,11 +11,9 @@ final class ProductAttributeTermListMapperTests: XCTestCase {
         XCTAssertEqual(terms.count, 3)
 
         let secondTerm = terms[1]
-        XCTAssertEqual(secondTerm.siteID, dummySiteID)
-        XCTAssertEqual(secondTerm.termID, 27)
-        XCTAssertEqual(secondTerm.name, "Medium")
-        XCTAssertEqual(secondTerm.slug, "medium")
-        XCTAssertEqual(secondTerm.count, 1)
+        let expectedTerm = ProductAttributeTerm(siteID: dummySiteID, termID: 27, name: "Medium", slug: "medium", count: 1)
+
+        XCTAssertEqual(secondTerm, expectedTerm)
     }
 }
 

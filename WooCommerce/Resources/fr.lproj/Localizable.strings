@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-12-17 14:31:52+0000 */
+/* Translation-Revision-Date: 2020-12-24 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -31,7 +31,7 @@
 "%1$@ left a review on %2$@" = "%1$@ a laissé un avis sur %2$@";
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
-"%1$@ refund requested (%2$@)" = "%1$@ refund requested (%2$@)";
+"%1$@ refund requested (%2$@)" = "Remboursement %1$@ demandé (%2$@)";
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ via %2$@";
@@ -40,7 +40,7 @@
 "%1$@ x %2$@" = "%1$@ x %2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
-"%1$@ • %2$@" = "%1$@ • %2$@";
+"%1$@ • %2$@" = "%1$@• %2$@";
 
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
@@ -58,7 +58,7 @@
 "%@ Items" = "%@ articles";
 
 /* Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS). */
-"%@ label refund requested" = "%@ label refund requested";
+"%@ label refund requested" = "Étiquette de remboursement %@ demandée";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%@ left a review on %@" = "%1$@ a laissé un avis sur %2$@";
@@ -215,7 +215,7 @@
 "Add a tracking" = "Ajouter un suivi";
 
 /* Add Product Attribute screen navigation title */
-"Add attribute" = "Add attribute";
+"Add attribute" = "Ajouter un attribut";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -234,7 +234,7 @@
 "Add products' downloadable files' info remotely" = "Ajouter à distance les informations « fichiers téléchargeables » des produits";
 
 /* Title for adding variations row on Product main screen for a variable product */
-"Add variations" = "Add variations";
+"Add variations" = "Ajouter des variantes";
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Ajouter le poids et les dimensions";
@@ -270,7 +270,7 @@
 "Alternatively:" = "Ou :";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
-"Amount Eligible For Refund" = "Amount Eligible For Refund";
+"Amount Eligible For Refund" = "Montant éligible au remboursement";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "Un erreur est survenue lors de la création du menu.";
@@ -334,7 +334,7 @@
 "Are you sure you want to remove this image?" = "Voulez-vous vraiment supprimer cette image ?";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
-"Attribute name" = "Attribute name";
+"Attribute name" = "Nom de l’attribut";
 
 /* No comment provided by engineer. */
 "Authenticating" = "Connexion";
@@ -506,7 +506,7 @@
 "Continue" = "Continuez";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
-"Continue With WordPress.com" = "Continue With WordPress.com";
+"Continue With WordPress.com" = "Continuer avec WordPress.com";
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Lire la suite";
@@ -534,7 +534,7 @@
 "Copy email address" = "Copiez l’adresse email";
 
 /* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
-"Copy tracking number" = "Copy tracking number";
+"Copy tracking number" = "Copier le numéro de suivi";
 
 /* The title of the button for giving a negative feedback for the app. */
 "Could Be Better" = "Pourrait être améliorée";
@@ -579,7 +579,7 @@
 "Creating products" = "Création des produits";
 
 /* Credit card payment method for shipping label. */
-"Credit card" = "Credit card";
+"Credit card" = "Carte de crédit";
 
 /* Cell title for Cross-sells products in Linked Products Settings screen */
 "Cross-sells" = "Ventes croisées";
@@ -691,10 +691,10 @@
 "Done" = "Terminé";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
-"Don’t know how to print from your device?" = "Don’t know how to print from your device?";
+"Don’t know how to print from your device?" = "Vous ne savez pas comment imprimer à partir de votre appareil ?";
 
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
-"Don’t know how to print from your phone?" = "Don’t know how to print from your phone?";
+"Don’t know how to print from your phone?" = "Vous ne savez pas comment imprimer à partir de votre téléphone ?";
 
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [(code)] (theMessage)" = "Erreur Dotcom : [(code)] (theMessage)";
@@ -805,14 +805,14 @@
 "Enjoying the WooCommerce app?" = "Vous appréciez l’application WooCommerce ?";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
-"Enter Another Store" = "Enter Another Store";
+"Enter Another Store" = "Entrer une autre boutique";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "Saisir l’URL";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account
    Button title. Takes the user to the login by store address flow. */
-"Enter Your Store Address" = "Enter Your Store Address";
+"Enter Your Store Address" = "Saisir l’adresse de votre boutique";
 
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Saisissez le nom du transporteur";
@@ -861,7 +861,7 @@
 "Enter your email address to log in or create a WordPress.com account." = "Entrez votre adresse e-mail pour vous connecter ou créez un compte WordPress.com.";
 
 /* Button title. Takes the user to the login by site address flow. */
-"Enter your existing site address" = "Enter your existing site address";
+"Enter your existing site address" = "Saisissez l’adresse de votre site actuel";
 
 /* Title of a button on the magic link screen.
    Title of a button. */
@@ -928,7 +928,7 @@
 "Find your site address" = "Trouver l’adresse de votre site";
 
 /* The hint button's title text to help users find their store address. */
-"Find your store address" = "Find your store address";
+"Find your store address" = "Trouver l’adresse de votre boutique";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new reads." = "Suivez vos sites favoris et découvrez de nouveaux contenus à lire.";
@@ -1065,13 +1065,13 @@
 "If disabled the note will be private" = "Si cette option est désactivée, la note sera privée";
 
 /* Header text when reprinting a shipping label */
-"If there was a printing error when you purchased the label, you can print it again." = "If there was a printing error when you purchased the label, you can print it again.";
+"If there was a printing error when you purchased the label, you can print it again." = "Vous pouvez réimprimer l’étiquette en cas d’erreur d’impression lors de son achat.";
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "Si vous possédez déjà une boutique, vous devrez installer l’extension Jetpack gratuite et la connecter à votre compte WordPress.com.";
 
 /* Info text when reprinting a shipping label */
-"If you already used the label in a package, printing and using it again is a violation of our terms of service" = "If you already used the label in a package, printing and using it again is a violation of our terms of service";
+"If you already used the label in a package, printing and using it again is a violation of our terms of service" = "Si vous avez déjà apposé l’étiquette sur un colis, et que vous la réimprimez et la réutilisez, cela constitue une violation de nos conditions d’utilisation";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Si vous continuez avec Apple ou Google sans disposer au préalable d’un compte WordPress.com, vous créez un compte et acceptez nos _Conditions d'utilisation_.";
@@ -1081,7 +1081,7 @@
 "In stock" = "En stock";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
-"In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection";
+"In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "Dans l’administration de votre site, vous trouverez l’adresse e-mail utilisée pour vous connecter à WordPress.com à partir du Tableau de bord de Jetpack sous Connexions > Connexion du compte";
 
 /* Application's Inactive State */
 "Inactive" = "Inactif";
@@ -1142,7 +1142,7 @@
 "Issuing Refund..." = "Émission du remboursement en cours...";
 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
-"It looks like this email isn't associated with a WordPress.com account." = "It looks like this email isn't associated with a WordPress.com account.";
+"It looks like this email isn't associated with a WordPress.com account." = "Il semble que cet e-mail ne soit pas associé à un compte WordPress.com.";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Il semblerait que cet identifiant\/mot de passe n’est pas associé à ce site.";
@@ -1157,7 +1157,7 @@
 "It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!" = "Il est désormais possible de créer des produits simples, groupés \n et externes à la volée depuis l’application Woo. Vous n’êtes pas encore prêt(e) ? Enregistrez-les comme brouillon !";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
-"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats";
+"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack est une extension WordPress gratuite qui connecte votre boutique aux outils dont vous avez besoin pour vous offrir une expérience optimale, dont les notifications push et les statistiques";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Poursuivez la modification";
@@ -1166,7 +1166,7 @@
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "Gardez à l’esprit qu’il ne s’agit pas d’un ticket d’assistance et que nous ne pourrons pas répondre aux commentaires individuels";
 
 /* Title of label paper size option for printing a shipping label */
-"Label (4 x 6 in)" = "Label (4 x 6 in)";
+"Label (4 x 6 in)" = "Étiquette (4 x 6 po)";
 
 /* Last 24 hours section header */
 "Last 24 hours" = "24 dernières heures";
@@ -1182,16 +1182,16 @@
 "Learn more" = "En apprendre plus";
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
-"Learn more about Jetpack" = "Learn more about Jetpack";
+"Learn more about Jetpack" = "En savoir plus sur Jetpack";
 
 /* Title of legal paper size option for printing a shipping label */
-"Legal (8.5 x 14 in)" = "Legal (8.5 x 14 in)";
+"Legal (8.5 x 14 in)" = "Legal (8,5 x 14 po)";
 
 /* Title of the cell in Product Shipping Settings > Length */
 "Length" = "Longueur";
 
 /* Title of letter paper size option for printing a shipping label */
-"Letter (8.5 x 11 in)" = "Letter (8.5 x 11 in)";
+"Letter (8.5 x 11 in)" = "Letter (8,5 x 11 po)";
 
 /* Licenses (information page title) */
 "Licenses" = "Licences";
@@ -1237,7 +1237,7 @@
 
 /* Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
-"Log In With Another Account" = "Log In With Another Account";
+"Log In With Another Account" = "Se connecter avec un autre compte";
 
 /* Alert button title - confirms and logs out the user
    Log out button title */
@@ -1371,7 +1371,7 @@
 "Navigates to Settings." = "Accède aux paramètres.";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
-"Need help finding the connected email?" = "Need help finding the connected email?";
+"Need help finding the connected email?" = "Besoin d'aide pour trouver l'adresse e-mail de connexion ?";
 
 /* A button title. */
 "Need help finding your site address?" = "Besoin d’aide pour trouver l’adresse de votre site ?";
@@ -1534,7 +1534,7 @@
 "Or log in by _entering your site address_." = "Ou connectez-vous en saisissant l'adresse de votre site.";
 
 /* Header of attributes section in Add Attribute screen */
-"Or tap to select existing attribute" = "Or tap to select existing attribute";
+"Or tap to select existing attribute" = "Ou appuyez pour sélectionner l’attribut existant";
 
 /* Add a note screen - title. Example: Order #15
    Order number title */
@@ -1582,13 +1582,13 @@
 "Package %d" = "Colis %d";
 
 /* Title of package details in shipping label details */
-"Package Details" = "Package Details";
+"Package Details" = "Détails du colis";
 
 /* The title for the customer payment cell */
 "Paid By Customer" = "Payé par le client";
 
 /* Title of the paper size selector row for reprinting a shipping label */
-"Paper Size" = "Paper Size";
+"Paper Size" = "Format papier";
 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "Catégorie mère";
@@ -1607,7 +1607,7 @@
 "Payment" = "Paiement";
 
 /* Title of payment method in shipping label details */
-"Payment Method" = "Payment Method";
+"Payment Method" = "Moyen de paiement";
 
 /* Display label for the review's pending status */
 "Pending" = "En attente";
@@ -1711,7 +1711,7 @@
 "Price" = "Prix";
 
 /* Button title to generate a shipping label document for printing */
-"Print Shipping Label" = "Print Shipping Label";
+"Print Shipping Label" = "Imprimer l’étiquette d’expédition";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "Message de confidentialité pour les utilisateurs en Californie";
@@ -1803,7 +1803,7 @@
 "Publishing your product..." = "Publication de votre produit en cours…";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */
-"Purchase Date" = "Purchase Date";
+"Purchase Date" = "Date d’achat";
 
 /* Product Note navigation title
    Purchase note label in Product Settings */
@@ -1870,7 +1870,7 @@
 "Refund Details" = "Détails du remboursement";
 
 /* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
-"Refund Label (%1$@)" = "Refund Label (%1$@)";
+"Refund Label (%1$@)" = "Étiquette de remboursement (%1$@)";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
 "Refund Shipping" = "Rembourser les frais d’expédition";
@@ -1892,7 +1892,7 @@
 "Refunded Products" = "Produits remboursés";
 
 /* Title of the refund detail cell when the refund was done manually. */
-"Refunded manually" = "Refunded manually";
+"Refunded manually" = "Remboursé manuellement";
 
 /* It reads, 'Refunded manually via <payment method>' */
 "Refunded manually via %@" = "Remboursement effectué manuellement via %@";
@@ -1972,7 +1972,7 @@
 "SKU already in use by another product" = "Cette UGS est déjà utilisée par un autre produit";
 
 /* SKU label in order details > product row. The variable shows the SKU of the product. */
-"SKU: %1$@" = "SKU: %1$@";
+"SKU: %1$@" = "UGS : %1$@";
 
 /* Format of the SKU on the Inventory Settings row */
 "SKU: %@" = "UGS : %@";
@@ -2042,13 +2042,13 @@
 "Search results only" = "Résultats de recherche uniquement";
 
 /* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
-"See Instructions" = "See Instructions";
+"See Instructions" = "Voir instructions";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "See comments and notifications in real time." = "Affichez les commentaires et les notifications en temps réel.";
 
 /* Link title to see all paper size options */
-"See layout and paper sizes options" = "See layout and paper sizes options";
+"See layout and paper sizes options" = "Voir les options de mise en page et de format papier";
 
 /* Select all button title in the issue refund screen */
 "Select All" = "Select All";
@@ -2109,17 +2109,17 @@
 "Share your Store" = "Partager votre boutique";
 
 /* Title of origin address in shipping label details */
-"Ship from" = "Ship from";
+"Ship from" = "Livrer à partir de";
 
 /* Title of destination address in shipping label details */
-"Ship to" = "Ship to";
+"Ship to" = "Livrée à";
 
 /* A unit test string for order tracking. Reads as: 'Shipment Company HK Post'
    Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
 "Shipment Company %@" = "Société d'expédition %@";
 
 /* Navigation bar title of shipping label details */
-"Shipment Details" = "Shipment Details";
+"Shipment Details" = "Détails de l’expédition";
 
 /* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
    Date an item was shipped */
@@ -2130,7 +2130,7 @@
 "Shipping" = "Expédition";
 
 /* Title of shipping carrier and rates in shipping label details */
-"Shipping Carrier and Rates" = "Shipping Carrier and Rates";
+"Shipping Carrier and Rates" = "Transporteur et frais de port";
 
 /* Title of view displaying all available Shipment Tracking Carriers */
 "Shipping Carriers" = "Transporteurs";
@@ -2236,7 +2236,7 @@
 "Someone" = "Quelqu'un";
 
 /* Notice format when a shipping label refund request fails. */
-"Something went wrong with the refund. Please try again." = "Something went wrong with the refund. Please try again.";
+"Something went wrong with the refund. Please try again." = "Un problème est survenu lors du remboursement. Veuillez réessayer.";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Désolé, mais votre identifiant contient une phrase invalide%@.";
@@ -2383,10 +2383,10 @@
 "Tap to insert a Link" = "Appuyer pour insérer un lien";
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
-"Tap to modify the item refund quantity" = "Tap to modify the item refund quantity";
+"Tap to modify the item refund quantity" = "Appuyez pour modifier la quantité d’éléments à rembourser";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
-"Tap to show instructions on how to print a shipping label on the mobile device" = "Tap to show instructions on how to print a shipping label on the mobile device";
+"Tap to show instructions on how to print a shipping label on the mobile device" = "Appuyez pour afficher les instructions d’impression d’une étiquette de livraison sur l’appareil mobile";
 
 /* Accessibility hint for block quote button on formatting toolbar. */
 "Tap to toggle Block Quote" = "Appuyer pour basculer sur Bloquer les citations";
@@ -2547,7 +2547,7 @@
 "The stock quantity for this product. Editable." = "Quantité en stock de ce produit. Modifiable.";
 
 /* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
-"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "The website is not a WordPress site. For us to connect to it, the site must have WordPress installed.";
+"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "Le site Web n’est pas un site WordPress. Pour que nous puissions nous y connecter, WordPress doit être installé sur le site.";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "Un problème a bloqué les articles de ce site";
@@ -2605,7 +2605,7 @@
 "This product couldn't be loaded" = "Impossible de charger ce produit";
 
 /* Message displayed when loading a specific product fails because product was deleted */
-"This product has been deleted and is no longer visible" = "This product has been deleted and is no longer visible";
+"This product has been deleted and is no longer visible" = "Ce produit a été supprimé et n’est plus visible";
 
 /* Footer text in Product Catalog Visibility */
 "This setting determines which shop pages products will be listed on." = "Ce paramètre détermine sur quelle page de la boutique les produits seront affichés.";
@@ -2642,7 +2642,7 @@
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "Pour effectuer cela avec ce compte Google, veuillez d’abord vous connecter avec votre mot de passe WordPress.com. Cela sera demandé une seule fois.";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
-"To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store.";
+"To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "Pour utiliser cette application pour %@, l’extension Jetpack doit être installée et connectée sur votre boutique.";
 
 /* Tab selector title that shows the statistics for today
    Today Section Header - Top Performers section title - today */
@@ -2670,7 +2670,7 @@
 "Track Shipment" = "Suivi de l’expédition";
 
 /* Track shipment of a shipping label from the shipping label tracking more menu action sheet */
-"Track shipment" = "Track shipment";
+"Track shipment" = "Suivre l'expédition";
 
 /* Order tracking section title */
 "Tracking" = "Suivi";
@@ -2737,7 +2737,7 @@
 "Unable to load content" = "Impossible de charger le contenu";
 
 /* Load Product Attributes Action Failed */
-"Unable to load product attributes" = "Unable to load product attributes";
+"Unable to load product attributes" = "Impossible de charger les attributs du produit";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Impossible de marquer l'avis comme %@";
@@ -2862,7 +2862,7 @@
 "Variable product" = "Produit variable";
 
 /* Footer of text field section in Add Attribute screen */
-"Variation type (ie Color, Size)" = "Variation type (ie Color, Size)";
+"Variation type (ie Color, Size)" = "Type de variante (couleur, taille, etc.)";
 
 /* Title of the Product Variations row on Product main screen for a variable product
    Title that appears on top of the Product Variation List screen. */
@@ -2999,13 +2999,13 @@
 "Welcome to the world’s most popular website builder." = "Bienvenue sur le créateur de site Web le plus populaire au monde.";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
-"What email do I use to sign in?" = "What email do I use to sign in?";
+"What email do I use to sign in?" = "Quelle adresse e-mail dois-je utiliser pour me connecter ?";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
-"What is Jetpack" = "What is Jetpack";
+"What is Jetpack" = "Qu’est-ce que Jetpack";
 
 /* Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
-"What is Jetpack?" = "What is Jetpack?";
+"What is Jetpack?" = "Qu'est-ce que Jetpack ?";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "Quelle est l’adresse de mon site ?";
@@ -3051,7 +3051,7 @@
 "Yesterday" = "Hier";
 
 /* Header text in Refund Shipping Label screen */
-"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process.";
+"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "Vous pouvez demander le remboursement d’une étiquette d’expédition qui n’a pas été utilisée pour expédier un colis.\nCela prendra au moins 14 jours.";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Vous ne pouvez pas utiliser cette adresse e-mail pour vous inscrire. Nous rencontrons des problèmes avec ce service qui bloque parfois nos e-mails. Veuillez utiliser un autre fournisseur d'e-mail.";
@@ -3097,7 +3097,7 @@
 "unknown url" = "URL inconnue";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need... */
-"your site" = "your site";
+"your site" = "votre site";
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Connectez-vous avec Google.";
@@ -3109,5 +3109,5 @@
 "“%@”" = "“%@”";
 
 /* Text of the notice that is displayed after the refund is created. */
-"🎉 Products successfully refunded" = "";
+"🎉 Products successfully refunded" = "🎉 Produits remboursés avec succès";
 

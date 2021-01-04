@@ -108,6 +108,42 @@ final class ReprintShippingLabelCoordinatorTests: XCTestCase {
         XCTAssertEqual(viewController.presentedViewControllers.count, 1)
         assertThat(viewController.presentedViewControllers[0], isAnInstanceOf: UIAlertController.self)
     }
+
+    // MARK: `presentPaperSizeOptions`
+
+    func test_presentPaperSizeOptions_presents_ShippingLabelPaperSizeOptionsViewController() throws {
+        // Given
+        let viewController = MockSourceViewController()
+        let coordinator = ReprintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(), sourceViewController: viewController)
+        coordinator.showReprintUI()
+        let reprintViewController = try XCTUnwrap(viewController.shownViewControllers.first as? ReprintShippingLabelViewController)
+
+        // When
+        reprintViewController.onAction?(.presentPaperSizeOptions)
+
+        // Then
+        XCTAssertEqual(viewController.presentedViewControllers.count, 1)
+        assertThat((viewController.presentedViewControllers[0] as? UINavigationController)?.topViewController,
+                   isAnInstanceOf: ShippingLabelPaperSizeOptionsViewController.self)
+    }
+
+    // MARK: `presentPrintingInstructions`
+
+    func test_presentPrintingInstructions_presents_ShippingLabelPrintingInstructionsViewController() throws {
+        // Given
+        let viewController = MockSourceViewController()
+        let coordinator = ReprintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(), sourceViewController: viewController)
+        coordinator.showReprintUI()
+        let reprintViewController = try XCTUnwrap(viewController.shownViewControllers.first as? ReprintShippingLabelViewController)
+
+        // When
+        reprintViewController.onAction?(.presentPrintingInstructions)
+
+        // Then
+        XCTAssertEqual(viewController.presentedViewControllers.count, 1)
+        assertThat((viewController.presentedViewControllers[0] as? UINavigationController)?.topViewController,
+                   isAnInstanceOf: ShippingLabelPrintingInstructionsViewController.self)
+    }
 }
 
 private final class MockSourceViewController: UIViewController {

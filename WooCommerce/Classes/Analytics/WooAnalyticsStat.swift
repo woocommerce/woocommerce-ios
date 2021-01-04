@@ -292,6 +292,7 @@ public enum WooAnalyticsStat: String {
     case productShippingSettingsDoneButtonTapped = "product_shipping_settings_done_button_tapped"
     case productInventorySettingsDoneButtonTapped = "product_inventory_settings_done_button_tapped"
     case productDetailViewDownloadableFilesTapped = "product_detail_view_downloadable_files_tapped"
+    case productDetailProductDeleted = "product_detail_product_deleted"
 
     // MARK: Edit Product Variation Events
     //

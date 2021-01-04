@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-12-10 13:54:04+0000 */
+/* Translation-Revision-Date: 2020-12-24 08:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -31,7 +31,7 @@
 "%1$@ left a review on %2$@" = "%1$@ 对 %2$@ 发表了评论";
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
-"%1$@ refund requested (%2$@)" = "%1$@ refund requested (%2$@)";
+"%1$@ refund requested (%2$@)" = "已申请 %1$@ 退款 (%2$@)";
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@，通过 %2$@ 支付";
@@ -40,7 +40,7 @@
 "%1$@ x %2$@" = "%1$@ x %2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
-"%1$@ • %2$@" = "%1$@ • %2$@";
+"%1$@ • %2$@" = "%1$@• %2$@";
 
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
@@ -58,7 +58,7 @@
 "%@ Items" = "%@ 个项目";
 
 /* Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS). */
-"%@ label refund requested" = "%@ label refund requested";
+"%@ label refund requested" = "已申请 %@ 标签退款";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%@ left a review on %@" = "%1$@ 对 %2$@ 发表了评论";
@@ -215,7 +215,7 @@
 "Add a tracking" = "添加跟踪";
 
 /* Add Product Attribute screen navigation title */
-"Add attribute" = "Add attribute";
+"Add attribute" = "添加属性";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -234,7 +234,7 @@
 "Add products' downloadable files' info remotely" = "远程添加产品的可下载文件信息";
 
 /* Title for adding variations row on Product main screen for a variable product */
-"Add variations" = "Add variations";
+"Add variations" = "添加变量";
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "添加重量和尺寸";
@@ -270,7 +270,7 @@
 "Alternatively:" = "其他方式：";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
-"Amount Eligible For Refund" = "Amount Eligible For Refund";
+"Amount Eligible For Refund" = "符合退款条件的金额";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "创建菜单时出错。";
@@ -334,7 +334,7 @@
 "Are you sure you want to remove this image?" = "是否确定要删除此图片？";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
-"Attribute name" = "Attribute name";
+"Attribute name" = "属性名";
 
 /* No comment provided by engineer. */
 "Authenticating" = "正在验证";
@@ -506,7 +506,7 @@
 "Continue" = "继续";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
-"Continue With WordPress.com" = "Continue With WordPress.com";
+"Continue With WordPress.com" = "继续使用 WordPress.com";
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "继续阅读";
@@ -534,7 +534,7 @@
 "Copy email address" = "复制电子邮件地址";
 
 /* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
-"Copy tracking number" = "Copy tracking number";
+"Copy tracking number" = "复制跟踪编号";
 
 /* The title of the button for giving a negative feedback for the app. */
 "Could Be Better" = "还可以更好";
@@ -579,7 +579,7 @@
 "Creating products" = "创建产品";
 
 /* Credit card payment method for shipping label. */
-"Credit card" = "Credit card";
+"Credit card" = "信用卡";
 
 /* Cell title for Cross-sells products in Linked Products Settings screen */
 "Cross-sells" = "交叉销售";
@@ -691,10 +691,10 @@
 "Done" = "完成";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
-"Don’t know how to print from your device?" = "Don’t know how to print from your device?";
+"Don’t know how to print from your device?" = "不知道如何通过设备打印？";
 
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
-"Don’t know how to print from your phone?" = "Don’t know how to print from your phone?";
+"Don’t know how to print from your phone?" = "不知道如何通过手机打印？";
 
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [(code)] (theMessage)" = "Dotcom 错误：[(code)] (theMessage)";
@@ -805,14 +805,14 @@
 "Enjoying the WooCommerce app?" = "喜欢 WooCommerce 应用程序？";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
-"Enter Another Store" = "Enter Another Store";
+"Enter Another Store" = "输入其他商店";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "输入 URL";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account
    Button title. Takes the user to the login by store address flow. */
-"Enter Your Store Address" = "Enter Your Store Address";
+"Enter Your Store Address" = "输入您的商店地址";
 
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "输入承运商名称";
@@ -861,7 +861,7 @@
 "Enter your email address to log in or create a WordPress.com account." = "输入您的电子邮件地址以登录或创建 WordPress.com 帐户。";
 
 /* Button title. Takes the user to the login by site address flow. */
-"Enter your existing site address" = "Enter your existing site address";
+"Enter your existing site address" = "输入您的现有站点地址";
 
 /* Title of a button on the magic link screen.
    Title of a button. */
@@ -928,7 +928,7 @@
 "Find your site address" = "找到您的站点地址";
 
 /* The hint button's title text to help users find their store address. */
-"Find your store address" = "Find your store address";
+"Find your store address" = "查找您的商店地址";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new reads." = "关注您喜欢的站点，发现新的阅读内容。";
@@ -1065,13 +1065,13 @@
 "If disabled the note will be private" = "如果禁用，备注将不会公开";
 
 /* Header text when reprinting a shipping label */
-"If there was a printing error when you purchased the label, you can print it again." = "If there was a printing error when you purchased the label, you can print it again.";
+"If there was a printing error when you purchased the label, you can print it again." = "如果您已经购买了标签，但遇到打印错误，则可以再次打印。";
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "如果您已有商店，则需要安装免费的 Jetpack 插件并将其连接到您的 WordPress.com 帐户。";
 
 /* Info text when reprinting a shipping label */
-"If you already used the label in a package, printing and using it again is a violation of our terms of service" = "If you already used the label in a package, printing and using it again is a violation of our terms of service";
+"If you already used the label in a package, printing and using it again is a violation of our terms of service" = "如果您已在包装中使用过该标签，再次打印和使用此标签会违反我们的服务条款";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "如果您继续使用 Apple 或 Google，并且还没有 WordPress.com 帐户，则需要创建一个帐户，并同意我们的_服务条款_。";
@@ -1081,7 +1081,7 @@
 "In stock" = "有货";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
-"In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection";
+"In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "进行站点管理时，您可以在 Jetpack 控制面板中找到用于连接 WordPress.com 的电子邮件，具体位于“连接”>“帐户连接”下";
 
 /* Application's Inactive State */
 "Inactive" = "未激活";
@@ -1142,7 +1142,7 @@
 "Issuing Refund..." = "发放退款中...";
 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
-"It looks like this email isn't associated with a WordPress.com account." = "It looks like this email isn't associated with a WordPress.com account.";
+"It looks like this email isn't associated with a WordPress.com account." = "该电子邮件似乎未与 WordPress.com 帐户关联。";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "此用户名\/密码可能与该站点无关。";
@@ -1157,7 +1157,7 @@
 "It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!" = "现在可通过 Woo 应用程序随时随地创建简单、分组\n和外部产品。还没有准备好？ 将它们另存为草稿！";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
-"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats";
+"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack 是一款免费的 WordPress 插件，它可以将您的商店与所需的工具连接起来，为您提供最佳移动体验，包括推送通知和统计数据";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "继续编辑";
@@ -1166,7 +1166,7 @@
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "请注意，这不是支持请求，我们将无法处理个人反馈";
 
 /* Title of label paper size option for printing a shipping label */
-"Label (4 x 6 in)" = "Label (4 x 6 in)";
+"Label (4 x 6 in)" = "标签（4 x 6 英寸）";
 
 /* Last 24 hours section header */
 "Last 24 hours" = "过去 24 小时";
@@ -1182,16 +1182,16 @@
 "Learn more" = "了解更多";
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
-"Learn more about Jetpack" = "Learn more about Jetpack";
+"Learn more about Jetpack" = "详细了解 Jetpack";
 
 /* Title of legal paper size option for printing a shipping label */
-"Legal (8.5 x 14 in)" = "Legal (8.5 x 14 in)";
+"Legal (8.5 x 14 in)" = "Legal（8.5 x 14 英寸）";
 
 /* Title of the cell in Product Shipping Settings > Length */
 "Length" = "长度";
 
 /* Title of letter paper size option for printing a shipping label */
-"Letter (8.5 x 11 in)" = "Letter (8.5 x 11 in)";
+"Letter (8.5 x 11 in)" = "Letter（8.5 x 11 英寸）";
 
 /* Licenses (information page title) */
 "Licenses" = "许可证";
@@ -1237,7 +1237,7 @@
 
 /* Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
-"Log In With Another Account" = "Log In With Another Account";
+"Log In With Another Account" = "使用其他帐户登录";
 
 /* Alert button title - confirms and logs out the user
    Log out button title */
@@ -1371,7 +1371,7 @@
 "Navigates to Settings." = "导航至“设置”。";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
-"Need help finding the connected email?" = "Need help finding the connected email?";
+"Need help finding the connected email?" = "需要有关查找已关联电子邮件方面的帮助？";
 
 /* A button title. */
 "Need help finding your site address?" = "查找站点地址时需要帮助？";
@@ -1534,7 +1534,7 @@
 "Or log in by _entering your site address_." = "或通过 _输入您的站点地址_ 登录。";
 
 /* Header of attributes section in Add Attribute screen */
-"Or tap to select existing attribute" = "Or tap to select existing attribute";
+"Or tap to select existing attribute" = "或轻按以选择现有属性";
 
 /* Add a note screen - title. Example: Order #15
    Order number title */
@@ -1582,13 +1582,13 @@
 "Package %d" = "包裹 %d";
 
 /* Title of package details in shipping label details */
-"Package Details" = "Package Details";
+"Package Details" = "包裹详细信息";
 
 /* The title for the customer payment cell */
 "Paid By Customer" = "客户支付";
 
 /* Title of the paper size selector row for reprinting a shipping label */
-"Paper Size" = "Paper Size";
+"Paper Size" = "纸张尺寸";
 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "父级分类目录";
@@ -1607,7 +1607,7 @@
 "Payment" = "付款";
 
 /* Title of payment method in shipping label details */
-"Payment Method" = "Payment Method";
+"Payment Method" = "付款方式";
 
 /* Display label for the review's pending status */
 "Pending" = "待审";
@@ -1711,7 +1711,7 @@
 "Price" = "价格";
 
 /* Button title to generate a shipping label document for printing */
-"Print Shipping Label" = "Print Shipping Label";
+"Print Shipping Label" = "打印配送标签";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "面向加州用户的隐私声明";
@@ -1803,7 +1803,7 @@
 "Publishing your product..." = "正在发布您的产品…";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */
-"Purchase Date" = "Purchase Date";
+"Purchase Date" = "购买日期";
 
 /* Product Note navigation title
    Purchase note label in Product Settings */
@@ -1870,7 +1870,7 @@
 "Refund Details" = "退款详细信息";
 
 /* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
-"Refund Label (%1$@)" = "Refund Label (%1$@)";
+"Refund Label (%1$@)" = "退款标签 (%1$@)";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
 "Refund Shipping" = "配送费用退款";
@@ -1892,7 +1892,7 @@
 "Refunded Products" = "退款产品";
 
 /* Title of the refund detail cell when the refund was done manually. */
-"Refunded manually" = "Refunded manually";
+"Refunded manually" = "手动退款";
 
 /* It reads, 'Refunded manually via <payment method>' */
 "Refunded manually via %@" = "已通过 %@ 手动退款";
@@ -1972,7 +1972,7 @@
 "SKU already in use by another product" = "SKU 已用于其他产品";
 
 /* SKU label in order details > product row. The variable shows the SKU of the product. */
-"SKU: %1$@" = "SKU: %1$@";
+"SKU: %1$@" = "SKU：%1$@";
 
 /* Format of the SKU on the Inventory Settings row */
 "SKU: %@" = "SKU：%@";
@@ -2042,13 +2042,13 @@
 "Search results only" = "仅在搜索结果中显示";
 
 /* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
-"See Instructions" = "See Instructions";
+"See Instructions" = "查看说明";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "See comments and notifications in real time." = "实时查看评论和通知。";
 
 /* Link title to see all paper size options */
-"See layout and paper sizes options" = "See layout and paper sizes options";
+"See layout and paper sizes options" = "查看布局和纸张尺寸选项";
 
 /* Select all button title in the issue refund screen */
 "Select All" = "Select All";
@@ -2109,17 +2109,17 @@
 "Share your Store" = "共享您的商店";
 
 /* Title of origin address in shipping label details */
-"Ship from" = "Ship from";
+"Ship from" = "发货地";
 
 /* Title of destination address in shipping label details */
-"Ship to" = "Ship to";
+"Ship to" = "配送地";
 
 /* A unit test string for order tracking. Reads as: 'Shipment Company HK Post'
    Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
 "Shipment Company %@" = "配送公司：%@";
 
 /* Navigation bar title of shipping label details */
-"Shipment Details" = "Shipment Details";
+"Shipment Details" = "配送详细信息";
 
 /* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
    Date an item was shipped */
@@ -2130,7 +2130,7 @@
 "Shipping" = "配送";
 
 /* Title of shipping carrier and rates in shipping label details */
-"Shipping Carrier and Rates" = "Shipping Carrier and Rates";
+"Shipping Carrier and Rates" = "承运商和收费标准";
 
 /* Title of view displaying all available Shipment Tracking Carriers */
 "Shipping Carriers" = "承运商";
@@ -2236,7 +2236,7 @@
 "Someone" = "某人";
 
 /* Notice format when a shipping label refund request fails. */
-"Something went wrong with the refund. Please try again." = "Something went wrong with the refund. Please try again.";
+"Something went wrong with the refund. Please try again." = "处理退款时出错。 请重试。";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "对不起，您的用户名中包含非法短语 %@.";
@@ -2383,10 +2383,10 @@
 "Tap to insert a Link" = "轻点以插入链接";
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
-"Tap to modify the item refund quantity" = "Tap to modify the item refund quantity";
+"Tap to modify the item refund quantity" = "轻按可调整商品退款数量";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
-"Tap to show instructions on how to print a shipping label on the mobile device" = "Tap to show instructions on how to print a shipping label on the mobile device";
+"Tap to show instructions on how to print a shipping label on the mobile device" = "轻按可显示有关如何在移动设备上打印配送标签的说明";
 
 /* Accessibility hint for block quote button on formatting toolbar. */
 "Tap to toggle Block Quote" = "轻点以切换区块引用";
@@ -2547,7 +2547,7 @@
 "The stock quantity for this product. Editable." = "该产品的库存数量。可编辑。";
 
 /* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
-"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "The website is not a WordPress site. For us to connect to it, the site must have WordPress installed.";
+"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "此网站不是 WordPress 站点。 必须在此站点上安装 WordPress，然后我们才能连接此站点。";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "阻止来自指定站点的文章时出现问题。";
@@ -2605,7 +2605,7 @@
 "This product couldn't be loaded" = "无法加载此产品";
 
 /* Message displayed when loading a specific product fails because product was deleted */
-"This product has been deleted and is no longer visible" = "This product has been deleted and is no longer visible";
+"This product has been deleted and is no longer visible" = "此产品已被删除，不再可见";
 
 /* Footer text in Product Catalog Visibility */
 "This setting determines which shop pages products will be listed on." = "此设置决定产品将在哪个店铺页面上列出。";
@@ -2642,7 +2642,7 @@
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "要继续使用此 Google 帐户，请先使用您的 WordPress.com 密码登录。此要求只会出现一次。";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
-"To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store.";
+"To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "若要为 %@ 使用此应用程序，您需要在商店内安装并连接 Jetpack 插件。";
 
 /* Tab selector title that shows the statistics for today
    Today Section Header - Top Performers section title - today */
@@ -2670,7 +2670,7 @@
 "Track Shipment" = "跟踪配送";
 
 /* Track shipment of a shipping label from the shipping label tracking more menu action sheet */
-"Track shipment" = "Track shipment";
+"Track shipment" = "跟踪配送";
 
 /* Order tracking section title */
 "Tracking" = "跟踪";
@@ -2737,7 +2737,7 @@
 "Unable to load content" = "无法加载内容";
 
 /* Load Product Attributes Action Failed */
-"Unable to load product attributes" = "Unable to load product attributes";
+"Unable to load product attributes" = "无法加载产品属性";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "无法将评论标记为%@";
@@ -2862,7 +2862,7 @@
 "Variable product" = "可变产品";
 
 /* Footer of text field section in Add Attribute screen */
-"Variation type (ie Color, Size)" = "Variation type (ie Color, Size)";
+"Variation type (ie Color, Size)" = "变体类型（例如颜色、尺寸）";
 
 /* Title of the Product Variations row on Product main screen for a variable product
    Title that appears on top of the Product Variation List screen. */
@@ -2999,13 +2999,13 @@
 "Welcome to the world’s most popular website builder." = "欢迎使用全球最热门的网站生成器。";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
-"What email do I use to sign in?" = "What email do I use to sign in?";
+"What email do I use to sign in?" = "我用什么电子邮件登录？";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
-"What is Jetpack" = "What is Jetpack";
+"What is Jetpack" = "Jetpack 是什么";
 
 /* Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
-"What is Jetpack?" = "What is Jetpack?";
+"What is Jetpack?" = "Jetpack 是什么？";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "我的站点地址是什么？";
@@ -3051,7 +3051,7 @@
 "Yesterday" = "昨天";
 
 /* Header text in Refund Shipping Label screen */
-"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process.";
+"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "您可以对尚未用于配送包裹的配送标签申请退款。\n此过程至少需要 14 天的处理时间。";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "这个 E-mail 地址不可用。我们发现这个 E-mail 提供商会屏蔽我们的邮件，请更换一个。";
@@ -3097,7 +3097,7 @@
 "unknown url" = "未知 URL";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need... */
-"your site" = "your site";
+"your site" = "您的站点";
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} 使用 Google 登录。";
@@ -3109,5 +3109,5 @@
 "“%@”" = "“%@”";
 
 /* Text of the notice that is displayed after the refund is created. */
-"🎉 Products successfully refunded" = "";
+"🎉 Products successfully refunded" = "🎉 产品已成功退款";
 

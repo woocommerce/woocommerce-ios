@@ -257,9 +257,9 @@ private extension OrderDetailsDataSource {
             configureBillingDetail(cell: cell)
         case let cell as WooBasicTableViewCell where row == .shippingLabelDetail:
             configureShippingLabelDetail(cell: cell)
-        case let cell as TopLeftImageTableViewCell where row == .shippingNotice:
+        case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingNotice:
             configureShippingNotice(cell: cell)
-        case let cell as TopLeftImageTableViewCell where row == .shippingLabelPrintingInfo:
+        case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelPrintingInfo:
             configureShippingLabelPrintingInfo(cell: cell)
         case let cell as LeftImageTableViewCell where row == .addOrderNote:
             configureNewNote(cell: cell)
@@ -330,13 +330,17 @@ private extension OrderDetailsDataSource {
         )
     }
 
-    private func configureShippingNotice(cell: TopLeftImageTableViewCell) {
+    private func configureShippingNotice(cell: ImageAndTitleAndTextTableViewCell) {
         let cellTextContent = NSLocalizedString(
             "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.",
             comment: "Shipping notice row label when there is more than one shipping method")
-        cell.imageView?.image = Icons.shippingNoticeIcon
-        cell.imageView?.tintColor = .accent
-        cell.textLabel?.text = cellTextContent
+
+        let viewModel = ImageAndTitleAndTextTableViewCell.TopLeftImageViewModel(icon: Icons.shippingNoticeIcon,
+                                                                                iconColor: .accent,
+                                                                                title: cellTextContent,
+                                                                                isFootnoteStyle: false)
+        cell.updateUI(topLeftImageViewModel: viewModel)
+
         cell.selectionStyle = .none
 
         cell.accessibilityTraits = .staticText
@@ -453,12 +457,14 @@ private extension OrderDetailsDataSource {
         )
     }
 
-    private func configureShippingLabelPrintingInfo(cell: TopLeftImageTableViewCell) {
-        cell.imageView?.image = .infoOutlineFootnoteImage
-        cell.imageView?.tintColor = .systemColor(.secondaryLabel)
-        cell.textLabel?.text = Title.shippingLabelPrintingInfoAction
-        cell.textLabel?.textColor = .systemColor(.secondaryLabel)
-        cell.textLabel?.applyFootnoteStyle()
+    private func configureShippingLabelPrintingInfo(cell: ImageAndTitleAndTextTableViewCell) {
+        let viewModel = ImageAndTitleAndTextTableViewCell.TopLeftImageViewModel(icon: .infoOutlineFootnoteImage,
+                                                                                iconColor: .systemColor(.secondaryLabel),
+                                                                                title: Title.shippingLabelPrintingInfoAction,
+                                                                                isFootnoteStyle: true)
+
+        cell.updateUI(topLeftImageViewModel: viewModel)
+
         cell.selectionStyle = .default
 
         cell.accessibilityTraits = .button
@@ -1221,7 +1227,7 @@ extension OrderDetailsDataSource {
             case .shippingLabelDetail:
                 return WooBasicTableViewCell.reuseIdentifier
             case .shippingLabelPrintingInfo:
-                return TopLeftImageTableViewCell.reuseIdentifier
+                return ImageAndTitleAndTextTableViewCell.reuseIdentifier
             case .shippingLabelProduct:
                 return ProductDetailsTableViewCell.reuseIdentifier
             case .shippingLabelTrackingNumber, .shippingLabelRefunded:
@@ -1229,7 +1235,7 @@ extension OrderDetailsDataSource {
             case .shippingLabelReprintButton:
                 return ButtonTableViewCell.reuseIdentifier
             case .shippingNotice:
-                return TopLeftImageTableViewCell.reuseIdentifier
+                return ImageAndTitleAndTextTableViewCell.reuseIdentifier
             case .addOrderNote:
                 return LeftImageTableViewCell.reuseIdentifier
             case .orderNoteHeader:

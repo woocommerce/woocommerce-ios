@@ -307,19 +307,19 @@ private extension ProductPriceSettingsViewController {
             configureSalePrice(cell: cell)
         case let cell as SwitchTableViewCell where row == .scheduleSale:
             configureScheduleSale(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .scheduleSaleFrom:
+        case let cell as TitleAndValueTableViewCell where row == .scheduleSaleFrom:
             configureScheduleSaleFrom(cell: cell)
         case let cell as DatePickerTableViewCell where row == .datePickerSaleFrom:
             configureSaleFromPicker(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .scheduleSaleTo:
+        case let cell as TitleAndValueTableViewCell where row == .scheduleSaleTo:
             configureScheduleSaleTo(cell: cell)
         case let cell as DatePickerTableViewCell where row == .datePickerSaleTo:
             configureSaleToPicker(cell: cell)
         case let cell as BasicTableViewCell where row == .removeSaleTo:
             configureRemoveSaleTo(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .taxStatus:
+        case let cell as TitleAndValueTableViewCell where row == .taxStatus:
             configureTaxStatus(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .taxClass:
+        case let cell as TitleAndValueTableViewCell where row == .taxClass:
             configureTaxClass(cell: cell)
         default:
             fatalError()
@@ -359,7 +359,7 @@ private extension ProductPriceSettingsViewController {
         }
     }
 
-    func configureScheduleSaleFrom(cell: SettingTitleAndValueTableViewCell) {
+    func configureScheduleSaleFrom(cell: TitleAndValueTableViewCell) {
         let title = NSLocalizedString("From", comment: "Title of the cell in Product Price Settings > Schedule sale from a certain date")
         let placeholder = NSLocalizedString("Select start date",
                                             comment: "Placeholder value of the cell in Product Price Settings > Schedule sale from a certain date")
@@ -382,7 +382,7 @@ private extension ProductPriceSettingsViewController {
         }
     }
 
-    func configureScheduleSaleTo(cell: SettingTitleAndValueTableViewCell) {
+    func configureScheduleSaleTo(cell: TitleAndValueTableViewCell) {
         let title = NSLocalizedString("To", comment: "Title of the cell in Product Price Settings > Schedule sale to a certain date")
         let placeholder = NSLocalizedString("Select end date",
                                             comment: "Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date")
@@ -409,13 +409,13 @@ private extension ProductPriceSettingsViewController {
         cell.textLabel?.applyLinkBodyStyle()
     }
 
-    func configureTaxStatus(cell: SettingTitleAndValueTableViewCell) {
+    func configureTaxStatus(cell: TitleAndValueTableViewCell) {
         let title = NSLocalizedString("Tax status", comment: "Title of the cell in Product Price Settings > Tax status")
         cell.updateUI(title: title, value: viewModel.taxStatus.description)
         cell.accessoryType = .disclosureIndicator
     }
 
-    func configureTaxClass(cell: SettingTitleAndValueTableViewCell) {
+    func configureTaxClass(cell: TitleAndValueTableViewCell) {
         let title = NSLocalizedString("Tax class", comment: "Title of the cell in Product Price Settings > Tax class")
         cell.updateUI(title: title, value: viewModel.taxClass?.name)
         cell.accessoryType = .disclosureIndicator
@@ -470,11 +470,11 @@ extension ProductPriceSettingsViewController {
             case .scheduleSale:
                 return SwitchTableViewCell.self
             case .scheduleSaleFrom, .scheduleSaleTo:
-                return SettingTitleAndValueTableViewCell.self
+                return TitleAndValueTableViewCell.self
             case .datePickerSaleFrom, .datePickerSaleTo:
                 return DatePickerTableViewCell.self
             case .taxStatus, .taxClass:
-                return SettingTitleAndValueTableViewCell.self
+                return TitleAndValueTableViewCell.self
             case .removeSaleTo:
                 return BasicTableViewCell.self
             }

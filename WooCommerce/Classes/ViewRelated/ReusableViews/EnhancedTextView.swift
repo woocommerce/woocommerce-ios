@@ -10,7 +10,6 @@ final class EnhancedTextView: UITextView {
     var placeholder: String? {
         didSet {
             placeholderLabel?.text = placeholder
-            placeholderLabel?.sizeToFit()
         }
     }
     private var placeholderLabel: UILabel?
@@ -57,14 +56,27 @@ final class EnhancedTextView: UITextView {
 //
 private extension EnhancedTextView {
     func configurePlaceholderLabel() {
-        let frameRect = CGRect(x: Constants.margin, y: Constants.margin, width: bounds.width, height: bounds.height)
-        placeholderLabel = UILabel(frame: frameRect)
-        if let unwrappedLabel = placeholderLabel {
-            addSubview(unwrappedLabel)
-        }
-        placeholderLabel?.numberOfLines = 0
-        placeholderLabel?.applyBodyStyle()
-        placeholderLabel?.textColor = .textSubtle
+        placeholderLabel = {
+            let label = UILabel(frame: bounds)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(label)
+
+            // Make placeholder left/right margins same as for the text container
+            let leftPadding = textContainer.lineFragmentPadding + textContainerInset.left
+            let rightPadding = textContainer.lineFragmentPadding + textContainerInset.right
+            NSLayoutConstraint.activate([
+                label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: leftPadding),
+                label.widthAnchor.constraint(equalTo: widthAnchor, constant: -(leftPadding + rightPadding)),
+                label.topAnchor.constraint(equalTo: topAnchor, constant: Constants.margin),
+                label.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor, constant: -Constants.margin)
+            ])
+
+            label.numberOfLines = 0
+            label.applyBodyStyle()
+            label.textColor = .textSubtle
+
+            return label
+        }()
     }
 }
 

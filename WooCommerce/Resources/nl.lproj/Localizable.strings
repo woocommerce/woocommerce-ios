@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-12-10 15:54:04+0000 */
+/* Translation-Revision-Date: 2020-12-24 10:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -31,7 +31,7 @@
 "%1$@ left a review on %2$@" = "%1$@ heeft een beoordeling geplaatst over %2$@";
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
-"%1$@ refund requested (%2$@)" = "%1$@ refund requested (%2$@)";
+"%1$@ refund requested (%2$@)" = "%1$@ terugbetaling aangevraagd (%2$@)";
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ via %2$@";
@@ -40,7 +40,7 @@
 "%1$@ x %2$@" = "%1$@ x %2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
-"%1$@ • %2$@" = "%1$@ • %2$@";
+"%1$@ • %2$@" = "%1$@• %$2@";
 
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
@@ -58,7 +58,7 @@
 "%@ Items" = "%@ artikelen";
 
 /* Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS). */
-"%@ label refund requested" = "%@ label refund requested";
+"%@ label refund requested" = "%@ label-terugbetaling aangevraagd";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%@ left a review on %@" = "%1$@ heeft een beoordeling geplaatst over %2$@";
@@ -215,7 +215,7 @@
 "Add a tracking" = "Tracking toevoegen";
 
 /* Add Product Attribute screen navigation title */
-"Add attribute" = "Add attribute";
+"Add attribute" = "Eigenschap toevoegen";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -234,7 +234,7 @@
 "Add products' downloadable files' info remotely" = "De gegevens van downloadbare bestanden van producten op afstand toevoegen";
 
 /* Title for adding variations row on Product main screen for a variable product */
-"Add variations" = "Add variations";
+"Add variations" = "Variaties toevoegen";
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Gewicht en afmetingen toevoegen";
@@ -270,7 +270,7 @@
 "Alternatively:" = "Anders:";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
-"Amount Eligible For Refund" = "Amount Eligible For Refund";
+"Amount Eligible For Refund" = "Bedrag dat wordt terugbetaald";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "Fout bij aanmaken van het menu.";
@@ -334,7 +334,7 @@
 "Are you sure you want to remove this image?" = "Weet je zeker dat je deze afbeelding wilt verwijderen?";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
-"Attribute name" = "Attribute name";
+"Attribute name" = "Naam eigenschap";
 
 /* No comment provided by engineer. */
 "Authenticating" = "Authenticatie";
@@ -506,7 +506,7 @@
 "Continue" = "Doorgaan";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
-"Continue With WordPress.com" = "Continue With WordPress.com";
+"Continue With WordPress.com" = "Doorgaan met WordPress.com";
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Lees verder";
@@ -534,7 +534,7 @@
 "Copy email address" = "E-mailadres kopiëren";
 
 /* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
-"Copy tracking number" = "Copy tracking number";
+"Copy tracking number" = "Volgnummer kopiëren";
 
 /* The title of the button for giving a negative feedback for the app. */
 "Could Be Better" = "Kan beter";
@@ -579,7 +579,7 @@
 "Creating products" = "Producten aanmaken";
 
 /* Credit card payment method for shipping label. */
-"Credit card" = "Credit card";
+"Credit card" = "Creditcard";
 
 /* Cell title for Cross-sells products in Linked Products Settings screen */
 "Cross-sells" = "Cross-sells";
@@ -691,10 +691,10 @@
 "Done" = "Klaar";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
-"Don’t know how to print from your device?" = "Don’t know how to print from your device?";
+"Don’t know how to print from your device?" = "Weet je niet hoe je kan afdrukken vanaf je apparaat?";
 
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
-"Don’t know how to print from your phone?" = "Don’t know how to print from your phone?";
+"Don’t know how to print from your phone?" = "Weet je niet hoe je kan afdrukken vanaf je telefoon?";
 
 /* WordPress.com (unmapped!) error */
 "Dotcom Error: [(code)] (theMessage)" = "Dotcom-fout: [(code)] (theMessage)";
@@ -805,14 +805,14 @@
 "Enjoying the WooCommerce app?" = "Vind je de WooCommerce-app leuk?";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
-"Enter Another Store" = "Enter Another Store";
+"Enter Another Store" = "Een andere winkel invoeren";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "Voer URL in";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account
    Button title. Takes the user to the login by store address flow. */
-"Enter Your Store Address" = "Enter Your Store Address";
+"Enter Your Store Address" = "Het adres van je winkel invoeren";
 
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Voer naam van bezorgservice in";
@@ -861,7 +861,7 @@
 "Enter your email address to log in or create a WordPress.com account." = "Voer je e-mailadres in om in te loggen of maak een WordPress.com-account aan.";
 
 /* Button title. Takes the user to the login by site address flow. */
-"Enter your existing site address" = "Enter your existing site address";
+"Enter your existing site address" = "Voer je bestaande site-adres in";
 
 /* Title of a button on the magic link screen.
    Title of a button. */
@@ -928,7 +928,7 @@
 "Find your site address" = "Vind je site adres";
 
 /* The hint button's title text to help users find their store address. */
-"Find your store address" = "Find your store address";
+"Find your store address" = "Zoek het adres van je winkel";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new reads." = "Volg je favoriete sites en ontdek nieuwe artikelen.";
@@ -1065,13 +1065,13 @@
 "If disabled the note will be private" = "Als deze functie is uitgeschakeld, is de opmerking privé";
 
 /* Header text when reprinting a shipping label */
-"If there was a printing error when you purchased the label, you can print it again." = "If there was a printing error when you purchased the label, you can print it again.";
+"If there was a printing error when you purchased the label, you can print it again." = "Als er een afdrukfout heeft plaatsgevonden toen je het label hebt aangeschaft, dan kan je het opnieuw afdrukken.";
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "Als je al een winkel hebt, moet je de gratis Jetpack-plugin installeren en deze koppelen aan je WordPress.com-account.";
 
 /* Info text when reprinting a shipping label */
-"If you already used the label in a package, printing and using it again is a violation of our terms of service" = "If you already used the label in a package, printing and using it again is a violation of our terms of service";
+"If you already used the label in a package, printing and using it again is a violation of our terms of service" = "Als je het label al in een pakket hebt gebruikt, is het afdrukken en hergebruiken een overtreding van onze servicevoorwaarden";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Als je doorgaat met Google of Apple en nog geen WordPress.com-account hebt, maak je een account aan en ga je akkoord met onze _Servicevoorwaarden_.";
@@ -1081,7 +1081,7 @@
 "In stock" = "Op voorraad";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
-"In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection";
+"In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "In je sitebeheer kan je de e-mail vinden die je gebruikt hebt om verbinding te maken met WordPress.com via het Jetpack-dashboard onder Verbindingen > Accountverbinding";
 
 /* Application's Inactive State */
 "Inactive" = "Inactief";
@@ -1142,7 +1142,7 @@
 "Issuing Refund..." = "Terugbetalen";
 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
-"It looks like this email isn't associated with a WordPress.com account." = "It looks like this email isn't associated with a WordPress.com account.";
+"It looks like this email isn't associated with a WordPress.com account." = "Het lijkt erop dat dit e-mailadres niet is gekoppeld aan een WordPress.com-account.";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Het lijkt erop dat deze gebruikersnaam\/dit wachtwoord niet aan deze site is gekoppeld.";
@@ -1157,7 +1157,7 @@
 "It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!" = "Je kan nu eenvoudige, gegroepeerde \nen externe producten aanmaken terwijl je onderweg bent met de Woo-app. Was je nog niet klaar? Sla ze op als een concept!";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
-"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats";
+"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack is een gratis WordPress-plugin die aan je winkel wordt gekoppeld en tools voor de beste mobiele ervaring biedt, waaronder pushmeldingen en statistieken";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Doorgaan met bewerken";
@@ -1166,7 +1166,7 @@
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "Houd in gedachten dat dit geen ondersteuningsticket is en we niet op je individuele feedback in kunnen gaan";
 
 /* Title of label paper size option for printing a shipping label */
-"Label (4 x 6 in)" = "Label (4 x 6 in)";
+"Label (4 x 6 in)" = "Etiket (4 x 6 inch)";
 
 /* Last 24 hours section header */
 "Last 24 hours" = "Afgelopen 24 uur";
@@ -1182,16 +1182,16 @@
 "Learn more" = "Meer informatie";
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
-"Learn more about Jetpack" = "Learn more about Jetpack";
+"Learn more about Jetpack" = "Meer informatie over Jetpack";
 
 /* Title of legal paper size option for printing a shipping label */
-"Legal (8.5 x 14 in)" = "Legal (8.5 x 14 in)";
+"Legal (8.5 x 14 in)" = "Legal (8,5 x 14 inch)";
 
 /* Title of the cell in Product Shipping Settings > Length */
 "Length" = "Lengte";
 
 /* Title of letter paper size option for printing a shipping label */
-"Letter (8.5 x 11 in)" = "Letter (8.5 x 11 in)";
+"Letter (8.5 x 11 in)" = "Brief (8,5 x 11 inch)";
 
 /* Licenses (information page title) */
 "Licenses" = "Licenties";
@@ -1237,7 +1237,7 @@
 
 /* Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
-"Log In With Another Account" = "Log In With Another Account";
+"Log In With Another Account" = "Log in met een ander account";
 
 /* Alert button title - confirms and logs out the user
    Log out button title */
@@ -1371,7 +1371,7 @@
 "Navigates to Settings." = "Leidt door naar Instellingen.";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
-"Need help finding the connected email?" = "Need help finding the connected email?";
+"Need help finding the connected email?" = "Heb je hulp nodig bij het vinden van de gekoppelde e-mail?";
 
 /* A button title. */
 "Need help finding your site address?" = "Hulp nodig in het vinden van je site adres?";
@@ -1534,7 +1534,7 @@
 "Or log in by _entering your site address_." = "Je kunt ook inloggen door _je site-adres in te voeren_.";
 
 /* Header of attributes section in Add Attribute screen */
-"Or tap to select existing attribute" = "Or tap to select existing attribute";
+"Or tap to select existing attribute" = "Of tik om een bestaande eigenschap te selecteren";
 
 /* Add a note screen - title. Example: Order #15
    Order number title */
@@ -1582,13 +1582,13 @@
 "Package %d" = "Pakket %d";
 
 /* Title of package details in shipping label details */
-"Package Details" = "Package Details";
+"Package Details" = "Pakketgegevens";
 
 /* The title for the customer payment cell */
 "Paid By Customer" = "Betaald door klant";
 
 /* Title of the paper size selector row for reprinting a shipping label */
-"Paper Size" = "Paper Size";
+"Paper Size" = "Papierformaat";
 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "Bovenliggende categorie";
@@ -1607,7 +1607,7 @@
 "Payment" = "Betaling";
 
 /* Title of payment method in shipping label details */
-"Payment Method" = "Payment Method";
+"Payment Method" = "Betalingsmethode";
 
 /* Display label for the review's pending status */
 "Pending" = "In afwachting";
@@ -1711,7 +1711,7 @@
 "Price" = "Prijs";
 
 /* Button title to generate a shipping label document for printing */
-"Print Shipping Label" = "Print Shipping Label";
+"Print Shipping Label" = "Verzendlabel afdrukken";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "Privacyverklaring voor gebruikers in Californië";
@@ -1803,7 +1803,7 @@
 "Publishing your product..." = "Bezig met publiceren van je product...";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */
-"Purchase Date" = "Purchase Date";
+"Purchase Date" = "Datum van aanschaf";
 
 /* Product Note navigation title
    Purchase note label in Product Settings */
@@ -1870,7 +1870,7 @@
 "Refund Details" = "Restitutiedetails";
 
 /* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
-"Refund Label (%1$@)" = "Refund Label (%1$@)";
+"Refund Label (%1$@)" = "Terugbetalingslabel (%1$@)";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
 "Refund Shipping" = "Verzendkosten vergoeden";
@@ -1892,7 +1892,7 @@
 "Refunded Products" = "Vergoede producten";
 
 /* Title of the refund detail cell when the refund was done manually. */
-"Refunded manually" = "Refunded manually";
+"Refunded manually" = "Handmatig terugbetaald";
 
 /* It reads, 'Refunded manually via <payment method>' */
 "Refunded manually via %@" = "Handmatig terugbetaald via %@";
@@ -2042,13 +2042,13 @@
 "Search results only" = "Alleen zoekresultaten";
 
 /* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
-"See Instructions" = "See Instructions";
+"See Instructions" = "Zie aanwijzingen";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "See comments and notifications in real time." = "Lees opmerkingen en ontvang meldingen in realtime.";
 
 /* Link title to see all paper size options */
-"See layout and paper sizes options" = "See layout and paper sizes options";
+"See layout and paper sizes options" = "Zie opties voor lay-out en papierformaat";
 
 /* Select all button title in the issue refund screen */
 "Select All" = "Select All";
@@ -2109,17 +2109,17 @@
 "Share your Store" = "Deel je winkel";
 
 /* Title of origin address in shipping label details */
-"Ship from" = "Ship from";
+"Ship from" = "Verzenden van";
 
 /* Title of destination address in shipping label details */
-"Ship to" = "Ship to";
+"Ship to" = "Bestemming";
 
 /* A unit test string for order tracking. Reads as: 'Shipment Company HK Post'
    Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
 "Shipment Company %@" = "Koeriersdienst %@";
 
 /* Navigation bar title of shipping label details */
-"Shipment Details" = "Shipment Details";
+"Shipment Details" = "Verzendingsgegevens";
 
 /* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
    Date an item was shipped */
@@ -2130,7 +2130,7 @@
 "Shipping" = "Verzending";
 
 /* Title of shipping carrier and rates in shipping label details */
-"Shipping Carrier and Rates" = "Shipping Carrier and Rates";
+"Shipping Carrier and Rates" = "Bezorgservice en tarieven";
 
 /* Title of view displaying all available Shipment Tracking Carriers */
 "Shipping Carriers" = "Bezorgservices";
@@ -2236,7 +2236,7 @@
 "Someone" = "Iemand";
 
 /* Notice format when a shipping label refund request fails. */
-"Something went wrong with the refund. Please try again." = "Something went wrong with the refund. Please try again.";
+"Something went wrong with the refund. Please try again." = "Er is iets fout gegaan tijdens de terugbetaling. Probeer het nog eens.";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Sorry, je gebruikersnaam bevat een onjuiste zin%@.";
@@ -2383,10 +2383,10 @@
 "Tap to insert a Link" = "Tik om een link in te voeren";
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
-"Tap to modify the item refund quantity" = "Tap to modify the item refund quantity";
+"Tap to modify the item refund quantity" = "Tik om het aantal terug te betalen artikelen aan te passen";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
-"Tap to show instructions on how to print a shipping label on the mobile device" = "Tap to show instructions on how to print a shipping label on the mobile device";
+"Tap to show instructions on how to print a shipping label on the mobile device" = "Tik om aanwijzingen weer te geven voor het printen van een verzendlabel op een mobiel apparaat";
 
 /* Accessibility hint for block quote button on formatting toolbar. */
 "Tap to toggle Block Quote" = "Tik om over te schakelen naar blokcitaat";
@@ -2547,7 +2547,7 @@
 "The stock quantity for this product. Editable." = "De voorraad van dit product. Bewerkbaar.";
 
 /* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
-"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "The website is not a WordPress site. For us to connect to it, the site must have WordPress installed.";
+"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "De website is geen WordPress-website. Om er verbinding mee te kunnen maken, moet WordPress geïnstalleerd zijn.";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "Er is een probleem opgetreden bij het blokkeren van berichten van de opgegeven site.";
@@ -2605,7 +2605,7 @@
 "This product couldn't be loaded" = "Dit product kon niet worden geladen";
 
 /* Message displayed when loading a specific product fails because product was deleted */
-"This product has been deleted and is no longer visible" = "This product has been deleted and is no longer visible";
+"This product has been deleted and is no longer visible" = "Dit product is verwijderd en is niet meer zichtbaar";
 
 /* Footer text in Product Catalog Visibility */
 "This setting determines which shop pages products will be listed on." = "Deze instelling bepaalt op welke winkelpagina's producten worden vermeld.";
@@ -2642,7 +2642,7 @@
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "Om verder te gaan met dit Google account, meld je eerst aan met je WordPress.com wachtwoord. Dit wordt maar één keer gevraagd.";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
-"To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store.";
+"To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "Om deze app te gebruiken voor %@, moet de Jetpack-plugin geïnstalleerd en gekoppeld zijn aan je winkel.";
 
 /* Tab selector title that shows the statistics for today
    Today Section Header - Top Performers section title - today */
@@ -2670,7 +2670,7 @@
 "Track Shipment" = "Verzending volgen";
 
 /* Track shipment of a shipping label from the shipping label tracking more menu action sheet */
-"Track shipment" = "Track shipment";
+"Track shipment" = "Verzending tracken";
 
 /* Order tracking section title */
 "Tracking" = "Volgen";
@@ -2737,7 +2737,7 @@
 "Unable to load content" = "Kan content niet laden";
 
 /* Load Product Attributes Action Failed */
-"Unable to load product attributes" = "Unable to load product attributes";
+"Unable to load product attributes" = "Kon producteigenschappen niet laden";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Kan beoordeling niet markeren als %@";
@@ -2862,7 +2862,7 @@
 "Variable product" = "Variabel product";
 
 /* Footer of text field section in Add Attribute screen */
-"Variation type (ie Color, Size)" = "Variation type (ie Color, Size)";
+"Variation type (ie Color, Size)" = "Variatietype (kleur, maat)";
 
 /* Title of the Product Variations row on Product main screen for a variable product
    Title that appears on top of the Product Variation List screen. */
@@ -2999,13 +2999,13 @@
 "Welcome to the world’s most popular website builder." = "Welkom bij de meest populaire websitebouwer ter wereld.";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
-"What email do I use to sign in?" = "What email do I use to sign in?";
+"What email do I use to sign in?" = "Welke e-mail moet ik gebruiken om me aan te melden?";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
-"What is Jetpack" = "What is Jetpack";
+"What is Jetpack" = "Wat is Jetpack";
 
 /* Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
-"What is Jetpack?" = "What is Jetpack?";
+"What is Jetpack?" = "Wat is Jetpack?";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "Wat is het adres van mijn site?";
@@ -3051,7 +3051,7 @@
 "Yesterday" = "Gisteren";
 
 /* Header text in Refund Shipping Label screen */
-"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process.";
+"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "Je kan een terugbetaling aanvragen voor een verzendlabel dat niet is gebruikt om een pakket te verzenden.\nHet duurt minimaal 14 dagen voordat dit is verwerkt.";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Je kan dat e-mailadres niet gebruiken om je aan te melden. We hebben problemen met het blokkeren van sommige e-mailadressen. Probeer een andere e-mail provider.";
@@ -3097,7 +3097,7 @@
 "unknown url" = "onbekende url";
 
 /* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need... */
-"your site" = "your site";
+"your site" = "je site";
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Inloggen met Google.";
@@ -3109,5 +3109,5 @@
 "“%@”" = "“%@”";
 
 /* Text of the notice that is displayed after the refund is created. */
-"🎉 Products successfully refunded" = "";
+"🎉 Products successfully refunded" = "🎉 Producten zijn terugbetaald";
 

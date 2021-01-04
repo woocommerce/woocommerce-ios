@@ -76,10 +76,19 @@ final class TextViewTableViewCell: UITableViewCell {
         noteTextView.onTextDidBeginEditing = viewModel.onTextDidBeginEditing
         noteTextView.keyboardType = viewModel.keyboardType
         self.applyStyle(style: viewModel.style)
+
+        // Compensate for line fragment padding and container insets if icon is nil
+        trailingContraint.constant = -(noteTextView.textContainer.lineFragmentPadding + noteTextView.textContainerInset.right)
+        if iconImage == nil {
+            leadingContraint.constant = -(noteTextView.textContainer.lineFragmentPadding + noteTextView.textContainerInset.left)
+        } else {
+            leadingContraint.constant = 0
+        }
+
         if let edgeInsets = viewModel.edgeInsets {
             bottomContraint.constant = edgeInsets.bottom
-            trailingContraint.constant = edgeInsets.right
-            leadingContraint.constant = edgeInsets.left
+            trailingContraint.constant += edgeInsets.right
+            leadingContraint.constant += edgeInsets.left
             topContraint.constant = edgeInsets.top
         }
     }

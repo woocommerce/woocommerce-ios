@@ -198,7 +198,7 @@ private extension ProductShippingSettingsViewController {
             configureWidth(cell: cell)
         case let cell as UnitInputTableViewCell where row == .height:
             configureHeight(cell: cell)
-        case let cell as SettingTitleAndValueTableViewCell where row == .shippingClass:
+        case let cell as TitleAndValueTableViewCell where row == .shippingClass:
             configureShippingClass(cell: cell)
         default:
             fatalError()
@@ -237,7 +237,7 @@ private extension ProductShippingSettingsViewController {
         cell.configure(viewModel: cellViewModel)
     }
 
-    func configureShippingClass(cell: SettingTitleAndValueTableViewCell) {
+    func configureShippingClass(cell: TitleAndValueTableViewCell) {
         let title = NSLocalizedString("Shipping class", comment: "Title of the cell in Product Shipping Settings > Shipping class")
         cell.updateUI(title: title, value: viewModel.shippingClass?.name)
         cell.accessoryType = .disclosureIndicator
@@ -271,7 +271,7 @@ extension ProductShippingSettingsViewController {
             case .weight, .length, .width, .height:
                 return UnitInputTableViewCell.self
             case .shippingClass:
-                return SettingTitleAndValueTableViewCell.self
+                return TitleAndValueTableViewCell.self
             }
         }
 

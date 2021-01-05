@@ -1,0 +1,2 @@
+De app ondersteunt nu iOS 13 en hoger, zodat snellere functieontwikkeling mogelijk is.
+We hebben de foutafhandeling bij het inloggen verbeterd, een bug verholpen waardoor miniatuurafbeeldingen niet werden weergegeven voor productvariaties op het bestelgegevensscherm, en we hebben de spinner van de voettekst verticaal en horizontaal gecentreerd.

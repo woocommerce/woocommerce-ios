@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -16,41 +14,32 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="130"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="3jb-3U-LXj" id="DcP-t8-ihJ">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="129.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="130"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OEt-Ag-cwD">
-                        <rect key="frame" x="16" y="16" width="288" height="97.5"/>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="OEt-Ag-cwD">
+                        <rect key="frame" x="16" y="16" width="288" height="61.5"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="240" text="Full name label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0M6-ur-moJ" userLabel="Full name Label">
-                                <rect key="frame" x="0.0" y="0.0" width="288" height="56.5"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="Full name label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0M6-ur-moJ" userLabel="Full name Label">
+                                <rect key="frame" x="0.0" y="0.0" width="288" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Multiline, localized address that uses cnpostaladdressformatter" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C60-Fl-1PF">
-                                <rect key="frame" x="0.0" y="56.5" width="288" height="41"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" text="Multiline, localized address that uses cnpostaladdressformatter" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C60-Fl-1PF">
+                                <rect key="frame" x="0.0" y="20.5" width="288" height="41"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <constraints>
-                            <constraint firstItem="0M6-ur-moJ" firstAttribute="leading" secondItem="OEt-Ag-cwD" secondAttribute="leading" id="0d8-oQ-gkj"/>
-                            <constraint firstAttribute="bottom" secondItem="C60-Fl-1PF" secondAttribute="bottom" id="Cc0-UI-fLI"/>
-                            <constraint firstAttribute="trailing" secondItem="C60-Fl-1PF" secondAttribute="trailing" id="EUO-eD-M8P"/>
-                            <constraint firstItem="C60-Fl-1PF" firstAttribute="leading" secondItem="OEt-Ag-cwD" secondAttribute="leading" id="Jbn-17-odt"/>
-                            <constraint firstItem="C60-Fl-1PF" firstAttribute="top" secondItem="0M6-ur-moJ" secondAttribute="bottom" id="TU1-h0-AcH"/>
-                            <constraint firstAttribute="trailing" secondItem="0M6-ur-moJ" secondAttribute="trailing" id="VNa-da-fcl"/>
-                            <constraint firstItem="0M6-ur-moJ" firstAttribute="top" secondItem="OEt-Ag-cwD" secondAttribute="top" id="gEI-1W-ETe"/>
-                        </constraints>
                     </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="bottom" secondItem="OEt-Ag-cwD" secondAttribute="bottom" constant="16" id="8Ab-dy-wg2"/>
-                    <constraint firstItem="OEt-Ag-cwD" firstAttribute="leading" secondItem="DcP-t8-ihJ" secondAttribute="leading" constant="16" id="br5-Rh-OUl"/>
+                    <constraint firstAttribute="bottom" secondItem="OEt-Ag-cwD" secondAttribute="bottom" priority="999" constant="16" id="8Ab-dy-wg2"/>
+                    <constraint firstItem="OEt-Ag-cwD" firstAttribute="leading" secondItem="DcP-t8-ihJ" secondAttribute="leadingMargin" id="br5-Rh-OUl"/>
                     <constraint firstItem="OEt-Ag-cwD" firstAttribute="top" secondItem="DcP-t8-ihJ" secondAttribute="top" constant="16" id="rb4-jE-6zi"/>
-                    <constraint firstAttribute="trailing" secondItem="OEt-Ag-cwD" secondAttribute="trailing" constant="16" id="yLi-Ca-ZLm"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="OEt-Ag-cwD" secondAttribute="trailing" id="yLi-Ca-ZLm"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="jFl-iN-mHK"/>

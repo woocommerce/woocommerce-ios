@@ -53,12 +53,23 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         let title: String?
     }
 
+    /// View model to replace TopLeftImageTableViewCell
+    struct TopLeftImageViewModel {
+        let icon: UIImage
+        let iconColor: UIColor?
+        let title: String
+        let isFootnoteStyle: Bool
+    }
+
     @IBOutlet private weak var contentStackView: UIStackView!
     @IBOutlet private weak var contentImageStackView: UIStackView!
     @IBOutlet private weak var contentImageView: UIImageView!
     @IBOutlet private weak var titleAndTextStackView: UIStackView!
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var descriptionLabel: UILabel!
+
+    /// Disabled by default. When active, image is constrained to 24pt
+    @IBOutlet private var contentImageViewWidthConstraint: NSLayoutConstraint!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -97,6 +108,8 @@ extension ImageAndTitleAndTextTableViewCell {
             contentImageView.tintColor = imageTintColor
         }
         contentView.backgroundColor = nil
+
+        contentImageViewWidthConstraint.isActive = false
     }
 
     func updateUI(switchableViewModel: SwitchableViewModel) {
@@ -128,6 +141,24 @@ extension ImageAndTitleAndTextTableViewCell {
         titleLabel.textColor = .text
         titleLabel.numberOfLines = 0
         contentView.backgroundColor = .warningBackground
+    }
+
+    func updateUI(topLeftImageViewModel: TopLeftImageViewModel) {
+        let viewModel = ViewModel(title: topLeftImageViewModel.title,
+                                  text: nil,
+                                  image: topLeftImageViewModel.icon,
+                                  imageTintColor: topLeftImageViewModel.iconColor,
+                                  numberOfLinesForTitle: 0,
+                                  isActionable: false)
+        updateUI(viewModel: viewModel)
+
+        if topLeftImageViewModel.isFootnoteStyle {
+            titleLabel.applyFootnoteStyle()
+        } else {
+            titleLabel.applyBodyStyle()
+        }
+
+        contentImageViewWidthConstraint.isActive = true
     }
 }
 

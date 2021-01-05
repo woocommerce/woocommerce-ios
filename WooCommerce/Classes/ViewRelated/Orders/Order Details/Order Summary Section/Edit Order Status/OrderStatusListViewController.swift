@@ -274,10 +274,13 @@ extension OrderStatusListViewController {
     /// Displays the `Unable to Change Status of Order` Notice.
     ///
     func displayErrorNotice(orderID: Int64) {
-        let title = NSLocalizedString(
-            "Unable to change status of order #\(orderID)",
-            comment: "Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}"
+        let titleFormat = NSLocalizedString(
+            "Unable to change status of order #%1$d",
+            comment: "Content of error presented when updating the status of an Order fails. "
+            + "It reads: Unable to change status of order #{order number}. "
+            + "Parameters: %1$d - order number"
         )
+        let title = String.localizedStringWithFormat(titleFormat, orderID)
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
             self?.applyButtonTapped()

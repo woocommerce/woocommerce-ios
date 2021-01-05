@@ -1,0 +1,2 @@
+O aplicativo agora é compatível com iOS 13 e versões posteriores, o que agilizará o desenvolvimento de funcionalidades.
+Aprimoramos a gestão de erros no fluxo de login, corrigimos um bug que impedia a exibição de imagens em miniatura para variações de produtos na tela de detalhes do pedido e centralizamos o ícone de carregamento no rodapé vertical e horizontalmente.

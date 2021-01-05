@@ -230,7 +230,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
         if viewModel.canDeleteProduct() {
             actionSheet.addDestructiveActionWithTitle(ActionSheetStrings.delete) { [weak self] _ in
-                // TODO: Analytics M5
                 self?.displayDeleteProductAlert()
             }
         }
@@ -699,6 +698,7 @@ private extension ProductFormViewController {
                         self?.displayError(error: error)
                     }
                 case .success:
+                    ServiceLocator.analytics.track(.productDetailProductDeleted)
                     // Dismisses the in-progress UI.
                     self.navigationController?.dismiss(animated: true, completion: nil)
                     // Dismiss or Pop the Product Form

@@ -74,6 +74,7 @@ extension ProductDownloadFileViewController {
 
         let deleteTitle = Localization.actionSheetDeleteTitle
         let deleteAction = UIAlertAction(title: deleteTitle, style: .destructive) { [weak self] (action) in
+            ServiceLocator.analytics.track(.productsDownloadableFile, withProperties: ["action": "deleted"])
             self?.onDeletion()
         }
         menuAlert.addAction(deleteAction)
@@ -101,6 +102,12 @@ extension ProductDownloadFileViewController {
     }
 
     @objc private func completeUpdating() {
+        switch viewModel.formType {
+        case .add:
+            ServiceLocator.analytics.track(.productsDownloadableFile, withProperties: ["action": "added"])
+        case .edit:
+            ServiceLocator.analytics.track(.productsDownloadableFile, withProperties: ["action": "updated"])
+        }
         viewModel.completeUpdating { [weak self] (fileName, fileURL, fileID, hasUnsavedChanges) in
              self?.onCompletion(fileName, fileURL, fileID, hasUnsavedChanges)
         }

@@ -207,6 +207,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, onCompletion: @escaping (WordPressAuthenticatorResult) -> Void) {
 
+        /// Jetpack is required. Present an error if we don't detect a valid installation.
         guard let site = siteInfo, site.hasValidJetpack == true else {
             let viewModel = JetpackErrorViewModel(siteURL: siteInfo?.url)
             let installJetpackUI = ULErrorViewController(viewModel: viewModel)
@@ -218,8 +219,31 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
 
-        let isSelfHosted = site.isWP && !site.isWPCom
-        let authenticationResult: WordPressAuthenticatorResult = .presentPasswordController(value: isSelfHosted)
+        /// WordPress must be present.
+        guard site.isWP else {
+            let viewModel = NotWPErrorViewModel()
+            let notWPErrorUI = ULErrorViewController(viewModel: viewModel)
+
+            let authenticationResult: WordPressAuthenticatorResult = .injectViewController(value: notWPErrorUI)
+
+            onCompletion(authenticationResult)
+
+            return
+        }
+
+        /// For self-hosted sites, navigate to enter the email address associated to the wp.com account:
+        /// https://github.com/woocommerce/woocommerce-ios/issues/3426
+        guard site.isWPCom else {
+            let authenticationResult: WordPressAuthenticatorResult = .presentEmailController
+
+            onCompletion(authenticationResult)
+
+            return
+        }
+
+        /// We should never reach this point, as WPAuthenticator won't call its delegate for this case.
+        ///
+        let authenticationResult: WordPressAuthenticatorResult = .presentPasswordController(value: false)
         onCompletion(authenticationResult)
     }
 

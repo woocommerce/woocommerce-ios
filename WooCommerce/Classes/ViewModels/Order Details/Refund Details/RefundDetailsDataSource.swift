@@ -294,7 +294,7 @@ extension RefundDetailsDataSource {
             }
         }
 
-        private var reuseIdentifier: String {
+        fileprivate var reuseIdentifier: String {
             type.reuseIdentifier
         }
     }

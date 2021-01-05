@@ -31,7 +31,6 @@ xcuserdata/
 
 ## Bundler
 /vendor/bundle/
-.bundle/
 
 ## Dependencies
 /vendor/
@@ -78,6 +77,7 @@ fastlane/metadata/review_information
 fastlane/test_output
 fastlane/README.md
 fastlane/logs
+
 Preview.html
 default.profraw
 

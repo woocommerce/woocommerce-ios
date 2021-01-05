@@ -201,7 +201,7 @@ public enum WooAnalyticsStat: String {
     case shippingLabelRefundRequested = "shipping_label_refund_requested"
     case shippingLabelReprintRequested = "shipping_label_print_requested"
     case shipmentTrackingMenuAction = "shipment_tracking_menu_action"
-    case shippingLabelsAPIRequest = "shipping_labels_api_request"
+    case shippingLabelsAPIRequest = "shipping_label_api_request"
 
     // MARK: Push Notifications Events
     //

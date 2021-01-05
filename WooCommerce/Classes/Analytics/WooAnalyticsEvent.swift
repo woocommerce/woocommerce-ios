@@ -77,6 +77,18 @@ extension WooAnalyticsEvent {
         case dismissed
     }
 
+    /// The action performed on a shipment tracking number like in a shipping label card in order details.
+    public enum ShipmentTrackingMenuAction: String {
+        case track
+        case copy
+    }
+
+    /// The result of a shipping labels API GET request.
+    public enum ShippingLabelsAPIRequestResult: String {
+        case success
+        case failed
+    }
+
     static func appFeedbackPrompt(action: AppFeedbackPromptAction) -> WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .appFeedbackPrompt, properties: ["action": action.rawValue])
     }
@@ -87,6 +99,14 @@ extension WooAnalyticsEvent {
 
     static func featureFeedbackBanner(context: FeedbackContext, action: FeatureFeedbackBannerAction) -> WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .featureFeedbackBanner, properties: ["context": context.rawValue, "action": action.rawValue])
+    }
+
+    static func shipmentTrackingMenu(action: ShipmentTrackingMenuAction) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .shipmentTrackingMenuAction, properties: ["action": action.rawValue])
+    }
+
+    static func shippingLabelsAPIRequest(result: ShippingLabelsAPIRequestResult) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .shippingLabelsAPIRequest, properties: ["action": result.rawValue])
     }
 }
 

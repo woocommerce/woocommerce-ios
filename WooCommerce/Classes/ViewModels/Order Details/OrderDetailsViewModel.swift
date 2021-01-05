@@ -365,8 +365,10 @@ extension OrderDetailsViewModel {
         let action = ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
             switch result {
             case .success:
+                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .success))
                 onCompletion?(nil)
             case .failure(let error):
+                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed))
                 DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
                 onCompletion?(error)
             }

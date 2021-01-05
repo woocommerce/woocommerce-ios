@@ -196,6 +196,13 @@ public enum WooAnalyticsStat: String {
     case orderTrackingDeleteSuccess             = "order_tracking_delete_success"
     case orderTrackingProvidersLoaded           = "order_tracking_providers_loaded"
 
+    // MARK: Shipping Labels Events
+    //
+    case shippingLabelRefundRequested = "shipping_label_refund_requested"
+    case shippingLabelReprintRequested = "shipping_label_print_requested"
+    case shipmentTrackingMenuAction = "shipment_tracking_menu_action"
+    case shippingLabelsAPIRequest = "shipping_label_api_request"
+
     // MARK: Push Notifications Events
     //
     case pushNotificationReceived               = "push_notification_received"

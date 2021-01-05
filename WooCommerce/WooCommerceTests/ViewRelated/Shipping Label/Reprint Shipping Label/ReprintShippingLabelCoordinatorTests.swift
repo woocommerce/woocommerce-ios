@@ -109,6 +109,28 @@ final class ReprintShippingLabelCoordinatorTests: XCTestCase {
         assertThat(viewController.presentedViewControllers[0], isAnInstanceOf: UIAlertController.self)
     }
 
+    func test_reprint_logs_analytics() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+
+        let viewController = MockSourceViewController()
+        let coordinator = ReprintShippingLabelCoordinator(shippingLabel: MockShippingLabel.emptyLabel(),
+                                                          sourceViewController: viewController,
+                                                          stores: stores,
+                                                          analytics: analytics)
+        coordinator.showReprintUI()
+        let reprintViewController = try XCTUnwrap(viewController.shownViewControllers.first as? ReprintShippingLabelViewController)
+
+        // When
+        reprintViewController.onAction?(.reprint(paperSize: .label))
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.count, 1)
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, "shipping_label_print_requested")
+    }
+
     // MARK: `presentPaperSizeOptions`
 
     func test_presentPaperSizeOptions_presents_ShippingLabelPaperSizeOptionsViewController() throws {

@@ -130,7 +130,8 @@ class AuthenticationManager: Authentication {
         }
 
         if WordPressAuthenticator.shared.isWordPressAuthUrl(url) {
-            return WordPressAuthenticator.shared.handleWordPressAuthUrl(url, allowWordPressComAuth: true, rootViewController: rootViewController)
+            return WordPressAuthenticator.shared.handleWordPressAuthUrl(url,
+                                                                        rootViewController: rootViewController)
         }
 
         return false

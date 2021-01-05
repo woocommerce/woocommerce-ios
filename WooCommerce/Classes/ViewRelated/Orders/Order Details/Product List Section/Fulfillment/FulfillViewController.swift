@@ -150,7 +150,7 @@ private extension FulfillViewController {
             CustomerInfoTableViewCell.self,
             CustomerNoteTableViewCell.self,
             LeftImageTableViewCell.self,
-            TopLeftImageTableViewCell.self,
+            ImageAndTitleAndTextTableViewCell.self,
             EditableOrderTrackingTableViewCell.self,
             PickListTableViewCell.self
         ]
@@ -344,11 +344,16 @@ private extension FulfillViewController {
     /// Setup: Customer Note Cell
     ///
     private func setupCustomerNoteCell(_ cell: UITableViewCell, with note: String) {
-        guard let cell = cell as? TopLeftImageTableViewCell else {
+        guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
             fatalError()
         }
 
-        cell.configure(image: UIImage.quoteImage.imageWithTintColor(.text), text: note)
+        let viewModel = ImageAndTitleAndTextTableViewCell
+            .TopLeftImageViewModel(icon: .quoteImage,
+                                   iconColor: .text,
+                                   title: note,
+                                   isFootnoteStyle: false)
+        cell.updateUI(topLeftImageViewModel: viewModel)
 
         cell.isAccessibilityElement = true
         cell.accessibilityLabel = note
@@ -714,7 +719,7 @@ private enum Row {
         case .shippingMethod:
             return CustomerNoteTableViewCell.self
         case .note:
-            return TopLeftImageTableViewCell.self
+            return ImageAndTitleAndTextTableViewCell.self
         case .product:
             return PickListTableViewCell.self
         case .trackingAdd:

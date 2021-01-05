@@ -276,7 +276,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
             case .downloadableFiles:
-                //TODO: Add Analytics M5
+                ServiceLocator.analytics.track(.productDetailViewDownloadableFilesTapped)
                 showDownloadableFiles()
             case .linkedProducts(_, let isEditable):
                 guard isEditable else {

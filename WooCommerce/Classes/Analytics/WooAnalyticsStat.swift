@@ -298,6 +298,7 @@ public enum WooAnalyticsStat: String {
     case productPriceSettingsDoneButtonTapped   = "product_price_settings_done_button_tapped"
     case productShippingSettingsDoneButtonTapped = "product_shipping_settings_done_button_tapped"
     case productInventorySettingsDoneButtonTapped = "product_inventory_settings_done_button_tapped"
+    case productDetailViewDownloadableFilesTapped = "product_detail_view_downloadable_files_tapped"
     case productDetailProductDeleted = "product_detail_product_deleted"
 
     // MARK: Edit Product Variation Events
@@ -346,6 +347,10 @@ public enum WooAnalyticsStat: String {
     case groupedProductLinkedProductsAddButtonTapped = "grouped_product_linked_products_add_tapped"
     case groupedProductLinkedProductsAdded = "grouped_product_linked_products_added"
     case groupedProductLinkedProductsDoneButtonTapped = "grouped_product_linked_products_done_button_tapped"
+
+    // Edit Downloadable Products Events
+    case productDownloadableFilesSettingsChanged = "product_downloadable_files_settings_changed"
+    case productsDownloadableFile = "products_downloadable_file"
 
     // Edit External/Affiliate Product Event
     //

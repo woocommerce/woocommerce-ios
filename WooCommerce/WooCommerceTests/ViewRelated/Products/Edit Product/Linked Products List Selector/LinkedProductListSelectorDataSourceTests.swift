@@ -21,7 +21,7 @@ final class LinkedProductListSelectorDataSourceTests: XCTestCase {
         let product = MockProduct().product()
         let dataSource = LinkedProductListSelectorDataSource(product: product,
                                                              linkedProductIDs: preselectedProductIDs,
-                                                             deleteButtonTappedEvent: .groupedProductLinkedProductsDeleteButtonTapped)
+                                                             trackingContext: "test_context")
         var updatedProductIDs: [Int64]?
         cancellable = dataSource.productIDs.subscribe { ids in
             updatedProductIDs = ids
@@ -42,7 +42,7 @@ final class LinkedProductListSelectorDataSourceTests: XCTestCase {
         let product = MockProduct().product()
         let dataSource = LinkedProductListSelectorDataSource(product: product,
                                                              linkedProductIDs: preselectedProductIDs,
-                                                             deleteButtonTappedEvent: .groupedProductLinkedProductsDeleteButtonTapped)
+                                                             trackingContext: "test_context")
         var updatedProductIDs: [Int64]?
         cancellable = dataSource.productIDs.subscribe { ids in
             updatedProductIDs = ids
@@ -67,7 +67,7 @@ final class LinkedProductListSelectorDataSourceTests: XCTestCase {
         let product = MockProduct().product()
         let dataSource = LinkedProductListSelectorDataSource(product: product,
                                                              linkedProductIDs: preselectedProductIDs,
-                                                             deleteButtonTappedEvent: .groupedProductLinkedProductsDeleteButtonTapped)
+                                                             trackingContext: "test_context")
         var updatedProductIDs: [Int64]?
         cancellable = dataSource.productIDs.subscribe { ids in
             updatedProductIDs = ids
@@ -90,7 +90,7 @@ final class LinkedProductListSelectorDataSourceTests: XCTestCase {
         let product = MockProduct().product()
         let dataSource = LinkedProductListSelectorDataSource(product: product,
                                                              linkedProductIDs: preselectedProductIDs,
-                                                             deleteButtonTappedEvent: .groupedProductLinkedProductsDeleteButtonTapped)
+                                                             trackingContext: "test_context")
         var updatedProductIDs: [Int64]?
         cancellable = dataSource.productIDs.subscribe { ids in
             updatedProductIDs = ids

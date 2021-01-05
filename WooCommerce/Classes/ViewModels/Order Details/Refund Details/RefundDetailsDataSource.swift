@@ -193,12 +193,13 @@ private extension RefundDetailsDataSource {
     ///
     private func configureRefundNote(_ cell: ImageAndTitleAndTextTableViewCell) {
         cell.selectionStyle = .none
-        let viewModel = ImageAndTitleAndTextTableViewCell
-            .TopLeftImageViewModel(icon: .quoteImage,
-                                   iconColor: .text,
-                                   title: refundReason ?? "",
-                                   isFootnoteStyle: false)
-        cell.updateUI(topLeftImageViewModel: viewModel)
+        cell.update(with: .imageAndTitleOnly(fontStyle: .body),
+                    data: .init(title: refundReason ?? "",
+                                textTintColor: .text,
+                                image: .quoteImage,
+                                imageTintColor: .text,
+                                numberOfLinesForTitle: 0,
+                                isActionable: false))
     }
 }
 

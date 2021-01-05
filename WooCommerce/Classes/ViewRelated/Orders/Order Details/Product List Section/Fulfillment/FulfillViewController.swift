@@ -348,12 +348,13 @@ private extension FulfillViewController {
             fatalError()
         }
 
-        let viewModel = ImageAndTitleAndTextTableViewCell
-            .TopLeftImageViewModel(icon: .quoteImage,
-                                   iconColor: .text,
-                                   title: note,
-                                   isFootnoteStyle: false)
-        cell.updateUI(topLeftImageViewModel: viewModel)
+        cell.update(with: .imageAndTitleOnly(fontStyle: .body),
+                    data: .init(title: note,
+                                textTintColor: .text,
+                                image: .quoteImage,
+                                imageTintColor: .text,
+                                numberOfLinesForTitle: 0,
+                                isActionable: false))
 
         cell.isAccessibilityElement = true
         cell.accessibilityLabel = note

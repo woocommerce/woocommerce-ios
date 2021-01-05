@@ -31,6 +31,7 @@ final class LinkedProductsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        ServiceLocator.analytics.track(.linkedProducts, withProperties: ["action": "shown"])
         configureNavigationBar()
         configureMainView()
         configureTableView()

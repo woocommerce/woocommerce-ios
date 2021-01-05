@@ -353,6 +353,9 @@ public enum WooAnalyticsStat: String {
     case productDownloadableFilesSettingsChanged = "product_downloadable_files_settings_changed"
     case productsDownloadableFile = "products_downloadable_file"
 
+    // Edit Linked Products Events
+    case linkedProducts = "linked_products"
+
     // Edit External/Affiliate Product Event
     //
     case externalProductLinkSettingsDoneButtonTapped = "external_product_link_settings_done_button_tapped"

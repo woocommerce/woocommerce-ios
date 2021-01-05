@@ -153,11 +153,7 @@ private extension LinkedProductsViewController {
 
         // TODO: add analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
         let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.titleScreenAddUpsellProducts,
-                                                                                           addButtonEvent: .groupedProductLinkedProductsAddButtonTapped,
-                                                                                           productsAddedEvent: .groupedProductLinkedProductsAdded,
-                                                                                           doneButtonTappedEvent: .groupedProductLinkedProductsDoneButtonTapped,
-                                                                                           deleteButtonTappedEvent:
-                                                                                            .groupedProductLinkedProductsDeleteButtonTapped)
+                                                                                           trackingContext: "upsells")
 
         let viewController = LinkedProductsListSelectorViewController(product: product.product,
                                                                       linkedProductIDs: viewModel.upsellIDs,
@@ -181,11 +177,7 @@ private extension LinkedProductsViewController {
 
         // TODO: add analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
         let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.titleScreenAddUpsellProducts,
-                                                                                           addButtonEvent: .groupedProductLinkedProductsAddButtonTapped,
-                                                                                           productsAddedEvent: .groupedProductLinkedProductsAdded,
-                                                                                           doneButtonTappedEvent: .groupedProductLinkedProductsDoneButtonTapped,
-                                                                                           deleteButtonTappedEvent:
-                                                                                            .groupedProductLinkedProductsDeleteButtonTapped)
+                                                                                           trackingContext: "cross_sells")
 
         let viewController = LinkedProductsListSelectorViewController(product: product.product,
                                                                       linkedProductIDs: viewModel.crossSellIDs,

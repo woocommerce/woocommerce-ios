@@ -345,13 +345,11 @@ public enum WooAnalyticsStat: String {
     // Edit Linked and Grouped Products Events
     //
     case connectedProductsList = "connected_products_list"
+    case linkedProducts = "linked_products"
 
     // Edit Downloadable Products Events
     case productDownloadableFilesSettingsChanged = "product_downloadable_files_settings_changed"
     case productsDownloadableFile = "products_downloadable_file"
-
-    // Edit Linked Products Events
-    case linkedProducts = "linked_products"
 
     // Edit External/Affiliate Product Event
     //

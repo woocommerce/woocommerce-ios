@@ -151,7 +151,6 @@ private extension LinkedProductsViewController {
             return
         }
 
-        // TODO: add analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
         let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.titleScreenAddUpsellProducts,
                                                                                            trackingContext: "upsells")
 
@@ -175,7 +174,6 @@ private extension LinkedProductsViewController {
             return
         }
 
-        // TODO: add analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
         let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.titleScreenAddUpsellProducts,
                                                                                            trackingContext: "cross_sells")
 

@@ -401,6 +401,15 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
         // Product attributes should be deleted.
         XCTAssertEqual(try targetContext.count(entityName: "ProductAttribute"), 0)
+
+        // The Product.attributes inverse relationship should be gone too.
+        let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
+        XCTAssertEqual(migratedProduct.mutableSetValue(forKey: "attributes").count, 0)
+
+        // We should still be able to add new attributes.
+        let anotherAttribute = insertProductAttribute(to: targetContext)
+        migratedProduct.mutableSetValue(forKey: "attributes").add(anotherAttribute)
+        XCTAssertNoThrow(try targetContext.save())
     }
 
     func test_migrating_from_40_to_41_allow_use_to_create_ProductAttribute_terms() throws {

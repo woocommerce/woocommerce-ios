@@ -243,6 +243,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         /// We should never reach this point, as WPAuthenticator won't call its delegate for this case.
         ///
+        DDLogWarn("⚠️ Present password controller for site: \(site.url)")
         let authenticationResult: WordPressAuthenticatorResult = .presentPasswordController(value: false)
         onCompletion(authenticationResult)
     }

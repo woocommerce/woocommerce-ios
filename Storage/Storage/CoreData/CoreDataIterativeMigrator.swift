@@ -74,7 +74,6 @@ final class CoreDataIterativeMigrator {
                                                                          to: modelTo)
             debugMessages.append(migrationAttemptMessage)
             DDLogWarn(migrationAttemptMessage)
-            print(migrationAttemptMessage)
 
             let (success, migrateStoreError) = migrateStore(at: sourceStore,
                                                             storeType: storeType,
@@ -318,11 +317,9 @@ private extension CoreDataIterativeMigrator {
     func mappingModel(from sourceModel: NSManagedObjectModel,
                       to targetModel: NSManagedObjectModel) throws -> NSMappingModel {
         if let mappingModel = NSMappingModel(from: nil, forSourceModel: sourceModel, destinationModel: targetModel) {
-            print("returning FOUND mapping model")
             return mappingModel
         }
 
-        print("returning INFERRED mapping model")
         return try NSMappingModel.inferredMappingModel(forSourceModel: sourceModel, destinationModel: targetModel)
     }
 }

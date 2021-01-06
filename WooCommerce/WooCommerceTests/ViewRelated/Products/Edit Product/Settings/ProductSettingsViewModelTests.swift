@@ -70,7 +70,6 @@ private extension ProductSettingsViewModel {
     convenience init(product: Product, password: String?) {
         self.init(product: product,
                   password: password,
-                  formType: .edit,
-                  isEditProductsRelease5Enabled: true)
+                  formType: .edit)
     }
 }

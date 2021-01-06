@@ -80,7 +80,10 @@ final class OrderDetailsDataSource: NSObject {
         return resultsControllers.refunds
     }
 
-    private var shippingLabels: [ShippingLabel] = []
+    /// Shipping Labels for an Order
+    ///
+    private(set) var shippingLabels: [ShippingLabel] = []
+
     private var shippingLabelOrderItemsAggregator: AggregatedShippingLabelOrderItems = AggregatedShippingLabelOrderItems.empty
 
     /// Shipping Lines from an Order

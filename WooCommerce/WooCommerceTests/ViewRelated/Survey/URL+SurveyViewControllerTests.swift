@@ -23,6 +23,14 @@ final class URL_SurveyViewControllerTests: XCTestCase {
         XCTAssertEqual(expectedURL, actualURL)
     }
 
+    func test_tagging_shipping_labels_milestone_appends_the_correct_tag_data() throws {
+        let expectedURL = "https://testurl.com?shipping_label_milestone=test"
+
+        let actualURL = URL(string: "https://testurl.com")?.tagShippingLabelsMilestone("test").absoluteString
+
+        XCTAssertEqual(expectedURL, actualURL)
+    }
+
     func test_tagging_platform_and_tagging_product_milestone_does_stack() throws {
             let actualURL =
                 URL(string: "https://testurl.com")?

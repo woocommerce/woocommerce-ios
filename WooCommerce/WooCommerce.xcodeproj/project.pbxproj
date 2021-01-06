@@ -263,6 +263,8 @@
 		0295355B245ADF8100BDC42B /* FilterType+Products.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0295355A245ADF8100BDC42B /* FilterType+Products.swift */; };
 		029700EC24FE38C900D242F8 /* ScrollWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029700EB24FE38C900D242F8 /* ScrollWatcher.swift */; };
 		029700EF24FE38F000D242F8 /* ScrollWatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029700EE24FE38F000D242F8 /* ScrollWatcherTests.swift */; };
+		0298430C259351F100979CAE /* ShippingLabelsTopBannerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0298430B259351F100979CAE /* ShippingLabelsTopBannerFactory.swift */; };
+		0298431225936DFC00979CAE /* ShippingLabelsTopBannerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0298431125936DFC00979CAE /* ShippingLabelsTopBannerFactoryTests.swift */; };
 		029A9C672535873000BECEC5 /* AppCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029A9C662535873000BECEC5 /* AppCoordinatorTests.swift */; };
 		029B0F57234197B80010C1F3 /* ProductSearchUICommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029B0F56234197B80010C1F3 /* ProductSearchUICommand.swift */; };
 		029BFD4F24597D4B00FDDEEC /* UIButton+TitleAndImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029BFD4E24597D4B00FDDEEC /* UIButton+TitleAndImage.swift */; };
@@ -875,8 +877,6 @@
 		CE227099228F180B00C0626C /* WooBasicTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE227098228F180B00C0626C /* WooBasicTableViewCell.xib */; };
 		CE22709F2293052700C0626C /* WebviewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE22709E2293052700C0626C /* WebviewHelper.swift */; };
 		CE22E3F72170E23C005A6BEF /* PrivacySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE22E3F62170E23C005A6BEF /* PrivacySettingsViewController.swift */; };
-		CE22E3FB21714776005A6BEF /* TopLeftImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE22E3F921714776005A6BEF /* TopLeftImageTableViewCell.swift */; };
-		CE22E3FC21714776005A6BEF /* TopLeftImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE22E3FA21714776005A6BEF /* TopLeftImageTableViewCell.xib */; };
 		CE2409F1215D12D30091F887 /* WooNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2409F0215D12D30091F887 /* WooNavigationController.swift */; };
 		CE24BCCF212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE24BCCD212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift */; };
 		CE24BCD0212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE24BCCE212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib */; };
@@ -1358,6 +1358,8 @@
 		0295355A245ADF8100BDC42B /* FilterType+Products.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FilterType+Products.swift"; sourceTree = "<group>"; };
 		029700EB24FE38C900D242F8 /* ScrollWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollWatcher.swift; sourceTree = "<group>"; };
 		029700EE24FE38F000D242F8 /* ScrollWatcherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollWatcherTests.swift; sourceTree = "<group>"; };
+		0298430B259351F100979CAE /* ShippingLabelsTopBannerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelsTopBannerFactory.swift; sourceTree = "<group>"; };
+		0298431125936DFC00979CAE /* ShippingLabelsTopBannerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelsTopBannerFactoryTests.swift; sourceTree = "<group>"; };
 		029A9C662535873000BECEC5 /* AppCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinatorTests.swift; sourceTree = "<group>"; };
 		029B0F56234197B80010C1F3 /* ProductSearchUICommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSearchUICommand.swift; sourceTree = "<group>"; };
 		029BFD4E24597D4B00FDDEEC /* UIButton+TitleAndImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+TitleAndImage.swift"; sourceTree = "<group>"; };
@@ -1986,8 +1988,6 @@
 		CE227098228F180B00C0626C /* WooBasicTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WooBasicTableViewCell.xib; sourceTree = "<group>"; };
 		CE22709E2293052700C0626C /* WebviewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WebviewHelper.swift; path = Classes/Tools/WebviewHelper.swift; sourceTree = SOURCE_ROOT; };
 		CE22E3F62170E23C005A6BEF /* PrivacySettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacySettingsViewController.swift; sourceTree = "<group>"; };
-		CE22E3F921714776005A6BEF /* TopLeftImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TopLeftImageTableViewCell.swift; path = Classes/ViewRelated/ReusableViews/TopLeftImageTableViewCell.swift; sourceTree = SOURCE_ROOT; };
-		CE22E3FA21714776005A6BEF /* TopLeftImageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = TopLeftImageTableViewCell.xib; path = Classes/ViewRelated/ReusableViews/TopLeftImageTableViewCell.xib; sourceTree = SOURCE_ROOT; };
 		CE2409F0215D12D30091F887 /* WooNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooNavigationController.swift; sourceTree = "<group>"; };
 		CE24BCCD212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadlineLabelTableViewCell.swift; sourceTree = "<group>"; };
 		CE24BCCE212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HeadlineLabelTableViewCell.xib; sourceTree = "<group>"; };
@@ -2369,6 +2369,7 @@
 			children = (
 				023D69BA2589BF2500F7DA72 /* Refund Shipping Label */,
 				023D69C52589BF5F00F7DA72 /* Reprint Shipping Label */,
+				0298430B259351F100979CAE /* ShippingLabelsTopBannerFactory.swift */,
 			);
 			path = "Shipping Labels";
 			sourceTree = "<group>";
@@ -2719,6 +2720,7 @@
 			children = (
 				0277AE9A256CA8A200F45C4A /* AggregatedShippingLabelOrderItemsTests.swift */,
 				025678C625773399009D7E6C /* Collection+ShippingLabelTests.swift */,
+				0298431125936DFC00979CAE /* ShippingLabelsTopBannerFactoryTests.swift */,
 			);
 			path = "Shipping Labels";
 			sourceTree = "<group>";
@@ -4946,8 +4948,6 @@
 				020BE74C23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.xib */,
 				4512055024655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.swift */,
 				4512055124655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.xib */,
-				CE22E3F921714776005A6BEF /* TopLeftImageTableViewCell.swift */,
-				CE22E3FA21714776005A6BEF /* TopLeftImageTableViewCell.xib */,
 				CE35F1192343F3B1007B2A6B /* TwoColumnHeadlineFootnoteTableViewCell.swift */,
 				CE35F11A2343F3B1007B2A6B /* TwoColumnHeadlineFootnoteTableViewCell.xib */,
 				CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */,
@@ -5393,7 +5393,6 @@
 				740382DC2267D94100A627F4 /* LargeImageTableViewCell.xib in Resources */,
 				57CFCD2A2488496F003F51EC /* PrimarySectionHeaderView.xib in Resources */,
 				45F627B7253603AE00894B86 /* ProductDownloadSettingsViewController.xib in Resources */,
-				CE22E3FC21714776005A6BEF /* TopLeftImageTableViewCell.xib in Resources */,
 				571B850424CF7ECD00CF58A7 /* InAppFeedbackCardViewController.xib in Resources */,
 				B5D1AFB420BC445A00DB0E8C /* Images.xcassets in Resources */,
 				451B1741258B7EFB00836277 /* AddAttributeOptionsViewController.xib in Resources */,
@@ -5964,7 +5963,6 @@
 				02305353237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift in Sources */,
 				B5D6DC54214802740003E48A /* SyncCoordinator.swift in Sources */,
 				B57C5C9421B80E4700FF82B2 /* Data+Woo.swift in Sources */,
-				CE22E3FB21714776005A6BEF /* TopLeftImageTableViewCell.swift in Sources */,
 				B554E17B2152F27200F31188 /* UILabel+Appearance.swift in Sources */,
 				020B2F8F23BD9F1F00BD79AD /* IntegerInputFormatter.swift in Sources */,
 				7441EBC9226A71AA008BF83D /* TitleBodyTableViewCell.swift in Sources */,
@@ -6144,6 +6142,7 @@
 				029D444922F13F8A00DEFA8A /* DashboardUIFactory.swift in Sources */,
 				D8C2A28F231BD00500F503E9 /* ReviewsViewModel.swift in Sources */,
 				021AEF9E2407F55C00029D28 /* PHAssetImageLoader.swift in Sources */,
+				0298430C259351F100979CAE /* ShippingLabelsTopBannerFactory.swift in Sources */,
 				020BE74D23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.swift in Sources */,
 				023D692E2588BF0900F7DA72 /* ShippingLabelPaperSizeListSelectorCommand.swift in Sources */,
 				77E53EC52510C193003D385F /* ProductDownloadListViewController+Droppable.swift in Sources */,
@@ -6316,6 +6315,7 @@
 				4574745F24EA9ADE00CF49BC /* ProductTypeBottomSheetListSelectorCommandTests.swift in Sources */,
 				0212683724C049F000F8A892 /* ProductListMultiSelectorDataSourceTests.swift in Sources */,
 				D82DFB4C225F303200EFE2CB /* EmptyListMessageWithActionTests.swift in Sources */,
+				0298431225936DFC00979CAE /* ShippingLabelsTopBannerFactoryTests.swift in Sources */,
 				57B374B6245B331100D58BE0 /* EmptyStateViewControllerTests.swift in Sources */,
 				020BE76923B4A268007FE54C /* AztecItalicFormatBarCommandTests.swift in Sources */,
 				0271E1642509C66200633F7A /* DefaultProductFormTableViewModelTests.swift in Sources */,

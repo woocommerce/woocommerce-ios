@@ -74,6 +74,7 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 fastlane/promo_screenshots
+fastlane/metadata/review_information
 fastlane/test_output
 fastlane/README.md
 fastlane/logs

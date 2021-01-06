@@ -27,7 +27,7 @@ final class AppCoordinator {
             guard let self = self else { return }
 
             if isLoggedIn == false {
-                let animated = self.isLoggedIn == true
+                let animated = self.isLoggedIn == true && self.stores.needsDefaultStore == false
                 self.displayAuthenticator(animated: animated)
             } else if self.stores.needsDefaultStore {
                 self.displayStorePicker()

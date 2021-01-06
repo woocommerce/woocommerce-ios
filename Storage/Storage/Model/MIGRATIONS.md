@@ -2,6 +2,11 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 41 (Release 5.8.0.0)
+- @ecarrion 2020-12-30
+- Add `ProductAttributeTerm`  entity.
+- Updated `ProductAttribute` to add a `terms` relationship
+
 ## Model 40 (Release 5.7.0.0)
 - @pmusolino 2020-12-07
 - Add `siteID` attribute to `ProductAttribute` entity.

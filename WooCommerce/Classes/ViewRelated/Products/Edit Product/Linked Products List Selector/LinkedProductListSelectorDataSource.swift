@@ -41,18 +41,18 @@ final class LinkedProductListSelectorDataSource: PaginatedListSelectorDataSource
     private let siteID: Int64
     private let product: Product
     private let imageService: ImageService
-    private let deleteButtonTappedEvent: WooAnalyticsStat
+    private let trackingContext: String
 
     init(product: Product,
          linkedProductIDs: [Int64],
          imageService: ImageService = ServiceLocator.imageService,
-         deleteButtonTappedEvent: WooAnalyticsStat) {
+         trackingContext: String) {
         self.siteID = product.siteID
         self.product = product
         self.originalLinkedProductIDs = linkedProductIDs
         self.linkedProductIDs = linkedProductIDs
         self.imageService = imageService
-        self.deleteButtonTappedEvent = deleteButtonTappedEvent
+        self.trackingContext = trackingContext
     }
 
     func createResultsController() -> ResultsController<StorageProduct> {
@@ -79,7 +79,7 @@ final class LinkedProductListSelectorDataSource: PaginatedListSelectorDataSource
 
         cell.configureAccessoryDeleteButton { [weak self] in
             guard let self = self else { return }
-            ServiceLocator.analytics.track(self.deleteButtonTappedEvent)
+            ServiceLocator.analytics.track(.connectedProductsList, withProperties: ["action": "delete_tapped", "context": self.trackingContext])
             self.deleteProduct(model)
         }
     }

@@ -39,7 +39,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let productUIImageLoader: ProductUIImageLoader
 
     private let currency: String
-    private let isEditProductsRelease5Enabled: Bool
     private let isAddProductVariationsEnabled: Bool
 
     private lazy var exitForm: () -> Void = {
@@ -60,13 +59,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
-         isEditProductsRelease5Enabled: Bool,
          isAddProductVariationsEnabled: Bool) {
         self.viewModel = viewModel
         self.eventLogger = eventLogger
         self.currency = currency
         self.presentationStyle = presentationStyle
-        self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
         self.isAddProductVariationsEnabled = isAddProductVariationsEnabled
         self.productImageActionHandler = productImageActionHandler
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
@@ -276,13 +273,13 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
             case .downloadableFiles:
-                //TODO: Add Analytics M5
+                ServiceLocator.analytics.track(.productDetailViewDownloadableFilesTapped)
                 showDownloadableFiles()
             case .linkedProducts(_, let isEditable):
                 guard isEditable else {
                     return
                 }
-                // TODO: Add Analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+                ServiceLocator.analytics.track(.productDetailViewLinkedProductsTapped)
                 editLinkedProducts()
             case .productType(_, let isEditable):
                 guard isEditable else {
@@ -357,7 +354,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 let variationsViewController = ProductVariationsViewController(product: product.product,
                                                                                formType: viewModel.formType,
-                                                                               isEditProductsRelease5Enabled: isEditProductsRelease5Enabled,
                                                                                isAddProductVariationsEnabled: isAddProductVariationsEnabled)
                 show(variationsViewController, sender: self)
             case .status, .noPriceWarning:
@@ -546,7 +542,7 @@ private extension ProductFormViewController {
                                                                             ServiceLocator.analytics.track(.productDetailViewSKUTapped)
                                                                             self?.editSKU()
                                                                         case .editLinkedProducts:
-                                                                            // TODO: Analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+                                                                            ServiceLocator.analytics.track(.productDetailViewLinkedProductsTapped)
                                                                             self?.editLinkedProducts()
                                                                         }
                                                                     }
@@ -716,7 +712,6 @@ private extension ProductFormViewController {
         let viewController = ProductSettingsViewController(product: product.product,
                                                            password: password,
                                                            formType: viewModel.formType,
-                                                           isEditProductsRelease5Enabled: isEditProductsRelease5Enabled,
                                                            completion: { [weak self] (productSettings) in
             guard let self = self else {
                 return
@@ -1157,7 +1152,7 @@ private extension ProductFormViewController {
         guard hasUnsavedChanges else {
             return
         }
-        // TODO: Add Analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+        ServiceLocator.analytics.track(.linkedProducts, withProperties: ["action": "done"])
 
         viewModel.updateLinkedProducts(upsellIDs: upsellIDs, crossSellIDs: crossSellIDs)
     }
@@ -1172,11 +1167,7 @@ private extension ProductFormViewController {
         }
 
         let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.groupedProductsViewTitle,
-                                                                                           addButtonEvent: .groupedProductLinkedProductsAddButtonTapped,
-                                                                                           productsAddedEvent: .groupedProductLinkedProductsAdded,
-                                                                                           doneButtonTappedEvent: .groupedProductLinkedProductsDoneButtonTapped,
-                                                                                           deleteButtonTappedEvent:
-                                                                                            .groupedProductLinkedProductsDeleteButtonTapped)
+                                                                                           trackingContext: "grouped_products")
 
         let viewController = LinkedProductsListSelectorViewController(product: product.product,
                                                                       linkedProductIDs: product.product.groupedProducts,

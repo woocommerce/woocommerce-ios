@@ -18,7 +18,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rng-8C-l5l">
-                        <rect key="frame" x="16" y="19" width="299" height="40"/>
+                        <rect key="frame" x="16" y="20" width="299" height="35"/>
                         <state key="normal" title="Button"/>
                         <connections>
                             <action selector="sendButtonTouchUpEvent" destination="KGk-i7-Jjw" eventType="touchUpInside" id="N5x-ry-GxY"/>
@@ -26,9 +26,9 @@
                     </button>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="Rng-8C-l5l" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="8" id="Xrm-jK-VNb"/>
+                    <constraint firstItem="Rng-8C-l5l" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="20" id="Xrm-jK-VNb"/>
                     <constraint firstItem="Rng-8C-l5l" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="gs6-W7-LJC"/>
-                    <constraint firstAttribute="bottom" secondItem="Rng-8C-l5l" secondAttribute="bottom" constant="16" id="pd5-X4-yaY"/>
+                    <constraint firstAttribute="bottom" secondItem="Rng-8C-l5l" secondAttribute="bottom" constant="20" id="pd5-X4-yaY"/>
                     <constraint firstItem="Rng-8C-l5l" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="unu-fW-cIH"/>
                 </constraints>
             </tableViewCellContentView>

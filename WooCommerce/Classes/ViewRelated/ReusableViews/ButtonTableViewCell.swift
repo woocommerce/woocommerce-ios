@@ -4,6 +4,7 @@ import UIKit
 ///
 final class ButtonTableViewCell: UITableViewCell {
     @IBOutlet private var button: UIButton!
+    @IBOutlet private weak var bottomConstraint: NSLayoutConstraint!
 
     /// The style of this view, particularly the button.
     enum Style {
@@ -26,10 +27,19 @@ final class ButtonTableViewCell: UITableViewCell {
 
     /// Define this cell's UI attributes.
     ///
-    func configure(style: Style = .default, title: String?, onButtonTouchUp: (() -> Void)? = nil) {
+    /// - Parameters:
+    ///   - style: The style of the cell.
+    ///   - title: Button title.
+    ///   - bottomSpacing: If non-nil, the value is set to the spacing between the button bottom edge and cell bottom edge.
+    ///   - onButtonTouchUp: Called when the button is tapped.
+    func configure(style: Style = .default, title: String?, bottomSpacing: CGFloat? = nil, onButtonTouchUp: (() -> Void)? = nil) {
         apply(style: style)
         button.setTitle(title, for: .normal)
         self.onButtonTouchUp = onButtonTouchUp
+
+        if let bottomSpacing = bottomSpacing {
+            bottomConstraint.constant = bottomSpacing
+        }
     }
 }
 

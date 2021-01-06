@@ -81,16 +81,14 @@ final class ProductVariationsViewController: UIViewController {
     private let formType: ProductFormType
 
     private let imageService: ImageService = ServiceLocator.imageService
-    private let isEditProductsRelease5Enabled: Bool
     private let isAddProductVariationsEnabled: Bool
 
-    init(product: Product, formType: ProductFormType, isEditProductsRelease5Enabled: Bool, isAddProductVariationsEnabled: Bool) {
+    init(product: Product, formType: ProductFormType, isAddProductVariationsEnabled: Bool) {
         self.siteID = product.siteID
         self.productID = product.productID
         self.allAttributes = product.attributes
         self.parentProductSKU = product.sku
         self.formType = formType
-        self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
         self.isAddProductVariationsEnabled = isAddProductVariationsEnabled
         super.init(nibName: nil, bundle: nil)
     }
@@ -304,7 +302,6 @@ extension ProductVariationsViewController: UITableViewDelegate {
                                                        productImageActionHandler: productImageActionHandler,
                                                        currency: currency,
                                                        presentationStyle: .navigationStack,
-                                                       isEditProductsRelease5Enabled: isEditProductsRelease5Enabled,
                                                        isAddProductVariationsEnabled: isAddProductVariationsEnabled)
         navigationController?.pushViewController(viewController, animated: true)
     }

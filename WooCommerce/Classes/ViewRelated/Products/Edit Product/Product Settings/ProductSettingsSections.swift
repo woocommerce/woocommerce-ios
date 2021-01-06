@@ -8,7 +8,7 @@ protocol ProductSettingsSectionMediator {
     var title: String { get }
     var rows: [ProductSettingsRowMediator] { get }
 
-    init(_ settings: ProductSettings, productType: ProductType, isEditProductsRelease5Enabled: Bool)
+    init(_ settings: ProductSettings, productType: ProductType)
 }
 
 // MARK: - Sections declaration for Product Settings
@@ -20,13 +20,13 @@ enum ProductSettingsSections {
 
         let rows: [ProductSettingsRowMediator]
 
-        init(_ settings: ProductSettings, productType: ProductType, isEditProductsRelease5Enabled: Bool) {
+        init(_ settings: ProductSettings, productType: ProductType) {
             if productType == .simple {
                 let tempRows: [ProductSettingsRowMediator?] = [ProductSettingsRows.Status(settings),
                         ProductSettingsRows.Visibility(settings),
                         ProductSettingsRows.CatalogVisibility(settings),
                         ProductSettingsRows.VirtualProduct(settings),
-                        isEditProductsRelease5Enabled ? ProductSettingsRows.DownloadableProduct(settings) : nil
+                        ProductSettingsRows.DownloadableProduct(settings)
                 ]
                 rows = tempRows.compactMap { $0 }
             } else {
@@ -43,7 +43,7 @@ enum ProductSettingsSections {
 
         let rows: [ProductSettingsRowMediator]
 
-        init(_ settings: ProductSettings, productType: ProductType, isEditProductsRelease5Enabled: Bool) {
+        init(_ settings: ProductSettings, productType: ProductType) {
             rows = [ProductSettingsRows.ReviewsAllowed(settings),
             ProductSettingsRows.Slug(settings),
             ProductSettingsRows.PurchaseNote(settings),

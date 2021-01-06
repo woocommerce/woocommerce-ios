@@ -877,8 +877,6 @@
 		CE227099228F180B00C0626C /* WooBasicTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE227098228F180B00C0626C /* WooBasicTableViewCell.xib */; };
 		CE22709F2293052700C0626C /* WebviewHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE22709E2293052700C0626C /* WebviewHelper.swift */; };
 		CE22E3F72170E23C005A6BEF /* PrivacySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE22E3F62170E23C005A6BEF /* PrivacySettingsViewController.swift */; };
-		CE22E3FB21714776005A6BEF /* TopLeftImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE22E3F921714776005A6BEF /* TopLeftImageTableViewCell.swift */; };
-		CE22E3FC21714776005A6BEF /* TopLeftImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE22E3FA21714776005A6BEF /* TopLeftImageTableViewCell.xib */; };
 		CE2409F1215D12D30091F887 /* WooNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2409F0215D12D30091F887 /* WooNavigationController.swift */; };
 		CE24BCCF212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE24BCCD212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift */; };
 		CE24BCD0212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE24BCCE212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib */; };
@@ -1990,8 +1988,6 @@
 		CE227098228F180B00C0626C /* WooBasicTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WooBasicTableViewCell.xib; sourceTree = "<group>"; };
 		CE22709E2293052700C0626C /* WebviewHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WebviewHelper.swift; path = Classes/Tools/WebviewHelper.swift; sourceTree = SOURCE_ROOT; };
 		CE22E3F62170E23C005A6BEF /* PrivacySettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacySettingsViewController.swift; sourceTree = "<group>"; };
-		CE22E3F921714776005A6BEF /* TopLeftImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TopLeftImageTableViewCell.swift; path = Classes/ViewRelated/ReusableViews/TopLeftImageTableViewCell.swift; sourceTree = SOURCE_ROOT; };
-		CE22E3FA21714776005A6BEF /* TopLeftImageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = TopLeftImageTableViewCell.xib; path = Classes/ViewRelated/ReusableViews/TopLeftImageTableViewCell.xib; sourceTree = SOURCE_ROOT; };
 		CE2409F0215D12D30091F887 /* WooNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooNavigationController.swift; sourceTree = "<group>"; };
 		CE24BCCD212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadlineLabelTableViewCell.swift; sourceTree = "<group>"; };
 		CE24BCCE212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HeadlineLabelTableViewCell.xib; sourceTree = "<group>"; };
@@ -4952,8 +4948,6 @@
 				020BE74C23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.xib */,
 				4512055024655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.swift */,
 				4512055124655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.xib */,
-				CE22E3F921714776005A6BEF /* TopLeftImageTableViewCell.swift */,
-				CE22E3FA21714776005A6BEF /* TopLeftImageTableViewCell.xib */,
 				CE35F1192343F3B1007B2A6B /* TwoColumnHeadlineFootnoteTableViewCell.swift */,
 				CE35F11A2343F3B1007B2A6B /* TwoColumnHeadlineFootnoteTableViewCell.xib */,
 				CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */,
@@ -5399,7 +5393,6 @@
 				740382DC2267D94100A627F4 /* LargeImageTableViewCell.xib in Resources */,
 				57CFCD2A2488496F003F51EC /* PrimarySectionHeaderView.xib in Resources */,
 				45F627B7253603AE00894B86 /* ProductDownloadSettingsViewController.xib in Resources */,
-				CE22E3FC21714776005A6BEF /* TopLeftImageTableViewCell.xib in Resources */,
 				571B850424CF7ECD00CF58A7 /* InAppFeedbackCardViewController.xib in Resources */,
 				B5D1AFB420BC445A00DB0E8C /* Images.xcassets in Resources */,
 				451B1741258B7EFB00836277 /* AddAttributeOptionsViewController.xib in Resources */,
@@ -5970,7 +5963,6 @@
 				02305353237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift in Sources */,
 				B5D6DC54214802740003E48A /* SyncCoordinator.swift in Sources */,
 				B57C5C9421B80E4700FF82B2 /* Data+Woo.swift in Sources */,
-				CE22E3FB21714776005A6BEF /* TopLeftImageTableViewCell.swift in Sources */,
 				B554E17B2152F27200F31188 /* UILabel+Appearance.swift in Sources */,
 				020B2F8F23BD9F1F00BD79AD /* IntegerInputFormatter.swift in Sources */,
 				7441EBC9226A71AA008BF83D /* TitleBodyTableViewCell.swift in Sources */,

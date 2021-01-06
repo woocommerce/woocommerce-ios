@@ -396,7 +396,6 @@ private extension StorePickerViewController {
             return
         }
 
-        ServiceLocator.stores.deauthenticate()
         delegate?.restartAuthentication()
     }
 

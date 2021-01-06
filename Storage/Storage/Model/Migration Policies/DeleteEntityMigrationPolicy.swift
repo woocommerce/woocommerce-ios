@@ -1,5 +1,8 @@
 import CoreData
 
+/// A reusable migration policy that, when used for an entity, will delete all the data for that
+/// entity.
+///
 final class DeleteEntityMigrationPolicy: NSEntityMigrationPolicy {
     override func createDestinationInstances(forSource sInstance: NSManagedObject,
                                              in mapping: NSEntityMapping,

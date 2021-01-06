@@ -142,7 +142,7 @@ private extension RefundDetailsDataSource {
             configureRefundAmount(cell, at: indexPath)
         case let cell as WooBasicTableViewCell:
             configureRefundMethod(cell)
-        case let cell as TopLeftImageTableViewCell:
+        case let cell as ImageAndTitleAndTextTableViewCell:
             configureRefundNote(cell)
         default:
             fatalError("Unidentified refund details row type")
@@ -191,9 +191,15 @@ private extension RefundDetailsDataSource {
 
     /// Setup: Reason for Refund Note Cell
     ///
-    private func configureRefundNote(_ cell: TopLeftImageTableViewCell) {
+    private func configureRefundNote(_ cell: ImageAndTitleAndTextTableViewCell) {
         cell.selectionStyle = .none
-        cell.configure(image: .quoteImage, imageTintColor: .text, text: refundReason)
+        cell.update(with: .imageAndTitleOnly(fontStyle: .body),
+                    data: .init(title: refundReason ?? "",
+                                textTintColor: .text,
+                                image: .quoteImage,
+                                imageTintColor: .text,
+                                numberOfLinesForTitle: 0,
+                                isActionable: false))
     }
 }
 
@@ -266,7 +272,7 @@ extension RefundDetailsDataSource {
 
     /// Table Rows
     ///
-    enum Row {
+    enum Row: CaseIterable {
         /// Listed in the order they appear on screen
         case orderItem
         case productsRefund
@@ -274,19 +280,23 @@ extension RefundDetailsDataSource {
         case refundMethod
         case refundReason
 
-        var reuseIdentifier: String {
+        var type: UITableViewCell.Type {
             switch self {
             case .orderItem:
-                return ProductDetailsTableViewCell.reuseIdentifier
+                return ProductDetailsTableViewCell.self
             case .productsRefund:
-                return LedgerTableViewCell.reuseIdentifier
+                return LedgerTableViewCell.self
             case .refundAmount:
-                return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
+                return TwoColumnHeadlineFootnoteTableViewCell.self
             case .refundMethod:
-                return WooBasicTableViewCell.reuseIdentifier
+                return WooBasicTableViewCell.self
             case .refundReason:
-                return TopLeftImageTableViewCell.reuseIdentifier
+                return ImageAndTitleAndTextTableViewCell.self
             }
+        }
+
+        fileprivate var reuseIdentifier: String {
+            type.reuseIdentifier
         }
     }
 

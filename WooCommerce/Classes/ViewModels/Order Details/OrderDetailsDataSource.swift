@@ -537,7 +537,7 @@ private extension OrderDetailsDataSource {
     private func configureReprintShippingLabelButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
         cell.configure(style: .secondary,
                        title: Titles.reprintShippingLabel,
-                       bottomSpacing: 0) { [weak self] in
+                       bottomSpacing: 8) { [weak self] in
             guard let self = self else { return }
             guard let shippingLabel = self.shippingLabel(at: indexPath) else {
                 return

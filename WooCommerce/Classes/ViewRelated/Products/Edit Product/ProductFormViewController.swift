@@ -279,7 +279,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard isEditable else {
                     return
                 }
-                // TODO: Add Analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+                ServiceLocator.analytics.track(.productDetailViewLinkedProductsTapped)
                 editLinkedProducts()
             case .productType(_, let isEditable):
                 guard isEditable else {
@@ -542,7 +542,7 @@ private extension ProductFormViewController {
                                                                             ServiceLocator.analytics.track(.productDetailViewSKUTapped)
                                                                             self?.editSKU()
                                                                         case .editLinkedProducts:
-                                                                            // TODO: Analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+                                                                            ServiceLocator.analytics.track(.productDetailViewLinkedProductsTapped)
                                                                             self?.editLinkedProducts()
                                                                         }
                                                                     }
@@ -1152,7 +1152,7 @@ private extension ProductFormViewController {
         guard hasUnsavedChanges else {
             return
         }
-        // TODO: Add Analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+        ServiceLocator.analytics.track(.linkedProducts, withProperties: ["action": "done"])
 
         viewModel.updateLinkedProducts(upsellIDs: upsellIDs, crossSellIDs: crossSellIDs)
     }
@@ -1167,11 +1167,7 @@ private extension ProductFormViewController {
         }
 
         let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.groupedProductsViewTitle,
-                                                                                           addButtonEvent: .groupedProductLinkedProductsAddButtonTapped,
-                                                                                           productsAddedEvent: .groupedProductLinkedProductsAdded,
-                                                                                           doneButtonTappedEvent: .groupedProductLinkedProductsDoneButtonTapped,
-                                                                                           deleteButtonTappedEvent:
-                                                                                            .groupedProductLinkedProductsDeleteButtonTapped)
+                                                                                           trackingContext: "grouped_products")
 
         let viewController = LinkedProductsListSelectorViewController(product: product.product,
                                                                       linkedProductIDs: product.product.groupedProducts,

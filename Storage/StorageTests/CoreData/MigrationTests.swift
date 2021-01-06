@@ -406,21 +406,27 @@ final class MigrationTests: XCTestCase {
     func test_migrating_from_40_to_41_allow_use_to_create_ProductAttribute_terms() throws {
         // Given
         let sourceContainer = try startPersistentContainer("Model 40")
+        let sourceContext = sourceContainer.viewContext
 
-        let targetContainer = try migrate(sourceContainer, to: "Model 41")
-        let targetContext = targetContainer.viewContext
+        insertProductAttribute(to: sourceContext)
+        try sourceContext.save()
 
         // When
-        let attribute = insertProductAttribute(to: targetContext)
-        let term = insertProductAttributeTerm(to: targetContext)
-        attribute.mutableSetValue(forKey: "terms").add(term)
-        try targetContext.save()
+        let targetContainer = try migrate(sourceContainer, to: "Model 41")
 
         // Then
-        let fetchedTerm = try XCTUnwrap(targetContext.first(entityName: "ProductAttributeTerm"))
+        let targetContext = targetContainer.viewContext
+        // Confidence-check
+        XCTAssertEqual(try targetContext.count(entityName: "ProductAttribute"), 1)
 
-        XCTAssertEqual(fetchedTerm, term)
-        XCTAssertEqual(fetchedTerm.value(forKey: "attribute") as? NSManagedObject, attribute)
+        // Test we can add a term to a migrated `ProductAttribute`.
+        let migratedAttribute = try XCTUnwrap(targetContext.first(entityName: "ProductAttribute"))
+        let term = insertProductAttributeTerm(to: targetContext)
+        migratedAttribute.mutableSetValue(forKey: "terms").add(term)
+
+        XCTAssertNoThrow(try targetContext.save())
+        // The ProductAttribute.attribute inverse relationship should be updated.
+        XCTAssertEqual(term.value(forKey: "attribute") as? NSManagedObject, migratedAttribute)
     }
 }
 

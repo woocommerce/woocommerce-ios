@@ -181,11 +181,11 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssertFalse(authenticator.isWordPressAuthUrl(wordpressComURL))
     }
 
-    func testHandleWordPressAuthURLReturnsTrueOnSucceed() {
+    func testHandleWordPressAuthURLReturnsTrueOnSuccess() {
         let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
-        let url = URL(string: "https://wordpress.com/wp-login.php?token=1234567890%26action&magic-login&sr=1&signature=1234567890oienhdtsra")
+        let url = URL(string: "https://wordpress.com/wp-login.php?token=1234567890%26action&magic-login&sr=1&signature=1234567890oienhdtsra&flow=signup")
 
-        XCTAssertTrue(authenticator.handleWordPressAuthUrl(url!, rootViewController: UIViewController()))
+        XCTAssertTrue(authenticator.handleWordPressAuthUrl(url!, rootViewController: UIViewController(), automatedTesting: true))
     }
 
     // MARK: WordPressAuthenticator OnePassword Tests

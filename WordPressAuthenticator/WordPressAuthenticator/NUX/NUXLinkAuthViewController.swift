@@ -24,7 +24,7 @@ class NUXLinkAuthViewController: LoginViewController {
     }
     
     func syncAndContinue(authToken: String, flow: Flow, isJetpackConnect: Bool) {
-        let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackConnect, multifactor: false)
+        let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackConnect, multifactor: false, siteURL: "https://wordpress.com")
         let credentials = AuthenticatorCredentials(wpcom: wpcom)
         
         syncWPComAndPresentEpilogue(credentials: credentials) {

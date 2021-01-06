@@ -134,8 +134,8 @@ import WordPressKit
 
     /// Attempts to process the specified URL as a WordPress Authentication Link. Returns *true* on success.
     ///
-    @objc public func handleWordPressAuthUrl(_ url: URL, rootViewController: UIViewController) -> Bool {
-        return WordPressAuthenticator.openAuthenticationURL(url, fromRootViewController: rootViewController)
+    @objc public func handleWordPressAuthUrl(_ url: URL, rootViewController: UIViewController, automatedTesting: Bool = false) -> Bool {
+        return WordPressAuthenticator.openAuthenticationURL(url, fromRootViewController: rootViewController, automatedTesting: automatedTesting)
     }
 
 
@@ -309,10 +309,13 @@ import WordPressKit
     ///
     /// - Parameters:
     ///     - url: The authentication URL
-    ///     - rootViewController: The view controller to act as the presenter for the signin view controller.
-    ///                           By convention this is the app's root vc.
+    ///     - rootViewController: The view controller to act as the presenter for the signin view controller.  By convention this is the app's root vc.
+    ///     - automatedTesting: for calling this method for automated testing.  It won't sync the account or load any other VCs.
     ///
-    @objc public class func openAuthenticationURL(_ url: URL, fromRootViewController rootViewController: UIViewController) -> Bool {
+    @objc public class func openAuthenticationURL(
+        _ url: URL,
+        fromRootViewController rootViewController: UIViewController,
+        automatedTesting: Bool = false) -> Bool {
 
         guard let queryDictionary = url.query?.dictionaryFromQueryString() else {
             DDLogError("Magic link error: we couldn't retrieve the query dictionary from the sign-in URL.")
@@ -353,37 +356,39 @@ import WordPressKit
             return false
         }
         
-        let storyboard = Storyboard.emailMagicLink.instance
-        guard let loginVC = storyboard.instantiateViewController(withIdentifier: "LinkAuthView") as? NUXLinkAuthViewController else {
-            DDLogInfo("App opened with authentication link but couldn't create login screen.")
-            return false
+        if !automatedTesting {
+            let storyboard = Storyboard.emailMagicLink.instance
+            guard let loginVC = storyboard.instantiateViewController(withIdentifier: "LinkAuthView") as? NUXLinkAuthViewController else {
+                DDLogInfo("App opened with authentication link but couldn't create login screen.")
+                return false
+            }
+            loginVC.loginFields = loginFields
+            
+            let navController = LoginNavigationController(rootViewController: loginVC)
+            navController.modalPresentationStyle = .fullScreen
+            
+            // The way the magic link flow works some view controller might
+            // still be presented when the app is resumed by tapping on the auth link.
+            // We need to do a little work to present the SigninLinkAuth controller
+            // from the right place.
+            // - If the rootViewController is not presenting another vc then just
+            // present the auth controller.
+            // - If the rootViewController is presenting another NUX vc, dismiss the
+            // NUX vc then present the auth controller.
+            // - If the rootViewController is presenting *any* other vc, present the
+            // auth controller from the presented vc.
+            let presenter = rootViewController.topmostPresentedViewController
+            if presenter.isKind(of: NUXNavigationController.self) || presenter.isKind(of: LoginNavigationController.self),
+                let parent = presenter.presentingViewController {
+                parent.dismiss(animated: false, completion: {
+                    parent.present(navController, animated: false, completion: nil)
+                })
+            } else {
+                presenter.present(navController, animated: false, completion: nil)
+            }
+            
+            loginVC.syncAndContinue(authToken: authToken, flow: flow, isJetpackConnect: url.isJetpackConnect)
         }
-        loginVC.loginFields = loginFields
-        
-        let navController = LoginNavigationController(rootViewController: loginVC)
-        navController.modalPresentationStyle = .fullScreen
-        
-        // The way the magic link flow works some view controller might
-        // still be presented when the app is resumed by tapping on the auth link.
-        // We need to do a little work to present the SigninLinkAuth controller
-        // from the right place.
-        // - If the rootViewController is not presenting another vc then just
-        // present the auth controller.
-        // - If the rootViewController is presenting another NUX vc, dismiss the
-        // NUX vc then present the auth controller.
-        // - If the rootViewController is presenting *any* other vc, present the
-        // auth controller from the presented vc.
-        let presenter = rootViewController.topmostPresentedViewController
-        if presenter.isKind(of: NUXNavigationController.self) || presenter.isKind(of: LoginNavigationController.self),
-            let parent = presenter.presentingViewController {
-            parent.dismiss(animated: false, completion: {
-                parent.present(navController, animated: false, completion: nil)
-            })
-        } else {
-            presenter.present(navController, animated: false, completion: nil)
-        }
-        
-        loginVC.syncAndContinue(authToken: authToken, flow: flow, isJetpackConnect: url.isJetpackConnect)
         
         return true
     }

@@ -32,14 +32,12 @@ final class ButtonTableViewCell: UITableViewCell {
     ///   - title: Button title.
     ///   - bottomSpacing: If non-nil, the value is set to the spacing between the button bottom edge and cell bottom edge.
     ///   - onButtonTouchUp: Called when the button is tapped.
-    func configure(style: Style = .default, title: String?, bottomSpacing: CGFloat? = nil, onButtonTouchUp: (() -> Void)? = nil) {
+    func configure(style: Style = .default, title: String?, bottomSpacing: CGFloat = Constants.defaultBottomSpacing, onButtonTouchUp: (() -> Void)? = nil) {
         apply(style: style)
         button.setTitle(title, for: .normal)
         self.onButtonTouchUp = onButtonTouchUp
 
-        if let bottomSpacing = bottomSpacing {
-            bottomConstraint.constant = bottomSpacing
-        }
+        bottomConstraint.constant = bottomSpacing
     }
 }
 
@@ -61,5 +59,11 @@ private extension ButtonTableViewCell {
         case .secondary:
             button.applySecondaryButtonStyle()
         }
+    }
+}
+
+private extension ButtonTableViewCell {
+    enum Constants {
+        static let defaultBottomSpacing = CGFloat(20)
     }
 }

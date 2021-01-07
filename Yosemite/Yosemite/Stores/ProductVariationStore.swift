@@ -119,11 +119,11 @@ private extension ProductVariationStore {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let productVariations):
-                self.upsertStoredProductVariationsInBackground(readOnlyProductVariations: productVariations,
+                self.upsertStoredProductVariationsInBackground(readOnlyProductVariations: productVariations.create,
                                                                siteID: siteID, productID: productID) { [weak self] in
                     guard let storageProductVariations = self?.storageManager.viewStorage.loadProductVariations(siteID: siteID,
                                                                                                                 productID: productID,
-                                                                                                                productVariationsID: productVariations
+                                                                                                                productVariationsID: productVariations.create
                                                                                                                     .map { $0.productVariationID }
                     )
                     else {

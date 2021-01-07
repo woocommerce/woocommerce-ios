@@ -15,7 +15,7 @@ public protocol ProductVariationsRemoteProtocol {
     func createProductVariations(for siteID: Int64,
                                         productID: Int64,
                                         variations: [CreateProductVariation],
-                                        completion: @escaping (Result<[ProductVariation], Error>) -> Void)
+                                        completion: @escaping (Result<ProductVariationInBatch, Error>) -> Void)
     func updateProductVariation(productVariation: ProductVariation, completion: @escaping (Result<ProductVariation, Error>) -> Void)
 }
 
@@ -79,7 +79,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     public func createProductVariations(for siteID: Int64,
                                         productID: Int64,
                                         variations: [CreateProductVariation],
-                                        completion: @escaping (Result<[ProductVariation], Error>) -> Void) {
+                                        completion: @escaping (Result<ProductVariationInBatch, Error>) -> Void) {
         do {
             let parameters = [
                 ParameterKey.create: try variations.toDictionary()
@@ -87,7 +87,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
 
             let path = "\(Path.products)/\(productID)/variations"
             let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
-            let mapper = ProductVariationListMapper(siteID: siteID, productID: productID)
+            let mapper = ProductVariationInBatchListMapper(siteID: siteID, productID: productID)
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))

@@ -283,6 +283,13 @@ public extension StorageType {
         return firstObject(ofType: ProductAttribute.self, matching: predicate)
     }
 
+    /// Retrieves the Stored Product Attribute Term by, attribute and term ID.
+    ///
+    func loadProductAttributeTerm(siteID: Int64, attributeID: Int64, termID: Int64) -> ProductAttributeTerm? {
+        let predicate = NSPredicate(format: "siteID = %ld AND attributeID = %ld AND termID = %ld", siteID, attributeID, termID)
+        return firstObject(ofType: ProductAttributeTerm.self, matching: predicate)
+    }
+
     /// Retrieves the all of the stored Product Attributes for a `siteID`.
     ///
     func loadProductAttributes(siteID: Int64) -> [ProductAttribute] {

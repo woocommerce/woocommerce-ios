@@ -38,4 +38,12 @@ enum BuildConfiguration: String {
     static var shouldUseScreenshotsNetworkLayer: Bool {
         return ProcessInfo.processInfo.arguments.contains("mocked-network-layer")
     }
+
+    static var shouldLogoutAtLaunch: Bool {
+        ProcessInfo.processInfo.arguments.contains("logout-at-launch")
+    }
+
+    static var shouldDisableAnimations: Bool {
+        ProcessInfo.processInfo.arguments.contains("disable-animations")
+    }
 }

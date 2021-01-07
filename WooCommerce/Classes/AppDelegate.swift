@@ -320,11 +320,11 @@ private extension AppDelegate {
     }
 
     func handleLaunchArguments() {
-        if ProcessInfo.processInfo.arguments.contains("logout-at-launch") {
+        if BuildConfiguration.shouldLogoutAtLaunch {
           ServiceLocator.stores.deauthenticate()
         }
 
-        if ProcessInfo.processInfo.arguments.contains("mocked-network-layer") {
+        if BuildConfiguration.shouldUseScreenshotsNetworkLayer {
             /// Print the location of the core data DB for debugging
             if let storeUrl = ServiceLocator
                 .storageManager
@@ -339,7 +339,7 @@ private extension AppDelegate {
             ServiceLocator.setStores(ScreenshotStoresManager(storageManager: ServiceLocator.storageManager))
         }
 
-        if ProcessInfo.processInfo.arguments.contains("disable-animations") {
+        if BuildConfiguration.shouldDisableAnimations {
             UIView.setAnimationsEnabled(false)
 
             /// Trick found at: https://twitter.com/twannl/status/1232966604142653446

@@ -120,8 +120,8 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "mocked-wpcom-api"
             isEnabled = "NO">
+            argument = "mocked-network-layer"
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-force-crash-logging 1"

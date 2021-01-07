@@ -117,12 +117,6 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var descriptionLabel: UILabel!
 
-    /// A custom border view is used instead of the default cell separator so that we can show/hide the separator while keeping its alignment when
-    /// it is shown and reused.
-    /// This view is added/configured in code manually because the view has to be added to the cell view in order to extend to the cell trailing edge to include
-    /// potential accessory view. In xib, we can only add a subview to cell's `contentView`.
-    private var bottomBorderView = UIView(frame: .zero)
-
     /// Disabled by default. When active, image is constrained to 24pt
     @IBOutlet private var contentImageViewWidthConstraint: NSLayoutConstraint!
 
@@ -133,7 +127,6 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         configureContentStackView()
         configureTitleAndTextStackView()
         applyDefaultBackgroundStyle()
-        configureBottomBorderView()
     }
 }
 
@@ -167,7 +160,11 @@ extension ImageAndTitleAndTextTableViewCell {
 
         contentImageViewWidthConstraint.isActive = false
 
-        bottomBorderView.isHidden = viewModel.showsSeparator == false
+        if viewModel.showsSeparator {
+            showSeparator()
+        } else {
+            hideSeparator()
+        }
     }
 
     func updateUI(switchableViewModel: SwitchableViewModel) {
@@ -279,20 +276,5 @@ private extension ImageAndTitleAndTextTableViewCell {
 
     func configureTitleAndTextStackView() {
         titleAndTextStackView.spacing = 2
-    }
-
-    func configureBottomBorderView() {
-        bottomBorderView.backgroundColor = .systemColor(.separator)
-        addSubview(bottomBorderView)
-        bottomBorderView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            bottomBorderView.leadingAnchor.constraint(equalTo: contentStackView.leadingAnchor, constant: 0),
-            trailingAnchor.constraint(equalTo: bottomBorderView.trailingAnchor, constant: 0),
-            bottomAnchor.constraint(equalTo: bottomBorderView.bottomAnchor, constant: 0),
-            bottomBorderView.heightAnchor.constraint(equalToConstant: 0.5)
-            ])
-
-        // Hides system cell separator since we are using a custom view for the separator.
-        hideSeparator()
     }
 }

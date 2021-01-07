@@ -204,8 +204,8 @@ private extension ReprintShippingLabelViewController {
                                 image: .infoOutlineImage,
                                 imageTintColor: .systemColor(.secondaryLabel),
                                 numberOfLinesForTitle: 0,
-                                isActionable: false))
-        cell.hideSeparator()
+                                isActionable: false,
+                                showsSeparator: false))
     }
 
     func configurePaperSize(cell: TitleAndValueTableViewCell) {
@@ -228,7 +228,8 @@ private extension ReprintShippingLabelViewController {
                                 image: .pagesFootnoteImage,
                                 imageTintColor: .systemColor(.secondaryLabel),
                                 numberOfLinesForTitle: 0,
-                                isActionable: false))
+                                isActionable: false,
+                                showsSeparator: false))
         configureCommonStylesForInfoLinkCell(cell)
     }
 
@@ -239,12 +240,12 @@ private extension ReprintShippingLabelViewController {
                                 image: .infoOutlineFootnoteImage,
                                 imageTintColor: .systemColor(.secondaryLabel),
                                 numberOfLinesForTitle: 0,
-                                isActionable: false))
+                                isActionable: false,
+                                showsSeparator: false))
         configureCommonStylesForInfoLinkCell(cell)
     }
 
     func configureCommonStylesForInfoLinkCell(_ cell: ImageAndTitleAndTextTableViewCell) {
-        cell.hideSeparator()
         cell.selectionStyle = .default
     }
 }

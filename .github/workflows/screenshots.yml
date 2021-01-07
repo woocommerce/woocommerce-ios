@@ -109,8 +109,8 @@ jobs:
 
       - name: Install Native Dependencies
         run: |
-          brew install imagemagick@6
-          brew link imagemagick@6 --force
+          brew install imagemagick@7
+          brew link imagemagick@7 --force
 
       - name: "Set up Ruby"
         uses: ruby/setup-ruby@v1

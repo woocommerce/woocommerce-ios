@@ -134,6 +134,7 @@
 		457453EB25A73C0400276508 /* product-variations-create-update-delete-in-batch.json in Resources */ = {isa = PBXBuildFile; fileRef = 457453EA25A73C0400276508 /* product-variations-create-update-delete-in-batch.json */; };
 		457453F325A73CE500276508 /* ProductVariationInBatchListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457453F225A73CE500276508 /* ProductVariationInBatchListMapper.swift */; };
 		457453F725A7445100276508 /* ProductVariationInBatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457453F625A7445000276508 /* ProductVariationInBatch.swift */; };
+		457453FB25A7602A00276508 /* ProductVariationInBatchListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457453FA25A7602A00276508 /* ProductVariationInBatchListMapperTests.swift */; };
 		457FC68C2382B2FD00B41B02 /* product-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 457FC68B2382B2FD00B41B02 /* product-update.json */; };
 		4599FC5824A624BD0056157A /* ProductTagListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4599FC5724A624BD0056157A /* ProductTagListMapper.swift */; };
 		4599FC5A24A626B70056157A /* ProductTagListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4599FC5924A626B70056157A /* ProductTagListMapperTests.swift */; };
@@ -548,6 +549,7 @@
 		457453EA25A73C0400276508 /* product-variations-create-update-delete-in-batch.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-variations-create-update-delete-in-batch.json"; sourceTree = "<group>"; };
 		457453F225A73CE500276508 /* ProductVariationInBatchListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationInBatchListMapper.swift; sourceTree = "<group>"; };
 		457453F625A7445000276508 /* ProductVariationInBatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationInBatch.swift; sourceTree = "<group>"; };
+		457453FA25A7602A00276508 /* ProductVariationInBatchListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationInBatchListMapperTests.swift; sourceTree = "<group>"; };
 		457FC68B2382B2FD00B41B02 /* product-update.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-update.json"; sourceTree = "<group>"; };
 		4599FC5724A624BD0056157A /* ProductTagListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagListMapper.swift; sourceTree = "<group>"; };
 		4599FC5924A626B70056157A /* ProductTagListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagListMapperTests.swift; sourceTree = "<group>"; };
@@ -1490,6 +1492,7 @@
 				D8FBFF0E22D3B25E006E3336 /* WooAPIVersionTests.swift */,
 				02698CF724C183A5005337C4 /* ProductVariationListMapperTests.swift */,
 				020C907E24C7D359001E2BEB /* ProductVariationMapperTests.swift */,
+				457453FA25A7602A00276508 /* ProductVariationInBatchListMapperTests.swift */,
 				02C254D22563992900A04423 /* OrderShippingLabelListMapperTests.swift */,
 			);
 			path = Mapper;
@@ -2044,6 +2047,7 @@
 				02BDB83723EA9C4D00BCC63E /* String+HTMLTests.swift in Sources */,
 				74CF5E8421402C04000CED0A /* TopEarnerStatsRemoteTests.swift in Sources */,
 				45B204BA24890A8C00FE6526 /* ProductCategoryMapperTests.swift in Sources */,
+				457453FB25A7602A00276508 /* ProductVariationInBatchListMapperTests.swift in Sources */,
 				74749B9522413119005C4CF2 /* ProductsRemoteTests.swift in Sources */,
 				B524194321AC622500D6FC0A /* DotcomDeviceMapperTests.swift in Sources */,
 				74D5BECE217E0F98007B0348 /* SiteSettingsRemoteTests.swift in Sources */,

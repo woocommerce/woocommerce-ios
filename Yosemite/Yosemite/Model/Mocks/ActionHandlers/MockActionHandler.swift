@@ -12,18 +12,22 @@ protocol MockActionHandler {
 
 extension MockActionHandler {
 
+    /// A helper method to keep ActionHandler switch statements clean
     func unimplementedAction<T>(action: T) where T: Action {
         fatalError("Unable to handle action: \(action.identifier) \(String(describing: action))")
     }
 
+    /// A helper for that immediately returns a success for `Result<Void>` closure patterns
     func success(_ onCompletion: (Result<(), Error>) -> Void) {
         onCompletion(.success(()))
     }
 
+    /// A helper for that immediately returns a success for `Error?` closure patterns
     func success(_ onCompletion: (Error?) -> ()) {
         onCompletion(nil)
     }
 
+    /// A helper for saving mock objects into Core Data
     func save<T, U>(mocks: [T], as dataType: U.Type, onCompletion: @escaping (Error?) -> ()) where U: ReadOnlyConvertible & NSManagedObject {
 
         var error: Error?

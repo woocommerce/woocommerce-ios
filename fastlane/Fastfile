@@ -543,7 +543,6 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       "app_store_screenshot-3"    => {desc: "app_store_screenshot_3.txt"},
       "app_store_screenshot-4"    => {desc: "app_store_screenshot_4.txt"},
       "app_store_screenshot-5"    => {desc: "app_store_screenshot_5.txt"},
-      "app_store_screenshot-6"    => {desc: "app_store_screenshot_6.txt"},
     }
 
     metadata_locales = glotpress_locales

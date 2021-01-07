@@ -90,7 +90,7 @@ class WooCommerceScreenshots: XCTestCase {
         }
 
         /// Remove the leading `/`, so we're left with `foo-bar`
-        let assetName = path.replacingOccurrences(of: "/", with: "")
+        let assetName = path.replacingOccurrences(of: "^/", with: "", options: .regularExpression)
 
         /// Lookup the `assetName` in this bundle
         let bundle = Bundle(for: Self.self)

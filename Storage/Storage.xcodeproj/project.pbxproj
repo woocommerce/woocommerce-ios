@@ -48,14 +48,15 @@
 		454005AA24AE4D350087FDD1 /* WooCommerceModelV28toV29.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 454005A924AE4D350087FDD1 /* WooCommerceModelV28toV29.xcmappingmodel */; };
 		45E1862E2370450C009241F3 /* ShippingLine+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E1862D2370450C009241F3 /* ShippingLine+CoreDataClass.swift */; };
 		45E1863023704519009241F3 /* ShippingLine+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E1862F23704519009241F3 /* ShippingLine+CoreDataProperties.swift */; };
-		45ED60A7257EB8C2007B4AC6 /* WooCommerceModelV39toV40.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 45ED60A6257EB8C2007B4AC6 /* WooCommerceModelV39toV40.xcmappingmodel */; };
 		57150E1324F462DF00E81611 /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 57150E1224F462DF00E81611 /* TestKit */; };
+		572B40E425A5414D00DB20E0 /* DeleteEntityObjectsMigrationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572B40E325A5414D00DB20E0 /* DeleteEntityObjectsMigrationPolicy.swift */; };
 		572C099625475208005372E1 /* SpyFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572C099525475208005372E1 /* SpyFileManager.swift */; };
 		5736878E24AAADAE00B528FE /* ManagedObjectModelsInventory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5736878D24AAADAE00B528FE /* ManagedObjectModelsInventory.swift */; };
 		5736879024AABE4D00B528FE /* ManagedObjectModelsInventoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5736878F24AABE4D00B528FE /* ManagedObjectModelsInventoryTests.swift */; };
 		574B774C24AA87FA0042116F /* FileManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574B774B24AA87FA0042116F /* FileManagerProtocol.swift */; };
 		574B774E24AA883D0042116F /* MockFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574B774D24AA883D0042116F /* MockFileManager.swift */; };
 		574B775024AA897E0042116F /* FileManager+FileManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 574B774F24AA897E0042116F /* FileManager+FileManagerProtocol.swift */; };
+		574CFDEC25A531C90044730C /* WooCommerceModelV39toV40.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 574CFDEB25A531C90044730C /* WooCommerceModelV39toV40.xcmappingmodel */; };
 		57589E90252275CA000F22CE /* NSManagedObjectContext+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57589E8F252275CA000F22CE /* NSManagedObjectContext+TestHelpers.swift */; };
 		57589E9225227F95000F22CE /* WooCommerceModelV31toV32.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 57589E9125227F95000F22CE /* WooCommerceModelV31toV32.xcmappingmodel */; };
 		575CD4DC24ABE77800755B2B /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575CD4DB24ABE77800755B2B /* Collection+Extensions.swift */; };
@@ -237,14 +238,15 @@
 		45E1862D2370450C009241F3 /* ShippingLine+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLine+CoreDataClass.swift"; sourceTree = "<group>"; };
 		45E1862F23704519009241F3 /* ShippingLine+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLine+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		45ED6099257EB11B007B4AC6 /* Model 40.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 40.xcdatamodel"; sourceTree = "<group>"; };
-		45ED60A6257EB8C2007B4AC6 /* WooCommerceModelV39toV40.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV39toV40.xcmappingmodel; sourceTree = "<group>"; };
 		47556EE256120BEE49FF5FD3 /* Pods_StorageTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StorageTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		572B40E325A5414D00DB20E0 /* DeleteEntityObjectsMigrationPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteEntityObjectsMigrationPolicy.swift; sourceTree = "<group>"; };
 		572C099525475208005372E1 /* SpyFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpyFileManager.swift; sourceTree = "<group>"; };
 		5736878D24AAADAE00B528FE /* ManagedObjectModelsInventory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedObjectModelsInventory.swift; sourceTree = "<group>"; };
 		5736878F24AABE4D00B528FE /* ManagedObjectModelsInventoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedObjectModelsInventoryTests.swift; sourceTree = "<group>"; };
 		574B774B24AA87FA0042116F /* FileManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerProtocol.swift; sourceTree = "<group>"; };
 		574B774D24AA883D0042116F /* MockFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFileManager.swift; sourceTree = "<group>"; };
 		574B774F24AA897E0042116F /* FileManager+FileManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+FileManagerProtocol.swift"; sourceTree = "<group>"; };
+		574CFDEB25A531C90044730C /* WooCommerceModelV39toV40.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV39toV40.xcmappingmodel; sourceTree = "<group>"; };
 		57589E8F252275CA000F22CE /* NSManagedObjectContext+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+TestHelpers.swift"; sourceTree = "<group>"; };
 		57589E9125227F95000F22CE /* WooCommerceModelV31toV32.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV31toV32.xcmappingmodel; sourceTree = "<group>"; };
 		575CD4DB24ABE77800755B2B /* Collection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
@@ -446,6 +448,14 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		572B40E225A540BA00DB20E0 /* Migration Policies */ = {
+			isa = PBXGroup;
+			children = (
+				572B40E325A5414D00DB20E0 /* DeleteEntityObjectsMigrationPolicy.swift */,
+			);
+			path = "Migration Policies";
+			sourceTree = "<group>";
+		};
 		57A8819E24CA395000AE0943 /* AppSettings */ = {
 			isa = PBXGroup;
 			children = (
@@ -488,7 +498,7 @@
 				454005A924AE4D350087FDD1 /* WooCommerceModelV28toV29.xcmappingmodel */,
 				57589E9125227F95000F22CE /* WooCommerceModelV31toV32.xcmappingmodel */,
 				02D200D7253FDEE500840173 /* WooCommerceModelV32toV33.xcmappingmodel */,
-				45ED60A6257EB8C2007B4AC6 /* WooCommerceModelV39toV40.xcmappingmodel */,
+				574CFDEB25A531C90044730C /* WooCommerceModelV39toV40.xcmappingmodel */,
 			);
 			name = "Mapping Models";
 			sourceTree = "<group>";
@@ -619,6 +629,7 @@
 		B59E11D720A9CFF3004121A4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				572B40E225A540BA00DB20E0 /* Migration Policies */,
 				02C254E32563B12E00A04423 /* ShippingLabelSettings+CoreDataClass.swift */,
 				02C254E42563B12E00A04423 /* ShippingLabelSettings+CoreDataProperties.swift */,
 				02C254E52563B12E00A04423 /* ShippingLabel+CoreDataClass.swift */,
@@ -983,13 +994,13 @@
 				747453A82242C85E00E0B5EE /* ProductTag+CoreDataProperties.swift in Sources */,
 				D8FBFF5A22D66A06006E3336 /* OrderStatsV4+CoreDataProperties.swift in Sources */,
 				7474539F2242C85E00E0B5EE /* ProductImage+CoreDataClass.swift in Sources */,
-				45ED60A7257EB8C2007B4AC6 /* WooCommerceModelV39toV40.xcmappingmodel in Sources */,
 				D8736B6922F0AC9000A14A29 /* OrderCountItem+CoreDataProperties.swift in Sources */,
 				7474539D2242C85E00E0B5EE /* ProductAttribute+CoreDataClass.swift in Sources */,
 				023FA29623316A4D008C1769 /* ProductSearchResults+CoreDataProperties.swift in Sources */,
 				746A9D22214078080013F6FF /* TopEarnerStats+CoreDataProperties.swift in Sources */,
 				023FA29523316A4D008C1769 /* Product+CoreDataProperties.swift in Sources */,
 				261CF1C5255B291F0090D8D3 /* PaymentGateway+CoreDataProperties.swift in Sources */,
+				574CFDEC25A531C90044730C /* WooCommerceModelV39toV40.xcmappingmodel in Sources */,
 				937D6C48226E1D1F004FB8A5 /* AccountSettings+CoreDataProperties.swift in Sources */,
 				74F009C12183B99B002B4566 /* Note+CoreDataProperties.swift in Sources */,
 				02C254EB2563B12E00A04423 /* ShippingLabelSettings+CoreDataClass.swift in Sources */,
@@ -1040,6 +1051,7 @@
 				26B64556259CE7A900EF3FB3 /* ProductAttributeTerm+CoreDataProperties.swift in Sources */,
 				B505F6DE20BEEA4F00BB1B69 /* CoreDataManager.swift in Sources */,
 				57A881A024CA396D00AE0943 /* GeneralAppSettings.swift in Sources */,
+				572B40E425A5414D00DB20E0 /* DeleteEntityObjectsMigrationPolicy.swift in Sources */,
 				7492FAD7217FA9C100ED2C69 /* SiteSetting+CoreDataProperties.swift in Sources */,
 				45E1863023704519009241F3 /* ShippingLine+CoreDataProperties.swift in Sources */,
 				B5FD111F21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift in Sources */,

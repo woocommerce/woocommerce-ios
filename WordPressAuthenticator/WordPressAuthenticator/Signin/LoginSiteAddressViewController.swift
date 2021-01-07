@@ -235,8 +235,10 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
                     self.showSelfHostedUsernamePassword()
                 }
 
-                self.showWPUsernamePassword()
-
+                self.showWPUsernamePassword()                
+            case .presentEmailController:
+                // This case is only used for UL&S
+                break
             case .injectViewController(_):
                 // This case is only used for UL&S
                 break

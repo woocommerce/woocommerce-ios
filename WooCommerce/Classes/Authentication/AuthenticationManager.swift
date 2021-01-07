@@ -38,6 +38,7 @@ class AuthenticationManager: Authentication {
                                                                 showLoginOptions: true,
                                                                 enableSignUp: false,
                                                                 enableSignInWithApple: isSignInWithAppleEnabled,
+                                                                enableSignupWithGoogle: false,
                                                                 enableUnifiedAuth: true,
                                                                 continueWithSiteAddressFirst: true)
 
@@ -79,6 +80,7 @@ class AuthenticationManager: Authentication {
                                                                   continueWithWPButtonTitle: AuthenticationConstants.continueWithWPButtonTitle,
                                                                   enterYourSiteAddressButtonTitle: AuthenticationConstants.enterYourSiteAddressButtonTitle,
                                                                   findSiteButtonTitle: AuthenticationConstants.findYourStoreAddressButtonTitle,
+                                                                  signupTermsOfService: AuthenticationConstants.signupTermsOfService,
                                                                   getStartedTitle: AuthenticationConstants.loginTitle)
 
         let unifiedStyle = WordPressAuthenticatorUnifiedStyle(borderColor: .divider,

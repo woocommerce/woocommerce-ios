@@ -11,8 +11,6 @@ struct MockAvailabilityActionHandler: MockActionHandler {
         switch action {
             case .checkStatsV4Availability(let siteID, let onCompletion):
                 checkStatsV4Availability(siteId: siteID, onCompletion: onCompletion)
-
-            default: unimplementedAction(action: action)
         }
     }
 

@@ -36,8 +36,6 @@ struct MockStatsActionV4Handler: MockActionHandler {
     func retrieveSiteVisitStats(siteID: Int64, timeRange: StatsTimeRangeV4, onCompletion: @escaping (Error?) -> ()) {
         let store = StatsStoreV4(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
 
-//        store.upsertStoredSiteVisitStats(readOnlyStats: objectGraph.yearlyVisitStats)
-
         switch timeRange {
             case .today: success(onCompletion)
             case .thisWeek: success(onCompletion)

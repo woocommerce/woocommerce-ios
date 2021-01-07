@@ -40,6 +40,8 @@ public final class ProductVariationStore: Store {
             synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .retrieveProductVariation(let siteID, let productID, let variationID, let onCompletion):
             retrieveProductVariation(siteID: siteID, productID: productID, variationID: variationID, onCompletion: onCompletion)
+        case .createProductVariations(let siteID, let productID, let variations, let onCompletion):
+            createProductVariations(siteID: siteID, productID: productID, variations: variations, onCompletion: onCompletion)
         case .updateProductVariation(let productVariation, let onCompletion):
             updateProductVariation(productVariation: productVariation, onCompletion: onCompletion)
         case .requestMissingVariations(let order, let onCompletion):
@@ -100,6 +102,35 @@ private extension ProductVariationStore {
                                                 return
                     }
                     onCompletion(.success(storageProductVariation.toReadOnly()))
+                }
+            }
+        }
+    }
+
+    func createProductVariations(siteID: Int64,
+                                 productID: Int64,
+                                 variations: [CreateProductVariation],
+                                 onCompletion: @escaping (Result<[ProductVariation], Error>) -> Void) {
+        remote.createProductVariations(for: siteID, productID: productID, variations: variations) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let productVariations):
+                self.upsertStoredProductVariationsInBackground(readOnlyProductVariations: productVariations,
+                                                               siteID: siteID, productID: productID) { [weak self] in
+                    guard let storageProductVariations = self?.storageManager.viewStorage.loadProductVariations(siteID: siteID,
+                                                                                                                productID: productID,
+                                                                                                                productVariationsID: productVariations
+                                                                                                                    .map { $0.productVariationID }
+                    )
+                    else {
+                                                onCompletion(.failure(ProductVariationLoadError.notFoundInStorage))
+                                                return
+                    }
+                    onCompletion(.success(storageProductVariations.map { $0.toReadOnly() }))
                 }
             }
         }

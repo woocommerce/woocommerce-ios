@@ -68,9 +68,6 @@ jobs:
       with:
         bundler-cache: true
 
-    - name: Select Xcode Version
-      run: sudo xcode-select --switch /Applications/Xcode_12.app
-
     - name: Install Fastlane Dependencies
       run: bundle exec fastlane run configure_apply
     

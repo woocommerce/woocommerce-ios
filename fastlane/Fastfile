@@ -404,6 +404,9 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     # Ensure we're using the latest Pods
     sh('bundle exec pod install --verbose')
 
+    # Ensure we're using the right version of Xcode
+    xcversion(version: "~> 12.0")
+
     scan(
       workspace: File.join(fastlane_directory, "../WooCommerce.xcworkspace"),
       scheme: "WooCommerceScreenshots",

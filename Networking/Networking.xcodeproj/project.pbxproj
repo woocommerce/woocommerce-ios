@@ -131,6 +131,7 @@
 		4568E2242459D3230007E478 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4568E2232459D3230007E478 /* Post.swift */; };
 		456F71D424CB1E2400472EC1 /* ProductTagFromBatchCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456F71D324CB1E2400472EC1 /* ProductTagFromBatchCreation.swift */; };
 		457453E725A72C9700276508 /* CreateProductVariation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457453E625A72C9700276508 /* CreateProductVariation.swift */; };
+		457453EB25A73C0400276508 /* product-variations-create-update-delete-in-batch.json in Resources */ = {isa = PBXBuildFile; fileRef = 457453EA25A73C0400276508 /* product-variations-create-update-delete-in-batch.json */; };
 		457FC68C2382B2FD00B41B02 /* product-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 457FC68B2382B2FD00B41B02 /* product-update.json */; };
 		4599FC5824A624BD0056157A /* ProductTagListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4599FC5724A624BD0056157A /* ProductTagListMapper.swift */; };
 		4599FC5A24A626B70056157A /* ProductTagListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4599FC5924A626B70056157A /* ProductTagListMapperTests.swift */; };
@@ -542,6 +543,7 @@
 		4568E2232459D3230007E478 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		456F71D324CB1E2400472EC1 /* ProductTagFromBatchCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagFromBatchCreation.swift; sourceTree = "<group>"; };
 		457453E625A72C9700276508 /* CreateProductVariation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateProductVariation.swift; sourceTree = "<group>"; };
+		457453EA25A73C0400276508 /* product-variations-create-update-delete-in-batch.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-variations-create-update-delete-in-batch.json"; sourceTree = "<group>"; };
 		457FC68B2382B2FD00B41B02 /* product-update.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-update.json"; sourceTree = "<group>"; };
 		4599FC5724A624BD0056157A /* ProductTagListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagListMapper.swift; sourceTree = "<group>"; };
 		4599FC5924A626B70056157A /* ProductTagListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagListMapperTests.swift; sourceTree = "<group>"; };
@@ -1280,6 +1282,7 @@
 				02698CF924C188E8005337C4 /* product-variations-load-all-alternative-types.json */,
 				02698CFB24C1B0CE005337C4 /* product-variations-load-all-first-on-sale-empty-sale-price.json */,
 				02C54CC524D3E937007D658F /* product-variations-load-all-manage-stock-two-states.json */,
+				457453EA25A73C0400276508 /* product-variations-create-update-delete-in-batch.json */,
 				020C907A24C6E108001E2BEB /* product-variation-update.json */,
 				451274A525276C82009911FF /* product-variation.json */,
 				CE0A0F1E223998A00075ED8D /* products-load-all.json */,
@@ -1737,6 +1740,7 @@
 				CECC759E23D6231A00486676 /* order-560-all-refunds.json in Resources */,
 				02E7FFCF25621C7900C53030 /* shipping-label-print.json in Resources */,
 				74ABA1CB213F19FE00FFAD30 /* top-performers-week.json in Resources */,
+				457453EB25A73C0400276508 /* product-variations-create-update-delete-in-batch.json in Resources */,
 				B524194721AC643900D6FC0A /* device-settings.json in Resources */,
 				CEF88DAB233E911A00BED485 /* order-fully-refunded.json in Resources */,
 				02698CFA24C188E9005337C4 /* product-variations-load-all-alternative-types.json in Resources */,

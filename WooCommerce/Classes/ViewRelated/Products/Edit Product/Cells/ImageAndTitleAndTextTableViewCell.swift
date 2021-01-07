@@ -26,6 +26,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         let numberOfLinesForTitle: Int
         let numberOfLinesForText: Int
         let isActionable: Bool
+        let showsSeparator: Bool
 
         init(title: String?,
              text: String? = nil,
@@ -34,7 +35,8 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
              imageTintColor: UIColor? = nil,
              numberOfLinesForTitle: Int = 1,
              numberOfLinesForText: Int = 1,
-             isActionable: Bool = true) {
+             isActionable: Bool = true,
+             showsSeparator: Bool = true) {
             self.title = title
             self.text = text
             self.textTintColor = textTintColor
@@ -43,6 +45,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
             self.numberOfLinesForTitle = numberOfLinesForTitle
             self.numberOfLinesForText = numberOfLinesForText
             self.isActionable = isActionable
+            self.showsSeparator = showsSeparator
         }
     }
 
@@ -55,6 +58,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         let numberOfLinesForTitle: Int
         let numberOfLinesForText: Int
         let isActionable: Bool
+        let showsSeparator: Bool
 
         init(title: String?,
              text: String?,
@@ -63,7 +67,8 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
              imageTintColor: UIColor? = nil,
              numberOfLinesForTitle: Int = 1,
              numberOfLinesForText: Int = 1,
-             isActionable: Bool = true) {
+             isActionable: Bool = true,
+             showsSeparator: Bool = true) {
             self.title = title
             self.text = text
             self.textTintColor = textTintColor
@@ -72,6 +77,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
             self.numberOfLinesForTitle = numberOfLinesForTitle
             self.numberOfLinesForText = numberOfLinesForText
             self.isActionable = isActionable
+            self.showsSeparator = showsSeparator
         }
     }
 
@@ -111,6 +117,12 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var descriptionLabel: UILabel!
 
+    /// A custom border view is used instead of the default cell separator so that we can show/hide the separator while keeping its alignment when
+    /// it is shown and reused.
+    /// This view is added/configured in code manually because the view has to be added to the cell view in order to extend to the cell trailing edge to include
+    /// potential accessory view. In xib, we can only add a subview to cell's `contentView`.
+    private var bottomBorderView = UIView(frame: .zero)
+
     /// Disabled by default. When active, image is constrained to 24pt
     @IBOutlet private var contentImageViewWidthConstraint: NSLayoutConstraint!
 
@@ -121,6 +133,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         configureContentStackView()
         configureTitleAndTextStackView()
         applyDefaultBackgroundStyle()
+        configureBottomBorderView()
     }
 }
 
@@ -153,6 +166,8 @@ extension ImageAndTitleAndTextTableViewCell {
         contentView.backgroundColor = nil
 
         contentImageViewWidthConstraint.isActive = false
+
+        bottomBorderView.isHidden = viewModel.showsSeparator == false
     }
 
     func updateUI(switchableViewModel: SwitchableViewModel) {
@@ -235,7 +250,8 @@ private extension ImageAndTitleAndTextTableViewCell {
                                   imageTintColor: data.imageTintColor,
                                   numberOfLinesForTitle: data.numberOfLinesForTitle,
                                   numberOfLinesForText: data.numberOfLinesForText,
-                                  isActionable: data.isActionable)
+                                  isActionable: data.isActionable,
+                                  showsSeparator: data.showsSeparator)
         updateUI(viewModel: viewModel)
     }
 }
@@ -263,5 +279,20 @@ private extension ImageAndTitleAndTextTableViewCell {
 
     func configureTitleAndTextStackView() {
         titleAndTextStackView.spacing = 2
+    }
+
+    func configureBottomBorderView() {
+        bottomBorderView.backgroundColor = .systemColor(.separator)
+        addSubview(bottomBorderView)
+        bottomBorderView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            bottomBorderView.leadingAnchor.constraint(equalTo: contentStackView.leadingAnchor, constant: 0),
+            trailingAnchor.constraint(equalTo: bottomBorderView.trailingAnchor, constant: 0),
+            bottomAnchor.constraint(equalTo: bottomBorderView.bottomAnchor, constant: 0),
+            bottomBorderView.heightAnchor.constraint(equalToConstant: 0.5)
+            ])
+
+        // Hides system cell separator since we are using a custom view for the separator.
+        hideSeparator()
     }
 }

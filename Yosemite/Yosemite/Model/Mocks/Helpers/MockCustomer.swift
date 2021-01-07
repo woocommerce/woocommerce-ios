@@ -15,7 +15,7 @@ struct MockCustomer {
 
     init(
         firstName: String,
-         lastName: String,
+        lastName: String,
         company: String? = nil,
         address1: String = "",
         address2: String? = nil,

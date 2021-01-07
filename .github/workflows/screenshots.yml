@@ -126,7 +126,7 @@ jobs:
       - name: Download Generated Screenshots
         run: |
           cd fastlane
-          aws s3 cp s3://$S3_BUCKET/2020-12-14-final/screenshots screenshots/  --recursive --exclude "*.html"
+          aws s3 cp s3://$S3_BUCKET/$GITHUB_RUN_ID/screenshots screenshots/  --recursive --exclude "*.html"
 
       - name: Generate and Upload Screenshot Summary
         run: |

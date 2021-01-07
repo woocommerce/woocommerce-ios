@@ -6,7 +6,7 @@ import Storage
 // MARK: - AccountStore
 //
 public class AccountStore: Store {
-    private let remote: AccountRemoteProtocol
+    private let remote: AccountRemote
 
     /// Shared private StorageType for use during synchronizeSites and synchronizeSitePlan processes
     ///
@@ -19,7 +19,7 @@ public class AccountStore: Store {
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
-    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: AccountRemoteProtocol) {
+    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: AccountRemote) {
         self.remote = remote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }

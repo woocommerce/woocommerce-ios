@@ -5,7 +5,6 @@ import Foundation
 /// The required methods are intentionally incomplete. Feel free to add the other ones.
 ///
 public protocol ProductVariationsRemoteProtocol {
-    func updateProductVariation(productVariation: ProductVariation, completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func loadAllProductVariations(for siteID: Int64,
                                   productID: Int64,
                                   context: String?,
@@ -13,6 +12,11 @@ public protocol ProductVariationsRemoteProtocol {
                                   pageSize: Int,
                                   completion: @escaping ([ProductVariation]?, Error?) -> Void)
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
+    func createProductVariations(for siteID: Int64,
+                                        productID: Int64,
+                                        variations: [CreateProductVariation],
+                                        completion: @escaping (Result<[ProductVariation], Error>) -> Void)
+    func updateProductVariation(productVariation: ProductVariation, completion: @escaping (Result<ProductVariation, Error>) -> Void)
 }
 
 /// ProductVariation: Remote Endpoints

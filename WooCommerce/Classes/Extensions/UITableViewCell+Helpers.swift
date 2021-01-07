@@ -22,6 +22,13 @@ extension UITableViewCell {
     /// Be careful applying this to a reusable cell where the separator is expected to be shown in some cases.
     ///
     func hideSeparator() {
-        separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
+        separatorInset = UIEdgeInsets(top: 0, left: separatorInset.left, bottom: 0, right: .greatestFiniteMagnitude)
+    }
+
+    /// Shows the separator for a cell.
+    /// The separator inset is only set manually when a custom inset is preferred, or the cell is reusable with a different inset in other use cases.
+    ///
+    func showSeparator(inset: UIEdgeInsets = .init(top: 0, left: 16, bottom: 0, right: 0)) {
+        separatorInset = inset
     }
 }

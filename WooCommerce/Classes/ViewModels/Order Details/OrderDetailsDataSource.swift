@@ -535,13 +535,16 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureReprintShippingLabelButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
-        cell.configure(style: .secondary, title: Titles.reprintShippingLabel) { [weak self] in
+        cell.configure(style: .secondary,
+                       title: Titles.reprintShippingLabel,
+                       bottomSpacing: 8) { [weak self] in
             guard let self = self else { return }
             guard let shippingLabel = self.shippingLabel(at: indexPath) else {
                 return
             }
             self.onCellAction?(.reprintShippingLabel(shippingLabel: shippingLabel), nil)
         }
+        cell.hideSeparator()
     }
 
     private func configureAggregateOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
@@ -590,6 +593,7 @@ private extension OrderDetailsDataSource {
         cell.configure(title: Titles.fulfillTitle) { [weak self] in
             self?.onCellAction?(.fulfill, nil)
         }
+        cell.showSeparator()
     }
 
     private func configureIssueRefundButton(cell: IssueRefundTableViewCell) {

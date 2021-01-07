@@ -178,30 +178,16 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         )
     ]
 
-
-    public let thisYearVisitStats: SiteVisitStats = createStats(
-        granularity: .month,
-        items: ( 0 ..< Date().month ).map {
+    public let thisYearVisitStats: SiteVisitStats = createVisitStats(
+        granularity: .year,
+        items: [
             createVisitStatsItem(
-                granularity: .month,
-                ago: $0,
+                granularity: .year,
+                ago: 0,
                 visitors: Int.random(in: 100 ... 1000)
             )
-        }
+        ]
     )
-
-    public var yearlyVisitStats: SiteVisitStats {
-        Self.createStats(
-            granularity: .year,
-            items: [
-                Self.createVisitStatsItem(
-                    granularity: .year,
-                    ago: 0,
-                    visitors: thisYearVisitStats.totalVisitors
-                )
-            ]
-        )
-    }
 
     public var thisYearTopProducts: TopEarnerStats = createStats(granularity: .year, items: [
         createTopEarningItem(product: Products.akoyaPearlShades, quantity: 17),

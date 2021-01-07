@@ -12,8 +12,6 @@ public protocol MockObjectGraph {
     var products: [Product] { get }
     var reviews: [ProductReview] { get }
 
-    var yearlyVisitStats: SiteVisitStats { get }
-
     var thisYearOrderStats: OrderStatsV4 { get }
     var thisYearVisitStats: SiteVisitStats { get }
     var thisYearTopProducts: TopEarnerStats { get }
@@ -306,7 +304,8 @@ extension MockObjectGraph {
                 return SiteVisitStatsItem(period: period.asVisitStatsMonthString, visitors: visitors)
             case .year:
                 let period = Date().subtracingYears(count).yearStart
-                return SiteVisitStatsItem(period: period.asVisitStatsMonthString, visitors: visitors)
+                let item = SiteVisitStatsItem(period: period.asVisitStatsMonthString, visitors: visitors)
+                return item
             default:
                 fatalError("Not implemented yet")
         }
@@ -340,12 +339,19 @@ extension MockObjectGraph {
         )
     }
 
-    static func createStats(granularity: StatGranularity, items: [SiteVisitStatsItem]) -> SiteVisitStats {
-        SiteVisitStats(
-            date: Date().monthEnd.asVisitStatsMonthString,
-            granularity: granularity,
-            items: items
-        )
+    static func createVisitStats(granularity: StatGranularity, items: [SiteVisitStatsItem]) -> SiteVisitStats {
+
+        switch granularity {
+            case .day: preconditionFailure("Not implemented")
+            case .week: preconditionFailure("Not implemented")
+            case .month: preconditionFailure("Not implemented")
+            case .year:
+                return SiteVisitStats(
+                    date: Date().asVisitStatsYearString,
+                    granularity: .month,
+                    items: items
+                )
+        }
     }
 
     static func createStats(granularity: StatGranularity, items: [TopEarnerStatsItem]) -> TopEarnerStats {
@@ -435,6 +441,11 @@ private extension Array where Element == OrderStatsV4Interval {
         return Calendar.current.date(from: DateComponents(year: year, month: 1, day: 1))!
     }
 
+    var yearEnd: Date {
+        let year = Calendar.current.component(.year, from: self)
+        return Calendar.current.date(from: DateComponents(year: year, month: 12, day: 31))!
+    }
+
     var monthStart: Date {
         let components = DateComponents(year: self.year, month: self.month, day: 1)
         return Calendar.current.date(from: components)!
@@ -447,6 +458,12 @@ private extension Array where Element == OrderStatsV4Interval {
     var asVisitStatsMonthString: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: self)
+    }
+
+    var asVisitStatsYearString: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-12-31"
         return formatter.string(from: self)
     }
 

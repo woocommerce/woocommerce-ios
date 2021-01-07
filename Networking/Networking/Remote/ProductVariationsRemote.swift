@@ -64,27 +64,6 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Updates a specific `ProductVariation`.
-    ///
-    /// - Parameters:
-    ///     - productVariation: the ProductVariation to update remotely.
-    ///     - completion: Closure to be executed upon completion.
-    ///
-    public func updateProductVariation(productVariation: ProductVariation, completion: @escaping (Result<ProductVariation, Error>) -> Void) {
-        do {
-            let parameters = try productVariation.toDictionary()
-            let productID = productVariation.productID
-            let siteID = productVariation.siteID
-            let path = "\(Path.products)/\(productID)/variations/\(productVariation.productVariationID)"
-            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
-            let mapper = ProductVariationMapper(siteID: siteID, productID: productID)
-
-            enqueue(request, mapper: mapper, completion: completion)
-        } catch {
-            completion(.failure(error))
-        }
-    }
-
     /// Creates a list of `ProductVariation` in batch. At most 100 variations per batch.
     ///
     /// - Parameters:
@@ -105,6 +84,27 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
             let path = "\(Path.products)/\(productID)/variations"
             let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
             let mapper = ProductVariationListMapper(siteID: siteID, productID: productID)
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
+    /// Updates a specific `ProductVariation`.
+    ///
+    /// - Parameters:
+    ///     - productVariation: the ProductVariation to update remotely.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func updateProductVariation(productVariation: ProductVariation, completion: @escaping (Result<ProductVariation, Error>) -> Void) {
+        do {
+            let parameters = try productVariation.toDictionary()
+            let productID = productVariation.productID
+            let siteID = productVariation.siteID
+            let path = "\(Path.products)/\(productID)/variations/\(productVariation.productVariationID)"
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let mapper = ProductVariationMapper(siteID: siteID, productID: productID)
+
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))

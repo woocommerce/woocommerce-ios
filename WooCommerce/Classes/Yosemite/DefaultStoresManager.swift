@@ -1,7 +1,6 @@
 import Foundation
 import Yosemite
 import Observables
-import Networking
 
 // MARK: - DefaultStoresManager
 //
@@ -70,8 +69,8 @@ class DefaultStoresManager: StoresManager {
     ///
     init(sessionManager: SessionManagerProtocol) {
         _sessionManager = sessionManager
-
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
+
         isLoggedInSubject.send(isAuthenticated)
 
         restoreSessionAccountIfPossible()

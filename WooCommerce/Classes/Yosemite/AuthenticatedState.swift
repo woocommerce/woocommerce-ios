@@ -11,7 +11,7 @@ class AuthenticatedState: StoresManagerState {
 
     /// Dispatcher: Glues all of the Stores!
     ///
-    private let dispatcher: Dispatcher
+    private let dispatcher = Dispatcher()
 
     /// Retains all of the active Services
     ///
@@ -24,11 +24,11 @@ class AuthenticatedState: StoresManagerState {
 
     /// Designated Initializer
     ///
-    init(credentials: Credentials, dispatcher: Dispatcher = Dispatcher(), services: [ActionsProcessor]? = nil) {
+    init(credentials: Credentials) {
         let storageManager = ServiceLocator.storageManager
         let network = AlamofireNetwork(credentials: credentials)
 
-        self.services = services ?? [
+        services = [
             AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
             AvailabilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -55,8 +55,6 @@ class AuthenticatedState: StoresManagerState {
             StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
             TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
-
-        self.dispatcher = dispatcher
 
         startListeningToNotifications()
     }

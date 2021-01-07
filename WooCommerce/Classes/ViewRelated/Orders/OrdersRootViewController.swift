@@ -19,12 +19,6 @@ final class OrdersRootViewController: UIViewController {
 
     private lazy var ordersViewController = OrdersTabbedViewController(siteID: siteID)
 
-    // MARK: Subviews
-
-    private lazy var containerView: UIView = {
-        return UIView(frame: .zero)
-    }()
-
     private let siteID: Int64
 
     // MARK: View Lifecycle
@@ -46,14 +40,7 @@ final class OrdersRootViewController: UIViewController {
         configureTitle()
         configureNavigationButtons()
         configureView()
-        configureContainerView()
         configureChildViewController()
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        // The magical fix for XLPagerTabStrip landscape issue. h/t @jaclync https://git.io/JvzgK
-        ordersViewController.view.frame = containerView.bounds
     }
 
     /// Presents the Details for the Notification with the specified Identifier.
@@ -91,19 +78,12 @@ private extension OrdersRootViewController {
         removeNavigationBackBarButtonText()
     }
 
-    func configureContainerView() {
-        // A container view is added to respond to safe area insets from the view controller.
-        // This is needed when the child view controller's view has to use a frame-based layout
-        // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
-        view.addSubview(containerView)
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToSafeArea(containerView)
-    }
-
     func configureChildViewController() {
         let contentView = ordersViewController.view!
         addChild(ordersViewController)
-        containerView.addSubview(contentView)
+        view.addSubview(contentView)
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToSafeArea(contentView)
         ordersViewController.didMove(toParent: self)
     }
 }

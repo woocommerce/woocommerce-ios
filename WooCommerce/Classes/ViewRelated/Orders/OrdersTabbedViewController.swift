@@ -1,6 +1,4 @@
-
 import UIKit
-import XLPagerTabStrip
 import struct Yosemite.OrderStatus
 import enum Yosemite.OrderStatusEnum
 import struct Yosemite.Note
@@ -123,59 +121,6 @@ final class OrdersTabbedViewController: TabbedViewController {
 extension OrdersTabbedViewController: OrderListViewControllerDelegate {
     func orderListViewControllerWillSynchronizeOrders(_ viewController: UIViewController) {
         viewModel.syncOrderStatuses()
-    }
-}
-
-// MARK: - Initialization and Loading (Not Reusable)
-
-private extension OrdersTabbedViewController {
-    /// Initialize the tab bar containing the "Processing" and "All Orders" buttons.
-    ///
-    func configureTabStrip() {
-//        settings.style.buttonBarBackgroundColor = .listForeground
-//        settings.style.buttonBarItemBackgroundColor = .listForeground
-//        settings.style.selectedBarBackgroundColor = .primary
-//        settings.style.buttonBarItemFont = StyleManager.subheadlineFont
-//        settings.style.selectedBarHeight = TabStripDimensions.selectedBarHeight
-//        settings.style.buttonBarItemTitleColor = .text
-//        settings.style.buttonBarItemLeftRightMargin = TabStripDimensions.buttonLeftRightMargin
-//
-//        changeCurrentIndexProgressive = {
-//            (oldCell: ButtonBarViewCell?,
-//            newCell: ButtonBarViewCell?,
-//            progressPercentage: CGFloat,
-//            changeCurrentIndex: Bool,
-//            animated: Bool) -> Void in
-//
-//            guard changeCurrentIndex == true else { return }
-//            oldCell?.label.textColor = .textSubtle
-//            newCell?.label.textColor = .primary
-//        }
-//
-//        addBottomBorderToTabStripButtonBarView(buttonBarView)
-    }
-
-    /// Helper for `configureTabStrip()`.
-    ///
-    func addBottomBorderToTabStripButtonBarView(_ buttonBarView: ButtonBarView) {
-        guard let superView = buttonBarView.superview else {
-            return
-        }
-
-        let border = UIView.createBorderView()
-
-        superView.addSubview(border)
-
-        NSLayoutConstraint.activate([
-            border.topAnchor.constraint(equalTo: buttonBarView.bottomAnchor),
-            border.leadingAnchor.constraint(equalTo: buttonBarView.leadingAnchor),
-            border.trailingAnchor.constraint(equalTo: buttonBarView.trailingAnchor)
-        ])
-    }
-
-    enum TabStripDimensions {
-        static let buttonLeftRightMargin: CGFloat   = 14.0
-        static let selectedBarHeight: CGFloat       = 3.0
     }
 }
 

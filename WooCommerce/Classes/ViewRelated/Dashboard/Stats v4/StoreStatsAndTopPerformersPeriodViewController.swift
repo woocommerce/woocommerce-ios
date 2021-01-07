@@ -1,5 +1,4 @@
 import UIKit
-import XLPagerTabStrip
 import Yosemite
 import Observables
 
@@ -156,17 +155,6 @@ extension StoreStatsAndTopPerformersPeriodViewController {
     ///
     var shouldDisplayStoreStatsGhostContent: Bool {
         return storeStatsPeriodViewController.shouldDisplayGhostContent
-    }
-}
-
-// MARK: - IndicatorInfoProvider Conformance (Tab Bar)
-//
-extension StoreStatsAndTopPerformersPeriodViewController: IndicatorInfoProvider {
-    func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
-        return IndicatorInfo(
-            title: timeRange.tabTitle,
-            accessibilityIdentifier: "period-data-" + timeRange.rawValue + "-tab"
-        )
     }
 }
 

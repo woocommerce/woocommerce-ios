@@ -1,7 +1,6 @@
 import UIKit
 import Yosemite
 import Charts
-import XLPagerTabStrip
 import WordPressUI
 import class AutomatticTracks.CrashLogging
 
@@ -171,15 +170,6 @@ private extension TopPerformerDataViewController {
         for kind in headersAndFooters {
             tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
         }
-    }
-}
-
-
-// MARK: - IndicatorInfoProvider Conformance (Tab Bar)
-//
-extension TopPerformerDataViewController: IndicatorInfoProvider {
-    func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
-        return IndicatorInfo(title: tabDescription)
     }
 }
 

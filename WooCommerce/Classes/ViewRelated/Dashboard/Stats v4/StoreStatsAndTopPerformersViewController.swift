@@ -1,5 +1,4 @@
 import UIKit
-import XLPagerTabStrip
 import Yosemite
 
 /// Top-level stats container view controller that consists of a button bar with 4 time ranges.

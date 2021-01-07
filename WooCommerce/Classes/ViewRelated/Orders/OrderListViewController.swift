@@ -6,9 +6,6 @@ import WordPressUI
 import SafariServices
 import StoreKit
 
-// Used for protocol conformance of IndicatorInfoProvider only.
-import XLPagerTabStrip
-
 private typealias SyncReason = OrderListSyncActionUseCase.SyncReason
 
 protocol OrderListViewControllerDelegate: class {
@@ -124,12 +121,6 @@ final class OrderListViewController: UIViewController {
         super.viewWillAppear(animated)
 
         syncingCoordinator.resynchronize()
-
-        // Fix any _incomplete_ animation if the orders were deleted and refetched from
-        // a different location (or Orders tab).
-        //
-        // We can remove this once we've replaced XLPagerTabStrip.
-        tableView.reloadData()
     }
 
     /// Returns a function that creates cells for `dataSource`.
@@ -500,20 +491,6 @@ private extension OrderListViewController {
         state = dataSource.isEmpty ? .empty : .results
     }
 }
-
-// MARK: - IndicatorInfoProvider Conformance
-
-// This conformance is not used directly by `OrderListViewController`. We only need this because
-// `Self` is used as a child of `OrdersTabbedViewController` which is a
-// `ButtonBarPagerTabStripViewController`.
-extension OrderListViewController: IndicatorInfoProvider {
-    /// Return `self.title` under `IndicatorInfo`.
-    ///
-    func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
-        IndicatorInfo(title: title)
-    }
-}
-
 
 // MARK: - Nested Types
 //

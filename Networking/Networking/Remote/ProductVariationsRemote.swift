@@ -84,6 +84,32 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
             completion(.failure(error))
         }
     }
+
+    /// Creates a list of `ProductVariation` in batch. At most 100 variations per batch.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which will hosts the ProductVariations.
+    ///     - productID: Identifier of the Product.
+    ///     - variations: the CreateProductVariations sent for creating a ProductVariation remotely.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func createProductVariations(for siteID: Int64,
+                                        productID: Int64,
+                                        variations: [CreateProductVariation],
+                                        completion: @escaping (Result<[ProductVariation], Error>) -> Void) {
+        do {
+            let parameters = [
+                ParameterKey.create: try variations.toDictionary()
+            ]
+
+            let path = "\(Path.products)/\(productID)/variations"
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let mapper = ProductVariationListMapper(siteID: siteID, productID: productID)
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
 }
 
 
@@ -104,5 +130,6 @@ public extension ProductVariationsRemote {
         static let page: String       = "page"
         static let perPage: String    = "per_page"
         static let contextKey: String = "context"
+        static let create: String = "create"
     }
 }

@@ -10,14 +10,9 @@ struct MockOrderStatusActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-            case .retrieveOrderStatuses(let siteID, let onCompletion):
-                retrieveOrderStatuses(siteId: siteID, onCompletion: onCompletion)
-
+            // Order status is not currently supported by `MockObjectGraph`, so pretend none exist
+            case .retrieveOrderStatuses(_, let onCompletion): success(onCompletion)
             default: unimplementedAction(action: action)
         }
-    }
-
-    func retrieveOrderStatuses(siteId: Int64, onCompletion: ([OrderStatus]?, Error?) -> Void) {
-        onCompletion([], nil) // Todo
     }
 }

@@ -17,15 +17,23 @@ extension MockActionHandler {
         fatalError("Unable to handle action: \(action.identifier) \(String(describing: action))")
     }
 
-    /// A helper for that immediately returns a success for `Result<Void>` closure patterns
+    /// A helper that immediately returns a success for `Result<Void>` closure patterns
     func success(_ onCompletion: (Result<(), Error>) -> Void) {
         onCompletion(.success(()))
     }
 
-    /// A helper for that immediately returns a success for `Error?` closure patterns
+    /// A helper that immediately returns a success for `Error?` closure patterns
     func success(_ onCompletion: (Error?) -> ()) {
         onCompletion(nil)
     }
+
+    /// A helper that immediately returns an empty array for any callback that takes an array
+    func success<T>(_ onCompletion: ([T], (Error?)) -> ()) {
+        onCompletion([], nil)
+    }
+
+    /// A no-op helper for write operations in MockActionHandler subclasses
+    func success() {}
 
     /// A helper for saving mock objects into Core Data
     func save<T, U>(mocks: [T], as dataType: U.Type, onCompletion: @escaping (Error?) -> ()) where U: ReadOnlyConvertible & NSManagedObject {

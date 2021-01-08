@@ -11,8 +11,10 @@ struct MockAppSettingsActionHandler: MockActionHandler {
         switch action {
             case .loadInitialStatsVersionToShow(let siteId, let onCompletion):
                 loadInitialStatsVersionToShow(siteId: siteId, onCompletion: onCompletion)
-            case .setStatsVersionLastShown(let siteId, let statsVersion):
-                setStatsVersionLastShown(siteId: siteId, statsVersion: statsVersion)
+            case .setStatsVersionLastShown:
+                // This case needs to be handled to avoid crashing when running screenshots
+                // Once the enum is removed, this can be as well.
+                success()
             case .loadFeedbackVisibility(let type, let onCompletion):
                 loadFeedbackVisibility(type: type, onCompletion: onCompletion)
             case .setInstallationDateIfNecessary(let date, let onCompletion):
@@ -24,10 +26,6 @@ struct MockAppSettingsActionHandler: MockActionHandler {
 
     func loadInitialStatsVersionToShow(siteId: Int64, onCompletion: (StatsVersion?) -> Void) {
         onCompletion(.v4)
-    }
-
-    func setStatsVersionLastShown(siteId: Int64, statsVersion: StatsVersion) {
-        // TODO – we should persist this somewhere
     }
 
     func loadFeedbackVisibility(type: FeedbackType, onCompletion: (Result<Bool, Error>) -> Void) {

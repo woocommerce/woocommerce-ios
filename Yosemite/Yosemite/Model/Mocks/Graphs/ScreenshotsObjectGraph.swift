@@ -16,13 +16,13 @@ struct i18n {
 
 struct ScreenshotObjectGraph: MockObjectGraph {
 
-     public let userCredentials = Credentials(
+     let userCredentials = Credentials(
         username: i18n.DefaultAccount.username,
         authToken: UUID().uuidString,
         siteAddress: i18n.DefaultSite.url
     )
 
-    public let defaultAccount = Account(
+    let defaultAccount = Account(
         userID: 1,
         displayName: i18n.DefaultAccount.displayName,
         email: i18n.DefaultAccount.email,
@@ -30,7 +30,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         gravatarUrl: nil
     )
 
-    public let defaultSite = Site(
+    let defaultSite = Site(
         siteID: 1,
         name: i18n.DefaultSite.name,
         description: "",
@@ -43,34 +43,34 @@ struct ScreenshotObjectGraph: MockObjectGraph {
     )
 
     /// May not be needed anymore if we're not mocking the API
-    public let defaultSiteAPI = SiteAPI(siteID: 1, namespaces: [
+    let defaultSiteAPI = SiteAPI(siteID: 1, namespaces: [
         WooAPIVersion.mark3.rawValue,
         WooAPIVersion.mark4.rawValue,
     ])
 
-    public var sites: [Site] {
+    var sites: [Site] {
         return [defaultSite]
     }
 
-    public func accountWithId(id: Int64) -> Account {
+    func accountWithId(id: Int64) -> Account {
         return defaultAccount
     }
 
-    public func accountSettingsWithUserId(userId: Int64) -> AccountSettings {
+    func accountSettingsWithUserId(userId: Int64) -> AccountSettings {
         return .init(userID: userId, tracksOptOut: true)
     }
 
-    public var currentNotificationCount: Int = 4
-    public var statsVersion: StatsVersion = .v4
-    public func statsV4ShouldBeAvailable(forSiteId: Int64) -> Bool {
+    var currentNotificationCount: Int = 4
+    var statsVersion: StatsVersion = .v4
+    func statsV4ShouldBeAvailable(forSiteId: Int64) -> Bool {
         return true // statsV4 for all sites
     }
 
-    public func siteWithId(id: Int64) -> Site {
+    func siteWithId(id: Int64) -> Site {
         return defaultSite
     }
 
-    public var orders: [Order] = [
+    var orders: [Order] = [
         createOrder(
             number: 2201,
             customer: Customers.MiraWorkman,
@@ -111,7 +111,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         ),
     ]
 
-    public var products: [Product] = [
+    var products: [Product] = [
         Products.roseGoldShades,
         Products.coloradoShades,
         Products.blackCoralShades,
@@ -119,7 +119,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         Products.malayaShades,
     ]
 
-    public var reviews: [ProductReview] = [
+    var reviews: [ProductReview] = [
         createProductReview(
             product: Products.blackCoralShades,
             customer: Customers.PaytinLubin,
@@ -178,7 +178,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         )
     ]
 
-    public let thisYearVisitStats: SiteVisitStats = createVisitStats(
+    let thisYearVisitStats: SiteVisitStats = createVisitStats(
         granularity: .year,
         items: [
             createVisitStatsItem(
@@ -189,7 +189,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         ]
     )
 
-    public var thisYearTopProducts: TopEarnerStats = createStats(granularity: .year, items: [
+    var thisYearTopProducts: TopEarnerStats = createStats(granularity: .year, items: [
         createTopEarningItem(product: Products.akoyaPearlShades, quantity: 17),
         createTopEarningItem(product: Products.blackCoralShades, quantity: 11),
         createTopEarningItem(product: Products.coloradoShades, quantity: 5),
@@ -197,13 +197,13 @@ struct ScreenshotObjectGraph: MockObjectGraph {
 
     /// The probability of a sale for each visit when generating random stats
     ///
-    let orderProbabilityRange = 0.1...0.5
+    private let orderProbabilityRange = 0.1...0.5
 
     /// The possible value of an order when generating random stats
     ///
-    let orderValueRange = 100 ..< 500
+    private let orderValueRange = 100 ..< 500
 
-    public var thisYearOrderStats: OrderStatsV4 {
+    var thisYearOrderStats: OrderStatsV4 {
         Self.createStats(
             siteID: 1,
             granularity: .yearly,

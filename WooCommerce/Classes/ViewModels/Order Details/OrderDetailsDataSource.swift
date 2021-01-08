@@ -463,7 +463,7 @@ private extension OrderDetailsDataSource {
     private func configureShippingLabelPrintingInfo(cell: ImageAndTitleAndTextTableViewCell) {
         cell.update(with: .imageAndTitleOnly(fontStyle: .footnote),
                     data: .init(title: Title.shippingLabelPrintingInfoAction,
-                                image: .infoOutlineFootnoteImage,
+                                image: .infoOutlineImage,
                                 imageTintColor: .systemColor(.secondaryLabel),
                                 numberOfLinesForTitle: 0,
                                 isActionable: false,

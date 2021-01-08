@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 
 /// Displays an optional image, title and text.
@@ -119,6 +120,9 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
 
     /// Disabled by default. When active, image is constrained to 24pt
     @IBOutlet private var contentImageViewWidthConstraint: NSLayoutConstraint!
+    private var baseContentImageDimension: CGFloat = Constants.imageViewDefaultDimension
+
+    private var cancellable: AnyCancellable?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -127,6 +131,11 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         configureContentStackView()
         configureTitleAndTextStackView()
         applyDefaultBackgroundStyle()
+        cancellable = NotificationCenter.default
+                .publisher(for: UIContentSizeCategory.didChangeNotification)
+                .sink { [weak self] _ in
+                    self?.applyAccessibilityChanges()
+                }
     }
 }
 
@@ -222,6 +231,7 @@ extension ImageAndTitleAndTextTableViewCell {
         case .imageAndTitleOnly(let fontStyle):
             applyImageAndTitleOnlyStyle(fontStyle: fontStyle, data: data)
         }
+        applyAccessibilityChanges()
     }
 }
 
@@ -235,6 +245,7 @@ private extension ImageAndTitleAndTextTableViewCell {
         case .footnote:
             titleLabel.applyFootnoteStyle()
         }
+        baseContentImageDimension = fontStyle.imageDimension
         applyDefaultStyle(data: data)
         contentImageViewWidthConstraint.isActive = true
     }
@@ -265,12 +276,12 @@ private extension ImageAndTitleAndTextTableViewCell {
     }
 
     func configureImageView() {
-        contentImageView.contentMode = .center
+        contentImageView.contentMode = .scaleAspectFit
         contentImageView.setContentHuggingPriority(.required, for: .horizontal)
     }
 
     func configureContentStackView() {
-        contentStackView.alignment = .center
+        contentStackView.alignment = .firstBaseline
         contentStackView.spacing = 16
     }
 
@@ -278,3 +289,34 @@ private extension ImageAndTitleAndTextTableViewCell {
         titleAndTextStackView.spacing = 2
     }
 }
+
+private extension ImageAndTitleAndTextTableViewCell.FontStyle {
+    var imageDimension: CGFloat {
+        switch self {
+        case .body:
+            return 24
+        case .footnote:
+            return 20
+        }
+    }
+}
+
+// MARK: Accessibility
+//
+private extension ImageAndTitleAndTextTableViewCell {
+    func applyAccessibilityChanges() {
+        adjustImageViewWidth()
+    }
+
+    /// Changes the image view width according to the base image dimension.
+    func adjustImageViewWidth() {
+        contentImageViewWidthConstraint.constant = UIFontMetrics.default.scaledValue(for: baseContentImageDimension, compatibleWith: traitCollection)
+    }
+}
+
+private extension ImageAndTitleAndTextTableViewCell {
+    enum Constants {
+        static let imageViewDefaultDimension: CGFloat = 24
+    }
+}
+

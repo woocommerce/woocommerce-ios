@@ -1,2 +1,2 @@
 The app now supports iOS 13 and up which will allow for more rapid feature development.
-We’ve improved error handling in the login flow, fixed a bug that prevented thumbnail images from appearing for product variations on the order details screen, and centered the footer spinner vertically and horizontally.
+We've fixed a bug that prevented thumbnail images from appearing for product variations on the order details screen, and centered the footer spinner vertically and horizontally.

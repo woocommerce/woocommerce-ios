@@ -109,9 +109,10 @@ final class ProductAttributeTermStoreTests: XCTestCase {
 
     func test_synchronizeProductAttributeTerms_updates_previously_stored_terms() throws {
         // Given
-        let sampleTermID: Int64 = 27
         network.simulateResponse(requestUrlSuffix: sampleTermsPath, filename: "product-attribute-terms")
         network.simulateResponse(requestUrlSuffix: sampleTermsPath, filename: "product-attribute-terms-empty")
+
+        let sampleTermID: Int64 = 27
         let initialTerm = insertProductAttributeTerm(termID: sampleTermID)
 
         // When
@@ -127,6 +128,29 @@ final class ProductAttributeTermStoreTests: XCTestCase {
         let storedTerm = viewStorage.loadProductAttributeTerm(siteID: sampleSiteID, termID: sampleTermID, attributeID: sampleAttributeID)
         let readOnlyTerm = try XCTUnwrap(storedTerm?.toReadOnly())
         XCTAssertNotEqual(initialTerm, readOnlyTerm)
+        XCTAssertFalse(result.isFailure)
+    }
+
+    func test_synchronizeProductAttributeTerms_deletes_stale_terms() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: sampleTermsPath, filename: "product-attribute-terms")
+        network.simulateResponse(requestUrlSuffix: sampleTermsPath, filename: "product-attribute-terms-empty")
+
+        let sampleTermID: Int64 = 10
+        insertProductAttributeTerm(termID: sampleTermID)
+
+        // When
+        let result: Result<Void, ProductAttributeTermActionError> = try waitFor { promise in
+            let action = ProductAttributeTermAction.synchronizeProductAttributeTerms(siteID: self.sampleSiteID,
+                                                                                     attributeID: self.sampleAttributeID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertNil(viewStorage.loadProductAttributeTerm(siteID: sampleSiteID, termID: sampleTermID, attributeID: sampleAttributeID))
+        XCTAssertEqual(storedProductAttributeTermsCount, 3)
         XCTAssertFalse(result.isFailure)
     }
 }
@@ -149,7 +173,7 @@ private extension ProductAttributeTermStoreTests {
     @discardableResult
     func insertProductAttributeTerm(termID: Int64) -> Yosemite.ProductAttributeTerm  {
         let term = ProductAttributeTerm(siteID: sampleSiteID, termID: termID, name: "", slug: "", count: 0)
-        storageManager.insertSampleProductAttributeTerm(readOnlyTerm: term)
+        storageManager.insertSampleProductAttributeTerm(readOnlyTerm: term, onAttributeWithID: sampleAttributeID)
         return term
     }
 }

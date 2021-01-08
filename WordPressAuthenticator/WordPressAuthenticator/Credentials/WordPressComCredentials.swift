@@ -19,17 +19,19 @@ public struct WordPressComCredentials: Equatable {
     /// The site address used during login
     ///
     public var siteURL: String
-
-    /// Designated initializer
+    
+    private let wpComURL = "https://wordpress.com"
+    
+    /// Legacy  initializer, for backwards compatibility
     ///
     public init(authToken: String,
                 isJetpackLogin: Bool,
                 multifactor: Bool,
-                siteURL: String) {
+                siteURL: String = "https://wordpress.com") {
         self.authToken = authToken
         self.isJetpackLogin = isJetpackLogin
         self.multifactor = multifactor
-        self.siteURL = !siteURL.isEmpty ? siteURL : "https://wordpress.com"
+        self.siteURL = !siteURL.isEmpty ? siteURL : wpComURL
     }
 }
 

@@ -1,10 +1,11 @@
-import UIKit
+import AuthenticationServices
 import CocoaLumberjack
-import NSURL_IDN
 import GoogleSignIn
+import NSURL_IDN
+import UIKit
 import WordPressShared
 import WordPressUI
-import AuthenticationServices
+import WordPressKit
 
 // MARK: - WordPressAuthenticator: Public API to deal with WordPress.com and WordPress.org authentication.
 //
@@ -56,14 +57,9 @@ import AuthenticationServices
     ///
     @objc public static let WPSigninDidFinishNotification = "WPSigninDidFinishNotification"
 
-    /// Internal Constants.
+    /// The host name that identifies magic link URLs
     ///
-    private enum Constants {
-        static let authenticationInfoKey    = "authenticationInfoKey"
-        static let username                 = "username"
-        static let emailMagicLinkSource     = "emailMagicLinkSource"
-        static let magicLinkUrlPath         = "magic-login"
-    }
+    private static let magicLinkUrlHostname = "magic-login"
 
     // MARK: - Initialization
 
@@ -126,7 +122,7 @@ import AuthenticationServices
     /// Indicates if the received URL is a WordPress.com Authentication Callback.
     ///
     @objc public func isWordPressAuthUrl(_ url: URL) -> Bool {
-        let expectedPrefix = configuration.wpcomScheme + "://" + Constants.magicLinkUrlPath
+        let expectedPrefix = configuration.wpcomScheme + "://" + Self.magicLinkUrlHostname
         return url.absoluteString.hasPrefix(expectedPrefix)
     }
 
@@ -138,8 +134,8 @@ import AuthenticationServices
 
     /// Attempts to process the specified URL as a WordPress Authentication Link. Returns *true* on success.
     ///
-    @objc public func handleWordPressAuthUrl(_ url: URL, rootViewController: UIViewController) -> Bool {
-        return WordPressAuthenticator.openAuthenticationURL(url, fromRootViewController: rootViewController)
+    @objc public func handleWordPressAuthUrl(_ url: URL, rootViewController: UIViewController, automatedTesting: Bool = false) -> Bool {
+        return WordPressAuthenticator.openAuthenticationURL(url, fromRootViewController: rootViewController, automatedTesting: automatedTesting)
     }
 
 
@@ -309,68 +305,91 @@ import AuthenticationServices
 
     // MARK: - Authentication Link Helpers
 
-
     /// Present a signin view controller to handle an authentication link.
     ///
     /// - Parameters:
     ///     - url: The authentication URL
-    ///     - rootViewController: The view controller to act as the presenter for the signin view controller.
-    ///                           By convention this is the app's root vc.
+    ///     - rootViewController: The view controller to act as the presenter for the signin view controller.  By convention this is the app's root vc.
+    ///     - automatedTesting: for calling this method for automated testing.  It won't sync the account or load any other VCs.
     ///
-    @objc public class func openAuthenticationURL(_ url: URL, fromRootViewController rootViewController: UIViewController) -> Bool {
-        guard let token = url.query?.dictionaryFromQueryString().string(forKey: "token") else {
-            DDLogError("Signin Error: The authentication URL did not have the expected path.")
+    @objc public class func openAuthenticationURL(
+        _ url: URL,
+        fromRootViewController rootViewController: UIViewController,
+        automatedTesting: Bool = false) -> Bool {
+
+        guard let queryDictionary = url.query?.dictionaryFromQueryString() else {
+            DDLogError("Magic link error: we couldn't retrieve the query dictionary from the sign-in URL.")
             return false
         }
-
-        let loginFields = retrieveLoginInfoForTokenAuth()
-
+        
+        guard let authToken = queryDictionary.string(forKey: "token") else {
+            DDLogError("Magic link error: we couldn't retrieve the authentication token from the sign-in URL.")
+            return false
+        }
+        
+        guard let flowRawValue = queryDictionary.string(forKey: "flow") else {
+            DDLogError("Magic link error: we couldn't retrieve the flow from the sign-in URL.")
+            return false
+        }
+        
+        let loginFields = LoginFields()
+        
         if url.isJetpackConnect {
             loginFields.meta.jetpackLogin = true
         }
-
-        let storyboard = Storyboard.emailMagicLink.instance
-        guard let loginController = storyboard.instantiateViewController(withIdentifier: "LinkAuthView") as? NUXLinkAuthViewController else {
-            DDLogInfo("App opened with authentication link but couldn't create login screen.")
+        
+        // We could just use the flow, but since `MagicLinkFlow` is an ObjC enum, it always
+        // allows a `default` value.  By mapping the ObjC enum to a Swift enum we can avoid that afterwards.
+        let flow: NUXLinkAuthViewController.Flow
+        
+        switch MagicLinkFlow(rawValue: flowRawValue) {
+        case .signup:
+            flow = .signup
+            loginFields.meta.emailMagicLinkSource = .signup
+            Self.track(.signupMagicLinkOpened)
+        case .login:
+            flow = .login
+            loginFields.meta.emailMagicLinkSource = .login
+            Self.track(.loginMagicLinkOpened)
+        default:
+            DDLogError("Magic link error: the flow should be either `signup` or `login`. We can't handle an unsupported flow.")
             return false
         }
-        loginController.loginFields = loginFields
-        loginController.token = token
-        let controller = loginController
-
-        if let linkSource = loginFields.meta.emailMagicLinkSource {
-            switch linkSource {
-            case .signup:
-                WordPressAuthenticator.track(.signupMagicLinkOpened)
-            case .login:
-                WordPressAuthenticator.track(.loginMagicLinkOpened)
+        
+        if !automatedTesting {
+            let storyboard = Storyboard.emailMagicLink.instance
+            guard let loginVC = storyboard.instantiateViewController(withIdentifier: "LinkAuthView") as? NUXLinkAuthViewController else {
+                DDLogInfo("App opened with authentication link but couldn't create login screen.")
+                return false
             }
+            loginVC.loginFields = loginFields
+            
+            let navController = LoginNavigationController(rootViewController: loginVC)
+            navController.modalPresentationStyle = .fullScreen
+            
+            // The way the magic link flow works some view controller might
+            // still be presented when the app is resumed by tapping on the auth link.
+            // We need to do a little work to present the SigninLinkAuth controller
+            // from the right place.
+            // - If the rootViewController is not presenting another vc then just
+            // present the auth controller.
+            // - If the rootViewController is presenting another NUX vc, dismiss the
+            // NUX vc then present the auth controller.
+            // - If the rootViewController is presenting *any* other vc, present the
+            // auth controller from the presented vc.
+            let presenter = rootViewController.topmostPresentedViewController
+            if presenter.isKind(of: NUXNavigationController.self) || presenter.isKind(of: LoginNavigationController.self),
+                let parent = presenter.presentingViewController {
+                parent.dismiss(animated: false, completion: {
+                    parent.present(navController, animated: false, completion: nil)
+                })
+            } else {
+                presenter.present(navController, animated: false, completion: nil)
+            }
+            
+            loginVC.syncAndContinue(authToken: authToken, flow: flow, isJetpackConnect: url.isJetpackConnect)
         }
-
-        let navController = LoginNavigationController(rootViewController: controller)
-        navController.modalPresentationStyle = .fullScreen
-
-        // The way the magic link flow works some view controller might
-        // still be presented when the app is resumed by tapping on the auth link.
-        // We need to do a little work to present the SigninLinkAuth controller
-        // from the right place.
-        // - If the rootViewController is not presenting another vc then just
-        // present the auth controller.
-        // - If the rootViewController is presenting another NUX vc, dismiss the
-        // NUX vc then present the auth controller.
-        // - If the rootViewController is presenting *any* other vc, present the
-        // auth controller from the presented vc.
-        let presenter = rootViewController.topmostPresentedViewController
-        if presenter.isKind(of: NUXNavigationController.self) || presenter.isKind(of: LoginNavigationController.self),
-            let parent = presenter.presentingViewController {
-            parent.dismiss(animated: false, completion: {
-                parent.present(navController, animated: false, completion: nil)
-            })
-        } else {
-            presenter.present(navController, animated: false, completion: nil)
-        }
-
-        deleteLoginInfoForTokenAuth()
+        
         return true
     }
 
@@ -408,58 +427,6 @@ import AuthenticationServices
 
         return path
     }
-
-
-    // MARK: - Helpers for Saved Magic Link Info
-
-    /// Saves certain login information in NSUserDefaults
-    ///
-    /// - Parameter loginFields: The loginFields instance from which to save.
-    ///
-    class func storeLoginInfoForTokenAuth(_ loginFields: LoginFields) {
-        var dict: [String: String] = [
-            Constants.username: loginFields.username
-        ]
-
-        if let linkSource = loginFields.meta.emailMagicLinkSource {
-            dict[Constants.emailMagicLinkSource] = String(linkSource.rawValue)
-        }
-
-        UserDefaults.standard.set(dict, forKey: Constants.authenticationInfoKey)
-    }
-
-
-    /// Retrieves stored login information if any.
-    ///
-    /// - Returns: A loginFields instance or nil.
-    ///
-    class func retrieveLoginInfoForTokenAuth() -> LoginFields {
-
-        let loginFields = LoginFields()
-
-        guard let dict = UserDefaults.standard.dictionary(forKey: Constants.authenticationInfoKey) else {
-            return loginFields
-        }
-
-        if let username = dict[Constants.username] as? String {
-            loginFields.username = username
-        }
-
-        if let linkSource = dict[Constants.emailMagicLinkSource] as? String,
-            let linkSourceRawValue = Int(linkSource) {
-            loginFields.meta.emailMagicLinkSource = EmailMagicLinkSource(rawValue: linkSourceRawValue)
-        }
-
-        return loginFields
-    }
-
-
-    /// Removes stored login information from NSUserDefaults
-    ///
-    class func deleteLoginInfoForTokenAuth() {
-        UserDefaults.standard.removeObject(forKey: Constants.authenticationInfoKey)
-    }
-
 
     // MARK: - Other Helpers
 

@@ -49,23 +49,6 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssert(url == punycode)
     }
 
-    func testEmailAddressTokenHandling() {
-        let email = "example@email.com"
-        let loginFields = LoginFields()
-        loginFields.username = email
-        WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
-
-        var retrievedLoginFields = WordPressAuthenticator.retrieveLoginInfoForTokenAuth()
-        var retrievedEmail = retrievedLoginFields.username
-        XCTAssert(email == retrievedEmail, "The email retrived should match the email that was saved.")
-
-        WordPressAuthenticator.deleteLoginInfoForTokenAuth()
-        retrievedLoginFields = WordPressAuthenticator.retrieveLoginInfoForTokenAuth()
-        retrievedEmail = retrievedLoginFields.username
-
-        XCTAssert(email != retrievedEmail, "Saved loginFields should be deleted after calling deleteLoginInfoForTokenAuth.")
-    }
-
     // MARK: WordPressAuthenticator Notification Tests
     func testDispatchesSupportPushNotificationReceived() {
         let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
@@ -198,11 +181,11 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssertFalse(authenticator.isWordPressAuthUrl(wordpressComURL))
     }
 
-    func testHandleWordPressAuthURLReturnsTrueOnSucceed() {
+    func testHandleWordPressAuthURLReturnsTrueOnSuccess() {
         let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
-        let url = URL(string: "https://wordpress.com/wp-login.php?token=1234567890%26action&magic-login&sr=1&signature=1234567890oienhdtsra")
+        let url = URL(string: "https://wordpress.com/wp-login.php?token=1234567890%26action&magic-login&sr=1&signature=1234567890oienhdtsra&flow=signup")
 
-        XCTAssertTrue(authenticator.handleWordPressAuthUrl(url!, rootViewController: UIViewController()))
+        XCTAssertTrue(authenticator.handleWordPressAuthUrl(url!, rootViewController: UIViewController(), automatedTesting: true))
     }
 
     // MARK: WordPressAuthenticator OnePassword Tests

@@ -228,41 +228,50 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     }
 }
 
+// MARK: - View FLow
+
+extension LoginViewController {
+    func presentEpilogue(credentials: AuthenticatorCredentials) {
+        if mustShowSignupEpilogue() {
+            showSignupEpilogue(for: credentials)
+        } else if mustShowLoginEpilogue() {
+            showLoginEpilogue(for: credentials)
+        } else {
+            dismiss()
+        }
+    }
+}
+
 // MARK: - Sync Helpers
 
 extension LoginViewController {
 
     /// Signals the Main App to synchronize the specified WordPress.com account. On completion, the epilogue will be pushed (if needed).
     ///
-    func syncWPComAndPresentEpilogue(credentials: AuthenticatorCredentials) {
+    func syncWPComAndPresentEpilogue(
+        credentials: AuthenticatorCredentials,
+        completion: (() -> ())? = nil) {
+        
+        configureStatusLabel(LocalizedText.gettingAccountInfo)
+        
         syncWPCom(credentials: credentials) { [weak self] in
             guard let self = self else {
                 return
             }
-
-            if self.mustShowSignupEpilogue() {
-                self.showSignupEpilogue(for: credentials)
-            } else if self.mustShowLoginEpilogue() {
-                self.showLoginEpilogue(for: credentials)
-            } else {
-                self.dismiss()
-            }
+            
+            completion?()
+            
+            self.presentEpilogue(credentials: credentials)
+            self.configureStatusLabel("")
+            self.configureViewLoading(false)
+            self.trackSignIn(credentials: credentials)
         }
     }
 
-    /// TODO: @jlp Mar.19.2018. Officially support wporg, and rename to `sync(site)` + Update LoginSelfHostedViewController
-    ///
     /// Signals the Main App to synchronize the specified WordPress.com account.
     ///
-    private func syncWPCom(credentials: AuthenticatorCredentials, completion: (() -> ())? = nil) {
-        configureStatusLabel(LocalizedText.gettingAccountInfo)
-
-        authenticationDelegate.sync(credentials: credentials) { [weak self] in
-
-            self?.configureStatusLabel("")
-            self?.configureViewLoading(false)
-            self?.trackSignIn(credentials: credentials)
-
+    func syncWPCom(credentials: AuthenticatorCredentials, completion: (() -> ())? = nil) {
+        authenticationDelegate.sync(credentials: credentials) {
             completion?()
         }
     }
@@ -282,6 +291,7 @@ extension LoginViewController {
         // This stat is part of a funnel that provides critical information.  Please
         // consult with your lead before removing this event.
         WordPressAuthenticator.track(.signedIn, properties: properties)
+        tracker.track(step: .success)
     }
 
     /// Links the current WordPress Account to a Social Service (if possible!!).

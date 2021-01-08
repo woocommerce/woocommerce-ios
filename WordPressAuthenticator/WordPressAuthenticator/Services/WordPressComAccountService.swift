@@ -51,7 +51,7 @@ class WordPressComAccountService {
         remote.requestWPComAuthLink(forEmail: email,
                                     clientID: configuration.wpcomClientId,
                                     clientSecret: configuration.wpcomSecret,
-                                    jetpackLogin: jetpackLogin,
+                                    source: jetpackLogin ? .jetpackConnect : .default,
                                     wpcomScheme: configuration.wpcomScheme,
                                     success: success,
                                     failure: { error in

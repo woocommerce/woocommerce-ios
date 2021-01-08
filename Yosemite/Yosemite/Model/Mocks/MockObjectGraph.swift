@@ -265,19 +265,6 @@ extension MockObjectGraph {
     }
 }
 
-struct DateRange {
-    let start: Date
-    let end: Date
-
-    static func from(start: String, end: String) -> DateRange {
-
-        return DateRange(
-            start: Date.from(dateString: start),
-            end: Date.from(dateString: end)
-        )
-    }
-}
-
 // MARK: Stats Creation Helpers
 extension MockObjectGraph {
 
@@ -456,9 +443,7 @@ private extension Array where Element == OrderStatsV4Interval {
     }
 
     var asVisitStatsMonthString: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: self)
+        return DateFormatter.Stats.statsDayFormatter.string(from: self)
     }
 
     var asVisitStatsYearString: String {
@@ -468,14 +453,10 @@ private extension Array where Element == OrderStatsV4Interval {
     }
 
     var asOrderStatsString: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:MM:ss"
-        return formatter.string(from: self)
+        return DateFormatter.Stats.dateTimeFormatter.string(from: self)
     }
 
     static func from(dateString: String) -> Date {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.date(from: dateString)!
+        return DateFormatter.Stats.statsDayFormatter.date(from: dateString)!
     }
 }

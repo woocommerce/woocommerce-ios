@@ -132,7 +132,7 @@ private extension ProductAttributeTermStore {
         // Upserts the ProductAttributeTerm models from the read-only version
         readOnlyTerms.forEach { term in
             let storedTerm: Storage.ProductAttributeTerm = {
-                guard let storedTerm = storage.loadProductAttributeTerm(siteID: siteID, attributeID: attributeID, termID: term.termID) else {
+                guard let storedTerm = storage.loadProductAttributeTerm(siteID: siteID, termID: term.termID, attributeID: attributeID) else {
                     return storage.insertNewObject(ofType: Storage.ProductAttributeTerm.self)
                 }
                 return storedTerm

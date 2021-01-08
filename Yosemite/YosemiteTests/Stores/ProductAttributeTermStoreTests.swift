@@ -106,11 +106,35 @@ final class ProductAttributeTermStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributeTermsCount, 6)
         XCTAssertFalse(result.isFailure)
     }
+
+    func test_synchronizeProductAttributeTerms_updates_previously_stored_terms() throws {
+        // Given
+        let sampleTermID: Int64 = 27
+        network.simulateResponse(requestUrlSuffix: sampleTermsPath, filename: "product-attribute-terms")
+        network.simulateResponse(requestUrlSuffix: sampleTermsPath, filename: "product-attribute-terms-empty")
+        let initialTerm = insertProductAttributeTerm(termID: sampleTermID)
+
+        // When
+        let result: Result<Void, ProductAttributeTermActionError> = try waitFor { promise in
+            let action = ProductAttributeTermAction.synchronizeProductAttributeTerms(siteID: self.sampleSiteID,
+                                                                                     attributeID: self.sampleAttributeID) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        let storedTerm = viewStorage.loadProductAttributeTerm(siteID: sampleSiteID, termID: sampleTermID, attributeID: sampleAttributeID)
+        let readOnlyTerm = try XCTUnwrap(storedTerm?.toReadOnly())
+        XCTAssertNotEqual(initialTerm, readOnlyTerm)
+        XCTAssertFalse(result.isFailure)
+    }
 }
 
 // MARK: Helpers
 private extension ProductAttributeTermStoreTests {
-    func insertProductAttribute() {
+    @discardableResult
+    func insertProductAttribute() -> Yosemite.ProductAttribute {
         let attribute = ProductAttribute(siteID: sampleSiteID,
                                          attributeID: sampleAttributeID,
                                          name: "attribute",
@@ -118,8 +142,14 @@ private extension ProductAttributeTermStoreTests {
                                          visible: true,
                                          variation: true,
                                          options: [])
-        let storedAttribute = viewStorage.insertNewObject(ofType: ProductAttribute.self)
-        storedAttribute.update(with: attribute)
-        viewStorage.saveIfNeeded()
+        storageManager.insertSampleProductAttribute(readOnlyProductAttribute: attribute)
+        return attribute
+    }
+
+    @discardableResult
+    func insertProductAttributeTerm(termID: Int64) -> Yosemite.ProductAttributeTerm  {
+        let term = ProductAttributeTerm(siteID: sampleSiteID, termID: termID, name: "", slug: "", count: 0)
+        storageManager.insertSampleProductAttributeTerm(readOnlyTerm: term)
+        return term
     }
 }

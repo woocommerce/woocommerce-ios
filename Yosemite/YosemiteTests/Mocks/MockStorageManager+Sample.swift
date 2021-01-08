@@ -80,6 +80,15 @@ extension MockStorageManager {
         return newProductAttribute
     }
 
+    /// Inserts a new (Sample) ProductAttributeTerm.
+    ///
+    @discardableResult
+    func insertSampleProductAttributeTerm(readOnlyTerm: ProductAttributeTerm) -> StorageProductAttributeTerm {
+        let newProductAttributeTerm = viewStorage.insertNewObject(ofType: StorageProductAttributeTerm.self)
+        newProductAttributeTerm.update(with: readOnlyTerm)
+        return newProductAttributeTerm
+    }
+
     /// Inserts a new (Sample) Order into the specified context.
     ///
     @discardableResult

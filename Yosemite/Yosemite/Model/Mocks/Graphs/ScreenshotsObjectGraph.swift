@@ -218,44 +218,6 @@ struct ScreenshotObjectGraph: MockObjectGraph {
     }
 }
 
-protocol MockCustomerConvertable {
-    static var firstName: String { get }
-    static var lastName: String { get }
-    static var company: String? { get }
-    static var address1: String { get }
-    static var address2: String? { get }
-    static var city: String { get }
-    static var state: String { get }
-    static var postCode: String { get }
-    static var country: String { get }
-    static var phone: String? { get }
-    static var email: String? { get }
-
-    static var billingAddress: Address { get }
-}
-
-extension MockCustomerConvertable {
-    static var billingAddress: Address {
-        .init(
-            firstName: firstName,
-            lastName: lastName,
-            company: company,
-            address1: address1,
-            address2: address2,
-            city: city,
-            state: state,
-            postcode: postCode,
-            country: country,
-            phone: phone,
-            email: email
-        )
-    }
-
-    static var shippingAddress: Address {
-        return billingAddress
-    }
-}
-
 extension ScreenshotObjectGraph {
     struct Customers {
         static let MiraWorkman = MockCustomer(

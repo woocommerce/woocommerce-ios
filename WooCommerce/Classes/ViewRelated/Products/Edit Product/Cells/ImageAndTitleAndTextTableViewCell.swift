@@ -290,17 +290,6 @@ private extension ImageAndTitleAndTextTableViewCell {
     }
 }
 
-private extension ImageAndTitleAndTextTableViewCell.FontStyle {
-    var imageDimension: CGFloat {
-        switch self {
-        case .body:
-            return 24
-        case .footnote:
-            return 20
-        }
-    }
-}
-
 // MARK: Accessibility
 //
 private extension ImageAndTitleAndTextTableViewCell {
@@ -320,3 +309,14 @@ private extension ImageAndTitleAndTextTableViewCell {
     }
 }
 
+private extension ImageAndTitleAndTextTableViewCell.FontStyle {
+    /// Used for base image dimension.
+    var imageDimension: CGFloat {
+        switch self {
+        case .body:
+            return 24
+        case .footnote:
+            return 20
+        }
+    }
+}

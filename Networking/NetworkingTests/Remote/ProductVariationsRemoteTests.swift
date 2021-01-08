@@ -161,6 +161,53 @@ final class ProductVariationsRemoteTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, .notFound)
     }
 
+    // MARK: - Create ProductVariations in batch tests
+
+    /// Verifies that createProductVariations properly parses the `product-variations-create-update-delete-in-batch` sample response.
+    ///
+    func test_createProductVariations_properly_returns_parsed_product() throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let sampleProductVariationID: Int64 = 2783
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-create-update-delete-in-batch")
+
+        let result = try waitFor { promise in
+            remote.createProductVariations(for: self.sampleSiteID,
+                                           productID: self.sampleProductID,
+                                           variations:
+                                            self.sampleCreateProductVariations(siteID: self.sampleSiteID, productID: self.sampleProductID)) { (result) in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+
+        let productVariationsCreated = try result.get()
+        XCTAssertEqual(productVariationsCreated.create.first?.productID, sampleProductID)
+        XCTAssertEqual(productVariationsCreated.create.first?.productVariationID, sampleProductVariationID)
+    }
+
+    /// Verifies that createProductVariations properly relays Networking Layer errors.
+    ///
+    func test_createProductVariations_properly_relays_networking_errors() throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+
+        // When
+        let result = try waitFor { promise in
+            remote.createProductVariations(for: self.sampleSiteID,
+                                           productID: self.sampleProductID,
+                                           variations:
+                                            self.sampleCreateProductVariations(siteID: self.sampleSiteID, productID: self.sampleProductID)) { (result) in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result).isFailure)
+    }
+
     // MARK: - Update ProductVariation
 
     /// Verifies that updateProductVariation properly parses the `product-variation-update` sample response.
@@ -263,6 +310,15 @@ private extension ProductVariationsRemoteTests {
             ProductVariationAttribute(id: 0, name: "Flavor", option: "strawberry"),
             ProductVariationAttribute(id: 0, name: "Shape", option: "marble")
         ]
+    }
+
+    func sampleCreateProductVariations(siteID: Int64,
+                                      productID: Int64) -> [CreateProductVariation] {
+
+        let create1 = CreateProductVariation(regularPrice: "5.0", attributes: sampleProductVariationAttributes())
+        let create2 = CreateProductVariation(regularPrice: "10.0", attributes: sampleProductVariationAttributes())
+
+        return [create1, create2]
     }
 
     func dateFromGMT(_ dateStringInGMT: String) -> Date {

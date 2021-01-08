@@ -82,7 +82,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                         completion: @escaping (Result<ProductVariationInBatch, Error>) -> Void) {
         do {
             let parameters = [
-                ParameterKey.create: try variations.toDictionary()
+                ParameterKey.create: variations
             ]
 
             let path = "\(Path.products)/\(productID)/variations"

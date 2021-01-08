@@ -418,6 +418,9 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   desc "Take Screenshots"
   lane :take_screenshots do | options |
 
+    # Ensure we're using the right version of Xcode
+    xcversion(version: "~> 12.0")
+
     # By default, clear previous screenshots
     languages = ios_locales
 

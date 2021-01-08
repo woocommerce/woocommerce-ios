@@ -26,6 +26,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         let numberOfLinesForTitle: Int
         let numberOfLinesForText: Int
         let isActionable: Bool
+        let showsSeparator: Bool
 
         init(title: String?,
              text: String? = nil,
@@ -34,7 +35,8 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
              imageTintColor: UIColor? = nil,
              numberOfLinesForTitle: Int = 1,
              numberOfLinesForText: Int = 1,
-             isActionable: Bool = true) {
+             isActionable: Bool = true,
+             showsSeparator: Bool = true) {
             self.title = title
             self.text = text
             self.textTintColor = textTintColor
@@ -43,6 +45,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
             self.numberOfLinesForTitle = numberOfLinesForTitle
             self.numberOfLinesForText = numberOfLinesForText
             self.isActionable = isActionable
+            self.showsSeparator = showsSeparator
         }
     }
 
@@ -55,6 +58,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         let numberOfLinesForTitle: Int
         let numberOfLinesForText: Int
         let isActionable: Bool
+        let showsSeparator: Bool
 
         init(title: String?,
              text: String?,
@@ -63,7 +67,8 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
              imageTintColor: UIColor? = nil,
              numberOfLinesForTitle: Int = 1,
              numberOfLinesForText: Int = 1,
-             isActionable: Bool = true) {
+             isActionable: Bool = true,
+             showsSeparator: Bool = true) {
             self.title = title
             self.text = text
             self.textTintColor = textTintColor
@@ -72,6 +77,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
             self.numberOfLinesForTitle = numberOfLinesForTitle
             self.numberOfLinesForText = numberOfLinesForText
             self.isActionable = isActionable
+            self.showsSeparator = showsSeparator
         }
     }
 
@@ -153,6 +159,12 @@ extension ImageAndTitleAndTextTableViewCell {
         contentView.backgroundColor = nil
 
         contentImageViewWidthConstraint.isActive = false
+
+        if viewModel.showsSeparator {
+            showSeparator()
+        } else {
+            hideSeparator()
+        }
     }
 
     func updateUI(switchableViewModel: SwitchableViewModel) {
@@ -235,7 +247,8 @@ private extension ImageAndTitleAndTextTableViewCell {
                                   imageTintColor: data.imageTintColor,
                                   numberOfLinesForTitle: data.numberOfLinesForTitle,
                                   numberOfLinesForText: data.numberOfLinesForText,
-                                  isActionable: data.isActionable)
+                                  isActionable: data.isActionable,
+                                  showsSeparator: data.showsSeparator)
         updateUI(viewModel: viewModel)
     }
 }

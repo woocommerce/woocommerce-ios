@@ -461,12 +461,13 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureShippingLabelPrintingInfo(cell: ImageAndTitleAndTextTableViewCell) {
-        let viewModel = ImageAndTitleAndTextTableViewCell.TopLeftImageViewModel(icon: .infoOutlineFootnoteImage,
-                                                                                iconColor: .systemColor(.secondaryLabel),
-                                                                                title: Title.shippingLabelPrintingInfoAction,
-                                                                                isFootnoteStyle: true)
-
-        cell.updateUI(topLeftImageViewModel: viewModel)
+        cell.update(with: .imageAndTitleOnly(fontStyle: .footnote),
+                    data: .init(title: Title.shippingLabelPrintingInfoAction,
+                                image: .infoOutlineFootnoteImage,
+                                imageTintColor: .systemColor(.secondaryLabel),
+                                numberOfLinesForTitle: 0,
+                                isActionable: false,
+                                showsSeparator: false))
 
         cell.selectionStyle = .default
 

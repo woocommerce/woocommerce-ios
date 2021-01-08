@@ -43,6 +43,7 @@ public final class ProductAttributeTermStore: Store {
 private extension ProductAttributeTermStore {
 
     /// Synchronizes all product attribute terms associated with a given `SiteID` and `attributeID`, starting at a specific page number.
+    /// Having the correct parent `ProductAttribute` is a requirement, otherwise nothing will be saved.
     ///
     func synchronizeAllProductAttributeTerms(siteID: Int64,
                                              attributeID: Int64,
@@ -118,6 +119,7 @@ private extension ProductAttributeTermStore {
     }
 
     /// Updates (OR Inserts) the specified ReadOnly `ProductAttributeTerm` entities into the Storage Layer.
+    /// Having the correct parent `ProductAttribute` is a requirement, otherwise nothing will be saved.
     ///
     func upsertStoredProductAttributeTerms(_ readOnlyTerms: [Networking.ProductAttributeTerm],
                                            in storage: StorageType,
@@ -140,7 +142,7 @@ private extension ProductAttributeTermStore {
         }
     }
 
-    /// Deletes previously stored
+    /// Deletes previously stored terms that where not retrieved during the synchronization.
     ///
     func deleteStaleTerms(siteID: Int64, attributeID: Int64, activeTerms: [Yosemite.ProductAttributeTerm]) {
         let storage = storageManager.viewStorage
@@ -149,14 +151,15 @@ private extension ProductAttributeTermStore {
             return
         }
 
+        // Filter `previousTerms` that are not in `activeTerms`
         let staleTerms = previousTerms.filter { previousTerm -> Bool in
-            activeTerms.contains(where: { $0.termID == previousTerm.termID })
+            !activeTerms.contains(where: { $0.termID == previousTerm.termID })
         }
 
+        // Delete stale terms
         staleTerms.forEach { staleTerm in
             storage.deleteObject(staleTerm)
         }
-
         storage.saveIfNeeded()
     }
 }

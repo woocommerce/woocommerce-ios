@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-12-24 09:54:04+0000 */
+/* Translation-Revision-Date: 2020-12-29 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -2042,7 +2042,7 @@
 "Search results only" = "Résultats de recherche uniquement";
 
 /* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
-"See Instructions" = "Voir instructions";
+"See Instructions" = "Voir les instructions";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "See comments and notifications in real time." = "Affichez les commentaires et les notifications en temps réel.";

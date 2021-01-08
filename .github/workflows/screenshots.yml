@@ -17,16 +17,12 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - name: "Check out Project"
+      uses: actions/checkout@v1
     - name: "Set up Ruby"
       uses: ruby/setup-ruby@v1
       with:
         bundler-cache: true
-    - name: Install Ruby Dependencies
-      run: |
-        bundle config path vendor/bundle
-        bundle install --jobs 4 --retry 3
-    
     - name: Restore CocoaPods Dependency Cache
       id: restore-cocoapods-dependency-cache
       uses: actions/cache@v1

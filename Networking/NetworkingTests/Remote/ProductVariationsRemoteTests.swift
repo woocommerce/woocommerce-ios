@@ -165,17 +165,17 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
     /// Verifies that createProductVariations properly parses the `product-variations-create-update-delete-in-batch` sample response.
     ///
-    func test_createProductVariations_properly_returns_parsed_product() throws {
+    func test_createProductVariation_properly_returns_parsed_ProductVariation() throws {
         // Given
         let remote = ProductVariationsRemote(network: network)
-        let sampleProductVariationID: Int64 = 2783
-        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-create-update-delete-in-batch")
+        let sampleProductVariationID: Int64 = 1275
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variation")
 
         let result = try waitFor { promise in
-            remote.createProductVariations(for: self.sampleSiteID,
-                                           productID: self.sampleProductID,
-                                           variations:
-                                            self.sampleCreateProductVariations(siteID: self.sampleSiteID, productID: self.sampleProductID)) { (result) in
+            remote.createProductVariation(for: self.sampleSiteID,
+                                          productID: self.sampleProductID,
+                                          newVariation:
+                                            self.sampleCreateProductVariation(siteID: self.sampleSiteID, productID: self.sampleProductID)) { (result) in
                 promise(result)
             }
         }
@@ -183,9 +183,9 @@ final class ProductVariationsRemoteTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
 
-        let productVariationsCreated = try result.get()
-        XCTAssertEqual(productVariationsCreated.create.first?.productID, sampleProductID)
-        XCTAssertEqual(productVariationsCreated.create.first?.productVariationID, sampleProductVariationID)
+        let productVariationCreated = try result.get()
+        XCTAssertEqual(productVariationCreated.productID, sampleProductID)
+        XCTAssertEqual(productVariationCreated.productVariationID, sampleProductVariationID)
     }
 
     /// Verifies that createProductVariations properly relays Networking Layer errors.
@@ -196,10 +196,10 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
         // When
         let result = try waitFor { promise in
-            remote.createProductVariations(for: self.sampleSiteID,
-                                           productID: self.sampleProductID,
-                                           variations:
-                                            self.sampleCreateProductVariations(siteID: self.sampleSiteID, productID: self.sampleProductID)) { (result) in
+            remote.createProductVariation(for: self.sampleSiteID,
+                                          productID: self.sampleProductID,
+                                          newVariation:
+                                            self.sampleCreateProductVariation(siteID: self.sampleSiteID, productID: self.sampleProductID)) { (result) in
                 promise(result)
             }
         }
@@ -312,13 +312,10 @@ private extension ProductVariationsRemoteTests {
         ]
     }
 
-    func sampleCreateProductVariations(siteID: Int64,
-                                      productID: Int64) -> [CreateProductVariation] {
-
-        let create1 = CreateProductVariation(regularPrice: "5.0", attributes: sampleProductVariationAttributes())
-        let create2 = CreateProductVariation(regularPrice: "10.0", attributes: sampleProductVariationAttributes())
-
-        return [create1, create2]
+    func sampleCreateProductVariation(siteID: Int64,
+                                      productID: Int64) -> CreateProductVariation {
+        let createVariation = CreateProductVariation(regularPrice: "5.0", attributes: sampleProductVariationAttributes())
+        return createVariation
     }
 
     func dateFromGMT(_ dateStringInGMT: String) -> Date {

@@ -12,10 +12,10 @@ public protocol ProductVariationsRemoteProtocol {
                                   pageSize: Int,
                                   completion: @escaping ([ProductVariation]?, Error?) -> Void)
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
-    func createProductVariations(for siteID: Int64,
-                                        productID: Int64,
-                                        variations: [CreateProductVariation],
-                                        completion: @escaping (Result<ProductVariationInBatch, Error>) -> Void)
+    func createProductVariation(for siteID: Int64,
+                                productID: Int64,
+                                newVariation: CreateProductVariation,
+                                completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func updateProductVariation(productVariation: ProductVariation, completion: @escaping (Result<ProductVariation, Error>) -> Void)
 }
 
@@ -68,26 +68,24 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Creates a list of `ProductVariation` in batch. At most 100 variations per batch.
+    /// Creates a new `ProductVariation`.
     ///
     /// - Parameters:
     ///     - siteID: Site which will hosts the ProductVariations.
     ///     - productID: Identifier of the Product.
-    ///     - variations: the CreateProductVariations sent for creating a ProductVariation remotely.
+    ///     - variation: the CreateProductVariation sent for creating a ProductVariation remotely.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func createProductVariations(for siteID: Int64,
+    public func createProductVariation(for siteID: Int64,
                                         productID: Int64,
-                                        variations: [CreateProductVariation],
-                                        completion: @escaping (Result<ProductVariationInBatch, Error>) -> Void) {
+                                        newVariation: CreateProductVariation,
+                                        completion: @escaping (Result<ProductVariation, Error>) -> Void) {
         do {
-            let parameters = [
-                ParameterKey.create: variations
-            ]
+            let parameters = try newVariation.toDictionary()
 
             let path = "\(Path.products)/\(productID)/variations"
             let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
-            let mapper = ProductVariationInBatchListMapper(siteID: siteID, productID: productID)
+            let mapper = ProductVariationMapper(siteID: siteID, productID: productID)
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))
@@ -134,6 +132,5 @@ public extension ProductVariationsRemote {
         static let page: String       = "page"
         static let perPage: String    = "per_page"
         static let contextKey: String = "context"
-        static let create: String = "create"
     }
 }

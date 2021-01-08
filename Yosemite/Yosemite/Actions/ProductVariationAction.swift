@@ -14,12 +14,12 @@ public enum ProductVariationAction: Action {
     ///
     case retrieveProductVariation(siteID: Int64, productID: Int64, variationID: Int64, onCompletion: (Result<ProductVariation, Error>) -> Void)
 
-    /// Create in batch (max 100 elements) new ProductVariations.
+    /// Create a new ProductVariation.
     ///
-    case createProductVariations(siteID: Int64,
+    case createProductVariation(siteID: Int64,
                                  productID: Int64,
-                                 variations: [CreateProductVariation],
-                                 onCompletion: (Result<[ProductVariation], Error>) -> Void)
+                                 newVariation: CreateProductVariation,
+                                 onCompletion: (Result<ProductVariation, Error>) -> Void)
 
     /// Updates a specified ProductVariation.
     ///

@@ -40,8 +40,8 @@ public final class ProductVariationStore: Store {
             synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .retrieveProductVariation(let siteID, let productID, let variationID, let onCompletion):
             retrieveProductVariation(siteID: siteID, productID: productID, variationID: variationID, onCompletion: onCompletion)
-        case .createProductVariations(let siteID, let productID, let variations, let onCompletion):
-            createProductVariations(siteID: siteID, productID: productID, variations: variations, onCompletion: onCompletion)
+        case .createProductVariation(let siteID, let productID, let newVariation, let onCompletion):
+            createProductVariation(siteID: siteID, productID: productID, newVariation: newVariation, onCompletion: onCompletion)
         case .updateProductVariation(let productVariation, let onCompletion):
             updateProductVariation(productVariation: productVariation, onCompletion: onCompletion)
         case .requestMissingVariations(let order, let onCompletion):
@@ -107,30 +107,29 @@ private extension ProductVariationStore {
         }
     }
 
-    func createProductVariations(siteID: Int64,
+    func createProductVariation(siteID: Int64,
                                  productID: Int64,
-                                 variations: [CreateProductVariation],
-                                 onCompletion: @escaping (Result<[ProductVariation], Error>) -> Void) {
-        remote.createProductVariations(for: siteID, productID: productID, variations: variations) { [weak self] result in
+                                 newVariation: CreateProductVariation,
+                                 onCompletion: @escaping (Result<ProductVariation, Error>) -> Void) {
+        remote.createProductVariation(for: siteID, productID: productID, newVariation: newVariation) { [weak self] result in
             guard let self = self else {
                 return
             }
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))
-            case .success(let productVariations):
-                self.upsertStoredProductVariationsInBackground(readOnlyProductVariations: productVariations.create,
-                                                               siteID: siteID, productID: productID) { [weak self] in
-                    guard let storageProductVariations = self?.storageManager.viewStorage.loadProductVariations(siteID: siteID,
-                                                                                                                productID: productID,
-                                                                                                                productVariationsID: productVariations.create
-                                                                                                                    .map { $0.productVariationID }
+            case .success(let productVariation):
+                self.upsertStoredProductVariationsInBackground(readOnlyProductVariations: [productVariation],
+                                                               siteID: siteID,
+                                                               productID: productID) { [weak self] in
+                    guard let storageProductVariation = self?.storageManager.viewStorage.loadProductVariation(siteID: siteID,
+                                                                      productVariationID: productVariation.productVariationID
                     )
                     else {
                                                 onCompletion(.failure(ProductVariationLoadError.notFoundInStorage))
                                                 return
                     }
-                    onCompletion(.success(storageProductVariations.map { $0.toReadOnly() }))
+                    onCompletion(.success(storageProductVariation.toReadOnly()))
                 }
             }
         }

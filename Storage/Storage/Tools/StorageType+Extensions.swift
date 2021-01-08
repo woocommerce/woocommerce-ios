@@ -383,15 +383,6 @@ public extension StorageType {
         return allObjects(ofType: ProductVariation.self, matching: predicate, sortedBy: [descriptor])
     }
 
-    /// Retrieves all of the stored ProductVariation's for the provided siteID, productID and productVariationsID.
-    /// Sorted by dateCreated, descending
-    ///
-    func loadProductVariations(siteID: Int64, productID: Int64, productVariationsID: [Int64]) -> [ProductVariation]? {
-        let predicate = NSPredicate(format: "siteID = %lld AND productID = %lld AND productVariationID IN %@", siteID, productID, productVariationsID)
-        let descriptor = NSSortDescriptor(keyPath: \ProductVariation.dateCreated, ascending: false)
-        return allObjects(ofType: ProductVariation.self, matching: predicate, sortedBy: [descriptor])
-    }
-
     /// Retrieves a stored ProductVariation for the provided siteID and productVariationID.
     ///
     func loadProductVariation(siteID: Int64, productVariationID: Int64) -> ProductVariation? {

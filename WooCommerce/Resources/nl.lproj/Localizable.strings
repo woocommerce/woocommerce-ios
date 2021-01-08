@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-12-24 10:54:05+0000 */
+/* Translation-Revision-Date: 2021-01-08 16:00:00+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -40,7 +40,7 @@
 "%1$@ x %2$@" = "%1$@ x %2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
-"%1$@ • %2$@" = "%1$@• %$2@";
+"%1$@ • %2$@" = "%1$@• %2$@";
 
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";

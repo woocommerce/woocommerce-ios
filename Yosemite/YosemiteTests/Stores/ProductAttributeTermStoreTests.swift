@@ -171,7 +171,7 @@ private extension ProductAttributeTermStoreTests {
     }
 
     @discardableResult
-    func insertProductAttributeTerm(termID: Int64) -> Yosemite.ProductAttributeTerm  {
+    func insertProductAttributeTerm(termID: Int64) -> Yosemite.ProductAttributeTerm {
         let term = ProductAttributeTerm(siteID: sampleSiteID, termID: termID, name: "", slug: "", count: 0)
         storageManager.insertSampleProductAttributeTerm(readOnlyTerm: term, onAttributeWithID: sampleAttributeID)
         return term

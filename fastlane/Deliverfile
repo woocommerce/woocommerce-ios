@@ -22,7 +22,7 @@ privacy_url({
 
 team_id "299112"
 
-copyright('2020 WooCommerce')
+copyright('2021 WooCommerce')
 
 skip_binary_upload true
 overwrite_screenshots true

@@ -17,7 +17,7 @@ public final class ProductAttributeTermRemote: Remote {
                                           attributeID: Int64,
                                           pageNumber: Int = Default.pageNumber,
                                           pageSize: Int = Default.pageSize,
-                                          completion: @escaping ([ProductAttributeTerm]?, Error?) -> Void) {
+                                          completion: @escaping (Result<[ProductAttributeTerm], Error>) -> Void) {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize)
@@ -27,7 +27,14 @@ public final class ProductAttributeTermRemote: Remote {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = ProductAttributeTermListMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        enqueue(request, mapper: mapper) { terms, error in
+            if let error = error {
+                return completion(.failure(error))
+            }
+            if let terms = terms {
+                return completion(.success(terms))
+            }
+        }
     }
 }
 

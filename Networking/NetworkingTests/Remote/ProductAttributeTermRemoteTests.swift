@@ -31,16 +31,15 @@ final class ProductAttributeTermRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/attributes/\(sampleAttributeID)/terms", filename: "product-attribute-terms")
 
         // When
-        let result: (terms: [ProductAttributeTerm]?, error: Error?) = try waitFor { promise in
-            remote.loadProductAttributeTerms(for: self.sampleSiteID, attributeID: self.sampleAttributeID) { terms, error in
-                promise((terms: terms, error: error))
+        let result: Result<[ProductAttributeTerm], Error> = try waitFor { promise in
+            remote.loadProductAttributeTerms(for: self.sampleSiteID, attributeID: self.sampleAttributeID) { result in
+                promise(result)
             }
         }
 
         // Then
-        let terms = try XCTUnwrap(result.terms)
+        let terms = try result.get()
         XCTAssertEqual(terms.count, 3)
-        XCTAssertNil(result.error)
     }
 
     func test_load_ProductAttributeTerms_relays_networking_errors() throws {
@@ -50,15 +49,14 @@ final class ProductAttributeTermRemoteTests: XCTestCase {
         network.simulateError(requestUrlSuffix: "products/attributes/\(sampleAttributeID)/terms", error: expectedError)
 
         // When
-        let result: (terms: [ProductAttributeTerm]?, error: Error?) = try waitFor { promise in
-            remote.loadProductAttributeTerms(for: self.sampleSiteID, attributeID: self.sampleAttributeID) { terms, error in
-                promise((terms: terms, error: error))
+        let result: Result<[ProductAttributeTerm], Error> = try waitFor { promise in
+            remote.loadProductAttributeTerms(for: self.sampleSiteID, attributeID: self.sampleAttributeID) { result in
+                promise(result)
             }
         }
 
         // Then
-        let error = try XCTUnwrap(result.error) as NSError
+        let error = try XCTUnwrap(result.failure) as NSError
         XCTAssertEqual(expectedError, error)
-        XCTAssertNil(result.terms)
     }
 }

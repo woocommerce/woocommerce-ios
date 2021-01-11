@@ -3,6 +3,9 @@ import Yosemite
 
 /// Dispatches a network call for fulfilling an `Order`. This also provides actions for
 /// undoing the fulfillment and retrying failed network calls.
+///
+/// The UI is mainly handled by `OrderFulfillmentNoticePresenter`.
+///
 final class OrderFulfillmentUseCase {
     /// Represents a failed fulfillment, undo, or retry.
     struct FulfillmentError: Error {

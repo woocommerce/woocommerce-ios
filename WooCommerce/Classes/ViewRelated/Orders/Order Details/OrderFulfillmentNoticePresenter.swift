@@ -1,6 +1,20 @@
 import Foundation
 import Combine
 
+/// Presents notices for order fulfillment and handling undos and retries.
+///
+/// This is the UI counterpart for `OrderFulfillmentUseCase`.
+///
+/// This class is meant to live longer than the `ViewController` that creates it. So a lot of the
+/// calls in here will capture `self`.
+///
+/// One of the reasons is that all this class does is present notices. And notices can generally
+/// be presented anywhere.
+///
+/// Another reason is that we want to notify users if something fails in
+/// `OrderFulfillmentUseCase`. And we want to do this even if the user has already left the
+/// `ViewController` (i.e. `OrderDetailsViewController`).
+///
 final class OrderFulfillmentNoticePresenter {
 
     private let noticePresenter: NoticePresenter = ServiceLocator.noticePresenter
@@ -8,11 +22,15 @@ final class OrderFulfillmentNoticePresenter {
 
     private var cancellables = Set<AnyCancellable>()
 
+    /// Start presenting notices for the given fulfillment process.
+    ///
+    /// Undo and retry options will be presented to the user too.
     func present(process: OrderFulfillmentUseCase.FulfillmentProcess) {
         displayOptimisticFulfillmentNotice(process)
         observe(fulfillmentProcess: process)
     }
 
+    /// Observe the given process and display error notices if needed.
     private func observe(fulfillmentProcess: OrderFulfillmentUseCase.FulfillmentProcess) {
         var cancellable: AnyCancellable = AnyCancellable { }
         cancellable = fulfillmentProcess.result.sink { completion in
@@ -22,13 +40,17 @@ final class OrderFulfillmentNoticePresenter {
 
             cancellable.cancel()
         } receiveValue: {
-            // noop
+            // Noop. There is no value to receive or act on.
         }
 
+        // Insert in `cancellables` to keep the `sink` handler active.
         cancellables.insert(cancellable)
     }
 
-    /// Displays the `Order Fulfilled` Notice.
+    /// Notify the user that the order has been fulfillment.
+    ///
+    /// This is optimistic because the network call will still be ongoing by the time this is
+    /// executed.
     ///
     private func displayOptimisticFulfillmentNotice(_ fulfillmentProcess: OrderFulfillmentUseCase.FulfillmentProcess) {
         let message = NSLocalizedString("Order marked as fulfilled", comment: "Order fulfillment success notice")

@@ -3,6 +3,7 @@ import UIKit
 import Gridicons
 import Yosemite
 import MessageUI
+import Combine
 
 final class OrderDetailsViewModel {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
@@ -262,7 +263,13 @@ extension OrderDetailsViewModel {
 }
 
 // MARK: - Syncing data. Yosemite related stuff
+
 extension OrderDetailsViewModel {
+    /// Dispatches a network call in order to update `self.order`'s `status` to `.completed`.
+    func markCompleted() -> OrderFulfillmentUseCase.FulfillmentProcess {
+        OrderFulfillmentUseCase(order: order, stores: stores).fulfill()
+    }
+
     func syncOrder(onCompletion: ((Order?, Error?) -> ())? = nil) {
         let action = OrderAction.retrieveOrder(siteID: order.siteID, orderID: order.orderID) { (order, error) in
             guard let _ = order else {

@@ -408,8 +408,12 @@ private extension OrderDetailsViewController {
     }
 
     func markOrderCompleteWasPressed() {
-        #warning("TODO Implement me")
-        print("pretend that the order was completed :p")
+        ServiceLocator.analytics.track(.orderFulfillmentCompleteButtonTapped)
+
+        let fulfillmentProcess = viewModel.markCompleted()
+
+        let presenter = OrderFulfillmentNoticePresenter()
+        presenter.present(process: fulfillmentProcess)
     }
 
     func trackingWasPressed(at indexPath: IndexPath) {

@@ -21,4 +21,18 @@ public struct StoredProductSettings: Codable, Equatable {
         self.productStatusFilter = productStatusFilter
         self.productTypeFilter = productTypeFilter
     }
+
+    public func numberOfFilters() -> Int {
+        var total = 0
+        if stockStatusFilter != nil {
+            total += 1
+        }
+        if productStatusFilter != nil {
+            total += 1
+        }
+        if productTypeFilter != nil {
+            total += 1
+        }
+        return total
+    }
 }

@@ -226,13 +226,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
     // MARK: - Instance Methods
 
 
-    /// Noop.  Required by the SigninWPComSyncHandler protocol but the self-hosted
-    /// controller's implementation does not use safari saved credentials.
-    ///
-    override func updateSafariCredentialsIfNeeded() {
-    }
-
-
     /// Validates what is entered in the various form fields and, if valid,
     /// proceeds with the submit action.
     ///

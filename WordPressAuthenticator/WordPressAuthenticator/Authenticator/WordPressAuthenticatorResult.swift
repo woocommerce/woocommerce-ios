@@ -17,6 +17,11 @@ public enum WordPressAuthenticatorResult {
     ///
     case presentPasswordController(value: Bool)
 
+    /// Present the view controller requesting the email address
+    /// associated to the user's wordpress.com account
+    ///
+    case presentEmailController
+
     /// A view controller to be inserted into the navigation stack
     ///
     case injectViewController(value: UIViewController)

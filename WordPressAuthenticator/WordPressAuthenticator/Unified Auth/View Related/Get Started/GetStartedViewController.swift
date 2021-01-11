@@ -458,6 +458,7 @@ private extension GetStartedViewController {
         configureViewLoading(true)
         let service = WordPressComAccountService()
         service.requestAuthenticationLink(for: email,
+                                          jetpackLogin: loginFields.meta.jetpackLogin,
                                           success: { [weak self] in
                                             self?.didRequestAuthenticationLink()
                                             self?.configureViewLoading(false)
@@ -477,8 +478,6 @@ private extension GetStartedViewController {
     /// When a magic link successfully sends, navigate the user to the next step.
     ///
     func didRequestAuthenticationLink() {
-        WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
-
         guard let vc = LoginMagicLinkViewController.instantiate(from: .unifiedLoginMagicLink) else {
             DDLogError("Failed to navigate to LoginMagicLinkViewController from GetStartedViewController")
             return

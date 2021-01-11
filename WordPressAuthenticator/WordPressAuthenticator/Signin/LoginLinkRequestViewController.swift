@@ -110,6 +110,7 @@ class LoginLinkRequestViewController: LoginViewController {
         configureLoading(true)
         let service = WordPressComAccountService()
         service.requestAuthenticationLink(for: email,
+                                          jetpackLogin: loginFields.meta.jetpackLogin,
                                           success: { [weak self] in
                                             self?.didRequestAuthenticationLink()
                                             self?.configureLoading(false)
@@ -153,7 +154,6 @@ class LoginLinkRequestViewController: LoginViewController {
 
     @objc func didRequestAuthenticationLink() {
         WordPressAuthenticator.track(.loginMagicLinkRequested)
-        WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
 
         guard let vc = NUXLinkMailViewController.instantiate(from: .emailMagicLink) else {
             DDLogError("Failed to navigate to NUXLinkMailViewController")

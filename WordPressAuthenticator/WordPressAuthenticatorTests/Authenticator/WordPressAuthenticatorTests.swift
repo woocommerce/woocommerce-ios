@@ -49,23 +49,6 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssert(url == punycode)
     }
 
-    func testEmailAddressTokenHandling() {
-        let email = "example@email.com"
-        let loginFields = LoginFields()
-        loginFields.username = email
-        WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
-
-        var retrievedLoginFields = WordPressAuthenticator.retrieveLoginInfoForTokenAuth()
-        var retrievedEmail = retrievedLoginFields.username
-        XCTAssert(email == retrievedEmail, "The email retrived should match the email that was saved.")
-
-        WordPressAuthenticator.deleteLoginInfoForTokenAuth()
-        retrievedLoginFields = WordPressAuthenticator.retrieveLoginInfoForTokenAuth()
-        retrievedEmail = retrievedLoginFields.username
-
-        XCTAssert(email != retrievedEmail, "Saved loginFields should be deleted after calling deleteLoginInfoForTokenAuth.")
-    }
-
     // MARK: WordPressAuthenticator Notification Tests
     func testDispatchesSupportPushNotificationReceived() {
         let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
@@ -136,8 +119,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         }), object: .none)
 
         WordPressAuthenticator.showLoginForJustWPCom(from: presenterSpy,
-                                                     xmlrpc: "https://example.com/xmlrpc.php",
-                                                     username: "username",
+                                                     jetpackLogin: false,
                                                      connectedEmail: "email-address@example.com")
 
         let navController = try XCTUnwrap(presenterSpy.presentedVC as? LoginNavigationController)
@@ -146,8 +128,6 @@ class WordPressAuthenticatorTests: XCTestCase {
         wait(for: [expectation], timeout: timeout)
 
         XCTAssertEqual(controller.loginFields.restrictToWPCom, true)
-        XCTAssertEqual(controller.loginFields.meta.jetpackBlogXMLRPC, "https://example.com/xmlrpc.php")
-        XCTAssertEqual(controller.loginFields.meta.jetpackBlogUsername, "username")
         XCTAssertEqual(controller.loginFields.username, "email-address@example.com")
     }
 
@@ -201,30 +181,11 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssertFalse(authenticator.isWordPressAuthUrl(wordpressComURL))
     }
 
-    func testHandleWordPressAuthURLReturnsTrueOnSucceed() {
+    func testHandleWordPressAuthURLReturnsTrueOnSuccess() {
         let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
-        let url = URL(string: "https://wordpress.com/wp-login.php?token=1234567890%26action&magic-login&sr=1&signature=1234567890oienhdtsra")
+        let url = URL(string: "https://wordpress.com/wp-login.php?token=1234567890%26action&magic-login&sr=1&signature=1234567890oienhdtsra&flow=signup")
 
-        XCTAssertTrue(authenticator.handleWordPressAuthUrl(url!, allowWordPressComAuth: true, rootViewController: UIViewController()))
-    }
-
-    func testOpenAuthenticationFailsWithoutQuery() {
-        let url = URL(string: "https://WordPress.com/")
-
-        let result = WordPressAuthenticator.openAuthenticationURL(url!, allowWordPressComAuth: false, fromRootViewController: UIViewController())
-
-        XCTAssertFalse(result)
-    }
-
-    func testOpenAuthenticationFailsWithoutWpcomAuth() {
-        let url = URL(string: "https://WordPress.com/?token=arstdhneio0987654321")
-        let loginFields = LoginFields()
-        loginFields.username = "user123"
-        loginFields.password = "knockknock"
-
-        let result = WordPressAuthenticator.openAuthenticationURL(url!, allowWordPressComAuth: false, fromRootViewController: UIViewController())
-
-        XCTAssertFalse(result)
+        XCTAssertTrue(authenticator.handleWordPressAuthUrl(url!, rootViewController: UIViewController(), automatedTesting: true))
     }
 
     // MARK: WordPressAuthenticator OnePassword Tests

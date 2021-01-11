@@ -513,6 +513,8 @@ private extension SiteAddressViewController {
                 }
                 
                 self.showWPUsernamePassword()
+            case .presentEmailController:
+                self.showGetStarted()
             case let .injectViewController(customUI):
                 self.pushCustomUI(customUI)
             }

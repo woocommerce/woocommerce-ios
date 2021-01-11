@@ -220,17 +220,25 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         
         presentUnified2FA()
     }
-
-    // Update safari stored credentials. Call after a successful sign in.
-    ///
-    func updateSafariCredentialsIfNeeded() {
-        SafariCredentialsService.updateSafariCredentialsIfNeeded(with: loginFields)
-    }
     
     private enum LocalizedText {
         static let loginError = NSLocalizedString("Whoops, something went wrong and we couldn't log you in. Please try again!", comment: "An error message shown when a wpcom user provides the wrong password.")
         static let missingInfoError = NSLocalizedString("Please fill out all the fields", comment: "A short prompt asking the user to properly fill out all login fields.")
         static let gettingAccountInfo = NSLocalizedString("Getting account information", comment: "Alerts the user that wpcom account information is being retrieved.")
+    }
+}
+
+// MARK: - View FLow
+
+extension LoginViewController {
+    func presentEpilogue(credentials: AuthenticatorCredentials) {
+        if mustShowSignupEpilogue() {
+            showSignupEpilogue(for: credentials)
+        } else if mustShowLoginEpilogue() {
+            showLoginEpilogue(for: credentials)
+        } else {
+            dismiss()
+        }
     }
 }
 
@@ -240,37 +248,30 @@ extension LoginViewController {
 
     /// Signals the Main App to synchronize the specified WordPress.com account. On completion, the epilogue will be pushed (if needed).
     ///
-    func syncWPComAndPresentEpilogue(credentials: AuthenticatorCredentials) {
+    func syncWPComAndPresentEpilogue(
+        credentials: AuthenticatorCredentials,
+        completion: (() -> ())? = nil) {
+        
+        configureStatusLabel(LocalizedText.gettingAccountInfo)
+        
         syncWPCom(credentials: credentials) { [weak self] in
             guard let self = self else {
                 return
             }
-
-            if self.mustShowSignupEpilogue() {
-                self.showSignupEpilogue(for: credentials)
-            } else if self.mustShowLoginEpilogue() {
-                self.showLoginEpilogue(for: credentials)
-            } else {
-                self.dismiss()
-            }
+            
+            completion?()
+            
+            self.presentEpilogue(credentials: credentials)
+            self.configureStatusLabel("")
+            self.configureViewLoading(false)
+            self.trackSignIn(credentials: credentials)
         }
     }
 
-    /// TODO: @jlp Mar.19.2018. Officially support wporg, and rename to `sync(site)` + Update LoginSelfHostedViewController
-    ///
     /// Signals the Main App to synchronize the specified WordPress.com account.
     ///
-    private func syncWPCom(credentials: AuthenticatorCredentials, completion: (() -> ())? = nil) {
-        SafariCredentialsService.updateSafariCredentialsIfNeeded(with: loginFields)
-
-        configureStatusLabel(LocalizedText.gettingAccountInfo)
-
-        authenticationDelegate.sync(credentials: credentials) { [weak self] in
-
-            self?.configureStatusLabel("")
-            self?.configureViewLoading(false)
-            self?.trackSignIn(credentials: credentials)
-
+    func syncWPCom(credentials: AuthenticatorCredentials, completion: (() -> ())? = nil) {
+        authenticationDelegate.sync(credentials: credentials) {
             completion?()
         }
     }
@@ -290,6 +291,7 @@ extension LoginViewController {
         // This stat is part of a funnel that provides critical information.  Please
         // consult with your lead before removing this event.
         WordPressAuthenticator.track(.signedIn, properties: properties)
+        tracker.track(step: .success)
     }
 
     /// Links the current WordPress Account to a Social Service (if possible!!).

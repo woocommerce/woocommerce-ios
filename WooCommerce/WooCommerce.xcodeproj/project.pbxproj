@@ -4688,6 +4688,7 @@
 				26E1BEC7251BE50C0096D0A1 /* Issue Refunds */,
 				CE35F10A2343E4E6007B2A6B /* Order Notes Section */,
 				021A84DD257DFBDA00BC71D1 /* Shipping Labels */,
+				57A25C7525ACE9BC00A54A62 /* OrderFulfillmentUseCase.swift */,
 				57A25C7B25ACFAEC00A54A62 /* OrderFulfillmentNoticePresenter.swift */,
 			);
 			path = "Order Details";
@@ -5029,7 +5030,6 @@
 				D817586322BDD81600289CFE /* OrderDetailsDataSource.swift */,
 				D8C11A4D22DD235F00D4A88D /* OrderDetailsResultsControllers.swift */,
 				D8C11A5D22E2440400D4A88D /* OrderPaymentDetailsViewModel.swift */,
-				57A25C7525ACE9BC00A54A62 /* OrderFulfillmentUseCase.swift */,
 			);
 			path = "Order Details";
 			sourceTree = "<group>";

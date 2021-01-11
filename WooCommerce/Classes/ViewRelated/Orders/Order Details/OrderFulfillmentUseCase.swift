@@ -44,6 +44,7 @@ final class OrderFulfillmentUseCase {
                 guard let error = error else {
                     NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
                     self.analytics.track(.orderStatusChangeSuccess)
+                    promise(.success(()))
                     return
                 }
 

@@ -131,7 +131,7 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
     }
 
     func test_reset_productsSettings_action() {
-    
+
         let action = AppSettingsAction.resetProductsSettings
         subject.onAction(action)
         XCTAssertTrue(fileStorage!.deleteIsHit)

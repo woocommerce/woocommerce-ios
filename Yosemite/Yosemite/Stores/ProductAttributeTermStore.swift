@@ -3,7 +3,11 @@ import Networking
 import Storage
 
 public final class ProductAttributeTermStore: Store {
+
     private let remote: ProductAttributeTermRemote
+
+    /// Set the size of the page size request for this store
+    var pageSizeRequest = Constants.defaultMaxPageSize
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
@@ -54,12 +58,12 @@ private extension ProductAttributeTermStore {
         synchronizeProductAttributeTerms(siteID: siteID,
                                          attributeID: attributeID,
                                          pageNumber: fromPageNumber,
-                                         pageSize: Constants.defaultMaxPageSize) { [weak self] result in
+                                         pageSize: pageSizeRequest) { [weak self] result in
             guard let self = self else { return }
             switch result {
 
             // If terms count is less than the requested page size, end the recursion and call `onCompletion`
-            case let .success(terms) where terms.count < Constants.defaultMaxPageSize:
+            case let .success(terms) where terms.count < self.pageSizeRequest:
                 self.deleteStaleTerms(siteID: siteID, attributeID: attributeID, activeTerms: synchronizedTerms + terms)
                 onCompletion(nil)
 

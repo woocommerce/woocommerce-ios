@@ -55,6 +55,7 @@ final class ProductAttributeTermStoreTests: XCTestCase {
         store = ProductAttributeTermStore(dispatcher: Dispatcher(),
                                           storageManager: storageManager,
                                           network: network)
+        store.pageSizeRequest = 3
         insertProductAttribute()
     }
 

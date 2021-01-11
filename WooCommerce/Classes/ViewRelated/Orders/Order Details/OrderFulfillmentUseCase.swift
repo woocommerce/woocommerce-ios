@@ -1,18 +1,37 @@
 import Combine
 import Yosemite
 
+/// Dispatches a network call for fulfilling an `Order`. This also provides actions for
+/// undoing the fulfillment and retrying failed network calls.
 final class OrderFulfillmentUseCase {
+    /// Represents a failed fulfillment, undo, or retry.
     struct FulfillmentError: Error {
+        /// The type of activity that failed.
+        let activity: Activity
+        /// An error message that should be presented to the user.
         let message: String
+        /// A function that can be called to retry the activity represented by this error.
+        ///
+        /// The retry is typically initiated by the user.
         let retry: () -> FulfillmentProcess
     }
 
+    /// An ongoing or completed fulfillment, undo, or retry.
     struct FulfillmentProcess {
+        /// The type of the ongoing or completed activity.
+        let activity: Activity
+        /// An observable result of the activity.
         let result: Future<Void, FulfillmentError>
+        /// A function that can be used to undo the activity.
+        ///
+        /// For example, if the activity is `.fulfill`, which changes the `Order`'s `status` to
+        /// `completed`, then this function will dispatch a network call to revert the `status`
+        /// to the previously known `status` (e.g. `processing`, `on-hold`, etc.).
         let undo: () -> FulfillmentProcess
     }
 
-    private enum Context {
+    /// Defines the type of activity that this class handles.
+    enum Activity {
         case fulfill
         case undo
     }
@@ -26,17 +45,21 @@ final class OrderFulfillmentUseCase {
         self.stores = stores
     }
 
+    /// Mark the `self.order` as `.completed`.
+    ///
+    /// - Returns: An object containing the future result and a way to undo the change.
     func fulfill() -> FulfillmentProcess {
-        dispatchStatusUpdateAction(order: order, status: .completed, context: .fulfill)
+        dispatchStatusUpdateAction(order: order, status: .completed, activity: .fulfill)
     }
 
+    /// Executes the network call and, eventually, the update of the `Order` in the database.
+    ///
+    /// This recurring function is used by all types of activities handled by this class.
     private func dispatchStatusUpdateAction(order: Order,
                                             status targetStatus: OrderStatusEnum,
-                                            context: Context) -> FulfillmentProcess {
-        let sourceStatus = order.status
-
+                                            activity: Activity) -> FulfillmentProcess {
         analytics.track(.orderStatusChange, withProperties: ["id": order.orderID,
-                                                             "from": sourceStatus.rawValue,
+                                                             "from": order.status.rawValue,
                                                              "to": targetStatus.rawValue])
 
         let result: Future<Void, FulfillmentError> = Future { promise in
@@ -52,9 +75,10 @@ final class OrderFulfillmentUseCase {
                 DDLogError("⛔️ Order Update Failure: [\(order.orderID).status = \(targetStatus)]. Error: \(error)")
 
                 let fulfillmentError = FulfillmentError(
-                    message: self.makeErrorMessage(order: order, context: context),
+                    activity: activity,
+                    message: self.makeErrorMessage(order: order, activity: activity),
                     retry: {
-                        self.dispatchStatusUpdateAction(order: order, status: targetStatus, context: context)
+                        self.dispatchStatusUpdateAction(order: order, status: targetStatus, activity: activity)
                     }
                 )
                 promise(.failure(fulfillmentError))
@@ -64,17 +88,18 @@ final class OrderFulfillmentUseCase {
         }
 
         return FulfillmentProcess(
+            activity: activity,
             result: result,
             undo: {
                 self.analytics.track(.orderStatusChangeUndo, withProperties: ["id": order.orderID])
 
-                return self.dispatchStatusUpdateAction(order: order, status: sourceStatus, context: .undo)
+                return self.dispatchStatusUpdateAction(order: order, status: order.status, activity: .undo)
             }
         )
     }
 
-    private func makeErrorMessage(order: Order, context: Context) -> String {
-        switch context {
+    private func makeErrorMessage(order: Order, activity: Activity) -> String {
+        switch activity {
         case .fulfill:
             return Localization.fulfillmentError(orderID: order.orderID)
         case .undo:

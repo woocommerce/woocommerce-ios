@@ -29,6 +29,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
     }
 
     func test_deleteTracking_fires_orderTrackingDelete_Tracks_event() {
+        // Given
         let mockShipmentTracking = ShipmentTracking(siteID: 1111,
                                                     orderID: 1111,
                                                     trackingID: "1111",
@@ -37,8 +38,10 @@ final class OrderDetailsViewModelTests: XCTestCase {
                                                     trackingURL: nil,
                                                     dateShipped: nil)
 
+        // When
         viewModel.deleteTracking(mockShipmentTracking) { _ in }
 
+        // Then
         let analytics = ServiceLocator.analytics.analyticsProvider as! MockAnalyticsProvider
         let receivedEvents = analytics.receivedEvents
 

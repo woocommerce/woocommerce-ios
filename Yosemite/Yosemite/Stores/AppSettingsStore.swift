@@ -495,20 +495,26 @@ private extension AppSettingsStore {
         onCompletion(.success(settingsUnwrapped))
     }
 
-    func setProductsSettings(siteID: Int64,
-                             sort: String? = nil,
-                             stockStatusFilter: ProductStockStatus? = nil,
-                             productStatusFilter: ProductStatus? = nil,
-                             productTypeFilter: ProductType? = nil,
-                             onCompletion: (Error?) -> Void) {
-        let settings = StoredProductSettings(siteID: siteID,
-                                             sort: sort,
-                                             stockStatusFilter: stockStatusFilter,
-                                             productStatusFilter: productStatusFilter,
-                                             productTypeFilter: productTypeFilter)
+    func upsertProductsSettings(siteID: Int64,
+                                sort: String? = nil,
+                                stockStatusFilter: ProductStockStatus? = nil,
+                                productStatusFilter: ProductStatus? = nil,
+                                productTypeFilter: ProductType? = nil,
+                                onCompletion: (Error?) -> Void) {
+        var existingSettings: [StoredProductSettings] = []
+        if let settings: [StoredProductSettings] = try? fileStorage.data(for: productsSettingsURL) {
+            existingSettings = settings.filter { $0.siteID != siteID }
+        }
+
+        let newSettings = StoredProductSettings(siteID: siteID,
+                                                sort: sort,
+                                                stockStatusFilter: stockStatusFilter,
+                                                productStatusFilter: productStatusFilter,
+                                                productTypeFilter: productTypeFilter)
+        existingSettings.append(newSettings)
 
         do {
-            try fileStorage.write([settings], to: productsSettingsURL)
+            try fileStorage.write(existingSettings, to: productsSettingsURL)
             onCompletion(nil)
         } catch {
             onCompletion(AppSettingsStoreErrors.writeProductsSettings)

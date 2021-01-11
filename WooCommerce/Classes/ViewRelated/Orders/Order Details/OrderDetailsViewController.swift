@@ -378,6 +378,8 @@ private extension OrderDetailsViewController {
         switch type {
         case .fulfill:
             fulfillWasPressed()
+        case .markComplete:
+            markOrderCompleteWasPressed()
         case .summary:
             displayOrderStatusList()
         case .tracking:
@@ -403,6 +405,11 @@ private extension OrderDetailsViewController {
         ServiceLocator.analytics.track(.orderDetailFulfillButtonTapped)
         let fulfillViewController = FulfillViewController(order: viewModel.order, products: viewModel.products)
         navigationController?.pushViewController(fulfillViewController, animated: true)
+    }
+
+    func markOrderCompleteWasPressed() {
+        #warning("TODO Implement me")
+        print("pretend that the order was completed :p")
     }
 
     func trackingWasPressed(at indexPath: IndexPath) {

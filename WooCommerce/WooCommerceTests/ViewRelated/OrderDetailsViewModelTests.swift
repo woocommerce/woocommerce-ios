@@ -20,7 +20,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         order = nil
     }
 
-    func testDeleteTrackingFiresOrderTrackingDeleteTracksEvent() {
+    func test_deleteTracking_fires_orderTrackingDelete_Tracks_event() {
         let mockShipmentTracking = ShipmentTracking(siteID: 1111,
                                                     orderID: 1111,
                                                     trackingID: "1111",

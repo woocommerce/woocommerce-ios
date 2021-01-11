@@ -72,6 +72,10 @@ final class ProductsViewController: UIViewController {
     private var sortOrder: ProductsSortOrder = .nameAscending {
         didSet {
             if sortOrder != oldValue {
+                updateLocalProductSettings(sort: sortOrder,
+                                           stockStatusFilter: filters.stockStatus,
+                                           productStatusFilter: filters.productStatus,
+                                           productTypeFilter: filters.productType)
                 resultsController.updateSortOrder(sortOrder)
 
                 /// Reload data because `updateSortOrder` generates a new `predicate` which calls `performFetch`
@@ -110,6 +114,10 @@ final class ProductsViewController: UIViewController {
     private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
         didSet {
             if filters != oldValue {
+                updateLocalProductSettings(sort: sortOrder,
+                                           stockStatusFilter: filters.stockStatus,
+                                           productStatusFilter: filters.productStatus,
+                                           productTypeFilter: filters.productType)
                 updateFilterButtonTitle(filters: filters)
 
                 resultsController.updatePredicate(siteID: siteID,
@@ -156,6 +164,7 @@ final class ProductsViewController: UIViewController {
         updateTopBannerView()
 
         syncingCoordinator.resynchronize()
+        syncLocalProductsSettings()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -666,6 +675,41 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                     onCompletion?(result.isSuccess)
         }
 
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Update local Products Settings (eg. sort order or filters stored in Products settings)
+    ///
+    func updateLocalProductSettings(sort: ProductsSortOrder? = nil,
+                                    stockStatusFilter: ProductStockStatus? = nil,
+                                    productStatusFilter: ProductStatus? = nil,
+                                    productTypeFilter: ProductType? = nil) {
+        let action = AppSettingsAction.upsertProductsSettings(siteID: siteID,
+                                                              sort: sort?.rawValue,
+                                                              stockStatusFilter: stockStatusFilter,
+                                                              productStatusFilter: productStatusFilter,
+                                                              productTypeFilter: productTypeFilter) { (error) in
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Fetch local Products Settings (eg.  sort order or filters stored in Products settings)
+    ///
+    func syncLocalProductsSettings() {
+        let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
+            switch result {
+            case .success(let settings):
+                if let sort = settings.sort {
+                    self?.sortOrder = ProductsSortOrder(rawValue: sort) ?? .nameAscending
+                }
+                self?.filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
+                                                                   productStatus: settings.productStatusFilter,
+                                                                   productType: settings.productTypeFilter,
+                                                                   numberOfActiveFilters: settings.numberOfFilters())
+            case .failure:
+                break
+            }
+        }
         ServiceLocator.stores.dispatch(action)
     }
 }

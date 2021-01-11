@@ -25,4 +25,22 @@ extension UIPasteboard {
             }
         }
     }
+
+    /// Detects whether UIPasteboard.general contains a 2FA code.
+    /// - Parameters:
+    ///   - completion: Called with the 2FA code on success, or failure otherwise
+    @available(iOS 14.0, *)
+    func detectTwoFactorCode(completion: (Result<String, Error>) -> Void) {
+        UIPasteboard.general.detect(patterns: [.number]) { result in
+            switch result {
+                case .success(let detections):
+                    if let twoFactorCode = detections.first?.value as? String {
+                        completion(.success(twoFactorCode))
+                        return
+                    }
+            }
+        }
+
+        completion(.failure());
+    }
 }

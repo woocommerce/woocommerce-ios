@@ -296,14 +296,12 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         }
 
         if #available(iOS 14.0, *) {
-            UIPasteboard.general.detect(patterns: [.number]) { [weak self] result in
+            UIPasteboard.general.detectTwoFactorCode() { [weak self] result in
                 switch result {
-                case .success(let detections):
-                    if let pasteString = detections.first?.value as? String {
-                        self?.handle(code: pasteString)
-                    }
-                case .failure:
-                    break
+                    case .success(let twoFactorCode):
+                        self?.handle(code: twoFactorCode)
+                    case .failure:
+                        break
                 }
             }
         } else {

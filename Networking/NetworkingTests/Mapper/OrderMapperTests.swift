@@ -254,6 +254,27 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(variationLineItem.attributes, [])
         XCTAssertEqual(variationLineItem.name, "Hoodie - Green, No")
     }
+
+    func test_Order_fees_are_correctly_parsed() {
+        guard let order = mapLoadOrderResponse() else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertNotNil(order.fees)
+        XCTAssertEqual(order.fees.count, 1)
+
+        guard let fee = order.fees.first else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(fee.feeID, 60)
+        XCTAssertEqual(fee.name, "$125.50 fee")
+        XCTAssertEqual(fee.taxStatus, .taxable)
+        XCTAssertEqual(fee.total, "125.50")
+        XCTAssertEqual(fee.totalTax, "0.00")
+    }
 }
 
 

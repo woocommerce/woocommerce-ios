@@ -93,7 +93,8 @@ extension Storage.Order: ReadOnlyConvertible {
                      shippingAddress: createReadOnlyShippingAddress(),
                      shippingLines: orderShippingLines,
                      coupons: orderCoupons,
-                     refunds: orderRefunds)
+                     refunds: orderRefunds,
+                     fees: []) // Fees will be implemented properly in a subsequent PR.
     }
 
 

@@ -142,6 +142,17 @@ public class AppSettingsStore: Store {
             updateFeedbackStatus(type: type, status: status, onCompletion: onCompletion)
         case .loadFeedbackVisibility(let type, let onCompletion):
             loadFeedbackVisibility(type: type, onCompletion: onCompletion)
+        case .loadProductsSettings(let siteID, let onCompletion):
+            loadProductsSettings(siteID: siteID, onCompletion: onCompletion)
+        case .upsertProductsSettings(let siteID, let sort, let stockStatusFilter, let productStatusFilter, let productTypeFilter, let onCompletion):
+            upsertProductsSettings(siteID: siteID,
+                                   sort: sort,
+                                   stockStatusFilter: stockStatusFilter,
+                                   productStatusFilter: productStatusFilter,
+                                   productTypeFilter: productTypeFilter,
+                                   onCompletion: onCompletion)
+        case .resetProductsSettings:
+            resetProductsSettings()
         }
     }
 }

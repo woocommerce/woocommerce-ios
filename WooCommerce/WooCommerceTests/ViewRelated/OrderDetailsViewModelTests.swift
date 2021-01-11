@@ -47,4 +47,25 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         XCTAssert(receivedEvents.contains(WooAnalyticsStat.orderTrackingDelete.rawValue))
     }
+
+    func test_markComplete_dispatches_updateOrder_action() throws {
+        // Given
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+
+        // When
+        _ = viewModel.markCompleted()
+
+        // Then
+        XCTAssertEqual(storesManager.receivedActions.count, 1)
+
+        let action = try XCTUnwrap(storesManager.receivedActions.first as? OrderAction)
+        guard case let .updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: _) = action else {
+            XCTFail("Expected \(action) to be \(OrderAction.self)")
+            return
+        }
+
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(orderID, order.orderID)
+        XCTAssertEqual(status, .completed)
+    }
 }

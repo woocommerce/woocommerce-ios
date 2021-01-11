@@ -1,5 +1,6 @@
 import XCTest
-@testable import Yosemite
+import Yosemite
+
 @testable import WooCommerce
 
 final class OrderDetailsViewModelTests: XCTestCase {

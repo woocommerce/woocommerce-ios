@@ -15,7 +15,7 @@ final class OrderFulfillmentNoticePresenter {
 
     private func observe(fulfillmentProcess: OrderFulfillmentUseCase.FulfillmentProcess) {
         var cancellable: AnyCancellable = AnyCancellable { }
-        cancellable = fulfillmentProcess.future.sink { completion in
+        cancellable = fulfillmentProcess.result.sink { completion in
             if case .failure(let fulfillmentError) = completion {
                 self.displayFulfillmentErrorNotice(error: fulfillmentError)
             }
@@ -28,7 +28,7 @@ final class OrderFulfillmentNoticePresenter {
         cancellables.insert(cancellable)
     }
 
-    /// Displays the `Order Fulfilled` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
+    /// Displays the `Order Fulfilled` Notice.
     ///
     private func displayOptimisticFulfillmentNotice(_ fulfillmentProcess: OrderFulfillmentUseCase.FulfillmentProcess) {
         let message = NSLocalizedString("Order marked as fulfilled", comment: "Order fulfillment success notice")

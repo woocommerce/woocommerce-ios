@@ -8,8 +8,8 @@ final class OrderFulfillmentUseCase {
     }
 
     struct FulfillmentProcess {
+        let result: Future<Void, FulfillmentError>
         let undo: () -> FulfillmentProcess
-        let future: Future<Void, FulfillmentError>
     }
 
     private enum Context {
@@ -39,7 +39,7 @@ final class OrderFulfillmentUseCase {
                                                              "from": sourceStatus.rawValue,
                                                              "to": targetStatus.rawValue])
 
-        let future: Future<Void, FulfillmentError> = Future { promise in
+        let result: Future<Void, FulfillmentError> = Future { promise in
             let action = OrderAction.updateOrder(siteID: order.siteID, orderID: order.orderID, status: targetStatus) { error in
                 guard let error = error else {
                     NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
@@ -63,11 +63,14 @@ final class OrderFulfillmentUseCase {
             self.stores.dispatch(action)
         }
 
-        return FulfillmentProcess(undo: {
-            self.analytics.track(.orderStatusChangeUndo, withProperties: ["id": order.orderID])
+        return FulfillmentProcess(
+            result: result,
+            undo: {
+                self.analytics.track(.orderStatusChangeUndo, withProperties: ["id": order.orderID])
 
-            return self.dispatchStatusUpdateAction(order: order, status: sourceStatus, context: .undo)
-        }, future: future)
+                return self.dispatchStatusUpdateAction(order: order, status: sourceStatus, context: .undo)
+            }
+        )
     }
 
     private func makeErrorMessage(order: Order, context: Context) -> String {

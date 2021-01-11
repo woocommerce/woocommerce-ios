@@ -77,6 +77,13 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.generalAppSettingsFileName)
     }()
 
+    /// URL to the plist file that we use to determine the settings applied in Products
+    ///
+    private lazy var productsSettingsURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.productsSettings)
+    }()
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -467,6 +474,56 @@ private extension AppSettingsStore {
     }
 }
 
+// MARK: - Products Settings
+//
+private extension AppSettingsStore {
+    func loadProductsSettings(siteID: Int64, onCompletion: (Result<StoredProductSettings, Error>) -> Void) {
+        guard let allSavedSettings: [StoredProductSettings] = try? fileStorage.data(for: productsSettingsURL) else {
+            let error = AppSettingsStoreErrors.noProductsSettings
+            onCompletion(.failure(error))
+            return
+        }
+
+        let settings = allSavedSettings.filter { $0.siteID == siteID }
+
+        guard let settingsUnwrapped = settings.first else {
+            let error = AppSettingsStoreErrors.noProductsSettings
+            onCompletion(.failure(error))
+            return
+        }
+
+        onCompletion(.success(settingsUnwrapped))
+    }
+
+    func setProductsSettings(siteID: Int64,
+                             sort: String? = nil,
+                             stockStatusFilter: ProductStockStatus? = nil,
+                             productStatusFilter: ProductStatus? = nil,
+                             productTypeFilter: ProductType? = nil,
+                             onCompletion: (Error?) -> Void) {
+        let settings = StoredProductSettings(siteID: siteID,
+                                             sort: sort,
+                                             stockStatusFilter: stockStatusFilter,
+                                             productStatusFilter: productStatusFilter,
+                                             productTypeFilter: productTypeFilter)
+
+        do {
+            try fileStorage.write([settings], to: productsSettingsURL)
+            onCompletion(nil)
+        } catch {
+            onCompletion(AppSettingsStoreErrors.writeProductsSettings)
+        }
+    }
+
+    func resetProductsSettings() {
+        do {
+            try fileStorage.deleteFile(at: productsSettingsURL)
+        } catch {
+            DDLogError("⛔️ Deleting the product settings files failed. Error: \(error)")
+        }
+    }
+}
+
 
 // MARK: - Errors
 
@@ -480,6 +537,8 @@ enum AppSettingsStoreErrors: Error {
     case readPListFromFileStorage
     case writePListToFileStorage
     case deleteStatsVersionStates
+    case noProductsSettings
+    case writeProductsSettings
 }
 
 
@@ -498,4 +557,5 @@ private enum Constants {
     static let productsRelease3FeatureSwitchFileName = "products-m3-feature-switch.plist"
     static let productsRelease4FeatureSwitchFileName = "products-m4-feature-switch.plist"
     static let generalAppSettingsFileName = "general-app-settings.plist"
+    static let productsSettings = "products-settings.plist"
 }

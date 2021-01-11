@@ -80,7 +80,7 @@ extension MockStorageManager {
         return newProductAttribute
     }
 
-    /// Inserts a new (Sample) ProductAttributeTerm. and links it to a parent `ProductAttribute` if required.
+    /// Inserts a new (Sample) `ProductAttributeTerm`. and links it to a parent `ProductAttribute` if available.
     ///
     @discardableResult
     func insertSampleProductAttributeTerm(readOnlyTerm: ProductAttributeTerm, onAttributeWithID attributeID: Int64) -> StorageProductAttributeTerm {

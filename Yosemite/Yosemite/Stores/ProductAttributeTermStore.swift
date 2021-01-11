@@ -58,9 +58,9 @@ private extension ProductAttributeTermStore {
             guard let self = self else { return }
             switch result {
 
-            // If terms is empty, end the recursion and call `onCompletion`
-            case let .success(terms) where terms.isEmpty:
-                self.deleteStaleTerms(siteID: siteID, attributeID: attributeID, activeTerms: synchronizedTerms)
+            // If terms count is less than the requested page size, end the recursion and call `onCompletion`
+            case let .success(terms) where terms.count < Constants.defaultMaxPageSize:
+                self.deleteStaleTerms(siteID: siteID, attributeID: attributeID, activeTerms: synchronizedTerms + terms)
                 onCompletion(nil)
 
             // If there could be more(non-empty) terms, request the next page recursively.
@@ -85,14 +85,15 @@ private extension ProductAttributeTermStore {
                                           pageNumber: Int,
                                           pageSize: Int,
                                           onCompletion: @escaping (Result<[ProductAttributeTerm], ProductAttributeTermActionError>) -> Void) {
-        remote.loadProductAttributeTerms(for: siteID, attributeID: attributeID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] terms, error in
-            guard let terms = terms else {
+        remote.loadProductAttributeTerms(for: siteID, attributeID: attributeID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
+            switch result {
+            case let .success(terms):
+                self?.upsertStoredProductAttributeTermsInBackground(terms, siteID: siteID, attributeID: attributeID) {
+                    onCompletion(.success(terms))
+                }
+            case let .failure(error):
                 let error = ProductAttributeTermActionError.termsSynchronization(pageNumber: pageNumber, rawError: error)
                 return onCompletion(.failure(error))
-            }
-
-            self?.upsertStoredProductAttributeTermsInBackground(terms, siteID: siteID, attributeID: attributeID) {
-                onCompletion(.success(terms))
             }
         }
     }

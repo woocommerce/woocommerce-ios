@@ -16,5 +16,5 @@ public enum ProductAttributeTermAction: Action {
 public enum ProductAttributeTermActionError: Error {
     /// Represents the product attribute term synchronization failed state.
     ///
-    case termsSynchronization(pageNumber: Int, rawError: Error?)
+    case termsSynchronization(pageNumber: Int, rawError: Error)
 }

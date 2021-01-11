@@ -30,7 +30,7 @@ extension UIPasteboard {
     /// - Parameters:
     ///   - completion: Called with the 2FA code on success, or failure otherwise
     @available(iOS 14.0, *)
-    func detectTwoFactorCode(completion: (Result<String, Error>) -> Void) {
+    func detectTwoFactorCode(completion: @escaping (Result<String, Error>) -> Void) {
         UIPasteboard.general.detect(patterns: [.number]) { result in
             switch result {
                 case .success(let detections):
@@ -38,9 +38,9 @@ extension UIPasteboard {
                         completion(.success(twoFactorCode))
                         return
                     }
+                case .failure(let error):
+                    completion(.failure(error))
             }
         }
-
-        completion(.failure());
     }
 }

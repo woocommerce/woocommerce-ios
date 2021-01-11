@@ -128,7 +128,7 @@ private extension OrderDetailsViewController {
             guard let self = self else {
                 return
             }
-            self.viewModel.updateOrderStatus(order: order)
+            self.viewModel.update(order: order)
             self.reloadTableViewSectionsAndData()
         }
     }

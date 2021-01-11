@@ -130,10 +130,6 @@ extension OrderDetailsViewModel {
     func configureResultsControllers(onReload: @escaping () -> Void) {
         dataSource.configureResultsControllers(onReload: onReload)
     }
-
-    func updateOrderStatus(order: Order) {
-        update(order: order)
-    }
 }
 
 

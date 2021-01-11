@@ -10,6 +10,7 @@ final class OrderDetailsDataSource: NSObject {
 
     /// This is only used to pass as a dependency to `OrderDetailsResultsControllers`.
     private let storageManager: StorageManagerType
+    private let featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService
 
     private(set) var order: Order
     private let couponLines: [OrderCouponLine]?
@@ -755,8 +756,11 @@ extension OrderDetailsDataSource {
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
             if isProcessingPayment {
-                rows.append(.fulfillButton)
-                rows.append(.markCompleteButton)
+                if featureFlagService.isFeatureFlagEnabled(.removeOrderFulfillmentScreen) {
+                    rows.append(.markCompleteButton)
+                } else {
+                    rows.append(.fulfillButton)
+                }
             } else if isRefundedStatus == false {
                 rows.append(.details)
             }

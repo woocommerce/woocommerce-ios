@@ -10,7 +10,7 @@ struct DefaultFeatureFlagService: FeatureFlagService {
         case .shippingLabelsRelease1:
             return true
         case .removeOrderFulfillmentScreen:
-            return false
+            return buildConfig == .localDeveloper
         default:
             return true
         }

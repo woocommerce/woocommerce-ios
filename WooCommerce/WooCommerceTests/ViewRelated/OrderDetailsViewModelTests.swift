@@ -7,9 +7,15 @@ final class OrderDetailsViewModelTests: XCTestCase {
     private var order: Order!
     private var viewModel: OrderDetailsViewModel!
 
+    private var storesManager: MockStoresManager!
+
     override func setUp() {
+        storesManager = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+
         order = MockOrders().sampleOrder()
-        viewModel = OrderDetailsViewModel(order: order)
+
+        viewModel = OrderDetailsViewModel(order: order, stores: storesManager)
+
         let analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider())
         ServiceLocator.setAnalytics(analytics)
         super.setUp()
@@ -19,6 +25,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         super.tearDown()
         viewModel = nil
         order = nil
+        storesManager = nil
     }
 
     func test_deleteTracking_fires_orderTrackingDelete_Tracks_event() {

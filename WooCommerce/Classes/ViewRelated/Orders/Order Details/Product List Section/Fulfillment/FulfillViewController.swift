@@ -43,7 +43,7 @@ final class FulfillViewController: UIViewController {
         return shippingLines.first?.methodTitle ?? String()
     }
 
-    /// ResultsController fetching ShipemntTracking data
+    /// ResultsController fetching ShipmentTracking data
     ///
     private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
         let storageManager = ServiceLocator.storageManager

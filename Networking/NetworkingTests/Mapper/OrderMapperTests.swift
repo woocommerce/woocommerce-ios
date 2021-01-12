@@ -271,9 +271,12 @@ final class OrderMapperTests: XCTestCase {
 
         XCTAssertEqual(fee.feeID, 60)
         XCTAssertEqual(fee.name, "$125.50 fee")
+        XCTAssertEqual(fee.taxClass, "")
         XCTAssertEqual(fee.taxStatus, .taxable)
         XCTAssertEqual(fee.total, "125.50")
         XCTAssertEqual(fee.totalTax, "0.00")
+        XCTAssertEqual(fee.taxes, [])
+        XCTAssertEqual(fee.attributes, [])
     }
 }
 

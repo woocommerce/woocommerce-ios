@@ -163,8 +163,15 @@ final class ProductsViewController: UIViewController {
 
         updateTopBannerView()
 
-        syncingCoordinator.resynchronize()
-        syncLocalProductsSettings()
+        /// We sync the local product settings for configuring local sorting and filtering.
+        /// If there are some info stored when this screen is loaded, the data will be updated using the stored sort/filters.
+        /// If no info are stored (so there is a failure), we resynchronize the syncingCoordinator for updating the screen using the default sort/filters.
+        ///
+        syncLocalProductsSettings { [weak self] (result) in
+            if result.isFailure {
+                self?.syncingCoordinator.resynchronize()
+            }
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -695,7 +702,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
 
     /// Fetch local Products Settings (eg.  sort order or filters stored in Products settings)
     ///
-    func syncLocalProductsSettings() {
+    func syncLocalProductsSettings(onCompletion: @escaping (Result<StoredProductSettings, Error>) -> Void) {
         let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
             switch result {
             case .success(let settings):
@@ -709,6 +716,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
             case .failure:
                 break
             }
+            onCompletion(result)
         }
         ServiceLocator.stores.dispatch(action)
     }

@@ -316,21 +316,3 @@ private extension ImageAndTitleAndTextTableViewCell {
         contentStackView.spacing = isVerticalStack ? 5: 16
     }
 }
-
-private extension ImageAndTitleAndTextTableViewCell {
-    enum Constants {
-        static let imageViewDefaultDimension: CGFloat = 24
-    }
-}
-
-private extension ImageAndTitleAndTextTableViewCell.FontStyle {
-    /// Used for base image dimension.
-    var imageDimension: CGFloat {
-        switch self {
-        case .body:
-            return 24
-        case .footnote:
-            return 20
-        }
-    }
-}

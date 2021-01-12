@@ -10,7 +10,6 @@ final class OrderDetailsDataSource: NSObject {
 
     /// This is only used to pass as a dependency to `OrderDetailsResultsControllers`.
     private let storageManager: StorageManagerType
-    private let featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService
 
     private(set) var order: Order
     private let couponLines: [OrderCouponLine]?

@@ -100,6 +100,55 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
         let action = try XCTUnwrap(stores.receivedActions.last as? OrderAction)
         assertThat(statusUpdateAction: action, matches: order, status: .completed)
     }
+
+    func test_fulfill_returns_an_Error_if_the_Action_fails() throws {
+        // Given
+        let order = MockOrders().empty().copy(siteID: 500, orderID: 1, status: .pending)
+        let useCase = OrderFulfillmentUseCase(order: order, stores: stores)
+
+        mockUpdateOrderAction(from: stores, toCompleteWithError: SampleError.first)
+
+        // When
+        let process = useCase.fulfill()
+        let error: OrderFulfillmentUseCase.FulfillmentError = try waitFor { promise in
+            process.result.sink { completion in
+                guard case let .failure(error: fulfillmentError) = completion else {
+                    XCTFail("Unexpected completion \(completion).")
+                    return
+                }
+
+                promise(fulfillmentError)
+            } receiveValue: {
+                // noop
+            }.store(in: &self.cancellables)
+        }
+
+        // Then
+        XCTAssertEqual(error.activity, .fulfill)
+        XCTAssertEqual(error.message, OrderFulfillmentUseCase.Localization.fulfillmentError(orderID: order.orderID))
+    }
+
+    func test_fulfill_finishes_with_no_Error_if_the_Action_succeeds() throws {
+        // Given
+        let order = MockOrders().empty().copy(siteID: 500, orderID: 1, status: .pending)
+        let useCase = OrderFulfillmentUseCase(order: order, stores: stores)
+
+        mockUpdateOrderAction(from: stores, toCompleteWithError: nil)
+
+        // When
+        let process = useCase.fulfill()
+
+        // Then
+        waitForExpectation { expectation in
+            process.result.sink { completion in
+                if case .finished = completion {
+                    expectation.fulfill()
+                }
+            } receiveValue: {
+                // noop
+            }.store(in: &self.cancellables)
+        }
+    }
 }
 
 private extension OrderFulfillmentUseCaseTests {
@@ -118,5 +167,19 @@ private extension OrderFulfillmentUseCaseTests {
         XCTAssertEqual(siteID, order.siteID, file: file, line: line)
         XCTAssertEqual(orderID, order.orderID, file: file, line: line)
         XCTAssertEqual(actualStatus, expectedStatus, file: file, line: line)
+    }
+
+    func mockUpdateOrderAction(from stores: MockStoresManager,
+                               toCompleteWithError completionError: Error?,
+                               file: StaticString = #file,
+                               line: UInt = #line) {
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            guard case let .updateOrder(siteID: _, orderID: _, status: _, onCompletion: onCompletion) = action else {
+                XCTFail("Unexpected action \(action).", file: file, line: line)
+                return
+            }
+
+            onCompletion(completionError)
+        }
     }
 }

@@ -111,7 +111,7 @@ final class OrderFulfillmentUseCase {
     }
 }
 
-private extension OrderFulfillmentUseCase {
+extension OrderFulfillmentUseCase {
     enum Localization {
         static func fulfillmentError(orderID: Int64) -> String {
             let format = NSLocalizedString(

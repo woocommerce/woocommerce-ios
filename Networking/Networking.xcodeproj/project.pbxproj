@@ -87,6 +87,7 @@
 		26615475242D7C9500A31661 /* ProductCategoryListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26615474242D7C9500A31661 /* ProductCategoryListMapper.swift */; };
 		26615479242DA54D00A31661 /* ProductCategoyListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26615478242DA54D00A31661 /* ProductCategoyListMapperTests.swift */; };
 		2661547B242DAC1C00A31661 /* ProductCategoriesRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2661547A242DAC1C00A31661 /* ProductCategoriesRemoteTests.swift */; };
+		266C7F9225AD3C88006ED243 /* attribute-term.json in Resources */ = {isa = PBXBuildFile; fileRef = 266C7F9125AD3C87006ED243 /* attribute-term.json */; };
 		267313312559CC930026F7EF /* PaymentGateway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267313302559CC930026F7EF /* PaymentGateway.swift */; };
 		26731337255ACA850026F7EF /* PaymentGatewayListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26731336255ACA850026F7EF /* PaymentGatewayListMapper.swift */; };
 		2683D70E24456DB8002A1589 /* categories-empty.json in Resources */ = {isa = PBXBuildFile; fileRef = 2683D70D24456DB7002A1589 /* categories-empty.json */; };
@@ -499,6 +500,7 @@
 		26615474242D7C9500A31661 /* ProductCategoryListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryListMapper.swift; sourceTree = "<group>"; };
 		26615478242DA54D00A31661 /* ProductCategoyListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoyListMapperTests.swift; sourceTree = "<group>"; };
 		2661547A242DAC1C00A31661 /* ProductCategoriesRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoriesRemoteTests.swift; sourceTree = "<group>"; };
+		266C7F9125AD3C87006ED243 /* attribute-term.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "attribute-term.json"; sourceTree = "<group>"; };
 		267313302559CC930026F7EF /* PaymentGateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGateway.swift; sourceTree = "<group>"; };
 		26731336255ACA850026F7EF /* PaymentGatewayListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayListMapper.swift; sourceTree = "<group>"; };
 		2683D70D24456DB7002A1589 /* categories-empty.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "categories-empty.json"; sourceTree = "<group>"; };
@@ -1228,6 +1230,7 @@
 				2683D70F24456EE4002A1589 /* categories-extra.json */,
 				2683D70D24456DB7002A1589 /* categories-empty.json */,
 				45B204BB24890B1200FE6526 /* category.json */,
+				266C7F9125AD3C87006ED243 /* attribute-term.json */,
 				26B6454D259BF81400EF3FB3 /* product-attribute-terms.json */,
 				74C9477F2193A6C60024CB60 /* comment-moderate-approved.json */,
 				74C9477E2193A6C60024CB60 /* comment-moderate-trash.json */,
@@ -1724,6 +1727,7 @@
 				02698CFC24C1B0CE005337C4 /* product-variations-load-all-first-on-sale-empty-sale-price.json in Resources */,
 				74A1D265211898F000931DFA /* site-visits-month.json in Resources */,
 				74159623224D2C86003C21CF /* settings-product.json in Resources */,
+				266C7F9225AD3C88006ED243 /* attribute-term.json in Resources */,
 				CEC4BF93234E7EE0008D9195 /* refunds-all.json in Resources */,
 				D8FBFF1522D3BE09006E3336 /* order-stats-v4-defaults.json in Resources */,
 				7495AACF225D366D00801A89 /* variation-as-product.json in Resources */,

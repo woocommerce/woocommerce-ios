@@ -30,7 +30,7 @@ public final class ProductAttributeTermStore: Store {
 
         switch action {
         case let .synchronizeProductAttributeTerms(siteID, attributeID, onCompletion):
-            synchronizeAllProductAttributeTerms(siteID: siteID, attributeID: attributeID, fromPageNumber: 0) { error in
+            synchronizeAllProductAttributeTerms(siteID: siteID, attributeID: attributeID, fromPageNumber: Store.Default.firstPageNumber) { error in
                 let result: Result<Void, ProductAttributeTermActionError> = {
                     if let error = error {
                         return .failure(error)

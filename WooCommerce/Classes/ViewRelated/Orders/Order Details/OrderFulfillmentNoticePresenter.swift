@@ -33,7 +33,7 @@ final class OrderFulfillmentNoticePresenter {
                 self.displayFulfillmentErrorNotice(error: fulfillmentError)
             }
 
-            cancellable.cancel()
+            self.cancellables.remove(cancellable)
         } receiveValue: {
             // Noop. There is no value to receive or act on.
         }

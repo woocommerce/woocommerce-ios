@@ -34,6 +34,24 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
         let action = try XCTUnwrap(stores.receivedActions.first as? OrderAction)
         assertThat(statusUpdateAction: action, matches: order, status: .completed)
     }
+
+    func test_undo_dispatches_an_Action_to_change_the_status_back() throws {
+        // Given
+        let order = MockOrders().empty().copy(siteID: 98, orderID: 12, status: .failed)
+        let useCase = OrderFulfillmentUseCase(order: order, stores: stores)
+
+        let process = useCase.fulfill()
+
+        // When
+        let undoProcess = process.undo()
+
+        // Then
+        XCTAssertEqual(undoProcess.activity, .undo)
+        XCTAssertEqual(stores.receivedActions.count, 2)
+
+        let action = try XCTUnwrap(stores.receivedActions.last as? OrderAction)
+        assertThat(statusUpdateAction: action, matches: order, status: .failed)
+    }
 }
 
 private extension OrderFulfillmentUseCaseTests {

@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a FeeLine Entity within an Order.
 ///
-public struct OrderFeeLine: Decodable {
+public struct OrderFeeLine: Equatable, Decodable {
     public let feeID: Int64
     public let name: String
     public let taxClass: String
@@ -47,23 +47,5 @@ private extension OrderFeeLine {
         case totalTax   = "total_tax"
         case taxes      = "taxes"
         case attributes = "meta_data"
-    }
-}
-
-
-// MARK: - Comparable Conformance
-//
-extension OrderFeeLine: Comparable {
-    public static func == (lhs: OrderFeeLine, rhs: OrderFeeLine) -> Bool {
-        return lhs.feeID == rhs.feeID &&
-            lhs.name == rhs.name &&
-            lhs.total == rhs.total &&
-            lhs.totalTax == rhs.totalTax
-    }
-
-    public static func < (lhs: OrderFeeLine, rhs: OrderFeeLine) -> Bool {
-        return lhs.feeID < rhs.feeID ||
-            (lhs.feeID == rhs.feeID && lhs.name < rhs.name) ||
-            (lhs.feeID == rhs.feeID && lhs.name == rhs.name && lhs.total < rhs.total)
     }
 }

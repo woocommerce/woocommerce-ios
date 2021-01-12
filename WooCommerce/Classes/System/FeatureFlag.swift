@@ -21,9 +21,4 @@ enum FeatureFlag: Int {
     /// Shipping labels - release 1
     ///
     case shippingLabelsRelease1
-
-    /// Temporary feature flag because my PR for removing the order fulfillment screen
-    /// is too big. XD
-    ///
-    case removeOrderFulfillmentScreen
 }

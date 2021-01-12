@@ -756,11 +756,7 @@ extension OrderDetailsDataSource {
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
             if isProcessingPayment {
-                if featureFlagService.isFeatureFlagEnabled(.removeOrderFulfillmentScreen) {
-                    rows.append(.markCompleteButton)
-                } else {
-                    rows.append(.fulfillButton)
-                }
+                rows.append(.markCompleteButton)
             } else if isRefundedStatus == false {
                 rows.append(.details)
             }

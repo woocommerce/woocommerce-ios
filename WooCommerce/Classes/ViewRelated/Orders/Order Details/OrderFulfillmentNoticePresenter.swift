@@ -6,12 +6,7 @@ import Combine
 /// This is the UI counterpart for `OrderFulfillmentUseCase`.
 ///
 /// This class is meant to live longer than the `ViewController` that creates it. So a lot of the
-/// calls in here will capture `self`.
-///
-/// One of the reasons is that all this class does is present notices. And notices can generally
-/// be presented anywhere.
-///
-/// Another reason is that we want to notify users if something fails in
+/// calls in here will capture `self`. The reason is we want to notify users if something fails in
 /// `OrderFulfillmentUseCase`. And we want to do this even if the user has already left the
 /// `ViewController` (i.e. `OrderDetailsViewController`).
 ///

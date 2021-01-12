@@ -1,5 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+5.9
+-----
+- [**] Product List: if a user apply custom sort orders and filters in the Product List, now when they reopen the app will be able to see the previous settings applied. [https://github.com/woocommerce/woocommerce-ios/pull/3454]
+
+
 5.8
 -----
 - [***] Products M5 features are now available to all. Products M5 features: add and edit linked products, add and edit downloadable files, product deletion. [https://github.com/woocommerce/woocommerce-ios/pull/3420]

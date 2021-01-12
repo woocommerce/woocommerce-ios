@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-/// Presents notices for order fulfillment and handling undos and retries.
+/// Presents notices for order fulfillment and handling of undos and retries.
 ///
 /// This is the UI counterpart for `OrderFulfillmentUseCase`.
 ///

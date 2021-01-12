@@ -2,7 +2,7 @@
 
 5.9
 -----
- 
+- [*] Removed fulfillment screen and moved fulfillment to the order details screen. [https://github.com/woocommerce/woocommerce-ios/pull/3453]
 
 5.8
 -----

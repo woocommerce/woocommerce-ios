@@ -18,7 +18,7 @@ final class RefundShippingLabelViewController: UIViewController {
          onComplete: @escaping () -> Void) {
         self.shippingLabel = shippingLabel
         self.viewModel = RefundShippingLabelViewModel(shippingLabel: shippingLabel, currencyFormatter: currencyFormatter)
-        self.rows = [.purchaseDate, .refundableAmount]
+        self.rows = [.headerInfo, .purchaseDate, .refundableAmount]
         self.noticePresenter = noticePresenter
         self.onComplete = onComplete
         super.init(nibName: nil, bundle: nil)
@@ -68,23 +68,17 @@ private extension RefundShippingLabelViewController {
 
     func configureTableView() {
         tableView.dataSource = self
-        tableView.delegate = self
-        registerTableViewCellsAndHeader()
+        registerTableViewCells()
 
         tableView.applyFooterViewForHidingExtraRowPlaceholders()
         tableView.backgroundColor = .basicBackground
-        tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
-        tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.bounces = false
     }
 
-    func registerTableViewCellsAndHeader() {
-        // Rows.
+    func registerTableViewCells() {
         for row in Row.allCases {
             tableView.registerNib(for: row.type)
         }
-        // Header.
-        tableView.register(PlainTextSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: PlainTextSectionHeaderView.reuseIdentifier)
     }
 
     func configureRefundButton() {
@@ -119,22 +113,11 @@ extension RefundShippingLabelViewController: UITableViewDataSource {
     }
 }
 
-extension RefundShippingLabelViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerID = PlainTextSectionHeaderView.reuseIdentifier
-        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? PlainTextSectionHeaderView else {
-            fatalError()
-        }
-        headerView.label.applySubheadlineStyle()
-        headerView.label.text = Localization.headerText
-        headerView.label.textColor = Constants.cellValueTextColor
-        return headerView
-    }
-}
-
 private extension RefundShippingLabelViewController {
     func configure(_ cell: UITableViewCell, for row: Row) {
         switch cell {
+        case let cell as BasicTableViewCell where row == .headerInfo:
+            configureHeaderInfo(cell: cell)
         case let cell as ValueOneTableViewCell where row == .purchaseDate:
             configurePurchaseDate(cell: cell)
         case let cell as ValueOneTableViewCell where row == .refundableAmount:
@@ -142,6 +125,14 @@ private extension RefundShippingLabelViewController {
         default:
             break
         }
+    }
+
+    func configureHeaderInfo(cell: BasicTableViewCell) {
+        cell.textLabel?.applySubheadlineStyle()
+        cell.textLabel?.text = Localization.headerText
+        cell.textLabel?.textColor = Constants.cellValueTextColor
+        cell.textLabel?.numberOfLines = 0
+        cell.hideSeparator()
     }
 
     func configurePurchaseDate(cell: ValueOneTableViewCell) {
@@ -185,11 +176,17 @@ private extension RefundShippingLabelViewController {
 
 private extension RefundShippingLabelViewController {
     enum Row: CaseIterable {
+        case headerInfo
         case purchaseDate
         case refundableAmount
 
         var type: UITableViewCell.Type {
-            ValueOneTableViewCell.self
+            switch self {
+            case .headerInfo:
+                return BasicTableViewCell.self
+            case .purchaseDate, .refundableAmount:
+                return ValueOneTableViewCell.self
+            }
         }
 
         var reuseIdentifier: String {

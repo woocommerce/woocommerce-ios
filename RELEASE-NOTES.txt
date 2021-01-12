@@ -2,7 +2,8 @@
 
 5.9
 -----
- 
+ - [*] Fix: billing information action sheets now are presented correctly on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/3457]
+
 
 5.8
 -----

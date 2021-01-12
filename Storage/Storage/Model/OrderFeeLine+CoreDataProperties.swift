@@ -15,7 +15,7 @@ extension OrderFeeLine {
     @NSManaged public var total: String?
     @NSManaged public var totalTax: String?
     @NSManaged public var taxes: Set<OrderItemTax>?
-    @NSManaged public var attributes: NSOrderedSet?
+    @NSManaged public var attributes: Set<OrderItemAttribute>?
     @NSManaged public var order: Order
 }
 
@@ -39,24 +39,6 @@ extension OrderFeeLine {
 // MARK: Generated accessors for attributes
 extension OrderFeeLine {
 
-    @objc(insertObject:inAttributesAtIndex:)
-    @NSManaged public func insertIntoAttributes(_ value: OrderItemAttribute, at idx: Int)
-
-    @objc(removeObjectFromAttributesAtIndex:)
-    @NSManaged public func removeFromAttributes(at idx: Int)
-
-    @objc(insertAttributes:atIndexes:)
-    @NSManaged public func insertIntoAttributes(_ values: [OrderItemAttribute], at indexes: NSIndexSet)
-
-    @objc(removeAttributesAtIndexes:)
-    @NSManaged public func removeFromAttributes(at indexes: NSIndexSet)
-
-    @objc(replaceObjectInAttributesAtIndex:withObject:)
-    @NSManaged public func replaceAttributes(at idx: Int, with value: OrderItemAttribute)
-
-    @objc(replaceAttributesAtIndexes:withAttributes:)
-    @NSManaged public func replaceAttributes(at indexes: NSIndexSet, with values: [OrderItemAttribute])
-
     @objc(addAttributesObject:)
     @NSManaged public func addToAttributes(_ value: OrderItemAttribute)
 
@@ -64,9 +46,9 @@ extension OrderFeeLine {
     @NSManaged public func removeFromAttributes(_ value: OrderItemAttribute)
 
     @objc(addAttributes:)
-    @NSManaged public func addToAttributes(_ values: NSOrderedSet)
+    @NSManaged public func addToAttributes(_ values: NSSet)
 
     @objc(removeAttributes:)
-    @NSManaged public func removeFromAttributes(_ values: NSOrderedSet)
+    @NSManaged public func removeFromAttributes(_ values: NSSet)
 
 }

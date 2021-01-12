@@ -2,6 +2,7 @@
 
 5.9
 -----
+ - [*] fix: the rows in the product search list now don't have double separators. [https://github.com/woocommerce/woocommerce-ios/pull/3456]
  
 
 5.8

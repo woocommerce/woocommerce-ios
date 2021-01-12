@@ -10,10 +10,10 @@ public enum ProductAttributeTermAction: Action {
     ///
     case synchronizeProductAttributeTerms(siteID: Int64, attributeID: Int64, onCompletion: (Result<Void, ProductAttributeTermActionError>) -> Void)
 
-    /// Create a new product attribute term associated with a given Site ID.
+    /// Create a new product attribute term associated with a given `Site ID` and `attribute ID`.
     /// `onCompletion` will be invoked when the add operation finishes.
     ///
-    case createProductAttributeTerm(siteID: Int64, attributeID: Int64, onCompletion: (Result<ProductAttributeTerm, Error>) -> Void)
+    case createProductAttributeTerm(siteID: Int64, attributeID: Int64, name: String, onCompletion: (Result<ProductAttributeTerm, Error>) -> Void)
 }
 
 /// Defines all errors that a `ProductAttributeTermAction` can return

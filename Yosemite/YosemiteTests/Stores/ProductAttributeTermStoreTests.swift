@@ -154,6 +154,29 @@ final class ProductAttributeTermStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributeTermsCount, 3)
         XCTAssertFalse(result.isFailure)
     }
+
+    func test_createProductAttributeTerm_stores_term_correctly() throws {
+        // Given
+        let expectedTerm = ProductAttributeTerm(siteID: sampleSiteID, termID: 23, name: "XXS", slug: "xxs", count: 1)
+        network.simulateResponse(requestUrlSuffix: sampleTermsPath, filename: "attribute-term")
+
+        // When
+        let result: Result<Yosemite.ProductAttributeTerm, Error> = try waitFor { promise in
+            let action = ProductAttributeTermAction.createProductAttributeTerm(siteID: self.sampleSiteID,
+                                                                               attributeID: self.sampleAttributeID,
+                                                                               name: "XXS") { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+
+        // Then the category should be added
+        let storedTerm = try XCTUnwrap(viewStorage.loadProductAttributeTerm(siteID: sampleSiteID, termID: 23, attributeID: sampleAttributeID))
+        XCTAssertEqual(expectedTerm, storedTerm.toReadOnly())
+        XCTAssertNotNil(storedTerm.attribute)
+        XCTAssertFalse(result.isFailure)
+    }
 }
 
 // MARK: Helpers

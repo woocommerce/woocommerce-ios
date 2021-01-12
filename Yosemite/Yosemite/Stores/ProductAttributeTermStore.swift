@@ -39,6 +39,8 @@ public final class ProductAttributeTermStore: Store {
                 }()
                 onCompletion(result)
             }
+        case let .createProductAttributeTerm(siteID, attributeID, name, onCompletion):
+            createProductAttributeTerm(siteID: siteID, attributeID: attributeID, name: name, onCompletion: onCompletion)
         }
     }
 }
@@ -98,6 +100,24 @@ private extension ProductAttributeTermStore {
             case let .failure(error):
                 let error = ProductAttributeTermActionError.termsSynchronization(pageNumber: pageNumber, rawError: error)
                 return onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Creates and stores a new product attribute term and links it to it's parent product attribute.
+    ///
+    func createProductAttributeTerm(siteID: Int64,
+                                    attributeID: Int64,
+                                    name: String,
+                                    onCompletion: @escaping (Result<ProductAttributeTerm, Error>) -> Void) {
+        remote.createProductAttributeTerm(for: siteID, attributeID: attributeID, name: name) { [weak self] result in
+            switch result {
+            case let .success(term):
+                self?.upsertStoredProductAttributeTermsInBackground([term], siteID: siteID, attributeID: attributeID) {
+                    onCompletion(.success(term))
+                }
+            case .failure:
+                onCompletion(result)
             }
         }
     }

@@ -13,9 +13,13 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+        cancellables = Set<AnyCancellable>()
     }
 
     override func tearDown() {
+        cancellables.forEach {
+            $0.cancel()
+        }
         stores = nil
         super.tearDown()
     }
@@ -51,6 +55,50 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
 
         let action = try XCTUnwrap(stores.receivedActions.last as? OrderAction)
         assertThat(statusUpdateAction: action, matches: order, status: .failed)
+    }
+
+    func test_retry_dispatches_an_Action_to_change_the_status_to_completed() throws {
+        // Given
+        let order = MockOrders().empty().copy(siteID: 498, orderID: 29, status: .pending)
+        let useCase = OrderFulfillmentUseCase(order: order, stores: stores)
+
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            guard case let .updateOrder(siteID: _, orderID: _, status: status, onCompletion: onCompletion) = action else {
+                XCTFail("Unexpected action \(action).")
+                return
+            }
+
+            switch status {
+            case .completed:
+                onCompletion(SampleError.first)
+            default:
+                onCompletion(nil)
+            }
+        }
+
+        let process = useCase.fulfill()
+        let retry: () -> OrderFulfillmentUseCase.FulfillmentProcess = try waitFor { promise in
+            process.result.sink { completion in
+                guard case let .failure(error: fulfillmentError) = completion else {
+                    XCTFail("Unexpected completion \(completion).")
+                    return
+                }
+
+                promise(fulfillmentError.retry)
+            } receiveValue: {
+                // noop
+            }.store(in: &self.cancellables)
+        }
+
+        // When
+        let retryProcess = retry()
+
+        // Then
+        XCTAssertEqual(retryProcess.activity, .fulfill)
+        XCTAssertEqual(stores.receivedActions.count, 2)
+
+        let action = try XCTUnwrap(stores.receivedActions.last as? OrderAction)
+        assertThat(statusUpdateAction: action, matches: order, status: .completed)
     }
 }
 

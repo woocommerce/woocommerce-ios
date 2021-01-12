@@ -3,7 +3,6 @@ import UIKit
 import Gridicons
 import Yosemite
 import MessageUI
-import Combine
 
 final class OrderDetailsViewModel {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)

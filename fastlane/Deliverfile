@@ -14,7 +14,7 @@ app_identifier "com.automattic.woocommerce"
 screenshots_path "./fastlane/promo_screenshots/"
 
 # Make sure to update these keys for a new version
-app_version "5.7"
+app_version "5.8"
 
 privacy_url({
   'default' => 'https://automattic.com/privacy/',
@@ -22,7 +22,7 @@ privacy_url({
 
 team_id "299112"
 
-copyright('2020 WooCommerce')
+copyright('2021 WooCommerce')
 
 skip_binary_upload true
 overwrite_screenshots true

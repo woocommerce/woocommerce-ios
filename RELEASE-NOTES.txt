@@ -9,6 +9,7 @@
 -----
 - [***] Products M5 features are now available to all. Products M5 features: add and edit linked products, add and edit downloadable files, product deletion. [https://github.com/woocommerce/woocommerce-ios/pull/3420]
 - [***] Shipping labels M1 features are now available to all: view shipping label details, request a refund, and reprint a shipping label via AirPrint. [https://github.com/woocommerce/woocommerce-ios/pull/3436]
+- [**] Improved login flow, including better error handling. [https://github.com/woocommerce/woocommerce-ios/pull/3332]
 
 
 5.7

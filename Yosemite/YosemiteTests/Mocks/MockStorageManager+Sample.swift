@@ -80,6 +80,20 @@ extension MockStorageManager {
         return newProductAttribute
     }
 
+    /// Inserts a new (Sample) `ProductAttributeTerm`. and links it to a parent `ProductAttribute` if available.
+    ///
+    @discardableResult
+    func insertSampleProductAttributeTerm(readOnlyTerm: ProductAttributeTerm, onAttributeWithID attributeID: Int64) -> StorageProductAttributeTerm {
+        let newProductAttributeTerm = viewStorage.insertNewObject(ofType: StorageProductAttributeTerm.self)
+        newProductAttributeTerm.update(with: readOnlyTerm)
+
+        if let attribute = viewStorage.loadProductAttribute(siteID: readOnlyTerm.siteID, attributeID: attributeID) {
+            newProductAttributeTerm.attribute = attribute
+        }
+
+        return newProductAttributeTerm
+    }
+
     /// Inserts a new (Sample) Order into the specified context.
     ///
     @discardableResult

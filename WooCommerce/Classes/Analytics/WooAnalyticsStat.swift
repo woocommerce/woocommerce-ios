@@ -163,14 +163,10 @@ public enum WooAnalyticsStat: String {
     case orderDetailTrackPackageButtonTapped    = "order_detail_track_package_button_tapped"
     case orderDetailTrackingDeleteButtonTapped  = "order_detail_tracking_delete_button_tapped"
     case orderFulfillmentCompleteButtonTapped   = "order_fulfillment_mark_order_complete_button_tapped"
-    case orderFulfillmentAddTrackingButtonTapped = "order_fulfillment_tracking_add_tracking_button_tapped"
-    case orderFulfillmentDeleteTrackingButtonTapped = "order_fulfillment_tracking_delete_button_tapped"
     case orderMarkedCompleteUndoButtonTapped    = "snack_order_marked_complete_undo_button_tapped"
-    case orderShareStoreButtonTapped            = "orders_list_share_your_store_button_tapped"
     case orderShipmentTrackingAddButtonTapped   = "order_shipment_tracking_add_button_tapped"
     case orderShipmentTrackingCarrierSelected   = "order_shipment_tracking_carrier_selected"
     case orderShipmentTrackingCustomProviderSelected = "order_shipment_tracking_custom_provider_selected"
-    case orderStatusDialogApplyButtonTapped     = "set_order_status_dialog_apply_button_tapped"
 
     // MARK: Order Data/Action Events
     //

@@ -171,7 +171,7 @@ final class ProductAttributeTermStoreTests: XCTestCase {
         }
 
 
-        // Then the category should be added
+        // Then
         let storedTerm = try XCTUnwrap(viewStorage.loadProductAttributeTerm(siteID: sampleSiteID, termID: 23, attributeID: sampleAttributeID))
         XCTAssertEqual(expectedTerm, storedTerm.toReadOnly())
         XCTAssertNotNil(storedTerm.attribute)

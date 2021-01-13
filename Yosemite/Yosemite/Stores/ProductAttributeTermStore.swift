@@ -111,9 +111,10 @@ private extension ProductAttributeTermStore {
                                     name: String,
                                     onCompletion: @escaping (Result<ProductAttributeTerm, Error>) -> Void) {
         remote.createProductAttributeTerm(for: siteID, attributeID: attributeID, name: name) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case let .success(term):
-                self?.upsertStoredProductAttributeTermsInBackground([term], siteID: siteID, attributeID: attributeID) {
+                self.upsertStoredProductAttributeTermsInBackground([term], siteID: siteID, attributeID: attributeID) {
                     onCompletion(.success(term))
                 }
             case .failure:

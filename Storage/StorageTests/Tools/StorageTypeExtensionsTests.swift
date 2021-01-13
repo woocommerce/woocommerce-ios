@@ -89,4 +89,39 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(searchResult, storedSearchResult)
     }
+
+    func test_loadOrderItem_by_siteID_orderID_itemID() throws {
+        // Given
+        let orderID: Int64 = 123
+        let itemID: Int64 = 1234
+        let orderItem = storage.insertNewObject(ofType: OrderItem.self)
+        orderItem.itemID = itemID
+
+        let order = storage.insertNewObject(ofType: Order.self)
+        order.siteID = sampleSiteID
+        order.orderID = orderID
+        order.addToItems(orderItem)
+
+        // When
+        let storedOrderItem = try XCTUnwrap(storage.loadOrderItem(siteID: sampleSiteID, orderID: orderID, itemID: itemID))
+
+        // Then
+        XCTAssertEqual(orderItem, storedOrderItem)
+    }
+
+    /*
+    func test_load<#methodName#>_by_<#params#>() throws {
+        // Given
+        let <#param#> = <#param#>
+        let <#entity#> = storage.insertNewObject(ofType: <#type#>.self)
+        <#entity#>.<#param#> = <#param#>
+        <#entity#>.<#param#> = <#param#>
+
+        // When
+        let stored<#entity#> = try XCTUnwrap(storage.<#loadMethod#>)
+
+        // Then
+        XCTAssertEqual(<#entity#>, stored<#entity#>)
+    }
+     */
 }

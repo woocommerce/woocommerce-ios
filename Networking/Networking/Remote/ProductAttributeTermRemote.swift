@@ -36,6 +36,29 @@ public final class ProductAttributeTermRemote: Remote {
             }
         }
     }
+
+    /// Create a new `ProductAttributeTerm`.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll add a new product attribute terms.
+    ///     - name: Product attribute term name.
+    ///     - attributeID: The ID for the parent product attribute.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func createProductAttributeTerm(for siteID: Int64,
+                                           attributeID: Int64,
+                                           name: String,
+                                           completion: @escaping (Result<ProductAttributeTerm, Error>) -> Void) {
+        let parameters = [
+            ParameterKey.name: name
+        ]
+
+        let path = Path.terms(attributeID: attributeID)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let mapper = ProductAttributeTermMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 // MARK: - Constants
@@ -54,5 +77,6 @@ public extension ProductAttributeTermRemote {
     private enum ParameterKey {
         static let page: String = "page"
         static let perPage: String = "per_page"
+        static let name: String = "name"
     }
 }

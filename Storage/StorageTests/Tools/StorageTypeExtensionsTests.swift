@@ -76,4 +76,17 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(order, storedOrder)
     }
+
+    func test_loadOrderSearchResults_by_keyword() throws {
+        // Given
+        let keyword = "some-keyword"
+        let searchResult = storage.insertNewObject(ofType: OrderSearchResults.self)
+        searchResult.keyword = keyword
+
+        // When
+        let storedSearchResult = try XCTUnwrap(storage.loadOrderSearchResults(keyword: keyword))
+
+        // Then
+        XCTAssertEqual(searchResult, storedSearchResult)
+    }
 }

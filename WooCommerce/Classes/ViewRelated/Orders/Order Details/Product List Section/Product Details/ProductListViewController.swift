@@ -2,7 +2,11 @@ import UIKit
 import Yosemite
 
 
-class ProductListViewController: UIViewController {
+/// A simple Product List presented from the Order Details screen.
+///
+/// The list shows the product name and the purchased quantity.
+///
+final class ProductListViewController: UIViewController {
     @IBOutlet private var tableView: UITableView!
     private var items = [OrderItem]()
 

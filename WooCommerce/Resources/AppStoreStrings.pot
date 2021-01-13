@@ -57,10 +57,13 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v5.7-whats-new"
+msgctxt "v5.8-whats-new"
 msgid ""
-"The app now supports iOS 13 and up which will allow for more rapid feature development.\n"
-"We've fixed a bug that prevented thumbnail images from appearing for product variations on the order details screen, and centered the footer spinner vertically and horizontally.\n"
+"Products: All users can now add and edit linked products, add and edit downloadable files, and delete a product.\n"
+"\n"
+"Shipping: You can now view shipping label details, request a refund, and reprint a shipping label with AirPrint.\n"
+"\n"
+"Login: We’ve made various improvements to the login flow, including a better handling of errors.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

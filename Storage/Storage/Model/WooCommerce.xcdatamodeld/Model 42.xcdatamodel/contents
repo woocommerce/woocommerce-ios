@@ -79,7 +79,7 @@
         <attribute name="total" optional="YES" attributeType="String"/>
         <attribute name="totalTax" optional="YES" attributeType="String"/>
         <relationship name="coupons" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderCoupon" inverseName="order" inverseEntity="OrderCoupon"/>
-        <relationship name="feeLines" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OrderFeeLine" inverseName="order" inverseEntity="OrderFeeLine"/>
+        <relationship name="feeLines" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderFeeLine" inverseName="order" inverseEntity="OrderFeeLine"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderItem" inverseName="order" inverseEntity="OrderItem"/>
         <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderNote" inverseName="order" inverseEntity="OrderNote"/>
         <relationship name="refunds" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderRefundCondensed" inverseName="order" inverseEntity="OrderRefundCondensed"/>
@@ -114,7 +114,7 @@
         <attribute name="totalTax" optional="YES" attributeType="String"/>
         <relationship name="attributes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OrderItemAttribute" inverseName="orderFeeLine" inverseEntity="OrderItemAttribute"/>
         <relationship name="order" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="feeLines" inverseEntity="Order"/>
-        <relationship name="taxes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OrderItemTax" inverseName="feeLine" inverseEntity="OrderItemTax"/>
+        <relationship name="taxes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderItemTax" inverseName="feeLine" inverseEntity="OrderItemTax"/>
     </entity>
     <entity name="OrderItem" representedClassName="OrderItem" syncable="YES">
         <attribute name="itemID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -577,6 +577,7 @@
         <element name="OrderCount" positionX="-693" positionY="36" width="128" height="75"/>
         <element name="OrderCountItem" positionX="-684" positionY="45" width="128" height="105"/>
         <element name="OrderCoupon" positionX="-206.01953125" positionY="379.74609375" width="128" height="120"/>
+        <element name="OrderFeeLine" positionX="-693" positionY="45" width="128" height="164"/>
         <element name="OrderItem" positionX="-343.4609375" positionY="444.4296875" width="128" height="268"/>
         <element name="OrderItemAttribute" positionX="-702" positionY="27" width="128" height="104"/>
         <element name="OrderItemRefund" positionX="-504.859375" positionY="299.1171875" width="128" height="253"/>
@@ -620,6 +621,5 @@
         <element name="TaxClass" positionX="-529.7734375" positionY="-56.109375" width="128" height="88"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
-        <element name="OrderFeeLine" positionX="-693" positionY="45" width="128" height="164"/>
     </elements>
 </model>

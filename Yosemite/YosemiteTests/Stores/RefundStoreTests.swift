@@ -583,7 +583,8 @@ private extension RefundStoreTests {
             shippingAddress: nil,
             shippingLines: [],
             coupons: [],
-            refunds: []
+            refunds: [],
+            fees: []
         )
     }
 

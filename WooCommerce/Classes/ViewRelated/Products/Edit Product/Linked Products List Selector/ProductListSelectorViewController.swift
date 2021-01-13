@@ -69,7 +69,8 @@ private extension ProductListSelectorViewController {
         }
         let searchViewController = SearchViewController(storeID: siteID,
                                                         command: searchProductsCommand,
-                                                        cellType: ProductsTabProductTableViewCell.self)
+                                                        cellType: ProductsTabProductTableViewCell.self,
+                                                        cellSeparator: .none)
         let navigationController = WooNavigationController(rootViewController: searchViewController)
         searchProductsCommand.configurePresentingViewControllerForDiscardChangesAlert(presentingViewController: navigationController)
         present(navigationController, animated: true, completion: nil)

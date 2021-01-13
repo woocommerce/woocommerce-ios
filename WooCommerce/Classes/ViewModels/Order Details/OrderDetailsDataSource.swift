@@ -284,6 +284,8 @@ private extension OrderDetailsDataSource {
             configureAggregateOrderItem(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .fulfillButton:
             configureFulfillmentButton(cell: cell)
+        case let cell as ButtonTableViewCell where row == .markCompleteButton:
+            configureMarkCompleteButton(cell: cell)
         case let cell as ButtonTableViewCell where row == .shippingLabelReprintButton:
             configureReprintShippingLabelButton(cell: cell, at: indexPath)
         case let cell as OrderTrackingTableViewCell where row == .tracking:
@@ -597,6 +599,13 @@ private extension OrderDetailsDataSource {
         cell.showSeparator()
     }
 
+    private func configureMarkCompleteButton(cell: ButtonTableViewCell) {
+        cell.configure(title: Titles.markComplete) { [weak self] in
+            self?.onCellAction?(.markComplete, nil)
+        }
+        cell.showSeparator()
+    }
+
     private func configureIssueRefundButton(cell: IssueRefundTableViewCell) {
         cell.onIssueRefundTouchUp = { [weak self] in
             self?.onCellAction?(.issueRefund, nil)
@@ -746,7 +755,7 @@ extension OrderDetailsDataSource {
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
             if isProcessingPayment {
-                rows.append(.fulfillButton)
+                rows.append(.markCompleteButton)
             } else if isRefundedStatus == false {
                 rows.append(.details)
             }
@@ -1041,6 +1050,7 @@ extension OrderDetailsDataSource {
                                                       comment: "The row label to tap for a detailed product list")
         static let fulfillTitle = NSLocalizedString("Begin Fulfillment",
                                                     comment: "Begin fulfill order button title")
+        static let markComplete = NSLocalizedString("Mark Order Complete", comment: "Fulfill Order Action Button")
         static let addNoteText = NSLocalizedString("Add a note",
                                                    comment: "Button text for adding a new order note")
         static let paidByCustomer = NSLocalizedString("Paid By Customer",
@@ -1174,6 +1184,7 @@ extension OrderDetailsDataSource {
         case summary
         case aggregateOrderItem
         case fulfillButton
+        case markCompleteButton
         case details
         case refundedProducts
         case issueRefundButton
@@ -1205,6 +1216,8 @@ extension OrderDetailsDataSource {
             case .aggregateOrderItem:
                 return ProductDetailsTableViewCell.reuseIdentifier
             case .fulfillButton:
+                return ButtonTableViewCell.reuseIdentifier
+            case .markCompleteButton:
                 return ButtonTableViewCell.reuseIdentifier
             case .details:
                 return WooBasicTableViewCell.reuseIdentifier
@@ -1256,6 +1269,7 @@ extension OrderDetailsDataSource {
 
     enum CellActionType {
         case fulfill
+        case markComplete
         case tracking
         case summary
         case issueRefund

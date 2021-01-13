@@ -376,8 +376,6 @@ private extension OrderDetailsViewController {
 
     func handleCellAction(_ type: OrderDetailsDataSource.CellActionType, at indexPath: IndexPath?) {
         switch type {
-        case .fulfill:
-            print("DELETE ME")
         case .markComplete:
             markOrderCompleteWasPressed()
         case .summary:

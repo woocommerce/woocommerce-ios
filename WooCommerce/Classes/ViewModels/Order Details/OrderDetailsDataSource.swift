@@ -594,7 +594,7 @@ private extension OrderDetailsDataSource {
 
     private func configureFulfillmentButton(cell: ButtonTableViewCell) {
         cell.configure(title: Titles.fulfillTitle) { [weak self] in
-            self?.onCellAction?(.fulfill, nil)
+            print("DELETE ME")
         }
         cell.showSeparator()
     }
@@ -1268,7 +1268,6 @@ extension OrderDetailsDataSource {
     }
 
     enum CellActionType {
-        case fulfill
         case markComplete
         case tracking
         case summary

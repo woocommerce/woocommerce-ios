@@ -79,7 +79,7 @@
         <attribute name="total" optional="YES" attributeType="String"/>
         <attribute name="totalTax" optional="YES" attributeType="String"/>
         <relationship name="coupons" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderCoupon" inverseName="order" inverseEntity="OrderCoupon"/>
-        <relationship name="feeLines" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderFeeLine" inverseName="order" inverseEntity="OrderFeeLine"/>
+        <relationship name="fees" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderFeeLine" inverseName="order" inverseEntity="OrderFeeLine"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderItem" inverseName="order" inverseEntity="OrderItem"/>
         <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderNote" inverseName="order" inverseEntity="OrderNote"/>
         <relationship name="refunds" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderRefundCondensed" inverseName="order" inverseEntity="OrderRefundCondensed"/>
@@ -113,7 +113,7 @@
         <attribute name="total" optional="YES" attributeType="String"/>
         <attribute name="totalTax" optional="YES" attributeType="String"/>
         <relationship name="attributes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OrderItemAttribute" inverseName="orderFeeLine" inverseEntity="OrderItemAttribute"/>
-        <relationship name="order" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="feeLines" inverseEntity="Order"/>
+        <relationship name="order" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="fees" inverseEntity="Order"/>
         <relationship name="taxes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderItemTax" inverseName="feeLine" inverseEntity="OrderItemTax"/>
     </entity>
     <entity name="OrderItem" representedClassName="OrderItem" syncable="YES">

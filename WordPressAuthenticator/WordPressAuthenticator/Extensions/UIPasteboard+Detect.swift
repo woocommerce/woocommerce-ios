@@ -31,7 +31,7 @@ extension UIPasteboard {
     /// - Parameters:
     ///   - completion: Called with a six digit authentication code on success
     @available(iOS 14.0, *)
-    func detectAuthenticatorCode(completion: @escaping (Result<String, Error>) -> Void) {
+    public func detectAuthenticatorCode(completion: @escaping (Result<String, Error>) -> Void) {
         UIPasteboard.general.detect(patterns: [.number]) { result in
             switch result {
                 case .success(let detections):

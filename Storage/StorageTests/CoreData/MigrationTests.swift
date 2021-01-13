@@ -470,8 +470,6 @@ final class MigrationTests: XCTestCase {
 
         // The OrderFeeLine.order inverse relationship should be updated.
         XCTAssertEqual(fee.value(forKey: "order") as? NSManagedObject, migratedOrder)
-
-
     }
 }
 

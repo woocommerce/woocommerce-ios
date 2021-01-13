@@ -1,3 +1,4 @@
+import Combine
 import UIKit
 
 /// Displays an optional image, title and text.
@@ -120,6 +121,8 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
     /// Disabled by default. When active, image is constrained to 24pt
     @IBOutlet private var contentImageViewWidthConstraint: NSLayoutConstraint!
 
+    private var cancellable: AnyCancellable?
+
     override func awakeFromNib() {
         super.awakeFromNib()
         configureLabels()
@@ -127,6 +130,11 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         configureContentStackView()
         configureTitleAndTextStackView()
         applyDefaultBackgroundStyle()
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        cancellable = nil
     }
 }
 
@@ -222,12 +230,26 @@ extension ImageAndTitleAndTextTableViewCell {
         case .imageAndTitleOnly(let fontStyle):
             applyImageAndTitleOnlyStyle(fontStyle: fontStyle, data: data)
         }
+        applyAccessibilityChanges(contentSizeCategory: traitCollection.preferredContentSizeCategory)
+        observeContentSizeCategoryChanges()
     }
 }
 
 // MARK: Private update helpers
 //
 private extension ImageAndTitleAndTextTableViewCell {
+    func observeContentSizeCategoryChanges() {
+        cancellable = NotificationCenter.default
+                .publisher(for: UIContentSizeCategory.didChangeNotification)
+                .sink { [weak self] notification in
+                    guard let self = self,
+                          let contentSizeCategory = notification.userInfo?[UIContentSizeCategory.newValueUserInfoKey] as? UIContentSizeCategory else {
+                        return
+                    }
+                    self.applyAccessibilityChanges(contentSizeCategory: contentSizeCategory)
+                }
+    }
+
     func applyImageAndTitleOnlyStyle(fontStyle: FontStyle, data: DataConfiguration) {
         switch fontStyle {
         case .body:
@@ -270,11 +292,27 @@ private extension ImageAndTitleAndTextTableViewCell {
     }
 
     func configureContentStackView() {
-        contentStackView.alignment = .center
+        contentStackView.alignment = .firstBaseline
         contentStackView.spacing = 16
     }
 
     func configureTitleAndTextStackView() {
         titleAndTextStackView.spacing = 2
+    }
+}
+
+// MARK: Accessibility
+//
+private extension ImageAndTitleAndTextTableViewCell {
+    func applyAccessibilityChanges(contentSizeCategory: UIContentSizeCategory) {
+        adjustContentStackViewAxis(contentSizeCategory: contentSizeCategory)
+    }
+
+    /// Changes the image view width according to the base image dimension.
+    func adjustContentStackViewAxis(contentSizeCategory: UIContentSizeCategory) {
+        let isVerticalStack = contentSizeCategory >= .accessibilityMedium
+        contentStackView.axis = isVerticalStack ? .vertical: .horizontal
+        contentStackView.alignment = isVerticalStack ? .leading: .firstBaseline
+        contentStackView.spacing = isVerticalStack ? 5: 16
     }
 }

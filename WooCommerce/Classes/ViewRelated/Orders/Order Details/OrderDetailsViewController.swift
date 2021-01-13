@@ -128,7 +128,7 @@ private extension OrderDetailsViewController {
             guard let self = self else {
                 return
             }
-            self.viewModel.updateOrderStatus(order: order)
+            self.viewModel.update(order: order)
             self.reloadTableViewSectionsAndData()
         }
     }
@@ -378,6 +378,8 @@ private extension OrderDetailsViewController {
         switch type {
         case .fulfill:
             fulfillWasPressed()
+        case .markComplete:
+            markOrderCompleteWasPressed()
         case .summary:
             displayOrderStatusList()
         case .tracking:
@@ -403,6 +405,15 @@ private extension OrderDetailsViewController {
         ServiceLocator.analytics.track(.orderDetailFulfillButtonTapped)
         let fulfillViewController = FulfillViewController(order: viewModel.order, products: viewModel.products)
         navigationController?.pushViewController(fulfillViewController, animated: true)
+    }
+
+    func markOrderCompleteWasPressed() {
+        ServiceLocator.analytics.track(.orderFulfillmentCompleteButtonTapped)
+
+        let fulfillmentProcess = viewModel.markCompleted()
+
+        let presenter = OrderFulfillmentNoticePresenter()
+        presenter.present(process: fulfillmentProcess)
     }
 
     func trackingWasPressed(at indexPath: IndexPath) {

@@ -392,6 +392,8 @@
 		D88D5A4B230BCF0A007B6E01 /* ProductReviewListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88D5A4A230BCF0A007B6E01 /* ProductReviewListMapper.swift */; };
 		D88D5A4D230BD010007B6E01 /* ProductReviewsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88D5A4C230BD010007B6E01 /* ProductReviewsRemoteTests.swift */; };
 		D88D5A4F230BD276007B6E01 /* ProductReviewListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88D5A4E230BD276007B6E01 /* ProductReviewListMapperTests.swift */; };
+		D88E229025AC990A0023F3B1 /* OrderFeeLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88E228F25AC990A0023F3B1 /* OrderFeeLine.swift */; };
+		D88E229425AC9B420023F3B1 /* OrderFeeTaxStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88E229325AC9B420023F3B1 /* OrderFeeTaxStatus.swift */; };
 		D8C11A5C22DFCF8100D4A88D /* order-stats-v4-year-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = D8C11A5B22DFCF8100D4A88D /* order-stats-v4-year-alt.json */; };
 		D8C251D0230BD72700F49782 /* ProductReviewMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C251CF230BD72700F49782 /* ProductReviewMapper.swift */; };
 		D8FBFF0B22D3ADB1006E3336 /* OrderStatsRemoteV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF0A22D3ADB1006E3336 /* OrderStatsRemoteV4.swift */; };
@@ -813,6 +815,8 @@
 		D88D5A4A230BCF0A007B6E01 /* ProductReviewListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewListMapper.swift; sourceTree = "<group>"; };
 		D88D5A4C230BD010007B6E01 /* ProductReviewsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProductReviewsRemoteTests.swift; path = NetworkingTests/Remote/ProductReviewsRemoteTests.swift; sourceTree = SOURCE_ROOT; };
 		D88D5A4E230BD276007B6E01 /* ProductReviewListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewListMapperTests.swift; sourceTree = "<group>"; };
+		D88E228F25AC990A0023F3B1 /* OrderFeeLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderFeeLine.swift; sourceTree = "<group>"; };
+		D88E229325AC9B420023F3B1 /* OrderFeeTaxStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderFeeTaxStatus.swift; sourceTree = "<group>"; };
 		D8C11A5B22DFCF8100D4A88D /* order-stats-v4-year-alt.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-stats-v4-year-alt.json"; sourceTree = "<group>"; };
 		D8C251CF230BD72700F49782 /* ProductReviewMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewMapper.swift; sourceTree = "<group>"; };
 		D8FBFF0A22D3ADB1006E3336 /* OrderStatsRemoteV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsRemoteV4.swift; sourceTree = "<group>"; };
@@ -1187,6 +1191,8 @@
 				D8736B5B22F083C500A14A29 /* OrderCount.swift */,
 				D8736B5D22F0849700A14A29 /* OrderCountItem.swift */,
 				741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */,
+				D88E228F25AC990A0023F3B1 /* OrderFeeLine.swift */,
+				D88E229325AC9B420023F3B1 /* OrderFeeTaxStatus.swift */,
 				B5C6FCCE20A3592900A4F8E4 /* OrderItem.swift */,
 				021EAA5525493B3600AA8CCD /* OrderItemAttribute.swift */,
 				CE430671234B9EB20073CBFF /* OrderItemTax.swift */,
@@ -1877,6 +1883,7 @@
 				025CA2C2238EBBAA00B05C81 /* ProductShippingClassListMapper.swift in Sources */,
 				74ABA1CD213F1B6B00FFAD30 /* TopEarnerStats.swift in Sources */,
 				B557DA0220975500005962F4 /* JetpackRequest.swift in Sources */,
+				D88E229025AC990A0023F3B1 /* OrderFeeLine.swift in Sources */,
 				74046E1F217A6B70007DD7BF /* SiteSettingsMapper.swift in Sources */,
 				26B2F74524C5573F0065CCC8 /* LeaderboardListMapper.swift in Sources */,
 				24F98C542502E8DD00F49B68 /* Bundle+Woo.swift in Sources */,
@@ -1984,6 +1991,7 @@
 				B505F6EC20BEFDC200BB1B69 /* Loader.swift in Sources */,
 				74D3BD142114FE6900A6E85E /* MIContainer.swift in Sources */,
 				B5BB1D1220A255EC00112D92 /* OrderStatusEnum.swift in Sources */,
+				D88E229425AC9B420023F3B1 /* OrderFeeTaxStatus.swift in Sources */,
 				B5DAEFF02180DD5A0002356A /* NotificationsRemote.swift in Sources */,
 				020D07BE23D8570800FD9580 /* MediaListMapper.swift in Sources */,
 				74C8F06820EEB7BD00B6EDC9 /* OrderNotesMapper.swift in Sources */,

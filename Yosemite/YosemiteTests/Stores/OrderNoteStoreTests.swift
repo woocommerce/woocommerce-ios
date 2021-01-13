@@ -294,7 +294,8 @@ private extension OrderNoteStoreTests {
                      shippingAddress: sampleAddress(),
                      shippingLines: sampleShippingLines(),
                      coupons: [],
-                     refunds: [])
+                     refunds: [],
+                     fees: [])
     }
 
     func sampleShippingLines() -> [Networking.ShippingLine] {

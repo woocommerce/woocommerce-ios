@@ -562,16 +562,18 @@ private extension SettingsViewController {
     /// (which contains a link to the "Work with us" URL)
     ///
     var hiringAttributedText: NSAttributedString {
-        let hiringText = NSLocalizedString("Made with love by Automattic. We’re hiring!",
-                                           comment: "The text 'We're hiring!' links to our jobs page."
+        let hiringText = NSLocalizedString("Made with love by Automattic. <a href=\"https://automattic.com/work-with-us/\">We’re hiring!</a>",
+                                           comment: "It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>`"
         )
         let hiringAttributes: [NSAttributedString.Key: Any] = [
             .font: StyleManager.footerLabelFont,
             .foregroundColor: UIColor.textSubtle
         ]
 
-        let hiringAttrText = NSMutableAttributedString(string: hiringText, attributes: hiringAttributes)
-        hiringAttrText.addAttribute(.link, value: "https://automattic.com/work-with-us", range: NSRange(location: 30, length: 13))
+        let hiringAttrText = NSMutableAttributedString()
+        hiringAttrText.append(hiringText.htmlToAttributedString)
+        let range = NSRange(location: 0, length: hiringAttrText.length)
+        hiringAttrText.addAttributes(hiringAttributes, range: range)
 
         return hiringAttrText
     }

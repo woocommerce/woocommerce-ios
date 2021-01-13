@@ -4,6 +4,8 @@ import XCTest
 
 class StorageTypeExtensionsTests: XCTestCase {
 
+    private let sampleSiteID: Int64 = 1234
+
     private var storageManager: StorageManagerType!
 
     private var storage: StorageType! {
@@ -59,5 +61,19 @@ class StorageTypeExtensionsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(site, storedSite)
+    }
+
+    func test_loadOrder_by_siteID_and_orderID() throws {
+        // Given
+        let orderID: Int64 = 123
+        let order = storage.insertNewObject(ofType: Order.self)
+        order.siteID = sampleSiteID
+        order.orderID = orderID
+
+        // When
+        let storedOrder = try XCTUnwrap(storage.loadOrder(siteID: sampleSiteID, orderID: orderID))
+
+        // Then
+        XCTAssertEqual(order, storedOrder)
     }
 }

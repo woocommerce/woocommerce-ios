@@ -1,2 +1,5 @@
-The app now supports iOS 13 and up which will allow for more rapid feature development.
-We've fixed a bug that prevented thumbnail images from appearing for product variations on the order details screen, and centered the footer spinner vertically and horizontally.
+Products: All users can now add and edit linked products, add and edit downloadable files, and delete a product.
+
+Shipping: You can now view shipping label details, request a refund, and reprint a shipping label with AirPrint.
+
+Login: We’ve made various improvements to the login flow, including a better handling of errors.

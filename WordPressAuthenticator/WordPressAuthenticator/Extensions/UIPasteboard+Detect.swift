@@ -26,20 +26,48 @@ extension UIPasteboard {
         }
     }
 
-    /// Detects whether UIPasteboard.general contains a 2FA code.
+    /// Attempts to detect and return a authenticator code from the pasteboard.
+    /// Expects to run on main thread.
     /// - Parameters:
-    ///   - completion: Called with the 2FA code on success, or failure otherwise
+    ///   - completion: Called with a six digit authentication code on success
     @available(iOS 14.0, *)
-    func detectTwoFactorCode(completion: @escaping (Result<String, Error>) -> Void) {
+    func detectAuthenticatorCode(completion: @escaping (Result<String, Error>) -> Void) {
         UIPasteboard.general.detect(patterns: [.number]) { result in
             switch result {
                 case .success(let detections):
-                    if let twoFactorCode = detections.first?.value as? String {
-                        completion(.success(twoFactorCode))
+                    guard let firstMatch = detections.first else {
+                        completion(.success(""))
                         return
                     }
+                    guard let matchedNumber = firstMatch.value as? NSNumber else {
+                        completion(.success(""))
+                        return
+                    }
+
+                    var authenticationCode = matchedNumber.stringValue
+
+                    /// Reject numbers with decimal points or signs in them
+                    let codeCharacterSet = CharacterSet(charactersIn: authenticationCode)
+                    if !codeCharacterSet.isSubset(of: CharacterSet.decimalDigits) {
+                        completion(.success(""))
+                        return
+                    }
+
+                    /// We need 6 digits. No more, no less.
+                    if authenticationCode.count > 6 {
+                        completion(.success(""))
+                        return
+                    }
+
+                    while authenticationCode.count < 6 {
+                        authenticationCode = "0" + authenticationCode
+                    }
+
+                    completion(.success(authenticationCode))
+                    return
                 case .failure(let error):
                     completion(.failure(error))
+                    return
             }
         }
     }

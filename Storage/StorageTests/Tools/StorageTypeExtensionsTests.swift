@@ -127,10 +127,28 @@ class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(orderItemTax, storedItemTax)
     }
 
+    func test_loadOrderCoupon_by_siteID_couponID() throws {
+        // Given
+        let couponID: Int64 = 123
+        let coupon = storage.insertNewObject(ofType: OrderCoupon.self)
+        coupon.couponID = couponID
+
+        let order = storage.insertNewObject(ofType: Order.self)
+        order.siteID = sampleSiteID
+        order.addToCoupons(coupon)
+
+        // When
+        let storedCoupon = try XCTUnwrap(storage.loadOrderCoupon(siteID: sampleSiteID, couponID: couponID))
+
+        // Then
+        XCTAssertEqual(coupon, storedCoupon)
+    }
+
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given
-        let <#param#> = <#param#>
+        let <#param#>:Int64 = <#param#>
+        let <#param#>:Int64 = <#param#>
         let <#entity#> = storage.insertNewObject(ofType: <#type#>.self)
         <#entity#>.<#param#> = <#param#>
         <#entity#>.<#param#> = <#param#>

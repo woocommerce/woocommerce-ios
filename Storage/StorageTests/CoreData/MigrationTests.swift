@@ -460,12 +460,18 @@ final class MigrationTests: XCTestCase {
         let fee = insertOrderFeeLine(to: targetContext)
         migratedOrder.mutableSetValue(forKey: "fees").add(fee)
 
-//        XCTAssertNotNil(migratedRefund.entity.relationshipsByName["shippingLines"])
-//        XCTAssertEqual(migratedRefund.value(forKey: "supportShippingRefunds") as? Bool, false)
-
         XCTAssertNoThrow(try targetContext.save())
+
+        // Confidence-check
+        XCTAssertEqual(try targetContext.count(entityName: "OrderFeeLine"), 1)
+
+        // The relationship between Order and OrderFeeLine should be updated.
+        XCTAssertEqual(migratedOrder.value(forKey: "fees") as? Set<NSManagedObject>, [fee])
+
         // The OrderFeeLine.order inverse relationship should be updated.
         XCTAssertEqual(fee.value(forKey: "order") as? NSManagedObject, migratedOrder)
+
+
     }
 }
 

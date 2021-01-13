@@ -282,8 +282,6 @@ private extension OrderDetailsDataSource {
             configureShippingLabelProduct(cell: cell, at: indexPath)
         case let cell as ProductDetailsTableViewCell where row == .aggregateOrderItem:
             configureAggregateOrderItem(cell: cell, at: indexPath)
-        case let cell as ButtonTableViewCell where row == .fulfillButton:
-            print("DELETE ME")
         case let cell as ButtonTableViewCell where row == .markCompleteButton:
             configureMarkCompleteButton(cell: cell)
         case let cell as ButtonTableViewCell where row == .shippingLabelReprintButton:
@@ -1174,7 +1172,6 @@ extension OrderDetailsDataSource {
     enum Row {
         case summary
         case aggregateOrderItem
-        case fulfillButton
         case markCompleteButton
         case details
         case refundedProducts
@@ -1206,8 +1203,6 @@ extension OrderDetailsDataSource {
                 return SummaryTableViewCell.reuseIdentifier
             case .aggregateOrderItem:
                 return ProductDetailsTableViewCell.reuseIdentifier
-            case .fulfillButton:
-                return ButtonTableViewCell.reuseIdentifier
             case .markCompleteButton:
                 return ButtonTableViewCell.reuseIdentifier
             case .details:

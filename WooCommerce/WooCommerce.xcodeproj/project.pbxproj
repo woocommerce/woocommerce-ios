@@ -4794,6 +4794,8 @@
 		CE35F1182343E924007B2A6B /* Product Details */ = {
 			isa = PBXGroup;
 			children = (
+				CE37C04222984E81008DCB39 /* PickListTableViewCell.swift */,
+				CE37C04322984E81008DCB39 /* PickListTableViewCell.xib */,
 				CE21B3DC20FF9BC200A259D5 /* ProductListViewController.swift */,
 			);
 			path = "Product Details";
@@ -4812,8 +4814,6 @@
 		CE37C04122984E50008DCB39 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				CE37C04222984E81008DCB39 /* PickListTableViewCell.swift */,
-				CE37C04322984E81008DCB39 /* PickListTableViewCell.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";

@@ -90,17 +90,20 @@ where Cell.SearchModel == Command.CellViewModel {
     }()
 
     private let searchUICommand: Command
+    private let tableViewSeparatorStyle: UITableViewCell.SeparatorStyle
 
 
     /// Designated Initializer
     ///
     init(storeID: Int64,
          command: Command,
-         cellType: Cell.Type) {
+         cellType: Cell.Type,
+         cellSeparator: UITableViewCell.SeparatorStyle) {
         self.resultsController = command.createResultsController()
         self.resultsPredicate = resultsController.predicate
         self.searchUICommand = command
         self.storeID = storeID
+        tableViewSeparatorStyle = cellSeparator
         super.init(nibName: "SearchViewController", bundle: nil)
     }
 
@@ -259,6 +262,7 @@ private extension SearchViewController {
         tableView.estimatedRowHeight = Settings.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.tableFooterView = footerSpinnerView
+        tableView.separatorStyle = tableViewSeparatorStyle
     }
 
     /// Setup: Search Bar

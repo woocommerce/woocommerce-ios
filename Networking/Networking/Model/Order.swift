@@ -37,6 +37,7 @@ public struct Order: Decodable, GeneratedCopiable {
     public let shippingLines: [ShippingLine]
     public let coupons: [OrderCouponLine]
     public let refunds: [OrderRefundCondensed]
+    public let fees: [OrderFeeLine]
 
     /// Order struct initializer.
     ///
@@ -64,7 +65,8 @@ public struct Order: Decodable, GeneratedCopiable {
                 shippingAddress: Address?,
                 shippingLines: [ShippingLine],
                 coupons: [OrderCouponLine],
-                refunds: [OrderRefundCondensed]) {
+                refunds: [OrderRefundCondensed],
+                fees: [OrderFeeLine]) {
 
         self.siteID = siteID
         self.orderID = orderID
@@ -95,6 +97,7 @@ public struct Order: Decodable, GeneratedCopiable {
         self.shippingLines = shippingLines
         self.coupons = coupons
         self.refunds = refunds
+        self.fees = fees
     }
 
 
@@ -144,6 +147,8 @@ public struct Order: Decodable, GeneratedCopiable {
         // Filter out refunds with ID equal to 0 (deleted).
         refunds = refunds.filter({ $0.refundID != 0 })
 
+        let fees = try container.decode([OrderFeeLine].self, forKey: .feeLines)
+
         self.init(siteID: siteID,
                   orderID: orderID,
                   parentID: parentID,
@@ -168,7 +173,8 @@ public struct Order: Decodable, GeneratedCopiable {
                   shippingAddress: shippingAddress,
                   shippingLines: shippingLines,
                   coupons: coupons,
-                  refunds: refunds)
+                  refunds: refunds,
+                  fees: fees)
     }
 }
 
@@ -206,6 +212,7 @@ private extension Order {
         case shippingLines      = "shipping_lines"
         case couponLines        = "coupon_lines"
         case refunds            = "refunds"
+        case feeLines           = "fee_lines"
     }
 }
 

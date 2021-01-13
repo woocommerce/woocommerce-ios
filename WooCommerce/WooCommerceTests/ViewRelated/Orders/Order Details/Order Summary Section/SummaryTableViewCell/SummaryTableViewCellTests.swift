@@ -91,7 +91,8 @@ private extension SummaryTableViewCellTests {
                      shippingAddress: nil,
                      shippingLines: [],
                      coupons: [],
-                     refunds: [])
+                     refunds: [],
+                     fees: [])
     }
 }
 

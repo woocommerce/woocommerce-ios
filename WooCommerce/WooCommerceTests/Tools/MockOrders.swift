@@ -31,7 +31,8 @@ final class MockOrders {
             shippingAddress: nil,
             shippingLines: [],
             coupons: [],
-            refunds: []
+            refunds: [],
+            fees: []
         )
     }
 
@@ -60,7 +61,8 @@ final class MockOrders {
                      shippingAddress: sampleAddress(),
                      shippingLines: shippingLines,
                      coupons: [],
-                     refunds: [])
+                     refunds: [],
+                     fees: [])
     }
 
     func sampleOrder() -> Order {
@@ -92,7 +94,8 @@ final class MockOrders {
                      shippingAddress: sampleAddress(),
                      shippingLines: Self.sampleShippingLines(),
                      coupons: [],
-                     refunds: [])
+                     refunds: [],
+                     fees: [])
     }
 
     static func sampleShippingLines(cost: String = "133.00", tax: String = "0.00") -> [ShippingLine] {
@@ -145,7 +148,8 @@ final class MockOrders {
                      shippingAddress: brokenAddress(),
                      shippingLines: brokenShippingLines(), // empty shipping
                      coupons: [],
-                     refunds: [])
+                     refunds: [],
+                     fees: [])
     }
 
     /// An order with broken elements that hasn't been paid, inspired by `broken-order.json`
@@ -175,7 +179,8 @@ final class MockOrders {
                      shippingAddress: brokenAddress(),
                      shippingLines: brokenShippingLines(), // empty shipping
                      coupons: [],
-                     refunds: [])
+                     refunds: [],
+                     fees: [])
     }
 
     /// An address that may or may not be broken, that came from `broken-order.json`

@@ -283,7 +283,7 @@ private extension OrderDetailsDataSource {
         case let cell as ProductDetailsTableViewCell where row == .aggregateOrderItem:
             configureAggregateOrderItem(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .fulfillButton:
-            configureFulfillmentButton(cell: cell)
+            print("DELETE ME")
         case let cell as ButtonTableViewCell where row == .markCompleteButton:
             configureMarkCompleteButton(cell: cell)
         case let cell as ButtonTableViewCell where row == .shippingLabelReprintButton:
@@ -590,13 +590,6 @@ private extension OrderDetailsDataSource {
             "Show a list of refunded order items for this order.",
             comment: "VoiceOver accessibility hint, informing the user that the button can be used to view billing information."
         )
-    }
-
-    private func configureFulfillmentButton(cell: ButtonTableViewCell) {
-        cell.configure(title: Titles.fulfillTitle) { [weak self] in
-            print("DELETE ME")
-        }
-        cell.showSeparator()
     }
 
     private func configureMarkCompleteButton(cell: ButtonTableViewCell) {
@@ -1048,8 +1041,6 @@ extension OrderDetailsDataSource {
     enum Titles {
         static let productDetails = NSLocalizedString("Details",
                                                       comment: "The row label to tap for a detailed product list")
-        static let fulfillTitle = NSLocalizedString("Begin Fulfillment",
-                                                    comment: "Begin fulfill order button title")
         static let markComplete = NSLocalizedString("Mark Order Complete", comment: "Fulfill Order Action Button")
         static let addNoteText = NSLocalizedString("Add a note",
                                                    comment: "Button text for adding a new order note")

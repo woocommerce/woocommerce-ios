@@ -83,6 +83,34 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let issueRefundRow = row(row: .issueRefundButton, in: paymentSection)
         XCTAssertNil(issueRefundRow)
     }
+
+    func test_markOrderComplete_button_is_visible_if_order_is_processing() throws {
+        // Given
+        let order = makeOrder().copy(status: .processing)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let productsSection = try section(withTitle: Title.products, from: dataSource)
+        let buttonRow = row(row: .markCompleteButton, in: productsSection)
+        XCTAssertNotNil(buttonRow)
+    }
+
+    func test_markOrderComplete_button_is_hidden_if_order_is_not_processing() throws {
+        // Given
+        let order = makeOrder().copy(status: .onHold)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let productsSection = try section(withTitle: Title.products, from: dataSource)
+        let buttonRow = row(row: .markCompleteButton, in: productsSection)
+        XCTAssertNil(buttonRow)
+    }
 }
 
 // MARK: - Test Data

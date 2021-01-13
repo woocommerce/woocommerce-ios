@@ -35,7 +35,7 @@ class StorageTypeExtensionsTests: XCTestCase {
 
     }
 
-    func test_loadAccountSettings_by_user_ID () throws {
+    func test_loadAccountSettings_by_user_ID() throws {
         // Given
         let accountSettings = storage.insertNewObject(ofType: AccountSettings.self)
         let userID: Int64 = 123
@@ -46,5 +46,18 @@ class StorageTypeExtensionsTests: XCTestCase {
 
         // Then
         XCTAssertEqual(accountSettings, storedAccountSettings)
+    }
+
+    func test_loadSite_by_ID() throws {
+        // Given
+        let site = storage.insertNewObject(ofType: Site.self)
+        let id: Int64 = 123
+        site.siteID = id
+
+        // When
+        let storedSite = try XCTUnwrap(storage.loadSite(siteID: id))
+
+        // Then
+        XCTAssertEqual(site, storedSite)
     }
 }

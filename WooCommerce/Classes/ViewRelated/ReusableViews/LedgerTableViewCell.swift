@@ -41,7 +41,7 @@ final class LedgerTableViewCell: UITableViewCell {
 
         discountLabel.text = viewModel.discountText
         discountValue.text = viewModel.discountValue
-        discountView.isHidden = viewModel.discountValue == nil
+        discountView.isHidden = viewModel.shouldHideDiscount
 
         feesLabel.text = Titles.feesLabel
         feesValue.text = viewModel.feesValue
@@ -52,7 +52,7 @@ final class LedgerTableViewCell: UITableViewCell {
 
         taxesLabel.text = Titles.taxesLabel
         taxesValue.text = viewModel.taxesValue
-        taxesView.isHidden = taxesValue == nil
+        taxesView.isHidden = viewModel.shouldHideTaxes
 
         totalLabel.text = Titles.totalLabel
         totalValue.text = viewModel.totalValue

@@ -40,12 +40,20 @@ final class OrderPaymentDetailsViewModel {
         return "-" + formattedDiscount
     }
 
+    var shouldHideDiscount: Bool {
+        discountValue == nil
+    }
+
     var shippingValue: String {
         return currencyFormatter.formatAmount(order.shippingTotal, with: order.currency) ?? String()
     }
 
     var taxesValue: String? {
         return currencyFormatter.formatAmount(order.totalTax, with: order.currency)
+    }
+
+    var shouldHideTaxes: Bool {
+        taxesValue == nil
     }
 
     var totalValue: String {
@@ -76,7 +84,7 @@ final class OrderPaymentDetailsViewModel {
     }
 
     var shouldHideFees: Bool {
-        return feesTotal == Constants.decimalZero
+        feesTotal == Constants.decimalZero
     }
 
     /// Payment Summary

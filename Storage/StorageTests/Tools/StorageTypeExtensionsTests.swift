@@ -620,6 +620,25 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(productAttribute, storedProductAttribute)
     }
+
+    func test_loadProductImage_by_siteID_productID_imageID() throws {
+        // Given
+        let productID: Int64 = 123
+        let imageID: Int64 = 1234
+        let productImage = storage.insertNewObject(ofType: ProductImage.self)
+        productImage.imageID = imageID
+
+        let product = storage.insertNewObject(ofType: Product.self)
+        product.siteID = sampleSiteID
+        product.productID = productID
+        product.addToImages(productImage)
+
+        // When
+        let storedProductImage = try XCTUnwrap(storage.loadProductImage(siteID: sampleSiteID, productID: productID, imageID: imageID))
+
+        // Then
+        XCTAssertEqual(productImage, storedProductImage)
+    }
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

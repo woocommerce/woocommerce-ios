@@ -380,6 +380,102 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(notification, storedNotification)
     }
+
+    func test_loadShipmentTracking_by_siteID_orderID_trackingID() throws {
+        // Given
+        let orderID: Int64 = 123
+        let trackingID = "1234"
+        let shipmentTracking = storage.insertNewObject(ofType: ShipmentTracking.self)
+        shipmentTracking.siteID = sampleSiteID
+        shipmentTracking.orderID = orderID
+        shipmentTracking.trackingID = trackingID
+
+        // When
+        let storedShipmentTracking = try XCTUnwrap(storage.loadShipmentTracking(siteID: sampleSiteID, orderID: orderID, trackingID: trackingID))
+
+        // Then
+        XCTAssertEqual(shipmentTracking, storedShipmentTracking)
+    }
+
+    func test_loadShipmentTrackingList_by_siteID_orderID() throws {
+        // Given
+        let orderID: Int64 = 123
+        let shipmentTracking1 = storage.insertNewObject(ofType: ShipmentTracking.self)
+        shipmentTracking1.siteID = sampleSiteID
+        shipmentTracking1.orderID = orderID
+
+        let shipmentTracking2 = storage.insertNewObject(ofType: ShipmentTracking.self)
+        shipmentTracking2.siteID = sampleSiteID
+        shipmentTracking2.orderID = orderID
+
+        // When
+        let storedTrackingList = try XCTUnwrap(storage.loadShipmentTrackingList(siteID: sampleSiteID, orderID: orderID))
+
+        // Then
+        XCTAssertEqual([shipmentTracking1, shipmentTracking2], storedTrackingList)
+    }
+
+    func test_loadShipmentTrackingProviderGroup_by_siteID_groupName() throws {
+        // Given
+        let providerGroup = "group"
+        let shipmentProviderGroup = storage.insertNewObject(ofType: ShipmentTrackingProviderGroup.self)
+        shipmentProviderGroup.siteID = sampleSiteID
+        shipmentProviderGroup.name = providerGroup
+
+        // When
+        let storedShipmentProviderGroup = try XCTUnwrap(storage.loadShipmentTrackingProviderGroup(siteID: sampleSiteID, providerGroupName: providerGroup))
+
+        // Then
+        XCTAssertEqual(shipmentProviderGroup, storedShipmentProviderGroup)
+    }
+
+    func test_loadShipmentTrackingProviderGroupList_by_siteID() throws {
+        // Given
+        let shipmentProviderGroup1 = storage.insertNewObject(ofType: ShipmentTrackingProviderGroup.self)
+        shipmentProviderGroup1.siteID = sampleSiteID
+        shipmentProviderGroup1.name = "name-1"
+
+        let shipmentProviderGroup2 = storage.insertNewObject(ofType: ShipmentTrackingProviderGroup.self)
+        shipmentProviderGroup2.siteID = sampleSiteID
+        shipmentProviderGroup2.name = "name-2"
+
+        // When
+        let storedShipmentProviderGroup = try XCTUnwrap(storage.loadShipmentTrackingProviderGroupList(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual([shipmentProviderGroup1, shipmentProviderGroup2], storedShipmentProviderGroup)
+    }
+
+    func test_loadShipmentTrackingProvider_by_siteID_name() throws {
+        // Given
+        let name = "name"
+        let trackingProvider = storage.insertNewObject(ofType: ShipmentTrackingProvider.self)
+        trackingProvider.siteID = sampleSiteID
+        trackingProvider.name = name
+
+        // When
+        let storedTrackingProvider = try XCTUnwrap(storage.loadShipmentTrackingProvider(siteID: sampleSiteID, name: name))
+
+        // Then
+        XCTAssertEqual(trackingProvider, storedTrackingProvider)
+    }
+
+    func test_loadShipmentTrackingProviderList_by_siteID() throws {
+        // Given
+        let trackingProvider1 = storage.insertNewObject(ofType: ShipmentTrackingProvider.self)
+        trackingProvider1.siteID = sampleSiteID
+        trackingProvider1.name = "name-1"
+
+        let trackingProvider2 = storage.insertNewObject(ofType: ShipmentTrackingProvider.self)
+        trackingProvider2.siteID = sampleSiteID
+        trackingProvider2.name = "name-2"
+
+        // When
+        let storedTrackingProvider = try XCTUnwrap(storage.loadShipmentTrackingProviderList(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual([trackingProvider1, trackingProvider2], storedTrackingProvider)
+    }
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

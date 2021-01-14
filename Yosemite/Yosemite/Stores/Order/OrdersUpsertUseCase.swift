@@ -54,6 +54,7 @@ struct OrdersUpsertUseCase {
 
         handleOrderItems(readOnlyOrder, storageOrder, storage)
         handleOrderCoupons(readOnlyOrder, storageOrder, storage)
+        handleOrderFees(readOnlyOrder, storageOrder, storage)
         handleOrderShippingLines(readOnlyOrder, storageOrder, storage)
         handleOrderRefundsCondensed(readOnlyOrder, storageOrder, storage)
 
@@ -154,6 +155,29 @@ struct OrdersUpsertUseCase {
             if readOnlyOrder.coupons.first(where: { $0.couponID == storageCoupon.couponID } ) == nil {
                 storageOrder.removeFromCoupons(storageCoupon)
                 storage.deleteObject(storageCoupon)
+            }
+        }
+    }
+
+    /// Updates, inserts, or prunes the provided StorageOrder's fees using the provided read-only Order's fees
+    ///
+    private func handleOrderFees(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+        // Upsert the coupons from the read-only order
+        for readOnlyFee in readOnlyOrder.fees {
+            if let existingStorageFee = storage.loadOrderFeeLine(siteID: readOnlyOrder.siteID, feeID: readOnlyFee.feeID) {
+                existingStorageFee.update(with: readOnlyFee)
+            } else {
+                let newStorageFee = storage.insertNewObject(ofType: Storage.OrderFeeLine.self)
+                newStorageFee.update(with: readOnlyFee)
+                storageOrder.addToFees(newStorageFee)
+            }
+        }
+
+        // Now, remove any objects that exist in storageOrder.fees but not in readOnlyOrder.fees
+        storageOrder.fees?.forEach { storageFee in
+            if readOnlyOrder.fees.first(where: { $0.feeID == storageFee.feeID } ) == nil {
+                storageOrder.removeFromFees(storageFee)
+                storage.deleteObject(storageFee)
             }
         }
     }

@@ -220,6 +220,21 @@ class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(orderCount, storedOrderCount)
     }
 
+    func test_loadTopEarnerStats_by_date_granularity() throws {
+        // Given
+        let date = Date().description
+        let granularity = "daily"
+        let topEarnerStat = storage.insertNewObject(ofType: TopEarnerStats.self)
+        topEarnerStat.date = date
+        topEarnerStat.granularity = granularity
+
+        // When
+        let storedTopEarnerStat = try XCTUnwrap(storage.loadTopEarnerStats(date: date, granularity: granularity))
+
+        // Then
+        XCTAssertEqual(topEarnerStat, storedTopEarnerStat)
+    }
+
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

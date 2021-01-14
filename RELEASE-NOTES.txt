@@ -5,6 +5,7 @@
 - [*] Removed fulfillment screen and moved fulfillment to the order details screen. [https://github.com/woocommerce/woocommerce-ios/pull/3453]
 - [*] Fix: billing information action sheets now are presented correctly on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/3457]
 - [*] fix: the rows in the product search list now don't have double separators. [https://github.com/woocommerce/woocommerce-ios/pull/3456]
+- [*] Fix: During login, the spinner when a continue button is in loading state is now visible in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/3472]
 
 
 5.8

@@ -195,6 +195,19 @@ class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(shippingLine, storedShippingLine)
     }
 
+    func test_loadOrderNote_by_noteID() throws {
+        // Given
+        let noteID: Int64 = 123
+        let orderNote = storage.insertNewObject(ofType: OrderNote.self)
+        orderNote.noteID = noteID
+
+        // When
+        let storedNote = try XCTUnwrap(storage.loadOrderNote(noteID: noteID))
+
+        // Then
+        XCTAssertEqual(orderNote, storedNote)
+    }
+
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

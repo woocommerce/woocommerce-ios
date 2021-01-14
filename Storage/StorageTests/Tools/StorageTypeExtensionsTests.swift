@@ -263,6 +263,19 @@ class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(siteVisitStat, storedSiteVisitStat)
     }
 
+    func test_loadOrderStatsV4_by_siteID_timeRange() throws {
+        // Given
+        let timeRange = "Daily"
+        let statsV4 = storage.insertNewObject(ofType: OrderStatsV4.self)
+        statsV4.siteID = sampleSiteID
+        statsV4.timeRange = timeRange
+
+        // When
+        let storedStatsV4 = try XCTUnwrap(storage.loadOrderStatsV4(siteID: sampleSiteID, timeRange: timeRange))
+
+        // Then
+        XCTAssertEqual(statsV4, storedStatsV4)
+    }
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

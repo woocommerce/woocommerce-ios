@@ -704,6 +704,35 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(Set([productTag1, productTag2]), Set(storedProductTags))
     }
+
+    func test_loadProductReviews_by_siteID() throws {
+        // Given
+        let productReview1 = storage.insertNewObject(ofType: ProductReview.self)
+        productReview1.siteID = sampleSiteID
+
+        let productReview2 = storage.insertNewObject(ofType: ProductReview.self)
+        productReview2.siteID = sampleSiteID
+
+        // When
+        let storedProductReviews = try XCTUnwrap(storage.loadProductReviews(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual(Set([productReview1, productReview2]), Set(storedProductReviews))
+    }
+
+    func test_loadProductReviews_by_siteID_reviewID() throws {
+        // Given
+        let reviewID: Int64 = 123
+        let productReview = storage.insertNewObject(ofType: ProductReview.self)
+        productReview.siteID = sampleSiteID
+        productReview.reviewID = reviewID
+
+        // When
+        let storedProductReview = try XCTUnwrap(storage.loadProductReview(siteID: sampleSiteID, reviewID: reviewID))
+
+        // Then
+        XCTAssertEqual(productReview, storedProductReview)
+    }
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

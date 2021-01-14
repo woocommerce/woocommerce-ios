@@ -7,8 +7,8 @@ final class OrderPaymentDetailsViewModel {
     private let currencyFormatter: CurrencyFormatter
 
     var subtotal: Decimal {
-        let subtotal = order.items.reduce(Decimal(0)) { (output, item) in
-            let itemSubtotal = Decimal(string: item.subtotal) ?? Decimal(0)
+        let subtotal = order.items.reduce(Constants.decimalZero) { (output, item) in
+            let itemSubtotal = Decimal(string: item.subtotal) ?? Constants.decimalZero
             return output + itemSubtotal
         }
 
@@ -61,8 +61,8 @@ final class OrderPaymentDetailsViewModel {
     }
 
     private var feesTotal: Decimal {
-        let subtotal = order.fees.reduce(Decimal(0)) { (output, fee) in
-            let feeSubtotal = Decimal(string: fee.total) ?? Decimal(0)
+        let subtotal = order.fees.reduce(Constants.decimalZero) { (output, fee) in
+            let feeSubtotal = Decimal(string: fee.total) ?? Constants.decimalZero
             return output + feeSubtotal
         }
 
@@ -76,7 +76,7 @@ final class OrderPaymentDetailsViewModel {
     }
 
     var shouldHideFees: Bool {
-        return feesTotal == Decimal(0)
+        return feesTotal == Constants.decimalZero
     }
 
     /// Payment Summary
@@ -199,5 +199,11 @@ final class OrderPaymentDetailsViewModel {
         let refundTotal = totalRefundedUseCase.totalRefunded()
 
         return orderTotal.adding(refundTotal)
+    }
+}
+
+private extension OrderPaymentDetailsViewModel {
+    enum Constants {
+        static let decimalZero = Decimal(0)
     }
 }

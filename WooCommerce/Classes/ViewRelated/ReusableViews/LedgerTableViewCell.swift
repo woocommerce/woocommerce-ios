@@ -10,6 +10,10 @@ final class LedgerTableViewCell: UITableViewCell {
     @IBOutlet private weak var discountLabel: UILabel!
     @IBOutlet private weak var discountValue: UILabel!
 
+    @IBOutlet private weak var feesView: UIView!
+    @IBOutlet private weak var feesLabel: UILabel!
+    @IBOutlet private weak var feesValue: UILabel!
+
     @IBOutlet private var shippingView: UIView!
     @IBOutlet private weak var shippingLabel: UILabel!
     @IBOutlet private weak var shippingValue: UILabel!
@@ -39,6 +43,10 @@ final class LedgerTableViewCell: UITableViewCell {
         discountValue.text = viewModel.discountValue
         discountView.isHidden = viewModel.discountValue == nil
 
+        feesLabel.text = Titles.feesLabel
+        feesValue.text = viewModel.feesValue
+        feesView.isHidden = viewModel.shouldHideFees
+
         shippingLabel.text = Titles.shippingLabel
         shippingValue.text = viewModel.shippingValue
 
@@ -53,6 +61,8 @@ final class LedgerTableViewCell: UITableViewCell {
                                  subtotalValue as Any,
                                  discountLabel as Any,
                                  discountValue as Any,
+                                 feesLabel as Any,
+                                 feesValue as Any,
                                  shippingLabel as Any,
                                  shippingValue as Any,
                                  taxesLabel as Any,
@@ -90,6 +100,8 @@ private extension LedgerTableViewCell {
     enum Titles {
         static let subtotalLabel = NSLocalizedString("Product Total",
                                                      comment: "Product Total label for payment view")
+        static let feesLabel = NSLocalizedString("Fees",
+                                                     comment: "Fees label for payment view")
         static let shippingLabel = NSLocalizedString("Shipping",
                                                      comment: "Shipping label for payment view")
         static let taxesLabel = NSLocalizedString("Taxes",

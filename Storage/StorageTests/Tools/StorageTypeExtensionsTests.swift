@@ -525,6 +525,77 @@ class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(product, storedProducts)
     }
 
+    func test_loadProductAttribute_by_siteID_productID_attributeID_name() throws {
+        // Given
+        let productID: Int64 = 123
+        let attributeID: Int64 = 1234
+        let name = "name"
+        let productAttribute = storage.insertNewObject(ofType: ProductAttribute.self)
+        productAttribute.attributeID = attributeID
+        productAttribute.name = name
+
+        let product = storage.insertNewObject(ofType: Product.self)
+        product.siteID = sampleSiteID
+        product.productID = productID
+        product.addToAttributes(productAttribute)
+
+        // When
+        let storedProductAttribute = try XCTUnwrap(storage.loadProductAttribute(siteID: sampleSiteID,
+                                                                                productID: productID,
+                                                                                attributeID: attributeID,
+                                                                                name: name))
+
+        // Then
+        XCTAssertEqual(productAttribute, storedProductAttribute)
+    }
+
+    func test_loadProductAttribute_by_siteID_attributeID() throws {
+        // Given
+        let attributeID: Int64 = 1234
+        let productAttribute = storage.insertNewObject(ofType: ProductAttribute.self)
+        productAttribute.siteID = sampleSiteID
+        productAttribute.attributeID = attributeID
+
+        // When
+        let storedProductAttribute = try XCTUnwrap(storage.loadProductAttribute(siteID: sampleSiteID, attributeID: attributeID))
+
+        // Then
+        XCTAssertEqual(productAttribute, storedProductAttribute)
+    }
+
+    func test_loadProductAttribute_by_siteID() throws {
+        // Given
+        let productAttribute1 = storage.insertNewObject(ofType: ProductAttribute.self)
+        productAttribute1.siteID = sampleSiteID
+
+        let productAttribute2 = storage.insertNewObject(ofType: ProductAttribute.self)
+        productAttribute2.siteID = sampleSiteID
+
+        // When
+        let storedProductAttribute = try XCTUnwrap(storage.loadProductAttributes(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual([productAttribute1, productAttribute2], storedProductAttribute)
+    }
+
+    func test_loadProductAttributeTerm_by_siteID_termID_attributeID() throws {
+        // Given
+        let termID: Int64 = 123
+        let attributeID: Int64 = 1234
+        let term = storage.insertNewObject(ofType: ProductAttributeTerm.self)
+        term.termID = termID
+        term.siteID = sampleSiteID
+
+        let attribute = storage.insertNewObject(ofType: ProductAttribute.self)
+        attribute.attributeID = attributeID
+        attribute.addToTerms(term)
+
+        // When
+        let storedTerm = try XCTUnwrap(storage.loadProductAttributeTerm(siteID: sampleSiteID, termID: termID, attributeID: attributeID))
+
+        // Then
+        XCTAssertEqual(term, storedTerm)
+    }
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

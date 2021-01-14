@@ -713,7 +713,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                 self?.filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
                                                                    productStatus: settings.productStatusFilter,
                                                                    productType: settings.productTypeFilter,
-                                                                   numberOfActiveFilters: settings.numberOfActiveFilters()())
+                                                                   numberOfActiveFilters: settings.numberOfActiveFilters())
             case .failure:
                 break
             }

@@ -46,10 +46,6 @@ final class OrderDetailsViewModel {
         return dataSource.refunds
     }
 
-    var fees: [OrderFeeLine] {
-        return dataSource.fees
-    }
-
     /// Refunded products from an Order
     ///
     var refundedItems: [OrderItemRefund] {

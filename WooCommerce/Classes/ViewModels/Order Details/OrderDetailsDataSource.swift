@@ -145,12 +145,6 @@ final class OrderDetailsDataSource: NSObject {
     ///
     private var orderNotesSections: [NoteSection] = []
 
-    /// Fees associated to an Order
-    ///
-    var fees: [OrderFeeLine] {
-        return order.fees
-    }
-
     private lazy var resultsControllers: OrderDetailsResultsControllers = {
         return OrderDetailsResultsControllers(order: self.order, storageManager: self.storageManager)
     }()

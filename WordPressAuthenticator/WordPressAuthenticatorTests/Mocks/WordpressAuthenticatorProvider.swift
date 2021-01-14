@@ -32,6 +32,7 @@ public class WordpressAuthenticatorProvider: NSObject {
                 primaryTitleColor: UIColor.random(),
                 secondaryTitleColor: UIColor.random(),
                 disabledTitleColor: UIColor.random(),
+                disabledButtonActivityIndicatorColor: UIColor.random(),
                 textButtonColor: UIColor.random(),
                 textButtonHighlightColor: UIColor.random(),
                 instructionColor: UIColor.random(),

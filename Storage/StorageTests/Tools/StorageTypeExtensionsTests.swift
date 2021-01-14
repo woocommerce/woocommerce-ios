@@ -178,6 +178,23 @@ class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(orderRefund, storedOrderRefund)
     }
 
+    func test_loadOrderShippingLine_by_siteID_shippingID() throws {
+        // Given
+        let shippingID: Int64 = 123
+        let shippingLine = storage.insertNewObject(ofType: ShippingLine.self)
+        shippingLine.shippingID = shippingID
+
+        let order = storage.insertNewObject(ofType: Order.self)
+        order.siteID = sampleSiteID
+        order.addToShippingLines(shippingLine)
+
+        // When
+        let storedShippingLine = try XCTUnwrap(storage.loadOrderShippingLine(siteID: sampleSiteID, shippingID: shippingID))
+
+        // Then
+        XCTAssertEqual(shippingLine, storedShippingLine)
+    }
+
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

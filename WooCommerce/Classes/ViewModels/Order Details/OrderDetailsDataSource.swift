@@ -338,11 +338,13 @@ private extension OrderDetailsDataSource {
             "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.",
             comment: "Shipping notice row label when there is more than one shipping method")
 
-        let viewModel = ImageAndTitleAndTextTableViewCell.TopLeftImageViewModel(icon: Icons.shippingNoticeIcon,
-                                                                                iconColor: .accent,
-                                                                                title: cellTextContent,
-                                                                                isFootnoteStyle: false)
-        cell.updateUI(topLeftImageViewModel: viewModel)
+        cell.update(with: .imageAndTitleOnly(fontStyle: .body),
+                    data: .init(title: cellTextContent,
+                                textTintColor: .text,
+                                image: Icons.shippingNoticeIcon,
+                                imageTintColor: .listIcon,
+                                numberOfLinesForTitle: 0,
+                                isActionable: false))
 
         cell.selectionStyle = .none
 

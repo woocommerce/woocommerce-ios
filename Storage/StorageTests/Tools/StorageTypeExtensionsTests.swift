@@ -596,6 +596,30 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(term, storedTerm)
     }
+
+    func test_loadProductDefaultAttribute_by_siteID_productID_defaultAttributeID_name() throws {
+        // Given
+        let productID: Int64 = 123
+        let attributeID: Int64 = 1234
+        let name = "name"
+        let productAttribute = storage.insertNewObject(ofType: ProductDefaultAttribute.self)
+        productAttribute.attributeID = attributeID
+        productAttribute.name = name
+
+        let product = storage.insertNewObject(ofType: Product.self)
+        product.siteID = sampleSiteID
+        product.productID = productID
+        product.addToDefaultAttributes(productAttribute)
+
+        // When
+        let storedProductAttribute = try XCTUnwrap(storage.loadProductDefaultAttribute(siteID: sampleSiteID,
+                                                                                       productID: productID,
+                                                                                       defaultAttributeID: attributeID,
+                                                                                       name: name))
+
+        // Then
+        XCTAssertEqual(productAttribute, storedProductAttribute)
+    }
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

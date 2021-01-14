@@ -73,9 +73,7 @@ final class ProductsViewController: UIViewController {
         didSet {
             if sortOrder != oldValue {
                 updateLocalProductSettings(sort: sortOrder,
-                                           stockStatusFilter: filters.stockStatus,
-                                           productStatusFilter: filters.productStatus,
-                                           productTypeFilter: filters.productType)
+                                           filters: filters)
                 resultsController.updateSortOrder(sortOrder)
 
                 /// Reload data because `updateSortOrder` generates a new `predicate` which calls `performFetch`
@@ -115,9 +113,7 @@ final class ProductsViewController: UIViewController {
         didSet {
             if filters != oldValue {
                 updateLocalProductSettings(sort: sortOrder,
-                                           stockStatusFilter: filters.stockStatus,
-                                           productStatusFilter: filters.productStatus,
-                                           productTypeFilter: filters.productType)
+                                           filters: filters)
                 updateFilterButtonTitle(filters: filters)
 
                 resultsController.updatePredicate(siteID: siteID,
@@ -689,14 +685,12 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
     /// Update local Products Settings (eg. sort order or filters stored in Products settings)
     ///
     private func updateLocalProductSettings(sort: ProductsSortOrder? = nil,
-                                    stockStatusFilter: ProductStockStatus? = nil,
-                                    productStatusFilter: ProductStatus? = nil,
-                                    productTypeFilter: ProductType? = nil) {
+                                            filters: FilterProductListViewModel.Filters) {
         let action = AppSettingsAction.upsertProductsSettings(siteID: siteID,
                                                               sort: sort?.rawValue,
-                                                              stockStatusFilter: stockStatusFilter,
-                                                              productStatusFilter: productStatusFilter,
-                                                              productTypeFilter: productTypeFilter) { (error) in
+                                                              stockStatusFilter: filters.stockStatus,
+                                                              productStatusFilter: filters.productStatus,
+                                                              productTypeFilter: filters.productType) { (error) in
         }
         ServiceLocator.stores.dispatch(action)
     }

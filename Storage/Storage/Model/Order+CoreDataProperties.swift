@@ -179,3 +179,20 @@ extension Order {
     @NSManaged public func removeFromShippingLabels(_ values: NSSet)
 
 }
+
+// MARK: Generated accessors for fees
+extension Order {
+
+    @objc(addFeesObject:)
+    @NSManaged public func addToFees(_ value: OrderFeeLine)
+
+    @objc(removeFeesObject:)
+    @NSManaged public func removeFromFees(_ value: OrderFeeLine)
+
+    @objc(addFees:)
+    @NSManaged public func addToFees(_ values: NSSet)
+
+    @objc(removeFees:)
+    @NSManaged public func removeFromFees(_ values: NSSet)
+
+}

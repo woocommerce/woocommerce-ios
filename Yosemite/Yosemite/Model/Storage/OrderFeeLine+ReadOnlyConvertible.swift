@@ -14,6 +14,7 @@ extension Storage.OrderFeeLine: ReadOnlyConvertible {
         taxClass = feeLine.taxClass
         taxStatusKey = feeLine.taxStatus.rawValue
         total = feeLine.total
+        totalTax = feeLine.totalTax
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -26,9 +27,9 @@ extension Storage.OrderFeeLine: ReadOnlyConvertible {
                             name: name ?? "",
                             taxClass: taxClass ?? "",
                             taxStatus: OrderFeeTaxStatus(rawValue: taxStatusKey),
-                                total: total ?? "",
-                                totalTax: totalTax ?? "",
-                                taxes: feeTaxes,
-                                attributes: feeAttributes)
+                            total: total ?? "",
+                            totalTax: totalTax ?? "",
+                            taxes: feeTaxes,
+                            attributes: feeAttributes)
     }
 }

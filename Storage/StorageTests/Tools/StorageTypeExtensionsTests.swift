@@ -476,6 +476,55 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual([trackingProvider1, trackingProvider2], storedTrackingProvider)
     }
+
+    func test_loadProducts_by_siteID() throws {
+        // Given
+        let product1 = storage.insertNewObject(ofType: Product.self)
+        product1.siteID = sampleSiteID
+        product1.productID = 1
+
+        let product2 = storage.insertNewObject(ofType: Product.self)
+        product2.siteID = sampleSiteID
+        product2.productID = 2
+
+        // When
+        let storedProducts = try XCTUnwrap(storage.loadProducts(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual([product2, product1], storedProducts)
+    }
+
+    func test_loadProducts_by_siteID_productIDs() throws {
+        // Given
+        let product1 = storage.insertNewObject(ofType: Product.self)
+        product1.siteID = sampleSiteID
+        product1.productID = 1
+
+        let product2 = storage.insertNewObject(ofType: Product.self)
+        product2.siteID = sampleSiteID
+        product2.productID = 2
+
+        // When
+        let storedProducts = try XCTUnwrap(storage.loadProducts(siteID: sampleSiteID, productsIDs: [1, 2]))
+
+        // Then
+        XCTAssertEqual([product1, product2], storedProducts)
+    }
+
+    func test_loadProduct_by_siteID_productID() throws {
+        // Given
+        let productID: Int64 = 123
+        let product = storage.insertNewObject(ofType: Product.self)
+        product.siteID = sampleSiteID
+        product.productID = productID
+
+        // When
+        let storedProducts = try XCTUnwrap(storage.loadProduct(siteID: sampleSiteID, productID: productID))
+
+        // Then
+        XCTAssertEqual(product, storedProducts)
+    }
+
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

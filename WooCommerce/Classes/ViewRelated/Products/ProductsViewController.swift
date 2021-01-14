@@ -69,7 +69,7 @@ final class ProductsViewController: UIViewController {
         return resultsController
     }()
 
-    private var sortOrder: ProductsSortOrder = .nameAscending {
+    private var sortOrder: ProductsSortOrder = .default {
         didSet {
             if sortOrder != oldValue {
                 updateLocalProductSettings(sort: sortOrder,
@@ -702,7 +702,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
             switch result {
             case .success(let settings):
                 if let sort = settings.sort {
-                    self?.sortOrder = ProductsSortOrder(rawValue: sort) ?? .nameAscending
+                    self?.sortOrder = ProductsSortOrder(rawValue: sort) ?? .default
                 }
                 self?.filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
                                                                    productStatus: settings.productStatusFilter,

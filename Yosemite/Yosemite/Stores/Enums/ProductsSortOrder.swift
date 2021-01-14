@@ -11,6 +11,8 @@ public enum ProductsSortOrder: String {
     case nameDescending
     // Product name from A to Z
     case nameAscending
+
+    public static let `default`: ProductsSortOrder = .nameAscending
 }
 
 // MARK: ProductsRemote

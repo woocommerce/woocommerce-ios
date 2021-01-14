@@ -65,14 +65,14 @@ final class MockOrders {
                      shippingLines: shippingLines,
                      coupons: [],
                      refunds: [],
-                     fees: [])
+                     fees: fees)
     }
 
     func sampleOrder() -> Order {
         makeOrder()
     }
 
-    func sampleOrderWithFees() -> Order {
+    func orderWithFees() -> Order {
         makeOrder(fees: sampleFeeLines())
     }
 
@@ -116,8 +116,7 @@ final class MockOrders {
 
     func sampleFeeLines() -> [OrderFeeLine] {
         return [
-            sampleFeeLine(amount: "100"),
-            sampleFeeLine(amount: "200")
+            sampleFeeLine()
         ]
     }
 

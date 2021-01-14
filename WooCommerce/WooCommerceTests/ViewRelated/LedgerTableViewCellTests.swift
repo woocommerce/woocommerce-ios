@@ -9,7 +9,7 @@ final class LedgerTableViewCellTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        order = MockOrders().sampleOrderWithFees()
+        order = MockOrders().orderWithFees()
         viewModel = OrderPaymentDetailsViewModel(order: order)
 
         let nib = Bundle.main.loadNibNamed("LedgerTableViewCell", owner: self, options: nil)

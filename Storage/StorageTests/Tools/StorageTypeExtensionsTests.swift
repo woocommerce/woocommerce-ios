@@ -161,6 +161,23 @@ class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(feeLine, storedFeeLine)
     }
 
+    func test_loadOrderRefundCondensed_by_siteID_refundID() throws {
+        // Given
+        let refundID: Int64 = 123
+        let orderRefund = storage.insertNewObject(ofType: OrderRefundCondensed.self)
+        orderRefund.refundID = refundID
+
+        let order = storage.insertNewObject(ofType: Order.self)
+        order.siteID = sampleSiteID
+        order.addToRefunds(orderRefund)
+
+        // When
+        let storedOrderRefund = try XCTUnwrap(storage.loadOrderRefundCondensed(siteID: sampleSiteID, refundID: refundID))
+
+        // Then
+        XCTAssertEqual(orderRefund, storedOrderRefund)
+    }
+
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

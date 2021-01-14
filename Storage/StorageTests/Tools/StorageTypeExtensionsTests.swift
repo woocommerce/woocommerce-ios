@@ -235,6 +235,34 @@ class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(topEarnerStat, storedTopEarnerStat)
     }
 
+    func test_loadSiteVisitStats_by_granularity() throws {
+        // Given
+        let granularity = "daily"
+        let siteVisitStat = storage.insertNewObject(ofType: SiteVisitStats.self)
+        siteVisitStat.granularity = granularity
+
+        // When
+        let storedSiteVisitStat = try XCTUnwrap(storage.loadSiteVisitStats(granularity: granularity))
+
+        // Then
+        XCTAssertEqual(siteVisitStat, storedSiteVisitStat)
+    }
+
+    func test_loadSiteVisitStats_by_granularity_date() throws {
+        // Given
+        let date = Date().description
+        let granularity = "daily"
+        let siteVisitStat = storage.insertNewObject(ofType: SiteVisitStats.self)
+        siteVisitStat.date = date
+        siteVisitStat.granularity = granularity
+
+        // When
+        let storedSiteVisitStat = try XCTUnwrap(storage.loadSiteVisitStats(granularity: granularity, date: date))
+
+        // Then
+        XCTAssertEqual(siteVisitStat, storedSiteVisitStat)
+    }
+
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

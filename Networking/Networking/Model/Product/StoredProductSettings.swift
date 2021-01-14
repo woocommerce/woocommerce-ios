@@ -22,7 +22,7 @@ public struct StoredProductSettings: Codable, Equatable {
         self.productTypeFilter = productTypeFilter
     }
 
-    public func numberOfFilters() -> Int {
+    public func numberOfActiveFilters() -> Int {
         var total = 0
         if stockStatusFilter != nil {
             total += 1

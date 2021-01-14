@@ -208,6 +208,18 @@ class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(orderNote, storedNote)
     }
 
+    func test_loadOrderCount_by_siteID() throws {
+        // Given
+        let orderCount = storage.insertNewObject(ofType: OrderCount.self)
+        orderCount.siteID = sampleSiteID
+
+        // When
+        let storedOrderCount = try XCTUnwrap(storage.loadOrderCount(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual(orderCount, storedOrderCount)
+    }
+
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

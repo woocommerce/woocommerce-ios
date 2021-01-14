@@ -4,7 +4,7 @@ import XCTest
 
 class StorageTypeExtensionsTests: XCTestCase {
 
-    private let sampleSiteID: Int64 = 1234
+    private let sampleSiteID: Int64 = 98765
 
     private var storageManager: StorageManagerType!
 
@@ -144,11 +144,28 @@ class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(coupon, storedCoupon)
     }
 
+    func test_loadOrderFeeLine_by_siteID_feeID() throws {
+        // Given
+        let feeID: Int64 = 123
+        let feeLine = storage.insertNewObject(ofType: OrderFeeLine.self)
+        feeLine.feeID = feeID
+
+        let order = storage.insertNewObject(ofType: Order.self)
+        order.siteID = sampleSiteID
+        order.addToFees(feeLine)
+
+        // When
+        let storedFeeLine = try XCTUnwrap(storage.loadOrderFeeLine(siteID: sampleSiteID, feeID: feeID))
+
+        // Then
+        XCTAssertEqual(feeLine, storedFeeLine)
+    }
+
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given
-        let <#param#>:Int64 = <#param#>
-        let <#param#>:Int64 = <#param#>
+        let <#param#>: Int64 = <#param#>
+        let <#param#>: Int64 = <#param#>
         let <#entity#> = storage.insertNewObject(ofType: <#type#>.self)
         <#entity#>.<#param#> = <#param#>
         <#entity#>.<#param#> = <#param#>

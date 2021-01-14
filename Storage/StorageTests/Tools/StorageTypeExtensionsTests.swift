@@ -352,6 +352,34 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(siteSetting, storedSiteSetting)
     }
+
+    func test_loadNotification_by_noteID() throws {
+        // Given
+        let noteID: Int64 = 123
+        let notification = storage.insertNewObject(ofType: Note.self)
+        notification.noteID = noteID
+
+        // When
+        let storedNotification = try XCTUnwrap(storage.loadNotification(noteID: noteID))
+
+        // Then
+        XCTAssertEqual(notification, storedNotification)
+    }
+
+    func test_loadNotification_by_noteID_noteHash() throws {
+        // Given
+        let noteID: Int64 = 123
+        let noteHash: Int64 = 1234
+        let notification = storage.insertNewObject(ofType: Note.self)
+        notification.noteID = noteID
+        notification.noteHash = noteHash
+
+        // When
+        let storedNotification = try XCTUnwrap(storage.loadNotification(noteID: noteID, noteHash: (Int)(noteHash)))
+
+        // Then
+        XCTAssertEqual(notification, storedNotification)
+    }
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

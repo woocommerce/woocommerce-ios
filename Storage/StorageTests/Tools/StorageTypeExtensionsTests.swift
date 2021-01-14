@@ -291,6 +291,20 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual([status1, status2], storedStatuses)
     }
+
+    func test_loadOrderStatus_by_siteID_slug() throws {
+        // Given
+        let slug = "slug"
+        let status = storage.insertNewObject(ofType: OrderStatus.self)
+        status.siteID = sampleSiteID
+        status.slug = slug
+
+        // When
+        let storedStatus = try XCTUnwrap(storage.loadOrderStatus(siteID: sampleSiteID, slug: slug))
+
+        // Then
+        XCTAssertEqual(status, storedStatus)
+    }
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

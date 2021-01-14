@@ -141,6 +141,14 @@ extension LedgerTableViewCell {
         return discountValue
     }
 
+    func getFeesLabel() -> UILabel {
+        return feesLabel
+    }
+
+    func getFeesValue() -> UILabel {
+        return feesValue
+    }
+
     func getShippingLabel() -> UILabel {
         return shippingLabel
     }

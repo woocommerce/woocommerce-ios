@@ -36,7 +36,10 @@ final class MockOrders {
         )
     }
 
-    func makeOrder(status: OrderStatusEnum = .processing, items: [OrderItem] = [], shippingLines: [ShippingLine] = sampleShippingLines()) -> Order {
+    func makeOrder(status: OrderStatusEnum = .processing,
+                   items: [OrderItem] = [],
+                   shippingLines: [ShippingLine] = sampleShippingLines(),
+                   fees: [OrderFeeLine] = []) -> Order {
         return Order(siteID: siteID,
                      orderID: orderID,
                      parentID: 0,
@@ -67,6 +70,10 @@ final class MockOrders {
 
     func sampleOrder() -> Order {
         makeOrder()
+    }
+
+    func sampleOrderWithFees() -> Order {
+        makeOrder(fees: sampleFeeLines())
     }
 
     func sampleOrderCreatedInCurrentYear() -> Order {
@@ -105,6 +112,24 @@ final class MockOrders {
         total: cost,
         totalTax: tax,
         taxes: [])]
+    }
+
+    func sampleFeeLines() -> [OrderFeeLine] {
+        return [
+            sampleFeeLine(amount: "100"),
+            sampleFeeLine(amount: "200")
+        ]
+    }
+
+    func sampleFeeLine(amount: String = "100.00") -> OrderFeeLine {
+        return OrderFeeLine(feeID: 1,
+                            name: "Fee",
+                            taxClass: "",
+                            taxStatus: .none,
+                            total: amount,
+                            totalTax: "",
+                            taxes: [],
+                            attributes: [])
     }
 
     func sampleAddress() -> Address {

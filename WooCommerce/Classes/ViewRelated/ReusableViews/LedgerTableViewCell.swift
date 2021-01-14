@@ -82,6 +82,10 @@ final class LedgerTableViewCell: UITableViewCell {
         discountValue.text = nil
         discountView.isHidden = true
 
+        feesLabel.text = nil
+        feesValue.text = nil
+        feesView.isHidden = true
+
         shippingLabel.text = nil
         shippingValue.text = nil
         shippingView.isHidden = true

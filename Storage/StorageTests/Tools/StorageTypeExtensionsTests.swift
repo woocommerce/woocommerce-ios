@@ -289,7 +289,7 @@ class StorageTypeExtensionsTests: XCTestCase {
         let storedStatuses = try XCTUnwrap(storage.loadOrderStatuses(siteID: sampleSiteID))
 
         // Then
-        XCTAssertEqual([status1, status2], storedStatuses)
+        XCTAssertEqual(Set([status1, status2]), Set(storedStatuses))
     }
 
     func test_loadOrderStatus_by_siteID_slug() throws {
@@ -318,7 +318,7 @@ class StorageTypeExtensionsTests: XCTestCase {
         let storedSiteSettings = try XCTUnwrap(storage.loadAllSiteSettings(siteID: sampleSiteID))
 
         // Then
-        XCTAssertEqual([siteSetting1, siteSetting2], storedSiteSettings)
+        XCTAssertEqual(Set([siteSetting1, siteSetting2]), Set(storedSiteSettings))
     }
 
     func test_loadAllSiteSettings_by_siteID_groupKey() throws {
@@ -336,7 +336,7 @@ class StorageTypeExtensionsTests: XCTestCase {
         let storedSiteSettings = try XCTUnwrap(storage.loadSiteSettings(siteID: sampleSiteID, settingGroupKey: groupKey))
 
         // Then
-        XCTAssertEqual([siteSetting1, siteSetting2], storedSiteSettings)
+        XCTAssertEqual(Set([siteSetting1, siteSetting2]), Set(storedSiteSettings))
     }
 
     func test_loadSiteSettings_by_siteID_settingID() throws {
@@ -412,7 +412,7 @@ class StorageTypeExtensionsTests: XCTestCase {
         let storedTrackingList = try XCTUnwrap(storage.loadShipmentTrackingList(siteID: sampleSiteID, orderID: orderID))
 
         // Then
-        XCTAssertEqual([shipmentTracking1, shipmentTracking2], storedTrackingList)
+        XCTAssertEqual(Set([shipmentTracking1, shipmentTracking2]), Set(storedTrackingList))
     }
 
     func test_loadShipmentTrackingProviderGroup_by_siteID_groupName() throws {
@@ -433,17 +433,15 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Given
         let shipmentProviderGroup1 = storage.insertNewObject(ofType: ShipmentTrackingProviderGroup.self)
         shipmentProviderGroup1.siteID = sampleSiteID
-        shipmentProviderGroup1.name = "name-1"
 
         let shipmentProviderGroup2 = storage.insertNewObject(ofType: ShipmentTrackingProviderGroup.self)
         shipmentProviderGroup2.siteID = sampleSiteID
-        shipmentProviderGroup2.name = "name-2"
 
         // When
         let storedShipmentProviderGroup = try XCTUnwrap(storage.loadShipmentTrackingProviderGroupList(siteID: sampleSiteID))
 
         // Then
-        XCTAssertEqual([shipmentProviderGroup1, shipmentProviderGroup2], storedShipmentProviderGroup)
+        XCTAssertEqual(Set([shipmentProviderGroup1, shipmentProviderGroup2]), Set(storedShipmentProviderGroup))
     }
 
     func test_loadShipmentTrackingProvider_by_siteID_name() throws {
@@ -464,34 +462,30 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Given
         let trackingProvider1 = storage.insertNewObject(ofType: ShipmentTrackingProvider.self)
         trackingProvider1.siteID = sampleSiteID
-        trackingProvider1.name = "name-1"
 
         let trackingProvider2 = storage.insertNewObject(ofType: ShipmentTrackingProvider.self)
         trackingProvider2.siteID = sampleSiteID
-        trackingProvider2.name = "name-2"
 
         // When
         let storedTrackingProvider = try XCTUnwrap(storage.loadShipmentTrackingProviderList(siteID: sampleSiteID))
 
         // Then
-        XCTAssertEqual([trackingProvider1, trackingProvider2], storedTrackingProvider)
+        XCTAssertEqual(Set([trackingProvider1, trackingProvider2]), Set(storedTrackingProvider))
     }
 
     func test_loadProducts_by_siteID() throws {
         // Given
         let product1 = storage.insertNewObject(ofType: Product.self)
         product1.siteID = sampleSiteID
-        product1.productID = 1
 
         let product2 = storage.insertNewObject(ofType: Product.self)
         product2.siteID = sampleSiteID
-        product2.productID = 2
 
         // When
         let storedProducts = try XCTUnwrap(storage.loadProducts(siteID: sampleSiteID))
 
         // Then
-        XCTAssertEqual([product2, product1], storedProducts)
+        XCTAssertEqual(Set([product2, product1]), Set(storedProducts))
     }
 
     func test_loadProducts_by_siteID_productIDs() throws {
@@ -508,7 +502,7 @@ class StorageTypeExtensionsTests: XCTestCase {
         let storedProducts = try XCTUnwrap(storage.loadProducts(siteID: sampleSiteID, productsIDs: [1, 2]))
 
         // Then
-        XCTAssertEqual([product1, product2], storedProducts)
+        XCTAssertEqual(Set([product1, product2]), Set(storedProducts))
     }
 
     func test_loadProduct_by_siteID_productID() throws {
@@ -575,7 +569,7 @@ class StorageTypeExtensionsTests: XCTestCase {
         let storedProductAttribute = try XCTUnwrap(storage.loadProductAttributes(siteID: sampleSiteID))
 
         // Then
-        XCTAssertEqual([productAttribute1, productAttribute2], storedProductAttribute)
+        XCTAssertEqual(Set([productAttribute1, productAttribute2]), Set(storedProductAttribute))
     }
 
     func test_loadProductAttributeTerm_by_siteID_termID_attributeID() throws {
@@ -652,7 +646,7 @@ class StorageTypeExtensionsTests: XCTestCase {
         let storedCategories = try XCTUnwrap(storage.loadProductCategories(siteID: sampleSiteID))
 
         // Then
-        XCTAssertEqual([category1, category2], storedCategories)
+        XCTAssertEqual(Set([category1, category2]), Set(storedCategories))
     }
 
     func test_loadProductCategory_by_siteID_categoryID() throws {

@@ -305,6 +305,53 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(status, storedStatus)
     }
+
+    func test_loadAllSiteSettings_by_siteID() throws {
+        // Given
+        let siteSetting1 = storage.insertNewObject(ofType: SiteSetting.self)
+        siteSetting1.siteID = sampleSiteID
+
+        let siteSetting2 = storage.insertNewObject(ofType: SiteSetting.self)
+        siteSetting2.siteID = sampleSiteID
+
+        // When
+        let storedSiteSettings = try XCTUnwrap(storage.loadAllSiteSettings(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual([siteSetting1, siteSetting2], storedSiteSettings)
+    }
+
+    func test_loadAllSiteSettings_by_siteID_groupKey() throws {
+        // Given
+        let groupKey = "group"
+        let siteSetting1 = storage.insertNewObject(ofType: SiteSetting.self)
+        siteSetting1.siteID = sampleSiteID
+        siteSetting1.settingGroupKey = groupKey
+
+        let siteSetting2 = storage.insertNewObject(ofType: SiteSetting.self)
+        siteSetting2.siteID = sampleSiteID
+        siteSetting2.settingGroupKey = groupKey
+
+        // When
+        let storedSiteSettings = try XCTUnwrap(storage.loadSiteSettings(siteID: sampleSiteID, settingGroupKey: groupKey))
+
+        // Then
+        XCTAssertEqual([siteSetting1, siteSetting2], storedSiteSettings)
+    }
+
+    func test_loadSiteSettings_by_siteID_settingID() throws {
+        // Given
+        let settingID = "123"
+        let siteSetting = storage.insertNewObject(ofType: SiteSetting.self)
+        siteSetting.siteID = sampleSiteID
+        siteSetting.settingID = settingID
+
+        // When
+        let storedSiteSetting = try XCTUnwrap(storage.loadSiteSetting(siteID: sampleSiteID, settingID: settingID))
+
+        // Then
+        XCTAssertEqual(siteSetting, storedSiteSetting)
+    }
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

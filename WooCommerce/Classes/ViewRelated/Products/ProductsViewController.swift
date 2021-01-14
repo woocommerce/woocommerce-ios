@@ -688,7 +688,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
 
     /// Update local Products Settings (eg. sort order or filters stored in Products settings)
     ///
-    func updateLocalProductSettings(sort: ProductsSortOrder? = nil,
+    private func updateLocalProductSettings(sort: ProductsSortOrder? = nil,
                                     stockStatusFilter: ProductStockStatus? = nil,
                                     productStatusFilter: ProductStatus? = nil,
                                     productTypeFilter: ProductType? = nil) {
@@ -703,7 +703,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
 
     /// Fetch local Products Settings (eg.  sort order or filters stored in Products settings)
     ///
-    func syncLocalProductsSettings(onCompletion: @escaping (Result<StoredProductSettings, Error>) -> Void) {
+    private func syncLocalProductsSettings(onCompletion: @escaping (Result<StoredProductSettings, Error>) -> Void) {
         let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
             switch result {
             case .success(let settings):
@@ -713,7 +713,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                 self?.filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
                                                                    productStatus: settings.productStatusFilter,
                                                                    productType: settings.productTypeFilter,
-                                                                   numberOfActiveFilters: settings.numberOfFilters())
+                                                                   numberOfActiveFilters: settings.numberOfActiveFilters()())
             case .failure:
                 break
             }

@@ -5,6 +5,7 @@
 - [*] Removed fulfillment screen and moved fulfillment to the order details screen. [https://github.com/woocommerce/woocommerce-ios/pull/3453]
 - [*] Fix: billing information action sheets now are presented correctly on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/3457]
 - [*] fix: the rows in the product search list now don't have double separators. [https://github.com/woocommerce/woocommerce-ios/pull/3456]
+- [*] Fix: in order details, the shipping and billing address are displayed in the order of the country (in some eastern Asian countries, the address starts from the largest unit to the smallest). [https://github.com/woocommerce/woocommerce-ios/pull/3469]
 
 
 5.8

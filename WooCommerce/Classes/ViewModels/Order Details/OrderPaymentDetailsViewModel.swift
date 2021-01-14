@@ -60,6 +60,25 @@ final class OrderPaymentDetailsViewModel {
         return totalValue
     }
 
+    private var feesTotal: Decimal {
+        let subtotal = order.fees.reduce(Decimal(0)) { (output, fee) in
+            let feeSubtotal = Decimal(string: fee.total) ?? Decimal(0)
+            return output + feeSubtotal
+        }
+
+        return subtotal
+    }
+
+    var feesValue: String {
+        let amount = NSDecimalNumber(decimal: feesTotal).stringValue
+
+        return currencyFormatter.formatAmount(amount, with: order.currency) ?? String()
+    }
+
+    var shouldHideFees: Bool {
+        return feesTotal == Decimal(0)
+    }
+
     /// Payment Summary
     /// - returns: A full sentence summary of how much (if any) was paid, when, and using what method.
     ///

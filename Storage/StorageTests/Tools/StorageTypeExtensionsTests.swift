@@ -924,6 +924,54 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(gateway, storedGateway)
     }
+
+    func test_loadAllShippingLabels_by_siteID_orderID() throws {
+        // Given
+        let orderID: Int64 = 123
+        let label1 = storage.insertNewObject(ofType: ShippingLabel.self)
+        label1.siteID = sampleSiteID
+        label1.orderID = orderID
+
+        let label2 = storage.insertNewObject(ofType: ShippingLabel.self)
+        label2.siteID = sampleSiteID
+        label2.orderID = orderID
+
+        // When
+        let storedLabels = try XCTUnwrap(storage.loadAllShippingLabels(siteID: sampleSiteID, orderID: orderID))
+
+        // Then
+        XCTAssertEqual(Set([label1, label2]), Set(storedLabels))
+    }
+
+    func test_loadShippingLabel_by_siteID_orderID_labelID() throws {
+        // Given
+        let orderID: Int64 = 123
+        let labelID: Int64 = 1233
+        let label = storage.insertNewObject(ofType: ShippingLabel.self)
+        label.siteID = sampleSiteID
+        label.orderID = orderID
+        label.shippingLabelID = labelID
+
+        // When
+        let storedLabel = try XCTUnwrap(storage.loadShippingLabel(siteID: sampleSiteID, orderID: orderID, shippingLabelID: labelID))
+
+        // Then
+        XCTAssertEqual(label, storedLabel)
+    }
+
+    func test_loadShippingLabelSettings_by_siteID_orderID() throws {
+        // Given
+        let orderID: Int64 = 123
+        let labelSettings = storage.insertNewObject(ofType: ShippingLabelSettings.self)
+        labelSettings.siteID = sampleSiteID
+        labelSettings.orderID = orderID
+
+        // When
+        let storedLabelSettings = try XCTUnwrap(storage.loadShippingLabelSettings(siteID: sampleSiteID, orderID: orderID))
+
+        // Then
+        XCTAssertEqual(labelSettings, storedLabelSettings)
+    }
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

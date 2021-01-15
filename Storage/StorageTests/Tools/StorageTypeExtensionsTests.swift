@@ -794,6 +794,20 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(variation, storedVariation)
     }
+
+    func test_loadTaxClass_by_slug() throws {
+        // Given
+        let slug = "slug"
+        let taxClass = storage.insertNewObject(ofType: TaxClass.self)
+        taxClass.slug = slug
+
+        // When
+        let storedTaxClass = try XCTUnwrap(storage.loadTaxClass(slug: slug))
+
+        // Then
+        XCTAssertEqual(taxClass, storedTaxClass)
+    }
+
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

@@ -99,14 +99,6 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         }
     }
 
-    /// View model to replace TopLeftImageTableViewCell
-    struct TopLeftImageViewModel {
-        let icon: UIImage
-        let iconColor: UIColor?
-        let title: String
-        let isFootnoteStyle: Bool
-    }
-
     @IBOutlet private weak var contentStackView: UIStackView!
     @IBOutlet private weak var contentImageStackView: UIStackView!
     @IBOutlet private weak var contentImageView: UIImageView!
@@ -186,24 +178,6 @@ extension ImageAndTitleAndTextTableViewCell {
         }
         accessoryView = toggleSwitch
         contentView.backgroundColor = nil
-    }
-
-    func updateUI(topLeftImageViewModel: TopLeftImageViewModel) {
-        let viewModel = ViewModel(title: topLeftImageViewModel.title,
-                                  text: nil,
-                                  image: topLeftImageViewModel.icon,
-                                  imageTintColor: topLeftImageViewModel.iconColor,
-                                  numberOfLinesForTitle: 0,
-                                  isActionable: false)
-        updateUI(viewModel: viewModel)
-
-        if topLeftImageViewModel.isFootnoteStyle {
-            titleLabel.applyFootnoteStyle()
-        } else {
-            titleLabel.applyBodyStyle()
-        }
-
-        contentImageViewWidthConstraint.isActive = true
     }
 
     /// Updates cell with the given style and data configuration.

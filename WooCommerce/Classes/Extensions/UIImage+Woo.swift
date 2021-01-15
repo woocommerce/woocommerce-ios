@@ -22,8 +22,7 @@ extension UIImage {
     /// Notice Icon
     ///
     static var noticeImage: UIImage {
-        let tintColor = UIColor.listIcon
-        return UIImage.gridicon(.notice).imageWithTintColor(tintColor)!
+        return UIImage.gridicon(.notice)
     }
 
     /// Aside Image

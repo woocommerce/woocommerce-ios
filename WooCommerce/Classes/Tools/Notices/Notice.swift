@@ -48,3 +48,13 @@ struct Notice {
         self.actionHandler = actionHandler
     }
 }
+
+extension Notice: Equatable {
+    static func == (lhs: Notice, rhs: Notice) -> Bool {
+        return lhs.title == rhs.title &&
+            lhs.message == rhs.message &&
+            lhs.feedbackType == rhs.feedbackType &&
+            lhs.notificationInfo?.identifier == rhs.notificationInfo?.identifier &&
+            lhs.actionTitle == rhs.actionTitle
+    }
+}

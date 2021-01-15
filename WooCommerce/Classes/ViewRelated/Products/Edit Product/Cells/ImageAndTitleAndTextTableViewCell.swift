@@ -15,6 +15,8 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
     enum Style {
         /// Only the image and title label are displayed with a given font style for the title.
         case imageAndTitleOnly(fontStyle: FontStyle)
+        /// The cell's title, image, and background color are set to warning style.
+        case warning
     }
 
     /// Contains configurable properties for the cell.
@@ -95,20 +97,6 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
             self.isActionable = isActionable
             self.onSwitchChange = onSwitchChange
         }
-    }
-
-    /// View model for warning UI.
-    struct WarningViewModel {
-        let icon: UIImage
-        let title: String?
-    }
-
-    /// View model to replace TopLeftImageTableViewCell
-    struct TopLeftImageViewModel {
-        let icon: UIImage
-        let iconColor: UIColor?
-        let title: String
-        let isFootnoteStyle: Bool
     }
 
     @IBOutlet private weak var contentStackView: UIStackView!
@@ -192,43 +180,13 @@ extension ImageAndTitleAndTextTableViewCell {
         contentView.backgroundColor = nil
     }
 
-    func updateUI(warningViewModel: WarningViewModel) {
-        let viewModel = ViewModel(title: warningViewModel.title,
-                                  text: nil,
-                                  textTintColor: .warning,
-                                  image: warningViewModel.icon,
-                                  imageTintColor: .warning,
-                                  isActionable: false)
-        updateUI(viewModel: viewModel)
-
-        titleLabel.textColor = .text
-        titleLabel.numberOfLines = 0
-        contentView.backgroundColor = .warningBackground
-    }
-
-    func updateUI(topLeftImageViewModel: TopLeftImageViewModel) {
-        let viewModel = ViewModel(title: topLeftImageViewModel.title,
-                                  text: nil,
-                                  image: topLeftImageViewModel.icon,
-                                  imageTintColor: topLeftImageViewModel.iconColor,
-                                  numberOfLinesForTitle: 0,
-                                  isActionable: false)
-        updateUI(viewModel: viewModel)
-
-        if topLeftImageViewModel.isFootnoteStyle {
-            titleLabel.applyFootnoteStyle()
-        } else {
-            titleLabel.applyBodyStyle()
-        }
-
-        contentImageViewWidthConstraint.isActive = true
-    }
-
     /// Updates cell with the given style and data configuration.
     func update(with style: Style, data: DataConfiguration) {
         switch style {
         case .imageAndTitleOnly(let fontStyle):
             applyImageAndTitleOnlyStyle(fontStyle: fontStyle, data: data)
+        case .warning:
+            applyWarningStyle(data: data)
         }
         applyAccessibilityChanges(contentSizeCategory: traitCollection.preferredContentSizeCategory)
         observeContentSizeCategoryChanges()
@@ -259,6 +217,14 @@ private extension ImageAndTitleAndTextTableViewCell {
         }
         applyDefaultStyle(data: data)
         contentImageViewWidthConstraint.isActive = true
+    }
+
+    func applyWarningStyle(data: DataConfiguration) {
+        applyDefaultStyle(data: data)
+
+        titleLabel.textColor = .text
+        contentImageView.tintColor = .warning
+        contentView.backgroundColor = .warningBackground
     }
 
     func applyDefaultStyle(data: DataConfiguration) {

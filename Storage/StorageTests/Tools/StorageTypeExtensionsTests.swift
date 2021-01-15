@@ -733,6 +733,35 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(productReview, storedProductReview)
     }
+
+    func test_loadProductShippingClasses_by_siteID() throws {
+        // Given
+        let shippingClass1 = storage.insertNewObject(ofType: ProductShippingClass.self)
+        shippingClass1.siteID = sampleSiteID
+
+        let shippingClass2 = storage.insertNewObject(ofType: ProductShippingClass.self)
+        shippingClass2.siteID = sampleSiteID
+
+        // When
+        let storedShippingClasses = try XCTUnwrap(storage.loadProductShippingClasses(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual(Set([shippingClass1, shippingClass2]), Set(storedShippingClasses))
+    }
+
+    func test_loadProductShippingClass_by_siteID_classID() throws {
+        // Given
+        let classID: Int64 = 123
+        let shippingClass = storage.insertNewObject(ofType: ProductShippingClass.self)
+        shippingClass.siteID = sampleSiteID
+        shippingClass.shippingClassID = classID
+
+        // When
+        let storedShippingClass = try XCTUnwrap(storage.loadProductShippingClass(siteID: sampleSiteID, remoteID: classID))
+
+        // Then
+        XCTAssertEqual(shippingClass, storedShippingClass)
+    }
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

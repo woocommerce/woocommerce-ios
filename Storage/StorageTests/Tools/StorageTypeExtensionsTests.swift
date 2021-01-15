@@ -762,6 +762,38 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(shippingClass, storedShippingClass)
     }
+
+    func test_loadProductVariations_by_siteID_productID() throws {
+        // Given
+        let productID: Int64 = 123
+        let variation1 = storage.insertNewObject(ofType: ProductVariation.self)
+        variation1.siteID = sampleSiteID
+        variation1.productID = productID
+
+        let variation2 = storage.insertNewObject(ofType: ProductVariation.self)
+        variation2.siteID = sampleSiteID
+        variation2.productID = productID
+
+        // When
+        let storedVariations = try XCTUnwrap(storage.loadProductVariations(siteID: sampleSiteID, productID: productID))
+
+        // Then
+        XCTAssertEqual(Set([variation1, variation2]), Set(storedVariations))
+    }
+
+    func test_loadProductVariation_by_siteID_variationID() throws {
+        // Given
+        let variationID: Int64 = 123
+        let variation = storage.insertNewObject(ofType: ProductVariation.self)
+        variation.siteID = sampleSiteID
+        variation.productVariationID = variationID
+
+        // When
+        let storedVariation = try XCTUnwrap(storage.loadProductVariation(siteID: sampleSiteID, productVariationID: variationID))
+
+        // Then
+        XCTAssertEqual(variation, storedVariation)
+    }
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

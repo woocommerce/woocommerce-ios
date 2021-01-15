@@ -331,9 +331,13 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         let closure: () -> Void = {
             let match = matcher.match(originalURL: wpcom.siteURL)
-            print("==== it's a match", match)
-            print("==== stop")
-            onCompletion()
+
+            if match {
+                onCompletion()
+            } else {
+                print("stopping and showing an error")
+                print("=== end . log out")
+            }
         }
 
         ServiceLocator.stores.authenticate(credentials: .init(authToken: wpcom.authToken))

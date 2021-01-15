@@ -1044,11 +1044,11 @@ extension OrderDetailsDataSource {
         static let markComplete = NSLocalizedString("Mark Order Complete", comment: "Fulfill Order Action Button")
         static let addNoteText = NSLocalizedString("Add a note",
                                                    comment: "Button text for adding a new order note")
-        static let paidByCustomer = NSLocalizedString("Paid By Customer",
+        static let paidByCustomer = NSLocalizedString("Paid",
                                                       comment: "The title for the customer payment cell")
         static let refunded = NSLocalizedString("Refunded",
                                                 comment: "The title for the refunded amount cell")
-        static let netAmount = NSLocalizedString("Net", comment: "The title for the net amount paid cell")
+        static let netAmount = NSLocalizedString("Net Payment", comment: "The title for the net amount paid cell")
         static let reprintShippingLabel = NSLocalizedString("Reprint Shipping Label", comment: "Text on the button that reprints a shipping label")
     }
 

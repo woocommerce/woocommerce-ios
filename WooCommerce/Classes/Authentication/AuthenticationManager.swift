@@ -327,15 +327,24 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         }
         appleUserID = nil
 
+        let matcher = ULAccountMatcher()
+
+        let closure: () -> Void = {
+            let match = matcher.match(originalURL: wpcom.siteURL)
+            print("==== it's a match", match)
+            print("==== stop")
+            onCompletion()
+        }
+
         ServiceLocator.stores.authenticate(credentials: .init(authToken: wpcom.authToken))
         let action = AccountAction.synchronizeAccount { (account, error) in
             if let account = account {
                 let credentials = Credentials(username: account.username, authToken: wpcom.authToken, siteAddress: wpcom.siteURL)
                 ServiceLocator.stores
                     .authenticate(credentials: credentials)
-                    .synchronizeEntities(onCompletion: onCompletion)
+                    .synchronizeEntities(onCompletion: closure)
             } else {
-                ServiceLocator.stores.synchronizeEntities(onCompletion: onCompletion)
+                ServiceLocator.stores.synchronizeEntities(onCompletion: closure)
             }
         }
         ServiceLocator.stores.dispatch(action)

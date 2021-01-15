@@ -8,6 +8,7 @@
 - [*] fix: when adding a note to an order, the text gets no more deleted if you tap on “Email note to customer”. [https://github.com/woocommerce/woocommerce-ios/pull/3473]
 - [*] fix: now we don't show any more similar alert notices if an error occurred. [https://github.com/woocommerce/woocommerce-ios/pull/3474]
 - [*] fix: in Settings > Switch Store, the spinner in the "Continue" button at the bottom is now visible in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/3468]
+- [*] fix: in order details, the shipping and billing address are displayed in the order of the country (in some eastern Asian countries, the address starts from the largest unit to the smallest). [https://github.com/woocommerce/woocommerce-ios/pull/3469]
 
 
 5.8

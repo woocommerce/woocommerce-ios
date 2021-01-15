@@ -63,6 +63,13 @@ public extension StorageType {
         return firstObject(ofType: OrderCoupon.self, matching: predicate)
     }
 
+    /// Retrieves the Stored Order Fee.
+    ///
+    func loadOrderFeeLine(siteID: Int64, feeID: Int64) -> OrderFeeLine? {
+        let predicate = NSPredicate(format: "order.siteID = %ld AND feeID = %ld", siteID, feeID)
+        return firstObject(ofType: OrderFeeLine.self, matching: predicate)
+    }
+
     /// Retrieves the Stored Order Refund Condensed.
     ///
     func loadOrderRefundCondensed(siteID: Int64, refundID: Int64) -> OrderRefundCondensed? {

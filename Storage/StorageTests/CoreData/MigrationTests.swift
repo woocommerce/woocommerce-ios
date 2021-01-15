@@ -437,6 +437,40 @@ final class MigrationTests: XCTestCase {
         // The ProductAttribute.attribute inverse relationship should be updated.
         XCTAssertEqual(term.value(forKey: "attribute") as? NSManagedObject, migratedAttribute)
     }
+
+    func test_migrating_from_41_to_42_allow_use_to_create_Order_feeLines() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 41")
+        let sourceContext = sourceContainer.viewContext
+
+        insertOrder(to: sourceContext)
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 42")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        // Confidence-check
+        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "OrderFeeLine"), 0)
+
+        // Test we can add a fee to a migrated `Order`.
+        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+        let fee = insertOrderFeeLine(to: targetContext)
+        migratedOrder.mutableSetValue(forKey: "fees").add(fee)
+
+        XCTAssertNoThrow(try targetContext.save())
+
+        // Confidence-check
+        XCTAssertEqual(try targetContext.count(entityName: "OrderFeeLine"), 1)
+
+        // The relationship between Order and OrderFeeLine should be updated.
+        XCTAssertEqual(migratedOrder.value(forKey: "fees") as? Set<NSManagedObject>, [fee])
+
+        // The OrderFeeLine.order inverse relationship should be updated.
+        XCTAssertEqual(fee.value(forKey: "order") as? NSManagedObject, migratedOrder)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -565,6 +599,15 @@ private extension MigrationTests {
             "metaID": 134,
             "name": "Woo",
             "value": "4.7"
+        ])
+    }
+
+    @discardableResult
+    func insertOrderFeeLine(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderFeeLine", properties: [
+            "feeID": 134,
+            "name": "Woo",
+            "total": "125.0"
         ])
     }
 

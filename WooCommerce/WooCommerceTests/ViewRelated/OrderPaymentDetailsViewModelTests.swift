@@ -11,9 +11,13 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     private var brokenOrder: Order!
     private var anotherBrokenOrder: Order!
     private var orderWithFees: Order!
+    private var orderWithAPIRefunds: Order!
+    private var orderWithTransientRefunds: Order!
     private var brokenOrderViewModel: OrderPaymentDetailsViewModel!
     private var anotherBrokenOrderViewModel: OrderPaymentDetailsViewModel!
     private var orderWithFeesViewModel: OrderPaymentDetailsViewModel!
+    private var orderWithAPIRefundsViewModel: OrderPaymentDetailsViewModel!
+    private var orderWithTransientRefundsViewModel: OrderPaymentDetailsViewModel!
 
     override func setUp() {
         super.setUp()
@@ -28,9 +32,19 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
 
         orderWithFees = MockOrders().orderWithFees()
         orderWithFeesViewModel = OrderPaymentDetailsViewModel(order: orderWithFees, currencySettings: CurrencySettings())
+
+        orderWithAPIRefunds = MockOrders().orderWithAPIRefunds()
+        orderWithAPIRefundsViewModel = OrderPaymentDetailsViewModel(order: orderWithAPIRefunds, refund: MockRefunds.sampleRefund())
+
+        orderWithTransientRefunds = MockOrders().orderWithTransientRefunds()
+        orderWithTransientRefundsViewModel = OrderPaymentDetailsViewModel(order: orderWithTransientRefunds, refund: MockRefunds.sampleRefund())
     }
 
     override func tearDown() {
+        orderWithAPIRefundsViewModel = nil
+        orderWithAPIRefunds = nil
+        orderWithTransientRefundsViewModel = nil
+        orderWithTransientRefunds = nil
         orderWithFeesViewModel = nil
         orderWithFees = nil
         anotherBrokenOrderViewModel = nil
@@ -150,5 +164,17 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
 
     func test_coupon_lines_matches_expectation() {
         XCTAssertEqual(viewModel.couponLines, order.coupons)
+    }
+
+    func test_order_with_API_refunds_presents_refunds_with_minus_sign() throws {
+        let refundAmount = try XCTUnwrap(orderWithAPIRefundsViewModel.refundAmount)
+
+        XCTAssertTrue(refundAmount.hasPrefix("-"))
+    }
+
+    func test_order_with_transient_refunds_presents_refunds_with_minus_sign() throws {
+        let refundAmount = try XCTUnwrap(orderWithTransientRefundsViewModel.refundAmount)
+
+        XCTAssertTrue(refundAmount.hasPrefix("-"))
     }
 }

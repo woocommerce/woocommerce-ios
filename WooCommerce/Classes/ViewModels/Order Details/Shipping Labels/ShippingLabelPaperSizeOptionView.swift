@@ -23,11 +23,18 @@ struct ShippingLabelPaperSizeOptionView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
-            Spacer().frame(height: 25)
-            Text(title)
-                .fixedSize(horizontal: false, vertical: true)
-            image
+        HStack {
+            Spacer()
+            VStack(alignment: .leading) {
+                Spacer().frame(height: 25)
+                Text(title)
+                    .fixedSize(horizontal: false, vertical: true)
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            }
+            .frame(maxWidth: 200)
+            Spacer()
         }
     }
 }

@@ -277,6 +277,21 @@ class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(statsV4, storedStatsV4)
     }
 
+    func test_loadOrderStatsV4_by_interval_orderStats() throws {
+        // Given
+        let interval = "24-31"
+        let orderStats = storage.insertNewObject(ofType: OrderStatsV4.self)
+        let statsInterval = storage.insertNewObject(ofType: OrderStatsV4Interval.self)
+        statsInterval.interval = interval
+        statsInterval.stats = orderStats
+
+        // When
+        let storedStatsInterval = try XCTUnwrap(storage.loadOrderStatsInterval(interval: interval, orderStats: orderStats))
+
+        // Then
+        XCTAssertEqual(statsInterval, storedStatsInterval)
+    }
+
     func test_loadOrderStatuses_by_siteID() throws {
         // Given
         let status1 = storage.insertNewObject(ofType: OrderStatus.self)
@@ -972,20 +987,4 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(labelSettings, storedLabelSettings)
     }
-    /*
-    func test_load<#methodName#>_by_<#params#>() throws {
-        // Given
-        let <#param#>: Int64 = <#param#>
-        let <#param#>: Int64 = <#param#>
-        let <#entity#> = storage.insertNewObject(ofType: <#type#>.self)
-        <#entity#>.<#param#> = <#param#>
-        <#entity#>.<#param#> = <#param#>
-
-        // When
-        let stored<#entity#> = try XCTUnwrap(storage.<#loadMethod#>)
-
-        // Then
-        XCTAssertEqual(<#entity#>, stored<#entity#>)
-    }
-     */
 }

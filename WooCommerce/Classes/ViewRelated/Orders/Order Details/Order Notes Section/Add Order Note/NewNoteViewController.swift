@@ -167,7 +167,6 @@ private extension NewNoteViewController {
             }
 
             self.isCustomerNote = newValue
-            self.refreshTextViewCell()
 
             cell.accessibilityLabel = String.localizedStringWithFormat(
                 NSLocalizedString("Email note to customer %@", comment: ""),

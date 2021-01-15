@@ -68,6 +68,7 @@ extension Storage.Order: ReadOnlyConvertible {
         let orderCoupons = coupons?.map { $0.toReadOnly() } ?? [Yosemite.OrderCouponLine]()
         let orderRefunds = refunds?.map { $0.toReadOnly() } ?? [Yosemite.OrderRefundCondensed]()
         let orderShippingLines = shippingLines?.map { $0.toReadOnly() } ?? [Yosemite.ShippingLine]()
+        let orderFeeLines = fees?.map { $0.toReadOnly() } ?? [Yosemite.OrderFeeLine]()
 
         return Order(siteID: siteID,
                      orderID: orderID,
@@ -94,7 +95,7 @@ extension Storage.Order: ReadOnlyConvertible {
                      shippingLines: orderShippingLines,
                      coupons: orderCoupons,
                      refunds: orderRefunds,
-                     fees: []) // Fees will be implemented properly in a subsequent PR.
+                     fees: orderFeeLines)
     }
 
 

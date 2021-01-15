@@ -57,6 +57,7 @@ class AuthenticationManager: Authentication {
                                                 primaryTitleColor: .primaryButtonTitle,
                                                 secondaryTitleColor: systemLabelLightModeColor,
                                                 disabledTitleColor: .textSubtle,
+                                                disabledButtonActivityIndicatorColor: .textSubtle,
                                                 textButtonColor: .accent,
                                                 textButtonHighlightColor: .accentDark,
                                                 instructionColor: .textSubtle,

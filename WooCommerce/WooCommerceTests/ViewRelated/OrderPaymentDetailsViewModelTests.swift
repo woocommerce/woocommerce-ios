@@ -27,7 +27,7 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
         anotherBrokenOrderViewModel = OrderPaymentDetailsViewModel(order: anotherBrokenOrder)
 
         orderWithFees = MockOrders().orderWithFees()
-        orderWithFeesViewModel = OrderPaymentDetailsViewModel(order: orderWithFees)
+        orderWithFeesViewModel = OrderPaymentDetailsViewModel(order: orderWithFees, currencySettings: CurrencySettings())
     }
 
     override func tearDown() {

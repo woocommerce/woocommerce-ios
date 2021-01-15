@@ -808,6 +808,93 @@ class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(taxClass, storedTaxClass)
     }
 
+    func test_loadRefunds_by_siteID_orderID() throws {
+        // Given
+        let orderID: Int64 = 123
+        let refund1 = storage.insertNewObject(ofType: Refund.self)
+        refund1.siteID = sampleSiteID
+        refund1.orderID = orderID
+
+        let refund2 = storage.insertNewObject(ofType: Refund.self)
+        refund2.siteID = sampleSiteID
+        refund2.orderID = orderID
+
+        // When
+        let storedRefunds = try XCTUnwrap(storage.loadRefunds(siteID: sampleSiteID, orderID: orderID))
+
+        // Then
+        XCTAssertEqual(Set([refund1, refund2]), Set(storedRefunds))
+    }
+
+    func test_loadRefund_by_siteID_orderID_refundID() throws {
+        // Given
+        let orderID: Int64 = 123
+        let refundID: Int64 = 1234
+        let refund = storage.insertNewObject(ofType: Refund.self)
+        refund.siteID = sampleSiteID
+        refund.orderID = orderID
+        refund.refundID = refundID
+
+        // When
+        let storedRefund = try XCTUnwrap(storage.loadRefund(siteID: sampleSiteID, orderID: orderID, refundID: refundID))
+
+        // Then
+        XCTAssertEqual(refund, storedRefund)
+    }
+
+    func test_loadRefundItem_by_siteID_refundID_itemID() throws {
+        // Given
+        let refundID: Int64 = 123
+        let itemID: Int64 = 1234
+        let refundItem = storage.insertNewObject(ofType: OrderItemRefund.self)
+        refundItem.itemID = itemID
+
+        let refund = storage.insertNewObject(ofType: Refund.self)
+        refund.siteID = sampleSiteID
+        refund.refundID = refundID
+        refund.addToItems(refundItem)
+
+        // When
+        let storedRefundItem = try XCTUnwrap(storage.loadRefundItem(siteID: sampleSiteID, refundID: refundID, itemID: itemID))
+
+        // Then
+        XCTAssertEqual(refundItem, storedRefundItem)
+    }
+
+    func test_loadRefundShippingLine_by_siteID_shippingID() throws {
+        // Given
+        let shippingID: Int64 = 123
+        let shippingLine = storage.insertNewObject(ofType: ShippingLine.self)
+        shippingLine.shippingID = shippingID
+
+        let refund = storage.insertNewObject(ofType: Refund.self)
+        refund.siteID = sampleSiteID
+        refund.addToShippingLines(shippingLine)
+
+        // When
+        let storedShippingLine = try XCTUnwrap(storage.loadRefundShippingLine(siteID: sampleSiteID, shippingID: shippingID))
+
+        // Then
+        XCTAssertEqual(shippingLine, storedShippingLine)
+    }
+
+    func test_loadRefundItemTax_by_itemID_taxID() throws {
+        // Given
+        let itemID: Int64 = 123
+        let taxID: Int64 = 1234
+        let itemTax = storage.insertNewObject(ofType: OrderItemTaxRefund.self)
+        itemTax.taxID = taxID
+
+        let refundItem = storage.insertNewObject(ofType: OrderItemRefund.self)
+        refundItem.itemID = itemID
+        refundItem.addToTaxes(itemTax)
+
+        // When
+        let storedItemTax = try XCTUnwrap(storage.loadRefundItemTax(itemID: itemID, taxID: taxID))
+
+        // Then
+        XCTAssertEqual(itemTax, storedItemTax)
+    }
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

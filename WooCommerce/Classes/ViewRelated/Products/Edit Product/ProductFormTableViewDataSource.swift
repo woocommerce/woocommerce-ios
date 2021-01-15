@@ -13,12 +13,6 @@ private extension ProductFormSection.SettingsRow.ViewModel {
     }
 }
 
-private extension ProductFormSection.SettingsRow.WarningViewModel {
-    func toCellViewModel() -> ImageAndTitleAndTextTableViewCell.WarningViewModel {
-        return ImageAndTitleAndTextTableViewCell.WarningViewModel(icon: icon, title: title)
-    }
-}
-
 /// Configures the sections and rows of Product form table view based on the view model.
 ///
 final class ProductFormTableViewDataSource: NSObject {
@@ -269,6 +263,10 @@ private extension ProductFormTableViewDataSource {
         guard let cell = warningCell as? ImageAndTitleAndTextTableViewCell else {
             fatalError("Unexpected cell type \(warningCell) for view model: \(viewModel)")
         }
-        cell.updateUI(warningViewModel: viewModel.toCellViewModel())
+        cell.update(with: .warning,
+                    data: .init(title: viewModel.title,
+                                image: viewModel.icon,
+                                numberOfLinesForTitle: 0,
+                                isActionable: false))
     }
 }

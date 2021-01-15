@@ -190,6 +190,8 @@ private extension LedgerTableViewCell {
         subtotalValue.applyBodyStyle()
         discountLabel.applyBodyStyle()
         discountValue.applyBodyStyle()
+        feesLabel.applyBodyStyle()
+        feesValue.applyBodyStyle()
         shippingLabel.applyBodyStyle()
         shippingValue.applyBodyStyle()
         taxesLabel.applyBodyStyle()

@@ -895,6 +895,35 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(itemTax, storedItemTax)
     }
+
+    func test_loadAllPaymentGateways_by_siteID() throws {
+        // Given
+        let gateway1 = storage.insertNewObject(ofType: PaymentGateway.self)
+        gateway1.siteID = sampleSiteID
+
+        let gateway2 = storage.insertNewObject(ofType: PaymentGateway.self)
+        gateway2.siteID = sampleSiteID
+
+        // When
+        let storedGateways = try XCTUnwrap(storage.loadAllPaymentGateways(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual(Set([gateway1, gateway2]), Set(storedGateways))
+    }
+
+    func test_loadPaymentGateway_by_siteID_gatewayID() throws {
+        // Given
+        let gatewayID = "gateway"
+        let gateway = storage.insertNewObject(ofType: PaymentGateway.self)
+        gateway.siteID = sampleSiteID
+        gateway.gatewayID = gatewayID
+
+        // When
+        let storedGateway = try XCTUnwrap(storage.loadPaymentGateway(siteID: sampleSiteID, gatewayID: gatewayID))
+
+        // Then
+        XCTAssertEqual(gateway, storedGateway)
+    }
     /*
     func test_load<#methodName#>_by_<#params#>() throws {
         // Given

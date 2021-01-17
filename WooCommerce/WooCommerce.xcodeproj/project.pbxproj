@@ -1008,6 +1008,7 @@
 		D8915DC12372C8AC00F63762 /* ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8915DC02372C8AC00F63762 /* ColorStudio.swift */; };
 		D8915DC32372C9EF00F63762 /* UIColor+ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8915DC22372C9EF00F63762 /* UIColor+ColorStudio.swift */; };
 		D89CFE9025B256E9000E4683 /* ULAccountMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89CFE8F25B256E9000E4683 /* ULAccountMatcher.swift */; };
+		D89CFF3A25B43BBB000E4683 /* WrongAccountErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89CFF3925B43BBB000E4683 /* WrongAccountErrorViewModel.swift */; };
 		D89E0C31226EFB0900DF9DE6 /* EditableOrderTrackingTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89E0C30226EFB0900DF9DE6 /* EditableOrderTrackingTableViewCellTests.swift */; };
 		D8A8C4F32268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A8C4F22268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift */; };
 		D8AB131E225DC25F002BB5D1 /* MockOrders.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB131D225DC25F002BB5D1 /* MockOrders.swift */; };
@@ -2120,6 +2121,7 @@
 		D8915DC02372C8AC00F63762 /* ColorStudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorStudio.swift; sourceTree = "<group>"; };
 		D8915DC22372C9EF00F63762 /* UIColor+ColorStudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+ColorStudio.swift"; sourceTree = "<group>"; };
 		D89CFE8F25B256E9000E4683 /* ULAccountMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ULAccountMatcher.swift; sourceTree = "<group>"; };
+		D89CFF3925B43BBB000E4683 /* WrongAccountErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrongAccountErrorViewModel.swift; sourceTree = "<group>"; };
 		D89E0C30226EFB0900DF9DE6 /* EditableOrderTrackingTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EditableOrderTrackingTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/EditableOrderTrackingTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
 		D8A8C4F22268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddManualCustomTrackingViewModelTests.swift; path = WooCommerceTests/Model/AddManualCustomTrackingViewModelTests.swift; sourceTree = SOURCE_ROOT; };
 		D8AB131D225DC25F002BB5D1 /* MockOrders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockOrders.swift; sourceTree = "<group>"; };
@@ -5048,6 +5050,7 @@
 				D8610BD1256F291000A5DF27 /* JetpackErrorViewModel.swift */,
 				D8610D752570AE1F00A5DF27 /* NotWPErrorViewModel.swift */,
 				D881FE052579DC78008DE6F2 /* NotWPAccountViewModel.swift */,
+				D89CFF3925B43BBB000E4683 /* WrongAccountErrorViewModel.swift */,
 			);
 			path = "Navigation Exceptions";
 			sourceTree = "<group>";
@@ -5826,6 +5829,7 @@
 				B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */,
 				0235595524496B6D004BE2B8 /* BottomSheetListSelectorCommand.swift in Sources */,
 				747AA0892107CEC60047A89B /* AnalyticsProvider.swift in Sources */,
+				D89CFF3A25B43BBB000E4683 /* WrongAccountErrorViewModel.swift in Sources */,
 				B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */,
 				02EA6BF82435E80600FFF90A /* ImageDownloader.swift in Sources */,
 				CECC758623D21AC200486676 /* AggregateOrderItem.swift in Sources */,

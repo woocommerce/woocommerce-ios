@@ -316,7 +316,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     /// Synchronizes the specified WordPress Account.
     ///
-    func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping (WordPressAuthenticatorResult) -> Void) {
+    func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping (WordPressAuthenticatorSyncAccountResult) -> Void) {
         guard let wpcom = credentials.wpcom else {
             fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
         }
@@ -329,18 +329,16 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         let matcher = ULAccountMatcher()
 
-        let closure: () -> Void = {
+        let syncCompletion: () -> Void = {
             let match = matcher.match(originalURL: wpcom.siteURL)
 
             if match {
                 onCompletion(.success)
             } else {
-                print("stopping and showing an error")
-                print("=== end . log out")
-                let viewModel = JetpackErrorViewModel(siteURL: wpcom.siteURL)
-                let installJetpackUI = ULErrorViewController(viewModel: viewModel)
+                let viewModel = WrongAccountErrorViewModel(siteURL: wpcom.siteURL)
+                let mismatchAccountUI = ULErrorViewController(viewModel: viewModel)
 
-                let authenticationResult: WordPressAuthenticatorResult = .injectViewController(value: installJetpackUI)
+                let authenticationResult: WordPressAuthenticatorSyncAccountResult = .injectViewController(value: mismatchAccountUI)
 
                 onCompletion(authenticationResult)
 
@@ -354,9 +352,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                 let credentials = Credentials(username: account.username, authToken: wpcom.authToken, siteAddress: wpcom.siteURL)
                 ServiceLocator.stores
                     .authenticate(credentials: credentials)
-                    .synchronizeEntities(onCompletion: closure)
+                    .synchronizeEntities(onCompletion: syncCompletion)
             } else {
-                ServiceLocator.stores.synchronizeEntities(onCompletion: closure)
+                ServiceLocator.stores.synchronizeEntities(onCompletion: syncCompletion)
             }
         }
         ServiceLocator.stores.dispatch(action)

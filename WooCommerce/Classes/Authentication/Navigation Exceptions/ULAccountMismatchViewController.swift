@@ -91,12 +91,12 @@ private extension ULAccountMismatchViewController {
     }
 
     func configureSignedInAsLabel() {
-        singedInAsLabel.applyFootnoteStyle()
+        singedInAsLabel.applySecondaryBodyStyle()
         singedInAsLabel.text = viewModel.signedInText
     }
 
     func configureWrongAccountLabel() {
-        wrongAccountLabel.applyFootnoteStyle()
+        wrongAccountLabel.applySecondaryBodyStyle()
         wrongAccountLabel.text = viewModel.logOutTitle
     }
 

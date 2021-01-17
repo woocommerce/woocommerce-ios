@@ -75,11 +75,28 @@ final class ULAccountMismatchViewController: UIViewController {
 // MARK: - View configuration
 private extension ULAccountMismatchViewController {
     func configureAccountHeader() {
-//        accountHeaderView.username = "@" + defaultAccount.username
-//        accountHeaderView.fullname = defaultAccount.displayName
+        configureGravatar()
+        configureUserNameLabel()
+        configureSignedInAsLabel()
+        configureWrongAccountLabel()
+    }
+
+    func configureGravatar() {
         gravatarImageView.downloadGravatarWithEmail(viewModel.userEmail)
+    }
+
+    func configureUserNameLabel() {
+        userNameLabel.applyBodyStyle()
         userNameLabel.text = viewModel.userName
+    }
+
+    func configureSignedInAsLabel() {
+        singedInAsLabel.applyFootnoteStyle()
         singedInAsLabel.text = viewModel.signedInText
+    }
+
+    func configureWrongAccountLabel() {
+        wrongAccountLabel.applyFootnoteStyle()
         wrongAccountLabel.text = viewModel.logOutTitle
     }
 

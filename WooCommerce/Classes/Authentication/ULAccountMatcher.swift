@@ -17,16 +17,8 @@ final class ULAccountMatcher {
         resultsController.fetchedObjects
     }
 
-    init() {
-
-    }
-
-
     func match(originalURL: String) -> Bool {
         refreshResults()
-
-        print("==== sites ", sites)
-        print("==== originalURL ", originalURL)
 
         /// When loggin in with a wp.com account, WPAuthenticator will set the
         /// account's blog URL to be `https://wordpress.com`

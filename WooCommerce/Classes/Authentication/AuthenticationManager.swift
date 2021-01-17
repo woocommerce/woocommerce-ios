@@ -273,7 +273,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         // person's name and user ID show up on the picker screen.
         //
         // This is effectively a useless screen for them other than telling them to install Jetpack.
-        sync(credentials: credentials) { [weak self] in
+        sync(credentials: credentials) { [weak self] _ in
             self?.storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
             self?.storePickerCoordinator?.start()
         }
@@ -316,7 +316,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     /// Synchronizes the specified WordPress Account.
     ///
-    func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void) {
+    func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping (WordPressAuthenticatorResult) -> Void) {
         guard let wpcom = credentials.wpcom else {
             fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
         }
@@ -333,10 +333,18 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             let match = matcher.match(originalURL: wpcom.siteURL)
 
             if match {
-                onCompletion()
+                onCompletion(.success)
             } else {
                 print("stopping and showing an error")
                 print("=== end . log out")
+                let viewModel = JetpackErrorViewModel(siteURL: wpcom.siteURL)
+                let installJetpackUI = ULErrorViewController(viewModel: viewModel)
+
+                let authenticationResult: WordPressAuthenticatorResult = .injectViewController(value: installJetpackUI)
+
+                onCompletion(authenticationResult)
+
+                ServiceLocator.stores.deauthenticate()
             }
         }
 

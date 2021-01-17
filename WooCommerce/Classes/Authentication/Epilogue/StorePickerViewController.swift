@@ -576,6 +576,10 @@ extension StorePickerViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        guard configuration != .listStores else {
+            return nil
+        }
+
         return state.headerTitle?.uppercased()
     }
 

@@ -9,7 +9,7 @@ import SafariServices
 final class ULAccountMismatchViewController: UIViewController {
     /// The view model providing configuration for this view controller
     /// and support for user actions
-    private let viewModel: ULErrorViewModel
+    private let viewModel: ULAccountMismatchViewModel
 
     /// Header View: Displays all of the Account Details
     ///
@@ -17,9 +17,8 @@ final class ULAccountMismatchViewController: UIViewController {
         return AccountHeaderView.instantiateFromNib()
     }()
 
-    @IBOutlet private weak var stackView: UIStackView!
+    @IBOutlet private weak var gravatarImageView: CircularImageView!
     @IBOutlet private weak var primaryButton: NUXButton!
-    @IBOutlet private weak var secondaryButton: NUXButton!
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var errorMessage: UILabel!
     @IBOutlet private weak var extraInfoButton: UIButton!
@@ -36,7 +35,7 @@ final class ULAccountMismatchViewController: UIViewController {
         UIDevice.isPad() ? .all : .portrait
     }
 
-    init(viewModel: ULErrorViewModel) {
+    init(viewModel: ULAccountMismatchViewModel) {
         self.viewModel = viewModel
         super.init(nibName: Self.nibName, bundle: nil)
     }
@@ -54,7 +53,6 @@ final class ULAccountMismatchViewController: UIViewController {
         configureExtraInfoButton()
 
         configurePrimaryButton()
-        configureSecondaryButton()
 
         setUnifiedMargins(forWidth: view.frame.width)
     }
@@ -74,14 +72,9 @@ final class ULAccountMismatchViewController: UIViewController {
 // MARK: - View configuration
 private extension ULAccountMismatchViewController {
     func configureAccountHeader() {
-        guard let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount else {
-            return
-        }
-
-        stackView.insertArrangedSubview(accountHeaderView, at: 0)
-        accountHeaderView.username = "@" + defaultAccount.username
-        accountHeaderView.fullname = defaultAccount.displayName
-        accountHeaderView.downloadGravatar(with: defaultAccount.email)
+//        accountHeaderView.username = "@" + defaultAccount.username
+//        accountHeaderView.fullname = defaultAccount.displayName
+        gravatarImageView.downloadGravatarWithEmail(viewModel.userEmail)
     }
 
     func configureImageView() {
@@ -94,12 +87,6 @@ private extension ULAccountMismatchViewController {
     }
 
     func configureExtraInfoButton() {
-        guard viewModel.isAuxiliaryButtonHidden == false else {
-            extraInfoButton.isHidden = true
-
-            return
-        }
-
         extraInfoButton.applyLinkButtonStyle()
         extraInfoButton.contentEdgeInsets = Constants.extraInfoCustomInsets
         extraInfoButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
@@ -113,13 +100,6 @@ private extension ULAccountMismatchViewController {
         primaryButton.setTitle(viewModel.primaryButtonTitle, for: .normal)
         primaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapPrimaryButton()
-        }
-    }
-
-    func configureSecondaryButton() {
-        secondaryButton.setTitle(viewModel.secondaryButtonTitle, for: .normal)
-        secondaryButton.on(.touchUpInside) { [weak self] _ in
-            self?.didTapSecondaryButton()
         }
     }
 
@@ -165,10 +145,6 @@ private extension ULAccountMismatchViewController {
     func didTapPrimaryButton() {
         viewModel.didTapPrimaryButton(in: self)
     }
-
-    func didTapSecondaryButton() {
-        viewModel.didTapSecondaryButton(in: self)
-    }
 }
 
 
@@ -195,9 +171,5 @@ extension ULAccountMismatchViewController {
 
     func primaryActionButton() -> UIButton {
         return primaryButton
-    }
-
-    func secondaryActionButton() -> UIButton {
-        return secondaryButton
     }
 }

@@ -1,19 +1,50 @@
 import UIKit
 import SafariServices
-import WordPressAuthenticator
 import WordPressUI
+import Yosemite
 
 
 /// Configuration and actions for an ULErrorViewController, modelling
 /// an error when Jetpack is not installed or is not connected
-struct WrongAccountErrorViewModel: ULErrorViewModel {
+struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private let siteURL: String
+    private let defaultAccount: Account?
 
-    init(siteURL: String?) {
+    init(siteURL: String?, sessionManager: SessionManagerProtocol =  ServiceLocator.stores.sessionManager) {
         self.siteURL = siteURL ?? Localization.yourSite
+        self.defaultAccount = sessionManager.defaultAccount
     }
 
     // MARK: - Data and configuration
+    var userEmail: String {
+        guard let account = defaultAccount else {
+            DDLogWarn("⚠️ Present account mismatch UI for \(siteURL) without a default account")
+
+            return ""
+        }
+        return account.email
+    }
+
+    var userName: String {
+        guard let account = defaultAccount else {
+            DDLogWarn("⚠️ Present account mismatch UI for \(siteURL) without a default account")
+
+            return ""
+        }
+
+        return account.username
+    }
+
+    var displayName: String {
+        guard let account = defaultAccount else {
+            DDLogWarn("⚠️ Present account mismatch UI for \(siteURL) without a default display account")
+
+            return ""
+        }
+
+        return account.displayName
+    }
+
     let image: UIImage = .errorImage
 
     var text: NSAttributedString {
@@ -48,16 +79,17 @@ struct WrongAccountErrorViewModel: ULErrorViewModel {
         viewController?.present(safariViewController, animated: true)
     }
 
-    func didTapSecondaryButton(in viewController: UIViewController?) {
-        let refreshCommand = NavigateToRoot()
-        refreshCommand.execute(from: viewController)
-    }
-
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
         let fancyAlert = FancyAlertViewController.makeNeedHelpFindingEmailAlertController()
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         viewController?.present(fancyAlert, animated: true)
+    }
+
+    func didTapLogOutButton(in viewController: UIViewController?) {
+        // Log out and pop
+        ServiceLocator.stores.deauthenticate()
+        viewController?.navigationController?.popToRootViewController(animated: true)
     }
 }
 

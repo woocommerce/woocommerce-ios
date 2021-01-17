@@ -1007,6 +1007,7 @@
 		D8915DBF23729CFB00F63762 /* ColorPalette.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D8915DBE23729CFB00F63762 /* ColorPalette.xcassets */; };
 		D8915DC12372C8AC00F63762 /* ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8915DC02372C8AC00F63762 /* ColorStudio.swift */; };
 		D8915DC32372C9EF00F63762 /* UIColor+ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8915DC22372C9EF00F63762 /* UIColor+ColorStudio.swift */; };
+		D89C004725B467C7000E4683 /* ULAccountMismatchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89C004625B467C7000E4683 /* ULAccountMismatchViewModel.swift */; };
 		D89CFE9025B256E9000E4683 /* ULAccountMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89CFE8F25B256E9000E4683 /* ULAccountMatcher.swift */; };
 		D89CFF3A25B43BBB000E4683 /* WrongAccountErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89CFF3925B43BBB000E4683 /* WrongAccountErrorViewModel.swift */; };
 		D89CFFDD25B44468000E4683 /* ULAccountMismatchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89CFFDB25B44468000E4683 /* ULAccountMismatchViewController.swift */; };
@@ -2122,6 +2123,7 @@
 		D8915DBE23729CFB00F63762 /* ColorPalette.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ColorPalette.xcassets; sourceTree = "<group>"; };
 		D8915DC02372C8AC00F63762 /* ColorStudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorStudio.swift; sourceTree = "<group>"; };
 		D8915DC22372C9EF00F63762 /* UIColor+ColorStudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+ColorStudio.swift"; sourceTree = "<group>"; };
+		D89C004625B467C7000E4683 /* ULAccountMismatchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ULAccountMismatchViewModel.swift; sourceTree = "<group>"; };
 		D89CFE8F25B256E9000E4683 /* ULAccountMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ULAccountMatcher.swift; sourceTree = "<group>"; };
 		D89CFF3925B43BBB000E4683 /* WrongAccountErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrongAccountErrorViewModel.swift; sourceTree = "<group>"; };
 		D89CFFDB25B44468000E4683 /* ULAccountMismatchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ULAccountMismatchViewController.swift; sourceTree = "<group>"; };
@@ -5050,6 +5052,7 @@
 			children = (
 				D89CFFDB25B44468000E4683 /* ULAccountMismatchViewController.swift */,
 				D89CFFDC25B44468000E4683 /* ULAccountMismatchViewController.xib */,
+				D89C004625B467C7000E4683 /* ULAccountMismatchViewModel.swift */,
 				D881A319256B5CC500FE5605 /* ULErrorViewController.swift */,
 				D881A31A256B5CC500FE5605 /* ULErrorViewController.xib */,
 				D8610BCB256F284700A5DF27 /* ULErrorViewModel.swift */,
@@ -6210,6 +6213,7 @@
 				CE1CCB4B20570B1F000EE3AC /* OrderTableViewCell.swift in Sources */,
 				748AD087219F481B00023535 /* UIView+Animation.swift in Sources */,
 				02564A8A246CDF6100D6DB2A /* ProductsTopBannerFactory.swift in Sources */,
+				D89C004725B467C7000E4683 /* ULAccountMismatchViewModel.swift in Sources */,
 				B509FED321C05121000076A9 /* SupportManagerAdapter.swift in Sources */,
 				B5AA7B3D20ED5D15004DA14F /* SessionManager.swift in Sources */,
 				74C6FEA521C2F1FA009286B6 /* AboutViewController.swift in Sources */,

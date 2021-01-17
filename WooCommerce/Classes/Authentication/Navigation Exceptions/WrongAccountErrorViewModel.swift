@@ -35,15 +35,18 @@ struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         return account.username
     }
 
-    var displayName: String {
+    var signedInText: String {
         guard let account = defaultAccount else {
             DDLogWarn("⚠️ Present account mismatch UI for \(siteURL) without a default display account")
 
             return ""
         }
 
-        return account.displayName
+        return String.localizedStringWithFormat(Localization.signedInMessageFormat,
+                                                account.displayName)
     }
+
+    let logOutTitle: String = "Wrong account? Log Out"
 
     let image: UIImage = .errorImage
 
@@ -65,8 +68,6 @@ struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     let auxiliaryButtonTitle = Localization.findYourConnectedEmail
 
     let primaryButtonTitle = Localization.primaryButtonTitle
-
-    let secondaryButtonTitle = Localization.secondaryButtonTitle
 
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
@@ -97,6 +98,11 @@ struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 // MARK: - Private data structures
 private extension WrongAccountErrorViewModel {
     enum Localization {
+        static let signedInMessageFormat = NSLocalizedString("Signed in as @%1$@",
+                                                             comment: "Message describing the account a user has signed in to."
+                                                                + "Reads as: Signed is as @{username}"
+                                                                + "Parameters: %1$@ - user name")
+
         static let errorMessage = NSLocalizedString("It looks like %@ is connected to a different account.",
                                                     comment: "Message explaining that the site entered and the acount logged into do not match. "
                                                         + "Reads like 'It looks like awebsite.com is connected to a different account")
@@ -108,10 +114,6 @@ private extension WrongAccountErrorViewModel {
         static let primaryButtonTitle = NSLocalizedString("See Connected Stores",
                                                           comment: "Action button linking to a list of connected stores."
                                                           + "Presented when logging in with a site address that does not have a valid Jetpack installation")
-
-        static let secondaryButtonTitle = NSLocalizedString("Log In With Another Account",
-                                                            comment: "Action button that will restart the login flow."
-                                                            + "Presented when logging in with a site address that does not have a valid Jetpack installation")
 
         static let yourSite = NSLocalizedString("your site",
                                                 comment: "Placeholder for site url, if the url is unknown."

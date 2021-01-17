@@ -9,9 +9,12 @@ protocol ULAccountMismatchViewModel {
     /// The logged in user's username
     var userName: String { get }
 
-    /// The logged in user's display name
-    var displayName: String { get }
-    
+    /// Text pointing out the logged in user's username
+    var signedInText: String { get }
+
+    /// Text offering log out
+    var logOutTitle: String { get }
+
     /// An illustration accompanying the error
     var image: UIImage { get }
 

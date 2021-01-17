@@ -71,13 +71,14 @@ struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        guard let url = URL(string: Strings.instructionsURLString) else {
+        guard let navigationController = viewController?.navigationController else {
             return
         }
 
-        let safariViewController = SFSafariViewController(url: url)
-        safariViewController.modalPresentationStyle = .pageSheet
-        viewController?.present(safariViewController, animated: true)
+        let storePicker = StorePickerViewController()
+        storePicker.configuration = .login
+        //storePickerCoordinator?.onDismiss = onDismiss
+        navigationController.pushViewController(storePicker, animated: true)
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {

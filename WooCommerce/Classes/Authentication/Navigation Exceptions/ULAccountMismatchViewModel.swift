@@ -27,6 +27,9 @@ protocol ULAccountMismatchViewModel {
     /// Provides a title for a primary action button
     var primaryButtonTitle: String { get }
 
+    /// Provides the title for the logout button
+    var logOutButtonTitle: String { get }
+
     /// Executes action associated to a tap in the view controller log out button
     /// - Parameter viewController: usually the view controller sending the tap
     func didTapLogOutButton(in viewController: UIViewController?)

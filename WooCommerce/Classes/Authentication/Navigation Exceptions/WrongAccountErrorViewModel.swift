@@ -46,7 +46,9 @@ struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
                                                 account.username)
     }
 
-    let logOutTitle: String = "Wrong account? Log Out"
+    let logOutTitle: String = "Wrong account?"
+
+    let logOutButtonTitle: String = "Log Out"
 
     let image: UIImage = .errorImage
 

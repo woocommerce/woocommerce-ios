@@ -21,6 +21,7 @@ final class ULAccountMismatchViewController: UIViewController {
     @IBOutlet private weak var userNameLabel: UILabel!
     @IBOutlet private weak var singedInAsLabel: UILabel!
     @IBOutlet private weak var wrongAccountLabel: UILabel!
+    @IBOutlet private weak var logOutButton: UIButton!
     @IBOutlet private weak var primaryButton: NUXButton!
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var errorMessage: UILabel!
@@ -79,6 +80,7 @@ private extension ULAccountMismatchViewController {
         configureUserNameLabel()
         configureSignedInAsLabel()
         configureWrongAccountLabel()
+        configureLogOutButton()
     }
 
     func configureGravatar() {
@@ -98,6 +100,14 @@ private extension ULAccountMismatchViewController {
     func configureWrongAccountLabel() {
         wrongAccountLabel.applySecondaryBodyStyle()
         wrongAccountLabel.text = viewModel.logOutTitle
+    }
+
+    func configureLogOutButton() {
+        logOutButton.applyLinkButtonStyle()
+        logOutButton.setTitle(viewModel.logOutButtonTitle, for: .normal)
+        logOutButton.on(.touchUpInside) { [weak self] _ in
+            self?.didTapLogOutButton()
+        }
     }
 
     func configureImageView() {
@@ -167,6 +177,10 @@ private extension ULAccountMismatchViewController {
 
     func didTapPrimaryButton() {
         viewModel.didTapPrimaryButton(in: self)
+    }
+
+    func didTapLogOutButton() {
+        viewModel.didTapLogOutButton(in: self)
     }
 }
 

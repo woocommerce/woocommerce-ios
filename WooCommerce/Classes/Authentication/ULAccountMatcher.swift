@@ -1,6 +1,8 @@
 import Foundation
 import Yosemite
 
+/// Used to match a store address with a wordpress.com account, as part
+/// of the Unified Login process
 final class ULAccountMatcher {
     private let wpComURL = "https://wordpress.com"
     /// ResultsController: Loads Sites from the Storage Layer.
@@ -17,6 +19,11 @@ final class ULAccountMatcher {
         resultsController.fetchedObjects
     }
 
+
+    /// Checks if the URL passed as parameter is one of the sites
+    /// saved in Storage
+    /// - Parameter originalURL: a store address
+    /// - Returns: a boolean indicating if the url passed as parameter is already saved
     func match(originalURL: String) -> Bool {
         refreshResults()
 

@@ -32,7 +32,7 @@ struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
             return ""
         }
 
-        return account.username
+        return account.displayName
     }
 
     var signedInText: String {
@@ -43,7 +43,7 @@ struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         }
 
         return String.localizedStringWithFormat(Localization.signedInMessageFormat,
-                                                account.displayName)
+                                                account.username)
     }
 
     let logOutTitle: String = "Wrong account? Log Out"

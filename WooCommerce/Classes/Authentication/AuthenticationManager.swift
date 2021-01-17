@@ -254,6 +254,18 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, onDismiss: @escaping () -> Void) {
+        let matcher = ULAccountMatcher()
+
+        guard let siteURL = credentials.wpcom?.siteURL, matcher.match(originalURL: siteURL) else {
+            //fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
+            print("presenting error")
+            let viewModel = WrongAccountErrorViewModel(siteURL: credentials.wpcom?.siteURL)
+            let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
+            navigationController.pushViewController(mismatchAccountUI, animated: true)
+
+            return
+        }
+
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
         storePickerCoordinator?.onDismiss = onDismiss
         storePickerCoordinator?.start()
@@ -273,7 +285,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         // person's name and user ID show up on the picker screen.
         //
         // This is effectively a useless screen for them other than telling them to install Jetpack.
-        sync(credentials: credentials) { [weak self] _ in
+        sync(credentials: credentials) { [weak self] in
             self?.storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
             self?.storePickerCoordinator?.start()
         }
@@ -316,7 +328,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     /// Synchronizes the specified WordPress Account.
     ///
-    func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping (WordPressAuthenticatorSyncAccountResult) -> Void) {
+    func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void) {
         guard let wpcom = credentials.wpcom else {
             fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
         }
@@ -327,34 +339,15 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         }
         appleUserID = nil
 
-        let matcher = ULAccountMatcher()
-
-        let syncCompletion: () -> Void = {
-            let match = matcher.match(originalURL: wpcom.siteURL)
-
-            if match {
-                onCompletion(.success)
-            } else {
-                let viewModel = WrongAccountErrorViewModel(siteURL: wpcom.siteURL)
-                let mismatchAccountUI = ULErrorViewController(viewModel: viewModel)
-
-                let authenticationResult: WordPressAuthenticatorSyncAccountResult = .injectViewController(value: mismatchAccountUI)
-
-                onCompletion(authenticationResult)
-
-                ServiceLocator.stores.deauthenticate()
-            }
-        }
-
         ServiceLocator.stores.authenticate(credentials: .init(authToken: wpcom.authToken))
         let action = AccountAction.synchronizeAccount { (account, error) in
             if let account = account {
                 let credentials = Credentials(username: account.username, authToken: wpcom.authToken, siteAddress: wpcom.siteURL)
                 ServiceLocator.stores
                     .authenticate(credentials: credentials)
-                    .synchronizeEntities(onCompletion: syncCompletion)
+                    .synchronizeEntities(onCompletion: onCompletion)
             } else {
-                ServiceLocator.stores.synchronizeEntities(onCompletion: syncCompletion)
+                ServiceLocator.stores.synchronizeEntities(onCompletion: onCompletion)
             }
         }
         ServiceLocator.stores.dispatch(action)

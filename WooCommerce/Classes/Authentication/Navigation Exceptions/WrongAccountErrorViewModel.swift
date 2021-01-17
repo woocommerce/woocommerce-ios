@@ -76,7 +76,7 @@ struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         }
 
         let storePicker = StorePickerViewController()
-        storePicker.configuration = .login
+        storePicker.configuration = .listStores
         //storePickerCoordinator?.onDismiss = onDismiss
         navigationController.pushViewController(storePicker, animated: true)
     }

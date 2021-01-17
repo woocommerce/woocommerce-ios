@@ -198,7 +198,7 @@ extension ULAccountMismatchViewController {
         return imageView
     }
 
-    func getLabel() -> UILabel {
+    func getMessage() -> UILabel {
         return errorMessage
     }
 
@@ -206,7 +206,23 @@ extension ULAccountMismatchViewController {
         return extraInfoButton
     }
 
-    func primaryActionButton() -> UIButton {
+    func getLogOutButton() -> UIButton {
+        return logOutButton
+    }
+
+    func getPrimaryActionButton() -> UIButton {
         return primaryButton
+    }
+
+    func getUserNameLabel() -> UILabel {
+        return userNameLabel
+    }
+
+    func getSingedInAsLabel() -> UILabel {
+        return singedInAsLabel
+    }
+
+    func getWrongAccountLabel() -> UILabel {
+        return wrongAccountLabel
     }
 }

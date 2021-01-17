@@ -1008,6 +1008,7 @@
 		D8915DC12372C8AC00F63762 /* ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8915DC02372C8AC00F63762 /* ColorStudio.swift */; };
 		D8915DC32372C9EF00F63762 /* UIColor+ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8915DC22372C9EF00F63762 /* UIColor+ColorStudio.swift */; };
 		D89C004725B467C7000E4683 /* ULAccountMismatchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89C004625B467C7000E4683 /* ULAccountMismatchViewModel.swift */; };
+		D89C009425B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89C009325B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift */; };
 		D89CFE9025B256E9000E4683 /* ULAccountMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89CFE8F25B256E9000E4683 /* ULAccountMatcher.swift */; };
 		D89CFF3A25B43BBB000E4683 /* WrongAccountErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89CFF3925B43BBB000E4683 /* WrongAccountErrorViewModel.swift */; };
 		D89CFFDD25B44468000E4683 /* ULAccountMismatchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89CFFDB25B44468000E4683 /* ULAccountMismatchViewController.swift */; };
@@ -2124,6 +2125,7 @@
 		D8915DC02372C8AC00F63762 /* ColorStudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorStudio.swift; sourceTree = "<group>"; };
 		D8915DC22372C9EF00F63762 /* UIColor+ColorStudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+ColorStudio.swift"; sourceTree = "<group>"; };
 		D89C004625B467C7000E4683 /* ULAccountMismatchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ULAccountMismatchViewModel.swift; sourceTree = "<group>"; };
+		D89C009325B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ULAccountMismatchViewControllerTests.swift; sourceTree = "<group>"; };
 		D89CFE8F25B256E9000E4683 /* ULAccountMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ULAccountMatcher.swift; sourceTree = "<group>"; };
 		D89CFF3925B43BBB000E4683 /* WrongAccountErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrongAccountErrorViewModel.swift; sourceTree = "<group>"; };
 		D89CFFDB25B44468000E4683 /* ULAccountMismatchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ULAccountMismatchViewController.swift; sourceTree = "<group>"; };
@@ -3573,6 +3575,7 @@
 				D8610BF6256F5F0900A5DF27 /* ULErrorViewControllerTests.swift */,
 				D85DD1D6257F359800861AA8 /* NotWPErrorViewModelTests.swift */,
 				D85DD1E0257F376200861AA8 /* NotWPAccountViewModelTests.swift */,
+				D89C009325B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -6315,6 +6318,7 @@
 				B57C5C9E21B80E8300FF82B2 /* SessionManager+Internal.swift in Sources */,
 				2667BFDB252E659A008099D4 /* MockOrderItem.swift in Sources */,
 				456417F6247D5643001203F6 /* UITableView+HelpersTests.swift in Sources */,
+				D89C009425B4E9E2000E4683 /* ULAccountMismatchViewControllerTests.swift in Sources */,
 				573A960324F433DD0091F3A5 /* ProductsTopBannerFactoryTests.swift in Sources */,
 				0273707E24C0047800167204 /* SequenceHelpersTests.swift in Sources */,
 				F997174723DC070D00592D8E /* XLPagerStrip+AccessibilityIdentifierTests.swift in Sources */,

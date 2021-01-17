@@ -54,7 +54,7 @@ struct WrongAccountErrorViewModel: ULErrorViewModel {
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
-        let fancyAlert = FancyAlertViewController.makeWhatIsJetpackAlertController()
+        let fancyAlert = FancyAlertViewController.makeNeedHelpFindingEmailAlertController()
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         viewController?.present(fancyAlert, animated: true)
@@ -70,8 +70,8 @@ private extension WrongAccountErrorViewModel {
                                                         + "Reads like 'It looks like awebsite.com is connected to a different account")
 
         static let findYourConnectedEmail = NSLocalizedString("Find your connected email",
-                                                     comment: "Button linking to webview that explains how to find your connected email"
-                                                        + "Presented when logging in with a store address that does not belong to the account entered by the user")
+                                                     comment: "Button linking to webview explaining how to find your connected email"
+                                                        + "Presented when logging in with a store address that does not match the account entered")
 
         static let primaryButtonTitle = NSLocalizedString("See Connected Stores",
                                                           comment: "Action button linking to a list of connected stores."

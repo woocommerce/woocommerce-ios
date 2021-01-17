@@ -18,6 +18,7 @@ final class ULAccountMismatchViewController: UIViewController {
     }()
 
     @IBOutlet private weak var gravatarImageView: CircularImageView!
+    @IBOutlet private weak var userNameLabel: UILabel!
     @IBOutlet private weak var primaryButton: NUXButton!
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var errorMessage: UILabel!
@@ -74,6 +75,7 @@ private extension ULAccountMismatchViewController {
     func configureAccountHeader() {
 //        accountHeaderView.username = "@" + defaultAccount.username
 //        accountHeaderView.fullname = defaultAccount.displayName
+        userNameLabel.text = viewModel.userName
         gravatarImageView.downloadGravatarWithEmail(viewModel.userEmail)
     }
 

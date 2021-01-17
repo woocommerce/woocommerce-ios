@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 
 final class ULAccountMatcher {
+    private let wpComURL = "https://wordpress.com"
     /// ResultsController: Loads Sites from the Storage Layer.
     ///
     private let resultsController: ResultsController<StorageSite> = {
@@ -27,8 +28,15 @@ final class ULAccountMatcher {
         print("==== sites ", sites)
         print("==== originalURL ", originalURL)
 
+        /// When loggin in with a wp.com account, WPAuthenticator will set the
+        /// account's blog URL to be `https://wordpress.com`
+        /// We want to move forward and allow the login for those.
+        guard originalURL != wpComURL else {
+            return true
+        }
+
         return sites
-            .map{ $0.url }
+            .map { $0.url }
             .contains(originalURL)
     }
 

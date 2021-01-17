@@ -46,9 +46,9 @@ struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
                                                 account.username)
     }
 
-    let logOutTitle: String = "Wrong account?"
+    let logOutTitle: String = Localization.wrongAccountMessage
 
-    let logOutButtonTitle: String = "Log Out"
+    let logOutButtonTitle: String = Localization.logOutButtonTitle
 
     let image: UIImage = .errorImage
 
@@ -114,14 +114,21 @@ private extension WrongAccountErrorViewModel {
                                                      comment: "Button linking to webview explaining how to find your connected email"
                                                         + "Presented when logging in with a store address that does not match the account entered")
 
+        static let logOutButtonTitle = NSLocalizedString("Log Out",
+                                                          comment: "Action button triggering a Log Out."
+                                                          + "Presented when logging in with a store address that does not match the account entered")
+
         static let primaryButtonTitle = NSLocalizedString("See Connected Stores",
                                                           comment: "Action button linking to a list of connected stores."
-                                                          + "Presented when logging in with a site address that does not have a valid Jetpack installation")
+                                                          + "Presented when logging in with a store address that does not match the account entered")
 
         static let yourSite = NSLocalizedString("your site",
                                                 comment: "Placeholder for site url, if the url is unknown."
-                                                    + "Presented when logging in with a site address that does not have a valid Jetpack installation."
-                                                + "The error would read: to use this app for your site you'll need...")
+                                                    + "Presented when logging in with a store address that does not match the account entered.")
+
+        static let wrongAccountMessage = NSLocalizedString("Wrong account?",
+                                                           comment: "Prompt asking users if the logged in to the wrong account."
+                                                               + "Presented when logging in with a store address that does not match the account entered.")
 
     }
 

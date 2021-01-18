@@ -124,6 +124,20 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
         assertEmpty(steps)
     }
 
+    func test_steps_returns_empty_if_the_source_is_the_current_model() throws {
+        // Given
+        let sourceModel = modelsInventory.currentModel
+        let targetModel = modelsInventory.currentModel
+
+        // When
+        let steps = try MigrationStep.steps(using: modelsInventory,
+                                            source: sourceModel,
+                                            target: targetModel)
+
+        // Then
+        assertEmpty(steps)
+    }
+
     /// If the `source` and `target` are the same models, `steps()` will return steps from **that**
     /// model version up to the latest version in the inventory.
     ///

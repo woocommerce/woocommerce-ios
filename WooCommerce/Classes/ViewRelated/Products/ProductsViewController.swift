@@ -698,7 +698,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
 
     /// Fetch local Products Settings (eg.  sort order or filters stored in Products settings)
     ///
-    private func syncLocalProductsSettings(onCompletion: @escaping (Result<StoredProductSettings, Error>) -> Void) {
+    private func syncLocalProductsSettings(onCompletion: @escaping (Result<StoredProductSettings.Setting, Error>) -> Void) {
         let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
             switch result {
             case .success(let settings):

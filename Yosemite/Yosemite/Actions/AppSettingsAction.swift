@@ -72,7 +72,7 @@ public enum AppSettingsAction: Action {
 
     /// Loads the products settings
     ///
-    case loadProductsSettings(siteID: Int64, onCompletion: (Result<StoredProductSettings, Error>) -> Void)
+    case loadProductsSettings(siteID: Int64, onCompletion: (Result<StoredProductSettings.Setting, Error>) -> Void)
 
     /// Add or Update products settings
     ///

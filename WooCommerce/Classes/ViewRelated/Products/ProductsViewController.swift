@@ -5,6 +5,7 @@ import Yosemite
 import class AutomatticTracks.CrashLogging
 
 /// Shows a list of products with pull to refresh and infinite scroll
+/// TODO: it will be good to have unit tests for this, introducing a `ViewModel`
 ///
 final class ProductsViewController: UIViewController {
 

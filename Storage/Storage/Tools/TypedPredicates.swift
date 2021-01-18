@@ -1,8 +1,16 @@
 import Foundation
 
+///
+/// The goal of these utilities is to be able to provide a type-safe API when creating `NSPredicates`.
+/// This is achieved by overloading logical operators between a `Swift.KeyPath` which is type-safe and a `Value`.
+/// `KeyPaths` and `Values` can be transformed into `NSExpression` via a native `APIs`
+/// Which then can be converted to a `NSComparisonPredicate` using the `init(leftExpression, rightExpression, operator)`method.
+///
+
+
 // MARK: - Types
 
-/// Protocol that `CompoundPredicate` and `ComparisonPredicate` to be able perform operations between them
+/// Protocol to enclose `CompoundPredicate` and `ComparisonPredicate` instances  to be able perform operations between them.
 ///
 public protocol TypedPredicate: NSPredicate {}
 
@@ -18,7 +26,7 @@ public final class ComparisonPredicate: NSComparisonPredicate, TypedPredicate {}
 // MARK: - Compound Operators Overloads
 
 /// Overloads for compound operators.
-/// Each operator takes  `TypedPredicate` instances and returns a `CompoundPredicate` that evaluate the predicates using their respective logical rule.
+/// Each operator takes `TypedPredicate` instances and returns a `CompoundPredicate` that evaluate the predicates using their respective logical rule.
 ///
 
 /// Overloads the `AND` operator between two predicates, returns a `CompoundPredicate` that evaluates the two predicates with the `&&` rule.

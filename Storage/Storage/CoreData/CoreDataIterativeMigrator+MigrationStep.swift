@@ -4,7 +4,7 @@ private typealias ModelVersion = ManagedObjectModelsInventory.ModelVersion
 
 extension CoreDataIterativeMigrator {
     /// A step in the iterative migration loop executed by `CoreDataIterativeMigrator.iterativeMigrate`.
-    struct MigrationStep {
+    struct MigrationStep: Equatable {
         let sourceVersion: ManagedObjectModelsInventory.ModelVersion
         let sourceModel: NSManagedObjectModel
 

@@ -1,4 +1,5 @@
 import XCTest
+import TestKit
 
 @testable import Storage
 
@@ -28,10 +29,11 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
         let targetModel = try XCTUnwrap(modelsInventory.model(for: modelVersion31))
 
         // When
-        let steps = try MigrationStep.steps(using: modelsInventory, source: sourceModel, target: targetModel)
+        let steps = try MigrationStep.steps(using: modelsInventory,
+                                            source: sourceModel,
+                                            target: targetModel)
 
         // Then
-
         // There should be 8 steps:
         //   - 23 to 24
         //   - 24 to 25
@@ -63,8 +65,49 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
         XCTAssertEqual(actualLastStep, expectedLastStep)
     }
 
-    func test_steps_returns_empty_if_the_source_and_target_are_the_same() {
+    func test_steps_returns_one_MigrationStep_if_the_source_and_target_are_next_to_each_other() throws {
+        // Given
+        let sourceVersion = ModelVersion(name: "Model 37")
+        let sourceModel = try XCTUnwrap(modelsInventory.model(for: sourceVersion))
 
+        let targetVersion = ModelVersion(name: "Model 38")
+        let targetModel = try XCTUnwrap(modelsInventory.model(for: targetVersion))
+
+        // When
+        let steps = try MigrationStep.steps(using: modelsInventory,
+                                            source: sourceModel,
+                                            target: targetModel)
+
+        // Then
+        XCTAssertEqual(steps.count, 1)
+
+        let expectedStep = MigrationStep(sourceVersion: sourceVersion,
+                                         sourceModel: sourceModel,
+                                         targetVersion: targetVersion,
+                                         targetModel: targetModel)
+        let actualStep = try XCTUnwrap(steps.first)
+        XCTAssertEqual(actualStep, expectedStep)
+    }
+
+    func test_steps_returns_one_MigrationStep_if_source_is_second_to_last_version() throws {
+        // Given
+        let sourceVersion = modelsInventory.versions[modelsInventory.versions.endIndex - 2]
+        let sourceModel = try XCTUnwrap(modelsInventory.model(for: sourceVersion))
+
+        // When
+        let steps = try MigrationStep.steps(using: modelsInventory,
+                                            source: sourceModel,
+                                            target: modelsInventory.currentModel)
+
+        // Then
+        XCTAssertEqual(steps.count, 1)
+
+        let expectedStep = MigrationStep(sourceVersion: sourceVersion,
+                                         sourceModel: sourceModel,
+                                         targetVersion: try XCTUnwrap(modelsInventory.versions.last),
+                                         targetModel: modelsInventory.currentModel)
+        let actualStep = try XCTUnwrap(steps.first)
+        XCTAssertEqual(actualStep, expectedStep)
     }
 
     func test_steps_returns_empty_if_the_source_is_an_unknown_model() {

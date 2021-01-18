@@ -72,22 +72,22 @@
                             </constraints>
                         </imageView>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="hKL-EJ-A3J">
-                            <rect key="frame" x="129.5" y="92" width="87.5" height="78.5"/>
+                            <rect key="frame" x="126.5" y="92" width="93.5" height="78.5"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iWC-nR-Ao9">
-                                    <rect key="frame" x="23" y="0.0" width="41.5" height="20.5"/>
+                                    <rect key="frame" x="26" y="0.0" width="41.5" height="20.5"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="emS-Tp-OXA">
-                                    <rect key="frame" x="23" y="26.5" width="41.5" height="20.5"/>
+                                    <rect key="frame" x="26" y="26.5" width="41.5" height="20.5"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" horizontalCompressionResistancePriority="250" alignment="firstBaseline" translatesAutoresizingMaskIntoConstraints="NO" id="Hqt-oI-j1i">
-                                    <rect key="frame" x="0.0" y="53" width="87.5" height="25.5"/>
+                                <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" horizontalCompressionResistancePriority="250" alignment="firstBaseline" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="Hqt-oI-j1i">
+                                    <rect key="frame" x="0.0" y="53" width="93.5" height="25.5"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gb2-Fe-8kd">
                                             <rect key="frame" x="0.0" y="0.0" width="41.5" height="20.5"/>
@@ -96,7 +96,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s2i-wr-qJf">
-                                            <rect key="frame" x="41.5" y="-4.5" width="46" height="30"/>
+                                            <rect key="frame" x="47.5" y="-4.5" width="46" height="30"/>
                                             <state key="normal" title="Button"/>
                                         </button>
                                     </subviews>

@@ -105,6 +105,7 @@ private extension ULAccountMismatchViewController {
     func configureLogOutButton() {
         logOutButton.applyLinkButtonStyle()
         logOutButton.setTitle(viewModel.logOutButtonTitle, for: .normal)
+        logOutButton.contentEdgeInsets = .zero
         logOutButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapLogOutButton()
         }

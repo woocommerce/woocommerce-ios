@@ -59,9 +59,9 @@ extension UIPasteboard {
                         return
                     }
 
-                    while authenticationCode.count < 6 {
-                        authenticationCode = "0" + authenticationCode
-                    }
+                    let missingDigits = 6 - authenticationCode.count
+                    let paddingZeros = String(repeating: "0", count: missing)
+                    let paddedAuthenticationCode = paddingZeros + authenticationCode
 
                     completion(.success(authenticationCode))
                     return

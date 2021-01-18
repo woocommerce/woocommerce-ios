@@ -3,31 +3,42 @@ import CoreData
 private typealias ModelVersion = ManagedObjectModelsInventory.ModelVersion
 
 extension CoreDataIterativeMigrator {
-    /// A step in the iterative migration loop executed by `CoreDataIterativeMigrator.iterativeMigrate`.
+    /// A single step in the iterative migration loop executed
+    /// by `CoreDataIterativeMigrator.iterativeMigrate`.
     struct MigrationStep: Equatable {
+        /// The source version. This is used for logging purposes.
         let sourceVersion: ManagedObjectModelsInventory.ModelVersion
+        /// The source model in this single step. This will be used as the `sourceModel`
+        /// when initializing `NSMigrationManager()` for migration.
         let sourceModel: NSManagedObjectModel
 
+        /// The target version. This is used for logging purposes.
         let targetVersion: ManagedObjectModelsInventory.ModelVersion
+        /// The target model in this single step. This will be used as the `destinationModel`
+        /// when initializing `NSMigrationManager()` for migration.
         let targetModel: NSManagedObjectModel
 
+        /// Returns the steps that `CoreDataIterativeMigrator` should use to migrate a store
+        /// with a `source` model version to the desired `target` model version.
+        ///
+        ///  - Returns: An array of migration steps that should be performed in sequence.
         static func steps(using inventory: ManagedObjectModelsInventory,
                           source: NSManagedObjectModel,
                           target: NSManagedObjectModel) throws -> [MigrationStep] {
 
             // Retrieve an inclusive list of models between the source and target models.
-            let versionAndModels = try modelsToMigrate(using: inventory, source: source, target: target)
+            let versionsAndModels = try versionsAndModelsToMigrate(using: inventory, source: source, target: target)
 
-            // If there are less than 2 models to migrate, then there's nothing to migrate.
-            // ¯\_(ツ)_/¯
-            guard versionAndModels.count > 1 else {
+            // If there are less than 2 models to migrate, then there's no source and target,
+            // which means there's nothing to migrate. ¯\_(ツ)_/¯
+            guard versionsAndModels.count > 1 else {
                 return []
             }
 
             // Exclude the last one using `dropLast()`. It will be the `targetVersionAndModel` in the
             // last `MigrationStep` created.
-            return versionAndModels.dropLast().enumerated().map { index, sourceVersionAndModel -> MigrationStep in
-                let targetVersionAndModel = versionAndModels[index + 1]
+            return versionsAndModels.dropLast().enumerated().map { index, sourceVersionAndModel -> MigrationStep in
+                let targetVersionAndModel = versionsAndModels[index + 1]
 
                 return MigrationStep(sourceVersion: sourceVersionAndModel.version,
                                      sourceModel: sourceVersionAndModel.model,
@@ -37,7 +48,8 @@ extension CoreDataIterativeMigrator {
 
         }
 
-        /// Returns an inclusive list of models between the source and target models.
+        /// Returns an inclusive list of models between the source and target models. The response
+        /// also includes the `ModelVersion`.
         ///
         /// For example, if `sourceModel` is `"Model 13"` and `targetModel` is `"Model 16"`, then this
         /// will return this list of `NSManagedObjectModels` in order:
@@ -60,9 +72,9 @@ extension CoreDataIterativeMigrator {
         /// as is for now so I don't accidentally introduce regressions. Someday, one brave soul
         /// will refactor this and remove the descending logic.
         ///
-        /// - Returns: The list of models to be used for migration, including the `sourceModel` and
-        ///            the `targetModel`.
-        private static func modelsToMigrate(
+        /// - Returns: The list of models and their corresponding `ModelVersion` to be used for
+        ///            migration, including the `sourceModel` and the `targetModel`.
+        private static func versionsAndModelsToMigrate(
             using inventory: ManagedObjectModelsInventory,
             source sourceModel: NSManagedObjectModel,
             target targetModel: NSManagedObjectModel
@@ -97,7 +109,7 @@ extension CoreDataIterativeMigrator {
                     // that `allModels.count` is equal to `inventory.versions.count`.
                     let version = inventory.versions[index]
 
-                    modelsToMigrate.append((version, model))
+                    modelsToMigrate.append((version: version, model: model))
                 }
 
                 if lastFound {

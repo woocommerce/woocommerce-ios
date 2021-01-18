@@ -33,12 +33,6 @@ public func || (p1: TypedPredicate, p2: TypedPredicate) -> CompoundPredicate {
     CompoundPredicate(type: .or, subpredicates: [p1, p2])
 }
 
-/// Overloads the `NOT` operator for a single predicate, returns a `CompoundPredicate` that evaluates predicates with the `!` rule.
-///
-public prefix func ! (p: TypedPredicate) -> CompoundPredicate {
-    CompoundPredicate(type: .not, subpredicates: [p])
-}
-
 // MARK: - Comparison Operators Overloads
 
 /// Overloads for comparison  operators.  Each operator takes a `KeyPath` and a `Value`

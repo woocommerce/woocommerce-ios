@@ -91,6 +91,9 @@ struct ManagedObjectModelsInventory {
         return NSManagedObjectModel(contentsOf: expectedMomURL)
     }
 
+    /// Loads the corresponding `NSManagedObjectModel` for the given `versions`.
+    ///
+    /// - Throws: If one of the `NSManagedObjectModels` is not found or cannot be loaded.
     func models(for versions: [ModelVersion]) throws -> [NSManagedObjectModel] {
         try versions.map { version in
             guard let model = self.model(for: version) else {

@@ -50,46 +50,36 @@ final class CoreDataIterativeMigrator {
         // Find the current model used by the store.
         let sourceModel = try model(for: sourceMetadata)
 
-        // Get NSManagedObjectModels for each of the model names given.
-        let allModels = try models(for: modelsInventory.versions)
-        // Retrieve an inclusive list of models between the source and target models.
-        let modelsToMigrate = try self.modelsToMigrate(using: allModels, source: sourceModel, target: targetModel)
-        guard modelsToMigrate.count > 1 else {
-            return (false, ["Skipping migration. Unexpectedly found less than 2 models to perform a migration."])
+        // Get the steps to perform the migration.
+        let steps = try MigrationStep.steps(using: modelsInventory, source: sourceModel, target: targetModel)
+        guard !steps.isEmpty else {
+            return (false, ["Skipping migration. Found no steps for migration."])
         }
 
         var debugMessages = [String]()
 
-        // Migrate between each model. Count - 2 because of zero-based index and we want
-        // to stop at the last pair (you can't migrate the last model to nothingness).
-        let upperBound = modelsToMigrate.count - 2
-        for index in 0...upperBound {
-            let modelFrom = modelsToMigrate[index]
-            let modelTo = modelsToMigrate[index + 1]
-            let mappingModel = try self.mappingModel(from: modelFrom, to: modelTo)
+        do {
+            try steps.forEach { step in
+                let mappingModel = try self.mappingModel(from: step.sourceModel, to: step.targetModel)
 
-            // Migrate the model to the next step
-            let migrationAttemptMessage = makeMigrationAttemptLogMessage(models: allModels,
-                                                                         from: modelFrom,
-                                                                         to: modelTo)
-            debugMessages.append(migrationAttemptMessage)
-            DDLogWarn(migrationAttemptMessage)
+                // Migrate the model to the next step
+                let migrationAttemptMessage = makeMigrationAttemptLogMessage(step: step)
+                debugMessages.append(migrationAttemptMessage)
+                DDLogWarn(migrationAttemptMessage)
 
-            let (success, migrateStoreError) = migrateStore(at: sourceStore,
-                                                            storeType: storeType,
-                                                            fromModel: modelFrom,
-                                                            toModel: modelTo,
-                                                            with: mappingModel)
-            guard success else {
-                if let migrateStoreError = migrateStoreError {
-                    let errorInfo = (migrateStoreError as NSError?)?.userInfo ?? [:]
-                    debugMessages.append("Migration error: \(migrateStoreError) [\(errorInfo)]")
-                }
-                return (false, debugMessages)
+                try migrateStore(at: sourceStore,
+                                 storeType: storeType,
+                                 fromModel: step.sourceModel,
+                                 toModel: step.targetModel,
+                                 with: mappingModel)
             }
-        }
 
-        return (true, debugMessages)
+            return (true, debugMessages)
+        } catch {
+            let errorInfo = (error as NSError?)?.userInfo ?? [:]
+            debugMessages.append("Migration error: \(error) [\(errorInfo)]")
+            return (false, debugMessages)
+        }
     }
 }
 

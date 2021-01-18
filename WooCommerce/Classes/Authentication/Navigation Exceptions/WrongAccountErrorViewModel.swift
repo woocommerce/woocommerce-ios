@@ -11,7 +11,9 @@ struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private let defaultAccount: Account?
     private let storesManager: StoresManager
 
-    init(siteURL: String?, sessionManager: SessionManagerProtocol =  ServiceLocator.stores.sessionManager, storesManager: StoresManager = ServiceLocator.stores) {
+    init(siteURL: String?,
+         sessionManager: SessionManagerProtocol =  ServiceLocator.stores.sessionManager,
+         storesManager: StoresManager = ServiceLocator.stores) {
         self.siteURL = siteURL ?? Localization.yourSite
         self.defaultAccount = sessionManager.defaultAccount
         self.storesManager = storesManager

@@ -196,6 +196,8 @@ private extension ProductVisibilityViewController {
     ///
    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
+        case let cell as BasicTableViewCell where row == .passwordVisibility:
+            configurePasswordVisibilityCell(cell: cell, indexPath: indexPath)
         case let cell as BasicTableViewCell:
             configureVisibilityCell(cell: cell, indexPath: indexPath)
         case let cell as TitleAndTextFieldWithImageTableViewCell:
@@ -210,6 +212,22 @@ private extension ProductVisibilityViewController {
         cell.selectionStyle = .default
         cell.textLabel?.text = row.description
         cell.accessoryType = row.visibility == visibility ? .checkmark : .none
+        cell.showSeparator()
+    }
+
+    func configurePasswordVisibilityCell(cell: BasicTableViewCell, indexPath: IndexPath) {
+        let row = sections[indexPath.section].rows[indexPath.row]
+        cell.selectionStyle = .default
+        cell.textLabel?.text = row.description
+
+        let isSelected = row.visibility == visibility
+        cell.accessoryType = isSelected ? .checkmark : .none
+
+        if isSelected {
+            cell.hideSeparator()
+        } else {
+            cell.showSeparator()
+        }
     }
 
     func configurePasswordFieldCell(cell: TitleAndTextFieldWithImageTableViewCell, indexPath: IndexPath) {

@@ -9,10 +9,12 @@ import Yosemite
 struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private let siteURL: String
     private let defaultAccount: Account?
+    private let storesManager: StoresManager
 
-    init(siteURL: String?, sessionManager: SessionManagerProtocol =  ServiceLocator.stores.sessionManager) {
+    init(siteURL: String?, sessionManager: SessionManagerProtocol =  ServiceLocator.stores.sessionManager, storesManager: StoresManager = ServiceLocator.stores) {
         self.siteURL = siteURL ?? Localization.yourSite
         self.defaultAccount = sessionManager.defaultAccount
+        self.storesManager = storesManager
     }
 
     // MARK: - Data and configuration
@@ -92,7 +94,7 @@ struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     func didTapLogOutButton(in viewController: UIViewController?) {
         // Log out and pop
-        ServiceLocator.stores.deauthenticate()
+        storesManager.deauthenticate()
         viewController?.navigationController?.popToRootViewController(animated: true)
     }
 }

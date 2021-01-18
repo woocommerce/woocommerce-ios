@@ -1,5 +1,6 @@
 import XCTest
 import TestKit
+import CoreData
 
 @testable import Storage
 
@@ -110,8 +111,17 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
         XCTAssertEqual(actualStep, expectedStep)
     }
 
-    func test_steps_returns_empty_if_the_source_is_an_unknown_model() {
+    func test_steps_returns_empty_if_the_source_is_an_unknown_model() throws {
+        // Given
+        let unknownModel = NSManagedObjectModel()
 
+        // When
+        let steps = try MigrationStep.steps(using: modelsInventory,
+                                            source: unknownModel,
+                                            target: modelsInventory.currentModel)
+
+        // Then
+        assertEmpty(steps)
     }
 
     /// If the `source` and `target` are the same models, `steps()` will return steps from **that**

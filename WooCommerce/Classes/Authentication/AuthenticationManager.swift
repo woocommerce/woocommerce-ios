@@ -259,9 +259,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: credentials.wpcom?.siteURL))")
             let viewModel = WrongAccountErrorViewModel(siteURL: credentials.wpcom?.siteURL)
             let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
-            navigationController.pushViewController(mismatchAccountUI, animated: true)
 
-            return
+            return navigationController.show(mismatchAccountUI, sender: nil)
         }
 
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)

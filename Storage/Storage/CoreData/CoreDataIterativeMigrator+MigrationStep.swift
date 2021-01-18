@@ -1,5 +1,7 @@
 import CoreData
 
+private typealias ModelVersion = ManagedObjectModelsInventory.ModelVersion
+
 extension CoreDataIterativeMigrator {
     /// A step in the iterative migration loop executed by `CoreDataIterativeMigrator.iterativeMigrate`.
     struct MigrationStep {
@@ -31,13 +33,17 @@ extension CoreDataIterativeMigrator {
         ///
         /// - Returns: The list of models to be used for migration, including the `sourceModel` and
         ///            the `targetModel`.
-        private static func modelsToMigrate(using allModels: [NSManagedObjectModel],
+        private static func modelsToMigrate(using inventory: ManagedObjectModelsInventory,
                                             source sourceModel: NSManagedObjectModel,
-                                            target targetModel: NSManagedObjectModel) throws -> [NSManagedObjectModel] {
-            var modelsToMigrate = [NSManagedObjectModel]()
+                                            target targetModel: NSManagedObjectModel) throws -> [(ModelVersion, NSManagedObjectModel)] {
+            let allModels = try inventory.models(for: inventory.versions)
+
+            assert(allModels.count == inventory.versions.count)
+
+            var modelsToMigrate = [(ModelVersion, NSManagedObjectModel)]()
             var firstFound = false, lastFound = false, reverse = false
 
-            for model in allModels {
+            for (index, model) in allModels.enumerated() {
                 if model.isEqual(sourceModel) || model.isEqual(targetModel) {
                     if firstFound {
                         lastFound = true
@@ -51,7 +57,11 @@ extension CoreDataIterativeMigrator {
                 }
 
                 if firstFound {
-                    modelsToMigrate.append(model)
+                    // We don't need to use a safe array access for `versions` here since we expect
+                    // that `allModels.count` is equal to `inventory.versions.count`.
+                    let version = inventory.versions[index]
+
+                    modelsToMigrate.append((version, model))
                 }
 
                 if lastFound {
@@ -66,5 +76,6 @@ extension CoreDataIterativeMigrator {
 
             return modelsToMigrate
         }
+
     }
 }

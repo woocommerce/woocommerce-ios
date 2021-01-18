@@ -179,34 +179,24 @@ private extension CoreDataIterativeMigrator {
                              storeType: String,
                              fromModel: NSManagedObjectModel,
                              toModel: NSManagedObjectModel,
-                             with mappingModel: NSMappingModel) -> (success: Bool, error: Error?) {
+                             with mappingModel: NSMappingModel) throws {
         let tempDestinationURL = createTemporaryFolder(at: url)
 
         // Migrate from the source model to the target model using the mapping,
         // and store the resulting data at the temporary path.
         let migrator = NSMigrationManager(sourceModel: fromModel, destinationModel: toModel)
-        do {
-            try migrator.migrateStore(from: url,
-                                      sourceType: storeType,
-                                      options: nil,
-                                      with: mappingModel,
-                                      toDestinationURL: tempDestinationURL,
-                                      destinationType: storeType,
-                                      destinationOptions: nil)
-        } catch {
-            return (false, error)
-        }
+        try migrator.migrateStore(from: url,
+                                  sourceType: storeType,
+                                  options: nil,
+                                  with: mappingModel,
+                                  toDestinationURL: tempDestinationURL,
+                                  destinationType: storeType,
+                                  destinationOptions: nil)
 
-        do {
-            // Delete the original store files.
-            try deleteStoreFiles(storeURL: url)
-            // Replace the (deleted) original store files with the migrated store files.
-            try copyMigratedOverOriginal(from: tempDestinationURL, to: url)
-        } catch {
-            return (false, error)
-        }
-
-        return (true, nil)
+        // Delete the original store files.
+        try deleteStoreFiles(storeURL: url)
+        // Replace the (deleted) original store files with the migrated store files.
+        try copyMigratedOverOriginal(from: tempDestinationURL, to: url)
     }
 
     func model(for metadata: [String: Any]) throws -> NSManagedObjectModel {

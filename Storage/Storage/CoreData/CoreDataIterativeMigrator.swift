@@ -219,17 +219,6 @@ private extension CoreDataIterativeMigrator {
         return sourceModel
     }
 
-    func models(for modelVersions: [ManagedObjectModelsInventory.ModelVersion]) throws -> [NSManagedObjectModel] {
-        try modelVersions.map { version -> NSManagedObjectModel in
-            guard let model = self.modelsInventory.model(for: version) else {
-                let description = "No model found for \(version.name)"
-                throw NSError(domain: "IterativeMigrator", code: 110, userInfo: [NSLocalizedDescriptionKey: description])
-            }
-
-            return model
-        }
-    }
-
     /// Returns an inclusive list of models between the source and target models.
     ///
     /// For example, if `sourceModel` is `"Model 13"` and `targetModel` is `"Model 16"`, then this

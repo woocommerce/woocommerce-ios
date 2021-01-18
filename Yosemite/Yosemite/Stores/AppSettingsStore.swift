@@ -77,6 +77,13 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.generalAppSettingsFileName)
     }()
 
+    /// URL to the plist file that we use to determine the settings applied in Products
+    ///
+    private lazy var productsSettingsURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.productsSettings)
+    }()
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -110,7 +117,7 @@ public class AppSettingsStore: Store {
         case .loadCustomTrackingProvider(let siteID,
                                          let onCompletion):
             loadCustomTrackingProvider(siteID: siteID,
-                                        onCompletion: onCompletion)
+                                       onCompletion: onCompletion)
         case .resetStoredProviders(let onCompletion):
             resetStoredProviders(onCompletion: onCompletion)
         case .setStatsVersionLastShown(let siteID, let statsVersion):
@@ -135,6 +142,17 @@ public class AppSettingsStore: Store {
             updateFeedbackStatus(type: type, status: status, onCompletion: onCompletion)
         case .loadFeedbackVisibility(let type, let onCompletion):
             loadFeedbackVisibility(type: type, onCompletion: onCompletion)
+        case .loadProductsSettings(let siteID, let onCompletion):
+            loadProductsSettings(siteID: siteID, onCompletion: onCompletion)
+        case .upsertProductsSettings(let siteID, let sort, let stockStatusFilter, let productStatusFilter, let productTypeFilter, let onCompletion):
+            upsertProductsSettings(siteID: siteID,
+                                   sort: sort,
+                                   stockStatusFilter: stockStatusFilter,
+                                   productStatusFilter: productStatusFilter,
+                                   productTypeFilter: productTypeFilter,
+                                   onCompletion: onCompletion)
+        case .resetProductsSettings:
+            resetProductsSettings()
         }
     }
 }
@@ -153,7 +171,7 @@ private extension AppSettingsStore {
             let settings = loadOrCreateGeneralAppSettings()
 
             if let installationDate = settings.installationDate,
-                date > installationDate {
+               date > installationDate {
                 return onCompletion(.success(false))
             }
 
@@ -219,9 +237,9 @@ private extension AppSettingsStore {
     }
 
     func addCustomTrackingProvider(siteID: Int64,
-                             providerName: String,
-                             providerURL: String?,
-                             onCompletion: (Error?) -> Void) {
+                                   providerName: String,
+                                   providerURL: String?,
+                                   onCompletion: (Error?) -> Void) {
         addProvider(siteID: siteID,
                     providerName: providerName,
                     providerURL: providerURL,
@@ -258,8 +276,8 @@ private extension AppSettingsStore {
         }
 
         let providerName = allSavedProviders.filter {
-                $0.siteID == siteID
-            }.first?.providerName
+            $0.siteID == siteID
+        }.first?.providerName
 
         guard let name = providerName else {
             let error = AppSettingsStoreErrors.readPreselectedProvider
@@ -276,7 +294,7 @@ private extension AppSettingsStore {
     }
 
     func loadCustomTrackingProvider(siteID: Int64,
-                              onCompletion: (ShipmentTrackingProvider?, Error?) -> Void) {
+                                    onCompletion: (ShipmentTrackingProvider?, Error?) -> Void) {
         guard let allSavedProviders: [PreselectedProvider] = try? fileStorage.data(for: customSelectedProvidersURL) else {
             let error = AppSettingsStoreErrors.readPreselectedProvider
             onCompletion(nil, error)
@@ -285,11 +303,11 @@ private extension AppSettingsStore {
 
         let providerName = allSavedProviders.filter {
             $0.siteID == siteID
-            }.first?.providerName
+        }.first?.providerName
 
         let providerURL = allSavedProviders.filter {
             $0.siteID == siteID
-            }.first?.providerURL
+        }.first?.providerURL
 
         guard let name = providerName else {
             let error = AppSettingsStoreErrors.readPreselectedProvider
@@ -316,7 +334,7 @@ private extension AppSettingsStore {
         var dataToSave = preselectedData
 
         if preselectedData.contains(newPreselectedProvider),
-            let index = preselectedData.firstIndex(of: newPreselectedProvider) {
+           let index = preselectedData.firstIndex(of: newPreselectedProvider) {
             dataToSave[index] = newPreselectedProvider
         } else {
             dataToSave.append(newPreselectedProvider)
@@ -373,7 +391,7 @@ private extension AppSettingsStore {
 
     func loadInitialStatsVersionToShow(siteID: Int64, onCompletion: (StatsVersion?) -> Void) {
         guard let existingData: StatsVersionBySite = try? fileStorage.data(for: statsVersionLastShownURL),
-            let statsVersion = existingData.statsVersionBySite[siteID] else {
+              let statsVersion = existingData.statsVersionBySite[siteID] else {
             onCompletion(nil)
             return
         }
@@ -403,11 +421,11 @@ private extension AppSettingsStore {
     }
 
     func loadStatsVersionBannerVisibility(banner: StatsVersionBannerVisibility.StatsVersionBanner,
-                                         onCompletion: (Bool) -> Void) {
+                                          onCompletion: (Bool) -> Void) {
         guard let existingData: StatsVersionBannerVisibility = try? fileStorage.data(for: statsVersionBannerVisibilityURL),
-            let shouldShowBanner = existingData.visibilityByBanner[banner] else {
-                onCompletion(true)
-                return
+              let shouldShowBanner = existingData.visibilityByBanner[banner] else {
+            onCompletion(true)
+            return
         }
         onCompletion(shouldShowBanner)
     }
@@ -467,6 +485,61 @@ private extension AppSettingsStore {
     }
 }
 
+// MARK: - Products Settings
+//
+private extension AppSettingsStore {
+    func loadProductsSettings(siteID: Int64, onCompletion: (Result<StoredProductSettings.Setting, Error>) -> Void) {
+        guard let allSavedSettings: StoredProductSettings = try? fileStorage.data(for: productsSettingsURL) else {
+            let error = AppSettingsStoreErrors.noProductsSettings
+            onCompletion(.failure(error))
+            return
+        }
+
+        guard let settingsUnwrapped = allSavedSettings.settings[siteID] else {
+            let error = AppSettingsStoreErrors.noProductsSettings
+            onCompletion(.failure(error))
+            return
+        }
+
+        onCompletion(.success(settingsUnwrapped))
+    }
+
+    func upsertProductsSettings(siteID: Int64,
+                                sort: String? = nil,
+                                stockStatusFilter: ProductStockStatus? = nil,
+                                productStatusFilter: ProductStatus? = nil,
+                                productTypeFilter: ProductType? = nil,
+                                onCompletion: (Error?) -> Void) {
+        var existingSettings: [Int64: StoredProductSettings.Setting] = [:]
+        if let storedSettings: StoredProductSettings = try? fileStorage.data(for: productsSettingsURL) {
+            existingSettings = storedSettings.settings
+        }
+
+        let newSetting = StoredProductSettings.Setting(siteID: siteID,
+                                                       sort: sort,
+                                                       stockStatusFilter: stockStatusFilter,
+                                                       productStatusFilter: productStatusFilter,
+                                                       productTypeFilter: productTypeFilter)
+        existingSettings[siteID] = newSetting
+
+        let newStoredProductSettings = StoredProductSettings(settings: existingSettings)
+        do {
+            try fileStorage.write(newStoredProductSettings, to: productsSettingsURL)
+            onCompletion(nil)
+        } catch {
+            onCompletion(AppSettingsStoreErrors.writeProductsSettings)
+        }
+    }
+
+    func resetProductsSettings() {
+        do {
+            try fileStorage.deleteFile(at: productsSettingsURL)
+        } catch {
+            DDLogError("⛔️ Deleting the product settings files failed. Error: \(error)")
+        }
+    }
+}
+
 
 // MARK: - Errors
 
@@ -480,6 +553,8 @@ enum AppSettingsStoreErrors: Error {
     case readPListFromFileStorage
     case writePListToFileStorage
     case deleteStatsVersionStates
+    case noProductsSettings
+    case writeProductsSettings
 }
 
 
@@ -498,4 +573,5 @@ private enum Constants {
     static let productsRelease3FeatureSwitchFileName = "products-m3-feature-switch.plist"
     static let productsRelease4FeatureSwitchFileName = "products-m4-feature-switch.plist"
     static let generalAppSettingsFileName = "general-app-settings.plist"
+    static let productsSettings = "products-settings.plist"
 }

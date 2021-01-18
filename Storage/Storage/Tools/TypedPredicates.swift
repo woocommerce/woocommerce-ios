@@ -74,6 +74,7 @@ internal extension ComparisonPredicate {
     convenience init<RootType, ResultingType>(_ keyPath: KeyPath<RootType, ResultingType>, _ operator: NSComparisonPredicate.Operator, _ value: Any?) {
         let keyPathExpression = NSExpression(forKeyPath: keyPath)
         let valueExpression = NSExpression(forConstantValue: value)
-        self.init(leftExpression: keyPathExpression, rightExpression: valueExpression, modifier: .direct, type: `operator`)
+        let options = ResultingType.self == String.self ? NSComparisonPredicate.Options.caseInsensitive : []
+        self.init(leftExpression: keyPathExpression, rightExpression: valueExpression, modifier: .direct, type: `operator`, options: options)
     }
 }

@@ -253,6 +253,16 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, onDismiss: @escaping () -> Void) {
+        let matcher = ULAccountMatcher()
+
+        guard let siteURL = credentials.wpcom?.siteURL, matcher.match(originalURL: siteURL) else {
+            DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: credentials.wpcom?.siteURL))")
+            let viewModel = WrongAccountErrorViewModel(siteURL: credentials.wpcom?.siteURL)
+            let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
+
+            return navigationController.show(mismatchAccountUI, sender: nil)
+        }
+
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
         storePickerCoordinator?.onDismiss = onDismiss
         storePickerCoordinator?.start()

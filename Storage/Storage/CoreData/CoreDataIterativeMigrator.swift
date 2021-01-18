@@ -165,30 +165,8 @@ private extension CoreDataIterativeMigrator {
         }
     }
 
-    func makeMigrationAttemptLogMessage(models: [NSManagedObjectModel],
-                                        from fromModel: NSManagedObjectModel,
-                                        to toModel: NSManagedObjectModel) -> String {
-        // This logic is a bit nasty. I'm just trying to keep the existing logic intact for now.
-
-        let versions = modelsInventory.versions
-
-        let fromName: String? = {
-            if let index = models.firstIndex(of: fromModel) {
-                return versions[safe: index]?.name
-            } else {
-                return nil
-            }
-        }()
-
-        let toName: String? = {
-            if let index = models.firstIndex(of: toModel) {
-                return versions[safe: index]?.name
-            } else {
-                return nil
-            }
-        }()
-
-        return "⚠️ Attempting migration from \(fromName ?? "unknown") to \(toName ?? "unknown")"
+    func makeMigrationAttemptLogMessage(step: MigrationStep) -> String {
+        "⚠️ Attempting migration from \(step.sourceVersion.name) to \(step.targetVersion.name)"
     }
 }
 

@@ -113,4 +113,22 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
     func test_steps_returns_empty_if_the_source_is_an_unknown_model() {
 
     }
+
+    /// If the `source` and `target` are the same models, `steps()` will return steps from **that**
+    /// model version up to the latest version in the inventory.
+    ///
+    /// This seems like a bug in the `steps()` loop that has existed for a long time. I would have
+    /// expected that 0 steps are returned. I'm just keeping it as is for now. We don't
+    /// reach this condition because of the precondition checks in `CoreDataIterativeMigrator`.
+    func test_steps_returns_source_to_latest_version_MigrationSteps_if_the_source_and_target_are_the_same() throws {
+        // Given
+        let modelVersion37 = ModelVersion(name: "Model 37")
+        let sourceModel = try XCTUnwrap(modelsInventory.model(for: modelVersion37))
+
+        // When
+        let steps = try MigrationStep.steps(using: modelsInventory, source: sourceModel, target: sourceModel)
+
+        // Then
+        XCTAssertEqual(steps.count, modelsInventory.versions.count - 37)
+    }
 }

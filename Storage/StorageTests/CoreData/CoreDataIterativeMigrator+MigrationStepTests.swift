@@ -30,9 +30,7 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
         let targetModel = try XCTUnwrap(modelsInventory.model(for: modelVersion31))
 
         // When
-        let steps = try MigrationStep.steps(using: modelsInventory,
-                                            source: sourceModel,
-                                            target: targetModel)
+        let steps = try MigrationStep.steps(using: modelsInventory, source: sourceModel, target: targetModel)
 
         // Then
         // There should be 8 steps:
@@ -75,9 +73,7 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
         let targetModel = try XCTUnwrap(modelsInventory.model(for: targetVersion))
 
         // When
-        let steps = try MigrationStep.steps(using: modelsInventory,
-                                            source: sourceModel,
-                                            target: targetModel)
+        let steps = try MigrationStep.steps(using: modelsInventory, source: sourceModel, target: targetModel)
 
         // Then
         XCTAssertEqual(steps.count, 1)
@@ -130,9 +126,7 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
         let targetModel = modelsInventory.currentModel
 
         // When
-        let steps = try MigrationStep.steps(using: modelsInventory,
-                                            source: sourceModel,
-                                            target: targetModel)
+        let steps = try MigrationStep.steps(using: modelsInventory, source: sourceModel, target: targetModel)
 
         // Then
         assertEmpty(steps)

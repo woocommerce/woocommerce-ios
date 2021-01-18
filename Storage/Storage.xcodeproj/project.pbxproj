@@ -35,6 +35,7 @@
 		02EAB6D72480A86D00FD873C /* CrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EAB6D62480A86D00FD873C /* CrashLogger.swift */; };
 		2618707325409C65006522A1 /* ShippingLineTax+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2618707125409C65006522A1 /* ShippingLineTax+CoreDataClass.swift */; };
 		2618707425409C65006522A1 /* ShippingLineTax+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2618707225409C65006522A1 /* ShippingLineTax+CoreDataProperties.swift */; };
+		2619F71925AF95030006DAFF /* StorageTypeExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2619F71825AF95020006DAFF /* StorageTypeExtensionsTests.swift */; };
 		261CF1C4255B291F0090D8D3 /* PaymentGateway+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261CF1C2255B291F0090D8D3 /* PaymentGateway+CoreDataClass.swift */; };
 		261CF1C5255B291F0090D8D3 /* PaymentGateway+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261CF1C3255B291F0090D8D3 /* PaymentGateway+CoreDataProperties.swift */; };
 		26577519243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 26577518243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel */; };
@@ -217,6 +218,7 @@
 		261870702540944C006522A1 /* Model 34.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 34.xcdatamodel"; sourceTree = "<group>"; };
 		2618707125409C65006522A1 /* ShippingLineTax+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLineTax+CoreDataClass.swift"; sourceTree = "<group>"; };
 		2618707225409C65006522A1 /* ShippingLineTax+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLineTax+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		2619F71825AF95020006DAFF /* StorageTypeExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageTypeExtensionsTests.swift; sourceTree = "<group>"; };
 		261CF1C1255AFDC40090D8D3 /* Model 36.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 36.xcdatamodel"; sourceTree = "<group>"; };
 		261CF1C2255B291F0090D8D3 /* PaymentGateway+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PaymentGateway+CoreDataClass.swift"; sourceTree = "<group>"; };
 		261CF1C3255B291F0090D8D3 /* PaymentGateway+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PaymentGateway+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -627,6 +629,7 @@
 				B59E11DF20A9F5E6004121A4 /* Constants.swift */,
 				B54CA5C620A4BFDC00F38CD1 /* DummyStack.swift */,
 				57589E8F252275CA000F22CE /* NSManagedObjectContext+TestHelpers.swift */,
+				2619F71825AF95020006DAFF /* StorageTypeExtensionsTests.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -1091,6 +1094,7 @@
 				B54CA5C220A4BF6900F38CD1 /* NSManagedObjectStorageTests.swift in Sources */,
 				572C099625475208005372E1 /* SpyFileManager.swift in Sources */,
 				5736879024AABE4D00B528FE /* ManagedObjectModelsInventoryTests.swift in Sources */,
+				2619F71925AF95030006DAFF /* StorageTypeExtensionsTests.swift in Sources */,
 				57589E90252275CA000F22CE /* NSManagedObjectContext+TestHelpers.swift in Sources */,
 				D87F61572265AD980031A13B /* FileStorageTests.swift in Sources */,
 				B59E11DE20A9F1FB004121A4 /* CoreDataManagerTests.swift in Sources */,

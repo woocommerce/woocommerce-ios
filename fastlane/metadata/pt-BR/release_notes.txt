@@ -1,2 +1,0 @@
-Agora o aplicativo é compatível com o iOS 13 e versões mais recentes, o que permite um desenvolvimento de funcionalidades mais rápido.
-Corrigimos um bug que impedia a exibição de imagens de poster para variações de produtos na tela de detalhes do pedido. Além disso, centralizamos o ícone de carregamento no rodapé vertical e horizontalmente.

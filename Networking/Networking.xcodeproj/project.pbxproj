@@ -135,6 +135,7 @@
 		456F71D424CB1E2400472EC1 /* ProductTagFromBatchCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456F71D324CB1E2400472EC1 /* ProductTagFromBatchCreation.swift */; };
 		457453E725A72C9700276508 /* CreateProductVariation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457453E625A72C9700276508 /* CreateProductVariation.swift */; };
 		457FC68C2382B2FD00B41B02 /* product-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 457FC68B2382B2FD00B41B02 /* product-update.json */; };
+		458C6DE425AC72A1009B300D /* StoredProductSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 458C6DE325AC72A1009B300D /* StoredProductSettings.swift */; };
 		4599FC5824A624BD0056157A /* ProductTagListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4599FC5724A624BD0056157A /* ProductTagListMapper.swift */; };
 		4599FC5A24A626B70056157A /* ProductTagListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4599FC5924A626B70056157A /* ProductTagListMapperTests.swift */; };
 		4599FC5C24A6276F0056157A /* product-tags-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 4599FC5B24A6276F0056157A /* product-tags-all.json */; };
@@ -551,6 +552,7 @@
 		456F71D324CB1E2400472EC1 /* ProductTagFromBatchCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagFromBatchCreation.swift; sourceTree = "<group>"; };
 		457453E625A72C9700276508 /* CreateProductVariation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateProductVariation.swift; sourceTree = "<group>"; };
 		457FC68B2382B2FD00B41B02 /* product-update.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-update.json"; sourceTree = "<group>"; };
+		458C6DE325AC72A1009B300D /* StoredProductSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredProductSettings.swift; sourceTree = "<group>"; };
 		4599FC5724A624BD0056157A /* ProductTagListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagListMapper.swift; sourceTree = "<group>"; };
 		4599FC5924A626B70056157A /* ProductTagListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagListMapperTests.swift; sourceTree = "<group>"; };
 		4599FC5B24A6276F0056157A /* product-tags-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-tags-all.json"; sourceTree = "<group>"; };
@@ -1541,6 +1543,7 @@
 				021E2A1323A9FC5900B1DE07 /* ProductBackordersSetting.swift */,
 				45D1CF4823BACA6500945A36 /* ProductTaxStatus.swift */,
 				45CDAFAA2434CA9300F83C22 /* ProductCatalogVisibility.swift */,
+				458C6DE325AC72A1009B300D /* StoredProductSettings.swift */,
 			);
 			path = Product;
 			sourceTree = "<group>";
@@ -2032,6 +2035,7 @@
 				743E84EA22171C5800FAC9D7 /* ShipmentsRemote.swift in Sources */,
 				B59325D5217E4206000B0E8E /* NoteRange.swift in Sources */,
 				26B2F74324C545D50065CCC8 /* Leaderboard.swift in Sources */,
+				458C6DE425AC72A1009B300D /* StoredProductSettings.swift in Sources */,
 				B59325C7217E22FC000B0E8E /* Note.swift in Sources */,
 				CE0A0F13223942D90075ED8D /* ProductImage.swift in Sources */,
 				D8FBFF0B22D3ADB1006E3336 /* OrderStatsRemoteV4.swift in Sources */,

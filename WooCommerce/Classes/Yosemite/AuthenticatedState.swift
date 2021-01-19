@@ -120,6 +120,7 @@ private extension AuthenticatedState {
         let resetStoredProviders = AppSettingsAction.resetStoredProviders(onCompletion: nil)
         let resetStoredStatsVersionStates = AppSettingsAction.resetStatsVersionStates
         let resetFeatureSwitchStates = AppSettingsAction.resetFeatureSwitches
-        ServiceLocator.stores.dispatch([resetStoredProviders, resetStoredStatsVersionStates, resetFeatureSwitchStates])
+        let resetProductsSettings = AppSettingsAction.resetProductsSettings
+        ServiceLocator.stores.dispatch([resetStoredProviders, resetStoredStatsVersionStates, resetFeatureSwitchStates, resetProductsSettings])
     }
 }

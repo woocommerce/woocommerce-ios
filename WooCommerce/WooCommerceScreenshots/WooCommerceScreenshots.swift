@@ -80,8 +80,12 @@ class WooCommerceScreenshots: XCTestCase {
         }
     }
 
+    /// This method handles web requests to the asset server running in the test process. It allows for retrieving assets by name, so passing in `/test-image` will cause the
+    /// server to return the bits for the item in the `ScreenshotImages.xcassets` catalogue named `test-image`. Right now only `png` images are supported, though
+    /// we could add support for additional items over time as needed.
     func handleWebRequest(env: [String: Any], startResponse: ((String, [(String, String)]) -> ()), sendBody: ((Data) -> ())) {
         /// Extract the path, so http://localhost:9285/foo-bar would be `/foo-bar` here.
+        /// See https://github.com/envoy/Embassy#whats-swsgi-swift-web-server-gateway-interface for more about PATH_INFO
         guard let path = env["PATH_INFO"] as? String else {
             startResponse("404 Not Found", [])
             sendBody(Data())

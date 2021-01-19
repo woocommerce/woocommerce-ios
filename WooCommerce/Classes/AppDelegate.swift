@@ -321,7 +321,7 @@ private extension AppDelegate {
 
     func handleLaunchArguments() {
         if BuildConfiguration.shouldLogoutAtLaunch {
-          ServiceLocator.stores.deauthenticate()
+            ServiceLocator.stores.deauthenticate()
         }
 
         if BuildConfiguration.shouldUseScreenshotsNetworkLayer {

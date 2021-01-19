@@ -4,13 +4,7 @@
 /* Language: ko_KR */
 
 /* No comment provided by engineer. */
-"#%1$@ %2$@ %3$@" = "#%1$@ %2$@ %3$@";
-
-/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "%1$@ › %2$@";
-
-/* In Order Details, the pattern to show the billed person's full name. For example, “John Doe”. The %1$@ is the first name. The %2$@ is the last name. */
-"%1$@ %2$@" = "%1$@ %2$@";
 
 /* Format for each Product attribute */
 "%1$@ (%2$ld options)" = "%1$@(옵션 %2$ld개)";
@@ -113,6 +107,9 @@
 /* Product title in Products list when there is no title */
 "(No Title)" = "(제목 없음)";
 
+/* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
+"**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details.";
+
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "제품 1개 선택됨";
 
@@ -148,6 +145,9 @@
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "확인 코드에는 숫자만 사용할 수 있습니다.";
+
+/* Header of existing attribute options section in Add Attribute Options screen */
+"ADD OPTIONS" = "ADD OPTIONS";
 
 /* About this app (information page title) */
 "About" = "정보";
@@ -216,6 +216,9 @@
 
 /* Add Product Attribute screen navigation title */
 "Add attribute" = "속성 추가";
+
+/* Footer of text field section in Add Attribute Options screen */
+"Add each option and press enter" = "Add each option and press enter";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -462,6 +465,9 @@
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "이메일을 확인하세요!";
 
+/* Navigation title on the shipping label paper size selector screen */
+"Choose Paper Size" = "Choose Paper Size";
+
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "기기에서 선택";
 
@@ -646,8 +652,8 @@
 /* The row label to tap for a detailed product list */
 "Details" = "세부사항";
 
-/* Screen title: Details Order number (number) */
-"Details Order #(viewModel.order.number)" = "주문 #(viewModel.order.number) 상세 정보";
+/* Screen title: Details Order number. Parameters: %1$@ - order number */
+"Details Order #%1$@" = "Details Order #%1$@";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "카탈로그에서 제품 위치를 결정합니다. 숫자 값이 낮을수록 아이템이 제품 목록에서 더 위에 옵니다. 음수 값도 사용할 수 있습니다";
@@ -674,7 +680,7 @@
 "Discount" = "할인";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner on the products tab */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab */
 "Dismiss" = "무시";
 
 /* Display label for the product's inventory backorders setting option */
@@ -696,8 +702,8 @@
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
 "Don’t know how to print from your phone?" = "휴대폰에서 인쇄하는 방법을 모르시나요?";
 
-/* WordPress.com (unmapped!) error */
-"Dotcom Error: [(code)] (theMessage)" = "닷컴 오류: [(code)] (theMessage)";
+/* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
+"Dotcom Error: [%1$@] %2$@" = "Dotcom Error: [%1$@] %2$@";
 
 /* WordPress.com error thrown when the the request REST API url is invalid. */
 "Dotcom Invalid REST Route" = "REST 경로의 유효하지 않은 Dotcom";
@@ -735,10 +741,10 @@
 "Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "다운로드 만료";
+"Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Download expiration";
+"Download expiration" = "다운로드 만료";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "다운로드 한도";
@@ -753,16 +759,16 @@
 "Downloadable Files" = "다운로드 가능한 파일";
 
 /* Downloadable Product label in Product Settings */
-"Downloadable Product" = "다운로드 가능한 제품";
-
-/* Downloadable Product label in Product Settings */
 "Downloadable Product" = "Downloadable Product";
 
-/* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "다운로드 가능한 파일";
+/* Downloadable Product label in Product Settings */
+"Downloadable Product" = "다운로드 가능한 제품";
 
 /* Title of the Downloadable Files row on Product main screen */
 "Downloadable files" = "Downloadable files";
+
+/* Title of the Downloadable Files row on Product main screen */
+"Downloadable files" = "다운로드 가능한 파일";
 
 /* Display label for the product's draft status */
 "Draft" = "임시글";
@@ -803,6 +809,9 @@
 
 /* The title used when asking the user for feedback for the app. */
 "Enjoying the WooCommerce app?" = "WooCommerce 앱이 마음에 드시나요?";
+
+/* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
+"Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating.";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "다른 스토어 입력";
@@ -867,6 +876,9 @@
    Title of a button. */
 "Enter your password instead." = "비밀번호를 입력하세요.";
 
+/* Alert title when there is an error requesting shipping label document for reprinting */
+"Error previewing shipping label" = "Error previewing shipping label";
+
 /* Experimental features navigation title
    Navigates to experimental features screen */
 "Experimental Features" = "실험 특성";
@@ -894,19 +906,19 @@
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "File Name";
+"File Name" = "파일 이름";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "파일 이름";
-
-/* Placeholder of the cell text field in Product Downloadable File URL
-   Title of the cell in Product Downloadable File URL > File URL */
-"File URL" = "File URL";
+"File Name" = "File Name";
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
 "File URL" = "파일 URL";
+
+/* Placeholder of the cell text field in Product Downloadable File URL
+   Title of the cell in Product Downloadable File URL > File URL */
+"File URL" = "File URL";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "비밀번호 관리자로 채우기";
@@ -945,8 +957,8 @@
 /* Title of the downloadable file bottom sheet action for adding file from device. */
 "From device" = "기기에서";
 
-/* Order Fulfillment Title */
-"Fulfill Order #(order.number)" = "주문 #(order.number) 처리";
+/* Order Fulfillment Title. Parameters: %1$@ - order number */
+"Fulfill Order #%1$@" = "Fulfill Order #%1$@";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "스토어의 상품 실적에 대한 인사이트 확인";
@@ -964,7 +976,7 @@
 "Getting account information" = "계정 정보 받기";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
-   Title on the navigation bar for the products feedback survey */
+   The title of the button to give feedback about shipping labels features on the banner in order details - Title on the navigation bar for the products feedback survey */
 "Give feedback" = "피드백 보내기";
 
 /* Option to select the Gmail app when logging in with magic links */
@@ -986,7 +998,7 @@
 "Grouped products" = "그룹화된 제품";
 
 /* In Order Details, the name of the billed person when there are no name and last name.
-   In Order List, the name of the billed person when there are no name and last name. */
+   In Order List, the name of the billed person when there are no first and last name. */
 "Guest" = "비회원";
 
 /* My Store > Settings > Help & Support section title */
@@ -1072,6 +1084,12 @@
 
 /* Info text when reprinting a shipping label */
 "If you already used the label in a package, printing and using it again is a violation of our terms of service" = "패키지에 이미 레이블을 사용한 경우 해당 레이블을 다시 인쇄하여 사용하면 서비스 약관을 위반하는 것입니다.";
+
+/* Step 4 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
+"If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device.";
+
+/* Legal disclaimer for signing up. The underscores _..._ denote underline. */
+"If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "워드프레스닷컴 계정이 없는 경우 Apple 또는 Google을 계속 사용하면 계정이 만들어지고 _서비스 약관_에 동의하는 것으로 간주합니다.";
@@ -1167,6 +1185,9 @@
 
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "레이블(4 x 6in)";
+
+/* Navigation bar title of shipping label paper size options screen */
+"Label Format Options" = "Label Format Options";
 
 /* Last 24 hours section header */
 "Last 24 hours" = "최근 24시간";
@@ -1293,10 +1314,10 @@
 "Manual Offsets" = "수동 오프셋";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "%1$@을(를) 통한 수동 환불";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "%1$@을(를) 통한 수동 환불";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
 
 /* No comment provided by engineer. */
 "Manual Refund via Stripe" = "Stripe를 통한 수동 환불";
@@ -1389,8 +1410,8 @@
 /* The title for the net amount paid cell */
 "Net" = "최종 금액";
 
-/* Next nav bar button title in Add Product Attribute screen
-   Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
+/* Next nav bar button title in Add Product Attribute Options screen
+   Next nav bar button title in Add Product Attribute screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "다음";
 
 /* Empty Product Reviews List Message */
@@ -1410,16 +1431,16 @@
 "No data available" = "사용 가능한 데이터 없음";
 
 /* Placeholder of the cell text field in Download expiration */
-"No expiration" = "만료 없음";
-
-/* Placeholder of the cell text field in Download expiration */
 "No expiration" = "No expiration";
 
-/* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "아직 파일 없음";
+/* Placeholder of the cell text field in Download expiration */
+"No expiration" = "만료 없음";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "No files yet";
+
+/* Placeholder for empty Downloadable Files row on Product main screen */
+"No files yet" = "아직 파일 없음";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "아직 이미지 없음";
@@ -1443,8 +1464,8 @@
 /* Placeholder for empty product ratings */
 "No ratings" = "평가 없음";
 
-/* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
-"No results found for (term)\nAdd a custom carrier" = "(용어) 검색 결과가 없습니다.\n사용자 정의 배송업체 추가";
+/* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier'. Parameters: %1$@ - carrier name */
+"No results found for %1$@\nAdd a custom carrier" = "No results found for %1$@\nAdd a custom carrier";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "이 기간에 해당하는 수익이 없습니다.";
@@ -1474,8 +1495,11 @@
 "Note to customer" = "고객에게 남길 메모";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for reprinting - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "확인";
+
+/* Header of selected attribute options section in Add Attribute Options screen */
+"OPTIONS OFFERED" = "OPTIONS OFFERED";
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "끔";
@@ -1520,6 +1544,9 @@
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "사용 가능한 상태 목록을 엽니다.";
 
+/* Placeholder of cell presenting the title of the new attribute option. */
+"Option name" = "Option name";
+
 /* Add Product Category. Placeholder of cell presenting the parent category.
    Placeholder of the cell text field in Product Inventory Settings > SKU */
 "Optional" = "선택 사항";
@@ -1536,12 +1563,9 @@
 /* Header of attributes section in Add Attribute screen */
 "Or tap to select existing attribute" = "또는 기존 속성을 눌러서 선택";
 
-/* Add a note screen - title. Example: Order #15
-   Order number title */
-"Order #(viewModel.order.number)" = "주문 #(viewModel.order.number)";
-
-/* Displayed whenever an Order gets deleted. It reads: Order {order number} has been deleted from your store. */
-"Order %@ has been deleted from your store" = "스토어에서 %@ 주문이 삭제되었습니다.";
+/* Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number
+   Order number title. Parameters: %1$@ - order number */
+"Order #%1$@" = "Order #%1$@";
 
 /* Order notes section title */
 "Order Notes" = "주문 메모";
@@ -1679,7 +1703,8 @@
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "다시 시도하세요.";
 
-/* Text on the loading view of the survey screen indicating the user to wait */
+/* Message of in-progress modal when requesting shipping label document for reprinting
+   Text on the loading view of the survey screen indicating the user to wait */
 "Please wait" = "기다려 주세요.";
 
 /* Message of the in-progress UI while updating the Product remotely */
@@ -1701,10 +1726,10 @@
 "Powered by Automattic" = "Automattic 제공";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Previously Refunded";
+"Previously Refunded" = "이전에 환불됨";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "이전에 환불됨";
+"Previously Refunded" = "Previously Refunded";
 
 /* Product Price Settings navigation title
    Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
@@ -1712,6 +1737,15 @@
 
 /* Button title to generate a shipping label document for printing */
 "Print Shipping Label" = "배송 레이블 인쇄";
+
+/* Navigation bar title of shipping label printing instructions screen */
+"Print from your Phone" = "Print from your Phone";
+
+/* The title of the shipping labels top banner in order details */
+"Print shipping labels from your device!" = "Print shipping labels from your device!";
+
+/* Title of in-progress modal when requesting shipping label document for reprinting */
+"Printing Label" = "Printing Label";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "캘리포니아 사용자를 위한 개인정보 공지";
@@ -1824,10 +1858,10 @@
 "Quantity" = "수량";
 
 /* Navigation title on the quantity item selector screen */
-"Quantity to refund" = "Quantity to refund";
+"Quantity to refund" = "환불 수량";
 
 /* Navigation title on the quantity item selector screen */
-"Quantity to refund" = "환불 수량";
+"Quantity to refund" = "Quantity to refund";
 
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %ld" = "수량: %ld";
@@ -1848,16 +1882,16 @@
 "Reason for Refund (Optional)" = "Reason for Refund (Optional)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for refunding order" = "주문 환불 사유";
-
-/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Reason for refunding order";
 
-/* The title of the button to confirm the refund. */
-"Refund" = "환불";
+/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
+"Reason for refunding order" = "주문 환불 사유";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "Refund";
+
+/* The title of the button to confirm the refund. */
+"Refund" = "환불";
 
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "#%@ 환불";
@@ -1879,10 +1913,10 @@
 "Refund Shipping" = "Refund Shipping";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Refund Via";
+"Refund Via" = "통해 환불";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "통해 환불";
+"Refund Via" = "Refund Via";
 
 /* The title for the refunded amount cell */
 "Refunded" = "환불됨";
@@ -2051,10 +2085,10 @@
 "See layout and paper sizes options" = "레이아웃 및 용지 크기 옵션 참조";
 
 /* Select all button title in the issue refund screen */
-"Select All" = "Select All";
+"Select All" = "모두 선택";
 
 /* Select all button title in the issue refund screen */
-"Select All" = "모두 선택";
+"Select All" = "Select All";
 
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "상위 카테고리 선택";
@@ -2342,8 +2376,8 @@
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "스토어 전환";
 
-/* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. */
-"Switched to (newStoreName). You will only receive notifications from this store." = "(newStoreName)(으)로 전환했습니다. 이 스토어에서만 알림을 받습니다.";
+/* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. Parameters: %1$@ - store name */
+"Switched to %1$@. You will only receive notifications from this store." = "Switched to %1$@. You will only receive notifications from this store.";
 
 /* Accessibility Identifier for the H1 Aztec Style */
 "Switches to the Heading 1 font size" = "제목 1 글꼴 크기로 전환";
@@ -2709,23 +2743,20 @@
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "연결할 수 없음";
 
-/* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
-"Unable to add note to order #(viewModel.order.orderID)" = "주문 번호(viewModel.order.orderID)에 메모를 추가할 수 없음";
+/* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
+"Unable to add note to order #%1$d" = "Unable to add note to order #%1$d";
 
-/* Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number} */
-"Unable to add tracking to order #(orderID)" = "주문 번호(orderID)에 대한 추적을 추가할 수 없음";
+/* Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number}. Parameters: %1$d - order number */
+"Unable to add tracking to order #%1$d" = "Unable to add tracking to order #%1$d";
 
-/* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number} */
-"Unable to change status of order #(orderID)" = "주문 번호(orderID)의 상태를 변경할 수 없음";
+/* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}. Parameters: %1$d - order number */
+"Unable to change status of order #%1$d" = "Unable to change status of order #%1$d";
 
-/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
-"Unable to delete tracking for order #(order.orderID)" = "주문 번호(order.orderID)의 추적을 삭제할 수 없음";
+/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
+"Unable to delete tracking for order #%1$d" = "Unable to delete tracking for order #%1$d";
 
-/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
-"Unable to delete tracking for order #(orderID)" = "주문 번호(orderID)에 대한 추적을 삭제할 수 없음";
-
-/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
-"Unable to fulfill order #(orderID)" = "주문 번호(orderID)를 처리할 수 없음";
+/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
+"Unable to fulfill order #%1$d" = "Unable to fulfill order #%1$d";
 
 /* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
 "Unable to load Shipment Carriers" = "운송업체를 로드할 수 없음";
@@ -2811,10 +2842,10 @@
 "Update product inventory and SKU" = "제품 인벤토리 및 SKU 업데이트";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "제품의 다운로드 가능한 파일 정보를 원격으로 업데이트";
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "제품의 다운로드 가능한 파일 정보를 원격으로 업데이트";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "이 앱을 계속 사용하려면 WooCommerce 3.5로 업데이트하세요.";
@@ -2876,6 +2907,9 @@
 
 /* two factor code placeholder */
 "Verification code" = "확인 코드";
+
+/* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
+"Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network.";
 
 /* Displays the version of the App */
 "Version %@" = "버전 %@";
@@ -2942,6 +2976,9 @@
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Watch your audience grow with in-depth analytics." = "심층 분석으로 방문자 수가 늘어나는 것을 지켜보세요.";
+
+/* The info of the shipping labels top banner in order details */
+"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here.";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "스토어 분석을 표시할 수 없습니다.";
@@ -3066,7 +3103,7 @@
 "Your notifications travel with you — see comments and likes as they happen." = "회원님이 어떤 기기를 사용하든 알림을 받을 수 있습니다. 댓글 및 좋아요가 표시되면 즉시 확인하세요.";
 
 /* Body text of alert helping users understand their site address */
-"Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "Safari에서 사이트를 방문하면 화면 위쪽의 표시줄에 사이트 주소가 표시됩니다.";
+"Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Your site address appears in the bar at the top of the screen when you visit your site in Safari.";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[댓글]";

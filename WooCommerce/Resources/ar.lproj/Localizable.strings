@@ -4,13 +4,7 @@
 /* Language: ar */
 
 /* No comment provided by engineer. */
-"#%1$@ %2$@ %3$@" = "‎#%1$@ %2$@ %3$@";
-
-/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
-
-/* In Order Details, the pattern to show the billed person's full name. For example, “John Doe”. The %1$@ is the first name. The %2$@ is the last name. */
-"%1$@ %2$@" = "%1$@ %2$@";
 
 /* Format for each Product attribute */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld من الخيارات)";
@@ -113,6 +107,9 @@
 /* Product title in Products list when there is no title */
 "(No Title)" = "(بدون عنوان)";
 
+/* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
+"**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details.";
+
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "تم تحديد منتج واحد";
 
@@ -148,6 +145,9 @@
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "سيحتوي رمز التحقق على أرقام فقط.";
+
+/* Header of existing attribute options section in Add Attribute Options screen */
+"ADD OPTIONS" = "ADD OPTIONS";
 
 /* About this app (information page title) */
 "About" = "نبذة عن";
@@ -216,6 +216,9 @@
 
 /* Add Product Attribute screen navigation title */
 "Add attribute" = "إضافة سمة";
+
+/* Footer of text field section in Add Attribute Options screen */
+"Add each option and press enter" = "Add each option and press enter";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -462,6 +465,9 @@
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "التحقق من بريدك الإلكتروني!";
 
+/* Navigation title on the shipping label paper size selector screen */
+"Choose Paper Size" = "Choose Paper Size";
+
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "الاختيار من جهاز";
 
@@ -646,8 +652,8 @@
 /* The row label to tap for a detailed product list */
 "Details" = "تفاصيل";
 
-/* Screen title: Details Order number (number) */
-"Details Order #(viewModel.order.number)" = "تفاصيل الطلب رقم #(viewModel.order.number)";
+/* Screen title: Details Order number. Parameters: %1$@ - order number */
+"Details Order #%1$@" = "Details Order #%1$@";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "تحديد وضع المنتجات في الكتالوج. كلما انخفضت قيمة العدد، سيكون العنصر الموجود في قائمة المنتجات أعلى. يمكنك أيضًا استخدام قيم سالبة";
@@ -674,7 +680,7 @@
 "Discount" = "خصم";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner on the products tab */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab */
 "Dismiss" = "رفض";
 
 /* Display label for the product's inventory backorders setting option */
@@ -696,8 +702,8 @@
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
 "Don’t know how to print from your phone?" = "ألا تعرف كيفية الطباعة من هاتفك؟";
 
-/* WordPress.com (unmapped!) error */
-"Dotcom Error: [(code)] (theMessage)" = "خطأ في الدوت كوم: [(رمز)] (theMessage)";
+/* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
+"Dotcom Error: [%1$@] %2$@" = "Dotcom Error: [%1$@] %2$@";
 
 /* WordPress.com error thrown when the the request REST API url is invalid. */
 "Dotcom Invalid REST Route" = "مسار REST غير صالح في Dotcom";
@@ -735,10 +741,10 @@
 "Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "انتهاء صلاحية التنزيل";
+"Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Download expiration";
+"Download expiration" = "انتهاء صلاحية التنزيل";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "حدود التنزيل";
@@ -753,16 +759,16 @@
 "Downloadable Files" = "ملفات قابلة للتنزيل";
 
 /* Downloadable Product label in Product Settings */
-"Downloadable Product" = "منتج قابل للتنزيل";
-
-/* Downloadable Product label in Product Settings */
 "Downloadable Product" = "Downloadable Product";
 
-/* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "ملفات قابلة للتنزيل";
+/* Downloadable Product label in Product Settings */
+"Downloadable Product" = "منتج قابل للتنزيل";
 
 /* Title of the Downloadable Files row on Product main screen */
 "Downloadable files" = "Downloadable files";
+
+/* Title of the Downloadable Files row on Product main screen */
+"Downloadable files" = "ملفات قابلة للتنزيل";
 
 /* Display label for the product's draft status */
 "Draft" = "مسودة";
@@ -803,6 +809,9 @@
 
 /* The title used when asking the user for feedback for the app. */
 "Enjoying the WooCommerce app?" = "هل تستمتع بتطبيق WooCommerce؟";
+
+/* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
+"Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating.";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "إدخال متجر آخر";
@@ -867,6 +876,9 @@
    Title of a button. */
 "Enter your password instead." = "بدلاً من ذلك، أدخل كلمة المرور.";
 
+/* Alert title when there is an error requesting shipping label document for reprinting */
+"Error previewing shipping label" = "Error previewing shipping label";
+
 /* Experimental features navigation title
    Navigates to experimental features screen */
 "Experimental Features" = "الميزات التجريبية";
@@ -894,19 +906,19 @@
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "File Name";
+"File Name" = "اسم الملف";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "اسم الملف";
-
-/* Placeholder of the cell text field in Product Downloadable File URL
-   Title of the cell in Product Downloadable File URL > File URL */
-"File URL" = "File URL";
+"File Name" = "File Name";
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
 "File URL" = "رابط الملف";
+
+/* Placeholder of the cell text field in Product Downloadable File URL
+   Title of the cell in Product Downloadable File URL > File URL */
+"File URL" = "File URL";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "التعبئة باستخدام مدير كلمات المرور";
@@ -945,8 +957,8 @@
 /* Title of the downloadable file bottom sheet action for adding file from device. */
 "From device" = "من الجهاز";
 
-/* Order Fulfillment Title */
-"Fulfill Order #(order.number)" = "إتمام الطلب رقم #(order.number)";
+/* Order Fulfillment Title. Parameters: %1$@ - order number */
+"Fulfill Order #%1$@" = "Fulfill Order #%1$@";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "احصل على رؤى دقيقة حول كيفية أداء المنتجات في متجرك";
@@ -964,7 +976,7 @@
 "Getting account information" = "الحصول على معلومات الحساب";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
-   Title on the navigation bar for the products feedback survey */
+   The title of the button to give feedback about shipping labels features on the banner in order details - Title on the navigation bar for the products feedback survey */
 "Give feedback" = "تقديم الملاحظات";
 
 /* Option to select the Gmail app when logging in with magic links */
@@ -986,7 +998,7 @@
 "Grouped products" = "المنتجات المصنفة";
 
 /* In Order Details, the name of the billed person when there are no name and last name.
-   In Order List, the name of the billed person when there are no name and last name. */
+   In Order List, the name of the billed person when there are no first and last name. */
 "Guest" = "زائر";
 
 /* My Store > Settings > Help & Support section title */
@@ -1072,6 +1084,12 @@
 
 /* Info text when reprinting a shipping label */
 "If you already used the label in a package, printing and using it again is a violation of our terms of service" = "إذا كنتَ تستخدم الملصق بالفعل في حزمة، فإنَّ طباعته واستخدامه مجددًا يُعد انتهاكًا لشروط الخدمة لدينا";
+
+/* Step 4 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
+"If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device.";
+
+/* Legal disclaimer for signing up. The underscores _..._ denote underline. */
+"If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "إذا استمررت في استخدام Apple أو غوغل وليس لديك حساب على ووردبريس.كوم بالفعل، فستنشئ حسابًا جديدًا، وتوافق على شروط الخدمة التي نقرها.";
@@ -1167,6 +1185,9 @@
 
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "ملصق (4 × 6 بوصات)";
+
+/* Navigation bar title of shipping label paper size options screen */
+"Label Format Options" = "Label Format Options";
 
 /* Last 24 hours section header */
 "Last 24 hours" = "آخر 24 ساعة";
@@ -1293,10 +1314,10 @@
 "Manual Offsets" = "تعديلات يدويّة";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "استرداد الأموال اليدوي بواسطة %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "استرداد الأموال اليدوي بواسطة %1$@";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
 
 /* No comment provided by engineer. */
 "Manual Refund via Stripe" = "استرداد الأموال اليدوي بواسطة Stripe";
@@ -1389,8 +1410,8 @@
 /* The title for the net amount paid cell */
 "Net" = "صافٍ";
 
-/* Next nav bar button title in Add Product Attribute screen
-   Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
+/* Next nav bar button title in Add Product Attribute Options screen
+   Next nav bar button title in Add Product Attribute screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "التالي";
 
 /* Empty Product Reviews List Message */
@@ -1410,16 +1431,16 @@
 "No data available" = "لا توجد بيانات متاحة";
 
 /* Placeholder of the cell text field in Download expiration */
-"No expiration" = "لا يوجد انتهاء صلاحية";
-
-/* Placeholder of the cell text field in Download expiration */
 "No expiration" = "No expiration";
 
-/* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "لا توجد ملفات حتى الآن";
+/* Placeholder of the cell text field in Download expiration */
+"No expiration" = "لا يوجد انتهاء صلاحية";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "No files yet";
+
+/* Placeholder for empty Downloadable Files row on Product main screen */
+"No files yet" = "لا توجد ملفات حتى الآن";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "لا توجد صور حتى الآن";
@@ -1443,8 +1464,8 @@
 /* Placeholder for empty product ratings */
 "No ratings" = "لا توجد تقييمات";
 
-/* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
-"No results found for (term)\nAdd a custom carrier" = "لم يتم العثور على أي نتائج لـ (الشرط)\nإضافة ناقل مخصص";
+/* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier'. Parameters: %1$@ - carrier name */
+"No results found for %1$@\nAdd a custom carrier" = "No results found for %1$@\nAdd a custom carrier";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "لا يوجد أي عائد في هذه الفترة";
@@ -1474,8 +1495,11 @@
 "Note to customer" = "ملاحظة إلى العميل";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for reprinting - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "موافق";
+
+/* Header of selected attribute options section in Add Attribute Options screen */
+"OPTIONS OFFERED" = "OPTIONS OFFERED";
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "إيقاف تشغيل";
@@ -1520,6 +1544,9 @@
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "يفتح قائمة بالحالات المتاحة.";
 
+/* Placeholder of cell presenting the title of the new attribute option. */
+"Option name" = "Option name";
+
 /* Add Product Category. Placeholder of cell presenting the parent category.
    Placeholder of the cell text field in Product Inventory Settings > SKU */
 "Optional" = "اختياري";
@@ -1536,12 +1563,9 @@
 /* Header of attributes section in Add Attribute screen */
 "Or tap to select existing attribute" = "أو اضغط لتحديد السمة الموجودة";
 
-/* Add a note screen - title. Example: Order #15
-   Order number title */
-"Order #(viewModel.order.number)" = "طلب رقم #(viewModel.order.number)";
-
-/* Displayed whenever an Order gets deleted. It reads: Order {order number} has been deleted from your store. */
-"Order %@ has been deleted from your store" = "تم حذف الطلب %@ من متجرك";
+/* Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number
+   Order number title. Parameters: %1$@ - order number */
+"Order #%1$@" = "Order #%1$@";
 
 /* Order notes section title */
 "Order Notes" = "ملاحظات الطلب";
@@ -1679,7 +1703,8 @@
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "يُرجى المحاولة مرة أخرى.";
 
-/* Text on the loading view of the survey screen indicating the user to wait */
+/* Message of in-progress modal when requesting shipping label document for reprinting
+   Text on the loading view of the survey screen indicating the user to wait */
 "Please wait" = "يُرجى الانتظار";
 
 /* Message of the in-progress UI while updating the Product remotely */
@@ -1701,10 +1726,10 @@
 "Powered by Automattic" = "مدعوم من Automattic";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Previously Refunded";
+"Previously Refunded" = "تم استرداد المبلغ سابقًا";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "تم استرداد المبلغ سابقًا";
+"Previously Refunded" = "Previously Refunded";
 
 /* Product Price Settings navigation title
    Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
@@ -1712,6 +1737,15 @@
 
 /* Button title to generate a shipping label document for printing */
 "Print Shipping Label" = "طباعة ملصق الشحن";
+
+/* Navigation bar title of shipping label printing instructions screen */
+"Print from your Phone" = "Print from your Phone";
+
+/* The title of the shipping labels top banner in order details */
+"Print shipping labels from your device!" = "Print shipping labels from your device!";
+
+/* Title of in-progress modal when requesting shipping label document for reprinting */
+"Printing Label" = "Printing Label";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "إشعار الخصوصية الخاص بالمستخدمين في كاليفورنيا";
@@ -1824,10 +1858,10 @@
 "Quantity" = "الكمية";
 
 /* Navigation title on the quantity item selector screen */
-"Quantity to refund" = "Quantity to refund";
+"Quantity to refund" = "الكمية المطلوب استردادها";
 
 /* Navigation title on the quantity item selector screen */
-"Quantity to refund" = "الكمية المطلوب استردادها";
+"Quantity to refund" = "Quantity to refund";
 
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %ld" = "الكمية: %ld";
@@ -1848,16 +1882,16 @@
 "Reason for Refund (Optional)" = "Reason for Refund (Optional)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for refunding order" = "سبب طلب استرداد الأموال";
-
-/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Reason for refunding order";
 
-/* The title of the button to confirm the refund. */
-"Refund" = "إعادة المبلغ";
+/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
+"Reason for refunding order" = "سبب طلب استرداد الأموال";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "Refund";
+
+/* The title of the button to confirm the refund. */
+"Refund" = "إعادة المبلغ";
 
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "استرداد #%@";
@@ -1879,10 +1913,10 @@
 "Refund Shipping" = "Refund Shipping";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Refund Via";
+"Refund Via" = "استرداد الأموال بواسطة";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "استرداد الأموال بواسطة";
+"Refund Via" = "Refund Via";
 
 /* The title for the refunded amount cell */
 "Refunded" = "تم رد المبلغ";
@@ -2051,10 +2085,10 @@
 "See layout and paper sizes options" = "الاطلاع على خيارات التخطيط ومقاسات الورقة";
 
 /* Select all button title in the issue refund screen */
-"Select All" = "Select All";
+"Select All" = "تحديد الكل";
 
 /* Select all button title in the issue refund screen */
-"Select All" = "تحديد الكل";
+"Select All" = "Select All";
 
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "تحديد التصنيف الأصلي";
@@ -2342,8 +2376,8 @@
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "تحويل المتجر";
 
-/* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. */
-"Switched to (newStoreName). You will only receive notifications from this store." = "تم التحويل إلى (newStoreName). لن تتلقى سوى التنبيهات من هذا المتجر.";
+/* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. Parameters: %1$@ - store name */
+"Switched to %1$@. You will only receive notifications from this store." = "Switched to %1$@. You will only receive notifications from this store.";
 
 /* Accessibility Identifier for the H1 Aztec Style */
 "Switches to the Heading 1 font size" = "يقوم بالتبديل إلى حجم الخط 1 في العنوان";
@@ -2709,23 +2743,20 @@
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "يتعذر الاتصال";
 
-/* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
-"Unable to add note to order #(viewModel.order.orderID)" = "تعذرت إضافة ملاحظة إلى الطلب #(viewModel.order.orderID)";
+/* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
+"Unable to add note to order #%1$d" = "Unable to add note to order #%1$d";
 
-/* Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number} */
-"Unable to add tracking to order #(orderID)" = "تعذرت إضافة تعقب الطلب ‎#(orderID)‎";
+/* Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number}. Parameters: %1$d - order number */
+"Unable to add tracking to order #%1$d" = "Unable to add tracking to order #%1$d";
 
-/* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number} */
-"Unable to change status of order #(orderID)" = "تعذر تغيير حالة الطلب #(orderID)";
+/* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}. Parameters: %1$d - order number */
+"Unable to change status of order #%1$d" = "Unable to change status of order #%1$d";
 
-/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
-"Unable to delete tracking for order #(order.orderID)" = "يتعذر حذف تعقب الطلب #‏(order.orderID)";
+/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
+"Unable to delete tracking for order #%1$d" = "Unable to delete tracking for order #%1$d";
 
-/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
-"Unable to delete tracking for order #(orderID)" = "تعذر حذف تعقب الطلب ‎#(orderID)‎";
-
-/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
-"Unable to fulfill order #(orderID)" = "تعذر تنفيذ الطلب (orderID)";
+/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
+"Unable to fulfill order #%1$d" = "Unable to fulfill order #%1$d";
 
 /* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
 "Unable to load Shipment Carriers" = "تعذر تحميل شركات النقل المخصصة للشحن";
@@ -2811,10 +2842,10 @@
 "Update product inventory and SKU" = "تحديث مخزون المنتجات ووحدة SKU";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "تحديث معلومات الملفات القابلة للتنزيل للمنتجات عن بُعد";
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "تحديث معلومات الملفات القابلة للتنزيل للمنتجات عن بُعد";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "التحديث إلى WooCommerce 3.5 للاستمرار في استخدام هذا التطبيق";
@@ -2876,6 +2907,9 @@
 
 /* two factor code placeholder */
 "Verification code" = "رمز التحقق";
+
+/* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
+"Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network.";
 
 /* Displays the version of the App */
 "Version %@" = "الإصدار %@";
@@ -2942,6 +2976,9 @@
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Watch your audience grow with in-depth analytics." = "شاهد جمهورك يتزايد من خلال التحليلات المتعمقة.";
+
+/* The info of the shipping labels top banner in order details */
+"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here.";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "يتعذر علينا عرض تحليلات مخزنك";
@@ -3066,7 +3103,7 @@
 "Your notifications travel with you — see comments and likes as they happen." = "تنتقل الإعلامات معك — راجع التعليقات والإعجابات عندما تحدث.";
 
 /* Body text of alert helping users understand their site address */
-"Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "يظهر عنوان موقعك في الشريط الموجود في أعلى الشاشة عندما تدخل إلى موقعك من متصفح Safari.";
+"Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Your site address appears in the bar at the top of the screen when you visit your site in Safari.";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMMENT]";

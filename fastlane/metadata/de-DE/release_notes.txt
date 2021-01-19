@@ -1,2 +1,0 @@
-Die App unterstützt jetzt iOS 13 und höher, was eine schnellere Entwicklung von Funktionen ermöglicht.
-Wir haben einen Fehler behoben, der dazu geführt hat, dass auf dem Bildschirm mit den Bestelldetails für Produktvarianten keine Vorschaubilder angezeigt wurden, und wir haben die Statusanzeige für die Fußzeile vertikal und horizontal zentriert.

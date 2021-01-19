@@ -110,35 +110,35 @@ public extension StorageType {
     /// Retrieves the Stored TopEarnerStats.
     ///
     func loadTopEarnerStats(date: String, granularity: String) -> TopEarnerStats? {
-        let predicate = \TopEarnerStats.date == date && \TopEarnerStats.granularity == granularity
+        let predicate = \TopEarnerStats.date =~ date && \TopEarnerStats.granularity =~ granularity
         return firstObject(ofType: TopEarnerStats.self, matching: predicate)
     }
 
     /// Retrieves the Stored SiteVisitStats.
     ///
     func loadSiteVisitStats(granularity: String) -> SiteVisitStats? {
-        let predicate = \SiteVisitStats.granularity == granularity
+        let predicate = \SiteVisitStats.granularity =~ granularity
         return firstObject(ofType: SiteVisitStats.self, matching: predicate)
     }
 
     /// Retrieves the Stored SiteVisitStats for stats v4.
     ///
     func loadSiteVisitStats(granularity: String, date: String) -> SiteVisitStats? {
-        let predicate = \SiteVisitStats.granularity == granularity && \SiteVisitStats.date == date
+        let predicate = \SiteVisitStats.granularity =~ granularity && \SiteVisitStats.date =~ date
         return firstObject(ofType: SiteVisitStats.self, matching: predicate)
     }
 
     /// Retrieves the Stored OrderStats for V4 API.
     ///
     func loadOrderStatsV4(siteID: Int64, timeRange: String) -> OrderStatsV4? {
-        let predicate = \OrderStatsV4.siteID == siteID && \OrderStatsV4.timeRange == timeRange
+        let predicate = \OrderStatsV4.siteID == siteID && \OrderStatsV4.timeRange =~ timeRange
         return firstObject(ofType: OrderStatsV4.self, matching: predicate)
     }
 
     /// Retrieves the Stored OrderStatsV4interval.
     ///
     func loadOrderStatsInterval(interval: String, orderStats: OrderStatsV4) -> OrderStatsV4Interval? {
-        let predicate = \OrderStatsV4Interval.interval == interval && \OrderStatsV4Interval.stats == orderStats
+        let predicate = \OrderStatsV4Interval.interval =~ interval && \OrderStatsV4Interval.stats == orderStats
         return firstObject(ofType: OrderStatsV4Interval.self, matching: predicate)
     }
 
@@ -155,7 +155,7 @@ public extension StorageType {
     /// Retrieves the Stored OrderStatus
     ///
     func loadOrderStatus(siteID: Int64, slug: String) -> OrderStatus? {
-        let predicate = \OrderStatus.siteID == siteID && \OrderStatus.slug == slug
+        let predicate = \OrderStatus.siteID == siteID && \OrderStatus.slug =~ slug
         return firstObject(ofType: OrderStatus.self, matching: predicate)
     }
 
@@ -172,7 +172,7 @@ public extension StorageType {
     /// Retrieves stored SiteSettings for the provided siteID and settingGroupKey.
     ///
     func loadSiteSettings(siteID: Int64, settingGroupKey: String) -> [SiteSetting]? {
-        let predicate = \SiteSetting.siteID == siteID && \SiteSetting.settingGroupKey == settingGroupKey
+        let predicate = \SiteSetting.siteID == siteID && \SiteSetting.settingGroupKey =~ settingGroupKey
         let descriptor = NSSortDescriptor(keyPath: \SiteSetting.settingID, ascending: false)
         return allObjects(ofType: SiteSetting.self, matching: predicate, sortedBy: [descriptor])
     }
@@ -180,7 +180,7 @@ public extension StorageType {
     /// Retrieves the Stored SiteSetting.
     ///
     func loadSiteSetting(siteID: Int64, settingID: String) -> SiteSetting? {
-        let predicate = \SiteSetting.siteID == siteID && \SiteSetting.settingID == settingID
+        let predicate = \SiteSetting.siteID == siteID && \SiteSetting.settingID =~ settingID
         return firstObject(ofType: SiteSetting.self, matching: predicate)
     }
 
@@ -205,7 +205,7 @@ public extension StorageType {
     /// Retrieves a specific stored ShipmentTracking entity.
     ///
     func loadShipmentTracking(siteID: Int64, orderID: Int64, trackingID: String) -> ShipmentTracking? {
-        let predicate = \ShipmentTracking.siteID == siteID && \ShipmentTracking.orderID == orderID && \ShipmentTracking.trackingID == trackingID
+        let predicate = \ShipmentTracking.siteID == siteID && \ShipmentTracking.orderID == orderID && \ShipmentTracking.trackingID =~ trackingID
         return firstObject(ofType: ShipmentTracking.self, matching: predicate)
     }
 
@@ -220,7 +220,7 @@ public extension StorageType {
     /// Retrieves a specific stored ShipmentTrackingProviderGroup
     ///
     func loadShipmentTrackingProviderGroup(siteID: Int64, providerGroupName: String) -> ShipmentTrackingProviderGroup? {
-        let predicate = \ShipmentTrackingProviderGroup.siteID == siteID && \ShipmentTrackingProviderGroup.name == providerGroupName
+        let predicate = \ShipmentTrackingProviderGroup.siteID == siteID && \ShipmentTrackingProviderGroup.name =~ providerGroupName
         return firstObject(ofType: ShipmentTrackingProviderGroup.self, matching: predicate)
     }
 
@@ -243,7 +243,7 @@ public extension StorageType {
     /// Retrieves a stored ShipmentTrackingProvider for the provided siteID.
     ///
     func loadShipmentTrackingProvider(siteID: Int64, name: String) -> ShipmentTrackingProvider? {
-        let predicate = \ShipmentTrackingProvider.siteID == siteID && \ShipmentTrackingProvider.name == name
+        let predicate = \ShipmentTrackingProvider.siteID == siteID && \ShipmentTrackingProvider.name =~ name
         return firstObject(ofType: ShipmentTrackingProvider.self, matching: predicate)
     }
 
@@ -276,7 +276,7 @@ public extension StorageType {
     /// Note: WC attribute ID's often have an ID of `0`, so we need to also look them up by name 😏
     ///
     func loadProductAttribute(siteID: Int64, productID: Int64, attributeID: Int64, name: String) -> ProductAttribute? {
-        let predicate = \ProductAttribute.product?.siteID == siteID && \ProductAttribute.product?.productID == productID
+        let predicate = \ProductAttribute.product?.siteID == siteID && \ProductAttribute.product?.productID =~ productID
             && \ProductAttribute.attributeID == attributeID && \ProductAttribute.name == name
         return firstObject(ofType: ProductAttribute.self, matching: predicate)
     }
@@ -310,7 +310,7 @@ public extension StorageType {
     /// Note: WC default attribute ID's often have an ID of `0`, so we need to also look them up by name 😏
     ///
     func loadProductDefaultAttribute(siteID: Int64, productID: Int64, defaultAttributeID: Int64, name: String) -> ProductDefaultAttribute? {
-        let predicate = \ProductDefaultAttribute.product?.siteID == siteID && \ProductDefaultAttribute.product?.productID == productID
+        let predicate = \ProductDefaultAttribute.product?.siteID == siteID && \ProductDefaultAttribute.product?.productID =~ productID
             && \ProductDefaultAttribute.attributeID == defaultAttributeID && \ProductDefaultAttribute.name == name
         return firstObject(ofType: ProductDefaultAttribute.self, matching: predicate)
     }

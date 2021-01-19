@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Observables
 
@@ -42,7 +43,7 @@ public protocol StoresManager {
 
     /// Indicates if the user is currently logged in to a store.
     ///
-    var isLoggedInPublisher: Published<Bool>.Publisher { get }
+    var isLoggedInPublisher: AnyPublisher<Bool, Never> { get }
 
     /// The currently logged in store/site ID. Nil when the app is logged out.
     ///

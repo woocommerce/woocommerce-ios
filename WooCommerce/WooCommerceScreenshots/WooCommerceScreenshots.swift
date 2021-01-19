@@ -9,7 +9,7 @@ class WooCommerceScreenshots: XCTestCase {
 
         XCUIDevice.shared.orientation = UIDeviceOrientation.portrait
 
-        startWebServer()
+        try startWebServer()
     }
 
     override func tearDown() {
@@ -24,7 +24,7 @@ class WooCommerceScreenshots: XCTestCase {
         app.launchArguments.append("mocked-network-layer")
         app.launchArguments.append("disable-animations")
         app.launchArguments.append("-mocks-port")
-        app.launchArguments.append("\(port)")
+        app.launchArguments.append("\(server.listenAddress.port)")
 
         app.launch()
 
@@ -61,23 +61,22 @@ class WooCommerceScreenshots: XCTestCase {
             .thenTakeScreenshot(named: "product-details")
     }
 
-    private let port = Int.random(in: 2048...65535)
-
     private let loop = try! SelectorEventLoop(selector: try! KqueueSelector())
 
     private let queue = DispatchQueue(label: "screenshots-asset-server")
 
-    private lazy var server = DefaultHTTPServer(eventLoop: loop, port: port, app: handleWebRequest)
+    private lazy var server = DefaultHTTPServer(eventLoop: loop, app: handleWebRequest)
 
-    func startWebServer() {
-        queue.async {
+    func startWebServer() throws {
+        try queue.sync {
             /// Start HTTP server to listen on the port
-            try! self.server.start()
+            try self.server.start()
+            debugPrint("Web Server running on port \(self.server.listenAddress.port)")
+        }
 
+        queue.async {
             /// Run event loop
             self.loop.runForever()
-
-            debugPrint("Web Server running on port \(self.port)")
         }
     }
 

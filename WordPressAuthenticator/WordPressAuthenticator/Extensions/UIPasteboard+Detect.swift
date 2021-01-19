@@ -29,9 +29,9 @@ extension UIPasteboard {
     /// Attempts to detect and return a authenticator code from the pasteboard.
     /// Expects to run on main thread.
     /// - Parameters:
-    ///   - completion: Called with a six digit authentication code on success
+    ///   - completion: Called with a length digit authentication code on success
     @available(iOS 14.0, *)
-    public func detectAuthenticatorCode(completion: @escaping (Result<String, Error>) -> Void) {
+    public func detectAuthenticatorCode(length: Int = 6, completion: @escaping (Result<String, Error>) -> Void) {
         UIPasteboard.general.detect(patterns: [.number]) { result in
             switch result {
                 case .success(let detections):
@@ -44,7 +44,7 @@ extension UIPasteboard {
                         return
                     }
 
-                    var authenticationCode = matchedNumber.stringValue
+                    let authenticationCode = matchedNumber.stringValue
 
                     /// Reject numbers with decimal points or signs in them
                     let codeCharacterSet = CharacterSet(charactersIn: authenticationCode)
@@ -53,17 +53,20 @@ extension UIPasteboard {
                         return
                     }
 
-                    /// We need 6 digits. No more, no less.
-                    if authenticationCode.count > 6 {
+                    /// We need length digits. No more, no less.
+                    if authenticationCode.count > length {
                         completion(.success(""))
+                        return
+                    } else if authenticationCode.count == length {
+                        completion(.success(authenticationCode))
                         return
                     }
 
                     let missingDigits = 6 - authenticationCode.count
-                    let paddingZeros = String(repeating: "0", count: missing)
+                    let paddingZeros = String(repeating: "0", count: missingDigits)
                     let paddedAuthenticationCode = paddingZeros + authenticationCode
 
-                    completion(.success(authenticationCode))
+                    completion(.success(paddedAuthenticationCode))
                     return
                 case .failure(let error):
                     completion(.failure(error))

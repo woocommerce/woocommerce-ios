@@ -4,7 +4,7 @@ extension String {
 
     private static let slugSafeCharacters = CharacterSet(charactersIn: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-")
 
-    public var slugified: String? {
+    var slugified: String? {
         guard let latin = self.applyingTransform(StringTransform("Any-Latin; Latin-ASCII; Lower;"), reverse: false) else {
             return nil
         }

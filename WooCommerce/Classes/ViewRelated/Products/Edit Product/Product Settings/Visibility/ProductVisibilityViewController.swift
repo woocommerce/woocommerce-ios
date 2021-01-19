@@ -216,13 +216,12 @@ private extension ProductVisibilityViewController {
     }
 
     func configurePasswordVisibilityCell(cell: BasicTableViewCell, indexPath: IndexPath) {
-        let row = sections[indexPath.section].rows[indexPath.row]
-        cell.selectionStyle = .default
-        cell.textLabel?.text = row.description
+        configureVisibilityCell(cell: cell, indexPath: indexPath)
 
-        let isSelected = row.visibility == visibility
-        cell.accessoryType = isSelected ? .checkmark : .none
-
+        let isSelected: Bool = {
+            let row = sections[indexPath.section].rows[indexPath.row]
+            return row.visibility == visibility
+        }()
         if isSelected {
             cell.hideSeparator()
         } else {

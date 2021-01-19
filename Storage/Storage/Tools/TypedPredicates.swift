@@ -54,7 +54,7 @@ public func == <RootType, ResultingType: Equatable>(keyPath: KeyPath<RootType, R
     ComparisonPredicate(keyPath, .equalTo, value)
 }
 
-/// Defines a new  operator `equal insensitive`  between a `KeyPath` and a `Value`. Returns a `ComparisonPredicate` that evaluates the parameters using the `==[c]` rule.
+/// Defines a new  operator `=~` between a `KeyPath` and a `Value`. Returns a `ComparisonPredicate` that evaluates the parameters using the `==[c]` rule.
 ///
 infix operator =~ : ComparisonPrecedence
 public func =~ <RootType, ResultingType: Equatable>(keyPath: KeyPath<RootType, ResultingType>, value: ResultingType) -> ComparisonPredicate {

@@ -1,0 +1,2 @@
+L'app ora supporta iOS 13 e versioni successive per un più rapido sviluppo delle funzionalità.
+Abbiamo corretto un bug che impediva alle immagini in miniatura di essere visualizzate per le varianti del prodotto nella schermata dei dettagli dell'ordine e centrato la casella di selezione del piè di pagina verticalmente e orizzontalmente.

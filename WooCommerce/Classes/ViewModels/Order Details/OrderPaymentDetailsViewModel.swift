@@ -155,8 +155,8 @@ final class OrderPaymentDetailsViewModel {
             return nil
         }
 
-        // We want the condensed refund total because it's reported as a negative value
-        return currencyFormatter.formatAmount(condensedRefund.total, with: order.currency)
+        // We can not assume the total is negative.
+        return currencyFormatter.formatAmount(condensedRefund.normalizedTotalAsNegative, with: order.currency)
     }
 
     /// Format the net amount with the correct currency
@@ -213,5 +213,18 @@ final class OrderPaymentDetailsViewModel {
 private extension OrderPaymentDetailsViewModel {
     enum Constants {
         static let decimalZero = Decimal(0)
+    }
+}
+
+
+private extension OrderRefundCondensed {
+    /// Present the refund total as a negative number,
+    /// by prefixing it with a minus symbol.
+    var normalizedTotalAsNegative: String {
+        guard total.hasPrefix("-") else {
+            return "-" + total
+        }
+
+        return total
     }
 }

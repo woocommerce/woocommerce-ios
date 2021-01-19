@@ -35,7 +35,7 @@ public func && (p1: TypedPredicate, p2: TypedPredicate) -> CompoundPredicate {
     CompoundPredicate(type: .and, subpredicates: [p1, p2])
 }
 
-/// Overloads the `OR` operator between two predicates, returns a `CompoundPredicate` that evaluates the two predicates with the `!!` rule.
+/// Overloads the `OR` operator between two predicates, returns a `CompoundPredicate` that evaluates the two predicates with the `||` rule.
 ///
 public func || (p1: TypedPredicate, p2: TypedPredicate) -> CompoundPredicate {
     CompoundPredicate(type: .or, subpredicates: [p1, p2])

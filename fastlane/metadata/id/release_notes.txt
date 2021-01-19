@@ -1,2 +1,0 @@
-Aplikasi kini mendukung iOS 13 dan di atasnya, sehingga pengembangan fitur dapat dilakukan dengan lebih cepat.
-Kami memperbaiki bug yang menyebabkan gambar thumbnail variasi produk tidak muncul di layar rincian pesanan dan meletakkan spinner footer tepat di tengah dalam posisi vertikal maupun horizontal.

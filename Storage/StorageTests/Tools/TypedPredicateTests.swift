@@ -19,18 +19,18 @@ final class TypedPredicateTests: XCTestCase {
     }
 
     func test_AND_operator_produces_correct_predicate() {
-        let predicate = \Dummy.dummyID == 20 && \Dummy.name == "name"
+        let predicate = \Dummy.dummyID == 20 && \Dummy.name =~ "name"
         XCTAssertEqual(predicate.predicateFormat, "dummyID == 20 AND name ==[c] \"name\"")
     }
 
     func test_OR_operator_produces_correct_predicate() {
-        let predicate = \Dummy.dummyID == 20 || \Dummy.name == "name"
+        let predicate = \Dummy.dummyID == 20 || \Dummy.name =~ "name"
         XCTAssertEqual(predicate.predicateFormat, "dummyID == 20 OR name ==[c] \"name\"")
     }
 
     func test_multiple_operators_produces_correct_predicate() {
-        let predicate = \Dummy.dummyID == 20 || \Dummy.name == "name" && \Dummy.slug === ["slug", "name"]
-        XCTAssertEqual(predicate.predicateFormat, "dummyID == 20 OR (name ==[c] \"name\" AND slug IN[c] {\"slug\", \"name\"})")
+        let predicate = \Dummy.dummyID == 20 || \Dummy.name =~ "name" && \Dummy.slug === ["slug", "name"]
+        XCTAssertEqual(predicate.predicateFormat, "dummyID == 20 OR (name ==[c] \"name\" AND slug IN {\"slug\", \"name\"})")
     }
 }
 

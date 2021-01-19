@@ -325,17 +325,6 @@ private extension AppDelegate {
         }
 
         if BuildConfiguration.shouldUseScreenshotsNetworkLayer {
-            /// Print the location of the core data DB for debugging
-            if let storeUrl = ServiceLocator
-                .storageManager
-                .persistentContainer
-                .persistentStoreCoordinator
-                .persistentStores
-                .first?
-                .url {
-                debugPrint("💿 \(storeUrl.path)")
-            }
-
             ServiceLocator.setStores(ScreenshotStoresManager(storageManager: ServiceLocator.storageManager))
         }
 

@@ -1,5 +1,5 @@
+import Combine
 import UIKit
-import Observables
 import Yosemite
 
 /// Coordinates app navigation based on authentication state: tab bar UI is shown when the app is logged in, and authentication UI is shown
@@ -11,7 +11,7 @@ final class AppCoordinator {
     private let authenticationManager: Authentication
 
     private var storePickerCoordinator: StorePickerCoordinator?
-    private var cancellable: ObservationToken?
+    private var cancellable: AnyCancellable?
     private var isLoggedIn: Bool = false
 
     init(tabBarController: MainTabBarController,
@@ -23,7 +23,7 @@ final class AppCoordinator {
     }
 
     func start() {
-        cancellable = stores.isLoggedIn.subscribe { [weak self] isLoggedIn in
+        cancellable = stores.isLoggedInPublisher.removeDuplicates().sink { [weak self] isLoggedIn in
             guard let self = self else { return }
 
             if isLoggedIn == false {

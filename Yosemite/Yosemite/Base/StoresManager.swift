@@ -42,7 +42,7 @@ public protocol StoresManager {
 
     /// Indicates if the user is currently logged in to a store.
     ///
-    var isLoggedIn: Observable<Bool> { get }
+    var isLoggedInPublisher: Published<Bool>.Publisher { get }
 
     /// The currently logged in store/site ID. Nil when the app is logged out.
     ///

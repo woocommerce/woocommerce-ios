@@ -42,7 +42,7 @@ class DefaultStoresManager: StoresManager {
         }
         didSet {
             state.didEnter()
-            isLoggedInSubject.send(isAuthenticated)
+            isLoggedIn = isAuthenticated
         }
     }
 
@@ -52,10 +52,10 @@ class DefaultStoresManager: StoresManager {
         return state is AuthenticatedState
     }
 
-    var isLoggedIn: Observable<Bool> {
-        isLoggedInSubject
-    }
-    private let isLoggedInSubject = BehaviorSubject<Bool>(false)
+    @Published private var isLoggedIn: Bool = false
+
+    var isLoggedInPublisher: Published<Bool>.Publisher { $isLoggedIn }
+
 
     /// Indicates if we need a Default StoreID, or there's one already set.
     ///
@@ -73,7 +73,7 @@ class DefaultStoresManager: StoresManager {
         _sessionManager = sessionManager
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
 
-        isLoggedInSubject.send(isAuthenticated)
+        isLoggedIn = isAuthenticated
 
         restoreSessionAccountIfPossible()
         restoreSessionSiteIfPossible()

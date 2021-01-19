@@ -35,7 +35,7 @@ public func && (p1: TypedPredicate, p2: TypedPredicate) -> CompoundPredicate {
     CompoundPredicate(type: .and, subpredicates: [p1, p2])
 }
 
-/// Overloads the `OR` operator between two predicates, returns a `CompoundPredicate` that evaluates the two predicates with the `!!` rule.
+/// Overloads the `OR` operator between two predicates, returns a `CompoundPredicate` that evaluates the two predicates with the `||` rule.
 ///
 public func || (p1: TypedPredicate, p2: TypedPredicate) -> CompoundPredicate {
     CompoundPredicate(type: .or, subpredicates: [p1, p2])
@@ -52,6 +52,13 @@ public func || (p1: TypedPredicate, p2: TypedPredicate) -> CompoundPredicate {
 ///
 public func == <RootType, ResultingType: Equatable>(keyPath: KeyPath<RootType, ResultingType>, value: ResultingType) -> ComparisonPredicate {
     ComparisonPredicate(keyPath, .equalTo, value)
+}
+
+/// Defines a new  operator `=~` between a `KeyPath` and a `Value`. Returns a `ComparisonPredicate` that evaluates the parameters using the `==[c]` rule.
+///
+infix operator =~ : ComparisonPrecedence
+public func =~ <RootType, ResultingType: Equatable>(keyPath: KeyPath<RootType, ResultingType>, value: ResultingType) -> ComparisonPredicate {
+    ComparisonPredicate(keyPath, .equalTo, value, .caseInsensitive)
 }
 
 /// Overloads the `not equal` operator between a `KeyPath` and a `Value`. Returns a `ComparisonPredicate` that evaluates the parameters using the `!=` rule.
@@ -71,10 +78,12 @@ public func === <RootType, ResultingType: Equatable>(keyPath: KeyPath<RootType, 
 internal extension ComparisonPredicate {
     /// Returns a `ComparisonPredicate` by converting the parameters into `NSExpression` instances using the provided `Operator` as a modifier.
     ///
-    convenience init<RootType, ResultingType>(_ keyPath: KeyPath<RootType, ResultingType>, _ operator: NSComparisonPredicate.Operator, _ value: Any?) {
+    convenience init<RootType, ResultingType>(_ keyPath: KeyPath<RootType, ResultingType>,
+                                              _ operator: NSComparisonPredicate.Operator,
+                                              _ value: Any?,
+                                              _ options: NSComparisonPredicate.Options = []) {
         let keyPathExpression = NSExpression(forKeyPath: keyPath)
         let valueExpression = NSExpression(forConstantValue: value)
-        let options = ResultingType.self == String.self ? NSComparisonPredicate.Options.caseInsensitive : []
         self.init(leftExpression: keyPathExpression, rightExpression: valueExpression, modifier: .direct, type: `operator`, options: options)
     }
 }

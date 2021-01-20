@@ -39,6 +39,7 @@ final class MockOrders {
     func makeOrder(status: OrderStatusEnum = .processing,
                    items: [OrderItem] = [],
                    shippingLines: [ShippingLine] = sampleShippingLines(),
+                   refunds: [OrderRefundCondensed] = [],
                    fees: [OrderFeeLine] = []) -> Order {
         return Order(siteID: siteID,
                      orderID: orderID,
@@ -64,7 +65,7 @@ final class MockOrders {
                      shippingAddress: sampleAddress(),
                      shippingLines: shippingLines,
                      coupons: [],
-                     refunds: [],
+                     refunds: refunds,
                      fees: fees)
     }
 
@@ -74,6 +75,14 @@ final class MockOrders {
 
     func orderWithFees() -> Order {
         makeOrder(fees: sampleFeeLines())
+    }
+
+    func orderWithAPIRefunds() -> Order {
+        makeOrder(refunds: refundsWithNegativeValue())
+    }
+
+    func orderWithTransientRefunds() -> Order {
+        makeOrder(refunds: refundsWithPositiveValue())
     }
 
     func sampleOrderCreatedInCurrentYear() -> Order {
@@ -241,5 +250,17 @@ final class MockOrders {
             return Date()
         }
         return date
+    }
+
+    func refundsWithNegativeValue() -> [OrderRefundCondensed] {
+        return [
+            OrderRefundCondensed(refundID: 0, reason: nil, total: "-1.2"),
+        ]
+    }
+
+    func refundsWithPositiveValue() -> [OrderRefundCondensed] {
+        return [
+            OrderRefundCondensed(refundID: 0, reason: nil, total: "1.2"),
+        ]
     }
 }

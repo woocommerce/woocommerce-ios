@@ -269,7 +269,11 @@ private extension HelpAndSupportViewController {
     /// View application log action
     ///
     func applicationLogWasPressed() {
-        performSegue(withIdentifier: Constants.appLogSegue, sender: nil)
+        let identifier = ApplicationLogViewController.classNameWithoutNamespaces
+        guard let applicationLogVC = UIStoryboard.dashboard.instantiateViewController(identifier: identifier) as? ApplicationLogViewController else {
+            return
+        }
+        navigationController?.pushViewController(applicationLogVC, animated: true)
     }
 
     @objc func dismissWasPressed() {
@@ -334,7 +338,6 @@ extension HelpAndSupportViewController: UITableViewDelegate {
 private struct Constants {
     static let rowHeight = CGFloat(44)
     static let footerHeight = 44
-    static let appLogSegue = "ShowApplicationLogViewController"
 }
 
 private struct Section {

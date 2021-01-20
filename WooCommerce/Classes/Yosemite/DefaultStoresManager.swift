@@ -67,6 +67,13 @@ class DefaultStoresManager: StoresManager {
         return sessionManager.defaultStoreID == nil
     }
 
+    var needsDefaultStorePublisher: AnyPublisher<Bool, Never> {
+        sessionManager.defaultStoreIDPublisher
+            .map { $0 == nil }
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
+
     var siteID: Observable<Int64?> {
         sessionManager.siteID
     }

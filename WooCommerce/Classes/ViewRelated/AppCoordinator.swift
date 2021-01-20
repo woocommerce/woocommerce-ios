@@ -6,7 +6,9 @@ import Yosemite
 /// when the app is logged out.
 ///
 final class AppCoordinator {
-    private let tabBarController: MainTabBarController
+    let tabBarController: MainTabBarController
+
+    private let window: UIWindow
     private let stores: StoresManager
     private let authenticationManager: Authentication
 
@@ -14,53 +16,82 @@ final class AppCoordinator {
     private var cancellable: AnyCancellable?
     private var isLoggedIn: Bool = false
 
-    init(tabBarController: MainTabBarController,
+    init(window: UIWindow,
          stores: StoresManager = ServiceLocator.stores,
          authenticationManager: Authentication = ServiceLocator.authenticationManager) {
-        self.tabBarController = tabBarController
+        self.window = window
+        self.tabBarController = {
+            let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
+            guard let tabBarController = storyboard.instantiateInitialViewController() as? MainTabBarController else {
+                fatalError("Cannot load main tab bar controller from Storyboard")
+            }
+            return tabBarController
+        }()
         self.stores = stores
         self.authenticationManager = authenticationManager
     }
 
     func start() {
-        cancellable = stores.isLoggedInPublisher.removeDuplicates().sink { [weak self] isLoggedIn in
-            guard let self = self else { return }
+        cancellable = Publishers.CombineLatest(stores.isLoggedInPublisher, stores.needsDefaultStorePublisher)
+            .sink {  [weak self] isLoggedIn, needsDefaultStore in
+                guard let self = self else { return }
 
-            if isLoggedIn == false {
-                let animated = self.isLoggedIn == true && self.stores.needsDefaultStore == false
-                self.displayAuthenticator(animated: animated)
-            } else if self.stores.needsDefaultStore {
-                self.displayStorePicker()
+                if isLoggedIn == false {
+                    // When logging out, we only want to display the authenticator when `isLoggedIn` is `false` and `needsDefaultStore` is `true`.
+                    if needsDefaultStore {
+                        self.displayAuthenticator()
+                    }
+                } else {
+                    if needsDefaultStore {
+                        self.displayStorePicker()
+                    } else {
+                        self.window.rootViewController = self.tabBarController
+                    }
+                }
+                self.isLoggedIn = isLoggedIn
             }
-
-            self.isLoggedIn = isLoggedIn
-        }
     }
 }
 
 private extension AppCoordinator {
     /// Displays the WordPress.com Authentication UI.
     ///
-    func displayAuthenticator(animated: Bool) {
-        authenticationManager.displayAuthentication(from: tabBarController, animated: animated) { [weak self] in
+    func displayAuthenticator() {
+        let authenticationUI = authenticationManager.authenticationUI()
+        window.rootViewController = authenticationUI
+        ServiceLocator.analytics.track(.openedLogin)
+
+        UIView.transition(with: window, duration: Constants.animationDuration, options: .transitionCrossDissolve, animations: {}, completion: { [weak self] _ in
             guard let self = self else { return }
             self.tabBarController.removeViewControllers()
-        }
+        })
     }
 
-    /// Whenever the app is authenticated but there is no Default StoreID: Let's display the Store Picker.
+    /// If the app is authenticated but there is no default store ID on launch: Let's display the Store Picker.
     ///
     func displayStorePicker() {
-        guard let navigationController = tabBarController.selectedViewController as? UINavigationController else {
-            DDLogError("⛔️ Unable to locate navigationController in order to launch the store picker.")
+        // Store picker is only displayed by `AppCoordinator` on launch, when the window's root is uninitialized.
+        // In other cases when the app is authenticated but there is no default store ID, the store picker is shown by authentication UI.
+        guard window.rootViewController == nil else {
             return
         }
 
         DDLogInfo("💬 Authenticated user does not have a Woo store selected — launching store picker.")
+        let navigationController = UINavigationController()
+        window.rootViewController = navigationController
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .standard)
         storePickerCoordinator?.start()
         storePickerCoordinator?.onDismiss = { [weak self] in
-            self?.displayAuthenticator(animated: false)
+            guard let self = self else { return }
+            if self.isLoggedIn == false {
+                self.displayAuthenticator()
+            }
         }
+    }
+}
+
+private extension AppCoordinator {
+    enum Constants {
+        static let animationDuration = TimeInterval(0.3)
     }
 }

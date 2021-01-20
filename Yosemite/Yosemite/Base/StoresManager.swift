@@ -41,7 +41,7 @@ public protocol StoresManager {
     ///
     var isAuthenticated: Bool { get }
 
-    /// Indicates if the user is currently logged in to a store.
+    /// Publishes signal that indicates if the user is currently logged in with credentials.
     ///
     var isLoggedInPublisher: AnyPublisher<Bool, Never> { get }
 
@@ -52,6 +52,10 @@ public protocol StoresManager {
     /// Indicates if we need a Default StoreID, or there's one already set.
     ///
     var needsDefaultStore: Bool { get }
+
+    /// Publishes signal that indicates if we need a default store ID, or there is one already set.
+    ///
+    var needsDefaultStorePublisher: AnyPublisher<Bool, Never> { get }
 
     /// SessionManagerProtocol: Persistent Storage for Session-Y Properties.
     /// This property is thread safe

@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Observables
 
@@ -18,6 +19,10 @@ public protocol SessionManagerProtocol {
     /// Default StoreID.
     ///
     var defaultStoreID: Int64? { get set }
+
+    /// Publishes default store ID on change.
+    ///
+    var defaultStoreIDPublisher: AnyPublisher<Int64?, Never> { get }
 
     /// Anonymous UserID.
     ///

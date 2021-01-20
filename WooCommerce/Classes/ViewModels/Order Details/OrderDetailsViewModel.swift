@@ -236,7 +236,12 @@ extension OrderDetailsViewModel {
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
         case .details:
             ServiceLocator.analytics.track(.orderDetailProductDetailTapped)
-            viewController.performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
+            let identifier = ProductListViewController.classNameWithoutNamespaces
+            guard let productListVC = UIStoryboard.orders.instantiateViewController(identifier: identifier) as? ProductListViewController else {
+                return
+            }
+            productListVC.viewModel = self
+            viewController.navigationController?.pushViewController(productListVC, animated: true)
         case .refund:
             ServiceLocator.analytics.track(.orderDetailRefundDetailTapped)
             guard let refund = dataSource.refund(at: indexPath) else {
@@ -415,7 +420,6 @@ extension OrderDetailsViewModel {
 private extension OrderDetailsViewModel {
 
     enum Constants {
-        static let productDetailsSegue = "ShowProductListViewController"
         static let orderStatusListSegue = "ShowOrderStatusListViewController"
     }
 }

@@ -57,6 +57,11 @@ final class ProductVisibilityViewController: UIViewController {
         }
     }
 
+    override func viewLayoutMarginsDidChange() {
+        super.viewLayoutMarginsDidChange()
+        reloadSections()
+    }
+
     private func reloadSections() {
         if visibility == .passwordProtected {
             sections = [Section(rows: [.publicVisibility, .passwordVisibility, .passwordField, .privateVisibility])]
@@ -212,7 +217,7 @@ private extension ProductVisibilityViewController {
         cell.selectionStyle = .default
         cell.textLabel?.text = row.description
         cell.accessoryType = row.visibility == visibility ? .checkmark : .none
-        cell.showSeparator()
+        cell.showSeparator(inset: .init(top: 0, left: tableView.layoutMargins.left, bottom: 0, right: 0))
     }
 
     func configurePasswordVisibilityCell(cell: BasicTableViewCell, indexPath: IndexPath) {
@@ -225,7 +230,7 @@ private extension ProductVisibilityViewController {
         if isSelected {
             cell.hideSeparator()
         } else {
-            cell.showSeparator()
+            cell.showSeparator(inset: .init(top: 0, left: tableView.layoutMargins.left, bottom: 0, right: 0))
         }
     }
 

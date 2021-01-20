@@ -19,7 +19,8 @@ struct MockAppSettingsActionHandler: MockActionHandler {
                 loadFeedbackVisibility(type: type, onCompletion: onCompletion)
             case .setInstallationDateIfNecessary(let date, let onCompletion):
                 setInstallationDateIfNecessary(date: date, onCompletion: onCompletion)
-
+            case .loadProductsSettings(let siteId, let onCompletion):
+                loadProductSettings(siteId: siteId, onCompletion: onCompletion)
             default: unimplementedAction(action: action)
         }
     }
@@ -34,5 +35,10 @@ struct MockAppSettingsActionHandler: MockActionHandler {
 
     func setInstallationDateIfNecessary(date: Date, onCompletion: (Result<Bool, Error>) -> Void) {
         onCompletion(.success(true))
+    }
+
+    func loadProductSettings(siteId: Int64, onCompletion: (Result<StoredProductSettings.Setting, Error>) -> Void) {
+        let emptySetting = StoredProductSettings.Setting(siteID: siteId, sort: nil, stockStatusFilter: nil, productStatusFilter: nil, productTypeFilter: nil)
+        onCompletion(.success(emptySetting))
     }
 }

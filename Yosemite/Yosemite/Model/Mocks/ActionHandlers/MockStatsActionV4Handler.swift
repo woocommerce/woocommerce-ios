@@ -24,9 +24,12 @@ struct MockStatsActionV4Handler: MockActionHandler {
         let store = StatsStoreV4(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
 
         switch timeRange {
-            case .today: success(onCompletion)
-            case .thisWeek: success(onCompletion)
-            case .thisMonth: success(onCompletion)
+            case .today:
+                success(onCompletion)
+            case .thisWeek:
+                success(onCompletion)
+            case .thisMonth:
+                success(onCompletion)
             case .thisYear:
                 store.upsertStoredOrderStats(readOnlyStats: objectGraph.thisYearOrderStats, timeRange: timeRange)
                 onCompletion(nil)
@@ -37,9 +40,12 @@ struct MockStatsActionV4Handler: MockActionHandler {
         let store = StatsStoreV4(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
 
         switch timeRange {
-            case .today: success(onCompletion)
-            case .thisWeek: success(onCompletion)
-            case .thisMonth: success(onCompletion)
+            case .today:
+                success(onCompletion)
+            case .thisWeek:
+                success(onCompletion)
+            case .thisMonth:
+                success(onCompletion)
             case .thisYear:
                 store.upsertStoredSiteVisitStats(readOnlyStats: objectGraph.thisYearVisitStats)
                 onCompletion(nil)
@@ -50,9 +56,12 @@ struct MockStatsActionV4Handler: MockActionHandler {
         let store = StatsStoreV4(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
 
         switch timeRange {
-            case .today: success(onCompletion)
-            case .thisWeek: success(onCompletion)
-            case .thisMonth: success(onCompletion)
+            case .today:
+                success(onCompletion)
+            case .thisWeek:
+                success(onCompletion)
+            case .thisMonth:
+                success(onCompletion)
             case .thisYear:
                 store.upsertStoredTopEarnerStats(readOnlyStats: objectGraph.thisYearTopProducts)
                 onCompletion(nil)

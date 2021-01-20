@@ -1,2 +1,0 @@
-L’application prend désormais en charge iOS 13 et les versions supérieures qui permettent un développement plus rapide des fonctionnalités.
-Nous avons résolu un bug qui empêchait l’affichage des miniatures des variantes du produit sur l’écran Détails de la commande, et centré le compteur de pied de page verticalement et horizontalement.

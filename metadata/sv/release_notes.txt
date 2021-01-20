@@ -1,5 +1,0 @@
-Produkter: I Inställningar → Experimentella funktioner finns det nu ett Produkter-reglage tillgängligt för att aktivera och inaktivera M4-funktioner (funktionerna är för närvarande inaktiverade som standard). Du kan också lägga till en enkel, grupperad eller extern produkt och publicera eller spara den som ett utkast.
-
-Allmänna förbättringar: Om du inte sparar en produkt som "publicerad" kommer det pågående modalfönstret nu att visa ett mer exakt meddelande - exempelvis "sparar din produkt" istället för "publicerar din produkt". Dessutom, när du avvisar sökmodalfönstret för produktväljare och minst en produkt är vald för en grupperad produkts länkade produkter, kommer vi först att fråga dig om du vill kassera dina ändringar.
-
-Diverse korrigeringar: När du öppnar en produkt eller produktvariation från Orderdetaljer visar den nu skrivskyddad produkt- eller produktvariationsinformation (och produktvariationen visas inte längre på fliken Produkter). Dessutom, i produkt- och variationslistan visas inte längre lagerkvantiteten om lagerhantering är inaktiverad.

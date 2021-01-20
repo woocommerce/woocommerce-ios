@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Yosemite
 import Observables
@@ -54,8 +55,11 @@ class DefaultStoresManager: StoresManager {
 
     @Published private var isLoggedIn: Bool = false
 
-    var isLoggedInPublisher: Published<Bool>.Publisher { $isLoggedIn }
-
+    var isLoggedInPublisher: AnyPublisher<Bool, Never> {
+        $isLoggedIn
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
 
     /// Indicates if we need a Default StoreID, or there's one already set.
     ///

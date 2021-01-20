@@ -36,6 +36,8 @@
 		2618707325409C65006522A1 /* ShippingLineTax+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2618707125409C65006522A1 /* ShippingLineTax+CoreDataClass.swift */; };
 		2618707425409C65006522A1 /* ShippingLineTax+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2618707225409C65006522A1 /* ShippingLineTax+CoreDataProperties.swift */; };
 		2619F71925AF95030006DAFF /* StorageTypeExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2619F71825AF95020006DAFF /* StorageTypeExtensionsTests.swift */; };
+		2619F72525B236E60006DAFF /* TypedPredicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2619F72425B236E60006DAFF /* TypedPredicates.swift */; };
+		2619F78625B5D29B0006DAFF /* TypedPredicateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2619F78525B5D29B0006DAFF /* TypedPredicateTests.swift */; };
 		261CF1C4255B291F0090D8D3 /* PaymentGateway+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261CF1C2255B291F0090D8D3 /* PaymentGateway+CoreDataClass.swift */; };
 		261CF1C5255B291F0090D8D3 /* PaymentGateway+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261CF1C3255B291F0090D8D3 /* PaymentGateway+CoreDataProperties.swift */; };
 		26577519243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 26577518243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel */; };
@@ -49,6 +51,8 @@
 		454005AA24AE4D350087FDD1 /* WooCommerceModelV28toV29.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 454005A924AE4D350087FDD1 /* WooCommerceModelV28toV29.xcmappingmodel */; };
 		45E1862E2370450C009241F3 /* ShippingLine+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E1862D2370450C009241F3 /* ShippingLine+CoreDataClass.swift */; };
 		45E1863023704519009241F3 /* ShippingLine+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E1862F23704519009241F3 /* ShippingLine+CoreDataProperties.swift */; };
+		5707FBC425B5FE2200B7C1A6 /* CoreDataIterativeMigrator+MigrationStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5707FBC325B5FE2200B7C1A6 /* CoreDataIterativeMigrator+MigrationStep.swift */; };
+		5707FBC825B610DA00B7C1A6 /* CoreDataIterativeMigrator+MigrationStepTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5707FBC725B610DA00B7C1A6 /* CoreDataIterativeMigrator+MigrationStepTests.swift */; };
 		57150E1324F462DF00E81611 /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 57150E1224F462DF00E81611 /* TestKit */; };
 		572B40E425A5414D00DB20E0 /* DeleteEntityObjectsMigrationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572B40E325A5414D00DB20E0 /* DeleteEntityObjectsMigrationPolicy.swift */; };
 		572C099625475208005372E1 /* SpyFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 572C099525475208005372E1 /* SpyFileManager.swift */; };
@@ -219,6 +223,8 @@
 		2618707125409C65006522A1 /* ShippingLineTax+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLineTax+CoreDataClass.swift"; sourceTree = "<group>"; };
 		2618707225409C65006522A1 /* ShippingLineTax+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLineTax+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		2619F71825AF95020006DAFF /* StorageTypeExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageTypeExtensionsTests.swift; sourceTree = "<group>"; };
+		2619F72425B236E60006DAFF /* TypedPredicates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypedPredicates.swift; sourceTree = "<group>"; };
+		2619F78525B5D29B0006DAFF /* TypedPredicateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypedPredicateTests.swift; sourceTree = "<group>"; };
 		261CF1C1255AFDC40090D8D3 /* Model 36.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 36.xcdatamodel"; sourceTree = "<group>"; };
 		261CF1C2255B291F0090D8D3 /* PaymentGateway+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PaymentGateway+CoreDataClass.swift"; sourceTree = "<group>"; };
 		261CF1C3255B291F0090D8D3 /* PaymentGateway+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PaymentGateway+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -243,6 +249,8 @@
 		45E1862F23704519009241F3 /* ShippingLine+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLine+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		45ED6099257EB11B007B4AC6 /* Model 40.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 40.xcdatamodel"; sourceTree = "<group>"; };
 		47556EE256120BEE49FF5FD3 /* Pods_StorageTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_StorageTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5707FBC325B5FE2200B7C1A6 /* CoreDataIterativeMigrator+MigrationStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataIterativeMigrator+MigrationStep.swift"; sourceTree = "<group>"; };
+		5707FBC725B610DA00B7C1A6 /* CoreDataIterativeMigrator+MigrationStepTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreDataIterativeMigrator+MigrationStepTests.swift"; sourceTree = "<group>"; };
 		572B40E325A5414D00DB20E0 /* DeleteEntityObjectsMigrationPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteEntityObjectsMigrationPolicy.swift; sourceTree = "<group>"; };
 		572C099525475208005372E1 /* SpyFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpyFileManager.swift; sourceTree = "<group>"; };
 		5736878D24AAADAE00B528FE /* ManagedObjectModelsInventory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedObjectModelsInventory.swift; sourceTree = "<group>"; };
@@ -514,6 +522,7 @@
 			isa = PBXGroup;
 			children = (
 				B505255320EE6914008090F5 /* StorageType+Extensions.swift */,
+				2619F72425B236E60006DAFF /* TypedPredicates.swift */,
 				D87F61542265AA900031A13B /* PListFileStorage.swift */,
 				027D3E6D23A0EEA4007D91B0 /* StorageType+Deletions.swift */,
 			);
@@ -526,6 +535,7 @@
 				B505F6DD20BEEA4F00BB1B69 /* CoreDataManager.swift */,
 				9302E3A5220DC3AE00DA5018 /* CoreDataIterativeMigrator.swift */,
 				5736878D24AAADAE00B528FE /* ManagedObjectModelsInventory.swift */,
+				5707FBC325B5FE2200B7C1A6 /* CoreDataIterativeMigrator+MigrationStep.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -630,6 +640,7 @@
 				B54CA5C620A4BFDC00F38CD1 /* DummyStack.swift */,
 				57589E8F252275CA000F22CE /* NSManagedObjectContext+TestHelpers.swift */,
 				2619F71825AF95020006DAFF /* StorageTypeExtensionsTests.swift */,
+				2619F78525B5D29B0006DAFF /* TypedPredicateTests.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -746,6 +757,7 @@
 				B59E11DD20A9F1FB004121A4 /* CoreDataManagerTests.swift */,
 				5736878F24AABE4D00B528FE /* ManagedObjectModelsInventoryTests.swift */,
 				57A29FB725226BDC004DEE01 /* MigrationTests.swift */,
+				5707FBC725B610DA00B7C1A6 /* CoreDataIterativeMigrator+MigrationStepTests.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -967,6 +979,7 @@
 				021EAA4725493A1600AA8CCD /* OrderItemAttribute+CoreDataClass.swift in Sources */,
 				D87F61552265AA900031A13B /* PListFileStorage.swift in Sources */,
 				B5B914C620EFF03500F2F832 /* Site+CoreDataProperties.swift in Sources */,
+				2619F72525B236E60006DAFF /* TypedPredicates.swift in Sources */,
 				D8736B6B22F0AC9000A14A29 /* OrderCount+CoreDataProperties.swift in Sources */,
 				02DA64172313C26400284168 /* StatsVersionBySite.swift in Sources */,
 				26577519243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel in Sources */,
@@ -992,6 +1005,7 @@
 				747453A52242C85E00E0B5EE /* ProductDefaultAttribute+CoreDataClass.swift in Sources */,
 				02EAB6D72480A86D00FD873C /* CrashLogger.swift in Sources */,
 				746A9D21214078080013F6FF /* TopEarnerStats+CoreDataClass.swift in Sources */,
+				5707FBC425B5FE2200B7C1A6 /* CoreDataIterativeMigrator+MigrationStep.swift in Sources */,
 				74B7D6AD20F90CBB002667AC /* OrderNote+CoreDataClass.swift in Sources */,
 				B52B0F7920AA287C00477698 /* StorageManagerType.swift in Sources */,
 				028296F5237D404F00E84012 /* GenericAttribute+CoreDataProperties.swift in Sources */,
@@ -1085,6 +1099,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9302E3AC220E1CE900DA5018 /* CoreDataIterativeMigratorTests.swift in Sources */,
+				5707FBC825B610DA00B7C1A6 /* CoreDataIterativeMigrator+MigrationStepTests.swift in Sources */,
 				57CEB1A22525349B00D8544F /* ProductVariationTests.swift in Sources */,
 				B59E11E020A9F5E6004121A4 /* Constants.swift in Sources */,
 				B54CA5C320A4BF6900F38CD1 /* NSManagedObjectContextStorageTests.swift in Sources */,
@@ -1099,6 +1114,7 @@
 				D87F61572265AD980031A13B /* FileStorageTests.swift in Sources */,
 				B59E11DE20A9F1FB004121A4 /* CoreDataManagerTests.swift in Sources */,
 				57A29FB825226BDC004DEE01 /* MigrationTests.swift in Sources */,
+				2619F78625B5D29B0006DAFF /* TypedPredicateTests.swift in Sources */,
 				26EA01D524EC44B300176A57 /* GeneralAppSettingsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

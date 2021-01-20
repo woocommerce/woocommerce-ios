@@ -90,6 +90,22 @@ struct ManagedObjectModelsInventory {
         let expectedMomURL = packageURL.appendingPathComponent(version.name).appendingPathExtension("mom")
         return NSManagedObjectModel(contentsOf: expectedMomURL)
     }
+
+    /// Loads the corresponding `NSManagedObjectModel` for the given `versions`.
+    ///
+    /// - Throws: If one of the `NSManagedObjectModels` is not found or cannot be loaded.
+    func models(for versions: [ModelVersion]) throws -> [NSManagedObjectModel] {
+        try versions.map { version in
+            guard let model = self.model(for: version) else {
+                let description = "No model found for \(version.name)"
+                throw NSError(domain: "ManagedObjectModelsInventory",
+                              code: 110,
+                              userInfo: [NSLocalizedDescriptionKey: description])
+            }
+
+            return model
+        }
+    }
 }
 
 // MARK: - Utils

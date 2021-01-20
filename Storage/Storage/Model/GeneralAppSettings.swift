@@ -28,11 +28,11 @@ public struct GeneralAppSettings: Codable, Equatable {
     /// Returns the status of a given feedback type. If the feedback is not stored in the feedback array. it is assumed that it has a pending status.
     ///
     public func feedbackStatus(of type: FeedbackType) -> FeedbackSettings.Status {
-        guard let feedbackSeeting = feedbacks[type] else {
+        guard let feedbackSetting = feedbacks[type] else {
             return .pending
         }
 
-        return feedbackSeeting.status
+        return feedbackSetting.status
     }
 
     /// Returns a new instance of `GeneralAppSettings` with the provided feedback seetings updated.

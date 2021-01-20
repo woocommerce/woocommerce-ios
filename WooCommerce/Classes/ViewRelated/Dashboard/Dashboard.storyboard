@@ -68,7 +68,6 @@
                     </view>
                     <connections>
                         <outlet property="tableView" destination="pYs-VV-dST" id="Cqx-Lg-UJh"/>
-                        <segue destination="dyy-ah-iUY" kind="show" identifier="ShowApplicationLogDetailViewController" id="Ws4-zy-SlV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fOe-oS-ZTi" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -78,13 +77,13 @@
         <!--Application Log Detail View Controller-->
         <scene sceneID="EFa-xb-BCc">
             <objects>
-                <viewController id="dyy-ah-iUY" customClass="ApplicationLogDetailViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ApplicationLogDetailViewController" id="dyy-ah-iUY" customClass="ApplicationLogDetailViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="TC5-cg-3Zt">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="VZ4-xD-33I">
-                                <rect key="frame" x="16" y="0.0" width="343" height="647"/>
+                                <rect key="frame" x="16" y="0.0" width="343" height="667"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" notEnabled="YES"/>

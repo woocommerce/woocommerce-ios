@@ -36,7 +36,6 @@
                     </view>
                     <connections>
                         <outlet property="tableView" destination="hBh-xf-Cby" id="36b-Gi-HZa"/>
-                        <segue destination="gjo-lx-M5d" kind="show" identifier="" id="wt7-3f-Jje"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Z9o-7H-pWC" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -48,11 +47,11 @@
             <objects>
                 <viewController storyboardIdentifier="ProductListViewController" id="gjo-lx-M5d" customClass="ProductListViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="K91-GD-PbX">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="eY7-vI-1cr">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" systemColor="groupTableViewBackgroundColor"/>
                                 <connections>
                                     <outlet property="dataSource" destination="gjo-lx-M5d" id="ABK-8R-DTb"/>

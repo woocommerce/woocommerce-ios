@@ -10,6 +10,8 @@ import WordPressKit
 import WordPressAuthenticator
 import AutomatticTracks
 
+import class Yosemite.ScreenshotStoresManager
+
 #if DEBUG
 import Wormholy
 #endif
@@ -318,11 +320,15 @@ private extension AppDelegate {
     }
 
     func handleLaunchArguments() {
-        if ProcessInfo.processInfo.arguments.contains("logout-at-launch") {
-          ServiceLocator.stores.deauthenticate()
+        if BuildConfiguration.shouldLogoutAtLaunch {
+            ServiceLocator.stores.deauthenticate()
         }
 
-        if ProcessInfo.processInfo.arguments.contains("disable-animations") {
+        if BuildConfiguration.shouldUseScreenshotsNetworkLayer {
+            ServiceLocator.setStores(ScreenshotStoresManager(storageManager: ServiceLocator.storageManager))
+        }
+
+        if BuildConfiguration.shouldDisableAnimations {
             UIView.setAnimationsEnabled(false)
 
             /// Trick found at: https://twitter.com/twannl/status/1232966604142653446

@@ -3,6 +3,7 @@ source 'https://rubygems.org' do
   gem 'cocoapods', '~> 1.10'
   gem 'xcpretty-travis-formatter'
   gem 'dotenv'
+  gem 'xcode-install'
   gem 'fastlane', '~> 2'
 end
 

@@ -2,8 +2,6 @@ import Foundation
 import Yosemite
 import Observables
 
-
-
 // MARK: - DefaultStoresManager
 //
 class DefaultStoresManager: StoresManager {

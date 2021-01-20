@@ -1,7 +1,6 @@
 import Foundation
 import Alamofire
 
-
 /// Account: Remote Endpoints
 ///
 public class AccountRemote: Remote {

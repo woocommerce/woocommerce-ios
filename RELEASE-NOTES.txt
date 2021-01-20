@@ -1,7 +1,26 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+5.9
+-----
+- [**] Product List: if a user applies custom sort orders and filters in the Product List, now when they reopen the app will be able to see the previous settings applied. [https://github.com/woocommerce/woocommerce-ios/pull/3454]
+- [*] Removed fulfillment screen and moved fulfillment to the order details screen. [https://github.com/woocommerce/woocommerce-ios/pull/3453]
+- [*] Fix: billing information action sheets now are presented correctly on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/3457]
+- [*] fix: the rows in the product search list now don't have double separators. [https://github.com/woocommerce/woocommerce-ios/pull/3456]
+- [*] Fix: During login, the spinner when a continue button is in loading state is now visible in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/3472]
+- [*] fix: when adding a note to an order, the text gets no more deleted if you tap on “Email note to customer”. [https://github.com/woocommerce/woocommerce-ios/pull/3473]
+- [*] Added Fees to order details. [https://github.com/woocommerce/woocommerce-ios/pull/3475]
+- [*] fix: now we don't show any more similar alert notices if an error occurred. [https://github.com/woocommerce/woocommerce-ios/pull/3474]
+- [*] fix: in Settings > Switch Store, the spinner in the "Continue" button at the bottom is now visible in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/3468]
+- [*] fix: in order details, the shipping and billing address are displayed in the order of the country (in some eastern Asian countries, the address starts from the largest unit to the smallest). [https://github.com/woocommerce/woocommerce-ios/pull/3469]
+- [*] fix: pull to refresh on the order status picker screen does not resets anymore the current selection. [https://github.com/woocommerce/woocommerce-ios/pull/3493]
+- [*] When adding or editing a link (e.g. in a product description) link settings are now presented as a popover on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/3492]
+
+
 5.8
 -----
+- [***] Products M5 features are now available to all. Products M5 features: add and edit linked products, add and edit downloadable files, product deletion. [https://github.com/woocommerce/woocommerce-ios/pull/3420]
+- [***] Shipping labels M1 features are now available to all: view shipping label details, request a refund, and reprint a shipping label via AirPrint. [https://github.com/woocommerce/woocommerce-ios/pull/3436]
+- [**] Improved login flow, including better error handling. [https://github.com/woocommerce/woocommerce-ios/pull/3332]
 
 
 5.7

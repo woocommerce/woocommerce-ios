@@ -30,8 +30,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
         let taxClass = TaxClass(siteID: product.siteID, name: "standard", slug: product.taxClass ?? "standard")
         cancellableProduct = viewModel.observableProduct.subscribe { _ in
             // Assert
@@ -82,8 +81,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
         var isProductUpdated: Bool?
         cancellableProduct = viewModel.observableProduct.subscribe { product in
             isProductUpdated = true
@@ -124,8 +122,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
         var isProductUpdated: Bool?
         cancellableProduct = viewModel.observableProduct.subscribe { product in
             isProductUpdated = true
@@ -162,8 +159,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
         // The password is set from a separate DotCom API.
         viewModel.resetPassword("134")
 
@@ -207,8 +203,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
         var isProductUpdated: Bool?
         cancellableProduct = viewModel.observableProduct.subscribe { product in
             isProductUpdated = true

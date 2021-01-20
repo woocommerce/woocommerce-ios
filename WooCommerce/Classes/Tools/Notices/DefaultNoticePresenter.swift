@@ -28,6 +28,7 @@ class DefaultNoticePresenter: NoticePresenter {
     /// Enqueues the specified Notice for display.
     ///
     func enqueue(notice: Notice) {
+        guard !notices.contains(notice) else { return }
         notices.append(notice)
         presentNextNoticeIfPossible()
     }

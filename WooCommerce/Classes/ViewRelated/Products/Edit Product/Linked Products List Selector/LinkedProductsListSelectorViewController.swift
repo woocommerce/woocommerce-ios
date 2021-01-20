@@ -45,7 +45,7 @@ final class LinkedProductsListSelectorViewController: UIViewController {
         self.siteID = product.siteID
         self.dataSource = LinkedProductListSelectorDataSource(product: product,
                                                               linkedProductIDs: linkedProductIDs,
-                                                              deleteButtonTappedEvent: viewConfiguration.deleteButtonTappedEvent)
+                                                              trackingContext: viewConfiguration.trackingContext)
         self.imageService = imageService
         self.viewConfiguration = viewConfiguration
         self.onCompletion = completion
@@ -73,14 +73,15 @@ final class LinkedProductsListSelectorViewController: UIViewController {
 //
 private extension LinkedProductsListSelectorViewController {
     @objc func addTapped() {
-        ServiceLocator.analytics.track(viewConfiguration.addButtonEvent)
+        ServiceLocator.analytics.track(.connectedProductsList, withProperties: ["action": "add_tapped", "context": viewConfiguration.trackingContext])
 
         let excludedProductIDs = dataSource.linkedProductIDs + [productID]
         let listSelector = ProductListSelectorViewController(excludedProductIDs: excludedProductIDs,
                                                              siteID: siteID) { [weak self] selectedProductIDs in
                                                                 if selectedProductIDs.isNotEmpty,
-                                                                   let productsAddedEvent = self?.viewConfiguration.productsAddedEvent {
-                                                                    ServiceLocator.analytics.track(productsAddedEvent)
+                                                                   let context = self?.viewConfiguration.trackingContext {
+                                                                    ServiceLocator.analytics.track(.connectedProductsList,
+                                                                                                   withProperties: ["action": "added", "context": context])
                                                                 }
                                                                 self?.dataSource.addProducts(selectedProductIDs)
                                                                 self?.navigationController?.popViewController(animated: true)
@@ -89,10 +90,9 @@ private extension LinkedProductsListSelectorViewController {
     }
 
     @objc func doneButtonTapped() {
-        let hasChangedData = dataSource.hasUnsavedChanges()
-        ServiceLocator.analytics.track(viewConfiguration.doneButtonTappedEvent, withProperties: [
-            "has_changed_data": hasChangedData
-        ])
+        if dataSource.hasUnsavedChanges() {
+            ServiceLocator.analytics.track(.connectedProductsList, withProperties: ["action": "done_tapped", "context": viewConfiguration.trackingContext])
+        }
 
         completeUpdating()
     }
@@ -179,21 +179,12 @@ private extension LinkedProductsListSelectorViewController {
 extension LinkedProductsListSelectorViewController {
     struct ViewConfiguration {
         let title: String
-        let addButtonEvent: WooAnalyticsStat
-        let productsAddedEvent: WooAnalyticsStat
-        let doneButtonTappedEvent: WooAnalyticsStat
-        let deleteButtonTappedEvent: WooAnalyticsStat
+        let trackingContext: String
 
         init(title: String,
-             addButtonEvent: WooAnalyticsStat,
-             productsAddedEvent: WooAnalyticsStat,
-             doneButtonTappedEvent: WooAnalyticsStat,
-             deleteButtonTappedEvent: WooAnalyticsStat) {
+             trackingContext: String) {
             self.title = title
-            self.addButtonEvent = addButtonEvent
-            self.productsAddedEvent = productsAddedEvent
-            self.doneButtonTappedEvent = doneButtonTappedEvent
-            self.deleteButtonTappedEvent = deleteButtonTappedEvent
+            self.trackingContext = trackingContext
         }
     }
 }

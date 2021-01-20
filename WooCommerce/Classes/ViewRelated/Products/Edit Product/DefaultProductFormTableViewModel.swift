@@ -12,7 +12,6 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     //
     var siteTimezone: TimeZone = TimeZone.siteTimezone
 
-    private let isEditProductsRelease5Enabled: Bool
     private let isAddProductVariationsEnabled: Bool
 
     init(product: ProductFormDataModel,
@@ -22,7 +21,6 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
-        self.isEditProductsRelease5Enabled = featureFlagService.isFeatureFlagEnabled(.editProductsRelease5)
         self.isAddProductVariationsEnabled = featureFlagService.isFeatureFlagEnabled(.addProductVariations)
         configureSections(product: product, actionsFactory: actionsFactory)
     }

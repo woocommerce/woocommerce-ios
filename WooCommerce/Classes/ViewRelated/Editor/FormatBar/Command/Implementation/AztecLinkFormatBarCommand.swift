@@ -66,8 +66,17 @@ private extension AztecLinkFormatBarCommand {
             }
         })
 
-        // TODO-1496: show the Link Settings as a popover.
         let navigationController = UINavigationController(rootViewController: linkController)
+        navigationController.modalPresentationStyle = .popover
+        navigationController.popoverPresentationController?.sourceView = richTextView
+        if richTextView.selectedRange.length > 0,
+           let textRange = richTextView.selectedTextRange,
+           let selectionRect = richTextView.selectionRects(for: textRange).first {
+            navigationController.popoverPresentationController?.sourceRect = selectionRect.rect
+        } else if let textRange = richTextView.selectedTextRange {
+            let caretRect = richTextView.caretRect(for: textRange.start)
+            navigationController.popoverPresentationController?.sourceRect = caretRect
+        }
         presenter?.present(navigationController, animated: true)
         richTextView.resignFirstResponder()
     }

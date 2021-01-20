@@ -10,11 +10,13 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit,
-                                                isEditProductsRelease5Enabled: false)
+                                                formType: .edit)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true), .reviews, .productType(editable: true)]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
+                                                                       .reviews,
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editShippingSettings,
@@ -32,11 +34,13 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit,
-                                                isEditProductsRelease5Enabled: false)
+                                                formType: .edit)
 
         // Assert
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true), .reviews, .productType(editable: true)]
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
+                                                                       .reviews,
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editInventorySettings, .editCategories, .editTags, .editShortDescription]
@@ -50,8 +54,7 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                formType: .edit,
-                                                isEditProductsRelease5Enabled: true)
+                                                formType: .edit)
 
         // Assert
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),

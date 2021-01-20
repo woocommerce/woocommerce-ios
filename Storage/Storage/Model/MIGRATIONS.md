@@ -2,6 +2,11 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 42 (Release 5.9.0.0)
+- @ctarda 2021-01-12
+- Add `OrderFeeLine`  entity.
+- Updated `Order` to add a `fees` relationship
+
 ## Model 41 (Release 5.8.0.0)
 - @ecarrion 2020-12-30
 - Add `ProductAttributeTerm`  entity.

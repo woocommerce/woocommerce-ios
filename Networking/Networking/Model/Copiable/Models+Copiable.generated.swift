@@ -29,7 +29,8 @@ extension Order {
         shippingAddress: NullableCopiableProp<Address> = .copy,
         shippingLines: CopiableProp<[ShippingLine]> = .copy,
         coupons: CopiableProp<[OrderCouponLine]> = .copy,
-        refunds: CopiableProp<[OrderRefundCondensed]> = .copy
+        refunds: CopiableProp<[OrderRefundCondensed]> = .copy,
+        fees: CopiableProp<[OrderFeeLine]> = .copy
     ) -> Order {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -56,6 +57,7 @@ extension Order {
         let shippingLines = shippingLines ?? self.shippingLines
         let coupons = coupons ?? self.coupons
         let refunds = refunds ?? self.refunds
+        let fees = fees ?? self.fees
 
         return Order(
             siteID: siteID,
@@ -82,7 +84,8 @@ extension Order {
             shippingAddress: shippingAddress,
             shippingLines: shippingLines,
             coupons: coupons,
-            refunds: refunds
+            refunds: refunds,
+            fees: fees
         )
     }
 }

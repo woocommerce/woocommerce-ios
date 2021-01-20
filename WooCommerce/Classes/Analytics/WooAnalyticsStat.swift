@@ -151,7 +151,6 @@ public enum WooAnalyticsStat: String {
     case orderNoteEmailCustomerToggled          = "add_order_note_email_note_to_customer_toggled"
     case orderDetailAddTrackingButtonTapped     = "order_detail_tracking_add_tracking_button_tapped"
     case orderDetailShowBillingTapped           = "order_detail_customer_info_show_billing_tapped"
-    case orderDetailFulfillButtonTapped         = "order_detail_fulfill_order_button_tapped"
     case orderDetailCustomerEmailTapped         = "order_detail_customer_info_email_menu_email_tapped"
     case orderDetailCustomerEmailMenuTapped     = "order_detail_customer_info_email_menu_tapped"
     case orderDetailCustomerPhoneMenuTapped     = "order_detail_customer_info_phone_menu_tapped"
@@ -164,14 +163,10 @@ public enum WooAnalyticsStat: String {
     case orderDetailTrackPackageButtonTapped    = "order_detail_track_package_button_tapped"
     case orderDetailTrackingDeleteButtonTapped  = "order_detail_tracking_delete_button_tapped"
     case orderFulfillmentCompleteButtonTapped   = "order_fulfillment_mark_order_complete_button_tapped"
-    case orderFulfillmentAddTrackingButtonTapped = "order_fulfillment_tracking_add_tracking_button_tapped"
-    case orderFulfillmentDeleteTrackingButtonTapped = "order_fulfillment_tracking_delete_button_tapped"
     case orderMarkedCompleteUndoButtonTapped    = "snack_order_marked_complete_undo_button_tapped"
-    case orderShareStoreButtonTapped            = "orders_list_share_your_store_button_tapped"
     case orderShipmentTrackingAddButtonTapped   = "order_shipment_tracking_add_button_tapped"
     case orderShipmentTrackingCarrierSelected   = "order_shipment_tracking_carrier_selected"
     case orderShipmentTrackingCustomProviderSelected = "order_shipment_tracking_custom_provider_selected"
-    case orderStatusDialogApplyButtonTapped     = "set_order_status_dialog_apply_button_tapped"
 
     // MARK: Order Data/Action Events
     //
@@ -299,6 +294,7 @@ public enum WooAnalyticsStat: String {
     case productShippingSettingsDoneButtonTapped = "product_shipping_settings_done_button_tapped"
     case productInventorySettingsDoneButtonTapped = "product_inventory_settings_done_button_tapped"
     case productDetailViewDownloadableFilesTapped = "product_detail_view_downloadable_files_tapped"
+    case productDetailViewLinkedProductsTapped = "product_detail_view_linked_products_tapped"
     case productDetailProductDeleted = "product_detail_product_deleted"
 
     // MARK: Edit Product Variation Events
@@ -341,12 +337,10 @@ public enum WooAnalyticsStat: String {
     case productReviewListLoaded = "product_reviews_loaded"
     case productReviewListLoadFailed = "product_reviews_load_failed"
 
-    // Edit Grouped Product Events
+    // Edit Linked and Grouped Products Events
     //
-    case groupedProductLinkedProductsDeleteButtonTapped = "grouped_product_linked_products_delete_tapped"
-    case groupedProductLinkedProductsAddButtonTapped = "grouped_product_linked_products_add_tapped"
-    case groupedProductLinkedProductsAdded = "grouped_product_linked_products_added"
-    case groupedProductLinkedProductsDoneButtonTapped = "grouped_product_linked_products_done_button_tapped"
+    case connectedProductsList = "connected_products_list"
+    case linkedProducts = "linked_products"
 
     // Edit Downloadable Products Events
     case productDownloadableFilesSettingsChanged = "product_downloadable_files_settings_changed"

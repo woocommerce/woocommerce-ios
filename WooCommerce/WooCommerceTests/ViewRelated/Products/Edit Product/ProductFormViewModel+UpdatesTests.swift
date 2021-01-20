@@ -13,8 +13,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         let newName = "<p> cool product </p>"
@@ -31,8 +30,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         let newDescription = "<p> cool product </p>"
@@ -49,8 +47,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         let newWeight = "9999.88"
@@ -83,8 +80,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         let newRegularPrice = "32.45"
@@ -116,8 +112,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         let newSKU = "94115"
@@ -149,8 +144,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         let newImage = ProductImage(imageID: 17,
@@ -173,8 +167,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         let categoryID = Int64(1234)
@@ -195,8 +188,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         let tagID = Int64(1234)
@@ -216,8 +208,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         let newShortDescription = "<p> deal of the day! </p>"
@@ -234,8 +225,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         let newStatus = "pending"
@@ -277,8 +267,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         let sku = "woooo"
@@ -295,8 +284,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         let externalURL = "woo.com"
@@ -315,8 +303,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         let groupedProductIDs: [Int64] = [630, 22]
@@ -333,8 +320,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         let newDownloadableFiles = MockProduct().sampleDownloadsMutated()

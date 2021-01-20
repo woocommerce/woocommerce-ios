@@ -200,6 +200,7 @@ private enum Fixtures {
         shippingAddress: nil,
         shippingLines: [],
         coupons: [],
-        refunds: []
+        refunds: [],
+        fees: []
     )
 }

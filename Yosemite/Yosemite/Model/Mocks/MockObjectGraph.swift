@@ -233,7 +233,8 @@ extension MockObjectGraph {
             shippingAddress: customer.billingAddress,
             shippingLines: [],
             coupons: [],
-            refunds: []
+            refunds: [],
+            fees: []
         )
     }
 }

@@ -10,6 +10,10 @@ final class LedgerTableViewCell: UITableViewCell {
     @IBOutlet private weak var discountLabel: UILabel!
     @IBOutlet private weak var discountValue: UILabel!
 
+    @IBOutlet private weak var feesView: UIView!
+    @IBOutlet private weak var feesLabel: UILabel!
+    @IBOutlet private weak var feesValue: UILabel!
+
     @IBOutlet private var shippingView: UIView!
     @IBOutlet private weak var shippingLabel: UILabel!
     @IBOutlet private weak var shippingValue: UILabel!
@@ -37,14 +41,18 @@ final class LedgerTableViewCell: UITableViewCell {
 
         discountLabel.text = viewModel.discountText
         discountValue.text = viewModel.discountValue
-        discountView.isHidden = viewModel.discountValue == nil
+        discountView.isHidden = viewModel.shouldHideDiscount
+
+        feesLabel.text = Titles.feesLabel
+        feesValue.text = viewModel.feesValue
+        feesView.isHidden = viewModel.shouldHideFees
 
         shippingLabel.text = Titles.shippingLabel
         shippingValue.text = viewModel.shippingValue
 
         taxesLabel.text = Titles.taxesLabel
         taxesValue.text = viewModel.taxesValue
-        taxesView.isHidden = taxesValue == nil
+        taxesView.isHidden = viewModel.shouldHideTaxes
 
         totalLabel.text = Titles.totalLabel
         totalValue.text = viewModel.totalValue
@@ -53,6 +61,8 @@ final class LedgerTableViewCell: UITableViewCell {
                                  subtotalValue as Any,
                                  discountLabel as Any,
                                  discountValue as Any,
+                                 feesLabel as Any,
+                                 feesValue as Any,
                                  shippingLabel as Any,
                                  shippingValue as Any,
                                  taxesLabel as Any,
@@ -72,6 +82,10 @@ final class LedgerTableViewCell: UITableViewCell {
         discountValue.text = nil
         discountView.isHidden = true
 
+        feesLabel.text = nil
+        feesValue.text = nil
+        feesView.isHidden = true
+
         shippingLabel.text = nil
         shippingValue.text = nil
         shippingView.isHidden = true
@@ -90,6 +104,8 @@ private extension LedgerTableViewCell {
     enum Titles {
         static let subtotalLabel = NSLocalizedString("Product Total",
                                                      comment: "Product Total label for payment view")
+        static let feesLabel = NSLocalizedString("Fees",
+                                                     comment: "Fees label for payment view")
         static let shippingLabel = NSLocalizedString("Shipping",
                                                      comment: "Shipping label for payment view")
         static let taxesLabel = NSLocalizedString("Taxes",
@@ -123,6 +139,14 @@ extension LedgerTableViewCell {
 
     func getDiscountValue() -> UILabel {
         return discountValue
+    }
+
+    func getFeesLabel() -> UILabel {
+        return feesLabel
+    }
+
+    func getFeesValue() -> UILabel {
+        return feesValue
     }
 
     func getShippingLabel() -> UILabel {
@@ -166,6 +190,8 @@ private extension LedgerTableViewCell {
         subtotalValue.applyBodyStyle()
         discountLabel.applyBodyStyle()
         discountValue.applyBodyStyle()
+        feesLabel.applyBodyStyle()
+        feesValue.applyBodyStyle()
         shippingLabel.applyBodyStyle()
         shippingValue.applyBodyStyle()
         taxesLabel.applyBodyStyle()

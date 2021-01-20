@@ -65,7 +65,8 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
 
         let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(storeID: siteID,
                                                                                                   command: OrderSearchUICommand(siteID: siteID),
-                                                                                                  cellType: OrderTableViewCell.self)
+                                                                                                  cellType: OrderTableViewCell.self,
+                                                                                                  cellSeparator: .singleLine)
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
         present(navigationController, animated: true, completion: nil)

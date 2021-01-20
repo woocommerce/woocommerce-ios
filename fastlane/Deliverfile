@@ -9,20 +9,13 @@
 # The Bundle Identifier in App Store Connect
 app_identifier "com.automattic.woocommerce"
 
-
 # This folder has to include one folder for each language
 screenshots_path "./fastlane/promo_screenshots/"
 
 # Make sure to update these keys for a new version
-app_version "5.7"
-
-privacy_url({
-  'default' => 'https://automattic.com/privacy/',
-})
+app_version "5.8"
 
 team_id "299112"
-
-copyright('2020 WooCommerce')
 
 skip_binary_upload true
 overwrite_screenshots true

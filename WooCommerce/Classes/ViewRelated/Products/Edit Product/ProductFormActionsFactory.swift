@@ -34,15 +34,11 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let product: EditableProductModel
     private let formType: ProductFormType
     private let editable: Bool
-    private let isEditProductsRelease5Enabled: Bool
 
-    init(product: EditableProductModel,
-         formType: ProductFormType,
-         isEditProductsRelease5Enabled: Bool) {
+    init(product: EditableProductModel, formType: ProductFormType) {
         self.product = product
         self.formType = formType
         self.editable = formType != .readonly
-        self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -93,8 +89,7 @@ private extension ProductFormActionsFactory {
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowProductTypeRow = formType != .add
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
-        let shouldShowDownloadableProduct = isEditProductsRelease5Enabled && product.downloadable
-        let shouldShowLinkedProducts = isEditProductsRelease5Enabled
+        let shouldShowDownloadableProduct = product.downloadable
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings(editable: editable),
@@ -105,7 +100,7 @@ private extension ProductFormActionsFactory {
             .tags(editable: editable),
             shouldShowDownloadableProduct ? .downloadableFiles: nil,
             .shortDescription(editable: editable),
-            shouldShowLinkedProducts ? .linkedProducts(editable: editable): nil,
+            .linkedProducts(editable: editable),
             shouldShowProductTypeRow ? .productType(editable: editable): nil
         ]
         return actions.compactMap { $0 }
@@ -116,7 +111,6 @@ private extension ProductFormActionsFactory {
         let shouldShowExternalURLRow = editable || product.product.externalURL?.isNotEmpty == true
         let shouldShowSKURow = editable || product.sku?.isNotEmpty == true
         let shouldShowProductTypeRow = formType != .add
-        let shouldShowLinkedProducts = isEditProductsRelease5Enabled
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings(editable: editable),
@@ -126,7 +120,7 @@ private extension ProductFormActionsFactory {
             .categories(editable: editable),
             .tags(editable: editable),
             .shortDescription(editable: editable),
-            shouldShowLinkedProducts ? .linkedProducts(editable: editable): nil,
+            .linkedProducts(editable: editable),
             shouldShowProductTypeRow ? .productType(editable: editable): nil
         ]
         return actions.compactMap { $0 }
@@ -136,7 +130,6 @@ private extension ProductFormActionsFactory {
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowSKURow = editable || product.sku?.isNotEmpty == true
         let shouldShowProductTypeRow = formType != .add
-        let shouldShowLinkedProducts = isEditProductsRelease5Enabled
 
         let actions: [ProductFormEditAction?] = [
             .groupedProducts(editable: editable),
@@ -145,7 +138,7 @@ private extension ProductFormActionsFactory {
             .categories(editable: editable),
             .tags(editable: editable),
             .shortDescription(editable: editable),
-            shouldShowLinkedProducts ? .linkedProducts(editable: editable): nil,
+            .linkedProducts(editable: editable),
             shouldShowProductTypeRow ? .productType(editable: editable): nil
         ]
         return actions.compactMap { $0 }
@@ -154,7 +147,6 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForVariableProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowProductTypeRow = formType != .add
-        let shouldShowLinkedProducts = isEditProductsRelease5Enabled
 
         let actions: [ProductFormEditAction?] = [
             .variations,
@@ -164,7 +156,7 @@ private extension ProductFormActionsFactory {
             .categories(editable: editable),
             .tags(editable: editable),
             .shortDescription(editable: editable),
-            shouldShowLinkedProducts ? .linkedProducts(editable: editable): nil,
+            .linkedProducts(editable: editable),
             shouldShowProductTypeRow ? .productType(editable: editable): nil
         ]
         return actions.compactMap { $0 }
@@ -173,7 +165,6 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForNonCoreProduct() -> [ProductFormEditAction] {
         let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
         let shouldShowReviewsRow = product.reviewsAllowed
-        let shouldShowLinkedProducts = isEditProductsRelease5Enabled
 
         let actions: [ProductFormEditAction?] = [
             shouldShowPriceSettingsRow ? .priceSettings(editable: false): nil,
@@ -182,7 +173,7 @@ private extension ProductFormActionsFactory {
             .categories(editable: editable),
             .tags(editable: editable),
             .shortDescription(editable: editable),
-            shouldShowLinkedProducts ? .linkedProducts(editable: editable): nil,
+            .linkedProducts(editable: editable),
             .productType(editable: false)
         ]
         return actions.compactMap { $0 }
@@ -220,10 +211,10 @@ private extension ProductFormActionsFactory {
         case .tags:
             return product.product.tags.isNotEmpty
         case .linkedProducts:
-            return isEditProductsRelease5Enabled && (product.upsellIDs.count > 0 || product.crossSellIDs.count > 0)
+            return (product.upsellIDs.count > 0 || product.crossSellIDs.count > 0)
         // Downloadable files. Only core product types for downloadable files are able to handle downloadable files.
         case .downloadableFiles:
-            return isEditProductsRelease5Enabled && product.downloadable
+            return product.downloadable
         case .shortDescription:
             return product.shortDescription.isNilOrEmpty == false
         // Affiliate products only.

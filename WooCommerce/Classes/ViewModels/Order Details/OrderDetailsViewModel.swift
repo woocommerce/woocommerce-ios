@@ -6,6 +6,7 @@ import MessageUI
 
 final class OrderDetailsViewModel {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+    private let stores: StoresManager
 
     private(set) var order: Order
 
@@ -13,8 +14,9 @@ final class OrderDetailsViewModel {
         return lookUpOrderStatus(for: order)
     }
 
-    init(order: Order) {
+    init(order: Order, stores: StoresManager = ServiceLocator.stores) {
         self.order = order
+        self.stores = stores
     }
 
     func update(order newOrder: Order) {
@@ -128,10 +130,6 @@ extension OrderDetailsViewModel {
     func configureResultsControllers(onReload: @escaping () -> Void) {
         dataSource.configureResultsControllers(onReload: onReload)
     }
-
-    func updateOrderStatus(order: Order) {
-        update(order: order)
-    }
 }
 
 
@@ -142,7 +140,6 @@ extension OrderDetailsViewModel {
     ///
     func registerTableViewCells(_ tableView: UITableView) {
         let cells = [
-            TopLeftImageTableViewCell.self,
             LeftImageTableViewCell.self,
             CustomerNoteTableViewCell.self,
             CustomerInfoTableViewCell.self,
@@ -264,9 +261,14 @@ extension OrderDetailsViewModel {
     }
 }
 
-
 // MARK: - Syncing data. Yosemite related stuff
+
 extension OrderDetailsViewModel {
+    /// Dispatches a network call in order to update `self.order`'s `status` to `.completed`.
+    func markCompleted() -> OrderFulfillmentUseCase.FulfillmentProcess {
+        OrderFulfillmentUseCase(order: order, stores: stores).fulfill()
+    }
+
     func syncOrder(onCompletion: ((Order?, Error?) -> ())? = nil) {
         let action = OrderAction.retrieveOrder(siteID: order.siteID, orderID: order.orderID) { (order, error) in
             guard let _ = order else {
@@ -278,7 +280,7 @@ extension OrderDetailsViewModel {
             onCompletion?(order, nil)
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
@@ -297,7 +299,7 @@ extension OrderDetailsViewModel {
                                                                         onCompletion?(nil)
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func syncNotes(onCompletion: ((Error?) -> ())? = nil) {
@@ -315,7 +317,7 @@ extension OrderDetailsViewModel {
             onCompletion?(nil)
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
@@ -330,7 +332,7 @@ extension OrderDetailsViewModel {
             onCompletion?(nil)
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func syncProductVariations(onCompletion: ((Error?) -> ())? = nil) {
@@ -342,7 +344,7 @@ extension OrderDetailsViewModel {
             }
             onCompletion?(nil)
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func syncRefunds(onCompletion: ((Error?) -> ())? = nil) {
@@ -358,7 +360,7 @@ extension OrderDetailsViewModel {
             onCompletion?(nil)
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func syncShippingLabels(onCompletion: ((Error?) -> ())? = nil) {
@@ -373,7 +375,7 @@ extension OrderDetailsViewModel {
                 onCompletion?(error)
             }
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func deleteTracking(_ tracking: ShipmentTracking, onCompletion: @escaping (Error?) -> Void) {
@@ -406,7 +408,7 @@ extension OrderDetailsViewModel {
 
         }
 
-        ServiceLocator.stores.dispatch(deleteTrackingAction)
+        stores.dispatch(deleteTrackingAction)
     }
 }
 

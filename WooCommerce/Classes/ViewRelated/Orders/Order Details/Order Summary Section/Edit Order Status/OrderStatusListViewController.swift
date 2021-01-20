@@ -75,6 +75,7 @@ final class OrderStatusListViewController: UIViewController {
         }
 
         tableView.reloadData()
+        preselectStatusIfPossible()
     }
 
     private func preselectStatusIfPossible() {

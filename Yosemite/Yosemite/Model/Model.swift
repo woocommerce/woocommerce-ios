@@ -32,6 +32,8 @@ public typealias OrderItemRefund = Networking.OrderItemRefund
 public typealias OrderItemTaxRefund = Networking.OrderItemTaxRefund
 public typealias OrderStatusEnum = Networking.OrderStatusEnum
 public typealias OrderCouponLine = Networking.OrderCouponLine
+public typealias OrderFeeLine = Networking.OrderFeeLine
+public typealias OrderFeeTaxStatus = Networking.OrderFeeTaxStatus
 public typealias OrderNote = Networking.OrderNote
 public typealias OrderRefundCondensed = Networking.OrderRefundCondensed
 public typealias OrderStatsV4 = Networking.OrderStatsV4
@@ -53,6 +55,7 @@ public typealias ProductTag = Networking.ProductTag
 public typealias ProductTaxStatus = Networking.ProductTaxStatus
 public typealias ProductImage = Networking.ProductImage
 public typealias ProductAttribute = Networking.ProductAttribute
+public typealias ProductAttributeTerm = Networking.ProductAttributeTerm
 public typealias ProductDimensions = Networking.ProductDimensions
 public typealias ProductDefaultAttribute = Networking.ProductDefaultAttribute
 public typealias ProductDownload = Networking.ProductDownload
@@ -84,6 +87,7 @@ public typealias TaxClass = Networking.TaxClass
 public typealias TopEarnerStats = Networking.TopEarnerStats
 public typealias TopEarnerStatsItem = Networking.TopEarnerStatsItem
 public typealias WooAPIVersion = Networking.WooAPIVersion
+public typealias StoredProductSettings = Networking.StoredProductSettings
 
 
 // MARK: - Exported Storage Symbols
@@ -105,6 +109,7 @@ public typealias StoragePreselectedProvider = Storage.PreselectedProvider
 public typealias StorageProduct = Storage.Product
 public typealias StorageProductDimensions = Storage.ProductDimensions
 public typealias StorageProductAttribute = Storage.ProductAttribute
+public typealias StorageProductAttributeTerm = Storage.ProductAttributeTerm
 public typealias StorageProductImage = Storage.ProductImage
 public typealias StorageProductCategory = Storage.ProductCategory
 public typealias StorageProductDefaultAttribute = Storage.ProductDefaultAttribute

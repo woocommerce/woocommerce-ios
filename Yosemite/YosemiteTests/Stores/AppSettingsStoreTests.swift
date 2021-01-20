@@ -192,7 +192,7 @@ final class AppSettingsStoreTests: XCTestCase {
         // Given
         let date = Date(timeIntervalSince1970: 100)
 
-        let (existingSettings, feedback) = createAppSettingAndGeneralFeedback(instalationDate: Date(timeIntervalSince1970: 4_810),
+        let (existingSettings, feedback) = createAppSettingAndGeneralFeedback(installationDate: Date(timeIntervalSince1970: 4_810),
                                                                               feedbackSatus: .given(Date(timeIntervalSince1970: 9_971_311)))
         try fileStorage?.write(existingSettings, to: expectedGeneralAppSettingsFileURL)
 
@@ -304,7 +304,7 @@ final class AppSettingsStoreTests: XCTestCase {
         // Given
         let date = Date(timeIntervalSince1970: 300)
 
-        let (existingSettings, feedback) = createAppSettingAndGeneralFeedback(instalationDate: Date(timeIntervalSince1970: 1),
+        let (existingSettings, feedback) = createAppSettingAndGeneralFeedback(installationDate: Date(timeIntervalSince1970: 1),
                                                                               feedbackSatus: .given(Date(timeIntervalSince1970: 999)))
 
         try fileStorage?.write(existingSettings, to: expectedGeneralAppSettingsFileURL)
@@ -421,9 +421,9 @@ private extension AppSettingsStoreTests {
         return documents!.appendingPathComponent("general-app-settings.plist")
     }
 
-    func createAppSettingAndGeneralFeedback(instalationDate: Date?, feedbackSatus: FeedbackSettings.Status) -> (GeneralAppSettings, FeedbackSettings) {
+    func createAppSettingAndGeneralFeedback(installationDate: Date?, feedbackSatus: FeedbackSettings.Status) -> (GeneralAppSettings, FeedbackSettings) {
         let feedback = FeedbackSettings(name: .general, status: feedbackSatus)
-        let settings = GeneralAppSettings(installationDate: instalationDate, feedbacks: [feedback.name: feedback])
+        let settings = GeneralAppSettings(installationDate: installationDate, feedbacks: [feedback.name: feedback])
         return (settings, feedback)
     }
 }

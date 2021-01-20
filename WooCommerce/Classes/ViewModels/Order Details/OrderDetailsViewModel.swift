@@ -416,10 +416,3 @@ extension OrderDetailsViewModel {
         stores.dispatch(deleteTrackingAction)
     }
 }
-
-private extension OrderDetailsViewModel {
-
-    enum Constants {
-        static let orderStatusListSegue = "ShowOrderStatusListViewController"
-    }
-}

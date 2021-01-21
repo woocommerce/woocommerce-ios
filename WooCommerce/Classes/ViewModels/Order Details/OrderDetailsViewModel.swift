@@ -238,6 +238,7 @@ extension OrderDetailsViewModel {
             ServiceLocator.analytics.track(.orderDetailProductDetailTapped)
             let identifier = ProductListViewController.classNameWithoutNamespaces
             guard let productListVC = UIStoryboard.orders.instantiateViewController(identifier: identifier) as? ProductListViewController else {
+                DDLogError("Error: attempted to instantiate ProductListViewController. Instantiation failed.")
                 return
             }
             productListVC.viewModel = self

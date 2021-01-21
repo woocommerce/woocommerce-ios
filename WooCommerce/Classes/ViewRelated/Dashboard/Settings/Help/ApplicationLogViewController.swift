@@ -217,6 +217,7 @@ private extension ApplicationLogViewController {
 
         let identifier = ApplicationLogDetailViewController.classNameWithoutNamespaces
         guard let appLogDetailVC = UIStoryboard.dashboard.instantiateViewController(identifier: identifier) as? ApplicationLogDetailViewController else {
+            DDLogError("Error: attempted to instantiate ApplicationLogDetailViewController. Instantiation failed.")
             return
         }
         do {

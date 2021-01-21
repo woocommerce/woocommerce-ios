@@ -271,6 +271,7 @@ private extension HelpAndSupportViewController {
     func applicationLogWasPressed() {
         let identifier = ApplicationLogViewController.classNameWithoutNamespaces
         guard let applicationLogVC = UIStoryboard.dashboard.instantiateViewController(identifier: identifier) as? ApplicationLogViewController else {
+            DDLogError("Error: attempted to instantiate ApplicationLogViewController. Instantiation failed.")
             return
         }
         navigationController?.pushViewController(applicationLogVC, animated: true)

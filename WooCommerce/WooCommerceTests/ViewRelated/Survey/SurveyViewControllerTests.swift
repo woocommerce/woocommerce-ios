@@ -30,9 +30,9 @@ final class SurveyViewControllerTests: XCTestCase {
         _ = try XCTUnwrap(viewController.view)
         let mirror = try self.mirror(of: viewController)
 
-        //Then
+        // Then
         XCTAssertTrue(mirror.webView.isLoading)
-        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.productsM4Feedback.asURL().tagPlatform("ios").tagProductMilestone("4"))
+        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.productsM4Feedback.asURL().tagPlatform("ios").tagProductMilestone("5"))
     }
 
     func test_it_completes_after_receiving_a_form_submitted_completed_callback_request() throws {

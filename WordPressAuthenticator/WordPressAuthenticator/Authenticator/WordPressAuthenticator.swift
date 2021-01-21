@@ -174,7 +174,7 @@ import WordPressKit
     public class func loginUI(showCancel: Bool = false, restrictToWPCom: Bool = false, onLoginButtonTapped: (() -> Void)? = nil) -> UIViewController? {
         let storyboard = Storyboard.login.instance
         guard let controller = storyboard.instantiateInitialViewController() else {
-            assertionFailure("Cannot instantiate login root controller from Storyboard")
+            assertionFailure("Cannot instantiate initial login controller from Login.storyboard")
             return nil
         }
         if let childController = controller.children.first as? LoginPrologueViewController {

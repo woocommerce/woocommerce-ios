@@ -318,13 +318,10 @@ private extension TwoFAViewController {
         }
 
         if #available(iOS 14.0, *) {
-            UIPasteboard.general.detect(patterns: [.number]) { [weak self] result in
+            UIPasteboard.general.detectAuthenticatorCode() { [weak self] result in
                 switch result {
-                    case .success(let detections):
-                        if let pasteCode = detections.first?.value as? Int {
-                            let pasteString = String(pasteCode)
-                            self?.handle(code: pasteString, textField: codeField)
-                        }
+                    case .success(let authenticatorCode):
+                        self?.handle(code: authenticatorCode, textField: codeField)
                     case .failure:
                         break
                 }

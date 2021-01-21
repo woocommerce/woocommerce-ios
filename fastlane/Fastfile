@@ -150,11 +150,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   lane :new_beta_release do | options |
     ios_betabuild_prechecks(options)
     ios_update_metadata(options)
-    violations = ios_lint_localizations(input_dir: 'WooCommerce/Resources', abort_on_violations: false)
-    unless (violations.nil? || violations.empty?)
-      abort = UI.confirm("Violations found, we suggest fixing them in GlotPress first and retrying the beta afterwards. Abort?")
-      UI.abort_with_message!("Aborting the beta due to localization violations. Reach out to i18n folks to help you fix them.") if abort
-    end
+    ios_lint_localizations(input_dir: 'WooCommerce/Resources', allow_retry: true)
     ios_bump_version_beta()
     ios_tag_build()
   end
@@ -212,7 +208,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     ios_finalize_prechecks(options)
     unless ios_current_branch_is_hotfix
       ios_update_metadata(options)
-      ios_lint_localizations(input_dir: 'WooCommerce/Resources')
+      ios_lint_localizations(input_dir: 'WooCommerce/Resources', allow_retry: true)
       ios_bump_version_beta()
     end
     ios_final_tag(options)
@@ -404,6 +400,9 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     # Ensure we're using the latest Pods
     sh('bundle exec pod install --verbose')
 
+    # Ensure we're using the right version of Xcode
+    xcversion(version: "~> 12.0")
+
     scan(
       workspace: File.join(fastlane_directory, "../WooCommerce.xcworkspace"),
       scheme: "WooCommerceScreenshots",
@@ -414,6 +413,9 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
 
   desc "Take Screenshots"
   lane :take_screenshots do | options |
+
+    # Ensure we're using the right version of Xcode
+    xcversion(version: "~> 12.0")
 
     # By default, clear previous screenshots
     languages = ios_locales
@@ -471,7 +473,10 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       stop_after_first_error: true,
 
       # Allow the caller to invoke dark mode
-      dark_mode: options[:mode].to_s.downcase == "dark"
+      dark_mode: options[:mode].to_s.downcase == "dark",
+
+      # Make the status bar pretty
+      override_status_bar: true,
     )
 
   end
@@ -699,7 +704,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   end
 
   def ios_locales
-    "ar de-DE es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant en-US".split()
+    "ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant".split()
   end
 
   def glotpress_locales
@@ -730,7 +735,7 @@ end
   end
 
   def simulator_version()
-    return '13.3'
+    return '14.3'
   end
 
 ########################################################################

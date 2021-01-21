@@ -126,7 +126,7 @@ private extension ProductListViewController {
     func productWasPressed(orderItem: OrderItem) {
         let loaderViewController = ProductLoaderViewController(model: .init(orderItem: orderItem),
                                                                siteID: viewModel.order.siteID,
-                                                               forceReadOnly: false)
+                                                               forceReadOnly: true)
         let navController = WooNavigationController(rootViewController: loaderViewController)
         present(navController, animated: true, completion: nil)
     }

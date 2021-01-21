@@ -19,6 +19,11 @@ public class AccountStore: Store {
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
+    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: AccountRemote) {
+        self.remote = remote
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {

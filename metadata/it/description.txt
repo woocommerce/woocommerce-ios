@@ -1,14 +1,22 @@
-VISUALIZZA E GESTISCI GLI ORDINI
-Scorri, filtra o controlla un ordine specifico. Tocca per visualizzare le informazioni relative all'ordine, tra cui i prodotti, il valore, i dati del cliente, i dettagli della spedizione e le note.
+Gestisci la tua attività mentre sei in movimento con l'app per dispositivi mobili WooCommerce. Crea prodotti, elabora gli ordini e controlla le statistiche principali in tempo reale.
 
-TRACCIA IL TUO NEGOZIO
-Guarda quali prodotti hanno maggior successo. Controlla il fatturato generale e visualizza l'ordine e i dati dei visitatori per settimana, mese e anno.
+AGGIUNGI PRODOTTI
+Crea, raggruppa e pubblica i prodotti direttamente dal tuo iPhone o iPad. Cogli la tua creatività sul momento: trasforma le tue idee in prodotti in pochi secondi o salvale come bozze per un secondo momento.
 
-AVVISI DEGLI ORDINI IN TEMPO REALE
-Ottieni notifiche sull'attività del negozio, tra cui i nuovi ordini e le recensioni del prodotto.
+RICEVI NOTIFICHE
+Non perdere mai un ordine o una recensione. Tieni a bada la tua FOMO abilitando gli avvisi in tempo reale e tieni l'orecchio teso per sentire il suono della cassa che si chiude ogni volta che incassi con una nuova vendita.
 
-WooCommerce è la piattaforma di eCommerce maggiormente personalizzabile per costruire il tuo business online. Costruito sulla base di WordPress, è integrato con i migliori strumenti al mondo per la gestione dei contenuti.
+VISUALIZZA E MODIFICA ORDINI
+Scorri i riepiloghi o cerca per specifiche del cliente o dell'ordine. Tocca i dettagli per visualizzare la fatturazione dettagliata, per iniziare la compilazione e per modificare lo stato dell'ordine. Aggiungi note all'ordine o invia e-mail direttamente ai clienti per il follow-up.
 
-Requisiti: WooCommerce v3.5+, il plugin di Jetpack.
+TIENI TRACCIA DELLE TUE STATISTICHE
+Visualizza in un solo colpo d'occhio quali prodotti stanno vendendo di più. Tieni sotto controllo il fatturato generale, il conteggio degli ordini e i dati dei visitatori per settimana, mese e anno. Conoscenza = forza!
+
+PASSA DA UN NEGOZIO ALL'ALTRO
+Se ne hai più di una, passa con facilità da un'attività all'altra in pochi secondi.
+
+WooCommerce è la piattaforma open-source di eCommerce più personalizzabile al mondo. Indipendentemente dal fatto che tu stia avviando un'attività, portando un negozio reale online o progettando siti per clienti, utilizza WooCommerce per avere un negozio che unisce in modo potente contenuto e affari.
+
+Requisiti: WooCommerce v3.5 o versione superiore, il plugin di Jetpack.
 
 Consulta la nota sulla privacy per utenti in California su https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ULAccountMismatchViewController" customModule="WooCommerce" customModuleProvider="target">
+            <connections>
+                <outlet property="buttonViewLeadingConstraint" destination="r9Z-y5-j3W" id="bWb-vV-0U2"/>
+                <outlet property="buttonViewTrailingConstraint" destination="3Fe-tr-bmb" id="DjF-95-KFx"/>
+                <outlet property="errorMessage" destination="a2d-le-aKc" id="YgT-Ex-Gwh"/>
+                <outlet property="extraInfoButton" destination="GOR-hg-dbC" id="I7z-hN-FAo"/>
+                <outlet property="gravatarImageView" destination="Np4-PU-IRZ" id="WK3-f5-Ye2"/>
+                <outlet property="imageView" destination="Osv-Wo-lxW" id="yIN-vL-DOA"/>
+                <outlet property="logOutButton" destination="s2i-wr-qJf" id="yxc-ia-1rX"/>
+                <outlet property="primaryButton" destination="ZHa-is-GJK" id="wzn-TJ-1Sm"/>
+                <outlet property="singedInAsLabel" destination="emS-Tp-OXA" id="ajb-UO-YDy"/>
+                <outlet property="stackViewLeadingConstraint" destination="jMe-jj-6Bt" id="JnU-my-QgI"/>
+                <outlet property="stackViewTrailingConstraint" destination="Z7E-hC-lbB" id="RHp-Ac-R58"/>
+                <outlet property="userNameLabel" destination="iWC-nR-Ao9" id="ooC-C0-xay"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+                <outlet property="wrongAccountLabel" destination="gb2-Fe-8kd" id="ikk-a9-gTF"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="10Z-y1-ZQ6" userLabel="Action Background View">
+                    <rect key="frame" x="0.0" y="772" width="414" height="90"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="mhI-fa-Yzw">
+                            <rect key="frame" x="20" y="20" width="374" height="50"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZHa-is-GJK" userLabel="secondary action button" customClass="NUXButton" customModule="WordPressAuthenticator">
+                                    <rect key="frame" x="0.0" y="0.0" width="374" height="50"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="50" id="Gcd-Af-CS9"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                    <state key="normal" title="Primary Action Button">
+                                        <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </state>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="YES"/>
+                                    </userDefinedRuntimeAttributes>
+                                </button>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="mhI-fa-Yzw" secondAttribute="trailing" constant="20" id="8gH-vs-D9H"/>
+                        <constraint firstAttribute="bottomMargin" secondItem="mhI-fa-Yzw" secondAttribute="bottom" constant="12" id="PGb-Bi-220"/>
+                        <constraint firstItem="mhI-fa-Yzw" firstAttribute="top" secondItem="10Z-y1-ZQ6" secondAttribute="top" constant="20" id="elI-Eo-HER"/>
+                        <constraint firstItem="mhI-fa-Yzw" firstAttribute="leading" secondItem="10Z-y1-ZQ6" secondAttribute="leading" constant="20" id="vz3-FU-z4g"/>
+                    </constraints>
+                </view>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="jIt-xb-rrN">
+                    <rect key="frame" x="34" y="166.5" width="346" height="533"/>
+                    <subviews>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Np4-PU-IRZ" customClass="CircularImageView" customModule="WooCommerce" customModuleProvider="target">
+                            <rect key="frame" x="143" y="0.0" width="60" height="60"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="60" id="eVb-vV-gev"/>
+                                <constraint firstAttribute="height" constant="60" id="hAK-uZ-REW"/>
+                            </constraints>
+                        </imageView>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="hKL-EJ-A3J">
+                            <rect key="frame" x="126.5" y="92" width="93.5" height="78.5"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iWC-nR-Ao9">
+                                    <rect key="frame" x="26" y="0.0" width="41.5" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="emS-Tp-OXA">
+                                    <rect key="frame" x="26" y="26.5" width="41.5" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" horizontalCompressionResistancePriority="250" alignment="firstBaseline" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="Hqt-oI-j1i">
+                                    <rect key="frame" x="0.0" y="53" width="93.5" height="25.5"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gb2-Fe-8kd">
+                                            <rect key="frame" x="0.0" y="0.0" width="41.5" height="20.5"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s2i-wr-qJf">
+                                            <rect key="frame" x="47.5" y="-4.5" width="46" height="30"/>
+                                            <state key="normal" title="Button"/>
+                                        </button>
+                                    </subviews>
+                                </stackView>
+                            </subviews>
+                        </stackView>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="woo-no-jetpack-error" translatesAutoresizingMaskIntoConstraints="NO" id="Osv-Wo-lxW">
+                            <rect key="frame" x="32.5" y="202.5" width="281" height="150"/>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a2d-le-aKc">
+                            <rect key="frame" x="0.0" y="384.5" width="346" height="86.5"/>
+                            <string key="text">Qui eum est quo et recusandae ut. Hic cupiditate nobis et pariatur quidem dolorum. Doloribus est tempora ipsam eius. Quos ab et aspernatur velit corporis aut rem.</string>
+                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                            <color key="textColor" systemColor="secondaryLabelColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GOR-hg-dbC" userLabel="Action Button">
+                            <rect key="frame" x="59" y="503" width="228" height="30"/>
+                            <constraints>
+                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="228" id="Dh0-gH-21U"/>
+                            </constraints>
+                            <state key="normal" title="Action Button"/>
+                        </button>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="10Z-y1-ZQ6" secondAttribute="trailing" id="3Fe-tr-bmb"/>
+                <constraint firstItem="jIt-xb-rrN" firstAttribute="top" relation="greaterThanOrEqual" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="8" id="4vu-ll-3S2"/>
+                <constraint firstAttribute="trailing" secondItem="jIt-xb-rrN" secondAttribute="trailing" constant="34" id="Z7E-hC-lbB"/>
+                <constraint firstItem="jIt-xb-rrN" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" constant="-20" id="ZZg-jd-e4d"/>
+                <constraint firstItem="jIt-xb-rrN" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="34" id="jMe-jj-6Bt"/>
+                <constraint firstItem="10Z-y1-ZQ6" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="r9Z-y5-j3W"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="10Z-y1-ZQ6" secondAttribute="bottom" id="rPP-rT-zVR"/>
+            </constraints>
+            <point key="canvasLocation" x="137.68115942028987" y="86.383928571428569"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="woo-no-jetpack-error" width="281" height="150"/>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

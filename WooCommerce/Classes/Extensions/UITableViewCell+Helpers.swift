@@ -22,7 +22,9 @@ extension UITableViewCell {
     /// Be careful applying this to a reusable cell where the separator is expected to be shown in some cases.
     ///
     func hideSeparator() {
-        separatorInset = UIEdgeInsets(top: 0, left: separatorInset.left, bottom: 0, right: .greatestFiniteMagnitude)
+        // Using `CGFloat.greatestFiniteMagnitude` for the right separator inset would not work if the cell is initially configured with `hideSeparator()` then
+        // updated with `showSeparator()` later after the table view is rendered - the separator would not be shown again.
+        separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 999999)
     }
 
     /// Shows the separator for a cell.

@@ -24,7 +24,7 @@ final class SurveyViewControllerTests: XCTestCase {
 
     func test_it_loads_the_correct_product_feedback_survey() throws {
         // Given
-        let viewController = SurveyViewController(survey: .productsM4Feedback, onCompletion: {})
+        let viewController = SurveyViewController(survey: .productsM5Feedback, onCompletion: {})
 
         // When
         _ = try XCTUnwrap(viewController.view)

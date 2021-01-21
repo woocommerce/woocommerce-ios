@@ -566,7 +566,7 @@ private extension ProductsViewController {
     ///
     func presentProductsFeedback() {
         // Present survey
-        let navigationController = SurveyCoordinatingController(survey: .productsM4Feedback)
+        let navigationController = SurveyCoordinatingController(survey: .productsM5Feedback)
         present(navigationController, animated: true, completion: nil)
     }
 

@@ -21,7 +21,7 @@ class BaseScreen {
     func waitForPage() throws -> BaseScreen {
         XCTContext.runActivity(named: "Confirm page \(self) is loaded") { (activity) in
             /// Don't use a waiter if it's already enabled – this will make the test run faster
-            guard !expectedElement.isEnabled else {
+            guard let expectedElement = expectedElement, !expectedElement.isEnabled else {
                 return
             }
             let result = waitFor(element: expectedElement, predicate: "isEnabled == true", timeout: 20)

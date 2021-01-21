@@ -77,7 +77,7 @@ extension SurveyViewController {
                 return WooConstants.URLs.productsM4Feedback
                     .asURL()
                     .tagPlatform("ios")
-                    .tagProductMilestone("4")
+                    .tagProductMilestone("5")
             case .shippingLabelsRelease1Feedback:
                 return WooConstants.URLs.shippingLabelsRelease1Feedback
                     .asURL()

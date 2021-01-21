@@ -36,17 +36,16 @@ final class AppCoordinator {
             .sink {  [weak self] isLoggedIn, needsDefaultStore in
                 guard let self = self else { return }
 
-                if isLoggedIn == false {
-                    // When logging out, we only want to display the authenticator when `isLoggedIn` is `false` and `needsDefaultStore` is `true`.
-                    if needsDefaultStore {
-                        self.displayAuthenticator()
-                    }
-                } else {
-                    if needsDefaultStore {
-                        self.displayStorePicker()
-                    } else {
-                        self.window.rootViewController = self.tabBarController
-                    }
+                // More details about the UI states: https://github.com/woocommerce/woocommerce-ios/pull/3498
+                switch (isLoggedIn, needsDefaultStore) {
+                case (false, true):
+                    self.displayAuthenticator()
+                case (true, true):
+                    self.displayStorePicker()
+                case (true, false):
+                    self.displayLoggedInUI()
+                default:
+                    break
                 }
                 self.isLoggedIn = isLoggedIn
             }
@@ -58,13 +57,17 @@ private extension AppCoordinator {
     ///
     func displayAuthenticator() {
         let authenticationUI = authenticationManager.authenticationUI()
-        window.rootViewController = authenticationUI
-        ServiceLocator.analytics.track(.openedLogin)
-
-        UIView.transition(with: window, duration: Constants.animationDuration, options: .transitionCrossDissolve, animations: {}, completion: { [weak self] _ in
+        setWindowRootViewControllerAndAnimateIfNeeded(authenticationUI) { [weak self] _ in
             guard let self = self else { return }
             self.tabBarController.removeViewControllers()
-        })
+        }
+        ServiceLocator.analytics.track(.openedLogin)
+    }
+
+    /// Displays logged in tab bar UI.
+    ///
+    func displayLoggedInUI() {
+        setWindowRootViewControllerAndAnimateIfNeeded(tabBarController)
     }
 
     /// If the app is authenticated but there is no default store ID on launch: Let's display the Store Picker.
@@ -78,7 +81,7 @@ private extension AppCoordinator {
 
         DDLogInfo("💬 Authenticated user does not have a Woo store selected — launching store picker.")
         let navigationController = UINavigationController()
-        window.rootViewController = navigationController
+        setWindowRootViewControllerAndAnimateIfNeeded(navigationController)
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .standard)
         storePickerCoordinator?.start()
         storePickerCoordinator?.onDismiss = { [weak self] in
@@ -86,6 +89,17 @@ private extension AppCoordinator {
             if self.isLoggedIn == false {
                 self.displayAuthenticator()
             }
+        }
+    }
+}
+
+private extension AppCoordinator {
+    func setWindowRootViewControllerAndAnimateIfNeeded(_ rootViewController: UIViewController, onCompletion: @escaping (Bool) -> Void = { _ in }) {
+        // Animates window transition only if the root view controller is non-nil originally.
+        let shouldAnimate = window.rootViewController != nil
+        window.rootViewController = rootViewController
+        if shouldAnimate {
+            UIView.transition(with: window, duration: Constants.animationDuration, options: .transitionCrossDissolve, animations: {}, completion: onCompletion)
         }
     }
 }

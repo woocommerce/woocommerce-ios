@@ -113,15 +113,19 @@ class AuthenticationManager: Authentication {
     /// Returns the Login Flow view controller.
     ///
     func authenticationUI() -> UIViewController {
-        guard let loginViewController = WordPressAuthenticator.loginUI(onLoginButtonTapped: { [weak self] in
-            guard let self = self else { return }
-            // Resets Apple ID at the beginning of the authentication.
-            self.appleUserID = nil
+        let loginViewController: UIViewController = {
+            let loginUI = WordPressAuthenticator.loginUI(onLoginButtonTapped: { [weak self] in
+                guard let self = self else { return }
+                // Resets Apple ID at the beginning of the authentication.
+                self.appleUserID = nil
 
-            ServiceLocator.analytics.track(.loginPrologueContinueTapped)
-        }) else {
-            fatalError("Cannot instantiate login UI from WordPressAuthenticator")
-        }
+                ServiceLocator.analytics.track(.loginPrologueContinueTapped)
+            })
+            guard let loginVC = loginUI else {
+                fatalError("Cannot instantiate login UI from WordPressAuthenticator")
+            }
+            return loginVC
+        }()
         return loginViewController
     }
 

@@ -140,10 +140,12 @@ private extension LinkedProductsViewController {
 
     func configureUpsellsProducts(cell: NumberOfLinkedProductsTableViewCell) {
         cell.configure(content: Localization.upsellAndCrossSellProducts(count: viewModel.upsellIDs.count))
+        cell.selectionStyle = .none
     }
 
     func configureCrossSellsProducts(cell: NumberOfLinkedProductsTableViewCell) {
         cell.configure(content: Localization.upsellAndCrossSellProducts(count: viewModel.crossSellIDs.count))
+        cell.selectionStyle = .none
     }
 
     func configureUpsellsButton(cell: ButtonTableViewCell) {

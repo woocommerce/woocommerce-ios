@@ -550,20 +550,6 @@ extension OrderDetailsViewController: UITableViewDelegate {
     }
 }
 
-
-// MARK: - Segues
-//
-extension OrderDetailsViewController {
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let productListViewController = segue.destination as? ProductListViewController {
-            productListViewController.viewModel = viewModel
-            productListViewController.products = viewModel.products
-        }
-    }
-}
-
-
 // MARK: - Trackings alert
 // Track / delete tracking alert
 private extension OrderDetailsViewController {

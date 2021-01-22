@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -18,20 +18,20 @@
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" layoutMarginsFollowReadableWidth="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="hwi-He-cKY">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <color key="backgroundColor" systemColor="groupTableViewBackgroundColor"/>
                                 <connections>
                                     <outlet property="dataSource" destination="tLZ-3e-cJY" id="uum-dx-Yau"/>
                                     <outlet property="delegate" destination="tLZ-3e-cJY" id="Ig0-wR-2Ms"/>
                                 </connections>
                             </tableView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="e4p-U3-YVf"/>
                         <constraints>
                             <constraint firstAttribute="bottomMargin" secondItem="hwi-He-cKY" secondAttribute="bottom" id="UPd-Rr-5ev"/>
                             <constraint firstItem="hwi-He-cKY" firstAttribute="trailing" secondItem="e4p-U3-YVf" secondAttribute="trailing" id="mcB-Fh-FAx"/>
                             <constraint firstItem="hwi-He-cKY" firstAttribute="top" secondItem="eDL-oC-fDz" secondAttribute="topMargin" id="sVu-Pi-CPd"/>
                             <constraint firstItem="hwi-He-cKY" firstAttribute="leading" secondItem="e4p-U3-YVf" secondAttribute="leading" id="tE5-ir-eJR"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="e4p-U3-YVf"/>
                     </view>
                     <connections>
                         <outlet property="tableView" destination="hwi-He-cKY" id="dz2-gV-Lqe"/>
@@ -44,31 +44,30 @@
         <!--Application Log View Controller-->
         <scene sceneID="bod-JW-RLg">
             <objects>
-                <viewController id="cZP-lH-gTc" customClass="ApplicationLogViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ApplicationLogViewController" id="cZP-lH-gTc" customClass="ApplicationLogViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="kTI-Ip-3qK">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="pYs-VV-dST">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
-                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" systemColor="groupTableViewBackgroundColor"/>
                                 <connections>
                                     <outlet property="dataSource" destination="cZP-lH-gTc" id="elE-X0-kT3"/>
                                     <outlet property="delegate" destination="cZP-lH-gTc" id="Pq1-iP-TpG"/>
                                 </connections>
                             </tableView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="qMn-MK-zzV"/>
                         <constraints>
                             <constraint firstItem="qMn-MK-zzV" firstAttribute="trailing" secondItem="pYs-VV-dST" secondAttribute="trailing" id="9bn-9p-K1Z"/>
                             <constraint firstItem="pYs-VV-dST" firstAttribute="leading" secondItem="qMn-MK-zzV" secondAttribute="leading" id="OUm-VB-DJ3"/>
                             <constraint firstItem="pYs-VV-dST" firstAttribute="top" secondItem="qMn-MK-zzV" secondAttribute="top" id="nJg-fe-Omp"/>
                             <constraint firstItem="qMn-MK-zzV" firstAttribute="bottom" secondItem="pYs-VV-dST" secondAttribute="bottom" id="o10-zc-2HE"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="qMn-MK-zzV"/>
                     </view>
                     <connections>
                         <outlet property="tableView" destination="pYs-VV-dST" id="Cqx-Lg-UJh"/>
-                        <segue destination="dyy-ah-iUY" kind="show" identifier="ShowApplicationLogDetailViewController" id="Ws4-zy-SlV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fOe-oS-ZTi" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -78,13 +77,13 @@
         <!--Application Log Detail View Controller-->
         <scene sceneID="EFa-xb-BCc">
             <objects>
-                <viewController id="dyy-ah-iUY" customClass="ApplicationLogDetailViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ApplicationLogDetailViewController" id="dyy-ah-iUY" customClass="ApplicationLogDetailViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="TC5-cg-3Zt">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="VZ4-xD-33I">
-                                <rect key="frame" x="16" y="0.0" width="343" height="647"/>
+                                <rect key="frame" x="16" y="0.0" width="343" height="667"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" notEnabled="YES"/>
@@ -94,13 +93,13 @@
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="qu3-Gh-sHY"/>
                         <constraints>
                             <constraint firstItem="VZ4-xD-33I" firstAttribute="bottom" secondItem="qu3-Gh-sHY" secondAttribute="bottom" id="4Ax-uJ-Iya"/>
                             <constraint firstItem="VZ4-xD-33I" firstAttribute="leading" secondItem="qu3-Gh-sHY" secondAttribute="leading" constant="16" id="8fn-dv-dTY"/>
                             <constraint firstItem="VZ4-xD-33I" firstAttribute="top" secondItem="qu3-Gh-sHY" secondAttribute="top" id="B4a-y2-5Qj"/>
                             <constraint firstItem="qu3-Gh-sHY" firstAttribute="trailing" secondItem="VZ4-xD-33I" secondAttribute="trailing" constant="16" id="Pft-fy-5s7"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="qu3-Gh-sHY"/>
                     </view>
                     <connections>
                         <outlet property="textview" destination="VZ4-xD-33I" id="02L-PL-IgW"/>
@@ -120,13 +119,14 @@
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="egg-mo-Y4S">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <color key="backgroundColor" systemColor="groupTableViewBackgroundColor"/>
                                 <connections>
                                     <outlet property="dataSource" destination="iSl-b1-8Q7" id="D4h-Iu-gaD"/>
                                     <outlet property="delegate" destination="iSl-b1-8Q7" id="O3x-LW-ggf"/>
                                 </connections>
                             </tableView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="nz7-i3-560"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="nz7-i3-560" firstAttribute="trailing" secondItem="egg-mo-Y4S" secondAttribute="trailing" id="4lT-TU-td8"/>
@@ -134,16 +134,14 @@
                             <constraint firstItem="nz7-i3-560" firstAttribute="bottom" secondItem="egg-mo-Y4S" secondAttribute="bottom" id="hoc-dS-mst"/>
                             <constraint firstItem="egg-mo-Y4S" firstAttribute="leading" secondItem="nz7-i3-560" secondAttribute="leading" id="nCX-Yb-zUk"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="nz7-i3-560"/>
                     </view>
                     <connections>
                         <outlet property="tableView" destination="egg-mo-Y4S" id="Q6m-Fm-qjc"/>
-                        <segue destination="cZP-lH-gTc" kind="show" identifier="ShowApplicationLogViewController" id="C0s-Ys-0iv"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FQx-lA-JpF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1342" y="1036"/>
+            <point key="canvasLocation" x="1431" y="811"/>
         </scene>
         <!--About View Controller-->
         <scene sceneID="YPr-jf-D90">
@@ -155,20 +153,20 @@
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" layoutMarginsFollowReadableWidth="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="ibP-Y7-8cn">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <color key="backgroundColor" systemColor="groupTableViewBackgroundColor"/>
                                 <connections>
                                     <outlet property="dataSource" destination="0FF-UX-4XZ" id="6jO-4P-3zY"/>
                                     <outlet property="delegate" destination="0FF-UX-4XZ" id="eUa-vM-oOL"/>
                                 </connections>
                             </tableView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="BsY-oa-k6u"/>
                         <constraints>
                             <constraint firstItem="ibP-Y7-8cn" firstAttribute="trailing" secondItem="BsY-oa-k6u" secondAttribute="trailing" id="2ck-f3-BSs"/>
                             <constraint firstItem="ibP-Y7-8cn" firstAttribute="bottom" secondItem="BsY-oa-k6u" secondAttribute="bottom" id="69q-a2-QAu"/>
                             <constraint firstItem="ibP-Y7-8cn" firstAttribute="leading" secondItem="BsY-oa-k6u" secondAttribute="leading" id="QKN-1I-cNm"/>
                             <constraint firstItem="ibP-Y7-8cn" firstAttribute="top" secondItem="BsY-oa-k6u" secondAttribute="top" id="qyY-cu-ksZ"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="BsY-oa-k6u"/>
                     </view>
                     <connections>
                         <outlet property="tableView" destination="ibP-Y7-8cn" id="Q44-bo-hMp"/>
@@ -195,13 +193,13 @@
                                 </wkWebViewConfiguration>
                             </wkWebView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="gcq-RR-2k7"/>
                         <constraints>
                             <constraint firstItem="3Ux-jX-kZE" firstAttribute="leading" secondItem="gcq-RR-2k7" secondAttribute="leading" id="Qmb-Md-7xS"/>
                             <constraint firstItem="gcq-RR-2k7" firstAttribute="trailing" secondItem="3Ux-jX-kZE" secondAttribute="trailing" id="hPA-YS-aD5"/>
                             <constraint firstItem="gcq-RR-2k7" firstAttribute="bottom" secondItem="3Ux-jX-kZE" secondAttribute="bottom" id="qGU-af-Ie5"/>
                             <constraint firstItem="3Ux-jX-kZE" firstAttribute="top" secondItem="gcq-RR-2k7" secondAttribute="top" id="roD-E5-KXz"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="gcq-RR-2k7"/>
                     </view>
                     <connections>
                         <outlet property="webView" destination="3Ux-jX-kZE" id="Mwl-R5-9dT"/>
@@ -212,4 +210,18 @@
             <point key="canvasLocation" x="2265" y="1525"/>
         </scene>
     </scenes>
+    <resources>
+        <systemColor name="groupTableViewBackgroundColor">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="groupTableViewBackgroundColor">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="groupTableViewBackgroundColor">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="groupTableViewBackgroundColor">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
 </document>

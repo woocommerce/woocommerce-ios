@@ -47,20 +47,6 @@ class ApplicationLogViewController: UIViewController {
         registerTableViewCells()
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let vc = segue.destination as? ApplicationLogDetailViewController, segue.identifier == Segues.detailSegue {
-            let logFileInfo = sender as! DDLogFileInfo
-            do {
-                let contents = try String(contentsOfFile: logFileInfo.filePath)
-                let date = dateFormatter.string(from: logFileInfo.creationDate )
-                vc.logText = contents
-                vc.logDate = date
-            } catch {
-                DDLogError("Error: attempted to get contents of logFileInfo. Contents not found.")
-            }
-        }
-    }
-
     /// Style the back button, add the title to nav bar.
     ///
     func configureNavigation() {
@@ -228,7 +214,21 @@ private extension ApplicationLogViewController {
     ///
     func logFileWasPressed(in row: Int) {
         let logFileInfo = logFiles[row]
-        performSegue(withIdentifier: Segues.detailSegue, sender: logFileInfo)
+
+        let identifier = ApplicationLogDetailViewController.classNameWithoutNamespaces
+        guard let appLogDetailVC = UIStoryboard.dashboard.instantiateViewController(identifier: identifier) as? ApplicationLogDetailViewController else {
+            DDLogError("Error: attempted to instantiate ApplicationLogDetailViewController. Instantiation failed.")
+            return
+        }
+        do {
+            let contents = try String(contentsOfFile: logFileInfo.filePath)
+            let date = dateFormatter.string(from: logFileInfo.creationDate )
+            appLogDetailVC.logText = contents
+            appLogDetailVC.logDate = date
+        } catch {
+            DDLogError("Error: attempted to get contents of logFileInfo. Contents not found.")
+        }
+        navigationController?.pushViewController(appLogDetailVC, animated: true)
     }
 
     /// Clear old logs action
@@ -275,8 +275,4 @@ private enum Row: CaseIterable {
     var reuseIdentifier: String {
         return type.reuseIdentifier
     }
-}
-
-private struct Segues {
-    static let detailSegue = "ShowApplicationLogDetailViewController"
 }

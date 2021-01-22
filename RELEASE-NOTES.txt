@@ -16,6 +16,7 @@
 - [*] fix: pull to refresh on the order status picker screen does not resets anymore the current selection. [https://github.com/woocommerce/woocommerce-ios/pull/3493]
 - [*] When adding or editing a link (e.g. in a product description) link settings are now presented as a popover on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/3492]
 - [*] fix: the glitch when launching the app in logged out state or after tapping "Try another account" in store picker is now gone. [https://github.com/woocommerce/woocommerce-ios/pull/3498]
+- [*] Minor enhancements: in product editing form > product reviews list, the rows don't show highlighted state on tap anymore since they are not actionable. Same for the number of upsell and cross-sell products in product editing form > linked products. [https://github.com/woocommerce/woocommerce-ios/pull/3502]
 
 
 5.8

@@ -236,7 +236,13 @@ extension OrderDetailsViewModel {
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
         case .details:
             ServiceLocator.analytics.track(.orderDetailProductDetailTapped)
-            viewController.performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
+            let identifier = ProductListViewController.classNameWithoutNamespaces
+            guard let productListVC = UIStoryboard.orders.instantiateViewController(identifier: identifier) as? ProductListViewController else {
+                DDLogError("Error: attempted to instantiate ProductListViewController. Instantiation failed.")
+                return
+            }
+            productListVC.viewModel = self
+            viewController.navigationController?.pushViewController(productListVC, animated: true)
         case .refund:
             ServiceLocator.analytics.track(.orderDetailRefundDetailTapped)
             guard let refund = dataSource.refund(at: indexPath) else {
@@ -409,13 +415,5 @@ extension OrderDetailsViewModel {
         }
 
         stores.dispatch(deleteTrackingAction)
-    }
-}
-
-private extension OrderDetailsViewModel {
-
-    enum Constants {
-        static let productDetailsSegue = "ShowProductListViewController"
-        static let orderStatusListSegue = "ShowOrderStatusListViewController"
     }
 }

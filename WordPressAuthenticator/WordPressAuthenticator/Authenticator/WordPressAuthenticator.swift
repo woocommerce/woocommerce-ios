@@ -156,20 +156,34 @@ import WordPressKit
     ///   - onLoginButtonTapped: Called when the login button on the prologue screen is tapped.
     ///   - onCompletion: Called when the login UI presentation completes.
     public class func showLogin(from presenter: UIViewController, animated: Bool, showCancel: Bool = false, restrictToWPCom: Bool = false, onLoginButtonTapped: (() -> Void)? = nil, onCompletion: (() -> Void)? = nil) {
-        defer {
-            trackOpenedLogin()
+        guard let loginViewController = loginUI(showCancel: showCancel, restrictToWPCom: restrictToWPCom, onLoginButtonTapped: onLoginButtonTapped) else {
+            return
         }
+        presenter.present(loginViewController, animated: animated, completion: onCompletion)
+        trackOpenedLogin()
+    }
 
+    /// Returns the view controller for the login flow.
+    /// The caller is responsible for tracking `.openedLogin` event when displaying the view controller as in `showLogin`.
+    ///
+    /// - Parameters:
+    ///   - showCancel: Whether a cancel CTA is shown on the login prologue screen.
+    ///   - restrictToWPCom: Whether only WordPress.com login is enabled.
+    ///   - onLoginButtonTapped: Called when the login button on the prologue screen is tapped.
+    /// - Returns: The root view controller for the login flow.
+    public class func loginUI(showCancel: Bool = false, restrictToWPCom: Bool = false, onLoginButtonTapped: (() -> Void)? = nil) -> UIViewController? {
         let storyboard = Storyboard.login.instance
-        if let controller = storyboard.instantiateInitialViewController() {
-            if let childController = controller.children.first as? LoginPrologueViewController {
-                childController.loginFields.restrictToWPCom = restrictToWPCom
-                childController.showCancel = showCancel
-                childController.onLoginButtonTapped = onLoginButtonTapped
-            }
-            controller.modalPresentationStyle = .fullScreen
-            presenter.present(controller, animated: animated, completion: onCompletion)
+        guard let controller = storyboard.instantiateInitialViewController() else {
+            assertionFailure("Cannot instantiate initial login controller from Login.storyboard")
+            return nil
         }
+        if let childController = controller.children.first as? LoginPrologueViewController {
+            childController.loginFields.restrictToWPCom = restrictToWPCom
+            childController.showCancel = showCancel
+            childController.onLoginButtonTapped = onLoginButtonTapped
+        }
+        controller.modalPresentationStyle = .fullScreen
+        return controller
     }
 
     /// Used to present the new wpcom-only login flow from the app delegate

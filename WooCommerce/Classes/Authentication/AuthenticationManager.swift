@@ -110,16 +110,23 @@ class AuthenticationManager: Authentication {
         WordPressAuthenticator.shared.delegate = self
     }
 
-    /// Displays the Login Flow using the specified UIViewController as presenter.
+    /// Returns the Login Flow view controller.
     ///
-    func displayAuthentication(from presenter: UIViewController, animated: Bool, onCompletion: @escaping () -> Void) {
-        WordPressAuthenticator.showLogin(from: presenter, animated: animated, onLoginButtonTapped: { [weak self] in
-            guard let self = self else { return }
-            // Resets Apple ID at the beginning of the authentication.
-            self.appleUserID = nil
+    func authenticationUI() -> UIViewController {
+        let loginViewController: UIViewController = {
+            let loginUI = WordPressAuthenticator.loginUI(onLoginButtonTapped: { [weak self] in
+                guard let self = self else { return }
+                // Resets Apple ID at the beginning of the authentication.
+                self.appleUserID = nil
 
-            ServiceLocator.analytics.track(.loginPrologueContinueTapped)
-        }, onCompletion: onCompletion)
+                ServiceLocator.analytics.track(.loginPrologueContinueTapped)
+            })
+            guard let loginVC = loginUI else {
+                fatalError("Cannot instantiate login UI from WordPressAuthenticator")
+            }
+            return loginVC
+        }()
+        return loginViewController
     }
 
     /// Handles an Authentication URL Callback. Returns *true* on success.

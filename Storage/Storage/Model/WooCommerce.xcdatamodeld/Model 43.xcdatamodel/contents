@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="20C69" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17192" systemVersion="19H2" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -540,6 +540,7 @@
     <entity name="SiteVisitStats" representedClassName="SiteVisitStats" syncable="YES">
         <attribute name="date" attributeType="String"/>
         <attribute name="granularity" attributeType="String"/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SiteVisitStatsItem" inverseName="stats" inverseEntity="SiteVisitStatsItem"/>
     </entity>
     <entity name="SiteVisitStatsItem" representedClassName="SiteVisitStatsItem" syncable="YES">
@@ -556,6 +557,7 @@
         <attribute name="date" attributeType="String"/>
         <attribute name="granularity" attributeType="String"/>
         <attribute name="limit" attributeType="String"/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="TopEarnerStatsItem" inverseName="stats" inverseEntity="TopEarnerStatsItem"/>
     </entity>
     <entity name="TopEarnerStatsItem" representedClassName="TopEarnerStatsItem" syncable="YES">
@@ -616,10 +618,10 @@
         <element name="ShippingLineTax" positionX="-693" positionY="36" width="128" height="103"/>
         <element name="Site" positionX="-203.6875" positionY="208.0703125" width="128" height="178"/>
         <element name="SiteSetting" positionX="-360.41015625" positionY="214.8515625" width="128" height="133"/>
-        <element name="SiteVisitStats" positionX="134.515625" positionY="224.62109375" width="128" height="90"/>
+        <element name="SiteVisitStats" positionX="134.515625" positionY="224.62109375" width="128" height="103"/>
         <element name="SiteVisitStatsItem" positionX="308.1328125" positionY="251.91796875" width="128" height="90"/>
         <element name="TaxClass" positionX="-529.7734375" positionY="-56.109375" width="128" height="88"/>
-        <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
+        <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="118"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
     </elements>
 </model>

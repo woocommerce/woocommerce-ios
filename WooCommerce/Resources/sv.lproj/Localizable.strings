@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-01-18 20:41:56+0000 */
+/* Translation-Revision-Date: 2021-01-20 15:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -108,7 +108,7 @@
 "(No Title)" = "(ingen rubrik)";
 
 /* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details.";
+"**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "**Se till att AirPrint är aktiverat** i dina skrivarinställningar. Du kan behöva konfigurera inställningen på själva skrivaren.\n\nSe den dokumentation som medföljde skrivaren för information.";
 
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "1 produkt vald";
@@ -218,7 +218,7 @@
 "Add attribute" = "Lägg till attribut";
 
 /* Footer of text field section in Add Attribute Options screen */
-"Add each option and press enter" = "Add each option and press enter";
+"Add each option and press enter" = "Lägg till varje alternativ och tryck retur";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -653,7 +653,7 @@
 "Details" = "Detaljer";
 
 /* Screen title: Details Order number. Parameters: %1$@ - order number */
-"Details Order #%1$@" = "Details Order #%1$@";
+"Details Order #%1$@" = "Information om beställning nummer%1$@";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "Bestämmer produktens placering i katalogen. Ju lägre siffervärdet är desto högre kommer artikeln att vara i produktlistan. Du kan också använda negativa värden";
@@ -703,7 +703,7 @@
 "Don’t know how to print from your phone?" = "Vet du inte hur man skriver ut från din telefon?";
 
 /* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
-"Dotcom Error: [%1$@] %2$@" = "Dotcom Error: [%1$@] %2$@";
+"Dotcom Error: [%1$@] %2$@" = "Dotcom-fel: [%1$@] %2$@";
 
 /* WordPress.com error thrown when the the request REST API url is invalid. */
 "Dotcom Invalid REST Route" = "Dotcom Ogiltig REST-väg";
@@ -811,7 +811,7 @@
 "Enjoying the WooCommerce app?" = "Tycker du om WooCommerce-appen?";
 
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating.";
+"Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "Se till att din **skrivares firmware är uppdaterad**. Se skrivarens dokumentation för anvisningar om hur du uppdaterar.";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "Ange en annan butik";
@@ -877,7 +877,7 @@
 "Enter your password instead." = "Skriv in ditt lösenord istället.";
 
 /* Alert title when there is an error requesting shipping label document for reprinting */
-"Error previewing shipping label" = "Error previewing shipping label";
+"Error previewing shipping label" = "Fel vid förhandsgranskning av fraktetikett";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -958,7 +958,7 @@
 "From device" = "Från enhet";
 
 /* Order Fulfillment Title. Parameters: %1$@ - order number */
-"Fulfill Order #%1$@" = "Fulfill Order #%1$@";
+"Fulfill Order #%1$@" = "Uppfyll order nummer%1$@";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Få insikt i hur produkter presterar i din butik";
@@ -1086,10 +1086,10 @@
 "If you already used the label in a package, printing and using it again is a violation of our terms of service" = "Om du redan har använt etiketten på ett paket bryter du mot våra användarvillkor om du skriver ut och använder den igen.";
 
 /* Step 4 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device.";
+"If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "Om du fortfarande har problem med att skriva ut från din enhet kan du spara din etikett som en PDF-fil och **skicka den via e-post** för att skriva ut den från en annan enhet.";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
-"If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.";
+"If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Om du går vidare med alternativet Apple eller Google och inte redan har ett konto hos WordPress.com innebär detta att du registrerar ett konto och att du samtycker till våra _användarvillkor_.";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Om du fortsätter med Apple eller Google och inte redan har ett WordPress.com-konto, skapar du ett konto och samtycker till våra _användarvillkor_.";
@@ -1187,7 +1187,7 @@
 "Label (4 x 6 in)" = "Etikett (4 x 6 tum)";
 
 /* Navigation bar title of shipping label paper size options screen */
-"Label Format Options" = "Label Format Options";
+"Label Format Options" = "Alternativ för etikettformat";
 
 /* Last 24 hours section header */
 "Last 24 hours" = "Senaste 24 timmarna";
@@ -1499,7 +1499,7 @@
 "OK" = "OK";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
-"OPTIONS OFFERED" = "OPTIONS OFFERED";
+"OPTIONS OFFERED" = "ALTERNATIV SOM ERBJUDS";
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "Av";
@@ -1545,7 +1545,7 @@
 "Opens a list of available statuses." = "Öppnar en lista med tillgängliga statusar.";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
-"Option name" = "Option name";
+"Option name" = "Namn på alternativ";
 
 /* Add Product Category. Placeholder of cell presenting the parent category.
    Placeholder of the cell text field in Product Inventory Settings > SKU */
@@ -1565,7 +1565,7 @@
 
 /* Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number
    Order number title. Parameters: %1$@ - order number */
-"Order #%1$@" = "Order #%1$@";
+"Order #%1$@" = "Beställning nummer%1$@";
 
 /* Order notes section title */
 "Order Notes" = "Ordernoteringar";
@@ -1742,10 +1742,10 @@
 "Print from your Phone" = "Skriv ut från din telefon";
 
 /* The title of the shipping labels top banner in order details */
-"Print shipping labels from your device!" = "Print shipping labels from your device!";
+"Print shipping labels from your device!" = "Skriv ut fraktetiketter från din enhet!";
 
 /* Title of in-progress modal when requesting shipping label document for reprinting */
-"Printing Label" = "Printing Label";
+"Printing Label" = "Skriva ut etikett";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "Integritetsnotis för användare i Kalifornien";
@@ -2744,19 +2744,19 @@
 "Unable To Connect" = "Kan inte ansluta";
 
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
-"Unable to add note to order #%1$d" = "Unable to add note to order #%1$d";
+"Unable to add note to order #%1$d" = "Det gick inte att lägga till en notering till order nummer%1$d";
 
 /* Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number}. Parameters: %1$d - order number */
-"Unable to add tracking to order #%1$d" = "Unable to add tracking to order #%1$d";
+"Unable to add tracking to order #%1$d" = "Det går inte att lägga till spårning till order nummer%1$d";
 
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}. Parameters: %1$d - order number */
-"Unable to change status of order #%1$d" = "Unable to change status of order #%1$d";
+"Unable to change status of order #%1$d" = "Det gick inte att ändra status på order nummer%1$d";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
-"Unable to delete tracking for order #%1$d" = "Unable to delete tracking for order #%1$d";
+"Unable to delete tracking for order #%1$d" = "Det går inte att radera spårning för order nummer%1$d";
 
 /* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
-"Unable to fulfill order #%1$d" = "Unable to fulfill order #%1$d";
+"Unable to fulfill order #%1$d" = "Det gick inte att uppfylla order nummer%1$d";
 
 /* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
 "Unable to load Shipment Carriers" = "Det gick inte att läsa in transportföretag";
@@ -2909,7 +2909,7 @@
 "Verification code" = "Verifieringskod";
 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network.";
+"Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "Se till att din skrivare och din enhet är anslutna till **samma Wi-Fi-nätverk**.\n\nKontrollera dokumentationen för din skrivare för information om hur du ansluter den till ditt Wi-Fi-nätverk.";
 
 /* Displays the version of the App */
 "Version %@" = "Version %@";
@@ -2978,7 +2978,7 @@
 "Watch your audience grow with in-depth analytics." = "Se din publik växa med hjälp av djupgående analys.";
 
 /* The info of the shipping labels top banner in order details */
-"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here.";
+"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "Vi arbetar på att göra det lättare för dig att skriva ut fraktetiketter direkt från din enhet! Om du har skapat fraktetiketter för den här ordern i butiksadmin i WooCommerce Shopping kan du nu skriva ut dem under Beställningsinformation här.";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "Vi kan inte visa din butiks analys";
@@ -3103,7 +3103,7 @@
 "Your notifications travel with you — see comments and likes as they happen." = "Dina notifikationer följer med dig – du får veta direkt om någon kommenterar eller gillar.";
 
 /* Body text of alert helping users understand their site address */
-"Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Your site address appears in the bar at the top of the screen when you visit your site in Safari.";
+"Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Adressen till din webbplats visas i fältet överst på skärmen när du besöker din webbplats i Safari.";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMMENT]";

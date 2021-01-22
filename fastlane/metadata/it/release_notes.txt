@@ -1,0 +1,5 @@
+Prodotti: tutti gli utenti possono ora aggiungere e modificare prodotti collegati, aggiungere e modificare file scaricabili ed eliminare un prodotto.
+
+Spedizione: ora puoi visualizzare i dettagli dell'etichetta di spedizione, richiedere un rimborso e stampare nuovamente un'etichetta di spedizione con AirPrint.
+
+Accesso: abbiamo apportato vari miglioramenti al flusso di accesso, includendo una migliore gestione degli errori.

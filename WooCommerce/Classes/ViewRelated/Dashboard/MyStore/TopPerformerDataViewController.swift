@@ -14,6 +14,7 @@ final class TopPerformerDataViewController: UIViewController {
     private let granularity: StatGranularity
     private let siteID: Int64
     private let siteTimeZone: TimeZone
+    private let currentDate: Date
 
     var hasTopEarnerStatsItems: Bool {
         return (topEarnerStats?.items?.count ?? 0) > 0
@@ -30,7 +31,7 @@ final class TopPerformerDataViewController: UIViewController {
     private lazy var resultsController: ResultsController<StorageTopEarnerStats> = {
         let storageManager = ServiceLocator.storageManager
         let formattedDateString: String = {
-            let date = timeRange.latestDate(currentDate: Date(), siteTimezone: siteTimeZone)
+            let date = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimeZone)
             return StatsStoreV4.buildDateString(from: date, with: granularity)
         }()
         let predicate = NSPredicate(format: "granularity = %@ AND date = %@", granularity.rawValue, formattedDateString)
@@ -66,9 +67,10 @@ final class TopPerformerDataViewController: UIViewController {
 
     /// Designated Initializer
     ///
-    init(siteID: Int64, siteTimeZone: TimeZone, timeRange: StatsTimeRangeV4) {
+    init(siteID: Int64, siteTimeZone: TimeZone, currentDate: Date, timeRange: StatsTimeRangeV4) {
         self.siteID = siteID
         self.siteTimeZone = siteTimeZone
+        self.currentDate = currentDate
         self.granularity = timeRange.topEarnerStatsGranularity
         self.timeRange = timeRange
         super.init(nibName: type(of: self).nibName, bundle: nil)

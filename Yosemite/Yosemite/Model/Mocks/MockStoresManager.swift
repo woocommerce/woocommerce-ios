@@ -1,3 +1,4 @@
+import Combine
 import Observables
 import Storage
 
@@ -56,13 +57,13 @@ public class MockStoresManager: StoresManager {
 
     /// Accessor for whether the user is logged in (spoiler: they always will be when mocking)
     ///
-    public var isLoggedIn: Observable<Bool> {
-        isLoggedInSubject
+    public var isLoggedInPublisher: AnyPublisher<Bool, Never> {
+        isLoggedInSubject.eraseToAnyPublisher()
     }
 
     /// The backing object for `isLoggedIn`
     ///
-    private let isLoggedInSubject = BehaviorSubject<Bool>(true)
+    private let isLoggedInSubject = CurrentValueSubject<Bool, Never>(true)
 
     /// A mock session manager that aligns with our mock object graph
     ///
@@ -149,5 +150,12 @@ public class MockStoresManager: StoresManager {
 
     public var needsDefaultStore: Bool {
         sessionManager.defaultStoreID == nil
+    }
+
+    public var needsDefaultStorePublisher: AnyPublisher<Bool, Never> {
+        sessionManager.defaultStoreIDPublisher
+            .map { $0 == nil }
+            .removeDuplicates()
+            .eraseToAnyPublisher()
     }
 }

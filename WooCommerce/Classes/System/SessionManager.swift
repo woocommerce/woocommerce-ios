@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Yosemite
 import KeychainAccess
@@ -90,8 +91,15 @@ final class SessionManager: SessionManagerProtocol {
         }
         set {
             defaults[.defaultStoreID] = newValue
+            defaultStoreIDSubject.send(newValue)
         }
     }
+
+    var defaultStoreIDPublisher: AnyPublisher<Int64?, Never> {
+        defaultStoreIDSubject.eraseToAnyPublisher()
+    }
+
+    private let defaultStoreIDSubject: CurrentValueSubject<Int64?, Never>
 
     /// Anonymous UserID.
     ///
@@ -126,6 +134,7 @@ final class SessionManager: SessionManagerProtocol {
         self.defaults = defaults
         self.keychain = Keychain(service: keychainServiceName).accessibility(.afterFirstUnlock)
 
+        defaultStoreIDSubject = .init(defaults[.defaultStoreID])
         defaultStoreIDObserver = defaults.observe(\.defaultStoreID, options: [.initial, .new], changeHandler: { [weak self] _, change in
             let storeID = change.newValue.flatMap { Int64($0) }
             self?.storeIDSubject.send(storeID)

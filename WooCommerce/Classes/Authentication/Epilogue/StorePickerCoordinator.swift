@@ -76,7 +76,7 @@ private extension StorePickerCoordinator {
         case .standard:
             let wrapper = UINavigationController(rootViewController: storePicker)
             wrapper.modalPresentationStyle = .fullScreen
-            navigationController.present(wrapper, animated: true)
+            navigationController.present(wrapper, animated: false)
         case .switchingStores:
             let wrapper = UINavigationController(rootViewController: storePicker)
             navigationController.present(wrapper, animated: true)

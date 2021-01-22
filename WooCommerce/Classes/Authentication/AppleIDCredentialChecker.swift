@@ -13,7 +13,7 @@ final class AppleIDCredentialChecker {
     private let authenticator: WordPressAuthenticator
     private let stores: StoresManager
 
-    private var cancellable: ObservationToken?
+    private var cancellable: AnyCancellable?
     private var cancellables = Set<AnyCancellable>()
 
     init(authenticator: WordPressAuthenticator = WordPressAuthenticator.shared, stores: StoresManager = ServiceLocator.stores) {
@@ -30,7 +30,7 @@ final class AppleIDCredentialChecker {
     }
 
     func observeLoggedInStateForAppleIDObservations() {
-        cancellable = stores.isLoggedIn.subscribe { [weak self] isLoggedIn in
+        cancellable = stores.isLoggedInPublisher.sink { [weak self] isLoggedIn in
             if isLoggedIn {
                 self?.startObservingAppleIDCredentialRevoked()
             } else {

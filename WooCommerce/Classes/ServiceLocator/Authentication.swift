@@ -14,9 +14,9 @@ protocol Authentication {
     ///
     func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool
 
-    /// Displays the Login Flow using the specified UIViewController as presenter.
+    /// Returns authentication UI for display by the caller.
     ///
-    func displayAuthentication(from presenter: UIViewController, animated: Bool, onCompletion: @escaping () -> Void)
+    func authenticationUI() -> UIViewController
 
     /// Initializes the WordPress Authenticator.
     ///

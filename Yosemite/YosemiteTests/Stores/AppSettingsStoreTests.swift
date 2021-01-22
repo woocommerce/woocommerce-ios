@@ -192,8 +192,8 @@ final class AppSettingsStoreTests: XCTestCase {
         // Given
         let date = Date(timeIntervalSince1970: 100)
 
-        let (existingSettings, feedback) = createAppSettingAndGeneralFeedback(instalationDate: Date(timeIntervalSince1970: 4_810),
-                                                                              feedbackSatus: .given(Date(timeIntervalSince1970: 9_971_311)))
+        let (existingSettings, feedback) = createAppSettingAndGeneralFeedback(installationDate: Date(timeIntervalSince1970: 4_810),
+                                                                              feedbackStatus: .given(Date(timeIntervalSince1970: 9_971_311)))
         try fileStorage?.write(existingSettings, to: expectedGeneralAppSettingsFileURL)
 
         // When
@@ -304,8 +304,8 @@ final class AppSettingsStoreTests: XCTestCase {
         // Given
         let date = Date(timeIntervalSince1970: 300)
 
-        let (existingSettings, feedback) = createAppSettingAndGeneralFeedback(instalationDate: Date(timeIntervalSince1970: 1),
-                                                                              feedbackSatus: .given(Date(timeIntervalSince1970: 999)))
+        let (existingSettings, feedback) = createAppSettingAndGeneralFeedback(installationDate: Date(timeIntervalSince1970: 1),
+                                                                              feedbackStatus: .given(Date(timeIntervalSince1970: 999)))
 
         try fileStorage?.write(existingSettings, to: expectedGeneralAppSettingsFileURL)
 
@@ -352,15 +352,15 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(shouldBeVisibleResult).get())
     }
 
-    func test_loadFeedbackVisibility_for_productsM4_returns_true_after_marking_it_as_pending() throws {
+    func test_loadFeedbackVisibility_for_productsM5_returns_true_after_marking_it_as_pending() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsM4, status: .pending) { _ in }
+        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsM5, status: .pending) { _ in }
         subject?.onAction(updateAction)
 
         // When
         var visibilityResult: Result<Bool, Error>?
-        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .productsM4) { result in
+        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .productsM5) { result in
             visibilityResult = result
         }
         subject?.onAction(queryAction)
@@ -372,15 +372,15 @@ final class AppSettingsStoreTests: XCTestCase {
 
     }
 
-    func test_loadFeedbackVisibility_for_productsM4_returns_false_after_marking_it_as_dismissed() throws {
+    func test_loadFeedbackVisibility_for_productsM5_returns_false_after_marking_it_as_dismissed() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsM4, status: .dismissed) { _ in }
+        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsM5, status: .dismissed) { _ in }
         subject?.onAction(updateAction)
 
         // When
         var visibilityResult: Result<Bool, Error>?
-        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .productsM4) { result in
+        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .productsM5) { result in
             visibilityResult = result
         }
         subject?.onAction(queryAction)
@@ -392,15 +392,15 @@ final class AppSettingsStoreTests: XCTestCase {
 
     }
 
-    func test_loadFeedbackVisibility_for_productsM4_returns_false_after_marking_it_as_given() throws {
+    func test_loadFeedbackVisibility_for_productsM5_returns_false_after_marking_it_as_given() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsM4, status: .given(Date())) { _ in }
+        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsM5, status: .given(Date())) { _ in }
         subject?.onAction(updateAction)
 
         // When
         var visibilityResult: Result<Bool, Error>?
-        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .productsM4) { result in
+        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .productsM5) { result in
             visibilityResult = result
         }
         subject?.onAction(queryAction)
@@ -421,9 +421,9 @@ private extension AppSettingsStoreTests {
         return documents!.appendingPathComponent("general-app-settings.plist")
     }
 
-    func createAppSettingAndGeneralFeedback(instalationDate: Date?, feedbackSatus: FeedbackSettings.Status) -> (GeneralAppSettings, FeedbackSettings) {
-        let feedback = FeedbackSettings(name: .general, status: feedbackSatus)
-        let settings = GeneralAppSettings(installationDate: instalationDate, feedbacks: [feedback.name: feedback])
+    func createAppSettingAndGeneralFeedback(installationDate: Date?, feedbackStatus: FeedbackSettings.Status) -> (GeneralAppSettings, FeedbackSettings) {
+        let feedback = FeedbackSettings(name: .general, status: feedbackStatus)
+        let settings = GeneralAppSettings(installationDate: installationDate, feedbacks: [feedback.name: feedback])
         return (settings, feedback)
     }
 }

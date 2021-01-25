@@ -177,10 +177,10 @@ private extension CoreDataIterativeMigrator {
 private extension CoreDataIterativeMigrator {
 
     func migrateStore(at url: URL,
-                             storeType: String,
-                             fromModel: NSManagedObjectModel,
-                             toModel: NSManagedObjectModel,
-                             with mappingModel: NSMappingModel) throws {
+                      storeType: String,
+                      fromModel: NSManagedObjectModel,
+                      toModel: NSManagedObjectModel,
+                      with mappingModel: NSMappingModel) throws {
         let tempDestinationURL = createTemporaryFolder(at: url)
 
         // Migrate from the source model to the target model using the mapping,

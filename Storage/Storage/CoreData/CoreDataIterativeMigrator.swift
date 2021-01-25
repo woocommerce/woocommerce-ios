@@ -70,6 +70,7 @@ final class CoreDataIterativeMigrator {
         var debugMessages = [String]()
 
         do {
+            // Perform all the migration steps and acquire the last _migrated_ destination URL.
             let lastTempDestinationURL = try steps.reduce(sourceStoreURL) { currentSourceStoreURL, step in
                 // Log a message
                 let migrationAttemptMessage = makeMigrationAttemptLogMessage(step: step)
@@ -92,6 +93,16 @@ final class CoreDataIterativeMigrator {
                 return tempDestinationURL
             }
 
+            // Now that the migration steps have been performed, replace the store that the
+            // app will use with the _migrated_ store located at the `lastTempDestinationURL`.
+            //
+            // This completes the iterative migration. After this step, the store located
+            // in `sourceStoreURL` should be fully migrated and useable.
+            try persistentStoreCoordinator.replacePersistentStore(at: sourceStoreURL,
+                                                                  destinationOptions: nil,
+                                                                  withPersistentStoreFrom: lastTempDestinationURL,
+                                                                  sourceOptions: nil,
+                                                                  ofType: storeType)
             return (true, debugMessages)
         } catch {
             let errorInfo = (error as NSError?)?.userInfo ?? [:]

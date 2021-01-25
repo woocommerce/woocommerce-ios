@@ -81,6 +81,14 @@ final class CoreDataIterativeMigrator {
                                                      sourceStoreURL: currentSourceStoreURL,
                                                      storeType: storeType)
 
+                // Destroy the `currentSourceStoreURL` if it is a temporary URL since we
+                // will no longer need it.
+                if currentSourceStoreURL != sourceStoreURL {
+                    try persistentStoreCoordinator.destroyPersistentStore(at: currentSourceStoreURL,
+                                                                          ofType: storeType,
+                                                                          options: nil)
+                }
+
                 return tempDestinationURL
             }
 

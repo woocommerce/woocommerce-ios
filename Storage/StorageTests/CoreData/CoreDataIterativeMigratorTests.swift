@@ -194,13 +194,17 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
     func test_iterativeMigrate_replaces_the_original_SQLite_files() throws {
         // Given
         let storeType = NSSQLiteStoreType
-        let sourceModel = try managedObjectModel(for: "Model 30")
-        let targetModel = try managedObjectModel(for: "Model 31")
+        let sourceModel = try managedObjectModel(for: "Model 41")
+        let targetModel = try managedObjectModel(for: "Model 42")
 
         let storeFileName = "Woo_Migration_Replacement_Unit_Test.sqlite"
         let storeURL = try urlForStore(withName: storeFileName, deleteIfExists: true)
+
         // Start a container so the SQLite files will be created.
         let container = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: sourceModel)
+
+        // Precondition: `OrderFeeLine` should not exist in `Model 41` yet.
+        assertThat(container: container, hasNoEntity: "OrderFeeLine")
 
         let spyCoordinator = SpyPersistentStoreCoordinator(container.persistentStoreCoordinator)
 
@@ -222,6 +226,10 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         // The sourceURL should have been from the temporary directory.
         XCTAssertEqual(replacement.sourceURL.deletingLastPathComponent(),
                        URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true))
+
+        // Assert that the same `storeURL` is using the new `Model 42`, which has the `OrderFeeLine` entity.
+        let migratedContainer = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: targetModel)
+        assertThat(container: migratedContainer, hasEntity: "OrderFeeLine")
     }
 
     func test_iterativeMigrate_will_not_migrate_if_the_database_and_the_model_are_compatible() throws {

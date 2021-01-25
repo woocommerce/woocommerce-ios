@@ -224,46 +224,6 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
                        URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true))
     }
 
-    func test_iterativeMigrate_moves_the_migrated_SQLite_files_to_the_original_store_location() throws {
-        // Given
-        let storeType = NSSQLiteStoreType
-        let sourceModel = try managedObjectModel(for: "Model 30")
-        let targetModel = try managedObjectModel(for: "Model 31")
-
-        let storeFileName = "WooMigrationMoveUnitTest.sqlite"
-        let storeURL = try urlForStore(withName: storeFileName, deleteIfExists: true)
-        // Start a container so the SQLite files will be created.
-        let container = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: sourceModel)
-
-        let spyFileManager = SpyFileManager()
-        let iterativeMigrator = CoreDataIterativeMigrator(coordinator: container.persistentStoreCoordinator,
-                                                          modelsInventory: modelsInventory,
-                                                          fileManager: spyFileManager)
-
-        // When
-        let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
-                                                                 storeType: storeType,
-                                                                 to: targetModel)
-        // Then
-        XCTAssertTrue(result)
-
-        let movedItems = spyFileManager.movedItems
-        XCTAssertEqual(movedItems.count, 3)
-
-        let storeFolderURL = storeURL.deletingLastPathComponent()
-        let expectedMigrationFolderURL = storeURL.deletingLastPathComponent().appendingPathComponent("migration")
-        let expectedFilesToBeMoved = [
-            storeURL.lastPathComponent,
-            "\(storeURL.lastPathComponent)-wal",
-            "\(storeURL.lastPathComponent)-shm"
-        ]
-
-        expectedFilesToBeMoved.forEach { fileName in
-            XCTAssertEqual(movedItems[expectedMigrationFolderURL.appendingPathComponent(fileName).path],
-                           storeFolderURL.appendingPathComponent(fileName).path)
-        }
-    }
-
     func test_iterativeMigrate_will_not_migrate_if_the_database_and_the_model_are_compatible() throws {
         // Given
         let model = try managedObjectModel(for: "Model 28")

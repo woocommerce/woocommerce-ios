@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-12-24 08:54:04+0000 */
+/* Translation-Revision-Date: 2021-01-22 08:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -108,7 +108,7 @@
 "(No Title)" = "(sem título)";
 
 /* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details.";
+"**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "**Verifique se o AirPrint está habilitado** nas suas configurações de impressora. Talvez seja necessário ajustar essa configuração na própria impressora.\n\nConsulte a documentação da sua impressora para obter mais detalhes.";
 
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "1 produto selecionado";
@@ -147,7 +147,7 @@
 "A verification code will only contain numbers." = "Um código de verificação só contém números.";
 
 /* Header of existing attribute options section in Add Attribute Options screen */
-"ADD OPTIONS" = "ADD OPTIONS";
+"ADD OPTIONS" = "ADICIONAR OPÇÕES";
 
 /* About this app (information page title) */
 "About" = "Sobre";
@@ -218,7 +218,7 @@
 "Add attribute" = "Adicionar atributo";
 
 /* Footer of text field section in Add Attribute Options screen */
-"Add each option and press enter" = "Add each option and press enter";
+"Add each option and press enter" = "Adicione cada opção e pressione Enter";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -466,7 +466,7 @@
 "Check your email!" = "Verifique seu e-mail!";
 
 /* Navigation title on the shipping label paper size selector screen */
-"Choose Paper Size" = "Choose Paper Size";
+"Choose Paper Size" = "Escolher o tamanho do papel";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Escolher no dispositivo";
@@ -653,7 +653,7 @@
 "Details" = "Detalhes";
 
 /* Screen title: Details Order number. Parameters: %1$@ - order number */
-"Details Order #%1$@" = "Details Order #%1$@";
+"Details Order #%1$@" = "Detalhes do pedido %1$@";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "Determina a posição dos produtos no catálogo. Quanto menor for o valor do número, maior será a posição do item na lista de produtos. Também é possível usar valores negativos.";
@@ -703,7 +703,7 @@
 "Don’t know how to print from your phone?" = "Não sabe como imprimir do seu celular?";
 
 /* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
-"Dotcom Error: [%1$@] %2$@" = "Dotcom Error: [%1$@] %2$@";
+"Dotcom Error: [%1$@] %2$@" = "Erro Dotcom: [%1$@] %2$@";
 
 /* WordPress.com error thrown when the the request REST API url is invalid. */
 "Dotcom Invalid REST Route" = "Rota REST Dotcom inválida";
@@ -811,7 +811,7 @@
 "Enjoying the WooCommerce app?" = "O que você acha do aplicativo WooCommerce?";
 
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating.";
+"Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "Verifique se **o firmware da impressora está atualizado**. Consulte a documentação da sua impressora para obter instruções sobre como atualizar.";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "Insira outra loja";
@@ -877,7 +877,7 @@
 "Enter your password instead." = "Digitar sua senha.";
 
 /* Alert title when there is an error requesting shipping label document for reprinting */
-"Error previewing shipping label" = "Error previewing shipping label";
+"Error previewing shipping label" = "Erro ao visualizar a etiqueta de envio";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -958,7 +958,7 @@
 "From device" = "Do dispositivo";
 
 /* Order Fulfillment Title. Parameters: %1$@ - order number */
-"Fulfill Order #%1$@" = "Fulfill Order #%1$@";
+"Fulfill Order #%1$@" = "Concluir pedido %1$@";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Obtenha informações sobre o desempenho dos produtos de sua loja";
@@ -1086,10 +1086,10 @@
 "If you already used the label in a package, printing and using it again is a violation of our terms of service" = "Se você já usou a etiqueta em um pacote, imprimi-la e usá-la novamente é uma violação dos nossos termos de serviço";
 
 /* Step 4 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device.";
+"If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "Se você ainda tiver problemas para imprimir a partir do seu telefone, salve a etiqueta como PDF e **envie por e-mail** para imprimir usando outro dispositivo.";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
-"If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.";
+"If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Se você continuar com a Apple e ainda não tiver uma conta do WordPress.com, precisará criar uma e concordar com nossos _Termos de Serviços_.";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Ao prosseguir com a Apple ou o Google, se ainda não tiver uma conta do WordPress.com, você criará uma conta e concordará com os nossos _Termos de Serviço_.";
@@ -1187,7 +1187,7 @@
 "Label (4 x 6 in)" = "Etiqueta (10 x 15 cm)";
 
 /* Navigation bar title of shipping label paper size options screen */
-"Label Format Options" = "Label Format Options";
+"Label Format Options" = "Opções de formato da etiqueta";
 
 /* Last 24 hours section header */
 "Last 24 hours" = "Últimas 24 horas";
@@ -1465,7 +1465,7 @@
 "No ratings" = "Sem classificações";
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier'. Parameters: %1$@ - carrier name */
-"No results found for %1$@\nAdd a custom carrier" = "No results found for %1$@\nAdd a custom carrier";
+"No results found for %1$@\nAdd a custom carrier" = "Nenhum resultado foi encontrado para %1$@\nAdicionar uma transportadora personalizada";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Nenhuma receita para esse período";
@@ -1499,7 +1499,7 @@
 "OK" = "OK";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
-"OPTIONS OFFERED" = "OPTIONS OFFERED";
+"OPTIONS OFFERED" = "OPÇÕES DISPONÍVEIS";
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "Desativado";
@@ -1545,7 +1545,7 @@
 "Opens a list of available statuses." = "Abre uma lista de status disponíveis.";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
-"Option name" = "Option name";
+"Option name" = "Nome da opção";
 
 /* Add Product Category. Placeholder of cell presenting the parent category.
    Placeholder of the cell text field in Product Inventory Settings > SKU */
@@ -1565,7 +1565,7 @@
 
 /* Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number
    Order number title. Parameters: %1$@ - order number */
-"Order #%1$@" = "Order #%1$@";
+"Order #%1$@" = "Pedido %1$@";
 
 /* Order notes section title */
 "Order Notes" = "Observações do pedido";
@@ -1739,13 +1739,13 @@
 "Print Shipping Label" = "Imprimir etiqueta de envio";
 
 /* Navigation bar title of shipping label printing instructions screen */
-"Print from your Phone" = "Print from your Phone";
+"Print from your Phone" = "Imprimir a partir do seu telefone";
 
 /* The title of the shipping labels top banner in order details */
-"Print shipping labels from your device!" = "Print shipping labels from your device!";
+"Print shipping labels from your device!" = "Imprima etiquetas de envio a partir do seu dispositivo!";
 
 /* Title of in-progress modal when requesting shipping label document for reprinting */
-"Printing Label" = "Printing Label";
+"Printing Label" = "Imprimindo etiqueta";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "Aviso de privacidade para usuários residentes da Califórnia";
@@ -2377,7 +2377,7 @@
 "Switch Store" = "Alterar loja";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. Parameters: %1$@ - store name */
-"Switched to %1$@. You will only receive notifications from this store." = "Switched to %1$@. You will only receive notifications from this store.";
+"Switched to %1$@. You will only receive notifications from this store." = "Alternada para %1$@. Você receberá apenas notificações dessa loja.";
 
 /* Accessibility Identifier for the H1 Aztec Style */
 "Switches to the Heading 1 font size" = "Alterna para o tamanho Título 1";
@@ -2744,19 +2744,19 @@
 "Unable To Connect" = "Não foi possível conectar";
 
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
-"Unable to add note to order #%1$d" = "Unable to add note to order #%1$d";
+"Unable to add note to order #%1$d" = "Não foi possível adicionar a anotação ao pedido %1$d";
 
 /* Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number}. Parameters: %1$d - order number */
-"Unable to add tracking to order #%1$d" = "Unable to add tracking to order #%1$d";
+"Unable to add tracking to order #%1$d" = "Não foi possível adicionar um rastreamento ao pedido %1$d";
 
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}. Parameters: %1$d - order number */
-"Unable to change status of order #%1$d" = "Unable to change status of order #%1$d";
+"Unable to change status of order #%1$d" = "Não foi possível mudar o status do pedido %1$d";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
-"Unable to delete tracking for order #%1$d" = "Unable to delete tracking for order #%1$d";
+"Unable to delete tracking for order #%1$d" = "Não foi possível excluir o rastreamento para o pedido %1$d";
 
 /* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
-"Unable to fulfill order #%1$d" = "Unable to fulfill order #%1$d";
+"Unable to fulfill order #%1$d" = "Não foi possível concluir o pedido %1$d";
 
 /* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
 "Unable to load Shipment Carriers" = "Não foi possível carregar as transportadoras";
@@ -2909,7 +2909,7 @@
 "Verification code" = "Código de verificação";
 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network.";
+"Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "Primeiro, garanta que sua impressora e o dispositivo estejam conectados à **mesma rede Wi-Fi**.\n\nVerifique a documentação da sua impressora para obter informações sobre como conectá-la à sua rede Wi-Fi.";
 
 /* Displays the version of the App */
 "Version %@" = "Versão %@";
@@ -2978,7 +2978,7 @@
 "Watch your audience grow with in-depth analytics." = "Veja seu público-alvo aumentar usando análises detalhadas.";
 
 /* The info of the shipping labels top banner in order details */
-"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here.";
+"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "Estamos trabalhando para facilitar a impressão de etiquetas de envio diretamente do seu dispositivo! Por enquanto, se você criou etiquetas para um pedido na administração da sua loja com o WooCommerce Shipping, pode imprimi-las aqui em Detalhes do pedido.";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "Não é possível exibir a análise da sua loja";
@@ -3103,7 +3103,7 @@
 "Your notifications travel with you — see comments and likes as they happen." = "Suas notificações sempre com você - veja comentários e curtidas assim que ocorrerem.";
 
 /* Body text of alert helping users understand their site address */
-"Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Your site address appears in the bar at the top of the screen when you visit your site in Safari.";
+"Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "O endereço do seu site aparece na barra, localizada na parte superior da tela, quando acessado pelo Safari.";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMENTÁRIO]";

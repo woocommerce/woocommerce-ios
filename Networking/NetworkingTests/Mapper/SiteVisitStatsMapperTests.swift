@@ -5,6 +5,7 @@ import XCTest
 /// SiteVisitStatsMapper Unit Tests
 ///
 class SiteVisitStatsMapperTests: XCTestCase {
+    private let sampleSiteID: Int64 = 16
 
     /// Verifies that all of the day unit SiteVisitStats fields are parsed correctly.
     ///
@@ -14,6 +15,7 @@ class SiteVisitStatsMapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(dayStats.siteID, sampleSiteID)
         XCTAssertEqual(dayStats.granularity, .day)
         XCTAssertEqual(dayStats.date, "2018-08-06")
         XCTAssertEqual(dayStats.items!.count, 12)
@@ -36,6 +38,7 @@ class SiteVisitStatsMapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(weekStats.siteID, sampleSiteID)
         XCTAssertEqual(weekStats.granularity, .week)
         XCTAssertEqual(weekStats.date, "2018-08-06")
         XCTAssertEqual(weekStats.items!.count, 12)
@@ -58,6 +61,7 @@ class SiteVisitStatsMapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(monthStats.siteID, sampleSiteID)
         XCTAssertEqual(monthStats.granularity, .month)
         XCTAssertEqual(monthStats.date, "2018-08-06")
         XCTAssertEqual(monthStats.items!.count, 12)
@@ -80,6 +84,7 @@ class SiteVisitStatsMapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(yearStats.siteID, sampleSiteID)
         XCTAssertEqual(yearStats.granularity, .year)
         XCTAssertEqual(yearStats.date, "2018-08-06")
         XCTAssertEqual(yearStats.items!.count, 5)
@@ -107,7 +112,7 @@ private extension SiteVisitStatsMapperTests {
             return nil
         }
 
-        return try! SiteVisitStatsMapper().map(response: response)
+        return try! SiteVisitStatsMapper(siteID: sampleSiteID).map(response: response)
     }
 
     /// Returns the SiteVisitStatsMapper output upon receiving `site-visits-day`

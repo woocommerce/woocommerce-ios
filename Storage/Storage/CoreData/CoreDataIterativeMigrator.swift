@@ -16,6 +16,7 @@ final class CoreDataIterativeMigrator {
     /// The model versions that will be used for migration.
     private let modelsInventory: ManagedObjectModelsInventory
 
+    /// Used to determine if a given store URL exists in the file system.
     private let fileManager: FileManagerProtocol
 
     init(coordinator: PersistentStoreCoordinatorProtocol,

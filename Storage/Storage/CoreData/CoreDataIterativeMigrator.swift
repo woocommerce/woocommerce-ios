@@ -119,23 +119,6 @@ final class CoreDataIterativeMigrator {
     }
 }
 
-
-// MARK: - File helpers
-//
-private extension CoreDataIterativeMigrator {
-
-    /// Build a temporary SQLite **file URL** to be used as the destination when performing a
-    /// migration.
-    ///
-    /// - Returns: A unique URL in the temporary directory.
-    func makeTemporaryMigrationDestinationURL() -> URL {
-        URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-            .appendingPathComponent("migration_\(UUID().uuidString)")
-            .appendingPathExtension("sqlite")
-    }
-}
-
-
 // MARK: - Private helper functions
 //
 private extension CoreDataIterativeMigrator {
@@ -181,5 +164,15 @@ private extension CoreDataIterativeMigrator {
 
     func makeMigrationAttemptLogMessage(step: MigrationStep) -> String {
         "⚠️ Attempting migration from \(step.sourceVersion.name) to \(step.targetVersion.name)"
+    }
+
+    /// Build a temporary SQLite **file URL** to be used as the destination when performing a
+    /// migration.
+    ///
+    /// - Returns: A unique URL in the temporary directory.
+    func makeTemporaryMigrationDestinationURL() -> URL {
+        URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+            .appendingPathComponent("migration_\(UUID().uuidString)")
+            .appendingPathExtension("sqlite")
     }
 }

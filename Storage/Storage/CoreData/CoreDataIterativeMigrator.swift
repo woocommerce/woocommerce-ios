@@ -70,12 +70,18 @@ final class CoreDataIterativeMigrator {
         var debugMessages = [String]()
 
         do {
-            try steps.forEach { step in
+            let lastTempDestinationURL = try steps.reduce(sourceStoreURL) { currentSourceStoreURL, step in
+                // Log a message
                 let migrationAttemptMessage = makeMigrationAttemptLogMessage(step: step)
                 debugMessages.append(migrationAttemptMessage)
                 DDLogWarn(migrationAttemptMessage)
 
-                try migrate(step: step, sourceStoreURL: sourceStoreURL, storeType: storeType)
+                // Migrate to temporary URL
+                let tempDestinationURL = try migrate(step: step,
+                                                     sourceStoreURL: currentSourceStoreURL,
+                                                     storeType: storeType)
+
+                return tempDestinationURL
             }
 
             return (true, debugMessages)

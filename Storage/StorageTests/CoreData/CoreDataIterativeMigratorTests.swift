@@ -243,10 +243,10 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         let storeURL = try urlForStore(withName: "Woo_Compatibility_Test.sqlite", deleteIfExists: true)
         let container = try startPersistentContainer(storeURL: storeURL, storeType: NSSQLiteStoreType, model: model)
 
-        let spyFileManager = SpyFileManager()
+        let spyCoordinator = SpyPersistentStoreCoordinator(container.persistentStoreCoordinator)
+
         let migrator = CoreDataIterativeMigrator(coordinator: container.persistentStoreCoordinator,
-                                                 modelsInventory: modelsInventory,
-                                                 fileManager: spyFileManager)
+                                                 modelsInventory: modelsInventory)
 
         // When
         // Migrate up to the same model version.
@@ -260,9 +260,8 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertEqual(debugMessages.count, 1)
         assertThat(try XCTUnwrap(debugMessages.first), contains: "No migration necessary.")
 
-        // There should be no file operations.
-        assertEmpty(spyFileManager.deletedItems)
-        assertEmpty(spyFileManager.movedItems)
+        assertEmpty(spyCoordinator.replacements)
+        assertEmpty(spyCoordinator.destroyedURLs)
     }
 }
 

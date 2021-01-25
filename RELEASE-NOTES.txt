@@ -1,3 +1,6 @@
+6.0
+-----
+ 
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
 5.9

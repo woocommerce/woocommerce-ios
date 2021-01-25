@@ -64,18 +64,20 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
             // Given
             let currentModel = try XCTUnwrap(modelsByVersionName[currentVersion.name])
 
+            let persistentContainer =
+                makePersistentContainer(storeURL: storeURL, storeType: storeType, model: currentModel)
+
             // When
             // Migrate to the currentVersion if this is not the first version in the list.
             if modelsInventory.versions.first != currentVersion {
-                let migrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
+                let migrator = CoreDataIterativeMigrator(coordinator: persistentContainer.persistentStoreCoordinator,
+                                                         modelsInventory: modelsInventory)
                 let (isMigrationSuccessful, _) =
                     try migrator.iterativeMigrate(sourceStore: storeURL, storeType: storeType, to: currentModel)
                 XCTAssertTrue(isMigrationSuccessful)
             }
 
             // Load the persistent container
-            let persistentContainer =
-                makePersistentContainer(storeURL: storeURL, storeType: storeType, model: currentModel)
             let loadingError: Error? = try waitFor { promise in
                 persistentContainer.loadPersistentStores { _, error in
                     promise(error)
@@ -110,7 +112,12 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
         fileManager.whenCheckingIfFileExists(atPath: databaseURL.path, thenReturn: false)
 
-        let migrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory, fileManager: fileManager)
+        // Using a fake `NSPersistentStoreCoordinator` is apparently inconsequential.
+        let coordinator = NSPersistentStoreCoordinator()
+
+        let migrator = CoreDataIterativeMigrator(coordinator: coordinator,
+                                                 modelsInventory: modelsInventory,
+                                                 fileManager: fileManager)
 
         // When
         let result = try migrator.iterativeMigrate(sourceStore: databaseURL,
@@ -168,7 +175,8 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
         // When
         do {
-            let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
+            let iterativeMigrator = CoreDataIterativeMigrator(coordinator: try XCTUnwrap(psc),
+                                                              modelsInventory: modelsInventory)
             let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
                                                                      storeType: NSSQLiteStoreType,
                                                                      to: model10)
@@ -192,11 +200,13 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         let storeFileName = "WooMigrationDeletionUnitTest.sqlite"
         let storeURL = try urlForStore(withName: storeFileName, deleteIfExists: true)
         // Start a container so the SQLite files will be created.
-        _ = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: sourceModel)
+        let container = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: sourceModel)
 
         let fileManager = FileManager()
         let spyFileManager = SpyFileManager(fileManager)
-        let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory, fileManager: spyFileManager)
+        let iterativeMigrator = CoreDataIterativeMigrator(coordinator: container.persistentStoreCoordinator,
+                                                          modelsInventory: modelsInventory,
+                                                          fileManager: spyFileManager)
 
         // Create a file (e.g. WooCommerce.sqlite.~) that shouldn't be included in the deletion.
         let legacyBackupFileURL = storeURL.appendingPathExtension("~")
@@ -233,10 +243,12 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         let storeFileName = "WooMigrationMoveUnitTest.sqlite"
         let storeURL = try urlForStore(withName: storeFileName, deleteIfExists: true)
         // Start a container so the SQLite files will be created.
-        _ = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: sourceModel)
+        let container = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: sourceModel)
 
         let spyFileManager = SpyFileManager()
-        let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory, fileManager: spyFileManager)
+        let iterativeMigrator = CoreDataIterativeMigrator(coordinator: container.persistentStoreCoordinator,
+                                                          modelsInventory: modelsInventory,
+                                                          fileManager: spyFileManager)
 
         // When
         let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
@@ -268,10 +280,12 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
         // Start a container to create an existing database file.
         let storeURL = try urlForStore(withName: "Woo_Compatibility_Test.sqlite", deleteIfExists: true)
-        let _ = try startPersistentContainer(storeURL: storeURL, storeType: NSSQLiteStoreType, model: model)
+        let container = try startPersistentContainer(storeURL: storeURL, storeType: NSSQLiteStoreType, model: model)
 
         let spyFileManager = SpyFileManager()
-        let migrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory, fileManager: spyFileManager)
+        let migrator = CoreDataIterativeMigrator(coordinator: container.persistentStoreCoordinator,
+                                                 modelsInventory: modelsInventory,
+                                                 fileManager: spyFileManager)
 
         // When
         // Migrate up to the same model version.

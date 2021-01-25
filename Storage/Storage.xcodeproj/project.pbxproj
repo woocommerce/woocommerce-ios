@@ -66,6 +66,7 @@
 		57589E9225227F95000F22CE /* WooCommerceModelV31toV32.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 57589E9125227F95000F22CE /* WooCommerceModelV31toV32.xcmappingmodel */; };
 		575CD4DC24ABE77800755B2B /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575CD4DB24ABE77800755B2B /* Collection+Extensions.swift */; };
 		5772841F25BF45B90092FB2C /* PersistentStoreCoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5772841E25BF45B90092FB2C /* PersistentStoreCoordinatorProtocol.swift */; };
+		5772842325BF465A0092FB2C /* NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5772842225BF465A0092FB2C /* NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift */; };
 		57A29FB825226BDC004DEE01 /* MigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A29FB725226BDC004DEE01 /* MigrationTests.swift */; };
 		57A881A024CA396D00AE0943 /* GeneralAppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A8819F24CA396D00AE0943 /* GeneralAppSettings.swift */; };
 		57CEB1A22525349B00D8544F /* ProductVariationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CEB1A12525349B00D8544F /* ProductVariationTests.swift */; };
@@ -264,6 +265,7 @@
 		57589E9125227F95000F22CE /* WooCommerceModelV31toV32.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV31toV32.xcmappingmodel; sourceTree = "<group>"; };
 		575CD4DB24ABE77800755B2B /* Collection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
 		5772841E25BF45B90092FB2C /* PersistentStoreCoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentStoreCoordinatorProtocol.swift; sourceTree = "<group>"; };
+		5772842225BF465A0092FB2C /* NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift"; sourceTree = "<group>"; };
 		57A29FB725226BDC004DEE01 /* MigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigrationTests.swift; sourceTree = "<group>"; };
 		57A8819F24CA396D00AE0943 /* GeneralAppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettings.swift; sourceTree = "<group>"; };
 		57CEB1A12525349B00D8544F /* ProductVariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationTests.swift; sourceTree = "<group>"; };
@@ -632,6 +634,7 @@
 				B54CA5BC20A4BD3B00F38CD1 /* NSManagedObjectContext+Storage.swift */,
 				574B774F24AA897E0042116F /* FileManager+FileManagerProtocol.swift */,
 				575CD4DB24ABE77800755B2B /* Collection+Extensions.swift */,
+				5772842225BF465A0092FB2C /* NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1038,6 +1041,7 @@
 				CE12FBE32220515600C59248 /* WooCommerceModelV9toV10.xcmappingmodel in Sources */,
 				747453A62242C85E00E0B5EE /* ProductDefaultAttribute+CoreDataProperties.swift in Sources */,
 				028296F3237D404F00E84012 /* ProductVariation+CoreDataProperties.swift in Sources */,
+				5772842325BF465A0092FB2C /* NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift in Sources */,
 				B54CA5C920A4C17800F38CD1 /* NSObject+Storage.swift in Sources */,
 				7471A516216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataClass.swift in Sources */,
 				B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */,

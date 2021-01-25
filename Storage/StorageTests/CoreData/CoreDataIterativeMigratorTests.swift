@@ -113,9 +113,9 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         fileManager.whenCheckingIfFileExists(atPath: databaseURL.path, thenReturn: false)
 
         // Using a fake `NSPersistentStoreCoordinator` is apparently inconsequential.
-        let coordinator = NSPersistentStoreCoordinator()
+        let spyCoordinator = SpyPersistentStoreCoordinator(NSPersistentStoreCoordinator())
 
-        let migrator = CoreDataIterativeMigrator(coordinator: coordinator,
+        let migrator = CoreDataIterativeMigrator(coordinator: spyCoordinator,
                                                  modelsInventory: modelsInventory,
                                                  fileManager: fileManager)
 
@@ -130,6 +130,9 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         assertThat(try XCTUnwrap(result.debugMessages.first), contains: "Skipping migration.")
         XCTAssertEqual(fileManager.fileExistsInvocationCount, 1)
         XCTAssertEqual(fileManager.allMethodsInvocationCount, 1)
+
+        assertEmpty(spyCoordinator.replacements)
+        assertEmpty(spyCoordinator.destroyedURLs)
     }
 
     /// This is more like a confidence-check that Core Data does not allow us to open SQLite

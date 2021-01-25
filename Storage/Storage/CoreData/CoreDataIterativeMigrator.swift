@@ -71,18 +71,11 @@ final class CoreDataIterativeMigrator {
 
         do {
             try steps.forEach { step in
-                let mappingModel = try self.mappingModel(from: step.sourceModel, to: step.targetModel)
-
-                // Migrate the model to the next step
                 let migrationAttemptMessage = makeMigrationAttemptLogMessage(step: step)
                 debugMessages.append(migrationAttemptMessage)
                 DDLogWarn(migrationAttemptMessage)
 
-                try migrateStore(at: sourceStore,
-                                 storeType: storeType,
-                                 fromModel: step.sourceModel,
-                                 toModel: step.targetModel,
-                                 with: mappingModel)
+                try migrate(step: step, sourceStoreURL: sourceStore, storeType: storeType)
             }
 
             return (true, debugMessages)
@@ -175,6 +168,16 @@ private extension CoreDataIterativeMigrator {
 // MARK: - Private helper functions
 //
 private extension CoreDataIterativeMigrator {
+
+    func migrate(step: MigrationStep, sourceStoreURL: URL, storeType: String) throws {
+        let mappingModel = try self.mappingModel(from: step.sourceModel, to: step.targetModel)
+
+        try migrateStore(at: sourceStoreURL,
+                         storeType: storeType,
+                         fromModel: step.sourceModel,
+                         toModel: step.targetModel,
+                         with: mappingModel)
+    }
 
     func migrateStore(at url: URL,
                       storeType: String,

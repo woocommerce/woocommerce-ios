@@ -38,19 +38,19 @@ final class CoreDataIterativeMigrator {
     ///
     /// - Throws: A whole bunch of crap is possible to be thrown between Core Data and FileManager.
     ///
-    func iterativeMigrate(sourceStore: URL,
+    func iterativeMigrate(sourceStore sourceStoreURL: URL,
                           storeType: String,
                           to targetModel: NSManagedObjectModel) throws -> (success: Bool, debugMessages: [String]) {
         // If the persistent store does not exist at the given URL,
         // assume that it hasn't yet been created and return success immediately.
-        guard fileManager.fileExists(atPath: sourceStore.path) == true else {
-            return (true, ["No store exists at URL \(sourceStore).  Skipping migration."])
+        guard fileManager.fileExists(atPath: sourceStoreURL.path) == true else {
+            return (true, ["No store exists at URL \(sourceStoreURL).  Skipping migration."])
         }
 
         // Get the persistent store's metadata.  The metadata is used to
         // get information about the store's managed object model.
         let sourceMetadata =
-            try NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: storeType, at: sourceStore, options: nil)
+            try NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: storeType, at: sourceStoreURL, options: nil)
 
         // Check whether the final model is already compatible with the store.
         // If it is, no migration is necessary.
@@ -75,7 +75,7 @@ final class CoreDataIterativeMigrator {
                 debugMessages.append(migrationAttemptMessage)
                 DDLogWarn(migrationAttemptMessage)
 
-                try migrate(step: step, sourceStoreURL: sourceStore, storeType: storeType)
+                try migrate(step: step, sourceStoreURL: sourceStoreURL, storeType: storeType)
             }
 
             return (true, debugMessages)

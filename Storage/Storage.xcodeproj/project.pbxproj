@@ -68,6 +68,7 @@
 		5772841F25BF45B90092FB2C /* PersistentStoreCoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5772841E25BF45B90092FB2C /* PersistentStoreCoordinatorProtocol.swift */; };
 		5772842325BF465A0092FB2C /* NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5772842225BF465A0092FB2C /* NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift */; };
 		5772842725BF5BFB0092FB2C /* SpyPersistentStoreCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5772842625BF5BFB0092FB2C /* SpyPersistentStoreCoordinator.swift */; };
+		5772842C25BF62A90092FB2C /* Assertions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5772842B25BF62A90092FB2C /* Assertions.swift */; };
 		57A29FB825226BDC004DEE01 /* MigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A29FB725226BDC004DEE01 /* MigrationTests.swift */; };
 		57A881A024CA396D00AE0943 /* GeneralAppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A8819F24CA396D00AE0943 /* GeneralAppSettings.swift */; };
 		57CEB1A22525349B00D8544F /* ProductVariationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CEB1A12525349B00D8544F /* ProductVariationTests.swift */; };
@@ -268,6 +269,7 @@
 		5772841E25BF45B90092FB2C /* PersistentStoreCoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentStoreCoordinatorProtocol.swift; sourceTree = "<group>"; };
 		5772842225BF465A0092FB2C /* NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift"; sourceTree = "<group>"; };
 		5772842625BF5BFB0092FB2C /* SpyPersistentStoreCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpyPersistentStoreCoordinator.swift; sourceTree = "<group>"; };
+		5772842B25BF62A90092FB2C /* Assertions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assertions.swift; sourceTree = "<group>"; };
 		57A29FB725226BDC004DEE01 /* MigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigrationTests.swift; sourceTree = "<group>"; };
 		57A8819F24CA396D00AE0943 /* GeneralAppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettings.swift; sourceTree = "<group>"; };
 		57CEB1A12525349B00D8544F /* ProductVariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationTests.swift; sourceTree = "<group>"; };
@@ -478,6 +480,14 @@
 			path = "Migration Policies";
 			sourceTree = "<group>";
 		};
+		5772842A25BF62960092FB2C /* TestKit */ = {
+			isa = PBXGroup;
+			children = (
+				5772842B25BF62A90092FB2C /* Assertions.swift */,
+			);
+			path = TestKit;
+			sourceTree = "<group>";
+		};
 		57A8819E24CA395000AE0943 /* AppSettings */ = {
 			isa = PBXGroup;
 			children = (
@@ -608,6 +618,7 @@
 		B54CA5A620A4BBA600F38CD1 /* StorageTests */ = {
 			isa = PBXGroup;
 			children = (
+				5772842A25BF62960092FB2C /* TestKit */,
 				D87F61582265AED70031A13B /* Mock data */,
 				02A098252480D155002F8C7A /* Mocks */,
 				26EA01D224EC449C00176A57 /* Model */,
@@ -1127,6 +1138,7 @@
 				57A29FB825226BDC004DEE01 /* MigrationTests.swift in Sources */,
 				2619F78625B5D29B0006DAFF /* TypedPredicateTests.swift in Sources */,
 				5772842725BF5BFB0092FB2C /* SpyPersistentStoreCoordinator.swift in Sources */,
+				5772842C25BF62A90092FB2C /* Assertions.swift in Sources */,
 				26EA01D524EC44B300176A57 /* GeneralAppSettingsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

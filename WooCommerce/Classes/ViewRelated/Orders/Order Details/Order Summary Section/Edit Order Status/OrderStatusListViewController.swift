@@ -209,6 +209,7 @@ private extension OrderStatusListViewController {
         return OrderAction.updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: { error in
             guard let error = error else {
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+                NotificationCenter.default.post(name: .orderNotesReloadRequired, object: nil)
                 ServiceLocator.analytics.track(.orderStatusChangeSuccess)
                 return
             }

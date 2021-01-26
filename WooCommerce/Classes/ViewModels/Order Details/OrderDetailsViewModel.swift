@@ -4,6 +4,15 @@ import Gridicons
 import Yosemite
 import MessageUI
 
+// MARK: - OrderDetailsViewModel Notifications
+//
+extension NSNotification.Name {
+
+    /// Posted whenever a reload of order notes is required.
+    ///
+    public static let orderNotesReloadRequired = Foundation.Notification.Name(rawValue: "com.woocommerce.ios.orderNotesReloadRequired")
+}
+
 final class OrderDetailsViewModel {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     private let stores: StoresManager
@@ -17,11 +26,19 @@ final class OrderDetailsViewModel {
     init(order: Order, stores: StoresManager = ServiceLocator.stores) {
         self.order = order
         self.stores = stores
+        observeOrderNotesReloadNotifications()
     }
 
     func update(order newOrder: Order) {
         self.order = newOrder
         dataSource.update(order: order)
+    }
+
+    func observeOrderNotesReloadNotifications() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(reloadOrderNotes),
+                                               name: .orderNotesReloadRequired,
+                                               object: nil)
     }
 
     let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")
@@ -306,6 +323,10 @@ extension OrderDetailsViewModel {
         }
 
         stores.dispatch(action)
+    }
+
+    @objc func reloadOrderNotes() {
+        self.syncNotes()
     }
 
     func syncNotes(onCompletion: ((Error?) -> ())? = nil) {

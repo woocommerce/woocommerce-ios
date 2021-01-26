@@ -263,7 +263,7 @@ private extension AppDelegate {
     ///
     func setupNoticePresenter() {
         var noticePresenter = ServiceLocator.noticePresenter
-        noticePresenter.presentingViewController = window?.rootViewController
+        noticePresenter.presentingViewController = appCoordinator?.tabBarController
     }
 
     /// Push Notifications: Authorization + Registration!

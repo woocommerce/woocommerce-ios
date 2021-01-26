@@ -165,7 +165,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
     func test_iterativeMigrate_can_iteratively_migrate_from_model_1_to_model_10() throws {
         // Given
         let sourceModel = try managedObjectModel(for: "Model")
-        let model10 = try managedObjectModel(for: "Model 10")
+        let targetModel = try managedObjectModel(for: "Model 10")
 
         let storeURL = try urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
         let options = [NSInferMappingModelAutomaticallyOption: false, NSMigratePersistentStoresAutomaticallyOption: false]
@@ -182,14 +182,14 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
                                                               modelsInventory: modelsInventory)
             let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
                                                                      storeType: NSSQLiteStoreType,
-                                                                     to: model10)
+                                                                     to: targetModel)
             XCTAssertTrue(result)
         } catch {
             XCTFail("Error when attempting to migrate: \(error)")
         }
 
         // Then
-        psc = NSPersistentStoreCoordinator(managedObjectModel: model10)
+        psc = NSPersistentStoreCoordinator(managedObjectModel: targetModel)
         ps = try psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
         XCTAssertNotNil(ps)
     }

@@ -1,0 +1,5 @@
+Produkter: alla användare kan nu lägga till och redigera länkade produkter, lägga till och redigera nedladdningsbara filer och ta bort en produkt.
+
+Frakt: Du kan nu visa information om fraktetikett, begära en återbetalning och skriva ut en fraktetikett på nytt med AirPrint.
+
+Inloggning: Vi har gjort olika förbättringar av inloggningsflödet, inklusive bättre felhantering.

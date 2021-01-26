@@ -371,7 +371,7 @@ private extension ProductsViewController {
     /// Fetches products feedback visibility from AppSettingsStore and update products top banner accordingly
     ///
     func updateTopBannerView() {
-        let action = AppSettingsAction.loadFeedbackVisibility(type: .productsM4) { [weak self] result in
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .productsM5) { [weak self] result in
             switch result {
             case .success(let visible):
                 if visible {
@@ -566,14 +566,14 @@ private extension ProductsViewController {
     ///
     func presentProductsFeedback() {
         // Present survey
-        let navigationController = SurveyCoordinatingController(survey: .productsM4Feedback)
+        let navigationController = SurveyCoordinatingController(survey: .productsM5Feedback)
         present(navigationController, animated: true, completion: nil)
     }
 
     /// Mark feedback request as dismissed and update banner visibility
     ///
     func dismissProductsBanner() {
-        let action = AppSettingsAction.updateFeedbackStatus(type: .productsM4, status: .dismissed) { [weak self] result in
+        let action = AppSettingsAction.updateFeedbackStatus(type: .productsM5, status: .dismissed) { [weak self] result in
             if let error = result.failure {
                 CrashLogging.logError(error)
             }

@@ -1,0 +1,5 @@
+Produits : tous les utilisateurs peuvent désormais ajouter et modifier des produits liés, ajouter et modifier des fichiers téléchargeables et supprimer un produit.
+
+Expédition : vous pouvez désormais voir les détails de l’étiquette d’expédition, demander un remboursement et réimprimer une étiquette d’expédition avec AirPrint.
+
+Connexion : nous avons apporté diverses améliorations au flux de connexion, notamment une meilleure gestion des erreurs.

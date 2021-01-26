@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-12-24 10:54:05+0000 */
+/* Translation-Revision-Date: 2021-01-22 08:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -108,7 +108,7 @@
 "(No Title)" = "(タイトルなし)";
 
 /* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details.";
+"**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "プリンターの設定で **AirPrint が有効になっていることを確認** します。 この設定はプリンター本体で操作しなければならない場合があります。\n\n詳細については、プリンター付属のドキュメントをご確認ください。";
 
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "1件の商品を選択済み";
@@ -147,7 +147,7 @@
 "A verification code will only contain numbers." = "認証コードは数字だけで構成されます。";
 
 /* Header of existing attribute options section in Add Attribute Options screen */
-"ADD OPTIONS" = "ADD OPTIONS";
+"ADD OPTIONS" = "オプションを追加";
 
 /* About this app (information page title) */
 "About" = "このサイトについて";
@@ -218,7 +218,7 @@
 "Add attribute" = "属性を追加";
 
 /* Footer of text field section in Add Attribute Options screen */
-"Add each option and press enter" = "Add each option and press enter";
+"Add each option and press enter" = "各オプションを追加して Enter を押します";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -466,7 +466,7 @@
 "Check your email!" = "メールをご確認ください。";
 
 /* Navigation title on the shipping label paper size selector screen */
-"Choose Paper Size" = "Choose Paper Size";
+"Choose Paper Size" = "用紙サイズを選択";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "デバイスから選択";
@@ -653,7 +653,7 @@
 "Details" = "詳細";
 
 /* Screen title: Details Order number. Parameters: %1$@ - order number */
-"Details Order #%1$@" = "Details Order #%1$@";
+"Details Order #%1$@" = "注文番号 %1$@ の詳細";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "カタログ内の製品の位置を決定します。数字の値が小さいほど、アイテムは商品リストの上の方に表示されます。マイナスの値も利用できます";
@@ -703,7 +703,7 @@
 "Don’t know how to print from your phone?" = "スマートフォンを使って印刷する方法をご存知ですか ?";
 
 /* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
-"Dotcom Error: [%1$@] %2$@" = "Dotcom Error: [%1$@] %2$@";
+"Dotcom Error: [%1$@] %2$@" = "Dotcom エラー: [%1$@] %2$@";
 
 /* WordPress.com error thrown when the the request REST API url is invalid. */
 "Dotcom Invalid REST Route" = "Dotcom のリセット ルートが無効です";
@@ -811,7 +811,7 @@
 "Enjoying the WooCommerce app?" = "WooCommerce アプリの感想をお聞かせください";
 
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating.";
+"Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "**プリンターのファームウェアが最新である** ことを確認してください。 更新の手順については、プリンターのドキュメントを確認してください。";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "別のストアを入力";
@@ -877,7 +877,7 @@
 "Enter your password instead." = "代わりにパスワードを入力してください。";
 
 /* Alert title when there is an error requesting shipping label document for reprinting */
-"Error previewing shipping label" = "Error previewing shipping label";
+"Error previewing shipping label" = "配送ラベルのプレビューでエラーが発生しました";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -958,7 +958,7 @@
 "From device" = "端末から";
 
 /* Order Fulfillment Title. Parameters: %1$@ - order number */
-"Fulfill Order #%1$@" = "Fulfill Order #%1$@";
+"Fulfill Order #%1$@" = "注文番号 %1$@ を履行";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "ストアでの商品売り上げ状況の統計概要をチェック";
@@ -1086,10 +1086,10 @@
 "If you already used the label in a package, printing and using it again is a violation of our terms of service" = "荷物に一度使用したラベルを印刷して再度使用すると、弊社の利用規約違反となります。";
 
 /* Step 4 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device.";
+"If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "スマートフォンからの印刷で引き続き問題が発生している場合は、ラベルを PDF として保存し、別の端末に **メールで送信** して印刷できます。";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
-"If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.";
+"If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Apple を引き続き使用し、WordPress.com アカウントをまだお持ちでない場合は、アカウントを作成して WordPress.com の _利用規約_ に同意します。";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Apple または Google を引き続き使用し、WordPress.com アカウントをまだお持ちでない場合は、アカウントを作成して WordPress.com の _利用規約_ に同意します。";
@@ -1187,7 +1187,7 @@
 "Label (4 x 6 in)" = "ラベル (4 x 6インチ)";
 
 /* Navigation bar title of shipping label paper size options screen */
-"Label Format Options" = "Label Format Options";
+"Label Format Options" = "ラベルの書式設定オプション";
 
 /* Last 24 hours section header */
 "Last 24 hours" = "過去24時間";
@@ -1465,7 +1465,7 @@
 "No ratings" = "評価なし";
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier'. Parameters: %1$@ - carrier name */
-"No results found for %1$@\nAdd a custom carrier" = "No results found for %1$@\nAdd a custom carrier";
+"No results found for %1$@\nAdd a custom carrier" = "%1$@ の検索結果は0件でした\nカスタムの配送業者を追加";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "この期間には収益がありません";
@@ -1499,7 +1499,7 @@
 "OK" = "OK";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
-"OPTIONS OFFERED" = "OPTIONS OFFERED";
+"OPTIONS OFFERED" = "提供されているオプション";
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "オフ";
@@ -1545,7 +1545,7 @@
 "Opens a list of available statuses." = "利用可能なステータスのリストを開きます。";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
-"Option name" = "Option name";
+"Option name" = "オプション名";
 
 /* Add Product Category. Placeholder of cell presenting the parent category.
    Placeholder of the cell text field in Product Inventory Settings > SKU */
@@ -1565,7 +1565,7 @@
 
 /* Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number
    Order number title. Parameters: %1$@ - order number */
-"Order #%1$@" = "Order #%1$@";
+"Order #%1$@" = "注文番号 %1$@ を注文";
 
 /* Order notes section title */
 "Order Notes" = "注文メモ";
@@ -1739,13 +1739,13 @@
 "Print Shipping Label" = "配送ラベルを印刷";
 
 /* Navigation bar title of shipping label printing instructions screen */
-"Print from your Phone" = "Print from your Phone";
+"Print from your Phone" = "スマートフォンから印刷";
 
 /* The title of the shipping labels top banner in order details */
-"Print shipping labels from your device!" = "Print shipping labels from your device!";
+"Print shipping labels from your device!" = "お手元の端末から配送ラベルを印刷しましょう !";
 
 /* Title of in-progress modal when requesting shipping label document for reprinting */
-"Printing Label" = "Printing Label";
+"Printing Label" = "ラベルを印刷中";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "カリフォルニア州のユーザーへのプライバシー通知";
@@ -2377,7 +2377,7 @@
 "Switch Store" = "ストアを切り替える";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. Parameters: %1$@ - store name */
-"Switched to %1$@. You will only receive notifications from this store." = "Switched to %1$@. You will only receive notifications from this store.";
+"Switched to %1$@. You will only receive notifications from this store." = "%1$@ に切り替えました。 このストアの通知のみ受信します。";
 
 /* Accessibility Identifier for the H1 Aztec Style */
 "Switches to the Heading 1 font size" = "見出し1のフォントサイズに変更する";
@@ -2744,19 +2744,19 @@
 "Unable To Connect" = "接続できない";
 
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
-"Unable to add note to order #%1$d" = "Unable to add note to order #%1$d";
+"Unable to add note to order #%1$d" = "注文番号%1$dにメモを追加できません";
 
 /* Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number}. Parameters: %1$d - order number */
-"Unable to add tracking to order #%1$d" = "Unable to add tracking to order #%1$d";
+"Unable to add tracking to order #%1$d" = "注文番号%1$dの追跡を追加できません";
 
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}. Parameters: %1$d - order number */
-"Unable to change status of order #%1$d" = "Unable to change status of order #%1$d";
+"Unable to change status of order #%1$d" = "注文番号%1$dのステータスを変更できません";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
-"Unable to delete tracking for order #%1$d" = "Unable to delete tracking for order #%1$d";
+"Unable to delete tracking for order #%1$d" = "注文番号%1$dの追跡を削除できません";
 
 /* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
-"Unable to fulfill order #%1$d" = "Unable to fulfill order #%1$d";
+"Unable to fulfill order #%1$d" = "注文番号%1$dを受け付けられません";
 
 /* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
 "Unable to load Shipment Carriers" = "配送業者を読み込めません";
@@ -2909,7 +2909,7 @@
 "Verification code" = "認証コード";
 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network.";
+"Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "お使いのプリンターと端末が **同じ WiFi ネットワーク** に接続されていることを確認してください。\n\nWi-Fi ネットワークとの接続の詳細については、プリンターのドキュメントを確認してください。";
 
 /* Displays the version of the App */
 "Version %@" = "バージョン %@";
@@ -2978,7 +2978,7 @@
 "Watch your audience grow with in-depth analytics." = "詳細な分析により、オーディエンスの成長を見守れます。";
 
 /* The info of the shipping labels top banner in order details */
-"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here.";
+"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "より簡単に、お使いの端末から配送ラベルを直接印刷できるよう、改善を重ねているところです ! 現時点では、WooCommerce Shipping のストア管理からこの注文用にラベルを作成した場合、こちらの「注文詳細」から印刷できます。";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "ストアのアナリティクスを表示できません";
@@ -3103,7 +3103,7 @@
 "Your notifications travel with you — see comments and likes as they happen." = "モバイルでも通知を受信し、コメントやいいねをリアルタイムで確認できます。";
 
 /* Body text of alert helping users understand their site address */
-"Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Your site address appears in the bar at the top of the screen when you visit your site in Safari.";
+"Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Safari でサイトにアクセスすると、画面の上部にあるバーにサイトアドレスが表示されます。";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[コメント]";

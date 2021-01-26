@@ -62,6 +62,8 @@ final class CoreDataIterativeMigrator {
         // Get the steps to perform the migration.
         let steps = try MigrationStep.steps(using: modelsInventory, source: sourceModel, target: targetModel)
         guard !steps.isEmpty else {
+            // Abort because there is nothing to migrate. And also to avoid accidentally deleting
+            // `sourceStoreURL` during the routine below.
             return (false, ["Skipping migration. Found no steps for migration."])
         }
 

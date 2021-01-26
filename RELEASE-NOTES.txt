@@ -3,6 +3,7 @@
 6.0
 -----
 - [*] Updated copyright notice to WooCommerce
+- [*] Fix: top performers in "This Week" tab should be showing the same data as in WC Admin.
 - [internal] Refactored Core Data migrator stack to help reduce crashes [https://github.com/woocommerce/woocommerce-ios/pull/3523]
 
 5.9

@@ -371,9 +371,6 @@
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "Bar number %1$i, %2$@, ";
 
-/* Begin fulfill order button title */
-"Begin Fulfillment" = "Begin Fulfillment";
-
 /* Section header title for billing address in billing information */
 "Billing Address" = "Billing Address";
 
@@ -408,7 +405,7 @@
 "Can Not Request Link" = "Can Not Request Link";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
 "Cancel" = "Cancel";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -486,6 +483,9 @@
 
 /* Store Picker's Section Title: Displayed when there's a single pre-selected Store. */
 "Connected Store" = "Connected Store";
+
+/* Page title for the list of connected stores */
+"Connected Stores" = "Connected Stores";
 
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Connecting to WordPress.com";
@@ -573,9 +573,6 @@
 /* The button title text for creating a new account. */
 "Create Account" = "Create Account";
 
-/* The title of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
-"Create products from the app!" = "Create products from the app!";
-
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "Creating products";
 
@@ -601,11 +598,7 @@
 /* Customer info section title */
 "Customer" = "Customer";
 
-/* Section title for the customer's billing and shipping address */
-"Customer Information" = "Customer Information";
-
-/* Customer note section title
-   Section title for a note from the customer */
+/* Customer note section title */
 "Customer Provided Note" = "Customer Provided Note";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
@@ -626,16 +619,12 @@
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Default";
 
-/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen
-   Button title Delete in Downloadable File Options Action Sheet - Button title Delete in Edit Product More Options Action Sheet */
+/* Button title Delete in Downloadable File Options Action Sheet
+   Button title Delete in Edit Product More Options Action Sheet */
 "Delete" = "Delete";
 
-/* Delete a Shipment Tracking
-   Delete tracking button title */
+/* Delete tracking button title */
 "Delete Tracking" = "Delete Tracking";
-
-/* Accessibility hint for Delete Shipment button in Order fulfillment screen */
-"Deletes a shipment's tracking information." = "Deletes a shipment's tracking information.";
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "Describe your product";
@@ -869,6 +858,9 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Failed to serialize request to the REST API.";
 
+/* Content of error presented when undo of Mark Order Completed failed. It reads: Failed to undo fulfillment of order #{order number}. Parameters: %1$d - order number */
+"Failed to undo fulfillment of order #%1$d" = "Failed to undo fulfillment of order #%1$d";
+
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
 
@@ -877,6 +869,9 @@
 
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "Feedback Sent!";
+
+/* Fees label for payment view */
+"Fees" = "Fees";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -902,6 +897,9 @@
 /* Navigation bar title format for filtering a list of products with filters applied. */
 "Filters (%ld)" = "Filters (%ld)";
 
+/* Button linking to webview explaining how to find your connected emailPresented when logging in with a store address that does not match the account entered */
+"Find your connected email" = "Find your connected email";
+
 /* The hint button's title text to help users find their site address. */
 "Find your site address" = "Find your site address";
 
@@ -922,9 +920,6 @@
 
 /* Title of the downloadable file bottom sheet action for adding file from WordPress Media Library. */
 "From WordPress Media Library" = "From WordPress Media Library";
-
-/* Order Fulfillment Title. Parameters: %1$@ - order number */
-"Fulfill Order #%1$@" = "Fulfill Order #%1$@";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Gain insights into how products are performing on your store";
@@ -1125,6 +1120,9 @@
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "Issuing Refund...";
 
+/* Message explaining that the site entered and the acount logged into do not match. Reads like 'It looks like awebsite.com is connected to a different account */
+"It looks like %@ is connected to a different account." = "It looks like %@ is connected to a different account.";
+
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "It looks like this email isn't associated with a WordPress.com account." = "It looks like this email isn't associated with a WordPress.com account.";
 
@@ -1136,9 +1134,6 @@
 
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "Italic";
-
-/* The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
-"It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!" = "It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats";
@@ -1251,8 +1246,8 @@
 /* Instructions on the WordPress.com username / password log in form. */
 "Log in with your WordPress.com username and password." = "Log in with your WordPress.com username and password.";
 
-/* Alert button title - confirms and logs out the user
-   Log out button title */
+/* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
+   Alert button title - confirms and logs out the user - Log out button title */
 "Log Out" = "Log Out";
 
 /* Title of a button.  */
@@ -1377,7 +1372,10 @@
 "Need some help?" = "Need some help?";
 
 /* The title for the net amount paid cell */
-"Net" = "Net";
+"Net Payment" = "Net Payment";
+
+/* The title of the top banner on the Products tab. */
+"New features available!" = "New features available!";
 
 /* Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
@@ -1442,7 +1440,8 @@
 /* Placeholder of the Product Variations row on Product main screen for a variable product */
 "No variations yet" = "No variations yet";
 
-/* Display label for the product's tax status setting option */
+/* Display label for the order fee's tax status setting option
+   Display label for the product's tax status setting option */
 "None" = "None";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
@@ -1566,7 +1565,7 @@
 "Package Details" = "Package Details";
 
 /* The title for the customer payment cell */
-"Paid By Customer" = "Paid By Customer";
+"Paid" = "Paid";
 
 /* Title of the paper size selector row for reprinting a shipping label */
 "Paper Size" = "Paper Size";
@@ -1724,7 +1723,7 @@
 "Processing" = "Processing";
 
 /* Description for Top Performers left column header
-   Product section title - Product section title if there is only one product. - Section header title for the product */
+   Product section title - Product section title if there is only one product. */
 "Product" = "Product";
 
 /* Product section title */
@@ -1806,8 +1805,7 @@
 /* Quantity abbreviation for section title */
 "QTY" = "QTY";
 
-/* Quantity abbreviation for section title
-   Section header title - abbreviation for quantity */
+/* Quantity abbreviation for section title */
 "Qty" = "Qty";
 
 /* The accessibility label for the quantity button when selecting an item to refund
@@ -2004,6 +2002,9 @@
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "See comments and notifications in real time." = "See comments and notifications in real time.";
 
+/* Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
+"See Connected Stores" = "See Connected Stores";
+
 /* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "See Instructions" = "See Instructions";
 
@@ -2165,6 +2166,9 @@
 
 /* Button title. Tapping begins our normal sign up process. */
 "Sign up with Email" = "Sign up with Email";
+
+/* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
+"Signed in as @%1$@" = "Signed in as @%1$@";
 
 /* Display label for simple product type. */
 "Simple" = "Simple";
@@ -2425,7 +2429,8 @@
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "Tax status";
 
-/* Display label for the product's tax status setting option */
+/* Display label for the order fee's tax status setting option
+   Display label for the product's tax status setting option */
 "Taxable" = "Taxable";
 
 /* Taxes label for payment view */
@@ -2687,7 +2692,7 @@
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "Unable to delete tracking for order #%1$d";
 
-/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
+/* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "Unable to fulfill order #%1$d";
 
 /* Load Product Categories Action Failed */
@@ -3005,6 +3010,9 @@
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "WRITE NOTE";
 
+/* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
+"Wrong account?" = "Wrong account?";
+
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
 
@@ -3019,6 +3027,9 @@
 
 /* Yesterday Section Header */
 "Yesterday" = "Yesterday";
+
+/* The info of the top banner on the Products tab. */
+"You can now add downloadable files to a product and link upsell & cross-sell products. No longer want a product? Trash it!" = "You can now add downloadable files to a product and link upsell & cross-sell products. No longer want a product? Trash it!";
 
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process.";
@@ -3035,7 +3046,8 @@
 /* shown in promotional screens during first launch */
 "Your notifications travel with you — see comments and likes as they happen." = "Your notifications travel with you — see comments and likes as they happen.";
 
-/* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need... */
+/* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
+   Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */
 "your site" = "your site";
 
 /* Body text of alert helping users understand their site address */

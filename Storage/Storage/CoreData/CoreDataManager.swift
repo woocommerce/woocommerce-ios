@@ -197,7 +197,7 @@ public final class CoreDataManager: StorageManagerType {
 
         do {
             let iterativeMigrator = CoreDataIterativeMigrator(coordinator: coordinator, modelsInventory: modelsInventory)
-            let (migrateResult, migrationDebugMessages) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
+            let (migrateResult, migrationDebugMessages) = try iterativeMigrator.iterativeMigrate(sourceStoreURL: storeURL,
                                                                                                  storeType: NSSQLiteStoreType,
                                                                                                  to: modelsInventory.currentModel)
             debugMessages += migrationDebugMessages

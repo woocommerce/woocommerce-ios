@@ -36,7 +36,7 @@ final class CoreDataIterativeMigrator {
     ///
     /// - Throws: A whole bunch of crap is possible to be thrown between Core Data and FileManager.
     ///
-    func iterativeMigrate(sourceStore sourceStoreURL: URL,
+    func iterativeMigrate(sourceStoreURL: URL,
                           storeType: String,
                           to targetModel: NSManagedObjectModel) throws -> (success: Bool, debugMessages: [String]) {
         // If the persistent store does not exist at the given URL,

@@ -548,7 +548,7 @@ private extension MigrationTests {
         let migrator = CoreDataIterativeMigrator(coordinator: container.persistentStoreCoordinator,
                                                  modelsInventory: modelsInventory)
         let (isMigrationSuccessful, _) =
-            try migrator.iterativeMigrate(sourceStore: storeURL, storeType: storeDescription.type, to: targetModel)
+            try migrator.iterativeMigrate(sourceStoreURL: storeURL, storeType: storeDescription.type, to: targetModel)
         XCTAssertTrue(isMigrationSuccessful)
 
         // Load a new container

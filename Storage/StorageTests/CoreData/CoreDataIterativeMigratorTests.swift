@@ -73,7 +73,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
                 let migrator = CoreDataIterativeMigrator(coordinator: persistentContainer.persistentStoreCoordinator,
                                                          modelsInventory: modelsInventory)
                 let (isMigrationSuccessful, _) =
-                    try migrator.iterativeMigrate(sourceStore: storeURL, storeType: storeType, to: currentModel)
+                    try migrator.iterativeMigrate(sourceStoreURL: storeURL, storeType: storeType, to: currentModel)
                 XCTAssertTrue(isMigrationSuccessful)
             }
 
@@ -120,7 +120,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
                                                  fileManager: fileManager)
 
         // When
-        let result = try migrator.iterativeMigrate(sourceStore: databaseURL,
+        let result = try migrator.iterativeMigrate(sourceStoreURL: databaseURL,
                                                    storeType: NSSQLiteStoreType,
                                                    to: targetModel)
 
@@ -177,7 +177,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         // When
         let iterativeMigrator = CoreDataIterativeMigrator(coordinator: spyCoordinator,
                                                           modelsInventory: modelsInventory)
-        let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
+        let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStoreURL: storeURL,
                                                                  storeType: storeType,
                                                                  to: targetModel)
 
@@ -224,7 +224,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
                                                           modelsInventory: modelsInventory)
 
         // When
-        let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
+        let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStoreURL: storeURL,
                                                                  storeType: storeType,
                                                                  to: targetModel)
         // Then
@@ -259,7 +259,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
 
         // When
         // Migrate up to the same model version.
-        let (result, debugMessages) = try migrator.iterativeMigrate(sourceStore: storeURL,
+        let (result, debugMessages) = try migrator.iterativeMigrate(sourceStoreURL: storeURL,
                                                                     storeType: NSSQLiteStoreType,
                                                                     to: model)
 

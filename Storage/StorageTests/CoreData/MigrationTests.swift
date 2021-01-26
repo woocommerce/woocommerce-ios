@@ -471,6 +471,36 @@ final class MigrationTests: XCTestCase {
         // The OrderFeeLine.order inverse relationship should be updated.
         XCTAssertEqual(fee.value(forKey: "order") as? NSManagedObject, migratedOrder)
     }
+
+    func test_migrating_from_42_to_43_deletes_SiteVisitStats_and_TopEarnerStats_objects_and_requires_siteID_for_new_objects() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 42")
+        let sourceContext = sourceContainer.viewContext
+
+        insertSiteVisitStats(to: sourceContext)
+        insertTopEarnerStats(to: sourceContext)
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "SiteVisitStats"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "TopEarnerStats"), 1)
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 43")
+        let targetContext = targetContainer.viewContext
+
+        // Assert
+        // Pre-existing `SiteVisitStats` and `TopEarnerStats` objects should be deleted since model version 43 starts requiring a `siteID`.
+        XCTAssertEqual(try targetContext.count(entityName: "SiteVisitStats"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "TopEarnerStats"), 0)
+
+        // We should be able to add a new `SiteVisitStats` and `TopEarnerStats` with `siteID`.
+        let siteVisitStats = insertSiteVisitStats(to: targetContext)
+        siteVisitStats.setValue(66, forKey: "siteID")
+        let topEarnerStats = insertTopEarnerStats(to: targetContext)
+        topEarnerStats.setValue(66, forKey: "siteID")
+        XCTAssertNoThrow(try targetContext.save())
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -742,6 +772,23 @@ private extension MigrationTests {
             "siteID": 134,
             "orderID": 191,
             "paperSize": "legal"
+        ])
+    }
+
+    @discardableResult
+    func insertSiteVisitStats(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "SiteVisitStats", properties: [
+            "date": "2021-01-22",
+            "granularity": "day"
+        ])
+    }
+
+    @discardableResult
+    func insertTopEarnerStats(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "TopEarnerStats", properties: [
+            "date": "2021-01-22",
+            "granularity": "day",
+            "limit": "3"
         ])
     }
 }

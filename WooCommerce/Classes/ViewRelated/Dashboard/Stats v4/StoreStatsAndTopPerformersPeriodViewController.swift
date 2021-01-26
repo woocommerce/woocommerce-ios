@@ -73,7 +73,10 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     private lazy var inAppFeedbackCardViewsForStackView: [UIView] = createInAppFeedbackCardViewsForStackView()
 
     private lazy var topPerformersPeriodViewController: TopPerformerDataViewController = {
-        return TopPerformerDataViewController(siteID: siteID, granularity: timeRange.topEarnerStatsGranularity)
+        return TopPerformerDataViewController(siteID: siteID,
+                                              siteTimeZone: siteTimezone,
+                                              currentDate: currentDate,
+                                              timeRange: timeRange)
     }()
 
     // MARK: Internal Properties

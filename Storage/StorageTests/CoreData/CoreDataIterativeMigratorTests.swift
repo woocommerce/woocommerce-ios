@@ -201,7 +201,6 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         XCTAssertEqual(replacement.destinationURL, storeURL)
         // The source of the replacement should have been the last temporary destination store URL.
         XCTAssertEqual(replacement.sourceURL, spyCoordinator.destroyedURLs.last)
-
     }
 
     func test_iterativeMigrate_replaces_the_original_SQLite_files() throws {

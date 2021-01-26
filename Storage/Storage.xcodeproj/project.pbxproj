@@ -66,6 +66,10 @@
 		57589E90252275CA000F22CE /* NSManagedObjectContext+TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57589E8F252275CA000F22CE /* NSManagedObjectContext+TestHelpers.swift */; };
 		57589E9225227F95000F22CE /* WooCommerceModelV31toV32.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 57589E9125227F95000F22CE /* WooCommerceModelV31toV32.xcmappingmodel */; };
 		575CD4DC24ABE77800755B2B /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575CD4DB24ABE77800755B2B /* Collection+Extensions.swift */; };
+		5772841F25BF45B90092FB2C /* PersistentStoreCoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5772841E25BF45B90092FB2C /* PersistentStoreCoordinatorProtocol.swift */; };
+		5772842325BF465A0092FB2C /* NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5772842225BF465A0092FB2C /* NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift */; };
+		5772842725BF5BFB0092FB2C /* SpyPersistentStoreCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5772842625BF5BFB0092FB2C /* SpyPersistentStoreCoordinator.swift */; };
+		5772842C25BF62A90092FB2C /* Assertions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5772842B25BF62A90092FB2C /* Assertions.swift */; };
 		57A29FB825226BDC004DEE01 /* MigrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A29FB725226BDC004DEE01 /* MigrationTests.swift */; };
 		57A881A024CA396D00AE0943 /* GeneralAppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A8819F24CA396D00AE0943 /* GeneralAppSettings.swift */; };
 		57CEB1A22525349B00D8544F /* ProductVariationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57CEB1A12525349B00D8544F /* ProductVariationTests.swift */; };
@@ -265,6 +269,10 @@
 		57589E8F252275CA000F22CE /* NSManagedObjectContext+TestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSManagedObjectContext+TestHelpers.swift"; sourceTree = "<group>"; };
 		57589E9125227F95000F22CE /* WooCommerceModelV31toV32.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV31toV32.xcmappingmodel; sourceTree = "<group>"; };
 		575CD4DB24ABE77800755B2B /* Collection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
+		5772841E25BF45B90092FB2C /* PersistentStoreCoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentStoreCoordinatorProtocol.swift; sourceTree = "<group>"; };
+		5772842225BF465A0092FB2C /* NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift"; sourceTree = "<group>"; };
+		5772842625BF5BFB0092FB2C /* SpyPersistentStoreCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpyPersistentStoreCoordinator.swift; sourceTree = "<group>"; };
+		5772842B25BF62A90092FB2C /* Assertions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Assertions.swift; sourceTree = "<group>"; };
 		57A29FB725226BDC004DEE01 /* MigrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigrationTests.swift; sourceTree = "<group>"; };
 		57A8819F24CA396D00AE0943 /* GeneralAppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettings.swift; sourceTree = "<group>"; };
 		57CEB1A12525349B00D8544F /* ProductVariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationTests.swift; sourceTree = "<group>"; };
@@ -432,6 +440,7 @@
 				02A098262480D160002F8C7A /* MockCrashLogger.swift */,
 				574B774D24AA883D0042116F /* MockFileManager.swift */,
 				572C099525475208005372E1 /* SpyFileManager.swift */,
+				5772842625BF5BFB0092FB2C /* SpyPersistentStoreCoordinator.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -472,6 +481,14 @@
 				572B40E325A5414D00DB20E0 /* DeleteEntityObjectsMigrationPolicy.swift */,
 			);
 			path = "Migration Policies";
+			sourceTree = "<group>";
+		};
+		5772842A25BF62960092FB2C /* TestKit */ = {
+			isa = PBXGroup;
+			children = (
+				5772842B25BF62A90092FB2C /* Assertions.swift */,
+			);
+			path = TestKit;
 			sourceTree = "<group>";
 		};
 		57A8819E24CA395000AE0943 /* AppSettings */ = {
@@ -553,6 +570,7 @@
 				D87F61522265AA230031A13B /* FileStorage.swift */,
 				02EAB6D62480A86D00FD873C /* CrashLogger.swift */,
 				574B774B24AA87FA0042116F /* FileManagerProtocol.swift */,
+				5772841E25BF45B90092FB2C /* PersistentStoreCoordinatorProtocol.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -604,6 +622,7 @@
 		B54CA5A620A4BBA600F38CD1 /* StorageTests */ = {
 			isa = PBXGroup;
 			children = (
+				5772842A25BF62960092FB2C /* TestKit */,
 				D87F61582265AED70031A13B /* Mock data */,
 				02A098252480D155002F8C7A /* Mocks */,
 				26EA01D224EC449C00176A57 /* Model */,
@@ -633,6 +652,7 @@
 				B54CA5BC20A4BD3B00F38CD1 /* NSManagedObjectContext+Storage.swift */,
 				574B774F24AA897E0042116F /* FileManager+FileManagerProtocol.swift */,
 				575CD4DB24ABE77800755B2B /* Collection+Extensions.swift */,
+				5772842225BF465A0092FB2C /* NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1007,6 +1027,7 @@
 				B54CA5BD20A4BD3B00F38CD1 /* NSManagedObjectContext+Storage.swift in Sources */,
 				933A27302222344D00C2143A /* Logging.swift in Sources */,
 				747453A52242C85E00E0B5EE /* ProductDefaultAttribute+CoreDataClass.swift in Sources */,
+				5772841F25BF45B90092FB2C /* PersistentStoreCoordinatorProtocol.swift in Sources */,
 				02EAB6D72480A86D00FD873C /* CrashLogger.swift in Sources */,
 				746A9D21214078080013F6FF /* TopEarnerStats+CoreDataClass.swift in Sources */,
 				5707FBC425B5FE2200B7C1A6 /* CoreDataIterativeMigrator+MigrationStep.swift in Sources */,
@@ -1038,6 +1059,7 @@
 				CE12FBE32220515600C59248 /* WooCommerceModelV9toV10.xcmappingmodel in Sources */,
 				747453A62242C85E00E0B5EE /* ProductDefaultAttribute+CoreDataProperties.swift in Sources */,
 				028296F3237D404F00E84012 /* ProductVariation+CoreDataProperties.swift in Sources */,
+				5772842325BF465A0092FB2C /* NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift in Sources */,
 				B54CA5C920A4C17800F38CD1 /* NSObject+Storage.swift in Sources */,
 				7471A516216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataClass.swift in Sources */,
 				B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */,
@@ -1120,6 +1142,8 @@
 				B59E11DE20A9F1FB004121A4 /* CoreDataManagerTests.swift in Sources */,
 				57A29FB825226BDC004DEE01 /* MigrationTests.swift in Sources */,
 				2619F78625B5D29B0006DAFF /* TypedPredicateTests.swift in Sources */,
+				5772842725BF5BFB0092FB2C /* SpyPersistentStoreCoordinator.swift in Sources */,
+				5772842C25BF62A90092FB2C /* Assertions.swift in Sources */,
 				26EA01D524EC44B300176A57 /* GeneralAppSettingsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

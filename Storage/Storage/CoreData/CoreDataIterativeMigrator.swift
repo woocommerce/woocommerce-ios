@@ -122,6 +122,8 @@ final class CoreDataIterativeMigrator {
 private extension CoreDataIterativeMigrator {
 
     /// Migrate the store at `sourceStoreURL` using the source and target models defined in `step`.
+    ///
+    /// - Returns: A `URL` in the temporary directory where the migrated store is located.
     func migrate(step: MigrationStep, sourceStoreURL: URL, storeType: String) throws -> URL {
         let mappingModel = try self.mappingModel(from: step.sourceModel, to: step.targetModel)
         let tempDestinationURL = makeTemporaryMigrationDestinationURL()
@@ -164,7 +166,7 @@ private extension CoreDataIterativeMigrator {
         "⚠️ Attempting migration from \(step.sourceVersion.name) to \(step.targetVersion.name)"
     }
 
-    /// Build a temporary SQLite **file URL** to be used as the destination when performing a
+    /// Returns a temporary SQLite **file URL** to be used as the destination when performing a
     /// migration.
     func makeTemporaryMigrationDestinationURL() -> URL {
         URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)

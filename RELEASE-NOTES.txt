@@ -2,9 +2,8 @@
 
 6.0
 -----
-- [*] Fix: top performers in "This Week" tab should be showing the same data as in WC Admin.
-
 - [*] Updated copyright notice to WooCommerce
+- [*] Fix: top performers in "This Week" tab should be showing the same data as in WC Admin.
 
 5.9
 -----

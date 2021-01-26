@@ -164,34 +164,26 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
     /// Test the IterativeMigrator can migrate iteratively between model 1 to 10.
     func test_iterativeMigrate_can_iteratively_migrate_from_model_1_to_model_10() throws {
         // Given
+        let storeType = NSSQLiteStoreType
         let sourceModel = try managedObjectModel(for: "Model")
         let targetModel = try managedObjectModel(for: "Model 10")
 
         let storeURL = try urlForStore(withName: "Woo Test 10.sqlite", deleteIfExists: true)
-        let options = [NSInferMappingModelAutomaticallyOption: false, NSMigratePersistentStoresAutomaticallyOption: false]
 
-        var psc = NSPersistentStoreCoordinator(managedObjectModel: sourceModel)
-        var ps = try? psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
-        XCTAssertNotNil(ps)
-
-        try psc.remove(ps!)
+        let container = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: sourceModel)
 
         // When
-        do {
-            let iterativeMigrator = CoreDataIterativeMigrator(coordinator: try XCTUnwrap(psc),
-                                                              modelsInventory: modelsInventory)
-            let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
-                                                                     storeType: NSSQLiteStoreType,
-                                                                     to: targetModel)
-            XCTAssertTrue(result)
-        } catch {
-            XCTFail("Error when attempting to migrate: \(error)")
-        }
+        let iterativeMigrator = CoreDataIterativeMigrator(coordinator: container.persistentStoreCoordinator,
+                                                          modelsInventory: modelsInventory)
+        let (result, _) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
+                                                                 storeType: NSSQLiteStoreType,
+                                                                 to: targetModel)
 
         // Then
-        psc = NSPersistentStoreCoordinator(managedObjectModel: targetModel)
-        ps = try psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
-        XCTAssertNotNil(ps)
+        XCTAssertTrue(result)
+
+        // Start another container. If there is no error, then the migration was successful.
+        let _ = try startPersistentContainer(storeURL: storeURL, storeType: storeType, model: targetModel)
     }
 
     func test_iterativeMigrate_replaces_the_original_SQLite_files() throws {

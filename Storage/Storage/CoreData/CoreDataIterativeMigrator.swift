@@ -6,11 +6,8 @@ import CoreData
 ///
 final class CoreDataIterativeMigrator {
 
-    /// The coordinator instance whose functions will be used for replacing the existing
-    /// store with the migrated one.
-    ///
-    /// The coordinator instance can be retrieved from `NSPersistentContainer.persistentStoreCoordinator`.
-    ///
+    /// The `NSPersistentStoreCoordinator` instance that will be used for replacing or destroying
+    /// persistent stores.
     private let persistentStoreCoordinator: PersistentStoreCoordinatorProtocol
 
     /// The model versions that will be used for migration.
@@ -124,9 +121,9 @@ final class CoreDataIterativeMigrator {
 //
 private extension CoreDataIterativeMigrator {
 
+    /// Migrate the store at `sourceStoreURL` using the source and target models defined in `step`.
     func migrate(step: MigrationStep, sourceStoreURL: URL, storeType: String) throws -> URL {
         let mappingModel = try self.mappingModel(from: step.sourceModel, to: step.targetModel)
-
         let tempDestinationURL = makeTemporaryMigrationDestinationURL()
 
         // Migrate from the source model to the target model using the mapping,
@@ -169,8 +166,6 @@ private extension CoreDataIterativeMigrator {
 
     /// Build a temporary SQLite **file URL** to be used as the destination when performing a
     /// migration.
-    ///
-    /// - Returns: A unique URL in the temporary directory.
     func makeTemporaryMigrationDestinationURL() -> URL {
         URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             .appendingPathComponent("migration_\(UUID().uuidString)")

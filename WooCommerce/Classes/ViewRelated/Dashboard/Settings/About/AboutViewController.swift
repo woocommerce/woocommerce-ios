@@ -22,7 +22,7 @@ class AboutViewController: UIViewController {
             Bundle.main.detailedVersionNumber()
         )
         let localizedTitleTextLine2 = String.localizedStringWithFormat(
-            NSLocalizedString("© %@ Automattic, Inc.", comment: "About View's Footer Text. The variable is the current year"),
+            NSLocalizedString("© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd.", comment: "About View's Footer Text. The variable is the current year"),
             year
         )
         return String(format: localizedTitleTextLine1, year) + "\n" + localizedTitleTextLine2

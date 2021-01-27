@@ -66,10 +66,10 @@ public final class CoreDataManager: StorageManagerType {
     /// Persistent Container: Holds the full CoreData Stack
     ///
     public lazy var persistentContainer: NSPersistentContainer = {
-        let migrationDebugMessages = migrateDataModelIfNecessary()
-
         let container = NSPersistentContainer(name: name, managedObjectModel: modelsInventory.currentModel)
         container.persistentStoreDescriptions = [storeDescription]
+
+        let migrationDebugMessages = migrateDataModelIfNecessary(using: container.persistentStoreCoordinator)
 
         container.loadPersistentStores { [weak self] (storeDescription, error) in
             guard let `self` = self, let persistentStoreLoadingError = error else {
@@ -188,7 +188,7 @@ public final class CoreDataManager: StorageManagerType {
 
     /// Migrates the current persistent store to the latest data model if needed.
     /// - Returns: an array of debug messages for logging. Please feel free to remove when #2371 is resolved.
-    private func migrateDataModelIfNecessary() -> [String] {
+    private func migrateDataModelIfNecessary(using coordinator: NSPersistentStoreCoordinator) -> [String] {
         var debugMessages = [String]()
 
         let migrationCheckMessage = "ℹ️ [CoreDataManager] Checking if migration is necessary."
@@ -196,7 +196,7 @@ public final class CoreDataManager: StorageManagerType {
         DDLogInfo(migrationCheckMessage)
 
         do {
-            let iterativeMigrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
+            let iterativeMigrator = CoreDataIterativeMigrator(coordinator: coordinator, modelsInventory: modelsInventory)
             let (migrateResult, migrationDebugMessages) = try iterativeMigrator.iterativeMigrate(sourceStore: storeURL,
                                                                                                  storeType: NSSQLiteStoreType,
                                                                                                  to: modelsInventory.currentModel)

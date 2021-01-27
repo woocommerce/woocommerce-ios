@@ -123,8 +123,8 @@ public extension StorageType {
 
     /// Retrieves the Stored SiteVisitStats for stats v4.
     ///
-    func loadSiteVisitStats(granularity: String, date: String) -> SiteVisitStats? {
-        let predicate = \SiteVisitStats.granularity =~ granularity && \SiteVisitStats.date =~ date
+    func loadSiteVisitStats(granularity: String, timeRange: String) -> SiteVisitStats? {
+        let predicate = \SiteVisitStats.granularity =~ granularity && \SiteVisitStats.timeRange == timeRange
         return firstObject(ofType: SiteVisitStats.self, matching: predicate)
     }
 

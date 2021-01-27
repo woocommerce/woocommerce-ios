@@ -373,9 +373,9 @@ private extension StoreStatsV4PeriodViewController {
         let storageManager = ServiceLocator.storageManager
         let dateFormatter = DateFormatter.Stats.statsDayFormatter
         dateFormatter.timeZone = siteTimezone
-        let predicate = NSPredicate(format: "granularity ==[c] %@ AND date == %@",
+        let predicate = NSPredicate(format: "granularity ==[c] %@ AND timeRange == %@",
                                     timeRange.siteVisitStatsGranularity.rawValue,
-                                    dateFormatter.string(from: currentDate))
+                                    timeRange.rawValue)
         let descriptor = NSSortDescriptor(keyPath: \StorageSiteVisitStats.date, ascending: false)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }

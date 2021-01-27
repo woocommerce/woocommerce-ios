@@ -179,6 +179,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
     ]
 
     let thisYearVisitStats: SiteVisitStats = createVisitStats(
+        siteID: 1,
         granularity: .year,
         items: [
             createVisitStatsItem(
@@ -189,7 +190,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         ]
     )
 
-    var thisYearTopProducts: TopEarnerStats = createStats(granularity: .year, items: [
+    var thisYearTopProducts: TopEarnerStats = createStats(siteID: 1, granularity: .year, items: [
         createTopEarningItem(product: Products.akoyaPearlShades, quantity: 17),
         createTopEarningItem(product: Products.blackCoralShades, quantity: 11),
         createTopEarningItem(product: Products.coloradoShades, quantity: 5),

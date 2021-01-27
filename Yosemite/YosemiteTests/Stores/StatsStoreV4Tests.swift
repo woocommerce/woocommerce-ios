@@ -447,7 +447,8 @@ private extension StatsStoreV4Tests {
     // MARK: - Site Visit Stats Sample
 
     func sampleSiteVisitStats() -> Networking.SiteVisitStats {
-        return SiteVisitStats(date: "2015-08-06",
+        return SiteVisitStats(siteID: sampleSiteID,
+                              date: "2015-08-06",
                               granularity: .year,
                               items: [sampleSiteVisitStatsItem1(), sampleSiteVisitStatsItem2()])
     }
@@ -462,7 +463,8 @@ private extension StatsStoreV4Tests {
     }
 
     func sampleSiteVisitStatsMutated() -> Networking.SiteVisitStats {
-        return SiteVisitStats(date: "2015-08-06",
+        return SiteVisitStats(siteID: sampleSiteID,
+                              date: "2015-08-06",
                               granularity: .year,
                               items: [sampleSiteVisitStatsItem1Mutated(), sampleSiteVisitStatsItem2Mutated()])
     }
@@ -479,7 +481,8 @@ private extension StatsStoreV4Tests {
     // MARK: - Top Earner Stats Sample
 
     func sampleTopEarnerStats() -> Networking.TopEarnerStats {
-        return TopEarnerStats(date: "2020",
+        return TopEarnerStats(siteID: sampleSiteID,
+                              date: "2020",
                               granularity: .year,
                               limit: "3",
                               items: [sampleTopEarnerStatsItem1(), sampleTopEarnerStatsItem2()])
@@ -506,7 +509,8 @@ private extension StatsStoreV4Tests {
     }
 
     func sampleTopEarnerStatsMutated() -> Networking.TopEarnerStats {
-        return TopEarnerStats(date: "2020",
+        return TopEarnerStats(siteID: sampleSiteID,
+                              date: "2020",
                               granularity: .year,
                               limit: "3",
                               items: [sampleTopEarnerStatsMutatedItem1(), sampleTopEarnerStatsMutatedItem2()])

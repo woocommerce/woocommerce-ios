@@ -34,7 +34,7 @@ final class TopPerformerDataViewController: UIViewController {
             let date = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimeZone)
             return StatsStoreV4.buildDateString(from: date, with: granularity)
         }()
-        let predicate = NSPredicate(format: "granularity = %@ AND date = %@", granularity.rawValue, formattedDateString)
+        let predicate = NSPredicate(format: "granularity = %@ AND date = %@ AND siteID = %ld", granularity.rawValue, formattedDateString, siteID)
         let descriptor = NSSortDescriptor(key: "date", ascending: true)
 
         return ResultsController<StorageTopEarnerStats>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])

@@ -7,8 +7,9 @@ extension ProductFormDataModel {
         switch stockStatus {
         case .inStock:
             if let stockQuantity = stockQuantity, manageStock {
+                let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSDecimalNumber, number: .decimal)
                 let format = NSLocalizedString("%@ in stock", comment: "Label about product's inventory stock status shown on Products tab")
-                return String.localizedStringWithFormat(format, stockQuantity.description)
+                return String.localizedStringWithFormat(format, localizedStockQuantity)
             } else {
                 return NSLocalizedString("In stock", comment: "Label about product's inventory stock status shown on Products tab")
             }

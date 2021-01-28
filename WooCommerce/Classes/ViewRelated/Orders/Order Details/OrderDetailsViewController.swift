@@ -597,7 +597,7 @@ private extension OrderDetailsViewController {
     private func displayOrderStatusList() {
         ServiceLocator.analytics.track(.orderDetailOrderStatusEditButtonTapped,
                                        withProperties: ["status": viewModel.order.status.rawValue])
-        let statusList = OrderStatusListViewController(order: viewModel.order, currentStatus: viewModel.orderStatus)
+        let statusList = OrderStatusListViewController(viewModel: self.viewModel)
         let navigationController = UINavigationController(rootViewController: statusList)
 
         present(navigationController, animated: true)
@@ -639,5 +639,38 @@ private extension OrderDetailsViewController {
         static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 8, right: 0)
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
+    }
+}
+
+// MARK: - Error handling
+//
+extension OrderDetailsViewController {
+    /// Displays the `Order Updated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
+    ///
+    private func displayOrderUpdatedNotice(onUndoAction: @escaping () -> Void) {
+        let message = NSLocalizedString("Order status updated", comment: "Order status update success notice")
+        let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
+        let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
+
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Displays the `Unable to Change Status of Order` Notice.
+    ///
+    func displayErrorNotice(orderID: Int64) {
+        let titleFormat = NSLocalizedString(
+            "Unable to change status of order #%1$d",
+            comment: "Content of error presented when updating the status of an Order fails. "
+            + "It reads: Unable to change status of order #{order number}. "
+            + "Parameters: %1$d - order number"
+        )
+        let title = String.localizedStringWithFormat(titleFormat, orderID)
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle)
+        //X{ [weak self] in
+        //X    self?.applyButtonTapped()
+        //X}
+
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }

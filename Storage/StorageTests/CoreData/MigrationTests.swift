@@ -501,6 +501,32 @@ final class MigrationTests: XCTestCase {
         topEarnerStats.setValue(66, forKey: "siteID")
         XCTAssertNoThrow(try targetContext.save())
     }
+
+    func test_migrating_from_43_to_44_migrates_SiteVisitStats_with_empty_timeRange() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 43")
+        let sourceContext = sourceContainer.viewContext
+
+        insertSiteVisitStats(to: sourceContext)
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "SiteVisitStats"), 1)
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 44")
+        let targetContext = targetContainer.viewContext
+
+        // Assert
+        XCTAssertEqual(try targetContext.count(entityName: "SiteVisitStats"), 1)
+
+        let migratedSiteVisitStats = try XCTUnwrap(targetContext.first(entityName: "SiteVisitStats"))
+        XCTAssertEqual(migratedSiteVisitStats.value(forKey: "timeRange") as? String, "")
+
+        // We should be able to set `SiteVisitStats`'s `timeRange` to a different value.
+        migratedSiteVisitStats.setValue("today", forKey: "timeRange")
+        XCTAssertNoThrow(try targetContext.save())
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

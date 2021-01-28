@@ -12,6 +12,7 @@ extension SiteVisitStats {
     @NSManaged public var granularity: String
     @NSManaged public var items: Set<SiteVisitStatsItem>?
     @NSManaged public var siteID: Int64
+    @NSManaged public var timeRange: String
 }
 
 // MARK: Generated accessors for items

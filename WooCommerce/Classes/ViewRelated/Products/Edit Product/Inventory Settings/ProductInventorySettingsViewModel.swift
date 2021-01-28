@@ -23,7 +23,7 @@ protocol ProductInventorySettingsViewModelOutput {
     var soldIndividually: Bool? { get }
 
     // Editable data - manage stock enabled.
-    var stockQuantity: Int64? { get }
+    var stockQuantity: Decimal? { get }
     var backordersSetting: ProductBackordersSetting? { get }
 
     // Editable data - manage stock disabled.
@@ -69,7 +69,7 @@ final class ProductInventorySettingsViewModel: ProductInventorySettingsViewModel
     private(set) var soldIndividually: Bool?
 
     // Editable data - manage stock enabled.
-    private(set) var stockQuantity: Int64?
+    private(set) var stockQuantity: Decimal?
     private(set) var backordersSetting: ProductBackordersSetting?
 
     // Editable data - manage stock disabled.
@@ -169,7 +169,7 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
         guard let stockQuantity = stockQuantity else {
             return
         }
-        self.stockQuantity = Int64(stockQuantity)
+        self.stockQuantity = Decimal(string: stockQuantity)
     }
 
     func handleBackordersSettingChange(_ backordersSetting: ProductBackordersSetting?) {

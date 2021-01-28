@@ -21,7 +21,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
 
     func test_details_contain_stock_status_with_quantity_when_manage_stock_is_enabled() {
         // Arrange
-        let stockQuantity: Int64 = 6
+        let stockQuantity: Decimal = 6
         let product = productMock().copy(manageStock: true, stockQuantity: stockQuantity, stockStatusKey: ProductStockStatus.inStock.rawValue)
 
         // Action
@@ -36,7 +36,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
 
     func test_details_contain_stock_status_without_quantity_when_manage_stock_is_disabled() {
         // Arrange
-        let stockQuantity: Int64 = 6
+        let stockQuantity: Decimal = 6
         let product = productMock().copy(manageStock: false, stockQuantity: stockQuantity, stockStatusKey: ProductStockStatus.inStock.rawValue)
 
         // Action
@@ -96,7 +96,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
 
 extension ProductsTabProductViewModelTests {
     func productMock(name: String = "Hogsmeade",
-                     stockQuantity: Int64? = nil,
+                     stockQuantity: Decimal? = nil,
                      stockStatus: ProductStockStatus = .inStock,
                      variations: [Int64] = [],
                      images: [ProductImage] = []) -> Product {

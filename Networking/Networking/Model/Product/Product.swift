@@ -45,7 +45,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
     public let taxClass: String?
 
     public let manageStock: Bool
-    public let stockQuantity: Int64?    // API reports Int or null
+    public let stockQuantity: Decimal?    // Core API reports Int or null; some extensions allow decimal values as well
     public let stockStatusKey: String   // instock, outofstock, backorder
 
     public let backordersKey: String    // no, notify, yes
@@ -144,7 +144,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
                 taxStatusKey: String,
                 taxClass: String?,
                 manageStock: Bool,
-                stockQuantity: Int64?,
+                stockQuantity: Decimal?,
                 stockStatusKey: String,
                 backordersKey: String,
                 backordersAllowed: Bool,
@@ -320,7 +320,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
                                                                 })
         ]) ?? false
 
-        let stockQuantity = try container.decodeIfPresent(Int64.self, forKey: .stockQuantity)
+        let stockQuantity = try container.decodeIfPresent(Decimal.self, forKey: .stockQuantity)
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
 
         let backordersKey = try container.decode(String.self, forKey: .backordersKey)

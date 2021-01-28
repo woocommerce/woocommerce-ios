@@ -139,7 +139,7 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         productVariation.stockStatus
     }
 
-    var stockQuantity: Int64? {
+    var stockQuantity: Decimal? {
         productVariation.stockQuantity
     }
 

@@ -39,6 +39,9 @@ public struct WordPressAuthenticatorStyle {
 
     public let disabledTitleColor: UIColor
 
+    /// Color of the spinner that is shown when a button is disabled.
+    public let disabledButtonActivityIndicatorColor: UIColor
+
     /// Style: Text Buttons
     ///
     public let textButtonColor: UIColor
@@ -109,6 +112,7 @@ public struct WordPressAuthenticatorStyle {
                 primaryTitleColor: UIColor,
                 secondaryTitleColor: UIColor,
                 disabledTitleColor: UIColor,
+                disabledButtonActivityIndicatorColor: UIColor,
                 textButtonColor: UIColor,
                 textButtonHighlightColor: UIColor,
                 instructionColor: UIColor,
@@ -139,6 +143,7 @@ public struct WordPressAuthenticatorStyle {
         self.primaryTitleColor = primaryTitleColor
         self.secondaryTitleColor = secondaryTitleColor
         self.disabledTitleColor = disabledTitleColor
+        self.disabledButtonActivityIndicatorColor = disabledButtonActivityIndicatorColor
         self.textButtonColor = textButtonColor
         self.textButtonHighlightColor = textButtonHighlightColor
         self.instructionColor = instructionColor

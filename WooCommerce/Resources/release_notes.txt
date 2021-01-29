@@ -1,5 +1,11 @@
-Products: All users can now add and edit linked products, add and edit downloadable files, and delete a product.
+WooCommerce is excited to introduce the latest updates to its mobile app.
 
-Shipping: You can now view shipping label details, request a refund, and reprint a shipping label with AirPrint.
+Refresh and Ready: Let’s say a user applies sorting parameters and/or filters to your store’s product list—chances are, when they return to the app, they don’t want to repeat that process. No problem! Now, if a user reopens the app, they’ll be able to see their previous settings.
 
-Login: We’ve made various improvements to the login flow, including a better handling of errors.
+Consolidation: The designated fulfillment screen is a thing of the past—fulfillment information now lives on the order details screen, as does info about fees. 
+
+Bugs Be Gone: We’ve fixed several glitches—here’s a taste: 
+
+- Billing information action sheets now present correctly on iPads. 
+- Rows in product search lists no longer have double separators.
+- Loading spinners on “continue” buttons are now visible in dark mode.

@@ -16,11 +16,13 @@ final class ProductVariationsViewController: UIViewController {
     ///
     private let emptyStateConfig: EmptyStateViewController.Config = {
         let message = NSAttributedString(string: "Add your first variation", attributes: [.font: EmptyStateViewController.Config.messageFont])
-        return .withLink(message: message,
-                         image: .noStoreImage,
-                         details: "",
-                         linkTitle: "Add Variations",
-                         linkURL: WooConstants.URLs.emptyStoresJetpackSetup.asURL())
+        return .withButton(message: message,
+                           image: .emptyBoxImage,
+                           details: "",
+                           buttonTitle: "Add Variations") {
+                            // TODO: navigate to add variations
+                            print("Navigate to add variation")
+                           }
     }()
 
     @IBOutlet private weak var tableView: UITableView!

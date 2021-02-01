@@ -476,6 +476,9 @@
 		45527A412472C6160078D609 /* SwitchStoreUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45527A402472C6160078D609 /* SwitchStoreUseCase.swift */; };
 		455800CC24C6F83F00A8D117 /* ProductSettingsSectionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455800CB24C6F83F00A8D117 /* ProductSettingsSectionsTests.swift */; };
 		455A2FDB246B1349000CA72C /* ProductVisibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 455A2FDA246B1349000CA72C /* ProductVisibilityTests.swift */; };
+		456396A725C81C9A001F1A26 /* CreateShippingLabelFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456396A525C81C9A001F1A26 /* CreateShippingLabelFormViewController.swift */; };
+		456396A825C81C9A001F1A26 /* CreateShippingLabelFormViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 456396A625C81C9A001F1A26 /* CreateShippingLabelFormViewController.xib */; };
+		456396AE25C81D81001F1A26 /* CreateShippingLabelFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456396AD25C81D81001F1A26 /* CreateShippingLabelFormViewModel.swift */; };
 		456417F4247D5434001203F6 /* UITableView+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456417F3247D5434001203F6 /* UITableView+Helpers.swift */; };
 		456417F6247D5643001203F6 /* UITableView+HelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456417F5247D5643001203F6 /* UITableView+HelpersTests.swift */; };
 		456CB50D2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456CB50B2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift */; };
@@ -1580,6 +1583,9 @@
 		45527A402472C6160078D609 /* SwitchStoreUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchStoreUseCase.swift; sourceTree = "<group>"; };
 		455800CB24C6F83F00A8D117 /* ProductSettingsSectionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsSectionsTests.swift; sourceTree = "<group>"; };
 		455A2FDA246B1349000CA72C /* ProductVisibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVisibilityTests.swift; sourceTree = "<group>"; };
+		456396A525C81C9A001F1A26 /* CreateShippingLabelFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateShippingLabelFormViewController.swift; sourceTree = "<group>"; };
+		456396A625C81C9A001F1A26 /* CreateShippingLabelFormViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CreateShippingLabelFormViewController.xib; sourceTree = "<group>"; };
+		456396AD25C81D81001F1A26 /* CreateShippingLabelFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateShippingLabelFormViewModel.swift; sourceTree = "<group>"; };
 		456417F3247D5434001203F6 /* UITableView+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Helpers.swift"; sourceTree = "<group>"; };
 		456417F5247D5643001203F6 /* UITableView+HelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+HelpersTests.swift"; sourceTree = "<group>"; };
 		456CB50B2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPurchaseNoteViewController.swift; sourceTree = "<group>"; };
@@ -2387,6 +2393,7 @@
 				023D69BA2589BF2500F7DA72 /* Refund Shipping Label */,
 				023D69C52589BF5F00F7DA72 /* Reprint Shipping Label */,
 				0298430B259351F100979CAE /* ShippingLabelsTopBannerFactory.swift */,
+				456396A425C81C72001F1A26 /* Create Shipping Label Form */,
 			);
 			path = "Shipping Labels";
 			sourceTree = "<group>";
@@ -3320,6 +3327,16 @@
 				4552085A25829091001CF873 /* AddAttributeViewModelTests.swift */,
 			);
 			path = "Add Product Variation";
+			sourceTree = "<group>";
+		};
+		456396A425C81C72001F1A26 /* Create Shipping Label Form */ = {
+			isa = PBXGroup;
+			children = (
+				456396A525C81C9A001F1A26 /* CreateShippingLabelFormViewController.swift */,
+				456396A625C81C9A001F1A26 /* CreateShippingLabelFormViewController.xib */,
+				456396AD25C81D81001F1A26 /* CreateShippingLabelFormViewModel.swift */,
+			);
+			path = "Create Shipping Label Form";
 			sourceTree = "<group>";
 		};
 		456CB50A2444BF8400992A05 /* Purchase Note */ = {
@@ -5443,6 +5460,7 @@
 				D881A31C256B5CC500FE5605 /* ULErrorViewController.xib in Resources */,
 				D81D9229222E7F0800FFA585 /* OrderStatusListViewController.xib in Resources */,
 				748D34DE214828DD00E21A2F /* TopPerformerDataViewController.xib in Resources */,
+				456396A825C81C9A001F1A26 /* CreateShippingLabelFormViewController.xib in Resources */,
 				CEE006062077D1280079161F /* SummaryTableViewCell.xib in Resources */,
 				CE8CCD44239AC06E009DBD22 /* RefundDetailsViewController.xib in Resources */,
 				D8915DBF23729CFB00F63762 /* ColorPalette.xcassets in Resources */,
@@ -5753,6 +5771,7 @@
 				B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */,
 				576EA39425264C9B00AFC0B3 /* RefundConfirmationViewModel.swift in Sources */,
 				5778E00624DB0C3900B65CBF /* StoreStatsAndTopPerformersPeriodViewModel.swift in Sources */,
+				456396A725C81C9A001F1A26 /* CreateShippingLabelFormViewController.swift in Sources */,
 				02DD81FA242CAA400060E50B /* Media+WPMediaAsset.swift in Sources */,
 				024DF31F23743045006658FE /* Header+AztecFormatting.swift in Sources */,
 				029BFD4F24597D4B00FDDEEC /* UIButton+TitleAndImage.swift in Sources */,
@@ -6041,6 +6060,7 @@
 				CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */,
 				74A33D8021C3F234009E25DE /* LicensesViewController.swift in Sources */,
 				934CB123224EAB150005CCB9 /* main.swift in Sources */,
+				456396AE25C81D81001F1A26 /* CreateShippingLabelFormViewModel.swift in Sources */,
 				02ECD1DF24FF48D000735BE5 /* PaginationTracker.swift in Sources */,
 				020886572499E643001D784E /* ProductExternalLinkViewController.swift in Sources */,
 				02F4F50F237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.swift in Sources */,

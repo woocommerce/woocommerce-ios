@@ -363,17 +363,6 @@ private extension ProductVariationsViewController {
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
-    /// Displays the overlay when there are no results.
-    ///
-    func displayNoResultsOverlay() {
-        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = nil
-        overlayView.messageText = NSLocalizedString("No product variations yet",
-                                                    comment: "The text on the placeholder overlay when there are no product variations on the Products tab")
-        overlayView.actionVisible = false
-        overlayView.attach(to: view)
-    }
-
     /// Removes all of the the OverlayMessageView instances in the view hierarchy.
     ///
     func removeAllOverlays() {
@@ -422,7 +411,8 @@ private extension ProductVariationsViewController {
     func didEnter(state: PaginatedListViewControllerState) {
         switch state {
         case .noResultsPlaceholder:
-            displayNoResultsOverlay()
+            // TODO: future empty state view?
+            break
         case .syncing(let pageNumber):
             if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex {
                 displayPlaceholderProducts()

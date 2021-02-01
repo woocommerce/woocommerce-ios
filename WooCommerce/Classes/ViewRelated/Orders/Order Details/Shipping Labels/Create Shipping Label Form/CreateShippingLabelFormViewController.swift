@@ -87,6 +87,14 @@ private extension CreateShippingLabelFormViewController {
         switch cell {
         case let cell as ShippingLabelFormStepTableViewCell where row == .shipFrom:
             configureShipFrom(cell: cell)
+        case let cell as ShippingLabelFormStepTableViewCell where row == .shipTo:
+            configureShipTo(cell: cell)
+        case let cell as ShippingLabelFormStepTableViewCell where row == .packageDetails:
+            configurePackageDetails(cell: cell)
+        case let cell as ShippingLabelFormStepTableViewCell where row == .shippingCarrierAndRates:
+            configureShippingCarrierAndRates(cell: cell)
+        case let cell as ShippingLabelFormStepTableViewCell where row == .paymentMethod:
+            configurePaymentMethod(cell: cell)
         default:
             fatalError()
             break

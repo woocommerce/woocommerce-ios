@@ -85,7 +85,7 @@ private extension CreateShippingLabelFormViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as BasicTableViewCell where row == .shipFrom:
+        case let cell as ShippingLabelFormStepTableViewCell where row == .shipFrom:
             configureShipFrom(cell: cell)
         default:
             fatalError()
@@ -93,9 +93,26 @@ private extension CreateShippingLabelFormViewController {
         }
     }
 
-    func configureShipFrom(cell: BasicTableViewCell) {
-        // TODO: to be implemented
+    func configureShipFrom(cell: ShippingLabelFormStepTableViewCell) {
+        // TODO: to be implemented in the future
     }
+
+    func configureShipTo(cell: ShippingLabelFormStepTableViewCell) {
+        // TODO: to be implemented in the future
+    }
+
+    func configurePackageDetails(cell: ShippingLabelFormStepTableViewCell) {
+        // TODO: to be implemented in the future
+    }
+
+    func configureShippingCarrierAndRates(cell: ShippingLabelFormStepTableViewCell) {
+        // TODO: to be implemented in the future
+    }
+
+    func configurePaymentMethod(cell: ShippingLabelFormStepTableViewCell) {
+        // TODO: to be implemented in the future
+    }
+
 }
 
 extension CreateShippingLabelFormViewController {
@@ -114,7 +131,7 @@ extension CreateShippingLabelFormViewController {
         fileprivate var type: UITableViewCell.Type {
             switch self {
             case .shipFrom, .shipTo, .packageDetails, .shippingCarrierAndRates, .paymentMethod:
-                return BasicTableViewCell.self
+                return ShippingLabelFormStepTableViewCell.self
             }
         }
 

@@ -28,6 +28,13 @@ final class AddAttributeOptionsViewModel {
 
 }
 
+// MARK: - State Mutation
+extension AddAttributeOptionsViewModel {
+    func addNewOption(name: String) {
+
+    }
+}
+
 // MARK: - Synchronize Product Attribute terms
 //
 private extension AddAttributeOptionsViewModel {

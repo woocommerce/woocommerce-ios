@@ -37,9 +37,7 @@ private extension AddAttributeOptionsViewModel {
     ///
     func updateSections() {
         let textFieldSection = Section(header: nil, footer: Localization.footerTextField, rows: [.termTextField])
-        let selectedTermsSection = Section(header: Localization.headerSelectedTerms, footer: nil, rows: [.selectedTerms])
-        let existingTermsSection = Section(header: Localization.headerExistingTerms, footer: nil, rows: [.existingTerms])
-        sections = [textFieldSection, selectedTermsSection, existingTermsSection].compactMap { $0 }
+        sections = [textFieldSection]
     }
 }
 

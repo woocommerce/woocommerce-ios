@@ -479,6 +479,8 @@
 		456396A725C81C9A001F1A26 /* CreateShippingLabelFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456396A525C81C9A001F1A26 /* CreateShippingLabelFormViewController.swift */; };
 		456396A825C81C9A001F1A26 /* CreateShippingLabelFormViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 456396A625C81C9A001F1A26 /* CreateShippingLabelFormViewController.xib */; };
 		456396AE25C81D81001F1A26 /* CreateShippingLabelFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456396AD25C81D81001F1A26 /* CreateShippingLabelFormViewModel.swift */; };
+		456396B625C82691001F1A26 /* ShippingLabelFormStepTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456396B425C82691001F1A26 /* ShippingLabelFormStepTableViewCell.swift */; };
+		456396B725C82691001F1A26 /* ShippingLabelFormStepTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 456396B525C82691001F1A26 /* ShippingLabelFormStepTableViewCell.xib */; };
 		456417F4247D5434001203F6 /* UITableView+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456417F3247D5434001203F6 /* UITableView+Helpers.swift */; };
 		456417F6247D5643001203F6 /* UITableView+HelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456417F5247D5643001203F6 /* UITableView+HelpersTests.swift */; };
 		456CB50D2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456CB50B2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift */; };
@@ -1586,6 +1588,8 @@
 		456396A525C81C9A001F1A26 /* CreateShippingLabelFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateShippingLabelFormViewController.swift; sourceTree = "<group>"; };
 		456396A625C81C9A001F1A26 /* CreateShippingLabelFormViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CreateShippingLabelFormViewController.xib; sourceTree = "<group>"; };
 		456396AD25C81D81001F1A26 /* CreateShippingLabelFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateShippingLabelFormViewModel.swift; sourceTree = "<group>"; };
+		456396B425C82691001F1A26 /* ShippingLabelFormStepTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelFormStepTableViewCell.swift; sourceTree = "<group>"; };
+		456396B525C82691001F1A26 /* ShippingLabelFormStepTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShippingLabelFormStepTableViewCell.xib; sourceTree = "<group>"; };
 		456417F3247D5434001203F6 /* UITableView+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Helpers.swift"; sourceTree = "<group>"; };
 		456417F5247D5643001203F6 /* UITableView+HelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+HelpersTests.swift"; sourceTree = "<group>"; };
 		456CB50B2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPurchaseNoteViewController.swift; sourceTree = "<group>"; };
@@ -3335,8 +3339,18 @@
 				456396A525C81C9A001F1A26 /* CreateShippingLabelFormViewController.swift */,
 				456396A625C81C9A001F1A26 /* CreateShippingLabelFormViewController.xib */,
 				456396AD25C81D81001F1A26 /* CreateShippingLabelFormViewModel.swift */,
+				456396B325C8266D001F1A26 /* Cells */,
 			);
 			path = "Create Shipping Label Form";
+			sourceTree = "<group>";
+		};
+		456396B325C8266D001F1A26 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				456396B425C82691001F1A26 /* ShippingLabelFormStepTableViewCell.swift */,
+				456396B525C82691001F1A26 /* ShippingLabelFormStepTableViewCell.xib */,
+			);
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		456CB50A2444BF8400992A05 /* Purchase Note */ = {
@@ -5430,6 +5444,7 @@
 				028296ED237D28B600E84012 /* TextViewViewController.xib in Resources */,
 				451A04F52386F7C900E368C9 /* AddProductImageCollectionViewCell.xib in Resources */,
 				0211254225778BDF0075AD2A /* ShippingLabelDetailsViewController.xib in Resources */,
+				456396B725C82691001F1A26 /* ShippingLabelFormStepTableViewCell.xib in Resources */,
 				450C2CBB24D3127500D570DD /* ProductReviewsTableViewCell.xib in Resources */,
 				02DD81FC242CAA400060E50B /* WordPressMediaLibraryImagePickerViewController.xib in Resources */,
 				45E9A6E524DAE1EA00A600E8 /* ProductReviewsViewController.xib in Resources */,
@@ -6262,6 +6277,7 @@
 				2687165A24D350C20042F6AE /* SurveyCoordinatingController.swift in Sources */,
 				02C88775245036D400E4470F /* FilterProductListViewModel.swift in Sources */,
 				02A65301246AA63600755A01 /* ProductDetailsFactory.swift in Sources */,
+				456396B625C82691001F1A26 /* ShippingLabelFormStepTableViewCell.swift in Sources */,
 				02C8876D24501FAC00E4470F /* FilterListViewController.swift in Sources */,
 				021FB44C24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift in Sources */,
 				D89CFE9025B256E9000E4683 /* ULAccountMatcher.swift in Sources */,

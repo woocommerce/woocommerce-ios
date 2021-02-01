@@ -138,6 +138,8 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
                         WebviewHelper.launch(linkURL, with: self)
                     }
                 }
+            case .withButton(_, _, _, _, let tapClosure):
+                return { tapClosure() }
             case .withSupportRequest:
                 return { [weak self] in
                     if let self = self {
@@ -206,10 +208,10 @@ private extension EmptyStateViewController {
         switch config {
         case .simple:
             actionButton.isHidden = true
-        case .withLink(_, _, _, let linkTitle, _):
+        case .withLink(_, _, _, let title, _), .withButton(_, _, _, let title, _):
             actionButton.isHidden = false
             actionButton.applyPrimaryButtonStyle()
-            actionButton.setTitle(linkTitle, for: .normal)
+            actionButton.setTitle(title, for: .normal)
         case .withSupportRequest(_, _, _, let buttonTitle):
             actionButton.isHidden = false
             actionButton.applyLinkButtonStyle()
@@ -273,6 +275,14 @@ extension EmptyStateViewController {
         ///
         case withLink(message: NSAttributedString, image: UIImage, details: String, linkTitle: String, linkURL: URL)
 
+        /// Show all the elements and a prominent button which calls back the provided closure when tapped.
+        ///
+        /// - Parameters:
+        ///     - buttonTitle: The content shown on the `actionButton`.
+        ///     - onTap: Closure to be executed when the button is tapped.
+        ///
+        case withButton(message: NSAttributedString, image: UIImage, details: String, buttonTitle: String, onTap: () -> Void)
+
         /// Shows all the elements and a text-style button which shows the Contact Us dialog when activated.
         ///
         /// - Parameter buttonTitle: The content shown on the button that displays the Contact Support dialog.
@@ -292,6 +302,7 @@ extension EmptyStateViewController {
             switch self {
             case .simple(let message, _),
                  .withLink(let message, _, _, _, _),
+                 .withButton(let message, _, _, _, _),
                  .withSupportRequest(let message, _, _, _):
                 return message
             }
@@ -301,6 +312,7 @@ extension EmptyStateViewController {
             switch self {
             case .simple(_, let image),
                  .withLink(_, let image, _, _, _),
+                 .withButton(_, let image, _, _, _),
                  .withSupportRequest(_, let image, _, _):
                 return image
             }
@@ -311,6 +323,7 @@ extension EmptyStateViewController {
             case .simple:
                 return nil
             case .withLink(_, _, let detail, _, _),
+                 .withButton(_, _, let detail, _, _),
                  .withSupportRequest(_, _, let detail, _):
                 return detail
             }

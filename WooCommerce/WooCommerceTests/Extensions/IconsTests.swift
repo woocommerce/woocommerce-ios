@@ -388,4 +388,8 @@ final class IconsTests: XCTestCase {
     func test_errorImage_is_not_nil() {
         XCTAssertNotNil(UIImage.errorImage)
     }
+
+    func test_emptyBoxImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.emptyBoxImage)
+    }
 }

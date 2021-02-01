@@ -8,6 +8,21 @@ import class AutomatticTracks.CrashLogging
 ///
 final class ProductVariationsViewController: UIViewController {
 
+    /// Empty state screen
+    ///
+    private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
+
+    /// Empty state screen configuration
+    ///
+    private let emptyStateConfig: EmptyStateViewController.Config = {
+        let message = NSAttributedString(string: "Add your first variation", attributes: [.font: EmptyStateViewController.Config.messageFont])
+        return .withLink(message: message,
+                         image: .noStoreImage,
+                         details: "",
+                         linkTitle: "Add Variations",
+                         linkURL: WooConstants.URLs.emptyStoresJetpackSetup.asURL())
+    }()
+
     @IBOutlet private weak var tableView: UITableView!
 
     /// Pull To Refresh Support.
@@ -74,6 +89,7 @@ final class ProductVariationsViewController: UIViewController {
         return stateCoordinator
     }()
 
+    private let product: Product
     private let siteID: Int64
     private let productID: Int64
     private let allAttributes: [ProductAttribute]
@@ -84,6 +100,7 @@ final class ProductVariationsViewController: UIViewController {
     private let isAddProductVariationsEnabled: Bool
 
     init(product: Product, formType: ProductFormType, isAddProductVariationsEnabled: Bool) {
+        self.product = product
         self.siteID = product.siteID
         self.productID = product.productID
         self.allAttributes = product.attributes
@@ -111,6 +128,10 @@ final class ProductVariationsViewController: UIViewController {
         updateTopBannerView()
 
         syncingCoordinator.synchronizeFirstPage()
+
+        if product.variations.isEmpty {
+            displayEmptyViewController()
+        }
     }
 
     override func viewDidLayoutSubviews() {
@@ -169,6 +190,29 @@ private extension ProductVariationsViewController {
     ///
     func registerTableViewCells() {
         tableView.register(ProductsTabProductTableViewCell.self)
+    }
+
+    /// Shows the EmptyStateViewController
+    ///
+    private func displayEmptyViewController() {
+        addChild(emptyStateViewController)
+
+        emptyStateViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(emptyStateViewController.view)
+
+        emptyStateViewController.view.pinSubviewToAllEdges(view)
+        emptyStateViewController.didMove(toParent: self)
+        emptyStateViewController.configure(emptyStateConfig)
+    }
+
+    func removeEmptyViewController() {
+        guard emptyStateViewController.parent == self else {
+            return
+        }
+
+        emptyStateViewController.willMove(toParent: nil)
+        emptyStateViewController.view.removeFromSuperview()
+        emptyStateViewController.removeFromParent()
     }
 }
 
@@ -362,14 +406,6 @@ private extension ProductVariationsViewController {
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
-
-    /// Removes all of the the OverlayMessageView instances in the view hierarchy.
-    ///
-    func removeAllOverlays() {
-        for subview in view.subviews where subview is OverlayMessageView {
-            subview.removeFromSuperview()
-        }
-    }
 }
 
 // MARK: - Sync'ing Helpers
@@ -411,7 +447,6 @@ private extension ProductVariationsViewController {
     func didEnter(state: PaginatedListViewControllerState) {
         switch state {
         case .noResultsPlaceholder:
-            // TODO: future empty state view?
             break
         case .syncing(let pageNumber):
             if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex {
@@ -427,7 +462,7 @@ private extension ProductVariationsViewController {
     func didLeave(state: PaginatedListViewControllerState) {
         switch state {
         case .noResultsPlaceholder:
-            removeAllOverlays()
+            removeEmptyViewController()
         case .syncing:
             ensureFooterSpinnerIsStopped()
             removePlaceholderProducts()

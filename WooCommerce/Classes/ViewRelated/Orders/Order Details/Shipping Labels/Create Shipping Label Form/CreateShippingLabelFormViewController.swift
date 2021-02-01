@@ -1,7 +1,7 @@
 import UIKit
 import Yosemite
 
-class CreateShippingLabelFormViewController: UIViewController {
+final class CreateShippingLabelFormViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
 

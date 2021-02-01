@@ -134,6 +134,12 @@ extension UIImage {
         UIImage.gridicon(.creditCard)
     }
 
+    /// Customize Icon
+    ///
+    static var customizeImage: UIImage {
+        return UIImage.gridicon(.customize)
+    }
+
     /// Delete Icon
     ///
     static var deleteImage: UIImage {

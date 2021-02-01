@@ -63,16 +63,21 @@ extension ProductsTabProductTableViewCell {
         detailsLabel.attributedText = viewModel.detailsAttributedString
 
         productImageView.contentMode = .center
-        productImageView.image = .productsTabProductCellPlaceholderImage
-        if let productURLString = viewModel.imageUrl {
-            imageService.downloadAndCacheImageForImageView(productImageView,
-                                                           with: productURLString,
-                                                           placeholder: .productsTabProductCellPlaceholderImage,
-                                                           progressBlock: nil) { [weak self] (image, error) in
-                                                            let success = image != nil && error == nil
-                                                            if success {
-                                                                self?.productImageView.contentMode = .scaleAspectFill
-                                                            }
+        if viewModel.isDraggable {
+            productImageView.image = .menuImage
+            productImageView.layer.borderWidth = 0
+        } else {
+            productImageView.image = .productsTabProductCellPlaceholderImage
+            if let productURLString = viewModel.imageUrl {
+                imageService.downloadAndCacheImageForImageView(productImageView,
+                                                               with: productURLString,
+                                                               placeholder: .productsTabProductCellPlaceholderImage,
+                                                               progressBlock: nil) { [weak self] (image, error) in
+                                                                let success = image != nil && error == nil
+                                                                if success {
+                                                                    self?.productImageView.contentMode = .scaleAspectFill
+                                                                }
+                }
             }
         }
 

@@ -21,14 +21,16 @@ struct ProductsTabProductViewModel {
     let name: String
     let detailsAttributedString: NSAttributedString
     let isSelected: Bool
+    let isDraggable: Bool
 
     // Dependency for configuring the view.
     let imageService: ImageService
 
-    init(product: Product, isSelected: Bool = false, imageService: ImageService = ServiceLocator.imageService) {
+    init(product: Product, isSelected: Bool = false, isDraggable: Bool = false, imageService: ImageService = ServiceLocator.imageService) {
         imageUrl = product.images.first?.src
         name = product.name.isEmpty ? Localization.noTitle : product.name
         self.isSelected = isSelected
+        self.isDraggable = isDraggable
         detailsAttributedString = EditableProductModel(product: product).createDetailsAttributedString()
 
         self.imageService = imageService

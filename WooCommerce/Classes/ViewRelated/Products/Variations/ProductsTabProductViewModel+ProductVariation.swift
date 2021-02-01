@@ -10,6 +10,7 @@ extension ProductsTabProductViewModel {
 
         imageService = ServiceLocator.imageService
         isSelected = false
+        isDraggable = false
     }
 }
 

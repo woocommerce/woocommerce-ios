@@ -356,7 +356,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                                                                                formType: viewModel.formType,
                                                                                isAddProductVariationsEnabled: isAddProductVariationsEnabled)
                 show(variationsViewController, sender: self)
-            case .status, .noPriceWarning:
+            case .status, .noPriceWarning, .attributes:
                 break
             }
         }

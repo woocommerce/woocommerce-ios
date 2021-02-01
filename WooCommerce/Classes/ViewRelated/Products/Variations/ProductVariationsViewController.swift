@@ -14,14 +14,13 @@ final class ProductVariationsViewController: UIViewController {
 
     /// Empty state screen configuration
     ///
-    private let emptyStateConfig: EmptyStateViewController.Config = {
+    private lazy var emptyStateConfig: EmptyStateViewController.Config = {
         let message = NSAttributedString(string: "Add your first variation", attributes: [.font: EmptyStateViewController.Config.messageFont])
         return .withButton(message: message,
                            image: .emptyBoxImage,
                            details: "",
-                           buttonTitle: "Add Variations") {
-                            // TODO: navigate to add variations
-                            print("Navigate to add variation")
+                           buttonTitle: "Add Variations") { [weak self] in
+                            self?.navigateToAddAttributeViewController()
                            }
     }()
 
@@ -362,6 +361,15 @@ extension ProductVariationsViewController: UITableViewDelegate {
         // the actual value. AKA no flicker!
         //
         estimatedRowHeights[indexPath] = cell.frame.height
+    }
+}
+
+// MARK: Navigation
+private extension ProductVariationsViewController {
+    func navigateToAddAttributeViewController() {
+        let viewModel = AddAttributeViewModel(product: product)
+        let addAttributeViewController = AddAttributeViewController(viewModel: viewModel)
+        show(addAttributeViewController, sender: self)
     }
 }
 

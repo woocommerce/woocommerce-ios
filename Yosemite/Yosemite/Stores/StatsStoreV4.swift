@@ -136,7 +136,7 @@ public extension StatsStoreV4 {
                                             return
                                         }
 
-                                        self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats)
+                                        self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats, timeRange: timeRange)
                                         onCompletion(nil)
         }
     }
@@ -237,13 +237,14 @@ extension StatsStoreV4 {
 extension StatsStoreV4 {
     /// Updates (OR Inserts) the specified ReadOnly SiteVisitStats Entity into the Storage Layer.
     ///
-    func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats) {
+    func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats, timeRange: StatsTimeRangeV4) {
         assert(Thread.isMainThread)
 
         let storage = storageManager.viewStorage
         let storageSiteVisitStats = storage.loadSiteVisitStats(
-            granularity: readOnlyStats.granularity.rawValue, date: readOnlyStats.date) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
+            granularity: readOnlyStats.granularity.rawValue, timeRange: timeRange.rawValue) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
         storageSiteVisitStats.update(with: readOnlyStats)
+        storageSiteVisitStats.timeRange = timeRange.rawValue
         handleSiteVisitStatsItems(readOnlyStats, storageSiteVisitStats, storage)
         storage.saveIfNeeded()
     }

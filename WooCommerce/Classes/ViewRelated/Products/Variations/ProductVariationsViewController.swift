@@ -15,11 +15,11 @@ final class ProductVariationsViewController: UIViewController {
     /// Empty state screen configuration
     ///
     private lazy var emptyStateConfig: EmptyStateViewController.Config = {
-        let message = NSAttributedString(string: "Add your first variation", attributes: [.font: EmptyStateViewController.Config.messageFont])
+        let message = NSAttributedString(string: Localization.emptyStateTitle, attributes: [.font: EmptyStateViewController.Config.messageFont])
         return .withButton(message: message,
                            image: .emptyBoxImage,
                            details: "",
-                           buttonTitle: "Add Variations") { [weak self] in
+                           buttonTitle: Localization.emptyStateButtonTitle) { [weak self] in
                             self?.navigateToAddAttributeViewController()
                            }
     }()
@@ -524,12 +524,17 @@ extension ProductVariationsViewController {
     }
 }
 
-// MARK: - Nested Types
+// MARK: - Constants
 //
 private extension ProductVariationsViewController {
 
     enum Settings {
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
+    }
+
+    enum Localization {
+        static let emptyStateTitle = NSLocalizedString("Add your first variation", comment: "Title on the variations list screen when there are no variations")
+        static let emptyStateButtonTitle = NSLocalizedString("Add Variation", comment: "Title on add variation button when there are no variations")
     }
 }

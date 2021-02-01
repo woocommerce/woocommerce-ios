@@ -837,7 +837,7 @@
 "Enter the address of the WordPress site you'd like to connect." = "Voer het adres van de WordPress-site in die je wilt koppelen.";
 
 /* Sign in instructions for logging in with a URL. */
-"Enter the address of your WooCommerce store you'd like to connect." = "Voer het adres van de WooCommerce-winkel die je wilt koppelen in.";
+"Enter the address of the WooCommerce store you'd like to connect." = "Voer het adres van de WooCommerce-winkel die je wilt koppelen in.";
 
 /* Footer text for editing product external URL */
 "Enter the external URL to the product." = "Voer de externe URL naar het product in.";

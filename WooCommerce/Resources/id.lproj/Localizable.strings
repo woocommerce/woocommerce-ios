@@ -837,7 +837,7 @@
 "Enter the address of the WordPress site you'd like to connect." = "Masukkan alamat situs WordPress yang ingin Anda hubungkan.";
 
 /* Sign in instructions for logging in with a URL. */
-"Enter the address of your WooCommerce store you'd like to connect." = "Masukkan alamat toko WooCommerce Anda yang ingin dihubungkan.";
+"Enter the address of the WooCommerce store you'd like to connect." = "Masukkan alamat toko WooCommerce Anda yang ingin dihubungkan.";
 
 /* Footer text for editing product external URL */
 "Enter the external URL to the product." = "Masukkan URL eksternal ke produk";

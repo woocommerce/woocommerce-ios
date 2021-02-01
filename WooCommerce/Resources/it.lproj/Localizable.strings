@@ -837,7 +837,7 @@
 "Enter the address of the WordPress site you'd like to connect." = "Inserisci l'indirizzo del sito WordPress che desideri connettere.";
 
 /* Sign in instructions for logging in with a URL. */
-"Enter the address of your WooCommerce store you'd like to connect." = "Immetti l'indirizzo del negozio WooCommerce che desideri connettere.";
+"Enter the address of the WooCommerce store you'd like to connect." = "Immetti l'indirizzo del negozio WooCommerce che desideri connettere.";
 
 /* Footer text for editing product external URL */
 "Enter the external URL to the product." = "Inserisci l'URL esterno al prodotto.";

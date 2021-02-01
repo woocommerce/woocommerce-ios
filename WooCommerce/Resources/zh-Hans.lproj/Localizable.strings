@@ -837,7 +837,7 @@
 "Enter the address of the WordPress site you'd like to connect." = "输入您要连接的 WordPress 站点的地址。";
 
 /* Sign in instructions for logging in with a URL. */
-"Enter the address of your WooCommerce store you'd like to connect." = "输入您要关联的 WooCommerce 商店的地址。";
+"Enter the address of the WooCommerce store you'd like to connect." = "输入您要关联的 WooCommerce 商店的地址。";
 
 /* Footer text for editing product external URL */
 "Enter the external URL to the product." = "输入产品的外部 URL。";

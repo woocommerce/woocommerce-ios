@@ -837,7 +837,7 @@
 "Enter the address of the WordPress site you'd like to connect." = "أدخل عنوان موقع ووردبريس الذي ترغب في الاتصال به.";
 
 /* Sign in instructions for logging in with a URL. */
-"Enter the address of your WooCommerce store you'd like to connect." = "أدخل عنوان متجر WooCommerce الخاص بك الذي تود الاتصال به.";
+"Enter the address of the WooCommerce store you'd like to connect." = "أدخل عنوان متجر WooCommerce الخاص بك الذي تود الاتصال به.";
 
 /* Footer text for editing product external URL */
 "Enter the external URL to the product." = "أدخل عنوان URL الخارجي إلى المنتج.";

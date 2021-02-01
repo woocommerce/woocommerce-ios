@@ -837,7 +837,7 @@
 "Enter the address of the WordPress site you'd like to connect." = "連携する WordPress サイトのアドレスを入力してください。";
 
 /* Sign in instructions for logging in with a URL. */
-"Enter the address of your WooCommerce store you'd like to connect." = "連携させる WooCommerce ストアのアドレスを入力してください。";
+"Enter the address of the WooCommerce store you'd like to connect." = "連携させる WooCommerce ストアのアドレスを入力してください。";
 
 /* Footer text for editing product external URL */
 "Enter the external URL to the product." = "商品の外部 URL を入力してください。";

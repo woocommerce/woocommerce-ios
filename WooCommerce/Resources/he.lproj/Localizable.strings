@@ -837,7 +837,7 @@
 "Enter the address of the WordPress site you'd like to connect." = "יש להזין את כתובת האתר ב-WordPress שאליו ברצונך להתחבר.";
 
 /* Sign in instructions for logging in with a URL. */
-"Enter the address of your WooCommerce store you'd like to connect." = "יש להזין את הכתובת של חנות ה-WooCommerce שלך שאליה ברצונך להתחבר.";
+"Enter the address of the WooCommerce store you'd like to connect." = "יש להזין את הכתובת של חנות ה-WooCommerce שלך שאליה ברצונך להתחבר.";
 
 /* Footer text for editing product external URL */
 "Enter the external URL to the product." = "להזין את כתובת ה-URL החיצונית למוצר.";

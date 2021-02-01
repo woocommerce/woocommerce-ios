@@ -837,7 +837,7 @@
 "Enter the address of the WordPress site you'd like to connect." = "Skriv in adressen för den WordPress-webbplats du vill ansluta.";
 
 /* Sign in instructions for logging in with a URL. */
-"Enter the address of your WooCommerce store you'd like to connect." = "Ange adressen till den WooCommerce-butik som du vill ansluta.";
+"Enter the address of the WooCommerce store you'd like to connect." = "Ange adressen till den WooCommerce-butik som du vill ansluta.";
 
 /* Footer text for editing product external URL */
 "Enter the external URL to the product." = "Ange den externa URL:en till produkten.";

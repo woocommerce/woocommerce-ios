@@ -837,7 +837,7 @@
 "Enter the address of the WordPress site you'd like to connect." = "Bağlanmak istediğiniz WordPress sitesinin adresini girin.";
 
 /* Sign in instructions for logging in with a URL. */
-"Enter the address of your WooCommerce store you'd like to connect." = "Bağlanmak istediğiniz WooCommerce mağazasının adresini girin.";
+"Enter the address of the WooCommerce store you'd like to connect." = "Bağlanmak istediğiniz WooCommerce mağazasının adresini girin.";
 
 /* Footer text for editing product external URL */
 "Enter the external URL to the product." = "Ürünün harici URL'sini girin.";

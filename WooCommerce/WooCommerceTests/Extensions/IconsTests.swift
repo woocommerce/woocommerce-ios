@@ -75,6 +75,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.creditCardImage)
     }
 
+    func testCustomizeImageIsNotNil() {
+        XCTAssertNotNil(UIImage.customizeImage)
+    }
+
     func testDeleteImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.deleteImage)
     }

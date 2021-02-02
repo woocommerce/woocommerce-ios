@@ -137,7 +137,8 @@ extension UIImage {
     /// Customize Icon
     ///
     static var customizeImage: UIImage {
-        return UIImage.gridicon(.customize)
+        UIImage.gridicon(.customize)
+            .imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Delete Icon

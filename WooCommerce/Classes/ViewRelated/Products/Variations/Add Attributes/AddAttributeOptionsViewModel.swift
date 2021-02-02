@@ -27,8 +27,13 @@ final class AddAttributeOptionsViewModel {
     private var state: State = State() {
         didSet {
             updateSections()
+            onChange?()
         }
     }
+
+    /// Closure to notify the `ViewController` when the view model properties change.
+    ///
+    var onChange: (() -> (Void))?
 
     private(set) var sections: [Section] = []
 

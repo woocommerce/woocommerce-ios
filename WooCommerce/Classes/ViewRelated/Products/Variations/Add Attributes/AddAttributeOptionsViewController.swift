@@ -32,6 +32,7 @@ final class AddAttributeOptionsViewController: UIViewController {
         registerTableViewHeaderSections()
         registerTableViewCells()
         startListeningToNotifications()
+        observeViewModel()
     }
 }
 
@@ -70,6 +71,13 @@ private extension AddAttributeOptionsViewController {
     func registerTableViewCells() {
         for row in Row.allCases {
             tableView.registerNib(for: row.type)
+        }
+    }
+
+    func observeViewModel() {
+        viewModel.onChange = { [weak self] in
+            guard let self = self else { return }
+            self.tableView.reloadData()
         }
     }
 }
@@ -156,7 +164,10 @@ private extension AddAttributeOptionsViewController {
                                                          placeholder: Localization.optionNameCellPlaceholder,
                                                          onTextChange: nil,
                                                          onTextDidBeginEditing: nil,
-                                                         onTextDidReturn: {
+                                                         onTextDidReturn: { [weak self] text in
+                                                            if let text = text {
+                                                                self?.viewModel.addNewOption(name: text)
+                                                            }
                                                          }, inputFormatter: nil,
                                                          keyboardType: .default)
         cell.configure(viewModel: viewModel)

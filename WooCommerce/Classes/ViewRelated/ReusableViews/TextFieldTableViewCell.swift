@@ -108,7 +108,7 @@ extension TextFieldTableViewCell: UITextFieldDelegate {
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        viewModel?.onTextDidReturn?(viewModel?.text)
+        viewModel?.onTextDidReturn?(textField.text)
         textField.resignFirstResponder()
         return true
     }

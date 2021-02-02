@@ -64,7 +64,7 @@ extension ProductsTabProductTableViewCell {
 
         productImageView.contentMode = .center
         if viewModel.isDraggable {
-            productImageView.image = .menuImage
+            productImageView.image = .alignJustifyImage
             productImageView.layer.borderWidth = 0
         } else {
             productImageView.image = .productsTabProductCellPlaceholderImage

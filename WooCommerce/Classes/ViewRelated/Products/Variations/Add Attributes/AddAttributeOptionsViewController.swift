@@ -33,6 +33,7 @@ final class AddAttributeOptionsViewController: UIViewController {
         registerTableViewCells()
         startListeningToNotifications()
         observeViewModel()
+        renderViewModel()
     }
 }
 
@@ -41,8 +42,6 @@ final class AddAttributeOptionsViewController: UIViewController {
 private extension AddAttributeOptionsViewController {
 
     func configureNavigationBar() {
-        title = viewModel.titleView
-
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.nextNavBarButton,
                                                            style: .plain,
                                                            target: self,
@@ -76,8 +75,14 @@ private extension AddAttributeOptionsViewController {
     func observeViewModel() {
         viewModel.onChange = { [weak self] in
             guard let self = self else { return }
-            self.tableView.reloadData()
+            self.renderViewModel()
         }
+    }
+
+    func renderViewModel() {
+        title = viewModel.titleView
+        navigationItem.rightBarButtonItem?.isEnabled = viewModel.isNextButtonEnabled
+        tableView.reloadData()
     }
 }
 

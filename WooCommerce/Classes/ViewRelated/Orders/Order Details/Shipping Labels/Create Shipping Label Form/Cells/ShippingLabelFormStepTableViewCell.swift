@@ -36,7 +36,6 @@ final class ShippingLabelFormStepTableViewCell: UITableViewCell {
                    onButtonTouchUp: (() -> Void)? = nil) {
         self.title.text = title
         self.body.text = body
-        self.icon.image = icon.withTintColor(.black)
         button.setTitle(buttonTitle, for: .normal)
         self.onButtonTouchUp = onButtonTouchUp
         configureCellBasedOnState(state)
@@ -52,6 +51,7 @@ private extension ShippingLabelFormStepTableViewCell {
 private extension ShippingLabelFormStepTableViewCell {
     func configureStyle() {
         applyDefaultBackgroundStyle()
+        icon.tintColor = .black
     }
 
     func configureLabels() {

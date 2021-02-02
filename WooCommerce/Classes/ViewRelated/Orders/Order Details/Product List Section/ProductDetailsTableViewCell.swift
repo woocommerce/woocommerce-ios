@@ -22,7 +22,7 @@ final class ProductDetailsTableViewCell: UITableViewCell {
     /// The label showing the pattern "{qty} x {item_price}".
     ///
     @IBOutlet private var subtitleLabel: UILabel!
-    
+
     /// The label showing the SKU.
     ///
     @IBOutlet private var skuLabel: UILabel!

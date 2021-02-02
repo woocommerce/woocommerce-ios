@@ -3,9 +3,12 @@ import XCTest
 
 final class AddAttributeOptionsViewModelTests: XCTestCase {
 
+    private let sampleAttributeName = "attr"
+    private let sampleOptionName = "new-option"
+
     func test_new_attribute_should_have_textfield_section() throws {
         // Given
-        let viewModel = AddAttributeOptionsViewModel(newAttribute: "attr")
+        let viewModel = AddAttributeOptionsViewModel(newAttribute: sampleAttributeName)
 
         // Then
         let textFieldSection = try XCTUnwrap(viewModel.sections.last?.rows)
@@ -15,31 +18,32 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
 
     func test_when_adding_new_option_to_new_attribute_a_new_section_should_be_added() throws {
         // Given
-        let viewModel = AddAttributeOptionsViewModel(newAttribute: "attr")
+        let viewModel = AddAttributeOptionsViewModel(newAttribute: sampleAttributeName)
         XCTAssertEqual(viewModel.sections.count, 1) // Option Name Section
 
         // When
-        viewModel.addNewOption(name: "new-option")
+        viewModel.addNewOption(name: sampleOptionName)
 
         // Then
         let offeredSection = try XCTUnwrap(viewModel.sections.last?.rows)
-        XCTAssertEqual(offeredSection, [AddAttributeOptionsViewController.Row.selectedTerms])
+        XCTAssertEqual(offeredSection, [AddAttributeOptionsViewController.Row.selectedTerms(name: sampleOptionName)])
         XCTAssertEqual(viewModel.sections.count, 2)
     }
 
     func test_when_adding_multiple_options_one_section_with_multiple_rows_is_added() throws {
         // Given
-        let viewModel = AddAttributeOptionsViewModel(newAttribute: "attr")
+        let newOptionName = "new-option-2"
+        let viewModel = AddAttributeOptionsViewModel(newAttribute: sampleAttributeName)
         XCTAssertEqual(viewModel.sections.count, 1) // Option Name Section
 
         // When
-        viewModel.addNewOption(name: "new-option")
-        viewModel.addNewOption(name: "new-option-2")
+        viewModel.addNewOption(name: sampleOptionName)
+        viewModel.addNewOption(name: newOptionName)
 
         // Then
         let offeredSection = try XCTUnwrap(viewModel.sections.last?.rows)
-        XCTAssertEqual(offeredSection, [AddAttributeOptionsViewController.Row.selectedTerms,
-                                        AddAttributeOptionsViewController.Row.selectedTerms])
+        XCTAssertEqual(offeredSection, [AddAttributeOptionsViewController.Row.selectedTerms(name: sampleOptionName),
+                                        AddAttributeOptionsViewController.Row.selectedTerms(name: newOptionName)])
         XCTAssertEqual(viewModel.sections.count, 2)
     }
 }

@@ -423,10 +423,7 @@ private extension DefaultProductFormTableViewModel {
         let title = Localization.variationAttributesTitle
         let details = "Any Color - Any Material"
 
-        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
-                                                        title: title,
-                                                        details: details,
-                                                        isActionable: isEditable)
+        return .init(icon: icon, title: title, details: details, isActionable: isEditable)
     }
 
     // MARK: Product downloads only

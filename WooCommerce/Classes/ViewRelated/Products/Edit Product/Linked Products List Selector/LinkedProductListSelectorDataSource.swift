@@ -128,7 +128,7 @@ extension LinkedProductListSelectorDataSource: DraggablePaginatedListSelectorDat
 
     /// Called when the user rearranges products.
     func moveItem(from sourceIndex: Int, to destinationIndex: Int) {
-        guard sourceIndex < linkedProductIDs.count else {
+        guard sourceIndex < linkedProductIDs.count, sourceIndex != destinationIndex else {
             return
         }
 

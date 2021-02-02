@@ -102,23 +102,53 @@ private extension CreateShippingLabelFormViewController {
     }
 
     func configureShipFrom(cell: ShippingLabelFormStepTableViewCell) {
-        // TODO: to be implemented in the future
+        cell.configure(state: .continue,
+                       icon: .shippingImage,
+                       title: Localization.shipFromCellTitle,
+                       body: "TO BE IMPLEMENTED",
+                       buttonTitle: Localization.continueButtonInCells) {
+
+        }
     }
 
     func configureShipTo(cell: ShippingLabelFormStepTableViewCell) {
-        // TODO: to be implemented in the future
+        cell.configure(state: .continue,
+                       icon: .houseImage,
+                       title: Localization.shipToCellTitle,
+                       body: "TO BE IMPLEMENTED",
+                       buttonTitle: Localization.continueButtonInCells) {
+
+        }
     }
 
     func configurePackageDetails(cell: ShippingLabelFormStepTableViewCell) {
-        // TODO: to be implemented in the future
+        cell.configure(state: .continue,
+                       icon: .productPlaceholderImage,
+                       title: Localization.packageDetailsCellTitle,
+                       body: "TO BE IMPLEMENTED",
+                       buttonTitle: Localization.continueButtonInCells) {
+
+        }
     }
 
     func configureShippingCarrierAndRates(cell: ShippingLabelFormStepTableViewCell) {
-        // TODO: to be implemented in the future
+        cell.configure(state: .continue,
+                       icon: .priceImage,
+                       title: Localization.shippingCarrierAndRatesCellTitle,
+                       body: "TO BE IMPLEMENTED",
+                       buttonTitle: Localization.continueButtonInCells) {
+
+        }
     }
 
     func configurePaymentMethod(cell: ShippingLabelFormStepTableViewCell) {
-        // TODO: to be implemented in the future
+        cell.configure(state: .continue,
+                       icon: .creditCardImage,
+                       title: Localization.paymentMethodCellTitle,
+                       body: "TO BE IMPLEMENTED",
+                       buttonTitle: Localization.continueButtonInCells) {
+
+        }
     }
 
 }
@@ -176,6 +206,16 @@ extension CreateShippingLabelFormViewController {
 
 private extension CreateShippingLabelFormViewController {
     enum Localization {
-        static let titleView = NSLocalizedString("Create Shipping Label", comment: "Create Shipping Label navigation title")
+        static let titleView = NSLocalizedString("Create Shipping Label", comment: "Create Shipping Label form navigation title")
+        static let shipFromCellTitle = NSLocalizedString("Ship from", comment: "Title of the cell Ship from inside Create Shipping Label form")
+        static let shipToCellTitle = NSLocalizedString("Ship to", comment: "Title of the cell Ship From inside Create Shipping Label form")
+        static let packageDetailsCellTitle = NSLocalizedString("Package Details",
+                                                               comment: "Title of the cell Package Details inside Create Shipping Label form")
+        static let shippingCarrierAndRatesCellTitle = NSLocalizedString("Shipping Carrier and Rates",
+                                                                        comment: "Title of the cell Shipping Carrier inside Create Shipping Label form")
+        static let paymentMethodCellTitle = NSLocalizedString("Payment Method",
+                                                              comment: "Title of the cell Payment Method inside Create Shipping Label form")
+        static let continueButtonInCells = NSLocalizedString("Continue",
+                                                             comment: "Continue button inside every cell inside Create Shipping Label form")
     }
 }

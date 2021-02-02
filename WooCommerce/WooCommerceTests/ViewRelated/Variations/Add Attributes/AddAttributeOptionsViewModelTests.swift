@@ -3,6 +3,16 @@ import XCTest
 
 final class AddAttributeOptionsViewModelTests: XCTestCase {
 
+    func test_new_attribute_should_have_textfield_section() throws {
+        // Given
+        let viewModel = AddAttributeOptionsViewModel(newAttribute: "attr")
+
+        // Then
+        let textFieldSection = try XCTUnwrap(viewModel.sections.last?.rows)
+        XCTAssertEqual(textFieldSection, [AddAttributeOptionsViewController.Row.termTextField])
+        XCTAssertEqual(viewModel.sections.count, 1)
+    }
+
     func test_when_adding_new_option_to_new_attribute_a_new_section_should_be_added() throws {
         // Given
         let viewModel = AddAttributeOptionsViewModel(newAttribute: "attr")
@@ -12,8 +22,8 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         viewModel.addNewOption(name: "new-option")
 
         // Then
-        XCTAssertEqual(viewModel.sections.count, 2)
         let offeredSection = try XCTUnwrap(viewModel.sections.last?.rows)
         XCTAssertEqual(offeredSection, [AddAttributeOptionsViewController.Row.selectedTerms])
+        XCTAssertEqual(viewModel.sections.count, 2)
     }
 }

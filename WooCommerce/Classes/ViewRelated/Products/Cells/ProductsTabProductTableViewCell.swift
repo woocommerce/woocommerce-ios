@@ -8,6 +8,12 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
 
     private var selectedProductImageOverlayView: UIView?
 
+    /// ProductImageView.width == 0.1*Cell.width
+    private var productImageViewRelationalWidthConstraint: NSLayoutConstraint?
+
+    /// ProductImageView.height == Cell.height
+    private var productImageViewFixedHeightConstraint: NSLayoutConstraint?
+
     private lazy var nameLabel: UILabel = {
         let label = UILabel(frame: .zero)
         return label
@@ -64,9 +70,11 @@ extension ProductsTabProductTableViewCell {
 
         productImageView.contentMode = .center
         if viewModel.isDraggable {
+            configureProductImageViewForSmallIcons()
             productImageView.image = .alignJustifyImage
             productImageView.layer.borderWidth = 0
         } else {
+            configureProductImageViewForBigImages()
             productImageView.image = .productsTabProductCellPlaceholderImage
             if let productURLString = viewModel.imageUrl {
                 imageService.downloadAndCacheImageForImageView(productImageView,
@@ -118,6 +126,9 @@ private extension ProductsTabProductTableViewCell {
         contentView.addSubview(bottomBorderView)
         contentView.pinSubviewToAllEdges(stackView, insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16))
 
+        // Not initially enabled, saved for possible compact icon case
+        productImageViewFixedHeightConstraint = productImageView.heightAnchor.constraint(equalTo: stackView.heightAnchor)
+
         NSLayoutConstraint.activate([
             bottomBorderView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             bottomBorderView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -160,11 +171,24 @@ private extension ProductsTabProductTableViewCell {
         productImageView.layer.borderColor = Colors.imageBorderColor.cgColor
         productImageView.clipsToBounds = true
 
+        // This multiplier matches the required size(37.5pt) for a 375pt(as per designs) content view width
+        let widthConstraint = productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.1)
+        productImageViewRelationalWidthConstraint = widthConstraint
+
         NSLayoutConstraint.activate([
-            // This multiplier matches the required size(37.5pt) for a 375pt(as per designs) content view width
-            productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.1),
+            widthConstraint,
             productImageView.widthAnchor.constraint(equalTo: productImageView.heightAnchor)
         ])
+    }
+
+    func configureProductImageViewForBigImages() {
+        productImageViewRelationalWidthConstraint?.isActive = true
+        productImageViewFixedHeightConstraint?.isActive = false
+    }
+
+    func configureProductImageViewForSmallIcons() {
+        productImageViewRelationalWidthConstraint?.isActive = false
+        productImageViewFixedHeightConstraint?.isActive = true
     }
 
     func configureBottomBorderView() {

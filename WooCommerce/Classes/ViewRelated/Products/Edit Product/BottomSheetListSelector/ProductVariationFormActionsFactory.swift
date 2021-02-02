@@ -73,7 +73,8 @@ private extension ProductVariationFormActionsFactory {
             return productVariation.weight.isNilOrEmpty == false ||
                 productVariation.dimensions.height.isNotEmpty || productVariation.dimensions.width.isNotEmpty || productVariation.dimensions.length.isNotEmpty
         case .attributes:
-            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductVariationAttributes)
+            // Remove this feature flag conditional to release the "edit attributes" functionality early
+            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.addProductVariations)
         default:
             return false
         }

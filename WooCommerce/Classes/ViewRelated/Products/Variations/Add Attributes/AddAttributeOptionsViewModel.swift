@@ -4,6 +4,8 @@ import Yosemite
 /// Provides view data for Add Attributes, and handles init/UI/navigation actions needed.
 ///
 final class AddAttributeOptionsViewModel {
+    typealias Section = AddAttributeOptionsViewController.Section
+    typealias Row = AddAttributeOptionsViewController.Row
 
     /// Defines the necessary state to produce the ViewModel's outputs.
     ///
@@ -13,12 +15,22 @@ final class AddAttributeOptionsViewModel {
         var optionsOffered: [String] = []
     }
 
-    typealias Section = AddAttributeOptionsViewController.Section
-    typealias Row = AddAttributeOptionsViewController.Row
-
+    /// Title of the navigation bar
+    ///
     var titleView: String? {
         newAttributeName ?? attribute?.name
     }
+
+    /// Defines next button visibility
+    ///
+    var isNextButtonEnabled: Bool {
+        state.optionsOffered.isNotEmpty
+    }
+
+    /// Closure to notify the `ViewController` when the view model properties change.
+    ///
+    var onChange: (() -> (Void))?
+
     private(set) var newAttributeName: String?
     private(set) var attribute: ProductAttribute?
 
@@ -30,10 +42,6 @@ final class AddAttributeOptionsViewModel {
             onChange?()
         }
     }
-
-    /// Closure to notify the `ViewController` when the view model properties change.
-    ///
-    var onChange: (() -> (Void))?
 
     private(set) var sections: [Section] = []
 

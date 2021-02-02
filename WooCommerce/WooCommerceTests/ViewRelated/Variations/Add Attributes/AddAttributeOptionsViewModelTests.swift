@@ -46,4 +46,16 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
                                         AddAttributeOptionsViewController.Row.selectedTerms(name: newOptionName)])
         XCTAssertEqual(viewModel.sections.count, 2)
     }
+
+    func test_next_button_gets_enabled_after_adding_one_option() {
+        // Given
+        let viewModel = AddAttributeOptionsViewModel(newAttribute: sampleAttributeName)
+        XCTAssertFalse(viewModel.isNextButtonEnabled)
+
+        // When
+        viewModel.addNewOption(name: sampleOptionName)
+
+        // Then
+        XCTAssertTrue(viewModel.isNextButtonEnabled)
+    }
 }

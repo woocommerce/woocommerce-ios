@@ -5,6 +5,14 @@ import Yosemite
 ///
 final class AddAttributeOptionsViewModel {
 
+    /// Defines the necessary state to produce the ViewModel's outputs.
+    ///
+    private struct State {
+        /// Stores the options to be offered
+        ///
+        var optionsOffered: [String] = []
+    }
+
     typealias Section = AddAttributeOptionsViewController.Section
     typealias Row = AddAttributeOptionsViewController.Row
 
@@ -13,6 +21,14 @@ final class AddAttributeOptionsViewModel {
     }
     private(set) var newAttributeName: String?
     private(set) var attribute: ProductAttribute?
+
+    /// Current `ViewModel` state.
+    ///
+    private var state: State = State() {
+        didSet {
+            updateSections()
+        }
+    }
 
     private(set) var sections: [Section] = []
 
@@ -25,13 +41,12 @@ final class AddAttributeOptionsViewModel {
         self.attribute = existingAttribute
         updateSections()
     }
-
 }
 
-// MARK: - State Mutation
+// MARK: - ViewController Inputs
 extension AddAttributeOptionsViewModel {
     func addNewOption(name: String) {
-
+        state.optionsOffered.append(name)
     }
 }
 
@@ -40,11 +55,24 @@ extension AddAttributeOptionsViewModel {
 private extension AddAttributeOptionsViewModel {
     // TODO: to be implemented - fetch of terms
 
-    /// Updates  data in sections
+    /// Updates data in sections
     ///
     func updateSections() {
         let textFieldSection = Section(header: nil, footer: Localization.footerTextField, rows: [.termTextField])
-        sections = [textFieldSection]
+        let offeredSection = createOfferedSection()
+        sections = [textFieldSection, offeredSection].compactMap { $0 }
+    }
+
+    func createOfferedSection() -> Section? {
+        guard state.optionsOffered.isNotEmpty else {
+            return nil
+        }
+
+        let rows = state.optionsOffered.map { option in
+            AddAttributeOptionsViewModel.Row.selectedTerms
+        }
+
+        return Section(header: Localization.headerSelectedTerms, footer: nil, rows: rows)
     }
 }
 

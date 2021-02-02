@@ -15,7 +15,12 @@ final class CreateShippingLabelFormViewModel {
     }
 
     var sections: [Section] {
-        let rows: [Row] = [.shipFrom, .shipTo, .packageDetails, .shippingCarrierAndRates, .paymentMethod]
+        let shipFrom = Row(type: .shipFrom, dataState: .pending, displayMode: .editable)
+        let shipTo = Row(type: .shipTo, dataState: .pending, displayMode: .disabled)
+        let packageDetails = Row(type: .packageDetails, dataState: .pending, displayMode: .disabled)
+        let shippingCarrierAndRates = Row(type: .shippingCarrierAndRates, dataState: .pending, displayMode: .disabled)
+        let paymentMethod = Row(type: .paymentMethod, dataState: .pending, displayMode: .disabled)
+        let rows: [Row] = [shipFrom, shipTo, packageDetails, shippingCarrierAndRates, paymentMethod]
         return [Section(rows: rows)]
     }
 }

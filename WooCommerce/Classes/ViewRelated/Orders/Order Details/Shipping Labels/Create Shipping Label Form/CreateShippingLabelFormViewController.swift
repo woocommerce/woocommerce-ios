@@ -51,7 +51,7 @@ private extension CreateShippingLabelFormViewController {
     }
 
     func registerTableViewCells() {
-        for row in Row.allCases {
+        for row in RowType.allCases {
             tableView.registerNib(for: row.type)
         }
     }
@@ -71,7 +71,7 @@ extension CreateShippingLabelFormViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = viewModel.sections[indexPath.section].rows[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.type.reuseIdentifier, for: indexPath)
         configure(cell, for: row, at: indexPath)
 
         return cell
@@ -85,15 +85,15 @@ private extension CreateShippingLabelFormViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as ShippingLabelFormStepTableViewCell where row == .shipFrom:
+        case let cell as ShippingLabelFormStepTableViewCell where row.type == .shipFrom:
             configureShipFrom(cell: cell)
-        case let cell as ShippingLabelFormStepTableViewCell where row == .shipTo:
+        case let cell as ShippingLabelFormStepTableViewCell where row.type == .shipTo:
             configureShipTo(cell: cell)
-        case let cell as ShippingLabelFormStepTableViewCell where row == .packageDetails:
+        case let cell as ShippingLabelFormStepTableViewCell where row.type == .packageDetails:
             configurePackageDetails(cell: cell)
-        case let cell as ShippingLabelFormStepTableViewCell where row == .shippingCarrierAndRates:
+        case let cell as ShippingLabelFormStepTableViewCell where row.type == .shippingCarrierAndRates:
             configureShippingCarrierAndRates(cell: cell)
-        case let cell as ShippingLabelFormStepTableViewCell where row == .paymentMethod:
+        case let cell as ShippingLabelFormStepTableViewCell where row.type == .paymentMethod:
             configurePaymentMethod(cell: cell)
         default:
             fatalError()
@@ -129,7 +129,32 @@ extension CreateShippingLabelFormViewController {
         let rows: [Row]
     }
 
-    enum Row: CaseIterable {
+    struct Row: Equatable {
+        let type: RowType
+        let dataState: DateState
+        let displayMode: DisplayMode
+    }
+
+    /// Each row has a data state
+    enum DateState {
+        /// the data are validated
+        case validated
+
+        /// the data still need to be validated
+        case pending
+    }
+
+    /// Each row has a UI state
+    enum DisplayMode {
+        /// the row is not greyed out and is available for edit (a disclosure indicator is shown in the accessory view) and
+        /// "Continue" CTA is shown to edit the row details
+        case editable
+
+        /// the row is greyed out
+        case disabled
+    }
+
+    enum RowType: CaseIterable {
         case shipFrom
         case shipTo
         case packageDetails

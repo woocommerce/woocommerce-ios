@@ -36,14 +36,26 @@
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="a2G-dT-fut">
                         <rect key="frame" x="16" y="42" width="382" height="80"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xy8-tj-Ti2">
-                                <rect key="frame" x="0.0" y="0.0" width="382" height="20.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w9M-Xh-zIc">
+                                <rect key="frame" x="0.0" y="0.0" width="382" height="30"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xy8-tj-Ti2">
+                                        <rect key="frame" x="40" y="0.0" width="342" height="30"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="xy8-tj-Ti2" firstAttribute="leading" secondItem="w9M-Xh-zIc" secondAttribute="leading" constant="40" id="72f-We-wci"/>
+                                    <constraint firstAttribute="trailing" secondItem="xy8-tj-Ti2" secondAttribute="trailing" id="Gea-u5-agz"/>
+                                    <constraint firstItem="xy8-tj-Ti2" firstAttribute="top" secondItem="w9M-Xh-zIc" secondAttribute="top" id="JKS-Pv-6jc"/>
+                                    <constraint firstAttribute="bottom" secondItem="xy8-tj-Ti2" secondAttribute="bottom" id="qwz-ND-W7l"/>
+                                </constraints>
+                            </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cZb-NY-jcb">
-                                <rect key="frame" x="0.0" y="36.5" width="382" height="43.5"/>
+                                <rect key="frame" x="0.0" y="46" width="382" height="34"/>
                                 <state key="normal" title="Button"/>
                                 <connections>
                                     <action selector="buttonTouchUpEvent:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="d84-1D-kcV"/>

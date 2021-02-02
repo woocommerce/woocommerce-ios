@@ -50,11 +50,12 @@ private extension ShippingLabelFormStepTableViewCell {
 private extension ShippingLabelFormStepTableViewCell {
     func configureStyle() {
         applyDefaultBackgroundStyle()
+        icon.tintColor = .black
     }
 
     func configureLabels() {
-        title.applyTitleStyle()
-        body.applyBodyStyle()
+        title.applyBodyStyle()
+        body.applyCaption1Style()
         body.numberOfLines = 0
     }
 
@@ -66,19 +67,19 @@ private extension ShippingLabelFormStepTableViewCell {
         switch state {
         case .disabled:
             icon.alpha = 0.3
-            title.applyBodyStyle()
+            title.applyCaption1Style()
             title.alpha = 0.3
             body.alpha = 0.3
             button.isHidden = true
         case .enabled:
             icon.alpha = 0.6
-            title.applyTitleStyle()
+            title.applyBodyStyle()
             title.alpha = 1.0
             body.alpha = 0.6
             button.isHidden = true
         case .continue:
             icon.alpha = 1.0
-            title.applyTitleStyle()
+            title.applyBodyStyle()
             title.alpha = 1.0
             body.alpha = 0.6
             button.isHidden = false

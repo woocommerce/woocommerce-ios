@@ -14,6 +14,10 @@ enum FeatureFlag: Int {
     ///
     case addProductVariations
 
+    /// Card Present Payments
+    ///
+    case cardPresentPayments
+
     /// Product Reviews
     ///
     case reviews

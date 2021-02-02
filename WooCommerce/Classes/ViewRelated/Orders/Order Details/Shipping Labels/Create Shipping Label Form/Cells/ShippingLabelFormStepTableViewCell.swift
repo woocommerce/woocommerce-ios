@@ -2,11 +2,11 @@ import UIKit
 
 final class ShippingLabelFormStepTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var icon: UIImageView!
-    @IBOutlet weak var title: UILabel!
-    @IBOutlet weak var stackView: UIStackView!
-    @IBOutlet weak var body: UILabel!
-    @IBOutlet weak var button: UIButton!
+    @IBOutlet private weak var icon: UIImageView!
+    @IBOutlet private weak var title: UILabel!
+    @IBOutlet private weak var stackView: UIStackView!
+    @IBOutlet private weak var body: UILabel!
+    @IBOutlet private weak var button: UIButton!
 
     private var onButtonTouchUp: (() -> Void)?
 
@@ -29,12 +29,14 @@ final class ShippingLabelFormStepTableViewCell: UITableViewCell {
     }
 
     func configure(state: State,
+                   icon: UIImage,
                    title: String?,
                    body: String?,
                    buttonTitle: String?,
                    onButtonTouchUp: (() -> Void)? = nil) {
         self.title.text = title
         self.body.text = body
+        self.icon.image = icon.withTintColor(.black)
         button.setTitle(buttonTitle, for: .normal)
         self.onButtonTouchUp = onButtonTouchUp
         configureCellBasedOnState(state)
@@ -50,7 +52,6 @@ private extension ShippingLabelFormStepTableViewCell {
 private extension ShippingLabelFormStepTableViewCell {
     func configureStyle() {
         applyDefaultBackgroundStyle()
-        icon.tintColor = .black
     }
 
     func configureLabels() {

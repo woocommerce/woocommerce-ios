@@ -234,7 +234,7 @@ private extension AddAttributeViewController {
                                                             self?.enableDoneButton(self?.viewModel.newAttributeName != nil)
 
             }, onTextDidBeginEditing: {
-        }, inputFormatter: nil, keyboardType: .default)
+        }, onTextDidReturn: nil, inputFormatter: nil, keyboardType: .default)
         cell.configure(viewModel: viewModel)
         cell.applyStyle(style: .body)
     }

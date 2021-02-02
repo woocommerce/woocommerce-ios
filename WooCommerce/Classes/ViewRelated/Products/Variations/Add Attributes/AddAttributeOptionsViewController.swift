@@ -154,10 +154,11 @@ private extension AddAttributeOptionsViewController {
     func configureTextField(cell: TextFieldTableViewCell) {
         let viewModel = TextFieldTableViewCell.ViewModel(text: nil,
                                                          placeholder: Localization.optionNameCellPlaceholder,
-                                                         onTextChange: { newAttributeOption in
-
-            }, onTextDidBeginEditing: {
-        }, inputFormatter: nil, keyboardType: .default)
+                                                         onTextChange: nil,
+                                                         onTextDidBeginEditing: nil,
+                                                         onTextDidReturn: {
+                                                         }, inputFormatter: nil,
+                                                         keyboardType: .default)
         cell.configure(viewModel: viewModel)
         cell.applyStyle(style: .body)
     }

@@ -36,6 +36,8 @@ protocol PaginatedListSelectorDataSource {
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Result<Bool, Error>) -> Void)?)
 }
 
+/// `PaginatedListSelectorDataSource` implementing this protocol enables intra-table drag-and-drop in `PaginatedListSelectorViewController`.
+///
 protocol DraggablePaginatedListSelectorDataSource {
 
     /// Called to rearrange ordered list of models in datasource. For example, as a reaction to drag and drop in a tableview.

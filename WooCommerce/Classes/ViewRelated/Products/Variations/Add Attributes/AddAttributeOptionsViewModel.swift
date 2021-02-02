@@ -74,7 +74,7 @@ private extension AddAttributeOptionsViewModel {
         }
 
         let rows = state.optionsOffered.map { option in
-            AddAttributeOptionsViewModel.Row.selectedTerms
+            AddAttributeOptionsViewModel.Row.selectedTerms(name: option)
         }
 
         return Section(header: Localization.headerSelectedTerms, footer: nil, rows: rows)

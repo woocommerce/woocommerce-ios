@@ -69,9 +69,8 @@ private extension AddAttributeOptionsViewController {
     }
 
     func registerTableViewCells() {
-        for row in Row.allCases {
-            tableView.registerNib(for: row.type)
-        }
+        tableView.registerNib(for: BasicTableViewCell.self)
+        tableView.registerNib(for: TextFieldTableViewCell.self)
     }
 
     func observeViewModel() {
@@ -146,15 +145,15 @@ private extension AddAttributeOptionsViewController {
     /// Cells currently configured in the order they appear on screen
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
-        switch cell {
-        case let cell as TextFieldTableViewCell where row == .termTextField:
+        switch (row, cell) {
+        case (.termTextField, let cell as TextFieldTableViewCell):
             configureTextField(cell: cell)
-        case let cell as BasicTableViewCell where row == .selectedTerms:
-            configureOption(cell: cell)
-        case let cell as BasicTableViewCell where row == .existingTerms:
-            configureOption(cell: cell)
+        case (let .selectedTerms(name), let cell as BasicTableViewCell):
+            configureOption(cell: cell, text: name)
+        case (.existingTerms, let cell as BasicTableViewCell):
+            configureOption(cell: cell, text: "Work in Progress")
         default:
-            fatalError()
+            fatalError("Unsupported Cell")
             break
         }
     }
@@ -174,8 +173,8 @@ private extension AddAttributeOptionsViewController {
         cell.applyStyle(style: .body)
     }
 
-    func configureOption(cell: BasicTableViewCell) {
-        cell.textLabel?.text = "Work in progress" //TODO: to be implemented
+    func configureOption(cell: BasicTableViewCell, text: String) {
+        cell.textLabel?.text = text
     }
 }
 
@@ -213,9 +212,9 @@ extension AddAttributeOptionsViewController {
         let rows: [Row]
     }
 
-    enum Row: CaseIterable {
+    enum Row: Equatable {
         case termTextField
-        case selectedTerms
+        case selectedTerms(name: String)
         case existingTerms
 
         fileprivate var type: UITableViewCell.Type {

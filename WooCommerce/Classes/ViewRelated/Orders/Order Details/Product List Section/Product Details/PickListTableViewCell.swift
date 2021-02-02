@@ -1,6 +1,7 @@
 import UIKit
 import Gridicons
 import Yosemite
+import WordPressUI
 
 
 /// Pick List: a simplified ProductDetails cell, that focuses on order fulfillment.
@@ -89,7 +90,7 @@ extension PickListTableViewCell {
     func configure(item: ProductDetailsCellViewModel, imageService: ImageService) {
         imageService.downloadAndCacheImageForImageView(productImageView,
                                                        with: item.imageURL?.absoluteString,
-                                                       placeholder: .productPlaceholderImage,
+                                                       placeholder: UIImage.productPlaceholderImage.imageWithTintColor(UIColor.listIcon),
                                                        progressBlock: nil,
                                                        completion: nil)
         name = item.name

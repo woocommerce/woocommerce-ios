@@ -1,6 +1,7 @@
 import UIKit
 import Gridicons
 import Yosemite
+import WordPressUI
 
 
 /// Product Details: Renders a row that displays a single Product.
@@ -53,7 +54,7 @@ private extension ProductDetailsTableViewCell {
     }
 
     func configureProductImageView() {
-        productImageView.image = .productPlaceholderImage
+        productImageView.image = UIImage.productPlaceholderImage.imageWithTintColor(UIColor.listIcon)
         productImageView.tintColor = .listSmallIcon
         productImageView.contentMode = .scaleAspectFill
         productImageView.clipsToBounds = true
@@ -89,7 +90,7 @@ extension ProductDetailsTableViewCell {
     func configure(item: ProductDetailsCellViewModel, imageService: ImageService) {
         imageService.downloadAndCacheImageForImageView(productImageView,
                                                        with: item.imageURL?.absoluteString,
-                                                       placeholder: .productPlaceholderImage,
+                                                       placeholder: UIImage.productPlaceholderImage.imageWithTintColor(UIColor.listIcon),
                                                        progressBlock: nil,
                                                        completion: nil)
 

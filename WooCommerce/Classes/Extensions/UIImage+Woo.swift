@@ -367,8 +367,7 @@ extension UIImage {
     /// Product Placeholder Image
     ///
     static var productPlaceholderImage: UIImage {
-        let tintColor = UIColor.listIcon
-        return UIImage.gridicon(.product).imageWithTintColor(tintColor)!
+        return UIImage.gridicon(.product)
     }
 
     /// Product Placeholder Image on Products Tab Cell

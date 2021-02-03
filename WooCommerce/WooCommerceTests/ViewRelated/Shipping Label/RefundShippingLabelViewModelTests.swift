@@ -48,7 +48,7 @@ final class RefundShippingLabelViewModelTests: XCTestCase {
                                                      stores: stores)
 
         // When
-        let refundResult = try waitFor { promise in
+        let refundResult = waitFor { promise in
             viewModel.refundShippingLabel { result in
                 promise(result)
             }
@@ -76,7 +76,7 @@ final class RefundShippingLabelViewModelTests: XCTestCase {
                                                      stores: stores)
 
         // When
-        let refundResult = try waitFor { promise in
+        let refundResult = waitFor { promise in
             viewModel.refundShippingLabel { result in
                 promise(result)
             }

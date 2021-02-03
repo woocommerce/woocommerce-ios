@@ -77,7 +77,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
         }
 
         let process = useCase.fulfill()
-        let retry: () -> OrderFulfillmentUseCase.FulfillmentProcess = try waitFor { promise in
+        let retry: () -> OrderFulfillmentUseCase.FulfillmentProcess = waitFor { promise in
             process.result.sink { completion in
                 guard case let .failure(error: fulfillmentError) = completion else {
                     XCTFail("Unexpected completion \(completion).")
@@ -110,7 +110,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
 
         // When
         let process = useCase.fulfill()
-        let error: OrderFulfillmentUseCase.FulfillmentError = try waitFor { promise in
+        let error: OrderFulfillmentUseCase.FulfillmentError = waitFor { promise in
             process.result.sink { completion in
                 guard case let .failure(error: fulfillmentError) = completion else {
                     XCTFail("Unexpected completion \(completion).")

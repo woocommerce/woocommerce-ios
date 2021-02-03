@@ -90,7 +90,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         insertOrder(siteID: sampleSiteID, orderID: orderID)
 
         // When
-        let result: Result<Void, Error> = try waitFor { promise in
+        let result: Result<Void, Error> = waitFor { promise in
             let action = ShippingLabelAction.synchronizeShippingLabels(siteID: self.sampleSiteID, orderID: orderID) { result in
                 promise(result)
             }
@@ -123,7 +123,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         insertOrder(siteID: sampleSiteID, orderID: orderID)
 
         // When
-        let result: Result<Void, Error> = try waitFor { promise in
+        let result: Result<Void, Error> = waitFor { promise in
             let action = ShippingLabelAction.synchronizeShippingLabels(siteID: self.sampleSiteID, orderID: orderID) { result in
                 promise(result)
             }
@@ -152,7 +152,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<Void, Error> = try waitFor { promise in
+        let result: Result<Void, Error> = waitFor { promise in
             let action = ShippingLabelAction.synchronizeShippingLabels(siteID: self.sampleSiteID, orderID: orderID) { result in
                 promise(result)
             }
@@ -177,7 +177,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<ShippingLabelPrintData, Error> = try waitFor { promise in
+        let result: Result<ShippingLabelPrintData, Error> = waitFor { promise in
             let action = ShippingLabelAction.printShippingLabel(siteID: self.sampleSiteID,
                                                                 shippingLabelID: self.sampleShippingLabelID,
                                                                 paperSize: .label) { result in
@@ -202,7 +202,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<ShippingLabelPrintData, Error> = try waitFor { promise in
+        let result: Result<ShippingLabelPrintData, Error> = waitFor { promise in
             let action = ShippingLabelAction.printShippingLabel(siteID: self.sampleSiteID,
                                                                 shippingLabelID: self.sampleShippingLabelID,
                                                                 paperSize: .label) { result in
@@ -236,7 +236,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 0)
 
         // When
-        let result: Result<Yosemite.ShippingLabelRefund, Error> = try waitFor { promise in
+        let result: Result<Yosemite.ShippingLabelRefund, Error> = waitFor { promise in
             let action = ShippingLabelAction.refundShippingLabel(shippingLabel: shippingLabel) { result in
                 promise(result)
             }
@@ -271,7 +271,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 0)
 
         // When
-        let result: Result<Yosemite.ShippingLabelRefund, Error> = try waitFor { promise in
+        let result: Result<Yosemite.ShippingLabelRefund, Error> = waitFor { promise in
             let action = ShippingLabelAction.refundShippingLabel(shippingLabel: shippingLabel) { result in
                 promise(result)
             }
@@ -298,7 +298,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<Yosemite.ShippingLabelRefund, Error> = try waitFor { promise in
+        let result: Result<Yosemite.ShippingLabelRefund, Error> = waitFor { promise in
             let action = ShippingLabelAction.refundShippingLabel(shippingLabel: shippingLabel) { result in
                 promise(result)
             }
@@ -321,7 +321,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         insertShippingLabelSettings(shippingLabelSettings)
 
         // When
-        let result: Yosemite.ShippingLabelSettings? = try waitFor { promise in
+        let result: Yosemite.ShippingLabelSettings? = waitFor { promise in
             let action = ShippingLabelAction.loadShippingLabelSettings(shippingLabel: shippingLabel) { settings in
                 promise(settings)
             }
@@ -338,7 +338,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Yosemite.ShippingLabelSettings? = try waitFor { promise in
+        let result: Yosemite.ShippingLabelSettings? = waitFor { promise in
             let action = ShippingLabelAction.loadShippingLabelSettings(shippingLabel: shippingLabel) { settings in
                 promise(settings)
             }

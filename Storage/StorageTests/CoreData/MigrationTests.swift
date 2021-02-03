@@ -540,7 +540,7 @@ private extension MigrationTests {
         let model = try XCTUnwrap(modelsInventory.model(for: .init(name: versionName)))
         let container = makePersistentContainer(storeURL: storeURL, model: model)
 
-        let loadingError: Error? = try waitFor { promise in
+        let loadingError: Error? = waitFor { promise in
             container.loadPersistentStores { _, error in
                 promise(error)
             }
@@ -579,7 +579,7 @@ private extension MigrationTests {
 
         // Load a new container
         let migratedContainer = makePersistentContainer(storeURL: storeURL, model: targetModel)
-        let loadingError: Error? = try waitFor { promise in
+        let loadingError: Error? = waitFor { promise in
             migratedContainer.loadPersistentStores { _, error in
                 promise(error)
             }

@@ -23,7 +23,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "label/\(orderID)", filename: "order-shipping-labels")
 
         // When
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             remote.loadShippingLabels(siteID: self.sampleSiteID, orderID: orderID) { result in
                 promise(result)
             }
@@ -41,7 +41,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "label/print", filename: "shipping-label-print")
 
         // When
-        let printData: ShippingLabelPrintData = try waitFor { promise in
+        let printData: ShippingLabelPrintData = waitFor { promise in
             remote.printShippingLabel(siteID: self.sampleSiteID, shippingLabelID: 123, paperSize: .label) { result in
                 guard let printData = try? result.get() else {
                     XCTFail("Error printing shipping label: \(String(describing: result.failure))")
@@ -64,7 +64,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "label/\(orderID)/\(shippingLabelID)/refund", filename: "shipping-label-refund-success")
 
         // When
-        let result: Result<ShippingLabelRefund, Error> = try waitFor { promise in
+        let result: Result<ShippingLabelRefund, Error> = waitFor { promise in
             remote.refundShippingLabel(siteID: self.sampleSiteID,
                                        orderID: orderID,
                                        shippingLabelID: shippingLabelID) { result in
@@ -85,7 +85,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "label/\(orderID)/\(shippingLabelID)/refund", filename: "shipping-label-refund-error")
 
         // When
-        let result: Result<ShippingLabelRefund, Error> = try waitFor { promise in
+        let result: Result<ShippingLabelRefund, Error> = waitFor { promise in
             remote.refundShippingLabel(siteID: self.sampleSiteID,
                                        orderID: orderID,
                                        shippingLabelID: shippingLabelID) { result in

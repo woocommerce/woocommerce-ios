@@ -53,6 +53,7 @@ private extension ShippingLabelFormStepTableViewCell {
     func configureStyle() {
         applyDefaultBackgroundStyle()
         icon.tintColor = .black
+        selectionStyle = .none
     }
 
     func configureLabels() {

@@ -1,6 +1,5 @@
 import UIKit
 import Yosemite
-import WordPressUI
 
 final class AddAttributeOptionsViewController: UIViewController {
 

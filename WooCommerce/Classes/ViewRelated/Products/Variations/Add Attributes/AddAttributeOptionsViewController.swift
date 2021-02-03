@@ -216,8 +216,8 @@ private extension AddAttributeOptionsViewController {
 
         // Listen to taps on the cell's image view
         let tapRecognizer = UITapGestureRecognizer()
-        tapRecognizer.on { _ in
-            print("Delete at index: \(index)")
+        tapRecognizer.on { [weak self] _ in
+            self?.viewModel.removeOptionOffered(atIndex: index)
         }
         cell.imageView?.addGestureRecognizer(tapRecognizer)
         cell.imageView?.isUserInteractionEnabled = true

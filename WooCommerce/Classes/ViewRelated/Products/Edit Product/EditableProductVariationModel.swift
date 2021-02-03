@@ -4,7 +4,7 @@ import Yosemite
 final class EditableProductVariationModel {
     let productVariation: ProductVariation
 
-    private let allAttributes: [ProductAttribute]
+    let allAttributes: [ProductAttribute]
     private lazy var variationName: String = generateName(variationAttributes: productVariation.attributes, allAttributes: allAttributes)
 
     init(productVariation: ProductVariation, allAttributes: [ProductAttribute], parentProductSKU: String?) {

@@ -58,4 +58,80 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.isNextButtonEnabled)
     }
+
+    func test_reorder_option_reorders_the_option_within_sections() throws {
+        // Given
+        let viewModel = AddAttributeOptionsViewModel(newAttribute: sampleAttributeName)
+        viewModel.addNewOption(name: "Option 1")
+        viewModel.addNewOption(name: "Option 2")
+        viewModel.addNewOption(name: "Option 3")
+
+        // When
+        viewModel.reorderOptionOffered(fromIndex: 0, toIndex: 2)
+
+        // Then
+        let optionsOffered = try XCTUnwrap(viewModel.sections.last?.rows)
+        XCTAssertEqual(optionsOffered, [
+            .selectedTerms(name: "Option 2"),
+            .selectedTerms(name: "Option 3"),
+            .selectedTerms(name: "Option 1")
+        ])
+
+    }
+
+    func test_reorder_option_with_same_indexes_do_not_reorders_section() throws {
+        // Given
+        let viewModel = AddAttributeOptionsViewModel(newAttribute: sampleAttributeName)
+        viewModel.addNewOption(name: "Option 1")
+        viewModel.addNewOption(name: "Option 2")
+        viewModel.addNewOption(name: "Option 3")
+
+        // When
+        viewModel.reorderOptionOffered(fromIndex: 1, toIndex: 1)
+
+        // Then
+        let optionsOffered = try XCTUnwrap(viewModel.sections.last?.rows)
+        XCTAssertEqual(optionsOffered, [
+            .selectedTerms(name: "Option 1"),
+            .selectedTerms(name: "Option 2"),
+            .selectedTerms(name: "Option 3")
+        ])
+    }
+
+    func test_remove_option_with_correct_index_removes_it_from_section() throws {
+        // Given
+        let viewModel = AddAttributeOptionsViewModel(newAttribute: sampleAttributeName)
+        viewModel.addNewOption(name: "Option 1")
+        viewModel.addNewOption(name: "Option 2")
+        viewModel.addNewOption(name: "Option 3")
+
+        // When
+        viewModel.removeOptionOffered(atIndex: 1)
+
+        // Then
+        let optionsOffered = try XCTUnwrap(viewModel.sections.last?.rows)
+        XCTAssertEqual(optionsOffered, [
+            .selectedTerms(name: "Option 1"),
+            .selectedTerms(name: "Option 3")
+        ])
+    }
+
+    func test_remove_option_with_overflown_index_does_not_alter_section() throws {
+        // Given
+        let viewModel = AddAttributeOptionsViewModel(newAttribute: sampleAttributeName)
+        viewModel.addNewOption(name: "Option 1")
+        viewModel.addNewOption(name: "Option 2")
+        viewModel.addNewOption(name: "Option 3")
+
+        // When
+        viewModel.removeOptionOffered(atIndex: 3)
+
+        // Then
+        let optionsOffered = try XCTUnwrap(viewModel.sections.last?.rows)
+        XCTAssertEqual(optionsOffered, [
+            .selectedTerms(name: "Option 1"),
+            .selectedTerms(name: "Option 2"),
+            .selectedTerms(name: "Option 3")
+        ])
+    }
 }

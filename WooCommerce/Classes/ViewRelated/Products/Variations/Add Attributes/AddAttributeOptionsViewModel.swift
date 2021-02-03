@@ -58,8 +58,29 @@ final class AddAttributeOptionsViewModel {
 
 // MARK: - ViewController Inputs
 extension AddAttributeOptionsViewModel {
+    /// Inserts a new option with the provided name into the options offered section
+    ///
     func addNewOption(name: String) {
         state.optionsOffered.append(name)
+    }
+
+    /// Reorder an option offered at the specified index to a desired index
+    ///
+    func reorderOptionOffered(fromIndex: Int, toIndex: Int) {
+        guard let option = state.optionsOffered[safe: fromIndex], fromIndex != toIndex else {
+            return
+        }
+        state.optionsOffered.remove(at: fromIndex)
+        state.optionsOffered.insert(option, at: toIndex)
+    }
+
+    /// Removes an option offered at a given index
+    ///
+    func removeOptionOffered(atIndex index: Int) {
+        guard index < state.optionsOffered.count else {
+            return
+        }
+        state.optionsOffered.remove(at: index)
     }
 }
 
@@ -71,7 +92,7 @@ private extension AddAttributeOptionsViewModel {
     /// Updates data in sections
     ///
     func updateSections() {
-        let textFieldSection = Section(header: nil, footer: Localization.footerTextField, rows: [.termTextField])
+        let textFieldSection = Section(header: nil, footer: Localization.footerTextField, rows: [.termTextField], allowsReorder: false)
         let offeredSection = createOfferedSection()
         sections = [textFieldSection, offeredSection].compactMap { $0 }
     }
@@ -85,7 +106,7 @@ private extension AddAttributeOptionsViewModel {
             AddAttributeOptionsViewModel.Row.selectedTerms(name: option)
         }
 
-        return Section(header: Localization.headerSelectedTerms, footer: nil, rows: rows)
+        return Section(header: Localization.headerSelectedTerms, footer: nil, rows: rows, allowsReorder: true)
     }
 }
 

@@ -60,6 +60,7 @@ private extension AddAttributeOptionsViewController {
 
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.isEditing = true
     }
 
     func registerTableViewHeaderSections() {
@@ -104,6 +105,35 @@ extension AddAttributeOptionsViewController: UITableViewDataSource {
         configure(cell, for: row, at: indexPath)
 
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        .none // Don't show the default red delete button
+    }
+
+    func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        false // Don't indent content
+    }
+
+    func tableView(_ tableView: UITableView,
+                   targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath,
+                   toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
+        // Constraint reorder destination to sections that support it.
+        let proposedSection = viewModel.sections[proposedDestinationIndexPath.section]
+        guard proposedSection.allowsReorder else {
+            return sourceIndexPath
+        }
+        return proposedDestinationIndexPath
+    }
+
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        // Only allow reorder if the section allows it.
+        let section = viewModel.sections[indexPath.section]
+        return section.allowsReorder
+    }
+
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        viewModel.reorderOptionOffered(fromIndex: sourceIndexPath.row, toIndex: destinationIndexPath.row)
     }
 }
 
@@ -154,7 +184,7 @@ private extension AddAttributeOptionsViewController {
         case (.termTextField, let cell as TextFieldTableViewCell):
             configureTextField(cell: cell)
         case (let .selectedTerms(name), let cell as BasicTableViewCell):
-            configureOption(cell: cell, text: name)
+            configureOptionOffered(cell: cell, text: name, index: indexPath.row)
         case (.existingTerms, let cell as BasicTableViewCell):
             configureOption(cell: cell, text: "Work in Progress")
         default:
@@ -176,6 +206,20 @@ private extension AddAttributeOptionsViewController {
                                                          keyboardType: .default)
         cell.configure(viewModel: viewModel)
         cell.applyStyle(style: .body)
+    }
+
+    func configureOptionOffered(cell: BasicTableViewCell, text: String, index: Int) {
+        cell.imageView?.tintColor = .tertiaryLabel
+        cell.imageView?.image = UIImage.deleteCellImage
+        cell.textLabel?.text = text
+
+        // Listen to taps on the cell's image view
+        let tapRecognizer = UITapGestureRecognizer()
+        tapRecognizer.on { [weak self] _ in
+            self?.viewModel.removeOptionOffered(atIndex: index)
+        }
+        cell.imageView?.addGestureRecognizer(tapRecognizer)
+        cell.imageView?.isUserInteractionEnabled = true
     }
 
     func configureOption(cell: BasicTableViewCell, text: String) {
@@ -215,6 +259,7 @@ extension AddAttributeOptionsViewController {
         let header: String?
         let footer: String?
         let rows: [Row]
+        let allowsReorder: Bool
     }
 
     enum Row: Equatable {

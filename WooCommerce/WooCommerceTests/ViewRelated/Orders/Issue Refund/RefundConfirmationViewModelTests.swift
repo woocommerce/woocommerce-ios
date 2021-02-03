@@ -123,7 +123,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
 
         // When
         let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher)
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             viewModel.submit { result in
                 promise(result)
             }
@@ -148,7 +148,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         }
 
         // When
-        let orderUpdated: Bool = try waitFor { promise in
+        let orderUpdated: Bool = waitFor { promise in
             // Capture order updated value
             dispatcher.whenReceivingAction(ofType: OrderAction.self) { action in
                 if case let .retrieveOrder(_, _, onCompletion) = action {
@@ -175,7 +175,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
 
         // When
         let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher)
-        let refund: Refund = try waitFor { promise in
+        let refund: Refund = waitFor { promise in
             dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
                 if case let .createRefund(_, _, refund, _) = action {
                     promise(refund)
@@ -199,7 +199,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
 
         // When
         let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher)
-        let refund: Refund = try waitFor { promise in
+        let refund: Refund = waitFor { promise in
             dispatcher.whenReceivingAction(ofType: RefundAction.self) { action in
                 if case let .createRefund(_, _, refund, _) = action {
                     promise(refund)
@@ -235,7 +235,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
 
         // When
         let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher)
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             viewModel.submit { result in
                 promise(result)
             }
@@ -315,7 +315,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
 
         // When
         let viewModel = RefundConfirmationViewModel(details: details, actionProcessor: dispatcher, analytics: analytics)
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             viewModel.submit { result in
                 promise(result)
             }

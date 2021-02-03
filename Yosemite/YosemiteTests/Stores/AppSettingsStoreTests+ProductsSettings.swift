@@ -45,7 +45,7 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
                                                             productTypeFilter: .simple)
 
         // When
-        let result: Result<StoredProductSettings.Setting, Error> = try waitFor { promise in
+        let result: Result<StoredProductSettings.Setting, Error> = waitFor { promise in
             let initialReadAction = AppSettingsAction.loadProductsSettings(siteID: siteID) { (result) in
                 promise(result)
             }
@@ -65,7 +65,7 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
 
 
         // Then
-        let result2: Result<StoredProductSettings.Setting, Error> = try waitFor { promise in
+        let result2: Result<StoredProductSettings.Setting, Error> = waitFor { promise in
             let readAction = AppSettingsAction.loadProductsSettings(siteID: siteID) { (result) in
                 promise(result)
             }
@@ -111,7 +111,7 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
         subject.onAction(writeAction2)
 
         // Then
-        let result1: Result<StoredProductSettings.Setting, Error> = try waitFor { promise in
+        let result1: Result<StoredProductSettings.Setting, Error> = waitFor { promise in
             let initialReadAction = AppSettingsAction.loadProductsSettings(siteID: siteID1) { (result) in
                 promise(result)
             }
@@ -120,7 +120,7 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
         XCTAssertTrue(result1.isSuccess)
         XCTAssertEqual(try result1.get(), productSettings1)
 
-        let result2: Result<StoredProductSettings.Setting, Error> = try waitFor { promise in
+        let result2: Result<StoredProductSettings.Setting, Error> = waitFor { promise in
             let readAction = AppSettingsAction.loadProductsSettings(siteID: siteID2) { (result) in
                 promise(result)
             }

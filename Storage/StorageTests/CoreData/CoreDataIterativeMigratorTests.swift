@@ -78,7 +78,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
             }
 
             // Load the persistent container
-            let loadingError: Error? = try waitFor { promise in
+            let loadingError: Error? = waitFor { promise in
                 persistentContainer.loadPersistentStores { _, error in
                     promise(error)
                 }
@@ -329,7 +329,7 @@ private extension CoreDataIterativeMigratorTests {
     func startPersistentContainer(storeURL: URL, storeType: String, model: NSManagedObjectModel) throws -> NSPersistentContainer {
         let container = makePersistentContainer(storeURL: storeURL, storeType: storeType, model: model)
 
-        let loadingError: Error? = try waitFor { promise in
+        let loadingError: Error? = waitFor { promise in
             container.loadPersistentStores { _, error in
                 promise(error)
             }

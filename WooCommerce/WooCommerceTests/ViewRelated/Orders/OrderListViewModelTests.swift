@@ -255,7 +255,7 @@ private extension OrderListViewModelTests {
     /// Activate the viewModel to start fetching and then return the first
     /// valid `FetchResultSnapshot` triggered.
     func activateAndRetrieveSnapshot(of viewModel: OrderListViewModel) throws -> FetchResultSnapshot {
-        return try waitFor { promise in
+        return waitFor { promise in
             // The first snapshot is dropped because it's just the default empty one.
             viewModel.snapshot.dropFirst().sink { snapshot in
                 promise(snapshot)

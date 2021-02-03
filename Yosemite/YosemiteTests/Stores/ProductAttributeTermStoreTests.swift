@@ -74,7 +74,7 @@ final class ProductAttributeTermStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributeTermsCount, 0)
 
         // When
-        let result: Result<Void, ProductAttributeTermActionError> = try waitFor { promise in
+        let result: Result<Void, ProductAttributeTermActionError> = waitFor { promise in
             let action = ProductAttributeTermAction.synchronizeProductAttributeTerms(siteID: self.sampleSiteID,
                                                                                      attributeID: self.sampleAttributeID) { result in
                 promise(result)
@@ -95,7 +95,7 @@ final class ProductAttributeTermStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributeTermsCount, 0)
 
         // When
-        let result: Result<Void, ProductAttributeTermActionError> = try waitFor { promise in
+        let result: Result<Void, ProductAttributeTermActionError> = waitFor { promise in
             let action = ProductAttributeTermAction.synchronizeProductAttributeTerms(siteID: self.sampleSiteID,
                                                                                      attributeID: self.sampleAttributeID) { result in
                 promise(result)
@@ -117,7 +117,7 @@ final class ProductAttributeTermStoreTests: XCTestCase {
         let initialTerm = insertProductAttributeTerm(termID: sampleTermID)
 
         // When
-        let result: Result<Void, ProductAttributeTermActionError> = try waitFor { promise in
+        let result: Result<Void, ProductAttributeTermActionError> = waitFor { promise in
             let action = ProductAttributeTermAction.synchronizeProductAttributeTerms(siteID: self.sampleSiteID,
                                                                                      attributeID: self.sampleAttributeID) { result in
                 promise(result)
@@ -141,7 +141,7 @@ final class ProductAttributeTermStoreTests: XCTestCase {
         insertProductAttributeTerm(termID: sampleTermID)
 
         // When
-        let result: Result<Void, ProductAttributeTermActionError> = try waitFor { promise in
+        let result: Result<Void, ProductAttributeTermActionError> = waitFor { promise in
             let action = ProductAttributeTermAction.synchronizeProductAttributeTerms(siteID: self.sampleSiteID,
                                                                                      attributeID: self.sampleAttributeID) { result in
                 promise(result)
@@ -161,7 +161,7 @@ final class ProductAttributeTermStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: sampleTermsPath, filename: "attribute-term")
 
         // When
-        let result: Result<Yosemite.ProductAttributeTerm, Error> = try waitFor { promise in
+        let result: Result<Yosemite.ProductAttributeTerm, Error> = waitFor { promise in
             let action = ProductAttributeTermAction.createProductAttributeTerm(siteID: self.sampleSiteID,
                                                                                attributeID: self.sampleAttributeID,
                                                                                name: "XXS") { result in

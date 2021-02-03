@@ -45,7 +45,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         let defaultLimit: Int64 = -1
 
         // Act
-        let isValidResult = try waitFor { promise in
+        let isValidResult = waitFor { promise in
             viewModel.handleDownloadLimitChange("") { isValid in
                 promise(isValid)
             }
@@ -64,7 +64,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         let expectedLimit: Int64 = 100
 
         // Act
-        let isValidResult = try waitFor { promise in
+        let isValidResult = waitFor { promise in
             viewModel.handleDownloadLimitChange("100") { isValid in
                 promise(isValid)
             }
@@ -83,7 +83,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         let defaultLimit: Int64 = -2
 
         // Act
-        let isValidResult = try waitFor { promise in
+        let isValidResult = waitFor { promise in
             viewModel.handleDownloadLimitChange("-100") { isValid in
                 promise(isValid)
             }
@@ -104,7 +104,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         let defaultExpiry: Int64 = -1
 
         // Act
-        let isValidResult = try waitFor { promise in
+        let isValidResult = waitFor { promise in
             viewModel.handleDownloadExpiryChange("") { isValid in
                 promise(isValid)
             }
@@ -123,7 +123,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         let expectedExpiry: Int64 = 100
 
         // Act
-        let isValidResult = try waitFor { promise in
+        let isValidResult = waitFor { promise in
             viewModel.handleDownloadExpiryChange("100") { isValid in
                 promise(isValid)
             }
@@ -142,7 +142,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
         let defaultExpiry: Int64 = -2
 
         // Act
-        let isValidResult = try waitFor { promise in
+        let isValidResult = waitFor { promise in
             viewModel.handleDownloadExpiryChange("-100") { isValid in
                 promise(isValid)
             }

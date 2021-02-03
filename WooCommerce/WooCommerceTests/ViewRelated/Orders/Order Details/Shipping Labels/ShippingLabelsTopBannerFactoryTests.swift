@@ -8,7 +8,7 @@ final class ShippingLabelsTopBannerFactoryTests: XCTestCase {
         let factory = ShippingLabelsTopBannerFactory(shippingLabels: [])
 
         // When
-        let topBannerView = try waitFor { promise in
+        let topBannerView = waitFor { promise in
             factory.createTopBannerIfNeeded(isExpanded: false,
                                             onCompletion: { topBannerView in
                                                 promise(topBannerView)
@@ -25,7 +25,7 @@ final class ShippingLabelsTopBannerFactoryTests: XCTestCase {
         let factory = ShippingLabelsTopBannerFactory(shippingLabels: [refundedShippingLabel])
 
         // When
-        let topBannerView = try waitFor { promise in
+        let topBannerView = waitFor { promise in
             factory.createTopBannerIfNeeded(isExpanded: false,
                                             onCompletion: { topBannerView in
                                                 promise(topBannerView)
@@ -43,7 +43,7 @@ final class ShippingLabelsTopBannerFactoryTests: XCTestCase {
         let factory = ShippingLabelsTopBannerFactory(shippingLabels: [shippingLabel], stores: stores)
 
         // When
-        let topBannerView = try waitFor { promise in
+        let topBannerView = waitFor { promise in
             factory.createTopBannerIfNeeded(isExpanded: false,
                                             onCompletion: { topBannerView in
                                                 promise(topBannerView)
@@ -61,7 +61,7 @@ final class ShippingLabelsTopBannerFactoryTests: XCTestCase {
         let factory = ShippingLabelsTopBannerFactory(shippingLabels: [shippingLabel], stores: stores)
 
         // When
-        let topBannerView = try waitFor { promise in
+        let topBannerView = waitFor { promise in
             factory.createTopBannerIfNeeded(isExpanded: false,
                                             onCompletion: { topBannerView in
                                                 promise(topBannerView)
@@ -79,7 +79,7 @@ final class ShippingLabelsTopBannerFactoryTests: XCTestCase {
         let factory = ShippingLabelsTopBannerFactory(shippingLabels: [shippingLabel], stores: stores)
 
         // When
-        let topBannerView = try waitFor { promise in
+        let topBannerView = waitFor { promise in
             factory.createTopBannerIfNeeded(isExpanded: false,
                                             onCompletion: { topBannerView in
                                                 promise(topBannerView)
@@ -97,7 +97,7 @@ final class ShippingLabelsTopBannerFactoryTests: XCTestCase {
         let factory = ShippingLabelsTopBannerFactory(shippingLabels: [shippingLabel], stores: stores)
 
         // When
-        let topBannerView = try waitFor { promise in
+        let topBannerView = waitFor { promise in
             factory.createTopBannerIfNeeded(isExpanded: false,
                                             onCompletion: { topBannerView in
                                                 promise(topBannerView)
@@ -122,7 +122,7 @@ final class ShippingLabelsTopBannerFactoryTests: XCTestCase {
 
         // When
         var isGiveFeedbackButtonPressed = false
-        let topBannerView = try waitFor { promise in
+        let topBannerView = waitFor { promise in
             factory.createTopBannerIfNeeded(isExpanded: false,
                                             onGiveFeedbackButtonPressed: {
                                                 isGiveFeedbackButtonPressed = true
@@ -168,7 +168,7 @@ final class ShippingLabelsTopBannerFactoryTests: XCTestCase {
 
         // When
         var isDismissButtonPressed = false
-        let topBannerView = try waitFor { promise in
+        let topBannerView = waitFor { promise in
             factory.createTopBannerIfNeeded(isExpanded: false,
                                             onDismissButtonPressed: {
                                                 isDismissButtonPressed = true

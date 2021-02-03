@@ -86,66 +86,71 @@ private extension CreateShippingLabelFormViewController {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as ShippingLabelFormStepTableViewCell where row.type == .shipFrom:
-            configureShipFrom(cell: cell)
+            configureShipFrom(cell: cell, row: row)
         case let cell as ShippingLabelFormStepTableViewCell where row.type == .shipTo:
-            configureShipTo(cell: cell)
+            configureShipTo(cell: cell, row: row)
         case let cell as ShippingLabelFormStepTableViewCell where row.type == .packageDetails:
-            configurePackageDetails(cell: cell)
+            configurePackageDetails(cell: cell, row: row)
         case let cell as ShippingLabelFormStepTableViewCell where row.type == .shippingCarrierAndRates:
-            configureShippingCarrierAndRates(cell: cell)
+            configureShippingCarrierAndRates(cell: cell, row: row)
         case let cell as ShippingLabelFormStepTableViewCell where row.type == .paymentMethod:
-            configurePaymentMethod(cell: cell)
+            configurePaymentMethod(cell: cell, row: row)
         default:
             fatalError()
             break
         }
     }
 
-    func configureShipFrom(cell: ShippingLabelFormStepTableViewCell) {
-        cell.configure(state: .continue,
+    func configureShipFrom(cell: ShippingLabelFormStepTableViewCell, row: Row) {
+        let state = row.cellState
+        cell.configure(state: state,
                        icon: .shippingImage,
                        title: Localization.shipFromCellTitle,
-                       body: "TO BE IMPLEMENTED",
+                       body: "Carolle Bruce, 123 Main St, San Francisco CA, 78117, United States",
                        buttonTitle: Localization.continueButtonInCells) {
 
         }
     }
 
-    func configureShipTo(cell: ShippingLabelFormStepTableViewCell) {
-        cell.configure(state: .continue,
+    func configureShipTo(cell: ShippingLabelFormStepTableViewCell, row: Row) {
+        let state = row.cellState
+        cell.configure(state: state,
                        icon: .houseImage,
                        title: Localization.shipToCellTitle,
-                       body: "TO BE IMPLEMENTED",
+                       body: "To be implemented",
                        buttonTitle: Localization.continueButtonInCells) {
 
         }
     }
 
-    func configurePackageDetails(cell: ShippingLabelFormStepTableViewCell) {
-        cell.configure(state: .continue,
+    func configurePackageDetails(cell: ShippingLabelFormStepTableViewCell, row: Row) {
+        let state = row.cellState
+        cell.configure(state: state,
                        icon: .productPlaceholderImage,
                        title: Localization.packageDetailsCellTitle,
-                       body: "TO BE IMPLEMENTED",
+                       body: "To be implemented",
                        buttonTitle: Localization.continueButtonInCells) {
 
         }
     }
 
-    func configureShippingCarrierAndRates(cell: ShippingLabelFormStepTableViewCell) {
-        cell.configure(state: .continue,
+    func configureShippingCarrierAndRates(cell: ShippingLabelFormStepTableViewCell, row: Row) {
+        let state = row.cellState
+        cell.configure(state: state,
                        icon: .priceImage,
                        title: Localization.shippingCarrierAndRatesCellTitle,
-                       body: "TO BE IMPLEMENTED",
+                       body: "To be implemented",
                        buttonTitle: Localization.continueButtonInCells) {
 
         }
     }
 
-    func configurePaymentMethod(cell: ShippingLabelFormStepTableViewCell) {
-        cell.configure(state: .continue,
+    func configurePaymentMethod(cell: ShippingLabelFormStepTableViewCell, row: Row) {
+        let state = row.cellState
+        cell.configure(state: state,
                        icon: .creditCardImage,
                        title: Localization.paymentMethodCellTitle,
-                       body: "TO BE IMPLEMENTED",
+                       body: "To be implemented",
                        buttonTitle: Localization.continueButtonInCells) {
 
         }
@@ -163,6 +168,16 @@ extension CreateShippingLabelFormViewController {
         let type: RowType
         let dataState: DateState
         let displayMode: DisplayMode
+
+        var cellState: ShippingLabelFormStepTableViewCell.State {
+            if dataState == .validated && displayMode == .editable {
+                return .enabled
+            }
+            else if dataState == .pending && displayMode == .editable {
+                return .continue
+            }
+            return .disabled
+        }
     }
 
     /// Each row has a data state

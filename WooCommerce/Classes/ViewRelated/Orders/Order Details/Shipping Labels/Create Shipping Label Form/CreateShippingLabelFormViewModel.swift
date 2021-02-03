@@ -15,8 +15,8 @@ final class CreateShippingLabelFormViewModel {
     }
 
     var sections: [Section] {
-        let shipFrom = Row(type: .shipFrom, dataState: .pending, displayMode: .editable)
-        let shipTo = Row(type: .shipTo, dataState: .pending, displayMode: .disabled)
+        let shipFrom = Row(type: .shipFrom, dataState: .validated, displayMode: .editable)
+        let shipTo = Row(type: .shipTo, dataState: .pending, displayMode: .editable)
         let packageDetails = Row(type: .packageDetails, dataState: .pending, displayMode: .disabled)
         let shippingCarrierAndRates = Row(type: .shippingCarrierAndRates, dataState: .pending, displayMode: .disabled)
         let paymentMethod = Row(type: .paymentMethod, dataState: .pending, displayMode: .disabled)

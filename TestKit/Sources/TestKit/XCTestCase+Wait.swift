@@ -60,7 +60,7 @@ extension XCTestCase {
     /// ## Example Usage
     ///
     /// ```
-    /// let value: String = try waitFor { promise in
+    /// let value: String = waitFor { promise in
     ///     fetchFromAPI { responseString in
     ///         promise(responseString)
     ///     }

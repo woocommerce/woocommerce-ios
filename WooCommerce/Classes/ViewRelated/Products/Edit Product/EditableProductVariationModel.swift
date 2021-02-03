@@ -4,7 +4,7 @@ import Yosemite
 final class EditableProductVariationModel {
     let productVariation: ProductVariation
 
-    private let allAttributes: [ProductAttribute]
+    let allAttributes: [ProductAttribute]
     private lazy var variationName: String = generateName(variationAttributes: productVariation.attributes, allAttributes: allAttributes)
 
     init(productVariation: ProductVariation, allAttributes: [ProductAttribute], parentProductSKU: String?) {
@@ -223,6 +223,6 @@ extension EditableProductVariationModel: Equatable {
 extension EditableProductVariationModel {
     enum Localization {
         static let anyAttributeFormat =
-            NSLocalizedString("Any %@", comment: "Format of a product varition attribute description where the attribute is set to any value.")
+            NSLocalizedString("Any %@", comment: "Format of a product variation attribute description where the attribute is set to any value.")
     }
 }

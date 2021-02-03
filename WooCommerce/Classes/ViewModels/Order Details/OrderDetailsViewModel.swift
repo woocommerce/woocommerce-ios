@@ -15,10 +15,6 @@ final class OrderDetailsViewModel {
         return lookUpOrderStatus(for: order)
     }
 
-    /// Keep track of any changes the user requests we make to status, in case we need to retry them
-    ///
-    private var indexOfDesiredStatus: IndexPath?
-
     init(order: Order, stores: StoresManager = ServiceLocator.stores) {
         self.order = order
         self.stores = stores

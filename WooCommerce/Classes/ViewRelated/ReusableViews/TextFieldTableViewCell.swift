@@ -8,6 +8,7 @@ final class TextFieldTableViewCell: UITableViewCell {
         let placeholder: String?
         let onTextChange: ((_ text: String?) -> Void)?
         let onTextDidBeginEditing: (() -> Void)?
+        let onTextDidReturn: ((_ text: String?) -> Void)?
         let inputFormatter: UnitInputFormatter?
         let keyboardType: UIKeyboardType
     }
@@ -106,6 +107,7 @@ extension TextFieldTableViewCell: UITextFieldDelegate {
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        viewModel?.onTextDidReturn?(textField.text)
         textField.resignFirstResponder()
         return true
     }

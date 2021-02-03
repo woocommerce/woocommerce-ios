@@ -32,6 +32,8 @@ final class AddAttributeOptionsViewController: UIViewController {
         registerTableViewHeaderSections()
         registerTableViewCells()
         startListeningToNotifications()
+        observeViewModel()
+        renderViewModel()
     }
 }
 
@@ -40,8 +42,6 @@ final class AddAttributeOptionsViewController: UIViewController {
 private extension AddAttributeOptionsViewController {
 
     func configureNavigationBar() {
-        title = viewModel.titleView
-
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.nextNavBarButton,
                                                            style: .plain,
                                                            target: self,
@@ -68,9 +68,21 @@ private extension AddAttributeOptionsViewController {
     }
 
     func registerTableViewCells() {
-        for row in Row.allCases {
-            tableView.registerNib(for: row.type)
+        tableView.registerNib(for: BasicTableViewCell.self)
+        tableView.registerNib(for: TextFieldTableViewCell.self)
+    }
+
+    func observeViewModel() {
+        viewModel.onChange = { [weak self] in
+            guard let self = self else { return }
+            self.renderViewModel()
         }
+    }
+
+    func renderViewModel() {
+        title = viewModel.titleView
+        navigationItem.rightBarButtonItem?.isEnabled = viewModel.isNextButtonEnabled
+        tableView.reloadData()
     }
 }
 
@@ -138,15 +150,15 @@ private extension AddAttributeOptionsViewController {
     /// Cells currently configured in the order they appear on screen
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
-        switch cell {
-        case let cell as TextFieldTableViewCell where row == .termTextField:
+        switch (row, cell) {
+        case (.termTextField, let cell as TextFieldTableViewCell):
             configureTextField(cell: cell)
-        case let cell as BasicTableViewCell where row == .selectedTerms:
-            configureOption(cell: cell)
-        case let cell as BasicTableViewCell where row == .existingTerms:
-            configureOption(cell: cell)
+        case (let .selectedTerms(name), let cell as BasicTableViewCell):
+            configureOption(cell: cell, text: name)
+        case (.existingTerms, let cell as BasicTableViewCell):
+            configureOption(cell: cell, text: "Work in Progress")
         default:
-            fatalError()
+            fatalError("Unsupported Cell")
             break
         }
     }
@@ -154,16 +166,20 @@ private extension AddAttributeOptionsViewController {
     func configureTextField(cell: TextFieldTableViewCell) {
         let viewModel = TextFieldTableViewCell.ViewModel(text: nil,
                                                          placeholder: Localization.optionNameCellPlaceholder,
-                                                         onTextChange: { newAttributeOption in
-
-            }, onTextDidBeginEditing: {
-        }, inputFormatter: nil, keyboardType: .default)
+                                                         onTextChange: nil,
+                                                         onTextDidBeginEditing: nil,
+                                                         onTextDidReturn: { [weak self] text in
+                                                            if let text = text {
+                                                                self?.viewModel.addNewOption(name: text)
+                                                            }
+                                                         }, inputFormatter: nil,
+                                                         keyboardType: .default)
         cell.configure(viewModel: viewModel)
         cell.applyStyle(style: .body)
     }
 
-    func configureOption(cell: BasicTableViewCell) {
-        cell.textLabel?.text = "Work in progress" //TODO: to be implemented
+    func configureOption(cell: BasicTableViewCell, text: String) {
+        cell.textLabel?.text = text
     }
 }
 
@@ -201,9 +217,9 @@ extension AddAttributeOptionsViewController {
         let rows: [Row]
     }
 
-    enum Row: CaseIterable {
+    enum Row: Equatable {
         case termTextField
-        case selectedTerms
+        case selectedTerms(name: String)
         case existingTerms
 
         fileprivate var type: UITableViewCell.Type {

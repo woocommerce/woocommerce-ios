@@ -146,7 +146,7 @@ private extension ProductMenuOrderViewController {
             }
             }, onTextDidBeginEditing: {
                 //TODO: Add analytics track
-        }, inputFormatter: IntegerInputFormatter(defaultValue: ""), keyboardType: .numbersAndPunctuation)
+        }, onTextDidReturn: nil, inputFormatter: IntegerInputFormatter(defaultValue: ""), keyboardType: .numbersAndPunctuation)
         cell.configure(viewModel: viewModel)
         cell.applyStyle(style: .body)
     }

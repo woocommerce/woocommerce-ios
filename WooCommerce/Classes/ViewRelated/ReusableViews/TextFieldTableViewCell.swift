@@ -39,7 +39,6 @@ final class TextFieldTableViewCell: UITableViewCell {
         textField.keyboardType = viewModel.keyboardType
         textField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
         textField.addTarget(self, action: #selector(textFieldDidBegin(textField:)), for: .editingDidBegin)
-
     }
 
     @discardableResult

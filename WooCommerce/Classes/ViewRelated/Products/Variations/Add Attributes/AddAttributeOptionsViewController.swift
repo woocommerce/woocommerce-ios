@@ -60,6 +60,7 @@ private extension AddAttributeOptionsViewController {
 
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.isEditing = true
     }
 
     func registerTableViewHeaderSections() {
@@ -104,6 +105,35 @@ extension AddAttributeOptionsViewController: UITableViewDataSource {
         configure(cell, for: row, at: indexPath)
 
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        .none // Don't show the default red delete button
+    }
+
+    func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        false // Don't indent content
+    }
+
+    func tableView(_ tableView: UITableView,
+                   targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath,
+                   toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
+        // Constraint reorder destination to sections that support it.
+        let proposedSection = viewModel.sections[proposedDestinationIndexPath.section]
+        guard proposedSection.allowsReorder else {
+            return sourceIndexPath
+        }
+        return proposedDestinationIndexPath
+    }
+
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        // Only allow reorder if the section allows it.
+        let section = viewModel.sections[indexPath.section]
+        return section.allowsReorder
+    }
+
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        // TODO: Submit reorder on the view model
     }
 }
 
@@ -215,6 +245,7 @@ extension AddAttributeOptionsViewController {
         let header: String?
         let footer: String?
         let rows: [Row]
+        let allowsReorder: Bool
     }
 
     enum Row: Equatable {

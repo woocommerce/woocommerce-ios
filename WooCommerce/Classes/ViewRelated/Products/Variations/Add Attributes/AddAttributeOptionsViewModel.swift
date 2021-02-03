@@ -71,7 +71,7 @@ private extension AddAttributeOptionsViewModel {
     /// Updates data in sections
     ///
     func updateSections() {
-        let textFieldSection = Section(header: nil, footer: Localization.footerTextField, rows: [.termTextField])
+        let textFieldSection = Section(header: nil, footer: Localization.footerTextField, rows: [.termTextField], allowsReorder: false)
         let offeredSection = createOfferedSection()
         sections = [textFieldSection, offeredSection].compactMap { $0 }
     }
@@ -85,7 +85,7 @@ private extension AddAttributeOptionsViewModel {
             AddAttributeOptionsViewModel.Row.selectedTerms(name: option)
         }
 
-        return Section(header: Localization.headerSelectedTerms, footer: nil, rows: rows)
+        return Section(header: Localization.headerSelectedTerms, footer: nil, rows: rows, allowsReorder: true)
     }
 }
 

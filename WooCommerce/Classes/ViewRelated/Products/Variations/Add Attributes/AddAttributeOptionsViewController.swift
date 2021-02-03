@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import WordPressUI
 
 final class AddAttributeOptionsViewController: UIViewController {
 
@@ -184,7 +185,7 @@ private extension AddAttributeOptionsViewController {
         case (.termTextField, let cell as TextFieldTableViewCell):
             configureTextField(cell: cell)
         case (let .selectedTerms(name), let cell as BasicTableViewCell):
-            configureOption(cell: cell, text: name)
+            configureOptionOffered(cell: cell, text: name, index: indexPath.row)
         case (.existingTerms, let cell as BasicTableViewCell):
             configureOption(cell: cell, text: "Work in Progress")
         default:
@@ -206,6 +207,20 @@ private extension AddAttributeOptionsViewController {
                                                          keyboardType: .default)
         cell.configure(viewModel: viewModel)
         cell.applyStyle(style: .body)
+    }
+
+    func configureOptionOffered(cell: BasicTableViewCell, text: String, index: Int) {
+        cell.imageView?.tintColor = .tertiaryLabel
+        cell.imageView?.image = UIImage.deleteCellImage
+        cell.textLabel?.text = text
+
+        // Listen to taps on the cell's image view
+        let tapRecognizer = UITapGestureRecognizer()
+        tapRecognizer.on { _ in
+            print("Delete at index: \(index)")
+        }
+        cell.imageView?.addGestureRecognizer(tapRecognizer)
+        cell.imageView?.isUserInteractionEnabled = true
     }
 
     func configureOption(cell: BasicTableViewCell, text: String) {

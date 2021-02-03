@@ -106,7 +106,7 @@ private extension CreateShippingLabelFormViewController {
         cell.configure(state: state,
                        icon: .shippingImage,
                        title: Localization.shipFromCellTitle,
-                       body: "Carolle Bruce, 123 Main St, San Francisco CA, 78117, United States",
+                       body: "To be implemented",
                        buttonTitle: Localization.continueButtonInCells) {
 
         }

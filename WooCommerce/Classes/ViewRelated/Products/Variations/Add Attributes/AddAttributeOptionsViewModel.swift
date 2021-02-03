@@ -73,6 +73,15 @@ extension AddAttributeOptionsViewModel {
         state.optionsOffered.remove(at: fromIndex)
         state.optionsOffered.insert(option, at: toIndex)
     }
+
+    /// Removes an option offered at a given index
+    ///
+    func removeOptionOffered(atIndex index: Int) {
+        guard index < state.optionsOffered.count else {
+            return
+        }
+        state.optionsOffered.remove(at: index)
+    }
 }
 
 // MARK: - Synchronize Product Attribute terms

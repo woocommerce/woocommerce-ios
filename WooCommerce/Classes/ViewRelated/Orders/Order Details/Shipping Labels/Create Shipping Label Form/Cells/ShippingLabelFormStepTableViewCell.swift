@@ -1,5 +1,6 @@
 import UIKit
 
+
 final class ShippingLabelFormStepTableViewCell: UITableViewCell {
 
     @IBOutlet private weak var icon: UIImageView!
@@ -7,6 +8,8 @@ final class ShippingLabelFormStepTableViewCell: UITableViewCell {
     @IBOutlet private weak var stackView: UIStackView!
     @IBOutlet private weak var body: UILabel!
     @IBOutlet private weak var button: UIButton!
+    @IBOutlet private weak var separator: UIImageView!
+    @IBOutlet private weak var separatorLeadingConstraint: NSLayoutConstraint!
 
     private var onButtonTouchUp: (() -> Void)?
 
@@ -52,13 +55,14 @@ private extension ShippingLabelFormStepTableViewCell {
 private extension ShippingLabelFormStepTableViewCell {
     func configureStyle() {
         applyDefaultBackgroundStyle()
-        icon.tintColor = .black
+        icon.tintColor = .neutral(.shade100)
         selectionStyle = .none
+        separator.backgroundColor = .systemColor(.separator)
     }
 
     func configureLabels() {
         title.applyBodyStyle()
-        body.applyCaption1Style()
+        body.applySubheadlineStyle()
         body.numberOfLines = 0
     }
 
@@ -70,25 +74,32 @@ private extension ShippingLabelFormStepTableViewCell {
         switch state {
         case .disabled:
             icon.alpha = 0.3
-            title.applyCaption1Style()
             title.alpha = 0.3
             body.alpha = 0.3
             button.isHidden = true
+            separatorLeadingConstraint.constant = Constants.separatorDefaultMargin
             accessoryType = .none
         case .enabled:
             icon.alpha = 0.6
-            title.applyBodyStyle()
             title.alpha = 1.0
             body.alpha = 0.6
             button.isHidden = true
+            separatorLeadingConstraint.constant = Constants.separatorDefaultMargin
             accessoryType = .disclosureIndicator
         case .continue:
             icon.alpha = 1.0
-            title.applyBodyStyle()
             title.alpha = 1.0
             body.alpha = 0.6
             button.isHidden = false
+            separatorLeadingConstraint.constant = Constants.separatorCustomMargin
             accessoryType = .none
         }
+    }
+}
+
+private extension ShippingLabelFormStepTableViewCell {
+    enum Constants {
+        static let separatorCustomMargin: CGFloat = 0.0
+        static let separatorDefaultMargin: CGFloat = 56.0
     }
 }

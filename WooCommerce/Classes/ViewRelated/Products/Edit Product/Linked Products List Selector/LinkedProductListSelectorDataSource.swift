@@ -74,7 +74,7 @@ final class LinkedProductListSelectorDataSource: PaginatedListSelectorDataSource
     func configureCell(cell: ProductsTabProductTableViewCell, model: Product) {
         cell.selectionStyle = .none
 
-        let viewModel = ProductsTabProductViewModel(product: model)
+        let viewModel = ProductsTabProductViewModel(product: model, isDraggable: true)
         cell.update(viewModel: viewModel, imageService: imageService)
 
         cell.configureAccessoryDeleteButton { [weak self] in
@@ -121,5 +121,21 @@ extension LinkedProductListSelectorDataSource {
     /// Returns whether there are unsaved changes.
     func hasUnsavedChanges() -> Bool {
         return linkedProductIDs != originalLinkedProductIDs
+    }
+}
+
+extension LinkedProductListSelectorDataSource: DraggablePaginatedListSelectorDataSource {
+
+    /// Called when the user rearranges products.
+    func moveItem(from sourceIndex: Int, to destinationIndex: Int) {
+        guard sourceIndex < linkedProductIDs.count, sourceIndex != destinationIndex else {
+            return
+        }
+
+        // Use intermediate array to report only a single change to observers
+        var updatedLinkedProductIDs = linkedProductIDs
+        let item = updatedLinkedProductIDs.remove(at: sourceIndex)
+        updatedLinkedProductIDs.insert(item, at: destinationIndex)
+        linkedProductIDs = updatedLinkedProductIDs
     }
 }

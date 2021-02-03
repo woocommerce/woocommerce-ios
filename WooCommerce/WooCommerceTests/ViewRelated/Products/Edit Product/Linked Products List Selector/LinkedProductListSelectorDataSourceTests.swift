@@ -105,4 +105,49 @@ final class LinkedProductListSelectorDataSourceTests: XCTestCase {
         XCTAssertEqual(dataSource.linkedProductIDs, preselectedProductIDs)
         XCTAssertNil(updatedProductIDs)
     }
+
+    // MARK: `moveItem`
+
+    func test_sorting_products_should_save_updated_order() {
+        // Arrange
+        let preselectedProductIDs: [Int64] = [17, 671, 750]
+        let product = MockProduct().product()
+        let dataSource = LinkedProductListSelectorDataSource(product: product,
+                                                             linkedProductIDs: preselectedProductIDs,
+                                                             trackingContext: "test_context")
+        var updatedProductIDs: [Int64]?
+        cancellable = dataSource.productIDs.subscribe { ids in
+            updatedProductIDs = ids
+        }
+
+        // Action
+        dataSource.moveItem(from: 2, to: 0)
+
+        // Assert
+        XCTAssertTrue(dataSource.hasUnsavedChanges())
+        let expectedProductIDs: [Int64] = [750, 17, 671]
+        XCTAssertEqual(dataSource.linkedProductIDs, expectedProductIDs)
+        XCTAssertEqual(updatedProductIDs, expectedProductIDs)
+    }
+
+    func test_sorting_products_should_ignore_missing_index() {
+        // Arrange
+        let preselectedProductIDs: [Int64] = [17, 671, 750]
+        let product = MockProduct().product()
+        let dataSource = LinkedProductListSelectorDataSource(product: product,
+                                                             linkedProductIDs: preselectedProductIDs,
+                                                             trackingContext: "test_context")
+        var updatedProductIDs: [Int64]?
+        cancellable = dataSource.productIDs.subscribe { ids in
+            updatedProductIDs = ids
+        }
+
+        // Action
+        dataSource.moveItem(from: 50, to: 0)
+
+        // Assert
+        XCTAssertFalse(dataSource.hasUnsavedChanges())
+        XCTAssertEqual(dataSource.linkedProductIDs, preselectedProductIDs)
+        XCTAssertNil(updatedProductIDs)
+    }
 }

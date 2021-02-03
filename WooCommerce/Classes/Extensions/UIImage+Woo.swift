@@ -19,6 +19,12 @@ extension UIImage {
         return UIImage.gridicon(.arrowUp)
     }
 
+    /// Align justify Icon
+    ///
+    static var alignJustifyImage: UIImage {
+        return UIImage.gridicon(.alignJustify)
+    }
+
     /// Notice Icon
     ///
     static var noticeImage: UIImage {

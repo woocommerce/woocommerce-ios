@@ -146,6 +146,6 @@ private extension AttributePickerViewController {
         static let titleView = NSLocalizedString("Attributes", comment: "Edit Product Attributes screen navigation title")
         static let doneNavBarButton = NSLocalizedString("Done", comment: "Done nav bar button title in Edit Product Attributes screen")
         static let headerAttributes = NSLocalizedString("Options", comment: "Header of attributes section in Edit Product Attributes screen")
-        static let anyAttributeOption = NSLocalizedString("Any", comment: "Product varition attribute description where the attribute is set to any value.")
+        static let anyAttributeOption = NSLocalizedString("Any", comment: "Product variation attribute description where the attribute is set to any value.")
     }
 }

@@ -133,7 +133,7 @@ extension AddAttributeOptionsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        // TODO: Submit reorder on the view model
+        viewModel.reorderOptionOffered(fromIndex: sourceIndexPath.row, toIndex: destinationIndexPath.row)
     }
 }
 

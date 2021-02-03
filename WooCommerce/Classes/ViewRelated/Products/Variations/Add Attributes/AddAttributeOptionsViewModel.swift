@@ -67,7 +67,7 @@ extension AddAttributeOptionsViewModel {
     /// Reorder an option offered at the specified index to a desired index
     ///
     func reorderOptionOffered(fromIndex: Int, toIndex: Int) {
-        guard let option = state.optionsOffered[safe: fromIndex] else {
+        guard let option = state.optionsOffered[safe: fromIndex], fromIndex != toIndex else {
             return
         }
         state.optionsOffered.remove(at: fromIndex)

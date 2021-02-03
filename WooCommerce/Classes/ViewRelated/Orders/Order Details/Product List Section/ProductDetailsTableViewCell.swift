@@ -23,6 +23,10 @@ final class ProductDetailsTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var subtitleLabel: UILabel!
 
+    /// The label showing the SKU.
+    ///
+    @IBOutlet private var skuLabel: UILabel!
+
     // MARK: - Overridden Methods
 
     required init?(coder aDecoder: NSCoder) {
@@ -37,6 +41,7 @@ final class ProductDetailsTableViewCell: UITableViewCell {
         configureProductImageView()
         configureNameLabel()
         configurePriceLabel()
+        configureSKULabel()
         configureSubtitleLabel()
         configureSelectionStyle()
     }
@@ -75,6 +80,11 @@ private extension ProductDetailsTableViewCell {
         subtitleLabel?.text = ""
     }
 
+    func configureSKULabel() {
+        skuLabel.applySecondaryFootnoteStyle()
+        skuLabel?.text = ""
+    }
+
     func configureSelectionStyle() {
         selectionStyle = .none
     }
@@ -96,5 +106,6 @@ extension ProductDetailsTableViewCell {
         nameLabel.text = item.name
         priceLabel.text = item.total
         subtitleLabel.text = item.subtitle
+        skuLabel.text = item.sku
     }
 }

@@ -348,7 +348,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                                                                                formType: viewModel.formType,
                                                                                isAddProductVariationsEnabled: isAddProductVariationsEnabled)
                 show(variationsViewController, sender: self)
-            case .status, .noPriceWarning, .attributes:
+            case .attributes:
+                if let productVariationModel = product as? EditableProductVariationModel {
+                    let attributePickerViewController = AttributePickerViewController(variationModel: productVariationModel)
+                    show(attributePickerViewController, sender: self)
+                }
+            case .status, .noPriceWarning:
                 break
             }
         }

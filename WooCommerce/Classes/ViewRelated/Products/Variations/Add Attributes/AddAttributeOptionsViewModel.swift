@@ -58,8 +58,20 @@ final class AddAttributeOptionsViewModel {
 
 // MARK: - ViewController Inputs
 extension AddAttributeOptionsViewModel {
+    /// Inserts a new option with the provided name into the options offered section
+    ///
     func addNewOption(name: String) {
         state.optionsOffered.append(name)
+    }
+
+    /// Reorder an option offered at the specified index to a desired index
+    ///
+    func reorderOptionOffered(fromIndex: Int, toIndex: Int) {
+        guard let option = state.optionsOffered[safe: fromIndex] else {
+            return
+        }
+        state.optionsOffered.remove(at: fromIndex)
+        state.optionsOffered.insert(option, at: toIndex)
     }
 }
 

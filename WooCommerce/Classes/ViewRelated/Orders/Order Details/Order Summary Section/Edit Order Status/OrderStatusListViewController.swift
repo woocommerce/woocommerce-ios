@@ -6,7 +6,7 @@ final class OrderStatusListViewController: UIViewController {
     ///
     @IBOutlet private var tableView: UITableView!
 
-    /// The status selected
+    /// The index of (new) order status selected by the user tapping on a table row.
     ///
     private var indexOfSelectedStatus: IndexPath? {
         didSet {
@@ -22,13 +22,22 @@ final class OrderStatusListViewController: UIViewController {
         return refreshControl
     }()
 
-    /// Order to be provided with a new status
+    /// A creator provided view model containing all possible order statuses and the selected one.
     ///
-    private let viewModel: OrderDetailsViewModelStatusSubModel
+    private let viewModel: OrderStatusListViewModel
 
-    init(viewModel: OrderDetailsViewModelStatusSubModel) {
+    /// A closure to be called when this VC wants its creator to dismiss it without saving changes.
+    ///
+    var didSelectCancel: (() -> Void)?
+
+    /// A closure to be  called when this VC wants its creator to change the order status to the selected status and dismiss it.
+    ///
+    var didSelectApply: ((OrderStatusEnum?) -> Void)?
+
+    init(viewModel: OrderStatusListViewModel) {
         self.viewModel = viewModel
         super.init(nibName: type(of: self).nibName, bundle: nil)
+        //X TODO viewModel.onUpdate
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -40,19 +49,19 @@ final class OrderStatusListViewController: UIViewController {
         registerTableViewCells()
         configureNavigationBar()
         configureTableView()
-        reloadTable()
+        tableView.reloadData()
+        selectCurrentOrderStatusIfPossible()
     }
 
     private func reloadTable(completion: (() -> Void)? = nil) {
-        viewModel.refreshStatuses() //X Is this necessary everytime? Seems it could be slow.
-        //X TODO - needs a completion?
         tableView.reloadData()
-        preselectStatusIfPossible()
+        selectCurrentOrderStatusIfPossible()
         completion?()
     }
 
-    private func preselectStatusIfPossible() {
-        guard let selectedStatusIndex = viewModel.getIndexOfSelectedStatus() else {
+    /// Select the row corresponding to the current order status if we can.
+    private func selectCurrentOrderStatusIfPossible() {
+        guard let selectedStatusIndex = viewModel.indexOfCurrentOrderStatus() else {
             return
         }
         tableView.selectRow(at: selectedStatusIndex, animated: false, scrollPosition: .none)
@@ -75,6 +84,7 @@ final class OrderStatusListViewController: UIViewController {
         tableView.delegate = self
     }
 
+    //X TODO - reconnect to data source
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
         reloadTable {
             sender.endRefreshing()
@@ -130,15 +140,19 @@ extension OrderStatusListViewController {
     }
 
     @objc func dismissButtonTapped() {
-        dismiss(animated: true, completion: nil)
+        didSelectCancel?()
     }
 
     @objc func applyButtonTapped() {
-        guard let index = indexOfSelectedStatus else {
+        guard let indexOfSelectedStatus = indexOfSelectedStatus else {
+            didSelectCancel?()
             return
         }
-        viewModel.setSelectedStatus(to: index)
-        dismiss(animated: true, completion: nil)
+        guard let selectedStatus = viewModel.status(at: indexOfSelectedStatus) else {
+            didSelectCancel?()
+            return
+        }
+        didSelectApply?(selectedStatus)
     }
 }
 
@@ -146,16 +160,19 @@ extension OrderStatusListViewController {
 //
 extension OrderStatusListViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return viewModel.getNumStatusSections()
+        return 1
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.getNumStatuses(inSection: section)
+        guard section == 0 else {
+            return 0
+        }
+        return viewModel.statusCount()
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(StatusListTableViewCell.self, for: indexPath)
-        cell.textLabel?.text = viewModel.getStatusName(at: indexPath)
+        cell.textLabel?.text = viewModel.statusName(at: indexPath)
         cell.selectionStyle = .none
         return cell
     }

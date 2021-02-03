@@ -5,36 +5,19 @@ import Yosemite
 import MessageUI
 import class AutomatticTracks.CrashLogging
 
-protocol OrderDetailsViewModelStatusSubModel {
-    func refreshStatuses()
-    func getNumStatusSections() -> Int
-    func getNumStatuses(inSection section: Int) -> Int
-    func getIndexOfSelectedStatus() -> IndexPath?
-    func getStatusName(at indexPath: IndexPath) -> String?
-    func setSelectedStatus(to indexPath: IndexPath)
-}
-
 final class OrderDetailsViewModel {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     private let stores: StoresManager
-
-    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) OrderStatuses in sync.
-    ///
-    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-         let storageManager = ServiceLocator.storageManager
-         let predicate = NSPredicate(format: "siteID == %lld && slug != %@",
-                                     order.siteID,
-                                     OrderStatusEnum.refunded.rawValue)
-         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
-
-         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
 
     private(set) var order: Order
 
     var orderStatus: OrderStatus? {
         return lookUpOrderStatus(for: order)
     }
+
+    /// Keep track of any changes the user requests we make to status, in case we need to retry them
+    ///
+    private var indexOfDesiredStatus: IndexPath?
 
     init(order: Order, stores: StoresManager = ServiceLocator.stores) {
         self.order = order
@@ -437,85 +420,5 @@ extension OrderDetailsViewModel {
         }
 
         stores.dispatch(deleteTrackingAction)
-    }
-}
-
-extension OrderDetailsViewModel: OrderDetailsViewModelStatusSubModel {
-
-    // TODO
-    // configureResultsController
-    //X statusResultsController.startForwardingEvents(to: tableView)
-
-    func refreshStatuses() {
-        do {
-            try statusResultsController.performFetch()
-        } catch {
-            CrashLogging.logError(error)
-        }
-    }
-
-    func getNumStatusSections() -> Int {
-        return statusResultsController.sections.count
-    }
-
-    func getNumStatuses(inSection section: Int) -> Int {
-        return statusResultsController.sections[section].numberOfObjects
-    }
-
-    func getStatusName(at indexPath: IndexPath) -> String? {
-        let status = statusResultsController.object(at: indexPath)
-        return status.name
-    }
-
-    func getIndexOfSelectedStatus() -> IndexPath? {
-        guard let orderStatus = self.orderStatus else {
-            return nil
-        }
-        guard let row = statusResultsController.fetchedObjects.firstIndex(of: orderStatus) else {
-            return nil
-        }
-        return IndexPath(row: row, section: 0)
-    }
-
-    func setSelectedStatus(to indexPath: IndexPath) {
-        let selectedStatus = statusResultsController.object(at: indexPath)
-        let newStatus = selectedStatus.status
-        let done = updateOrderAction(siteID: order.siteID, orderID: order.orderID, status: newStatus)
-        ServiceLocator.stores.dispatch(done)
-
-        //X TODO hook up undo, notice
-
-        //X let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, status: undoStatus)
-
-        //X ServiceLocator.analytics.track(.orderStatusChange,
-        //X                           withProperties: ["id": orderID,
-        //X                                            "from": undoStatus.rawValue,
-        //X                                            "to": newStatus.rawValue])
-
-        //X displayOrderUpdatedNotice {
-        //X     ServiceLocator.stores.dispatch(undo)
-        //X     ServiceLocator.analytics.track(.orderStatusChange,
-        //X                               withProperties: ["id": orderID,
-        //X                                                "from": newStatus.rawValue,
-        //X                                                "to": undoStatus.rawValue])
-        //X }
-    }
-
-    /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
-    ///
-    private func updateOrderAction(siteID: Int64, orderID: Int64, status: OrderStatusEnum) -> Action {
-        return OrderAction.updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: { error in
-            guard let error = error else {
-                NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-                self.syncNotes()
-                ServiceLocator.analytics.track(.orderStatusChangeSuccess)
-                return
-            }
-
-            ServiceLocator.analytics.track(.orderStatusChangeFailed, withError: error)
-            DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(status)]. Error: \(error)")
-
-            //X TODO self.displayErrorNotice(orderID: orderID)
-        })
     }
 }

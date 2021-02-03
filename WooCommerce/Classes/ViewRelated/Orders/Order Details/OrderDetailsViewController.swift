@@ -4,7 +4,6 @@ import Contacts
 import Yosemite
 import SafariServices
 
-
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
 //
 final class OrderDetailsViewController: UIViewController {
@@ -591,16 +590,108 @@ private extension OrderDetailsViewController {
 }
 
 
-// MARK: - Present Order Status List
+// MARK: - Order Status List Child View
 //
 private extension OrderDetailsViewController {
     private func displayOrderStatusList() {
         ServiceLocator.analytics.track(.orderDetailOrderStatusEditButtonTapped,
                                        withProperties: ["status": viewModel.order.status.rawValue])
-        let statusList = OrderStatusListViewController(viewModel: self.viewModel)
+
+        let statusViewModel = OrderStatusListViewModel()
+        let filteredStatuses = self.viewModel.dataSource.currentSiteStatuses.filter {
+            $0.slug != OrderStatusEnum.refunded.rawValue
+        }
+        statusViewModel.updateStatuses(newStatuses: filteredStatuses)
+        statusViewModel.setCurrentOrderStatus(newStatus: viewModel.order.status)
+
+        //X TODO Refresh/fetch
+
+        let statusList = OrderStatusListViewController(viewModel: statusViewModel)
+
+        statusList.didSelectCancel = {
+            statusList.dismiss(animated: true, completion: nil)
+        }
+
+        statusList.didSelectApply = { (selectedStatus) in
+            statusList.dismiss(animated: true) {
+                self.setOrderStatus(to: selectedStatus)
+            }
+        }
+
         let navigationController = UINavigationController(rootViewController: statusList)
 
         present(navigationController, animated: true)
+    }
+
+    func setOrderStatus(to newStatus: OrderStatusEnum?) {
+        guard let newStatus = newStatus else {
+            return
+        }
+        let orderID = viewModel.order.orderID
+        let undoStatus = viewModel.order.status
+        let done = updateOrderStatusAction(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, status: newStatus)
+        let undo = updateOrderStatusAction(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, status: undoStatus)
+
+        ServiceLocator.stores.dispatch(done)
+
+        ServiceLocator.analytics.track(.orderStatusChange,
+                                       withProperties: ["id": orderID,
+                                                        "from": undoStatus.rawValue,
+                                                        "to": newStatus.rawValue])
+
+        displayOrderStatusUpdatedNotice {
+            ServiceLocator.stores.dispatch(undo)
+            ServiceLocator.analytics.track(.orderStatusChange,
+                                           withProperties: ["id": orderID,
+                                                            "from": newStatus.rawValue,
+                                                            "to": undoStatus.rawValue])
+        }
+    }
+
+    /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
+    ///
+    private func updateOrderStatusAction(siteID: Int64, orderID: Int64, status: OrderStatusEnum) -> Action {
+        return OrderAction.updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: { error in
+            guard let error = error else {
+                NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+                self.syncNotes()
+                ServiceLocator.analytics.track(.orderStatusChangeSuccess)
+                return
+            }
+
+            ServiceLocator.analytics.track(.orderStatusChangeFailed, withError: error)
+            DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(status)]. Error: \(error)")
+
+            self.displayOrderStatusErrorNotice(orderID: orderID, status: status)
+        })
+    }
+
+    /// Enqueues the `Order Updated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
+    ///
+    private func displayOrderStatusUpdatedNotice(onUndoAction: @escaping () -> Void) {
+        let message = NSLocalizedString("Order status updated", comment: "Order status update success notice")
+        let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
+        let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
+
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Enqueues the `Unable to Change Status of Order` Notice.
+    ///
+    private func displayOrderStatusErrorNotice(orderID: Int64, status: OrderStatusEnum) {
+        let titleFormat = NSLocalizedString(
+            "Unable to change status of order #%1$d",
+            comment: "Content of error presented when updating the status of an Order fails. "
+            + "It reads: Unable to change status of order #{order number}. "
+            + "Parameters: %1$d - order number"
+        )
+        let title = String.localizedStringWithFormat(titleFormat, orderID)
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.setOrderStatus(to: status)
+        }
+
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -639,38 +730,5 @@ private extension OrderDetailsViewController {
         static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 8, right: 0)
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
-    }
-}
-
-// MARK: - Error handling
-//
-extension OrderDetailsViewController {
-    /// Displays the `Order Updated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
-    ///
-    private func displayOrderUpdatedNotice(onUndoAction: @escaping () -> Void) {
-        let message = NSLocalizedString("Order status updated", comment: "Order status update success notice")
-        let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
-        let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
-
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
-    }
-
-    /// Displays the `Unable to Change Status of Order` Notice.
-    ///
-    func displayErrorNotice(orderID: Int64) {
-        let titleFormat = NSLocalizedString(
-            "Unable to change status of order #%1$d",
-            comment: "Content of error presented when updating the status of an Order fails. "
-            + "It reads: Unable to change status of order #{order number}. "
-            + "Parameters: %1$d - order number"
-        )
-        let title = String.localizedStringWithFormat(titleFormat, orderID)
-        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle)
-        //X{ [weak self] in
-        //X    self?.applyButtonTapped()
-        //X}
-
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }

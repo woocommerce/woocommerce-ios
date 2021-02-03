@@ -47,6 +47,7 @@ private extension ProductVariationFormActionsFactory {
         let actions: [ProductFormEditAction?] = [
             shouldShowPriceSettingsRow ? .priceSettings(editable: editable): nil,
             shouldShowNoPriceWarningRow ? .noPriceWarning: nil,
+            .attributes(editable: editable),
             .status(editable: editable),
             shouldShowShippingSettingsRow ? .shippingSettings(editable: editable): nil,
             .inventorySettings(editable: editable),
@@ -71,6 +72,9 @@ private extension ProductVariationFormActionsFactory {
         case .shippingSettings:
             return productVariation.weight.isNilOrEmpty == false ||
                 productVariation.dimensions.height.isNotEmpty || productVariation.dimensions.width.isNotEmpty || productVariation.dimensions.length.isNotEmpty
+        case .attributes:
+            // Remove this feature flag conditional to release the "edit attributes" functionality early
+            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.addProductVariations)
         default:
             return false
         }

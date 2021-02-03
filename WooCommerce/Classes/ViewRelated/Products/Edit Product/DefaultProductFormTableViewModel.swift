@@ -104,6 +104,8 @@ private extension DefaultProductFormTableViewModel {
             switch action {
             case .priceSettings(let editable):
                 return .price(viewModel: variationPriceSettingsRow(productVariation: productVariation, isEditable: editable), isEditable: editable)
+            case .attributes(let editable):
+                return .attributes(viewModel: variationAttributesRow(productVariation: productVariation, isEditable: editable), isEditable: editable)
             case .shippingSettings(let editable):
                 return .shipping(viewModel: shippingSettingsRow(product: productVariation, isEditable: editable), isEditable: editable)
             case .inventorySettings(let editable):
@@ -416,6 +418,14 @@ private extension DefaultProductFormTableViewModel {
         return ProductFormSection.SettingsRow.WarningViewModel(icon: icon, title: title)
     }
 
+    func variationAttributesRow(productVariation: EditableProductVariationModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.customizeImage
+        let title = Localization.variationAttributesTitle
+        let details = productVariation.name
+
+        return .init(icon: icon, title: title, details: details, isActionable: isEditable)
+    }
+
     // MARK: Product downloads only
 
     func downloadsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
@@ -560,6 +570,9 @@ private extension DefaultProductFormTableViewModel {
         static let variationStatusTitle =
             NSLocalizedString("Enabled",
                               comment: "Title of the status row on Product Variation main screen to enable/disable a variation")
+
+        // Variation attributes
+        static let variationAttributesTitle = NSLocalizedString("Attributes", comment: "Title of the attributes row on Product Variation main screen")
 
         // No price warning row
         static let noPriceWarningTitle =

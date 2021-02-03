@@ -64,7 +64,7 @@ private extension JetpackErrorViewModelTests {
     private enum Expectations {
         static let url = "https://woocommerce.com"
         static let image = UIImage.loginNoJetpackError
-        static let whatIsJetpack = NSLocalizedString("What is Jetpack",
+        static let whatIsJetpack = NSLocalizedString("What is Jetpack?",
                                                      comment: "Button linking to webview that explains what Jetpack is"
                                                         + "Presented when logging in with a site address that does not have a valid Jetpack installation")
         static let primaryButtonTitle = NSLocalizedString("See Instructions",

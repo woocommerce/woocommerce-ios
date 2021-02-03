@@ -8,6 +8,22 @@ import class AutomatticTracks.CrashLogging
 ///
 final class ProductVariationsViewController: UIViewController {
 
+    /// Empty state screen
+    ///
+    private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
+
+    /// Empty state screen configuration
+    ///
+    private lazy var emptyStateConfig: EmptyStateViewController.Config = {
+        let message = NSAttributedString(string: Localization.emptyStateTitle, attributes: [.font: EmptyStateViewController.Config.messageFont])
+        return .withButton(message: message,
+                           image: .emptyBoxImage,
+                           details: "",
+                           buttonTitle: Localization.emptyStateButtonTitle) { [weak self] in
+                            self?.navigateToAddAttributeViewController()
+                           }
+    }()
+
     @IBOutlet private weak var tableView: UITableView!
 
     /// Pull To Refresh Support.
@@ -74,6 +90,7 @@ final class ProductVariationsViewController: UIViewController {
         return stateCoordinator
     }()
 
+    private let product: Product
     private let siteID: Int64
     private let productID: Int64
     private let allAttributes: [ProductAttribute]
@@ -84,6 +101,7 @@ final class ProductVariationsViewController: UIViewController {
     private let isAddProductVariationsEnabled: Bool
 
     init(product: Product, formType: ProductFormType, isAddProductVariationsEnabled: Bool) {
+        self.product = product
         self.siteID = product.siteID
         self.productID = product.productID
         self.allAttributes = product.attributes
@@ -111,6 +129,10 @@ final class ProductVariationsViewController: UIViewController {
         updateTopBannerView()
 
         syncingCoordinator.synchronizeFirstPage()
+
+        if product.variations.isEmpty {
+            displayEmptyViewController()
+        }
     }
 
     override func viewDidLayoutSubviews() {
@@ -169,6 +191,29 @@ private extension ProductVariationsViewController {
     ///
     func registerTableViewCells() {
         tableView.register(ProductsTabProductTableViewCell.self)
+    }
+
+    /// Shows the EmptyStateViewController
+    ///
+    private func displayEmptyViewController() {
+        addChild(emptyStateViewController)
+
+        emptyStateViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(emptyStateViewController.view)
+
+        emptyStateViewController.view.pinSubviewToAllEdges(view)
+        emptyStateViewController.didMove(toParent: self)
+        emptyStateViewController.configure(emptyStateConfig)
+    }
+
+    func removeEmptyViewController() {
+        guard emptyStateViewController.parent == self else {
+            return
+        }
+
+        emptyStateViewController.willMove(toParent: nil)
+        emptyStateViewController.view.removeFromSuperview()
+        emptyStateViewController.removeFromParent()
     }
 }
 
@@ -319,6 +364,15 @@ extension ProductVariationsViewController: UITableViewDelegate {
     }
 }
 
+// MARK: Navigation
+private extension ProductVariationsViewController {
+    func navigateToAddAttributeViewController() {
+        let viewModel = AddAttributeViewModel(product: product)
+        let addAttributeViewController = AddAttributeViewController(viewModel: viewModel)
+        show(addAttributeViewController, sender: self)
+    }
+}
+
 private extension ProductVariationsViewController {
     @objc private func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.productVariationListPulledToRefresh)
@@ -362,25 +416,6 @@ private extension ProductVariationsViewController {
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
-
-    /// Displays the overlay when there are no results.
-    ///
-    func displayNoResultsOverlay() {
-        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = nil
-        overlayView.messageText = NSLocalizedString("No product variations yet",
-                                                    comment: "The text on the placeholder overlay when there are no product variations on the Products tab")
-        overlayView.actionVisible = false
-        overlayView.attach(to: view)
-    }
-
-    /// Removes all of the the OverlayMessageView instances in the view hierarchy.
-    ///
-    func removeAllOverlays() {
-        for subview in view.subviews where subview is OverlayMessageView {
-            subview.removeFromSuperview()
-        }
-    }
 }
 
 // MARK: - Sync'ing Helpers
@@ -422,7 +457,7 @@ private extension ProductVariationsViewController {
     func didEnter(state: PaginatedListViewControllerState) {
         switch state {
         case .noResultsPlaceholder:
-            displayNoResultsOverlay()
+            break
         case .syncing(let pageNumber):
             if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex {
                 displayPlaceholderProducts()
@@ -437,7 +472,7 @@ private extension ProductVariationsViewController {
     func didLeave(state: PaginatedListViewControllerState) {
         switch state {
         case .noResultsPlaceholder:
-            removeAllOverlays()
+            removeEmptyViewController()
         case .syncing:
             ensureFooterSpinnerIsStopped()
             removePlaceholderProducts()
@@ -489,12 +524,17 @@ extension ProductVariationsViewController {
     }
 }
 
-// MARK: - Nested Types
+// MARK: - Constants
 //
 private extension ProductVariationsViewController {
 
     enum Settings {
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
+    }
+
+    enum Localization {
+        static let emptyStateTitle = NSLocalizedString("Add your first variation", comment: "Title on the variations list screen when there are no variations")
+        static let emptyStateButtonTitle = NSLocalizedString("Add Variation", comment: "Title on add variation button when there are no variations")
     }
 }

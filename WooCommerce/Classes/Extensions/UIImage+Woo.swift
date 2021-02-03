@@ -140,6 +140,13 @@ extension UIImage {
         UIImage.gridicon(.creditCard)
     }
 
+    /// Customize Icon
+    ///
+    static var customizeImage: UIImage {
+        UIImage.gridicon(.customize)
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Delete Icon
     ///
     static var deleteImage: UIImage {
@@ -557,6 +564,12 @@ extension UIImage {
     ///
     static var errorImage: UIImage {
         return UIImage(imageLiteralResourceName: "woo-error").imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Empty box image
+    ///
+    static var emptyBoxImage: UIImage {
+        UIImage(imageLiteralResourceName: "empty-box")
     }
 
     /// Creates a bitmap image of the Woo "bubble" logo based on a vector image in our asset catalog.

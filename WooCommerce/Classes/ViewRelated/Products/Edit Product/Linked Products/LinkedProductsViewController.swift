@@ -176,7 +176,7 @@ private extension LinkedProductsViewController {
             return
         }
 
-        let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.titleScreenAddUpsellProducts,
+        let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.titleScreenAddCrossSellProducts,
                                                                                            trackingContext: "cross_sells")
 
         let viewController = LinkedProductsListSelectorViewController(product: product.product,

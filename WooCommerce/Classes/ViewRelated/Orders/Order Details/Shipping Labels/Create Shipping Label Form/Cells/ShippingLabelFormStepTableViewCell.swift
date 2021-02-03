@@ -34,6 +34,7 @@ final class ShippingLabelFormStepTableViewCell: UITableViewCell {
                    body: String?,
                    buttonTitle: String?,
                    onButtonTouchUp: (() -> Void)? = nil) {
+        self.icon.image = icon
         self.title.text = title
         self.body.text = body
         button.setTitle(buttonTitle, for: .normal)
@@ -72,18 +73,21 @@ private extension ShippingLabelFormStepTableViewCell {
             title.alpha = 0.3
             body.alpha = 0.3
             button.isHidden = true
+            accessoryType = .none
         case .enabled:
             icon.alpha = 0.6
             title.applyBodyStyle()
             title.alpha = 1.0
             body.alpha = 0.6
             button.isHidden = true
+            accessoryType = .disclosureIndicator
         case .continue:
             icon.alpha = 1.0
             title.applyBodyStyle()
             title.alpha = 1.0
             body.alpha = 0.6
             button.isHidden = false
+            accessoryType = .none
         }
     }
 }

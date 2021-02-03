@@ -211,10 +211,10 @@ class LoginPrologueViewController: LoginViewController {
 
         setButtonViewMargins(forWidth: view.frame.width)
 
-        buttonViewController.setupTopButton(title: loginTitle, isPrimary: true, accessibilityIdentifier: "Prologue Continue Button", onTap: loginTapCallback())
+        buttonViewController.setupTopButton(title: loginTitle, isPrimary: true, configureBodyFontForTitle: true, accessibilityIdentifier: "Prologue Continue Button", onTap: loginTapCallback())
 
         if configuration.enableUnifiedAuth {
-            buttonViewController.setupBottomButton(title: siteAddressTitle, isPrimary: false, accessibilityIdentifier: "Prologue Self Hosted Button", onTap: siteAddressTapCallback()) 
+            buttonViewController.setupBottomButton(title: siteAddressTitle, isPrimary: false, configureBodyFontForTitle: true, accessibilityIdentifier: "Prologue Self Hosted Button", onTap: siteAddressTapCallback())
         }
 
         showCancelIfNeccessary(buttonViewController)

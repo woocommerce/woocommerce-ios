@@ -184,7 +184,8 @@ extension WPStyleGuide {
             return NSAttributedString(attachment: googleAttachment)
         } else {
             // Create an attributed string that contains the Google icon + button text.
-            googleAttachment.bounds = CGRect(x: 0, y: (NUXButton.titleFont.capHeight - Constants.googleIconButtonSize) / 2,
+            let nuxButtonTitleFont = WPStyleGuide.mediumWeightFont(forStyle: .title3)
+            googleAttachment.bounds = CGRect(x: 0, y: (nuxButtonTitleFont.capHeight - Constants.googleIconButtonSize) / 2,
                                              width: Constants.googleIconButtonSize, height: Constants.googleIconButtonSize)
 
             let buttonString = NSMutableAttributedString(attachment: googleAttachment)

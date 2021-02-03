@@ -29,7 +29,7 @@ import WordPressKit
         return indicator
     }()
 
-    static let titleFont = WPStyleGuide.mediumWeightFont(forStyle: .title3)
+    var titleFont = WPStyleGuide.mediumWeightFont(forStyle: .title3)
     
     override open func layoutSubviews() {
         super.layoutSubviews()
@@ -75,6 +75,10 @@ import WordPressKit
 
     func didChangePreferredContentSize() {
         titleLabel?.adjustsFontForContentSizeCategory = true
+    }
+    
+    func customizeFont(_ font: UIFont) {
+        titleFont = font
     }
 
     /// Indicates if the current instance should be rendered with the "Primary" Style.
@@ -158,7 +162,7 @@ import WordPressKit
     /// Setup: TitleLabel
     ///
     private func configureTitleLabel() {
-        titleLabel?.font = NUXButton.titleFont
+        titleLabel?.font = self.titleFont
         titleLabel?.adjustsFontForContentSizeCategory = true
         titleLabel?.textAlignment = .center
     }

@@ -14,14 +14,16 @@ private struct NUXButtonConfig {
     let attributedTitle: NSAttributedString?
     let socialService: SocialServiceName?
     let isPrimary: Bool
+    let configureBodyFontForTitle: Bool?
     let accessibilityIdentifier: String?
     let callback: CallBackType?
 
-    init(title: String? = nil, attributedTitle: NSAttributedString? = nil, socialService: SocialServiceName? = nil, isPrimary: Bool, accessibilityIdentifier: String? = nil, callback: CallBackType?) {
+    init(title: String? = nil, attributedTitle: NSAttributedString? = nil, socialService: SocialServiceName? = nil, isPrimary: Bool, configureBodyFontForTitle: Bool? = nil, accessibilityIdentifier: String? = nil, callback: CallBackType?) {
         self.title = title
         self.attributedTitle = attributedTitle
         self.socialService = socialService
         self.isPrimary = isPrimary
+        self.configureBodyFontForTitle = configureBodyFontForTitle
         self.accessibilityIdentifier = accessibilityIdentifier
         self.callback = callback
     }
@@ -79,6 +81,10 @@ open class NUXButtonViewController: UIViewController {
 
             button.accessibilityIdentifier = buttonConfig.accessibilityIdentifier ?? accessibilityIdentifier(for: buttonConfig.title)
             button.isPrimary = buttonConfig.isPrimary
+            if buttonConfig.configureBodyFontForTitle == true {
+                button.customizeFont(WPStyleGuide.mediumWeightFont(forStyle: .body))
+            }
+
             button.isHidden = false
         } else {
             button?.isHidden = true
@@ -107,16 +113,16 @@ open class NUXButtonViewController: UIViewController {
         }
     }
 
-    func setupTopButton(title: String, isPrimary: Bool = false, accessibilityIdentifier: String? = nil, onTap callback: @escaping CallBackType) {
-        topButtonConfig = NUXButtonConfig(title: title, isPrimary: isPrimary, accessibilityIdentifier: accessibilityIdentifier, callback: callback)
+    func setupTopButton(title: String, isPrimary: Bool = false, configureBodyFontForTitle: Bool = false, accessibilityIdentifier: String? = nil, onTap callback: @escaping CallBackType) {
+        topButtonConfig = NUXButtonConfig(title: title, isPrimary: isPrimary, configureBodyFontForTitle: configureBodyFontForTitle, accessibilityIdentifier: accessibilityIdentifier, callback: callback)
     }
 
     func setupTopButtonFor(socialService: SocialServiceName, onTap callback: @escaping CallBackType) {
         topButtonConfig = buttonConfigFor(socialService: socialService, onTap: callback)
     }
     
-    func setupBottomButton(title: String, isPrimary: Bool = false, accessibilityIdentifier: String? = nil, onTap callback: @escaping CallBackType) {
-        bottomButtonConfig = NUXButtonConfig(title: title, isPrimary: isPrimary, accessibilityIdentifier: accessibilityIdentifier, callback: callback)
+    func setupBottomButton(title: String, isPrimary: Bool = false, configureBodyFontForTitle: Bool = false, accessibilityIdentifier: String? = nil, onTap callback: @escaping CallBackType) {
+        bottomButtonConfig = NUXButtonConfig(title: title, isPrimary: isPrimary, configureBodyFontForTitle: configureBodyFontForTitle, accessibilityIdentifier: accessibilityIdentifier, callback: callback)
     }
 
     func setupButtomButtonFor(socialService: SocialServiceName, onTap callback: @escaping CallBackType) {
@@ -135,7 +141,7 @@ open class NUXButtonViewController: UIViewController {
     func hideShadowView() {
         shadowView?.isHidden = true
     }
-    
+
     // MARK: - Helpers
 
     private func buttonConfigFor(socialService: SocialServiceName, onTap callback: @escaping CallBackType) -> NUXButtonConfig {

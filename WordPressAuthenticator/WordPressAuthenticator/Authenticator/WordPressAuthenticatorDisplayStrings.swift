@@ -166,7 +166,7 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                    comment: "The button title text for opening the user's preferred email app."),
             createAccountButtonTitle: NSLocalizedString("Create Account",
                                                         comment: "The button title text for creating a new account."),
-            continueWithWPButtonTitle: NSLocalizedString("Continue with WordPress.com",
+            continueWithWPButtonTitle: NSLocalizedString("Log in or sign up with WordPress.com",
                                                comment: "Button title. Takes the user to the login by email flow."),
             enterYourSiteAddressButtonTitle: NSLocalizedString("Enter your existing site address",
                                                                comment: "Button title. Takes the user to the login by site address flow."),

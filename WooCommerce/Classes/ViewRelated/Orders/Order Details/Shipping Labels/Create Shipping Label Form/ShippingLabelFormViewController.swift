@@ -164,7 +164,7 @@ extension ShippingLabelFormViewController {
         let dataState: DataState
         let displayMode: DisplayMode
 
-        var cellState: ShippingLabelFormStepTableViewCell.State {
+        fileprivate var cellState: ShippingLabelFormStepTableViewCell.State {
             if dataState == .validated && displayMode == .editable {
                 return .enabled
             }

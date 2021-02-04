@@ -185,8 +185,8 @@ private extension AddAttributeOptionsViewController {
             configureTextField(cell: cell)
         case (let .selectedTerms(name), let cell as BasicTableViewCell):
             configureOptionOffered(cell: cell, text: name, index: indexPath.row)
-        case (.existingTerms, let cell as BasicTableViewCell):
-            configureOption(cell: cell, text: "Work in Progress")
+        case (let .existingTerms(name), let cell as BasicTableViewCell):
+            configureOptionAdded(cell: cell, text: name)
         default:
             fatalError("Unsupported Cell")
             break
@@ -222,7 +222,7 @@ private extension AddAttributeOptionsViewController {
         cell.imageView?.isUserInteractionEnabled = true
     }
 
-    func configureOption(cell: BasicTableViewCell, text: String) {
+    func configureOptionAdded(cell: BasicTableViewCell, text: String) {
         cell.textLabel?.text = text
     }
 }

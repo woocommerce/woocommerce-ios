@@ -1,5 +1,7 @@
 import XCTest
+@testable import Networking
 @testable import WooCommerce
+@testable import Yosemite
 
 final class AddAttributeOptionsViewModelTests: XCTestCase {
 
@@ -133,5 +135,55 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
             .selectedTerms(name: "Option 2"),
             .selectedTerms(name: "Option 3")
         ])
+    }
+
+    func test_sync_options_of_existing_attribute_creates_optionsAdded_section() throws {
+        // Given
+        let storage = MockStorageManager()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: ProductAttributeTermAction.self) { action in
+            switch action {
+            case let .synchronizeProductAttributeTerms(_, _, onCompletion):
+                storage.insertSampleProductAttribute(readOnlyProductAttribute: self.sampleAttribute())
+                storage.insertSampleProductAttributeTerm(readOnlyTerm: self.sampleAttributeTerm(id: 1, name: "Option 1"), onAttributeWithID: 1234)
+                storage.insertSampleProductAttributeTerm(readOnlyTerm: self.sampleAttributeTerm(id: 2, name: "Option 2"), onAttributeWithID: 1234)
+                storage.insertSampleProductAttributeTerm(readOnlyTerm: self.sampleAttributeTerm(id: 3, name: "Option 3"), onAttributeWithID: 1234)
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = AddAttributeOptionsViewModel(source: .existing(attribute: sampleAttribute()), stores: stores, viewStorage: storage)
+
+        waitUntil {
+            return viewModel.sections.count == 2
+        }
+
+        // Then
+        let optionsAdded = try XCTUnwrap(viewModel.sections.last?.rows)
+        XCTAssertEqual(optionsAdded, [
+            .existingTerms(name: "Option 1"),
+            .existingTerms(name: "Option 2"),
+            .existingTerms(name: "Option 3")
+        ])
+    }
+}
+
+// MARK: Helpers
+private extension AddAttributeOptionsViewModelTests {
+    func sampleAttribute() -> ProductAttribute {
+        ProductAttribute(siteID: 123,
+                         attributeID: 1234,
+                         name: sampleAttributeName,
+                         position: 0,
+                         visible: true,
+                         variation: true,
+                         options: [])
+    }
+
+    func sampleAttributeTerm(id: Int64, name: String) -> ProductAttributeTerm {
+        ProductAttributeTerm(siteID: 123, termID: id, name: name, slug: name, count: 0)
     }
 }

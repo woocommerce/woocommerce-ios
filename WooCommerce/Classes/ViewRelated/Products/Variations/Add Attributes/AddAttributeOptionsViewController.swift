@@ -265,7 +265,7 @@ extension AddAttributeOptionsViewController {
     enum Row: Equatable {
         case termTextField
         case selectedTerms(name: String)
-        case existingTerms
+        case existingTerms(name: String)
 
         fileprivate var type: UITableViewCell.Type {
             switch self {

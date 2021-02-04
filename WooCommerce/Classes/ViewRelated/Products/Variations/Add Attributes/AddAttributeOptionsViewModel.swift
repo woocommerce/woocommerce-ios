@@ -63,7 +63,8 @@ final class AddAttributeOptionsViewModel {
         }
 
         let predicate = NSPredicate(format: "siteID == %lld && attribute.attributeID == %lld", attribute.siteID, attribute.attributeID)
-        let controller = ResultsController<StorageProductAttributeTerm>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+        let controller = ResultsController<StorageProductAttributeTerm>(storageManager: viewStorage, matching: predicate, sortedBy: [descriptor])
 
         controller.onDidChangeContent = { [weak self] in
             self?.state.optionsAdded = controller.fetchedObjects
@@ -142,7 +143,8 @@ private extension AddAttributeOptionsViewModel {
     func updateSections() {
         let textFieldSection = Section(header: nil, footer: Localization.footerTextField, rows: [.termTextField], allowsReorder: false)
         let offeredSection = createOfferedSection()
-        sections = [textFieldSection, offeredSection].compactMap { $0 }
+        let addedSection = createAddedSection()
+        sections = [textFieldSection, offeredSection, addedSection].compactMap { $0 }
     }
 
     func createOfferedSection() -> Section? {
@@ -155,6 +157,19 @@ private extension AddAttributeOptionsViewModel {
         }
 
         return Section(header: Localization.headerSelectedTerms, footer: nil, rows: rows, allowsReorder: true)
+    }
+
+    func createAddedSection() -> Section? {
+        // TODO: Handle attribute local options
+        guard state.optionsAdded.isNotEmpty else {
+            return nil
+        }
+
+        let rows = state.optionsAdded.map { term in
+            AddAttributeOptionsViewModel.Row.existingTerms(name: term.name)
+        }
+
+        return Section(header: Localization.headerExistingTerms, footer: nil, rows: rows, allowsReorder: false)
     }
 
     /// Synchronizes options(terms) for global attributes

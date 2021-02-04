@@ -1,7 +1,7 @@
 {
   "project_name": "woocommerce-ios",
   "branch": "trunk",
-  "pinned_hash": "d4d49f1c05e63554f6b9497e3a2cc7ca710e9947",
+  "pinned_hash": "2ed6e69e0620cd85fddd186ef4cc82290219a70e",
   "files_to_copy": [
     {
       "file": "shared/google_cloud_keys.json",
@@ -16,6 +16,11 @@
     {
       "file": "iOS/WCiOS/project.env",
       "destination": ".configure-files/project.env",
+      "encrypt": true
+    },
+    {
+      "file": "iOS/app_store_connect_fastlane_api_key.json",
+      "destination": ".configure-files/app_store_connect_fastlane_api_key.json",
       "encrypt": true
     }
   ],

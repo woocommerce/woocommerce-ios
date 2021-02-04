@@ -24,11 +24,9 @@ final class MappingModelTests: XCTestCase {
 
     func test_NSMappingModel_returns_the_appropriate_custom_mapping_models() throws {
         // Given
-        let customMappingModelNames = (mainBundle.urls(forResourcesWithExtension: "cdm", subdirectory: nil) ?? []).map {
-            $0.deletingPathExtension().lastPathComponent
-        }
+        let mappingModelNames = self.mappingModelNames()
         // Confidence-check. We have custom mapping models so this should not be empty.
-        assertNotEmpty(customMappingModelNames)
+        assertNotEmpty(mappingModelNames)
 
         let steps: [MigrationStep] = try {
             let firstModel = try XCTUnwrap(modelsInventory.model(for: try XCTUnwrap(modelsInventory.versions.first)))
@@ -60,12 +58,19 @@ final class MappingModelTests: XCTestCase {
                 If not that, the mapping model is probably not following the standard naming \
                 pattern that we use for mapping model files.
                 """
-            XCTAssertTrue(customMappingModelNames.contains(expectedMappingModelName), message)
+            XCTAssertTrue(mappingModelNames.contains(expectedMappingModelName), message)
         }
     }
 }
 
 private extension MappingModelTests {
+
+    func mappingModelNames() -> [String] {
+        (mainBundle.urls(forResourcesWithExtension: "cdm", subdirectory: nil) ?? []).map {
+            $0.deletingPathExtension().lastPathComponent
+        }
+    }
+
     /// Return the expected file name of the mapping model for the given migration step.
     ///
     /// If the step is for migrating from "Model 40" to "Model 41", we expected the mapping model

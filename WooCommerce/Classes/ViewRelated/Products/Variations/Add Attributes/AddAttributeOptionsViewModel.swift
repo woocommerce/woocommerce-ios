@@ -1,6 +1,8 @@
 import Foundation
 import Yosemite
 
+import protocol Storage.StorageManagerType
+
 /// Provides view data for Add Attributes, and handles init/UI/navigation actions needed.
 ///
 final class AddAttributeOptionsViewModel {
@@ -13,6 +15,10 @@ final class AddAttributeOptionsViewModel {
         /// Stores the options to be offered
         ///
         var optionsOffered: [String] = []
+
+        /// Stores options previously added
+        ///
+        var optionsAdded: [ProductAttributeTerm] = []
     }
 
     /// Title of the navigation bar
@@ -34,6 +40,26 @@ final class AddAttributeOptionsViewModel {
     private(set) var newAttributeName: String?
     private(set) var attribute: ProductAttribute?
 
+    /// When an attribute exists, returns an already configured `ResultsController`
+    /// When there isn't an existing attribute, returns a dummy/un-initialized `ResultsController`
+    ///
+    private lazy var optionsOfferedResultsController: ResultsController<StorageProductAttributeTerm> = {
+        // Return a dummy ResultsController if there isn't an attribute. It's a workaround to not deal with an optional results controller
+        guard let attribute = attribute else {
+            return ResultsController<StorageProductAttributeTerm>(storageManager: viewStorage, matching: nil, sortedBy: [])
+        }
+
+        let predicate = NSPredicate(format: "siteID == %lld && attribute.attributeID == %lld", attribute.siteID, attribute.attributeID)
+        let controller = ResultsController<StorageProductAttributeTerm>(storageManager: ServiceLocator.storageManager, matching: predicate, sortedBy: [])
+
+        controller.onDidChangeContent = { [weak self] in
+            self?.state.optionsAdded = controller.fetchedObjects
+        }
+
+        try? controller.performFetch()
+        return controller
+    }()
+
     /// Current `ViewModel` state.
     ///
     private var state: State = State() {
@@ -45,14 +71,26 @@ final class AddAttributeOptionsViewModel {
 
     private(set) var sections: [Section] = []
 
-    init(newAttribute: String?) {
+    /// Stores manager to dispatch sync terms(options) action.
+    ///
+    private let stores: StoresManager
+
+    /// Storage manager to read fetched terms(options).
+    ///
+    private let viewStorage: StorageManagerType
+
+    init(newAttribute: String?, stores: StoresManager = ServiceLocator.stores, viewStorage: StorageManagerType = ServiceLocator.storageManager) {
         self.newAttributeName = newAttribute
+        self.stores = stores
+        self.viewStorage = viewStorage
         updateSections()
     }
 
-    init(existingAttribute: ProductAttribute) {
+    init(existingAttribute: ProductAttribute, stores: StoresManager = ServiceLocator.stores, viewStorage: StorageManagerType = ServiceLocator.storageManager) {
         self.attribute = existingAttribute
-        updateSections()
+        self.stores = stores
+        self.viewStorage = viewStorage
+        synchronizeOptions()
     }
 }
 
@@ -87,8 +125,6 @@ extension AddAttributeOptionsViewModel {
 // MARK: - Synchronize Product Attribute terms
 //
 private extension AddAttributeOptionsViewModel {
-    // TODO: to be implemented - fetch of terms
-
     /// Updates data in sections
     ///
     func updateSections() {
@@ -107,6 +143,21 @@ private extension AddAttributeOptionsViewModel {
         }
 
         return Section(header: Localization.headerSelectedTerms, footer: nil, rows: rows, allowsReorder: true)
+    }
+
+    /// Synchronizes options(terms) for global attributes
+    ///
+    func synchronizeOptions() {
+        guard let attribute = attribute, attribute.isGlobal else {
+            return
+        }
+
+        let fetchTerms = ProductAttributeTermAction.synchronizeProductAttributeTerms(siteID: attribute.siteID,
+                                                                                     attributeID: attribute.attributeID) { [weak self] _ in
+            guard let self = self else { return }
+            self.state.optionsAdded = self.optionsOfferedResultsController.fetchedObjects
+        }
+        stores.dispatch(fetchTerms)
     }
 }
 

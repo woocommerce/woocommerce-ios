@@ -30,6 +30,17 @@ final class MappingModelTests: XCTestCase {
         super.tearDown()
     }
 
+    /// Tests that all initialization of `NSMappingModel(from:forSourceModel:destinationModel:)`
+    /// return the expected mapping models.
+    ///
+    /// You can reproduce the issue that this protects against by following these steps:
+    ///
+    /// 1. In `WooCommerceModelV39toV40`:
+    ///     a. Delete the `ProductAttributeToProductAttribute` entity mapping.
+    ///     b. In the `ProductToProduct` entity mapping, delete the `attributes` relationship mapping.
+    /// 2. Run this unit test. It will fail because migrating from 40 to 41 will return the
+    ///     (incorrect) **39 to 40** mapping model.
+    ///
     func test_NSMappingModel_returns_the_appropriate_mapping_models() throws {
         // Given
         let mappingModelNames = self.mappingModelNames()
@@ -44,29 +55,43 @@ final class MappingModelTests: XCTestCase {
         }()
         assertNotEmpty(steps)
 
-        // When and Then
         steps.forEach { step in
             let expectedMappingModelName = self.expectedMappingModelName(step: step)
 
-            guard NSMappingModel(from: [mainBundle],
-                                 forSourceModel: step.sourceModel,
-                                 destinationModel: step.targetModel) != nil else {
-                return
+            // When
+            let hasMappingModel = NSMappingModel(from: [mainBundle],
+                                                 forSourceModel: step.sourceModel,
+                                                 destinationModel: step.targetModel) != nil
+
+            // Then
+            if hasMappingModel {
+                // Confirm that this migration step should have had a mapping model.
+                let failureMessage = """
+                    Failed to find a \(expectedMappingModelName).xcmappingmodel file in \
+                    the bundle.
+
+                    This can mean that NSMappingModel() returned an incorrect \
+                    mapping model to use for migrating from \(step.sourceVersion.name) to
+                    \(step.targetVersion.name). There's probably something wrong with how we \
+                    configured the mapping or the model.
+
+                    If not that, the mapping model is probably not following the standard naming \
+                    pattern that we use for mapping model files.
+                    """
+                XCTAssertTrue(mappingModelNames.contains(expectedMappingModelName), failureMessage)
+            } else {
+                // Confirm if there should have been a mapping model for this migration step.
+                let failureMessage = """
+                    Unexpectedly found a \(expectedMappingModelName).xcmappingmodel file in \
+                    the bundle.
+
+                    This can mean that we defined a mapping model file for migrating from
+                    \(step.sourceVersion.name) to \(step.targetVersion.name) but NSMappingModel()
+                    did not return that model. There's probably something wrong with how we \
+                    configured the mapping or the model.
+                    """
+                XCTAssertFalse(mappingModelNames.contains(expectedMappingModelName), failureMessage)
             }
-
-            let failureMessage = """
-                Failed to find a \(expectedMappingModelName).xcmappingmodel file in \
-                the bundle.
-
-                This can mean that NSMappingModel() returned an incorrect \
-                mapping model to use for migrating from \(step.sourceVersion.name) to
-                \(step.targetVersion.name). There's probably something wrong with how we \
-                configured the mapping or the model.
-
-                If not that, the mapping model is probably not following the standard naming \
-                pattern that we use for mapping model files.
-                """
-            XCTAssertTrue(mappingModelNames.contains(expectedMappingModelName), failureMessage)
         }
     }
 

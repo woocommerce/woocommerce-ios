@@ -6,6 +6,12 @@ public func assertEmpty<T: Collection>(_ collection: T, file: StaticString = #fi
     XCTAssertTrue(collection.isEmpty, "Expected collection \(collection) to be empty.", file: file, line: line)
 }
 
+/// Asserts that a collection is not empty.
+///
+public func assertNotEmpty<T: Collection>(_ collection: T, file: StaticString = #file, line: UInt = #line) {
+    XCTAssertFalse(collection.isEmpty, "Expected collection \(collection) to not be empty.", file: file, line: line)
+}
+
 /// Asserts that `lhs` has the same pointer address as `rhs`.
 ///
 public func assertThat(_ lhs: AnyObject?, isIdenticalTo rhs: AnyObject?, file: StaticString = #file, line: UInt = #line) {

@@ -96,7 +96,7 @@ private extension ShippingLabelFormViewController {
         case let cell as ShippingLabelFormStepTableViewCell where row.type == .paymentMethod:
             configurePaymentMethod(cell: cell, row: row)
         default:
-            fatalError()
+            fatalError("Cannot instantiate \(cell) with row \(row.type)")
             break
         }
     }

@@ -70,6 +70,19 @@ public struct ProductAttribute: Decodable {
     }
 }
 
+public extension ProductAttribute {
+    /// Returns weather an attribute belongs to a product(local) or to the store(global)
+    ///
+    var isLocal: Bool {
+        attributeID == 0 // Currently the only way to know if an attribute is local is if it has a zero ID
+    }
+
+    /// Returns weather an attribute belongs to a product(local) or to the store(global)
+    ///
+    var isGlobal: Bool {
+        !isLocal
+    }
+}
 
 /// Defines all the ProductAttribute CodingKeys.
 ///

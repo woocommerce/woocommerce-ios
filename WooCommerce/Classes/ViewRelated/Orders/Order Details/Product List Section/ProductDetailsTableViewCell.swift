@@ -54,7 +54,7 @@ private extension ProductDetailsTableViewCell {
     }
 
     func configureProductImageView() {
-        productImageView.image = UIImage.productPlaceholderImage.imageWithTintColor(UIColor.listIcon)
+        productImageView.image = UIImage.productPlaceholderImage
         productImageView.tintColor = .listSmallIcon
         productImageView.contentMode = .scaleAspectFill
         productImageView.clipsToBounds = true

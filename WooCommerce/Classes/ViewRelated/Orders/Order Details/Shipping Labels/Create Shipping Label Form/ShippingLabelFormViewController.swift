@@ -102,8 +102,7 @@ private extension ShippingLabelFormViewController {
     }
 
     func configureShipFrom(cell: ShippingLabelFormStepTableViewCell, row: Row) {
-        let state = row.cellState
-        cell.configure(state: state,
+        cell.configure(state: row.cellState,
                        icon: .shippingImage,
                        title: Localization.shipFromCellTitle,
                        body: "To be implemented",
@@ -113,8 +112,7 @@ private extension ShippingLabelFormViewController {
     }
 
     func configureShipTo(cell: ShippingLabelFormStepTableViewCell, row: Row) {
-        let state = row.cellState
-        cell.configure(state: state,
+        cell.configure(state: row.cellState,
                        icon: .houseImage,
                        title: Localization.shipToCellTitle,
                        body: "To be implemented",
@@ -124,8 +122,7 @@ private extension ShippingLabelFormViewController {
     }
 
     func configurePackageDetails(cell: ShippingLabelFormStepTableViewCell, row: Row) {
-        let state = row.cellState
-        cell.configure(state: state,
+        cell.configure(state: row.cellState,
                        icon: .productPlaceholderImage,
                        title: Localization.packageDetailsCellTitle,
                        body: "To be implemented",
@@ -135,8 +132,7 @@ private extension ShippingLabelFormViewController {
     }
 
     func configureShippingCarrierAndRates(cell: ShippingLabelFormStepTableViewCell, row: Row) {
-        let state = row.cellState
-        cell.configure(state: state,
+        cell.configure(state: row.cellState,
                        icon: .priceImage,
                        title: Localization.shippingCarrierAndRatesCellTitle,
                        body: "To be implemented",
@@ -146,8 +142,7 @@ private extension ShippingLabelFormViewController {
     }
 
     func configurePaymentMethod(cell: ShippingLabelFormStepTableViewCell, row: Row) {
-        let state = row.cellState
-        cell.configure(state: state,
+        cell.configure(state: row.cellState,
                        icon: .creditCardImage,
                        title: Localization.paymentMethodCellTitle,
                        body: "To be implemented",

@@ -36,8 +36,7 @@ private extension AttributePickerViewController {
     func configureNavigationBar() {
         title = Localization.titleView
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.doneNavBarButton,
-                                                           style: .plain,
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
                                                            target: self,
                                                            action: #selector(doneButtonPressed))
     }
@@ -144,7 +143,6 @@ extension AttributePickerViewController {
 private extension AttributePickerViewController {
     enum Localization {
         static let titleView = NSLocalizedString("Attributes", comment: "Edit Product Attributes screen navigation title")
-        static let doneNavBarButton = NSLocalizedString("Done", comment: "Done nav bar button title in Edit Product Attributes screen")
         static let headerAttributes = NSLocalizedString("Options", comment: "Header of attributes section in Edit Product Attributes screen")
         static let anyAttributeOption = NSLocalizedString("Any", comment: "Product variation attribute description where the attribute is set to any value.")
     }

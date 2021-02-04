@@ -7,10 +7,14 @@ final class AttributePickerViewController: UIViewController {
 
     private let variationModel: EditableProductVariationModel
 
+    typealias Completion = (_ attributes: [ProductVariationAttribute]) -> Void
+    private let onCompletion: Completion
+
     /// Init
     ///
-    init(variationModel: EditableProductVariationModel) {
+    init(variationModel: EditableProductVariationModel, onCompletion: @escaping Completion) {
         self.variationModel = variationModel
+        self.onCompletion = onCompletion
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -132,7 +136,7 @@ private extension AttributePickerViewController {
 extension AttributePickerViewController {
 
     @objc private func doneButtonPressed() {
-        // TODO-3518: Save updated attributes
+        onCompletion(variationModel.productVariation.attributes)
     }
 
     private func presentAttributeOptions(for existingAttribute: ProductAttribute) {

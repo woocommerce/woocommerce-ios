@@ -1263,8 +1263,26 @@ private extension ProductFormViewController {
             return
         }
 
-        let attributePickerViewController = AttributePickerViewController(variationModel: productVariationModel)
+        let attributePickerViewController = AttributePickerViewController(variationModel: productVariationModel) { [weak self] (attributes) in
+            self?.onEditVariationAttributesCompletion(attributes: attributes)
+        }
         show(attributePickerViewController, sender: self)
+    }
+
+    func onEditVariationAttributesCompletion(attributes: [ProductVariationAttribute]) {
+        guard let productVariation = product as? EditableProductVariationModel else {
+            return
+        }
+
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+
+        let hasChangedData = attributes != productVariation.productVariation.attributes
+        guard hasChangedData else {
+            return
+        }
+        viewModel.updateVariationAttributes(attributes)
     }
 }
 

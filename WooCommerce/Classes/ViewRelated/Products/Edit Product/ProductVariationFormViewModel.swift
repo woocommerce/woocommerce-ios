@@ -229,6 +229,12 @@ extension ProductVariationFormViewModel {
     func updateLinkedProducts(upsellIDs: [Int64], crossSellIDs: [Int64]) {
         // no-op
     }
+
+    func updateVariationAttributes(_ attributes: [ProductVariationAttribute]) {
+        productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(attributes: attributes),
+                                                         allAttributes: allAttributes,
+                                                         parentProductSKU: parentProductSKU)
+    }
 }
 
 // MARK: Remote actions

@@ -9,6 +9,13 @@ final class AddAttributeOptionsViewModel {
     typealias Section = AddAttributeOptionsViewController.Section
     typealias Row = AddAttributeOptionsViewController.Row
 
+    /// Enum to represents the original invocation source of this view model
+    ///
+    enum Source {
+        case new(name: String)
+        case existing(attribute: ProductAttribute)
+    }
+
     /// Defines the necessary state to produce the ViewModel's outputs.
     ///
     private struct State {
@@ -24,7 +31,12 @@ final class AddAttributeOptionsViewModel {
     /// Title of the navigation bar
     ///
     var titleView: String? {
-        newAttributeName ?? attribute?.name
+        switch source {
+        case .new(let name):
+            return name
+        case .existing(let attribute):
+            return attribute.name
+        }
     }
 
     /// Defines next button visibility
@@ -37,15 +49,16 @@ final class AddAttributeOptionsViewModel {
     ///
     var onChange: (() -> (Void))?
 
-    private(set) var newAttributeName: String?
-    private(set) var attribute: ProductAttribute?
+    /// Main attribute dependency.
+    ///
+    private let source: Source
 
     /// When an attribute exists, returns an already configured `ResultsController`
     /// When there isn't an existing attribute, returns a dummy/un-initialized `ResultsController`
     ///
     private lazy var optionsOfferedResultsController: ResultsController<StorageProductAttributeTerm> = {
-        // Return a dummy ResultsController if there isn't an attribute. It's a workaround to not deal with an optional results controller
-        guard let attribute = attribute else {
+        guard case let .existing(attribute) = source, attribute.isGlobal else {
+            // Return a dummy ResultsController if there isn't an existing attribute. It's a workaround to not deal with an optional ResultsController.
             return ResultsController<StorageProductAttributeTerm>(storageManager: viewStorage, matching: nil, sortedBy: [])
         }
 
@@ -79,17 +92,11 @@ final class AddAttributeOptionsViewModel {
     ///
     private let viewStorage: StorageManagerType
 
-    init(newAttribute: String?, stores: StoresManager = ServiceLocator.stores, viewStorage: StorageManagerType = ServiceLocator.storageManager) {
-        self.newAttributeName = newAttribute
+    init(source: Source, stores: StoresManager = ServiceLocator.stores, viewStorage: StorageManagerType = ServiceLocator.storageManager) {
+        self.source = source
         self.stores = stores
         self.viewStorage = viewStorage
         updateSections()
-    }
-
-    init(existingAttribute: ProductAttribute, stores: StoresManager = ServiceLocator.stores, viewStorage: StorageManagerType = ServiceLocator.storageManager) {
-        self.attribute = existingAttribute
-        self.stores = stores
-        self.viewStorage = viewStorage
         synchronizeOptions()
     }
 }
@@ -148,7 +155,7 @@ private extension AddAttributeOptionsViewModel {
     /// Synchronizes options(terms) for global attributes
     ///
     func synchronizeOptions() {
-        guard let attribute = attribute, attribute.isGlobal else {
+        guard case let .existing(attribute) = source, attribute.isGlobal else {
             return
         }
 

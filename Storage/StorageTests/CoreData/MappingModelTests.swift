@@ -6,8 +6,13 @@ import CoreData
 
 private typealias MigrationStep = CoreDataIterativeMigrator.MigrationStep
 
+/// Test cases that protect us from incorrectly configuring mapping models.
+///
+/// This is an assisting unit test for the functionality of `CoreDataIterativeMigrator`.
+///
 final class MappingModelTests: XCTestCase {
 
+    /// The standard mapping model naming pattern that we follow.
     private let mappingModelNamePattern = #"^WooCommerceModelV(?<source>\d+)toV(?<target>\d+)$"#
 
     private var modelsInventory: ManagedObjectModelsInventory!
@@ -82,6 +87,8 @@ final class MappingModelTests: XCTestCase {
 private extension MappingModelTests {
 
     /// Returns all the mapping model file names (excluding extensions) from the bundle.
+    ///
+    /// - Returns: File names like `["WooCommerceModelV40toV41", "WooCommerceModelV21toV22"]`.
     func mappingModelNames() -> [String] {
         // The mapping models (.xcmappingmodel) have the "cdm" file extension when they are compiled.
         (mainBundle.urls(forResourcesWithExtension: "cdm", subdirectory: nil) ?? []).map {

@@ -161,7 +161,7 @@ extension ShippingLabelFormViewController {
 
     struct Row: Equatable {
         let type: RowType
-        let dataState: DateState
+        let dataState: DataState
         let displayMode: DisplayMode
 
         var cellState: ShippingLabelFormStepTableViewCell.State {
@@ -176,7 +176,7 @@ extension ShippingLabelFormViewController {
     }
 
     /// Each row has a data state
-    enum DateState {
+    enum DataState {
         /// the data are validated
         case validated
 

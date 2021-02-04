@@ -7,6 +7,9 @@ import CoreData
 private typealias MigrationStep = CoreDataIterativeMigrator.MigrationStep
 
 final class MappingModelTests: XCTestCase {
+
+    private let mappingModelNamePattern = #"^WooCommerceModelV(\d+)toV(\d+)$"#
+
     private var modelsInventory: ManagedObjectModelsInventory!
     private var mainBundle: Bundle!
 
@@ -61,11 +64,26 @@ final class MappingModelTests: XCTestCase {
             XCTAssertTrue(mappingModelNames.contains(expectedMappingModelName), message)
         }
     }
+
+    func test_all_mapping_model_files_follow_the_standard_naming_pattern() throws {
+        // Given
+        let mappingModelNames = self.mappingModelNames()
+
+        mappingModelNames.forEach { name in
+            // When
+            let range = name.range(of: mappingModelNamePattern, options: .regularExpression)
+
+            // Then
+            XCTAssertNotNil(range)
+        }
+    }
 }
 
 private extension MappingModelTests {
 
+    /// Returns all the mapping model file names (excluding extensions) from the bundle.
     func mappingModelNames() -> [String] {
+        // The mapping models (.xcmappingmodel) have the "cdm" file extension when they are compiled.
         (mainBundle.urls(forResourcesWithExtension: "cdm", subdirectory: nil) ?? []).map {
             $0.deletingPathExtension().lastPathComponent
         }

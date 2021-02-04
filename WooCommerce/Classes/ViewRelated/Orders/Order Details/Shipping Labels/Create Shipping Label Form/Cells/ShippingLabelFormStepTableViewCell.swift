@@ -8,7 +8,7 @@ final class ShippingLabelFormStepTableViewCell: UITableViewCell {
     @IBOutlet private weak var stackView: UIStackView!
     @IBOutlet private weak var bodyLabel: UILabel!
     @IBOutlet private weak var button: UIButton!
-    @IBOutlet private weak var separator: UIImageView!
+    @IBOutlet private weak var separator: UIView!
     @IBOutlet private weak var separatorLeadingConstraint: NSLayoutConstraint!
 
     private var onButtonTouchUp: (() -> Void)?

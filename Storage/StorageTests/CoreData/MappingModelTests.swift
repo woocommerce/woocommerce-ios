@@ -8,7 +8,7 @@ private typealias MigrationStep = CoreDataIterativeMigrator.MigrationStep
 
 final class MappingModelTests: XCTestCase {
 
-    private let mappingModelNamePattern = #"^WooCommerceModelV(\d+)toV(\d+)$"#
+    private let mappingModelNamePattern = #"^WooCommerceModelV(?<source>\d+)toV(?<target>\d+)$"#
 
     private var modelsInventory: ManagedObjectModelsInventory!
     private var mainBundle: Bundle!
@@ -65,7 +65,7 @@ final class MappingModelTests: XCTestCase {
         }
     }
 
-    func test_all_mapping_model_files_follow_the_standard_naming_pattern() throws {
+    func test_all_mapping_model_files_follow_the_standard_naming_pattern() {
         // Given
         let mappingModelNames = self.mappingModelNames()
 

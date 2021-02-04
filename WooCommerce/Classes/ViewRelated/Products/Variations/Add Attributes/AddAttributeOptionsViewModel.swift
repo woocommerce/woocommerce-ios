@@ -96,8 +96,13 @@ final class AddAttributeOptionsViewModel {
         self.source = source
         self.stores = stores
         self.viewStorage = viewStorage
-        updateSections()
-        synchronizeOptions()
+
+        switch source {
+        case .new:
+            updateSections()
+        case .existing:
+            synchronizeOptions()
+        }
     }
 }
 

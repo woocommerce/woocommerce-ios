@@ -13,6 +13,7 @@
         - [Test Methods](naming-conventions.md#test-methods)
     - [Choosing Between Structures and Classes](choosing-between-structs-and-classes.md)
     - [Creating Core Data Model Versions](creating-core-data-model-versions.md)
+    - [Localization](localization.md)
 - Design Patterns
     - [Copiable](copiable.md)
         - [Generating Copiable Methods](copiable.md#generating-copiable-methods)

@@ -1,16 +1,16 @@
 import UIKit
 import Yosemite
 
-final class CreateShippingLabelFormViewController: UIViewController {
+final class ShippingLabelFormViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
 
-    private let viewModel: CreateShippingLabelFormViewModel
+    private let viewModel: ShippingLabelFormViewModel
 
     /// Init
     ///
     init(order: Order) {
-        viewModel = CreateShippingLabelFormViewModel(order: order)
+        viewModel = ShippingLabelFormViewModel(order: order)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -29,7 +29,7 @@ final class CreateShippingLabelFormViewController: UIViewController {
 
 // MARK: - View Configuration
 //
-private extension CreateShippingLabelFormViewController {
+private extension ShippingLabelFormViewController {
 
     func configureNavigationBar() {
         title = Localization.titleView
@@ -59,7 +59,7 @@ private extension CreateShippingLabelFormViewController {
 
 // MARK: - UITableViewDataSource Conformance
 //
-extension CreateShippingLabelFormViewController: UITableViewDataSource {
+extension ShippingLabelFormViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return viewModel.sections.count
@@ -80,7 +80,7 @@ extension CreateShippingLabelFormViewController: UITableViewDataSource {
 
 // MARK: - Cell configuration
 //
-private extension CreateShippingLabelFormViewController {
+private extension ShippingLabelFormViewController {
     /// Cells currently configured in the order they appear on screen
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
@@ -158,7 +158,7 @@ private extension CreateShippingLabelFormViewController {
 
 }
 
-extension CreateShippingLabelFormViewController {
+extension ShippingLabelFormViewController {
 
     struct Section: Equatable {
         let rows: [Row]
@@ -219,7 +219,7 @@ extension CreateShippingLabelFormViewController {
     }
 }
 
-private extension CreateShippingLabelFormViewController {
+private extension ShippingLabelFormViewController {
     enum Localization {
         static let titleView = NSLocalizedString("Create Shipping Label", comment: "Create Shipping Label form navigation title")
         static let shipFromCellTitle = NSLocalizedString("Ship from", comment: "Title of the cell Ship from inside Create Shipping Label form")

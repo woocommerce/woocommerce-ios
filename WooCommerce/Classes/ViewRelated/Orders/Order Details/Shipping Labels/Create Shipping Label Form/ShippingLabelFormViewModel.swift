@@ -3,10 +3,10 @@ import Yosemite
 
 /// Provides view data for Create Shipping Label, and handles init/UI/navigation actions needed.
 ///
-final class CreateShippingLabelFormViewModel {
+final class ShippingLabelFormViewModel {
 
-    typealias Section = CreateShippingLabelFormViewController.Section
-    typealias Row = CreateShippingLabelFormViewController.Row
+    typealias Section = ShippingLabelFormViewController.Section
+    typealias Row = ShippingLabelFormViewController.Row
 
     private let order: Order
 

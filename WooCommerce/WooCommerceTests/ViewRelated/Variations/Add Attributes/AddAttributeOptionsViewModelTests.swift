@@ -169,6 +169,30 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
             .existingTerms(name: "Option 3")
         ])
     }
+
+    func test_sync_options_of_existing_attribute_should_display_and_hide_ghost_tableView() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: ProductAttributeTermAction.self) { action in
+            switch action {
+            case let .synchronizeProductAttributeTerms(_, _, onCompletion):
+                DispatchQueue.main.async {
+                    onCompletion(.success(()))
+                }
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = AddAttributeOptionsViewModel(source: .existing(attribute: sampleAttribute()), stores: stores)
+        XCTAssertTrue(viewModel.showGhostTableView)
+
+        // Then
+        waitUntil {
+            !viewModel.showGhostTableView
+        }
+    }
 }
 
 // MARK: Helpers

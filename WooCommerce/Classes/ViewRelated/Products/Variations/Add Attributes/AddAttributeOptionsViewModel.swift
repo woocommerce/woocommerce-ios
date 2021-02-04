@@ -26,6 +26,10 @@ final class AddAttributeOptionsViewModel {
         /// Stores options previously added
         ///
         var optionsAdded: [ProductAttributeTerm] = []
+
+        /// Indicates if the view model is syncing a global attribute options
+        ///
+        var isSyncing: Bool = false
     }
 
     /// Title of the navigation bar
@@ -43,6 +47,10 @@ final class AddAttributeOptionsViewModel {
     ///
     var isNextButtonEnabled: Bool {
         state.optionsOffered.isNotEmpty
+    }
+
+    var showGhostTableView: Bool {
+        state.isSyncing
     }
 
     /// Closure to notify the `ViewController` when the view model properties change.
@@ -183,7 +191,9 @@ private extension AddAttributeOptionsViewModel {
                                                                                      attributeID: attribute.attributeID) { [weak self] _ in
             guard let self = self else { return }
             self.state.optionsAdded = self.optionsOfferedResultsController.fetchedObjects
+            self.state.isSyncing = false
         }
+        state.isSyncing = true
         stores.dispatch(fetchTerms)
     }
 }

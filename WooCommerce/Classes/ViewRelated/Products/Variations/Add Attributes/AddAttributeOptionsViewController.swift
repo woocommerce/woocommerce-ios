@@ -1,9 +1,11 @@
 import UIKit
 import Yosemite
+import WordPressUI
 
 final class AddAttributeOptionsViewController: UIViewController {
 
     @IBOutlet weak private var tableView: UITableView!
+    private let ghostTableView = UITableView()
 
     private let viewModel: AddAttributeOptionsViewModel
 
@@ -29,6 +31,7 @@ final class AddAttributeOptionsViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
+        configureGhostTableView()
         registerTableViewHeaderSections()
         registerTableViewCells()
         startListeningToNotifications()
@@ -63,6 +66,15 @@ private extension AddAttributeOptionsViewController {
         tableView.isEditing = true
     }
 
+    func configureGhostTableView() {
+        view.addSubview(ghostTableView)
+        ghostTableView.isHidden = true
+        ghostTableView.translatesAutoresizingMaskIntoConstraints = false
+        ghostTableView.pinSubviewToAllEdges(view)
+        ghostTableView.backgroundColor = .listBackground
+        ghostTableView.removeLastCellSeparator()
+    }
+
     func registerTableViewHeaderSections() {
         let headerNib = UINib(nibName: TwoColumnSectionHeaderView.reuseIdentifier, bundle: nil)
         tableView.register(headerNib, forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
@@ -71,6 +83,7 @@ private extension AddAttributeOptionsViewController {
     func registerTableViewCells() {
         tableView.registerNib(for: BasicTableViewCell.self)
         tableView.registerNib(for: TextFieldTableViewCell.self)
+        ghostTableView.registerNib(for: WooBasicTableViewCell.self)
     }
 
     func observeViewModel() {
@@ -84,6 +97,12 @@ private extension AddAttributeOptionsViewController {
         title = viewModel.titleView
         navigationItem.rightBarButtonItem?.isEnabled = viewModel.isNextButtonEnabled
         tableView.reloadData()
+
+        if viewModel.showGhostTableView {
+            displayGhostTableView()
+        } else {
+            removeGhostTableView()
+        }
     }
 }
 
@@ -224,6 +243,27 @@ private extension AddAttributeOptionsViewController {
 
     func configureOptionAdded(cell: BasicTableViewCell, text: String) {
         cell.textLabel?.text = text
+    }
+}
+
+// MARK: - Placeholders
+//
+private extension AddAttributeOptionsViewController {
+    /// Renders ghost placeholder while terms are being synched.
+    ///
+    func displayGhostTableView() {
+        let options = GhostOptions(displaysSectionHeader: false,
+                                   reuseIdentifier: WooBasicTableViewCell.reuseIdentifier,
+                                   rowsPerSection: [3])
+        ghostTableView.displayGhostContent(options: options, style: .wooDefaultGhostStyle)
+        ghostTableView.isHidden = false
+    }
+
+    /// Removes ghost placeholder
+    ///
+    func removeGhostTableView() {
+        ghostTableView.removeGhostContent()
+        ghostTableView.isHidden = true
     }
 }
 

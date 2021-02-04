@@ -49,7 +49,7 @@ final class MappingModelTests: XCTestCase {
                 return
             }
 
-            let message = """
+            let failureMessage = """
                 Failed to find a \(expectedMappingModelName).xcmappingmodel file in \
                 the bundle.
 
@@ -61,7 +61,7 @@ final class MappingModelTests: XCTestCase {
                 If not that, the mapping model is probably not following the standard naming \
                 pattern that we use for mapping model files.
                 """
-            XCTAssertTrue(mappingModelNames.contains(expectedMappingModelName), message)
+            XCTAssertTrue(mappingModelNames.contains(expectedMappingModelName), failureMessage)
         }
     }
 

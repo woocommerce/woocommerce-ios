@@ -76,7 +76,7 @@
                     <constraint firstItem="a2G-dT-fut" firstAttribute="top" secondItem="5sn-qE-DiU" secondAttribute="bottom" constant="4" id="A5U-Fo-XRk"/>
                     <constraint firstItem="Gj6-sV-Ol2" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="LWK-os-LoN"/>
                     <constraint firstItem="5sn-qE-DiU" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="PAW-f5-JLa"/>
-                    <constraint firstAttribute="trailing" secondItem="eAt-5t-c91" secondAttribute="trailing" id="UNY-Hc-gko"/>
+                    <constraint firstAttribute="trailing" secondItem="eAt-5t-c91" secondAttribute="trailing" id="bpN-LU-eog"/>
                     <constraint firstAttribute="trailing" secondItem="Gj6-sV-Ol2" secondAttribute="trailing" constant="16" id="cZr-rr-dow"/>
                     <constraint firstItem="a2G-dT-fut" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="f6h-OM-jpK"/>
                     <constraint firstItem="Gj6-sV-Ol2" firstAttribute="leading" secondItem="5sn-qE-DiU" secondAttribute="trailing" constant="16" id="gB7-fM-exD"/>
@@ -87,13 +87,13 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="body" destination="xy8-tj-Ti2" id="E6u-1q-PI2"/>
+                <outlet property="bodyLabel" destination="xy8-tj-Ti2" id="8e8-bZ-hEz"/>
                 <outlet property="button" destination="cZb-NY-jcb" id="y3F-c6-sng"/>
-                <outlet property="icon" destination="5sn-qE-DiU" id="x8D-0w-ZsC"/>
+                <outlet property="iconView" destination="5sn-qE-DiU" id="9qT-Ip-5Ys"/>
                 <outlet property="separator" destination="eAt-5t-c91" id="zBY-Ei-Hf4"/>
                 <outlet property="separatorLeadingConstraint" destination="neU-uS-V2f" id="I1X-V0-wak"/>
                 <outlet property="stackView" destination="a2G-dT-fut" id="VDn-TJ-DAo"/>
-                <outlet property="title" destination="Gj6-sV-Ol2" id="L8I-rY-PQY"/>
+                <outlet property="titleLabel" destination="Gj6-sV-Ol2" id="nhg-SG-s9H"/>
             </connections>
             <point key="canvasLocation" x="205.79710144927537" y="150"/>
         </tableViewCell>

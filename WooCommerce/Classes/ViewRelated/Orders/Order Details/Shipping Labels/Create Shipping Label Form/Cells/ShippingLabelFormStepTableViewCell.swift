@@ -3,10 +3,10 @@ import UIKit
 
 final class ShippingLabelFormStepTableViewCell: UITableViewCell {
 
-    @IBOutlet private weak var icon: UIImageView!
-    @IBOutlet private weak var title: UILabel!
+    @IBOutlet private weak var iconView: UIImageView!
+    @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var stackView: UIStackView!
-    @IBOutlet private weak var body: UILabel!
+    @IBOutlet private weak var bodyLabel: UILabel!
     @IBOutlet private weak var button: UIButton!
     @IBOutlet private weak var separator: UIImageView!
     @IBOutlet private weak var separatorLeadingConstraint: NSLayoutConstraint!
@@ -37,9 +37,9 @@ final class ShippingLabelFormStepTableViewCell: UITableViewCell {
                    body: String?,
                    buttonTitle: String?,
                    onButtonTouchUp: (() -> Void)? = nil) {
-        self.icon.image = icon
-        self.title.text = title
-        self.body.text = body
+        iconView.image = icon
+        titleLabel.text = title
+        bodyLabel.text = body
         button.setTitle(buttonTitle, for: .normal)
         self.onButtonTouchUp = onButtonTouchUp
         configureCellBasedOnState(state)
@@ -55,15 +55,15 @@ private extension ShippingLabelFormStepTableViewCell {
 private extension ShippingLabelFormStepTableViewCell {
     func configureStyle() {
         applyDefaultBackgroundStyle()
-        icon.tintColor = .neutral(.shade100)
+        iconView.tintColor = .neutral(.shade100)
         selectionStyle = .none
         separator.backgroundColor = .systemColor(.separator)
     }
 
     func configureLabels() {
-        title.applyBodyStyle()
-        body.applySubheadlineStyle()
-        body.numberOfLines = 0
+        titleLabel.applyBodyStyle()
+        bodyLabel.applySubheadlineStyle()
+        bodyLabel.numberOfLines = 0
     }
 
     func configureButton() {
@@ -73,23 +73,23 @@ private extension ShippingLabelFormStepTableViewCell {
     func configureCellBasedOnState(_ state: State) {
         switch state {
         case .disabled:
-            icon.alpha = 0.3
-            title.alpha = 0.3
-            body.alpha = 0.3
+            iconView.alpha = 0.3
+            titleLabel.alpha = 0.3
+            bodyLabel.alpha = 0.3
             button.isHidden = true
             separatorLeadingConstraint.constant = Constants.separatorDefaultMargin
             accessoryType = .none
         case .enabled:
-            icon.alpha = 0.6
-            title.alpha = 1.0
-            body.alpha = 0.6
+            iconView.alpha = 0.6
+            titleLabel.alpha = 1.0
+            bodyLabel.alpha = 0.6
             button.isHidden = true
             separatorLeadingConstraint.constant = Constants.separatorDefaultMargin
             accessoryType = .disclosureIndicator
         case .continue:
-            icon.alpha = 1.0
-            title.alpha = 1.0
-            body.alpha = 0.6
+            iconView.alpha = 1.0
+            titleLabel.alpha = 1.0
+            bodyLabel.alpha = 0.6
             button.isHidden = false
             separatorLeadingConstraint.constant = Constants.separatorCustomMargin
             accessoryType = .none

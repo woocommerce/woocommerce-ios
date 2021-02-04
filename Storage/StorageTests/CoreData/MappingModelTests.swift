@@ -25,7 +25,7 @@ final class MappingModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_NSMappingModel_returns_the_appropriate_custom_mapping_models() throws {
+    func test_NSMappingModel_returns_the_appropriate_mapping_models() throws {
         // Given
         let mappingModelNames = self.mappingModelNames()
         // Confidence-check. We have custom mapping models so this should not be empty.

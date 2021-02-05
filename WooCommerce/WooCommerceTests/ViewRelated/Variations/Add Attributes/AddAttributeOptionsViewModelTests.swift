@@ -144,10 +144,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: ProductAttributeTermAction.self) { action in
             switch action {
             case let .synchronizeProductAttributeTerms(_, _, onCompletion):
-                storage.insertSampleProductAttribute(readOnlyProductAttribute: self.sampleAttribute())
-                storage.insertSampleProductAttributeTerm(readOnlyTerm: self.sampleAttributeTerm(id: 1, name: "Option 1"), onAttributeWithID: 1234)
-                storage.insertSampleProductAttributeTerm(readOnlyTerm: self.sampleAttributeTerm(id: 2, name: "Option 2"), onAttributeWithID: 1234)
-                storage.insertSampleProductAttributeTerm(readOnlyTerm: self.sampleAttributeTerm(id: 3, name: "Option 3"), onAttributeWithID: 1234)
+                self.insertSampleAttributeWithTerms(on: storage)
                 onCompletion(.success(()))
             default:
                 break
@@ -193,6 +190,35 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
             !viewModel.showGhostTableView
         }
     }
+
+    func test_select_addedOption_moves_it_to_offeredSection_and_removes_it_from_addedSection() throws {
+        // Given
+        let storage = MockStorageManager()
+        insertSampleAttributeWithTerms(on: storage)
+
+        let viewModel = AddAttributeOptionsViewModel(source: .existing(attribute: sampleAttribute()), viewStorage: storage)
+        waitUntil {
+            viewModel.sections.count == 2
+        }
+
+        // When
+        viewModel.selectExistingOption(atIndex: 1)
+        waitUntil {
+            viewModel.sections.count == 3
+        }
+
+        // Then
+        let optionsOffered = try XCTUnwrap(viewModel.sections[1].rows)
+        let optionsAdded = try XCTUnwrap(viewModel.sections[2].rows)
+
+        XCTAssertEqual(optionsOffered, [
+            .selectedOptions(name: "Option 2"),
+        ])
+        XCTAssertEqual(optionsAdded, [
+            .existingOptions(name: "Option 1"),
+            .existingOptions(name: "Option 3"),
+        ])
+    }
 }
 
 // MARK: Helpers
@@ -209,5 +235,12 @@ private extension AddAttributeOptionsViewModelTests {
 
     func sampleAttributeTerm(id: Int64, name: String) -> ProductAttributeTerm {
         ProductAttributeTerm(siteID: 123, termID: id, name: name, slug: name, count: 0)
+    }
+
+    func insertSampleAttributeWithTerms(on storage: MockStorageManager) {
+        storage.insertSampleProductAttribute(readOnlyProductAttribute: self.sampleAttribute())
+        storage.insertSampleProductAttributeTerm(readOnlyTerm: self.sampleAttributeTerm(id: 1, name: "Option 1"), onAttributeWithID: 1234)
+        storage.insertSampleProductAttributeTerm(readOnlyTerm: self.sampleAttributeTerm(id: 2, name: "Option 2"), onAttributeWithID: 1234)
+        storage.insertSampleProductAttributeTerm(readOnlyTerm: self.sampleAttributeTerm(id: 3, name: "Option 3"), onAttributeWithID: 1234)
     }
 }

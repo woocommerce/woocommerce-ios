@@ -141,6 +141,15 @@ extension AddAttributeOptionsViewModel {
         }
         state.optionsOffered.remove(at: index)
     }
+
+    /// Moves an option from at the specified index to the "Options Offered" section.
+    ///
+    func selectExistingOption(atIndex index: Int) {
+        guard let option = state.optionsAdded[safe: index] else {
+            return
+        }
+        addNewOption(name: option.name)
+    }
 }
 
 // MARK: - Synchronize Product Attribute Options
@@ -173,9 +182,14 @@ private extension AddAttributeOptionsViewModel {
             return nil
         }
 
-        let rows = state.optionsAdded.map { option in
-            AddAttributeOptionsViewModel.Row.existingOptions(name: option.name)
-        }
+        // Filter options that exists in `optionsOffered` for then converting them to `Row` types.
+        let rows = state.optionsAdded
+            .filter { option in
+                !state.optionsOffered.contains(option.name)
+            }
+            .map { option in
+                AddAttributeOptionsViewModel.Row.existingOptions(name: option.name)
+            }
 
         return Section(header: Localization.headerExistingOptions, footer: nil, rows: rows, allowsReorder: false)
     }

@@ -673,6 +673,7 @@
 		AEB73BF025CD4FDC00A8454A /* AttributeOptionPickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AEB73BEE25CD4FDC00A8454A /* AttributeOptionPickerViewController.xib */; };
 		AEB73C0625CD651F00A8454A /* AttributeOptionPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C0525CD651F00A8454A /* AttributeOptionPickerViewModel.swift */; };
 		AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */; };
+		AEB73C1725CD8E5800A8454A /* AttributePickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */; };
 		AEB73C2125CD974800A8454A /* AttributeOptionPickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C2025CD974800A8454A /* AttributeOptionPickerViewModelTests.swift */; };
 		AEDDDA0A25CA9C980077F9B2 /* AttributePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */; };
 		AEDDDA1A25CAB2170077F9B2 /* AttributePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AEDDDA1925CAB2170077F9B2 /* AttributePickerViewController.xib */; };
@@ -1791,6 +1792,7 @@
 		AEB73BEE25CD4FDC00A8454A /* AttributeOptionPickerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AttributeOptionPickerViewController.xib; sourceTree = "<group>"; };
 		AEB73C0525CD651F00A8454A /* AttributeOptionPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeOptionPickerViewModel.swift; sourceTree = "<group>"; };
 		AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModel.swift; sourceTree = "<group>"; };
+		AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModelTests.swift; sourceTree = "<group>"; };
 		AEB73C2025CD974800A8454A /* AttributeOptionPickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeOptionPickerViewModelTests.swift; sourceTree = "<group>"; };
 		AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewController.swift; sourceTree = "<group>"; };
 		AEDDDA1925CAB2170077F9B2 /* AttributePickerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AttributePickerViewController.xib; sourceTree = "<group>"; };
@@ -3901,6 +3903,7 @@
 		AEB73C1525CD8E3100A8454A /* Edit Product Variation */ = {
 			isa = PBXGroup;
 			children = (
+				AEB73C1625CD8E5800A8454A /* AttributePickerViewModelTests.swift */,
 				AEB73C2025CD974800A8454A /* AttributeOptionPickerViewModelTests.swift */,
 			);
 			path = "Edit Product Variation";
@@ -6461,6 +6464,7 @@
 				02BAB02124D0235F00F8B06E /* ProductPriceSettingsViewModel+ProductVariationTests.swift in Sources */,
 				02503C632538301400FD235D /* ProductVariationFormActionsFactory+ReadonlyVariationTests.swift in Sources */,
 				023EC2E024DA87460021DA91 /* ProductInventorySettingsViewModelTests.swift in Sources */,
+				AEB73C1725CD8E5800A8454A /* AttributePickerViewModelTests.swift in Sources */,
 				B56C721421B5BBC000E5E85B /* MockStoresManager.swift in Sources */,
 				26B119C024D0C69500FED5C7 /* SurveyViewControllerTests.swift in Sources */,
 				D8AB131E225DC25F002BB5D1 /* MockOrders.swift in Sources */,

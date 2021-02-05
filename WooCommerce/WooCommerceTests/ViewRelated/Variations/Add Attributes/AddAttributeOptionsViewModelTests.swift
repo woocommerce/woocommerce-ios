@@ -194,12 +194,18 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
     func test_select_addedOption_moves_it_to_offeredSection_and_removes_it_from_addedSection() throws {
         // Given
         let storage = MockStorageManager()
-        insertSampleAttributeWithTerms(on: storage)
-
-        let viewModel = AddAttributeOptionsViewModel(source: .existing(attribute: sampleAttribute()), viewStorage: storage)
-        waitUntil {
-            viewModel.sections.count == 2
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: ProductAttributeTermAction.self) { action in
+            switch action {
+            case let .synchronizeProductAttributeTerms(_, _, onCompletion):
+                self.insertSampleAttributeWithTerms(on: storage)
+                onCompletion(.success(()))
+            default:
+                break
+            }
         }
+
+        let viewModel = AddAttributeOptionsViewModel(source: .existing(attribute: sampleAttribute()), stores: stores, viewStorage: storage)
 
         // When
         viewModel.selectExistingOption(atIndex: 1)
@@ -224,12 +230,18 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
     func test_selecting_all_added_options_removes_its_section() throws {
         // Given
         let storage = MockStorageManager()
-        insertSampleAttributeWithTerms(on: storage)
-
-        let viewModel = AddAttributeOptionsViewModel(source: .existing(attribute: sampleAttribute()), viewStorage: storage)
-        waitUntil {
-            viewModel.sections.count == 2
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: ProductAttributeTermAction.self) { action in
+            switch action {
+            case let .synchronizeProductAttributeTerms(_, _, onCompletion):
+                self.insertSampleAttributeWithTerms(on: storage)
+                onCompletion(.success(()))
+            default:
+                break
+            }
         }
+
+        let viewModel = AddAttributeOptionsViewModel(source: .existing(attribute: sampleAttribute()), stores: stores, viewStorage: storage)
 
         let optionsAdded = try XCTUnwrap(viewModel.sections.last?.rows)
         XCTAssertEqual(optionsAdded, [

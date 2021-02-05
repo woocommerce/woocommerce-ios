@@ -349,11 +349,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                                                                                isAddProductVariationsEnabled: isAddProductVariationsEnabled)
                 show(variationsViewController, sender: self)
             case .attributes(_, let isEditable):
-                guard isEditable, let productVariationModel = product as? EditableProductVariationModel else {
+                guard isEditable else {
                     return
                 }
-                let attributePickerViewController = AttributePickerViewController(variationModel: productVariationModel)
-                show(attributePickerViewController, sender: self)
+                editVariationAttributes()
             case .status, .noPriceWarning:
                 break
             }
@@ -1253,6 +1252,37 @@ private extension ProductFormViewController {
             return
         }
         viewModel.updateDownloadableFiles(downloadableFiles: data.downloadableFiles, downloadLimit: data.downloadLimit, downloadExpiry: data.downloadExpiry)
+    }
+}
+
+// MARK: Action - Edit Product Variation Attributes
+//
+private extension ProductFormViewController {
+    func editVariationAttributes() {
+        guard let productVariationModel = product as? EditableProductVariationModel else {
+            return
+        }
+
+        let attributePickerViewController = AttributePickerViewController(variationModel: productVariationModel) { [weak self] (attributes) in
+            self?.onEditVariationAttributesCompletion(attributes: attributes)
+        }
+        show(attributePickerViewController, sender: self)
+    }
+
+    func onEditVariationAttributesCompletion(attributes: [ProductVariationAttribute]) {
+        guard let productVariation = product as? EditableProductVariationModel else {
+            return
+        }
+
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+
+        let hasChangedData = attributes != productVariation.productVariation.attributes
+        guard hasChangedData else {
+            return
+        }
+        viewModel.updateVariationAttributes(attributes)
     }
 }
 

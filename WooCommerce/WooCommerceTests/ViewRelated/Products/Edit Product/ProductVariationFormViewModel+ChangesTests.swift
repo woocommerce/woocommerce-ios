@@ -132,6 +132,21 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
+
+    func test_product_variation_has_unsaved_changes_from_editing_attributes() {
+        // Arrange
+        let productVariation = MockProductVariation().productVariation()
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
+
+        // Action
+        let attributes = [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")]
+        viewModel.updateVariationAttributes(attributes)
+
+        // Assert
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
 }
 
 // Helper in unit tests

@@ -297,6 +297,9 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable {
         try container.encode(stockStatus.rawValue, forKey: .stockStatusKey)
         try container.encode(stockQuantity, forKey: .stockQuantity)
         try container.encode(backordersKey, forKey: .backordersKey)
+
+        // Variation (Local) Attributes
+        try container.encode(attributes, forKey: .attributes)
     }
 }
 

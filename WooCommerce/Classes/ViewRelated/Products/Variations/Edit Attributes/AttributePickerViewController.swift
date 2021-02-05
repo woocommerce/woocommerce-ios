@@ -7,10 +7,14 @@ final class AttributePickerViewController: UIViewController {
 
     private let variationModel: EditableProductVariationModel
 
+    typealias Completion = (_ attributes: [ProductVariationAttribute]) -> Void
+    private let onCompletion: Completion
+
     /// Init
     ///
-    init(variationModel: EditableProductVariationModel) {
+    init(variationModel: EditableProductVariationModel, onCompletion: @escaping Completion) {
         self.variationModel = variationModel
+        self.onCompletion = onCompletion
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -36,8 +40,7 @@ private extension AttributePickerViewController {
     func configureNavigationBar() {
         title = Localization.titleView
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.doneNavBarButton,
-                                                           style: .plain,
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
                                                            target: self,
                                                            action: #selector(doneButtonPressed))
     }
@@ -133,7 +136,7 @@ private extension AttributePickerViewController {
 extension AttributePickerViewController {
 
     @objc private func doneButtonPressed() {
-        // TODO-3518: Save updated attributes
+        onCompletion(variationModel.productVariation.attributes)
     }
 
     private func presentAttributeOptions(for existingAttribute: ProductAttribute) {
@@ -144,7 +147,6 @@ extension AttributePickerViewController {
 private extension AttributePickerViewController {
     enum Localization {
         static let titleView = NSLocalizedString("Attributes", comment: "Edit Product Attributes screen navigation title")
-        static let doneNavBarButton = NSLocalizedString("Done", comment: "Done nav bar button title in Edit Product Attributes screen")
         static let headerAttributes = NSLocalizedString("Options", comment: "Header of attributes section in Edit Product Attributes screen")
         static let anyAttributeOption = NSLocalizedString("Any", comment: "Product variation attribute description where the attribute is set to any value.")
     }

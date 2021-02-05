@@ -220,6 +220,37 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
             .existingOptions(name: "Option 1"),
         ])
     }
+
+    func test_selecting_all_added_options_removes_its_section() throws {
+        // Given
+        let storage = MockStorageManager()
+        insertSampleAttributeWithTerms(on: storage)
+
+        let viewModel = AddAttributeOptionsViewModel(source: .existing(attribute: sampleAttribute()), viewStorage: storage)
+        waitUntil {
+            viewModel.sections.count == 2
+        }
+
+        let optionsAdded = try XCTUnwrap(viewModel.sections.last?.rows)
+        XCTAssertEqual(optionsAdded, [
+            .existingOptions(name: "Option 1"),
+            .existingOptions(name: "Option 2"),
+            .existingOptions(name: "Option 3"),
+        ])
+
+        // When
+        viewModel.selectExistingOption(atIndex: 0)
+        viewModel.selectExistingOption(atIndex: 0)
+        viewModel.selectExistingOption(atIndex: 0)
+
+        // Then
+        let optionsOffered = try XCTUnwrap(viewModel.sections.last?.rows)
+        XCTAssertEqual(optionsOffered, [
+            .selectedOptions(name: "Option 1"),
+            .selectedOptions(name: "Option 2"),
+            .selectedOptions(name: "Option 3"),
+        ])
+    }
 }
 
 // MARK: Helpers

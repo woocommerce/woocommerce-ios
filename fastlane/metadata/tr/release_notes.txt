@@ -1,5 +1,11 @@
-Ürünler: Tüm kullanıcılar artık bağlantılı ürünleri ekleyip düzenleyebilir, indirilebilir dosyalar ekleyip düzenleyebilir ve bir ürünü silebilir.
+WooCommerce, mobil uygulamasıyla ilgili en son güncellemeleri sunmaktan heyecan duyuyor. 
 
-Gönderi: Artık gönderi etiketi ayrıntılarını görüntüleyebilir, para iadesi isteyebilir ve AirPrint ile gönderi etiketini yeniden yazdırabilirsiniz.
+Yenileyin, Her Şey Hazır Olsun: Bir kullanıcının mağazanızın ürün listesine sıralama parametreleri ve/veya filtreler uyguladığını varsayalım. Büyük olasılıkla, uygulamaya döndüklerinde bu işlemi tekrarlamak istemezler. Sorun değil! Artık bir kullanıcı uygulamayı yeniden açtığında önceki ayarlarını görebilir.
 
-Giriş: Hataların daha iyi ele alınması da dahil olmak üzere giriş akışında çeşitli iyileştirmeler yapılmıştır.
+Birleştirme: Özel işlem tamamlama ekranı artık geçmişte kaldı; işlem tamamlama bilgileri artık ücretlerle ilgili bilgiler gibi sipariş ayrıntıları ekranında görüntüleniyor.
+
+Hatalar Giderildi: Birkaç sorun düzeltildi. İşte bir tanesi:
+
+- Fatura bilgileri işlem sayfaları artık iPad'lerde doğru şekilde görünüyor.
+- Ürün arama listelerindeki satırlarda artık çift ayırıcı yok.
+- "Devam" düğmelerindeki döndürücüler artık karanlık modda görünüyor.

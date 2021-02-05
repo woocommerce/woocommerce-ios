@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-12-24 10:54:05+0000 */
+/* Translation-Revision-Date: 2021-02-03 13:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -108,7 +108,7 @@
 "(No Title)" = "(제목 없음)";
 
 /* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details.";
+"**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "프린터 설정에서 **AirPrint를 사용하도록 설정되었는지 확인**하세요. 프린터 자체에서 이 설정을 구성해야 할 수 있습니다.\n\n자세한 내용은 프린터와 함께 제공된 설명서를 참조하세요.";
 
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "제품 1개 선택됨";
@@ -147,7 +147,7 @@
 "A verification code will only contain numbers." = "확인 코드에는 숫자만 사용할 수 있습니다.";
 
 /* Header of existing attribute options section in Add Attribute Options screen */
-"ADD OPTIONS" = "ADD OPTIONS";
+"ADD OPTIONS" = "옵션 추가";
 
 /* About this app (information page title) */
 "About" = "정보";
@@ -176,10 +176,10 @@
 "Add Downloadable File" = "다운로드 가능한 파일 추가";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "파일 추가하기";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "파일 추가하기";
+"Add File" = "Add File";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "사진 추가";
@@ -218,7 +218,7 @@
 "Add attribute" = "속성 추가";
 
 /* Footer of text field section in Add Attribute Options screen */
-"Add each option and press enter" = "Add each option and press enter";
+"Add each option and press enter" = "각 옵션 추가 및 Enter 키 누르기";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -376,9 +376,6 @@
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "표시줄 번호 %1$i, %2$@, ";
 
-/* Begin fulfill order button title */
-"Begin Fulfillment" = "처리 시작";
-
 /* Section header title for billing address in billing information */
 "Billing Address" = "청구 주소";
 
@@ -413,7 +410,7 @@
 "Can Not Request Link" = "링크를 요청할 수 없음";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
 "Cancel" = "취소";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -466,7 +463,7 @@
 "Check your email!" = "이메일을 확인하세요!";
 
 /* Navigation title on the shipping label paper size selector screen */
-"Choose Paper Size" = "Choose Paper Size";
+"Choose Paper Size" = "용지 크기 선택";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "기기에서 선택";
@@ -491,6 +488,9 @@
 
 /* Store Picker's Section Title: Displayed when there's a single pre-selected Store. */
 "Connected Store" = "연결된 스토어";
+
+/* Page title for the list of connected stores */
+"Connected Stores" = "연결된 스토어";
 
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "워드프레스닷컴에 접속 중입니다";
@@ -578,9 +578,6 @@
 /* The button title text for creating a new account. */
 "Create Account" = "계정 생성";
 
-/* The title of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
-"Create products from the app!" = "앱에서 제품을 만들어 보세요!";
-
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "제품 만들기";
 
@@ -606,11 +603,7 @@
 /* Customer info section title */
 "Customer" = "고객";
 
-/* Section title for the customer's billing and shipping address */
-"Customer Information" = "고객 정보";
-
-/* Customer note section title
-   Section title for a note from the customer */
+/* Customer note section title */
 "Customer Provided Note" = "고객이 남긴 메모";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
@@ -631,16 +624,12 @@
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "기본";
 
-/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen
-   Button title Delete in Downloadable File Options Action Sheet - Button title Delete in Edit Product More Options Action Sheet */
+/* Button title Delete in Downloadable File Options Action Sheet
+   Button title Delete in Edit Product More Options Action Sheet */
 "Delete" = "삭제";
 
-/* Delete a Shipment Tracking
-   Delete tracking button title */
+/* Delete tracking button title */
 "Delete Tracking" = "추적 삭제";
-
-/* Accessibility hint for Delete Shipment button in Order fulfillment screen */
-"Deletes a shipment's tracking information." = "배송 추적 정보를 삭제합니다.";
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "제품 설명";
@@ -653,7 +642,7 @@
 "Details" = "세부사항";
 
 /* Screen title: Details Order number. Parameters: %1$@ - order number */
-"Details Order #%1$@" = "Details Order #%1$@";
+"Details Order #%1$@" = "주문 #%1$@ 상세 정보";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "카탈로그에서 제품 위치를 결정합니다. 숫자 값이 낮을수록 아이템이 제품 목록에서 더 위에 옵니다. 음수 값도 사용할 수 있습니다";
@@ -703,7 +692,7 @@
 "Don’t know how to print from your phone?" = "휴대폰에서 인쇄하는 방법을 모르시나요?";
 
 /* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
-"Dotcom Error: [%1$@] %2$@" = "Dotcom Error: [%1$@] %2$@";
+"Dotcom Error: [%1$@] %2$@" = "닷컴 오류: [%1$@] %2$@";
 
 /* WordPress.com error thrown when the the request REST API url is invalid. */
 "Dotcom Invalid REST Route" = "REST 경로의 유효하지 않은 Dotcom";
@@ -741,22 +730,22 @@
 "Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Download expiration";
-
-/* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "다운로드 만료";
 
-/* Title of the cell in Product Download limit > Download limit */
-"Download limit" = "다운로드 한도";
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Download limit";
 
-/* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "Downloadable Files";
+/* Title of the cell in Product Download limit > Download limit */
+"Download limit" = "다운로드 한도";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "다운로드 가능한 파일";
+
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "Downloadable Files";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "Downloadable Product";
@@ -811,7 +800,7 @@
 "Enjoying the WooCommerce app?" = "WooCommerce 앱이 마음에 드시나요?";
 
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating.";
+"Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "**프린터 펌웨어가 최신 상태**인지 확인하세요. 프린터 설명서에서 업데이트에 대한 지침을 참조하세요.";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "다른 스토어 입력";
@@ -843,16 +832,16 @@
 "Enter the external URL to the product." = "제품의 외부 URL을 입력하세요.";
 
 /* Footer text for Download Expiration */
-"Enter the number of days before a download link expires, or leave blank if never it expires" = "다운로드 링크가 만료될 때까지의 일 수를 입력하거나 만료되지 않을 경우 비워 둡니다.";
-
-/* Footer text for Download Expiration */
 "Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
 
-/* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "파일을 다운로드할 수 있는 시간을 입력하거나 무제한으로 다운로드할 수 있도록 비워 둡니다.";
+/* Footer text for Download Expiration */
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "다운로드 링크가 만료될 때까지의 일 수를 입력하거나 만료되지 않을 경우 비워 둡니다.";
 
 /* Footer text for Downloadable Limit */
 "Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
+
+/* Footer text for Downloadable Limit */
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "파일을 다운로드할 수 있는 시간을 입력하거나 무제한으로 다운로드할 수 있도록 비워 둡니다.";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "워드프레스닷컴 계정에 대한 비밀번호를 입력합니다.";
@@ -877,7 +866,7 @@
 "Enter your password instead." = "비밀번호를 입력하세요.";
 
 /* Alert title when there is an error requesting shipping label document for reprinting */
-"Error previewing shipping label" = "Error previewing shipping label";
+"Error previewing shipping label" = "배송 레이블을 미리 보는 중 오류 발생";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -895,6 +884,9 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "REST API에 요청을 일련화할 수 없습니다.";
 
+/* Content of error presented when undo of Mark Order Completed failed. It reads: Failed to undo fulfillment of order #{order number}. Parameters: %1$d - order number */
+"Failed to undo fulfillment of order #%1$d" = "주문 #%1$d 처리 실행 취소 실패";
+
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
 
@@ -903,6 +895,9 @@
 
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "피드백을 보냈습니다!";
+
+/* Fees label for payment view */
+"Fees" = "수수료";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -914,11 +909,11 @@
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
-"File URL" = "파일 URL";
+"File URL" = "File URL";
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
-"File URL" = "File URL";
+"File URL" = "파일 URL";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "비밀번호 관리자로 채우기";
@@ -935,6 +930,9 @@
 
 /* Navigation bar title format for filtering a list of products with filters applied. */
 "Filters (%ld)" = "필터(%ld)";
+
+/* Button linking to webview explaining how to find your connected emailPresented when logging in with a store address that does not match the account entered */
+"Find your connected email" = "연결한 이메일 찾기";
 
 /* The hint button's title text to help users find their site address. */
 "Find your site address" = "사이트 주소 찾기";
@@ -956,9 +954,6 @@
 
 /* Title of the downloadable file bottom sheet action for adding file from device. */
 "From device" = "기기에서";
-
-/* Order Fulfillment Title. Parameters: %1$@ - order number */
-"Fulfill Order #%1$@" = "Fulfill Order #%1$@";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "스토어의 상품 실적에 대한 인사이트 확인";
@@ -1086,10 +1081,10 @@
 "If you already used the label in a package, printing and using it again is a violation of our terms of service" = "패키지에 이미 레이블을 사용한 경우 해당 레이블을 다시 인쇄하여 사용하면 서비스 약관을 위반하는 것입니다.";
 
 /* Step 4 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device.";
+"If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "휴대폰에서 인쇄 중 문제가 계속 발생하는 경우 레이블을 PDF로 저장하고 **이메일로 보내** 다른 기기에서 인쇄할 수 있습니다.";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
-"If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.";
+"If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Apple에서 계속하는데 아직 워드프레스닷컴 계정이 없는 경우, 계정을 만들면 _서비스 약관_에 동의하는 것입니다.";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "워드프레스닷컴 계정이 없는 경우 Apple 또는 Google을 계속 사용하면 계정이 만들어지고 _서비스 약관_에 동의하는 것으로 간주합니다.";
@@ -1159,6 +1154,9 @@
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "환불 발행 중...";
 
+/* Message explaining that the site entered and the acount logged into do not match. Reads like 'It looks like awebsite.com is connected to a different account */
+"It looks like %@ is connected to a different account." = "%@이(가) 다른 계정에 연결된 것 같습니다.";
+
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "It looks like this email isn't associated with a WordPress.com account." = "이 이메일은 워드프레스닷컴 계정과 연결되지 않은 것으로 보입니다.";
 
@@ -1170,9 +1168,6 @@
 
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "이탤릭체";
-
-/* The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
-"It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!" = "이제 이동 중에 Woo 앱에서 간단하고 그룹화된 \n외부 제품을 생성할 수 있습니다. 아직 준비되지 않으셨나요? 임시글로 저장하세요!";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack은 스토어를 최고의 모바일 환경을 제공하는 데 필요한 푸시 알림, 통계 등의 도구와 연결하는 무료 워드프레스 플러그인입니다.";
@@ -1187,7 +1182,7 @@
 "Label (4 x 6 in)" = "레이블(4 x 6in)";
 
 /* Navigation bar title of shipping label paper size options screen */
-"Label Format Options" = "Label Format Options";
+"Label Format Options" = "레이블 형식 옵션";
 
 /* Last 24 hours section header */
 "Last 24 hours" = "최근 24시간";
@@ -1260,8 +1255,8 @@
    Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log In With Another Account" = "다른 계정으로 로그인";
 
-/* Alert button title - confirms and logs out the user
-   Log out button title */
+/* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
+   Alert button title - confirms and logs out the user - Log out button title */
 "Log Out" = "로그아웃";
 
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
@@ -1314,10 +1309,10 @@
 "Manual Offsets" = "수동 오프셋";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "%1$@을(를) 통한 수동 환불";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "%1$@을(를) 통한 수동 환불";
 
 /* No comment provided by engineer. */
 "Manual Refund via Stripe" = "Stripe를 통한 수동 환불";
@@ -1408,7 +1403,10 @@
 "Need some help?" = "도움이 필요하세요?";
 
 /* The title for the net amount paid cell */
-"Net" = "최종 금액";
+"Net Payment" = "순 결제";
+
+/* The title of the top banner on the Products tab. */
+"New features available!" = "새 기능을 사용할 수 있습니다!";
 
 /* Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
@@ -1437,10 +1435,10 @@
 "No expiration" = "만료 없음";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "No files yet";
+"No files yet" = "아직 파일 없음";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "아직 파일 없음";
+"No files yet" = "No files yet";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "아직 이미지 없음";
@@ -1465,7 +1463,7 @@
 "No ratings" = "평가 없음";
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier'. Parameters: %1$@ - carrier name */
-"No results found for %1$@\nAdd a custom carrier" = "No results found for %1$@\nAdd a custom carrier";
+"No results found for %1$@\nAdd a custom carrier" = "%1$@에 대한 결과를 찾을 수 없음\n사용자 정의 배송업체 추가";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "이 기간에 해당하는 수익이 없습니다.";
@@ -1482,7 +1480,8 @@
 /* Placeholder of the Product Variations row on Product main screen for a variable product */
 "No variations yet" = "아직 옵션이 없습니다.";
 
-/* Display label for the product's tax status setting option */
+/* Display label for the order fee's tax status setting option
+   Display label for the product's tax status setting option */
 "None" = "없음";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
@@ -1499,7 +1498,7 @@
 "OK" = "확인";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
-"OPTIONS OFFERED" = "OPTIONS OFFERED";
+"OPTIONS OFFERED" = "제공된 옵션";
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "끔";
@@ -1545,7 +1544,7 @@
 "Opens a list of available statuses." = "사용 가능한 상태 목록을 엽니다.";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
-"Option name" = "Option name";
+"Option name" = "옵션 이름";
 
 /* Add Product Category. Placeholder of cell presenting the parent category.
    Placeholder of the cell text field in Product Inventory Settings > SKU */
@@ -1565,7 +1564,7 @@
 
 /* Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number
    Order number title. Parameters: %1$@ - order number */
-"Order #%1$@" = "Order #%1$@";
+"Order #%1$@" = "주문 #%1$@";
 
 /* Order notes section title */
 "Order Notes" = "주문 메모";
@@ -1609,7 +1608,7 @@
 "Package Details" = "패키지 상세 정보";
 
 /* The title for the customer payment cell */
-"Paid By Customer" = "고객 결제";
+"Paid" = "유료";
 
 /* Title of the paper size selector row for reprinting a shipping label */
 "Paper Size" = "용지 크기";
@@ -1711,10 +1710,10 @@
 "Please wait while we publish this product to your store" = "이 제품을 회원님의 스토어에 게시하는 동안 기다려주세요...";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
+"Please wait while we save this product to your store" = "이 제품을 스토어에 저장하는 동안 기다려주세요...";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "이 제품을 스토어에 저장하는 동안 기다려주세요...";
+"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
 
 /* Message of the in-progress UI while deleting the Product remotely */
 "Please wait while we update your store details" = "스토어 세부정보를 업데이트하는 동안 기다려 주세요.";
@@ -1739,13 +1738,13 @@
 "Print Shipping Label" = "배송 레이블 인쇄";
 
 /* Navigation bar title of shipping label printing instructions screen */
-"Print from your Phone" = "Print from your Phone";
+"Print from your Phone" = "휴대폰에서 인쇄";
 
 /* The title of the shipping labels top banner in order details */
-"Print shipping labels from your device!" = "Print shipping labels from your device!";
+"Print shipping labels from your device!" = "기기에서 배송 레이블을 인쇄하세요!";
 
 /* Title of in-progress modal when requesting shipping label document for reprinting */
-"Printing Label" = "Printing Label";
+"Printing Label" = "레이블 인쇄";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "캘리포니아 사용자를 위한 개인정보 공지";
@@ -1770,7 +1769,7 @@
 "Processing" = "처리 중";
 
 /* Description for Top Performers left column header
-   Product section title - Product section title if there is only one product. - Section header title for the product */
+   Product section title - Product section title if there is only one product. */
 "Product" = "상품";
 
 /* Edit Product External Link navigation title */
@@ -1849,8 +1848,7 @@
 /* Quantity abbreviation for section title */
 "QTY" = "수량";
 
-/* Quantity abbreviation for section title
-   Section header title - abbreviation for quantity */
+/* Quantity abbreviation for section title */
 "Qty" = "수량";
 
 /* The accessibility label for the quantity button when selecting an item to refund
@@ -1882,16 +1880,16 @@
 "Reason for Refund (Optional)" = "Reason for Refund (Optional)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for refunding order" = "Reason for refunding order";
-
-/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "주문 환불 사유";
 
-/* The title of the button to confirm the refund. */
-"Refund" = "Refund";
+/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
+"Reason for refunding order" = "Reason for refunding order";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "환불";
+
+/* The title of the button to confirm the refund. */
+"Refund" = "Refund";
 
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "#%@ 환불";
@@ -1907,10 +1905,10 @@
 "Refund Label (%1$@)" = "환불 레이블(%1$@)";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "배송비 환불";
+"Refund Shipping" = "Refund Shipping";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Refund Shipping";
+"Refund Shipping" = "배송비 환불";
 
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "통해 환불";
@@ -2040,10 +2038,10 @@
 "Save as draft" = "임시글로 저장";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
-"Saving your product..." = "Saving your product...";
+"Saving your product..." = "제품 저장...";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
-"Saving your product..." = "제품 저장...";
+"Saving your product..." = "Saving your product...";
 
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "SKU를 업데이트할 바코드 스캔";
@@ -2074,6 +2072,9 @@
 
 /* Display label for the product's catalog visibility */
 "Search results only" = "검색 결과만";
+
+/* Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
+"See Connected Stores" = "연결된 스토어 참조";
 
 /* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "See Instructions" = "지침 참조";
@@ -2243,6 +2244,9 @@
 /* Button title. Tapping begins our normal sign up process. */
 "Sign up with Email" = "이메일로 가입";
 
+/* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
+"Signed in as @%1$@" = "@%1$@(으)로 로그인됨";
+
 /* Display label for simple product type. */
 "Simple" = "심플";
 
@@ -2377,7 +2381,7 @@
 "Switch Store" = "스토어 전환";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. Parameters: %1$@ - store name */
-"Switched to %1$@. You will only receive notifications from this store." = "Switched to %1$@. You will only receive notifications from this store.";
+"Switched to %1$@. You will only receive notifications from this store." = "%1$@(으)로 전환되었습니다. 이 스토어에서만 알림을 받습니다.";
 
 /* Accessibility Identifier for the H1 Aztec Style */
 "Switches to the Heading 1 font size" = "제목 1 글꼴 크기로 전환";
@@ -2486,7 +2490,8 @@
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "세금 상태";
 
-/* Display label for the product's tax status setting option */
+/* Display label for the order fee's tax status setting option
+   Display label for the product's tax status setting option */
 "Taxable" = "과세 가능";
 
 /* Taxes label for payment view */
@@ -2744,19 +2749,19 @@
 "Unable To Connect" = "연결할 수 없음";
 
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
-"Unable to add note to order #%1$d" = "Unable to add note to order #%1$d";
+"Unable to add note to order #%1$d" = "%1$d번 주문에 메모를 추가할 수 없음";
 
 /* Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number}. Parameters: %1$d - order number */
-"Unable to add tracking to order #%1$d" = "Unable to add tracking to order #%1$d";
+"Unable to add tracking to order #%1$d" = "%1$d번 주문에 추적을 추가할 수 없음";
 
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}. Parameters: %1$d - order number */
-"Unable to change status of order #%1$d" = "Unable to change status of order #%1$d";
+"Unable to change status of order #%1$d" = "%1$d번 주문의 상태를 변경할 수 없음";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
-"Unable to delete tracking for order #%1$d" = "Unable to delete tracking for order #%1$d";
+"Unable to delete tracking for order #%1$d" = "%1$d번 주문에 대한 추적을 삭제할 수 없음";
 
-/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
-"Unable to fulfill order #%1$d" = "Unable to fulfill order #%1$d";
+/* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
+"Unable to fulfill order #%1$d" = "%1$d번 주문을 처리할 수 없음";
 
 /* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
 "Unable to load Shipment Carriers" = "운송업체를 로드할 수 없음";
@@ -2842,10 +2847,10 @@
 "Update product inventory and SKU" = "제품 인벤토리 및 SKU 업데이트";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "제품의 다운로드 가능한 파일 정보를 원격으로 업데이트";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "제품의 다운로드 가능한 파일 정보를 원격으로 업데이트";
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "이 앱을 계속 사용하려면 WooCommerce 3.5로 업데이트하세요.";
@@ -2909,7 +2914,7 @@
 "Verification code" = "확인 코드";
 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network.";
+"Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "프린터와 기기가 **같은 WiFi 네트워크**에 연결되었는지 확인\n\nWi-Fi 네트워크에 프린터를 연결하는 내용은 해당 프린터의 설명서를 참조하세요.";
 
 /* Displays the version of the App */
 "Version %@" = "버전 %@";
@@ -2978,7 +2983,7 @@
 "Watch your audience grow with in-depth analytics." = "심층 분석으로 방문자 수가 늘어나는 것을 지켜보세요.";
 
 /* The info of the shipping labels top banner in order details */
-"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here.";
+"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "기기에서 바로 더 쉽게 배송 레이블을 인쇄할 수 있도록 노력하고 있습니다. 지금은 WooCommerce 배송으로 스토어 관리자에서 이 주문의 레이블을 만든 경우 여기의 주문 상세 정보에서 레이블을 인쇄할 수 있습니다.";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "스토어 분석을 표시할 수 없습니다.";
@@ -3072,6 +3077,9 @@
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "워드프레스 버전이 너무 오래됐습니다. %1$@의 사이트는 워드프레스 %2$@을(를) 사용합니다. 최신 버전 또는 %3$@ 이상으로 업데이트하세요.";
 
+/* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
+"Wrong account?" = "계정이 잘못되었나요?";
+
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "야후 메일";
 
@@ -3086,6 +3094,9 @@
 
 /* Yesterday Section Header */
 "Yesterday" = "어제";
+
+/* The info of the top banner on the Products tab. */
+"You can now add downloadable files to a product and link upsell & cross-sell products. No longer want a product? Trash it!" = "이제 다운로드 가능한 파일을 제품에 추가하고 상향 판매 및 교차 판매 제품을 연결할 수 있습니다. 더는 제품을 원하지 않나요? 휴지통에 버리세요!";
 
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "패키지를 배송하는 데 사용되지 않은 배송 레이블은 환불을 요청할 수 있습니다.\n처리되는 데 14일 이상 걸립니다.";
@@ -3103,7 +3114,7 @@
 "Your notifications travel with you — see comments and likes as they happen." = "회원님이 어떤 기기를 사용하든 알림을 받을 수 있습니다. 댓글 및 좋아요가 표시되면 즉시 확인하세요.";
 
 /* Body text of alert helping users understand their site address */
-"Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Your site address appears in the bar at the top of the screen when you visit your site in Safari.";
+"Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Safari에서 사이트를 방문하면 화면 위쪽의 표시줄에 사이트 주소가 표시됩니다.";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[댓글]";
@@ -3133,7 +3144,8 @@
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "알 수 없는 url";
 
-/* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need... */
+/* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
+   Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */
 "your site" = "내 사이트";
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */

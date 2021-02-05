@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-01-22 08:54:04+0000 */
+/* Translation-Revision-Date: 2021-02-03 11:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -176,10 +176,10 @@
 "Add Downloadable File" = "ダウンロード可能なファイルを追加";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "ファイルを追加";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "ファイルを追加";
+"Add File" = "Add File";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "写真を追加";
@@ -376,9 +376,6 @@
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "バー番号%1$i、%2$@、";
 
-/* Begin fulfill order button title */
-"Begin Fulfillment" = "フルフィルメントを開始";
-
 /* Section header title for billing address in billing information */
 "Billing Address" = "請求先住所";
 
@@ -413,7 +410,7 @@
 "Can Not Request Link" = "リンクをリクエストできません";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
 "Cancel" = "キャンセル";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -491,6 +488,9 @@
 
 /* Store Picker's Section Title: Displayed when there's a single pre-selected Store. */
 "Connected Store" = "連携ストア";
+
+/* Page title for the list of connected stores */
+"Connected Stores" = "連携ストア";
 
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "WordPress.com に接続中";
@@ -578,9 +578,6 @@
 /* The button title text for creating a new account. */
 "Create Account" = "アカウントを作成";
 
-/* The title of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
-"Create products from the app!" = "アプリから商品を作成しましょう !";
-
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "商品を作成中";
 
@@ -606,11 +603,7 @@
 /* Customer info section title */
 "Customer" = "顧客";
 
-/* Section title for the customer's billing and shipping address */
-"Customer Information" = "顧客情報";
-
-/* Customer note section title
-   Section title for a note from the customer */
+/* Customer note section title */
 "Customer Provided Note" = "顧客提供メモ";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
@@ -631,16 +624,12 @@
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "デフォルト";
 
-/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen
-   Button title Delete in Downloadable File Options Action Sheet - Button title Delete in Edit Product More Options Action Sheet */
+/* Button title Delete in Downloadable File Options Action Sheet
+   Button title Delete in Edit Product More Options Action Sheet */
 "Delete" = "削除";
 
-/* Delete a Shipment Tracking
-   Delete tracking button title */
+/* Delete tracking button title */
 "Delete Tracking" = "追跡を削除";
-
-/* Accessibility hint for Delete Shipment button in Order fulfillment screen */
-"Deletes a shipment's tracking information." = "出荷の追跡情報を削除します。";
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "商品を説明";
@@ -741,22 +730,22 @@
 "Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Download expiration";
-
-/* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "ダウンロードの有効期限";
 
-/* Title of the cell in Product Download limit > Download limit */
-"Download limit" = "ダウンロード制限";
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Download limit";
 
-/* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "Downloadable Files";
+/* Title of the cell in Product Download limit > Download limit */
+"Download limit" = "ダウンロード制限";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "ダウンロード可能なファイル";
+
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "Downloadable Files";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "Downloadable Product";
@@ -843,16 +832,16 @@
 "Enter the external URL to the product." = "商品の外部 URL を入力してください。";
 
 /* Footer text for Download Expiration */
-"Enter the number of days before a download link expires, or leave blank if never it expires" = "ダウンロードリンクの期限が切れるまでの日数を入力するか、期限がない場合は空欄のままにします";
-
-/* Footer text for Download Expiration */
 "Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
 
-/* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "ファイルのダウンロード可能な回数を入力するか、ダウンロード回数に制限がない場合は空欄のままにします";
+/* Footer text for Download Expiration */
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "ダウンロードリンクの期限が切れるまでの日数を入力するか、期限がない場合は空欄のままにします";
 
 /* Footer text for Downloadable Limit */
 "Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
+
+/* Footer text for Downloadable Limit */
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "ファイルのダウンロード可能な回数を入力するか、ダウンロード回数に制限がない場合は空欄のままにします";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "WordPress.com アカウント用のパスワードを入力します。";
@@ -895,6 +884,9 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "REST API へのリクエストをシリアライズできませんでした。";
 
+/* Content of error presented when undo of Mark Order Completed failed. It reads: Failed to undo fulfillment of order #{order number}. Parameters: %1$d - order number */
+"Failed to undo fulfillment of order #%1$d" = "注文番号%1$dの履行を取り消せませんでした";
+
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
 
@@ -903,6 +895,9 @@
 
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "フィードバックを送信しました";
+
+/* Fees label for payment view */
+"Fees" = "手数料";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -914,11 +909,11 @@
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
-"File URL" = "ファイルの URL";
+"File URL" = "File URL";
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
-"File URL" = "File URL";
+"File URL" = "ファイルの URL";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "パスワードマネージャーで入力";
@@ -935,6 +930,9 @@
 
 /* Navigation bar title format for filtering a list of products with filters applied. */
 "Filters (%ld)" = "Filters (%ld)";
+
+/* Button linking to webview explaining how to find your connected emailPresented when logging in with a store address that does not match the account entered */
+"Find your connected email" = "連携済みのメールアドレスを検索";
 
 /* The hint button's title text to help users find their site address. */
 "Find your site address" = "サイトアドレスを検索";
@@ -956,9 +954,6 @@
 
 /* Title of the downloadable file bottom sheet action for adding file from device. */
 "From device" = "端末から";
-
-/* Order Fulfillment Title. Parameters: %1$@ - order number */
-"Fulfill Order #%1$@" = "注文番号 %1$@ を履行";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "ストアでの商品売り上げ状況の統計概要をチェック";
@@ -1159,6 +1154,9 @@
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "返金を実行しています...";
 
+/* Message explaining that the site entered and the acount logged into do not match. Reads like 'It looks like awebsite.com is connected to a different account */
+"It looks like %@ is connected to a different account." = "%@ が異なるアカウントに接続されているようです。";
+
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "It looks like this email isn't associated with a WordPress.com account." = " このメールは WordPress.com アカウントと関連付けられていないようです。";
 
@@ -1170,9 +1168,6 @@
 
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "斜体";
-
-/* The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
-"It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!" = "Woo アプリで、シンプルでグループ化された\n外部の商品を作成できるようになりました。ぜひインストールしてください。 下書きとして保存しましょう 。";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack は WordPress の無料のプラグインであり、ストアをモバイルでの最適な操作に必要なツール (プッシュ通知および統計を含む) と接続します。";
@@ -1260,8 +1255,8 @@
    Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log In With Another Account" = "別のアカウントでログイン";
 
-/* Alert button title - confirms and logs out the user
-   Log out button title */
+/* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
+   Alert button title - confirms and logs out the user - Log out button title */
 "Log Out" = "ログアウト";
 
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
@@ -1314,10 +1309,10 @@
 "Manual Offsets" = "マニュアルオフセット";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "%1$@ 経由で手動返金";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "%1$@ 経由で手動返金";
 
 /* No comment provided by engineer. */
 "Manual Refund via Stripe" = "Stripe 経由で手動返金";
@@ -1408,7 +1403,10 @@
 "Need some help?" = "ヘルプが必要ですか ?";
 
 /* The title for the net amount paid cell */
-"Net" = "純額";
+"Net Payment" = "支払額 (正味)";
+
+/* The title of the top banner on the Products tab. */
+"New features available!" = "新機能を利用できます。";
 
 /* Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
@@ -1437,10 +1435,10 @@
 "No expiration" = "有効期限はありません";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "No files yet";
+"No files yet" = "まだファイルはありません";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "まだファイルはありません";
+"No files yet" = "No files yet";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "画像がありません";
@@ -1482,7 +1480,8 @@
 /* Placeholder of the Product Variations row on Product main screen for a variable product */
 "No variations yet" = "バリエーションなし";
 
-/* Display label for the product's tax status setting option */
+/* Display label for the order fee's tax status setting option
+   Display label for the product's tax status setting option */
 "None" = "なし";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
@@ -1609,7 +1608,7 @@
 "Package Details" = "荷物の詳細";
 
 /* The title for the customer payment cell */
-"Paid By Customer" = "顧客から支払われた金額";
+"Paid" = "支払済み";
 
 /* Title of the paper size selector row for reprinting a shipping label */
 "Paper Size" = "用紙サイズ";
@@ -1711,10 +1710,10 @@
 "Please wait while we publish this product to your store" = "この製品をストアに公開するまでしばらくお待ちください";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
+"Please wait while we save this product to your store" = "ストアにこの商品を保存しています。しばらくお待ちください";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "ストアにこの商品を保存しています。しばらくお待ちください";
+"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
 
 /* Message of the in-progress UI while deleting the Product remotely */
 "Please wait while we update your store details" = "ストアの詳細を更新しています。しばらくお待ちください";
@@ -1770,7 +1769,7 @@
 "Processing" = "処理中";
 
 /* Description for Top Performers left column header
-   Product section title - Product section title if there is only one product. - Section header title for the product */
+   Product section title - Product section title if there is only one product. */
 "Product" = "商品";
 
 /* Edit Product External Link navigation title */
@@ -1849,8 +1848,7 @@
 /* Quantity abbreviation for section title */
 "QTY" = "数量";
 
-/* Quantity abbreviation for section title
-   Section header title - abbreviation for quantity */
+/* Quantity abbreviation for section title */
 "Qty" = "数量";
 
 /* The accessibility label for the quantity button when selecting an item to refund
@@ -1882,16 +1880,16 @@
 "Reason for Refund (Optional)" = "Reason for Refund (Optional)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for refunding order" = "Reason for refunding order";
-
-/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "﻿注文返金﻿の理由";
 
-/* The title of the button to confirm the refund. */
-"Refund" = "Refund";
+/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
+"Reason for refunding order" = "Reason for refunding order";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "払戻額";
+
+/* The title of the button to confirm the refund. */
+"Refund" = "Refund";
 
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "#%@ を返金";
@@ -1907,10 +1905,10 @@
 "Refund Label (%1$@)" = "返金ラベル (%1$@)";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "配送料を返金";
+"Refund Shipping" = "Refund Shipping";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Refund Shipping";
+"Refund Shipping" = "配送料を返金";
 
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "返金方法";
@@ -2040,10 +2038,10 @@
 "Save as draft" = "下書きとして保存";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
-"Saving your product..." = "Saving your product...";
+"Saving your product..." = "商品を保存しています...";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
-"Saving your product..." = "商品を保存しています...";
+"Saving your product..." = "Saving your product...";
 
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "バーコードをスキャンして SKU を更新";
@@ -2074,6 +2072,9 @@
 
 /* Display label for the product's catalog visibility */
 "Search results only" = "検索結果のみ";
+
+/* Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
+"See Connected Stores" = "連携ストアを表示";
 
 /* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "See Instructions" = "手順を参照してください";
@@ -2242,6 +2243,9 @@
 
 /* Button title. Tapping begins our normal sign up process. */
 "Sign up with Email" = "メールアドレスで登録";
+
+/* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
+"Signed in as @%1$@" = "@%1$@ にログイン中";
 
 /* Display label for simple product type. */
 "Simple" = "シンプル";
@@ -2486,7 +2490,8 @@
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "税状況";
 
-/* Display label for the product's tax status setting option */
+/* Display label for the order fee's tax status setting option
+   Display label for the product's tax status setting option */
 "Taxable" = "課税";
 
 /* Taxes label for payment view */
@@ -2755,7 +2760,7 @@
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "注文番号%1$dの追跡を削除できません";
 
-/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
+/* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "注文番号%1$dを受け付けられません";
 
 /* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
@@ -2842,10 +2847,10 @@
 "Update product inventory and SKU" = "商品在庫と SKU を更新";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "商品のダウンロード可能なファイルの情報をリモートで更新";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "商品のダウンロード可能なファイルの情報をリモートで更新";
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "WooCommerce 3.5に更新して引き続きアプリを使用";
@@ -3072,6 +3077,9 @@
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "WordPress バージョンが古すぎます。%1$@ のサイトは WordPress %2$@ を使用しています。最新バージョンか、最低でも %3$@ に更新することをおすすめします。";
 
+/* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
+"Wrong account?" = "アカウントが間違っていますか ?";
+
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
 
@@ -3086,6 +3094,9 @@
 
 /* Yesterday Section Header */
 "Yesterday" = "昨日";
+
+/* The info of the top banner on the Products tab. */
+"You can now add downloadable files to a product and link upsell & cross-sell products. No longer want a product? Trash it!" = "商品にダウンロード可能なファイルを追加して、アップセルとクロスセルの商品をリンクできるようになりました。 商品が不要になりましたか ? ゴミ箱に移動しましょう。";
 
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "荷物の配送に使用されていない配送ラベルの返金をリクエストできます。\n処理には少なくとも14日かかります。";
@@ -3133,7 +3144,8 @@
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "不明な URL";
 
-/* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need... */
+/* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
+   Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */
 "your site" = "あなたのサイト";
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */

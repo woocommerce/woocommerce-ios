@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-01-21 10:54:05+0000 */
+/* Translation-Revision-Date: 2021-02-03 16:54:38+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -176,10 +176,10 @@
 "Add Downloadable File" = "Aggiungi file scaricabile";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "Aggiungi file";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Aggiungi file";
+"Add File" = "Add File";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Aggiungi foto";
@@ -376,9 +376,6 @@
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "Numero della barra %1$i, %2$@, ";
 
-/* Begin fulfill order button title */
-"Begin Fulfillment" = "Inizia evasione";
-
 /* Section header title for billing address in billing information */
 "Billing Address" = "Indirizzo di fatturazione";
 
@@ -413,7 +410,7 @@
 "Can Not Request Link" = "Può non essere necessario il collegamento";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
 "Cancel" = "Annulla";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -491,6 +488,9 @@
 
 /* Store Picker's Section Title: Displayed when there's a single pre-selected Store. */
 "Connected Store" = "Negozio collegato";
+
+/* Page title for the list of connected stores */
+"Connected Stores" = "Negozi collegati";
 
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Connessione con WordPress.com in corso";
@@ -578,9 +578,6 @@
 /* The button title text for creating a new account. */
 "Create Account" = "Crea account";
 
-/* The title of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
-"Create products from the app!" = "Crea prodotti dall'app!";
-
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "Creazione di prodotti";
 
@@ -606,11 +603,7 @@
 /* Customer info section title */
 "Customer" = "Cliente";
 
-/* Section title for the customer's billing and shipping address */
-"Customer Information" = "Informazioni cliente";
-
-/* Customer note section title
-   Section title for a note from the customer */
+/* Customer note section title */
 "Customer Provided Note" = "Nota fornita dai clienti";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
@@ -631,16 +624,12 @@
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Predefinito";
 
-/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen
-   Button title Delete in Downloadable File Options Action Sheet - Button title Delete in Edit Product More Options Action Sheet */
+/* Button title Delete in Downloadable File Options Action Sheet
+   Button title Delete in Edit Product More Options Action Sheet */
 "Delete" = "Elimina";
 
-/* Delete a Shipment Tracking
-   Delete tracking button title */
+/* Delete tracking button title */
 "Delete Tracking" = "Elimina tracciabilità";
-
-/* Accessibility hint for Delete Shipment button in Order fulfillment screen */
-"Deletes a shipment's tracking information." = "Elimina le informazioni di tracciabilità di una spedizione.";
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "Descrivi il tuo prodotto";
@@ -741,22 +730,22 @@
 "Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Download expiration";
-
-/* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "Scadenza download";
 
-/* Title of the cell in Product Download limit > Download limit */
-"Download limit" = "Limite di download";
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Download limit";
 
-/* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "Downloadable Files";
+/* Title of the cell in Product Download limit > Download limit */
+"Download limit" = "Limite di download";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "File scaricabili";
+
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "Downloadable Files";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "Downloadable Product";
@@ -843,16 +832,16 @@
 "Enter the external URL to the product." = "Inserisci l'URL esterno al prodotto.";
 
 /* Footer text for Download Expiration */
-"Enter the number of days before a download link expires, or leave blank if never it expires" = "Inserisci il numero di giorni precedenti la scadenza del link di download o lascia vuoto se non si ha scadenza";
-
-/* Footer text for Download Expiration */
 "Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
 
-/* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Inserisci il numero di volte che il file può essere scaricato o lascia vuoto per download illimitati";
+/* Footer text for Download Expiration */
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "Inserisci il numero di giorni precedenti la scadenza del link di download o lascia vuoto se non si ha scadenza";
 
 /* Footer text for Downloadable Limit */
 "Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
+
+/* Footer text for Downloadable Limit */
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Inserisci il numero di volte che il file può essere scaricato o lascia vuoto per download illimitati";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Digita la password per il tuo account WordPress.com.";
@@ -895,6 +884,9 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Tentativo di richiesta di serializzazione all'API REST non riuscito.";
 
+/* Content of error presented when undo of Mark Order Completed failed. It reads: Failed to undo fulfillment of order #{order number}. Parameters: %1$d - order number */
+"Failed to undo fulfillment of order #%1$d" = "Non è stato possibile annullare l'evasione dell'ordine n. %1$d";
+
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
 
@@ -903,6 +895,9 @@
 
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "Feedback inviato.";
+
+/* Fees label for payment view */
+"Fees" = "Tariffe";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -914,11 +909,11 @@
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
-"File URL" = "URL del file";
+"File URL" = "File URL";
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
-"File URL" = "File URL";
+"File URL" = "URL del file";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "Inserisci il programma di gestione delle password";
@@ -935,6 +930,9 @@
 
 /* Navigation bar title format for filtering a list of products with filters applied. */
 "Filters (%ld)" = "Filtri (%ld)";
+
+/* Button linking to webview explaining how to find your connected emailPresented when logging in with a store address that does not match the account entered */
+"Find your connected email" = "Trova l'e-mail collegata";
 
 /* The hint button's title text to help users find their site address. */
 "Find your site address" = "Trova l'indirizzo per il tuo sito";
@@ -956,9 +954,6 @@
 
 /* Title of the downloadable file bottom sheet action for adding file from device. */
 "From device" = "Dal dispositivo";
-
-/* Order Fulfillment Title. Parameters: %1$@ - order number */
-"Fulfill Order #%1$@" = "Evadi ordine n. %1$@";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Ottieni informazioni su come i prodotti vengono tracciati nel negozio";
@@ -1159,6 +1154,9 @@
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "Emissione del rimborso...";
 
+/* Message explaining that the site entered and the acount logged into do not match. Reads like 'It looks like awebsite.com is connected to a different account */
+"It looks like %@ is connected to a different account." = "Sembra che %@ sia connesso a un account diverso.";
+
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "It looks like this email isn't associated with a WordPress.com account." = "Sembra che questa e-mail non sia associata a un account WordPress.com.";
 
@@ -1170,9 +1168,6 @@
 
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "Corsivo";
-
-/* The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
-"It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!" = "Dall'app Woo ora puoi creare prodotti semplici, raggruppati \ned esterni anche mentre viaggi. Non sei ancora pronto? Salvali come bozza.";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack è un plugin WordPress gratuito che collega il tuo negozio con gli strumenti necessari per assicurarti la migliore esperienza mobile, incluse le notifiche push e le statistiche";
@@ -1260,8 +1255,8 @@
    Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log In With Another Account" = "Accedi con un altro account";
 
-/* Alert button title - confirms and logs out the user
-   Log out button title */
+/* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
+   Alert button title - confirms and logs out the user - Log out button title */
 "Log Out" = "Esci";
 
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
@@ -1314,10 +1309,10 @@
 "Manual Offsets" = "Offset manuale";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Rimborso manuale tramite %1$@";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "Rimborso manuale tramite %1$@";
 
 /* No comment provided by engineer. */
 "Manual Refund via Stripe" = "Rimborso manuale tramite Stripe";
@@ -1408,7 +1403,10 @@
 "Need some help?" = "Ti serve aiuto?";
 
 /* The title for the net amount paid cell */
-"Net" = "Netto";
+"Net Payment" = "Pagamento netto";
+
+/* The title of the top banner on the Products tab. */
+"New features available!" = "Nuove funzionalità disponibili.";
 
 /* Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
@@ -1437,10 +1435,10 @@
 "No expiration" = "Nessuna scadenza";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "No files yet";
+"No files yet" = "Ancora nessun file";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "Ancora nessun file";
+"No files yet" = "No files yet";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "Nessuna immagine ancora presente";
@@ -1482,7 +1480,8 @@
 /* Placeholder of the Product Variations row on Product main screen for a variable product */
 "No variations yet" = "Ancora nessuna variante";
 
-/* Display label for the product's tax status setting option */
+/* Display label for the order fee's tax status setting option
+   Display label for the product's tax status setting option */
 "None" = "Nessuna";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
@@ -1609,7 +1608,7 @@
 "Package Details" = "Dettagli pacco";
 
 /* The title for the customer payment cell */
-"Paid By Customer" = "Pagato dal cliente";
+"Paid" = "A pagamento";
 
 /* Title of the paper size selector row for reprinting a shipping label */
 "Paper Size" = "Dimensione foglio";
@@ -1711,10 +1710,10 @@
 "Please wait while we publish this product to your store" = "Attendi mentre pubblichiamo questo prodotto nel tuo negozio";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
+"Please wait while we save this product to your store" = "Attendi mentre salviamo questo prodotto nel tuo negozio";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Attendi mentre salviamo questo prodotto nel tuo negozio";
+"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
 
 /* Message of the in-progress UI while deleting the Product remotely */
 "Please wait while we update your store details" = "Attendi mentre aggiorniamo i dettagli del negozio";
@@ -1770,7 +1769,7 @@
 "Processing" = "In elaborazione";
 
 /* Description for Top Performers left column header
-   Product section title - Product section title if there is only one product. - Section header title for the product */
+   Product section title - Product section title if there is only one product. */
 "Product" = "Prodotto";
 
 /* Edit Product External Link navigation title */
@@ -1849,8 +1848,7 @@
 /* Quantity abbreviation for section title */
 "QTY" = "QUANTITÀ";
 
-/* Quantity abbreviation for section title
-   Section header title - abbreviation for quantity */
+/* Quantity abbreviation for section title */
 "Qty" = "Quantità";
 
 /* The accessibility label for the quantity button when selecting an item to refund
@@ -1882,16 +1880,16 @@
 "Reason for Refund (Optional)" = "Reason for Refund (Optional)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for refunding order" = "Reason for refunding order";
-
-/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Motivo del rimborso ordine";
 
-/* The title of the button to confirm the refund. */
-"Refund" = "Refund";
+/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
+"Reason for refunding order" = "Reason for refunding order";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "Rimborsa";
+
+/* The title of the button to confirm the refund. */
+"Refund" = "Refund";
 
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "Rimborso #%@";
@@ -1907,10 +1905,10 @@
 "Refund Label (%1$@)" = "Rimborsa etichetta (%1$@)";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Rimborsa spedizione";
+"Refund Shipping" = "Refund Shipping";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Refund Shipping";
+"Refund Shipping" = "Rimborsa spedizione";
 
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "Rimborsa tramite";
@@ -2040,10 +2038,10 @@
 "Save as draft" = "Salva come bozza";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
-"Saving your product..." = "Saving your product...";
+"Saving your product..." = "Salvataggio del tuo prodotto...";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
-"Saving your product..." = "Salvataggio del tuo prodotto...";
+"Saving your product..." = "Saving your product...";
 
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "Esegui scansione del codice a barre per aggiornare lo SKU";
@@ -2074,6 +2072,9 @@
 
 /* Display label for the product's catalog visibility */
 "Search results only" = "Soltanto risultati della ricerca";
+
+/* Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
+"See Connected Stores" = "Visualizza i negozi collegati";
 
 /* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "See Instructions" = "Visualizza istruzioni";
@@ -2242,6 +2243,9 @@
 
 /* Button title. Tapping begins our normal sign up process. */
 "Sign up with Email" = "Registrati con l'e-mail";
+
+/* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
+"Signed in as @%1$@" = "Accesso effettuato come @%1$@";
 
 /* Display label for simple product type. */
 "Simple" = "Semplice";
@@ -2486,7 +2490,8 @@
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "Stato delle tasse";
 
-/* Display label for the product's tax status setting option */
+/* Display label for the order fee's tax status setting option
+   Display label for the product's tax status setting option */
 "Taxable" = "Tassabile";
 
 /* Taxes label for payment view */
@@ -2755,7 +2760,7 @@
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "Unable to delete tracking for order #%1$d" = "Impossibile eliminare la tracciabilità dell'ordine n. %1$d";
 
-/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
+/* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "Impossibile evadere l'ordine n. %1$d";
 
 /* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
@@ -2842,10 +2847,10 @@
 "Update product inventory and SKU" = "Aggiorna inventario dei prodotti e SKU";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "Aggiorna le informazioni dei file scaricabili di prodotti in remoto";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Aggiorna le informazioni dei file scaricabili di prodotti in remoto";
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "Aggiorna a WooCommerce 3.5 per continuare utilizzare questa app";
@@ -3072,6 +3077,9 @@
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "La versione di WordPress è troppo vecchia Il sito %1$@ usa WordPress %2$@. Ti suggeriamo di aggiornare all'ultima versione, o, almeno, alla versione %3$@";
 
+/* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
+"Wrong account?" = "Account sbagliato?";
+
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
 
@@ -3086,6 +3094,9 @@
 
 /* Yesterday Section Header */
 "Yesterday" = "Ieri";
+
+/* The info of the top banner on the Products tab. */
+"You can now add downloadable files to a product and link upsell & cross-sell products. No longer want a product? Trash it!" = "Ora puoi aggiungere file scaricabili a un prodotto e collegare i prodotti di upsell e cross-sell. Non desideri più un prodotto? Spostalo nel cestino.";
 
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "Puoi richiedere un rimborso per un'etichetta di spedizione non utilizzata per spedire un pacchetto.\nL'elaborazione richiederà almeno 14 giorni.";
@@ -3133,7 +3144,8 @@
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "url sconosciuto";
 
-/* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need... */
+/* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
+   Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */
 "your site" = "il tuo sito";
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */

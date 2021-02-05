@@ -1,5 +1,11 @@
-Productos: Ahora, todos los usuarios pueden añadir y editar productos vinculados, añadir y editar archivos descargables y eliminar un producto.
+El equipo de WooCommerce está encantado de presentar las últimas actualizaciones de su aplicación móvil.
 
-Envío: Ahora, puedes ver los detalles de la etiqueta de envío, solicitar un reembolso y volver a imprimir una etiqueta de envío con AirPrint.
+Actualizar y listo: imaginemos que un usuario aplica parámetros de orden y/o filtros a la lista de productos de tu tienda; lo más probable es que no quiera repetir ese proceso la próxima vez que vuelva a usar aplicación. ¡No hay problema! Ahora, si el usuario vuelve a abrir la aplicación, podrá ver su configuración anterior.
 
-Inicio de sesión: Hemos realizado diversas mejoras en el flujo de inicio de sesión, incluida una mejora en la gestión de errores.
+Consolidación: la pantalla específica de envío es cosa del pasado. Ahora, la información de envío aparece en la pantalla de información del pedido, así como la información sobre tarifas.
+
+¡Adiós, errores! Hemos corregido varios fallos; aquí tienes una pequeña muestra:
+
+- Las hojas de acción de la información de facturación ya se ven correctamente en los dispositivos iPad.
+- Las filas de las listas de búsqueda de productos ya no tienen separadores dobles.
+- Los indicadores giratorios de los botones "Continuar" ya se pueden ver en el modo oscuro.

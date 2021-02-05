@@ -1,5 +1,11 @@
-Produkter: alla användare kan nu lägga till och redigera länkade produkter, lägga till och redigera nedladdningsbara filer och ta bort en produkt.
+WooCommerce är glada att presentera de senaste uppdateringarna av vår mobilapp.
 
-Frakt: Du kan nu visa information om fraktetikett, begära en återbetalning och skriva ut en fraktetikett på nytt med AirPrint.
+Uppdatera och var redo: Låt oss säga att en användare tillämpar sorteringsparametrar och/eller filter i din butiks produktlista – det troliga är att när de återvänder till appen vill de inte upprepa processen. Inga problem! Om en användare öppnar appen igen kan de se sina tidigare inställningar.
 
-Inloggning: Vi har gjort olika förbättringar av inloggningsflödet, inklusive bättre felhantering.
+Konsolidering: Den angivna fullgörandeskärmen tillhör det förflutna – information om fullgörande ligger nu live nu på skärmen med beställningsinformation, liksom information om avgifter.
+
+Bort med felen: Vi har fixat flera fel – här är ett smakprov:
+
+– Åtgärdsblad för faktureringsinformation visas nu korrekt på iPads.
+– Rader i produktsökningslistor har inte längre dubbla avgränsare.
+– Laddningsspinnare på "Fortsätt" -knapparna är nu synliga i mörkt läge.

@@ -1,5 +1,11 @@
-Prodotti: tutti gli utenti possono ora aggiungere e modificare prodotti collegati, aggiungere e modificare file scaricabili ed eliminare un prodotto.
+WooCommerce è felice di presentare gli ultimi aggiornamenti all'app per dispositivi mobili.
 
-Spedizione: ora puoi visualizzare i dettagli dell'etichetta di spedizione, richiedere un rimborso e stampare nuovamente un'etichetta di spedizione con AirPrint.
+Aggiornamento e inizio: supponiamo che un utente applichi parametri e/o filtri di ordinamento all'elenco dei prodotti del tuo negozio. È probabile che non voglia ripetere lo stesso procedimento quando torna nell'app. Nessun problema. Ora, se un utente riapre l'app, sarà in grado di visualizzare le impostazioni precedenti.
 
-Accesso: abbiamo apportato vari miglioramenti al flusso di accesso, includendo una migliore gestione degli errori.
+Consolidamento: l'apposita schermata di evasione appartiene al passato. Le informazioni relative all'evasione ora si trovano nella schermata dei dettagli dell'ordine, così come le informazioni riguardanti le tariffe.
+
+Bug spariti: abbiamo corretto diversi errori tecnici. Ecco alcuni esempi:
+
+- I fogli delle azioni relative alle informazioni di fatturazione ora vengono visualizzati correttamente sugli iPad.
+- Le righe negli elenchi di ricerca dei prodotti non hanno più i separatori doppi.
+- Le rotelline di caricamento sui pulsanti "Continua" sono ora visibili in Dark Mode.

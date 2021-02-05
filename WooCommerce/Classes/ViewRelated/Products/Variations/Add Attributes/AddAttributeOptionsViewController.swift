@@ -247,6 +247,8 @@ private extension AddAttributeOptionsViewController {
 
     func configureOptionAdded(cell: BasicTableViewCell, text: String) {
         cell.textLabel?.text = text
+        cell.imageView?.image = nil
+        cell.imageView?.isUserInteractionEnabled = false
     }
 }
 

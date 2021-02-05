@@ -47,7 +47,7 @@ struct MockStatsActionV4Handler: MockActionHandler {
             case .thisMonth:
                 success(onCompletion)
             case .thisYear:
-                store.upsertStoredSiteVisitStats(readOnlyStats: objectGraph.thisYearVisitStats)
+                store.upsertStoredSiteVisitStats(readOnlyStats: objectGraph.thisYearVisitStats, timeRange: timeRange)
                 onCompletion(nil)
         }
     }

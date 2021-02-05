@@ -327,7 +327,7 @@ extension MockObjectGraph {
         )
     }
 
-    static func createVisitStats(granularity: StatGranularity, items: [SiteVisitStatsItem]) -> SiteVisitStats {
+    static func createVisitStats(siteID: Int64, granularity: StatGranularity, items: [SiteVisitStatsItem]) -> SiteVisitStats {
 
         switch granularity {
             case .day: preconditionFailure("Not implemented")
@@ -335,6 +335,7 @@ extension MockObjectGraph {
             case .month: preconditionFailure("Not implemented")
             case .year:
                 return SiteVisitStats(
+                    siteID: siteID,
                     date: Date().asVisitStatsYearString,
                     granularity: .month,
                     items: items
@@ -342,8 +343,9 @@ extension MockObjectGraph {
         }
     }
 
-    static func createStats(granularity: StatGranularity, items: [TopEarnerStatsItem]) -> TopEarnerStats {
+    static func createStats(siteID: Int64, granularity: StatGranularity, items: [TopEarnerStatsItem]) -> TopEarnerStats {
         TopEarnerStats(
+            siteID: siteID,
             date: String(Date().year),
             granularity: granularity,
             limit: "",

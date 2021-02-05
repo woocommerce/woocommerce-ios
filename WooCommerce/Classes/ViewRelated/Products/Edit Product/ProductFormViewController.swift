@@ -344,19 +344,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard let product = product as? EditableProductModel else {
                     return
                 }
-                guard product.product.variations.isNotEmpty else {
-                    if isAddProductVariationsEnabled {
-                        let viewModel = AddAttributeViewModel(product: product.product)
-                        let addAttributeViewController = AddAttributeViewController(viewModel: viewModel)
-                        navigationController?.pushViewController(addAttributeViewController, animated: true)
-                    }
-                    return
-                }
                 let variationsViewController = ProductVariationsViewController(product: product.product,
                                                                                formType: viewModel.formType,
                                                                                isAddProductVariationsEnabled: isAddProductVariationsEnabled)
                 show(variationsViewController, sender: self)
-            case .status, .noPriceWarning:
+            case .status, .noPriceWarning, .attributes:
                 break
             }
         }

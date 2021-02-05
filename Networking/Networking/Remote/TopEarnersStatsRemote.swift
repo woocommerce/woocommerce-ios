@@ -28,7 +28,7 @@ public class TopEarnersStatsRemote: Remote {
                           ParameterKeys.date: latestDateToInclude,
                           ParameterKeys.limit: String(limit)]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
-        let mapper = TopEarnerStatsMapper()
+        let mapper = TopEarnerStatsMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
 }

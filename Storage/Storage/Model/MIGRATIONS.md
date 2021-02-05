@@ -2,6 +2,15 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 44 (Release 6.0.0.0)
+- @jaclync 2021-01-27
+- Added `timeRange` attribute to `SiteVisitStats` entity (non-optional and default to empty string).
+
+## Model 43 (Release 6.0.0.0)
+- @jaclync 2021-01-22
+- Added `siteID` attribute to `SiteVisitStats` and `TopEarnerStats` entity.
+- Used mapping model: `WooCommerceModelV42toV43.xcmappingmodel` to remove `SiteVisitStats` and `TopEarnerStats` entities without `siteID`.
+
 ## Model 42 (Release 5.9.0.0)
 - @ctarda 2021-01-12
 - Add `OrderFeeLine`  entity.

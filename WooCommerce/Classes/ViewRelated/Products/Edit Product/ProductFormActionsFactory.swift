@@ -25,6 +25,7 @@ enum ProductFormEditAction: Equatable {
     case variationName
     case noPriceWarning
     case status(editable: Bool)
+    case attributes(editable: Bool)
     // Downloadable products only
     case downloadableFiles
 }

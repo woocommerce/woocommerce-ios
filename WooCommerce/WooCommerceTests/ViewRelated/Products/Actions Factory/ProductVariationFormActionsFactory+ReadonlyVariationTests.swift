@@ -45,6 +45,7 @@ final class ProductVariationFormActionsFactory_ReadonlyVariationTests: XCTestCas
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: false),
+                                                                       .attributes(editable: false),
                                                                        .status(editable: false),
                                                                        .shippingSettings(editable: false),
                                                                        .inventorySettings(editable: false)]

@@ -30,7 +30,7 @@ public class SiteVisitStatsRemote: Remote {
                           ParameterKeys.quantity: String(quantity),
                           ParameterKeys.statFields: Constants.visitorStatFieldValue]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
-        let mapper = SiteVisitStatsMapper()
+        let mapper = SiteVisitStatsMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
 }

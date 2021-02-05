@@ -3,6 +3,10 @@
 6.0
 -----
 - [*] Updated copyright notice to WooCommerce
+- [*] Fix: top performers in "This Week" tab should be showing the same data as in WC Admin.
+- [*] Fix: visitor stats in Dashboard should be more consistent with web data on days when the end date for more than one tab is the same (e.g. "This Week" and "This Month" both end on January 31). [https://github.com/woocommerce/woocommerce-ios/pull/3532]
+- [*] Fix: navbar title on cross-sells products list displayed title for upsells [https://github.com/woocommerce/woocommerce-ios/pull/3565]
+- [internal] Refactored Core Data migrator stack to help reduce crashes [https://github.com/woocommerce/woocommerce-ios/pull/3523]
 
 5.9
 -----

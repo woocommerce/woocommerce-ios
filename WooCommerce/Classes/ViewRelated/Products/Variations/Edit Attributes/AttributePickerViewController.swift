@@ -142,9 +142,33 @@ extension AttributePickerViewController {
     }
 
     private func presentAttributeOptions(for existingAttribute: ProductAttribute) {
-        let optionValue = editableAttributes.first(where: { $0.id == existingAttribute.attributeID && $0.name == existingAttribute.name })
-        let attributeOptionPickerViewController = AttributeOptionPickerViewController(attribute: existingAttribute, selectedOption: optionValue)
+        let oldAttribute = editableAttributes.first(where: { $0.id == existingAttribute.attributeID && $0.name == existingAttribute.name })
+        let attributeOptionPickerViewController = AttributeOptionPickerViewController(attribute: existingAttribute,
+                                                                                      selectedOption: oldAttribute) { [weak self] resultAttribute in
+            self?.onEditAttributeOptionCompletion(oldAttribute: oldAttribute, newAttribute: resultAttribute)
+        }
         show(attributeOptionPickerViewController, sender: self)
+    }
+
+    func onEditAttributeOptionCompletion(oldAttribute: ProductVariationAttribute?, newAttribute: ProductVariationAttribute?) {
+        switch (oldAttribute, newAttribute) {
+        case (nil, let newAttribute?):
+            editableAttributes.append(newAttribute)
+        case (let oldAttribute?, nil):
+            if let index = editableAttributes.firstIndex(of: oldAttribute) {
+                editableAttributes.remove(at: index)
+            }
+        case (let oldAttribute?, let newAttribute?):
+            if let index = editableAttributes.firstIndex(of: oldAttribute) {
+                editableAttributes.remove(at: index)
+                editableAttributes.insert(newAttribute, at: index)
+            }
+        case (nil, nil):
+            break
+        }
+
+        tableView.reloadData()
+        navigationController?.popViewController(animated: true)
     }
 }
 

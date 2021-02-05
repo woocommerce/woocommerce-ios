@@ -5,14 +5,16 @@ final class AttributeOptionPickerViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
 
-    let attribute: ProductAttribute
-    let selectedOption: ProductVariationAttribute?
+    private let viewModel: AttributeOptionPickerViewModel
+
+    typealias Completion = (_ attribute: ProductVariationAttribute?) -> Void
+    private let onCompletion: Completion
 
     /// Init
     ///
-    init(attribute: ProductAttribute, selectedOption: ProductVariationAttribute?) {
-        self.attribute = attribute
-        self.selectedOption = selectedOption
+    init(attribute: ProductAttribute, selectedOption: ProductVariationAttribute?, onCompletion: @escaping Completion) {
+        self.viewModel = .init(attribute: attribute, selectedOption: selectedOption)
+        self.onCompletion = onCompletion
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -28,7 +30,6 @@ final class AttributeOptionPickerViewController: UIViewController {
         registerTableViewCells()
         configureTableView()
     }
-
 }
 
 // MARK: - View Configuration
@@ -36,11 +37,17 @@ final class AttributeOptionPickerViewController: UIViewController {
 private extension AttributeOptionPickerViewController {
 
     func configureNavigationBar() {
-        title = attribute.name
+        title = viewModel.attributeName
+    }
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
-                                                            target: self,
-                                                            action: #selector(doneButtonPressed))
+    func updateDoneButton() {
+        if viewModel.isChanged {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
+                                                                target: self,
+                                                                action: #selector(doneButtonPressed))
+        } else {
+            navigationItem.rightBarButtonItem = nil
+        }
     }
 
     func configureMainView() {
@@ -65,16 +72,23 @@ private extension AttributeOptionPickerViewController {
 //
 extension AttributeOptionPickerViewController: UITableViewDataSource {
 
+    enum Row: Equatable {
+        case anyAttribute
+        case option(String)
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return attribute.options.count + 1
+        return viewModel.allRows.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(BasicTableViewCell.self, for: indexPath)
-        if indexPath.row == 0 {
+
+        switch viewModel.allRows[indexPath.row] {
+        case .anyAttribute:
             configureAnyAttribute(cell: cell)
-        } else {
-            configureAttribute(cell: cell, option: attribute.options[safe: indexPath.row - 1])
+        case .option(let optionName):
+            configureAttribute(cell: cell, option: optionName)
         }
 
         return cell
@@ -86,6 +100,10 @@ extension AttributeOptionPickerViewController: UITableViewDataSource {
 extension AttributeOptionPickerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+
+        viewModel.selectRow(at: indexPath)
+        tableView.reloadData()
+        updateDoneButton()
     }
 }
 
@@ -95,7 +113,7 @@ private extension AttributeOptionPickerViewController {
     func configureAnyAttribute(cell: BasicTableViewCell) {
         cell.textLabel?.text = Localization.anyAttributeOption
 
-        if selectedOption == nil {
+        if viewModel.selectedRow == .anyAttribute {
             cell.accessoryType = .checkmark
         } else {
             cell.accessoryType = .none
@@ -105,7 +123,7 @@ private extension AttributeOptionPickerViewController {
     func configureAttribute(cell: BasicTableViewCell, option: String?) {
         cell.textLabel?.text = option
 
-        if selectedOption?.option == option {
+        if case .option(let selectedOptionName) = viewModel.selectedRow, selectedOptionName == option {
             cell.accessoryType = .checkmark
         } else {
             cell.accessoryType = .none
@@ -118,11 +136,7 @@ private extension AttributeOptionPickerViewController {
 extension AttributeOptionPickerViewController {
 
     @objc private func doneButtonPressed() {
-        // TODO-3518: Save updated attributes
-    }
-
-    private func presentAttributeOptions(for existingAttribute: ProductAttribute) {
-        // TODO-3515: Show options for attribute
+        onCompletion(viewModel.resultAttribute)
     }
 }
 

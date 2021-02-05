@@ -93,11 +93,11 @@ final class AddAttributeOptionsViewModel {
 
     private(set) var sections: [Section] = []
 
-    /// Stores manager to dispatch sync terms(options) action.
+    /// Stores manager to dispatch sync global options action.
     ///
     private let stores: StoresManager
 
-    /// Storage manager to read fetched terms(options).
+    /// Storage manager to read fetched global options.
     ///
     private let viewStorage: StorageManagerType
 
@@ -110,7 +110,7 @@ final class AddAttributeOptionsViewModel {
         case .new:
             updateSections()
         case .existing:
-            synchronizeOptions()
+            synchronizeGlobalOptions()
         }
     }
 }
@@ -143,13 +143,13 @@ extension AddAttributeOptionsViewModel {
     }
 }
 
-// MARK: - Synchronize Product Attribute terms
+// MARK: - Synchronize Product Attribute Options
 //
 private extension AddAttributeOptionsViewModel {
     /// Updates data in sections
     ///
     func updateSections() {
-        let textFieldSection = Section(header: nil, footer: Localization.footerTextField, rows: [.termTextField], allowsReorder: false)
+        let textFieldSection = Section(header: nil, footer: Localization.footerTextField, rows: [.optionTextField], allowsReorder: false)
         let offeredSection = createOfferedSection()
         let addedSection = createAddedSection()
         sections = [textFieldSection, offeredSection, addedSection].compactMap { $0 }
@@ -161,10 +161,10 @@ private extension AddAttributeOptionsViewModel {
         }
 
         let rows = state.optionsOffered.map { option in
-            AddAttributeOptionsViewModel.Row.selectedTerms(name: option)
+            AddAttributeOptionsViewModel.Row.selectedOptions(name: option)
         }
 
-        return Section(header: Localization.headerSelectedTerms, footer: nil, rows: rows, allowsReorder: true)
+        return Section(header: Localization.headerSelectedOptions, footer: nil, rows: rows, allowsReorder: true)
     }
 
     func createAddedSection() -> Section? {
@@ -173,28 +173,28 @@ private extension AddAttributeOptionsViewModel {
             return nil
         }
 
-        let rows = state.optionsAdded.map { term in
-            AddAttributeOptionsViewModel.Row.existingTerms(name: term.name)
+        let rows = state.optionsAdded.map { option in
+            AddAttributeOptionsViewModel.Row.existingOptions(name: option.name)
         }
 
-        return Section(header: Localization.headerExistingTerms, footer: nil, rows: rows, allowsReorder: false)
+        return Section(header: Localization.headerExistingOptions, footer: nil, rows: rows, allowsReorder: false)
     }
 
-    /// Synchronizes options(terms) for global attributes
+    /// Synchronizes options for global attributes
     ///
-    func synchronizeOptions() {
+    func synchronizeGlobalOptions() {
         guard case let .existing(attribute) = source, attribute.isGlobal else {
             return
         }
 
-        let fetchTerms = ProductAttributeTermAction.synchronizeProductAttributeTerms(siteID: attribute.siteID,
-                                                                                     attributeID: attribute.attributeID) { [weak self] _ in
+        let fetchOptions = ProductAttributeTermAction.synchronizeProductAttributeTerms(siteID: attribute.siteID,
+                                                                                       attributeID: attribute.attributeID) { [weak self] _ in
             guard let self = self else { return }
             self.state.optionsAdded = self.optionsOfferedResultsController.fetchedObjects
             self.state.isSyncing = false
         }
         state.isSyncing = true
-        stores.dispatch(fetchTerms)
+        stores.dispatch(fetchOptions)
     }
 }
 
@@ -202,9 +202,9 @@ private extension AddAttributeOptionsViewModel {
     enum Localization {
         static let footerTextField = NSLocalizedString("Add each option and press enter",
                                                        comment: "Footer of text field section in Add Attribute Options screen")
-        static let headerSelectedTerms = NSLocalizedString("OPTIONS OFFERED",
+        static let headerSelectedOptions = NSLocalizedString("OPTIONS OFFERED",
                                                            comment: "Header of selected attribute options section in Add Attribute Options screen")
-        static let headerExistingTerms = NSLocalizedString("ADD OPTIONS",
+        static let headerExistingOptions = NSLocalizedString("ADD OPTIONS",
                                                            comment: "Header of existing attribute options section in Add Attribute Options screen")
     }
 }

@@ -200,11 +200,11 @@ private extension AddAttributeOptionsViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch (row, cell) {
-        case (.termTextField, let cell as TextFieldTableViewCell):
+        case (.optionTextField, let cell as TextFieldTableViewCell):
             configureTextField(cell: cell)
-        case (let .selectedTerms(name), let cell as BasicTableViewCell):
+        case (let .selectedOptions(name), let cell as BasicTableViewCell):
             configureOptionOffered(cell: cell, text: name, index: indexPath.row)
-        case (let .existingTerms(name), let cell as BasicTableViewCell):
+        case (let .existingOptions(name), let cell as BasicTableViewCell):
             configureOptionAdded(cell: cell, text: name)
         default:
             fatalError("Unsupported Cell")
@@ -249,7 +249,7 @@ private extension AddAttributeOptionsViewController {
 // MARK: - Placeholders
 //
 private extension AddAttributeOptionsViewController {
-    /// Renders ghost placeholder while terms are being synched.
+    /// Renders ghost placeholder while options are being synched.
     ///
     func displayGhostTableView() {
         let options = GhostOptions(displaysSectionHeader: false,
@@ -303,15 +303,15 @@ extension AddAttributeOptionsViewController {
     }
 
     enum Row: Equatable {
-        case termTextField
-        case selectedTerms(name: String)
-        case existingTerms(name: String)
+        case optionTextField
+        case selectedOptions(name: String)
+        case existingOptions(name: String)
 
         fileprivate var type: UITableViewCell.Type {
             switch self {
-            case .termTextField:
+            case .optionTextField:
                 return TextFieldTableViewCell.self
-            case .selectedTerms, .existingTerms:
+            case .selectedOptions, .existingOptions:
                 return BasicTableViewCell.self
             }
         }

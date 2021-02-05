@@ -14,7 +14,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
 
         // Then
         let textFieldSection = try XCTUnwrap(viewModel.sections.last?.rows)
-        XCTAssertEqual(textFieldSection, [AddAttributeOptionsViewController.Row.termTextField])
+        XCTAssertEqual(textFieldSection, [AddAttributeOptionsViewController.Row.optionTextField])
         XCTAssertEqual(viewModel.sections.count, 1)
     }
 
@@ -28,7 +28,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
 
         // Then
         let offeredSection = try XCTUnwrap(viewModel.sections.last?.rows)
-        XCTAssertEqual(offeredSection, [AddAttributeOptionsViewController.Row.selectedTerms(name: sampleOptionName)])
+        XCTAssertEqual(offeredSection, [AddAttributeOptionsViewController.Row.selectedOptions(name: sampleOptionName)])
         XCTAssertEqual(viewModel.sections.count, 2)
     }
 
@@ -44,8 +44,8 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
 
         // Then
         let offeredSection = try XCTUnwrap(viewModel.sections.last?.rows)
-        XCTAssertEqual(offeredSection, [AddAttributeOptionsViewController.Row.selectedTerms(name: sampleOptionName),
-                                        AddAttributeOptionsViewController.Row.selectedTerms(name: newOptionName)])
+        XCTAssertEqual(offeredSection, [AddAttributeOptionsViewController.Row.selectedOptions(name: sampleOptionName),
+                                        AddAttributeOptionsViewController.Row.selectedOptions(name: newOptionName)])
         XCTAssertEqual(viewModel.sections.count, 2)
     }
 
@@ -74,9 +74,9 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         // Then
         let optionsOffered = try XCTUnwrap(viewModel.sections.last?.rows)
         XCTAssertEqual(optionsOffered, [
-            .selectedTerms(name: "Option 2"),
-            .selectedTerms(name: "Option 3"),
-            .selectedTerms(name: "Option 1")
+            .selectedOptions(name: "Option 2"),
+            .selectedOptions(name: "Option 3"),
+            .selectedOptions(name: "Option 1")
         ])
 
     }
@@ -94,9 +94,9 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         // Then
         let optionsOffered = try XCTUnwrap(viewModel.sections.last?.rows)
         XCTAssertEqual(optionsOffered, [
-            .selectedTerms(name: "Option 1"),
-            .selectedTerms(name: "Option 2"),
-            .selectedTerms(name: "Option 3")
+            .selectedOptions(name: "Option 1"),
+            .selectedOptions(name: "Option 2"),
+            .selectedOptions(name: "Option 3")
         ])
     }
 
@@ -113,8 +113,8 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         // Then
         let optionsOffered = try XCTUnwrap(viewModel.sections.last?.rows)
         XCTAssertEqual(optionsOffered, [
-            .selectedTerms(name: "Option 1"),
-            .selectedTerms(name: "Option 3")
+            .selectedOptions(name: "Option 1"),
+            .selectedOptions(name: "Option 3")
         ])
     }
 
@@ -131,9 +131,9 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         // Then
         let optionsOffered = try XCTUnwrap(viewModel.sections.last?.rows)
         XCTAssertEqual(optionsOffered, [
-            .selectedTerms(name: "Option 1"),
-            .selectedTerms(name: "Option 2"),
-            .selectedTerms(name: "Option 3")
+            .selectedOptions(name: "Option 1"),
+            .selectedOptions(name: "Option 2"),
+            .selectedOptions(name: "Option 3")
         ])
     }
 
@@ -164,9 +164,9 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         // Then
         let optionsAdded = try XCTUnwrap(viewModel.sections.last?.rows)
         XCTAssertEqual(optionsAdded, [
-            .existingTerms(name: "Option 1"),
-            .existingTerms(name: "Option 2"),
-            .existingTerms(name: "Option 3")
+            .existingOptions(name: "Option 1"),
+            .existingOptions(name: "Option 2"),
+            .existingOptions(name: "Option 3")
         ])
     }
 

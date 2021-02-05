@@ -672,6 +672,7 @@
 		AEB73BEF25CD4FDC00A8454A /* AttributeOptionPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73BED25CD4FDC00A8454A /* AttributeOptionPickerViewController.swift */; };
 		AEB73BF025CD4FDC00A8454A /* AttributeOptionPickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AEB73BEE25CD4FDC00A8454A /* AttributeOptionPickerViewController.xib */; };
 		AEB73C0625CD651F00A8454A /* AttributeOptionPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C0525CD651F00A8454A /* AttributeOptionPickerViewModel.swift */; };
+		AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */; };
 		AEDDDA0A25CA9C980077F9B2 /* AttributePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */; };
 		AEDDDA1A25CAB2170077F9B2 /* AttributePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AEDDDA1925CAB2170077F9B2 /* AttributePickerViewController.xib */; };
 		B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112D2049E27A007D25DC /* DashboardViewController.swift */; };
@@ -1788,6 +1789,7 @@
 		AEB73BED25CD4FDC00A8454A /* AttributeOptionPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeOptionPickerViewController.swift; sourceTree = "<group>"; };
 		AEB73BEE25CD4FDC00A8454A /* AttributeOptionPickerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AttributeOptionPickerViewController.xib; sourceTree = "<group>"; };
 		AEB73C0525CD651F00A8454A /* AttributeOptionPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeOptionPickerViewModel.swift; sourceTree = "<group>"; };
+		AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModel.swift; sourceTree = "<group>"; };
 		AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewController.swift; sourceTree = "<group>"; };
 		AEDDDA1925CAB2170077F9B2 /* AttributePickerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AttributePickerViewController.xib; sourceTree = "<group>"; };
 		B509112D2049E27A007D25DC /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
@@ -3898,6 +3900,7 @@
 			children = (
 				AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */,
 				AEDDDA1925CAB2170077F9B2 /* AttributePickerViewController.xib */,
+				AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */,
 				AEB73BED25CD4FDC00A8454A /* AttributeOptionPickerViewController.swift */,
 				AEB73BEE25CD4FDC00A8454A /* AttributeOptionPickerViewController.xib */,
 				AEB73C0525CD651F00A8454A /* AttributeOptionPickerViewModel.swift */,
@@ -6067,6 +6070,7 @@
 				02B296A722FA6DB500FD7A4C /* Date+StartAndEnd.swift in Sources */,
 				D81D9228222E7F0800FFA585 /* OrderStatusListViewController.swift in Sources */,
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
+				AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */,
 				B58B4AB62108F11C00076FDD /* Notice.swift in Sources */,
 				CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */,
 				0211252825773F220075AD2A /* Models+Copiable.generated.swift in Sources */,

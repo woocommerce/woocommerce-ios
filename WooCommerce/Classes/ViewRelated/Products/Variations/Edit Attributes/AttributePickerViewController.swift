@@ -6,6 +6,7 @@ final class AttributePickerViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
 
     private let variationModel: EditableProductVariationModel
+    private var editableAttributes: [ProductVariationAttribute]
 
     typealias Completion = (_ attributes: [ProductVariationAttribute]) -> Void
     private let onCompletion: Completion
@@ -14,6 +15,7 @@ final class AttributePickerViewController: UIViewController {
     ///
     init(variationModel: EditableProductVariationModel, onCompletion: @escaping Completion) {
         self.variationModel = variationModel
+        self.editableAttributes = variationModel.productVariation.attributes
         self.onCompletion = onCompletion
         super.init(nibName: nil, bundle: nil)
     }
@@ -123,7 +125,7 @@ private extension AttributePickerViewController {
             return
         }
 
-        let optionValue = variationModel.productVariation.attributes.first(where: { $0.id == attribute.attributeID && $0.name == attribute.name })?.option ??
+        let optionValue = editableAttributes.first(where: { $0.id == attribute.attributeID && $0.name == attribute.name })?.option ??
             Localization.anyAttributeOption
 
         cell.updateUI(title: attribute.name, value: optionValue)
@@ -136,11 +138,13 @@ private extension AttributePickerViewController {
 extension AttributePickerViewController {
 
     @objc private func doneButtonPressed() {
-        onCompletion(variationModel.productVariation.attributes)
+        onCompletion(editableAttributes)
     }
 
     private func presentAttributeOptions(for existingAttribute: ProductAttribute) {
-        // TODO-3515: Show options for attribute
+        let optionValue = editableAttributes.first(where: { $0.id == existingAttribute.attributeID && $0.name == existingAttribute.name })
+        let attributeOptionPickerViewController = AttributeOptionPickerViewController(attribute: existingAttribute, selectedOption: optionValue)
+        show(attributeOptionPickerViewController, sender: self)
     }
 }
 

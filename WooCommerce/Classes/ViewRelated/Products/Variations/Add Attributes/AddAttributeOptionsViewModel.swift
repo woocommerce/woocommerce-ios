@@ -18,14 +18,21 @@ final class AddAttributeOptionsViewModel {
 
     /// Defines the necessary state to produce the ViewModel's outputs.
     ///
-    private struct State {
+    fileprivate struct State {
+        /// Bundles the attributes options that are supported
+        ///
+        enum Option {
+            case local(name: String)
+            case global(option: ProductAttributeTerm)
+        }
+
         /// Stores the options to be offered
         ///
-        var optionsOffered: [String] = []
+        var optionsOffered: [Option] = []
 
         /// Stores options previously added
         ///
-        var optionsAdded: [ProductAttributeTerm] = []
+        var optionsAdded: [Option] = []
 
         /// Indicates if the view model is syncing a global attribute options
         ///
@@ -75,7 +82,7 @@ final class AddAttributeOptionsViewModel {
         let controller = ResultsController<StorageProductAttributeTerm>(storageManager: viewStorage, matching: predicate, sortedBy: [descriptor])
 
         controller.onDidChangeContent = { [weak self] in
-            self?.state.optionsAdded = controller.fetchedObjects
+            self?.state.optionsAdded = controller.fetchedObjects.map { .global(option: $0) }
         }
 
         try? controller.performFetch()
@@ -109,8 +116,12 @@ final class AddAttributeOptionsViewModel {
         switch source {
         case .new:
             updateSections()
-        case .existing:
-            synchronizeGlobalOptions()
+        case let .existing(attribute) where attribute.isGlobal:
+            synchronizeGlobalOptions(of: attribute)
+        case let .existing(attribute) where attribute.isLocal:
+            populateLocalOptions(of: attribute)
+        default:
+            break
         }
     }
 }
@@ -120,7 +131,7 @@ extension AddAttributeOptionsViewModel {
     /// Inserts a new option with the provided name into the options offered section
     ///
     func addNewOption(name: String) {
-        state.optionsOffered.append(name)
+        state.optionsOffered.append(.local(name: name))
     }
 
     /// Reorder an option offered at the specified index to a desired index
@@ -175,14 +186,13 @@ private extension AddAttributeOptionsViewModel {
         }
 
         let rows = state.optionsOffered.map { option in
-            AddAttributeOptionsViewModel.Row.selectedOptions(name: option)
+            AddAttributeOptionsViewModel.Row.selectedOptions(name: option.name)
         }
 
         return Section(header: Localization.headerSelectedOptions, footer: nil, rows: rows, allowsReorder: true, allowsSelection: false)
     }
 
     func createAddedSection() -> Section? {
-        // TODO: Handle attribute local options
         let currentOptionsAdded = filterOptionsAdded()
         guard currentOptionsAdded.isNotEmpty else {
             return nil
@@ -197,26 +207,29 @@ private extension AddAttributeOptionsViewModel {
 
     /// Synchronizes options for global attributes
     ///
-    func synchronizeGlobalOptions() {
-        guard case let .existing(attribute) = source, attribute.isGlobal else {
-            return
-        }
-
+    func synchronizeGlobalOptions(of attribute: ProductAttribute) {
         let fetchOptions = ProductAttributeTermAction.synchronizeProductAttributeTerms(siteID: attribute.siteID,
                                                                                        attributeID: attribute.attributeID) { [weak self] _ in
             guard let self = self else { return }
-            self.state.optionsAdded = self.optionsOfferedResultsController.fetchedObjects
+            self.state.optionsAdded = self.optionsOfferedResultsController.fetchedObjects.map { .global(option: $0) }
             self.state.isSyncing = false
         }
         state.isSyncing = true
         stores.dispatch(fetchOptions)
     }
 
-    /// Returns a filtered version of `state.optionsAdded` where options that exists in `state.optionsOffered` are removed.
+    func populateLocalOptions(of attribute: ProductAttribute) {
+        state.optionsAdded = attribute.options.map { option in
+            .local(name: option)
+        }
+    }
+
+    /// Returns a filtered(based on the option name) version of `state.optionsAdded` where options that exists in `state.optionsOffered` are removed.
     ///
-    func filterOptionsAdded() -> [ProductAttributeTerm] {
-        state.optionsAdded.filter { option in
-            !state.optionsOffered.contains(option.name)
+    func filterOptionsAdded() -> [State.Option] {
+        let optionsOfferedNames = state.optionsOffered.map { $0.name }
+        return state.optionsAdded.filter { option in
+            !optionsOfferedNames.contains(option.name)
         }
     }
 }
@@ -229,5 +242,18 @@ private extension AddAttributeOptionsViewModel {
                                                            comment: "Header of selected attribute options section in Add Attribute Options screen")
         static let headerExistingOptions = NSLocalizedString("ADD OPTIONS",
                                                            comment: "Header of existing attribute options section in Add Attribute Options screen")
+    }
+}
+
+private extension AddAttributeOptionsViewModel.State.Option {
+    /// Returns the name associated with the option
+    ///
+    var name: String {
+        switch self {
+        case let .local(name):
+            return name
+        case let .global(option):
+            return option.name
+        }
     }
 }

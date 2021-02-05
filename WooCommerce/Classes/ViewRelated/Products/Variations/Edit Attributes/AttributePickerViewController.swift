@@ -94,7 +94,7 @@ extension AttributePickerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        presentAttributeOptions(for: viewModel.attributes[indexPath.row])
+        presentAttributeOptions(for: viewModel.attributes[safe: indexPath.row])
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -142,7 +142,11 @@ extension AttributePickerViewController {
         onCompletion(viewModel.resultAttributes)
     }
 
-    private func presentAttributeOptions(for existingAttribute: ProductAttribute) {
+    private func presentAttributeOptions(for existingAttribute: ProductAttribute?) {
+        guard let existingAttribute = existingAttribute else {
+            return
+        }
+
         let oldAttribute = viewModel.selectedOption(for: existingAttribute)
         let attributeOptionPickerViewController = AttributeOptionPickerViewController(attribute: existingAttribute,
                                                                                       selectedOption: oldAttribute) { [weak self] resultAttribute in

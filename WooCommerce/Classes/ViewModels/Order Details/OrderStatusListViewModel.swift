@@ -13,17 +13,12 @@ final class OrderStatusListViewModel {
 
     func configureResultsController(tableView: UITableView) {
         dataSource.startForwardingEvents(to: tableView)
-        refetchData()
-        // Reload table because refetchData() executes performFetch()
-        tableView.reloadData()
-    }
-
-    func refetchData() {
         do {
             try dataSource.performFetch()
         } catch {
             CrashLogging.logError(error)
         }
+        tableView.reloadData()
     }
 
     /// Return the number of statuses for the view.

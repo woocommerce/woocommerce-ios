@@ -14,14 +14,6 @@ final class OrderStatusListViewController: UIViewController {
         }
     }
 
-    /// Pull To Refresh Support.
-    ///
-    private lazy var refreshControl: UIRefreshControl = {
-        let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(pullToRefresh(sender:)), for: .valueChanged)
-        return refreshControl
-    }()
-
     /// A cview model containing all possible order statuses and the selected one.
     ///
     private let viewModel: OrderStatusListViewModel
@@ -74,14 +66,8 @@ final class OrderStatusListViewController: UIViewController {
     func configureTableView() {
         view.backgroundColor = .listBackground
         tableView.backgroundColor = .listBackground
-        tableView.refreshControl = refreshControl
         tableView.dataSource = self
         tableView.delegate = self
-    }
-
-    @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        viewModel.refetchData()
-        sender.endRefreshing()
     }
 }
 

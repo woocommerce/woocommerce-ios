@@ -145,9 +145,10 @@ extension AddAttributeOptionsViewModel {
     /// Moves an option from at the specified index to the "Options Offered" section.
     ///
     func selectExistingOption(atIndex index: Int) {
-        guard let option = state.optionsAdded[safe: index] else {
+        guard let option = filterOptionsAdded()[safe: index] else {
             return
         }
+
         addNewOption(name: option.name)
     }
 }
@@ -158,7 +159,11 @@ private extension AddAttributeOptionsViewModel {
     /// Updates data in sections
     ///
     func updateSections() {
-        let textFieldSection = Section(header: nil, footer: Localization.footerTextField, rows: [.optionTextField], allowsReorder: false)
+        let textFieldSection = Section(header: nil,
+                                       footer: Localization.footerTextField,
+                                       rows: [.optionTextField],
+                                       allowsReorder: false,
+                                       allowsSelection: false)
         let offeredSection = createOfferedSection()
         let addedSection = createAddedSection()
         sections = [textFieldSection, offeredSection, addedSection].compactMap { $0 }
@@ -173,25 +178,21 @@ private extension AddAttributeOptionsViewModel {
             AddAttributeOptionsViewModel.Row.selectedOptions(name: option)
         }
 
-        return Section(header: Localization.headerSelectedOptions, footer: nil, rows: rows, allowsReorder: true)
+        return Section(header: Localization.headerSelectedOptions, footer: nil, rows: rows, allowsReorder: true, allowsSelection: false)
     }
 
     func createAddedSection() -> Section? {
         // TODO: Handle attribute local options
-        guard state.optionsAdded.isNotEmpty else {
+        let currentOptionsAdded = filterOptionsAdded()
+        guard currentOptionsAdded.isNotEmpty else {
             return nil
         }
 
-        // Filter options that exists in `optionsOffered` for then converting them to `Row` types.
-        let rows = state.optionsAdded
-            .filter { option in
-                !state.optionsOffered.contains(option.name)
-            }
-            .map { option in
-                AddAttributeOptionsViewModel.Row.existingOptions(name: option.name)
-            }
+        let rows = currentOptionsAdded.map { option in
+            AddAttributeOptionsViewModel.Row.existingOptions(name: option.name)
+        }
 
-        return Section(header: Localization.headerExistingOptions, footer: nil, rows: rows, allowsReorder: false)
+        return Section(header: Localization.headerExistingOptions, footer: nil, rows: rows, allowsReorder: false, allowsSelection: true)
     }
 
     /// Synchronizes options for global attributes
@@ -209,6 +210,14 @@ private extension AddAttributeOptionsViewModel {
         }
         state.isSyncing = true
         stores.dispatch(fetchOptions)
+    }
+
+    /// Returns a filtered version of `state.optionsAdded` where options that exists in `state.optionsOffered` are removed.
+    ///
+    func filterOptionsAdded() -> [ProductAttributeTerm] {
+        state.optionsAdded.filter { option in
+            !state.optionsOffered.contains(option.name)
+        }
     }
 }
 

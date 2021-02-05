@@ -203,6 +203,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
 
         // When
         viewModel.selectExistingOption(atIndex: 1)
+        viewModel.selectExistingOption(atIndex: 1)
         waitUntil {
             viewModel.sections.count == 3
         }
@@ -213,10 +214,10 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
 
         XCTAssertEqual(optionsOffered, [
             .selectedOptions(name: "Option 2"),
+            .selectedOptions(name: "Option 3"),
         ])
         XCTAssertEqual(optionsAdded, [
             .existingOptions(name: "Option 1"),
-            .existingOptions(name: "Option 3"),
         ])
     }
 }

@@ -64,6 +64,7 @@ private extension AddAttributeOptionsViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.isEditing = true
+        tableView.allowsSelectionDuringEditing = true
     }
 
     func configureGhostTableView() {
@@ -160,7 +161,10 @@ extension AddAttributeOptionsViewController: UITableViewDataSource {
 //
 extension AddAttributeOptionsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        guard viewModel.sections[indexPath.section].allowsSelection else {
+            return
+        }
+        viewModel.selectExistingOption(atIndex: indexPath.row)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -300,6 +304,7 @@ extension AddAttributeOptionsViewController {
         let footer: String?
         let rows: [Row]
         let allowsReorder: Bool
+        let allowsSelection: Bool
     }
 
     enum Row: Equatable {

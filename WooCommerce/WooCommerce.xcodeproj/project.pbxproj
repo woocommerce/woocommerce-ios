@@ -673,6 +673,7 @@
 		AEB73BF025CD4FDC00A8454A /* AttributeOptionPickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AEB73BEE25CD4FDC00A8454A /* AttributeOptionPickerViewController.xib */; };
 		AEB73C0625CD651F00A8454A /* AttributeOptionPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C0525CD651F00A8454A /* AttributeOptionPickerViewModel.swift */; };
 		AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */; };
+		AEB73C2125CD974800A8454A /* AttributeOptionPickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB73C2025CD974800A8454A /* AttributeOptionPickerViewModelTests.swift */; };
 		AEDDDA0A25CA9C980077F9B2 /* AttributePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */; };
 		AEDDDA1A25CAB2170077F9B2 /* AttributePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AEDDDA1925CAB2170077F9B2 /* AttributePickerViewController.xib */; };
 		B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112D2049E27A007D25DC /* DashboardViewController.swift */; };
@@ -1790,6 +1791,7 @@
 		AEB73BEE25CD4FDC00A8454A /* AttributeOptionPickerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AttributeOptionPickerViewController.xib; sourceTree = "<group>"; };
 		AEB73C0525CD651F00A8454A /* AttributeOptionPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeOptionPickerViewModel.swift; sourceTree = "<group>"; };
 		AEB73C0B25CD734200A8454A /* AttributePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewModel.swift; sourceTree = "<group>"; };
+		AEB73C2025CD974800A8454A /* AttributeOptionPickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributeOptionPickerViewModelTests.swift; sourceTree = "<group>"; };
 		AEDDDA0925CA9C980077F9B2 /* AttributePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributePickerViewController.swift; sourceTree = "<group>"; };
 		AEDDDA1925CAB2170077F9B2 /* AttributePickerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AttributePickerViewController.xib; sourceTree = "<group>"; };
 		B509112D2049E27A007D25DC /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
@@ -2285,6 +2287,7 @@
 			isa = PBXGroup;
 			children = (
 				455208592582907C001CF873 /* Add Product Variation */,
+				AEB73C1525CD8E3100A8454A /* Edit Product Variation */,
 				45A0E4D12566BF0800D4E8C3 /* Linked Products */,
 				77423F14251CF59D0016A083 /* Downloadable Files */,
 				45E9A6EA24DAFC3E00A600E8 /* ProductReviewsViewModelTests.swift */,
@@ -3893,6 +3896,14 @@
 			);
 			name = config;
 			path = ../config;
+			sourceTree = "<group>";
+		};
+		AEB73C1525CD8E3100A8454A /* Edit Product Variation */ = {
+			isa = PBXGroup;
+			children = (
+				AEB73C2025CD974800A8454A /* AttributeOptionPickerViewModelTests.swift */,
+			);
+			path = "Edit Product Variation";
 			sourceTree = "<group>";
 		};
 		AEDDDA0825CA9C0A0077F9B2 /* Edit Attributes */ = {
@@ -6420,6 +6431,7 @@
 				D85DD1E1257F376200861AA8 /* NotWPAccountViewModelTests.swift in Sources */,
 				020C908424C84652001E2BEB /* ProductListMultiSelectorSearchUICommandTests.swift in Sources */,
 				746FC23D2200A62B00C3096C /* DateWooTests.swift in Sources */,
+				AEB73C2125CD974800A8454A /* AttributeOptionPickerViewModelTests.swift in Sources */,
 				02F5F80E246102240000613A /* FilterProductListViewModel+numberOfActiveFiltersTests.swift in Sources */,
 				021AEF9C2407B07300029D28 /* ProductImageStatus+HelpersTests.swift in Sources */,
 				024A543622BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift in Sources */,

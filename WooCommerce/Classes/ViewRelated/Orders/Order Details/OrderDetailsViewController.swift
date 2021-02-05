@@ -597,16 +597,8 @@ private extension OrderDetailsViewController {
         ServiceLocator.analytics.track(.orderDetailOrderStatusEditButtonTapped,
                                        withProperties: ["status": viewModel.order.status.rawValue])
 
-        let statusViewModel = OrderStatusListViewModel()
-        let filteredStatuses = self.viewModel.dataSource.currentSiteStatuses.filter {
-            $0.slug != OrderStatusEnum.refunded.rawValue
-        }
-        statusViewModel.updateStatuses(newStatuses: filteredStatuses)
-        statusViewModel.setCurrentOrderStatus(newStatus: viewModel.order.status)
-
-        //X TODO Refresh/fetch
-
-        let statusList = OrderStatusListViewController(viewModel: statusViewModel)
+        let statusList = OrderStatusListViewController(siteID: viewModel.order.siteID,
+                                                       status: viewModel.order.status)
 
         statusList.didSelectCancel = {
             statusList.dismiss(animated: true, completion: nil)

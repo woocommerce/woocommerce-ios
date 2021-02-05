@@ -22,7 +22,7 @@ final class OrderStatusListViewController: UIViewController {
         return refreshControl
     }()
 
-    /// A creator provided view model containing all possible order statuses and the selected one.
+    /// A cview model containing all possible order statuses and the selected one.
     ///
     private let viewModel: OrderStatusListViewModel
 
@@ -34,10 +34,10 @@ final class OrderStatusListViewController: UIViewController {
     ///
     var didSelectApply: ((OrderStatusEnum?) -> Void)?
 
-    init(viewModel: OrderStatusListViewModel) {
-        self.viewModel = viewModel
+    init(siteID: Int64, status: OrderStatusEnum) {
+        self.viewModel = OrderStatusListViewModel(status: status,
+                                                  dataSource: OrderStatusListDataSource(siteID: siteID))
         super.init(nibName: type(of: self).nibName, bundle: nil)
-        //X TODO viewModel.onUpdate
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -49,18 +49,14 @@ final class OrderStatusListViewController: UIViewController {
         registerTableViewCells()
         configureNavigationBar()
         configureTableView()
+        viewModel.configureResultsController(tableView: tableView)
         tableView.reloadData()
-        selectCurrentOrderStatusIfPossible()
-    }
-
-    private func reloadTable(completion: (() -> Void)? = nil) {
-        tableView.reloadData()
-        selectCurrentOrderStatusIfPossible()
-        completion?()
+        selectStatusIfPossible()
     }
 
     /// Select the row corresponding to the current order status if we can.
-    private func selectCurrentOrderStatusIfPossible() {
+    ///
+    private func selectStatusIfPossible() {
         guard let selectedStatusIndex = viewModel.indexOfCurrentOrderStatus() else {
             return
         }
@@ -79,16 +75,13 @@ final class OrderStatusListViewController: UIViewController {
         view.backgroundColor = .listBackground
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
-
         tableView.dataSource = self
         tableView.delegate = self
     }
 
-    //X TODO - reconnect to data source
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        reloadTable {
-            sender.endRefreshing()
-        }
+        viewModel.refetchData()
+        sender.endRefreshing()
     }
 }
 

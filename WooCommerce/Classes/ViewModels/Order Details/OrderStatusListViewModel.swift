@@ -1,41 +1,44 @@
 import Foundation
 import Yosemite
+import class AutomatticTracks.CrashLogging
 
-class OrderStatusListViewModel {
-    private var orderStatuses = [OrderStatus]()
-    private var orderStatus: OrderStatusEnum?
+final class OrderStatusListViewModel {
+    private var status: OrderStatusEnum?
+    private var dataSource: OrderStatusListDataSource
 
-    /// Provide a means for the view to be notified when this view model changes.
-    private var onUpdate: (() -> ())?
-
-    /// Update the statuses.
-    func updateStatuses(newStatuses: [OrderStatus]) {
-        orderStatuses = newStatuses
-        onUpdate?()
+    init(status: OrderStatusEnum, dataSource: OrderStatusListDataSource) {
+        self.status = status
+        self.dataSource = dataSource
     }
 
-    /// Set the current order status.
-    func setCurrentOrderStatus(newStatus: OrderStatusEnum) {
-        orderStatus = newStatus
-        onUpdate?()
+    func configureResultsController(tableView: UITableView) {
+        dataSource.startForwardingEvents(to: tableView)
+        refetchData()
+        // Reload table because refetchData() executes performFetch()
+        tableView.reloadData()
+    }
+
+    func refetchData() {
+        do {
+            try dataSource.performFetch()
+        } catch {
+            CrashLogging.logError(error)
+        }
     }
 
     /// Return the number of statuses for the view.
     ///
     func statusCount() -> Int {
-        orderStatuses.count
+        dataSource.statusCount()
     }
 
     /// Return the index of the current order status.
     ///
     func indexOfCurrentOrderStatus() -> IndexPath? {
-        guard let orderStatus = self.orderStatus else {
+        guard let foundStatus = dataSource.statuses().filter({ $0.status == status }).first else {
             return nil
         }
-        guard let foundStatus = orderStatuses.filter({ $0.status == orderStatus }).first else {
-            return nil
-        }
-        guard let row = orderStatuses.firstIndex(of: foundStatus) else {
+        guard let row = dataSource.statuses().firstIndex(of: foundStatus) else {
             return nil
         }
         return IndexPath(row: row, section: 0)
@@ -47,10 +50,10 @@ class OrderStatusListViewModel {
         guard indexPath.section == 0 else {
             return nil
         }
-        guard indexPath.row < orderStatuses.count else {
+        guard indexPath.row < statusCount() else {
             return nil
         }
-        let status = orderStatuses[indexPath.row].status
+        let status = dataSource.statuses()[indexPath.row].status
         return status
     }
 
@@ -60,10 +63,10 @@ class OrderStatusListViewModel {
         guard indexPath.section == 0 else {
             return nil
         }
-        guard indexPath.row < orderStatuses.count else {
+        guard indexPath.row < statusCount() else {
             return nil
         }
-        let status = orderStatuses[indexPath.row]
+        let status = dataSource.statuses()[indexPath.row]
         return status.name
     }
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-02-04 14:54:04+0000 */
+/* Translation-Revision-Date: 2021-02-05 15:49:23+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -1155,7 +1155,7 @@
 "Issuing Refund..." = "正在核發退款…";
 
 /* Message explaining that the site entered and the acount logged into do not match. Reads like 'It looks like awebsite.com is connected to a different account */
-"It looks like %@ is connected to a different account." = "％@ 似乎已連結到其他帳號。";
+"It looks like %@ is connected to a different account." = "%@ 似乎已連結到其他帳號。";
 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "It looks like this email isn't associated with a WordPress.com account." = "電子郵件與 WordPress.com 帳號似乎無關聯。";

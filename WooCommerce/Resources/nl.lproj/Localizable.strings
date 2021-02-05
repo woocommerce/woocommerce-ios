@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-02-05 10:54:04+0000 */
+/* Translation-Revision-Date: 2021-02-05 15:47:14+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -1463,7 +1463,7 @@
 "No ratings" = "Geen beoordelingen";
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier'. Parameters: %1$@ - carrier name */
-"No results found for %1$@\nAdd a custom carrier" = "Geen resultaten gevonden voor %$1@\nVoeg een aangepaste bezorgservice toe";
+"No results found for %1$@\nAdd a custom carrier" = "Geen resultaten gevonden voor %1$@\nVoeg een aangepaste bezorgservice toe";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Geen omzet deze periode";

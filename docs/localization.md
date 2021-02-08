@@ -87,8 +87,8 @@ GlotPress currently does not support pluralization using the [`.stringsdict` fil
 
 ```swift
 struct PostCountLabels {
-    static let singular = NSLocalizedString("%d Post", comment: "Number of posts displayed in Posting Activity when a day is selected. %d will contain the actual number (singular).")
-    static let plural = NSLocalizedString("%d Posts", comment: "Number of posts displayed in Posting Activity when a day is selected. %d will contain the actual number (plural).")
+    static let singular = NSLocalizedString("%1$d Post", comment: "Number of posts displayed in Posting Activity when a day is selected. %1$d will contain the actual number (singular).")
+    static let plural = NSLocalizedString("%1$d Posts", comment: "Number of posts displayed in Posting Activity when a day is selected. %1$d will contain the actual number (plural).")
 }
 
 let postCountText = (count == 1 ? PostCountLabels.singular : PostCountLabels.plural)

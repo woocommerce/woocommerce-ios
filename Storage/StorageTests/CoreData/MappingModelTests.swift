@@ -71,7 +71,7 @@ final class MappingModelTests: XCTestCase {
                     the bundle.
 
                     This can mean that NSMappingModel() returned an incorrect \
-                    mapping model to use for migrating from \(step.sourceVersion.name) to
+                    mapping model to use for migrating from \(step.sourceVersion.name) to \
                     \(step.targetVersion.name). There's probably something wrong with how we \
                     configured the mapping or the model.
 
@@ -85,8 +85,8 @@ final class MappingModelTests: XCTestCase {
                     Unexpectedly found a \(expectedMappingModelName).xcmappingmodel file in \
                     the bundle.
 
-                    This can mean that we defined a mapping model file for migrating from
-                    \(step.sourceVersion.name) to \(step.targetVersion.name) but NSMappingModel()
+                    This can mean that we defined a mapping model file for migrating from \
+                    \(step.sourceVersion.name) to \(step.targetVersion.name) but NSMappingModel() \
                     did not return that model. There's probably something wrong with how we \
                     configured the mapping or the model.
                     """

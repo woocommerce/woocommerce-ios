@@ -508,6 +508,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         // Linked Products (Upsells and Cross-sell Products)
         try container.encode(upsellIDs, forKey: .upsellIDs)
         try container.encode(crossSellIDs, forKey: .crossSellIDs)
+
+        // Attributes
+        try container.encode(attributes, forKey: .attributes)
     }
 }
 

@@ -48,7 +48,7 @@ private extension AddAttributeOptionsViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.nextNavBarButton,
                                                            style: .plain,
                                                            target: self,
-                                                           action: #selector(doneButtonPressed))
+                                                           action: #selector(nextButtonPressed))
         removeNavigationBackBarButtonText()
     }
 
@@ -294,7 +294,7 @@ extension AddAttributeOptionsViewController: KeyboardScrollable {
 //
 extension AddAttributeOptionsViewController {
 
-    @objc private func doneButtonPressed() {
+    @objc private func nextButtonPressed() {
         // TODO: to be implemented
     }
 }

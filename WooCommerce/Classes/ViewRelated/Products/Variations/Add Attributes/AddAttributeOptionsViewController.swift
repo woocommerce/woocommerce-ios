@@ -295,7 +295,7 @@ extension AddAttributeOptionsViewController: KeyboardScrollable {
 extension AddAttributeOptionsViewController {
 
     @objc private func nextButtonPressed() {
-        // TODO: to be implemented
+        viewModel.updateProductAttributes()
     }
 }
 

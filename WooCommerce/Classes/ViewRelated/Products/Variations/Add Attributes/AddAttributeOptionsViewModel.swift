@@ -170,6 +170,35 @@ extension AddAttributeOptionsViewModel {
 
         addNewOption(name: option.name)
     }
+
+    /// Gathers selected options and update the product's attributes
+    ///
+    func updateProductAttributes() {
+        let newOptions = state.selectedOptions.map { $0.name }
+        let newAttribute = ProductAttribute(siteID: product.siteID,
+                                            attributeID: attribute.attributeID,
+                                            name: attribute.name,
+                                            position: 0,
+                                            visible: true,
+                                            variation: true,
+                                            options: newOptions)
+
+        var currentAttributes = product.attributes
+        currentAttributes.removeAll { $0.attributeID == newAttribute.attributeID }
+        currentAttributes.append(newAttribute)
+
+        let newProduct = product.copy(attributes: currentAttributes)
+
+        let action = ProductAction.updateProduct(product: newProduct) { result in
+            switch result {
+            case let .success(newProduct):
+                print(newProduct.attributes)
+            case let .failure(error):
+                print("error: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
 }
 
 // MARK: - Synchronize Product Attribute Options
@@ -262,6 +291,30 @@ private extension AddAttributeOptionsViewModel.State.Option {
             return name
         case let .global(option):
             return option.name
+        }
+    }
+}
+
+private extension AddAttributeOptionsViewModel.Attribute {
+    /// Returns the ID associated with the attribute. `Zero` for new attributes
+    ///
+    var attributeID: Int64 {
+        switch self {
+        case .new:
+            return 0
+        case .existing(let attribute):
+            return attribute.attributeID
+        }
+    }
+
+    /// Returns the name associated with the attribute.
+    ///
+    var name: String {
+        switch self {
+        case let .new(name):
+            return name
+        case let .existing(attribute):
+            return attribute.name
         }
     }
 }

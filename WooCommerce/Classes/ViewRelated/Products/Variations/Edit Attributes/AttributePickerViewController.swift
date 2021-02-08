@@ -4,8 +4,7 @@ import Yosemite
 final class AttributePickerViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
-
-    private let variationModel: EditableProductVariationModel
+    private let viewModel: AttributePickerViewModel
 
     typealias Completion = (_ attributes: [ProductVariationAttribute]) -> Void
     private let onCompletion: Completion
@@ -13,7 +12,7 @@ final class AttributePickerViewController: UIViewController {
     /// Init
     ///
     init(variationModel: EditableProductVariationModel, onCompletion: @escaping Completion) {
-        self.variationModel = variationModel
+        self.viewModel = .init(variationModel: variationModel)
         self.onCompletion = onCompletion
         super.init(nibName: nil, bundle: nil)
     }
@@ -39,10 +38,14 @@ private extension AttributePickerViewController {
 
     func configureNavigationBar() {
         title = Localization.titleView
+    }
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
-                                                           target: self,
-                                                           action: #selector(doneButtonPressed))
+    func updateDoneButton() {
+        if viewModel.isChanged {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonPressed))
+        } else {
+            navigationItem.rightBarButtonItem = nil
+        }
     }
 
     func configureMainView() {
@@ -73,13 +76,12 @@ private extension AttributePickerViewController {
 extension AttributePickerViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return variationModel.allAttributes.count
+        return viewModel.attributes.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(TitleAndValueTableViewCell.self, for: indexPath)
-        configureAttribute(cell: cell, attribute: variationModel.allAttributes[safe: indexPath.row])
-
+        configureAttribute(cell: cell, attribute: viewModel.attributes[safe: indexPath.row])
         return cell
     }
 }
@@ -90,7 +92,7 @@ extension AttributePickerViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        presentAttributeOptions(for: variationModel.allAttributes[indexPath.row])
+        presentAttributeOptions(for: viewModel.attributes[safe: indexPath.row])
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -123,8 +125,7 @@ private extension AttributePickerViewController {
             return
         }
 
-        let optionValue = variationModel.productVariation.attributes.first(where: { $0.id == attribute.attributeID && $0.name == attribute.name })?.option ??
-            Localization.anyAttributeOption
+        let optionValue = viewModel.selectedOption(for: attribute)?.option ?? Localization.anyOption
 
         cell.updateUI(title: attribute.name, value: optionValue)
         cell.accessoryType = .disclosureIndicator
@@ -133,14 +134,41 @@ private extension AttributePickerViewController {
 
 // MARK: - Navigation actions handling
 //
-extension AttributePickerViewController {
+private extension AttributePickerViewController {
 
-    @objc private func doneButtonPressed() {
-        onCompletion(variationModel.productVariation.attributes)
+    @objc func doneButtonPressed() {
+        onCompletion(viewModel.resultAttributes)
     }
 
-    private func presentAttributeOptions(for existingAttribute: ProductAttribute) {
-        // TODO-3515: Show options for attribute
+    func presentAttributeOptions(for existingAttribute: ProductAttribute?) {
+        guard let existingAttribute = existingAttribute else {
+            return
+        }
+
+        let oldAttribute = viewModel.selectedOption(for: existingAttribute)
+
+        let command = AttributeOptionListSelectorCommand(attribute: existingAttribute, selectedOption: oldAttribute)
+        let attributeOptionListSelector = ListSelectorViewController(command: command) { [weak self] selected in
+            self?.onAttributeOptionListSelectorCompletion(parentAttribute: existingAttribute, oldAttribute: oldAttribute, selectedRow: selected)
+        }
+        show(attributeOptionListSelector, sender: self)
+    }
+
+    func onAttributeOptionListSelectorCompletion(parentAttribute: ProductAttribute,
+                                                 oldAttribute: ProductVariationAttribute?,
+                                                 selectedRow: AttributeOptionListSelectorCommand.Row?) {
+        let newAttribute: ProductVariationAttribute? = {
+            switch selectedRow {
+            case .option(let selectedOption):
+                return ProductVariationAttribute(id: parentAttribute.attributeID, name: parentAttribute.name, option: selectedOption)
+            default:
+                return nil
+            }
+        }()
+
+        viewModel.update(oldAttribute: oldAttribute, to: newAttribute)
+        tableView.reloadData()
+        updateDoneButton()
     }
 }
 
@@ -148,6 +176,6 @@ private extension AttributePickerViewController {
     enum Localization {
         static let titleView = NSLocalizedString("Attributes", comment: "Edit Product Attributes screen navigation title")
         static let headerAttributes = NSLocalizedString("Options", comment: "Header of attributes section in Edit Product Attributes screen")
-        static let anyAttributeOption = NSLocalizedString("Any", comment: "Product variation attribute description where the attribute is set to any value.")
+        static let anyOption = NSLocalizedString("Any", comment: "Product variation attribute description where the attribute is set to any value.")
     }
 }

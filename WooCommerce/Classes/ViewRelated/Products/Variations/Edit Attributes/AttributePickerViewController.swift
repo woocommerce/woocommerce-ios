@@ -136,30 +136,39 @@ private extension AttributePickerViewController {
 
 // MARK: - Navigation actions handling
 //
-extension AttributePickerViewController {
+private extension AttributePickerViewController {
 
-    @objc private func doneButtonPressed() {
+    @objc func doneButtonPressed() {
         onCompletion(viewModel.resultAttributes)
     }
 
-    private func presentAttributeOptions(for existingAttribute: ProductAttribute?) {
+    func presentAttributeOptions(for existingAttribute: ProductAttribute?) {
         guard let existingAttribute = existingAttribute else {
             return
         }
 
         let oldAttribute = viewModel.selectedOption(for: existingAttribute)
-        let attributeOptionPickerViewController = AttributeOptionPickerViewController(attribute: existingAttribute,
-                                                                                      selectedOption: oldAttribute) { [weak self] resultAttribute in
-            self?.onEditAttributeOptionCompletion(oldAttribute: oldAttribute, newAttribute: resultAttribute)
+
+        let command = AttributeOptionListSelectorCommand(attribute: existingAttribute, selectedOption: oldAttribute)
+        let attributeOptionListSelector = ListSelectorViewController(command: command) { [weak self] selected in
+            self?.onAttributeOptionListSelectorCompletion(parentAttribute: existingAttribute, oldAttribute: oldAttribute, selectedRow: selected)
         }
-        show(attributeOptionPickerViewController, sender: self)
+        show(attributeOptionListSelector, sender: self)
     }
 
-    func onEditAttributeOptionCompletion(oldAttribute: ProductVariationAttribute?, newAttribute: ProductVariationAttribute?) {
+    func onAttributeOptionListSelectorCompletion(parentAttribute: ProductAttribute,
+                                                 oldAttribute: ProductVariationAttribute?,
+                                                 selectedRow: AttributeOptionListSelectorCommand.Row?) {
+        let newAttribute: ProductVariationAttribute?
+        if case .option(let selectedOption) = selectedRow {
+            newAttribute = ProductVariationAttribute(id: parentAttribute.attributeID, name: parentAttribute.name, option: selectedOption)
+        } else {
+            newAttribute = nil
+        }
+
         viewModel.update(oldAttribute: oldAttribute, to: newAttribute)
         tableView.reloadData()
         updateDoneButton()
-        navigationController?.popViewController(animated: true)
     }
 }
 

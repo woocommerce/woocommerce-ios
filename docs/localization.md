@@ -46,7 +46,7 @@ Use [`String.localizedStringWithFormat`](https://developer.apple.com/documentati
 ```swift
 // Do
 let year = 2019
-let template = NSLocalizedString("© %d Acme, Inc.", comment: "Copyright Notice")
+let template = NSLocalizedString("© %1$d Acme, Inc.", comment: "Copyright Notice")
 let str = String.localizeStringWithFormat(template, year)
 ```
 

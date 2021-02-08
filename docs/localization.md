@@ -4,7 +4,7 @@ During development, using [`NSLocalizedString()`](https://developer.apple.com/do
 
 During the release process, `NSLocalizedString` statements are scanned and stored in the `Localizable.strings` file. The file is then uploaded to [GlotPress](https://translate.wordpress.com/projects/woocommerce/woocommerce-ios/) for translation. Before the release build is finalized, all the translations are grabbed from GlotPress and saved back to the `Localizable.strings` files.
 
-## Always add Comments
+## Always Add Comments
 
 Always add a meaningful comment. If possible, describe where and how the string will be used. If there are placeholders, describe what each placeholder is. 
 
@@ -21,7 +21,7 @@ let title = NSLocalizedString("Following %@", comment: "")
 
 Comments help give more context to translators.
 
-## Do not use Variables
+## Do Not Use Variables
 
 Do not use variables as the argument of `NSLocalizedString()`. The string value will not be automatically picked up. 
 
@@ -37,7 +37,7 @@ let myText = "This is the text I want to translate."
 myTextLabel?.text = NSLocalizedString(myText, comment: "Put a meaningful comment here.")
 ```
 
-## Do not use Interpolated Strings
+## Do Not Use Interpolated Strings
 
 Interpolated strings are harder to understand by translators and they may end up translating/changing the variable name, causing a crash.
 

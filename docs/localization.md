@@ -10,8 +10,8 @@ Always add a meaningful comment. If possible, describe where and how the string 
 
 ```swift
 // Do
-let title = NSLocalizedString("Following %@",
-                              comment: "Title for a notice informing the user that they've successfully followed a site. %@ is a placeholder for the name of the site.")
+let title = NSLocalizedString("Following %1$@",
+                              comment: "Title for a notice informing the user that they've successfully followed a site. %1$@ is a placeholder for the name of the site.")
 ```
 
 ```swift

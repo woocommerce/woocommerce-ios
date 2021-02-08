@@ -9,6 +9,6 @@ public struct Hardware {
     public init() {
 
     }
-    
+
     public var text = "Hello, World!"
 }

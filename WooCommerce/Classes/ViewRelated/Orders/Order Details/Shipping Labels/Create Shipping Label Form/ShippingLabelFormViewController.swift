@@ -113,7 +113,7 @@ private extension ShippingLabelFormViewController {
 
     func configureShipTo(cell: ShippingLabelFormStepTableViewCell, row: Row) {
         cell.configure(state: row.cellState,
-                       icon: .houseImage,
+                       icon: .houseOutlinedImage,
                        title: Localization.shipToCellTitle,
                        body: "To be implemented",
                        buttonTitle: Localization.continueButtonInCells) {

@@ -45,11 +45,25 @@ final class AddAttributeOptionsViewController: UIViewController {
 private extension AddAttributeOptionsViewController {
 
     func configureNavigationBar() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.nextNavBarButton,
-                                                           style: .plain,
-                                                           target: self,
-                                                           action: #selector(nextButtonPressed))
         removeNavigationBackBarButtonText()
+    }
+
+    func configureRightButtonItem() {
+        // The update indicator has precedence over the next button
+        if viewModel.showUpdateIndicator {
+            let indicator = UIActivityIndicatorView(style: .medium)
+            indicator.color = .primaryButtonTitle
+            indicator.startAnimating()
+            navigationItem.rightBarButtonItem = UIBarButtonItem(customView: indicator)
+            return
+        }
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.nextNavBarButton,
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(nextButtonPressed))
+        navigationItem.rightBarButtonItem?.isEnabled = viewModel.isNextButtonEnabled
+
     }
 
     func configureMainView() {
@@ -96,7 +110,7 @@ private extension AddAttributeOptionsViewController {
 
     func renderViewModel() {
         title = viewModel.titleView
-        navigationItem.rightBarButtonItem?.isEnabled = viewModel.isNextButtonEnabled
+        configureRightButtonItem()
         tableView.reloadData()
 
         if viewModel.showGhostTableView {

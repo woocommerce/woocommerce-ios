@@ -37,6 +37,10 @@ final class AddAttributeOptionsViewModel {
         /// Indicates if the view model is syncing a global attribute options
         ///
         var isSyncing: Bool = false
+
+        /// Indicates if the view model is updating the product's attributes
+        ///
+        var isUpdating: Bool = false
     }
 
     /// Title of the navigation bar
@@ -56,8 +60,16 @@ final class AddAttributeOptionsViewModel {
         state.selectedOptions.isNotEmpty
     }
 
+    /// Defines ghost cells visibility
+    ///
     var showGhostTableView: Bool {
         state.isSyncing
+    }
+
+    /// Defines if the update indicator should be shown
+    ///
+    var showUpdateIndicator: Bool {
+        state.isUpdating
     }
 
     /// Closure to notify the `ViewController` when the view model properties change.
@@ -189,7 +201,11 @@ extension AddAttributeOptionsViewModel {
 
         let newProduct = product.copy(attributes: currentAttributes)
 
-        let action = ProductAction.updateProduct(product: newProduct) { result in
+        state.isUpdating = true
+        let action = ProductAction.updateProduct(product: newProduct) { [weak self] result in
+            guard let self = self else { return }
+            self.state.isUpdating = false
+
             switch result {
             case let .success(newProduct):
                 print(newProduct.attributes)

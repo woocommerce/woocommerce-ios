@@ -42,9 +42,7 @@ private extension AttributePickerViewController {
 
     func updateDoneButton() {
         if viewModel.isChanged {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
-                                                                target: self,
-                                                                action: #selector(doneButtonPressed))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonPressed))
         } else {
             navigationItem.rightBarButtonItem = nil
         }
@@ -159,12 +157,14 @@ private extension AttributePickerViewController {
     func onAttributeOptionListSelectorCompletion(parentAttribute: ProductAttribute,
                                                  oldAttribute: ProductVariationAttribute?,
                                                  selectedRow: AttributeOptionListSelectorCommand.Row?) {
-        let newAttribute: ProductVariationAttribute?
-        if case .option(let selectedOption) = selectedRow {
-            newAttribute = ProductVariationAttribute(id: parentAttribute.attributeID, name: parentAttribute.name, option: selectedOption)
-        } else {
-            newAttribute = nil
-        }
+        let newAttribute: ProductVariationAttribute? = {
+            switch selectedRow {
+            case .option(let selectedOption):
+                return ProductVariationAttribute(id: parentAttribute.attributeID, name: parentAttribute.name, option: selectedOption)
+            default:
+                return nil
+            }
+        }()
 
         viewModel.update(oldAttribute: oldAttribute, to: newAttribute)
         tableView.reloadData()

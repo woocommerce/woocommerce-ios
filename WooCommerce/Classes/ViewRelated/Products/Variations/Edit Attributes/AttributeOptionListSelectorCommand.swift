@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
 
-/// Command to populate the shipping label paper size list selector
+/// Command to populate the attribute option selector for variable product
 ///
 final class AttributeOptionListSelectorCommand: ListSelectorCommand {
 

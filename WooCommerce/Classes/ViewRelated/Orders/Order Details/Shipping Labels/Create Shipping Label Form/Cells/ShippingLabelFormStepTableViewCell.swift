@@ -8,6 +8,8 @@ final class ShippingLabelFormStepTableViewCell: UITableViewCell {
     @IBOutlet private weak var stackView: UIStackView!
     @IBOutlet private weak var bodyLabel: UILabel!
     @IBOutlet private weak var button: UIButton!
+    @IBOutlet private weak var disclosureIndicatorView: UIView!
+    @IBOutlet private weak var chevronView: UIImageView!
     @IBOutlet private weak var separator: UIView!
     @IBOutlet private weak var separatorLeadingConstraint: NSLayoutConstraint!
 
@@ -57,6 +59,9 @@ private extension ShippingLabelFormStepTableViewCell {
         applyDefaultBackgroundStyle()
         iconView.tintColor = .neutral(.shade100)
         selectionStyle = .none
+        chevronView.image = .chevronImage
+        chevronView.tintColor = .neutral(.shade100)
+        chevronView.alpha = 0.3
         separator.backgroundColor = .systemColor(.separator)
     }
 
@@ -77,22 +82,22 @@ private extension ShippingLabelFormStepTableViewCell {
             titleLabel.alpha = 0.3
             bodyLabel.alpha = 0.3
             button.isHidden = true
+            disclosureIndicatorView.isHidden = true
             separatorLeadingConstraint.constant = Constants.separatorDefaultMargin
-            accessoryType = .none
         case .enabled:
             iconView.alpha = 0.6
             titleLabel.alpha = 1.0
             bodyLabel.alpha = 0.6
             button.isHidden = true
+            disclosureIndicatorView.isHidden = false
             separatorLeadingConstraint.constant = Constants.separatorDefaultMargin
-            accessoryType = .disclosureIndicator
         case .continue:
             iconView.alpha = 1.0
             titleLabel.alpha = 1.0
             bodyLabel.alpha = 0.6
             button.isHidden = false
+            disclosureIndicatorView.isHidden = true
             separatorLeadingConstraint.constant = Constants.separatorCustomMargin
-            accessoryType = .none
         }
     }
 }

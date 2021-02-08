@@ -94,8 +94,7 @@ extension UIImage {
     /// Chevron Pointing Right
     ///
     static var chevronImage: UIImage {
-        let tintColor = UIColor.neutral(.shade40)
-        return UIImage.gridicon(.chevronRight).imageWithTintColor(tintColor)!
+        return UIImage.gridicon(.chevronRight)
     }
 
     /// Chevron Pointing Down

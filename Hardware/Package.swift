@@ -30,6 +30,6 @@ let package = Package(
             dependencies: ["StripeTerminal"]),
         .testTarget(
             name: "HardwareTests",
-            dependencies: ["Hardware", "StripeTerminal"]),
+            dependencies: ["Hardware"]),
     ]
 )

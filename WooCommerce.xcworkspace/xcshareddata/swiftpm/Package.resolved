@@ -16,7 +16,7 @@
         "state": {
           "branch": "spm_beta",
           "revision": "48e6c75c74b0fe52c16dff54da53944c5d001008",
-          "version": null
+          "version": "4.1.2"
         }
       }
     ]

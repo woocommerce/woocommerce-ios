@@ -185,7 +185,20 @@ extension AddAttributeOptionsViewModel {
 
     /// Gathers selected options and update the product's attributes
     ///
-    func updateProductAttributes() {
+    func updateProductAttributes(onCompletion: @escaping ((Result<Product, ProductUpdateError>) -> Void)) {
+        state.isUpdating = true
+        let newProduct = createUpdatedProduct()
+        let action = ProductAction.updateProduct(product: newProduct) { [weak self] result in
+            guard let self = self else { return }
+            self.state.isUpdating = false
+            onCompletion(result)
+        }
+        stores.dispatch(action)
+    }
+
+    /// Returns a product with its attributes updated with the new attribute to create.
+    ///
+    private func createUpdatedProduct() -> Product {
         let newOptions = state.selectedOptions.map { $0.name }
         let newAttribute = ProductAttribute(siteID: product.siteID,
                                             attributeID: attribute.attributeID,
@@ -194,26 +207,14 @@ extension AddAttributeOptionsViewModel {
                                             visible: true,
                                             variation: true,
                                             options: newOptions)
+        let updatedAttributes: [ProductAttribute] = {
+            var attributes = product.attributes
+            attributes.removeAll { $0.attributeID == newAttribute.attributeID }
+            attributes.append(newAttribute)
+            return attributes
+        }()
 
-        var currentAttributes = product.attributes
-        currentAttributes.removeAll { $0.attributeID == newAttribute.attributeID }
-        currentAttributes.append(newAttribute)
-
-        let newProduct = product.copy(attributes: currentAttributes)
-
-        state.isUpdating = true
-        let action = ProductAction.updateProduct(product: newProduct) { [weak self] result in
-            guard let self = self else { return }
-            self.state.isUpdating = false
-
-            switch result {
-            case let .success(newProduct):
-                print(newProduct.attributes)
-            case let .failure(error):
-                print("error: \(error)")
-            }
-        }
-        stores.dispatch(action)
+        return product.copy(attributes: updatedAttributes)
     }
 }
 

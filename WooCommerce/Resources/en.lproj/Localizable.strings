@@ -231,11 +231,17 @@
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "Add Tracking";
 
+/* Title on add variation button when there are no variations */
+"Add Variation" = "Add Variation";
+
 /* Title for adding variations row on Product main screen for a variable product */
 "Add variations" = "Add variations";
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Add weight and dimensions";
+
+/* Title on the variations list screen when there are no variations */
+"Add your first variation" = "Add your first variation";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Adds tracking to an order.";
@@ -288,10 +294,11 @@
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "An optional note to send the customer after purchase";
 
-/* Title when there is no filter set. */
+/* Product variation attribute description where the attribute is set to any value.
+   Title when there is no filter set. */
 "Any" = "Any";
 
-/* Format of a product varition attribute description where the attribute is set to any value. */
+/* Format of a product variation attribute description where the attribute is set to any value. */
 "Any %@" = "Any %@";
 
 /* Message shown when Apple authentication fails. */
@@ -333,6 +340,10 @@
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "Attribute name" = "Attribute name";
+
+/* Edit Product Attributes screen navigation title
+   Title of the attributes row on Product Variation main screen */
+"Attributes" = "Attributes";
 
 /* No comment provided by engineer. */
 "Authenticating" = "Authenticating";
@@ -515,10 +526,6 @@
 /* Button title. Tapping begins log in using Google. */
 "Continue with Google" = "Continue with Google";
 
-/* Button title. Takes the user to the login by email flow.
-   Button title. Tapping begins our normal log in process. */
-"Continue with WordPress.com" = "Continue with WordPress.com";
-
 /* Button title. Takes the user to the login with WordPress.com flow. */
 "Continue With WordPress.com" = "Continue With WordPress.com";
 
@@ -609,12 +616,6 @@
 
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "Date: Oldest to Newest";
-
-/* Statistical unit - a single day */
-"Day" = "Day";
-
-/* Plural of 'day' — a statistical unit */
-"Days" = "Days";
 
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Default";
@@ -1136,7 +1137,7 @@
 "Italic" = "Italic";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
-"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats";
+"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats.";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Keep Editing";
@@ -1225,6 +1226,10 @@
 
 /* A generic error message for a failed log in. */
 "Log in failed. Please try again." = "Log in failed. Please try again.";
+
+/* Button title. Takes the user to the login by email flow.
+   Button title. Tapping begins our normal log in process. */
+"Log in or sign up with WordPress.com" = "Log in or sign up with WordPress.com";
 
 /* Instruction text on the login's email address screen. */
 "Log in to the WordPress.com account you used to connect Jetpack." = "Log in to the WordPress.com account you used to connect Jetpack.";
@@ -1317,12 +1322,6 @@
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %@, maximum value %@" = "Minimum value %1$@, maximum value %2$@";
 
-/* Statistical unit - a single week */
-"Month" = "Month";
-
-/* Plural of 'month' — a statistical unit */
-"Months" = "Months";
-
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
 "More" = "More";
@@ -1405,9 +1404,6 @@
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "No price set";
-
-/* The text on the placeholder overlay when there are no product variations on the Products tab */
-"No product variations yet" = "No product variations yet";
 
 /* Placeholder for the linked products list selector screen
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
@@ -1509,6 +1505,9 @@
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Optional Tracking Information";
+
+/* Header of attributes section in Edit Product Attributes screen */
+"Options" = "Options";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
 "OPTIONS OFFERED" = "OPTIONS OFFERED";
@@ -2955,12 +2954,6 @@
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com.";
 
-/* Statistical unit - a single week */
-"Week" = "Week";
-
-/* Plural of 'week' — a statistical unit */
-"Weeks" = "Weeks";
-
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "Weight";
 
@@ -2973,10 +2966,8 @@
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "What email do I use to sign in?";
 
-/* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
-"What is Jetpack" = "What is Jetpack";
-
-/* Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
+/* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
+   Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "What is Jetpack?" = "What is Jetpack?";
 
 /* Title of alert helping users understand their site address */
@@ -3016,12 +3007,6 @@
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
 
-/* Statistical unit - a single year */
-"Year" = "Year";
-
-/* Plural of 'year' — a statistical unit */
-"Years" = "Years";
-
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Yes, change";
 
@@ -3057,7 +3042,7 @@
 "{G} Log in with Google." = "{G} Log in with Google.";
 
 /* About View's Footer Text. The variable is the current year */
-"© %@ Automattic, Inc." = "© %@ Automattic, Inc.";
+"© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd.";
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "“%@”";

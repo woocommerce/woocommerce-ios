@@ -21,6 +21,28 @@ let title = NSLocalizedString("Following %@", comment: "")
 
 Comments help give more context to translators.
 
+## Always Use Positional Placeholders
+
+Always include the positional index of parameters. For example, instead of just using `%@` as the placeholder, use `%1$@` instead. Positional placeholders allow translators to change the order of placeholders or repeat them if necessary.
+
+```swift
+// Do
+let title = NSLocalizedString(
+    "%1$@ left a review on %2$@",
+    comment: "Title for a product review in Notifications." +
+        " The %1$@ is a placeholder for the author's name." +
+        " The %2$@ is a placeholder for the product name.")
+```
+
+```swift
+// Don't
+let title = NSLocalizedString(
+    "%@ left a review on %@",
+    comment: "Title for a product review in Notifications." +
+        " The first placeholder is the author's name." +
+        " The second placeholder is the product name.")
+```
+
 ## Do Not Use Variables
 
 Do not use variables as the argument of `NSLocalizedString()`. The string value will not be automatically picked up. 

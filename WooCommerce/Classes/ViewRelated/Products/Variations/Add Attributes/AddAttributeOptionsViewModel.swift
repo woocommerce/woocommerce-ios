@@ -207,9 +207,12 @@ extension AddAttributeOptionsViewModel {
                                             visible: true,
                                             variation: true,
                                             options: newOptions)
+
+        // Here we remove any possible existing attribute with the same ID and Name. For then re-adding the new updated attribute
+        // Name has to be considered, because local attributes are zero-id based.
         let updatedAttributes: [ProductAttribute] = {
             var attributes = product.attributes
-            attributes.removeAll { $0.attributeID == newAttribute.attributeID }
+            attributes.removeAll { $0.attributeID == newAttribute.attributeID && $0.name == newAttribute.name }
             attributes.append(newAttribute)
             return attributes
         }()

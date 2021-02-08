@@ -23,7 +23,7 @@ Comments help give more context to translators.
 
 ## Always Use Positional Placeholders
 
-Always include the positional index of parameters. For example, instead of just using `%@` as the placeholder, use `%1$@` instead. Positional placeholders allow translators to change the order of placeholders or repeat them if necessary.
+Always include the positional index of parameters, even if you only have one placeholder in your string. For example, instead of using `%@` as the placeholder, use `%1$@` instead. Positional placeholders allow translators to change the order of placeholders or repeat them if necessary.
 
 ```swift
 // Do

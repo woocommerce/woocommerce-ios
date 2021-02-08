@@ -12,7 +12,7 @@ final class AddAttributeViewModel {
     ///
     private let storesManager: StoresManager
 
-    private let product: Product
+    let product: Product
     private(set) var localAndGlobalAttributes: [ProductAttribute] = []
 
     private(set) var sections: [Section] = []

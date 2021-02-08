@@ -11,7 +11,7 @@ final class AddAttributeOptionsViewModel {
 
     /// Enum to represents the original invocation source of this view model
     ///
-    enum Source {
+    enum Attribute {
         case new(name: String)
         case existing(attribute: ProductAttribute)
     }
@@ -42,7 +42,7 @@ final class AddAttributeOptionsViewModel {
     /// Title of the navigation bar
     ///
     var titleView: String? {
-        switch source {
+        switch attribute {
         case .new(let name):
             return name
         case .existing(let attribute):
@@ -64,15 +64,19 @@ final class AddAttributeOptionsViewModel {
     ///
     var onChange: (() -> (Void))?
 
+    /// Main product dependency.
+    ///
+    private let product: Product
+
     /// Main attribute dependency.
     ///
-    private let source: Source
+    private let attribute: Attribute
 
     /// When an attribute exists, returns an already configured `ResultsController`
     /// When there isn't an existing attribute, returns a dummy/un-initialized `ResultsController`
     ///
     private lazy var existingOptionsResultsController: ResultsController<StorageProductAttributeTerm> = {
-        guard case let .existing(attribute) = source, attribute.isGlobal else {
+        guard case let .existing(attribute) = attribute, attribute.isGlobal else {
             // Return a dummy ResultsController if there isn't an existing attribute. It's a workaround to not deal with an optional ResultsController.
             return ResultsController<StorageProductAttributeTerm>(storageManager: viewStorage, matching: nil, sortedBy: [])
         }
@@ -108,12 +112,16 @@ final class AddAttributeOptionsViewModel {
     ///
     private let viewStorage: StorageManagerType
 
-    init(source: Source, stores: StoresManager = ServiceLocator.stores, viewStorage: StorageManagerType = ServiceLocator.storageManager) {
-        self.source = source
+    init(product: Product,
+         attribute: Attribute,
+         stores: StoresManager = ServiceLocator.stores,
+         viewStorage: StorageManagerType = ServiceLocator.storageManager) {
+        self.product = product
+        self.attribute = attribute
         self.stores = stores
         self.viewStorage = viewStorage
 
-        switch source {
+        switch attribute {
         case .new:
             updateSections()
         case let .existing(attribute) where attribute.isGlobal:

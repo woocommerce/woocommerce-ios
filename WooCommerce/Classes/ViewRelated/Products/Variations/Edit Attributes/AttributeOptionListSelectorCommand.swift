@@ -6,7 +6,7 @@ import Yosemite
 final class AttributeOptionListSelectorCommand: ListSelectorCommand {
 
     enum Row: Equatable {
-        case anyAttribute
+        case anyOption
         case option(String)
     }
 
@@ -21,19 +21,19 @@ final class AttributeOptionListSelectorCommand: ListSelectorCommand {
 
     init(attribute: ProductAttribute, selectedOption: ProductVariationAttribute?) {
         self.navigationBarTitle = attribute.name
-        self.data = [Row.anyAttribute] + attribute.options.map { Row.option($0) }
+        self.data = [Row.anyOption] + attribute.options.map { Row.option($0) }
 
         if let selectedOption = selectedOption {
             self.selected = .option(selectedOption.option)
         } else {
-            self.selected = .anyAttribute
+            self.selected = .anyOption
         }
     }
 
     func configureCell(cell: BasicTableViewCell, model: Row) {
         switch model {
-        case .anyAttribute:
-            cell.textLabel?.text = Localization.anyAttributeOption
+        case .anyOption:
+            cell.textLabel?.text = Localization.anyOption
         case .option(let optionName):
             cell.textLabel?.text = optionName
         }
@@ -50,7 +50,7 @@ final class AttributeOptionListSelectorCommand: ListSelectorCommand {
 
 private extension AttributeOptionListSelectorCommand {
     enum Localization {
-        static let anyAttributeOption = NSLocalizedString(
+        static let anyOption = NSLocalizedString(
             "Any Attribute",
             comment: "Product variation attribute description where the attribute is set to any value.")
     }

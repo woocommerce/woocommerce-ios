@@ -127,7 +127,7 @@ private extension AttributePickerViewController {
             return
         }
 
-        let optionValue = viewModel.selectedOption(for: attribute)?.option ?? Localization.anyAttributeOption
+        let optionValue = viewModel.selectedOption(for: attribute)?.option ?? Localization.anyOption
 
         cell.updateUI(title: attribute.name, value: optionValue)
         cell.accessoryType = .disclosureIndicator
@@ -176,6 +176,6 @@ private extension AttributePickerViewController {
     enum Localization {
         static let titleView = NSLocalizedString("Attributes", comment: "Edit Product Attributes screen navigation title")
         static let headerAttributes = NSLocalizedString("Options", comment: "Header of attributes section in Edit Product Attributes screen")
-        static let anyAttributeOption = NSLocalizedString("Any", comment: "Product variation attribute description where the attribute is set to any value.")
+        static let anyOption = NSLocalizedString("Any", comment: "Product variation attribute description where the attribute is set to any value.")
     }
 }

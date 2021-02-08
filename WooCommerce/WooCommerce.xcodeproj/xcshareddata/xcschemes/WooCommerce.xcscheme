@@ -120,8 +120,8 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            isEnabled = "NO">
             argument = "mocked-network-layer"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-force-crash-logging 1"

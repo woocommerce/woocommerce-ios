@@ -5,6 +5,10 @@
 /// https://github.com/woocommerce/woocommerce-ios/issues/3587 or
 /// https://github.com/woocommerce/woocommerce-ios/issues/3589
 /// Leaving it here for now will also help test the PR that adds the package to the project
-struct Hardware {
-    var text = "Hello, World!"
+public struct Hardware {
+    public init() {
+
+    }
+    
+    public var text = "Hello, World!"
 }

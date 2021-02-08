@@ -278,9 +278,9 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .updateProduct(_, onCompletion):
+            case let .updateProduct(product, onCompletion):
                 DispatchQueue.main.async {
-                    onCompletion(.success(Product()))
+                    onCompletion(.success(product))
                 }
             default:
                 break
@@ -289,13 +289,55 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
 
         // When
         let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: sampleAttribute()), stores: stores)
-        viewModel.updateProductAttributes()
+        viewModel.updateProductAttributes(onCompletion: { _ in })
 
         // Then
         XCTAssertTrue(viewModel.showUpdateIndicator)
         waitUntil {
             !viewModel.showUpdateIndicator
         }
+    }
+
+    func test_update_product_correctly_updates_product_attributes() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(product, onCompletion):
+                    onCompletion(.success(product))
+            default:
+                break
+            }
+        }
+
+        let initialAttribute = sampleAttribute()
+        let initialProduct = sampleProduct().copy(attributes: [initialAttribute])
+        let viewModel = AddAttributeOptionsViewModel(product: initialProduct, attribute: .existing(attribute: initialAttribute), stores: stores)
+
+        viewModel.addNewOption(name: "Option 1")
+        viewModel.addNewOption(name: "Option 2")
+
+        // When
+        let updatedProduct: Product = waitFor { promise in
+            viewModel.updateProductAttributes { result in
+                switch result {
+                case .success(let product):
+                    promise(product)
+                case .failure:
+                    break
+                }
+            }
+        }
+
+        // Then
+        let expectedAttribute = ProductAttribute.init(siteID: initialAttribute.siteID,
+                                                      attributeID: initialAttribute.attributeID,
+                                                      name: initialAttribute.name,
+                                                      position: initialAttribute.position,
+                                                      visible: true,
+                                                      variation: true,
+                                                      options: ["Option 1", "Option 2"])
+        XCTAssertEqual(updatedProduct.attributes, [expectedAttribute])
     }
 }
 

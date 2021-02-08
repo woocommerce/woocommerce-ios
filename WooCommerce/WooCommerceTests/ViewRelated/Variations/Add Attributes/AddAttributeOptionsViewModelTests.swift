@@ -272,6 +272,31 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
             .selectedOptions(name: "Option 3"),
         ])
     }
+
+    func test_update_product_should_toggle_showUpdateIndicator_property() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(_, onCompletion):
+                DispatchQueue.main.async {
+                    onCompletion(.success(Product()))
+                }
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: sampleAttribute()), stores: stores)
+        viewModel.updateProductAttributes()
+
+        // Then
+        XCTAssertTrue(viewModel.showUpdateIndicator)
+        waitUntil {
+            !viewModel.showUpdateIndicator
+        }
+    }
 }
 
 // MARK: Helpers

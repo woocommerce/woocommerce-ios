@@ -120,7 +120,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = ""
+            argument = "mocked-network-layer"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument

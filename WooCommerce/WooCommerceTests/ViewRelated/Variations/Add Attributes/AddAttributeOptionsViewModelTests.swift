@@ -298,7 +298,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         }
     }
 
-    func test_update_product_correctly_updates_product_attributes() throws {
+    func test_updating_existing_attribute_correctly_updates_product_attributes() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
@@ -330,14 +330,44 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         }
 
         // Then
-        let expectedAttribute = ProductAttribute.init(siteID: initialAttribute.siteID,
-                                                      attributeID: initialAttribute.attributeID,
-                                                      name: initialAttribute.name,
-                                                      position: initialAttribute.position,
-                                                      visible: true,
-                                                      variation: true,
-                                                      options: ["Option 1", "Option 2"])
+        let expectedAttribute = sampleAttribute(options: ["Option 1", "Option 2"])
         XCTAssertEqual(updatedProduct.attributes, [expectedAttribute])
+    }
+
+    func test_saving_new_attribute_does_not_override_existing_local_attribute() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(product, onCompletion):
+                    onCompletion(.success(product))
+            default:
+                break
+            }
+        }
+
+        let initialAttribute = sampleAttribute(attributeID: 0, name: "attr-1")
+        let initialProduct = sampleProduct().copy(attributes: [initialAttribute])
+        let viewModel = AddAttributeOptionsViewModel(product: initialProduct, attribute: .new(name: "attr-2"), stores: stores)
+
+        viewModel.addNewOption(name: "Option 1")
+        viewModel.addNewOption(name: "Option 2")
+
+        // When
+        let updatedProduct: Product = waitFor { promise in
+            viewModel.updateProductAttributes { result in
+                switch result {
+                case .success(let product):
+                    promise(product)
+                case .failure:
+                    break
+                }
+            }
+        }
+
+        // Then
+        let expectedAttribute = sampleAttribute(attributeID: 0, name: "attr-2", options: ["Option 1", "Option 2"])
+        XCTAssertEqual(updatedProduct.attributes, [initialAttribute, expectedAttribute])
     }
 }
 
@@ -348,14 +378,14 @@ private extension AddAttributeOptionsViewModelTests {
         Product().copy(siteID: .some(123), productID: .some(12345))
     }
 
-    func sampleAttribute() -> ProductAttribute {
+    func sampleAttribute(attributeID: Int64 = 1234, name: String? = nil, options: [String] = []) -> ProductAttribute {
         ProductAttribute(siteID: 123,
-                         attributeID: 1234,
-                         name: sampleAttributeName,
+                         attributeID: attributeID,
+                         name: name ?? sampleAttributeName,
                          position: 0,
                          visible: true,
                          variation: true,
-                         options: [])
+                         options: options)
     }
 
     func sampleAttributeTerm(id: Int64, name: String) -> ProductAttributeTerm {

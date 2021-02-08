@@ -132,7 +132,7 @@ private extension SignupMagicLinkViewController {
     /// Describes how the tableView rows should be rendered.
     ///
     func loadRows() {
-        rows = [.persona, .instructions, .checkSpam]
+        rows = [.persona, .instructions, .checkSpam, .oops]
     }
 
     /// Configure cells.
@@ -145,6 +145,8 @@ private extension SignupMagicLinkViewController {
             configureInstructionLabel(cell)
         case let cell as TextLabelTableViewCell where row == .checkSpam:
             configureCheckSpamLabel(cell)
+        case let cell as TextLabelTableViewCell where row == .oops:
+            configureoopsLabel(cell)
         default:
             DDLogError("Error: Unidentified tableViewCell type found.")
         }
@@ -167,6 +169,12 @@ private extension SignupMagicLinkViewController {
     func configureCheckSpamLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.checkSpamInstructions, style: .body)
     }
+    
+    /// Configure the "Check spam" cell.
+    ///
+    func configureoopsLabel(_ cell: TextLabelTableViewCell) {
+        cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.oopsInstructions, style: .body)
+    }
 
     // MARK: - Private Constants
 
@@ -176,12 +184,13 @@ private extension SignupMagicLinkViewController {
         case persona
         case instructions
         case checkSpam
+        case oops
 
         var reuseIdentifier: String {
             switch self {
             case .persona:
                 return GravatarEmailTableViewCell.reuseIdentifier
-            case .instructions, .checkSpam:
+            case .instructions, .checkSpam, .oops:
                 return TextLabelTableViewCell.reuseIdentifier
             }
         }

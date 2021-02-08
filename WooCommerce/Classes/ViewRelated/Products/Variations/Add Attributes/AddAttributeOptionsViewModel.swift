@@ -28,11 +28,11 @@ final class AddAttributeOptionsViewModel {
 
         /// Stores the options to be offered
         ///
-        var optionsOffered: [Option] = []
+        var selectedOptions: [Option] = []
 
-        /// Stores options previously added
+        /// Stores options added in previous sessions
         ///
-        var optionsAdded: [Option] = []
+        var existingOptions: [Option] = []
 
         /// Indicates if the view model is syncing a global attribute options
         ///
@@ -53,7 +53,7 @@ final class AddAttributeOptionsViewModel {
     /// Defines next button visibility
     ///
     var isNextButtonEnabled: Bool {
-        state.optionsOffered.isNotEmpty
+        state.selectedOptions.isNotEmpty
     }
 
     var showGhostTableView: Bool {
@@ -71,7 +71,7 @@ final class AddAttributeOptionsViewModel {
     /// When an attribute exists, returns an already configured `ResultsController`
     /// When there isn't an existing attribute, returns a dummy/un-initialized `ResultsController`
     ///
-    private lazy var optionsOfferedResultsController: ResultsController<StorageProductAttributeTerm> = {
+    private lazy var existingOptionsResultsController: ResultsController<StorageProductAttributeTerm> = {
         guard case let .existing(attribute) = source, attribute.isGlobal else {
             // Return a dummy ResultsController if there isn't an existing attribute. It's a workaround to not deal with an optional ResultsController.
             return ResultsController<StorageProductAttributeTerm>(storageManager: viewStorage, matching: nil, sortedBy: [])
@@ -82,7 +82,7 @@ final class AddAttributeOptionsViewModel {
         let controller = ResultsController<StorageProductAttributeTerm>(storageManager: viewStorage, matching: predicate, sortedBy: [descriptor])
 
         controller.onDidChangeContent = { [weak self] in
-            self?.state.optionsAdded = controller.fetchedObjects.map { .global(option: $0) }
+            self?.state.existingOptions = controller.fetchedObjects.map { .global(option: $0) }
         }
 
         try? controller.performFetch()
@@ -128,35 +128,35 @@ final class AddAttributeOptionsViewModel {
 
 // MARK: - ViewController Inputs
 extension AddAttributeOptionsViewModel {
-    /// Inserts a new option with the provided name into the options offered section
+    /// Inserts a new option with the provided name into the options selected section
     ///
     func addNewOption(name: String) {
-        state.optionsOffered.append(.local(name: name))
+        state.selectedOptions.append(.local(name: name))
     }
 
-    /// Reorder an option offered at the specified index to a desired index
+    /// Reorder a selected option at the specified index to a desired index.
     ///
-    func reorderOptionOffered(fromIndex: Int, toIndex: Int) {
-        guard let option = state.optionsOffered[safe: fromIndex], fromIndex != toIndex else {
+    func reorderSelectedOptions(fromIndex: Int, toIndex: Int) {
+        guard let option = state.selectedOptions[safe: fromIndex], fromIndex != toIndex else {
             return
         }
-        state.optionsOffered.remove(at: fromIndex)
-        state.optionsOffered.insert(option, at: toIndex)
+        state.selectedOptions.remove(at: fromIndex)
+        state.selectedOptions.insert(option, at: toIndex)
     }
 
-    /// Removes an option offered at a given index
+    /// Removes a selected  option at a given index
     ///
-    func removeOptionOffered(atIndex index: Int) {
-        guard index < state.optionsOffered.count else {
+    func removeSelectedOption(atIndex index: Int) {
+        guard index < state.selectedOptions.count else {
             return
         }
-        state.optionsOffered.remove(at: index)
+        state.selectedOptions.remove(at: index)
     }
 
-    /// Moves an option from at the specified index to the "Options Offered" section.
+    /// Moves an existing option at the specified index to the "Options Selected" section.
     ///
     func selectExistingOption(atIndex index: Int) {
-        guard let option = filterOptionsAdded()[safe: index] else {
+        guard let option = remainingExistingOptions()[safe: index] else {
             return
         }
 
@@ -175,25 +175,25 @@ private extension AddAttributeOptionsViewModel {
                                        rows: [.optionTextField],
                                        allowsReorder: false,
                                        allowsSelection: false)
-        let offeredSection = createOfferedSection()
-        let addedSection = createAddedSection()
+        let offeredSection = createSelectedSection()
+        let addedSection = createExistingSection()
         sections = [textFieldSection, offeredSection, addedSection].compactMap { $0 }
     }
 
-    func createOfferedSection() -> Section? {
-        guard state.optionsOffered.isNotEmpty else {
+    func createSelectedSection() -> Section? {
+        guard state.selectedOptions.isNotEmpty else {
             return nil
         }
 
-        let rows = state.optionsOffered.map { option in
+        let rows = state.selectedOptions.map { option in
             AddAttributeOptionsViewModel.Row.selectedOptions(name: option.name)
         }
 
         return Section(header: Localization.headerSelectedOptions, footer: nil, rows: rows, allowsReorder: true, allowsSelection: false)
     }
 
-    func createAddedSection() -> Section? {
-        let currentOptionsAdded = filterOptionsAdded()
+    func createExistingSection() -> Section? {
+        let currentOptionsAdded = remainingExistingOptions()
         guard currentOptionsAdded.isNotEmpty else {
             return nil
         }
@@ -211,7 +211,7 @@ private extension AddAttributeOptionsViewModel {
         let fetchOptions = ProductAttributeTermAction.synchronizeProductAttributeTerms(siteID: attribute.siteID,
                                                                                        attributeID: attribute.attributeID) { [weak self] _ in
             guard let self = self else { return }
-            self.state.optionsAdded = self.optionsOfferedResultsController.fetchedObjects.map { .global(option: $0) }
+            self.state.existingOptions = self.existingOptionsResultsController.fetchedObjects.map { .global(option: $0) }
             self.state.isSyncing = false
         }
         state.isSyncing = true
@@ -219,16 +219,16 @@ private extension AddAttributeOptionsViewModel {
     }
 
     func populateLocalOptions(of attribute: ProductAttribute) {
-        state.optionsAdded = attribute.options.map { option in
+        state.existingOptions = attribute.options.map { option in
             .local(name: option)
         }
     }
 
-    /// Returns a filtered(based on the option name) version of `state.optionsAdded` where options that exists in `state.optionsOffered` are removed.
+    /// Returns a filtered(based on the option name) version of `state.existingOptions` where options that exists in `state.selectedOptions` are removed.
     ///
-    func filterOptionsAdded() -> [State.Option] {
-        let optionsOfferedNames = state.optionsOffered.map { $0.name }
-        return state.optionsAdded.filter { option in
+    func remainingExistingOptions() -> [State.Option] {
+        let optionsOfferedNames = state.selectedOptions.map { $0.name }
+        return state.existingOptions.filter { option in
             !optionsOfferedNames.contains(option.name)
         }
     }

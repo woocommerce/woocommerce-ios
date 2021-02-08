@@ -153,7 +153,7 @@ extension AddAttributeOptionsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        viewModel.reorderOptionOffered(fromIndex: sourceIndexPath.row, toIndex: destinationIndexPath.row)
+        viewModel.reorderSelectedOptions(fromIndex: sourceIndexPath.row, toIndex: destinationIndexPath.row)
     }
 }
 
@@ -239,7 +239,7 @@ private extension AddAttributeOptionsViewController {
         // Listen to taps on the cell's image view
         let tapRecognizer = UITapGestureRecognizer()
         tapRecognizer.on { [weak self] _ in
-            self?.viewModel.removeOptionOffered(atIndex: index)
+            self?.viewModel.removeSelectedOption(atIndex: index)
         }
         cell.imageView?.addGestureRecognizer(tapRecognizer)
         cell.imageView?.isUserInteractionEnabled = true

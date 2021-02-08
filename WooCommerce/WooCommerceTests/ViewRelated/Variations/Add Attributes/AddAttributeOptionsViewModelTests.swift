@@ -69,7 +69,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         viewModel.addNewOption(name: "Option 3")
 
         // When
-        viewModel.reorderOptionOffered(fromIndex: 0, toIndex: 2)
+        viewModel.reorderSelectedOptions(fromIndex: 0, toIndex: 2)
 
         // Then
         let optionsOffered = try XCTUnwrap(viewModel.sections.last?.rows)
@@ -89,7 +89,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         viewModel.addNewOption(name: "Option 3")
 
         // When
-        viewModel.reorderOptionOffered(fromIndex: 1, toIndex: 1)
+        viewModel.reorderSelectedOptions(fromIndex: 1, toIndex: 1)
 
         // Then
         let optionsOffered = try XCTUnwrap(viewModel.sections.last?.rows)
@@ -108,7 +108,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         viewModel.addNewOption(name: "Option 3")
 
         // When
-        viewModel.removeOptionOffered(atIndex: 1)
+        viewModel.removeSelectedOption(atIndex: 1)
 
         // Then
         let optionsOffered = try XCTUnwrap(viewModel.sections.last?.rows)
@@ -126,7 +126,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         viewModel.addNewOption(name: "Option 3")
 
         // When
-        viewModel.removeOptionOffered(atIndex: 3)
+        viewModel.removeSelectedOption(atIndex: 3)
 
         // Then
         let optionsOffered = try XCTUnwrap(viewModel.sections.last?.rows)

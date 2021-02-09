@@ -23,7 +23,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="qiC-rL-M9o">
-                    <rect key="frame" x="0.0" y="106" width="414" height="756"/>
+                    <rect key="frame" x="0.0" y="106" width="414" height="790"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                 </tableView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JgB-I2-Oin" userLabel="Top Container View">
@@ -44,7 +44,7 @@
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="jcH-eR-YQX" secondAttribute="trailing" id="FeC-CZ-qha"/>
-                        <constraint firstItem="kdx-D1-LQl" firstAttribute="leading" secondItem="JgB-I2-Oin" secondAttribute="leading" constant="16" id="PHN-Mn-Ged"/>
+                        <constraint firstItem="kdx-D1-LQl" firstAttribute="leading" secondItem="JgB-I2-Oin" secondAttribute="leadingMargin" constant="8" id="PHN-Mn-Ged"/>
                         <constraint firstItem="kdx-D1-LQl" firstAttribute="top" secondItem="JgB-I2-Oin" secondAttribute="top" constant="16" id="c6H-ZR-2vv"/>
                         <constraint firstItem="jcH-eR-YQX" firstAttribute="leading" secondItem="JgB-I2-Oin" secondAttribute="leading" id="cAM-Ml-GJf"/>
                         <constraint firstItem="kdx-D1-LQl" firstAttribute="centerX" secondItem="JgB-I2-Oin" secondAttribute="centerX" id="iKk-Jb-vz1"/>
@@ -58,11 +58,11 @@
             <constraints>
                 <constraint firstItem="qiC-rL-M9o" firstAttribute="top" secondItem="JgB-I2-Oin" secondAttribute="bottom" id="5ZL-hN-TvX"/>
                 <constraint firstItem="JgB-I2-Oin" firstAttribute="top" secondItem="BpX-ee-mWz" secondAttribute="top" id="OTM-FB-x7A"/>
-                <constraint firstItem="qiC-rL-M9o" firstAttribute="bottom" secondItem="BpX-ee-mWz" secondAttribute="bottom" id="WrM-dg-Cjb"/>
-                <constraint firstItem="JgB-I2-Oin" firstAttribute="leading" secondItem="BpX-ee-mWz" secondAttribute="leading" id="auf-RJ-d2u"/>
-                <constraint firstItem="JgB-I2-Oin" firstAttribute="trailing" secondItem="BpX-ee-mWz" secondAttribute="trailing" id="ccN-yL-kyf"/>
-                <constraint firstItem="qiC-rL-M9o" firstAttribute="leading" secondItem="BpX-ee-mWz" secondAttribute="leading" id="n3S-eE-wek"/>
-                <constraint firstItem="BpX-ee-mWz" firstAttribute="trailing" secondItem="qiC-rL-M9o" secondAttribute="trailing" id="pi6-3T-cyB"/>
+                <constraint firstItem="qiC-rL-M9o" firstAttribute="bottom" secondItem="VM8-dE-9OM" secondAttribute="bottom" id="WrM-dg-Cjb"/>
+                <constraint firstItem="JgB-I2-Oin" firstAttribute="leading" secondItem="VM8-dE-9OM" secondAttribute="leading" id="auf-RJ-d2u"/>
+                <constraint firstItem="JgB-I2-Oin" firstAttribute="trailing" secondItem="qiC-rL-M9o" secondAttribute="trailing" id="ccN-yL-kyf"/>
+                <constraint firstItem="qiC-rL-M9o" firstAttribute="leading" secondItem="VM8-dE-9OM" secondAttribute="leading" id="n3S-eE-wek"/>
+                <constraint firstAttribute="trailing" secondItem="qiC-rL-M9o" secondAttribute="trailing" id="pi6-3T-cyB"/>
             </constraints>
             <point key="canvasLocation" x="137.68115942028987" y="128.57142857142856"/>
         </view>

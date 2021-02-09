@@ -14,9 +14,9 @@
         "package": "StripeTerminal",
         "repositoryURL": "https://github.com/stripe/stripe-terminal-ios",
         "state": {
-          "branch": "spm_beta",
+          "branch": null,
           "revision": "48e6c75c74b0fe52c16dff54da53944c5d001008",
-          "version": "4.1.2"
+          "version": "1.4.0-spmbeta"
         }
       }
     ]

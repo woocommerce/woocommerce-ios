@@ -20,7 +20,7 @@ let package = Package(
         // This should be fine wile we continue development, but if the Stripe SDK
         // does not provide official support for SPM whenever we start getting close
         // to release, we might need to migrate to CocoaPods.
-        .package(name: "StripeTerminal", url: "https://github.com/stripe/stripe-terminal-ios", .branch("spm_beta")),
+        .package(name: "StripeTerminal", url: "https://github.com/stripe/stripe-terminal-ios", .exact("1.4.0-spmbeta")),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.

@@ -142,6 +142,8 @@
 		4599FC5C24A6276F0056157A /* product-tags-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 4599FC5B24A6276F0056157A /* product-tags-all.json */; };
 		4599FC5E24A62AA70056157A /* ProductTagsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4599FC5D24A62AA70056157A /* ProductTagsRemote.swift */; };
 		4599FC6624A633A10056157A /* ProductTagsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4599FC6524A633A10056157A /* ProductTagsRemoteTests.swift */; };
+		45A4B84A25D2DECD00776FB4 /* ShippingLabelAddressValidationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A4B84925D2DECD00776FB4 /* ShippingLabelAddressValidationResponse.swift */; };
+		45A4B84E25D2E11300776FB4 /* ShippingLabelAddressValidationResponseMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A4B84D25D2E11300776FB4 /* ShippingLabelAddressValidationResponseMapper.swift */; };
 		45AB8B0F24AA29DC00B5B36E /* product-tags-created.json in Resources */ = {isa = PBXBuildFile; fileRef = 45AB8B0E24AA29DC00B5B36E /* product-tags-created.json */; };
 		45AB8B1324AA34CB00B5B36E /* product-tags-deleted.json in Resources */ = {isa = PBXBuildFile; fileRef = 45AB8B1224AA34CB00B5B36E /* product-tags-deleted.json */; };
 		45AB8B2024AB3E1F00B5B36E /* product-tags-empty.json in Resources */ = {isa = PBXBuildFile; fileRef = 45AB8B1F24AB3E1F00B5B36E /* product-tags-empty.json */; };
@@ -560,6 +562,8 @@
 		4599FC5B24A6276F0056157A /* product-tags-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-tags-all.json"; sourceTree = "<group>"; };
 		4599FC5D24A62AA70056157A /* ProductTagsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagsRemote.swift; sourceTree = "<group>"; };
 		4599FC6524A633A10056157A /* ProductTagsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagsRemoteTests.swift; sourceTree = "<group>"; };
+		45A4B84925D2DECD00776FB4 /* ShippingLabelAddressValidationResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressValidationResponse.swift; sourceTree = "<group>"; };
+		45A4B84D25D2E11300776FB4 /* ShippingLabelAddressValidationResponseMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressValidationResponseMapper.swift; sourceTree = "<group>"; };
 		45AB8B0E24AA29DC00B5B36E /* product-tags-created.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-tags-created.json"; sourceTree = "<group>"; };
 		45AB8B1224AA34CB00B5B36E /* product-tags-deleted.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-tags-deleted.json"; sourceTree = "<group>"; };
 		45AB8B1F24AB3E1F00B5B36E /* product-tags-empty.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-tags-empty.json"; sourceTree = "<group>"; };
@@ -882,6 +886,7 @@
 				02C254A7256373AB00A04423 /* ShippingLabel.swift */,
 				02C2549925636E1500A04423 /* ShippingLabelAddress.swift */,
 				457A573F25D1817E000797AD /* ShippingLabelAddressVerification.swift */,
+				45A4B84925D2DECD00776FB4 /* ShippingLabelAddressValidationResponse.swift */,
 				02C2549F25636F6900A04423 /* ShippingLabelRefund.swift */,
 				02C254A3256371B200A04423 /* ShippingLabelSettings.swift */,
 			);
@@ -1408,6 +1413,7 @@
 				02C1CEF324C6A02B00703EBA /* ProductVariationMapper.swift */,
 				029BA53A255DFABD006171FD /* ShippingLabelPrintDataMapper.swift */,
 				021A84D9257DF92800BC71D1 /* ShippingLabelRefundMapper.swift */,
+				45A4B84D25D2E11300776FB4 /* ShippingLabelAddressValidationResponseMapper.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -1916,6 +1922,7 @@
 				D88D5A4B230BCF0A007B6E01 /* ProductReviewListMapper.swift in Sources */,
 				93D8BBFB226BBC5100AD2EB3 /* AccountSettings.swift in Sources */,
 				B53EF53821813806003E146F /* DotcomError.swift in Sources */,
+				45A4B84E25D2E11300776FB4 /* ShippingLabelAddressValidationResponseMapper.swift in Sources */,
 				45D1CF4923BACA6500945A36 /* ProductTaxStatus.swift in Sources */,
 				D823D91222377DF300C90817 /* ShipmentTrackingProviderListMapper.swift in Sources */,
 				B5C151BB217EC34100C7BDC1 /* KeyedDecodingContainer+Woo.swift in Sources */,
@@ -2017,6 +2024,7 @@
 				26B2F74B24C696C00065CCC8 /* LeaderboardRow.swift in Sources */,
 				D823D90D2237784A00C90817 /* ShipmentTrackingProvider.swift in Sources */,
 				021E2A1423A9FC5900B1DE07 /* ProductBackordersSetting.swift in Sources */,
+				45A4B84A25D2DECD00776FB4 /* ShippingLabelAddressValidationResponse.swift in Sources */,
 				CE17C6B1229462C000AACE1C /* ProductStockStatus.swift in Sources */,
 				B557DA0420975500005962F4 /* OrdersRemote.swift in Sources */,
 				CE43066C2347C5F90073CBFF /* OrderItemRefund.swift in Sources */,

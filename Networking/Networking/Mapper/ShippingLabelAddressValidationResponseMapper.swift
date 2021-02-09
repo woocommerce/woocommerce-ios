@@ -4,11 +4,11 @@ import Foundation
 /// Mapper: Shipping Label Address Validation Response
 ///
 struct ShippingLabelAddressValidationResponseMapper: Mapper {
-    /// (Attempts) to convert a dictionary into ShippingLabelAddress.
+    /// (Attempts) to convert a dictionary into ShippingLabelAddressValidationResponse.
     ///
-    func map(response: Data) throws -> ShippingLabelAddress {
+    func map(response: Data) throws -> ShippingLabelAddressValidationResponse {
         let decoder = JSONDecoder()
-        return try decoder.decode(ShippingLabelAddressValidationResponseEnvelope.self, from: response).data.address
+        return try decoder.decode(ShippingLabelAddressValidationResponseEnvelope.self, from: response).data
     }
 }
 

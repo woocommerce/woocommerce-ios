@@ -13,7 +13,7 @@ public protocol ShippingLabelRemoteProtocol {
                              completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void)
     func addressValidation(siteID: Int64,
                            address: ShippingLabelAddressVerification,
-                           completion: @escaping (Result<ShippingLabelAddress, Error>) -> Void)
+                           completion: @escaping (Result<ShippingLabelAddressValidationResponse, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints.
@@ -73,7 +73,7 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
     ///   - completion: Closure to be executed upon completion.
     public func addressValidation(siteID: Int64,
                                   address: ShippingLabelAddressVerification,
-                                  completion: @escaping (Result<ShippingLabelAddress, Error>) -> Void) {
+                                  completion: @escaping (Result<ShippingLabelAddressValidationResponse, Error>) -> Void) {
         do {
             let parameters = try address.toDictionary()
             let path = "\(Path.normalizeAddress)"

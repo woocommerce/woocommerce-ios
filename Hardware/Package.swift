@@ -14,7 +14,7 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        // Notice we are pulling a branch instead of a tag.
+        // Notice we are pulling a beta tag.
         // See https://github.com/stripe/stripe-terminal-ios/issues/61 for
         // a discussion and the rationale behind this decission.
         // This should be fine wile we continue development, but if the Stripe SDK

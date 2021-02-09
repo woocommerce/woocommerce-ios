@@ -176,7 +176,8 @@ extension AddAttributeViewController: UITableViewDelegate {
         guard row == .existingAttribute else {
             return
         }
-        presentAddAttributeOptions(for: viewModel.localAndGlobalAttributes[indexPath.row])
+        let attribute = viewModel.localAndGlobalAttributes[indexPath.row]
+        presentAddAttributeOptions(attribute: .existing(attribute: attribute))
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -269,19 +270,15 @@ extension AddAttributeViewController {
         guard let name = viewModel.newAttributeName else {
             return
         }
-        presentAddAttributeOptions(for: name)
+        presentAddAttributeOptions(attribute: .new(name: name))
     }
 
-    private func presentAddAttributeOptions(for newAttribute: String) {
-        let viewModel = AddAttributeOptionsViewModel(product: self.viewModel.product, attribute: .new(name: newAttribute))
-        let addAttributeOptionsVC = AddAttributeOptionsViewController(viewModel: viewModel)
-        navigationController?.pushViewController(addAttributeOptionsVC, animated: true)
-    }
-
-    private func presentAddAttributeOptions(for existingAttribute: ProductAttribute) {
-        let viewModel = AddAttributeOptionsViewModel(product: self.viewModel.product, attribute: .existing(attribute: existingAttribute))
-        let addAttributeOptionsVC = AddAttributeOptionsViewController(viewModel: viewModel)
-        navigationController?.pushViewController(addAttributeOptionsVC, animated: true)
+    private func presentAddAttributeOptions(attribute: AddAttributeOptionsViewModel.Attribute) {
+        let viewModel = AddAttributeOptionsViewModel(product: self.viewModel.product, attribute: attribute)
+        let addAttributeOptionsVC = AddAttributeOptionsViewController(viewModel: viewModel) { product in
+            print(product.attributes)
+        }
+        show(addAttributeOptionsVC, sender: nil)
     }
 }
 

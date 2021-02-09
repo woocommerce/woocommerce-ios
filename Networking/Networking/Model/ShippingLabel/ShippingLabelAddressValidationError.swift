@@ -16,7 +16,7 @@ extension ShippingLabelAddressValidationError: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let address = try container.decodeIfPresent(String.self, forKey: .address)
-        let general = try container.decodeIfPresent(String.self, forKey: .address)
+        let general = try container.decodeIfPresent(String.self, forKey: .general)
         self.init(address: address, general: general)
     }
 }

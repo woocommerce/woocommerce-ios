@@ -37,6 +37,7 @@ final class AttributeOptionListSelectorCommand: ListSelectorCommand {
         case .option(let optionName):
             cell.textLabel?.text = optionName
         }
+        cell.textLabel?.numberOfLines = 0
     }
 
     func handleSelectedChange(selected: Row, viewController: ViewController) {

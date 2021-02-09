@@ -139,32 +139,30 @@ private extension SettingsViewController {
         let storeRows: [Row] = sites.count > 1 ?
             [.selectedStore, .switchStore] : [.selectedStore]
 
-        let otherSection: Section
-        #if DEBUG
-        otherSection = Section(title: otherTitle, rows: [.appSettings, .wormholy], footerHeight: CGFloat.leastNonzeroMagnitude)
-        #else
-        otherSection = Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude)
-        #endif
+        sections = [
+            Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
+            Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
+        ]
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) {
+            sections.append(Section(title: nil, rows: [.cardReaders], footerHeight: UITableView.automaticDimension))
+        }
 
         if couldShowBetaFeaturesRow() {
-            sections = [
-                Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
-                Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
-                Section(title: improveTheAppTitle, rows: [.privacy, .betaFeatures, .sendFeedback], footerHeight: UITableView.automaticDimension),
-                Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
-                otherSection,
-                Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
-            ]
+            sections.append(Section(title: improveTheAppTitle, rows: [.privacy, .betaFeatures, .sendFeedback], footerHeight: UITableView.automaticDimension))
         } else {
-            sections = [
-                Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
-                Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
-                Section(title: improveTheAppTitle, rows: [.privacy, .sendFeedback], footerHeight: UITableView.automaticDimension),
-                Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
-                otherSection,
-                Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
-            ]
+            sections.append(Section(title: improveTheAppTitle, rows: [.privacy, .sendFeedback], footerHeight: UITableView.automaticDimension))
         }
+
+        sections.append(Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension))
+
+        #if DEBUG
+        sections.append(Section(title: otherTitle, rows: [.appSettings, .wormholy], footerHeight: CGFloat.leastNonzeroMagnitude))
+        #else
+        sections.append(Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude))
+        #endif
+
+        sections.append(Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude))
     }
 
     func registerTableViewCells() {
@@ -183,6 +181,8 @@ private extension SettingsViewController {
             configureSwitchStore(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
             configureSupport(cell: cell)
+        case let cell as BasicTableViewCell where row == .cardReaders:
+            configureCardReaders(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
             configurePrivacy(cell: cell)
         case let cell as BasicTableViewCell where row == .betaFeatures:
@@ -221,6 +221,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Help & Support", comment: "Contact Support Action")
+    }
+
+    func configureCardReaders(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Manage card readers", comment: "Manage card readers Action")
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {
@@ -337,6 +343,14 @@ private extension SettingsViewController {
         ServiceLocator.analytics.track(.settingsContactSupportTapped)
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: HelpAndSupportViewController.self) else {
             fatalError("Cannot instantiate `HelpAndSupportViewController` from Dashboard storyboard")
+        }
+        show(viewController, sender: self)
+    }
+
+    func cardReadersWasPressed() {
+        ServiceLocator.analytics.track(.settingsCardReadersTapped)
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsViewController.self) else {
+            fatalError("Cannot instantiate `CardReaderSettingsViewController` from Dashboard storyboard")
         }
         show(viewController, sender: self)
     }
@@ -473,6 +487,8 @@ extension SettingsViewController: UITableViewDelegate {
             switchStoreWasPressed()
         case .support:
             supportWasPressed()
+        case .cardReaders:
+            cardReadersWasPressed()
         case .privacy:
             privacyWasPressed()
         case .betaFeatures:
@@ -513,6 +529,7 @@ private enum Row: CaseIterable {
     case selectedStore
     case switchStore
     case support
+    case cardReaders
     case logout
     case privacy
     case betaFeatures
@@ -529,6 +546,8 @@ private enum Row: CaseIterable {
         case .switchStore:
             return BasicTableViewCell.self
         case .support:
+            return BasicTableViewCell.self
+        case .cardReaders:
             return BasicTableViewCell.self
         case .logout:
             return BasicTableViewCell.self

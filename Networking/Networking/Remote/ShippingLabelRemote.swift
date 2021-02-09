@@ -11,6 +11,9 @@ public protocol ShippingLabelRemoteProtocol {
                              orderID: Int64,
                              shippingLabelID: Int64,
                              completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void)
+    func addressValidation(siteID: Int64,
+                           address: ShippingLabelAddressVerification,
+                           completion: @escaping (Result<ShippingLabelAddress, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints.

@@ -19,8 +19,10 @@ final class AddAttributeViewController: UIViewController {
         self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
     }
 
-    /// Init
+    /// Initializer for `AddAttributeViewController`
     ///
+    /// - Parameters:
+    ///   - onCompletion: Closure to be invoked(with the updated product)  when the update/create attribute operation finishes successfully.
     init(viewModel: AddAttributeViewModel, onCompletion: @escaping (Product) -> Void) {
         self.viewModel = viewModel
         self.onCompletion = onCompletion

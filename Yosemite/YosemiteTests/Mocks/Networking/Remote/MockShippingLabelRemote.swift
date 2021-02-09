@@ -37,7 +37,7 @@ final class MockShippingLabelRemote {
     private var refundResults = [RefundResultKey: Result<ShippingLabelRefund, Error>]()
 
     /// The results to return based on the given arguments in `addressValidation`
-    private var addressValidationResults = [AddressValidationResultKey: Result<ShippingLabelAddress, Error>]()
+    private var addressValidationResults = [AddressValidationResultKey: Result<ShippingLabelAddressValidationResponse, Error>]()
 
     /// Set the value passed to the `completion` block if `loadShippingLabels` is called.
     func whenLoadingShippingLabels(siteID: Int64,
@@ -67,7 +67,7 @@ final class MockShippingLabelRemote {
 
     /// Set the value passed to the `completion` block if `addressValidation` is called.
     func whenValidatingAddress(siteID: Int64,
-                               thenReturn result: Result<ShippingLabelAddress, Error>) {
+                               thenReturn result: Result<ShippingLabelAddressValidationResponse, Error>) {
         let key = AddressValidationResultKey(siteID: siteID)
         addressValidationResults[key] = result
     }
@@ -117,7 +117,8 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
         }
     }
 
-    func addressValidation(siteID: Int64, address: ShippingLabelAddressVerification, completion: @escaping (Result<ShippingLabelAddress, Error>) -> Void) {
+    func addressValidation(siteID: Int64, address: ShippingLabelAddressVerification,
+                           completion: @escaping (Result<ShippingLabelAddressValidationResponse, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
 

@@ -282,6 +282,8 @@ private extension OrderDetailsDataSource {
             configureShippingLabelProduct(cell: cell, at: indexPath)
         case let cell as ProductDetailsTableViewCell where row == .aggregateOrderItem:
             configureAggregateOrderItem(cell: cell, at: indexPath)
+        case let cell as ButtonTableViewCell where row == .shippingLabelCreateButton:
+            configureCreateShippingLabelButton(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .markCompleteButton:
             configureMarkCompleteButton(cell: cell)
         case let cell as ButtonTableViewCell where row == .shippingLabelReprintButton:
@@ -442,6 +444,15 @@ private extension OrderDetailsDataSource {
         cell.leftText = Titles.netAmount
         cell.rightText = paymentViewModel.netAmount
         cell.hideFootnote()
+    }
+
+    private func configureCreateShippingLabelButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
+        cell.configure(style: .primary,
+                       title: Titles.createShippingLabel,
+                       bottomSpacing: 0) {
+            // TODO-2972: present shipping label creation form
+        }
+        cell.hideSeparator()
     }
 
     private func configureShippingLabelDetail(cell: WooBasicTableViewCell) {
@@ -747,6 +758,10 @@ extension OrderDetailsDataSource {
 
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease2) {
+                rows.append(.shippingLabelCreateButton)
+            }
+
             if isProcessingPayment {
                 rows.append(.markCompleteButton)
             } else if isRefundedStatus == false {
@@ -1049,6 +1064,7 @@ extension OrderDetailsDataSource {
         static let refunded = NSLocalizedString("Refunded",
                                                 comment: "The title for the refunded amount cell")
         static let netAmount = NSLocalizedString("Net Payment", comment: "The title for the net amount paid cell")
+        static let createShippingLabel = NSLocalizedString("Create Shipping Label", comment: "Text on the button that starts shipping label creation")
         static let reprintShippingLabel = NSLocalizedString("Reprint Shipping Label", comment: "Text on the button that reprints a shipping label")
     }
 
@@ -1188,6 +1204,7 @@ extension OrderDetailsDataSource {
         case netAmount
         case tracking
         case trackingAdd
+        case shippingLabelCreateButton
         case shippingLabelDetail
         case shippingLabelPrintingInfo
         case shippingLabelProduct
@@ -1233,6 +1250,8 @@ extension OrderDetailsDataSource {
                 return OrderTrackingTableViewCell.reuseIdentifier
             case .trackingAdd:
                 return LeftImageTableViewCell.reuseIdentifier
+            case .shippingLabelCreateButton:
+                return ButtonTableViewCell.reuseIdentifier
             case .shippingLabelDetail:
                 return WooBasicTableViewCell.reuseIdentifier
             case .shippingLabelPrintingInfo:

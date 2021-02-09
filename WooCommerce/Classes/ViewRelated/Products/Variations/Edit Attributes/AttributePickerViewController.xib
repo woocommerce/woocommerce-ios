@@ -30,8 +30,8 @@
             <constraints>
                 <constraint firstItem="LMJ-Yc-Ynh" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="M7y-IN-pPj"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="LMJ-Yc-Ynh" secondAttribute="bottom" id="TaQ-Li-YYi"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="LMJ-Yc-Ynh" secondAttribute="trailing" id="Y1H-2Q-aGh"/>
-                <constraint firstItem="LMJ-Yc-Ynh" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="lej-bj-WKL"/>
+                <constraint firstAttribute="trailing" secondItem="LMJ-Yc-Ynh" secondAttribute="trailing" id="Y1H-2Q-aGh"/>
+                <constraint firstItem="LMJ-Yc-Ynh" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="lej-bj-WKL"/>
             </constraints>
             <point key="canvasLocation" x="116" y="153"/>
         </view>

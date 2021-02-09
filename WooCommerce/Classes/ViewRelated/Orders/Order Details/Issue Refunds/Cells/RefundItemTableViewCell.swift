@@ -1,4 +1,5 @@
 import UIKit
+import WordPressUI
 
 /// Displays an item to be refunded
 ///
@@ -113,7 +114,7 @@ extension RefundItemTableViewCell {
 
         guard let productImage = viewModel.productImage else {
             itemImageView.image = nil
-            placeholderImageView.image = .productPlaceholderImage
+            placeholderImageView.image = UIImage.productPlaceholderImage.imageWithTintColor(UIColor.listIcon)
             return
         }
 

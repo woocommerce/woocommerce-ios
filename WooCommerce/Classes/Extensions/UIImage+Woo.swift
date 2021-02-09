@@ -100,8 +100,7 @@ extension UIImage {
     /// Chevron Pointing Right
     ///
     static var chevronImage: UIImage {
-        let tintColor = UIColor.neutral(.shade40)
-        return UIImage.gridicon(.chevronRight).imageWithTintColor(tintColor)!
+        return UIImage.gridicon(.chevronRight)
     }
 
     /// Chevron Pointing Down
@@ -380,8 +379,7 @@ extension UIImage {
     /// Product Placeholder Image
     ///
     static var productPlaceholderImage: UIImage {
-        let tintColor = UIColor.listIcon
-        return UIImage.gridicon(.product).imageWithTintColor(tintColor)!
+        return UIImage.gridicon(.product)
     }
 
     /// Product Placeholder Image on Products Tab Cell

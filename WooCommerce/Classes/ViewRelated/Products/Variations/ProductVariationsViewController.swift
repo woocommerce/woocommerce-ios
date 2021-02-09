@@ -90,7 +90,7 @@ final class ProductVariationsViewController: UIViewController {
         return stateCoordinator
     }()
 
-    private let product: Product
+    private var product: Product
     private let siteID: Int64
     private let productID: Int64
     private let allAttributes: [ProductAttribute]
@@ -368,7 +368,13 @@ extension ProductVariationsViewController: UITableViewDelegate {
 private extension ProductVariationsViewController {
     func navigateToAddAttributeViewController() {
         let viewModel = AddAttributeViewModel(product: product)
-        let addAttributeViewController = AddAttributeViewController(viewModel: viewModel)
+        let addAttributeViewController = AddAttributeViewController(viewModel: viewModel) { [weak self] updatedProduct in
+            guard let self = self else { return }
+            self.product = updatedProduct
+
+            // TODO: Replace stack with AttributeList UI in #3536
+            self.navigationController?.popToViewController(self, animated: true)
+        }
         show(addAttributeViewController, sender: self)
     }
 }

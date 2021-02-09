@@ -9,6 +9,10 @@ final class AddAttributeViewController: UIViewController {
 
     private let viewModel: AddAttributeViewModel
 
+    /// Closure to be invoked(with the updated product)  when the update/create attribute operation finishes successfully.
+    ///
+    private let onCompletion: (Product) -> Void
+
     /// Keyboard management
     ///
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
@@ -17,8 +21,9 @@ final class AddAttributeViewController: UIViewController {
 
     /// Init
     ///
-    init(viewModel: AddAttributeViewModel) {
+    init(viewModel: AddAttributeViewModel, onCompletion: @escaping (Product) -> Void) {
         self.viewModel = viewModel
+        self.onCompletion = onCompletion
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -273,11 +278,11 @@ extension AddAttributeViewController {
         presentAddAttributeOptions(attribute: .new(name: name))
     }
 
+    /// Presents `AddAttributeOptionsViewController` and passes the same `onCompletion` closure, for our presenterVC  to handle.
+    ///
     private func presentAddAttributeOptions(attribute: AddAttributeOptionsViewModel.Attribute) {
         let viewModel = AddAttributeOptionsViewModel(product: self.viewModel.product, attribute: attribute)
-        let addAttributeOptionsVC = AddAttributeOptionsViewController(viewModel: viewModel) { product in
-            print(product.attributes)
-        }
+        let addAttributeOptionsVC = AddAttributeOptionsViewController(viewModel: viewModel, onCompletion: onCompletion)
         show(addAttributeOptionsVC, sender: nil)
     }
 }

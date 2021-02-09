@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a ProductAttribute entity.
 ///
-public struct ProductAttribute: Decodable {
+public struct ProductAttribute: Codable {
     public let siteID: Int64
     public let attributeID: Int64
     public let name: String
@@ -67,6 +67,17 @@ public struct ProductAttribute: Decodable {
                   visible: visible,
                   variation: variation,
                   options: options)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(attributeID, forKey: .attributeID)
+        try container.encode(name, forKey: .name)
+        try container.encode(options, forKey: .options)
+        try container.encode(position, forKey: .position)
+        try container.encode(visible, forKey: .visible)
+        try container.encode(variation, forKey: .variation)
     }
 }
 

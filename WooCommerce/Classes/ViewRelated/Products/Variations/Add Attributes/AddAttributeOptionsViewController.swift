@@ -9,6 +9,8 @@ final class AddAttributeOptionsViewController: UIViewController {
 
     private let viewModel: AddAttributeOptionsViewModel
 
+    private let noticePresenter: NoticePresenter
+
     /// Keyboard management
     ///
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
@@ -17,8 +19,9 @@ final class AddAttributeOptionsViewController: UIViewController {
 
     /// Init
     ///
-    init(viewModel: AddAttributeOptionsViewModel) {
+    init(viewModel: AddAttributeOptionsViewModel, noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.viewModel = viewModel
+        self.noticePresenter = noticePresenter
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -45,11 +48,25 @@ final class AddAttributeOptionsViewController: UIViewController {
 private extension AddAttributeOptionsViewController {
 
     func configureNavigationBar() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.nextNavBarButton,
-                                                           style: .plain,
-                                                           target: self,
-                                                           action: #selector(doneButtonPressed))
         removeNavigationBackBarButtonText()
+    }
+
+    func configureRightButtonItem() {
+        // The update indicator has precedence over the next button
+        if viewModel.showUpdateIndicator {
+            let indicator = UIActivityIndicatorView(style: .medium)
+            indicator.color = .primaryButtonTitle
+            indicator.startAnimating()
+            navigationItem.rightBarButtonItem = UIBarButtonItem(customView: indicator)
+            return
+        }
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.nextNavBarButton,
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(nextButtonPressed))
+        navigationItem.rightBarButtonItem?.isEnabled = viewModel.isNextButtonEnabled
+
     }
 
     func configureMainView() {
@@ -96,7 +113,7 @@ private extension AddAttributeOptionsViewController {
 
     func renderViewModel() {
         title = viewModel.titleView
-        navigationItem.rightBarButtonItem?.isEnabled = viewModel.isNextButtonEnabled
+        configureRightButtonItem()
         tableView.reloadData()
 
         if viewModel.showGhostTableView {
@@ -294,8 +311,18 @@ extension AddAttributeOptionsViewController: KeyboardScrollable {
 //
 extension AddAttributeOptionsViewController {
 
-    @objc private func doneButtonPressed() {
-        // TODO: to be implemented
+    @objc private func nextButtonPressed() {
+        viewModel.updateProductAttributes { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case let .success(product):
+                // TODO: Navigate to attributes screen, maybe clean the stack? #3536
+                print(product.attributes)
+            case let .failure(error):
+                self.noticePresenter.enqueue(notice: .init(title: Localization.updateAttributeError, feedbackType: .error))
+                DDLogError(error.localizedDescription)
+            }
+        }
     }
 }
 
@@ -334,5 +361,7 @@ private extension AddAttributeOptionsViewController {
         static let nextNavBarButton = NSLocalizedString("Next", comment: "Next nav bar button title in Add Product Attribute Options screen")
         static let optionNameCellPlaceholder = NSLocalizedString("Option name",
                                                             comment: "Placeholder of cell presenting the title of the new attribute option.")
+        static let updateAttributeError = NSLocalizedString("The attribute couldn't be saved.",
+                                                            comment: "Error title when trying to update or create an attribute remotely.")
     }
 }

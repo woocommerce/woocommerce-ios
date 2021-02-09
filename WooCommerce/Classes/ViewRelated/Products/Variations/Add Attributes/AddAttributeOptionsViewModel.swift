@@ -11,7 +11,7 @@ final class AddAttributeOptionsViewModel {
 
     /// Enum to represents the original invocation source of this view model
     ///
-    enum Source {
+    enum Attribute {
         case new(name: String)
         case existing(attribute: ProductAttribute)
     }
@@ -37,12 +37,16 @@ final class AddAttributeOptionsViewModel {
         /// Indicates if the view model is syncing a global attribute options
         ///
         var isSyncing: Bool = false
+
+        /// Indicates if the view model is updating the product's attributes
+        ///
+        var isUpdating: Bool = false
     }
 
     /// Title of the navigation bar
     ///
     var titleView: String? {
-        switch source {
+        switch attribute {
         case .new(let name):
             return name
         case .existing(let attribute):
@@ -56,23 +60,35 @@ final class AddAttributeOptionsViewModel {
         state.selectedOptions.isNotEmpty
     }
 
+    /// Defines ghost cells visibility
+    ///
     var showGhostTableView: Bool {
         state.isSyncing
+    }
+
+    /// Defines if the update indicator should be shown
+    ///
+    var showUpdateIndicator: Bool {
+        state.isUpdating
     }
 
     /// Closure to notify the `ViewController` when the view model properties change.
     ///
     var onChange: (() -> (Void))?
 
+    /// Main product dependency.
+    ///
+    private let product: Product
+
     /// Main attribute dependency.
     ///
-    private let source: Source
+    private let attribute: Attribute
 
     /// When an attribute exists, returns an already configured `ResultsController`
     /// When there isn't an existing attribute, returns a dummy/un-initialized `ResultsController`
     ///
     private lazy var existingOptionsResultsController: ResultsController<StorageProductAttributeTerm> = {
-        guard case let .existing(attribute) = source, attribute.isGlobal else {
+        guard case let .existing(attribute) = attribute, attribute.isGlobal else {
             // Return a dummy ResultsController if there isn't an existing attribute. It's a workaround to not deal with an optional ResultsController.
             return ResultsController<StorageProductAttributeTerm>(storageManager: viewStorage, matching: nil, sortedBy: [])
         }
@@ -108,12 +124,16 @@ final class AddAttributeOptionsViewModel {
     ///
     private let viewStorage: StorageManagerType
 
-    init(source: Source, stores: StoresManager = ServiceLocator.stores, viewStorage: StorageManagerType = ServiceLocator.storageManager) {
-        self.source = source
+    init(product: Product,
+         attribute: Attribute,
+         stores: StoresManager = ServiceLocator.stores,
+         viewStorage: StorageManagerType = ServiceLocator.storageManager) {
+        self.product = product
+        self.attribute = attribute
         self.stores = stores
         self.viewStorage = viewStorage
 
-        switch source {
+        switch attribute {
         case .new:
             updateSections()
         case let .existing(attribute) where attribute.isGlobal:
@@ -161,6 +181,43 @@ extension AddAttributeOptionsViewModel {
         }
 
         addNewOption(name: option.name)
+    }
+
+    /// Gathers selected options and update the product's attributes
+    ///
+    func updateProductAttributes(onCompletion: @escaping ((Result<Product, ProductUpdateError>) -> Void)) {
+        state.isUpdating = true
+        let newProduct = createUpdatedProduct()
+        let action = ProductAction.updateProduct(product: newProduct) { [weak self] result in
+            guard let self = self else { return }
+            self.state.isUpdating = false
+            onCompletion(result)
+        }
+        stores.dispatch(action)
+    }
+
+    /// Returns a product with its attributes updated with the new attribute to create.
+    ///
+    private func createUpdatedProduct() -> Product {
+        let newOptions = state.selectedOptions.map { $0.name }
+        let newAttribute = ProductAttribute(siteID: product.siteID,
+                                            attributeID: attribute.attributeID,
+                                            name: attribute.name,
+                                            position: 0,
+                                            visible: true,
+                                            variation: true,
+                                            options: newOptions)
+
+        // Here we remove any possible existing attribute with the same ID and Name. For then re-adding the new updated attribute
+        // Name has to be considered, because local attributes are zero-id based.
+        let updatedAttributes: [ProductAttribute] = {
+            var attributes = product.attributes
+            attributes.removeAll { $0.attributeID == newAttribute.attributeID && $0.name == newAttribute.name }
+            attributes.append(newAttribute)
+            return attributes
+        }()
+
+        return product.copy(attributes: updatedAttributes)
     }
 }
 
@@ -254,6 +311,30 @@ private extension AddAttributeOptionsViewModel.State.Option {
             return name
         case let .global(option):
             return option.name
+        }
+    }
+}
+
+private extension AddAttributeOptionsViewModel.Attribute {
+    /// Returns the ID associated with the attribute. `Zero` for new attributes
+    ///
+    var attributeID: Int64 {
+        switch self {
+        case .new:
+            return 0
+        case .existing(let attribute):
+            return attribute.attributeID
+        }
+    }
+
+    /// Returns the name associated with the attribute.
+    ///
+    var name: String {
+        switch self {
+        case let .new(name):
+            return name
+        case let .existing(attribute):
+            return attribute.name
         }
     }
 }

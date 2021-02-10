@@ -52,7 +52,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         }
     }
 
-    struct ViewModel {
+    struct ViewModel: Equatable {
         let title: String?
         let text: String?
         let textTintColor: UIColor?

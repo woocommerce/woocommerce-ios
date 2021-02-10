@@ -5,24 +5,30 @@ final class EditAttributesViewModel {
 
     /// Main product dependency
     ///
-    private var product: Product
+    private var product: Product {
+        didSet {
+            self.attributes = createAttributeViewModels()
+        }
+    }
 
     /// If true, a done button will appear that allows the merchant to generate a variation
     ///
     private let allowVariationCreation: Bool
 
-    init(product: Product, allowVariationCreation: Bool) {
-        self.product = product
-        self.allowVariationCreation = allowVariationCreation
-    }
-}
+    /// Datasource for the product attributes table view
+    ///
+    var attributes: [ImageAndTitleAndTextTableViewCell.ViewModel] = []
 
-// MARK: View Controller Outputs
-extension EditAttributesViewModel {
     /// Defines done button visibility
     ///
     var showDoneButton: Bool {
         allowVariationCreation
+    }
+
+    init(product: Product, allowVariationCreation: Bool) {
+        self.product = product
+        self.allowVariationCreation = allowVariationCreation
+        self.attributes = createAttributeViewModels()
     }
 }
 
@@ -33,5 +39,19 @@ extension EditAttributesViewModel {
     ///
     func updateProduct(_ product: Product) {
         self.product = product
+    }
+}
+
+// MARK: Helpers
+private extension EditAttributesViewModel {
+
+    /// Creates an array of `ImageAndTitleAndTextTableViewCell.ViewModel` based on the `product.attributes`
+    func createAttributeViewModels() -> [ImageAndTitleAndTextTableViewCell.ViewModel] {
+        product.attributes.map { attribute in
+            ImageAndTitleAndTextTableViewCell.ViewModel(title: attribute.name,
+                                                        text: attribute.options.joined(separator: ", "),
+                                                        numberOfLinesForTitle: 0,
+                                                        numberOfLinesForText: 0)
+        }
     }
 }

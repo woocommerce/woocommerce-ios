@@ -92,13 +92,7 @@ private extension DashboardViewController {
         rightBarButton.accessibilityIdentifier = "dashboard-settings-button"
         navigationItem.setRightBarButton(rightBarButton, animated: false)
 
-        // Don't show the Dashboard title in the next-view's back button
-        let backButton = UIBarButtonItem(title: String(),
-                                         style: .plain,
-                                         target: nil,
-                                         action: nil)
-
-        navigationItem.backBarButtonItem = backButton
+        removeNavigationBackBarButtonText()
     }
 
     func configureDashboardUIContainer() {

@@ -15,7 +15,7 @@ extension UIViewController {
     /// Removes the text of the navigation bar back button in the next view controller of the navigation stack.
     ///
     func removeNavigationBackBarButtonText() {
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem = UIBarButtonItem(image: UIImage(), style: .plain, target: nil, action: nil)
     }
 
     /// Show the X close button or a custom close button with title on the left bar button item position

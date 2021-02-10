@@ -13,4 +13,9 @@ public protocol CardReaderService {
 
     /// The Publisher that emits the payment status
     var paymentStatus: AnyPublisher<PaymentStatus, Never> { get }
+
+    /// The Publisher that emits reader events
+    var readerEvent: AnyPublisher<CardReaderEvent, Never> { get }
+
+    func connect(_ reader: CardReader) -> Future <Void, Error>
 }

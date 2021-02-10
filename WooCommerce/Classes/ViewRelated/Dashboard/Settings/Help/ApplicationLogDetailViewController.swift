@@ -46,8 +46,7 @@ class ApplicationLogDetailViewController: UIViewController {
     func configureNavigation() {
         title = logDate
 
-        // Don't show the Application Log title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+        removeNavigationBackBarButtonText()
 
         let shareButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(showShareActivity))
         navigationItem.rightBarButtonItem = shareButton

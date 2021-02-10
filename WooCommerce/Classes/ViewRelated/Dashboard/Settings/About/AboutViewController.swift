@@ -64,13 +64,7 @@ private extension AboutViewController {
     ///
     func configureNavigation() {
         title = NSLocalizedString("About", comment: "About this app (information page title)")
-        // Don't show the About title in the next-view's back button
-        let backButton = UIBarButtonItem(title: String(),
-                                         style: .plain,
-                                         target: nil,
-                                         action: nil)
-
-        navigationItem.backBarButtonItem = backButton
+        removeNavigationBackBarButtonText()
     }
 
     /// Apply Woo styles.

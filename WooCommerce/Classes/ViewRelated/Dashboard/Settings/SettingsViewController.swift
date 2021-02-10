@@ -76,13 +76,7 @@ private extension SettingsViewController {
 
     func configureNavigation() {
         title = NSLocalizedString("Settings", comment: "Settings navigation title")
-        // Don't show the Settings title in the next-view's back button
-        let backButton = UIBarButtonItem(title: String(),
-                                         style: .plain,
-                                         target: nil,
-                                         action: nil)
-
-        navigationItem.backBarButtonItem = backButton
+        removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {

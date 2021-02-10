@@ -55,8 +55,7 @@ class ApplicationLogViewController: UIViewController {
             comment: "Application Logs navigation bar title - this screen is where users view the list of application logs available to them."
         )
 
-        // Don't show the Help & Support title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+        removeNavigationBackBarButtonText()
     }
 
     /// Apply Woo styles.

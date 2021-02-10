@@ -98,13 +98,7 @@ private extension PrivacySettingsViewController {
     func configureNavigation() {
         title = NSLocalizedString("Privacy Settings", comment: "Privacy settings screen title")
 
-        // Don't show the Settings title in the next-view's back button
-        let backButton = UIBarButtonItem(title: String(),
-                                         style: .plain,
-                                         target: nil,
-                                         action: nil)
-
-        navigationItem.backBarButtonItem = backButton
+        removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {

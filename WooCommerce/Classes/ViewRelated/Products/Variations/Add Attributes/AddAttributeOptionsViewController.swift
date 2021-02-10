@@ -11,17 +11,26 @@ final class AddAttributeOptionsViewController: UIViewController {
 
     private let noticePresenter: NoticePresenter
 
+    /// Closure to be invoked(with the updated product)  when the update/create attribute operation finishes successfully.
+    ///
+    private let onCompletion: (Product) -> Void
+
     /// Keyboard management
     ///
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
     }
 
-    /// Init
+    /// Initializer for `AddAttributeOptionsViewController`
     ///
-    init(viewModel: AddAttributeOptionsViewModel, noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+    /// - Parameters:
+    ///   - onCompletion: Closure to be invoked(with the updated product)  when the update/create attribute operation finishes successfully.
+    init(viewModel: AddAttributeOptionsViewModel,
+         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+         onCompletion: @escaping (Product) -> Void) {
         self.viewModel = viewModel
         self.noticePresenter = noticePresenter
+        self.onCompletion = onCompletion
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -316,8 +325,7 @@ extension AddAttributeOptionsViewController {
             guard let self = self else { return }
             switch result {
             case let .success(product):
-                // TODO: Navigate to attributes screen, maybe clean the stack? #3536
-                print(product.attributes)
+                self.onCompletion(product)
             case let .failure(error):
                 self.noticePresenter.enqueue(notice: .init(title: Localization.updateAttributeError, feedbackType: .error))
                 DDLogError(error.localizedDescription)

@@ -53,10 +53,7 @@ private extension EditAttributesViewController {
     }
 
     func configureRightButton() {
-        let rightBarButton = UIBarButtonItem(title: Localization.done,
-                                             style: .done,
-                                             target: self,
-                                             action: #selector(doneButtonTapped))
+        let rightBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
         navigationItem.setRightBarButton(rightBarButton, animated: false)
     }
 }

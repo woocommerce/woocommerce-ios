@@ -89,19 +89,13 @@ extension EditAttributesViewController {
 extension EditAttributesViewController: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 6 // Temporary
+        return viewModel.attributes.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(ImageAndTitleAndTextTableViewCell.self, for: indexPath)
-
-        // Temporary
-        let vm = ImageAndTitleAndTextTableViewCell.ViewModel(title: "Color",
-                                                             text: "Green, Yellow, Blue",
-                                                             numberOfLinesForTitle: 0,
-                                                             numberOfLinesForText: 0)
-        cell.updateUI(viewModel: vm)
-
+        let cellViewModel = viewModel.attributes[indexPath.row]
+        cell.updateUI(viewModel: cellViewModel)
         return cell
     }
 

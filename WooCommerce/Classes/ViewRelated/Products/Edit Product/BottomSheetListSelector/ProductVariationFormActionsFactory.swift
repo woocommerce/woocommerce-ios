@@ -63,8 +63,8 @@ private extension ProductVariationFormActionsFactory {
 
     func isVisibleInSettingsSection(action: ProductFormEditAction) -> Bool {
         switch action {
-        case .priceSettings, .noPriceWarning, .status:
-            // The price settings and visibility actions are always visible in the settings section.
+        case .priceSettings, .noPriceWarning, .status, .attributes:
+            // The price settings, attributes, and visibility actions are always visible in the settings section.
             return true
         case .inventorySettings:
             let hasStockData = productVariation.manageStock ? productVariation.stockQuantity != nil: true
@@ -72,9 +72,6 @@ private extension ProductVariationFormActionsFactory {
         case .shippingSettings:
             return productVariation.weight.isNilOrEmpty == false ||
                 productVariation.dimensions.height.isNotEmpty || productVariation.dimensions.width.isNotEmpty || productVariation.dimensions.length.isNotEmpty
-        case .attributes:
-            // Remove this feature flag conditional to release the "edit attributes" functionality early
-            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.addProductVariations)
         default:
             return false
         }

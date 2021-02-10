@@ -229,7 +229,7 @@ private extension SettingsViewController {
     func configureCardReaders(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Manage card readers", comment: "Manage card readers Action")
+        cell.textLabel?.text = NSLocalizedString("Manage card readers", comment: "Navigates to Card Reader management screen")
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {

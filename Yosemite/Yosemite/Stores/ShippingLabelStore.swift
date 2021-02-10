@@ -45,6 +45,8 @@ public final class ShippingLabelStore: Store {
                                 completion: completion)
         case .loadShippingLabelSettings(let shippingLabel, let completion):
             loadShippingLabelSettings(shippingLabel: shippingLabel, completion: completion)
+        case .validateAddress(let siteID, let address, let completion):
+            validateAddress(siteID: siteID, address: address, completion: completion)
         }
     }
 }
@@ -95,6 +97,12 @@ private extension ShippingLabelStore {
 
     func loadShippingLabelSettings(shippingLabel: ShippingLabel, completion: (ShippingLabelSettings?) -> Void) {
         completion(storageManager.viewStorage.loadShippingLabelSettings(siteID: shippingLabel.siteID, orderID: shippingLabel.orderID)?.toReadOnly())
+    }
+
+    func validateAddress(siteID: Int64,
+                         address: ShippingLabelAddressVerification,
+                         completion: @escaping (Result<ShippingLabelAddressValidationResponse, Error>) -> Void) {
+        remote.addressValidation(siteID: siteID, address: address, completion: completion)
     }
 }
 

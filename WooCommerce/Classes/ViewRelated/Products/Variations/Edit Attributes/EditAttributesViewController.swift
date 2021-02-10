@@ -22,7 +22,7 @@ final class EditAttributesViewController: UIViewController {
 // MARK: - View Configuration
 private extension EditAttributesViewController {
     func registerTableViewCells() {
-//        tableView.registerNib(for: ProductCategoryTableViewCell.self)
+        tableView.registerNib(for: ImageAndTitleAndTextTableViewCell.self)
     }
 
     func configureAddButton() {
@@ -38,15 +38,14 @@ private extension EditAttributesViewController {
     func configureTableView() {
         view.backgroundColor = .listBackground
         tableView.backgroundColor = .listBackground
-//        tableView.dataSource = self
-//        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.delegate = self
         tableView.removeLastCellSeparator()
     }
 
     func configureNavigationBar() {
         configureTitle()
         configureRightButton()
-        removeNavigationBackBarButtonText()
     }
 
     func configureTitle() {
@@ -71,9 +70,31 @@ extension EditAttributesViewController {
     @objc private func addButtonTapped() {
         // TODO: Launch add attribute flow and update product upon completion
     }
+}
 
-    override func shouldPopOnSwipeBack() -> Bool {
-        return false
+// MARK: - UITableView conformance
+//
+extension EditAttributesViewController: UITableViewDataSource, UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 6 // Temporary
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(ImageAndTitleAndTextTableViewCell.self, for: indexPath)
+
+        // Temporary
+        let vm = ImageAndTitleAndTextTableViewCell.ViewModel(title: "Color",
+                                                             text: "Green, Yellow, Blue",
+                                                             numberOfLinesForTitle: 0,
+                                                             numberOfLinesForText: 0)
+        cell.updateUI(viewModel: vm)
+
+        return cell
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // TODO: Navigate to edit attribute
     }
 }
 

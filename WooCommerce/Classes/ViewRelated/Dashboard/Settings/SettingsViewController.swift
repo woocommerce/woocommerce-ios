@@ -141,11 +141,14 @@ private extension SettingsViewController {
 
         sections = [
             Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
-            Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
         ]
 
+        /// Iif we are going to show a card reader section we want a minimal section footer height for the support section above it.
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) {
+            sections.append(Section(title: nil, rows: [.support], footerHeight: CGFloat.leastNonzeroMagnitude))
             sections.append(Section(title: nil, rows: [.cardReaders], footerHeight: UITableView.automaticDimension))
+        } else {
+            sections.append(Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension))
         }
 
         if couldShowBetaFeaturesRow() {

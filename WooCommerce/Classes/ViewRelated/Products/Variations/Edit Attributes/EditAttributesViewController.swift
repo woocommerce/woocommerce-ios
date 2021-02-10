@@ -80,7 +80,18 @@ extension EditAttributesViewController {
     }
 
     @objc private func addButtonTapped() {
-        // TODO: Launch add attribute flow and update product upon completion
+        navigateToAddAttributeViewController()
+    }
+
+    /// Navigates to `AddAttributeViewController` and upon completion, update the product and clean the navigation stack
+    ///
+    private func navigateToAddAttributeViewController() {
+        let addAttributeVM = AddAttributeViewModel(product: viewModel.product)
+        let addAttributeViewController = AddAttributeViewController(viewModel: addAttributeVM) { [weak self] updatedProduct in
+            guard let self = self else { return }
+            self.viewModel.updateProduct(updatedProduct)
+        }
+        show(addAttributeViewController, sender: self)
     }
 }
 

@@ -5,7 +5,7 @@ final class EditAttributesViewModel {
 
     /// Main product dependency
     ///
-    private var product: Product {
+    private(set) var product: Product {
         didSet {
             self.attributes = createAttributeViewModels()
         }

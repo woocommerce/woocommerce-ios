@@ -51,8 +51,22 @@ public struct ShippingLabelAddress: Equatable {
     }
 }
 
-// MARK: Decodable
-extension ShippingLabelAddress: Decodable {
+// MARK: Codable
+extension ShippingLabelAddress: Codable {
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(company, forKey: .company)
+        try container.encode(name, forKey: .name)
+        try container.encode(phone, forKey: .phone)
+        try container.encode(country, forKey: .country)
+        try container.encode(state, forKey: .state)
+        try container.encode(address1, forKey: .address1)
+        try container.encode(address2, forKey: .address2)
+        try container.encode(city, forKey: .city)
+        try container.encode(postcode, forKey: .postcode)
+    }
+
     private enum CodingKeys: String, CodingKey {
         case company
         case name

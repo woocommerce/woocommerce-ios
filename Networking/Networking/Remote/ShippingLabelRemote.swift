@@ -11,6 +11,9 @@ public protocol ShippingLabelRemoteProtocol {
                              orderID: Int64,
                              shippingLabelID: Int64,
                              completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void)
+    func addressValidation(siteID: Int64,
+                           address: ShippingLabelAddressVerification,
+                           completion: @escaping (Result<ShippingLabelAddressValidationResponse, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints.
@@ -62,12 +65,32 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
         let mapper = ShippingLabelRefundMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Address validation for a shipping address.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site that owns the shipping label.
+    ///   - address: The address that should be verified.
+    ///   - completion: Closure to be executed upon completion.
+    public func addressValidation(siteID: Int64,
+                                  address: ShippingLabelAddressVerification,
+                                  completion: @escaping (Result<ShippingLabelAddressValidationResponse, Error>) -> Void) {
+        do {
+            let parameters = try address.toDictionary()
+            let path = "\(Path.normalizeAddress)"
+            let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let mapper = ShippingLabelAddressValidationResponseMapper()
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
 }
 
 // MARK: Constant
 private extension ShippingLabelRemote {
     enum Path {
         static let shippingLabels = "label"
+        static let normalizeAddress = "normalize-address"
     }
 
     enum ParameterKey {

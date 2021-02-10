@@ -136,8 +136,8 @@ final class ShippingLabelRemoteTests: XCTestCase {
         let address = try result.get().address
         let errors = try XCTUnwrap(result.get().errors)
         XCTAssertNil(address)
-        XCTAssertEqual(errors.address, "House number is missing")
-        XCTAssertEqual(errors.general, "Address not found")
+        XCTAssertEqual(errors.addressError, "House number is missing")
+        XCTAssertEqual(errors.generalError, "Address not found")
     }
 }
 

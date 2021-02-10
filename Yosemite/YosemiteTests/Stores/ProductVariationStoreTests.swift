@@ -307,7 +307,7 @@ final class ProductVariationStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
 
         // When
-        let result: Result<Yosemite.ProductVariation, Error> = try waitFor { promise in
+        let result: Result<Yosemite.ProductVariation, Error> = waitFor { promise in
             let action = ProductVariationAction.retrieveProductVariation(siteID: self.sampleSiteID,
                                                                          productID: self.sampleProductID,
                                                                          variationID: sampleProductVariationID) { result in
@@ -345,7 +345,7 @@ final class ProductVariationStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
 
         // When
-        let result1: Result<Yosemite.ProductVariation, Error> = try waitFor { promise in
+        let result1: Result<Yosemite.ProductVariation, Error> = waitFor { promise in
             let action = ProductVariationAction.retrieveProductVariation(siteID: self.sampleSiteID,
                                                                          productID: self.sampleProductID,
                                                                          variationID: sampleProductVariationID) { result in
@@ -354,7 +354,7 @@ final class ProductVariationStoreTests: XCTestCase {
             store.onAction(action)
         }
 
-        let result2: Result<Yosemite.ProductVariation, Error> = try waitFor { promise in
+        let result2: Result<Yosemite.ProductVariation, Error> = waitFor { promise in
             let action = ProductVariationAction.retrieveProductVariation(siteID: self.sampleSiteID,
                                                                          productID: self.sampleProductID,
                                                                          variationID: sampleProductVariationID) { result in
@@ -394,7 +394,7 @@ final class ProductVariationStoreTests: XCTestCase {
                                            thenReturn: .failure(expectedError))
 
         // When
-        let result: Result<Yosemite.ProductVariation, Error> = try waitFor { promise in
+        let result: Result<Yosemite.ProductVariation, Error> = waitFor { promise in
             let action = ProductVariationAction.retrieveProductVariation(siteID: self.sampleSiteID,
                                                                          productID: self.sampleProductID,
                                                                          variationID: sampleProductVariationID) { result in
@@ -429,7 +429,7 @@ final class ProductVariationStoreTests: XCTestCase {
         let createdProductVariation = CreateProductVariation(regularPrice: "10", attributes: sampleProductVariationAttributes())
 
         // When
-        let result: Result<Yosemite.ProductVariation, Error> = try waitFor { promise in
+        let result: Result<Yosemite.ProductVariation, Error> = waitFor { promise in
             let action = ProductVariationAction.createProductVariation(siteID: self.sampleSiteID,
                                                           productID: self.sampleProductID,
                                                           newVariation: createdProductVariation) { result in
@@ -467,7 +467,7 @@ final class ProductVariationStoreTests: XCTestCase {
         let createdProductVariation = CreateProductVariation(regularPrice: "10", attributes: sampleProductVariationAttributes())
 
         // When
-        let result: Result<Yosemite.ProductVariation, Error> = try waitFor { promise in
+        let result: Result<Yosemite.ProductVariation, Error> = waitFor { promise in
             let action = ProductVariationAction.createProductVariation(siteID: self.sampleSiteID,
                                                           productID: self.sampleProductID,
                                                           newVariation: createdProductVariation) { result in

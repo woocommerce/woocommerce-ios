@@ -1,6 +1,7 @@
 import UIKit
 import Gridicons
 import Yosemite
+import WordPressUI
 
 
 /// Product Details: Renders a row that displays a single Product.
@@ -23,6 +24,10 @@ final class ProductDetailsTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var subtitleLabel: UILabel!
 
+    /// The label showing the SKU.
+    ///
+    @IBOutlet private var skuLabel: UILabel!
+
     // MARK: - Overridden Methods
 
     required init?(coder aDecoder: NSCoder) {
@@ -37,6 +42,7 @@ final class ProductDetailsTableViewCell: UITableViewCell {
         configureProductImageView()
         configureNameLabel()
         configurePriceLabel()
+        configureSKULabel()
         configureSubtitleLabel()
         configureSelectionStyle()
     }
@@ -53,7 +59,7 @@ private extension ProductDetailsTableViewCell {
     }
 
     func configureProductImageView() {
-        productImageView.image = .productPlaceholderImage
+        productImageView.image = UIImage.productPlaceholderImage
         productImageView.tintColor = .listSmallIcon
         productImageView.contentMode = .scaleAspectFill
         productImageView.clipsToBounds = true
@@ -75,6 +81,11 @@ private extension ProductDetailsTableViewCell {
         subtitleLabel?.text = ""
     }
 
+    func configureSKULabel() {
+        skuLabel.applySecondaryFootnoteStyle()
+        skuLabel?.text = ""
+    }
+
     func configureSelectionStyle() {
         selectionStyle = .none
     }
@@ -89,12 +100,13 @@ extension ProductDetailsTableViewCell {
     func configure(item: ProductDetailsCellViewModel, imageService: ImageService) {
         imageService.downloadAndCacheImageForImageView(productImageView,
                                                        with: item.imageURL?.absoluteString,
-                                                       placeholder: .productPlaceholderImage,
+                                                       placeholder: UIImage.productPlaceholderImage.imageWithTintColor(UIColor.listIcon),
                                                        progressBlock: nil,
                                                        completion: nil)
 
         nameLabel.text = item.name
         priceLabel.text = item.total
         subtitleLabel.text = item.subtitle
+        skuLabel.text = item.sku
     }
 }

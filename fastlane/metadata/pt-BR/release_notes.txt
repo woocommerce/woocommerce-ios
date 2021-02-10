@@ -1,5 +1,11 @@
-Produtos: todos os usuários agora podem adicionar e editar produtos vinculados e arquivos para download, além de excluir um produto.
+O WooCommerce tem o prazer de anunciar as atualizações mais recentes no seu aplicativo móvel.
 
-Envio: agora você pode visualizar uma etiqueta de envio, solicitar um reembolso e reimprimi-la com o AirPrint.
+Atualize e pronto: digamos que um usuário aplique parâmetros de ordenação e/ou filtros na lista de produtos da sua loja, mas não queira repetir esse processo quando retornar ao aplicativo. Sem problema! Agora, se um usuário reabrir o aplicativo, ele poderá ver suas configurações anteriores.
 
-Login: fizemos várias melhorias no fluxo de login, incluindo o processamento de erros.
+Consolidação: a tela de controle de vendas designada é coisa do passado. Agora, as informações de taxas e de controle de vendas ficam na tela de detalhes do pedido.
+
+Demos um fim nos bugs: corrigimos diversas falhas, por exemplo:
+
+- As janelas de ações das informações de cobrança agora são exibidas corretamente nos iPads.
+- As linhas nas listas de pesquisa de produtos não têm mais separadores duplos.
+- Os ícones de carregamento nos botões de "Continuar" agora são visíveis no modo escuro.

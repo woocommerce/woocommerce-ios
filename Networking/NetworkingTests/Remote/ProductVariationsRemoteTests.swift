@@ -128,7 +128,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/\(sampleProductVariationID)", filename: "product-variation")
 
         // When
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             remote.loadProductVariation(for: self.sampleSiteID, productID: self.sampleProductID, variationID: sampleProductVariationID) { result in
                 promise(result)
             }
@@ -150,7 +150,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
         let sampleProductVariationID: Int64 = 2783
 
         // When
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             remote.loadProductVariation(for: self.sampleSiteID, productID: self.sampleProductID, variationID: sampleProductVariationID) { result in
                 promise(result)
             }
@@ -171,7 +171,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
         let sampleProductVariationID: Int64 = 1275
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variation")
 
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             remote.createProductVariation(for: self.sampleSiteID,
                                           productID: self.sampleProductID,
                                           newVariation:
@@ -195,7 +195,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
         let remote = ProductVariationsRemote(network: network)
 
         // When
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             remote.createProductVariation(for: self.sampleSiteID,
                                           productID: self.sampleProductID,
                                           newVariation:

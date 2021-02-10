@@ -60,7 +60,7 @@ extension XCTestCase {
     /// ## Example Usage
     ///
     /// ```
-    /// let value: String = try waitFor { promise in
+    /// let value: String = waitFor { promise in
     ///     fetchFromAPI { responseString in
     ///         promise(responseString)
     ///     }
@@ -72,7 +72,7 @@ extension XCTestCase {
     public func waitFor<ValueType>(file: StaticString = #file,
                                    line: UInt = #line,
                                    timeout: TimeInterval = 5.0,
-                                   await: @escaping (_ promise: (@escaping (ValueType) -> Void)) throws -> Void) throws -> ValueType {
+                                   await: @escaping (_ promise: (@escaping (ValueType) -> Void)) throws -> Void) rethrows -> ValueType {
         let exp = expectation(description: "Expect promise to be called.")
 
         var receivedValue: ValueType? = nil

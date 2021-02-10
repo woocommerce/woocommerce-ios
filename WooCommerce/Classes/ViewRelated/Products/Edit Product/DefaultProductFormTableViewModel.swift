@@ -105,7 +105,7 @@ private extension DefaultProductFormTableViewModel {
             case .priceSettings(let editable):
                 return .price(viewModel: variationPriceSettingsRow(productVariation: productVariation, isEditable: editable), isEditable: editable)
             case .attributes(let editable):
-                return .attributes(viewModel: variationAttributesRow(isEditable: editable), isEditable: editable)
+                return .attributes(viewModel: variationAttributesRow(productVariation: productVariation, isEditable: editable), isEditable: editable)
             case .shippingSettings(let editable):
                 return .shipping(viewModel: shippingSettingsRow(product: productVariation, isEditable: editable), isEditable: editable)
             case .inventorySettings(let editable):
@@ -418,10 +418,10 @@ private extension DefaultProductFormTableViewModel {
         return ProductFormSection.SettingsRow.WarningViewModel(icon: icon, title: title)
     }
 
-    func variationAttributesRow(isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+    func variationAttributesRow(productVariation: EditableProductVariationModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.customizeImage
         let title = Localization.variationAttributesTitle
-        let details = "Any Color - Any Material"
+        let details = productVariation.name
 
         return .init(icon: icon, title: title, details: details, isActionable: isEditable)
     }

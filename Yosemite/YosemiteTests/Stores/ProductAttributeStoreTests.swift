@@ -64,7 +64,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 0)
 
         // When
-        let result: Result<[Networking.ProductAttribute], Error> = try waitFor { promise in
+        let result: Result<[Networking.ProductAttribute], Error> = waitFor { promise in
             let action = ProductAttributeAction.synchronizeProductAttributes(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -84,7 +84,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 1)
 
         // When
-        let result: Result<[Networking.ProductAttribute], Error> = try waitFor { promise in
+        let result: Result<[Networking.ProductAttribute], Error> = waitFor { promise in
             let action = ProductAttributeAction.synchronizeProductAttributes(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -109,7 +109,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 0)
 
         // When
-        let result: Result<[Networking.ProductAttribute], Error> = try waitFor { promise in
+        let result: Result<[Networking.ProductAttribute], Error> = waitFor { promise in
             let action = ProductAttributeAction.synchronizeProductAttributes(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -126,7 +126,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 0)
 
         // When
-        let result: Result<[Networking.ProductAttribute], Error> = try waitFor { promise in
+        let result: Result<[Networking.ProductAttribute], Error> = waitFor { promise in
             let action = ProductAttributeAction.synchronizeProductAttributes(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -144,7 +144,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 0)
 
         // When
-        let result: Result<Networking.ProductAttribute, Error> = try waitFor { promise in
+        let result: Result<Networking.ProductAttribute, Error> = waitFor { promise in
             let action = ProductAttributeAction.addProductAttribute(siteID: self.sampleSiteID, name: "Color") { result in
                 promise(result)
             }
@@ -170,7 +170,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 0)
 
         // When
-        let result: Result<Networking.ProductAttribute, Error> = try waitFor { promise in
+        let result: Result<Networking.ProductAttribute, Error> = waitFor { promise in
             let action = ProductAttributeAction.addProductAttribute(siteID: self.sampleSiteID, name: "Color") { result in
                 promise(result)
             }
@@ -187,7 +187,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 0)
 
         // When
-        let result: Result<Networking.ProductAttribute, Error> = try waitFor { promise in
+        let result: Result<Networking.ProductAttribute, Error> = waitFor { promise in
             let action = ProductAttributeAction.addProductAttribute(siteID: self.sampleSiteID, name: "Color") { result in
                 promise(result)
             }
@@ -207,7 +207,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 1)
 
         // When
-        let result: Result<Networking.ProductAttribute, Error> = try waitFor { promise in
+        let result: Result<Networking.ProductAttribute, Error> = waitFor { promise in
             let action = ProductAttributeAction.updateProductAttribute(siteID: self.sampleSiteID, productAttributeID: 1, name: "Color") { result in
                 promise(result)
             }
@@ -232,7 +232,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 0)
 
         // When
-        let result: Result<Networking.ProductAttribute, Error> = try waitFor { promise in
+        let result: Result<Networking.ProductAttribute, Error> = waitFor { promise in
             let action = ProductAttributeAction.updateProductAttribute(siteID: self.sampleSiteID, productAttributeID: 1, name: "Color") { result in
                 promise(result)
             }
@@ -249,7 +249,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 0)
 
         // When
-        let result: Result<Networking.ProductAttribute, Error> = try waitFor { promise in
+        let result: Result<Networking.ProductAttribute, Error> = waitFor { promise in
             let action = ProductAttributeAction.updateProductAttribute(siteID: self.sampleSiteID, productAttributeID: 1, name: "Color") { result in
                 promise(result)
             }
@@ -269,7 +269,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 1)
 
         // When
-        let result: Result<Networking.ProductAttribute, Error> = try waitFor { promise in
+        let result: Result<Networking.ProductAttribute, Error> = waitFor { promise in
             let action = ProductAttributeAction.deleteProductAttribute(siteID: self.sampleSiteID, productAttributeID: 1) { result in
                 promise(result)
             }
@@ -287,7 +287,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 0)
 
         // When
-        let result: Result<Networking.ProductAttribute, Error> = try waitFor { promise in
+        let result: Result<Networking.ProductAttribute, Error> = waitFor { promise in
             let action = ProductAttributeAction.deleteProductAttribute(siteID: self.sampleSiteID, productAttributeID: 1) { result in
                 promise(result)
             }
@@ -304,7 +304,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 0)
 
         // When
-        let result: Result<Networking.ProductAttribute, Error> = try waitFor { promise in
+        let result: Result<Networking.ProductAttribute, Error> = waitFor { promise in
             let action = ProductAttributeAction.deleteProductAttribute(siteID: self.sampleSiteID, productAttributeID: 1) { result in
                 promise(result)
             }

@@ -34,7 +34,7 @@ final class ProductAttributesRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/attributes", filename: "product-attributes-all")
 
         // When
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             remote.loadAllProductAttributes(for: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -56,7 +56,7 @@ final class ProductAttributesRemoteTests: XCTestCase {
         let remote = ProductAttributesRemote(network: network)
 
         // When
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             remote.loadAllProductAttributes(for: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -77,7 +77,7 @@ final class ProductAttributesRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/attributes", filename: "product-attribute-create")
 
         // When
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             remote.createProductAttribute(for: self.sampleSiteID, name: "Color") { result in
                 promise(result)
             }
@@ -96,7 +96,7 @@ final class ProductAttributesRemoteTests: XCTestCase {
         let remote = ProductAttributesRemote(network: network)
 
         // When
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             remote.createProductAttribute(for: self.sampleSiteID, name: "Color") { result in
                 promise(result)
             }
@@ -118,7 +118,7 @@ final class ProductAttributesRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/attributes/\(defaultProductAttributeID)", filename: "product-attribute-update")
 
         // When
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             remote.updateProductAttribute(for: self.sampleSiteID, productAttributeID: defaultProductAttributeID, name: "Color") { result in
                 promise(result)
             }
@@ -138,7 +138,7 @@ final class ProductAttributesRemoteTests: XCTestCase {
         let remote = ProductAttributesRemote(network: network)
 
         // When
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             remote.updateProductAttribute(for: self.sampleSiteID, productAttributeID: defaultProductAttributeID, name: "Color") { result in
                 promise(result)
             }
@@ -160,7 +160,7 @@ final class ProductAttributesRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/attributes/\(defaultProductAttributeID)", filename: "product-attribute-delete")
 
         // When
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             remote.deleteProductAttribute(for: self.sampleSiteID, productAttributeID: defaultProductAttributeID) { result in
                 promise(result)
             }
@@ -180,7 +180,7 @@ final class ProductAttributesRemoteTests: XCTestCase {
         let remote = ProductAttributesRemote(network: network)
 
         // When
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             remote.deleteProductAttribute(for: self.sampleSiteID, productAttributeID: defaultProductAttributeID) { result in
                 promise(result)
             }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-12-24 08:54:04+0000 */
+/* Translation-Revision-Date: 2021-02-05 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -108,7 +108,7 @@
 "(No Title)" = "(无标题)";
 
 /* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details.";
+"**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "确保在打印机设置中**启用 AirPrint**。 您可能需要在打印机上配置此设置。\n\n请参阅打印机附带的文档了解详情。";
 
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "已选择 1 个产品";
@@ -147,7 +147,7 @@
 "A verification code will only contain numbers." = "验证码将仅包含数字。";
 
 /* Header of existing attribute options section in Add Attribute Options screen */
-"ADD OPTIONS" = "ADD OPTIONS";
+"ADD OPTIONS" = "添加选项";
 
 /* About this app (information page title) */
 "About" = "关于";
@@ -176,10 +176,10 @@
 "Add Downloadable File" = "添加可下载文件";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "添加文件";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "添加文件";
+"Add File" = "Add File";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "添加照片";
@@ -218,7 +218,7 @@
 "Add attribute" = "添加属性";
 
 /* Footer of text field section in Add Attribute Options screen */
-"Add each option and press enter" = "Add each option and press enter";
+"Add each option and press enter" = "添加每个选项并按回车";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -376,9 +376,6 @@
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "%2$@ 栏号 %1$i";
 
-/* Begin fulfill order button title */
-"Begin Fulfillment" = "开始履行";
-
 /* Section header title for billing address in billing information */
 "Billing Address" = "账单地址";
 
@@ -413,7 +410,7 @@
 "Can Not Request Link" = "无法请求链接";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
 "Cancel" = "取消";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -466,7 +463,7 @@
 "Check your email!" = "请查看电子邮件！";
 
 /* Navigation title on the shipping label paper size selector screen */
-"Choose Paper Size" = "Choose Paper Size";
+"Choose Paper Size" = "选择纸张尺寸";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "从设备中选择";
@@ -491,6 +488,9 @@
 
 /* Store Picker's Section Title: Displayed when there's a single pre-selected Store. */
 "Connected Store" = "已关联的商店";
+
+/* Page title for the list of connected stores */
+"Connected Stores" = "已关联的商店";
 
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "正在连接 WordPress.com";
@@ -578,9 +578,6 @@
 /* The button title text for creating a new account. */
 "Create Account" = "创建帐户";
 
-/* The title of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
-"Create products from the app!" = "通过应用程序创建产品！";
-
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "创建产品";
 
@@ -606,11 +603,7 @@
 /* Customer info section title */
 "Customer" = "客户";
 
-/* Section title for the customer's billing and shipping address */
-"Customer Information" = "客户信息";
-
-/* Customer note section title
-   Section title for a note from the customer */
+/* Customer note section title */
 "Customer Provided Note" = "客户提供的备注";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
@@ -631,16 +624,12 @@
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "默认";
 
-/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen
-   Button title Delete in Downloadable File Options Action Sheet - Button title Delete in Edit Product More Options Action Sheet */
+/* Button title Delete in Downloadable File Options Action Sheet
+   Button title Delete in Edit Product More Options Action Sheet */
 "Delete" = "删除";
 
-/* Delete a Shipment Tracking
-   Delete tracking button title */
+/* Delete tracking button title */
 "Delete Tracking" = "删除跟踪信息";
-
-/* Accessibility hint for Delete Shipment button in Order fulfillment screen */
-"Deletes a shipment's tracking information." = "删除配送跟踪信息。";
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "描述您的产品";
@@ -653,7 +642,7 @@
 "Details" = "详情";
 
 /* Screen title: Details Order number. Parameters: %1$@ - order number */
-"Details Order #%1$@" = "Details Order #%1$@";
+"Details Order #%1$@" = "详细的订单号 %1$@";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "确定产品在目录中的位置。数值越低，相关产品在产品列表中的位置越靠前。您还可以使用负数";
@@ -703,7 +692,7 @@
 "Don’t know how to print from your phone?" = "不知道如何通过手机打印？";
 
 /* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
-"Dotcom Error: [%1$@] %2$@" = "Dotcom Error: [%1$@] %2$@";
+"Dotcom Error: [%1$@] %2$@" = "Dotcom 错误：[%1$@] %2$@";
 
 /* WordPress.com error thrown when the the request REST API url is invalid. */
 "Dotcom Invalid REST Route" = "Dotcom 无效 REST 路由";
@@ -741,22 +730,22 @@
 "Download Settings" = "Download Settings";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Download expiration";
-
-/* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "下载有效期";
 
-/* Title of the cell in Product Download limit > Download limit */
-"Download limit" = "下载限制";
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Download limit";
 
-/* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "Downloadable Files";
+/* Title of the cell in Product Download limit > Download limit */
+"Download limit" = "下载限制";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "可下载文件";
+
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "Downloadable Files";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "Downloadable Product";
@@ -811,7 +800,7 @@
 "Enjoying the WooCommerce app?" = "喜欢 WooCommerce 应用程序？";
 
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating.";
+"Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "确保您的**打印机固件是最新的**。 请参阅您的打印机文档了解更新说明。";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
 "Enter Another Store" = "输入其他商店";
@@ -843,16 +832,16 @@
 "Enter the external URL to the product." = "输入产品的外部 URL。";
 
 /* Footer text for Download Expiration */
-"Enter the number of days before a download link expires, or leave blank if never it expires" = "输入下载链接的有效天数，或者留空，使其永久有效";
-
-/* Footer text for Download Expiration */
 "Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
 
-/* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "输入文件可以下载的次数，或者留空以供无限次下载";
+/* Footer text for Download Expiration */
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "输入下载链接的有效天数，或者留空，使其永久有效";
 
 /* Footer text for Downloadable Limit */
 "Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
+
+/* Footer text for Downloadable Limit */
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "输入文件可以下载的次数，或者留空以供无限次下载";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "输入您的 WordPress.com 帐户的密码。";
@@ -877,7 +866,7 @@
 "Enter your password instead." = "改为输入密码。";
 
 /* Alert title when there is an error requesting shipping label document for reprinting */
-"Error previewing shipping label" = "Error previewing shipping label";
+"Error previewing shipping label" = "预览配送标签时出错";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -895,6 +884,9 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "未能将请求序列化至 REST API。";
 
+/* Content of error presented when undo of Mark Order Completed failed. It reads: Failed to undo fulfillment of order #{order number}. Parameters: %1$d - order number */
+"Failed to undo fulfillment of order #%1$d" = "未能撤销订单 #%1$d 的履约";
+
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
 
@@ -903,6 +895,9 @@
 
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "反馈已发送！";
+
+/* Fees label for payment view */
+"Fees" = "费用";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -914,11 +909,11 @@
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
-"File URL" = "文件 URL";
+"File URL" = "File URL";
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
-"File URL" = "File URL";
+"File URL" = "文件 URL";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "使用密码管理器填写";
@@ -935,6 +930,9 @@
 
 /* Navigation bar title format for filtering a list of products with filters applied. */
 "Filters (%ld)" = "筛选条件 (%ld)";
+
+/* Button linking to webview explaining how to find your connected emailPresented when logging in with a store address that does not match the account entered */
+"Find your connected email" = "找到您的关联电子邮件";
 
 /* The hint button's title text to help users find their site address. */
 "Find your site address" = "找到您的站点地址";
@@ -956,9 +954,6 @@
 
 /* Title of the downloadable file bottom sheet action for adding file from device. */
 "From device" = "从设备";
-
-/* Order Fulfillment Title. Parameters: %1$@ - order number */
-"Fulfill Order #%1$@" = "Fulfill Order #%1$@";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "深入了解商店中产品的销售情况";
@@ -1086,10 +1081,10 @@
 "If you already used the label in a package, printing and using it again is a violation of our terms of service" = "如果您已在包装中使用过该标签，再次打印和使用此标签会违反我们的服务条款";
 
 /* Step 4 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device.";
+"If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "如果通过手机打印时仍然有问题，您可以将标签另存为 PDF，并**通过电子邮件将其发送到**其他设备打印。";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
-"If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.";
+"If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "如果您继续使用 Apple，并且还没有 WordPress.com 帐户，则需要创建一个帐户，并同意我们的_服务条款_。";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "如果您继续使用 Apple 或 Google，并且还没有 WordPress.com 帐户，则需要创建一个帐户，并同意我们的_服务条款_。";
@@ -1159,6 +1154,9 @@
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "发放退款中...";
 
+/* Message explaining that the site entered and the acount logged into do not match. Reads like 'It looks like awebsite.com is connected to a different account */
+"It looks like %@ is connected to a different account." = "%@ 似乎已关联到其他帐户。";
+
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "It looks like this email isn't associated with a WordPress.com account." = "该电子邮件似乎未与 WordPress.com 帐户关联。";
 
@@ -1170,9 +1168,6 @@
 
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "斜体";
-
-/* The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
-"It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!" = "现在可通过 Woo 应用程序随时随地创建简单、分组\n和外部产品。还没有准备好？ 将它们另存为草稿！";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack 是一款免费的 WordPress 插件，它可以将您的商店与所需的工具连接起来，为您提供最佳移动体验，包括推送通知和统计数据";
@@ -1187,7 +1182,7 @@
 "Label (4 x 6 in)" = "标签（4 x 6 英寸）";
 
 /* Navigation bar title of shipping label paper size options screen */
-"Label Format Options" = "Label Format Options";
+"Label Format Options" = "标签格式选项";
 
 /* Last 24 hours section header */
 "Last 24 hours" = "过去 24 小时";
@@ -1260,8 +1255,8 @@
    Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Log In With Another Account" = "使用其他帐户登录";
 
-/* Alert button title - confirms and logs out the user
-   Log out button title */
+/* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
+   Alert button title - confirms and logs out the user - Log out button title */
 "Log Out" = "注销";
 
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
@@ -1314,10 +1309,10 @@
 "Manual Offsets" = "手动选择偏差";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "通过 %1$@ 手动退款";
+"Manual Refund via %1$@" = "Manual Refund via %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "通过 %1$@ 手动退款";
 
 /* No comment provided by engineer. */
 "Manual Refund via Stripe" = "通过 Stripe 手动退款";
@@ -1408,7 +1403,10 @@
 "Need some help?" = "需要一些帮助？";
 
 /* The title for the net amount paid cell */
-"Net" = "净额";
+"Net Payment" = "净付款";
+
+/* The title of the top banner on the Products tab. */
+"New features available!" = "已推出新功能！";
 
 /* Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
@@ -1437,10 +1435,10 @@
 "No expiration" = "永久有效";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "No files yet";
+"No files yet" = "暂无文件";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "暂无文件";
+"No files yet" = "No files yet";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "还没有图片";
@@ -1465,7 +1463,7 @@
 "No ratings" = "无评分";
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier'. Parameters: %1$@ - carrier name */
-"No results found for %1$@\nAdd a custom carrier" = "No results found for %1$@\nAdd a custom carrier";
+"No results found for %1$@\nAdd a custom carrier" = "找不到符合 %1$@ 的结果\n添加自定义运营商";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "此时期没有收入";
@@ -1482,7 +1480,8 @@
 /* Placeholder of the Product Variations row on Product main screen for a variable product */
 "No variations yet" = "尚无变体";
 
-/* Display label for the product's tax status setting option */
+/* Display label for the order fee's tax status setting option
+   Display label for the product's tax status setting option */
 "None" = "无";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
@@ -1499,7 +1498,7 @@
 "OK" = "确定";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
-"OPTIONS OFFERED" = "OPTIONS OFFERED";
+"OPTIONS OFFERED" = "提供选项";
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "关闭";
@@ -1545,7 +1544,7 @@
 "Opens a list of available statuses." = "打开可用状态列表。";
 
 /* Placeholder of cell presenting the title of the new attribute option. */
-"Option name" = "Option name";
+"Option name" = "选项名称";
 
 /* Add Product Category. Placeholder of cell presenting the parent category.
    Placeholder of the cell text field in Product Inventory Settings > SKU */
@@ -1565,7 +1564,7 @@
 
 /* Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number
    Order number title. Parameters: %1$@ - order number */
-"Order #%1$@" = "Order #%1$@";
+"Order #%1$@" = "订单号 %1$@";
 
 /* Order notes section title */
 "Order Notes" = "订单备注";
@@ -1609,7 +1608,7 @@
 "Package Details" = "包裹详细信息";
 
 /* The title for the customer payment cell */
-"Paid By Customer" = "客户支付";
+"Paid" = "已付";
 
 /* Title of the paper size selector row for reprinting a shipping label */
 "Paper Size" = "纸张尺寸";
@@ -1711,10 +1710,10 @@
 "Please wait while we publish this product to your store" = "我们正在将此产品发布到您的商店，请稍候";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
+"Please wait while we save this product to your store" = "请稍候，我们正在将此产品保存到您的商店";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "请稍候，我们正在将此产品保存到您的商店";
+"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
 
 /* Message of the in-progress UI while deleting the Product remotely */
 "Please wait while we update your store details" = "请稍候，正在更新您的商店详细信息";
@@ -1739,13 +1738,13 @@
 "Print Shipping Label" = "打印配送标签";
 
 /* Navigation bar title of shipping label printing instructions screen */
-"Print from your Phone" = "Print from your Phone";
+"Print from your Phone" = "通过手机打印";
 
 /* The title of the shipping labels top banner in order details */
-"Print shipping labels from your device!" = "Print shipping labels from your device!";
+"Print shipping labels from your device!" = "通过您的设备打印配送标签！";
 
 /* Title of in-progress modal when requesting shipping label document for reprinting */
-"Printing Label" = "Printing Label";
+"Printing Label" = "打印标签";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "面向加州用户的隐私声明";
@@ -1770,7 +1769,7 @@
 "Processing" = "正在处理";
 
 /* Description for Top Performers left column header
-   Product section title - Product section title if there is only one product. - Section header title for the product */
+   Product section title - Product section title if there is only one product. */
 "Product" = "产品";
 
 /* Edit Product External Link navigation title */
@@ -1849,8 +1848,7 @@
 /* Quantity abbreviation for section title */
 "QTY" = "数量";
 
-/* Quantity abbreviation for section title
-   Section header title - abbreviation for quantity */
+/* Quantity abbreviation for section title */
 "Qty" = "数量";
 
 /* The accessibility label for the quantity button when selecting an item to refund
@@ -1882,16 +1880,16 @@
 "Reason for Refund (Optional)" = "Reason for Refund (Optional)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for refunding order" = "Reason for refunding order";
-
-/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "订单退款原因";
 
-/* The title of the button to confirm the refund. */
-"Refund" = "Refund";
+/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
+"Reason for refunding order" = "Reason for refunding order";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "退款";
+
+/* The title of the button to confirm the refund. */
+"Refund" = "Refund";
 
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "退款 #%@";
@@ -1907,10 +1905,10 @@
 "Refund Label (%1$@)" = "退款标签 (%1$@)";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "配送费用退款";
+"Refund Shipping" = "Refund Shipping";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Refund Shipping";
+"Refund Shipping" = "配送费用退款";
 
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "退款方式";
@@ -2040,10 +2038,10 @@
 "Save as draft" = "保存为草稿";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
-"Saving your product..." = "Saving your product...";
+"Saving your product..." = "正在保存您的产品...";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
-"Saving your product..." = "正在保存您的产品...";
+"Saving your product..." = "Saving your product...";
 
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "扫描条形码以更新 SKU";
@@ -2074,6 +2072,9 @@
 
 /* Display label for the product's catalog visibility */
 "Search results only" = "仅在搜索结果中显示";
+
+/* Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
+"See Connected Stores" = "查看已关联的商店";
 
 /* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "See Instructions" = "查看说明";
@@ -2243,6 +2244,9 @@
 /* Button title. Tapping begins our normal sign up process. */
 "Sign up with Email" = "使用电子邮件注册";
 
+/* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
+"Signed in as @%1$@" = "登录用户为 @%1$@";
+
 /* Display label for simple product type. */
 "Simple" = "简单";
 
@@ -2377,7 +2381,7 @@
 "Switch Store" = "切换商店";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. Parameters: %1$@ - store name */
-"Switched to %1$@. You will only receive notifications from this store." = "Switched to %1$@. You will only receive notifications from this store.";
+"Switched to %1$@. You will only receive notifications from this store." = "已切换到 %1$@。 您只会收到来自此商店的通知。";
 
 /* Accessibility Identifier for the H1 Aztec Style */
 "Switches to the Heading 1 font size" = "切换为标题 1 号字";
@@ -2486,7 +2490,8 @@
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "税状态";
 
-/* Display label for the product's tax status setting option */
+/* Display label for the order fee's tax status setting option
+   Display label for the product's tax status setting option */
 "Taxable" = "应纳税";
 
 /* Taxes label for payment view */
@@ -2744,19 +2749,19 @@
 "Unable To Connect" = "无法连接";
 
 /* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
-"Unable to add note to order #%1$d" = "Unable to add note to order #%1$d";
+"Unable to add note to order #%1$d" = "无法将备注添加到订单号 %1$d";
 
 /* Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number}. Parameters: %1$d - order number */
-"Unable to add tracking to order #%1$d" = "Unable to add tracking to order #%1$d";
+"Unable to add tracking to order #%1$d" = "无法为订单号 %1$d 添加跟踪信息";
 
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}. Parameters: %1$d - order number */
-"Unable to change status of order #%1$d" = "Unable to change status of order #%1$d";
+"Unable to change status of order #%1$d" = "无法更改订单号 %1$d 的状态";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
-"Unable to delete tracking for order #%1$d" = "Unable to delete tracking for order #%1$d";
+"Unable to delete tracking for order #%1$d" = "无法删除订单号 %1$d 的跟踪信息";
 
-/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
-"Unable to fulfill order #%1$d" = "Unable to fulfill order #%1$d";
+/* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
+"Unable to fulfill order #%1$d" = "无法履行订单号 %1$d";
 
 /* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
 "Unable to load Shipment Carriers" = "无法加载运输承运商";
@@ -2842,10 +2847,10 @@
 "Update product inventory and SKU" = "更新产品库存和 SKU";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "远程更新产品的“可下载文件”的信息";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "远程更新产品的“可下载文件”的信息";
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "更新至 WooCommerce 3.5，继续使用此应用程序";
@@ -2909,7 +2914,7 @@
 "Verification code" = "验证码";
 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
-"Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network.";
+"Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "验证您的打印机和设备连接到**相同的 Wi-Fi 网络**。\n\n请查看您的打印机文档，了解有关连接到 Wi-Fi 网络的信息。";
 
 /* Displays the version of the App */
 "Version %@" = "版本 %@";
@@ -2978,7 +2983,7 @@
 "Watch your audience grow with in-depth analytics." = "通过深入分析观察您的受众增长。";
 
 /* The info of the shipping labels top banner in order details */
-"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here.";
+"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "我们正竭力让您可以更轻松地直接通过设备打印配送标签！ 现在，如果您使用 WooCommerce Shipping 在商店管理中为某个订单创建了标签，则可以在此处的“订单详情”中打印标签。";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "我们无法显示您的店铺分析";
@@ -3072,6 +3077,9 @@
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "WordPress 版本过旧。%1$@ 上的站点采用 WordPress %2$@。我们建议更新至最新版本或至少更新为 %3$@";
 
+/* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
+"Wrong account?" = "错误帐户？";
+
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo 邮箱";
 
@@ -3086,6 +3094,9 @@
 
 /* Yesterday Section Header */
 "Yesterday" = "昨天";
+
+/* The info of the top banner on the Products tab. */
+"You can now add downloadable files to a product and link upsell & cross-sell products. No longer want a product? Trash it!" = "您现在可以为产品添加可下载的文件，并链接追加销售和交叉销售产品。 不再想要某款产品了吗？ 将该产品移至回收站！";
 
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "您可以对尚未用于配送包裹的配送标签申请退款。\n此过程至少需要 14 天的处理时间。";
@@ -3103,7 +3114,7 @@
 "Your notifications travel with you — see comments and likes as they happen." = "无论您走到哪里都能收到通知 - 及时看到他人的评论和点赞。";
 
 /* Body text of alert helping users understand their site address */
-"Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "Your site address appears in the bar at the top of the screen when you visit your site in Safari.";
+"Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "在您使用 Safari 访问自己的站点时，站点地址显示在屏幕顶部的地址栏中。";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[评论]";
@@ -3133,7 +3144,8 @@
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "未知 URL";
 
-/* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need... */
+/* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
+   Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */
 "your site" = "您的站点";
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */

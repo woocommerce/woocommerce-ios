@@ -58,9 +58,7 @@ private extension HelpAndSupportViewController {
     ///
     func configureNavigation() {
         title = NSLocalizedString("Help", comment: "Help and Support navigation title")
-
-        // Don't show the Settings title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+        removeNavigationBackBarButtonText()
 
         // Dismiss
         navigationItem.leftBarButtonItem = {

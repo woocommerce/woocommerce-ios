@@ -129,6 +129,22 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
         XCTAssertEqual(viewModel.productModel.images, newImages)
     }
 
+    func test_updating_attributes() {
+        // Arrange
+        let productVariation = MockProductVariation().productVariation()
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
+
+        // Action
+        let newAttribute = ProductVariationAttribute(id: 1, name: "Color", option: "Blue")
+        let newAttributes = [newAttribute]
+        viewModel.updateVariationAttributes(newAttributes)
+
+        //Assert
+        XCTAssertEqual(viewModel.productModel.productVariation.attributes, newAttributes)
+    }
+
     func testDisablingAVariationUpdatesItsStatusFromPublishToPrivate() {
         // Arrange
         let productVariation = MockProductVariation().productVariation().copy(status: .publish)

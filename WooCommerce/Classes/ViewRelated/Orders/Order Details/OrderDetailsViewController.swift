@@ -115,9 +115,7 @@ private extension OrderDetailsViewController {
     func configureNavigation() {
         let titleFormat = NSLocalizedString("Order #%1$@", comment: "Order number title. Parameters: %1$@ - order number")
         title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
-
-        // Don't show the Order details title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+        removeNavigationBackBarButtonText()
     }
 
     /// Setup: EntityListener

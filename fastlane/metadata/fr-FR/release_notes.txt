@@ -1,5 +1,11 @@
-Produits : tous les utilisateurs peuvent désormais ajouter et modifier des produits liés, ajouter et modifier des fichiers téléchargeables et supprimer un produit.
+WooCommerce se réjouit d’annoncer les dernières mises à jour de son application mobile.
 
-Expédition : vous pouvez désormais voir les détails de l’étiquette d’expédition, demander un remboursement et réimprimer une étiquette d’expédition avec AirPrint.
+Actualisation : Admettons qu’un utilisateur applique des paramètres de tri et/ou des filtres sur la liste de produits de votre magasin. Il est fort probable qu’en revenant dans l’application, il préférera éviter d’effectuer de nouveau l’opération. Aucun problème ! Désormais, lorsqu’un utilisateur rouvre l’application, les paramètres appliqués précédemment restent en vigueur.
 
-Connexion : nous avons apporté diverses améliorations au flux de connexion, notamment une meilleure gestion des erreurs.
+Regroupement : L’écran d’exécution proprement dit n’existe plus ; les informations sur l’exécution se trouvent désormais sur l’écran des détails de la commande, comme c’était déjà le cas pour les frais.
+
+Adieu les bugs : Nous avons résolu plusieurs problèmes techniques, par exemple :
+
+- Les feuilles d’action reprenant les informations de facturation s’affichent désormais correctement sur les iPads.
+- Les lignes dans les listes de recherche de produits ne comportent plus de double séparateurs.
+- Les compteurs de chargement sur les boutons « continuer » sont désormais visibles en mode sombre.

@@ -27,7 +27,7 @@ final class ProductVariationLoadUseCaseTests: XCTestCase {
         mockRetrieveProduct(result: .success(product))
 
         // Action
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             useCase.loadProductVariation(productID: 806, variationID: 725) { result in
                 promise(result)
             }
@@ -48,7 +48,7 @@ final class ProductVariationLoadUseCaseTests: XCTestCase {
         mockRetrieveProduct(result: .success(product))
 
         // Action
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             useCase.loadProductVariation(productID: 806, variationID: 725) { result in
                 promise(result)
             }
@@ -69,7 +69,7 @@ final class ProductVariationLoadUseCaseTests: XCTestCase {
         mockRetrieveProduct(result: .failure(ProductLoadError.notFoundInStorage))
 
         // Action
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             useCase.loadProductVariation(productID: 806, variationID: 725) { result in
                 promise(result)
             }
@@ -89,7 +89,7 @@ final class ProductVariationLoadUseCaseTests: XCTestCase {
         mockRetrieveProduct(result: .failure(ProductLoadError.notFoundInStorage))
 
         // Action
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             useCase.loadProductVariation(productID: 806, variationID: 725) { result in
                 promise(result)
             }

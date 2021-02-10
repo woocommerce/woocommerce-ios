@@ -537,7 +537,7 @@ final class ProductStoreTests: XCTestCase {
 
         // Action
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product")
-        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+        let result: Result<Yosemite.Product, Error> = waitFor { promise in
             let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
                 promise(result)
             }
@@ -559,7 +559,7 @@ final class ProductStoreTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // Action
-        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+        let result: Result<Yosemite.Product, Error> = waitFor { promise in
             let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
                 promise(result)
             }
@@ -580,7 +580,7 @@ final class ProductStoreTests: XCTestCase {
 
         // Action
         network.simulateResponse(requestUrlSuffix: "products/295", filename: "variation-as-product")
-        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+        let result: Result<Yosemite.Product, Error> = waitFor { promise in
             let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleVariationTypeProductID) { result in
                 promise(result)
             }
@@ -609,7 +609,7 @@ final class ProductStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/282", filename: "product")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
 
-        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+        let result: Result<Yosemite.Product, Error> = waitFor { promise in
             let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
                 promise(result)
             }
@@ -638,7 +638,7 @@ final class ProductStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/295", filename: "variation-as-product")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
 
-        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+        let result: Result<Yosemite.Product, Error> = waitFor { promise in
             let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleVariationTypeProductID) { result in
                 promise(result)
             }
@@ -670,7 +670,7 @@ final class ProductStoreTests: XCTestCase {
 
         // Action
         network.simulateResponse(requestUrlSuffix: "products/282", filename: "generic_error")
-        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+        let result: Result<Yosemite.Product, Error> = waitFor { promise in
             let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
                 promise(result)
             }
@@ -688,7 +688,7 @@ final class ProductStoreTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // Action
-        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+        let result: Result<Yosemite.Product, Error> = waitFor { promise in
             let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
                 promise(result)
             }
@@ -714,7 +714,7 @@ final class ProductStoreTests: XCTestCase {
 
         // Action
         network.simulateError(requestUrlSuffix: "products/282", error: dotComError)
-        let result: Result<Yosemite.Product, Error> = try waitFor { promise in
+        let result: Result<Yosemite.Product, Error> = waitFor { promise in
             let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
                 promise(result)
             }

@@ -1,11 +1,5 @@
-WooCommerce is excited to introduce the latest updates to its mobile app.
+What’s new in our 6.0 release?
 
-Refresh and Ready: Let’s say a user applies sorting parameters and/or filters to your store’s product list—chances are, when they return to the app, they don’t want to repeat that process. No problem! Now, if a user reopens the app, they’ll be able to see their previous settings.
+You asked, we listened! Due to popular demand, the product SKU is displayed once again in the Order Details screen.
 
-Consolidation: The designated fulfillment screen is a thing of the past—fulfillment information now lives on the order details screen, as does info about fees. 
-
-Bugs Be Gone: We’ve fixed several glitches—here’s a taste: 
-
-- Billing information action sheets now present correctly on iPads. 
-- Rows in product search lists no longer have double separators.
-- Loading spinners on “continue” buttons are now visible in dark mode.
+We also made various enhancements, including support for drag-and-drop sorting to Linked Products, consistency fixes to visitor stats in your dashboard and top performers in your “This Week” tab, and an improvement that reduces the risk of crashes when you update the app.

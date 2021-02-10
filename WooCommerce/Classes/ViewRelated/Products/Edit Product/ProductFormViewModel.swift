@@ -247,6 +247,10 @@ extension ProductFormViewModel {
         product = EditableProductModel(product: product.product.copy(upsellIDs: upsellIDs,
                                                                      crossSellIDs: crossSellIDs))
     }
+
+    func updateVariationAttributes(_ attributes: [ProductVariationAttribute]) {
+        // no-op
+    }
 }
 
 // MARK: Remote actions

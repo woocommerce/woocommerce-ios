@@ -96,6 +96,8 @@ protocol ProductFormViewModelProtocol {
 
     func updateLinkedProducts(upsellIDs: [Int64], crossSellIDs: [Int64])
 
+    func updateVariationAttributes(_ attributes: [ProductVariationAttribute])
+
     // Remote action
 
     /// Creates/updates a product remotely given an optional product status to override.

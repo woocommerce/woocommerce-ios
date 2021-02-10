@@ -31,7 +31,7 @@ final class ProductAttributeTermRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/attributes/\(sampleAttributeID)/terms", filename: "product-attribute-terms")
 
         // When
-        let result: Result<[ProductAttributeTerm], Error> = try waitFor { promise in
+        let result: Result<[ProductAttributeTerm], Error> = waitFor { promise in
             remote.loadProductAttributeTerms(for: self.sampleSiteID, attributeID: self.sampleAttributeID) { result in
                 promise(result)
             }
@@ -49,7 +49,7 @@ final class ProductAttributeTermRemoteTests: XCTestCase {
         network.simulateError(requestUrlSuffix: "products/attributes/\(sampleAttributeID)/terms", error: expectedError)
 
         // When
-        let result: Result<[ProductAttributeTerm], Error> = try waitFor { promise in
+        let result: Result<[ProductAttributeTerm], Error> = waitFor { promise in
             remote.loadProductAttributeTerms(for: self.sampleSiteID, attributeID: self.sampleAttributeID) { result in
                 promise(result)
             }
@@ -67,7 +67,7 @@ final class ProductAttributeTermRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/attributes/\(sampleAttributeID)/terms", filename: "attribute-term")
 
         // When
-        let result: Result<ProductAttributeTerm, Error> = try waitFor { promise in
+        let result: Result<ProductAttributeTerm, Error> = waitFor { promise in
             remote.createProductAttributeTerm(for: self.sampleSiteID, attributeID: self.sampleAttributeID, name: "XXS") { result in
                 promise(result)
             }
@@ -85,7 +85,7 @@ final class ProductAttributeTermRemoteTests: XCTestCase {
         network.simulateError(requestUrlSuffix: "products/attributes/\(sampleAttributeID)/terms", error: expectedError)
 
         // When
-        let result: Result<ProductAttributeTerm, Error> = try waitFor { promise in
+        let result: Result<ProductAttributeTerm, Error> = waitFor { promise in
             remote.createProductAttributeTerm(for: self.sampleSiteID, attributeID: self.sampleAttributeID, name: "XXS") { result in
                 promise(result)
             }

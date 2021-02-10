@@ -600,15 +600,12 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   end
 
   desc "Upload App Store Data"
-  lane :upload_app_store_data do | options |
-    
+  lane :upload_app_store_data do | options |    
     deliver(
-      app_identifier: 'com.automattic.woocommerce',
-      copyright: '2019 WooCommerce',
       skip_binary_upload: true,
-      team_id: '299112',
       skip_screenshots: true,
-      ignore_language_directory_validation: true
+      ignore_language_directory_validation: true,
+      precheck_include_in_app_purchases: false # Not supported yet when using ADC APIKey
     )
   end
 

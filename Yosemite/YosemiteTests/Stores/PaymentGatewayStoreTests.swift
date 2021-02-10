@@ -44,7 +44,7 @@ final class PaymentGatewayStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "payment_gateways", filename: "payment-gateway-list")
 
         // When
-        let result: Result<Void, Error> = try waitFor { promise in
+        let result: Result<Void, Error> = waitFor { promise in
             let action = PaymentGatewayAction.synchronizePaymentGateways(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -69,7 +69,7 @@ final class PaymentGatewayStoreTests: XCTestCase {
         store.onAction(firstSync)
 
         // When
-        let result: Result<Void, Error> = try waitFor { promise in
+        let result: Result<Void, Error> = waitFor { promise in
             let secondSync = PaymentGatewayAction.synchronizePaymentGateways(siteID: self.sampleSiteID) { result in
                 promise(result)
             }

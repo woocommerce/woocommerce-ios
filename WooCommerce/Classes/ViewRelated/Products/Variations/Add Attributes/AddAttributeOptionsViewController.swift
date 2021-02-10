@@ -21,7 +21,7 @@ final class AddAttributeOptionsViewController: UIViewController {
         self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
     }
 
-    /// Initializer for `AddAttributeViewController`
+    /// Initializer for `AddAttributeOptionsViewController`
     ///
     /// - Parameters:
     ///   - onCompletion: Closure to be invoked(with the updated product)  when the update/create attribute operation finishes successfully.

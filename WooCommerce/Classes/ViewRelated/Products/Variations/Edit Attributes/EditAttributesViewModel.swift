@@ -17,6 +17,15 @@ final class EditAttributesViewModel {
     }
 }
 
+// MARK: View Controller Outputs
+extension EditAttributesViewModel {
+    /// Defines done button visibility
+    ///
+    var showDoneButton: Bool {
+        allowVariationCreation
+    }
+}
+
 // MARK: View Controller inputs
 extension EditAttributesViewModel {
 

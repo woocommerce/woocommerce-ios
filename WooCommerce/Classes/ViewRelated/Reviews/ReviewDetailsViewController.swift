@@ -88,8 +88,7 @@ private extension ReviewDetailsViewController {
     /// Setup: Navigation
     ///
     func configureNavigationItem() {
-        // Don't show the Notifications title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+        removeNavigationBackBarButtonText()
     }
 
     /// Setup: Main View

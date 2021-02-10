@@ -184,7 +184,7 @@ extension AddAttributeViewController: UITableViewDelegate {
             return
         }
         let attribute = viewModel.localAndGlobalAttributes[indexPath.row]
-        presentAddAttributeOptions(attribute: .existing(attribute: attribute))
+        presentAddAttributeOptions(for: .existing(attribute: attribute))
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -277,12 +277,12 @@ extension AddAttributeViewController {
         guard let name = viewModel.newAttributeName else {
             return
         }
-        presentAddAttributeOptions(attribute: .new(name: name))
+        presentAddAttributeOptions(for: .new(name: name))
     }
 
     /// Presents `AddAttributeOptionsViewController` and passes the same `onCompletion` closure, for our presenterVC  to handle.
     ///
-    private func presentAddAttributeOptions(attribute: AddAttributeOptionsViewModel.Attribute) {
+    private func presentAddAttributeOptions(for attribute: AddAttributeOptionsViewModel.Attribute) {
         let viewModel = AddAttributeOptionsViewModel(product: self.viewModel.product, attribute: attribute)
         let addAttributeOptionsVC = AddAttributeOptionsViewController(viewModel: viewModel, onCompletion: onCompletion)
         show(addAttributeOptionsVC, sender: nil)

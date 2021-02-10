@@ -150,6 +150,7 @@ private extension ProductVariationsViewController {
     /// Set the title.
     ///
     func configureNavigationBar() {
+        removeNavigationBackBarButtonText()
         title = NSLocalizedString(
             "Variations",
             comment: "Title that appears on top of the Product Variation List screen."
@@ -371,11 +372,25 @@ private extension ProductVariationsViewController {
         let addAttributeViewController = AddAttributeViewController(viewModel: viewModel) { [weak self] updatedProduct in
             guard let self = self else { return }
             self.product = updatedProduct
-
-            // TODO: Replace stack with AttributeList UI in #3536
-            self.navigationController?.popToViewController(self, animated: true)
+            self.navigateToEditAttributeViewController()
         }
         show(addAttributeViewController, sender: self)
+    }
+
+    /// Cleans the navigation stack until `self` and navigates to `EditAttributesViewController`
+    ///
+    func navigateToEditAttributeViewController() {
+        guard let navigationController = navigationController else {
+            return
+        }
+
+        let editAttributeViewController = EditAttributesViewController()
+        guard let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) else {
+            return show(editAttributeViewController, sender: nil)
+        }
+
+        let viewControllersUntilSelf = navigationController.viewControllers[0...indexOfSelf]
+        navigationController.setViewControllers(viewControllersUntilSelf + [editAttributeViewController], animated: true)
     }
 }
 

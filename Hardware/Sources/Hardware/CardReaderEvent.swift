@@ -2,4 +2,6 @@
 public enum CardReaderEvent {
     case cardInserted
     case cardRemoved
+    case lowBattery
+    case disconnected
 }

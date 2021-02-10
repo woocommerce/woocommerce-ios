@@ -65,6 +65,9 @@ private extension EditAttributesViewController {
     }
 
     func configureRightButton() {
+        guard viewModel.showDoneButton else {
+            return
+        }
         let rightBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
         navigationItem.setRightBarButton(rightBarButton, animated: false)
     }

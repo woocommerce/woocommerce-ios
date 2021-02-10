@@ -22,7 +22,7 @@ private extension EditableProductVariationModel {
         let detailsAttributedString = NSMutableAttributedString(attributedString: stockStatusAttributedString)
         detailsAttributedString.append(NSAttributedString(string: " • ", attributes: [
             .foregroundColor: UIColor.textSubtle,
-            .font: Style.detailsFont
+            .font: StyleManager.footerLabelFont
         ]))
         detailsAttributedString.append(variationStatusOrPriceAttributedString)
         return NSAttributedString(attributedString: detailsAttributedString)
@@ -33,7 +33,7 @@ private extension EditableProductVariationModel {
         return NSAttributedString(string: stockText,
                                   attributes: [
                                     .foregroundColor: UIColor.textSubtle,
-                                    .font: Style.detailsFont
+                                    .font: StyleManager.footerLabelFont
         ])
     }
 
@@ -58,7 +58,7 @@ private extension EditableProductVariationModel {
         let attributedString = NSMutableAttributedString(string: detailsText,
                                                          attributes: [
                                                             .foregroundColor: textColor,
-                                                            .font: Style.detailsFont
+                                                            .font: StyleManager.footerLabelFont
         ])
         return attributedString
     }
@@ -66,12 +66,6 @@ private extension EditableProductVariationModel {
     func createPriceText(currency: String, currencySettings: CurrencySettings) -> String {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         return currencyFormatter.formatAmount(productVariation.price, with: currency) ?? ""
-    }
-}
-
-private extension EditableProductVariationModel {
-    enum Style {
-        static let detailsFont = StyleManager.footerLabelFont
     }
 }
 

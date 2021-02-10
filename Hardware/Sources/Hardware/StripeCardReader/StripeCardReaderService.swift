@@ -45,6 +45,60 @@ extension StripeCardReaderService: CardReaderService {
 
 
     // MARK: - CardReaderService conformance. Commands
+
+    public func start() {
+        // 🚀
+    }
+
+    public func disconnect(_ reader: CardReader) -> Future<Void, Error> {
+        return Future() { promise in
+            // This will be removed. We just want to pretend we are doing a roundtrip to the SDK for now.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                promise(Result.success(()))
+            }
+        }
+    }
+
+    public func clear() {
+        // 🧹
+    }
+
+    public func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<PaymentIntent, Error> {
+        return Future() { promise in
+            // This will be removed. We just want to pretend we are doing a roundtrip to the SDK for now.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                promise(Result.success(PaymentIntent()))
+            }
+        }
+    }
+
+    public func collectPaymentMethod(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
+        return Future() { promise in
+            // This will be removed. We just want to pretend we are doing a roundtrip to the SDK for now.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                promise(Result.success(PaymentIntent()))
+            }
+        }
+    }
+
+    public func processPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
+        return Future() { promise in
+            // This will be removed. We just want to pretend we are doing a roundtrip to the SDK for now.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                promise(Result.success(PaymentIntent()))
+            }
+        }
+    }
+
+    public func cancelPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
+        return Future() { promise in
+            // This will be removed. We just want to pretend we are doing a roundtrip to the SDK for now.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                promise(Result.success(PaymentIntent()))
+            }
+        }
+    }
+
     public func connect(_ reader: CardReader) -> Future <Void, Error> {
         return Future() { promise in
             // This will be removed. We just want to execute this

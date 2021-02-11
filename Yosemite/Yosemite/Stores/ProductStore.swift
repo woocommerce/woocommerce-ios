@@ -2,7 +2,6 @@ import Foundation
 import Networking
 import Storage
 
-
 // MARK: - ProductStore
 //
 public class ProductStore: Store {
@@ -287,9 +286,7 @@ private extension ProductStore {
                 onCompletion(.failure(ProductUpdateError(error: error)))
             case .success(let product):
                 self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) { [weak self] in
-                    // For some reason, using `storageManager.viewStorage.loadProduct` does not fetches the options of some product attributes.
-                    // Using `sharedDerivedStorage.loadProduct` does fetches that latest state.
-                    guard let storageProduct = self?.sharedDerivedStorage.loadProduct(siteID: product.siteID, productID: product.productID) else {
+                    guard let storageProduct = self?.storageManager.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID) else {
                         onCompletion(.failure(.notFoundInStorage))
                         return
                     }

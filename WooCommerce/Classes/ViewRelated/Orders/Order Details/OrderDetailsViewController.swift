@@ -391,6 +391,9 @@ private extension OrderDetailsViewController {
             }
             let coordinator = ReprintShippingLabelCoordinator(shippingLabel: shippingLabel, sourceViewController: navigationController)
             coordinator.showReprintUI()
+        case .createShippingLabel:
+            let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
+            navigationController?.show(shippingLabelFormVC, sender: self)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         }

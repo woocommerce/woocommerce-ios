@@ -7,6 +7,8 @@ import StripeTerminal
 public final class WCPayTokenProvider: ConnectionTokenProvider {
     private let mockToken = "mock_token"
 
+    public init() { }
+
     public func fetchConnectionToken(_ completion: @escaping ConnectionTokenCompletionBlock) {
         // For this first implementation we just want to have something up quickly.
         // So, for now, we will return a hardcoded string, and no error.

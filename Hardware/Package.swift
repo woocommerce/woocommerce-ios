@@ -30,6 +30,13 @@ let package = Package(
             dependencies: ["StripeTerminal"]),
         .testTarget(
             name: "HardwareTests",
-            dependencies: ["Hardware"]),
+            dependencies: ["Hardware"],
+            resources: [
+                .copy("Resources/Hardware-Info.plist")
+            ],
+            linkerSettings: [ .unsafeFlags( ["-sectcreate",
+                                                "__TEXT",
+                                                "__info_plist",
+                                                "Hardware-Info.plist"])]),
     ]
 )

@@ -90,6 +90,8 @@ extension EditAttributesViewController {
         let addAttributeViewController = AddAttributeViewController(viewModel: addAttributeVM) { [weak self] updatedProduct in
             guard let self = self else { return }
             self.viewModel.updateProduct(updatedProduct)
+            self.tableView.reloadData()
+            self.navigationController?.popToViewController(self, animated: true)
         }
         show(addAttributeViewController, sender: self)
     }

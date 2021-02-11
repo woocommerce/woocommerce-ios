@@ -20,7 +20,7 @@ public protocol CardReaderService {
     var paymentStatus: AnyPublisher<PaymentStatus, Never> { get }
 
     /// The Publisher that emits reader events
-    var readerEvent: AnyPublisher<CardReaderEvent, Never> { get }
+    var readerEvents: AnyPublisher<CardReaderEvent, Never> { get }
 
     // MARK: - Commands
 

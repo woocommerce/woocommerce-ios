@@ -44,7 +44,7 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     /// The Publisher that emits reader events
-    public var readerEvent: AnyPublisher<CardReaderEvent, Never> {
+    public var readerEvents: AnyPublisher<CardReaderEvent, Never> {
         readerEventsSubject.eraseToAnyPublisher()
     }
 

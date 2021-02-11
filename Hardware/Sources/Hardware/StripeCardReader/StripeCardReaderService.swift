@@ -6,7 +6,7 @@ public final class StripeCardReaderService {
     private let tokenProvider: ConnectionTokenProvider
 
     private let discoveredReadersSubject = CurrentValueSubject<[CardReader], Never>([])
-    private let connectedReadersSubject = PassthroughSubject<[CardReader], Never>()
+    private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
     private let serviceStatusSubject = CurrentValueSubject<CardReaderServiceStatus, Never>(.ready)
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
     private let paymentStatusSubject = CurrentValueSubject<PaymentStatus, Never>(.notReady)

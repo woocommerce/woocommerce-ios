@@ -180,6 +180,7 @@ private extension ProductVariationsViewController {
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
+        tableView.separatorStyle = .none
     }
 
     /// Setup: Sync'ing Coordinator

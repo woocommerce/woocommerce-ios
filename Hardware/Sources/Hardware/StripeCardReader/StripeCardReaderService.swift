@@ -10,7 +10,7 @@ public final class StripeCardReaderService {
     private let serviceStatusSubject = CurrentValueSubject<CardReaderServiceStatus, Never>(.ready)
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
     private let paymentStatusSubject = CurrentValueSubject<PaymentStatus, Never>(.notReady)
-    private let readerSubject = PassthroughSubject<CardReaderEvent, Never>()
+    private let readerEventsSubject = PassthroughSubject<CardReaderEvent, Never>()
 
     public init(tokenProvider: ConnectionTokenProvider) {
         self.tokenProvider = tokenProvider
@@ -45,7 +45,7 @@ extension StripeCardReaderService: CardReaderService {
 
     /// The Publisher that emits reader events
     public var readerEvent: AnyPublisher<CardReaderEvent, Never> {
-        readerSubject.eraseToAnyPublisher()
+        readerEventsSubject.eraseToAnyPublisher()
     }
 
 

@@ -20,4 +20,10 @@ public enum ShippingLabelAction: Action {
     /// Loads the settings for a shipping label.
     ///
     case loadShippingLabelSettings(shippingLabel: ShippingLabel, completion: (ShippingLabelSettings?) -> Void)
+
+    /// Validate a shipping address.
+    ///
+    case validateAddress(siteID: Int64,
+                         address: ShippingLabelAddressVerification,
+                         completion: (Result<ShippingLabelAddressValidationResponse, Error>) -> Void)
 }

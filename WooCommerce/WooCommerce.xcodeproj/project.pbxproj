@@ -969,7 +969,6 @@
 		D817586422BDD81600289CFE /* OrderDetailsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D817586322BDD81600289CFE /* OrderDetailsDataSource.swift */; };
 		D81D9228222E7F0800FFA585 /* OrderStatusListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81D9226222E7F0800FFA585 /* OrderStatusListViewController.swift */; };
 		D81D9229222E7F0800FFA585 /* OrderStatusListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D81D9227222E7F0800FFA585 /* OrderStatusListViewController.xib */; };
-		D81F0A7C25D18326004F33C8 /* Hardware in Frameworks */ = {isa = PBXBuildFile; productRef = D81F0A7B25D18326004F33C8 /* Hardware */; };
 		D81F2D35225F0CF70084BF9C /* EmptyListMessageWithActionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D81F2D34225F0CF70084BF9C /* EmptyListMessageWithActionView.xib */; };
 		D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81F2D36225F0D160084BF9C /* EmptyListMessageWithActionView.swift */; };
 		D82DFB4A225F22D400EFE2CB /* UISearchBar+Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82DFB49225F22D400EFE2CB /* UISearchBar+Appearance.swift */; };
@@ -2231,7 +2230,6 @@
 				B5C3B5E720D189ED0072CB9D /* Yosemite.framework in Frameworks */,
 				B5C3B5E520D189EA0072CB9D /* Storage.framework in Frameworks */,
 				B5C3B5E320D189E60072CB9D /* Networking.framework in Frameworks */,
-				D81F0A7C25D18326004F33C8 /* Hardware in Frameworks */,
 				86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5300,7 +5298,6 @@
 			);
 			name = WooCommerce;
 			packageProductDependencies = (
-				D81F0A7B25D18326004F33C8 /* Hardware */,
 			);
 			productName = WooCommerce;
 			productReference = B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */;
@@ -7373,10 +7370,6 @@
 		57150E0E24F462C200E81611 /* TestKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TestKit;
-		};
-		D81F0A7B25D18326004F33C8 /* Hardware */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Hardware;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

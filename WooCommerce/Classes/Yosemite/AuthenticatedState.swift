@@ -28,7 +28,7 @@ class AuthenticatedState: StoresManagerState {
         let storageManager = ServiceLocator.storageManager
         let network = AlamofireNetwork(credentials: credentials)
 
-        services = [
+        var allServices = [
             AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
             AvailabilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -56,6 +56,16 @@ class AuthenticatedState: StoresManagerState {
             StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
             TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) {
+            let cardReaderStore =  CardPresentPaymentStore(dispatcher: dispatcher,
+                                                           storageManager: storageManager,
+                                                           network: network,
+                                                           cardReaderService: ServiceLocator.cardReaderService)
+            allServices.append(cardReaderStore)
+        }
+
+        services = allServices
 
         startListeningToNotifications()
     }

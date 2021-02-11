@@ -5,9 +5,10 @@ import StripeTerminal
 public final class StripeCardReaderService {
     private let tokenProvider: ConnectionTokenProvider
 
-    private let discoveredReadersSubject = CurrentValueSubject<[CardReader], Error>([])
-    private let connectedReaderSubject = PassthroughSubject<CardReader, Never>()
-    private let connectionStatusSubject = CurrentValueSubject<ConnectionStatus, Never>(.notConnected)
+    private let discoveredReadersSubject = CurrentValueSubject<[CardReader], Never>([])
+    private let connectedReadersSubject = PassthroughSubject<[CardReader], Never>()
+    private let serviceStatusSubject = CurrentValueSubject<CardReaderServiceStatus, Never>(.ready)
+    private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
     private let paymentStatusSubject = CurrentValueSubject<PaymentStatus, Never>(.notReady)
     private let readerSubject = PassthroughSubject<CardReaderEvent, Never>()
 
@@ -21,16 +22,20 @@ public final class StripeCardReaderService {
 extension StripeCardReaderService: CardReaderService {
 
     // MARK: - CardReaderService conformance. Queries
-    public var discoveredReaders: AnyPublisher<[CardReader], Error> {
+    public var discoveredReaders: AnyPublisher<[CardReader], Never> {
         discoveredReadersSubject.eraseToAnyPublisher()
     }
 
-    public var connectedReader: AnyPublisher<CardReader, Never> {
-        connectedReaderSubject.eraseToAnyPublisher()
+    public var connectedReaders: AnyPublisher<[CardReader], Never> {
+        connectedReadersSubject.eraseToAnyPublisher()
     }
 
-    public var connectionStatus: AnyPublisher<ConnectionStatus, Never> {
-        connectionStatusSubject.eraseToAnyPublisher()
+    public var serviceStatus: AnyPublisher<CardReaderServiceStatus, Never> {
+        serviceStatusSubject.eraseToAnyPublisher()
+    }
+
+    public var discoveryStatus: AnyPublisher<CardReaderServiceDiscoveryStatus, Never> {
+        discoveryStatusSubject.eraseToAnyPublisher()
     }
 
     /// The Publisher that emits the payment status

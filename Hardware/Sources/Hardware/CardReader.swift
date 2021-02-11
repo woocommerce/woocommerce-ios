@@ -3,5 +3,5 @@
 /// The exact properties are to be defined yet.
 /// For now, this is a placeholder
 public struct CardReader {
-
+    public let status: CardReaderStatus
 }

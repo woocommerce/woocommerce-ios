@@ -5,13 +5,16 @@ public protocol CardReaderService {
 
     // MARK: - Queries
     /// The publisher that emits the list of discovered readers whenever the service discovers a new reader.
-    var discoveredReaders: AnyPublisher<[CardReader], Error> { get }
+    var discoveredReaders: AnyPublisher<[CardReader], Never> { get }
 
-    /// The Publisher that emits the connected reader
-    var connectedReader: AnyPublisher<CardReader, Never> { get }
+    /// The Publisher that emits the connected readers
+    var connectedReaders: AnyPublisher<[CardReader], Never> { get }
 
-    /// The Publisher that emits the connection status
-    var connectionStatus: AnyPublisher<ConnectionStatus, Never> { get }
+    /// The Publisher that emits the service status
+    var serviceStatus: AnyPublisher<CardReaderServiceStatus, Never> { get }
+
+    /// The Publisher that emits the service discovery status
+    var discoveryStatus: AnyPublisher<CardReaderServiceDiscoveryStatus, Never> { get }
 
     /// The Publisher that emits the payment status
     var paymentStatus: AnyPublisher<PaymentStatus, Never> { get }

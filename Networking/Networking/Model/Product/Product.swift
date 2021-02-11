@@ -463,7 +463,11 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         try container.encode(sku, forKey: .sku)
         try container.encode(manageStock, forKey: .manageStock)
         try container.encode(soldIndividually, forKey: .soldIndividually)
-        try container.encode(stockQuantity, forKey: .stockQuantity)
+
+        // API currently only accepts integer values for stock quantity
+        let integerStockQuantity = Int(truncating: stockQuantity as NSDecimalNumber? ?? 0)
+        try container.encode(integerStockQuantity, forKey: .stockQuantity)
+
         try container.encode(backordersKey, forKey: .backordersKey)
         try container.encode(stockStatusKey, forKey: .stockStatusKey)
         try container.encode(virtual, forKey: .virtual)

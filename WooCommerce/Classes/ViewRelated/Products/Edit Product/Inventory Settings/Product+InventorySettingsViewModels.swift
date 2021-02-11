@@ -24,8 +24,8 @@ extension Product {
                                   placeholder: "0",
                                   accessibilityHint: accessibilityHint,
                                   unitPosition: .none,
-                                  keyboardType: .decimalPad,
-                                  inputFormatter: DecimalInputFormatter(),
+                                  keyboardType: .numberPad,
+                                  inputFormatter: IntegerInputFormatter(),
                                   onInputChange: onInputChange)
     }
 }

@@ -424,7 +424,7 @@ private extension ProductVariationsViewController {
 }
 
 private extension ProductVariationsViewController {
-    @objc private func pullToRefresh(sender: UIRefreshControl) {
+    @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.productVariationListPulledToRefresh)
 
         syncingCoordinator.synchronizeFirstPage {
@@ -432,7 +432,7 @@ private extension ProductVariationsViewController {
         }
     }
 
-    @objc private func addButtonTapped() {
+    @objc func addButtonTapped() {
         // TODO-3539: Generate new variation
     }
 }

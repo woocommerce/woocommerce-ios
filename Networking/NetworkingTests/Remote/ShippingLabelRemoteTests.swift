@@ -100,4 +100,62 @@ final class ShippingLabelRemoteTests: XCTestCase {
                         "The parcel has been shipped. ( 400 )")
         XCTAssertEqual(result.failure as? DotcomError, expectedError)
     }
+
+    func test_shippingAddressValidation_returns_address_on_success() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "normalize-address", filename: "shipping-label-address-validation-success")
+
+        // When
+        let result: Result<ShippingLabelAddressValidationResponse, Error> = waitFor { promise in
+            remote.addressValidation(siteID: self.sampleSiteID, address: self.sampleShippingLabelAddressVerification()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let address = try XCTUnwrap(result.get().address)
+        let errors = try result.get().errors
+        XCTAssertEqual(address, sampleShippingLabelAddress())
+        XCTAssertNil(errors)
+    }
+
+    func test_shippingAddressValidation_returns_errors_on_failure() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "normalize-address", filename: "shipping-label-address-validation-error")
+
+        // When
+        let result: Result<ShippingLabelAddressValidationResponse, Error> = waitFor { promise in
+            remote.addressValidation(siteID: self.sampleSiteID, address: self.sampleShippingLabelAddressVerification()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let address = try result.get().address
+        let errors = try XCTUnwrap(result.get().errors)
+        XCTAssertNil(address)
+        XCTAssertEqual(errors.addressError, "House number is missing")
+        XCTAssertEqual(errors.generalError, "Address not found")
+    }
+}
+
+private extension ShippingLabelRemoteTests {
+    func sampleShippingLabelAddressVerification() -> ShippingLabelAddressVerification {
+        let type: ShippingLabelAddressVerification.ShipType = .destination
+        return ShippingLabelAddressVerification(address: sampleShippingLabelAddress(), type: type)
+    }
+
+    func sampleShippingLabelAddress() -> ShippingLabelAddress {
+        return ShippingLabelAddress(company: "",
+                                    name: "Anitaa",
+                                    phone: "41535032",
+                                    country: "US",
+                                    state: "CA",
+                                    address1: "60 29TH ST # 343",
+                                    address2: "",
+                                    city: "SAN FRANCISCO",
+                                    postcode: "94110-4929")
+    }
 }

@@ -3,7 +3,7 @@
 6.1
 -----
 - [**] Products: When editing variable products, you can now edit the variation attributes to select different attribute options. [https://github.com/woocommerce/woocommerce-ios/pull/3628]
-
+- [*] Fixes a bug where long pressing the back button sometimes displayed an empty list of screens.
 
 6.0
 -----

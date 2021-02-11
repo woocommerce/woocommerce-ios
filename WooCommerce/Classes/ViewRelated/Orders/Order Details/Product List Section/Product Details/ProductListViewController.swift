@@ -38,8 +38,7 @@ private extension ProductListViewController {
         title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
         view.backgroundColor = .listBackground
 
-        // Don't show the Order details title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+        removeNavigationBackBarButtonText()
     }
 
     /// Setup: TableView

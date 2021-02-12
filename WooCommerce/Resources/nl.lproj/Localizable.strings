@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-02-05 15:47:14+0000 */
+/* Translation-Revision-Date: 2021-02-09 11:32:07+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -176,10 +176,10 @@
 "Add Downloadable File" = "Downloadbaar bestand toevoegen";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Bestand toevoegen";
+"Add File" = "Add File";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "Bestand toevoegen";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Foto toevoegen";
@@ -197,6 +197,9 @@
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "Tracking toevoegen";
+
+/* Title on add variation button when there are no variations */
+"Add Variation" = "Add Variation";
 
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
@@ -241,6 +244,9 @@
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Gewicht en afmetingen toevoegen";
+
+/* Title on the variations list screen when there are no variations */
+"Add your first variation" = "Add your first variation";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Voegt tracking toe aan een bestelling.";
@@ -293,10 +299,11 @@
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "Een optionele opmerking om naar de klant te sturen na aankoop";
 
-/* Title when there is no filter set. */
+/* Product variation attribute description where the attribute is set to any value.
+   Title when there is no filter set. */
 "Any" = "Alle";
 
-/* Format of a product varition attribute description where the attribute is set to any value. */
+/* Format of a product variation attribute description where the attribute is set to any value. */
 "Any %@" = "Iedere %@";
 
 /* Message shown when Apple authentication fails. */
@@ -338,6 +345,10 @@
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "Attribute name" = "Naam eigenschap";
+
+/* Edit Product Attributes screen navigation title
+   Title of the attributes row on Product Variation main screen */
+"Attributes" = "Attributes";
 
 /* No comment provided by engineer. */
 "Authenticating" = "Authenticatie";
@@ -523,10 +534,6 @@
 /* Button title. Tapping begins log in using Google. */
 "Continue with Google" = "Doorgaan met Google";
 
-/* Button title. Takes the user to the login by email flow.
-   Button title. Tapping begins our normal log in process. */
-"Continue with WordPress.com" = "Doorgaan met WordPress.com";
-
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "Doorgaan met Apple";
 
@@ -614,12 +621,6 @@
 
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "Datum: Oudste naar nieuwste";
-
-/* Statistical unit - a single day */
-"Day" = "Dag";
-
-/* Plural of 'day' — a statistical unit */
-"Days" = "Dagen";
 
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Standaard";
@@ -736,10 +737,10 @@
 "Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download limit > Download limit */
-"Download limit" = "Download limit";
+"Download limit" = "Downloadlimiet";
 
 /* Title of the cell in Product Download limit > Download limit */
-"Download limit" = "Downloadlimiet";
+"Download limit" = "Download limit";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "Downloadbare bestanden";
@@ -754,10 +755,10 @@
 "Downloadable Product" = "Downloadbaar product";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "Downloadable files";
+"Downloadable files" = "Downloadbare bestanden";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "Downloadbare bestanden";
+"Downloadable files" = "Downloadable files";
 
 /* Display label for the product's draft status */
 "Draft" = "Concept";
@@ -832,10 +833,10 @@
 "Enter the external URL to the product." = "Voer de externe URL naar het product in.";
 
 /* Footer text for Download Expiration */
-"Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "Voer het aantal dagen in voordat een downloadlink verloopt, of laat leeg om onbeperkt beschikbaar te laten";
 
 /* Footer text for Download Expiration */
-"Enter the number of days before a download link expires, or leave blank if never it expires" = "Voer het aantal dagen in voordat een downloadlink verloopt, of laat leeg om onbeperkt beschikbaar te laten";
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
 
 /* Footer text for Downloadable Limit */
 "Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
@@ -901,19 +902,19 @@
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "Bestandsnaam";
+"File Name" = "File Name";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "File Name";
-
-/* Placeholder of the cell text field in Product Downloadable File URL
-   Title of the cell in Product Downloadable File URL > File URL */
-"File URL" = "File URL";
+"File Name" = "Bestandsnaam";
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
 "File URL" = "Bestand-URL";
+
+/* Placeholder of the cell text field in Product Downloadable File URL
+   Title of the cell in Product Downloadable File URL > File URL */
+"File URL" = "File URL";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "Invullen met wachtwoordmanager";
@@ -1170,7 +1171,7 @@
 "Italic" = "Cursief";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
-"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack is een gratis WordPress-plugin die aan je winkel wordt gekoppeld en tools voor de beste mobiele ervaring biedt, waaronder pushmeldingen en statistieken";
+"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack is een gratis WordPress-plugin die aan je winkel wordt gekoppeld en tools voor de beste mobiele ervaring biedt, waaronder pushmeldingen en statistieken";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Doorgaan met bewerken";
@@ -1265,6 +1266,10 @@
 /* A generic error message for a failed log in. */
 "Log in failed. Please try again." = "Inloggen mislukt. Probeer het nogmaals.";
 
+/* Button title. Takes the user to the login by email flow.
+   Button title. Tapping begins our normal log in process. */
+"Log in or sign up with WordPress.com" = "Log in or sign up with WordPress.com";
+
 /* Instruction text on the login's email address screen. */
 "Log in to the WordPress.com account you used to connect Jetpack." = "Login met je WordPress.com account die je gebruikt hebt om verbinding met Jetpack te maken.";
 
@@ -1348,12 +1353,6 @@
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %@, maximum value %@" = "Minimale waarde %1$@, maximale waarde %2$@";
 
-/* Statistical unit - a single week */
-"Month" = "Maand";
-
-/* Plural of 'month' — a statistical unit */
-"Months" = "Maanden";
-
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
 "More" = "Meer";
@@ -1435,25 +1434,22 @@
 "No expiration" = "Onbeperkt";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "Nog geen bestanden";
+"No files yet" = "No files yet";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "No files yet";
+"No files yet" = "Nog geen bestanden";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "Nog geen afbeeldingen";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "Geen limiet";
+"No limit" = "No limit";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "No limit";
+"No limit" = "Geen limiet";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Geen prijs ingesteld";
-
-/* The text on the placeholder overlay when there are no product variations on the Products tab */
-"No product variations yet" = "Nog geen productvariaties";
 
 /* Placeholder for the linked products list selector screen
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
@@ -1552,6 +1548,9 @@
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Optionele tracking-informatie";
+
+/* Header of attributes section in Edit Product Attributes screen */
+"Options" = "Opties";
 
 /* Divider on initial auth view separating auth options. */
 "Or" = "Of";
@@ -1710,10 +1709,10 @@
 "Please wait while we publish this product to your store" = "Een moment geduld terwijl we dit product in je winkel publiceren";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Een moment geduld terwijl we dit product in je winkel opslaan";
+"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
+"Please wait while we save this product to your store" = "Een moment geduld terwijl we dit product in je winkel opslaan";
 
 /* Message of the in-progress UI while deleting the Product remotely */
 "Please wait while we update your store details" = "Even geduld terwijl we je winkelgegevens bijwerken";
@@ -1725,10 +1724,10 @@
 "Powered by Automattic" = "Mogelijk gemaakt door Automattic";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Eerder terugbetaald";
+"Previously Refunded" = "Previously Refunded";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Previously Refunded";
+"Previously Refunded" = "Eerder terugbetaald";
 
 /* Product Price Settings navigation title
    Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
@@ -1880,16 +1879,16 @@
 "Reason for Refund (Optional)" = "Reason for Refund (Optional)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for refunding order" = "Reden voor terugbetalen bestelling";
-
-/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Reason for refunding order";
 
-/* The title of the button to confirm the refund. */
-"Refund" = "Terugbetalen";
+/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
+"Reason for refunding order" = "Reden voor terugbetalen bestelling";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "Refund";
+
+/* The title of the button to confirm the refund. */
+"Refund" = "Terugbetalen";
 
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "Restitutie #%@";
@@ -2038,10 +2037,10 @@
 "Save as draft" = "Opslaan als concept";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
-"Saving your product..." = "Je product wordt opgeslagen";
+"Saving your product..." = "Saving your product...";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
-"Saving your product..." = "Saving your product...";
+"Saving your product..." = "Je product wordt opgeslagen";
 
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "Barcode scannen om SKU bij te werken";
@@ -2631,10 +2630,10 @@
 "This is the name of the file shown to the customer." = "Dit is de naam van het bestand dat klanten te zien krijgen.";
 
 /* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Dit is de URL van het bestand die klanten tot hun beschikking zullen hebben. Ingevoerde URL's zouden al versleuteld moeten zijn.";
 
 /* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Dit is de URL van het bestand die klanten tot hun beschikking zullen hebben. Ingevoerde URL's zouden al versleuteld moeten zijn.";
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2847,10 +2846,10 @@
 "Update product inventory and SKU" = "Productvoorraad en SKU bijwerken";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "De gegevens van downloadbare bestanden van producten op afstand bijwerken";
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "De gegevens van downloadbare bestanden van producten op afstand bijwerken";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "Werk WooCommerce bij naar 3.5 om deze app te blijven gebruiken";
@@ -2934,10 +2933,10 @@
 "View Shipment Details" = "Verzendingsgegevens bekijken";
 
 /* The action to update downloadable files settings for a product */
-"View downloadable file settings" = "Downloadbare bestandinstellingen bekijken";
+"View downloadable file settings" = "View downloadable file settings";
 
 /* The action to update downloadable files settings for a product */
-"View downloadable file settings" = "View downloadable file settings";
+"View downloadable file settings" = "Downloadbare bestandinstellingen bekijken";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Eerder ingediende rapporttickets bekijken";
@@ -3025,12 +3024,6 @@
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "We hebben je een aanmeldlink toegestuurd om je nieuwe WordPress.com-account aan te maken. Controleer je e-mail op dit apparaat en tik op de link in de e-mail die je van WordPress.com ontvangt.";
 
-/* Statistical unit - a single week */
-"Week" = "Week";
-
-/* Plural of 'week' — a statistical unit */
-"Weeks" = "Weken";
-
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "Gewicht";
 
@@ -3043,10 +3036,8 @@
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "Welke e-mail moet ik gebruiken om me aan te melden?";
 
-/* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
-"What is Jetpack" = "Wat is Jetpack";
-
-/* Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
+/* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
+   Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "What is Jetpack?" = "Wat is Jetpack?";
 
 /* Title of alert helping users understand their site address */
@@ -3082,12 +3073,6 @@
 
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
-
-/* Statistical unit - a single year */
-"Year" = "Jaar";
-
-/* Plural of 'year' — a statistical unit */
-"Years" = "Jaren";
 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Ja, wijzigen";
@@ -3152,7 +3137,7 @@
 "{G} Log in with Google." = "{G} Inloggen met Google.";
 
 /* About View's Footer Text. The variable is the current year */
-"© %@ Automattic, Inc." = "© %@ Automattic, Inc.";
+"© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd.";
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "“%@”";

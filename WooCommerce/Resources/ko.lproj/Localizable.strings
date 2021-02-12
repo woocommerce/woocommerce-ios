@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-02-03 13:54:03+0000 */
+/* Translation-Revision-Date: 2021-02-09 11:32:07+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -176,10 +176,10 @@
 "Add Downloadable File" = "다운로드 가능한 파일 추가";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "파일 추가하기";
+"Add File" = "Add File";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
-"Add File" = "Add File";
+"Add File" = "파일 추가하기";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "사진 추가";
@@ -197,6 +197,9 @@
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "추적 추가";
+
+/* Title on add variation button when there are no variations */
+"Add Variation" = "Add Variation";
 
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
@@ -241,6 +244,9 @@
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "무게 및 치수 추가";
+
+/* Title on the variations list screen when there are no variations */
+"Add your first variation" = "Add your first variation";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "주문에 대한 추적을 추가합니다.";
@@ -293,10 +299,11 @@
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "구매 후 고객에 보낼 메모(선택 사항)";
 
-/* Title when there is no filter set. */
+/* Product variation attribute description where the attribute is set to any value.
+   Title when there is no filter set. */
 "Any" = "모두";
 
-/* Format of a product varition attribute description where the attribute is set to any value. */
+/* Format of a product variation attribute description where the attribute is set to any value. */
 "Any %@" = "모든 %@";
 
 /* Message shown when Apple authentication fails. */
@@ -338,6 +345,10 @@
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "Attribute name" = "속성 이름";
+
+/* Edit Product Attributes screen navigation title
+   Title of the attributes row on Product Variation main screen */
+"Attributes" = "Attributes";
 
 /* No comment provided by engineer. */
 "Authenticating" = "인증하기";
@@ -523,10 +534,6 @@
 /* Button title. Tapping begins log in using Google. */
 "Continue with Google" = "Google로 계속하기";
 
-/* Button title. Takes the user to the login by email flow.
-   Button title. Tapping begins our normal log in process. */
-"Continue with WordPress.com" = "워드프레스닷컴으로 계속하기";
-
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "Apple로 계속하기";
 
@@ -614,12 +621,6 @@
 
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "날짜: 오래된 순";
-
-/* Statistical unit - a single day */
-"Day" = "일";
-
-/* Plural of 'day' — a statistical unit */
-"Days" = "일";
 
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "기본";
@@ -736,10 +737,10 @@
 "Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download limit > Download limit */
-"Download limit" = "Download limit";
+"Download limit" = "다운로드 한도";
 
 /* Title of the cell in Product Download limit > Download limit */
-"Download limit" = "다운로드 한도";
+"Download limit" = "Download limit";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "다운로드 가능한 파일";
@@ -754,10 +755,10 @@
 "Downloadable Product" = "다운로드 가능한 제품";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "Downloadable files";
+"Downloadable files" = "다운로드 가능한 파일";
 
 /* Title of the Downloadable Files row on Product main screen */
-"Downloadable files" = "다운로드 가능한 파일";
+"Downloadable files" = "Downloadable files";
 
 /* Display label for the product's draft status */
 "Draft" = "임시글";
@@ -832,10 +833,10 @@
 "Enter the external URL to the product." = "제품의 외부 URL을 입력하세요.";
 
 /* Footer text for Download Expiration */
-"Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "다운로드 링크가 만료될 때까지의 일 수를 입력하거나 만료되지 않을 경우 비워 둡니다.";
 
 /* Footer text for Download Expiration */
-"Enter the number of days before a download link expires, or leave blank if never it expires" = "다운로드 링크가 만료될 때까지의 일 수를 입력하거나 만료되지 않을 경우 비워 둡니다.";
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
 
 /* Footer text for Downloadable Limit */
 "Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
@@ -901,19 +902,19 @@
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "파일 이름";
+"File Name" = "File Name";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
-"File Name" = "File Name";
-
-/* Placeholder of the cell text field in Product Downloadable File URL
-   Title of the cell in Product Downloadable File URL > File URL */
-"File URL" = "File URL";
+"File Name" = "파일 이름";
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
 "File URL" = "파일 URL";
+
+/* Placeholder of the cell text field in Product Downloadable File URL
+   Title of the cell in Product Downloadable File URL > File URL */
+"File URL" = "File URL";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "비밀번호 관리자로 채우기";
@@ -1170,7 +1171,7 @@
 "Italic" = "이탤릭체";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
-"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack은 스토어를 최고의 모바일 환경을 제공하는 데 필요한 푸시 알림, 통계 등의 도구와 연결하는 무료 워드프레스 플러그인입니다.";
+"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack은 스토어를 최고의 모바일 환경을 제공하는 데 필요한 푸시 알림, 통계 등의 도구와 연결하는 무료 워드프레스 플러그인입니다.";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "편집 계속";
@@ -1265,6 +1266,10 @@
 /* A generic error message for a failed log in. */
 "Log in failed. Please try again." = "로그인에 실패했습니다. 다시 시도하세요.";
 
+/* Button title. Takes the user to the login by email flow.
+   Button title. Tapping begins our normal log in process. */
+"Log in or sign up with WordPress.com" = "Log in or sign up with WordPress.com";
+
 /* Instruction text on the login's email address screen. */
 "Log in to the WordPress.com account you used to connect Jetpack." = "젯팩에 연결하는 데 사용한 워드프레스닷컴 계정으로 로그인하세요.";
 
@@ -1348,12 +1353,6 @@
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %@, maximum value %@" = "최소값 %1$@, 최대값 %2$@";
 
-/* Statistical unit - a single week */
-"Month" = "월";
-
-/* Plural of 'month' — a statistical unit */
-"Months" = "월";
-
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
 "More" = "더 보기";
@@ -1435,25 +1434,22 @@
 "No expiration" = "만료 없음";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "아직 파일 없음";
+"No files yet" = "No files yet";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "No files yet";
+"No files yet" = "아직 파일 없음";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "아직 이미지 없음";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "제한 없음";
+"No limit" = "No limit";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "No limit";
+"No limit" = "제한 없음";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "가격이 설정되지 않음";
-
-/* The text on the placeholder overlay when there are no product variations on the Products tab */
-"No product variations yet" = "아직 제품 변형이 없습니다.";
 
 /* Placeholder for the linked products list selector screen
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
@@ -1552,6 +1548,9 @@
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "선택적 추적 정보";
+
+/* Header of attributes section in Edit Product Attributes screen */
+"Options" = "옵션";
 
 /* Divider on initial auth view separating auth options. */
 "Or" = "또는";
@@ -1710,10 +1709,10 @@
 "Please wait while we publish this product to your store" = "이 제품을 회원님의 스토어에 게시하는 동안 기다려주세요...";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "이 제품을 스토어에 저장하는 동안 기다려주세요...";
+"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Please wait while we save this product to your store";
+"Please wait while we save this product to your store" = "이 제품을 스토어에 저장하는 동안 기다려주세요...";
 
 /* Message of the in-progress UI while deleting the Product remotely */
 "Please wait while we update your store details" = "스토어 세부정보를 업데이트하는 동안 기다려 주세요.";
@@ -1725,10 +1724,10 @@
 "Powered by Automattic" = "Automattic 제공";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "이전에 환불됨";
+"Previously Refunded" = "Previously Refunded";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Previously Refunded";
+"Previously Refunded" = "이전에 환불됨";
 
 /* Product Price Settings navigation title
    Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
@@ -1880,16 +1879,16 @@
 "Reason for Refund (Optional)" = "Reason for Refund (Optional)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for refunding order" = "주문 환불 사유";
-
-/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Reason for refunding order";
 
-/* The title of the button to confirm the refund. */
-"Refund" = "환불";
+/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
+"Reason for refunding order" = "주문 환불 사유";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "Refund";
+
+/* The title of the button to confirm the refund. */
+"Refund" = "환불";
 
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "#%@ 환불";
@@ -2038,10 +2037,10 @@
 "Save as draft" = "임시글로 저장";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
-"Saving your product..." = "제품 저장...";
+"Saving your product..." = "Saving your product...";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
-"Saving your product..." = "Saving your product...";
+"Saving your product..." = "제품 저장...";
 
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "SKU를 업데이트할 바코드 스캔";
@@ -2631,10 +2630,10 @@
 "This is the name of the file shown to the customer." = "고객에게 표시되는 파일 이름입니다.";
 
 /* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "고객이 액세스할 파일의 URL입니다. 입력한 URL은 이미 인코딩되어 있어야 합니다.";
 
 /* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "고객이 액세스할 파일의 URL입니다. 입력한 URL은 이미 인코딩되어 있어야 합니다.";
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2847,10 +2846,10 @@
 "Update product inventory and SKU" = "제품 인벤토리 및 SKU 업데이트";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "제품의 다운로드 가능한 파일 정보를 원격으로 업데이트";
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "제품의 다운로드 가능한 파일 정보를 원격으로 업데이트";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "이 앱을 계속 사용하려면 WooCommerce 3.5로 업데이트하세요.";
@@ -2934,10 +2933,10 @@
 "View Shipment Details" = "배송 상세 정보 보기";
 
 /* The action to update downloadable files settings for a product */
-"View downloadable file settings" = "다운로드 가능한 파일 설정 보기";
+"View downloadable file settings" = "View downloadable file settings";
 
 /* The action to update downloadable files settings for a product */
-"View downloadable file settings" = "View downloadable file settings";
+"View downloadable file settings" = "다운로드 가능한 파일 설정 보기";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "이전에 제출한 지원 티켓 보기";
@@ -3025,12 +3024,6 @@
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "새로운 워드프레스닷컴 계정을 만들 수 있는 등록 링크를 이메일로 보내드렸습니다. 이 기기에서 이메일을 확인하고 워드프레스닷컴에서 받은 이메일의 링크를 누르세요.";
 
-/* Statistical unit - a single week */
-"Week" = "주";
-
-/* Plural of 'week' — a statistical unit */
-"Weeks" = "주";
-
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "가중치";
 
@@ -3043,10 +3036,8 @@
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "로그인할 때 어떤 이메일을 사용하나요?";
 
-/* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
-"What is Jetpack" = "Jetpack이란";
-
-/* Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
+/* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
+   Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "What is Jetpack?" = "Jetpack이란 무엇인가요?";
 
 /* Title of alert helping users understand their site address */
@@ -3082,12 +3073,6 @@
 
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "야후 메일";
-
-/* Statistical unit - a single year */
-"Year" = "년";
-
-/* Plural of 'year' — a statistical unit */
-"Years" = "연도";
 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "예. 변경합니다.";
@@ -3152,7 +3137,7 @@
 "{G} Log in with Google." = "{G} Google로 로그인합니다.";
 
 /* About View's Footer Text. The variable is the current year */
-"© %@ Automattic, Inc." = "© %@ Automattic, Inc.";
+"© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd.";
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "“%@”";

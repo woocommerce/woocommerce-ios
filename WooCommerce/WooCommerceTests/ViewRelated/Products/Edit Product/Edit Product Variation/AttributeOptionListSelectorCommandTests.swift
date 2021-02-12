@@ -24,7 +24,7 @@ final class AttributeOptionListSelectorCommandTests: XCTestCase {
         let command = AttributeOptionListSelectorCommand(attribute: attribute, selectedOption: selectedAttribute)
 
         // Then
-        XCTAssertEqual(command.data, [.anyOption, .option("Blue"), .option("Red")])
+        XCTAssertEqual(command.data, [.anyOption("Color"), .option("Blue"), .option("Red")])
     }
 
     func test_command_selects_initial_option_correctly() {
@@ -59,7 +59,7 @@ final class AttributeOptionListSelectorCommandTests: XCTestCase {
         let command = AttributeOptionListSelectorCommand(attribute: attribute, selectedOption: nil)
 
         // Then
-        XCTAssertEqual(command.selected, .anyOption)
+        XCTAssertEqual(command.selected, .anyOption("Color"))
     }
 
 

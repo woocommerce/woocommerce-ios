@@ -2,7 +2,6 @@ import Foundation
 import Networking
 import Storage
 
-
 // MARK: - ProductStore
 //
 public class ProductStore: Store {

@@ -385,7 +385,8 @@ private extension ProductVariationsViewController {
             return
         }
 
-        let editAttributeViewController = EditAttributesViewController()
+        let editAttributesViewModel = EditAttributesViewModel(product: product, allowVariationCreation: true)
+        let editAttributeViewController = EditAttributesViewController(viewModel: editAttributesViewModel)
         guard let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) else {
             return show(editAttributeViewController, sender: nil)
         }

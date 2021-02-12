@@ -8,6 +8,17 @@ final class EditAttributesViewController: UIViewController {
     @IBOutlet private weak var addButtonSeparator: UIView!
     @IBOutlet private var tableView: UITableView!
 
+    private let viewModel: EditAttributesViewModel
+
+    init(viewModel: EditAttributesViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureAddButton()
@@ -46,6 +57,7 @@ private extension EditAttributesViewController {
     func configureNavigationBar() {
         configureTitle()
         configureRightButton()
+        removeNavigationBackBarButtonText()
     }
 
     func configureTitle() {
@@ -53,6 +65,9 @@ private extension EditAttributesViewController {
     }
 
     func configureRightButton() {
+        guard viewModel.showDoneButton else {
+            return
+        }
         let rightBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
         navigationItem.setRightBarButton(rightBarButton, animated: false)
     }
@@ -65,7 +80,20 @@ extension EditAttributesViewController {
     }
 
     @objc private func addButtonTapped() {
-        // TODO: Launch add attribute flow and update product upon completion
+        navigateToAddAttributeViewController()
+    }
+
+    /// Navigates to `AddAttributeViewController` and upon completion, update the product and clean the navigation stack
+    ///
+    private func navigateToAddAttributeViewController() {
+        let addAttributeVM = AddAttributeViewModel(product: viewModel.product)
+        let addAttributeViewController = AddAttributeViewController(viewModel: addAttributeVM) { [weak self] updatedProduct in
+            guard let self = self else { return }
+            self.viewModel.updateProduct(updatedProduct)
+            self.tableView.reloadData()
+            self.navigationController?.popToViewController(self, animated: true)
+        }
+        show(addAttributeViewController, sender: self)
     }
 }
 
@@ -74,19 +102,13 @@ extension EditAttributesViewController {
 extension EditAttributesViewController: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 6 // Temporary
+        return viewModel.attributes.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(ImageAndTitleAndTextTableViewCell.self, for: indexPath)
-
-        // Temporary
-        let vm = ImageAndTitleAndTextTableViewCell.ViewModel(title: "Color",
-                                                             text: "Green, Yellow, Blue",
-                                                             numberOfLinesForTitle: 0,
-                                                             numberOfLinesForText: 0)
-        cell.updateUI(viewModel: vm)
-
+        let cellViewModel = viewModel.attributes[indexPath.row]
+        cell.updateUI(viewModel: cellViewModel)
         return cell
     }
 

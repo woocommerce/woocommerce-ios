@@ -936,13 +936,16 @@ private extension ProductFormViewController {
         let command = ProductTypeBottomSheetListSelectorCommand(selected: viewModel.productModel.productType) { [weak self] (selectedProductType) in
             self?.dismiss(animated: true, completion: nil)
 
-            if let originalProductType = self?.product.productType {
-                ServiceLocator.analytics.track(.productTypeChanged, withProperties: [
-                    "from": originalProductType.rawValue,
-                    "to": selectedProductType.rawValue
-                ])
+            guard let originalProductType = self?.product.productType else {
+                return
             }
-            self?.presentProductTypeChangeAlert(completion: { (change) in
+
+            ServiceLocator.analytics.track(.productTypeChanged, withProperties: [
+                "from": originalProductType.rawValue,
+                "to": selectedProductType.rawValue
+            ])
+
+            self?.presentProductTypeChangeAlert(for: originalProductType, completion: { (change) in
                 guard change == true else {
                     return
                 }

@@ -9,8 +9,8 @@ final class ShippingLabelAddressValidationViewController: UIViewController {
 
     /// Init
     ///
-    init(address: ShippingLabelAddress) {
-        viewModel = ShippingLabelAddressValidationViewModel(address: address)
+    init(addressVerification: ShippingLabelAddressVerification) {
+        viewModel = ShippingLabelAddressValidationViewModel(addressVerification: addressVerification)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -20,10 +20,42 @@ final class ShippingLabelAddressValidationViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        configureNavigationBar()
+        configureMainView()
+        configureTableView()
+        registerTableViewCells()
     }
 }
 
+// MARK: - View Configuration
+//
+private extension ShippingLabelAddressValidationViewController {
+
+    func configureNavigationBar() {
+        title = viewModel.addressVerification.type == .origin ? Localization.titleViewShipFrom : Localization.titleViewShipTo
+        removeNavigationBackBarButtonText()
+    }
+
+    func configureMainView() {
+        view.backgroundColor = .listForeground
+    }
+
+    func configureTableView() {
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.backgroundColor = .listForeground
+        tableView.separatorStyle = .none
+
+        registerTableViewCells()
+
+        //tableView.dataSource = self
+    }
+
+    func registerTableViewCells() {
+        for row in Row.allCases {
+            tableView.registerNib(for: row.type)
+        }
+    }
+}
 
 extension ShippingLabelAddressValidationViewController {
 
@@ -32,7 +64,7 @@ extension ShippingLabelAddressValidationViewController {
     }
 
     enum Row: CaseIterable {
-        case errorBanner
+        case topBanner
 
         case name
         case company
@@ -44,21 +76,26 @@ extension ShippingLabelAddressValidationViewController {
         case state
         case country
 
-        case useAddressAsEntered
+        case fieldError
 
         fileprivate var type: UITableViewCell.Type {
             switch self {
-            case .errorBanner:
+            case .topBanner, .fieldError:
                 return BasicTableViewCell.self
             case .name, .company, .phones, .address, .address2, .city, .postcode, .state, .country:
-                return NumberOfLinkedProductsTableViewCell.self
-            case .useAddressAsEntered:
-                return ButtonTableViewCell.self
+                return TitleAndTextFieldTableViewCell.self
             }
         }
 
         fileprivate var reuseIdentifier: String {
             return type.reuseIdentifier
         }
+    }
+}
+
+private extension ShippingLabelAddressValidationViewController {
+    enum Localization {
+        static let titleViewShipFrom = NSLocalizedString("Ship from", comment: "Shipping Label Address Validation navigation title")
+        static let titleViewShipTo = NSLocalizedString("Ship to", comment: "Shipping Label Address Validation navigation title")
     }
 }

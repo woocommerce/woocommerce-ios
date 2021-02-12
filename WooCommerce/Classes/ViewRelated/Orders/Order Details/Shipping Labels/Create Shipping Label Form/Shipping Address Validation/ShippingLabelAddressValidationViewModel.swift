@@ -3,10 +3,10 @@ import Yosemite
 
 final class ShippingLabelAddressValidationViewModel: NSObject {
 
-    private let address: ShippingLabelAddress
+    let addressVerification: ShippingLabelAddressVerification
 
-    init(address: ShippingLabelAddress) {
-        self.address = address
+    init(addressVerification: ShippingLabelAddressVerification) {
+        self.addressVerification = addressVerification
     }
 
 }

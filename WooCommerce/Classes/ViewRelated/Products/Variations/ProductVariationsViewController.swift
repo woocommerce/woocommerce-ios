@@ -125,7 +125,8 @@ final class ProductVariationsViewController: UIViewController {
         configureTableView()
         configureSyncingCoordinator()
         registerTableViewCells()
-        configureTopBannerContainerView()
+        configureHeaderContainerView()
+        configureAddButton()
         updateTopBannerView()
 
         syncingCoordinator.synchronizeFirstPage()
@@ -220,13 +221,40 @@ private extension ProductVariationsViewController {
 }
 
 private extension ProductVariationsViewController {
-    func configureTopBannerContainerView() {
+    func configureHeaderContainerView() {
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
         headerContainer.addSubview(topStackView)
         headerContainer.pinSubviewToSafeArea(topStackView)
         topStackView.addArrangedSubview(topBannerView)
 
         tableView.tableHeaderView = headerContainer
+    }
+
+    func configureAddButton() {
+        guard isAddProductVariationsEnabled else {
+            return
+        }
+        let buttonContainer = UIView()
+        buttonContainer.backgroundColor = .listForeground
+
+        let addVariationButton = UIButton()
+        addVariationButton.translatesAutoresizingMaskIntoConstraints = false
+        addVariationButton.setTitle(Localization.addNewVariation, for: .normal)
+        addVariationButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+        addVariationButton.applySecondaryButtonStyle()
+
+        buttonContainer.addSubview(addVariationButton)
+        buttonContainer.pinSubviewToSafeArea(addVariationButton, insets: .init(top: 16, left: 16, bottom: 16, right: 16))
+
+        let separator = UIView.createBorderView()
+        buttonContainer.addSubview(separator)
+        NSLayoutConstraint.activate([
+            buttonContainer.leadingAnchor.constraint(equalTo: separator.leadingAnchor),
+            buttonContainer.bottomAnchor.constraint(equalTo: separator.bottomAnchor),
+            buttonContainer.trailingAnchor.constraint(equalTo: separator.trailingAnchor)
+        ])
+
+        topStackView.addArrangedSubview(buttonContainer)
     }
 
     func updateTopBannerView() {
@@ -397,12 +425,16 @@ private extension ProductVariationsViewController {
 }
 
 private extension ProductVariationsViewController {
-    @objc private func pullToRefresh(sender: UIRefreshControl) {
+    @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.productVariationListPulledToRefresh)
 
         syncingCoordinator.synchronizeFirstPage {
             sender.endRefreshing()
         }
+    }
+
+    @objc func addButtonTapped() {
+        // TODO-3539: Generate new variation
     }
 }
 
@@ -559,5 +591,6 @@ private extension ProductVariationsViewController {
     enum Localization {
         static let emptyStateTitle = NSLocalizedString("Add your first variation", comment: "Title on the variations list screen when there are no variations")
         static let emptyStateButtonTitle = NSLocalizedString("Add Variation", comment: "Title on add variation button when there are no variations")
+        static let addNewVariation = NSLocalizedString("Add Variation", comment: "Action to add new variation on the variations list")
     }
 }

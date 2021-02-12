@@ -266,8 +266,9 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
                     self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize, reason: reason)
                 } else {
-                    let status = self.viewModel.statusFilter?.slug ?? String()
-                    ServiceLocator.analytics.track(.ordersListLoaded, withProperties: ["status": status])
+                    ServiceLocator.analytics.track(event: .ordersListLoaded(totalDuration: totalDuration,
+                                                                            pageNumber: pageNumber,
+                                                                            status: self.viewModel.statusFilter))
                 }
 
                 self.transitionToResultsUpdatedState()

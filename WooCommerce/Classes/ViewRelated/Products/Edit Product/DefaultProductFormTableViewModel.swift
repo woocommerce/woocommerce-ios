@@ -227,10 +227,12 @@ private extension DefaultProductFormTableViewModel {
         let details: String
         switch product.productType {
         case .simple:
-            switch product.virtual {
-            case true:
+            switch (product.downloadable, product.virtual) {
+            case (true, _):
+                details = Localization.downloadableProductType
+            case (false, true):
                 details = Localization.virtualProductType
-            case false:
+            case (false, false):
                 details = Localization.physicalProductType
             }
         case .custom(let customProductType):
@@ -525,6 +527,7 @@ private extension DefaultProductFormTableViewModel {
                                                            comment: "Format of the stock quantity on the Inventory Settings row")
 
         // Product Type
+        static let downloadableProductType = NSLocalizedString("Downloadable", comment: "Display label for simple downloadable product type.")
         static let virtualProductType = NSLocalizedString("Virtual",
                                                           comment: "Display label for simple virtual product type.")
         static let physicalProductType = NSLocalizedString("Physical",

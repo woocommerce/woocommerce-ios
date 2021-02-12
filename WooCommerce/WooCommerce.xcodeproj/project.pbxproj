@@ -5802,7 +5802,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/sh\nif [ \"$CONFIGURATION\" == \"Debug\" ] \nthen\n    PLISTBUDDY=\"/usr/libexec/PlistBuddy\"\n    ADDITIONAL_DEBUG_KEYS=${SRCROOT}'/Resources/AdditionalDebugKeys-Info.plist'\n    PLIST_WITH_ADITTIONAL_KEYS=${SRCROOT}'/Resources/Info-WithAdditionalDebugKeys.plist'\n    \n    if [ -f \"$ADDITIONAL_DEBUG_KEYS\" ] \n        then\n            cp ${INFOPLIST_FILE} $PLIST_WITH_ADITTIONAL_KEYS\n\n            ${INFOLIST_PATH}=$PLIST_WITH_ADITTIONAL_KEYS\n            $PLISTBUDDY -c \"Merge  '$ADDITIONAL_DEBUG_KEYS'\"  $PLIST_WITH_ADITTIONAL_KEYS\n        else \n        ${INFOLIST_PATH}=${INFOPLIST_FILE}\n    fi\nfi\n";
+			shellScript = "#!/bin/sh\nif [ \"$CONFIGURATION\" == \"Debug\" ] \nthen\n    PLISTBUDDY=\"/usr/libexec/PlistBuddy\"\n    ADDITIONAL_DEBUG_KEYS=${SRCROOT}'/Resources/AdditionalDebugKeys-Info.plist'\n    PLIST_WITH_ADITTIONAL_KEYS=${SRCROOT}'/Resources/Info-WithAdditionalDebugKeys.plist'\n    \n    if [ -f \"$ADDITIONAL_DEBUG_KEYS\" ] \n        then\n            cp ${INFOPLIST_FILE} $PLIST_WITH_ADITTIONAL_KEYS\n\n            $PLISTBUDDY -c \"Merge  '$ADDITIONAL_DEBUG_KEYS'\"  $PLIST_WITH_ADITTIONAL_KEYS\n    fi\nfi\n";
 		};
 		E8FC62641D61F33F705BC760 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

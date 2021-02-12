@@ -28,7 +28,7 @@ class AuthenticatedState: StoresManagerState {
         let storageManager = ServiceLocator.storageManager
         let network = AlamofireNetwork(credentials: credentials)
 
-        var allServices = [
+        services = [
             AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
             AvailabilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -41,7 +41,6 @@ class AuthenticatedState: StoresManagerState {
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             PaymentGatewayStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductAttributeStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            ProductAttributeTermStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductReviewStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductCategoryStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -54,18 +53,12 @@ class AuthenticatedState: StoresManagerState {
             ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SitePostStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+            TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            CardPresentPaymentStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    cardReaderService: ServiceLocator.cardReaderService)
         ]
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) {
-            let cardReaderStore =  CardPresentPaymentStore(dispatcher: dispatcher,
-                                                           storageManager: storageManager,
-                                                           network: network,
-                                                           cardReaderService: ServiceLocator.cardReaderService)
-            allServices.append(cardReaderStore)
-        }
-
-        services = allServices
 
         startListeningToNotifications()
     }

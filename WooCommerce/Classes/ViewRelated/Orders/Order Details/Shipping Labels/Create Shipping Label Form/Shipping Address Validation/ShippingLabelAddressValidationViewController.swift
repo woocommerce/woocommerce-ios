@@ -6,7 +6,7 @@ final class ShippingLabelAddressValidationViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
 
     private let viewModel: ShippingLabelAddressValidationViewModel
-    
+
     /// Init
     ///
     init(address: ShippingLabelAddress) {

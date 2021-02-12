@@ -52,7 +52,7 @@ final class AttributeOptionListSelectorCommand: ListSelectorCommand {
 private extension AttributeOptionListSelectorCommand {
     enum Localization {
         static let anyOption = NSLocalizedString(
-            "Any %@",
+            "Any %1$@",
             comment: "Product variation attribute description where the attribute is set to any value.")
     }
 }

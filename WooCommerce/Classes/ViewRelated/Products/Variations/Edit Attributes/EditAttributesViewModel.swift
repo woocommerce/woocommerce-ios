@@ -52,7 +52,6 @@ extension EditAttributesViewModel {
         let action = ProductVariationAction.createProductVariation(siteID: product.siteID,
                                                                    productID: product.productID,
                                                                    newVariation: createVariationParameter()) { result in
-            print(result)
             onCompletion(result)
         }
         stores.dispatch(action)

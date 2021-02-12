@@ -77,6 +77,9 @@ private extension EditAttributesViewController {
 extension EditAttributesViewController {
     @objc private func doneButtonTapped() {
         // TODO: Create variation and notify back
+        viewModel.generateVariation { result in
+
+        }
     }
 
     @objc private func addButtonTapped() {

@@ -68,6 +68,17 @@ public class AlamofireNetwork: Network {
         }
     }
 
+    public func detailedResponseData(for request: URLRequestConvertible,
+                              completion: @escaping (DataResponse) -> Void) {
+        let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
+
+        Alamofire.request(authenticated).responseData { response in
+            let dataResponse = DataResponse(result: response.result.toSwiftResult(),
+                                            totalDuration: response.timeline.totalDuration)
+            completion(dataResponse)
+        }
+    }
+
     public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
                                         to request: URLRequestConvertible,
                                         completion: @escaping (Data?, Error?) -> Void) {

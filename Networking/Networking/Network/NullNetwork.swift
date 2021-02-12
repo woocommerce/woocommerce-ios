@@ -16,6 +16,11 @@ public final class NullNetwork: Network {
 
     }
 
+    public func detailedResponseData(for request: URLRequestConvertible,
+                                     completion: @escaping (DataResponse) -> Void) {
+
+    }
+
     public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
                                         to request: URLRequestConvertible,
                                         completion: @escaping (Data?, Error?) -> Void) { }

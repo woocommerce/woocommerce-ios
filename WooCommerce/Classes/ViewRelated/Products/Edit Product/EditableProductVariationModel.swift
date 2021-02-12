@@ -223,6 +223,6 @@ extension EditableProductVariationModel: Equatable {
 extension EditableProductVariationModel {
     enum Localization {
         static let anyAttributeFormat =
-            NSLocalizedString("Any %@", comment: "Format of a product variation attribute description where the attribute is set to any value.")
+            NSLocalizedString("Any %1$@", comment: "Format of a product variation attribute description where the attribute is set to any value.")
     }
 }

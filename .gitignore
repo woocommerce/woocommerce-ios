@@ -101,4 +101,4 @@ WooCommerce/WooCommerceScreenshots/Mocks/vendor/
 .idea
 
 # Info.plist with Additional Keys for Debug builds
-/WooCommerce/Resources/Info-WithAdditionalDebugKeys.plist
+/WooCommerce/Resources/Consolidated-Info.plist

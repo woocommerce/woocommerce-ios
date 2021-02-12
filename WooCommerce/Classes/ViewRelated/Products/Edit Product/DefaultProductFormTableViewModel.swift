@@ -527,7 +527,8 @@ private extension DefaultProductFormTableViewModel {
                                                            comment: "Format of the stock quantity on the Inventory Settings row")
 
         // Product Type
-        static let downloadableProductType = NSLocalizedString("Downloadable", comment: "Display label for simple downloadable product type.")
+        static let downloadableProductType = NSLocalizedString("Downloadable",
+                                                               comment: "Display label for simple downloadable product type.")
         static let virtualProductType = NSLocalizedString("Virtual",
                                                           comment: "Display label for simple virtual product type.")
         static let physicalProductType = NSLocalizedString("Physical",

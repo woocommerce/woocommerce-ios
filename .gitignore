@@ -99,3 +99,6 @@ WooCommerce/WooCommerceScreenshots/Mocks/vendor/
 
 # AppCode
 .idea
+
+# Info.plist with Additional Keys for Debug builds
+/WooCommerce/Resources/Info-WithAdditionalDebugKeys.plist

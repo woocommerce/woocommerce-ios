@@ -2163,6 +2163,7 @@
 		D88CA755237CE515005D2F44 /* UITabBar+Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBar+Appearance.swift"; sourceTree = "<group>"; };
 		D88CA757237D1C27005D2F44 /* Ghost+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Ghost+Woo.swift"; sourceTree = "<group>"; };
 		D88D5A3C230B5E85007B6E01 /* ServiceLocatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocatorTests.swift; sourceTree = "<group>"; };
+		D88FD81525D6D33000CB0DBD /* AdditionalDebugKeys-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "AdditionalDebugKeys-Info.plist"; sourceTree = "<group>"; };
 		D8915DBE23729CFB00F63762 /* ColorPalette.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = ColorPalette.xcassets; sourceTree = "<group>"; };
 		D8915DC02372C8AC00F63762 /* ColorStudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorStudio.swift; sourceTree = "<group>"; };
 		D8915DC22372C9EF00F63762 /* UIColor+ColorStudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+ColorStudio.swift"; sourceTree = "<group>"; };
@@ -4230,6 +4231,7 @@
 				B5D1AFB320BC445900DB0E8C /* Images.xcassets */,
 				B573B19D219DC2690081C78C /* Localizable.strings */,
 				B56DB3D82049BFAA00D4AA8E /* Info.plist */,
+				D88FD81525D6D33000CB0DBD /* AdditionalDebugKeys-Info.plist */,
 				B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */,
 				B56C721921B5F65E00E5E85B /* Woo-Debug.entitlements */,
 				B56C721A21B5F65E00E5E85B /* Woo-Release.entitlements */,
@@ -5289,6 +5291,7 @@
 			buildPhases = (
 				91990E72B3E1D58AC13D7628 /* [CP] Check Pods Manifest.lock */,
 				57CCFFD4249D2A5700825FCF /* SwiftLint */,
+				D88FD81F25D6D49000CB0DBD /* Merge Additional Debug Keys into Info.plist file */,
 				B56DB3C22049BFAA00D4AA8E /* Sources */,
 				B56DB3C32049BFAA00D4AA8E /* Frameworks */,
 				B56DB3C42049BFAA00D4AA8E /* Resources */,
@@ -5782,6 +5785,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Per Zendesk documentation (https://developer.zendesk.com/embeddables/docs/ios_support_sdk/sdk_add#adding-the-sdk-with-cocoapods):\n# This script should be the last step in your projects \"Build Phases\".\n# This step is required to work around an App store submission bug when archiving universal binaries.\n\nbash \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZendeskCoreSDK.framework/strip-frameworks.sh\"\n";
+		};
+		D88FD81F25D6D49000CB0DBD /* Merge Additional Debug Keys into Info.plist file */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Merge Additional Debug Keys into Info.plist file";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\nif [ \"$CONFIGURATION\" == \"Debug\" ] \nthen\n    PLISTBUDDY=\"/usr/libexec/PlistBuddy\"\n    ADDITIONAL_DEBUG_KEYS=${SRCROOT}'/Resources/AdditionalDebugKeys-Info.plist'\n    PLIST_WITH_ADITTIONAL_KEYS=${SRCROOT}'/Resources/Info-WithAdditionalDebugKeys.plist'\n    \n    if [ -f \"$ADDITIONAL_DEBUG_KEYS\" ] \n        then\n            cp ${INFOPLIST_FILE} $PLIST_WITH_ADITTIONAL_KEYS\n\n            ${INFOLIST_PATH}=$PLIST_WITH_ADITTIONAL_KEYS\n            $PLISTBUDDY -c \"Merge  '$ADDITIONAL_DEBUG_KEYS'\"  $PLIST_WITH_ADITTIONAL_KEYS\n        else \n        ${INFOLIST_PATH}=${INFOPLIST_FILE}\n    fi\nfi\n";
 		};
 		E8FC62641D61F33F705BC760 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

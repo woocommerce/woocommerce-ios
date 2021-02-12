@@ -81,11 +81,6 @@ class MockNetwork: Network {
         completion(.success(data))
     }
 
-    func detailedResponseData(for request: URLRequestConvertible,
-                              completion: @escaping (DataResponse) -> Void) {
-
-    }
-
     func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
                                  to request: URLRequestConvertible,
                                  completion: @escaping (Data?, Error?) -> Void) {

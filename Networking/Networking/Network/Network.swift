@@ -43,8 +43,6 @@ public protocol Network {
     func responseData(for request: URLRequestConvertible,
                       completion: @escaping (Swift.Result<Data, Error>) -> Void)
 
-    func detailedResponseData(for request: URLRequestConvertible, completion: @escaping (DataResponse) -> Void)
-
     /// Executes the specified Network Request for file uploads. Upon completion, the payload will be sent back to the caller as a Data instance.
     ///
     /// - Parameters:

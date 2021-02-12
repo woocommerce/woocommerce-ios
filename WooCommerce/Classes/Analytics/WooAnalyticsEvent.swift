@@ -39,7 +39,7 @@ import Foundation
 ///
 public struct WooAnalyticsEvent {
     let statName: WooAnalyticsStat
-    let properties: [String: String]
+    let properties: [String: WooAnalyticsEventPropertyType]
 }
 
 // MARK: - In-app Feedback and Survey

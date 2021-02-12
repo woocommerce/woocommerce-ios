@@ -11,7 +11,7 @@ extension ProductFormViewController {
     func presentProductTypeChangeAlert(completion: @escaping (Bool) -> ()) {
         let title = NSLocalizedString("Are you sure you want to change the product type?",
                                       comment: "Title of the alert when a user is changing the product type")
-        let body = NSLocalizedString("Changing the product type will modify some of the product data",
+        let body = NSLocalizedString("Changing the product type will modify some of the product data and delete all your attributes and variations.",
                                      comment: "Body of the alert when a user is changing the product type")
         let cancelButton = NSLocalizedString("Cancel", comment: "Cancel button on the alert when the user is cancelling the action on changing product type")
         let confirmButton = NSLocalizedString("Yes, change", comment: "Confirmation button on the alert when the user is changing product type")

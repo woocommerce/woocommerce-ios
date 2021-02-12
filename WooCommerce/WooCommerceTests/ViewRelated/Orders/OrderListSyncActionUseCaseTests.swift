@@ -12,7 +12,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
     private let siteID: Int64 = 1_000_000
     private let pageSize = 50
 
-    private let unimportantCompletionHandler: ((Error?) -> Void) = { _ in
+    private let unimportantCompletionHandler: ((TimeInterval, Error?) -> Void) = { _, _ in
         // noop
     }
 

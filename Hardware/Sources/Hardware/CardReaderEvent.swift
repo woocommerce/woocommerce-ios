@@ -9,6 +9,15 @@ public enum CardReaderEvent {
     // Low battery warning.
     case lowBattery
 
+    // Low battery warning resolved.
+    case lowBatteryResolved
+
+    // A software update is available.
+    case softwareUpdateNeeded
+
+    // Software is up to dat.
+    case softwareUpToDate
+
     // The card reader disconnected.
     case disconnected
 }

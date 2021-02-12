@@ -10,8 +10,11 @@ final class EditAttributesViewController: UIViewController {
 
     private let viewModel: EditAttributesViewModel
 
-    init(viewModel: EditAttributesViewModel) {
+    private let noticePresenter: NoticePresenter
+
+    init(viewModel: EditAttributesViewModel, noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.viewModel = viewModel
+        self.noticePresenter = noticePresenter
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -76,14 +79,27 @@ private extension EditAttributesViewController {
 // MARK: Button Actions & Navigation Handling
 extension EditAttributesViewController {
     @objc private func doneButtonTapped() {
-        // TODO: Create variation and notify back
-        viewModel.generateVariation { result in
-
-        }
+        createVariation()
     }
 
     @objc private func addButtonTapped() {
         navigateToAddAttributeViewController()
+    }
+
+    /// Creates a variation and presents a loading screen while it is created.
+    ///
+    private func createVariation() {
+        // TODO: Create variation and notify back
+        let progressViewController = InProgressViewController(viewProperties: .init(title: Localization.generatingVariation,
+                                                                                    message: Localization.waitInstructions))
+        present(progressViewController, animated: true)
+        viewModel.generateVariation { [noticePresenter] result in
+            progressViewController.dismiss(animated: true)
+
+            if result.isFailure {
+                noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
+            }
+        }
     }
 
     /// Navigates to `AddAttributeViewController` and upon completion, update the product and clean the navigation stack
@@ -126,5 +142,11 @@ private extension EditAttributesViewController {
         static let addNewAttribute = NSLocalizedString("Add New Attribute", comment: "Action to add new attribute on the Product Attributes screen")
         static let title = NSLocalizedString("Edit Attributes", comment: "Navigation title for the Product Attributes screen")
         static let done = NSLocalizedString("Done", comment: "Button title for the Done Action on the navigation bar")
+
+        static let generatingVariation = NSLocalizedString("Generating Variation", comment: "Title for the progress screen while generating a variation")
+        static let waitInstructions = NSLocalizedString("Please wait while we create the new variation",
+                                                        comment: "Instructions for the progress screen while generating a variation")
+        static let generateVariationError = NSLocalizedString("The variation couldn't be generated.",
+                                                              comment: "Error title when failing to generate a variation.")
     }
 }

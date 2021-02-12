@@ -3324,14 +3324,14 @@
 			path = "Add Attributes";
 			sourceTree = "<group>";
 		};
-		4515C88A25D6BD520099C8E3 /* ShippingAddress */ = {
+		4515C88A25D6BD520099C8E3 /* Shipping Address Validation */ = {
 			isa = PBXGroup;
 			children = (
 				4515C88B25D6BE540099C8E3 /* ShippingLabelAddressValidationViewController.swift */,
 				4515C88C25D6BE540099C8E3 /* ShippingLabelAddressValidationViewController.xib */,
 				4515C89725D6C00E0099C8E3 /* ShippingLabelAddressValidationViewModel.swift */,
 			);
-			path = ShippingAddress;
+			path = "Shipping Address Validation";
 			sourceTree = "<group>";
 		};
 		451A04E82386D04900E368C9 /* Product Images */ = {
@@ -3405,7 +3405,7 @@
 				456396A525C81C9A001F1A26 /* ShippingLabelFormViewController.swift */,
 				456396A625C81C9A001F1A26 /* ShippingLabelFormViewController.xib */,
 				456396AD25C81D81001F1A26 /* ShippingLabelFormViewModel.swift */,
-				4515C88A25D6BD520099C8E3 /* ShippingAddress */,
+				4515C88A25D6BD520099C8E3 /* Shipping Address Validation */,
 				456396B325C8266D001F1A26 /* Cells */,
 			);
 			path = "Create Shipping Label Form";

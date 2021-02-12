@@ -8,5 +8,5 @@ final class ShippingLabelAddressValidationViewModel: NSObject {
     init(address: ShippingLabelAddress) {
         self.address = address
     }
-    
+
 }

@@ -24,3 +24,19 @@ final class ShippingLabelFormViewModel {
         return [Section(rows: rows)]
     }
 }
+
+// MARK: - Utils
+extension ShippingLabelFormViewModel {
+    func fromAddressToShippingLabelAddress(address: Address) -> ShippingLabelAddress {
+        let shippingLabelAddress = ShippingLabelAddress(company: address.company ?? "",
+                                                        name: address.firstName + " " + address.lastName,
+                                                        phone: address.phone ?? "",
+                                                        country: address.country,
+                                                        state: address.state,
+                                                        address1: address.address1,
+                                                        address2: address.address2 ?? "",
+                                                        city: address.city,
+                                                        postcode: address.postcode)
+        return shippingLabelAddress
+    }
+}

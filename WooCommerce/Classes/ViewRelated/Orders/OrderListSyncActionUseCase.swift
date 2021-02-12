@@ -88,7 +88,7 @@ struct OrderListSyncActionUseCase {
     func actionFor(pageNumber: Int,
                    pageSize: Int,
                    reason: SyncReason?,
-                   completionHandler: @escaping (Error?) -> Void) -> OrderAction {
+                   completionHandler: @escaping (TimeInterval, Error?) -> Void) -> OrderAction {
         let statusKey = statusFilter?.slug
 
         if pageNumber == Defaults.pageFirstIndex {

@@ -1,4 +1,5 @@
 import UIKit
+import Yosemite
 
 /// EditAttributesViewController: Displays the list of attributes for a product.
 ///
@@ -11,6 +12,10 @@ final class EditAttributesViewController: UIViewController {
     private let viewModel: EditAttributesViewModel
 
     private let noticePresenter: NoticePresenter
+
+    /// Assign this closure to be notified after a variation is created.
+    ///
+    var onVariationCreation: ((ProductVariation) -> Void)?
 
     init(viewModel: EditAttributesViewModel, noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.viewModel = viewModel
@@ -89,16 +94,17 @@ extension EditAttributesViewController {
     /// Creates a variation and presents a loading screen while it is created.
     ///
     private func createVariation() {
-        // TODO: Create variation and notify back
         let progressViewController = InProgressViewController(viewProperties: .init(title: Localization.generatingVariation,
                                                                                     message: Localization.waitInstructions))
         present(progressViewController, animated: true)
-        viewModel.generateVariation { [noticePresenter] result in
+        viewModel.generateVariation { [onVariationCreation, noticePresenter] result in
             progressViewController.dismiss(animated: true)
 
-            if result.isFailure {
-                noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
+            guard let variation = try? result.get() else {
+                return noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
             }
+
+            onVariationCreation?(variation)
         }
     }
 

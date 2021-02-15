@@ -289,9 +289,8 @@ private extension LinkedProductsViewController {
             }()
         }
 
-        static let titleScreenAddUpsellProducts = NSLocalizedString("Upsells Products",
-                                                                    comment: "Navigation bar title for editing linked products for upsell products")
-        static let titleScreenAddCrossSellProducts = NSLocalizedString("Cross-sells Products",
+        static let titleScreenAddUpsellProducts = NSLocalizedString("Upsells", comment: "Navigation bar title for editing linked products for upsell products")
+        static let titleScreenAddCrossSellProducts = NSLocalizedString("Cross-sells",
                                                                        comment: "Navigation bar title for editing linked products for cross-sell products")
     }
 }

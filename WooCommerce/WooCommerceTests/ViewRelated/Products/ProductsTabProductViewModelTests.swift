@@ -29,8 +29,9 @@ final class ProductsTabProductViewModelTests: XCTestCase {
         let detailsText = viewModel.detailsAttributedString.string
 
         // Assert
-        let format = NSLocalizedString("%ld in stock", comment: "Label about product's inventory stock status shown on Products tab")
-        let expectedStockDetail = String.localizedStringWithFormat(format, stockQuantity)
+        let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSNumber, number: .decimal)
+        let format = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown on Products tab")
+        let expectedStockDetail = String.localizedStringWithFormat(format, localizedStockQuantity)
         XCTAssertTrue(detailsText.contains(expectedStockDetail))
     }
 

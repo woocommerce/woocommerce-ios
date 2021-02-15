@@ -240,9 +240,12 @@ private extension AddAttributeViewController {
                                                          onTextChange: { [weak self] newAttributeName in
                                                             self?.viewModel.handleNewAttributeNameChange(newAttributeName)
                                                             self?.enableDoneButton(self?.viewModel.newAttributeName != nil)
-
-            }, onTextDidBeginEditing: {
-        }, onTextDidReturn: nil, inputFormatter: nil, keyboardType: .default)
+                                                         }, onTextDidBeginEditing: {
+                                                         }, onTextDidReturn: { [weak self] _ in
+                                                            self?.doneButtonPressed()
+                                                         }, inputFormatter: nil,
+                                                         keyboardType: .default,
+                                                         returnKeyType: .next)
         cell.configure(viewModel: viewModel)
         cell.applyStyle(style: .body)
     }

@@ -323,7 +323,7 @@ private extension AddAttributeViewController {
     enum Localization {
         static let titleView = NSLocalizedString("Add attribute", comment: "Add Product Attribute screen navigation title")
         static let nextNavBarButton = NSLocalizedString("Next", comment: "Next nav bar button title in Add Product Attribute screen")
-        static let titleCellPlaceholder = NSLocalizedString("Attribute name",
+        static let titleCellPlaceholder = NSLocalizedString("New Attribute Name",
                                                             comment: "Add Product Attribute. Placeholder of cell presenting the title of the new attribute.")
         static let syncErrorMessage = NSLocalizedString("Unable to load product attributes", comment: "Load Product Attributes Action Failed")
         static let retryAction = NSLocalizedString("Retry", comment: "Retry Action")

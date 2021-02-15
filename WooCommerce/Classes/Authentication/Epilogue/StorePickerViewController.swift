@@ -84,7 +84,7 @@ class StorePickerViewController: UIViewController {
         didSet {
             secondaryActionButton.backgroundColor = .clear
             secondaryActionButton.titleFont = StyleManager.actionButtonTitleFont
-            secondaryActionButton.setTitle(NSLocalizedString("Try another account",
+            secondaryActionButton.setTitle(NSLocalizedString("Try With Another Account",
                                                              comment: "Button to trigger connection to another account in store picker"),
                                            for: .normal)
         }

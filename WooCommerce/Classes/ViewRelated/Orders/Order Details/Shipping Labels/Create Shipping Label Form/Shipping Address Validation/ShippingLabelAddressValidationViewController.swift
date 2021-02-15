@@ -7,6 +7,12 @@ final class ShippingLabelAddressValidationViewController: UIViewController {
 
     private let viewModel: ShippingLabelAddressValidationViewModel
 
+    /// Needed to scroll content to a visible area when the keyboard appears.
+    ///
+    private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] frame in
+        self?.handleKeyboardFrameUpdate(keyboardFrame: frame)
+    })
+
     /// Init
     ///
     init(addressVerification: ShippingLabelAddressVerification) {
@@ -24,6 +30,7 @@ final class ShippingLabelAddressValidationViewController: UIViewController {
         configureMainView()
         configureTableView()
         registerTableViewCells()
+        keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
     }
 }
 
@@ -215,6 +222,13 @@ private extension ShippingLabelAddressValidationViewController {
 
         }
         cell.configure(viewModel: viewModel)
+    }
+}
+
+// MARK: KeyboardScrollable
+extension ShippingLabelAddressValidationViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        tableView
     }
 }
 

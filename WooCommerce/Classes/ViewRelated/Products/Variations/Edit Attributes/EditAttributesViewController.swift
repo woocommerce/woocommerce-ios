@@ -147,7 +147,6 @@ private extension EditAttributesViewController {
     enum Localization {
         static let addNewAttribute = NSLocalizedString("Add New Attribute", comment: "Action to add new attribute on the Product Attributes screen")
         static let title = NSLocalizedString("Edit Attributes", comment: "Navigation title for the Product Attributes screen")
-        static let done = NSLocalizedString("Done", comment: "Button title for the Done Action on the navigation bar")
 
         static let generatingVariation = NSLocalizedString("Generating Variation", comment: "Title for the progress screen while generating a variation")
         static let waitInstructions = NSLocalizedString("Please wait while we create the new variation",

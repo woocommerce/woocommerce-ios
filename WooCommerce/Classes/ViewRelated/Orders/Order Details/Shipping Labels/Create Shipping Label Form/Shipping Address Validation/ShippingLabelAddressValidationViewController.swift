@@ -4,6 +4,7 @@ import Yosemite
 final class ShippingLabelAddressValidationViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var confirmButton: UIButton!
 
     private let viewModel: ShippingLabelAddressValidationViewModel
 
@@ -30,6 +31,7 @@ final class ShippingLabelAddressValidationViewController: UIViewController {
         configureMainView()
         configureTableView()
         registerTableViewCells()
+        configureConfirmButton()
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
     }
 }
@@ -44,13 +46,15 @@ private extension ShippingLabelAddressValidationViewController {
     }
 
     func configureMainView() {
-        view.backgroundColor = .listForeground
+        view.backgroundColor = .listBackground
     }
 
     func configureTableView() {
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.backgroundColor = .listForeground
+        tableView.backgroundColor = .listBackground
         tableView.separatorStyle = .singleLine
+        // Hide "Empty Rows"
+        tableView.tableFooterView = UIView()
 
         registerTableViewCells()
 
@@ -61,6 +65,13 @@ private extension ShippingLabelAddressValidationViewController {
         for row in Row.allCases {
             tableView.registerNib(for: row.type)
         }
+    }
+
+    func configureConfirmButton() {
+        confirmButton.setTitle(Localization.confirmButtonTitle, for: .normal)
+        // TODO: implement confirm button action
+        //confirmButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
+        confirmButton.applySecondaryButtonStyle()
     }
 }
 
@@ -291,5 +302,8 @@ private extension ShippingLabelAddressValidationViewController {
         static let stateFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
         static let countryField = NSLocalizedString("Country", comment: "Text field country in Shipping Label Address Validation")
         static let countryFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
+
+        static let confirmButtonTitle = NSLocalizedString("Use Address as Entered",
+                                                          comment: "Action to use the address in Shipping Label Validation screen as entered")
     }
 }

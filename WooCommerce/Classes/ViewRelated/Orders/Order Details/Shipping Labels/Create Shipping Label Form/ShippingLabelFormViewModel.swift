@@ -8,7 +8,7 @@ final class ShippingLabelFormViewModel {
     typealias Section = ShippingLabelFormViewController.Section
     typealias Row = ShippingLabelFormViewController.Row
 
-    private let order: Order
+    let order: Order
 
     init(order: Order) {
         self.order = order
@@ -27,7 +27,8 @@ final class ShippingLabelFormViewModel {
 
 // MARK: - Utils
 extension ShippingLabelFormViewModel {
-    func fromAddressToShippingLabelAddress(address: Address) -> ShippingLabelAddress {
+    func fromAddressToShippingLabelAddress(address: Address?) -> ShippingLabelAddress? {
+        guard let address = address else { return nil }
         let shippingLabelAddress = ShippingLabelAddress(company: address.company ?? "",
                                                         name: address.firstName + " " + address.lastName,
                                                         phone: address.phone ?? "",

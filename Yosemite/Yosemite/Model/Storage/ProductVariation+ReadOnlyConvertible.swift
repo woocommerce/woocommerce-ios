@@ -46,7 +46,7 @@ extension Storage.ProductVariation: ReadOnlyConvertible {
         taxClass = productVariation.taxClass
 
         manageStock = productVariation.manageStock
-        stockQuantity = productVariation.stockQuantity ?? 0
+        stockQuantity = productVariation.stockQuantity ?? Decimal(0)
         stockStatusKey = productVariation.stockStatus.rawValue
 
         backordersKey = productVariation.backordersKey

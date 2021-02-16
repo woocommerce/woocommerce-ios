@@ -16,8 +16,8 @@ final class ShippingLabelAddressFormViewController: UIViewController {
 
     /// Init
     ///
-    init(addressVerification: ShippingLabelAddressVerification) {
-        viewModel = ShippingLabelAddressFormViewModel(addressVerification: addressVerification)
+    init(type: ShipType, address: ShippingLabelAddress?) {
+        viewModel = ShippingLabelAddressFormViewModel(type: type, address: address)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -41,7 +41,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
 private extension ShippingLabelAddressFormViewController {
 
     func configureNavigationBar() {
-        title = viewModel.addressVerification.type == .origin ? Localization.titleViewShipFrom : Localization.titleViewShipTo
+        title = viewModel.type == .origin ? Localization.titleViewShipFrom : Localization.titleViewShipTo
         removeNavigationBackBarButtonText()
     }
 

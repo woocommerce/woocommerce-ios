@@ -105,8 +105,8 @@ private extension ShippingLabelAddressFormViewController {
             configureName(cell: cell, row: row)
         case let cell as TitleAndTextFieldTableViewCell where row == .company:
             configureCompany(cell: cell, row: row)
-        case let cell as TitleAndTextFieldTableViewCell where row == .phones:
-            configurePhones(cell: cell, row: row)
+        case let cell as TitleAndTextFieldTableViewCell where row == .phone:
+            configurePhone(cell: cell, row: row)
         case let cell as TitleAndTextFieldTableViewCell where row == .address:
             configureAddress(cell: cell, row: row)
         case let cell as TitleAndTextFieldTableViewCell where row == .address2:
@@ -149,10 +149,10 @@ private extension ShippingLabelAddressFormViewController {
         cell.configure(viewModel: viewModel)
     }
 
-    func configurePhones(cell: TitleAndTextFieldTableViewCell, row: Row) {
-        let viewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.phonesField,
+    func configurePhone(cell: TitleAndTextFieldTableViewCell, row: Row) {
+        let viewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.phoneField,
                                                                  text: "",
-                                                                 placeholder: Localization.phonesFieldPlaceholder,
+                                                                 placeholder: Localization.phoneFieldPlaceholder,
                                                                  state: .normal,
                                                                  keyboardType: .default,
                                                                  textFieldAlignment: .leading) { (newText) in
@@ -252,7 +252,7 @@ extension ShippingLabelAddressFormViewController {
 
         case name
         case company
-        case phones
+        case phone
         case address
         case address2
         case city
@@ -266,7 +266,7 @@ extension ShippingLabelAddressFormViewController {
             switch self {
             case .topBanner, .fieldError:
                 return BasicTableViewCell.self
-            case .name, .company, .phones, .address, .address2, .city, .postcode, .state, .country:
+            case .name, .company, .phone, .address, .address2, .city, .postcode, .state, .country:
                 return TitleAndTextFieldTableViewCell.self
             }
         }
@@ -286,8 +286,8 @@ private extension ShippingLabelAddressFormViewController {
         static let nameFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
         static let companyField = NSLocalizedString("Company", comment: "Text field company in Shipping Label Address Validation")
         static let companyFieldPlaceholder = NSLocalizedString("Optional", comment: "Text field placeholder in Shipping Label Address Validation")
-        static let phonesField = NSLocalizedString("Phones", comment: "Text field phones in Shipping Label Address Validation")
-        static let phonesFieldPlaceholder = NSLocalizedString("Optional", comment: "Text field placeholder in Shipping Label Address Validation")
+        static let phoneField = NSLocalizedString("Phones", comment: "Text field phone in Shipping Label Address Validation")
+        static let phoneFieldPlaceholder = NSLocalizedString("Optional", comment: "Text field placeholder in Shipping Label Address Validation")
         static let addressField = NSLocalizedString("Address", comment: "Text field address in Shipping Label Address Validation")
         static let addressFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
         static let address2Field = NSLocalizedString("Address 2", comment: "Text field address 2 in Shipping Label Address Validation")

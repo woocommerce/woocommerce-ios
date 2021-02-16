@@ -15,6 +15,6 @@ final class ShippingLabelAddressFormViewModel: NSObject {
     }
 
     var sections: [Section] {
-        return [Section(rows: [.name, .company, .phones, .address, .address2, .city, .postcode, .state, .country])]
+        return [Section(rows: [.name, .company, .phone, .address, .address2, .city, .postcode, .state, .country])]
     }
 }

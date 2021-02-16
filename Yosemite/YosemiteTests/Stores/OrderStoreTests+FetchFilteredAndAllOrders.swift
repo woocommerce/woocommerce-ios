@@ -132,7 +132,7 @@ private extension OrderStoreTests_FetchFilteredAndAllOrders {
             siteID: Fixtures.siteID,
             statusKey: statusKey,
             deleteAllBeforeSaving: deleteAllBeforeSaving,
-            pageSize: 50) { _ in
+            pageSize: 50) { _, _  in
                 expectation.fulfill()
         }
 

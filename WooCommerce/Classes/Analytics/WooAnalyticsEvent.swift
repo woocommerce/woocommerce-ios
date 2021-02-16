@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 /// This struct represents an analytics event. It is a combination of `WooAnalyticsStat` and
 /// its properties.
@@ -39,7 +40,7 @@ import Foundation
 ///
 public struct WooAnalyticsEvent {
     let statName: WooAnalyticsStat
-    let properties: [String: String]
+    let properties: [String: WooAnalyticsEventPropertyType]
 }
 
 // MARK: - In-app Feedback and Survey
@@ -107,6 +108,14 @@ extension WooAnalyticsEvent {
 
     static func shippingLabelsAPIRequest(result: ShippingLabelsAPIRequestResult) -> WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .shippingLabelsAPIRequest, properties: ["action": result.rawValue])
+    }
+
+    static func ordersListLoaded(totalDuration: TimeInterval, pageNumber: Int, status: OrderStatus?) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .ordersListLoaded, properties: [
+            "status": status?.slug ?? String(),
+            "page_number": Int64(pageNumber),
+            "total_duration": Double(totalDuration)
+        ])
     }
 }
 

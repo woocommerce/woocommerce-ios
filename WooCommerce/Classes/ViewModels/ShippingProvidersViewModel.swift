@@ -21,13 +21,13 @@ final class ShippingProvidersViewModel {
 
     // MARK: - Store country
 
-    /// Encapsulates the logic to figure out the current store's country
-    /// and translate that into a readable string
-    private let siteCountry = SiteCountry()
+    /// Encapsulates the logic to figure out the current store's address
+    /// and translate the site country into a readable string
+    private let siteAddress = SiteAddress()
 
     /// The name of the current store's country
     private lazy var siteCountryName: String? = {
-        return self.siteCountry.siteCountryName
+        return self.siteAddress.countryName
     }()
 
     // MARK: - Predicates

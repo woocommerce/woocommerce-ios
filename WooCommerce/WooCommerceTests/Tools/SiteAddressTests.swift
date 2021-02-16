@@ -16,7 +16,8 @@ final class SiteAddressTests: XCTestCase {
         XCTAssertEqual(siteAddress.address2, "")
         XCTAssertEqual(siteAddress.city, "Auburn")
         XCTAssertEqual(siteAddress.postalCode, "13021")
-        XCTAssertEqual(siteAddress.country, "US")
+        XCTAssertEqual(siteAddress.countryCode, "US")
+        XCTAssertEqual(siteAddress.countryName, "United States")
         XCTAssertEqual(siteAddress.state, "NY")
     }
 

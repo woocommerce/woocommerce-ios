@@ -10,7 +10,8 @@ final class ShippingLabelFormViewController: UIViewController {
     /// Init
     ///
     init(order: Order) {
-        viewModel = ShippingLabelFormViewModel(order: order)
+        // TODO: pass the real origin address. It will be implemented in a next PR that fetch the store address.
+        viewModel = ShippingLabelFormViewModel(originAddress: order.billingAddress, destinationAddress: order.shippingAddress)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -107,8 +108,7 @@ private extension ShippingLabelFormViewController {
                        title: Localization.shipFromCellTitle,
                        body: "To be implemented",
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
-            // TODO: pass the real origin address. It will be implemented in a next PR that fetch the store address.
-            let shippingLabelAddress = self?.viewModel.fromAddressToShippingLabelAddress(address: self?.viewModel.order.billingAddress)
+            let shippingLabelAddress = self?.viewModel.originAddress
             let shippingAddressValidationVC = ShippingLabelAddressFormViewController(type: .origin, address: shippingLabelAddress)
             self?.navigationController?.pushViewController(shippingAddressValidationVC, animated: true)
         }
@@ -120,7 +120,7 @@ private extension ShippingLabelFormViewController {
                        title: Localization.shipToCellTitle,
                        body: "To be implemented",
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
-            let shippingLabelAddress = self?.viewModel.fromAddressToShippingLabelAddress(address: self?.viewModel.order.shippingAddress)
+            let shippingLabelAddress = self?.viewModel.destinationAddress
             let shippingAddressValidationVC = ShippingLabelAddressFormViewController(type: .destination, address: shippingLabelAddress)
             self?.navigationController?.pushViewController(shippingAddressValidationVC, animated: true)
         }

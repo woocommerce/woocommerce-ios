@@ -8,10 +8,12 @@ final class ShippingLabelFormViewModel {
     typealias Section = ShippingLabelFormViewController.Section
     typealias Row = ShippingLabelFormViewController.Row
 
-    let order: Order
+    let originAddress: ShippingLabelAddress?
+    let destinationAddress: ShippingLabelAddress?
 
-    init(order: Order) {
-        self.order = order
+    init(originAddress: Address?, destinationAddress: Address?) {
+        self.originAddress = ShippingLabelFormViewModel.fromAddressToShippingLabelAddress(address: originAddress)
+        self.destinationAddress = ShippingLabelFormViewModel.fromAddressToShippingLabelAddress(address: destinationAddress)
     }
 
     var sections: [Section] {
@@ -27,10 +29,17 @@ final class ShippingLabelFormViewModel {
 
 // MARK: - Utils
 extension ShippingLabelFormViewModel {
-    func fromAddressToShippingLabelAddress(address: Address?) -> ShippingLabelAddress? {
+    private static func fromAddressToShippingLabelAddress(address: Address?) -> ShippingLabelAddress? {
         guard let address = address else { return nil }
+
+        // In this way we support localized name correctly,
+        // because the order is often reversed in a few Asian languages.
+        var components = PersonNameComponents()
+        components.givenName = address.firstName
+        components.familyName = address.lastName
+
         let shippingLabelAddress = ShippingLabelAddress(company: address.company ?? "",
-                                                        name: address.firstName + " " + address.lastName,
+                                                        name: PersonNameComponentsFormatter.localizedString(from: components, style: .medium, options: []),
                                                         phone: address.phone ?? "",
                                                         country: address.country,
                                                         state: address.state,

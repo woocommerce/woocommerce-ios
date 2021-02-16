@@ -454,7 +454,7 @@
 		4515262F2577D56C0076B03C /* AddAttributeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4515262D2577D56C0076B03C /* AddAttributeViewController.xib */; };
 		451526392577D89E0076B03C /* AddAttributeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451526382577D89E0076B03C /* AddAttributeViewModel.swift */; };
 		4515C88D25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4515C88B25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.swift */; };
-		4515C88E25D6BE540099C8E3 /* ShippingLabelAddressValidationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4515C88C25D6BE540099C8E3 /* ShippingLabelAddressValidationViewController.xib */; };
+		4515C88E25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4515C88C25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.xib */; };
 		4515C89825D6C00E0099C8E3 /* ShippingLabelAddressFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4515C89725D6C00E0099C8E3 /* ShippingLabelAddressFormViewModel.swift */; };
 		451750B224470CD5004FDA65 /* EnhancedTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451750B124470CD5004FDA65 /* EnhancedTextView.swift */; };
 		451A04E62386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A04E42386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift */; };
@@ -1580,7 +1580,7 @@
 		4515262D2577D56C0076B03C /* AddAttributeViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddAttributeViewController.xib; sourceTree = "<group>"; };
 		451526382577D89E0076B03C /* AddAttributeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAttributeViewModel.swift; sourceTree = "<group>"; };
 		4515C88B25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressFormViewController.swift; sourceTree = "<group>"; };
-		4515C88C25D6BE540099C8E3 /* ShippingLabelAddressValidationViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShippingLabelAddressValidationViewController.xib; sourceTree = "<group>"; };
+		4515C88C25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShippingLabelAddressFormViewController.xib; sourceTree = "<group>"; };
 		4515C89725D6C00E0099C8E3 /* ShippingLabelAddressFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressFormViewModel.swift; sourceTree = "<group>"; };
 		451750B124470CD5004FDA65 /* EnhancedTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedTextView.swift; sourceTree = "<group>"; };
 		451A04E42386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesHeaderTableViewCell.swift; sourceTree = "<group>"; };
@@ -3326,7 +3326,7 @@
 			isa = PBXGroup;
 			children = (
 				4515C88B25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.swift */,
-				4515C88C25D6BE540099C8E3 /* ShippingLabelAddressValidationViewController.xib */,
+				4515C88C25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.xib */,
 				4515C89725D6C00E0099C8E3 /* ShippingLabelAddressFormViewModel.swift */,
 			);
 			path = "Shipping Address Validation";
@@ -5596,7 +5596,7 @@
 				456CB50E2444BFAC00992A05 /* ProductPurchaseNoteViewController.xib in Resources */,
 				023A059B24135F2600E3FC99 /* ReviewsViewController.xib in Resources */,
 				026CF63B237E9ABE009563D4 /* ProductVariationsViewController.xib in Resources */,
-				4515C88E25D6BE540099C8E3 /* ShippingLabelAddressValidationViewController.xib in Resources */,
+				4515C88E25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.xib in Resources */,
 				CE27258021925AE8002B22EB /* ValueOneTableViewCell.xib in Resources */,
 				451A04F12386F7B500E368C9 /* ProductImageCollectionViewCell.xib in Resources */,
 				45C8B26223155CBC0002FA77 /* BillingInformationViewController.xib in Resources */,

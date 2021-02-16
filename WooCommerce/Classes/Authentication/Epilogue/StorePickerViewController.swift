@@ -59,15 +59,6 @@ class StorePickerViewController: UIViewController {
 
     // MARK: - Private Properties
 
-    /// White-Background View, to be placed surrounding the bottom area.
-    ///
-    @IBOutlet private var actionBackgroundView: UIView! {
-        didSet {
-            actionBackgroundView.layer.masksToBounds = false
-            actionBackgroundView.layer.shadowOpacity = StorePickerConstants.backgroundShadowOpacity
-        }
-    }
-
     /// Default Action Button.
     ///
     @IBOutlet private var actionButton: FancyAnimatedButton! {
@@ -84,7 +75,7 @@ class StorePickerViewController: UIViewController {
         didSet {
             secondaryActionButton.backgroundColor = .clear
             secondaryActionButton.titleFont = StyleManager.actionButtonTitleFont
-            secondaryActionButton.setTitle(NSLocalizedString("Try another account",
+            secondaryActionButton.setTitle(NSLocalizedString("Try With Another Account",
                                                              comment: "Button to trigger connection to another account in store picker"),
                                            for: .normal)
         }
@@ -654,7 +645,6 @@ extension StorePickerViewController: UITableViewDelegate {
 // MARK: - StorePickerConstants: Contains all of the constants required by the Picker.
 //
 private enum StorePickerConstants {
-    static let backgroundShadowOpacity = Float(0.2)
     static let numberOfSections = 1
     static let emptyStateRowCount = 1
     static let estimatedRowHeight = CGFloat(50)

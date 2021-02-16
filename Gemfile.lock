@@ -300,17 +300,17 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  cocoapods (~> 1.10)!
-  dotenv!
-  fastlane (~> 2)!
+  cocoapods (~> 1.10)
+  dotenv
+  fastlane (~> 2)
   fastlane-plugin-appcenter (= 1.6.0)
   fastlane-plugin-sentry
   fastlane-plugin-test_center
   fastlane-plugin-wpmreleasetoolkit!
-  rake!
+  rake
   rmagick (~> 3.2.0)
-  xcode-install!
-  xcpretty-travis-formatter!
+  xcode-install
+  xcpretty-travis-formatter
 
 BUNDLED WITH
-   2.1.4
+   2.2.10

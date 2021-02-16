@@ -272,7 +272,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             case .reviews:
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
-            case .downloadableFiles:
+            case .downloadableFiles(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
                 ServiceLocator.analytics.track(.productDetailViewDownloadableFilesTapped)
                 showDownloadableFiles()
             case .linkedProducts(_, let isEditable):

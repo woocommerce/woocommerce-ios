@@ -210,7 +210,7 @@ private extension ProductFormTableViewDataSource {
              .externalURL(let viewModel, _),
              .sku(let viewModel, _),
              .groupedProducts(let viewModel, _),
-             .downloadableFiles(let viewModel),
+             .downloadableFiles(let viewModel, _),
              .linkedProducts(let viewModel, _),
              .variations(let viewModel),
              .attributes(let viewModel, _):

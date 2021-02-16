@@ -30,7 +30,6 @@ final class ShippingLabelAddressFormViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
-        registerTableViewCells()
         configureConfirmButton()
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
     }

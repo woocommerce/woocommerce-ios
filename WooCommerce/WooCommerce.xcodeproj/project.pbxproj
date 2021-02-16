@@ -453,9 +453,9 @@
 		4515262E2577D56C0076B03C /* AddAttributeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4515262C2577D56C0076B03C /* AddAttributeViewController.swift */; };
 		4515262F2577D56C0076B03C /* AddAttributeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4515262D2577D56C0076B03C /* AddAttributeViewController.xib */; };
 		451526392577D89E0076B03C /* AddAttributeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451526382577D89E0076B03C /* AddAttributeViewModel.swift */; };
-		4515C88D25D6BE540099C8E3 /* ShippingLabelAddressValidationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4515C88B25D6BE540099C8E3 /* ShippingLabelAddressValidationViewController.swift */; };
+		4515C88D25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4515C88B25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.swift */; };
 		4515C88E25D6BE540099C8E3 /* ShippingLabelAddressValidationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4515C88C25D6BE540099C8E3 /* ShippingLabelAddressValidationViewController.xib */; };
-		4515C89825D6C00E0099C8E3 /* ShippingLabelAddressValidationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4515C89725D6C00E0099C8E3 /* ShippingLabelAddressValidationViewModel.swift */; };
+		4515C89825D6C00E0099C8E3 /* ShippingLabelAddressFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4515C89725D6C00E0099C8E3 /* ShippingLabelAddressFormViewModel.swift */; };
 		451750B224470CD5004FDA65 /* EnhancedTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451750B124470CD5004FDA65 /* EnhancedTextView.swift */; };
 		451A04E62386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A04E42386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift */; };
 		451A04E72386CE8700E368C9 /* ProductImagesHeaderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451A04E52386CE8700E368C9 /* ProductImagesHeaderTableViewCell.xib */; };
@@ -1579,9 +1579,9 @@
 		4515262C2577D56C0076B03C /* AddAttributeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAttributeViewController.swift; sourceTree = "<group>"; };
 		4515262D2577D56C0076B03C /* AddAttributeViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddAttributeViewController.xib; sourceTree = "<group>"; };
 		451526382577D89E0076B03C /* AddAttributeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAttributeViewModel.swift; sourceTree = "<group>"; };
-		4515C88B25D6BE540099C8E3 /* ShippingLabelAddressValidationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressValidationViewController.swift; sourceTree = "<group>"; };
+		4515C88B25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressFormViewController.swift; sourceTree = "<group>"; };
 		4515C88C25D6BE540099C8E3 /* ShippingLabelAddressValidationViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShippingLabelAddressValidationViewController.xib; sourceTree = "<group>"; };
-		4515C89725D6C00E0099C8E3 /* ShippingLabelAddressValidationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressValidationViewModel.swift; sourceTree = "<group>"; };
+		4515C89725D6C00E0099C8E3 /* ShippingLabelAddressFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddressFormViewModel.swift; sourceTree = "<group>"; };
 		451750B124470CD5004FDA65 /* EnhancedTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedTextView.swift; sourceTree = "<group>"; };
 		451A04E42386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesHeaderTableViewCell.swift; sourceTree = "<group>"; };
 		451A04E52386CE8700E368C9 /* ProductImagesHeaderTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductImagesHeaderTableViewCell.xib; sourceTree = "<group>"; };
@@ -3325,9 +3325,9 @@
 		4515C88A25D6BD520099C8E3 /* Shipping Address Validation */ = {
 			isa = PBXGroup;
 			children = (
-				4515C88B25D6BE540099C8E3 /* ShippingLabelAddressValidationViewController.swift */,
+				4515C88B25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.swift */,
 				4515C88C25D6BE540099C8E3 /* ShippingLabelAddressValidationViewController.xib */,
-				4515C89725D6C00E0099C8E3 /* ShippingLabelAddressValidationViewModel.swift */,
+				4515C89725D6C00E0099C8E3 /* ShippingLabelAddressFormViewModel.swift */,
 			);
 			path = "Shipping Address Validation";
 			sourceTree = "<group>";
@@ -6321,7 +6321,7 @@
 				451B1747258BD7B600836277 /* AddAttributeOptionsViewModel.swift in Sources */,
 				02F49ADC23BF3A0100FA0BFA /* ErrorSectionHeaderView.swift in Sources */,
 				265BCA052430E611004E53EE /* ProductCategoryListViewController.swift in Sources */,
-				4515C88D25D6BE540099C8E3 /* ShippingLabelAddressValidationViewController.swift in Sources */,
+				4515C88D25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.swift in Sources */,
 				CE4DA5CA21DEA78E00074607 /* NSDecimalNumber+Helpers.swift in Sources */,
 				CE5F462A23AACA0A006B1A5C /* RefundDetailsDataSource.swift in Sources */,
 				02162726237963AF000208D2 /* ProductFormViewController.swift in Sources */,
@@ -6359,7 +6359,7 @@
 				028FA46C257E0D9F00F88A48 /* PlainTextSectionHeaderView.swift in Sources */,
 				0235595924496D70004BE2B8 /* ProductsSortOrderBottomSheetListSelectorCommand.swift in Sources */,
 				57A25C7625ACE9BC00A54A62 /* OrderFulfillmentUseCase.swift in Sources */,
-				4515C89825D6C00E0099C8E3 /* ShippingLabelAddressValidationViewModel.swift in Sources */,
+				4515C89825D6C00E0099C8E3 /* ShippingLabelAddressFormViewModel.swift in Sources */,
 				CE24BCCF212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift in Sources */,
 				0245465D24EE779D004F531C /* ProductFormEventLogger.swift in Sources */,
 				B53B898D20D462A000EDB467 /* DefaultStoresManager.swift in Sources */,

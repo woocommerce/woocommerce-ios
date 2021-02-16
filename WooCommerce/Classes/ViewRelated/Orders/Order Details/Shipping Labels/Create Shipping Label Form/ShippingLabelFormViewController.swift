@@ -110,7 +110,7 @@ private extension ShippingLabelFormViewController {
             // TODO: pass the real origin address. It will be implemented in a next PR that fetch the store address.
             let shippingLabelAddress = self?.viewModel.fromAddressToShippingLabelAddress(address: self?.viewModel.order.billingAddress)
             let addressVerification = ShippingLabelAddressVerification(address: shippingLabelAddress, type: .origin)
-            let shippingAddressValidationVC = ShippingLabelAddressValidationViewController(addressVerification: addressVerification)
+            let shippingAddressValidationVC = ShippingLabelAddressFormViewController(addressVerification: addressVerification)
             self?.navigationController?.pushViewController(shippingAddressValidationVC, animated: true)
         }
     }
@@ -123,7 +123,7 @@ private extension ShippingLabelFormViewController {
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             let shippingLabelAddress = self?.viewModel.fromAddressToShippingLabelAddress(address: self?.viewModel.order.shippingAddress)
             let addressVerification = ShippingLabelAddressVerification(address: shippingLabelAddress, type: .destination)
-            let shippingAddressValidationVC = ShippingLabelAddressValidationViewController(addressVerification: addressVerification)
+            let shippingAddressValidationVC = ShippingLabelAddressFormViewController(addressVerification: addressVerification)
             self?.navigationController?.pushViewController(shippingAddressValidationVC, animated: true)
         }
     }

@@ -1,12 +1,12 @@
 import UIKit
 import Yosemite
 
-final class ShippingLabelAddressValidationViewController: UIViewController {
+final class ShippingLabelAddressFormViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var confirmButton: UIButton!
 
-    private let viewModel: ShippingLabelAddressValidationViewModel
+    private let viewModel: ShippingLabelAddressFormViewModel
 
     /// Needed to scroll content to a visible area when the keyboard appears.
     ///
@@ -17,7 +17,7 @@ final class ShippingLabelAddressValidationViewController: UIViewController {
     /// Init
     ///
     init(addressVerification: ShippingLabelAddressVerification) {
-        viewModel = ShippingLabelAddressValidationViewModel(addressVerification: addressVerification)
+        viewModel = ShippingLabelAddressFormViewModel(addressVerification: addressVerification)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -38,7 +38,7 @@ final class ShippingLabelAddressValidationViewController: UIViewController {
 
 // MARK: - View Configuration
 //
-private extension ShippingLabelAddressValidationViewController {
+private extension ShippingLabelAddressFormViewController {
 
     func configureNavigationBar() {
         title = viewModel.addressVerification.type == .origin ? Localization.titleViewShipFrom : Localization.titleViewShipTo
@@ -77,7 +77,7 @@ private extension ShippingLabelAddressValidationViewController {
 
 // MARK: - UITableViewDataSource Conformance
 //
-extension ShippingLabelAddressValidationViewController: UITableViewDataSource {
+extension ShippingLabelAddressFormViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return viewModel.sections.count
@@ -98,7 +98,7 @@ extension ShippingLabelAddressValidationViewController: UITableViewDataSource {
 
 // MARK: - Cell configuration
 //
-private extension ShippingLabelAddressValidationViewController {
+private extension ShippingLabelAddressFormViewController {
     /// Cells currently configured in the order they appear on screen
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
@@ -237,13 +237,13 @@ private extension ShippingLabelAddressValidationViewController {
 }
 
 // MARK: KeyboardScrollable
-extension ShippingLabelAddressValidationViewController: KeyboardScrollable {
+extension ShippingLabelAddressFormViewController: KeyboardScrollable {
     var scrollable: UIScrollView {
         tableView
     }
 }
 
-extension ShippingLabelAddressValidationViewController {
+extension ShippingLabelAddressFormViewController {
 
     struct Section: Equatable {
         let rows: [Row]
@@ -279,7 +279,7 @@ extension ShippingLabelAddressValidationViewController {
     }
 }
 
-private extension ShippingLabelAddressValidationViewController {
+private extension ShippingLabelAddressFormViewController {
     enum Localization {
         static let titleViewShipFrom = NSLocalizedString("Ship from", comment: "Shipping Label Address Validation navigation title")
         static let titleViewShipTo = NSLocalizedString("Ship to", comment: "Shipping Label Address Validation navigation title")

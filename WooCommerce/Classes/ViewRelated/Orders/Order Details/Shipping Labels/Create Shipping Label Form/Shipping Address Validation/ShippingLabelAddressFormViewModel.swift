@@ -1,10 +1,10 @@
 import UIKit
 import Yosemite
 
-final class ShippingLabelAddressValidationViewModel: NSObject {
+final class ShippingLabelAddressFormViewModel: NSObject {
 
-    typealias Section = ShippingLabelAddressValidationViewController.Section
-    typealias Row = ShippingLabelAddressValidationViewController.Row
+    typealias Section = ShippingLabelAddressFormViewController.Section
+    typealias Row = ShippingLabelAddressFormViewController.Row
 
     let addressVerification: ShippingLabelAddressVerification
 

@@ -72,6 +72,7 @@ extension SurveyViewController {
                 return WooConstants.URLs.inAppFeedback
                     .asURL()
                     .tagPlatform("ios")
+                    .tagAppVersion(Bundle.main.bundleVersion())
 
             case .productsM5Feedback:
                 return WooConstants.URLs.productsM4Feedback
@@ -145,6 +146,10 @@ extension URL {
         appendingQueryItem(URLQueryItem(name: Tags.surveyRequestPlatformTag, value: platformName))
     }
 
+    func tagAppVersion(_ version: String) -> URL {
+        appendingQueryItem(URLQueryItem(name: Tags.surveyRequestAppVersionTag, value: version))
+    }
+
     func tagProductMilestone(_ milestone: String) -> URL {
         appendingQueryItem(URLQueryItem(name: Tags.surveyRequestProductMilestoneTag, value: milestone))
     }
@@ -169,6 +174,7 @@ extension URL {
 
     private enum Tags {
         static let surveyRequestPlatformTag = "woo-mobile-platform"
+        static let surveyRequestAppVersionTag = "app-version"
         static let surveyRequestProductMilestoneTag = "product-milestone"
         static let surveyRequestShippingLabelsMilestoneTag = "shipping_label_milestone"
     }

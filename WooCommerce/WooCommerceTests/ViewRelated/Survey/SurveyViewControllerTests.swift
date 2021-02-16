@@ -19,7 +19,7 @@ final class SurveyViewControllerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(mirror.webView.isLoading)
-        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.inAppFeedback.asURL().tagPlatform("ios"))
+        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.inAppFeedback.asURL().tagPlatform("ios").tagAppVersion(Bundle.main.bundleVersion()))
     }
 
     func test_it_loads_the_correct_product_feedback_survey() throws {

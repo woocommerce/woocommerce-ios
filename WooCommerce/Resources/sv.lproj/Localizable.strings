@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-02-02 16:54:04+0000 */
+/* Translation-Revision-Date: 2021-02-12 14:03:12+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -198,6 +198,9 @@
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "Lägg till spårning";
 
+/* Title on add variation button when there are no variations */
+"Add Variation" = "Lägg till variation";
+
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
 "Add a note" = "Lägg till en notering";
@@ -241,6 +244,9 @@
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "Lägg till vikt och dimensioner";
+
+/* Title on the variations list screen when there are no variations */
+"Add your first variation" = "Lägg till din första variation";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Lägger till spårning för en order.";
@@ -293,10 +299,11 @@
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "Ett valfritt meddelande som kan skickas till kunden efter köpet";
 
-/* Title when there is no filter set. */
+/* Product variation attribute description where the attribute is set to any value.
+   Title when there is no filter set. */
 "Any" = "Alla";
 
-/* Format of a product varition attribute description where the attribute is set to any value. */
+/* Format of a product variation attribute description where the attribute is set to any value. */
 "Any %@" = "Valfri %@";
 
 /* Message shown when Apple authentication fails. */
@@ -338,6 +345,10 @@
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "Attribute name" = "Attributnamn";
+
+/* Edit Product Attributes screen navigation title
+   Title of the attributes row on Product Variation main screen */
+"Attributes" = "Attribut";
 
 /* No comment provided by engineer. */
 "Authenticating" = "Autentiserar";
@@ -523,10 +534,6 @@
 /* Button title. Tapping begins log in using Google. */
 "Continue with Google" = "Fortsätt med Google";
 
-/* Button title. Takes the user to the login by email flow.
-   Button title. Tapping begins our normal log in process. */
-"Continue with WordPress.com" = "Fortsätt med WordPress.com";
-
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "Fortsätter med Apple";
 
@@ -614,12 +621,6 @@
 
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "Datum: äldsta till nyaste";
-
-/* Statistical unit - a single day */
-"Day" = "Dag";
-
-/* Plural of 'day' — a statistical unit */
-"Days" = "Dagar";
 
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Standard";
@@ -727,7 +728,7 @@
 
 /* Button title Download Settings in Downloadable Files More Options Action Sheet
    Download file settings navigation title */
-"Download Settings" = "Download Settings";
+"Download Settings" = "Inställningar för nedladdning";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "Tidsgräns för nedladdning";
@@ -736,7 +737,7 @@
 "Download expiration" = "Download expiration";
 
 /* Title of the cell in Product Download limit > Download limit */
-"Download limit" = "Download limit";
+"Download limit" = "Nedladdningsgräns";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Nedladdningsgräns";
@@ -832,13 +833,13 @@
 "Enter the external URL to the product." = "Ange den externa URL:en till produkten.";
 
 /* Footer text for Download Expiration */
-"Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
-
-/* Footer text for Download Expiration */
 "Enter the number of days before a download link expires, or leave blank if never it expires" = "Ange antal dagar tills en nedladdningslänk löper ut, eller lämna fältet tomt om länken aldrig löper ut";
 
+/* Footer text for Download Expiration */
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
+
 /* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Ange antalet gånger filen kan laddas ner eller lämna tom för obegränsad nedladdning";
 
 /* Footer text for Downloadable Limit */
 "Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Ange antalet gånger som filen kan laddas ned eller lämna fältet tomt för obegränsade nerladdningar";
@@ -909,11 +910,11 @@
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
-"File URL" = "Fil-URL";
+"File URL" = "Filens webbadress";
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
-"File URL" = "Filens webbadress";
+"File URL" = "Fil-URL";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "Fyll i med lösenordshanteraren";
@@ -1170,7 +1171,7 @@
 "Italic" = "Kursiv";
 
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
-"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack är ett gratis WordPress-tillägg som ansluter din butik till de verktyg som behövs för att ge dig den bästa möjliga mobilupplevelsen, inklusive pushmeddelanden och statistik";
+"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack är ett gratis WordPress-tillägg som ansluter din butik till de verktyg som behövs för att ge dig den bästa möjliga mobilupplevelsen, inklusive pushmeddelanden och statistik";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Fortsätt redigera";
@@ -1265,6 +1266,10 @@
 /* A generic error message for a failed log in. */
 "Log in failed. Please try again." = "Kunde inte logga in. Var vänlig försök igen.";
 
+/* Button title. Takes the user to the login by email flow.
+   Button title. Tapping begins our normal log in process. */
+"Log in or sign up with WordPress.com" = "Logga in eller registrera dig hos WordPress.com";
+
 /* Instruction text on the login's email address screen. */
 "Log in to the WordPress.com account you used to connect Jetpack." = "Logga in till det WordPress.com-konto du använde när du anslöt Jetpack.";
 
@@ -1309,7 +1314,7 @@
 "Manual Offsets" = "Manuella offset-värden";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "Manuell återbetalning via %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
 "Manual Refund via %1$@" = "Manuell återbetalning via %1$@";
@@ -1347,12 +1352,6 @@
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %@, maximum value %@" = "Minimivärde %1$@, maxvärde %2$@";
-
-/* Statistical unit - a single week */
-"Month" = "Månad";
-
-/* Plural of 'month' — a statistical unit */
-"Months" = "Månader";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -1452,9 +1451,6 @@
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "Inget pris angivet";
 
-/* The text on the placeholder overlay when there are no product variations on the Products tab */
-"No product variations yet" = "Inga produktvarianter ännu";
-
 /* Placeholder for the linked products list selector screen
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "Inga produkter ännu";
@@ -1552,6 +1548,9 @@
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Valfri spårningsinformation";
+
+/* Header of attributes section in Edit Product Attributes screen */
+"Options" = "Alternativ";
 
 /* Divider on initial auth view separating auth options. */
 "Or" = "Eller";
@@ -1710,10 +1709,10 @@
 "Please wait while we publish this product to your store" = "Vänta tills vi publicerar den här produkten i din butik";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Vänta tills vi sparar den här produkten i din butik";
+"Please wait while we save this product to your store" = "Vänta medan vi sparar denna produkt till din butik";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Vänta medan vi sparar denna produkt till din butik";
+"Please wait while we save this product to your store" = "Vänta tills vi sparar den här produkten i din butik";
 
 /* Message of the in-progress UI while deleting the Product remotely */
 "Please wait while we update your store details" = "Vänta medan vi uppdaterar dina butiksdetaljer";
@@ -1725,10 +1724,10 @@
 "Powered by Automattic" = "Drivs av Automattic";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Tidigare återbetalt";
+"Previously Refunded" = "Previously Refunded";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Previously Refunded";
+"Previously Refunded" = "Tidigare återbetalt";
 
 /* Product Price Settings navigation title
    Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
@@ -1880,16 +1879,16 @@
 "Reason for Refund (Optional)" = "Orsak till återbetalning (valfritt)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for refunding order" = "Orsak till återbetalning av order";
-
-/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Reason for refunding order";
 
-/* The title of the button to confirm the refund. */
-"Refund" = "Återbetalning";
+/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
+"Reason for refunding order" = "Orsak till återbetalning av order";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "Återbetala";
+
+/* The title of the button to confirm the refund. */
+"Refund" = "Återbetalning";
 
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "Återbetala #%@";
@@ -2631,10 +2630,10 @@
 "This is the name of the file shown to the customer." = "Det här är namnet på den fil som visas för kunden.";
 
 /* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Det här är URL:en till den fil som kunderna kommer att få tillgång till. URL:er som anges bör redan vara kodade.";
 
 /* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Det här är URL:en till den fil som kunderna kommer att få tillgång till. URL:er som anges bör redan vara kodade.";
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2847,10 +2846,10 @@
 "Update product inventory and SKU" = "Uppdatera produktinventering och SKU";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Fjärruppdatera produkters information om nedladdningsbara filer";
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "Fjärruppdatera produkters information om nedladdningsbara filer";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "Uppdatera till WooCommerce 3.5 för att fortsätta använda den här appen";
@@ -3025,12 +3024,6 @@
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Vi har skickat en registreringslänk till dig via e-post, så att du kan skapa ditt nya WordPress.com-konto. Kontrollera din e-post på den här enheten och tryck på länken i e-postmeddelandet som du får från WordPress.com.";
 
-/* Statistical unit - a single week */
-"Week" = "Vecka";
-
-/* Plural of 'week' — a statistical unit */
-"Weeks" = "Veckor";
-
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "Vikt";
 
@@ -3043,10 +3036,8 @@
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "Vilken e-post ska jag använda för att logga in?";
 
-/* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
-"What is Jetpack" = "Vad är Jetpack";
-
-/* Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
+/* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
+   Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "What is Jetpack?" = "Vad är Jetpack?";
 
 /* Title of alert helping users understand their site address */
@@ -3082,12 +3073,6 @@
 
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
-
-/* Statistical unit - a single year */
-"Year" = "År";
-
-/* Plural of 'year' — a statistical unit */
-"Years" = "År";
 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Ja, ändra";
@@ -3152,7 +3137,7 @@
 "{G} Log in with Google." = "{G} Logga in med Google.";
 
 /* About View's Footer Text. The variable is the current year */
-"© %@ Automattic, Inc." = "© %@ Automattic, Inc.";
+"© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd.";
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "”%@”";

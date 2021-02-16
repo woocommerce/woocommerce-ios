@@ -15,6 +15,10 @@ final class EditAttributesViewModel {
     ///
     private let allowVariationCreation: Bool
 
+    /// Stores dependency. Needed to generate variations
+    ///
+    private let stores: StoresManager
+
     /// Datasource for the product attributes table view
     ///
     var attributes: [ImageAndTitleAndTextTableViewCell.ViewModel] = []
@@ -25,9 +29,10 @@ final class EditAttributesViewModel {
         allowVariationCreation
     }
 
-    init(product: Product, allowVariationCreation: Bool) {
+    init(product: Product, allowVariationCreation: Bool, stores: StoresManager = ServiceLocator.stores) {
         self.product = product
         self.allowVariationCreation = allowVariationCreation
+        self.stores = stores
         self.attributes = createAttributeViewModels()
     }
 }
@@ -39,6 +44,17 @@ extension EditAttributesViewModel {
     ///
     func updateProduct(_ product: Product) {
         self.product = product
+    }
+
+    /// Generates a variation in the host site using the product attributes
+    ///
+    func generateVariation(onCompletion: @escaping (Result<ProductVariation, Error>) -> Void) {
+        let action = ProductVariationAction.createProductVariation(siteID: product.siteID,
+                                                                   productID: product.productID,
+                                                                   newVariation: createVariationParameter()) { result in
+            onCompletion(result)
+        }
+        stores.dispatch(action)
     }
 }
 
@@ -53,5 +69,12 @@ private extension EditAttributesViewModel {
                                                         numberOfLinesForTitle: 0,
                                                         numberOfLinesForText: 0)
         }
+    }
+
+    /// Returns a `CreateProductVariation` type with no price and no options selected for any of it's attributes.
+    ///
+    func createVariationParameter() -> CreateProductVariation {
+        let attributes = product.attributes.map { ProductVariationAttribute(id: $0.attributeID, name: $0.name, option: "") }
+        return CreateProductVariation(regularPrice: "", attributes: attributes)
     }
 }

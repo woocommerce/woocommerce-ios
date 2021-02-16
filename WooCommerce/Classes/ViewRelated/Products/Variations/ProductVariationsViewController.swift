@@ -415,19 +415,19 @@ private extension ProductVariationsViewController {
         let addAttributeViewController = AddAttributeViewController(viewModel: viewModel) { [weak self] updatedProduct in
             guard let self = self else { return }
             self.product = updatedProduct
-            self.navigateToEditAttributeViewController()
+            self.navigateToEditAttributeViewController(allowVariationCreation: true)
         }
         show(addAttributeViewController, sender: self)
     }
 
     /// Cleans the navigation stack until `self` and navigates to `EditAttributesViewController`
     ///
-    func navigateToEditAttributeViewController() {
+    func navigateToEditAttributeViewController(allowVariationCreation: Bool) {
         guard let navigationController = navigationController else {
             return
         }
 
-        let editAttributesViewModel = EditAttributesViewModel(product: product, allowVariationCreation: true)
+        let editAttributesViewModel = EditAttributesViewModel(product: product, allowVariationCreation: allowVariationCreation)
         let editAttributeViewController = EditAttributesViewController(viewModel: editAttributesViewModel)
         editAttributeViewController.onVariationCreation = { [weak self] _ in
             self?.removeEmptyViewController()
@@ -465,7 +465,7 @@ private extension ProductVariationsViewController {
         actionSheet.view.tintColor = .text
 
         let editAttributesAction = UIAlertAction(title: Localization.editAttributesAction, style: .default) { [weak self] _ in
-            self?.navigateToEditAttributeViewController()
+            self?.navigateToEditAttributeViewController(allowVariationCreation: false)
         }
         actionSheet.addAction(editAttributesAction)
 

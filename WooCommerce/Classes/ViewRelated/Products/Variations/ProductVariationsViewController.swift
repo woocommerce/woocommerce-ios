@@ -148,7 +148,7 @@ final class ProductVariationsViewController: UIViewController {
 //
 private extension ProductVariationsViewController {
 
-    /// Set the title.
+    /// Set the title and navigation buttons.
     ///
     func configureNavigationBar() {
         removeNavigationBackBarButtonText()
@@ -156,6 +156,20 @@ private extension ProductVariationsViewController {
             "Variations",
             comment: "Title that appears on top of the Product Variation List screen."
         )
+        if product.variations.isNotEmpty {
+            configureMoreOptionsButton()
+        }
+    }
+
+    /// Configure More Options button.
+    ///
+    func configureMoreOptionsButton() {
+        let moreButton = UIBarButtonItem(image: .moreImage,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(presentMoreOptionsActionSheet(_:)))
+        moreButton.accessibilityLabel = Localization.moreButtonLabel
+        navigationItem.setRightBarButton(moreButton, animated: false)
     }
 
     /// Apply Woo styles.
@@ -443,6 +457,28 @@ private extension ProductVariationsViewController {
     }
 }
 
+// MARK: Action Sheet
+//
+private extension ProductVariationsViewController {
+    @objc private func presentMoreOptionsActionSheet(_ sender: UIBarButtonItem) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        let editAttributesAction = UIAlertAction(title: Localization.editAttributesAction, style: .default) { [weak self] _ in
+            self?.navigateToEditAttributeViewController()
+        }
+        actionSheet.addAction(editAttributesAction)
+
+        let cancelAction = UIAlertAction(title: Localization.cancelAction, style: .cancel)
+        actionSheet.addAction(cancelAction)
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.barButtonItem = sender
+
+        present(actionSheet, animated: true)
+    }
+}
+
 // MARK: - Placeholders
 //
 private extension ProductVariationsViewController {
@@ -597,5 +633,8 @@ private extension ProductVariationsViewController {
         static let emptyStateTitle = NSLocalizedString("Add your first variation", comment: "Title on the variations list screen when there are no variations")
         static let emptyStateButtonTitle = NSLocalizedString("Add Variation", comment: "Title on add variation button when there are no variations")
         static let addNewVariation = NSLocalizedString("Add Variation", comment: "Action to add new variation on the variations list")
+        static let moreButtonLabel = NSLocalizedString("More options", comment: "Accessibility label to show the More Options action sheet")
+        static let editAttributesAction = NSLocalizedString("Edit Attributes", comment: "Action to edit the attributes and options used for variations")
+        static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel button in the More Options action sheet")
     }
 }

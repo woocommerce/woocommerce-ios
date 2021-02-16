@@ -11,23 +11,23 @@ final class SiteAddress {
     var address: String {
         return getValueFromSiteSettings(Constants.address) ?? ""
     }
-    
+
     var address2: String {
         return getValueFromSiteSettings(Constants.address2) ?? ""
     }
-    
+
     var city: String {
         return getValueFromSiteSettings(Constants.city) ?? ""
     }
-    
+
     var postalCode: String {
         return getValueFromSiteSettings(Constants.postalCode) ?? ""
     }
-    
+
     var country: String {
         return getValueFromSiteSettings(Constants.countryAndState)?.components(separatedBy: ":").first ?? ""
     }
-    
+
     var state: String {
         return getValueFromSiteSettings(Constants.countryAndState)?.components(separatedBy: ":").last ?? ""
     }
@@ -35,8 +35,8 @@ final class SiteAddress {
     init(siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings) {
         self.siteSettings = siteSettings
     }
-    
-    private func getValueFromSiteSettings(_ settingID: String) -> String?{
+
+    private func getValueFromSiteSettings(_ settingID: String) -> String? {
         return siteSettings.first { (setting) -> Bool in
                     return setting.settingID.contains(settingID)
                 }?.value

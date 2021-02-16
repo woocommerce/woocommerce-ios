@@ -53,8 +53,7 @@ private extension ShippingLabelAddressFormViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
         tableView.separatorStyle = .singleLine
-        // Hide "Empty Rows"
-        tableView.tableFooterView = UIView()
+        tableView.removeLastCellSeparator()
 
         registerTableViewCells()
 

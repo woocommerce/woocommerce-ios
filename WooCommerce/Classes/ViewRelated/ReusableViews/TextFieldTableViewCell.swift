@@ -11,6 +11,7 @@ final class TextFieldTableViewCell: UITableViewCell {
         let onTextDidReturn: ((_ text: String?) -> Void)?
         let inputFormatter: UnitInputFormatter?
         let keyboardType: UIKeyboardType
+        var returnKeyType: UIReturnKeyType = .default
     }
 
     @IBOutlet private weak var textField: UITextField!
@@ -37,6 +38,7 @@ final class TextFieldTableViewCell: UITableViewCell {
         textField.placeholder = viewModel.placeholder
         textField.borderStyle = .none
         textField.keyboardType = viewModel.keyboardType
+        textField.returnKeyType = viewModel.returnKeyType
         textField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
         textField.addTarget(self, action: #selector(textFieldDidBegin(textField:)), for: .editingDidBegin)
     }

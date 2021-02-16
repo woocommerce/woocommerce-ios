@@ -156,7 +156,7 @@ private extension ProductVariationsViewController {
             "Variations",
             comment: "Title that appears on top of the Product Variation List screen."
         )
-        if product.variations.isNotEmpty {
+        if product.variations.isNotEmpty && isAddProductVariationsEnabled {
             configureMoreOptionsButton()
         }
     }

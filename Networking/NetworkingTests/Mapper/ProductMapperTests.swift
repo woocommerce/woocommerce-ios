@@ -109,8 +109,10 @@ final class ProductMapperTests: XCTestCase {
         let product = try XCTUnwrap(mapLoadProductResponseWithAlternativeTypes())
 
         XCTAssertEqual(product.price, "17")
+        XCTAssertEqual(product.regularPrice, "12.89")
         XCTAssertEqual(product.salePrice, "26.73")
         XCTAssertTrue(product.manageStock)
+        XCTAssertFalse(product.soldIndividually)
     }
 
     /// Verifies that the `salePrice` field of the Product are parsed correctly when the product is on sale, and the sale price is an empty string

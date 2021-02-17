@@ -274,8 +274,10 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
                                                       forKey: .price,
                                                       alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
             ?? ""
-
-        let regularPrice = try container.decodeIfPresent(String.self, forKey: .regularPrice)
+        let regularPrice = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                             forKey: .regularPrice,
+                                                             alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
+            ?? ""
 
         let onSale = try container.decode(Bool.self, forKey: .onSale)
 
@@ -325,7 +327,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         let backordersAllowed = try container.decode(Bool.self, forKey: .backordersAllowed)
         let backordered = try container.decode(Bool.self, forKey: .backordered)
 
-        let soldIndividually = try container.decode(Bool.self, forKey: .soldIndividually)
+        let soldIndividually = try container.decodeIfPresent(Bool.self, forKey: .soldIndividually) ?? false
         let weight = try container.decodeIfPresent(String.self, forKey: .weight)
         let dimensions = try container.decode(ProductDimensions.self, forKey: .dimensions)
 

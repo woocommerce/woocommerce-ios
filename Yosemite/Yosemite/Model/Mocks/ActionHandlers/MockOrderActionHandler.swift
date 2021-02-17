@@ -19,9 +19,9 @@ struct MockOrderActionHandler: MockActionHandler {
         }
     }
 
-    func fetchFilteredAndAllOrders(siteID: Int64, onCompletion: @escaping (Error?) -> ()) {
+    func fetchFilteredAndAllOrders(siteID: Int64, onCompletion: @escaping (TimeInterval, Error?) -> ()) {
         saveOrders(orders: objectGraph.orders(forSiteId: siteID)) {
-            onCompletion(nil)
+            onCompletion(0, nil)
         }
     }
 

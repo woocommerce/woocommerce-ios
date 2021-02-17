@@ -66,7 +66,7 @@ final class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
-        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 4)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 4)
@@ -88,7 +88,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 0)
 
-        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 4)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 4)
             XCTAssertNil(error)
@@ -112,7 +112,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 0)
 
-        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
             XCTAssertNil(error)
 
             let predicate = NSPredicate(format: "orderID = %ld", remoteOrder.orderID)
@@ -140,7 +140,7 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: "broken-orders-mark-2")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
-        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 6)
 
@@ -158,7 +158,7 @@ final class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "generic_error")
-        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
             XCTAssertNotNil(error)
 
             expectation.fulfill()
@@ -174,7 +174,7 @@ final class OrderStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve orders empty response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { _, error in
             XCTAssertNotNil(error)
 
             expectation.fulfill()

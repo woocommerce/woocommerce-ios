@@ -88,8 +88,8 @@ private extension DefaultProductFormTableViewModel {
                 return .groupedProducts(viewModel: groupedProductsRow(product: product.product, isEditable: editable), isEditable: editable)
             case .variations:
                 return .variations(viewModel: variationsRow(product: product.product))
-            case .downloadableFiles:
-                return .downloadableFiles(viewModel: downloadsRow(product: product))
+            case .downloadableFiles(let editable):
+                return .downloadableFiles(viewModel: downloadsRow(product: product, isEditable: editable), isEditable: editable)
             case .linkedProducts(let editable):
                 return .linkedProducts(viewModel: linkedProductsRow(product: product, isEditable: editable), isEditable: editable)
             default:
@@ -430,7 +430,7 @@ private extension DefaultProductFormTableViewModel {
 
     // MARK: Product downloads only
 
-    func downloadsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
+    func downloadsRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.cloudImage
         let title = Localization.downloadsTitle
         var details = Localization.emptyDownloads
@@ -446,7 +446,8 @@ private extension DefaultProductFormTableViewModel {
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
-                                                        details: details)
+                                                        details: details,
+                                                        isActionable: isEditable)
     }
 
     // MARK: Linked products only

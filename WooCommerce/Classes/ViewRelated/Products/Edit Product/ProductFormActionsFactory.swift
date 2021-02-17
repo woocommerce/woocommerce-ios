@@ -27,7 +27,7 @@ enum ProductFormEditAction: Equatable {
     case status(editable: Bool)
     case attributes(editable: Bool)
     // Downloadable products only
-    case downloadableFiles
+    case downloadableFiles(editable: Bool)
 }
 
 /// Creates actions for different sections/UI on the product form.
@@ -99,7 +99,7 @@ private extension ProductFormActionsFactory {
             .inventorySettings(editable: editable),
             .categories(editable: editable),
             .tags(editable: editable),
-            shouldShowDownloadableProduct ? .downloadableFiles: nil,
+            shouldShowDownloadableProduct ? .downloadableFiles(editable: editable): nil,
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
             shouldShowProductTypeRow ? .productType(editable: editable): nil

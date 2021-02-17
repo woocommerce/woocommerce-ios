@@ -12,7 +12,8 @@ final class ShippingLabelFormViewModel {
     let destinationAddress: ShippingLabelAddress?
 
     init(originAddress: Address?, destinationAddress: Address?) {
-        self.originAddress = ShippingLabelFormViewModel.fromAddressToShippingLabelAddress(address: originAddress)
+        self.originAddress = ShippingLabelFormViewModel.fromAddressToShippingLabelAddress(address: originAddress) ??
+            ShippingLabelFormViewModel.generateDefaultOriginAddress()
         self.destinationAddress = ShippingLabelFormViewModel.fromAddressToShippingLabelAddress(address: destinationAddress)
     }
 
@@ -29,6 +30,20 @@ final class ShippingLabelFormViewModel {
 
 // MARK: - Utils
 extension ShippingLabelFormViewModel {
+    private static func generateDefaultOriginAddress() -> ShippingLabelAddress? {
+        let address = Address(firstName: ServiceLocator.stores.sessionManager.defaultAccount?.displayName ?? "",
+                lastName: "", company: ServiceLocator.stores.sessionManager.defaultSite?.name ?? "",
+                address1: SiteAddress().address,
+                address2: SiteAddress().address2,
+                city: SiteAddress().city,
+                state: SiteAddress().state,
+                postcode: SiteAddress().postalCode,
+                country: SiteAddress().countryName ?? "",
+                phone: "",
+                email: ServiceLocator.stores.sessionManager.defaultAccount?.email)
+        return fromAddressToShippingLabelAddress(address: address)
+    }
+
     private static func fromAddressToShippingLabelAddress(address: Address?) -> ShippingLabelAddress? {
         guard let address = address else { return nil }
 

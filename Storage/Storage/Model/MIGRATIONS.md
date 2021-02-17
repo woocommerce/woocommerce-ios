@@ -2,6 +2,11 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 45 (Release 6.1.0.0)
+- @pmusolino 2021-02-17
+- Added `firstName` attribute to `AccountSettings` entity (optional).
+- Added `lastName` attribute to `AccountSettings` entity (optional).
+
 ## Model 44 (Release 6.0.0.0)
 - @jaclync 2021-01-27
 - Added `timeRange` attribute to `SiteVisitStats` entity (non-optional and default to empty string).

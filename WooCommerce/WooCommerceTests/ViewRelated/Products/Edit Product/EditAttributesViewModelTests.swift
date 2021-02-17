@@ -90,6 +90,35 @@ final class EditAttributesViewModelTests: XCTestCase {
         let expectedVariation = CreateProductVariation(regularPrice: "", attributes: expectedAttributes)
         XCTAssertEqual(expectedVariation, variationSubmitted)
     }
+
+    func test_create_variations_updates_the_product_variations_array() throws {
+        // Given
+        let attribute = sampleAttribute(attributeID: 0, name: "attr", options: ["Option 1", "Option 2"])
+        let attribute2 = sampleAttribute(attributeID: 1, name: "attr-2", options: ["Option 3", "Option 4"])
+        let product = Product().copy(attributes: [attribute, attribute2])
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        mockStores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            switch action {
+            case let .createProductVariation(_, _, _, onCompletion):
+                onCompletion(.success(MockProductVariation().productVariation()))
+            default:
+                break
+            }
+        }
+
+        let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: true, stores: mockStores)
+
+        // When
+        let result: Result<Product, Error> = waitFor { promise in
+            viewModel.generateVariation { result in
+                promise(result)
+            }
+        }
+
+        let updatedProduct = try XCTUnwrap(result.get())
+        let expectedVariations = [MockProductVariation().productVariation().productVariationID]
+        XCTAssertEqual(updatedProduct.variations, expectedVariations)
+    }
 }
 
 private extension EditAttributesViewModelTests {

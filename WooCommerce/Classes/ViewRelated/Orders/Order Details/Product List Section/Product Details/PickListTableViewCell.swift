@@ -92,7 +92,12 @@ extension PickListTableViewCell {
                                                        with: item.imageURL?.absoluteString,
                                                        placeholder: UIImage.productPlaceholderImage.imageWithTintColor(UIColor.listIcon),
                                                        progressBlock: nil,
-                                                       completion: nil)
+                                                       completion: { [weak productImageView] (image, error) in
+                                                           guard image != nil else {
+                                                               return
+                                                           }
+                                                           productImageView?.contentMode = .scaleAspectFill
+                                                       })
         name = item.name
         quantity = item.quantity
 

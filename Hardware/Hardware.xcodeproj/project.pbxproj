@@ -1,0 +1,746 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 51;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5A747BE9FA06EC8752A35752 /* Pods_HardwareTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1DC5B6141B8184FAC29B0A4 /* Pods_HardwareTests.framework */; };
+		C5D2CB7D21CEE28FEBF18BF6 /* Pods_Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F0AC202B287C1221EA2C99 /* Pods_Hardware.framework */; };
+		D88FDB0925DD216B00CB0DBD /* Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88FDAFF25DD216B00CB0DBD /* Hardware.framework */; };
+		D88FDB0E25DD216B00CB0DBD /* HardwareTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88FDB0D25DD216B00CB0DBD /* HardwareTests.swift */; };
+		D88FDB1025DD216B00CB0DBD /* Hardware.h in Headers */ = {isa = PBXBuildFile; fileRef = D88FDB0225DD216B00CB0DBD /* Hardware.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D88FDB2825DD21B000CB0DBD /* Hardware.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88FDB1E25DD21AE00CB0DBD /* Hardware.swift */; };
+		D88FDB2925DD21B000CB0DBD /* CardReaderServiceDiscoveryStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88FDB1F25DD21AF00CB0DBD /* CardReaderServiceDiscoveryStatus.swift */; };
+		D88FDB2A25DD21B000CB0DBD /* PaymentStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88FDB2025DD21AF00CB0DBD /* PaymentStatus.swift */; };
+		D88FDB2B25DD21B000CB0DBD /* CardReaderServiceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88FDB2125DD21AF00CB0DBD /* CardReaderServiceStatus.swift */; };
+		D88FDB2C25DD21B000CB0DBD /* CardReaderStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88FDB2225DD21AF00CB0DBD /* CardReaderStatus.swift */; };
+		D88FDB2D25DD21B000CB0DBD /* PaymentIntentParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88FDB2325DD21B000CB0DBD /* PaymentIntentParameters.swift */; };
+		D88FDB2E25DD21B000CB0DBD /* CardReaderEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88FDB2425DD21B000CB0DBD /* CardReaderEvent.swift */; };
+		D88FDB2F25DD21B000CB0DBD /* PaymentIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88FDB2525DD21B000CB0DBD /* PaymentIntent.swift */; };
+		D88FDB3025DD21B000CB0DBD /* CardReaderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88FDB2625DD21B000CB0DBD /* CardReaderService.swift */; };
+		D88FDB3125DD21B000CB0DBD /* CardReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88FDB2725DD21B000CB0DBD /* CardReader.swift */; };
+		D88FDB3925DD21D300CB0DBD /* StripeCardReaderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88FDB3725DD21D200CB0DBD /* StripeCardReaderService.swift */; };
+		D88FDB3A25DD21D300CB0DBD /* WCPayTokenProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88FDB3825DD21D300CB0DBD /* WCPayTokenProvider.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D88FDB0A25DD216B00CB0DBD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D88FDAF625DD216B00CB0DBD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D88FDAFE25DD216B00CB0DBD;
+			remoteInfo = Hardware;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0C16E0AAFF5A7B364BD4E171 /* Pods-Hardware.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.release-alpha.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		1CC96A71F2937BCB7432766F /* Pods-HardwareTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.debug.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.debug.xcconfig"; sourceTree = "<group>"; };
+		3CF9348BADD5E0518080A61A /* Pods-Hardware.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.debug.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.debug.xcconfig"; sourceTree = "<group>"; };
+		9726331F55A9621F2F887E13 /* Pods-Hardware.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.release.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.release.xcconfig"; sourceTree = "<group>"; };
+		B1DC5B6141B8184FAC29B0A4 /* Pods_HardwareTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HardwareTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C61D1642BE09D1A1AD6AA9FA /* Pods-HardwareTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.release.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.release.xcconfig"; sourceTree = "<group>"; };
+		D88FDAFF25DD216B00CB0DBD /* Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D88FDB0225DD216B00CB0DBD /* Hardware.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Hardware.h; sourceTree = "<group>"; };
+		D88FDB0325DD216B00CB0DBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D88FDB0825DD216B00CB0DBD /* HardwareTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HardwareTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D88FDB0D25DD216B00CB0DBD /* HardwareTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HardwareTests.swift; sourceTree = "<group>"; };
+		D88FDB0F25DD216B00CB0DBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D88FDB1E25DD21AE00CB0DBD /* Hardware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hardware.swift; sourceTree = "<group>"; };
+		D88FDB1F25DD21AF00CB0DBD /* CardReaderServiceDiscoveryStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderServiceDiscoveryStatus.swift; sourceTree = "<group>"; };
+		D88FDB2025DD21AF00CB0DBD /* PaymentStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentStatus.swift; sourceTree = "<group>"; };
+		D88FDB2125DD21AF00CB0DBD /* CardReaderServiceStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderServiceStatus.swift; sourceTree = "<group>"; };
+		D88FDB2225DD21AF00CB0DBD /* CardReaderStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderStatus.swift; sourceTree = "<group>"; };
+		D88FDB2325DD21B000CB0DBD /* PaymentIntentParameters.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentIntentParameters.swift; sourceTree = "<group>"; };
+		D88FDB2425DD21B000CB0DBD /* CardReaderEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderEvent.swift; sourceTree = "<group>"; };
+		D88FDB2525DD21B000CB0DBD /* PaymentIntent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentIntent.swift; sourceTree = "<group>"; };
+		D88FDB2625DD21B000CB0DBD /* CardReaderService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderService.swift; sourceTree = "<group>"; };
+		D88FDB2725DD21B000CB0DBD /* CardReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReader.swift; sourceTree = "<group>"; };
+		D88FDB3725DD21D200CB0DBD /* StripeCardReaderService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StripeCardReaderService.swift; sourceTree = "<group>"; };
+		D88FDB3825DD21D300CB0DBD /* WCPayTokenProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WCPayTokenProvider.swift; sourceTree = "<group>"; };
+		DB2B86965868C0EC25910D7D /* Pods-HardwareTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.release-alpha.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		E9F0AC202B287C1221EA2C99 /* Pods_Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D88FDAFC25DD216B00CB0DBD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C5D2CB7D21CEE28FEBF18BF6 /* Pods_Hardware.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D88FDB0525DD216B00CB0DBD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D88FDB0925DD216B00CB0DBD /* Hardware.framework in Frameworks */,
+				5A747BE9FA06EC8752A35752 /* Pods_HardwareTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		ADED522B787D093F499BD540 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				3CF9348BADD5E0518080A61A /* Pods-Hardware.debug.xcconfig */,
+				9726331F55A9621F2F887E13 /* Pods-Hardware.release.xcconfig */,
+				1CC96A71F2937BCB7432766F /* Pods-HardwareTests.debug.xcconfig */,
+				C61D1642BE09D1A1AD6AA9FA /* Pods-HardwareTests.release.xcconfig */,
+				0C16E0AAFF5A7B364BD4E171 /* Pods-Hardware.release-alpha.xcconfig */,
+				DB2B86965868C0EC25910D7D /* Pods-HardwareTests.release-alpha.xcconfig */,
+			);
+			name = Pods;
+			path = ../Pods;
+			sourceTree = "<group>";
+		};
+		D88FDAF525DD216B00CB0DBD = {
+			isa = PBXGroup;
+			children = (
+				D88FDB0125DD216B00CB0DBD /* Hardware */,
+				D88FDB0C25DD216B00CB0DBD /* HardwareTests */,
+				D88FDB0025DD216B00CB0DBD /* Products */,
+				ADED522B787D093F499BD540 /* Pods */,
+				EF9EE401B2930AC16BD86FE2 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		D88FDB0025DD216B00CB0DBD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D88FDAFF25DD216B00CB0DBD /* Hardware.framework */,
+				D88FDB0825DD216B00CB0DBD /* HardwareTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D88FDB0125DD216B00CB0DBD /* Hardware */ = {
+			isa = PBXGroup;
+			children = (
+				D88FDB1D25DD218800CB0DBD /* CardReader */,
+				D88FDB0225DD216B00CB0DBD /* Hardware.h */,
+				D88FDB0325DD216B00CB0DBD /* Info.plist */,
+			);
+			path = Hardware;
+			sourceTree = "<group>";
+		};
+		D88FDB0C25DD216B00CB0DBD /* HardwareTests */ = {
+			isa = PBXGroup;
+			children = (
+				D88FDB0D25DD216B00CB0DBD /* HardwareTests.swift */,
+				D88FDB0F25DD216B00CB0DBD /* Info.plist */,
+			);
+			path = HardwareTests;
+			sourceTree = "<group>";
+		};
+		D88FDB1D25DD218800CB0DBD /* CardReader */ = {
+			isa = PBXGroup;
+			children = (
+				D88FDB3625DD21BE00CB0DBD /* StripeCardReader */,
+				D88FDB2725DD21B000CB0DBD /* CardReader.swift */,
+				D88FDB2425DD21B000CB0DBD /* CardReaderEvent.swift */,
+				D88FDB2625DD21B000CB0DBD /* CardReaderService.swift */,
+				D88FDB1F25DD21AF00CB0DBD /* CardReaderServiceDiscoveryStatus.swift */,
+				D88FDB2125DD21AF00CB0DBD /* CardReaderServiceStatus.swift */,
+				D88FDB2225DD21AF00CB0DBD /* CardReaderStatus.swift */,
+				D88FDB1E25DD21AE00CB0DBD /* Hardware.swift */,
+				D88FDB2525DD21B000CB0DBD /* PaymentIntent.swift */,
+				D88FDB2325DD21B000CB0DBD /* PaymentIntentParameters.swift */,
+				D88FDB2025DD21AF00CB0DBD /* PaymentStatus.swift */,
+			);
+			path = CardReader;
+			sourceTree = "<group>";
+		};
+		D88FDB3625DD21BE00CB0DBD /* StripeCardReader */ = {
+			isa = PBXGroup;
+			children = (
+				D88FDB3725DD21D200CB0DBD /* StripeCardReaderService.swift */,
+				D88FDB3825DD21D300CB0DBD /* WCPayTokenProvider.swift */,
+			);
+			path = StripeCardReader;
+			sourceTree = "<group>";
+		};
+		EF9EE401B2930AC16BD86FE2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E9F0AC202B287C1221EA2C99 /* Pods_Hardware.framework */,
+				B1DC5B6141B8184FAC29B0A4 /* Pods_HardwareTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D88FDAFA25DD216B00CB0DBD /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D88FDB1025DD216B00CB0DBD /* Hardware.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		D88FDAFE25DD216B00CB0DBD /* Hardware */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D88FDB1325DD216B00CB0DBD /* Build configuration list for PBXNativeTarget "Hardware" */;
+			buildPhases = (
+				84973D985DDEC124CBFAFFBD /* [CP] Check Pods Manifest.lock */,
+				D88FDAFA25DD216B00CB0DBD /* Headers */,
+				D88FDAFB25DD216B00CB0DBD /* Sources */,
+				D88FDAFC25DD216B00CB0DBD /* Frameworks */,
+				D88FDAFD25DD216B00CB0DBD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Hardware;
+			productName = Hardware;
+			productReference = D88FDAFF25DD216B00CB0DBD /* Hardware.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		D88FDB0725DD216B00CB0DBD /* HardwareTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D88FDB1625DD216B00CB0DBD /* Build configuration list for PBXNativeTarget "HardwareTests" */;
+			buildPhases = (
+				0527257C87F0190B55C7EDFB /* [CP] Check Pods Manifest.lock */,
+				D88FDB0425DD216B00CB0DBD /* Sources */,
+				D88FDB0525DD216B00CB0DBD /* Frameworks */,
+				D88FDB0625DD216B00CB0DBD /* Resources */,
+				2EAAA3A4E3365D114A040CFC /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D88FDB0B25DD216B00CB0DBD /* PBXTargetDependency */,
+			);
+			name = HardwareTests;
+			productName = HardwareTests;
+			productReference = D88FDB0825DD216B00CB0DBD /* HardwareTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D88FDAF625DD216B00CB0DBD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1240;
+				LastUpgradeCheck = 1240;
+				TargetAttributes = {
+					D88FDAFE25DD216B00CB0DBD = {
+						CreatedOnToolsVersion = 12.4;
+						LastSwiftMigration = 1240;
+					};
+					D88FDB0725DD216B00CB0DBD = {
+						CreatedOnToolsVersion = 12.4;
+					};
+				};
+			};
+			buildConfigurationList = D88FDAF925DD216B00CB0DBD /* Build configuration list for PBXProject "Hardware" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D88FDAF525DD216B00CB0DBD;
+			productRefGroup = D88FDB0025DD216B00CB0DBD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D88FDAFE25DD216B00CB0DBD /* Hardware */,
+				D88FDB0725DD216B00CB0DBD /* HardwareTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D88FDAFD25DD216B00CB0DBD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D88FDB0625DD216B00CB0DBD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0527257C87F0190B55C7EDFB /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-HardwareTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		2EAAA3A4E3365D114A040CFC /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HardwareTests/Pods-HardwareTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-HardwareTests/Pods-HardwareTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-HardwareTests/Pods-HardwareTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		84973D985DDEC124CBFAFFBD /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Hardware-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D88FDAFB25DD216B00CB0DBD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D88FDB2D25DD21B000CB0DBD /* PaymentIntentParameters.swift in Sources */,
+				D88FDB2E25DD21B000CB0DBD /* CardReaderEvent.swift in Sources */,
+				D88FDB3125DD21B000CB0DBD /* CardReader.swift in Sources */,
+				D88FDB2A25DD21B000CB0DBD /* PaymentStatus.swift in Sources */,
+				D88FDB2825DD21B000CB0DBD /* Hardware.swift in Sources */,
+				D88FDB2B25DD21B000CB0DBD /* CardReaderServiceStatus.swift in Sources */,
+				D88FDB2925DD21B000CB0DBD /* CardReaderServiceDiscoveryStatus.swift in Sources */,
+				D88FDB3925DD21D300CB0DBD /* StripeCardReaderService.swift in Sources */,
+				D88FDB2F25DD21B000CB0DBD /* PaymentIntent.swift in Sources */,
+				D88FDB3025DD21B000CB0DBD /* CardReaderService.swift in Sources */,
+				D88FDB2C25DD21B000CB0DBD /* CardReaderStatus.swift in Sources */,
+				D88FDB3A25DD21D300CB0DBD /* WCPayTokenProvider.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D88FDB0425DD216B00CB0DBD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D88FDB0E25DD216B00CB0DBD /* HardwareTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D88FDB0B25DD216B00CB0DBD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D88FDAFE25DD216B00CB0DBD /* Hardware */;
+			targetProxy = D88FDB0A25DD216B00CB0DBD /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		D88FDB1125DD216B00CB0DBD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = "";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		D88FDB1225DD216B00CB0DBD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = "";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		D88FDB1425DD216B00CB0DBD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3CF9348BADD5E0518080A61A /* Pods-Hardware.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = PZYM8XX95Q;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = Hardware/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.Hardware;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D88FDB1525DD216B00CB0DBD /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9726331F55A9621F2F887E13 /* Pods-Hardware.release.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = PZYM8XX95Q;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = Hardware/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.Hardware;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D88FDB1725DD216B00CB0DBD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1CC96A71F2937BCB7432766F /* Pods-HardwareTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PZYM8XX95Q;
+				INFOPLIST_FILE = HardwareTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.Hardware.HardwareTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D88FDB1825DD216B00CB0DBD /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C61D1642BE09D1A1AD6AA9FA /* Pods-HardwareTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PZYM8XX95Q;
+				INFOPLIST_FILE = HardwareTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.Hardware.HardwareTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D88FDBDD25DD248C00CB0DBD /* Release-Alpha */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = "";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = "Release-Alpha";
+		};
+		D88FDBDE25DD248C00CB0DBD /* Release-Alpha */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0C16E0AAFF5A7B364BD4E171 /* Pods-Hardware.release-alpha.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = PZYM8XX95Q;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = Hardware/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.Hardware;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = "Release-Alpha";
+		};
+		D88FDBDF25DD248C00CB0DBD /* Release-Alpha */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DB2B86965868C0EC25910D7D /* Pods-HardwareTests.release-alpha.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PZYM8XX95Q;
+				INFOPLIST_FILE = HardwareTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.Hardware.HardwareTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = "Release-Alpha";
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D88FDAF925DD216B00CB0DBD /* Build configuration list for PBXProject "Hardware" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D88FDB1125DD216B00CB0DBD /* Debug */,
+				D88FDB1225DD216B00CB0DBD /* Release */,
+				D88FDBDD25DD248C00CB0DBD /* Release-Alpha */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D88FDB1325DD216B00CB0DBD /* Build configuration list for PBXNativeTarget "Hardware" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D88FDB1425DD216B00CB0DBD /* Debug */,
+				D88FDB1525DD216B00CB0DBD /* Release */,
+				D88FDBDE25DD248C00CB0DBD /* Release-Alpha */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D88FDB1625DD216B00CB0DBD /* Build configuration list for PBXNativeTarget "HardwareTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D88FDB1725DD216B00CB0DBD /* Debug */,
+				D88FDB1825DD216B00CB0DBD /* Release */,
+				D88FDBDF25DD248C00CB0DBD /* Release-Alpha */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D88FDAF625DD216B00CB0DBD /* Project object */;
+}

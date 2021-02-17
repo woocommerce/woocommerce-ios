@@ -284,7 +284,7 @@
 		D88E234525AE0EB90023F3B1 /* OrderFeeLine+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88E234425AE0EB90023F3B1 /* OrderFeeLine+ReadOnlyConvertible.swift */; };
 		D88FD70325D58F2100CB0DBD /* CardPresentPaymentAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88FD70225D58F2100CB0DBD /* CardPresentPaymentAction.swift */; };
 		D88FD70725D58FCC00CB0DBD /* CardPresentPaymentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88FD70625D58FCC00CB0DBD /* CardPresentPaymentStore.swift */; };
-		D88FD75225D595F300CB0DBD /* Hardware in Frameworks */ = {isa = PBXBuildFile; productRef = D88FD75125D595F300CB0DBD /* Hardware */; };
+		D88FDB3E25DD222600CB0DBD /* Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88FDB3D25DD222600CB0DBD /* Hardware.framework */; };
 		D8BD6A4C229D07C9007CAD6C /* custom-shipment-provider.plist in Resources */ = {isa = PBXBuildFile; fileRef = D8BD6A4B229D07C8007CAD6C /* custom-shipment-provider.plist */; };
 		D8C11A5022DF2D9400D4A88D /* StatsStoreV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A4F22DF2D9400D4A88D /* StatsStoreV4.swift */; };
 		D8C11A5222DF2DA200D4A88D /* StatsActionV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5122DF2DA200D4A88D /* StatsActionV4.swift */; };
@@ -589,6 +589,7 @@
 		D88E234425AE0EB90023F3B1 /* OrderFeeLine+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderFeeLine+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D88FD70225D58F2100CB0DBD /* CardPresentPaymentAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentAction.swift; sourceTree = "<group>"; };
 		D88FD70625D58FCC00CB0DBD /* CardPresentPaymentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentStore.swift; sourceTree = "<group>"; };
+		D88FDB3D25DD222600CB0DBD /* Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8BD6A4B229D07C8007CAD6C /* custom-shipment-provider.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "custom-shipment-provider.plist"; sourceTree = "<group>"; };
 		D8C11A4F22DF2D9400D4A88D /* StatsStoreV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsStoreV4.swift; sourceTree = "<group>"; };
 		D8C11A5122DF2DA200D4A88D /* StatsActionV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsActionV4.swift; sourceTree = "<group>"; };
@@ -605,9 +606,9 @@
 			files = (
 				B5B19DE220E6A45E00899568 /* Networking.framework in Frameworks */,
 				B5B19DE020E6A45900899568 /* Storage.framework in Frameworks */,
-				D88FD75225D595F300CB0DBD /* Hardware in Frameworks */,
 				0E67B79585034C4DD75C8117 /* Pods_Yosemite.framework in Frameworks */,
 				247CE81D2582E31700F9D9D1 /* Observables in Frameworks */,
+				D88FDB3E25DD222600CB0DBD /* Hardware.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1161,6 +1162,7 @@
 		B5C4EB7720D17329002AC0AF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D88FDB3D25DD222600CB0DBD /* Hardware.framework */,
 				B5B19DE120E6A45E00899568 /* Networking.framework */,
 				B5B19DDF20E6A45900899568 /* Storage.framework */,
 				C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */,
@@ -1376,7 +1378,6 @@
 			name = Yosemite;
 			packageProductDependencies = (
 				247CE81C2582E31700F9D9D1 /* Observables */,
-				D88FD75125D595F300CB0DBD /* Hardware */,
 			);
 			productName = FluxC;
 			productReference = B5C9DDF52087FEC0006B910A /* Yosemite.framework */;
@@ -2189,10 +2190,6 @@
 		57150E1024F462D900E81611 /* TestKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TestKit;
-		};
-		D88FD75125D595F300CB0DBD /* Hardware */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Hardware;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

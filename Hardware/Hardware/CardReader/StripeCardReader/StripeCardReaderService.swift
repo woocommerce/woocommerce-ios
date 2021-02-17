@@ -96,37 +96,29 @@ extension StripeCardReaderService: CardReaderService {
 
     public func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<PaymentIntent, Error> {
         return Future() { promise in
-            // This will be removed. We just want to pretend we are doing a roundtrip to the SDK for now.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                promise(Result.success(PaymentIntent()))
-            }
+            // Attack the Stripe SDK and create a PaymentIntent.
+            // To be implemented
         }
     }
 
     public func collectPaymentMethod(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
         return Future() { promise in
-            // This will be removed. We just want to pretend we are doing a roundtrip to the SDK for now.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                promise(Result.success(PaymentIntent()))
-            }
+            // Attack the Stripe SDK to collect a payment method.
+            // To be implemented
         }
     }
 
     public func processPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
         return Future() { promise in
-            // This will be removed. We just want to pretend we are doing a roundtrip to the SDK for now.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                promise(Result.success(PaymentIntent()))
-            }
+            // Attack the Stripe SDK and process a PaymentIntent.
+            // To be implemented
         }
     }
 
     public func cancelPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
         return Future() { promise in
-            // This will be removed. We just want to pretend we are doing a roundtrip to the SDK for now.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                promise(Result.success(PaymentIntent()))
-            }
+            // Attack the Stripe SDK and cancel a PaymentIntent.
+            // To be implemented
         }
     }
 

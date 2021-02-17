@@ -1,7 +1,9 @@
 import StripeTerminal
 
-/// Convenience intializer
 extension CardReader {
+
+    /// Convenience initializer
+    /// - Parameter reader: An instance of a StripeTerminal.Reader
     init(reader: Reader) {
         self.serial = reader.serialNumber
         self.vendorIdentifier = reader.stripeId

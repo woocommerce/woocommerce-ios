@@ -1,5 +1,4 @@
 /// The possible payment statuses
-
 public enum PaymentStatus {
     /// The service is not ready to start a payment.
     /// It might be busy with another command or a reader might not be connected

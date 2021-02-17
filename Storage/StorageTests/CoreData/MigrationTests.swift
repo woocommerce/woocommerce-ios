@@ -527,6 +527,34 @@ final class MigrationTests: XCTestCase {
         migratedSiteVisitStats.setValue("today", forKey: "timeRange")
         XCTAssertNoThrow(try targetContext.save())
     }
+
+    func test_migrating_from_44_to_45_migrates_AccountSettings_with_empty_firstName_and_lastName() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 44")
+        let sourceContext = sourceContainer.viewContext
+
+        insertAccountSettingsWithoutFirstNameAndLastName(to: sourceContext)
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "AccountSettings"), 1)
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 45")
+        let targetContext = targetContainer.viewContext
+
+        // Assert
+        XCTAssertEqual(try targetContext.count(entityName: "AccountSettings"), 1)
+
+        let migratedSiteVisitStats = try XCTUnwrap(targetContext.first(entityName: "AccountSettings"))
+        XCTAssertNil(migratedSiteVisitStats.value(forKey: "firstName") as? String)
+        XCTAssertNil(migratedSiteVisitStats.value(forKey: "lastName") as? String)
+
+        // We should be able to set `AccountSetttings`'s `firstName` and `lastName` to a different value.
+        migratedSiteVisitStats.setValue("Mario", forKey: "firstName")
+        migratedSiteVisitStats.setValue("Rossi", forKey: "lastName")
+        XCTAssertNoThrow(try targetContext.save())
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -816,6 +844,14 @@ private extension MigrationTests {
             "date": "2021-01-22",
             "granularity": "day",
             "limit": "3"
+        ])
+    }
+
+    @discardableResult
+    func insertAccountSettingsWithoutFirstNameAndLastName(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "AccountSettings", properties: [
+            "userID": 0,
+            "tracksOptOut": true
         ])
     }
 }

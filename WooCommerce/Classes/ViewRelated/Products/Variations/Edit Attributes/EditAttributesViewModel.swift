@@ -48,11 +48,18 @@ extension EditAttributesViewModel {
 
     /// Generates a variation in the host site using the product attributes
     ///
-    func generateVariation(onCompletion: @escaping (Result<ProductVariation, Error>) -> Void) {
+    func generateVariation(onCompletion: @escaping (Result<Product, Error>) -> Void) {
         let action = ProductVariationAction.createProductVariation(siteID: product.siteID,
                                                                    productID: product.productID,
-                                                                   newVariation: createVariationParameter()) { result in
-            onCompletion(result)
+                                                                   newVariation: createVariationParameter()) { [weak self] result in
+            guard let self = self else { return }
+
+            // Convert the variationResult into a productResult by appending the variationID to the variations array
+            let productResult = result.map { variation in
+                self.product.copy(variations: self.product.variations + [variation.productVariationID])
+            }
+
+            onCompletion(productResult)
         }
         stores.dispatch(action)
     }

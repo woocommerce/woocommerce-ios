@@ -15,7 +15,7 @@ final class EditAttributesViewController: UIViewController {
 
     /// Assign this closure to be notified after a variation is created.
     ///
-    var onVariationCreation: ((ProductVariation) -> Void)?
+    var onVariationCreation: ((Product) -> Void)?
 
     /// Assign this closure to be notified after an attribute  is created.
     ///

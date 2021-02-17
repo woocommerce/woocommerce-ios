@@ -33,6 +33,9 @@ extension ShippingLabelFormViewModel {
     // We generate the default origin address using the information
     // of the logged Account and of the website.
     private static func getDefaultOriginAddress() -> ShippingLabelAddress? {
+        // TODO: 2973 - for populating the origin address with the correct first and last name of the store owner
+        // we need to explicitly ask for first_name,last_name parameters in loadAccountSettings method
+        // and add the new properties to AccountSettings entity.
         let address = Address(firstName: ServiceLocator.stores.sessionManager.defaultAccount?.displayName ?? "",
                 lastName: "", company: ServiceLocator.stores.sessionManager.defaultSite?.name ?? "",
                 address1: SiteAddress().address,

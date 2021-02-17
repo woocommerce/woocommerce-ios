@@ -6,6 +6,7 @@
 - [*] Fixes a bug where long pressing the back button sometimes displayed an empty list of screens.
 - [*] Product Type: Updated product type detail to display "Downloadable" if a product is downloadable. [https://github.com/woocommerce/woocommerce-ios/pull/3647]
 - [*] Fix: Update the downloadable files row to read-only, if the product is accessed from Order Details. [https://github.com/woocommerce/woocommerce-ios/pull/3669]
+- [*] Fix: Allow product's `regular_price` to be a number and `sold_individually` to be `null` as some third-party plugins could alter the type in the API. This could help with the products tab not loading due to product decoding errors. [https://github.com/woocommerce/woocommerce-ios/pull/3679]
 
 6.0
 -----

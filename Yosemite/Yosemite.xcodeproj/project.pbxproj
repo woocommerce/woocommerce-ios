@@ -605,10 +605,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5B19DE220E6A45E00899568 /* Networking.framework in Frameworks */,
+				D88FDB3E25DD222600CB0DBD /* Hardware.framework in Frameworks */,
 				B5B19DE020E6A45900899568 /* Storage.framework in Frameworks */,
 				0E67B79585034C4DD75C8117 /* Pods_Yosemite.framework in Frameworks */,
 				247CE81D2582E31700F9D9D1 /* Observables in Frameworks */,
-				D88FDB3E25DD222600CB0DBD /* Hardware.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

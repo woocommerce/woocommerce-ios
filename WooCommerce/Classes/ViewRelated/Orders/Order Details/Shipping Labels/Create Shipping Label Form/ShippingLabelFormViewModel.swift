@@ -13,13 +13,13 @@ final class ShippingLabelFormViewModel {
 
     init(originAddress: Address?, destinationAddress: Address?) {
         self.originAddress = ShippingLabelFormViewModel.fromAddressToShippingLabelAddress(address: originAddress) ??
-            ShippingLabelFormViewModel.generateDefaultOriginAddress()
+            ShippingLabelFormViewModel.getDefaultOriginAddress()
         self.destinationAddress = ShippingLabelFormViewModel.fromAddressToShippingLabelAddress(address: destinationAddress)
     }
 
     var sections: [Section] {
-        let shipFrom = Row(type: .shipFrom, dataState: .validated, displayMode: .editable)
-        let shipTo = Row(type: .shipTo, dataState: .pending, displayMode: .editable)
+        let shipFrom = Row(type: .shipFrom, dataState: .pending, displayMode: .editable)
+        let shipTo = Row(type: .shipTo, dataState: .pending, displayMode: .disabled)
         let packageDetails = Row(type: .packageDetails, dataState: .pending, displayMode: .disabled)
         let shippingCarrierAndRates = Row(type: .shippingCarrierAndRates, dataState: .pending, displayMode: .disabled)
         let paymentMethod = Row(type: .paymentMethod, dataState: .pending, displayMode: .disabled)
@@ -30,7 +30,9 @@ final class ShippingLabelFormViewModel {
 
 // MARK: - Utils
 extension ShippingLabelFormViewModel {
-    private static func generateDefaultOriginAddress() -> ShippingLabelAddress? {
+    // We generate the default origin address using the information
+    // of the logged Account and of the website.
+    private static func getDefaultOriginAddress() -> ShippingLabelAddress? {
         let address = Address(firstName: ServiceLocator.stores.sessionManager.defaultAccount?.displayName ?? "",
                 lastName: "", company: ServiceLocator.stores.sessionManager.defaultSite?.name ?? "",
                 address1: SiteAddress().address,

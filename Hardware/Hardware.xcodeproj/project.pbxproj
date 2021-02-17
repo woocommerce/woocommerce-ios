@@ -164,10 +164,10 @@
 		D88FDB3625DD21BE00CB0DBD /* StripeCardReader */ = {
 			isa = PBXGroup;
 			children = (
-				D88FDB3725DD21D200CB0DBD /* StripeCardReaderService.swift */,
-				D88FDB3825DD21D300CB0DBD /* WCPayTokenProvider.swift */,
 				D8DF5F4925DD9F7A008AFE25 /* CardReader+Stripe.swift */,
 				D8DF5F4D25DD9F91008AFE25 /* CardReaderType+Stripe.swift */,
+				D88FDB3725DD21D200CB0DBD /* StripeCardReaderService.swift */,
+				D88FDB3825DD21D300CB0DBD /* WCPayTokenProvider.swift */,
 			);
 			path = StripeCardReader;
 			sourceTree = "<group>";

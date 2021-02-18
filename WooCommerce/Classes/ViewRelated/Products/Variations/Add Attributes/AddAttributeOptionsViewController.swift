@@ -251,6 +251,7 @@ private extension AddAttributeOptionsViewController {
                                                             if let text = text {
                                                                 self?.viewModel.addNewOption(name: text)
                                                             }
+
                                                          }, inputFormatter: nil,
                                                          keyboardType: .default)
         cell.configure(viewModel: viewModel)

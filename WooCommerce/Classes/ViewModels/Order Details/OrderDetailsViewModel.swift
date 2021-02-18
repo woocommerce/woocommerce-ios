@@ -376,7 +376,7 @@ extension OrderDetailsViewModel {
                 ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .success))
                 onCompletion?(nil)
             case .failure(let error):
-                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed))
+                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error)))
                 DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
                 onCompletion?(error)
             }

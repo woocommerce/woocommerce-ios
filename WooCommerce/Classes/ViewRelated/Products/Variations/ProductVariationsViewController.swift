@@ -91,21 +91,29 @@ final class ProductVariationsViewController: UIViewController {
     }()
 
     private var product: Product
-    private let siteID: Int64
-    private let productID: Int64
-    private let allAttributes: [ProductAttribute]
-    private let parentProductSKU: String?
-    private let formType: ProductFormType
 
+    private var siteID: Int64 {
+        product.siteID
+    }
+
+    private var productID: Int64 {
+        product.productID
+    }
+
+    private var allAttributes: [ProductAttribute] {
+        product.attributes
+    }
+
+    private var parentProductSKU: String? {
+        product.sku
+    }
+
+    private let formType: ProductFormType
     private let imageService: ImageService = ServiceLocator.imageService
     private let isAddProductVariationsEnabled: Bool
 
     init(product: Product, formType: ProductFormType, isAddProductVariationsEnabled: Bool) {
         self.product = product
-        self.siteID = product.siteID
-        self.productID = product.productID
-        self.allAttributes = product.attributes
-        self.parentProductSKU = product.sku
         self.formType = formType
         self.isAddProductVariationsEnabled = isAddProductVariationsEnabled
         super.init(nibName: nil, bundle: nil)

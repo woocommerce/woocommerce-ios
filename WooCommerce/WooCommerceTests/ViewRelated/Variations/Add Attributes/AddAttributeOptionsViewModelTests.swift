@@ -61,6 +61,19 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isNextButtonEnabled)
     }
 
+    func test_empty_names_are_not_added_as_options() throws {
+        // Given
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName))
+
+        // When
+        viewModel.addNewOption(name: "")
+
+        // Then
+        let textFieldSection = try XCTUnwrap(viewModel.sections.last?.rows)
+        XCTAssertEqual(textFieldSection, [AddAttributeOptionsViewController.Row.optionTextField])
+        XCTAssertEqual(viewModel.sections.count, 1)
+    }
+
     func test_reorder_option_reorders_the_option_within_sections() throws {
         // Given
         let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName))

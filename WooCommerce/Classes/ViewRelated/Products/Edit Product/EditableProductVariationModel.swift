@@ -212,6 +212,21 @@ extension EditableProductVariationModel {
     var isEnabledAndMissingPrice: Bool {
         isEnabled && regularPrice.isNilOrEmpty
     }
+
+    /// Whether the variation has a decimal stock quantity
+    ///
+    var hasDecimalStockQuantity: Bool {
+        stockQuantity?.exponent ?? 0 < 0
+    }
+
+    /// Defines if the variation should be read-only based on variation settings
+    ///
+    var isReadOnly: Bool {
+        // If the product has a decimal (non-integer) stock quantity, force read-only mode.
+        // An API change is required to support updating a product with a decimal stock quantity.
+        // Related issue: https://github.com/woocommerce/woocommerce-ios/issues/3494
+        return hasDecimalStockQuantity
+    }
 }
 
 extension EditableProductVariationModel: Equatable {

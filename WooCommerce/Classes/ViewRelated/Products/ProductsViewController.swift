@@ -511,19 +511,20 @@ extension ProductsViewController: UITableViewDelegate {
 private extension ProductsViewController {
     func didSelectProduct(product: Product) {
         // If the product has a decimal (non-integer) stock quantity, force read-only mode.
-        // Editable mode with decimal stock quantities requires an API change.
+        // An API change is required to support updating a product with a decimal stock quantity.
         // Related issue: https://github.com/woocommerce/woocommerce-ios/issues/3494
-        var forceReadOnly: Bool
-        if let stockQuantity = product.stockQuantity {
-            let hasIntegerStockQuantity = stockQuantity.exponent >= 0
-            forceReadOnly = !hasIntegerStockQuantity
-        } else {
-            forceReadOnly = false // Don't force read-only when stock quantity is nil
-        }
+//        var hasDecimalStockQuantity: Bool {
+//            if let stockQuantity = product.stockQuantity {
+//                return stockQuantity.exponent < 0
+//            } else {
+//                return false
+//            }
+//        }
+        let hasDecimalStockQuantity = product.stockQuantity?.exponent ?? 0 < 0
 
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .navigationStack,
-                                             forceReadOnly: forceReadOnly) { [weak self] viewController in
+                                             forceReadOnly: hasDecimalStockQuantity) { [weak self] viewController in
             self?.navigationController?.pushViewController(viewController, animated: true)
         }
     }

@@ -42,9 +42,9 @@ final class AddAttributeOptionsViewModel {
         ///
         var existingOptions: [Option] = []
 
-        /// Indicates if the view model is syncing a global attribute options
+        /// Indicates synchronization state for global attribute options
         ///
-        var isSyncing: SyncState = .idle
+        var syncState: SyncState = .idle
 
         /// Indicates if the view model is updating the product's attributes
         ///
@@ -71,7 +71,7 @@ final class AddAttributeOptionsViewModel {
     /// Defines ghost cells visibility
     ///
     var showGhostTableView: Bool {
-        state.isSyncing == .loading
+        state.syncState == .loading
     }
 
     /// Defines if the update indicator should be shown
@@ -83,7 +83,7 @@ final class AddAttributeOptionsViewModel {
     /// Defines if the error state should be shown
     ///
     var showSyncingError: Bool {
-        state.isSyncing == .failed
+        state.syncState == .failed
     }
 
     /// Closure to notify the `ViewController` when the view model properties change.
@@ -294,13 +294,13 @@ private extension AddAttributeOptionsViewModel {
             switch result {
             case .success:
                 self.state.existingOptions = self.existingOptionsResultsController.fetchedObjects.map { .global(option: $0) }
-                self.state.isSyncing = .idle
+                self.state.syncState = .idle
             case .failure(let error):
                 DDLogError(error.localizedDescription)
-                self.state.isSyncing = .failed
+                self.state.syncState = .failed
             }
         }
-        state.isSyncing = .loading
+        state.syncState = .loading
         stores.dispatch(fetchOptions)
     }
 

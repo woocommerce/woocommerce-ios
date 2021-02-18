@@ -5,7 +5,7 @@ extension PaymentIntent {
     /// Convenience initializer
     /// - Parameter intent: An instance of a StripeTerminal.PaymentIntent
     init(intent: StripeTerminal.PaymentIntent) {
-        self.identifier = intent.stripeId
+        self.id = intent.stripeId
         self.status = PaymentIntentStatus.with(status: intent.status)
         self.created = intent.created
         self.amount = Int(intent.amount)

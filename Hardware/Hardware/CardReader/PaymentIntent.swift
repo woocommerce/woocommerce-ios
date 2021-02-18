@@ -1,8 +1,8 @@
 /// A PaymentIntent tracks the process of collecting a payment from your customer.
 /// We would create exactly one PaymentIntent for each order
-public struct PaymentIntent {
+public struct PaymentIntent: Identifiable {
     /// Unique identifier for the PaymentIntent
-    public let identifier: String
+    public let id: String
 
     /// The status of the Payment Intent
     public let status: PaymentIntentStatus
@@ -23,9 +23,3 @@ public struct PaymentIntent {
     public let charges: [Charge]
 }
 
-
-extension PaymentIntent: Equatable {
-    public static func==(lhs: PaymentIntent, rhs: PaymentIntent) -> Bool {
-        return lhs.identifier == rhs.identifier
-    }
-}

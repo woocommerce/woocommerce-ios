@@ -207,6 +207,28 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         }
     }
 
+    func test_failed_sync_options_of_existing_attribute_should_display_error_state() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let rawError = NSError(domain: "Options Error", code: 1, userInfo: nil)
+        stores.whenReceivingAction(ofType: ProductAttributeTermAction.self) { action in
+            if case .synchronizeProductAttributeTerms(_, _, let onCompletion) = action {
+                DispatchQueue.main.async {
+                    onCompletion(.failure(.termsSynchronization(pageNumber: 0, rawError: rawError)))
+                }
+            }
+        }
+
+        // When
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: sampleAttribute()), stores: stores)
+        XCTAssertFalse(viewModel.showSyncingError)
+
+        // Then
+        waitUntil {
+            viewModel.showSyncingError
+        }
+    }
+
     func test_select_addedOption_moves_it_to_offeredSection_and_removes_it_from_addedSection() throws {
         // Given
         let storage = MockStorageManager()

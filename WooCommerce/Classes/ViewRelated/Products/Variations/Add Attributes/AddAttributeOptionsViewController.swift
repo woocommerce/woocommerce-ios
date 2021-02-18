@@ -21,6 +21,19 @@ final class AddAttributeOptionsViewController: UIViewController {
         self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
     }
 
+    /// Empty state screen
+    ///
+    private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
+
+    /// Sync error state configuration for EmptyStateViewController
+    ///
+    private lazy var errorStateConfig: EmptyStateViewController.Config = {
+        let message = NSAttributedString(string: Localization.syncErrorMessage, attributes: [.font: EmptyStateViewController.Config.messageFont])
+        return .withButton(message: message, image: .errorImage, details: "", buttonTitle: Localization.retryAction) { [weak self] in
+            self?.viewModel.updateData()
+        }
+    }()
+
     /// Initializer for `AddAttributeOptionsViewController`
     ///
     /// - Parameters:
@@ -130,6 +143,35 @@ private extension AddAttributeOptionsViewController {
         } else {
             removeGhostTableView()
         }
+
+        if viewModel.showSyncingError {
+            displaySyncErrorViewController()
+        } else {
+            removeEmptyViewController()
+        }
+    }
+
+    /// Shows the EmptyStateViewController for options sync error state
+    ///
+    func displaySyncErrorViewController() {
+        addChild(emptyStateViewController)
+
+        emptyStateViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(emptyStateViewController.view)
+
+        emptyStateViewController.view.pinSubviewToAllEdges(view)
+        emptyStateViewController.didMove(toParent: self)
+        emptyStateViewController.configure(errorStateConfig)
+    }
+
+    func removeEmptyViewController() {
+        guard emptyStateViewController.parent == self else {
+            return
+        }
+
+        emptyStateViewController.willMove(toParent: nil)
+        emptyStateViewController.view.removeFromSuperview()
+        emptyStateViewController.removeFromParent()
     }
 }
 
@@ -372,5 +414,8 @@ private extension AddAttributeOptionsViewController {
                                                             comment: "Placeholder of cell presenting the title of the new attribute option.")
         static let updateAttributeError = NSLocalizedString("The attribute couldn't be saved.",
                                                             comment: "Error title when trying to update or create an attribute remotely.")
+
+        static let syncErrorMessage = NSLocalizedString("Unable to load attribute options", comment: "Load Attribute Options Action Failed")
+        static let retryAction = NSLocalizedString("Retry", comment: "Retry Action")
     }
 }

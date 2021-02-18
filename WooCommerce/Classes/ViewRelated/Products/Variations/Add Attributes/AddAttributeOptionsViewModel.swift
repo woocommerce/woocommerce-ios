@@ -26,6 +26,14 @@ final class AddAttributeOptionsViewModel {
             case global(option: ProductAttributeTerm)
         }
 
+        /// Possible states for syncing global attribute options
+        ///
+        enum SyncState {
+            case idle
+            case loading
+            case failed
+        }
+
         /// Stores the options to be offered
         ///
         var selectedOptions: [Option] = []
@@ -36,7 +44,7 @@ final class AddAttributeOptionsViewModel {
 
         /// Indicates if the view model is syncing a global attribute options
         ///
-        var isSyncing: Bool = false
+        var isSyncing: SyncState = .idle
 
         /// Indicates if the view model is updating the product's attributes
         ///
@@ -63,13 +71,19 @@ final class AddAttributeOptionsViewModel {
     /// Defines ghost cells visibility
     ///
     var showGhostTableView: Bool {
-        state.isSyncing
+        state.isSyncing == .loading
     }
 
     /// Defines if the update indicator should be shown
     ///
     var showUpdateIndicator: Bool {
         state.isUpdating
+    }
+
+    /// Defines if the error state should be shown
+    ///
+    var showSyncingError: Bool {
+        state.isSyncing == .failed
     }
 
     /// Closure to notify the `ViewController` when the view model properties change.
@@ -133,6 +147,12 @@ final class AddAttributeOptionsViewModel {
         self.stores = stores
         self.viewStorage = viewStorage
 
+        updateData()
+    }
+
+    /// Updates all data based on attribute type
+    ///
+    func updateData() {
         switch attribute {
         case .new:
             updateSections()
@@ -269,12 +289,18 @@ private extension AddAttributeOptionsViewModel {
     ///
     func synchronizeGlobalOptions(of attribute: ProductAttribute) {
         let fetchOptions = ProductAttributeTermAction.synchronizeProductAttributeTerms(siteID: attribute.siteID,
-                                                                                       attributeID: attribute.attributeID) { [weak self] _ in
+                                                                                       attributeID: attribute.attributeID) { [weak self] result in
             guard let self = self else { return }
-            self.state.existingOptions = self.existingOptionsResultsController.fetchedObjects.map { .global(option: $0) }
-            self.state.isSyncing = false
+            switch result {
+            case .success:
+                self.state.existingOptions = self.existingOptionsResultsController.fetchedObjects.map { .global(option: $0) }
+                self.state.isSyncing = .idle
+            case .failure(let error):
+                DDLogError(error.localizedDescription)
+                self.state.isSyncing = .failed
+            }
         }
-        state.isSyncing = true
+        state.isSyncing = .loading
         stores.dispatch(fetchOptions)
     }
 

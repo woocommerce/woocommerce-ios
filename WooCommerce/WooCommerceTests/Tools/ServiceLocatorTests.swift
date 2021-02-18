@@ -1,7 +1,6 @@
 import XCTest
 @testable import WooCommerce
 @testable import CocoaLumberjack
-@testable import Hardware
 
 final class ServiceLocatorTests: XCTestCase {
 
@@ -84,15 +83,5 @@ final class ServiceLocatorTests: XCTestCase {
         let fileLogger = ServiceLocator.fileLogger
 
         XCTAssertTrue(fileLogger is DDFileLogger)
-    }
-
-    func test_ServiceLocator_provides_card_reader() {
-        XCTAssertNotNil(ServiceLocator.cardReaderService)
-    }
-
-    func test_card_reader_service_defaults_to_Stripe() {
-        let cardReader = ServiceLocator.cardReaderService
-
-        XCTAssertTrue(cardReader is StripeCardReaderService)
     }
 }

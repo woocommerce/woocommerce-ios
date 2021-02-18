@@ -54,11 +54,7 @@ class AuthenticatedState: StoresManagerState {
             ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SitePostStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            CardPresentPaymentStore(dispatcher: dispatcher,
-                                    storageManager: storageManager,
-                                    network: network,
-                                    cardReaderService: ServiceLocator.cardReaderService)
+            TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
 
         startListeningToNotifications()

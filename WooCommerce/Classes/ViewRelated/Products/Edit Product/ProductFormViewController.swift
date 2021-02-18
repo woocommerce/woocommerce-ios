@@ -347,9 +347,14 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard let product = product as? EditableProductModel, row.isActionable else {
                     return
                 }
-                let variationsViewController = ProductVariationsViewController(product: product.product,
+                let variationsViewModel = ProductVariationsViewModel(product: product.product, isAddProductVariationsEnabled: isAddProductVariationsEnabled)
+                let variationsViewController = ProductVariationsViewController(viewModel: variationsViewModel,
+                                                                               product: product.product,
                                                                                formType: viewModel.formType,
                                                                                isAddProductVariationsEnabled: isAddProductVariationsEnabled)
+                variationsViewController.onProductUpdate = { [viewModel] updatedProduct in
+                    viewModel.updateProductVariations(from: updatedProduct)
+                }
                 show(variationsViewController, sender: self)
             case .attributes(_, let isEditable):
                 guard isEditable else {

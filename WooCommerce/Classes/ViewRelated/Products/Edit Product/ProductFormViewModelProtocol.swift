@@ -111,6 +111,10 @@ protocol ProductFormViewModelProtocol {
     // Reset action
 
     func resetPassword(_ password: String?)
+
+    /// Updates the original product variations(and attributes).
+    /// This is needed because variations and attributes, remote updates, happen outside this view model and we need a way to sync the original product.
+    func updateProductVariations(from product: Product)
 }
 
 extension ProductFormViewModelProtocol {

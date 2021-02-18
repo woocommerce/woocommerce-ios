@@ -16,6 +16,8 @@ class AccountSettingsMapperTests: XCTestCase {
 
         XCTAssertEqual(account.userID, 10)
         XCTAssertTrue(account.tracksOptOut)
+        XCTAssertEqual(account.firstName, "Dem 123")
+        XCTAssertEqual(account.lastName, "Nines")
     }
 }
 

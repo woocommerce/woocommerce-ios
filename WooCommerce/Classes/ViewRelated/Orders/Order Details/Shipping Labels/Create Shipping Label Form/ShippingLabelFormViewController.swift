@@ -10,8 +10,7 @@ final class ShippingLabelFormViewController: UIViewController {
     /// Init
     ///
     init(order: Order) {
-        // TODO: pass the real origin address. It will be implemented in a next PR that fetch the store address.
-        viewModel = ShippingLabelFormViewModel(originAddress: order.billingAddress, destinationAddress: order.shippingAddress)
+        viewModel = ShippingLabelFormViewModel(originAddress: nil, destinationAddress: order.shippingAddress)
         super.init(nibName: nil, bundle: nil)
     }
 

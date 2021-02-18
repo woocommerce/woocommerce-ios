@@ -103,14 +103,16 @@ final class ProductMapperTests: XCTestCase {
     }
 
     /// Verifies that the fields of the Product with alternative types are parsed correctly when they have different types than in the struct.
-    /// Currently, `price`, `salePrice` and `manageStock` allow alternative types.
+    /// Currently, `price`, `regularPrice`, `salePrice`, `manageStock`, and `soldIndividually` allow alternative types.
     ///
     func test_that_product_alternative_types_are_properly_parsed() throws {
         let product = try XCTUnwrap(mapLoadProductResponseWithAlternativeTypes())
 
         XCTAssertEqual(product.price, "17")
+        XCTAssertEqual(product.regularPrice, "12.89")
         XCTAssertEqual(product.salePrice, "26.73")
         XCTAssertTrue(product.manageStock)
+        XCTAssertFalse(product.soldIndividually)
     }
 
     /// Verifies that the `salePrice` field of the Product are parsed correctly when the product is on sale, and the sale price is an empty string

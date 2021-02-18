@@ -21,7 +21,7 @@ struct VariationAttributeViewModel: AnyAttributeDisplayable {
     }
 }
 
-private extension VariationAttributeViewModel {
+extension VariationAttributeViewModel {
     enum Localization {
         static let anyAttributeFormat =
             NSLocalizedString("Any %1$@", comment: "Format of a product variation attribute description where the attribute is set to any value.")

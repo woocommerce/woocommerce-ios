@@ -153,6 +153,23 @@ final class ProductFormViewModelTests: XCTestCase {
         // Assert
         XCTAssertFalse(canDeleteProduct)
     }
+
+    func est_update_variations_updates_original_product_while_maintaining_pending_changes() throws {
+        // Given
+        let product = Product()
+        let viewModel = createViewModel(product: product, formType: .edit)
+        viewModel.updateName("new-name")
+
+        // When
+        let attributes = ProductAttribute(siteID: 0, attributeID: 0, name: "Color", position: 0, visible: true, variation: true, options: ["Green, Blue"])
+        let newProduct = product.copy(attributes: [attributes], variations: [1])
+        viewModel.updateProductVariations(from: newProduct)
+
+        // Then
+        XCTAssertEqual(viewModel.productModel.name, "new-name")
+        XCTAssertEqual(viewModel.productModel.product.variations, newProduct.variations)
+        XCTAssertEqual(viewModel.productModel.product.attributes, newProduct.attributes)
+    }
 }
 
 private extension ProductFormViewModelTests {

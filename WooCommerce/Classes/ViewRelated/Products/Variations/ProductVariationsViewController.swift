@@ -90,7 +90,11 @@ final class ProductVariationsViewController: UIViewController {
         return stateCoordinator
     }()
 
-    private var product: Product
+    private var product: Product {
+        didSet {
+            onProductUpdate?(product)
+        }
+    }
 
     private var siteID: Int64 {
         product.siteID
@@ -113,6 +117,10 @@ final class ProductVariationsViewController: UIViewController {
     private let isAddProductVariationsEnabled: Bool
 
     private let viewModel: ProductVariationsViewModel
+
+    /// Assign this closure to get notified when the underlying product changes due to new variations or new attributes.
+    ///
+    var onProductUpdate: ((Product) -> Void)?
 
     init(viewModel: ProductVariationsViewModel, product: Product, formType: ProductFormType, isAddProductVariationsEnabled: Bool) {
         self.product = product
@@ -440,9 +448,13 @@ private extension ProductVariationsViewController {
 
         let editAttributesViewModel = EditAttributesViewModel(product: product, allowVariationCreation: allowVariationCreation)
         let editAttributeViewController = EditAttributesViewController(viewModel: editAttributesViewModel)
-        editAttributeViewController.onVariationCreation = { [weak self] _ in
+        editAttributeViewController.onVariationCreation = { [weak self] updatedProduct in
+            self?.product = updatedProduct
             self?.removeEmptyViewController()
             self?.navigationController?.popViewController(animated: true)
+        }
+        editAttributeViewController.onAttributeCreation = { [weak self] updatedProduct in
+            self?.product = updatedProduct
         }
 
         guard let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) else {

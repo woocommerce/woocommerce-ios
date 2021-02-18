@@ -221,11 +221,11 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
 
         // When
         let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: sampleAttribute()), stores: stores)
-        XCTAssertFalse(viewModel.showSyncingError)
+        XCTAssertFalse(viewModel.showSyncError)
 
         // Then
         waitUntil {
-            viewModel.showSyncingError
+            viewModel.showSyncError
         }
     }
 

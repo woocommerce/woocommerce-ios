@@ -21,17 +21,21 @@ final class AddAttributeOptionsViewController: UIViewController {
         self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
     }
 
-    /// Empty state screen
+    /// Sync error state screen
     ///
-    private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
+    private lazy var syncErrorViewController: EmptyStateViewController = {
+        let syncErrorVC = EmptyStateViewController(style: .list)
 
-    /// Sync error state configuration for EmptyStateViewController
-    ///
-    private lazy var errorStateConfig: EmptyStateViewController.Config = {
         let message = NSAttributedString(string: Localization.syncErrorMessage, attributes: [.font: EmptyStateViewController.Config.messageFont])
-        return .withButton(message: message, image: .errorImage, details: "", buttonTitle: Localization.retryAction) { [weak self] in
+        let errorStateConfig = EmptyStateViewController.Config.withButton(message: message,
+                                                   image: .errorImage,
+                                                   details: "",
+                                                   buttonTitle: Localization.retryAction) { [weak self] in
             self?.viewModel.updateData()
         }
+
+        syncErrorVC.configure(errorStateConfig)
+        return syncErrorVC
     }()
 
     /// Initializer for `AddAttributeOptionsViewController`
@@ -144,34 +148,33 @@ private extension AddAttributeOptionsViewController {
             removeGhostTableView()
         }
 
-        if viewModel.showSyncingError {
+        if viewModel.showSyncError {
             displaySyncErrorViewController()
         } else {
-            removeEmptyViewController()
+            removeSyncErrorViewController()
         }
     }
 
     /// Shows the EmptyStateViewController for options sync error state
     ///
     func displaySyncErrorViewController() {
-        addChild(emptyStateViewController)
+        addChild(syncErrorViewController)
 
-        emptyStateViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(emptyStateViewController.view)
+        syncErrorViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(syncErrorViewController.view)
 
-        emptyStateViewController.view.pinSubviewToAllEdges(view)
-        emptyStateViewController.didMove(toParent: self)
-        emptyStateViewController.configure(errorStateConfig)
+        syncErrorViewController.view.pinSubviewToAllEdges(view)
+        syncErrorViewController.didMove(toParent: self)
     }
 
-    func removeEmptyViewController() {
-        guard emptyStateViewController.parent == self else {
+    func removeSyncErrorViewController() {
+        guard syncErrorViewController.parent == self else {
             return
         }
 
-        emptyStateViewController.willMove(toParent: nil)
-        emptyStateViewController.view.removeFromSuperview()
-        emptyStateViewController.removeFromParent()
+        syncErrorViewController.willMove(toParent: nil)
+        syncErrorViewController.view.removeFromSuperview()
+        syncErrorViewController.removeFromParent()
     }
 }
 

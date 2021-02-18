@@ -82,7 +82,7 @@ final class AddAttributeOptionsViewModel {
 
     /// Defines if the error state should be shown
     ///
-    var showSyncingError: Bool {
+    var showSyncError: Bool {
         state.syncState == .failed
     }
 

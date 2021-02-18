@@ -4,7 +4,7 @@ import Yosemite
 /// Generates a new variation for a product, with no price and no options selected
 ///
 final class GenerateVariationUseCase {
-    
+
     /// Main product dependency
     ///
     private let product: Product
@@ -23,12 +23,11 @@ final class GenerateVariationUseCase {
     func generateVariation(onCompletion: @escaping (Result<Product, Error>) -> Void) {
         let action = ProductVariationAction.createProductVariation(siteID: product.siteID,
                                                                    productID: product.productID,
-                                                                   newVariation: createVariationParameter()) { [weak self] result in
-            guard let self = self else { return }
+                                                                   newVariation: createVariationParameter()) { [product] result in
 
             // Convert the variationResult into a productResult by appending the variationID to the variations array
             let productResult = result.map { variation in
-                self.product.copy(variations: self.product.variations + [variation.productVariationID])
+                product.copy(variations: product.variations + [variation.productVariationID])
             }
 
             onCompletion(productResult)

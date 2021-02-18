@@ -116,14 +116,17 @@ final class ProductVariationsViewController: UIViewController {
     private let imageService: ImageService = ServiceLocator.imageService
     private let isAddProductVariationsEnabled: Bool
 
+    private let viewModel: ProductVariationsViewModel
+
     /// Assign this closure to get notified when the underlying product changes due to new variations or new attributes.
     ///
     var onProductUpdate: ((Product) -> Void)?
 
-    init(product: Product, formType: ProductFormType, isAddProductVariationsEnabled: Bool) {
+    init(viewModel: ProductVariationsViewModel, product: Product, formType: ProductFormType, isAddProductVariationsEnabled: Bool) {
         self.product = product
         self.formType = formType
         self.isAddProductVariationsEnabled = isAddProductVariationsEnabled
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -172,7 +175,7 @@ private extension ProductVariationsViewController {
             "Variations",
             comment: "Title that appears on top of the Product Variation List screen."
         )
-        if product.variations.isNotEmpty && isAddProductVariationsEnabled {
+        if viewModel.showMoreButton {
             configureMoreOptionsButton()
         }
     }

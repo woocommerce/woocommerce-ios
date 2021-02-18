@@ -151,6 +151,9 @@ extension AddAttributeOptionsViewModel {
     /// Inserts a new option with the provided name into the options selected section
     ///
     func addNewOption(name: String) {
+        guard name.isNotEmpty else {
+            return
+        }
         state.selectedOptions.append(.local(name: name))
     }
 

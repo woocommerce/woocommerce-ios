@@ -8,10 +8,12 @@ final class ShippingLabelFormViewModel {
     typealias Section = ShippingLabelFormViewController.Section
     typealias Row = ShippingLabelFormViewController.Row
 
-    private let order: Order
+    let originAddress: ShippingLabelAddress?
+    let destinationAddress: ShippingLabelAddress?
 
-    init(order: Order) {
-        self.order = order
+    init(originAddress: Address?, destinationAddress: Address?) {
+        self.originAddress = ShippingLabelFormViewModel.fromAddressToShippingLabelAddress(address: originAddress)
+        self.destinationAddress = ShippingLabelFormViewModel.fromAddressToShippingLabelAddress(address: destinationAddress)
     }
 
     var sections: [Section] {
@@ -22,5 +24,29 @@ final class ShippingLabelFormViewModel {
         let paymentMethod = Row(type: .paymentMethod, dataState: .pending, displayMode: .disabled)
         let rows: [Row] = [shipFrom, shipTo, packageDetails, shippingCarrierAndRates, paymentMethod]
         return [Section(rows: rows)]
+    }
+}
+
+// MARK: - Utils
+extension ShippingLabelFormViewModel {
+    private static func fromAddressToShippingLabelAddress(address: Address?) -> ShippingLabelAddress? {
+        guard let address = address else { return nil }
+
+        // In this way we support localized name correctly,
+        // because the order is often reversed in a few Asian languages.
+        var components = PersonNameComponents()
+        components.givenName = address.firstName
+        components.familyName = address.lastName
+
+        let shippingLabelAddress = ShippingLabelAddress(company: address.company ?? "",
+                                                        name: PersonNameComponentsFormatter.localizedString(from: components, style: .medium, options: []),
+                                                        phone: address.phone ?? "",
+                                                        country: address.country,
+                                                        state: address.state,
+                                                        address1: address.address1,
+                                                        address2: address.address2 ?? "",
+                                                        city: address.city,
+                                                        postcode: address.postcode)
+        return shippingLabelAddress
     }
 }

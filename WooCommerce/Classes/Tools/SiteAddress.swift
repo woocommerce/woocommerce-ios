@@ -1,23 +1,40 @@
 import Foundation
 import Yosemite
 
-final class SiteCountry {
+
+/// Represent and parse the Address of the store, returned in the SiteSettings API `/settings/general/`
+///
+final class SiteAddress {
 
     private let siteSettings: [SiteSetting]
 
-    private var siteCountry: String? {
-        return siteSettings.first { (setting) -> Bool in
-            return setting.settingID.contains(Constants.countryKey)
-        }?.value
+    var address: String {
+        return getValueFromSiteSettings(Constants.address) ?? ""
+    }
+
+    var address2: String {
+        return getValueFromSiteSettings(Constants.address2) ?? ""
+    }
+
+    var city: String {
+        return getValueFromSiteSettings(Constants.city) ?? ""
+    }
+
+    var postalCode: String {
+        return getValueFromSiteSettings(Constants.postalCode) ?? ""
+    }
+
+    var countryCode: String {
+        return getValueFromSiteSettings(Constants.countryAndState)?.components(separatedBy: ":").first ?? ""
     }
 
     /// Returns the name of the country associated with the current store.
     /// The default store country is provided in a format like `HK:KOWLOON`
-    /// This methdod will transform `HK:KOWLOON` into `Hong Kong`
+    /// This method will transform `HK:KOWLOON` into `Hong Kong`
     /// Will return nil if it can not figure out a valid country name
-    var siteCountryName: String? {
-        guard let siteCountryCode = siteCountry,
-            let code = siteCountryCode.components(separatedBy: ":").first,
+    var countryName: String? {
+        guard
+            let code = getValueFromSiteSettings(Constants.countryAndState)?.components(separatedBy: ":").first,
             let countryCode = CountryCode(rawValue: code) else {
                 return nil
         }
@@ -25,11 +42,33 @@ final class SiteCountry {
         return countryCode.readableCountry
     }
 
+    var state: String {
+        return getValueFromSiteSettings(Constants.countryAndState)?.components(separatedBy: ":").last ?? ""
+    }
+
     init(siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings) {
         self.siteSettings = siteSettings
     }
+
+    private func getValueFromSiteSettings(_ settingID: String) -> String? {
+        return siteSettings.first { (setting) -> Bool in
+                    return setting.settingID.contains(settingID)
+                }?.value
+    }
 }
 
+// MARK: - Constants.
+//
+private extension SiteAddress {
+    /// The key of the SiteSetting containing the store address
+    enum Constants {
+        static let address = "woocommerce_store_address"
+        static let address2 = "woocommerce_store_address_2"
+        static let city = "woocommerce_store_city"
+        static let postalCode = "woocommerce_store_postcode"
+        static let countryAndState = "woocommerce_default_country"
+    }
+}
 
 // MARK: - Mapping between country codes and readable names
 // The country names were extracted from the response to `/wp-json/wc/v3/settings/general`
@@ -37,7 +76,7 @@ final class SiteCountry {
 // in one of the following fomats:
 // - `"COUNTRY_CODE": "READABALE_COUNTRY_NAME"
 // - `"COUNTRY_CODE:COUNTRY_REGION": "READABLE_COUNTRY_NAME - READABLE_COUNTRY_REGION"
-extension SiteCountry {
+extension SiteAddress {
     enum CountryCode: String, CaseIterable {
         // A
         case AX
@@ -637,15 +676,5 @@ extension SiteCountry {
             case .ZW: return "Zimbabwe"
             }
         }
-    }
-}
-
-
-// MARK: - Constants.
-//
-private extension SiteCountry {
-    /// The key of the SiteSetting containing the store country
-    enum Constants {
-        static let countryKey = "woocommerce_default_country"
     }
 }

@@ -3,10 +3,10 @@ import Foundation
 /// Represents Shipping Label Address that should be verified.
 ///
 public struct ShippingLabelAddressVerification: Equatable {
-    public let address: ShippingLabelAddress
+    public let address: ShippingLabelAddress?
     public let type: ShipType
 
-    public init(address: ShippingLabelAddress, type: ShipType) {
+    public init(address: ShippingLabelAddress?, type: ShipType) {
         self.address = address
         self.type = type
     }

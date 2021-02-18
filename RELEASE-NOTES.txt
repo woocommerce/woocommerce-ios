@@ -6,6 +6,8 @@
 - [*] Fixes a bug where long pressing the back button sometimes displayed an empty list of screens.
 - [*] Product Type: Updated product type detail to display "Downloadable" if a product is downloadable. [https://github.com/woocommerce/woocommerce-ios/pull/3647]
 - [*] Product Description: Updated the placeholder text in the Aztec Editor screens to provide more context. [https://github.com/woocommerce/woocommerce-ios/pull/3668]
+- [*] Fix: Update the downloadable files row to read-only, if the product is accessed from Order Details. [https://github.com/woocommerce/woocommerce-ios/pull/3669]
+- [*] Fix: Thumbnail image of a product wasn't being loaded correctly in Order Details. [https://github.com/woocommerce/woocommerce-ios/pull/3678]
 
 6.0
 -----

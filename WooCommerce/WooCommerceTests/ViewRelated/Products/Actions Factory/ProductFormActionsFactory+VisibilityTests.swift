@@ -163,7 +163,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
                                                 formType: .edit)
 
         // Assert
-        XCTAssertTrue(factory.settingsSectionActions().contains(.downloadableFiles))
+        XCTAssertTrue(factory.settingsSectionActions().contains(.downloadableFiles(editable: true)))
     }
 
     func test_downloadableFiles_row_is_invisible_for_non_downloadable_product_without_downloadableFiles() {
@@ -176,7 +176,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
                                                 formType: .edit)
 
         // Assert
-        XCTAssertFalse(factory.settingsSectionActions().contains(.downloadableFiles))
+        XCTAssertFalse(factory.settingsSectionActions().contains(.downloadableFiles(editable: true)))
     }
 }
 

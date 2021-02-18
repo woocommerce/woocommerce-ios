@@ -159,7 +159,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .inventorySettings(editable: true),
                                                                        .categories(editable: true),
                                                                        .tags(editable: true),
-                                                                       .downloadableFiles,
+                                                                       .downloadableFiles(editable: true),
                                                                        .shortDescription(editable: true),
                                                                        .linkedProducts(editable: true),
                                                                        .productType(editable: true)]

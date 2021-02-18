@@ -110,7 +110,7 @@ private extension OrderStore {
                                    before: Date?,
                                    deleteAllBeforeSaving: Bool,
                                    pageSize: Int,
-                                   onCompletion: @escaping (Error?) -> Void) {
+                                   onCompletion: @escaping (TimeInterval, Error?) -> Void) {
 
         let pageNumber = OrdersRemote.Defaults.pageNumber
 
@@ -123,6 +123,7 @@ private extension OrderStore {
         var fetchErrors = [Error]()
         var hasDeletedAllOrders = false
         let serialQueue = DispatchQueue(label: "orders_sync", qos: .userInitiated)
+        let startTime = Date()
 
         // Delete all the orders if we haven't yet.
         // This should only be called inside the `serialQueue` block.
@@ -189,7 +190,7 @@ private extension OrderStore {
         }
 
         group.notify(queue: .main) {
-            onCompletion(fetchErrors.first)
+            onCompletion(Date().timeIntervalSince(startTime), fetchErrors.first)
         }
     }
 
@@ -200,7 +201,8 @@ private extension OrderStore {
                            before: Date?,
                            pageNumber: Int,
                            pageSize: Int,
-                           onCompletion: @escaping (Error?) -> Void) {
+                           onCompletion: @escaping (TimeInterval, Error?) -> Void) {
+        let startTime = Date()
         remote.loadAllOrders(for: siteID,
                              statusKey: statusKey,
                              before: before,
@@ -209,10 +211,10 @@ private extension OrderStore {
             switch result {
             case .success(let orders):
                 self?.upsertStoredOrdersInBackground(readOnlyOrders: orders) {
-                    onCompletion(nil)
+                    onCompletion(Date().timeIntervalSince(startTime), nil)
                 }
             case .failure(let error):
-                onCompletion(error)
+                onCompletion(Date().timeIntervalSince(startTime), error)
             }
         }
     }

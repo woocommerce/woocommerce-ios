@@ -147,12 +147,13 @@ final class AddAttributeOptionsViewModel {
         self.stores = stores
         self.viewStorage = viewStorage
 
-        updateData()
+        synchronizeOptions()
     }
 
-    /// Updates all data based on attribute type
+    /// Updates all options based on attribute type.
+    /// For global attribute remote sync will be triggered.
     ///
-    func updateData() {
+    func synchronizeOptions() {
         switch attribute {
         case .new:
             updateSections()

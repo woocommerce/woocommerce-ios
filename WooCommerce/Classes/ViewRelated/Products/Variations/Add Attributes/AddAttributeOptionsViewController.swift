@@ -31,7 +31,7 @@ final class AddAttributeOptionsViewController: UIViewController {
                                                    image: .errorImage,
                                                    details: "",
                                                    buttonTitle: Localization.retryAction) { [weak self] in
-            self?.viewModel.updateData()
+            self?.viewModel.synchronizeOptions()
         }
 
         syncErrorVC.configure(errorStateConfig)

@@ -21,6 +21,7 @@ final class ProductListViewController: UIViewController {
         super.viewDidLoad()
 
         self.items = viewModel.order.items
+        self.products = viewModel.products
         configureMainView()
         configureTableView()
     }

@@ -409,7 +409,7 @@ extension ProductVariationsViewController: UITableViewDelegate {
         let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                       allAttributes: allAttributes,
                                                       parentProductSKU: parentProductSKU,
-                                                      formType: model.isReadOnly ? .readonly : .edit,
+                                                      formType: productVariation.hasDecimalStockQuantity ? .readonly : .edit,
                                                       productImageActionHandler: productImageActionHandler)
         let viewController = ProductFormViewController(viewModel: viewModel,
                                                        eventLogger: ProductVariationFormEventLogger(),

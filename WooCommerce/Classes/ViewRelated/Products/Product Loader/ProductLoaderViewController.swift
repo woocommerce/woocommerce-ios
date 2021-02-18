@@ -207,7 +207,7 @@ private extension ProductLoaderViewController {
     func presentProductDetails(for product: Product) {
         ProductDetailsFactory.productDetails(product: product,
                                              presentationStyle: .contained(containerViewController: self),
-                                             forceReadOnly: forceReadOnly) { [weak self] viewController in
+                                             forceReadOnly: forceReadOnly || product.hasDecimalStockQuantity) { [weak self] viewController in
             self?.attachProductDetailsChildViewController(viewController)
         }
     }
@@ -218,7 +218,7 @@ private extension ProductLoaderViewController {
         ProductVariationDetailsFactory.productVariationDetails(productVariation: productVariation,
                                                                parentProduct: parentProduct,
                                                                presentationStyle: .contained(containerViewController: self),
-                                                               forceReadOnly: forceReadOnly) { [weak self] viewController in
+                                                               forceReadOnly: forceReadOnly || productVariation.hasDecimalStockQuantity) { [weak self] viewController in
             self?.attachProductDetailsChildViewController(viewController)
         }
     }

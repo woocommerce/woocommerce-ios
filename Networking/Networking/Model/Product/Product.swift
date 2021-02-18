@@ -109,6 +109,14 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         return ProductTaxStatus(rawValue: taxStatusKey)
     }
 
+    /// Whether the product has a decimal (non-integer) stock quantity.
+    /// Can be used to determine if the product should be loaded as read-only.
+    /// Related issue: https://github.com/woocommerce/woocommerce-ios/issues/3494
+    ///
+    public var hasDecimalStockQuantity: Bool {
+        stockQuantity?.exponent ?? 0 < 0
+    }
+
     /// Product struct initializer.
     ///
     public init(siteID: Int64,

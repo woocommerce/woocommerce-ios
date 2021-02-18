@@ -55,6 +55,17 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable {
 
     public let menuOrder: Int64
 
+    /// Computed Properties
+    ///
+
+    /// Whether the product variation has a decimal (non-integer) stock quantity.
+    /// Can be used to determine if the product variation should be loaded as read-only.
+    /// Related issue: https://github.com/woocommerce/woocommerce-ios/issues/3494
+    ///
+    public var hasDecimalStockQuantity: Bool {
+        stockQuantity?.exponent ?? 0 < 0
+    }
+
     /// ProductVariation struct initializer.
     ///
     public init(siteID: Int64,

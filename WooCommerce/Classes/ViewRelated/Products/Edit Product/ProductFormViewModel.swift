@@ -256,7 +256,8 @@ extension ProductFormViewModel {
     /// This is needed because variations and attributes, remote updates, happen outside this view model and wee need a way to sync our original product.
     ///
     func updateProductVariations(from newProduct: Product) {
-        let newOriginalProduct = EditableProductModel(product: newProduct)
+        let newOriginalProduct = EditableProductModel(product: originalProduct.product.copy(attributes: newProduct.attributes,
+                                                                                            variations: newProduct.variations))
 
         // If the product doesn't have any pending changes, we can safely override the original product
         guard hasUnsavedChanges() else {

@@ -115,6 +115,7 @@ final class EditAttributesViewModelTests: XCTestCase {
             }
         }
 
+        // Then
         let updatedProduct = try XCTUnwrap(result.get())
         let expectedVariations = [MockProductVariation().productVariation().productVariationID]
         XCTAssertEqual(updatedProduct.variations, expectedVariations)

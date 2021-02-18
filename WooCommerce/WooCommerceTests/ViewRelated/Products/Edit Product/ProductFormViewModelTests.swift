@@ -154,7 +154,7 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertFalse(canDeleteProduct)
     }
 
-    func test_update_variations_updates_original_product_while_mantaining_pending_changes() throws {
+    func est_update_variations_updates_original_product_while_maintaining_pending_changes() throws {
         // Given
         let product = Product()
         let viewModel = createViewModel(product: product, formType: .edit)

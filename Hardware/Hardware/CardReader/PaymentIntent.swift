@@ -22,4 +22,3 @@ public struct PaymentIntent: Identifiable {
     // Charges that were created by this PaymentIntent, if any.
     public let charges: [Charge]
 }
-

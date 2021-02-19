@@ -27,8 +27,12 @@ struct VariationAttributeViewModel {
         self.value = value
     }
 
-    init(variationAttribute: ProductVariationAttribute) {
-        self.init(name: variationAttribute.name, value: variationAttribute.option)
+    init(orderItemAttribute: OrderItemAttribute) {
+        self.init(name: orderItemAttribute.name, value: orderItemAttribute.value)
+    }
+
+    init(productVariationAttribute: ProductVariationAttribute) {
+        self.init(name: productVariationAttribute.name, value: productVariationAttribute.option)
     }
 }
 
@@ -122,7 +126,7 @@ struct ProductDetailsCellViewModel {
                   positiveTotal: formatter.convertToDecimal(from: item.total)?.abs() ?? NSDecimalNumber.zero,
                   positivePrice: item.price.abs(),
                   skuText: item.sku,
-                  attributes: item.attributes.map { VariationAttributeViewModel(name: $0.name, value: $0.value) })
+                  attributes: item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) })
     }
 
     /// Aggregate Order Item initializer
@@ -139,7 +143,7 @@ struct ProductDetailsCellViewModel {
                   positiveTotal: aggregateItem.total?.abs(),
                   positivePrice: aggregateItem.price?.abs(),
                   skuText: aggregateItem.sku,
-                  attributes: aggregateItem.attributes.map { VariationAttributeViewModel(name: $0.name, value: $0.value) })
+                  attributes: aggregateItem.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) })
     }
 
     /// Refunded Order Item initializer

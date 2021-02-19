@@ -1,6 +1,7 @@
 import Storage
 import Hardware
 import Networking
+import Combine
 
 /// MARK: CardPresentPaymentStore
 ///
@@ -9,6 +10,8 @@ public final class CardPresentPaymentStore: Store {
     // At this point though, the ServiceLocator is part of the WooCommerce binary, so this is a good starting point.
     // If retaining the service here ended up being a problem, we would need to move this Store out of Yosemite and push it up to WooCommerce.
     private let cardReaderService: CardReaderService
+
+    private var cancellable: AnyCancellable?
 
     public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, cardReaderService: CardReaderService) {
         self.cardReaderService = cardReaderService
@@ -30,8 +33,8 @@ public final class CardPresentPaymentStore: Store {
         }
 
         switch action {
-        case .startCardReaderDiscovery:
-            startCardReaderDiscovery()
+        case .startCardReaderDiscovery(let completion):
+            startCardReaderDiscovery(completion: completion)
         }
     }
 }
@@ -40,7 +43,21 @@ public final class CardPresentPaymentStore: Store {
 // MARK: - Services
 //
 private extension CardPresentPaymentStore {
-    func startCardReaderDiscovery() {
+    func startCardReaderDiscovery(completion: @escaping (_ readers: [CardReader]) -> Void) {
         cardReaderService.start()
+
+        // Over simplification. This is the point where we would receive
+        // new data via the CardReaderService's stream of discovered readers
+        // In here, we should redirect that data to Storage and also up to the UI.
+        // For now we are sending the data up to the UI after mapping CardReaderService.CardReader
+        // to Yosemite.CardReader.
+        cancellable = cardReaderService.discoveredReaders.sink { readers in
+            let yosemiteReaaders = readers.map {
+                Yosemite.CardReader(name: $0.name, serialNumber: $0.serial)
+            }
+
+            // This hurts a bit, but for now it works
+            completion(yosemiteReaaders)
+        }
     }
 }

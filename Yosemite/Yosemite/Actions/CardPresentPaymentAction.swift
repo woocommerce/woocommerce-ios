@@ -3,5 +3,5 @@
 public enum CardPresentPaymentAction: Action {
     /// Start the Card Reader discovery process.
     ///
-    case startCardReaderDiscovery
+    case startCardReaderDiscovery(onCompletion: ([CardReader]) -> Void)
 }

@@ -1,18 +1,17 @@
 import UIKit
 import Combine
-import OSLog
 
-class CardReaderSettingsViewController: UIViewController {
-    private var viewmodel: CardReaderSettingsViewModel
+final class CardReaderSettingsViewController: UIViewController {
     private var subscriptions = Set<AnyCancellable>()
-
+    private var viewmodel = CardReaderSettingsViewModel()
     private var subView: UIView?
     private var alert: UIAlertController?
 
-    required init?(coder: NSCoder) {
-        self.viewmodel = CardReaderSettingsViewModel()
-        super.init(coder: coder)
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureNavigation()
 
+        self.viewmodel = CardReaderSettingsViewModel()
         viewmodel.$summaryState
             .receive(on: DispatchQueue.main)
             .sink { [weak self] summaryState in
@@ -21,12 +20,7 @@ class CardReaderSettingsViewController: UIViewController {
             .store(in: &subscriptions)
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        configureNavigation()
-    }
-
-    func setSubView() {
+    private func setSubView() {
         alert?.dismiss(animated: true, completion: nil)
         subView?.removeFromSuperview()
 
@@ -59,7 +53,7 @@ class CardReaderSettingsViewController: UIViewController {
         }
     }
 
-    func addCleanSlateView() {
+    private func addCleanSlateView() {
         let connectView = CardReaderSettingsConnectView(frame: view.frame)
         connectView.onPressedConnect = {
             self.viewmodel.startSearch()
@@ -70,14 +64,15 @@ class CardReaderSettingsViewController: UIViewController {
         }
     }
 
-    func addListView() {
+    private func addListView() {
         // TODO Implement
     }
 
-    func noop() {
+    private func noop() {
+        // TODO cleanup
     }
 
-    func addSearchingModal() {
+    private func addSearchingModal() {
         // TODO Use FancyAlert instead
         alert = UIAlertController(
             title: "Scanning for readers",

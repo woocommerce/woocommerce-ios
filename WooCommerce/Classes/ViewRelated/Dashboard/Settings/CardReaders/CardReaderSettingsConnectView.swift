@@ -1,6 +1,6 @@
 import UIKit
 
-class CardReaderSettingsConnectView: UIView {
+final class CardReaderSettingsConnectView: UIView {
     @IBOutlet var contentView: UIView!
     @IBOutlet weak var connectButton: UIButton!
 

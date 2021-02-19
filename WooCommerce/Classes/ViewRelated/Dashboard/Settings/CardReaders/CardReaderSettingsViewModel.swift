@@ -1,6 +1,5 @@
 import Foundation
 import Combine
-import OSLog
 
 struct CardReader {
     var name: String
@@ -23,7 +22,7 @@ enum CardReaderSettingsViewInteractiveState {
     case updating
 }
 
-class CardReaderSettingsViewModel: ObservableObject {
+final class CardReaderSettingsViewModel: ObservableObject {
     @Published var summaryState: CardReaderSettingsViewSummaryState
     @Published var interactiveState: CardReaderSettingsViewInteractiveState
     @Published var knownReaders: [CardReader]

@@ -218,7 +218,8 @@ private extension ProductLoaderViewController {
         ProductVariationDetailsFactory.productVariationDetails(productVariation: productVariation,
                                                                parentProduct: parentProduct,
                                                                presentationStyle: .contained(containerViewController: self),
-                                                               forceReadOnly: forceReadOnly || productVariation.hasDecimalStockQuantity) { [weak self] viewController in
+                                                               forceReadOnly: forceReadOnly || productVariation.hasDecimalStockQuantity) {
+            [weak self] viewController in
             self?.attachProductDetailsChildViewController(viewController)
         }
     }

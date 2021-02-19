@@ -5,6 +5,9 @@ extension CardReader {
     /// Convenience initializer
     /// - Parameter reader: An instance of a StripeTerminal.Reader
     init(reader: Reader) {
+        print("==== reader")
+        print(reader)
+        print("//// reader")
         self.serial = reader.serialNumber
         self.vendorIdentifier = reader.stripeId
         self.name = reader.label

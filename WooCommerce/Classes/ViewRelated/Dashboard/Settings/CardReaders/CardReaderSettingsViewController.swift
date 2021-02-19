@@ -4,43 +4,92 @@ import OSLog
 
 class CardReaderSettingsViewController: UIViewController {
     private var viewmodel: CardReaderSettingsViewModel
-    private var previousChildView: CardReaderSettingsActiveChildView = .none
     private var subscriptions = Set<AnyCancellable>()
+
+    private var subView: UIView?
+    private var alert: UIAlertController?
 
     required init?(coder: NSCoder) {
         self.viewmodel = CardReaderSettingsViewModel()
         super.init(coder: coder)
 
-        os_log("In CRSVC init")
-
-        viewmodel.$activeChildView
+        viewmodel.$summaryState
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] readers in
-                self?.setChildView()
+            .sink { [weak self] summaryState in
+                self?.setSubView()
             }
             .store(in: &subscriptions)
     }
 
-    deinit {
-        os_log("In CRSVC deinit")
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigation()
-        os_log("In CRSVC viewDidLoad")
     }
 
-    private func setChildView() {
-        // Close any existing child view
-        if viewmodel.activeChildView != .none {
-            self.navigationController?.popViewController(animated: true)
+    func setSubView() {
+        alert?.dismiss(animated: true, completion: nil)
+        subView?.removeFromSuperview()
+
+        switch self.viewmodel.summaryState {
+        case .cleanSlate:
+            addCleanSlateView()
+        case .connected:
+            addListView()
+        case .notConnected:
+            addListView()
         }
 
-        // Open the new one (if any)
-        if viewmodel.activeChildView == .connect {
-            let connectViewController = CardReaderSettingsConnectViewController()
-            self.navigationController?.pushViewController(connectViewController, animated: true)
+        switch self.viewmodel.interactiveState {
+        case .none:
+            noop()
+        case .searching:
+            addSearchingModal()
+        case .foundReader:
+            noop()
+        case .connecting:
+            noop()
+        case .tutorial:
+            noop()
+        case .updateAvailable:
+            noop()
+        case .updateRequired:
+            noop()
+        case .updating:
+            noop()
+        }
+    }
+
+    func addCleanSlateView() {
+        let connectView = CardReaderSettingsConnectView(frame: view.frame)
+        connectView.onPressedConnect = {
+            self.viewmodel.startSearch()
+        }
+        subView = connectView
+        if subView != nil {
+            view.addSubview(subView!)
+        }
+    }
+
+    func addListView() {
+        // TODO Implement
+    }
+
+    func noop() {
+    }
+
+    func addSearchingModal() {
+        // TODO Use FancyAlert instead
+        alert = UIAlertController(
+            title: "Scanning for readers",
+            message: "Press the power button of your reader until you see a flashing blue light",
+            preferredStyle: UIAlertController.Style.alert
+        )
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { UIAlertAction in
+            self.viewmodel.stopSearch()
+        }
+        alert?.addAction(cancelAction)
+        if alert != nil {
+            self.present(alert!, animated: true, completion: nil)
         }
     }
 }

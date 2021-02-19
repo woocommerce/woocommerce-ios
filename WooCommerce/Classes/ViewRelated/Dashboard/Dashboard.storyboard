@@ -216,20 +216,8 @@
                     <view key="view" contentMode="scaleToFill" id="pCM-3y-65z">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Coming soon" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kRA-oz-aZ3">
-                                <rect key="frame" x="137" y="323" width="101" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="CPz-be-GKr"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="kRA-oz-aZ3" firstAttribute="centerY" secondItem="pCM-3y-65z" secondAttribute="centerY" id="Stl-O0-vG2"/>
-                            <constraint firstItem="kRA-oz-aZ3" firstAttribute="centerX" secondItem="pCM-3y-65z" secondAttribute="centerX" id="nnB-xe-iBh"/>
-                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="w65-IK-CKC" userLabel="First Responder" sceneMemberID="firstResponder"/>

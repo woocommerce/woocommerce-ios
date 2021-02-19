@@ -1,0 +1,5 @@
+Novità del rilascio 6.0
+
+Tu hai chiesto, noi abbiamo ascoltato. A grande richiesta, lo SKU del prodotto viene visualizzato nuovamente nella schermata Dettagli dell'ordine.
+
+Abbiamo anche apportato vari miglioramenti, tra cui il supporto per l'ordinamento mediante trascinamento per i prodotti collegati, le correzioni per la coerenza relative alle statistiche dei visitatori nella bacheca e ai risultati migliori nella scheda "Questa settimana" e un miglioramento che riduce il rischio di arresti anomali durante l'aggiornamento dell'applicazione.

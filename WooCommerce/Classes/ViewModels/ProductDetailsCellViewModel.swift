@@ -1,23 +1,34 @@
 import Foundation
 import Yosemite
 
-protocol AnyAttributeDisplayable {
-    var name: String { get set }
-    var value: String { get set }
-    var nameOrValue: String { get }
-}
+// MARK: - View Model for a Variation Attribute
+//
+struct VariationAttributeViewModel {
 
-struct VariationAttributeViewModel: AnyAttributeDisplayable {
+    /// Attribute name
+    ///
+    let name: String
 
-    var name: String = ""
+    /// Attribute value
+    ///
+    let value: String?
 
-    var value: String = ""
-
+    /// Returns the attribute value, or "Any \(name)" if the attribute value is nil or empty
+    ///
     var nameOrValue: String {
-        guard value.isNotEmpty else {
+        guard let value = value, value.isNotEmpty else {
             return String(format: Localization.anyAttributeFormat, name)
         }
         return value
+    }
+
+    init(name: String, value: String? = nil) {
+        self.name = name
+        self.value = value
+    }
+
+    init(variationAttribute: ProductVariationAttribute) {
+        self.init(name: variationAttribute.name, value: variationAttribute.option)
     }
 }
 

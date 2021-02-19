@@ -33,7 +33,7 @@ private extension EditableProductVariationModel {
             guard let variationAttribute = productVariation.attributes.first(where: { $0.id == attribute.attributeID && $0.name == attribute.name }) else {
                 return VariationAttributeViewModel(name: attribute.name)
             }
-            return VariationAttributeViewModel(value: variationAttribute.option)
+            return VariationAttributeViewModel(variationAttribute: variationAttribute)
         }
     }
 }

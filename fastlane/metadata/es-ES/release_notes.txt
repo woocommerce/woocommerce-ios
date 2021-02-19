@@ -1,0 +1,5 @@
+Novedades de la versión 6.0
+
+Hemos respondido a tus peticiones. Por demanda popular, ahora la SKU de los productos vuelve a mostrarse en la pantalla Detalles del pedido.
+
+También hemos hecho varias mejoras: ahora los productos relacionados pueden ordenarse arrastrándolos y soltándolos, hay una mayor homogeneidad en las estadísticas de visitantes en el escritorio y en los productos con mejor rendimiento en la pestaña "Esta semana", y hemos reducido el riesgo de que se produzcan fallos al actualizar la app.

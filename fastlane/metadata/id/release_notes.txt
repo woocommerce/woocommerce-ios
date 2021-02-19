@@ -1,0 +1,5 @@
+Apa yang baru di rilis 6.0 kami?
+
+Anda meminta, kami menyediakannya! Karena banyaknya permintaan, SKU produk akan ditampilkan sekali lagi pada layar Detail Pesanan.
+
+Kami juga melakukan berbagai peningkatan, antara lain dukungan untuk pengurutan dengan seret dan lepas pada Produk Tertaut, perbaikan konsistensi pada statistik pelanggan di dasbor dan produk dengan performa tertinggi di tab "Minggu ini", dan peningkatan yang mengurangi risiko masalah crash saat Anda memperbarui aplikasi.

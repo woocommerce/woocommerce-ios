@@ -49,19 +49,8 @@ extension EditAttributesViewModel {
     /// Generates a variation in the host site using the product attributes
     ///
     func generateVariation(onCompletion: @escaping (Result<Product, Error>) -> Void) {
-        let action = ProductVariationAction.createProductVariation(siteID: product.siteID,
-                                                                   productID: product.productID,
-                                                                   newVariation: createVariationParameter()) { [weak self] result in
-            guard let self = self else { return }
-
-            // Convert the variationResult into a productResult by appending the variationID to the variations array
-            let productResult = result.map { variation in
-                self.product.copy(variations: self.product.variations + [variation.productVariationID])
-            }
-
-            onCompletion(productResult)
-        }
-        stores.dispatch(action)
+        let useCase = GenerateVariationUseCase(product: product, stores: stores)
+        useCase.generateVariation(onCompletion: onCompletion)
     }
 }
 
@@ -76,12 +65,5 @@ private extension EditAttributesViewModel {
                                                         numberOfLinesForTitle: 0,
                                                         numberOfLinesForText: 0)
         }
-    }
-
-    /// Returns a `CreateProductVariation` type with no price and no options selected for any of it's attributes.
-    ///
-    func createVariationParameter() -> CreateProductVariation {
-        let attributes = product.attributes.map { ProductVariationAttribute(id: $0.attributeID, name: $0.name, option: "") }
-        return CreateProductVariation(regularPrice: "", attributes: attributes)
     }
 }

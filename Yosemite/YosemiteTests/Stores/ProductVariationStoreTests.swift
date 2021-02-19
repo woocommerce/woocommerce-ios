@@ -724,7 +724,7 @@ private extension ProductVariationStoreTests {
                                 taxStatusKey: "taxable",
                                 taxClass: "",
                                 manageStock: true,
-                                stockQuantity: 16,
+                                stockQuantity: 16.5,
                                 stockStatus: .inStock,
                                 backordersKey: "notify",
                                 backordersAllowed: true,

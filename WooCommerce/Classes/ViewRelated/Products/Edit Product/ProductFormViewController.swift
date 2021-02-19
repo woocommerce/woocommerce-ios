@@ -595,14 +595,23 @@ private extension ProductFormViewController {
 
         // Waits for all product images to be uploaded before updating the product remotely.
         group.enter()
+        // Since `group.leave()` should only be called once to balance `group.enter()`, we track whether there are images pending upload in the image closure.
+        var hasNoImagesPendingUpload = false
         let observationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
-            guard productImageStatuses.hasPendingUpload == false else {
+            guard hasNoImagesPendingUpload == false else {
                 return
             }
 
             guard let self = self else {
+                group.leave()
                 return
             }
+
+            guard productImageStatuses.hasPendingUpload == false else {
+                return
+            }
+
+            hasNoImagesPendingUpload = true
 
             self.viewModel.updateImages(productImageStatuses.images)
             group.leave()

@@ -599,16 +599,6 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     FileUtils.remove_dir(review_info_path) if File.directory?(review_info_path)
   end
 
-  desc "Upload App Store Data"
-  lane :upload_app_store_data do | options |    
-    deliver(
-      skip_binary_upload: true,
-      skip_screenshots: true,
-      ignore_language_directory_validation: true,
-      precheck_include_in_app_purchases: false # Not supported yet when using ADC APIKey
-    )
-  end
-
   desc "Create Promo Screenshots"
   lane :create_promo_screenshots do | options |
 

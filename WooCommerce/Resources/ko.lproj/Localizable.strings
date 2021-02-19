@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-02-09 11:32:07+0000 */
+/* Translation-Revision-Date: 2021-02-18 11:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -199,7 +199,7 @@
 "Add Tracking" = "추적 추가";
 
 /* Title on add variation button when there are no variations */
-"Add Variation" = "Add Variation";
+"Add Variation" = "변형 추가";
 
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
@@ -246,7 +246,7 @@
 "Add weight and dimensions" = "무게 및 치수 추가";
 
 /* Title on the variations list screen when there are no variations */
-"Add your first variation" = "Add your first variation";
+"Add your first variation" = "첫 번째 변형 추가";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "주문에 대한 추적을 추가합니다.";
@@ -348,7 +348,7 @@
 
 /* Edit Product Attributes screen navigation title
    Title of the attributes row on Product Variation main screen */
-"Attributes" = "Attributes";
+"Attributes" = "속성";
 
 /* No comment provided by engineer. */
 "Authenticating" = "인증하기";
@@ -1268,7 +1268,7 @@
 
 /* Button title. Takes the user to the login by email flow.
    Button title. Tapping begins our normal log in process. */
-"Log in or sign up with WordPress.com" = "Log in or sign up with WordPress.com";
+"Log in or sign up with WordPress.com" = "워드프레스닷컴을 통해 로그인하거나 가입";
 
 /* Instruction text on the login's email address screen. */
 "Log in to the WordPress.com account you used to connect Jetpack." = "젯팩에 연결하는 데 사용한 워드프레스닷컴 계정으로 로그인하세요.";
@@ -3137,7 +3137,7 @@
 "{G} Log in with Google." = "{G} Google로 로그인합니다.";
 
 /* About View's Footer Text. The variable is the current year */
-"© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd.";
+"© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. 및 WooCommerce Ireland Ltd.";
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "“%@”";

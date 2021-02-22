@@ -1,5 +1,4 @@
 import XCTest
-import Combine
 @testable import Yosemite
 @testable import Networking
 @testable import Storage
@@ -28,12 +27,15 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         return storageManager.viewStorage
     }
 
+    /// Mock Card Reader Service: In memory
+    private var mockCardReaderService: MockCardReaderService!
 
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         network = MockNetwork()
+        mockCardReaderService = MockCardReaderService()
     }
 
     // MARK: - CardPresentPaymentAction.startCardReaderDiscovery
@@ -41,12 +43,10 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     /// Verifies that CardPresentPaymentAction.startCardReaderDiscovery hits the `start` method in the service.
     ///
     func test_start_discovery_action_hits_start_in_service() {
-        let mockService = MockService()
-
         let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
                                                        storageManager: storageManager,
                                                        network: network,
-                                                       cardReaderService: mockService)
+                                                       cardReaderService: mockCardReaderService)
 
         //let expectation = self.expectation(description: "Start discovery")
 
@@ -56,16 +56,14 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         cardPresentStore.onAction(action)
 
-        XCTAssertTrue(mockService.didHitStart)
+        XCTAssertTrue(mockCardReaderService.didHitStart)
     }
 
     func test_start_discovery_action_returns_data_eventually() {
-        let mockService = MockService()
-
         let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
                                                        storageManager: storageManager,
                                                        network: network,
-                                                       cardReaderService: mockService)
+                                                       cardReaderService: mockCardReaderService)
 
         let expectation = self.expectation(description: "Readers discovered")
 
@@ -76,83 +74,5 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         cardPresentStore.onAction(action)
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
-}
-
-
-private final class MockService: CardReaderService {
-    var discoveredReaders: AnyPublisher<[Hardware.CardReader], Never> {
-        CurrentValueSubject<[Hardware.CardReader], Never>([]).eraseToAnyPublisher()
-    }
-
-    var connectedReaders: AnyPublisher<[Hardware.CardReader], Never> {
-        CurrentValueSubject<[Hardware.CardReader], Never>([]).eraseToAnyPublisher()
-    }
-
-    var serviceStatus: AnyPublisher<CardReaderServiceStatus, Never> {
-        CurrentValueSubject<CardReaderServiceStatus, Never>(.ready).eraseToAnyPublisher()
-    }
-
-    var discoveryStatus: AnyPublisher<CardReaderServiceDiscoveryStatus, Never> {
-        CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle).eraseToAnyPublisher()
-    }
-
-    var paymentStatus: AnyPublisher<PaymentStatus, Never> {
-        CurrentValueSubject<PaymentStatus, Never>(.notReady).eraseToAnyPublisher()
-    }
-
-    var readerEvents: AnyPublisher<CardReaderEvent, Never> {
-        PassthroughSubject<CardReaderEvent, Never>().eraseToAnyPublisher()
-    }
-
-    var didHitStart = false
-
-    init() {
-
-    }
-
-    func start() {
-        didHitStart = true
-    }
-
-    func connect(_ reader: Hardware.CardReader) -> Future<Void, Error> {
-        Future() { promise in
-            // To be implemented
-        }
-    }
-
-    func disconnect(_ reader: Hardware.CardReader) -> Future<Void, Error> {
-        Future() { promise in
-            // This will be removed. We just want to pretend we are doing a roundtrip to the SDK for now.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                promise(Result.success(()))
-            }
-        }
-    }
-
-    func clear() { }
-
-    func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<PaymentIntent, Error> {
-        Future() { promise in
-            // To be implemented
-        }
-    }
-
-    func collectPaymentMethod(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
-        Future() { promise in
-            // To be implemented
-        }
-    }
-
-    func processPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
-        Future() { promise in
-            // To be implemented
-        }
-    }
-
-    func cancelPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
-        Future() { promise in
-            // To be implemented
-        }
     }
 }

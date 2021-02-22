@@ -284,6 +284,7 @@
 		D87F615E2265B1BC0031A13B /* AppSettingsStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F615D2265B1BC0031A13B /* AppSettingsStoreTests.swift */; };
 		D87F61602265B2400031A13B /* shipment-provider.plist in Resources */ = {isa = PBXBuildFile; fileRef = D87F615F2265B2400031A13B /* shipment-provider.plist */; };
 		D88303E925E459DC00C877F9 /* CardPresentPaymentStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303E825E459DC00C877F9 /* CardPresentPaymentStoreTests.swift */; };
+		D88303F025E45E6F00C877F9 /* MockCardReaderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303EF25E45E6F00C877F9 /* MockCardReaderService.swift */; };
 		D88E234525AE0EB90023F3B1 /* OrderFeeLine+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88E234425AE0EB90023F3B1 /* OrderFeeLine+ReadOnlyConvertible.swift */; };
 		D88FDB3E25DD222600CB0DBD /* Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88FDB3D25DD222600CB0DBD /* Hardware.framework */; };
 		D8BD6A4C229D07C9007CAD6C /* custom-shipment-provider.plist in Resources */ = {isa = PBXBuildFile; fileRef = D8BD6A4B229D07C8007CAD6C /* custom-shipment-provider.plist */; };
@@ -591,6 +592,7 @@
 		D87F615D2265B1BC0031A13B /* AppSettingsStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsStoreTests.swift; sourceTree = "<group>"; };
 		D87F615F2265B2400031A13B /* shipment-provider.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "shipment-provider.plist"; sourceTree = "<group>"; };
 		D88303E825E459DC00C877F9 /* CardPresentPaymentStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentStoreTests.swift; sourceTree = "<group>"; };
+		D88303EF25E45E6F00C877F9 /* MockCardReaderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardReaderService.swift; sourceTree = "<group>"; };
 		D88E234425AE0EB90023F3B1 /* OrderFeeLine+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderFeeLine+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D88FDB3D25DD222600CB0DBD /* Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8BD6A4B229D07C8007CAD6C /* custom-shipment-provider.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "custom-shipment-provider.plist"; sourceTree = "<group>"; };
@@ -1271,6 +1273,7 @@
 		B5C9DE1D2087FF20006B910A /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				D88303EE25E45E5500C877F9 /* CardPresentPayments */,
 				578CE7892475E78C00492EBF /* Networking */,
 				D8BD6A4B229D07C8007CAD6C /* custom-shipment-provider.plist */,
 				D87F615F2265B2400031A13B /* shipment-provider.plist */,
@@ -1338,6 +1341,14 @@
 				B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */,
 			);
 			path = Tools;
+			sourceTree = "<group>";
+		};
+		D88303EE25E45E5500C877F9 /* CardPresentPayments */ = {
+			isa = PBXGroup;
+			children = (
+				D88303EF25E45E6F00C877F9 /* MockCardReaderService.swift */,
+			);
+			path = CardPresentPayments;
 			sourceTree = "<group>";
 		};
 		D8F01DE525E017F600CE70BE /* Payments */ = {
@@ -1741,6 +1752,7 @@
 			files = (
 				4552073D25811B4E001CF873 /* ProductAttributeStoreTests.swift in Sources */,
 				458C6DE825ACC554009B300D /* AppSettingsStoreTests+ProductsSettings.swift in Sources */,
+				D88303F025E45E6F00C877F9 /* MockCardReaderService.swift in Sources */,
 				022F00C524728B0C008CD97F /* SiteNotificationCountFileContentsTests.swift in Sources */,
 				7499A9ED2220527500D8FDFA /* ShipmentStoreTests.swift in Sources */,
 				0212AC64242C6FC300C51F6C /* ProductStore+ProductsSortOrderTests.swift in Sources */,

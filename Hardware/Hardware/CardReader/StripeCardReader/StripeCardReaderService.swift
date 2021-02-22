@@ -3,7 +3,6 @@ import StripeTerminal
 
 /// The adapter wrapping the Stripe Terminal SDK
 public final class StripeCardReaderService: NSObject {
-//    private let tokenProvider: ConnectionTokenProvider
 
     private var discoveryCancellable: StripeTerminal.Cancelable?
 
@@ -15,7 +14,6 @@ public final class StripeCardReaderService: NSObject {
     private let readerEventsSubject = PassthroughSubject<CardReaderEvent, Never>()
 
     public init(tokenProvider: ConnectionTokenProvider) {
-//        self.tokenProvider = tokenProvider
         // Per Stripe SDK's instructions, the first we need to do is set the token provider, before calling `shared`
         // If we don't, an assertion will 💥
         // We can only set the token once

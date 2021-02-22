@@ -350,7 +350,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 let variationsViewModel = ProductVariationsViewModel(product: product.product, isAddProductVariationsEnabled: isAddProductVariationsEnabled)
                 let variationsViewController = ProductVariationsViewController(viewModel: variationsViewModel,
                                                                                product: product.product,
-                                                                               formType: viewModel.formType,
                                                                                isAddProductVariationsEnabled: isAddProductVariationsEnabled)
                 variationsViewController.onProductUpdate = { [viewModel] updatedProduct in
                     viewModel.updateProductVariations(from: updatedProduct)

@@ -112,7 +112,6 @@ final class ProductVariationsViewController: UIViewController {
         product.sku
     }
 
-    private let formType: ProductFormType
     private let imageService: ImageService = ServiceLocator.imageService
     private let isAddProductVariationsEnabled: Bool
 
@@ -125,11 +124,9 @@ final class ProductVariationsViewController: UIViewController {
 
     init(viewModel: ProductVariationsViewModel,
          product: Product,
-         formType: ProductFormType,
          isAddProductVariationsEnabled: Bool,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.product = product
-        self.formType = formType
         self.isAddProductVariationsEnabled = isAddProductVariationsEnabled
         self.viewModel = viewModel
         self.noticePresenter = noticePresenter

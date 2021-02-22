@@ -58,6 +58,22 @@ final class EditAttributesViewModelTests: XCTestCase {
                                                                       numberOfLinesForText: 0)
         XCTAssertEqual(viewModel.attributes, [expectedVM, expectedVM2])
     }
+
+    func test_product_attributes_indexes_match_attributes_viewModel_indexes() {
+        // Given
+        let attribute = sampleAttribute(name: "attr", options: ["Option 1", "Option 2"])
+        let attribute2 = sampleAttribute(name: "attr-2", options: ["Option 3", "Option 4"])
+        let product = Product().copy(attributes: [attribute, attribute2])
+
+        // When
+        let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: false)
+
+        // Then
+        XCTAssertTrue(viewModel.attributes.isNotEmpty)
+        viewModel.attributes.enumerated().forEach { index, vm in
+            XCTAssertEqual(vm.title, viewModel.productAttributeAtIndex(index).name)
+        }
+    }
 }
 
 private extension EditAttributesViewModelTests {

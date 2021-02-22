@@ -125,6 +125,21 @@ extension EditAttributesViewController {
         }
         show(addAttributeViewController, sender: self)
     }
+
+    /// Navigates to `AddAttributeOptionsViewController` to provide delete/rename/edit-options functionality.
+    /// Upon completion, update the product and pop the view controller.
+    ///
+    // TODO: Make sure that the screens before this are being updated
+    func navigateToEditAttribute(_ attribute: ProductAttribute) {
+        let editViewModel = AddAttributeOptionsViewModel(product: viewModel.product, attribute: .existing(attribute: attribute))
+        let editViewController = AddAttributeOptionsViewController(viewModel: editViewModel) { [weak self] updatedProduct in
+            guard let self = self else { return }
+            self.viewModel.updateProduct(updatedProduct)
+            self.tableView.reloadData()
+            self.navigationController?.popViewController(animated: true)
+        }
+        show(editViewController, sender: true)
+    }
 }
 
 // MARK: - UITableView conformance
@@ -143,7 +158,9 @@ extension EditAttributesViewController: UITableViewDataSource, UITableViewDelega
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // TODO: Navigate to edit attribute
+        tableView.deselectRow(at: indexPath, animated: true)
+        let attribute = viewModel.productAttributeAtIndex(indexPath.row)
+        navigateToEditAttribute(attribute)
     }
 }
 

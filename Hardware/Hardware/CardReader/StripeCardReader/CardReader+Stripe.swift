@@ -20,6 +20,11 @@ extension CardReader {
 }
 
 
+/// The initializers of StripeTerminal.Reader are annotated as NS_UNAVAILABLE
+/// So we can not create instances of that class in our tests.
+/// A workaround is declaring this protocol, which matches the parts of
+/// SCPReader that we are interested in, make Reader implement it,
+/// and initialize Harware.CardReader with a type conforming to it.
 protocol StripeCardReader {
     var serialNumber: String { get }
     var stripeId: String? { get }

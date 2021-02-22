@@ -55,6 +55,15 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable {
 
     public let menuOrder: Int64
 
+    /// Computed Properties
+    ///
+    /// Whether the product variation has an integer stock quantity.
+    /// Decimal (non-integer) stock quantities currently aren't accepted by the Core API.
+    /// Related issue: https://github.com/woocommerce/woocommerce-ios/issues/3494
+    public var hasIntegerStockQuantity: Bool {
+        stockQuantity?.exponent ?? 0 >= 0
+    }
+
     /// ProductVariation struct initializer.
     ///
     public init(siteID: Int64,
@@ -295,7 +304,9 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable {
         try container.encode(sku, forKey: .sku)
         try container.encode(manageStock, forKey: .manageStock)
         try container.encode(stockStatus.rawValue, forKey: .stockStatusKey)
-        try container.encode(stockQuantity, forKey: .stockQuantity)
+        if hasIntegerStockQuantity {
+            try container.encode(stockQuantity, forKey: .stockQuantity)
+        }
         try container.encode(backordersKey, forKey: .backordersKey)
 
         // Variation (Local) Attributes

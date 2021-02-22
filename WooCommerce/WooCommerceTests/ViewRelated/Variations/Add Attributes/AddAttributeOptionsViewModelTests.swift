@@ -61,6 +61,19 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isNextButtonEnabled)
     }
 
+    func test_next_button_is_enabled_after_removing_preselected_options() {
+        // Given
+        let attribute = sampleAttribute(name: "Size", options: ["S", "M", "L"])
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: attribute))
+        XCTAssertFalse(viewModel.isNextButtonEnabled)
+
+        // When
+        viewModel.removeSelectedOption(atIndex: 2)
+
+        // Then
+        XCTAssertTrue(viewModel.isNextButtonEnabled)
+    }
+
     func test_empty_names_are_not_added_as_options() throws {
         // Given
         let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName))

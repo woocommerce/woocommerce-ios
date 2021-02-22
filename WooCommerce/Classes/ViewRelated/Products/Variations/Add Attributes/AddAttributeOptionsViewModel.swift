@@ -57,7 +57,8 @@ final class AddAttributeOptionsViewModel {
     /// Defines next button visibility
     ///
     var isNextButtonEnabled: Bool {
-        state.selectedOptions.isNotEmpty
+        let optionsToSubmit = state.selectedOptions.map { $0.name }
+        return state.selectedOptions.isNotEmpty && optionsToSubmit != attribute.previouslySelectedOptions
     }
 
     /// Defines ghost cells visibility
@@ -349,6 +350,17 @@ private extension AddAttributeOptionsViewModel.Attribute {
             return name
         case let .existing(attribute):
             return attribute.name
+        }
+    }
+
+    /// Returns the previously selected options of an attribute. (ie: set when creating a variation)
+    ///
+    var previouslySelectedOptions: [String] {
+        switch self {
+        case .new:
+            return []
+        case let .existing(attribute):
+            return attribute.options
         }
     }
 }

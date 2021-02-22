@@ -22,6 +22,9 @@ final class MockProductVariationsRemote {
     /// The results to return based on the given arguments in `loadProductVariation`
     private var productVariationLoadResults = [ResultKey: Result<ProductVariation, Error>]()
 
+    /// The results to return based on the given arguments in `deleteProductVariation`
+    private var productVariationDeleteResults = [ResultKey: Result<ProductVariation, Error>]()
+
     /// Set the value passed to the `completion` block if `createProductVariation()` is called.
     ///
     func whenCreatingProductVariation(siteID: Int64,
@@ -45,6 +48,13 @@ final class MockProductVariationsRemote {
     func whenLoadingProductVariation(siteID: Int64, productID: Int64, productVariationID: Int64, thenReturn result: Result<ProductVariation, Error>) {
         let key = ResultKey(siteID: siteID, productID: productID, productVariationIDs: [productVariationID])
         productVariationLoadResults[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `deleteProductVariation()` is called.
+    ///
+    func whenDeletingProductVariation(siteID: Int64, productID: Int64, productVariationID: Int64, thenReturn result: Result<ProductVariation, Error>) {
+        let key = ResultKey(siteID: siteID, productID: productID, productVariationIDs: [productVariationID])
+        productVariationDeleteResults[key] = result
     }
 }
 
@@ -107,6 +117,23 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
                                 productID: productVariation.productID,
                                 productVariationIDs: [productVariation.productVariationID])
             if let result = self.productVariationUpdateResults[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func deleteProductVariation(siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            let key = ResultKey(siteID: siteID,
+                                productID: productID,
+                                productVariationIDs: [variationID])
+            if let result = self.productVariationDeleteResults[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

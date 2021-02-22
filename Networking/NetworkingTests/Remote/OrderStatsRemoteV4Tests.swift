@@ -30,8 +30,8 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
 
         remote.loadOrderStats(for: sampleSiteID,
                               unit: .hourly,
-                              earliestDateToInclude: "1955-11-05",
-                              latestDateToInclude: "1955-11-05",
+                              earliestDateToInclude: Date(),
+                              latestDateToInclude: Date(),
                               quantity: 24) { (orderStatsV4, error) in
                                 XCTAssertNil(error)
                                 XCTAssertNotNil(orderStatsV4)
@@ -53,8 +53,8 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
 
         remote.loadOrderStats(for: sampleSiteID,
                               unit: .weekly,
-                              earliestDateToInclude: "1955-11-05",
-                              latestDateToInclude: "1955-11-05",
+                              earliestDateToInclude: Date(),
+                              latestDateToInclude: Date(),
                               quantity: 2) { (orderStatsV4, error) in
                                 XCTAssertNil(error)
                                 XCTAssertNotNil(orderStatsV4)
@@ -73,8 +73,8 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
 
         remote.loadOrderStats(for: sampleSiteID,
                               unit: .daily,
-                              earliestDateToInclude: "1955-11-05",
-                              latestDateToInclude: "1955-11-05",
+                              earliestDateToInclude: Date(),
+                              latestDateToInclude: Date(),
                               quantity: 31) { (orderStats, error) in
             XCTAssertNil(orderStats)
             XCTAssertNotNil(error)

@@ -235,6 +235,10 @@ extension ProductVariationFormViewModel {
                                                          allAttributes: allAttributes,
                                                          parentProductSKU: parentProductSKU)
     }
+
+    func updateProductVariations(from product: Product) {
+        //no-op
+    }
 }
 
 // MARK: Remote actions

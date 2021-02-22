@@ -189,9 +189,12 @@ class AccountStoreTests: XCTestCase {
 
         // Then
         let account = try result.get()
+        let expectedAccount = Networking.AccountSettings(userID: 10,
+                                                         tracksOptOut: true,
+                                                         firstName: "Dem 123",
+                                                         lastName: "Nines")
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.AccountSettings.self), 1)
-        XCTAssertEqual(account?.firstName, "Dem 123")
-        XCTAssertEqual(account?.lastName, "Nines")
+        XCTAssertEqual(account, expectedAccount)
         XCTAssertTrue(result.isSuccess)
     }
 

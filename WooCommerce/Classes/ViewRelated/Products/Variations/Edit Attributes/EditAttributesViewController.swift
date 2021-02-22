@@ -15,7 +15,11 @@ final class EditAttributesViewController: UIViewController {
 
     /// Assign this closure to be notified after a variation is created.
     ///
-    var onVariationCreation: ((ProductVariation) -> Void)?
+    var onVariationCreation: ((Product) -> Void)?
+
+    /// Assign this closure to be notified after an attribute  is created.
+    ///
+    var onAttributeCreation: ((Product) -> Void)?
 
     init(viewModel: EditAttributesViewModel, noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.viewModel = viewModel
@@ -115,6 +119,7 @@ extension EditAttributesViewController {
         let addAttributeViewController = AddAttributeViewController(viewModel: addAttributeVM) { [weak self] updatedProduct in
             guard let self = self else { return }
             self.viewModel.updateProduct(updatedProduct)
+            self.onAttributeCreation?(updatedProduct)
             self.tableView.reloadData()
             self.navigationController?.popToViewController(self, animated: true)
         }

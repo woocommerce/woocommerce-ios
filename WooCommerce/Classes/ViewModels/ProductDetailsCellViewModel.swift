@@ -1,15 +1,52 @@
 import Foundation
 import Yosemite
 
+// MARK: - View Model for a Variation Attribute
+//
+struct VariationAttributeViewModel {
+
+    /// Attribute name
+    ///
+    let name: String
+
+    /// Attribute value
+    ///
+    let value: String?
+
+    /// Returns the attribute value, or "Any \(name)" if the attribute value is nil or empty
+    ///
+    var nameOrValue: String {
+        guard let value = value, value.isNotEmpty else {
+            return String(format: Localization.anyAttributeFormat, name)
+        }
+        return value
+    }
+
+    init(name: String, value: String? = nil) {
+        self.name = name
+        self.value = value
+    }
+
+    init(orderItemAttribute: OrderItemAttribute) {
+        self.init(name: orderItemAttribute.name, value: orderItemAttribute.value)
+    }
+
+    init(productVariationAttribute: ProductVariationAttribute) {
+        self.init(name: productVariationAttribute.name, value: productVariationAttribute.option)
+    }
+}
+
+extension VariationAttributeViewModel {
+    enum Localization {
+        static let anyAttributeFormat =
+            NSLocalizedString("Any %1$@", comment: "Format of a product variation attribute description where the attribute is set to any value.")
+    }
+}
+
 
 // MARK: - View Model for a product details cell
 //
 struct ProductDetailsCellViewModel {
-    /// An attribute of order for product details UI.
-    struct OrderAttributeViewModel {
-        /// The value of the attribute.
-        let value: String
-    }
 
     // MARK: - Public properties
 
@@ -47,7 +84,7 @@ struct ProductDetailsCellViewModel {
                  positiveTotal: NSDecimalNumber?,
                  positivePrice: NSDecimalNumber?,
                  skuText: String?,
-                 attributes: [OrderAttributeViewModel]) {
+                 attributes: [VariationAttributeViewModel]) {
         self.imageURL = imageURL
         self.name = name
         let quantity = NumberFormatter.localizedString(from: positiveQuantity as NSDecimalNumber, number: .decimal)
@@ -89,7 +126,7 @@ struct ProductDetailsCellViewModel {
                   positiveTotal: formatter.convertToDecimal(from: item.total)?.abs() ?? NSDecimalNumber.zero,
                   positivePrice: item.price.abs(),
                   skuText: item.sku,
-                  attributes: item.attributes.map { OrderAttributeViewModel(orderItemAttribute: $0) })
+                  attributes: item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) })
     }
 
     /// Aggregate Order Item initializer
@@ -106,7 +143,7 @@ struct ProductDetailsCellViewModel {
                   positiveTotal: aggregateItem.total?.abs(),
                   positivePrice: aggregateItem.price?.abs(),
                   skuText: aggregateItem.sku,
-                  attributes: aggregateItem.attributes.map { OrderAttributeViewModel(orderItemAttribute: $0) })
+                  attributes: aggregateItem.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) })
     }
 
     /// Refunded Order Item initializer
@@ -141,20 +178,14 @@ private extension ProductDetailsCellViewModel {
                                 + " the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”."
                                 + " The %1$@ is the list of attributes (e.g. from variation)."
                                 + " The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00).")
-        static func subtitle(quantity: String, price: String, attributes: [OrderAttributeViewModel]) -> String {
-            let attributesText = attributes.map { $0.value }.joined(separator: ", ")
+        static func subtitle(quantity: String, price: String, attributes: [VariationAttributeViewModel]) -> String {
+            let attributesText = attributes.map { $0.nameOrValue }.joined(separator: ", ")
             if attributes.isEmpty {
                 return String.localizedStringWithFormat(subtitleFormat, quantity, price)
             } else {
                 return String.localizedStringWithFormat(subtitleWithAttributesFormat, attributesText, quantity, price)
             }
         }
-    }
-}
-
-private extension ProductDetailsCellViewModel.OrderAttributeViewModel {
-    init(orderItemAttribute: OrderItemAttribute) {
-        self.value = orderItemAttribute.value
     }
 }
 

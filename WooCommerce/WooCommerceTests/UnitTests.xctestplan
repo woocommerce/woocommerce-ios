@@ -57,13 +57,6 @@
         "identifier" : "ObservablesTests",
         "name" : "ObservablesTests"
       }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:..\/Hardware",
-        "identifier" : "HardwareTests",
-        "name" : "HardwareTests"
-      }
     }
   ],
   "version" : 1

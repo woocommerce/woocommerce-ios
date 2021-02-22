@@ -58,38 +58,6 @@ final class EditAttributesViewModelTests: XCTestCase {
                                                                       numberOfLinesForText: 0)
         XCTAssertEqual(viewModel.attributes, [expectedVM, expectedVM2])
     }
-
-    func test_create_variations_is_invoked_with_correct_parameters() {
-        // Given
-        let attribute = sampleAttribute(attributeID: 0, name: "attr", options: ["Option 1", "Option 2"])
-        let attribute2 = sampleAttribute(attributeID: 1, name: "attr-2", options: ["Option 3", "Option 4"])
-        let product = Product().copy(attributes: [attribute, attribute2])
-
-        let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: true, stores: mockStores)
-
-        // When
-        let variationSubmitted: CreateProductVariation = waitFor { promise in
-            mockStores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
-               switch action {
-               case let .createProductVariation(_, _, newVariation, _):
-                promise(newVariation)
-               default:
-                   break
-               }
-            }
-
-            viewModel.generateVariation { _ in }
-        }
-
-        // Then
-        let expectedAttributes = [
-            ProductVariationAttribute(id: 0, name: "attr", option: ""),
-            ProductVariationAttribute(id: 1, name: "attr-2", option: ""),
-        ]
-        let expectedVariation = CreateProductVariation(regularPrice: "", attributes: expectedAttributes)
-        XCTAssertEqual(expectedVariation, variationSubmitted)
-    }
 }
 
 private extension EditAttributesViewModelTests {

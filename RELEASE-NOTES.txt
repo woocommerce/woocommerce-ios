@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+6.2
+-----
+
+
 6.1
 -----
 - [**] Products: When editing variable products, you can now edit the variation attributes to select different attribute options. [https://github.com/woocommerce/woocommerce-ios/pull/3628]

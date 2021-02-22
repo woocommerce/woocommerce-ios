@@ -98,6 +98,11 @@ private extension AppCoordinator {
         // Animates window transition only if the root view controller is non-nil originally.
         let shouldAnimate = window.rootViewController != nil
         window.rootViewController = rootViewController
+
+        if !window.isKeyWindow {
+            window.makeKeyAndVisible()
+        }
+
         if shouldAnimate {
             UIView.transition(with: window, duration: Constants.animationDuration, options: .transitionCrossDissolve, animations: {}, completion: onCompletion)
         }

@@ -155,7 +155,6 @@ private extension AppDelegate {
     ///
     func setupMainWindow() {
         let window = UIWindow()
-        window.makeKeyAndVisible()
         self.window = window
 
         appCoordinator = AppCoordinator(window: window)

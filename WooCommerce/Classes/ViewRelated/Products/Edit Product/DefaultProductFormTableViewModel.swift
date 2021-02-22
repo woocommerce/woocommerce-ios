@@ -73,8 +73,7 @@ private extension DefaultProductFormTableViewModel {
             case .shippingSettings(let editable):
                 return .shipping(viewModel: shippingSettingsRow(product: product, isEditable: editable), isEditable: editable)
             case .inventorySettings(let editable):
-                let isEditable = editable && product.hasIntegerStockQuantity
-                return .inventory(viewModel: inventorySettingsRow(product: product, isEditable: isEditable), isEditable: isEditable)
+                return .inventory(viewModel: inventorySettingsRow(product: product, isEditable: editable), isEditable: editable)
             case .categories(let editable):
                 return .categories(viewModel: categoriesRow(product: product.product, isEditable: editable), isEditable: editable)
             case .tags(let editable):
@@ -110,8 +109,7 @@ private extension DefaultProductFormTableViewModel {
             case .shippingSettings(let editable):
                 return .shipping(viewModel: shippingSettingsRow(product: productVariation, isEditable: editable), isEditable: editable)
             case .inventorySettings(let editable):
-                let isEditable = editable && productVariation.hasIntegerStockQuantity
-                return .inventory(viewModel: inventorySettingsRow(product: productVariation, isEditable: isEditable), isEditable: isEditable)
+                return .inventory(viewModel: inventorySettingsRow(product: productVariation, isEditable: editable), isEditable: editable)
             case .status(let editable):
                 return .status(viewModel: variationStatusRow(productVariation: productVariation, isEditable: editable), isEditable: editable)
             case .noPriceWarning:

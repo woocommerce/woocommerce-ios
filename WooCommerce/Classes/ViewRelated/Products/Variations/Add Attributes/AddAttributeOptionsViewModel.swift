@@ -136,12 +136,13 @@ final class AddAttributeOptionsViewModel {
         switch attribute {
         case .new:
             updateSections()
-        case let .existing(attribute) where attribute.isGlobal:
-            synchronizeGlobalOptions(of: attribute)
-        case let .existing(attribute) where attribute.isLocal:
-            populateLocalOptions(of: attribute)
-        default:
-            break
+        case let .existing(attribute):
+            preselectCurrentOptions(of: attribute)
+            if attribute.isGlobal {
+                synchronizeGlobalOptions(of: attribute)
+            } else {
+                populateLocalOptions(of: attribute)
+            }
         }
     }
 }
@@ -265,6 +266,14 @@ private extension AddAttributeOptionsViewModel {
         return Section(header: Localization.headerExistingOptions, footer: nil, rows: rows, allowsReorder: false, allowsSelection: true)
     }
 
+    /// Pre-selects options of a product attribute.
+    ///
+    func preselectCurrentOptions(of attribute: ProductAttribute) {
+        state.selectedOptions = attribute.options.map { option in
+            .local(name: option)
+        }
+    }
+
     /// Synchronizes options for global attributes
     ///
     func synchronizeGlobalOptions(of attribute: ProductAttribute) {
@@ -278,6 +287,8 @@ private extension AddAttributeOptionsViewModel {
         stores.dispatch(fetchOptions)
     }
 
+    /// Populates existing options for a local attribute.
+    ///
     func populateLocalOptions(of attribute: ProductAttribute) {
         state.existingOptions = attribute.options.map { option in
             .local(name: option)

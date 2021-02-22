@@ -4,7 +4,7 @@ public struct Charge: Identifiable {
     public let id: String
 
     /// The amount of the charge.
-    public let amount: Int
+    public let amount: UInt
 
     /// The currency of the charge
     public let currency: String
@@ -13,7 +13,7 @@ public struct Charge: Identifiable {
     public let status: ChargeStatus
 
     /// A string describing the charge.
-    public let description: String
+    public let description: String?
 
     /// Metadata associated with the charge.
     public let metadata: [AnyHashable: Any]?

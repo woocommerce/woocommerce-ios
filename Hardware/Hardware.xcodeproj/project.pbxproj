@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		5A747BE9FA06EC8752A35752 /* Pods_HardwareTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1DC5B6141B8184FAC29B0A4 /* Pods_HardwareTests.framework */; };
 		C5D2CB7D21CEE28FEBF18BF6 /* Pods_Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F0AC202B287C1221EA2C99 /* Pods_Hardware.framework */; };
+		D88303D125E44B2500C877F9 /* ChargeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303D025E44B2500C877F9 /* ChargeTests.swift */; };
+		D88303D525E44CD200C877F9 /* MockStripeCharge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303D425E44CD200C877F9 /* MockStripeCharge.swift */; };
 		D88FDB0925DD216B00CB0DBD /* Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88FDAFF25DD216B00CB0DBD /* Hardware.framework */; };
 		D88FDB1025DD216B00CB0DBD /* Hardware.h in Headers */ = {isa = PBXBuildFile; fileRef = D88FDB0225DD216B00CB0DBD /* Hardware.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D88FDB2925DD21B000CB0DBD /* CardReaderServiceDiscoveryStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88FDB1F25DD21AF00CB0DBD /* CardReaderServiceDiscoveryStatus.swift */; };
@@ -53,6 +55,8 @@
 		9726331F55A9621F2F887E13 /* Pods-Hardware.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.release.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.release.xcconfig"; sourceTree = "<group>"; };
 		B1DC5B6141B8184FAC29B0A4 /* Pods_HardwareTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HardwareTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C61D1642BE09D1A1AD6AA9FA /* Pods-HardwareTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.release.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.release.xcconfig"; sourceTree = "<group>"; };
+		D88303D025E44B2500C877F9 /* ChargeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChargeTests.swift; sourceTree = "<group>"; };
+		D88303D425E44CD200C877F9 /* MockStripeCharge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStripeCharge.swift; sourceTree = "<group>"; };
 		D88FDAFF25DD216B00CB0DBD /* Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D88FDB0225DD216B00CB0DBD /* Hardware.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Hardware.h; sourceTree = "<group>"; };
 		D88FDB0325DD216B00CB0DBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -155,7 +159,9 @@
 			children = (
 				D88FDB0F25DD216B00CB0DBD /* Info.plist */,
 				D892F20F25E3F4C0001D7134 /* MockStripeCardReader.swift */,
+				D88303D425E44CD200C877F9 /* MockStripeCharge.swift */,
 				D892F21325E3F67A001D7134 /* CardReaderTests.swift */,
+				D88303D025E44B2500C877F9 /* ChargeTests.swift */,
 			);
 			path = HardwareTests;
 			sourceTree = "<group>";
@@ -409,8 +415,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D88303D525E44CD200C877F9 /* MockStripeCharge.swift in Sources */,
 				D892F21425E3F67A001D7134 /* CardReaderTests.swift in Sources */,
 				D892F21025E3F4C0001D7134 /* MockStripeCardReader.swift in Sources */,
+				D88303D125E44B2500C877F9 /* ChargeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -13,7 +13,7 @@ struct MockStripeCardReader {
     let batteryLevel: NSNumber?
 }
 
-extension MockStripeCardReader: CardReaderSource {}
+extension MockStripeCardReader: StripeCardReader {}
 
 extension MockStripeCardReader {
     static func stripeSDKTestReaders() -> [Self] {

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-02-09 11:32:07+0000 */
+/* Translation-Revision-Date: 2021-02-18 11:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -199,7 +199,7 @@
 "Add Tracking" = "إضافة التعقب";
 
 /* Title on add variation button when there are no variations */
-"Add Variation" = "Add Variation";
+"Add Variation" = "إضافة نوع";
 
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
@@ -246,7 +246,7 @@
 "Add weight and dimensions" = "إضافة الوزن والأبعاد";
 
 /* Title on the variations list screen when there are no variations */
-"Add your first variation" = "Add your first variation";
+"Add your first variation" = "إضافة نوعك الأول";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "يُضيف التعقب إلى الطلب.";
@@ -348,7 +348,7 @@
 
 /* Edit Product Attributes screen navigation title
    Title of the attributes row on Product Variation main screen */
-"Attributes" = "Attributes";
+"Attributes" = "السمات";
 
 /* No comment provided by engineer. */
 "Authenticating" = "مصادقة";
@@ -1268,7 +1268,7 @@
 
 /* Button title. Takes the user to the login by email flow.
    Button title. Tapping begins our normal log in process. */
-"Log in or sign up with WordPress.com" = "Log in or sign up with WordPress.com";
+"Log in or sign up with WordPress.com" = "تسجيل الدخول أو التسجيل باستخدام ووردبريس.كوم";
 
 /* Instruction text on the login's email address screen. */
 "Log in to the WordPress.com account you used to connect Jetpack." = "سجّل الدخول إلى حساب وردبرس الذي تستخدمه للاتصال بـ Jetpack.";
@@ -3137,7 +3137,7 @@
 "{G} Log in with Google." = "{G} تسجيل الدخول باستخدام Google.";
 
 /* About View's Footer Text. The variable is the current year */
-"© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd.";
+"© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "حقوق النشر © %@ محفوظة لشركة WooCommerce, Inc. وWooCommerce Ireland Ltd.";
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "\"%@\"";

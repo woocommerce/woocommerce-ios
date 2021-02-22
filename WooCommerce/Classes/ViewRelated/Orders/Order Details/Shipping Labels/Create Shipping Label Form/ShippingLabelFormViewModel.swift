@@ -12,8 +12,15 @@ final class ShippingLabelFormViewModel {
     let destinationAddress: ShippingLabelAddress?
 
     init(originAddress: Address?, destinationAddress: Address?) {
+        let accountSettings = ShippingLabelFormViewModel.getStoredAccountSettings()
+        let company = ServiceLocator.stores.sessionManager.defaultSite?.name
+        let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount
+
         self.originAddress = ShippingLabelFormViewModel.fromAddressToShippingLabelAddress(address: originAddress) ??
-            ShippingLabelFormViewModel.getDefaultOriginAddress()
+            ShippingLabelFormViewModel.getDefaultOriginAddress(accountSettings: accountSettings,
+                                                               company: company,
+                                                               siteAddress: SiteAddress(),
+                                                               account: defaultAccount)
         self.destinationAddress = ShippingLabelFormViewModel.fromAddressToShippingLabelAddress(address: destinationAddress)
     }
 
@@ -29,27 +36,28 @@ final class ShippingLabelFormViewModel {
 }
 
 // MARK: - Utils
-extension ShippingLabelFormViewModel {
+private extension ShippingLabelFormViewModel {
     // We generate the default origin address using the information
     // of the logged Account and of the website.
-    private static func getDefaultOriginAddress() -> ShippingLabelAddress? {
-        // TODO: 2973 - for populating the origin address with the correct first and last name of the store owner
-        // we need to explicitly ask for first_name,last_name parameters in loadAccountSettings method
-        // and add the new properties to AccountSettings entity.
-        let address = Address(firstName: ServiceLocator.stores.sessionManager.defaultAccount?.displayName ?? "",
-                lastName: "", company: ServiceLocator.stores.sessionManager.defaultSite?.name ?? "",
-                address1: SiteAddress().address,
-                address2: SiteAddress().address2,
-                city: SiteAddress().city,
-                state: SiteAddress().state,
-                postcode: SiteAddress().postalCode,
-                country: SiteAddress().countryName ?? "",
-                phone: "",
-                email: ServiceLocator.stores.sessionManager.defaultAccount?.email)
+    static func getDefaultOriginAddress(accountSettings: AccountSettings?,
+                                        company: String?,
+                                        siteAddress: SiteAddress,
+                                        account: Account?) -> ShippingLabelAddress? {
+        let address = Address(firstName: accountSettings?.firstName ?? "",
+                              lastName: accountSettings?.lastName ?? "",
+                              company: company ?? "",
+                              address1: siteAddress.address,
+                              address2: siteAddress.address2,
+                              city: siteAddress.city,
+                              state: siteAddress.state,
+                              postcode: siteAddress.postalCode,
+                              country: siteAddress.countryName ?? "",
+                              phone: "",
+                              email: account?.email)
         return fromAddressToShippingLabelAddress(address: address)
     }
 
-    private static func fromAddressToShippingLabelAddress(address: Address?) -> ShippingLabelAddress? {
+    static func fromAddressToShippingLabelAddress(address: Address?) -> ShippingLabelAddress? {
         guard let address = address else { return nil }
 
         // In this way we support localized name correctly,
@@ -68,5 +76,13 @@ extension ShippingLabelFormViewModel {
                                                         city: address.city,
                                                         postcode: address.postcode)
         return shippingLabelAddress
+    }
+
+    static func getStoredAccountSettings() -> AccountSettings? {
+        let storageManager = ServiceLocator.storageManager
+
+        let resultsController = ResultsController<StorageAccountSettings>(storageManager: storageManager, sortedBy: [])
+        try? resultsController.performFetch()
+        return resultsController.fetchedObjects.first
     }
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-02-09 11:32:07+0000 */
+/* Translation-Revision-Date: 2021-02-18 17:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -199,7 +199,7 @@
 "Add Tracking" = "Добавить отслеживание";
 
 /* Title on add variation button when there are no variations */
-"Add Variation" = "Add Variation";
+"Add Variation" = "Добавить вариант";
 
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
@@ -246,7 +246,7 @@
 "Add weight and dimensions" = "Добавить вес и размеры";
 
 /* Title on the variations list screen when there are no variations */
-"Add your first variation" = "Add your first variation";
+"Add your first variation" = "Добавьте первый вариант";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Добавляет отслеживание для заказа.";
@@ -348,7 +348,7 @@
 
 /* Edit Product Attributes screen navigation title
    Title of the attributes row on Product Variation main screen */
-"Attributes" = "Attributes";
+"Attributes" = "Атрибуты";
 
 /* No comment provided by engineer. */
 "Authenticating" = "Идёт авторизация";
@@ -1268,7 +1268,7 @@
 
 /* Button title. Takes the user to the login by email flow.
    Button title. Tapping begins our normal log in process. */
-"Log in or sign up with WordPress.com" = "Log in or sign up with WordPress.com";
+"Log in or sign up with WordPress.com" = "Войдите или зарегистрируйтесь на WordPress.com";
 
 /* Instruction text on the login's email address screen. */
 "Log in to the WordPress.com account you used to connect Jetpack." = "Войдите в учетную запись WordPress.com, через которую подключен Jetpack.";
@@ -3137,7 +3137,7 @@
 "{G} Log in with Google." = "{G} Войти через Google.";
 
 /* About View's Footer Text. The variable is the current year */
-"© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd.";
+"© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© WooCommerce, Inc. и WooCommerce Ireland Ltd., %@";
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "\"%@\"";

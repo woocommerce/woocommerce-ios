@@ -97,6 +97,7 @@ public typealias StoredProductSettings = Networking.StoredProductSettings
 // MARK: - Exported Storage Symbols
 
 public typealias StorageAccount = Storage.Account
+public typealias StorageAccountSettings = Storage.AccountSettings
 public typealias StorageAttribute = Storage.GenericAttribute
 public typealias StorageNote = Storage.Note
 public typealias StorageOrder = Storage.Order

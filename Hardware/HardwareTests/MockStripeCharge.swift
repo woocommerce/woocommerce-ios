@@ -1,15 +1,15 @@
 @testable import Hardware
 import StripeTerminal
 // This structs emulates the properties of SCPCharge
-// We can not mock StripeTerminal.Reader directly, because its initializers
+// We can not mock SCPCharge directly, because its initializers
 // are annotated as NS_UNAVAILABLE
 struct MockStripeCharge {
-    var stripeId: String
-    var amount: UInt
-    var currency: String
-    var status: StripeTerminal.ChargeStatus
-    var stripeDescription: String?
-    var metadata: [AnyHashable: Any]
+    let stripeId: String
+    let amount: UInt
+    let currency: String
+    let status: StripeTerminal.ChargeStatus
+    let stripeDescription: String?
+    let metadata: [AnyHashable: Any]
 }
 
 extension MockStripeCharge: StripeCharge {}

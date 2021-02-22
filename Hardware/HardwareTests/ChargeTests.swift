@@ -1,7 +1,7 @@
 import XCTest
 @testable import Hardware
 
-/// Tests the mapping between CardReader and SCPCharge
+/// Tests the mapping between Charge and SCPCharge
 final class ChargeTests: XCTestCase {
     func test_charge_maps_id() {
         let mockCharge = MockStripeCharge.mock()

@@ -16,29 +16,17 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
         cancellables = []
     }
 
-    // MARK: - Integration tests
-    func test_start_discovery_updates_discovered_readers() {
-        let receivedReaders = expectation(description: "Discovered Readers publishes values after discovery process starts")
+    /// The observed behaviour is that when discovery starts, the Stripe SDK will
+    /// call into its delegate with an empty array of "discovered readers".
+    /// Later on, it will call into its delegate again everytime it discovers a reader
+    /// passing the full list of readers discovered
+    func test_start_discovery_updates_discovered_readers_at_least_twice() {
+        let discoveredReaders = expectation(description: "Discovered Readers publishes first, an empty array, and then the actual reader(s) discovered")
 
         let readerService = ServiceLocator.cardReaderService
 
         readerService.discoveredReaders.sink { completion in
-            receivedReaders.fulfill()
-        } receiveValue: { readers in
-            receivedReaders.fulfill()
-        }.store(in: &cancellables)
-
-        readerService.start()
-        waitForExpectations(timeout: 5, handler: nil)
-    }
-
-    func test_start_discovery_updates_discovered_readers__at_least_twice() {
-        let receivedReaders = expectation(description: "Discovered Readers publishes first, an empty array, and then the actual reader(s) discovered")
-
-        let readerService = ServiceLocator.cardReaderService
-
-        readerService.discoveredReaders.sink { completion in
-            receivedReaders.fulfill()
+            discoveredReaders.fulfill()
         } receiveValue: { readers in
             // The Stripe Terminal SDK published an empty list of discovered readers first
             // and it will continue publishing as new readers are discovered.
@@ -49,10 +37,13 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
             }
 
             // There should be at least one non nil reader
-            XCTAssertNotNil(readers.first)
+            guard let _ = readers.first else {
+                XCTFail()
+                return
+            }
 
             // We blisfully ignore the actual values received (for now)
-            receivedReaders.fulfill()
+            discoveredReaders.fulfill()
         }.store(in: &cancellables)
 
         readerService.start()

@@ -2,38 +2,50 @@ import UIKit
 import Combine
 
 final class CardReaderSettingsViewController: UIViewController {
+
+    @IBOutlet weak var tableView: UITableView!
+
     private var subscriptions = Set<AnyCancellable>()
     private var viewmodel = CardReaderSettingsViewModel()
-    private var subView: UIView?
     private var alert: UIAlertController?
+
+    private lazy var connectView = CardReaderSettingsConnectView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigation()
 
+        setTableSource()
+
         self.viewmodel = CardReaderSettingsViewModel()
-        viewmodel.$summaryState
+        viewmodel.$activeView
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] summaryState in
-                self?.setSubView()
+            .sink { [weak self] activeView in
+                self?.setTableSource()
             }
             .store(in: &subscriptions)
-    }
+        viewmodel.$activeAlert
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] activeAlert in
+                self?.setAlert()
+            }
+            .store(in: &subscriptions)    }
 
-    private func setSubView() {
+    private func setTableSource() {
         alert?.dismiss(animated: true, completion: nil)
-        subView?.removeFromSuperview()
 
-        switch self.viewmodel.summaryState {
-        case .cleanSlate:
+        switch self.viewmodel.activeView {
+        case .connectYourReader:
             addCleanSlateView()
-        case .connected:
+        case .manageYourReader:
             addListView()
-        case .notConnected:
+        case .noReaderFound:
             addListView()
         }
+    }
 
-        switch self.viewmodel.interactiveState {
+    private func setAlert() {
+        switch self.viewmodel.activeAlert {
         case .none:
             noop()
         case .searching:
@@ -54,14 +66,14 @@ final class CardReaderSettingsViewController: UIViewController {
     }
 
     private func addCleanSlateView() {
-        let connectView = CardReaderSettingsConnectView(frame: view.frame)
         connectView.onPressedConnect = {
             self.viewmodel.startSearch()
         }
-        subView = connectView
-        if subView != nil {
-            view.addSubview(subView!)
-        }
+        tableView.registerNib(for: BasicTableViewCell.self) // TODO move into connect
+        tableView.registerNib(for: ButtonTableViewCell.self) // TODO move into connect
+        tableView.dataSource = connectView
+        tableView.delegate = connectView
+        tableView.reloadData()
     }
 
     private func addListView() {

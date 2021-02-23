@@ -5,13 +5,13 @@ struct CardReader {
     var name: String
 }
 
-enum CardReaderSettingsViewSummaryState {
-    case cleanSlate
-    case connected
-    case notConnected
+enum CardReaderSettingsViewActiveView {
+    case connectYourReader
+    case manageYourReader
+    case noReaderFound
 }
 
-enum CardReaderSettingsViewInteractiveState {
+enum CardReaderSettingsViewActiveAlert {
     case none
     case searching
     case foundReader
@@ -23,39 +23,31 @@ enum CardReaderSettingsViewInteractiveState {
 }
 
 final class CardReaderSettingsViewModel: ObservableObject {
-    @Published var summaryState: CardReaderSettingsViewSummaryState
-    @Published var interactiveState: CardReaderSettingsViewInteractiveState
-    @Published var knownReaders: [CardReader]
-    @Published var foundReader: CardReader?
-    @Published var connectedReader: CardReader?
+    @Published var activeView: CardReaderSettingsViewActiveView
+    @Published var activeAlert: CardReaderSettingsViewActiveAlert
+
+    var knownReaders: [CardReader]
+    var foundReader: CardReader?
+    var connectedReader: CardReader?
 
     init() {
-        // TODO fetch initial state from Yosemite.CardReader
-        self.summaryState = .cleanSlate
-        self.interactiveState = .searching
+        // TODO fetch initial state from Yosemite.CardReader.
+        // The initial activeView and alert will be based on the knownReaders, connectedReaders and serviceState
+        self.activeView = .connectYourReader
+        self.activeAlert = .none
         self.knownReaders = []
         self.foundReader = nil
         self.connectedReader = nil
     }
 
     func startSearch() {
-        // TODO dispatch an action to start searching
-        if knownReaders.count == 0 {
-            summaryState = .cleanSlate
-        } else {
-            summaryState = .notConnected
-        }
-        interactiveState = .searching
+        // TODO dispatch an action to start searching.
+        activeAlert = .searching
     }
 
     func stopSearch() {
-        // TODO dispatch an action to stop searching
-        if knownReaders.count == 0 {
-            summaryState = .cleanSlate
-        } else {
-            summaryState = .notConnected
-        }
-        interactiveState = .none
+        // TODO dispatch an action to stop searching.
+        activeAlert = .none
     }
 
     func connect() {

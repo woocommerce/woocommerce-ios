@@ -437,7 +437,6 @@
 		26FE09E424DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E324DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift */; };
 		26FF455F24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FF455E24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift */; };
 		31186FF325DF220B001A28D3 /* CardReaderSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31186FF225DF220B001A28D3 /* CardReaderSettingsViewModel.swift */; };
-		3118700125E0664E001A28D3 /* CardReaderSettingsConnectView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3118700025E0664E001A28D3 /* CardReaderSettingsConnectView.xib */; };
 		3118700725E06758001A28D3 /* CardReaderSettingsConnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3118700625E06758001A28D3 /* CardReaderSettingsConnectView.swift */; };
 		31316F9C25CB20FD00D9F129 /* OrderStatusListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31316F9B25CB20FD00D9F129 /* OrderStatusListViewModel.swift */; };
 		316837DA25CCA90C00E36B2F /* OrderStatusListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316837D925CCA90C00E36B2F /* OrderStatusListDataSource.swift */; };
@@ -1572,7 +1571,6 @@
 		26FF455E24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedStatsDashboardViewController.swift; sourceTree = "<group>"; };
 		2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		31186FF225DF220B001A28D3 /* CardReaderSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsViewModel.swift; sourceTree = "<group>"; };
-		3118700025E0664E001A28D3 /* CardReaderSettingsConnectView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CardReaderSettingsConnectView.xib; sourceTree = "<group>"; };
 		3118700625E06758001A28D3 /* CardReaderSettingsConnectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsConnectView.swift; sourceTree = "<group>"; };
 		31316F9B25CB20FD00D9F129 /* OrderStatusListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusListViewModel.swift; sourceTree = "<group>"; };
 		316837D925CCA90C00E36B2F /* OrderStatusListDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusListDataSource.swift; sourceTree = "<group>"; };
@@ -3318,7 +3316,6 @@
 			children = (
 				318A9E9025D302370032C245 /* CardReaderSettingsViewController.swift */,
 				31186FF225DF220B001A28D3 /* CardReaderSettingsViewModel.swift */,
-				3118700025E0664E001A28D3 /* CardReaderSettingsConnectView.xib */,
 				3118700625E06758001A28D3 /* CardReaderSettingsConnectView.swift */,
 			);
 			path = CardReaders;
@@ -5636,7 +5633,6 @@
 				B59D1EE821908A08009D1978 /* Noticons.ttf in Resources */,
 				D81F2D35225F0CF70084BF9C /* EmptyListMessageWithActionView.xib in Resources */,
 				022F7A0424A05F6400012601 /* LinkedProductsListSelectorViewController.xib in Resources */,
-				3118700125E0664E001A28D3 /* CardReaderSettingsConnectView.xib in Resources */,
 				456CB50E2444BFAC00992A05 /* ProductPurchaseNoteViewController.xib in Resources */,
 				023A059B24135F2600E3FC99 /* ReviewsViewController.xib in Resources */,
 				026CF63B237E9ABE009563D4 /* ProductVariationsViewController.xib in Resources */,

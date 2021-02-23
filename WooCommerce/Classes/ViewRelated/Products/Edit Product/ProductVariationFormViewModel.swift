@@ -115,7 +115,7 @@ extension ProductVariationFormViewModel {
     }
 
     func canDeleteProduct() -> Bool {
-        false
+        formType == .edit
     }
 }
 
@@ -265,9 +265,24 @@ extension ProductVariationFormViewModel {
         storesManager.dispatch(updateAction)
     }
 
-    func deleteProductRemotely(onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
-        // no-op
+    func deleteProductRemotely(onCompletion: @escaping (Result<EditableProductVariationModel, ProductUpdateError>) -> Void) {
+        let deleteAction = ProductVariationAction.deleteProductVariation(productVariation: productVariation.productVariation) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+            switch result {
+            case .success(let productVariation):
+                let model = EditableProductVariationModel(productVariation: productVariation,
+                                                          allAttributes: self.allAttributes,
+                                                          parentProductSKU: self.parentProductSKU)
+                onCompletion(.success(model))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+        storesManager.dispatch(deleteAction)
     }
+
     private func resetProductVariation(_ productVariation: EditableProductVariationModel) {
         originalProductVariation = productVariation
         isUpdateEnabledSubject.send(hasUnsavedChanges())

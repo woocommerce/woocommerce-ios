@@ -1,6 +1,7 @@
 import Combine
 import UIKit
 import Yosemite
+import class AutomatticTracks.CrashLogging
 
 /// Coordinates app navigation based on authentication state: tab bar UI is shown when the app is logged in, and authentication UI is shown
 /// when the app is logged out.
@@ -40,12 +41,14 @@ final class AppCoordinator {
                 switch (isLoggedIn, needsDefaultStore) {
                 case (false, true):
                     self.displayAuthenticator()
+                case (false, false):
+                    // TODO-3711: let's delete the logging once we verify the crash is caused by this case.
+                    CrashLogging.logMessage("Unexpected app state where `isLoggedIn` and `needsDefaultStore` are both `false`", level: .info)
+                    self.displayAuthenticator()
                 case (true, true):
                     self.displayStorePicker()
                 case (true, false):
                     self.displayLoggedInUI()
-                default:
-                    break
                 }
                 self.isLoggedIn = isLoggedIn
             }

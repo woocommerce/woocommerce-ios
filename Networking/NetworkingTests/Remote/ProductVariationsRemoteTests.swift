@@ -282,7 +282,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
     /// Verifies that deleteProductVariation properly relays Networking Layer errors.
     ///
-    func test_deleteProductVariation_properly_relays_networking_errors() throws {
+    func test_deleteProductVariation_properly_relays_networking_errors() {
         // Given
         let remote = ProductVariationsRemote(network: network)
         let sampleProductVariationID: Int64 = 1275
@@ -297,7 +297,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
         }
 
         // Then
-        XCTAssertTrue(try XCTUnwrap(result).isFailure)
+        XCTAssertTrue(result.isFailure)
     }
 }
 

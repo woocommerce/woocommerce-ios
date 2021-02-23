@@ -9,9 +9,11 @@ final class ShippingLabelAddressFormViewModel: NSObject {
     let siteID: Int64
     let type: ShipType
     private (set) var address: ShippingLabelAddress?
+    var addressValidationError: ShippingLabelAddressValidationError?
 
     private let stores: StoresManager
     private var addressIsValidated: Bool = false
+
 
     init(siteID: Int64, type: ShipType, address: ShippingLabelAddress?, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
@@ -52,19 +54,28 @@ final class ShippingLabelAddressFormViewModel: NSObject {
 
 // MARK: - Remote API
 extension ShippingLabelAddressFormViewModel {
-    func validateAddress(onSuccess: ((Bool, Error?) -> ())? = nil) {
+    func validateAddress(onSuccess: ((Bool, ShippingLabelAddressValidationError?) -> ())? = nil) {
 
         let addressToBeVerified = ShippingLabelAddressVerification(address: address, type: type)
 
         let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] (result) in
             switch result {
             case .success:
-                self?.addressIsValidated = true
-                onSuccess?(true, nil)
+                if (try? result.get().errors) == nil {
+                    self?.addressIsValidated = true
+                    self?.addressValidationError = nil
+                    onSuccess?(true, nil)
+                }
+                else {
+                    self?.addressIsValidated = false
+                    self?.addressValidationError = try? result.get().errors
+                    onSuccess?(false, try? result.get().errors)
+                }
             case .failure(let error):
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
                 self?.addressIsValidated = false
-                onSuccess?(false, error)
+                self?.addressValidationError = nil
+                onSuccess?(false, nil)
             }
         }
         stores.dispatch(action)

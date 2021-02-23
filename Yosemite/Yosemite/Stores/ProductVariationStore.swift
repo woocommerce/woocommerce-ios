@@ -211,9 +211,7 @@ private extension ProductVariationStore {
         remote.deleteProductVariation(siteID: productVariation.siteID,
                                       productID: productVariation.productID,
                                       variationID: productVariation.productVariationID) { [weak self] result in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
             switch result {
             case .failure(let error):
                 onCompletion(.failure(ProductUpdateError(error: error)))

@@ -13,78 +13,72 @@ final class CardReaderSettingsConnectView: NSObject {
 
     private func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as BasicTableViewCell where row == .connectHeader:
+        case let cell as TitleTableViewCell where row == .connectHeader:
             configureHeader(cell: cell)
-        case let cell as BasicTableViewCell where row == .connectImage:
+        case let cell as ImageTableViewCell where row == .connectImage:
             configureImage(cell: cell)
-        case let cell as BasicTableViewCell where row == .connectHelp1:
+        case let cell as NumberedListItemTableViewCell where row == .connectHelp1:
             configureHelp1(cell: cell)
-        case let cell as BasicTableViewCell where row == .connectHelp2:
+        case let cell as NumberedListItemTableViewCell where row == .connectHelp2:
             configureHelp2(cell: cell)
-        case let cell as BasicTableViewCell where row == .connectHelp3:
+        case let cell as NumberedListItemTableViewCell where row == .connectHelp3:
             configureHelp3(cell: cell)
         case let cell as ButtonTableViewCell where row == .connectButton:
             configureButton(cell: cell)
-        case let cell as BasicTableViewCell where row == .connectLearnMore:
+        case let cell as TextViewTableViewCell where row == .connectLearnMore:
             configureLearnMore(cell: cell)
         default:
             fatalError()
         }
     }
 
-    private func configureHeader(cell: BasicTableViewCell) {
-        cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .listForeground
-        cell.textLabel?.text = NSLocalizedString(
+    private func configureHeader(cell: TitleTableViewCell) {
+        cell.titleLabel?.text = NSLocalizedString(
             "Connect your card reader",
             comment: "Settings > Manage Card Reader > Prompt user to connect their first reader"
         )
         cell.hideSeparator()
-        cell.textLabel?.numberOfLines = 0
     }
 
-    private func configureImage(cell: BasicTableViewCell) {
-        cell.imageView?.image = UIImage(named: "card-reader-connect")
-        cell.imageView?.tintColor = .listForeground
-        cell.textLabel?.text = NSLocalizedString(
-            "Connect your card reader",
-            comment: "Settings > Manage Card Reader > Connect > An illustration of connecting a card reader"
-        )
+    private func configureImage(cell: ImageTableViewCell) {
+        cell.detailImageView?.image = UIImage(named: "card-reader-connect")
         cell.hideSeparator()
-        cell.textLabel?.numberOfLines = 0
     }
 
-    private func configureHelp1(cell: BasicTableViewCell) {
-        cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .listForeground
-        cell.textLabel?.text = NSLocalizedString(
+    private func configureHelp1(cell: NumberedListItemTableViewCell) {
+        cell.numberLabel?.text = NSLocalizedString(
+            "1",
+            comment: "Settings > Manage Card Reader > Connect > List item, number 1"
+        )
+        cell.itemTextLabel?.text = NSLocalizedString(
             "Make sure card reader is charged",
-            comment: "Settings > Manage Card Reader > Connect > One of three hints to help the user connect their reader"
-        )
+            comment: "Settings > Manage Card Reader > Connect > Help hint for connecting reader")
         cell.hideSeparator()
-        cell.textLabel?.numberOfLines = 0
+        //cell.textLabel?.numberOfLines = 0
     }
 
-    private func configureHelp2(cell: BasicTableViewCell) {
-        cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .listForeground
-        cell.textLabel?.text = NSLocalizedString(
+    private func configureHelp2(cell: NumberedListItemTableViewCell) {
+        cell.numberLabel?.text = NSLocalizedString(
+            "2",
+            comment: "Settings > Manage Card Reader > Connect > List item, number 2"
+        )
+        cell.itemTextLabel?.text = NSLocalizedString(
             "Turn card reader on and place it next to mobile device",
-            comment: "Settings > Manage Card Reader > Connect > One of three hints to help the user connect their reader"
-        )
+            comment: "Settings > Manage Card Reader > Connect > Help hint for connecting reader")
         cell.hideSeparator()
-        cell.textLabel?.numberOfLines = 0
+        //cell.textLabel?.numberOfLines = 0
     }
 
-    private func configureHelp3(cell: BasicTableViewCell) {
-        cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .listForeground
-        cell.textLabel?.text = NSLocalizedString(
-            "Turn mobile device bluetooth on",
-            comment: "Settings > Manage Card Reader > Connect > One of three hints to help the user connect their reader"
+    private func configureHelp3(cell: NumberedListItemTableViewCell) {
+        cell.numberLabel?.text = NSLocalizedString(
+            "3",
+            comment: "Settings > Manage Card Reader > Connect > List item, number 3"
         )
+        cell.itemTextLabel?.text = NSLocalizedString(
+            "Turn mobile device Bluetooth on",
+            comment: "Settings > Manage Card Reader > Connect > Help hint for connecting reader")
         cell.hideSeparator()
-        cell.textLabel?.numberOfLines = 0
+        //cell.textLabel?.numberOfLines = 0
     }
 
     private func configureButton(cell: ButtonTableViewCell) {
@@ -98,15 +92,24 @@ final class CardReaderSettingsConnectView: NSObject {
         cell.hideSeparator()
     }
 
-    private func configureLearnMore(cell: BasicTableViewCell) {
-        cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .listForeground
-        cell.textLabel?.text = NSLocalizedString(
+    // TODO - reconsider use of TextViewTableViewCell - might want a InfoLinkTableViewCell instead
+    private func configureLearnMore(cell: TextViewTableViewCell) {
+        let iconAccessibilityLabel = NSLocalizedString(
+            "Information",
+            comment: "Spoken accessibility label for an icon image that indicates information is present"
+        )
+        let learnMoreText = NSLocalizedString(
             "Learn more about accepting payments with your mobile device and ordering card readers",
             comment: "Settings > Manage Card Reader > Connect > A prompt for new users to start accepting mobile payments"
         )
+        let viewModel = TextViewTableViewCell.ViewModel(
+            icon: .infoOutlineImage,
+            iconAccessibilityLabel: iconAccessibilityLabel,
+            iconTint: .text,
+            text: learnMoreText
+        )
+        cell.configure(with: viewModel)
         cell.hideSeparator()
-        cell.textLabel?.numberOfLines = 0
     }
 }
 
@@ -127,19 +130,19 @@ private enum Row: CaseIterable {
     var type: UITableViewCell.Type {
         switch self {
         case .connectHeader:
-            return BasicTableViewCell.self
+            return TitleTableViewCell.self
         case .connectImage:
-            return BasicTableViewCell.self
+            return ImageTableViewCell.self
         case .connectHelp1:
-            return BasicTableViewCell.self
+            return NumberedListItemTableViewCell.self
         case .connectHelp2:
-            return BasicTableViewCell.self
+            return NumberedListItemTableViewCell.self
         case .connectHelp3:
-            return BasicTableViewCell.self
+            return NumberedListItemTableViewCell.self
         case .connectButton:
             return ButtonTableViewCell.self
         case .connectLearnMore:
-            return BasicTableViewCell.self
+            return TextViewTableViewCell.self
         }
     }
 
@@ -176,4 +179,14 @@ extension CardReaderSettingsConnectView: UITableViewDataSource {
 }
 
 extension CardReaderSettingsConnectView: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let row = rowAtIndexPath(indexPath)
+        if row == .connectImage {
+            return 250
+        }
+        if row == .connectHelp1 || row == .connectHelp2 || row == .connectHelp3 {
+            return 70
+        }
+        return UITableView.automaticDimension
+    }
 }

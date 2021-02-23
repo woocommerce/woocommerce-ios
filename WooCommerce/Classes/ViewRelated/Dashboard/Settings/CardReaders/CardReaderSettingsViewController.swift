@@ -71,6 +71,10 @@ final class CardReaderSettingsViewController: UIViewController {
         }
         tableView.registerNib(for: BasicTableViewCell.self) // TODO move into connect
         tableView.registerNib(for: ButtonTableViewCell.self) // TODO move into connect
+        tableView.registerNib(for: TitleTableViewCell.self) // TODO move into connect
+        tableView.registerNib(for: ImageTableViewCell.self) // TODO move
+        tableView.registerNib(for: NumberedListItemTableViewCell.self) // TODO move
+        tableView.registerNib(for: TextViewTableViewCell.self) // TODO move
         tableView.dataSource = connectView
         tableView.delegate = connectView
         tableView.reloadData()

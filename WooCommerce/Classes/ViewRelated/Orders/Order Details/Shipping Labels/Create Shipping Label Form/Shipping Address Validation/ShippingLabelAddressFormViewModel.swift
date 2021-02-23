@@ -10,10 +10,9 @@ final class ShippingLabelAddressFormViewModel: NSObject {
     let type: ShipType
     private(set) var address: ShippingLabelAddress?
     private(set) var addressValidationError: ShippingLabelAddressValidationError?
+    private(set) var isAddressValidated: Bool = false
 
     private let stores: StoresManager
-    private var addressIsValidated: Bool = false
-
 
     init(siteID: Int64, type: ShipType, address: ShippingLabelAddress?, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
@@ -71,18 +70,18 @@ extension ShippingLabelAddressFormViewModel {
             switch result {
             case .success:
                 if (try? result.get().errors) == nil {
-                    self?.addressIsValidated = true
+                    self?.isAddressValidated = true
                     self?.addressValidationError = nil
                     onSuccess?(true, nil)
                 }
                 else {
-                    self?.addressIsValidated = false
+                    self?.isAddressValidated = false
                     self?.addressValidationError = try? result.get().errors
                     onSuccess?(false, try? result.get().errors)
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
-                self?.addressIsValidated = false
+                self?.isAddressValidated = false
                 self?.addressValidationError = nil
                 onSuccess?(false, nil)
             }

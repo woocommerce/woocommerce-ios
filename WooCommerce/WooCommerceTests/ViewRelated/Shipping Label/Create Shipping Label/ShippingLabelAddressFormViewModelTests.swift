@@ -87,4 +87,80 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
                                                                      .country]
         XCTAssertEqual(viewModel.sections, [ShippingLabelAddressFormViewModel.Section(rows: expectedRows)])
     }
+
+    func test_address_validation_returns_correct_values_if_succeeded() {
+        // Given
+        let shippingAddress = MockShippingLabelAddress.sampleAddress()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        //let validationError = ShippingLabelAddressValidationError(addressError: "Error", generalError: nil)
+        let expectedValidationResponse = ShippingLabelAddressValidationResponse(address: shippingAddress,
+                                                                                errors: nil)
+
+        // When
+        stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
+            switch action {
+            case let .validateAddress(_, _, onCompletion):
+                onCompletion(.success(expectedValidationResponse))
+            default:
+                break
+            }
+        }
+
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, stores: stores)
+        viewModel.validateAddress()
+
+        // Then
+        XCTAssertEqual(viewModel.isAddressValidated, true)
+        XCTAssertEqual(viewModel.addressValidationError, nil)
+    }
+
+    func test_address_validation_returns_correct_values_if_the_validation_fails() {
+        // Given
+        let shippingAddress = MockShippingLabelAddress.sampleAddress()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let validationError = ShippingLabelAddressValidationError(addressError: "Error", generalError: nil)
+        let expectedValidationResponse = ShippingLabelAddressValidationResponse(address: nil,
+                                                                                errors: validationError)
+
+        // When
+        stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
+            switch action {
+            case let .validateAddress(_, _, onCompletion):
+                onCompletion(.success(expectedValidationResponse))
+            default:
+                break
+            }
+        }
+
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, stores: stores)
+        viewModel.validateAddress()
+
+        // Then
+        XCTAssertEqual(viewModel.isAddressValidated, false)
+        XCTAssertEqual(viewModel.addressValidationError, validationError)
+    }
+
+    func test_address_validation_returns_correct_values_if_the_validation_returns_an_error() {
+        // Given
+        let shippingAddress = MockShippingLabelAddress.sampleAddress()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let error = SampleError.first
+
+        // When
+        stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
+            switch action {
+            case let .validateAddress(_, _, onCompletion):
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        }
+
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, stores: stores)
+        viewModel.validateAddress()
+
+        // Then
+        XCTAssertEqual(viewModel.isAddressValidated, false)
+        XCTAssertEqual(viewModel.addressValidationError, nil)
+    }
 }

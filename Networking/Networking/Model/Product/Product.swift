@@ -109,6 +109,17 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         return ProductTaxStatus(rawValue: taxStatusKey)
     }
 
+    /// Whether the product has an integer (or nil) stock quantity.
+    /// Decimal (non-integer) stock quantities currently aren't accepted by the Core API.
+    /// Related issue: https://github.com/woocommerce/woocommerce-ios/issues/3494
+    public var hasIntegerStockQuantity: Bool {
+        guard let stockQuantity = stockQuantity else {
+            return true
+        }
+
+        return stockQuantity.isInteger
+    }
+
     /// Product struct initializer.
     ///
     public init(siteID: Int64,
@@ -465,8 +476,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         try container.encode(soldIndividually, forKey: .soldIndividually)
 
         // API currently only accepts integer values for stock quantity
-        let integerStockQuantity = Int(truncating: stockQuantity as NSDecimalNumber? ?? 0)
-        try container.encode(integerStockQuantity, forKey: .stockQuantity)
+        if hasIntegerStockQuantity {
+            try container.encode(stockQuantity, forKey: .stockQuantity)
+        }
 
         try container.encode(backordersKey, forKey: .backordersKey)
         try container.encode(stockStatusKey, forKey: .stockStatusKey)

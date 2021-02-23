@@ -82,6 +82,12 @@ extension StripeCardReaderService: CardReaderService {
         })
     }
 
+    public func cancelDiscovery() {
+        // Bouncing to a private method just in case we need to do something else
+        // If we realize we don't, there is no point in having two methods doing the same
+        cancelReaderDiscovery()
+    }
+
     public func disconnect(_ reader: CardReader) -> Future<Void, Error> {
         return Future() { promise in
             // This will be removed. We just want to pretend we are doing a roundtrip to the SDK for now.
@@ -126,10 +132,25 @@ extension StripeCardReaderService: CardReaderService {
 
     public func connect(_ reader: CardReader) -> Future <Void, Error> {
         return Future() { promise in
-            // This will be removed. We just want to execute this
-            // Promise sometime in the future for now.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                promise(Result.success(()))
+
+            guard let stripeReader = reader.toStripe() else {
+                promise(Result.failure(CardReaderServiceError.connection))
+                return
+            }
+
+            Terminal.shared.connectReader(stripeReader) { [weak self] (reader, error) in
+                guard let self = self else {
+                    return
+                }
+
+                if let _ = error {
+                    promise(Result.failure(CardReaderServiceError.connection))
+                }
+
+                if let reader = reader {
+                    self.connectedReadersSubject.send([CardReader(reader: reader)])
+                    promise(Result.success(()))
+                }
             }
         }
     }
@@ -172,4 +193,10 @@ private extension StripeCardReaderService {
     func handleError(_ error: Error) {
         // Empty for now. Will be implemented later
     }
+}
+
+
+private enum CardReaderServiceError: Error {
+    case discovery
+    case connection
 }

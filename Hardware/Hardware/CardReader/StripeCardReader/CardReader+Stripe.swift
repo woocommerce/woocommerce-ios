@@ -16,6 +16,8 @@ extension CardReader {
         self.batteryLevel = reader.batteryLevel?.floatValue
 
         self.readerType = CardReaderType.with(readerType: reader.deviceType)
+
+        self.stripeReader = reader
     }
 }
 

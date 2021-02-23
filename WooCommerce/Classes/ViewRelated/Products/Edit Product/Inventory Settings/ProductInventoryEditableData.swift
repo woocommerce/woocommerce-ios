@@ -6,7 +6,7 @@ struct ProductInventoryEditableData: Equatable {
     let sku: String?
     let manageStock: Bool
     let soldIndividually: Bool?
-    let stockQuantity: Int64?
+    let stockQuantity: Decimal?
     let backordersSetting: ProductBackordersSetting?
     let stockStatus: ProductStockStatus?
 }

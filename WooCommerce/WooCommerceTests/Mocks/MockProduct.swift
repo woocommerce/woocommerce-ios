@@ -22,7 +22,7 @@ final class MockProduct {
                  productType: ProductType = .simple,
                  manageStock: Bool = false,
                  sku: String? = "",
-                 stockQuantity: Int64? = nil,
+                 stockQuantity: Decimal? = nil,
                  taxClass: String? = "",
                  taxStatus: ProductTaxStatus = .taxable,
                  stockStatus: ProductStockStatus = .inStock,

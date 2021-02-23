@@ -26,7 +26,7 @@
         "tax_status": "taxable",
         "tax_class": "",
         "manage_stock": true,
-        "stock_quantity": 16,
+        "stock_quantity": 16.5,
         "stock_status": "instock",
         "backorders": "notify",
         "backorders_allowed": true,

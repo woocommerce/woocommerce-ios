@@ -55,7 +55,7 @@ extension Storage.Product: ReadOnlyConvertible {
 
         var quantity: String? = nil
         if let stockQuantity = product.stockQuantity {
-            quantity = String(stockQuantity)
+            quantity = stockQuantity.description
         }
         stockQuantity = quantity
 
@@ -94,9 +94,9 @@ extension Storage.Product: ReadOnlyConvertible {
         let productDefaultAttributes = defaultAttributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductDefaultAttribute]()
         let productShippingClassModel = productShippingClass?.toReadOnly()
 
-        var quantity: Int64?
+        var quantity: Decimal?
         if let stockQuantity = stockQuantity {
-            quantity = Int64(stockQuantity)
+            quantity = Decimal(string: stockQuantity)
         }
 
         return Product(siteID: siteID,

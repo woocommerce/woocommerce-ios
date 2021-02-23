@@ -49,7 +49,8 @@ protocol ProductFormDataModel {
     var sku: String? { get }
     var manageStock: Bool { get }
     var stockStatus: ProductStockStatus { get }
-    var stockQuantity: Int64? { get }
+    var stockQuantity: Decimal? { get }
+    var hasIntegerStockQuantity: Bool { get }
     var backordersKey: String { get }
     var soldIndividually: Bool? { get }
     // Whether stock status is available for the product.

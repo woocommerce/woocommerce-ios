@@ -126,6 +126,8 @@ private extension ShippingLabelAddressFormViewController {
             configureAddress(cell: cell, row: row)
         case let cell as TitleAndTextFieldTableViewCell where row == .address2:
             configureAddress2(cell: cell, row: row)
+        case let cell as BasicTableViewCell where row == .fieldError:
+            configureFieldError(cell: cell, row: row)
         case let cell as TitleAndTextFieldTableViewCell where row == .city:
             configureCity(cell: cell, row: row)
         case let cell as TitleAndTextFieldTableViewCell where row == .postcode:
@@ -198,6 +200,11 @@ private extension ShippingLabelAddressFormViewController {
             self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }
         cell.configure(viewModel: cellViewModel)
+    }
+
+    func configureFieldError(cell: BasicTableViewCell, row: Row) {
+        cell.textLabel?.text = viewModel.addressValidationError?.addressError
+        cell.textLabel?.textColor = .error
     }
 
     func configureCity(cell: TitleAndTextFieldTableViewCell, row: Row) {

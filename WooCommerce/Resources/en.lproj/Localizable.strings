@@ -199,6 +199,9 @@
    Title of the button at the bottom of the product form to add more product details. */
 "Add more details" = "Add more details";
 
+/* Action to add new attribute on the Product Attributes screen */
+"Add New Attribute" = "Add New Attribute";
+
 /* Voiceover accessibility label for the tags field in product tags. */
 "Add new tags, separated by commas." = "Add new tags, separated by commas.";
 
@@ -231,7 +234,8 @@
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "Add Tracking";
 
-/* Title on add variation button when there are no variations */
+/* Action to add new variation on the variations list
+   Title on add variation button when there are no variations */
 "Add Variation" = "Add Variation";
 
 /* Title for adding variations row on Product main screen for a variable product */
@@ -242,6 +246,12 @@
 
 /* Title on the variations list screen when there are no variations */
 "Add your first variation" = "Add your first variation";
+
+/* Text field address in Shipping Label Address Validation */
+"Address" = "Address";
+
+/* Text field address 2 in Shipping Label Address Validation */
+"Address 2" = "Address 2";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Adds tracking to an order.";
@@ -298,8 +308,9 @@
    Title when there is no filter set. */
 "Any" = "Any";
 
-/* Format of a product variation attribute description where the attribute is set to any value. */
-"Any %@" = "Any %@";
+/* Format of a product variation attribute description where the attribute is set to any value.
+   Product variation attribute description where the attribute is set to any value. */
+"Any %1$@" = "Any %1$@";
 
 /* Message shown when Apple authentication fails. */
 "Apple authentication failed.\nPlease make sure you are signed in to iCloud with an Apple ID that uses two-factor authentication." = "Apple authentication failed.\nPlease make sure you are signed in to iCloud with an Apple ID that uses two-factor authentication.";
@@ -337,9 +348,6 @@
 
 /* Message on the alert when the user taps to delete a Product image */
 "Are you sure you want to remove this image?" = "Are you sure you want to remove this image?";
-
-/* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
-"Attribute name" = "Attribute name";
 
 /* Edit Product Attributes screen navigation title
    Title of the attributes row on Product Variation main screen */
@@ -416,7 +424,7 @@
 "Can Not Request Link" = "Can Not Request Link";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
 "Cancel" = "Cancel";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -432,6 +440,9 @@
 /* The title of the alert when there is an error uploading an image
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Cannot upload image";
+
+/* Card reader settings screen title */
+"Card Readers" = "Card Readers";
 
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "Carrier name";
@@ -456,6 +467,9 @@
 /* Body of the alert when a user is changing the product type */
 "Changing the product type will modify some of the product data" = "Changing the product type will modify some of the product data";
 
+/* Body of the alert when a user is changing the product type */
+"Changing the product type will modify some of the product data and delete all your attributes and variations" = "Changing the product type will modify some of the product data and delete all your attributes and variations";
+
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Check that the URL entered is valid";
 
@@ -474,11 +488,17 @@
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Choose Paper Size";
 
+/* Text field city in Shipping Label Address Validation */
+"City" = "City";
+
 /* Button title for clearing all filters for the list. */
 "Clear all" = "Clear all";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Collect Information";
+
+/* Text field company in Shipping Label Address Validation */
+"Company" = "Company";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "Composes a new email message to the billing customer.";
@@ -513,8 +533,8 @@
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "Contact us here";
 
-/* The button title text when there is a next step for logging in or signing up.
-   Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
+/* Continue button inside every cell inside Create Shipping Label form
+   The button title text when there is a next step for logging in or signing up. - Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
 "Continue" = "Continue";
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
@@ -571,6 +591,9 @@
 /* Error message when tag loading failed */
 "Couldn't load tags." = "Couldn't load tags.";
 
+/* Text field country in Shipping Label Address Validation */
+"Country" = "Country";
+
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "Crash Debug Menu";
 
@@ -580,17 +603,19 @@
 /* The button title text for creating a new account. */
 "Create Account" = "Create Account";
 
+/* Create Shipping Label form navigation title
+   Text on the button that starts shipping label creation */
+"Create Shipping Label" = "Create Shipping Label";
+
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "Creating products";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "Credit card";
 
-/* Cell title for Cross-sells products in Linked Products Settings screen */
+/* Cell title for Cross-sells products in Linked Products Settings screen
+   Navigation bar title for editing linked products for cross-sell products */
 "Cross-sells" = "Cross-sells";
-
-/* Navigation bar title for editing linked products for cross-sell products */
-"Cross-sells Products" = "Cross-sells Products";
 
 /* Cell title: the current date. */
 "Current" = "Current";
@@ -629,6 +654,9 @@
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "Describe your product";
+
+/* The default placeholder text for the of the Aztec editor screen. */
+"Describe your product to your future customers..." = "Describe your product to your future customers...";
 
 /* The navigation bar title of the Aztec editor screen.
    Title in the Product description row on Product form screen when the description is non-empty. */
@@ -727,6 +755,9 @@
    Download file settings navigation title */
 "Download Settings" = "Download Settings";
 
+/* Display label for simple downloadable product type. */
+"Downloadable" = "Downloadable";
+
 /* Title of the Downloadable Files row on Product main screen */
 "Downloadable files" = "Downloadable files";
 
@@ -741,6 +772,10 @@
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Easily identify your products with unique codes";
+
+/* Action to edit the attributes and options used for variations
+   Navigation title for the Product Attributes screen */
+"Edit Attributes" = "Edit Attributes";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Edit Products";
@@ -924,6 +959,9 @@
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Gain insights into how products are performing on your store";
+
+/* Title for the progress screen while generating a variation */
+"Generating Variation" = "Generating Variation";
 
 /* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
 "Get a login link by email" = "Get a login link by email";
@@ -1270,6 +1308,9 @@
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "Make your products easier to find with tags";
 
+/* Navigates to Card Reader management screen */
+"Manage card readers" = "Manage card readers";
+
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Manage orders, track sales and monitor store activity with real-time alerts.";
 
@@ -1329,7 +1370,8 @@
 /* Title of the More Options section on Product Settings screen */
 "More Options" = "More Options";
 
-/* Accessibility label for the Edit Product More Options action sheet */
+/* Accessibility label for the Edit Product More Options action sheet
+   Accessibility label to show the More Options action sheet */
 "More options" = "More options";
 
 /* Confirmation button on the alert when the user is moving a product to the trash */
@@ -1348,7 +1390,8 @@
 /* My Tickets title */
 "My Tickets" = "My Tickets";
 
-/* Name text field placeholder */
+/* Name text field placeholder
+   Text field name in Shipping Label Address Validation */
 "Name" = "Name";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
@@ -1372,6 +1415,9 @@
 
 /* The title for the net amount paid cell */
 "Net Payment" = "Net Payment";
+
+/* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
+"New Attribute Name" = "New Attribute Name";
 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "New features available!";
@@ -1500,7 +1546,7 @@
 "Option name" = "Option name";
 
 /* Add Product Category. Placeholder of cell presenting the parent category.
-   Placeholder of the cell text field in Product Inventory Settings > SKU */
+   Placeholder of the cell text field in Product Inventory Settings > SKU - Text field placeholder in Shipping Label Address Validation */
 "Optional" = "Optional";
 
 /* No comment provided by engineer. */
@@ -1560,7 +1606,8 @@
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
 "Package %d" = "Package %d";
 
-/* Title of package details in shipping label details */
+/* Title of package details in shipping label details
+   Title of the cell Package Details inside Create Shipping Label form */
 "Package Details" = "Package Details";
 
 /* The title for the customer payment cell */
@@ -1588,7 +1635,8 @@
 /* Payment section title */
 "Payment" = "Payment";
 
-/* Title of payment method in shipping label details */
+/* Title of payment method in shipping label details
+   Title of the cell Payment Method inside Create Shipping Label form */
 "Payment Method" = "Payment Method";
 
 /* Display label for the review's pending status */
@@ -1600,6 +1648,9 @@
 /* A unit test string, appended before the title of a review.
    Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "Pending Review";
+
+/* Text field phone in Shipping Label Address Validation */
+"Phone" = "Phone";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Phone number: %@";
@@ -1665,6 +1716,9 @@
    Text on the loading view of the survey screen indicating the user to wait */
 "Please wait" = "Please wait";
 
+/* Instructions for the progress screen while generating a variation */
+"Please wait while we create the new variation" = "Please wait while we create the new variation";
+
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Please wait while we publish this product to your store";
 
@@ -1676,6 +1730,9 @@
 
 /* Text on the loading view of the product downloadable file screen indicating the user to wait */
 "Please wait..." = "Please wait...";
+
+/* Text field postcode in Shipping Label Address Validation */
+"Postcode" = "Postcode";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Powered by Automattic";
@@ -1911,6 +1968,9 @@
    Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "Request a Refund";
 
+/* Text field placeholder in Shipping Label Address Validation */
+"Required" = "Required";
+
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Reset Activity Log";
 
@@ -2065,10 +2125,12 @@
 /* Action: Opens the Store in a browser */
 "Share your Store" = "Share your Store";
 
-/* Title of origin address in shipping label details */
+/* Shipping Label Address Validation navigation title
+   Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
 "Ship from" = "Ship from";
 
-/* Title of destination address in shipping label details */
+/* Shipping Label Address Validation navigation title
+   Title of destination address in shipping label details - Title of the cell Ship From inside Create Shipping Label form */
 "Ship to" = "Ship to";
 
 /* A unit test string for order tracking. Reads as: 'Shipment Company HK Post'
@@ -2089,7 +2151,8 @@
 /* Add / Edit shipping carrier. Title of cell presenting name */
 "Shipping carrier" = "Shipping carrier";
 
-/* Title of shipping carrier and rates in shipping label details */
+/* Title of shipping carrier and rates in shipping label details
+   Title of the cell Shipping Carrier inside Create Shipping Label form */
 "Shipping Carrier and Rates" = "Shipping Carrier and Rates";
 
 /* Title of view displaying all available Shipment Tracking Carriers */
@@ -2276,11 +2339,11 @@
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Standard rate";
 
-/* Aztec's Text Placeholder */
-"Start writing..." = "Start writing...";
-
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "Starting period %1$@, ending period %2$@";
+
+/* Text field state in Shipping Label Address Validation */
+"State" = "State";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -2435,6 +2498,9 @@
 /* Taxes label for payment view */
 "Taxes" = "Taxes";
 
+/* The placeholder text for the of the Aztec editor screen. */
+"Tell us more about %1$@..." = "Tell us more about %1$@...";
+
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Terms of Service";
 
@@ -2468,6 +2534,9 @@
 
 /* No comment provided by engineer. */
 "That username is not allowed." = "That username is not allowed.";
+
+/* Error title when trying to update or create an attribute remotely. */
+"The attribute couldn't be saved." = "The attribute couldn't be saved.";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?";
@@ -2522,6 +2591,9 @@
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "The URL is missing a valid host.";
+
+/* Error title when failing to generate a variation. */
+"The variation couldn't be generated." = "The variation couldn't be generated.";
 
 /* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
 "The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "The website is not a WordPress site. For us to connect to it, the site must have WordPress installed.";
@@ -2600,6 +2672,9 @@
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "To";
 
+/* Footer of text field section in Add Attribute screen */
+"To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first";
+
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "To create your new WordPress.com account, please enter your email address.";
 
@@ -2668,7 +2743,7 @@
 "Trust" = "Trust";
 
 /* Button to trigger connection to another account in store picker */
-"Try another account" = "Try another account";
+"Try With Another Account" = "Try With Another Account";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Try with another email";
@@ -2809,15 +2884,16 @@
    Updated on <date> */
 "Updated on %@" = "Updated on %@";
 
-/* Cell title for Upsells products in Linked Products Settings screen */
+/* Cell title for Upsells products in Linked Products Settings screen
+   Navigation bar title for editing linked products for upsell products */
 "Upsells" = "Upsells";
-
-/* Navigation bar title for editing linked products for upsell products */
-"Upsells Products" = "Upsells Products";
 
 /* Navigation bar title for editing the URL of a text link
    URL text field placeholder */
 "URL" = "URL";
+
+/* Action to use the address in Shipping Label Validation screen as entered */
+"Use Address as Entered" = "Use Address as Entered";
 
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
@@ -2831,9 +2907,6 @@
 
 /* Action sheet option when the user wants to change the Product type to varible product */
 "Variable product" = "Variable product";
-
-/* Footer of text field section in Add Attribute screen */
-"Variation type (ie Color, Size)" = "Variation type (ie Color, Size)";
 
 /* Title of the Product Variations row on Product main screen for a variable product
    Title that appears on top of the Product Variation List screen. */

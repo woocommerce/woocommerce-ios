@@ -16,6 +16,26 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
         cancellables = []
     }
 
+    // MARK: - Integration tests
+    func test_start_discovery_updates_discovered_readers() {
+        let receivedReaders = expectation(description: "Discovered Readers publishes values after discovery process starts")
+
+        let readerService = ServiceLocator.cardReaderService
+
+        readerService.discoveredReaders.sink { completion in
+            readerService.cancelDiscovery()
+            receivedReaders.fulfill()
+        } receiveValue: { readers in
+            if readers.count > 0 {
+                readerService.cancelDiscovery()
+                receivedReaders.fulfill()
+            }
+        }.store(in: &cancellables)
+
+        readerService.start()
+        wait(for: [receivedReaders], timeout: Constants.expectationTimeout)
+    }
+
     /// The observed behaviour is that when discovery starts, the Stripe SDK will
     /// call into its delegate with an empty array of "discovered readers".
     /// Later on, it will call into its delegate again everytime it discovers a reader
@@ -26,6 +46,7 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
         let readerService = ServiceLocator.cardReaderService
 
         readerService.discoveredReaders.sink { completion in
+            readerService.cancelDiscovery()
             discoveredReaders.fulfill()
         } receiveValue: { readers in
             // The Stripe Terminal SDK published an empty list of discovered readers first
@@ -38,16 +59,18 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
 
             // There should be at least one non nil reader
             guard let _ = readers.first else {
+                readerService.cancelDiscovery()
                 XCTFail()
                 return
             }
 
             // We blisfully ignore the actual values received (for now)
+            readerService.cancelDiscovery()
             discoveredReaders.fulfill()
         }.store(in: &cancellables)
 
         readerService.start()
-        waitForExpectations(timeout: 10, handler: nil)
+        wait(for: [discoveredReaders], timeout: Constants.expectationTimeout)
     }
 
 }

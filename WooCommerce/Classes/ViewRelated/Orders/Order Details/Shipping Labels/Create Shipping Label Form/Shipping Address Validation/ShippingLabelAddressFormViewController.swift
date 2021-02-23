@@ -6,6 +6,23 @@ final class ShippingLabelAddressFormViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var confirmButton: UIButton!
 
+    /// Stack view that contains the top warning banner and is contained in the table view header.
+    ///
+    private lazy var topStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [])
+        stackView.axis = .vertical
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+
+    /// Top banner that shows a warning in case there is an error in the address validation.
+    ///
+    private lazy var topBannerView: TopBannerView = {
+        let topBanner = ShippingLabelAddressTopBannerFactory.addressErrorTopBannerView()
+        topBanner.translatesAutoresizingMaskIntoConstraints = false
+        return topBanner
+    }()
+
     private let viewModel: ShippingLabelAddressFormViewModel
 
     /// Needed to scroll content to a visible area when the keyboard appears.
@@ -60,12 +77,25 @@ private extension ShippingLabelAddressFormViewController {
         registerTableViewCells()
 
         tableView.dataSource = self
+
+        // Configure header container view
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
+        headerContainer.addSubview(topStackView)
+        headerContainer.pinSubviewToSafeArea(topStackView)
+        topStackView.addArrangedSubview(topBannerView)
+
+        tableView.tableHeaderView = headerContainer
     }
 
     func registerTableViewCells() {
         for row in Row.allCases {
             tableView.registerNib(for: row.type)
         }
+    }
+
+    func updateTopBannerView() {
+        topBannerView.isHidden = viewModel.addressValidationError?.generalError != nil
+        tableView.updateHeaderHeight()
     }
 
     func configureConfirmButton() {
@@ -82,6 +112,7 @@ private extension ShippingLabelAddressFormViewController {
 
     @objc func doneButtonTapped() {
         viewModel.validateAddress { [weak self] (success, error) in
+            self?.updateTopBannerView()
             self?.tableView.reloadData()
         }
     }
@@ -326,5 +357,14 @@ private extension ShippingLabelAddressFormViewController {
 
         static let confirmButtonTitle = NSLocalizedString("Use Address as Entered",
                                                           comment: "Action to use the address in Shipping Label Validation screen as entered")
+    }
+
+    enum Constants {
+        static let headerViewSpacing = CGFloat(8)
+        static let estimatedRowHeight = CGFloat(86)
+        static let placeholderRowsPerSection = [3]
+        static let headerDefaultHeight = CGFloat(130)
+        static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        static let toolbarButtonInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
     }
 }

@@ -46,8 +46,8 @@ public final class ProductVariationStore: Store {
             updateProductVariation(productVariation: productVariation, onCompletion: onCompletion)
         case .requestMissingVariations(let order, let onCompletion):
             requestMissingVariations(for: order, onCompletion: onCompletion)
-        case .deleteProductVariation(let siteID, let productID, let variationID, let onCompletion):
-            deleteProductVariation(siteID: siteID, productID: productID, variationID: variationID, onCompletion: onCompletion)
+        case .deleteProductVariation(let productVariation, let onCompletion):
+            deleteProductVariation(productVariation: productVariation, onCompletion: onCompletion)
         }
     }
 }
@@ -207,11 +207,10 @@ private extension ProductVariationStore {
 
     /// Deletes the product variation.
     ///
-    func deleteProductVariation(siteID: Int64,
-                                productID: Int64,
-                                variationID: Int64,
-                                onCompletion: @escaping (Result<ProductVariation, ProductUpdateError>) -> Void) {
-        remote.deleteProductVariation(siteID: siteID, productID: productID, variationID: variationID) { [weak self] result in
+    func deleteProductVariation(productVariation: ProductVariation, onCompletion: @escaping (Result<ProductVariation, ProductUpdateError>) -> Void) {
+        remote.deleteProductVariation(siteID: productVariation.siteID,
+                                      productID: productVariation.productID,
+                                      variationID: productVariation.productVariationID) { [weak self] result in
             guard let self = self else {
                 return
             }
@@ -219,7 +218,7 @@ private extension ProductVariationStore {
             case .failure(let error):
                 onCompletion(.failure(ProductUpdateError(error: error)))
             case .success(let productVariation):
-                self.deleteStoredProductVariation(siteID: siteID, productVariationID: variationID)
+                self.deleteStoredProductVariation(siteID: productVariation.siteID, productVariationID: productVariation.productVariationID)
                 onCompletion(.success(productVariation))
             }
         }

@@ -691,9 +691,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
         // When
         let result: Result<Yosemite.ProductVariation, ProductUpdateError> = waitFor { promise in
-            let action = ProductVariationAction.deleteProductVariation(siteID: self.sampleSiteID,
-                                                                       productID: self.sampleProductID,
-                                                                       variationID: sampleProductVariationID) { result in
+            let action = ProductVariationAction.deleteProductVariation(productVariation: sampleVariation) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -711,9 +709,10 @@ final class ProductVariationStoreTests: XCTestCase {
         let remote = MockProductVariationsRemote()
         let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
         let sampleProductVariationID: Int64 = 1275
-        storageManager.insertSampleProductVariation(readOnlyProductVariation: sampleProductVariation(siteID: sampleSiteID,
-                                                                                                     productID: sampleProductID,
-                                                                                                     id: sampleProductVariationID))
+        let sampleVariation = sampleProductVariation(siteID: sampleSiteID,
+                                                     productID: sampleProductID,
+                                                     id: sampleProductVariationID)
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: sampleVariation)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
         remote.whenDeletingProductVariation(siteID: sampleSiteID,
                                             productID: sampleProductID,
@@ -722,9 +721,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
         // When
         let result: Result<Yosemite.ProductVariation, ProductUpdateError> = waitFor { promise in
-            let action = ProductVariationAction.deleteProductVariation(siteID: self.sampleSiteID,
-                                                                       productID: self.sampleProductID,
-                                                                       variationID: sampleProductVariationID) { result in
+            let action = ProductVariationAction.deleteProductVariation(productVariation: sampleVariation) { result in
                 promise(result)
             }
             store.onAction(action)

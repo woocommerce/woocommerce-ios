@@ -84,7 +84,7 @@ private extension AddAttributeOptionsViewController {
     }
 
     func createNextButton(enabled: Bool) -> UIBarButtonItem {
-        let button = UIBarButtonItem(title: Localization.nextNavBarButton, style: .plain, target: self, action: #selector(nextButtonPressed(_:)))
+        let button = UIBarButtonItem(title: Localization.nextNavBarButton, style: .plain, target: self, action: #selector(moreButtonPressed(_:)))
         button.isEnabled = enabled
         return button
     }
@@ -346,7 +346,21 @@ extension AddAttributeOptionsViewController {
     }
 
     @objc private func moreButtonPressed(_ sender: UIBarButtonItem) {
-        // TODO: Show Edit action sheet
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        let removeAction = UIAlertAction(title: Localization.removeAction, style: .default) { [weak self] _ in
+            // TODO: Remove
+        }
+        actionSheet.addAction(removeAction)
+
+        let cancelAction = UIAlertAction(title: Localization.cancelAction, style: .cancel)
+        actionSheet.addAction(cancelAction)
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.barButtonItem = sender
+
+        present(actionSheet, animated: true)
     }
 }
 
@@ -387,5 +401,8 @@ private extension AddAttributeOptionsViewController {
                                                             comment: "Placeholder of cell presenting the title of the new attribute option.")
         static let updateAttributeError = NSLocalizedString("The attribute couldn't be saved.",
                                                             comment: "Error title when trying to update or create an attribute remotely.")
+
+        static let removeAction = NSLocalizedString("Remove", comment: "Title for removing an attribute in the edit attribute action sheet.")
+        static let cancelAction = NSLocalizedString("Cancel", comment: "Title for canceling the edit attribute action sheet.")
     }
 }

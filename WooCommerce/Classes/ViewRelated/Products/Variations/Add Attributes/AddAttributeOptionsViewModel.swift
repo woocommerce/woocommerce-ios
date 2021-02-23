@@ -251,7 +251,17 @@ private extension AddAttributeOptionsViewModel {
             AddAttributeOptionsViewModel.Row.selectedOptions(name: option.name)
         }
 
-        return Section(header: Localization.headerSelectedOptions, footer: nil, rows: rows, allowsReorder: true, allowsSelection: false)
+        // Only allow reorder for local attributes(existing and new)
+        let allowsReorder: Bool = {
+            switch attribute {
+            case .new:
+                return true
+            case let .existing(productAttribute):
+                return productAttribute.isLocal
+            }
+        }()
+
+        return Section(header: Localization.headerSelectedOptions, footer: nil, rows: rows, allowsReorder: allowsReorder, allowsSelection: false)
     }
 
     func createExistingSection() -> Section? {

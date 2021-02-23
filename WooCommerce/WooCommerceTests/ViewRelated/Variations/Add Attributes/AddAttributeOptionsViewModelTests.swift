@@ -429,6 +429,43 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
             AddAttributeOptionsViewController.Row.selectedOptions(name: "L")
         ])
     }
+
+    func test_new_attribute_should_allow_reorder() throws {
+        // Given
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName))
+
+        // When
+        viewModel.addNewOption(name: "Option 1")
+        viewModel.addNewOption(name: "Option 2")
+
+        // Then
+        let selectedSection = try XCTUnwrap(viewModel.sections.last)
+        XCTAssertTrue(selectedSection.allowsReorder)
+    }
+
+    func test_local_attribute_should_allow_reorder() throws {
+        // Given, When
+        let attribute = sampleAttribute(attributeID: 0, name: "Color", options: ["Green", "Blue", "Red"])
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: attribute))
+
+
+        // Then
+        let selectedSection = try XCTUnwrap(viewModel.sections.last)
+        XCTAssertTrue(selectedSection.allowsReorder)
+        XCTAssertTrue(attribute.isLocal)
+    }
+
+    func test_global_attribute_should_not_allow_reorder() throws {
+        // Given, When
+        let attribute = sampleAttribute(name: "Color", options: ["Green", "Blue", "Red"])
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: attribute))
+
+
+        // Then
+        let selectedSection = try XCTUnwrap(viewModel.sections.last)
+        XCTAssertFalse(selectedSection.allowsReorder)
+        XCTAssertTrue(attribute.isGlobal)
+    }
 }
 
 // MARK: Helpers

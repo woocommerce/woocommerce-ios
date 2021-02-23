@@ -28,4 +28,8 @@ public enum ProductVariationAction: Action {
     /// Requests the variations in a specified Order that have not been fetched.
     ///
     case requestMissingVariations(for: Order, onCompletion: (Error?) -> Void)
+
+    /// Delete an existing ProductVariation.
+    ///
+    case deleteProductVariation(siteID: Int64, productID: Int64, variationID: Int64, onCompletion: (Result<ProductVariation, ProductUpdateError>) -> Void)
 }

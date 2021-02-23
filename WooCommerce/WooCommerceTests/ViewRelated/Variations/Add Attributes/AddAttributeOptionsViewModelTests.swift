@@ -74,6 +74,22 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isNextButtonEnabled)
     }
 
+    func test_more_button_is_not_visible_when_editing_is_disabled() {
+        // Given, When
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName), allowsEditing: false)
+
+        // Then
+        XCTAssertFalse(viewModel.showMoreButton)
+    }
+
+    func test_more_button_is_visible_when_editing_is_enabled() {
+        // Given, When
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName), allowsEditing: true)
+
+        // Then
+        XCTAssertTrue(viewModel.showMoreButton)
+    }
+
     func test_empty_names_are_not_added_as_options() throws {
         // Given
         let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName))

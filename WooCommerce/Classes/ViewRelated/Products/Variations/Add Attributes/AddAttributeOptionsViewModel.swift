@@ -61,6 +61,12 @@ final class AddAttributeOptionsViewModel {
         return state.selectedOptions.isNotEmpty && optionsToSubmit != attribute.previouslySelectedOptions
     }
 
+    /// Defines the more(...) button visibility
+    ///
+    var showMoreButton: Bool {
+        allowsEditing
+    }
+
     /// Defines ghost cells visibility
     ///
     var showGhostTableView: Bool {
@@ -84,6 +90,10 @@ final class AddAttributeOptionsViewModel {
     /// Main attribute dependency.
     ///
     private let attribute: Attribute
+
+    /// Main allows editing dependency.
+    ///
+    private let allowsEditing: Bool
 
     /// When an attribute exists, returns an already configured `ResultsController`
     /// When there isn't an existing attribute, returns a dummy/un-initialized `ResultsController`
@@ -127,10 +137,12 @@ final class AddAttributeOptionsViewModel {
 
     init(product: Product,
          attribute: Attribute,
+         allowsEditing: Bool = false,
          stores: StoresManager = ServiceLocator.stores,
          viewStorage: StorageManagerType = ServiceLocator.storageManager) {
         self.product = product
         self.attribute = attribute
+        self.allowsEditing = allowsEditing
         self.stores = stores
         self.viewStorage = viewStorage
 

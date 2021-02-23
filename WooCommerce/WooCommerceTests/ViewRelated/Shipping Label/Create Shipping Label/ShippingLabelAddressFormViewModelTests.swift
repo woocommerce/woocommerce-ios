@@ -56,12 +56,12 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
     func test_sections_are_returned_correctly_if_an_address_validation_error_occurs() {
         // Given
         let shippingAddress = MockShippingLabelAddress.sampleAddress()
-
-        // When
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let validationError = ShippingLabelAddressValidationError(addressError: "Error", generalError: nil)
         let expectedValidationResponse = ShippingLabelAddressValidationResponse(address: nil,
                                                                                 errors: validationError)
+
+        // When
         stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
             switch action {
             case let .validateAddress(_, _, onCompletion):

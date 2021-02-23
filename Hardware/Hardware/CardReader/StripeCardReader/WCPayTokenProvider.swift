@@ -5,7 +5,7 @@ import StripeTerminal
 /// Tokens can be "live" or "test", depending on wheter WCPay
 /// is set for live or test mode.
 public final class WCPayTokenProvider: ConnectionTokenProvider {
-    private let mockToken = "mock_token"
+    private let mockToken = "grab a token from the test site"
 
     public init() { }
 

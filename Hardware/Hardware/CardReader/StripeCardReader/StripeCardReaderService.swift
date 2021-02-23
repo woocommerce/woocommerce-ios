@@ -138,14 +138,18 @@ extension StripeCardReaderService: CardReaderService {
 
             Terminal.shared.connectReader(stripeReader) { [weak self] (reader, error) in
                 guard let self = self else {
+                    print("==== no self")
                     return
                 }
 
                 if let _ = error {
+                    print("==== there is an error ", error)
+                    print("==== there is a reader ", reader)
                     promise(Result.failure(CardReaderServiceError.connection))
                 }
 
                 if let reader = reader {
+                    print("==== everything went well")
                     self.connectedReadersSubject.send([CardReader(reader: reader)])
                     promise(Result.success(()))
                 }

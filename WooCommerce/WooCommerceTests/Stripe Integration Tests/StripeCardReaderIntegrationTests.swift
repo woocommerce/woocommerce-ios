@@ -73,4 +73,41 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
         wait(for: [discoveredReaders], timeout: Constants.expectationTimeout)
     }
 
+    func test_connecting_to_reader_works() {
+        let discoveredReaders = expectation(description: "Connected to reader")
+
+        let readerService = ServiceLocator.cardReaderService
+
+        readerService.discoveredReaders.sink { completion in
+            readerService.cancelDiscovery()
+            discoveredReaders.fulfill()
+        } receiveValue: { readers in
+            // The Stripe Terminal SDK published an empty list of discovered readers first
+            // and it will continue publishing as new readers are discovered.
+            // So we ignore the first call to receiveValue, and perform the test on the first call to
+            // receive value that is receiving a non-empty array.
+            guard !readers.isEmpty else {
+                return
+            }
+
+            // There should be at least one non nil reader
+            guard let firstReader = readers.first else {
+                return
+            }
+            print("==== testing connection with reader ", firstReader)
+            readerService.connect(firstReader).sink { completion in
+                print("==== completed a")
+                readerService.cancelDiscovery()
+            } receiveValue: { _ in
+                print("==== completed B")
+                readerService.cancelDiscovery()
+                discoveredReaders.fulfill()
+            }.store(in: &self.cancellables)
+
+        }.store(in: &cancellables)
+
+        readerService.start()
+        wait(for: [discoveredReaders], timeout: Constants.expectationTimeout)
+    }
+
 }

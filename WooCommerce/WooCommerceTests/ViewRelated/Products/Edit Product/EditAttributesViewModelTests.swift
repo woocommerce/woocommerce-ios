@@ -69,7 +69,7 @@ final class EditAttributesViewModelTests: XCTestCase {
         let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: false)
 
         // Then
-        XCTAssertTrue(viewModel.attributes.isNotEmpty)
+        XCTAssertEqual(viewModel.attributes.count, 2)
         viewModel.attributes.enumerated().forEach { index, vm in
             XCTAssertEqual(vm.title, viewModel.productAttributeAtIndex(index).name)
         }

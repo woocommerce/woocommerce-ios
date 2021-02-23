@@ -70,6 +70,8 @@ extension StripeCardReaderService: CardReaderService {
             simulated: true
         )
 
+        // Cancel a previous discovery process if it is still in flight
+        cancelReaderDiscovery()
         // Enough code to pass a test
         discoveryCancellable = Terminal.shared.discoverReaders(config, delegate: self, completion: { error in
             if let error = error {
@@ -144,5 +146,30 @@ extension StripeCardReaderService: DiscoveryDelegate {
         }
 
         discoveredReadersSubject.send(wooReaders)
+    }
+}
+
+
+private extension StripeCardReaderService {
+    func cancelReaderDiscovery() {
+        discoveryCancellable?.cancel { [weak self] error in
+            guard let self = self,
+                  let error = error else {
+                return
+            }
+
+            self.handleError(error)
+        }
+    }
+
+    func resetDiscoveredReadersSubject() {
+        discoveredReadersSubject.send([])
+    }
+}
+
+
+private extension StripeCardReaderService {
+    func handleError(_ error: Error) {
+        // Empty for now. Will be implemented later
     }
 }

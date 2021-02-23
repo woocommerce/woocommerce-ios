@@ -8,8 +8,8 @@ final class ShippingLabelAddressFormViewModel: NSObject {
 
     let siteID: Int64
     let type: ShipType
-    private (set) var address: ShippingLabelAddress?
-    var addressValidationError: ShippingLabelAddressValidationError?
+    private(set) var address: ShippingLabelAddress?
+    private(set) var addressValidationError: ShippingLabelAddressValidationError?
 
     private let stores: StoresManager
     private var addressIsValidated: Bool = false

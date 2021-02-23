@@ -1061,7 +1061,7 @@ final class ProductStoreTests: XCTestCase {
         let expectedProductSKU = "94115"
         let expectedProductManageStock = true
         let expectedProductSoldIndividually = false
-        let expectedStockQuantity: Int64 = 99
+        let expectedStockQuantity: Decimal = 99
         let expectedBackordersSetting = ProductBackordersSetting.allowed
         let expectedStockStatus = ProductStockStatus.inStock
         let expectedProductRegularPrice = "12.00"

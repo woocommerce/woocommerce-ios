@@ -40,7 +40,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable {
     public let taxClass: String?
 
     public let manageStock: Bool
-    public let stockQuantity: Int64?    // API reports Int or null
+    public let stockQuantity: Decimal?    // Core API reports Int or null; some extensions allow decimal values as well
     public let stockStatus: ProductStockStatus
 
     public let backordersKey: String    // no, notify, yes
@@ -54,6 +54,19 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable {
     public let shippingClassID: Int64
 
     public let menuOrder: Int64
+
+    /// Computed Properties
+    ///
+    /// Whether the product variation has an integer (or nil) stock quantity.
+    /// Decimal (non-integer) stock quantities currently aren't accepted by the Core API.
+    /// Related issue: https://github.com/woocommerce/woocommerce-ios/issues/3494
+    public var hasIntegerStockQuantity: Bool {
+        guard let stockQuantity = stockQuantity else {
+            return true
+        }
+
+        return stockQuantity.isInteger
+    }
 
     /// ProductVariation struct initializer.
     ///
@@ -83,7 +96,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable {
                 taxStatusKey: String,
                 taxClass: String?,
                 manageStock: Bool,
-                stockQuantity: Int64?,
+                stockQuantity: Decimal?,
                 stockStatus: ProductStockStatus,
                 backordersKey: String,
                 backordersAllowed: Bool,
@@ -205,7 +218,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable {
                                                                 })
         ]) ?? false
 
-        let stockQuantity = try container.decodeIfPresent(Int64.self, forKey: .stockQuantity)
+        let stockQuantity = try container.decodeIfPresent(Decimal.self, forKey: .stockQuantity)
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
         let stockStatus = ProductStockStatus(rawValue: stockStatusKey)
         let backordersKey = try container.decode(String.self, forKey: .backordersKey)
@@ -295,7 +308,9 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable {
         try container.encode(sku, forKey: .sku)
         try container.encode(manageStock, forKey: .manageStock)
         try container.encode(stockStatus.rawValue, forKey: .stockStatusKey)
-        try container.encode(stockQuantity, forKey: .stockQuantity)
+        if hasIntegerStockQuantity {
+            try container.encode(stockQuantity, forKey: .stockQuantity)
+        }
         try container.encode(backordersKey, forKey: .backordersKey)
 
         // Variation (Local) Attributes

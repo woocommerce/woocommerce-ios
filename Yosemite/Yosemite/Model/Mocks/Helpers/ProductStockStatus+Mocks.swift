@@ -1,7 +1,7 @@
 import Foundation
 
 extension ProductStockStatus {
-    public static func from(quantity: Int64) -> ProductStockStatus {
+    public static func from(quantity: Decimal) -> ProductStockStatus {
         switch quantity {
             case ..<0:
                 return .onBackOrder

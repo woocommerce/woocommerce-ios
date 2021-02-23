@@ -91,12 +91,13 @@ private extension ProductFormActionsFactory {
         let shouldShowProductTypeRow = formType != .add
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
         let shouldShowDownloadableProduct = product.downloadable
+        let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings(editable: editable),
             shouldShowReviewsRow ? .reviews: nil,
             shouldShowShippingSettingsRow ? .shippingSettings(editable: editable): nil,
-            .inventorySettings(editable: editable),
+            .inventorySettings(editable: canEditInventorySettingsRow),
             .categories(editable: editable),
             .tags(editable: editable),
             shouldShowDownloadableProduct ? .downloadableFiles(editable: editable): nil,
@@ -148,12 +149,13 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForVariableProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowProductTypeRow = formType != .add
+        let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
 
         let actions: [ProductFormEditAction?] = [
             .variations,
             shouldShowReviewsRow ? .reviews: nil,
             .shippingSettings(editable: editable),
-            .inventorySettings(editable: editable),
+            .inventorySettings(editable: canEditInventorySettingsRow),
             .categories(editable: editable),
             .tags(editable: editable),
             .shortDescription(editable: editable),

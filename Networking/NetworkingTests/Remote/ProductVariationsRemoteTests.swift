@@ -76,7 +76,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
             XCTAssertTrue(expectedVariation.downloadable)
 
             XCTAssertTrue(expectedVariation.manageStock)
-            XCTAssertEqual(expectedVariation.stockQuantity, 16)
+            XCTAssertEqual(expectedVariation.stockQuantity, 16.5)
             XCTAssertEqual(expectedVariation.backordersKey, "notify")
             XCTAssertTrue(expectedVariation.backordersAllowed)
             XCTAssertFalse(expectedVariation.backordered)

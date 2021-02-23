@@ -11,7 +11,7 @@ final class MockProduct {
                  productStatus: ProductStatus = .publish,
                  productType: ProductType = .simple,
                  sku: String? = nil,
-                 stockQuantity: Int64? = nil,
+                 stockQuantity: Decimal? = nil,
                  stockStatus: ProductStockStatus = .inStock,
                  variations: [Int64] = [],
                  virtual: Bool = true,

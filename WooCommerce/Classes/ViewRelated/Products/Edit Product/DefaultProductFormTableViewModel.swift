@@ -206,7 +206,8 @@ private extension DefaultProductFormTableViewModel {
         }
 
         if let stockQuantity = product.stockQuantity, product.manageStock {
-            inventoryDetails.append(String.localizedStringWithFormat(Localization.stockQuantityFormat, stockQuantity))
+            let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSDecimalNumber, number: .decimal)
+            inventoryDetails.append(String.localizedStringWithFormat(Localization.stockQuantityFormat, localizedStockQuantity))
         } else if product.manageStock == false && product.isStockStatusEnabled() {
             let stockStatus = product.stockStatus
             inventoryDetails.append(stockStatus.description)
@@ -524,7 +525,7 @@ private extension DefaultProductFormTableViewModel {
         // Inventory
         static let skuFormat = NSLocalizedString("SKU: %@",
                                                  comment: "Format of the SKU on the Inventory Settings row")
-        static let stockQuantityFormat = NSLocalizedString("Quantity: %ld",
+        static let stockQuantityFormat = NSLocalizedString("Quantity: %@",
                                                            comment: "Format of the stock quantity on the Inventory Settings row")
 
         // Product Type

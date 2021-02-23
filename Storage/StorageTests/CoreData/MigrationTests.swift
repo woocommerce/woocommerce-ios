@@ -555,6 +555,31 @@ final class MigrationTests: XCTestCase {
         migratedSiteVisitStats.setValue("Rossi", forKey: "lastName")
         XCTAssertNoThrow(try targetContext.save())
     }
+
+    func test_migrating_from_45_to_46_migrates_ProductVariation_stockQuantity_from_Int64_to_Decimal() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 45")
+        let sourceContext = sourceContainer.viewContext
+
+        let productVariation = insertProductVariation(to: sourceContext)
+        productVariation.setValue(10, forKey: "stockQuantity")
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "ProductVariation"), 1)
+        XCTAssertEqual(productVariation.entity.attributesByName["stockQuantity"]?.attributeType, .integer64AttributeType)
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 46")
+        let targetContext = targetContainer.viewContext
+
+        // Assert
+        XCTAssertEqual(try targetContext.count(entityName: "ProductVariation"), 1)
+
+        // Make sure stock quantity value is migrated as Decimal attribute type
+        let migratedVariation = try XCTUnwrap(targetContext.first(entityName: "ProductVariation"))
+        XCTAssertEqual(migratedVariation.entity.attributesByName["stockQuantity"]?.attributeType, .decimalAttributeType)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

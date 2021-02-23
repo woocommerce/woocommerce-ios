@@ -71,7 +71,6 @@ extension StripeCardReaderService: CardReaderService {
         )
 
         // Enough code to pass a test
-        print("=== creating cancellable")
         discoveryCancellable = Terminal.shared.discoverReaders(config, delegate: self, completion: { error in
             if let error = error {
                 print("***** discoverReaders failed: \(error)")
@@ -79,8 +78,6 @@ extension StripeCardReaderService: CardReaderService {
                 print("***** discoverReaders succeeded")
             }
         })
-
-        print("=== creating cancellable done")
     }
 
     public func cancelDiscovery() {
@@ -174,17 +171,12 @@ extension StripeCardReaderService: DiscoveryDelegate {
 
 private extension StripeCardReaderService {
     func cancelReaderDiscovery() {
-        print("==== starting cancel discovery")
-        print("==== cancellable ", discoveryCancellable)
         discoveryCancellable?.cancel { [weak self] error in
-            print("==== cancelling discovery is supposed to be complete")
             guard let self = self,
                   let error = error else {
-                print("==== cancelling discovery no error")
                 return
             }
-            print("==== cancelling discovery with error")
-            self.handleError(error)
+            self.internalError(error)
         }
     }
 
@@ -195,7 +187,7 @@ private extension StripeCardReaderService {
 
 
 private extension StripeCardReaderService {
-    func handleError(_ error: Error) {
+    func internalError(_ error: Error) {
         // Empty for now. Will be implemented later
     }
 }

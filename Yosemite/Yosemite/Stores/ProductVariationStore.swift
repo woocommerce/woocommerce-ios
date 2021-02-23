@@ -213,11 +213,11 @@ private extension ProductVariationStore {
                                       variationID: productVariation.productVariationID) { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case .failure(let error):
-                onCompletion(.failure(ProductUpdateError(error: error)))
             case .success(let productVariation):
                 self.deleteStoredProductVariation(siteID: productVariation.siteID, productVariationID: productVariation.productVariationID)
                 onCompletion(.success(productVariation))
+            case .failure(let error):
+                onCompletion(.failure(ProductUpdateError(error: error)))
             }
         }
     }

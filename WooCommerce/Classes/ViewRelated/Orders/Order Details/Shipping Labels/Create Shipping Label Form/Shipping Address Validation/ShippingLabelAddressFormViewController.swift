@@ -111,6 +111,7 @@ private extension ShippingLabelAddressFormViewController {
 private extension ShippingLabelAddressFormViewController {
 
     @objc func doneButtonTapped() {
+        // TODO: after the validation, return to the previous controller passing the new address.
         viewModel.validateAddress { [weak self] (success, error) in
             self?.updateTopBannerView()
             self?.tableView.reloadData()

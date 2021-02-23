@@ -21,7 +21,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
 
 
         // When
-        let shippingLabelFormViewModel = ShippingLabelFormViewModel(originAddress: address, destinationAddress: nil)
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(siteID: 10, originAddress: address, destinationAddress: nil)
 
         // Then
         let originAddress = shippingLabelFormViewModel.originAddress

@@ -17,7 +17,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
                                                    city: "",
                                                    postcode: "")
 
-        let viewModel = ShippingLabelAddressFormViewModel(type: .origin, address: shippingAddress)
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress)
 
         // When
         viewModel.handleAddressValueChanges(row: .name, newValue: "Skylar Ferry")

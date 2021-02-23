@@ -8,10 +8,14 @@ final class ShippingLabelFormViewModel {
     typealias Section = ShippingLabelFormViewController.Section
     typealias Row = ShippingLabelFormViewController.Row
 
+    let siteID: Int64
     let originAddress: ShippingLabelAddress?
     let destinationAddress: ShippingLabelAddress?
 
-    init(originAddress: Address?, destinationAddress: Address?) {
+    init(siteID: Int64, originAddress: Address?, destinationAddress: Address?) {
+
+        self.siteID = siteID
+
         let accountSettings = ShippingLabelFormViewModel.getStoredAccountSettings()
         let company = ServiceLocator.stores.sessionManager.defaultSite?.name
         let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount

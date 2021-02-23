@@ -48,7 +48,16 @@ final class ShippingLabelAddressFormViewModel: NSObject {
     }
 
     var sections: [Section] {
-        return [Section(rows: [.name, .company, .phone, .address, .address2, .city, .postcode, .state, .country])]
+        var rows: [Row] = [.name, .company, .phone, .address, .address2, .city, .postcode, .state, .country]
+        if addressValidationError?.addressError != nil {
+            if let addressIndex = rows.firstIndex(where: { $0 == .address }) {
+                rows.insert(.fieldError, at: rows.index(after: addressIndex))
+            }
+        }
+        else {
+            rows.removeAll(where: { $0 == .fieldError })
+        }
+        return [Section(rows: rows)]
     }
 }
 

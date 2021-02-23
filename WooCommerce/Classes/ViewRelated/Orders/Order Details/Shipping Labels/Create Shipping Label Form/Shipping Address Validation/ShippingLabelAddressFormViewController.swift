@@ -81,8 +81,8 @@ private extension ShippingLabelAddressFormViewController {
 private extension ShippingLabelAddressFormViewController {
 
     @objc func doneButtonTapped() {
-        viewModel.validateAddress { (success, error) in
-
+        viewModel.validateAddress { [weak self] (success, error) in
+            self?.tableView.reloadData()
         }
     }
 
@@ -205,6 +205,7 @@ private extension ShippingLabelAddressFormViewController {
     func configureFieldError(cell: BasicTableViewCell, row: Row) {
         cell.textLabel?.text = viewModel.addressValidationError?.addressError
         cell.textLabel?.textColor = .error
+        cell.backgroundColor = .listBackground
     }
 
     func configureCity(cell: TitleAndTextFieldTableViewCell, row: Row) {

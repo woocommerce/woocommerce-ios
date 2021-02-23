@@ -82,7 +82,7 @@ private extension ShippingLabelAddressFormViewController {
 
     @objc func doneButtonTapped() {
         viewModel.validateAddress { (success, error) in
-            
+
         }
     }
 

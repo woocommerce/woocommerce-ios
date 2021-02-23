@@ -16,8 +16,8 @@ final class ShippingLabelAddressFormViewController: UIViewController {
 
     /// Init
     ///
-    init(type: ShipType, address: ShippingLabelAddress?) {
-        viewModel = ShippingLabelAddressFormViewModel(type: type, address: address)
+    init(siteID: Int64, type: ShipType, address: ShippingLabelAddress?) {
+        viewModel = ShippingLabelAddressFormViewModel(siteID: siteID, type: type, address: address)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -41,6 +41,9 @@ private extension ShippingLabelAddressFormViewController {
 
     func configureNavigationBar() {
         title = viewModel.type == .origin ? Localization.titleViewShipFrom : Localization.titleViewShipTo
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
+
         removeNavigationBackBarButtonText()
     }
 
@@ -71,6 +74,18 @@ private extension ShippingLabelAddressFormViewController {
         //confirmButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
         confirmButton.applySecondaryButtonStyle()
     }
+}
+
+// MARK: - Actions
+//
+private extension ShippingLabelAddressFormViewController {
+
+    @objc func doneButtonTapped() {
+        viewModel.validateAddress { (success, error) in
+            
+        }
+    }
+
 }
 
 // MARK: - UITableViewDataSource Conformance

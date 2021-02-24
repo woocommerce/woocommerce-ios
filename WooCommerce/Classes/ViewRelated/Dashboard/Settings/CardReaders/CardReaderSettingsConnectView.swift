@@ -11,6 +11,16 @@ final class CardReaderSettingsConnectView: NSObject {
         rows = [.connectHeader, .connectImage, .connectHelp1, .connectHelp2, .connectHelp3, .connectButton, .connectLearnMore]
     }
 
+    public func rowTypes() -> [UITableViewCell.Type] {
+        return [
+            ButtonTableViewCell.self,
+            ImageTableViewCell.self,
+            LearnMoreTableViewCell.self,
+            NumberedListItemTableViewCell.self,
+            TitleTableViewCell.self
+        ]
+    }
+
     private func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as TitleTableViewCell where row == .connectHeader:
@@ -95,7 +105,6 @@ final class CardReaderSettingsConnectView: NSObject {
         cell.selectionStyle = .none
     }
 
-    // TODO - reconsider use of TextViewTableViewCell - might want a InfoLinkTableViewCell instead
     private func configureLearnMore(cell: LearnMoreTableViewCell) {
         cell.learnMoreLabel.text = NSLocalizedString(
             "Learn more about accepting payments with your mobile device and ordering card readers",
@@ -104,11 +113,6 @@ final class CardReaderSettingsConnectView: NSObject {
         cell.hideSeparator()
         cell.selectionStyle = .none
     }
-}
-
-private struct Section {
-    let title: String?
-    let rows: [Row]
 }
 
 private enum Row: CaseIterable {
@@ -155,10 +159,6 @@ private extension CardReaderSettingsConnectView {
 // MARK: - UITableViewDataSource Conformance
 //
 extension CardReaderSettingsConnectView: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return rows.count
     }

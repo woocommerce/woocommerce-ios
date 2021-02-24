@@ -14,7 +14,6 @@ final class CardReaderSettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigation()
-
         setTableSource()
 
         self.viewmodel = CardReaderSettingsViewModel()
@@ -69,13 +68,11 @@ final class CardReaderSettingsViewController: UIViewController {
         connectView.onPressedConnect = {
             self.viewmodel.startSearch()
         }
-        tableView.registerNib(for: BasicTableViewCell.self) // TODO move into connect
-        tableView.registerNib(for: ButtonTableViewCell.self) // TODO move into connect
-        tableView.registerNib(for: TitleTableViewCell.self) // TODO move into connect
-        tableView.registerNib(for: ImageTableViewCell.self) // TODO move
-        tableView.registerNib(for: NumberedListItemTableViewCell.self) // TODO move
-        tableView.registerNib(for: TextViewTableViewCell.self) // TODO move
-        tableView.registerNib(for: LearnMoreTableViewCell.self) // TODO move
+
+        for rowType in connectView.rowTypes() {
+            tableView.registerNib(for: rowType)
+        }
+
         tableView.dataSource = connectView
         tableView.delegate = connectView
         tableView.reloadData()

@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a Shipping Label Address.
 ///
-public struct ShippingLabelAddress: Equatable {
+public struct ShippingLabelAddress: GeneratedCopiable, Equatable {
     /// The name of the company at the address.
     public let company: String
 

@@ -487,3 +487,39 @@ extension ShippingLabel {
         )
     }
 }
+
+extension ShippingLabelAddress {
+    public func copy(
+        company: CopiableProp<String> = .copy,
+        name: CopiableProp<String> = .copy,
+        phone: CopiableProp<String> = .copy,
+        country: CopiableProp<String> = .copy,
+        state: CopiableProp<String> = .copy,
+        address1: CopiableProp<String> = .copy,
+        address2: CopiableProp<String> = .copy,
+        city: CopiableProp<String> = .copy,
+        postcode: CopiableProp<String> = .copy
+    ) -> ShippingLabelAddress {
+        let company = company ?? self.company
+        let name = name ?? self.name
+        let phone = phone ?? self.phone
+        let country = country ?? self.country
+        let state = state ?? self.state
+        let address1 = address1 ?? self.address1
+        let address2 = address2 ?? self.address2
+        let city = city ?? self.city
+        let postcode = postcode ?? self.postcode
+
+        return ShippingLabelAddress(
+            company: company,
+            name: name,
+            phone: phone,
+            country: country,
+            state: state,
+            address1: address1,
+            address2: address2,
+            city: city,
+            postcode: postcode
+        )
+    }
+}

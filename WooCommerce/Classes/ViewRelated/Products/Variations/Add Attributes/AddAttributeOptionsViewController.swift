@@ -390,7 +390,7 @@ extension AddAttributeOptionsViewController {
             case let .success(product):
                 self.onCompletion(product)
             case let .failure(error):
-                // TODO: Show error notice
+                self.noticePresenter.enqueue(notice: .init(title: Localization.removeAttributeError, feedbackType: .error))
                 DDLogError(error.localizedDescription)
             }
         }
@@ -434,6 +434,8 @@ private extension AddAttributeOptionsViewController {
                                                             comment: "Placeholder of cell presenting the title of the new attribute option.")
         static let updateAttributeError = NSLocalizedString("The attribute couldn't be saved.",
                                                             comment: "Error title when trying to update or create an attribute remotely.")
+        static let removeAttributeError = NSLocalizedString("The attribute couldn't be removed.",
+                                                            comment: "Error title when trying to remove an attribute remotely.")
 
         static let removeAction = NSLocalizedString("Remove", comment: "Title for removing an attribute in the edit attribute action sheet.")
         static let cancelAction = NSLocalizedString("Cancel", comment: "Title for canceling the edit attribute action sheet.")

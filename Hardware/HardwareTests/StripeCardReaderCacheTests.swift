@@ -3,7 +3,7 @@ import XCTest
 
 final class StripeCardReaderCacheTests: XCTestCase {
     func test_cache_is_initialized_empty() {
-        let cache = StripeCardReaderCache()
+        let cache = StripeCardReaderDiscoveryCache()
 
         XCTAssertTrue(cache.cachedReaders.isEmpty)
     }
@@ -11,7 +11,7 @@ final class StripeCardReaderCacheTests: XCTestCase {
     func test_cache_contains_cached_readers_after_adding_one_reader() {
         let mockReader = MockStripeCardReader.bbpos()
 
-        let cache = StripeCardReaderCache()
+        let cache = StripeCardReaderDiscoveryCache()
         cache.insert(mockReader)
 
         XCTAssertEqual(cache.cachedReaders.count, 1)
@@ -21,7 +21,7 @@ final class StripeCardReaderCacheTests: XCTestCase {
     func test_cache_contains_cached_readers_after_adding_an_array_of_readers() {
         let mockReader = MockStripeCardReader.bbpos()
 
-        let cache = StripeCardReaderCache()
+        let cache = StripeCardReaderDiscoveryCache()
         cache.insert([mockReader])
 
         XCTAssertEqual(cache.cachedReaders.count, 1)
@@ -32,7 +32,7 @@ final class StripeCardReaderCacheTests: XCTestCase {
         let mockStripeBBPOSReader = MockStripeCardReader.bbpos()
         let mockStripeVerifoneReader = MockStripeCardReader.verifone()
 
-        let cache = StripeCardReaderCache()
+        let cache = StripeCardReaderDiscoveryCache()
         cache.insert([mockStripeBBPOSReader, mockStripeVerifoneReader, mockStripeVerifoneReader, mockStripeBBPOSReader])
 
         let cardReader = CardReader(serial: mockStripeBBPOSReader.serialNumber,
@@ -51,7 +51,7 @@ final class StripeCardReaderCacheTests: XCTestCase {
     func test_cache_clears_cache() {
         let mockReader = MockStripeCardReader.bbpos()
 
-        let cache = StripeCardReaderCache()
+        let cache = StripeCardReaderDiscoveryCache()
         cache.insert([mockReader])
 
         cache.clear()

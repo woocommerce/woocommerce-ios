@@ -16,7 +16,7 @@ public final class StripeCardReaderService: NSObject {
     /// Volatile, in-memory cache of discovered readers. It has to be cleared after we connect to a reader
     /// see
     ///  https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPDiscoveryDelegate.html#/c:objc(pl)SCPDiscoveryDelegate(im)terminal:didUpdateDiscoveredReaders:
-    private let discoveredStripeReadersCache = StripeCardReaderCache()
+    private let discoveredStripeReadersCache = StripeCardReaderDiscoveryCache()
 
     public init(tokenProvider: ConnectionTokenProvider) {
         // Per Stripe SDK's instructions, the first we need to do is set the token provider, before calling `shared`

@@ -1,7 +1,7 @@
 import StripeTerminal
 
 /// In memory, volatile cache
-final class StripeCardReaderCache {
+final class StripeCardReaderDiscoveryCache {
     /// CachedReaders. We will expose it for now,ntil we have some more clarity on what we
     /// actually need from this class API.
     /// Typed as StripeCardReader so that we can unit test this class, which makes the class

@@ -25,7 +25,7 @@ final class CardReaderSettingsConnectView: NSObject {
             configureHelp3(cell: cell)
         case let cell as ButtonTableViewCell where row == .connectButton:
             configureButton(cell: cell)
-        case let cell as TextViewTableViewCell where row == .connectLearnMore:
+        case let cell as LearnMoreTableViewCell where row == .connectLearnMore:
             configureLearnMore(cell: cell)
         default:
             fatalError()
@@ -38,11 +38,13 @@ final class CardReaderSettingsConnectView: NSObject {
             comment: "Settings > Manage Card Reader > Prompt user to connect their first reader"
         )
         cell.hideSeparator()
+        cell.selectionStyle = .none
     }
 
     private func configureImage(cell: ImageTableViewCell) {
         cell.detailImageView?.image = UIImage(named: "card-reader-connect")
         cell.hideSeparator()
+        cell.selectionStyle = .none
     }
 
     private func configureHelp1(cell: NumberedListItemTableViewCell) {
@@ -54,7 +56,7 @@ final class CardReaderSettingsConnectView: NSObject {
             "Make sure card reader is charged",
             comment: "Settings > Manage Card Reader > Connect > Help hint for connecting reader")
         cell.hideSeparator()
-        //cell.textLabel?.numberOfLines = 0
+        cell.selectionStyle = .none
     }
 
     private func configureHelp2(cell: NumberedListItemTableViewCell) {
@@ -66,7 +68,7 @@ final class CardReaderSettingsConnectView: NSObject {
             "Turn card reader on and place it next to mobile device",
             comment: "Settings > Manage Card Reader > Connect > Help hint for connecting reader")
         cell.hideSeparator()
-        //cell.textLabel?.numberOfLines = 0
+        cell.selectionStyle = .none
     }
 
     private func configureHelp3(cell: NumberedListItemTableViewCell) {
@@ -78,8 +80,8 @@ final class CardReaderSettingsConnectView: NSObject {
             "Turn mobile device Bluetooth on",
             comment: "Settings > Manage Card Reader > Connect > Help hint for connecting reader")
         cell.hideSeparator()
-        //cell.textLabel?.numberOfLines = 0
-    }
+        cell.selectionStyle = .none
+   }
 
     private func configureButton(cell: ButtonTableViewCell) {
         let buttonTitle = NSLocalizedString(
@@ -90,26 +92,17 @@ final class CardReaderSettingsConnectView: NSObject {
             self?.onPressedConnect?()
         }
         cell.hideSeparator()
+        cell.selectionStyle = .none
     }
 
     // TODO - reconsider use of TextViewTableViewCell - might want a InfoLinkTableViewCell instead
-    private func configureLearnMore(cell: TextViewTableViewCell) {
-        let iconAccessibilityLabel = NSLocalizedString(
-            "Information",
-            comment: "Spoken accessibility label for an icon image that indicates information is present"
-        )
-        let learnMoreText = NSLocalizedString(
+    private func configureLearnMore(cell: LearnMoreTableViewCell) {
+        cell.learnMoreLabel.text = NSLocalizedString(
             "Learn more about accepting payments with your mobile device and ordering card readers",
             comment: "Settings > Manage Card Reader > Connect > A prompt for new users to start accepting mobile payments"
         )
-        let viewModel = TextViewTableViewCell.ViewModel(
-            icon: .infoOutlineImage,
-            iconAccessibilityLabel: iconAccessibilityLabel,
-            iconTint: .text,
-            text: learnMoreText
-        )
-        cell.configure(with: viewModel)
         cell.hideSeparator()
+        cell.selectionStyle = .none
     }
 }
 
@@ -142,7 +135,7 @@ private enum Row: CaseIterable {
         case .connectButton:
             return ButtonTableViewCell.self
         case .connectLearnMore:
-            return TextViewTableViewCell.self
+            return LearnMoreTableViewCell.self
         }
     }
 
@@ -178,6 +171,8 @@ extension CardReaderSettingsConnectView: UITableViewDataSource {
     }
 }
 
+// MARK: - UITableViewDelegate Conformance
+//
 extension CardReaderSettingsConnectView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let row = rowAtIndexPath(indexPath)
@@ -188,5 +183,15 @@ extension CardReaderSettingsConnectView: UITableViewDelegate {
             return 70
         }
         return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let row = rowAtIndexPath(indexPath)
+        if row == .connectLearnMore {
+            guard let url = URL(string: "https://woocommerce.com/payments/") else {
+                return
+            }
+            UIApplication.shared.open(url)
+        }
     }
 }

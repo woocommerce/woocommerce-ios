@@ -689,10 +689,14 @@ private extension ProductFormViewController {
 
     func deleteProduct() {
         self.viewModel.deleteProductRemotely { [weak self] result in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
             switch result {
+            case .success:
+                ServiceLocator.analytics.track(.productDetailProductDeleted)
+                // Dismisses the in-progress UI.
+                self.navigationController?.dismiss(animated: true, completion: nil)
+                // Dismiss or Pop the Product Form
+                self.dismissOrPopViewController()
             case .failure(let error):
                 DDLogError("⛔️ Error deleting Product: \(error)")
 
@@ -700,12 +704,6 @@ private extension ProductFormViewController {
                 self.navigationController?.dismiss(animated: true) { [weak self] in
                     self?.displayError(error: error)
                 }
-            case .success:
-                ServiceLocator.analytics.track(.productDetailProductDeleted)
-                // Dismisses the in-progress UI.
-                self.navigationController?.dismiss(animated: true, completion: nil)
-                // Dismiss or Pop the Product Form
-                self.dismissOrPopViewController()
             }
         }
     }

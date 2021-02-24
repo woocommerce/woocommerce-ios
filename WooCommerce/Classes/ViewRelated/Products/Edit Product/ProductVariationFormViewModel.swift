@@ -61,6 +61,7 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     private let parentProductSKU: String?
     private let productImageActionHandler: ProductImageActionHandler
     private let storesManager: StoresManager
+    private let isAddProductVariationsEnabled: Bool
     private var cancellable: ObservationToken?
 
     init(productVariation: EditableProductVariationModel,
@@ -68,11 +69,13 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
          parentProductSKU: String?,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
-         storesManager: StoresManager = ServiceLocator.stores) {
+         storesManager: StoresManager = ServiceLocator.stores,
+         isAddProductVariationsEnabled: Bool) {
         self.allAttributes = allAttributes
         self.parentProductSKU = parentProductSKU
         self.productImageActionHandler = productImageActionHandler
         self.storesManager = storesManager
+        self.isAddProductVariationsEnabled = isAddProductVariationsEnabled
         self.originalProductVariation = productVariation
         self.productVariation = productVariation
         self.formType = formType
@@ -115,7 +118,7 @@ extension ProductVariationFormViewModel {
     }
 
     func canDeleteProduct() -> Bool {
-        false
+        isAddProductVariationsEnabled && formType == .edit
     }
 }
 
@@ -265,9 +268,18 @@ extension ProductVariationFormViewModel {
         storesManager.dispatch(updateAction)
     }
 
-    func deleteProductRemotely(onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
-        // no-op
+    func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {
+        let deleteAction = ProductVariationAction.deleteProductVariation(productVariation: productVariation.productVariation) { result in
+            switch result {
+            case .success:
+                onCompletion(.success(()))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+        storesManager.dispatch(deleteAction)
     }
+
     private func resetProductVariation(_ productVariation: EditableProductVariationModel) {
         originalProductVariation = productVariation
         isUpdateEnabledSubject.send(hasUnsavedChanges())

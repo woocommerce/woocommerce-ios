@@ -163,6 +163,9 @@ private extension TopBannerView {
         titleStackView.axis = .horizontal
         titleStackView.spacing = 16
 
+        // titleStackView will hidden if there is no title
+        titleStackView.isHidden = viewModel.title == nil || viewModel.title?.isEmpty == true
+
         let informationStackView = UIStackView(arrangedSubviews: [titleStackView, infoLabel])
         informationStackView.axis = .vertical
         informationStackView.spacing = 9

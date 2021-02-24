@@ -323,12 +323,12 @@ extension ProductFormViewModel {
         }
     }
 
-    func deleteProductRemotely(onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
+    func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {
         let remoteActionUseCase = ProductFormRemoteActionUseCase()
         remoteActionUseCase.deleteProduct(product: product) { result in
             switch result {
-            case .success(let data):
-                onCompletion(.success(data.product))
+            case .success:
+                onCompletion(.success(()))
             case .failure(let error):
                 onCompletion(.failure(error))
             }

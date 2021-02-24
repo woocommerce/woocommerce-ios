@@ -3,50 +3,45 @@ import XCTest
 
 /// Tests the mapping between PaymentIntent and SCPPaymentIntent
 final class PaymentIntentTests: XCTestCase {
+    private let mockIntent = MockStripePaymentIntent.mock()
+
     func test_intent_maps_id() {
-        let mockIntent = MockStripePaymentIntent.mock()
         let intent = PaymentIntent(intent: mockIntent)
 
         XCTAssertEqual(intent.id, mockIntent.stripeId)
     }
 
     func test_intent_maps_status() {
-        let mockIntent = MockStripePaymentIntent.mock()
         let intent = PaymentIntent(intent: mockIntent)
 
         XCTAssertEqual(intent.status, .succeeded)
     }
 
     func test_intent_maps_date_created() {
-        let mockIntent = MockStripePaymentIntent.mock()
         let intent = PaymentIntent(intent: mockIntent)
 
         XCTAssertEqual(intent.created, mockIntent.created)
     }
 
     func test_intent_maps_amount() {
-        let mockIntent = MockStripePaymentIntent.mock()
         let intent = PaymentIntent(intent: mockIntent)
 
         XCTAssertEqual(intent.amount, mockIntent.amount)
     }
 
     func test_intent_maps_currency() {
-        let mockIntent = MockStripePaymentIntent.mock()
         let intent = PaymentIntent(intent: mockIntent)
 
         XCTAssertEqual(intent.currency, mockIntent.currency)
     }
 
     func test_intent_maps_metadata() {
-        let mockIntent = MockStripePaymentIntent.mock()
         let intent = PaymentIntent(intent: mockIntent)
 
         XCTAssertNil(intent.metadata)
     }
 
     func test_intent_maps_charges() {
-        let mockIntent = MockStripePaymentIntent.mock()
         let intent = PaymentIntent(intent: mockIntent)
 
         // Very indirect test, that doesn't really test much.

@@ -9,7 +9,7 @@ import Combine
 /// because these are integration test, and we do not want to mock anything,
 /// at this point, other than the actual hardware
 final class StripeCardReaderIntegrationTests: XCTestCase {
-    private var cancellables: Set<AnyCancellable>!
+    private var cancellables: Set<AnyCancellable> = []
 
     override func setUp() {
         super.setUp()

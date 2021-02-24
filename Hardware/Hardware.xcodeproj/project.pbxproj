@@ -11,6 +11,7 @@
 		C5D2CB7D21CEE28FEBF18BF6 /* Pods_Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F0AC202B287C1221EA2C99 /* Pods_Hardware.framework */; };
 		D81AE85A25E6A62800D9CFD3 /* StripeCardReaderCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81AE85925E6A62800D9CFD3 /* StripeCardReaderCache.swift */; };
 		D81AE85E25E6A89F00D9CFD3 /* StripeCardReaderCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81AE85D25E6A89F00D9CFD3 /* StripeCardReaderCacheTests.swift */; };
+		D81AE86425E6B77F00D9CFD3 /* CardReaderServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81AE86325E6B77F00D9CFD3 /* CardReaderServiceError.swift */; };
 		D88303D125E44B2500C877F9 /* ChargeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303D025E44B2500C877F9 /* ChargeTests.swift */; };
 		D88303D525E44CD200C877F9 /* MockStripeCharge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303D425E44CD200C877F9 /* MockStripeCharge.swift */; };
 		D88303DB25E450E700C877F9 /* PaymentIntentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303DA25E450E700C877F9 /* PaymentIntentTests.swift */; };
@@ -61,6 +62,7 @@
 		C61D1642BE09D1A1AD6AA9FA /* Pods-HardwareTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.release.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.release.xcconfig"; sourceTree = "<group>"; };
 		D81AE85925E6A62800D9CFD3 /* StripeCardReaderCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeCardReaderCache.swift; sourceTree = "<group>"; };
 		D81AE85D25E6A89F00D9CFD3 /* StripeCardReaderCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeCardReaderCacheTests.swift; sourceTree = "<group>"; };
+		D81AE86325E6B77F00D9CFD3 /* CardReaderServiceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderServiceError.swift; sourceTree = "<group>"; };
 		D88303D025E44B2500C877F9 /* ChargeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChargeTests.swift; sourceTree = "<group>"; };
 		D88303D425E44CD200C877F9 /* MockStripeCharge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStripeCharge.swift; sourceTree = "<group>"; };
 		D88303DA25E450E700C877F9 /* PaymentIntentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentIntentTests.swift; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 				D89B8F0125DDC7500001C726 /* PaymentIntentStatus.swift */,
 				D88FDB2325DD21B000CB0DBD /* PaymentIntentParameters.swift */,
 				D88FDB2025DD21AF00CB0DBD /* PaymentStatus.swift */,
+				D81AE86325E6B77F00D9CFD3 /* CardReaderServiceError.swift */,
 			);
 			path = CardReader;
 			sourceTree = "<group>";
@@ -405,6 +408,7 @@
 				D89B8F0C25DDC9D30001C726 /* ChargeStatus.swift in Sources */,
 				D88FDB3125DD21B000CB0DBD /* CardReader.swift in Sources */,
 				D81AE85A25E6A62800D9CFD3 /* StripeCardReaderCache.swift in Sources */,
+				D81AE86425E6B77F00D9CFD3 /* CardReaderServiceError.swift in Sources */,
 				D8DF5F4E25DD9F91008AFE25 /* CardReaderType+Stripe.swift in Sources */,
 				D89B8F1225DDCBCD0001C726 /* Charge+Stripe.swift in Sources */,
 				D8DF5F4A25DD9F7A008AFE25 /* CardReader+Stripe.swift in Sources */,

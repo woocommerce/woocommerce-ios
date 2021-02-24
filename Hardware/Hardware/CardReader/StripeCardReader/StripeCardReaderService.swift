@@ -14,7 +14,8 @@ public final class StripeCardReaderService: NSObject {
     private let readerEventsSubject = PassthroughSubject<CardReaderEvent, Never>()
 
     /// Volatile, in-memory cache of discovered readers. It has to be cleared after we connect to a reader
-    /// see https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPDiscoveryDelegate.html#/c:objc(pl)SCPDiscoveryDelegate(im)terminal:didUpdateDiscoveredReaders:
+    /// see
+    ///  https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPDiscoveryDelegate.html#/c:objc(pl)SCPDiscoveryDelegate(im)terminal:didUpdateDiscoveredReaders:
     private let discoveredStripeReadersCache = StripeCardReaderCache()
 
     public init(tokenProvider: ConnectionTokenProvider) {
@@ -148,27 +149,19 @@ extension StripeCardReaderService: CardReaderService {
                 promise(Result.failure(CardReaderServiceError.connection))
                 return
             }
-//            guard let stripeReader = reader.toStripe() else {
-//                promise(Result.failure(CardReaderServiceError.connection))
-//                return
-//            }
 
             Terminal.shared.connectReader(stripeReader) { [weak self] (reader, error) in
                 guard let self = self else {
-                    print("==== no self")
                     promise(Result.failure(CardReaderServiceError.connection))
                     return
                 }
 
                 if let _ = error {
-                    print("==== there is an error ", error)
-                    print("==== there is a reader ", reader)
                     self.discoveredStripeReadersCache.clear()
                     promise(Result.failure(CardReaderServiceError.connection))
                 }
 
                 if let reader = reader {
-                    print("==== everything went well")
                     self.discoveredStripeReadersCache.clear()
                     self.connectedReadersSubject.send([CardReader(reader: reader)])
                     promise(Result.success(()))
@@ -218,10 +211,4 @@ private extension StripeCardReaderService {
     func internalError(_ error: Error) {
         // Empty for now. Will be implemented later
     }
-}
-
-
-private enum CardReaderServiceError: Error {
-    case discovery
-    case connection
 }

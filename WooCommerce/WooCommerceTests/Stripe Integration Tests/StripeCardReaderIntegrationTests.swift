@@ -45,10 +45,17 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
 
         let readerService = ServiceLocator.cardReaderService
 
-        readerService.discoveredReaders.dropFirst(1).sink { completion in
+        readerService.discoveredReaders.sink { completion in
             readerService.cancelDiscovery()
             discoveredReaders.fulfill()
         } receiveValue: { readers in
+            // The Stripe Terminal SDK published an empty list of discovered readers first
+            // and it will continue publishing as new readers are discovered.
+            // So we ignore the first call to receiveValue, and perform the test on the first call to
+            // receive value that is receiving a non-empty array.
+            guard !readers.isEmpty else {
+                return
+            }
             // There should be at least one non nil reader
             guard let _ = readers.first else {
                 readerService.cancelDiscovery()

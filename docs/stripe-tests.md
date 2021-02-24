@@ -78,7 +78,7 @@ Integration tests that go just beyond discovering readers are not easy to run (a
 
 There are some prerequistes for running some of the integration tests:
 
-* Install WooCommerce Payments on a WooCommerce site. Do not run the setup assisntant yet.
+* Install WooCommerce Payments on a WooCommerce site. Do not run the setup assistant yet.
 * Install [the dev plugin](https://github.com/Automattic/woocommerce-payments-dev-tools) by downloading the repo as a zip and uploading it to the site as a new plugin, and activate it.
 * After activating the Dev Tools plugin, look in wp-admin all the way at the bottom of the sidebar menu for WCPay Dev.
 * Uncheck Proxy WPCOM requests

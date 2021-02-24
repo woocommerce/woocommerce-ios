@@ -97,9 +97,10 @@ class LoginPrologueViewController: LoginViewController {
         WordPressAuthenticator.track(.loginPrologueViewed)
 
         tracker.set(flow: .prologue)
-        
-        if isBeingPresentedInAnyWay {
+
+        if !prologueFlowTracked {
             tracker.track(step: .prologue)
+            prologueFlowTracked = true
         } else {
             tracker.set(step: .prologue)
         }

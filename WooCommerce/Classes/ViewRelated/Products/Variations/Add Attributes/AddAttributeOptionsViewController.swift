@@ -345,12 +345,14 @@ extension AddAttributeOptionsViewController {
         }
     }
 
+    /// Present an action-sheet with `Remove` and `Rename` options.
+    ///
     @objc private func moreButtonPressed(_ sender: UIBarButtonItem) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
         let removeAction = UIAlertAction(title: Localization.removeAction, style: .default) { [weak self] _ in
-            // TODO: Remove
+            self?.presentRemoveAttributeConfirmation()
         }
         actionSheet.addAction(removeAction)
 
@@ -361,6 +363,22 @@ extension AddAttributeOptionsViewController {
         popoverController?.barButtonItem = sender
 
         present(actionSheet, animated: true)
+    }
+
+    /// Presents a confirmation alert and removes the attribute if the merchant confirms it.
+    ///
+    @objc private func presentRemoveAttributeConfirmation() {
+        let alertController = UIAlertController(title: Localization.removeConfirmationTitle,
+                                                message: Localization.removeConfirmationInfo,
+                                                preferredStyle: .alert)
+        alertController.view.tintColor = .text
+
+        alertController.addCancelActionWithTitle(Localization.cancelAction)
+        alertController.addDestructiveActionWithTitle(Localization.removeAction) { [weak self] _ in
+            // Call view model
+        }
+
+        present(alertController, animated: true)
     }
 }
 
@@ -404,5 +422,10 @@ private extension AddAttributeOptionsViewController {
 
         static let removeAction = NSLocalizedString("Remove", comment: "Title for removing an attribute in the edit attribute action sheet.")
         static let cancelAction = NSLocalizedString("Cancel", comment: "Title for canceling the edit attribute action sheet.")
+
+        static let removeConfirmationTitle = NSLocalizedString("Remove Attribute",
+                                                               comment: "Confirmation title before removing an attribute from a variation.")
+        static let removeConfirmationInfo = NSLocalizedString("Are you sure you want to remove this attribute?",
+                                                              comment: "Confirmation text before removing an attribute from a variation.")
     }
 }

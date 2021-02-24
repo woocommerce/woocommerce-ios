@@ -78,9 +78,9 @@ extension StripeCardReaderService: CardReaderService {
         // Enough code to pass a test
         discoveryCancellable = Terminal.shared.discoverReaders(config, delegate: self, completion: { error in
             if let error = error {
-                print("***** discoverReaders failed: \(error)")
+                print("discoverReaders failed: \(error)")
             } else {
-                print("***** discoverReaders succeeded")
+                print("discoverReaders succeeded")
             }
         })
     }

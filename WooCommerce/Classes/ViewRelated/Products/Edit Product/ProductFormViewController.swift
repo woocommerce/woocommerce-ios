@@ -567,19 +567,7 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func saveProduct(status: ProductStatus? = nil) {
         let productStatus = status ?? product.status
-        let title: String
-        let message: String
-        switch productStatus {
-        case .publish:
-            title = NSLocalizedString("Publishing your product...", comment: "Title of the in-progress UI while updating the Product remotely")
-            message = NSLocalizedString("Please wait while we publish this product to your store",
-                                        comment: "Message of the in-progress UI while updating the Product remotely")
-        default:
-            title = NSLocalizedString("Saving your product...", comment: "Title of the in-progress UI while saving a Product as draft remotely")
-            message = NSLocalizedString("Please wait while we save this product to your store",
-                                        comment: "Message of the in-progress UI while saving a Product as draft remotely")
-        }
-        displayInProgressView(title: title, message: message)
+        showSavingProgress(for: productStatus)
 
         saveImagesAndProductRemotely(status: status)
     }
@@ -640,14 +628,6 @@ private extension ProductFormViewController {
         }
     }
 
-    func displayInProgressView(title: String, message: String) {
-        let viewProperties = InProgressViewProperties(title: title, message: message)
-        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
-        inProgressViewController.modalPresentationStyle = .overCurrentContext
-
-        navigationController?.present(inProgressViewController, animated: true, completion: nil)
-    }
-
     func displayError(error: ProductUpdateError?) {
         let title = NSLocalizedString("Cannot update product", comment: "The title of the alert when there is an error updating the product")
 
@@ -685,34 +665,44 @@ private extension ProductFormViewController {
     }
 
     func displayDeleteProductAlert() {
-        presentProductConfirmationDeleteAlert { [weak self] (isConfirmed) in
-            guard isConfirmed else {
-                return
-            }
-
-            let title = NSLocalizedString("Placing your product in the trash...", comment: "Title of the in-progress UI while deleting the Product remotely")
-            let message = NSLocalizedString("Please wait while we update your store details",
-                                            comment: "Message of the in-progress UI while deleting the Product remotely")
-            self?.displayInProgressView(title: title, message: message)
-
-            self?.viewModel.deleteProductRemotely { [weak self] result in
-                guard let self = self else {
+        let showVariationsText = viewModel is ProductVariationFormViewModel
+        if showVariationsText {
+            presentVariationConfirmationDeleteAlert { [weak self] isConfirmed in
+                guard isConfirmed else {
                     return
                 }
-                switch result {
-                case .failure(let error):
-                    DDLogError("⛔️ Error deleting Product: \(error)")
 
-                    // Dismisses the in-progress UI then presents the error alert.
-                    self.navigationController?.dismiss(animated: true) { [weak self] in
-                        self?.displayError(error: error)
-                    }
-                case .success:
-                    ServiceLocator.analytics.track(.productDetailProductDeleted)
-                    // Dismisses the in-progress UI.
-                    self.navigationController?.dismiss(animated: true, completion: nil)
-                    // Dismiss or Pop the Product Form
-                    self.dismissOrPopViewController()
+                self?.showVariationDeletionProgress()
+                self?.deleteProduct()
+            }
+        } else {
+            presentProductConfirmationDeleteAlert { [weak self] isConfirmed in
+                guard isConfirmed else {
+                    return
+                }
+
+                self?.showProductDeletionProgress()
+                self?.deleteProduct()
+            }
+        }
+    }
+
+    func deleteProduct() {
+        self.viewModel.deleteProductRemotely { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                ServiceLocator.analytics.track(.productDetailProductDeleted)
+                // Dismisses the in-progress UI.
+                self.navigationController?.dismiss(animated: true, completion: nil)
+                // Dismiss or Pop the Product Form
+                self.dismissOrPopViewController()
+            case .failure(let error):
+                DDLogError("⛔️ Error deleting Product: \(error)")
+
+                // Dismisses the in-progress UI then presents the error alert.
+                self.navigationController?.dismiss(animated: true) { [weak self] in
+                    self?.displayError(error: error)
                 }
             }
         }

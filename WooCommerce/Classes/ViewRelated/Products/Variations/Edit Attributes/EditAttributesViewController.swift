@@ -121,13 +121,12 @@ extension EditAttributesViewController {
             self.viewModel.updateProduct(updatedProduct)
             self.onAttributesUpdate?(updatedProduct)
             self.tableView.reloadData()
-            self.navigationController?.popToViewController(self, animated: true)
         }
         show(addAttributeViewController, sender: self)
     }
 
     /// Navigates to `AddAttributeOptionsViewController` to provide delete/rename/edit-options functionality.
-    /// Upon completion, update the product and pop the view controller.
+    /// Upon completion, update the product and notify invoker
     ///
     private func navigateToEditAttribute(_ attribute: ProductAttribute) {
         let editViewModel = AddAttributeOptionsViewModel(product: viewModel.product, attribute: .existing(attribute: attribute), allowsEditing: true)
@@ -136,9 +135,6 @@ extension EditAttributesViewController {
             self.viewModel.updateProduct(updatedProduct)
             self.onAttributesUpdate?(updatedProduct)
             self.tableView.reloadData()
-            self.navigationController?.popViewController(animated: true)
-
-            // TODO: Pop until product if there aren't any more attributes
         }
         show(editViewController, sender: true)
     }

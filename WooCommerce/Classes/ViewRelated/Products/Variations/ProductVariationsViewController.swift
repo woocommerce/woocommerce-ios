@@ -458,10 +458,12 @@ private extension ProductVariationsViewController {
         editAttributeViewController.onVariationCreation = { [weak self] updatedProduct in
             self?.product = updatedProduct
             self?.removeEmptyViewController()
-            self?.navigationController?.popViewController(animated: true)
+            navigationController.popViewController(animated: true)
         }
         editAttributeViewController.onAttributesUpdate = { [weak self] updatedProduct in
-            self?.product = updatedProduct
+            guard let self = self else { return }
+            self.product = updatedProduct
+            self.onAttributesUpdate(editAttributesViewController: editAttributeViewController)
         }
 
         guard let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) else {
@@ -470,6 +472,18 @@ private extension ProductVariationsViewController {
 
         let viewControllersUntilSelf = navigationController.viewControllers[0...indexOfSelf]
         navigationController.setViewControllers(viewControllersUntilSelf + [editAttributeViewController], animated: true)
+    }
+
+    /// Refreshes the product variations list and navigates to the appropriate screen.
+    /// Navigates back to edit attribute screen if the product has attributes.
+    /// Navigates back to variations list if the product doesn't has attributes.
+    ///
+    private func onAttributesUpdate(editAttributesViewController: UIViewController) {
+        // Refresh variations because updating an attribute updates the product variations,
+        syncingCoordinator.synchronizeFirstPage()
+
+        let viewControllerToShow = product.attributes.isNotEmpty ? editAttributesViewController : self
+        navigationController?.popToViewController(viewControllerToShow, animated: true)
     }
 }
 

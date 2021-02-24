@@ -24,7 +24,7 @@ final class AddAttributeOptionsViewController: UIViewController {
     /// Initializer for `AddAttributeOptionsViewController`
     ///
     /// - Parameters:
-    ///   - onCompletion: Closure to be invoked(with the updated product) qwhen the update/create/remove attribute operation finishes successfully.
+    ///   - onCompletion: Closure to be invoked(with the updated product) when the update/create/remove attribute operation finishes successfully.
     init(viewModel: AddAttributeOptionsViewModel,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
          onCompletion: @escaping (Product) -> Void) {

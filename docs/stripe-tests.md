@@ -20,7 +20,7 @@ The model objects declared in the Stripe Terminal SDK can not be initialized by 
 
 That translates into something like this:
 
-```
+```swift
 import StripeTerminal
 
 extension CardReader {

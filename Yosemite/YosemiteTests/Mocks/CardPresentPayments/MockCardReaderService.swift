@@ -38,6 +38,10 @@ final class MockCardReaderService: CardReaderService {
         didHitStart = true
     }
 
+    func cancelDiscovery() {
+
+    }
+
     func connect(_ reader: Hardware.CardReader) -> Future<Void, Error> {
         Future() { promise in
             // To be implemented

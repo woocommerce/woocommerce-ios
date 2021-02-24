@@ -28,6 +28,9 @@ public protocol CardReaderService {
     /// That could imply, for example, that the reader discovery process starts
     func start()
 
+    /// Cancels the discovery process.
+    func cancelDiscovery()
+
     /// Connects to a card reader
     /// - Parameter reader: The card reader we want to connect to.
     func connect(_ reader: CardReader) -> Future <Void, Error>

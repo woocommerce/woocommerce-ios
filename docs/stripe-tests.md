@@ -74,6 +74,20 @@ In order to run, no matter if it is in test mode or production mode, the Stripe 
 
 That, in turn, means that tests against the Stripe SDK will crash unless those tests are run against an app. So to workaround this, we moved the integration tests to the WooCommerceTests suite. See `StripeCardReaderIntegrationTests`
 
+Integration tests that go just beyond discovering readers are not easy to run (at this stage). The reason is that the Terminal SDK needs a valid connection token when it attempts to connect to a reader, even if the SDK is in test mode.
+
+There are some prerequistes for running some of the integration tests:
+
+* Install WooCommerce Payments on a WooCommerce site. Do not run the setup assistant yet.
+* Install woocommerce-payments-dev-tools by downloading the repo as a zip and uploading it to the site as a new plugin, and activate it. as an alternative, add this to wp-config.php: `define( 'WCPAY_DEV_MODE', true );`
+* After activating the Dev Tools plugin, look in wp-admin all the way at the bottom of the sidebar menu for WCPay Dev.
+* Uncheck Proxy WPCOM requests
+* Run the WooCommerce Payments setup assistant. It should indicate that it is running in "TEST DATA" mode. That would allow entering mock data.
+
+At the time of writing this, we do not have the infrastructure to obtain that connection token by performing an authenicated request to a WooCommerce store. So integration tests that requir a connection token will require to edit WCPayTokenProvider and update the mock token with a value obtainied from your store's wp-admin. In order to do that you would need to download and install woocommerce-payments-card-reader-token-helper. 
+
+After installing and activating the plugin, connection tokens would be available in a notice at the top of most wp-admin pages. 
+
 ## Business logic
 
 The business logic of the integration is encapsulated in `CardPresentPaymentStore`. This logic is unit tested in the YosemiteTests, like any other Store in the codebase

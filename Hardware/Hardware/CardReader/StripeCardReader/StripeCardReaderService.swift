@@ -13,6 +13,11 @@ public final class StripeCardReaderService: NSObject {
     private let paymentStatusSubject = CurrentValueSubject<PaymentStatus, Never>(.notReady)
     private let readerEventsSubject = PassthroughSubject<CardReaderEvent, Never>()
 
+    /// Volatile, in-memory cache of discovered readers. It has to be cleared after we connect to a reader
+    /// see
+    ///  https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPDiscoveryDelegate.html#/c:objc(pl)SCPDiscoveryDelegate(im)terminal:didUpdateDiscoveredReaders:
+    private let discoveredStripeReadersCache = StripeCardReaderDiscoveryCache()
+
     public init(tokenProvider: ConnectionTokenProvider) {
         // Per Stripe SDK's instructions, the first we need to do is set the token provider, before calling `shared`
         // If we don't, an assertion will 💥
@@ -80,6 +85,12 @@ extension StripeCardReaderService: CardReaderService {
         })
     }
 
+    public func cancelDiscovery() {
+        // Bouncing to a private method just in case we need to do something else
+        // If we realize we don't, there is no point in having two methods doing the same
+        cancelReaderDiscovery()
+    }
+
     public func disconnect(_ reader: CardReader) -> Future<Void, Error> {
         return Future() { promise in
             // This will be removed. We just want to pretend we are doing a roundtrip to the SDK for now.
@@ -123,11 +134,39 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func connect(_ reader: CardReader) -> Future <Void, Error> {
-        return Future() { promise in
-            // This will be removed. We just want to execute this
-            // Promise sometime in the future for now.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                promise(Result.success(()))
+        return Future() { [weak self] promise in
+
+            guard let self = self else {
+                promise(Result.failure(CardReaderServiceError.connection))
+                return
+            }
+
+            // Find a cached reader that matches.
+            // If this fails, that means that we are in an internal state that we do not expect.
+            // Therefore it is better to let the user know that something went wrong.
+            // Proper error handling is coming in https://github.com/woocommerce/woocommerce-ios/issues/3734
+            guard let stripeReader = self.discoveredStripeReadersCache.reader(matching: reader) as? Reader else {
+                promise(Result.failure(CardReaderServiceError.connection))
+                return
+            }
+
+            Terminal.shared.connectReader(stripeReader) { [weak self] (reader, error) in
+                guard let self = self else {
+                    promise(Result.failure(CardReaderServiceError.connection))
+                    return
+                }
+
+                // Clear cached readers, as per Stripe's documentation.
+                self.discoveredStripeReadersCache.clear()
+
+                if let _ = error {
+                    promise(Result.failure(CardReaderServiceError.connection))
+                }
+
+                if let reader = reader {
+                    self.connectedReadersSubject.send([CardReader(reader: reader)])
+                    promise(Result.success(()))
+                }
             }
         }
     }
@@ -139,10 +178,38 @@ extension StripeCardReaderService: CardReaderService {
 extension StripeCardReaderService: DiscoveryDelegate {
     /// Enough code to pass the test
     public func terminal(_ terminal: Terminal, didUpdateDiscoveredReaders readers: [Reader]) {
+        // Cache discovered readers. The cache needs to be cleared after we connect to a
+        // specific reader
+        discoveredStripeReadersCache.insert(readers)
+
         let wooReaders = readers.map {
             CardReader(reader: $0)
         }
 
         discoveredReadersSubject.send(wooReaders)
+    }
+}
+
+
+private extension StripeCardReaderService {
+    func cancelReaderDiscovery() {
+        discoveryCancellable?.cancel { [weak self] error in
+            guard let self = self,
+                  let error = error else {
+                return
+            }
+            self.internalError(error)
+        }
+    }
+
+    func resetDiscoveredReadersSubject() {
+        discoveredReadersSubject.send([])
+    }
+}
+
+
+private extension StripeCardReaderService {
+    func internalError(_ error: Error) {
+        // Empty for now. Will be implemented later
     }
 }

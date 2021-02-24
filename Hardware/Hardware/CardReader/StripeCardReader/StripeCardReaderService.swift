@@ -13,6 +13,10 @@ public final class StripeCardReaderService: NSObject {
     private let paymentStatusSubject = CurrentValueSubject<PaymentStatus, Never>(.notReady)
     private let readerEventsSubject = PassthroughSubject<CardReaderEvent, Never>()
 
+    /// Volatile, in-memory cache of discovered readers. It has to be cleared after we connect to a reader
+    /// see https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPDiscoveryDelegate.html#/c:objc(pl)SCPDiscoveryDelegate(im)terminal:didUpdateDiscoveredReaders:
+    private let discoveredStripeReadersCache = StripeCardReaderCache()
+
     public init(tokenProvider: ConnectionTokenProvider) {
         // Per Stripe SDK's instructions, the first we need to do is set the token provider, before calling `shared`
         // If we don't, an assertion will 💥
@@ -129,27 +133,43 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func connect(_ reader: CardReader) -> Future <Void, Error> {
-        return Future() { promise in
+        return Future() { [weak self] promise in
 
-            guard let stripeReader = reader.toStripe() else {
+            guard let self = self else {
+                print("==== no self")
                 promise(Result.failure(CardReaderServiceError.connection))
                 return
             }
 
+            // Find a cached reader that matches.
+            // If this fails, that means that we are in an internal state that we do not expect.
+            // Therefore it is better to let the user know that something went wrong, and
+            guard let stripeReader = self.discoveredStripeReadersCache.reader(matching: reader) as? Reader else {
+                promise(Result.failure(CardReaderServiceError.connection))
+                return
+            }
+//            guard let stripeReader = reader.toStripe() else {
+//                promise(Result.failure(CardReaderServiceError.connection))
+//                return
+//            }
+
             Terminal.shared.connectReader(stripeReader) { [weak self] (reader, error) in
                 guard let self = self else {
                     print("==== no self")
+                    promise(Result.failure(CardReaderServiceError.connection))
                     return
                 }
 
                 if let _ = error {
                     print("==== there is an error ", error)
                     print("==== there is a reader ", reader)
+                    self.discoveredStripeReadersCache.clear()
                     promise(Result.failure(CardReaderServiceError.connection))
                 }
 
                 if let reader = reader {
                     print("==== everything went well")
+                    self.discoveredStripeReadersCache.clear()
                     self.connectedReadersSubject.send([CardReader(reader: reader)])
                     promise(Result.success(()))
                 }
@@ -164,6 +184,10 @@ extension StripeCardReaderService: CardReaderService {
 extension StripeCardReaderService: DiscoveryDelegate {
     /// Enough code to pass the test
     public func terminal(_ terminal: Terminal, didUpdateDiscoveredReaders readers: [Reader]) {
+        // Cache discovered readers. The cache needs to be cleared after we connect to a
+        // specific reader
+        discoveredStripeReadersCache.insert(readers)
+
         let wooReaders = readers.map {
             CardReader(reader: $0)
         }

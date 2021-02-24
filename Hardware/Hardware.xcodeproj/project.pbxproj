@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		5A747BE9FA06EC8752A35752 /* Pods_HardwareTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1DC5B6141B8184FAC29B0A4 /* Pods_HardwareTests.framework */; };
 		C5D2CB7D21CEE28FEBF18BF6 /* Pods_Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F0AC202B287C1221EA2C99 /* Pods_Hardware.framework */; };
+		D81AE85A25E6A62800D9CFD3 /* StripeCardReaderCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81AE85925E6A62800D9CFD3 /* StripeCardReaderCache.swift */; };
+		D81AE85E25E6A89F00D9CFD3 /* StripeCardReaderCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81AE85D25E6A89F00D9CFD3 /* StripeCardReaderCacheTests.swift */; };
 		D8296F7625E5557000C5D74A /* ToStripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8296F7525E5557000C5D74A /* ToStripe.swift */; };
 		D88303D125E44B2500C877F9 /* ChargeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303D025E44B2500C877F9 /* ChargeTests.swift */; };
 		D88303D525E44CD200C877F9 /* MockStripeCharge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303D425E44CD200C877F9 /* MockStripeCharge.swift */; };
@@ -58,6 +60,8 @@
 		9726331F55A9621F2F887E13 /* Pods-Hardware.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hardware.release.xcconfig"; path = "Target Support Files/Pods-Hardware/Pods-Hardware.release.xcconfig"; sourceTree = "<group>"; };
 		B1DC5B6141B8184FAC29B0A4 /* Pods_HardwareTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HardwareTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C61D1642BE09D1A1AD6AA9FA /* Pods-HardwareTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.release.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.release.xcconfig"; sourceTree = "<group>"; };
+		D81AE85925E6A62800D9CFD3 /* StripeCardReaderCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeCardReaderCache.swift; sourceTree = "<group>"; };
+		D81AE85D25E6A89F00D9CFD3 /* StripeCardReaderCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeCardReaderCacheTests.swift; sourceTree = "<group>"; };
 		D8296F7525E5557000C5D74A /* ToStripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToStripe.swift; sourceTree = "<group>"; };
 		D88303D025E44B2500C877F9 /* ChargeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChargeTests.swift; sourceTree = "<group>"; };
 		D88303D425E44CD200C877F9 /* MockStripeCharge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStripeCharge.swift; sourceTree = "<group>"; };
@@ -170,6 +174,7 @@
 				D892F21325E3F67A001D7134 /* CardReaderTests.swift */,
 				D88303D025E44B2500C877F9 /* ChargeTests.swift */,
 				D88303DA25E450E700C877F9 /* PaymentIntentTests.swift */,
+				D81AE85D25E6A89F00D9CFD3 /* StripeCardReaderCacheTests.swift */,
 			);
 			path = HardwareTests;
 			sourceTree = "<group>";
@@ -207,6 +212,7 @@
 				D88FDB3725DD21D200CB0DBD /* StripeCardReaderService.swift */,
 				D88FDB3825DD21D300CB0DBD /* WCPayTokenProvider.swift */,
 				D8296F7525E5557000C5D74A /* ToStripe.swift */,
+				D81AE85925E6A62800D9CFD3 /* StripeCardReaderCache.swift */,
 			);
 			path = StripeCardReader;
 			sourceTree = "<group>";
@@ -401,6 +407,7 @@
 				D88FDB2E25DD21B000CB0DBD /* CardReaderEvent.swift in Sources */,
 				D89B8F0C25DDC9D30001C726 /* ChargeStatus.swift in Sources */,
 				D88FDB3125DD21B000CB0DBD /* CardReader.swift in Sources */,
+				D81AE85A25E6A62800D9CFD3 /* StripeCardReaderCache.swift in Sources */,
 				D8DF5F4E25DD9F91008AFE25 /* CardReaderType+Stripe.swift in Sources */,
 				D89B8F1225DDCBCD0001C726 /* Charge+Stripe.swift in Sources */,
 				D8DF5F4A25DD9F7A008AFE25 /* CardReader+Stripe.swift in Sources */,
@@ -427,6 +434,7 @@
 			files = (
 				D88303D525E44CD200C877F9 /* MockStripeCharge.swift in Sources */,
 				D88303DF25E4512400C877F9 /* MockStripePaymentIntent.swift in Sources */,
+				D81AE85E25E6A89F00D9CFD3 /* StripeCardReaderCacheTests.swift in Sources */,
 				D892F21425E3F67A001D7134 /* CardReaderTests.swift in Sources */,
 				D892F21025E3F4C0001D7134 /* MockStripeCardReader.swift in Sources */,
 				D88303DB25E450E700C877F9 /* PaymentIntentTests.swift in Sources */,

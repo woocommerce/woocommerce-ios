@@ -459,7 +459,7 @@ private extension ProductVariationsViewController {
             self?.removeEmptyViewController()
             self?.navigationController?.popViewController(animated: true)
         }
-        editAttributeViewController.onAttributeCreation = { [weak self] updatedProduct in
+        editAttributeViewController.onAttributesUpdate = { [weak self] updatedProduct in
             self?.product = updatedProduct
         }
 

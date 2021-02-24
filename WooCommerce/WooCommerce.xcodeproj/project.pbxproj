@@ -1065,6 +1065,7 @@
 		D8CD710F237A49DB007148B9 /* UIColor+SemanticColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CD710E237A49DB007148B9 /* UIColor+SemanticColors.swift */; };
 		D8D15F83230A17A000D48B3F /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F82230A17A000D48B3F /* ServiceLocator.swift */; };
 		D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F84230A18AB00D48B3F /* Analytics.swift */; };
+		D8F01DD325DEDC1C00CE70BE /* StripeCardReaderIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F01DD225DEDC1C00CE70BE /* StripeCardReaderIntegrationTests.swift */; };
 		D8F3A973258862BE0085859B /* PrologueScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F3A972258862BE0085859B /* PrologueScreen.swift */; };
 		D8F3A9792588659E0085859B /* GetStartedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F3A9782588659E0085859B /* GetStartedScreen.swift */; };
 		D8F3A97F258865BD0085859B /* PasswordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F3A97E258865BD0085859B /* PasswordScreen.swift */; };
@@ -2212,6 +2213,7 @@
 		D8CD710E237A49DB007148B9 /* UIColor+SemanticColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+SemanticColors.swift"; sourceTree = "<group>"; };
 		D8D15F82230A17A000D48B3F /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
 		D8D15F84230A18AB00D48B3F /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
+		D8F01DD225DEDC1C00CE70BE /* StripeCardReaderIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeCardReaderIntegrationTests.swift; sourceTree = "<group>"; };
 		D8F3A972258862BE0085859B /* PrologueScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrologueScreen.swift; sourceTree = "<group>"; };
 		D8F3A9782588659E0085859B /* GetStartedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetStartedScreen.swift; sourceTree = "<group>"; };
 		D8F3A97E258865BD0085859B /* PasswordScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordScreen.swift; sourceTree = "<group>"; };
@@ -4193,6 +4195,7 @@
 		B56DB3E02049BFAA00D4AA8E /* WooCommerceTests */ = {
 			isa = PBXGroup;
 			children = (
+				D8F01DD125DEDC0100CE70BE /* Stripe Integration Tests */,
 				5791FB4024EC833200117FD6 /* ViewModels */,
 				57C2F6E324C27B0C00131012 /* Authentication */,
 				CCDC49F1240060F3003166BA /* UnitTests.xctestplan */,
@@ -5232,6 +5235,14 @@
 				57532CAB24BFF4DA0032B84E /* MessageComposerPresenter.swift */,
 			);
 			path = ServiceLocator;
+			sourceTree = "<group>";
+		};
+		D8F01DD125DEDC0100CE70BE /* Stripe Integration Tests */ = {
+			isa = PBXGroup;
+			children = (
+				D8F01DD225DEDC1C00CE70BE /* StripeCardReaderIntegrationTests.swift */,
+			);
+			path = "Stripe Integration Tests";
 			sourceTree = "<group>";
 		};
 		F4B77A83B2A3D94EA331691B /* Pods */ = {
@@ -6627,6 +6638,7 @@
 				CECC759923D6160000486676 /* AggregateDataHelperTests.swift in Sources */,
 				5767E940256D9A4A00CFA652 /* OrderListViewModelTests.swift in Sources */,
 				26A630F3253F3CFE00CBC3B1 /* RefundCreationUseCaseTests.swift in Sources */,
+				D8F01DD325DEDC1C00CE70BE /* StripeCardReaderIntegrationTests.swift in Sources */,
 				020BE76F23B4A468007FE54C /* AztecBlockquoteFormatBarCommandTests.swift in Sources */,
 				0258B66D2518778300EB5CF2 /* ProductFormViewModelTests.swift in Sources */,
 				748C7784211E2D8400814F2C /* DoubleWooTests.swift in Sources */,

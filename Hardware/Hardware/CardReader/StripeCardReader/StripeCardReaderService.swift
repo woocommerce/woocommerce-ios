@@ -3,7 +3,6 @@ import StripeTerminal
 
 /// The adapter wrapping the Stripe Terminal SDK
 public final class StripeCardReaderService: NSObject {
-    private let tokenProvider: ConnectionTokenProvider
 
     private var discoveryCancellable: StripeTerminal.Cancelable?
 
@@ -15,7 +14,12 @@ public final class StripeCardReaderService: NSObject {
     private let readerEventsSubject = PassthroughSubject<CardReaderEvent, Never>()
 
     public init(tokenProvider: ConnectionTokenProvider) {
-        self.tokenProvider = tokenProvider
+        // Per Stripe SDK's instructions, the first we need to do is set the token provider, before calling `shared`
+        // If we don't, an assertion will 💥
+        // We can only set the token once
+        if !Terminal.hasTokenProvider() {
+            Terminal.setTokenProvider(tokenProvider)
+        }
     }
 }
 
@@ -60,11 +64,6 @@ extension StripeCardReaderService: CardReaderService {
         // simulate reader included in the Stripe Terminal SDK
         // https://stripe.com/docs/terminal/integration?country=CA&platform=ios&reader=p400#dev-test
 
-        // Per Stripe SDK's instructions, the first we need to do is set the token provider, before calling `shared`
-        // If we don't, an assertion will 💥
-
-        Terminal.setTokenProvider(self.tokenProvider)
-
         // Attack the test terminal, provided by the SDK
         let config = DiscoveryConfiguration(
             discoveryMethod: .internet,
@@ -92,6 +91,7 @@ extension StripeCardReaderService: CardReaderService {
 
     public func clear() {
         // 🧹
+        Terminal.shared.clearCachedCredentials()
     }
 
     public func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<PaymentIntent, Error> {

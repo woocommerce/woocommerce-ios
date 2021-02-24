@@ -4,7 +4,7 @@ extension CardReader {
 
     /// Convenience initializer
     /// - Parameter reader: An instance of a StripeTerminal.Reader
-    init(reader: Reader) {
+    init(reader: StripeCardReader) {
         self.serial = reader.serialNumber
         self.vendorIdentifier = reader.stripeId
         self.name = reader.label
@@ -18,3 +18,22 @@ extension CardReader {
         self.readerType = CardReaderType.with(readerType: reader.deviceType)
     }
 }
+
+
+/// The initializers of StripeTerminal.Reader are annotated as NS_UNAVAILABLE
+/// So we can not create instances of that class in our tests.
+/// A workaround is declaring this protocol, which matches the parts of
+/// SCPReader that we are interested in, make Reader implement it,
+/// and initialize Harware.CardReader with a type conforming to it.
+protocol StripeCardReader {
+    var serialNumber: String { get }
+    var stripeId: String? { get }
+    var label: String? { get }
+    var status: ReaderNetworkStatus { get }
+    var deviceSoftwareVersion: String? { get }
+    var batteryLevel: NSNumber? { get }
+    var deviceType: DeviceType { get }
+}
+
+
+extension Reader: StripeCardReader { }

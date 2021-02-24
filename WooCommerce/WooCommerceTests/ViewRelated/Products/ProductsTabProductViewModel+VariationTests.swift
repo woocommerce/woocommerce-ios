@@ -74,7 +74,7 @@ final class ProductsTabProductViewModel_VariationTests: XCTestCase {
 
     func test_product_cell_view_model_shows_stock_status_with_quantity_when_variation_is_in_stock_with_stock_quantity_and_manage_stock_enabled() {
         // Arrange
-        let stockQuantity: Int64 = 6
+        let stockQuantity: Decimal = 6
         let variation = MockProductVariation().productVariation().copy(manageStock: true, stockQuantity: stockQuantity, stockStatus: .inStock)
         let model = EditableProductVariationModel(productVariation: variation)
 
@@ -82,14 +82,15 @@ final class ProductsTabProductViewModel_VariationTests: XCTestCase {
         let viewModel = ProductsTabProductViewModel(productVariationModel: model)
 
         // Assert
-        let format = NSLocalizedString("%ld in stock", comment: "Label about product's inventory stock status shown on Products tab")
-        let expectedStockDetails = String.localizedStringWithFormat(format, stockQuantity)
+        let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSNumber, number: .decimal)
+        let format = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown on Products tab")
+        let expectedStockDetails = String.localizedStringWithFormat(format, localizedStockQuantity)
         XCTAssertTrue(viewModel.detailsAttributedString.string.contains(expectedStockDetails))
     }
 
     func test_product_cell_view_model_shows_stock_status_without_quantity_when_variation_is_in_stock_with_stock_quantity_but_manage_stock_disabled() {
         // Arrange
-        let stockQuantity: Int64 = 6
+        let stockQuantity: Decimal = 6
         let variation = MockProductVariation().productVariation().copy(manageStock: false, stockQuantity: stockQuantity, stockStatus: .inStock)
         let model = EditableProductVariationModel(productVariation: variation)
 

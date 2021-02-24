@@ -33,8 +33,7 @@ public extension StorageType {
     /// Deletes single stored Product Variation for the provided siteID and productVariationID.
     ///
     func deleteProductVariation(siteID: Int64, productVariationID: Int64) {
-        guard let productVariation = loadProductVariation(siteID: siteID,
-                                                          productVariationID: productVariationID) else {
+        guard let productVariation = loadProductVariation(siteID: siteID, productVariationID: productVariationID) else {
             return
         }
 

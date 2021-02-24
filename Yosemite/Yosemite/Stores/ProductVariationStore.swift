@@ -207,19 +207,17 @@ private extension ProductVariationStore {
 
     /// Deletes the product variation.
     ///
-    func deleteProductVariation(productVariation: ProductVariation, onCompletion: @escaping (Result<ProductVariation, ProductUpdateError>) -> Void) {
+    func deleteProductVariation(productVariation: ProductVariation, onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {
         remote.deleteProductVariation(siteID: productVariation.siteID,
                                       productID: productVariation.productID,
                                       variationID: productVariation.productVariationID) { [weak self] result in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
             switch result {
-            case .failure(let error):
-                onCompletion(.failure(ProductUpdateError(error: error)))
             case .success(let productVariation):
                 self.deleteStoredProductVariation(siteID: productVariation.siteID, productVariationID: productVariation.productVariationID)
-                onCompletion(.success(productVariation))
+                onCompletion(.success(()))
+            case .failure(let error):
+                onCompletion(.failure(ProductUpdateError(error: error)))
             }
         }
     }

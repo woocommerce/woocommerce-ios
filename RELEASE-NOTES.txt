@@ -1,5 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+6.2
+-----
+
+- [*] Fix: Load product inventory settings in read-only mode when the product has a decimal stock quantity. This fixes the products tab not loading due to product decoding errors when third-party plugins enable decimal stock quantities. [https://github.com/woocommerce/woocommerce-ios/pull/3717]
+
 6.1
 -----
 - [**] Products: When editing variable products, you can now edit the variation attributes to select different attribute options. [https://github.com/woocommerce/woocommerce-ios/pull/3628]

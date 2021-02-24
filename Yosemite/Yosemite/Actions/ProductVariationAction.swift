@@ -31,5 +31,5 @@ public enum ProductVariationAction: Action {
 
     /// Delete an existing ProductVariation.
     ///
-    case deleteProductVariation(productVariation: ProductVariation, onCompletion: (Result<ProductVariation, ProductUpdateError>) -> Void)
+    case deleteProductVariation(productVariation: ProductVariation, onCompletion: (Result<Void, ProductUpdateError>) -> Void)
 }

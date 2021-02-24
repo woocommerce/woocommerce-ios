@@ -674,7 +674,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     // MARK: - ProductVariationAction.deleteProductVariation
 
-    func test_deleteProductVariation_deletes_data_from_storage_and_returns_expected_data() throws {
+    func test_deleteProductVariation_deletes_data_from_storage_and_returns_expected_data() {
         // Given
         let remote = MockProductVariationsRemote()
         let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
@@ -690,7 +690,7 @@ final class ProductVariationStoreTests: XCTestCase {
                                             thenReturn: .success(sampleVariation))
 
         // When
-        let result: Result<Yosemite.ProductVariation, ProductUpdateError> = waitFor { promise in
+        let result: Result<Void, ProductUpdateError> = waitFor { promise in
             let action = ProductVariationAction.deleteProductVariation(productVariation: sampleVariation) { result in
                 promise(result)
             }
@@ -698,13 +698,11 @@ final class ProductVariationStoreTests: XCTestCase {
         }
 
         // Then
-        XCTAssertTrue(try XCTUnwrap(result).isSuccess)
-        let returnedProductVariation = try result.get()
-        XCTAssertEqual(returnedProductVariation, sampleVariation)
+        XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
     }
 
-    func test_deleteProductVariation_returns_error_upon_response_error() throws {
+    func test_deleteProductVariation_returns_error_upon_response_error() {
         // Given
         let remote = MockProductVariationsRemote()
         let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
@@ -720,7 +718,7 @@ final class ProductVariationStoreTests: XCTestCase {
                                             thenReturn: .failure(NSError(domain: "", code: 400, userInfo: nil)))
 
         // When
-        let result: Result<Yosemite.ProductVariation, ProductUpdateError> = waitFor { promise in
+        let result: Result<Void, ProductUpdateError> = waitFor { promise in
             let action = ProductVariationAction.deleteProductVariation(productVariation: sampleVariation) { result in
                 promise(result)
             }
@@ -728,7 +726,7 @@ final class ProductVariationStoreTests: XCTestCase {
         }
 
         // Then
-        XCTAssertTrue(try XCTUnwrap(result).isFailure)
+        XCTAssertTrue(result.isFailure)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
     }
 }
@@ -784,7 +782,7 @@ private extension ProductVariationStoreTests {
                                 taxStatusKey: "taxable",
                                 taxClass: "",
                                 manageStock: true,
-                                stockQuantity: 16,
+                                stockQuantity: 16.5,
                                 stockStatus: .inStock,
                                 backordersKey: "notify",
                                 backordersAllowed: true,

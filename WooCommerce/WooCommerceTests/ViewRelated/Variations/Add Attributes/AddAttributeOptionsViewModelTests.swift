@@ -61,6 +61,19 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isNextButtonEnabled)
     }
 
+    func test_next_button_is_enabled_after_removing_preselected_options() {
+        // Given
+        let attribute = sampleAttribute(name: "Size", options: ["S", "M", "L"])
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: attribute))
+        XCTAssertFalse(viewModel.isNextButtonEnabled)
+
+        // When
+        viewModel.removeSelectedOption(atIndex: 2)
+
+        // Then
+        XCTAssertTrue(viewModel.isNextButtonEnabled)
+    }
+
     func test_empty_names_are_not_added_as_options() throws {
         // Given
         let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName))
@@ -381,6 +394,77 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         // Then
         let expectedAttribute = sampleAttribute(attributeID: 0, name: "attr-2", options: ["Option 1", "Option 2"])
         XCTAssertEqual(updatedProduct.attributes, [initialAttribute, expectedAttribute])
+    }
+
+    func test_existing_local_attribute_should_preselect_options() throws {
+        // Given
+        let attribute = sampleAttribute(attributeID: 0, name: "Color", options: ["Green", "Blue", "Red"])
+        XCTAssertTrue(attribute.isLocal)
+
+        // When
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: attribute))
+
+        // Then
+        let textFieldSection = try XCTUnwrap(viewModel.sections.last?.rows)
+        XCTAssertEqual(textFieldSection, [
+            AddAttributeOptionsViewController.Row.selectedOptions(name: "Green"),
+            AddAttributeOptionsViewController.Row.selectedOptions(name: "Blue"),
+            AddAttributeOptionsViewController.Row.selectedOptions(name: "Red")
+        ])
+    }
+
+    func test_existing_global_attribute_should_preselect_options() throws {
+        // Given
+        let attribute = sampleAttribute(name: "Size", options: ["S", "M", "L"])
+        XCTAssertTrue(attribute.isGlobal)
+
+        // When
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: attribute))
+
+        // Then
+        let textFieldSection = try XCTUnwrap(viewModel.sections.last?.rows)
+        XCTAssertEqual(textFieldSection, [
+            AddAttributeOptionsViewController.Row.selectedOptions(name: "S"),
+            AddAttributeOptionsViewController.Row.selectedOptions(name: "M"),
+            AddAttributeOptionsViewController.Row.selectedOptions(name: "L")
+        ])
+    }
+
+    func test_new_attribute_should_allow_reorder() throws {
+        // Given
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName))
+
+        // When
+        viewModel.addNewOption(name: "Option 1")
+        viewModel.addNewOption(name: "Option 2")
+
+        // Then
+        let selectedSection = try XCTUnwrap(viewModel.sections.last)
+        XCTAssertTrue(selectedSection.allowsReorder)
+    }
+
+    func test_local_attribute_should_allow_reorder() throws {
+        // Given, When
+        let attribute = sampleAttribute(attributeID: 0, name: "Color", options: ["Green", "Blue", "Red"])
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: attribute))
+
+
+        // Then
+        let selectedSection = try XCTUnwrap(viewModel.sections.last)
+        XCTAssertTrue(selectedSection.allowsReorder)
+        XCTAssertTrue(attribute.isLocal)
+    }
+
+    func test_global_attribute_should_not_allow_reorder() throws {
+        // Given, When
+        let attribute = sampleAttribute(name: "Color", options: ["Green", "Blue", "Red"])
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: attribute))
+
+
+        // Then
+        let selectedSection = try XCTUnwrap(viewModel.sections.last)
+        XCTAssertFalse(selectedSection.allowsReorder)
+        XCTAssertTrue(attribute.isGlobal)
     }
 }
 

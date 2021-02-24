@@ -112,7 +112,7 @@ extension MockObjectGraph {
         name: String,
         price: Decimal,
         salePrice: Decimal? = nil,
-        quantity: Int64,
+        quantity: Decimal,
         siteId: Int64 = 1,
         image: ProductImage? = nil
     ) -> Product {

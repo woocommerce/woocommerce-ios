@@ -1,0 +1,5 @@
+Neuerungen in unserer Version 6.0
+
+Euer Wunsch ist uns Befehl! Aufgrund der großen Nachfrage wird die Produkt-SKU wieder auf dem Bildschirm mit den Bestelldetails angezeigt.
+
+Außerdem haben wir verschiedene Verbesserungen vorgenommen. Dazu gehören die Unterstützung der Drag-and-Drop-Sortierung von verknüpften Produkten, Konsistenzkorrekturen für die Besucherstatistiken in deinem Dashboard und die Topseller auf deinem „Diese Woche“-Tab sowie eine Verbesserung, die das Absturzrisiko beim Aktualisieren der App verringert.

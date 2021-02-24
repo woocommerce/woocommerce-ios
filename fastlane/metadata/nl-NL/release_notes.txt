@@ -1,0 +1,5 @@
+Wat is er nieuw in onze 6.0-uitgave?
+
+Jij vraagt, wij draaien! Op veler verzoek wordt de product-SKU weer weergegeven in het scherm Bestelgegevens.
+
+We hebben ook verschillende verbeteringen aangebracht, waaronder ondersteuning voor drag-and-drop-sortering van gekoppelde producten, consistentie-verbeteringen aan bezoekersstatistieken in je dashboard en toppresteerders in je tabblad 'Deze week' en een verbetering die de kans op crashes vermindert wanneer je de app bijwerkt.

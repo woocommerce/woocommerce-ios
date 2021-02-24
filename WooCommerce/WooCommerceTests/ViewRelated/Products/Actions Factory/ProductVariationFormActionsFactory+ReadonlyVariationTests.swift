@@ -45,6 +45,7 @@ final class ProductVariationFormActionsFactory_ReadonlyVariationTests: XCTestCas
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: false),
+                                                                       .attributes(editable: false),
                                                                        .status(editable: false),
                                                                        .shippingSettings(editable: false),
                                                                        .inventorySettings(editable: false)]
@@ -52,6 +53,22 @@ final class ProductVariationFormActionsFactory_ReadonlyVariationTests: XCTestCas
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
+
+    func test_variation_with_decimal_stock_quantities_has_read_only_inventory() {
+        // Arrange
+        let productVariation = Fixtures.variationWithDecimalStockQuantity
+        let model = EditableProductVariationModel(productVariation: productVariation)
+
+        // Action
+        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
+
+        // Assert
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
+                                                                       .attributes(editable: true),
+                                                                       .status(editable: true),
+                                                                       .inventorySettings(editable: false)]
+        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
     }
 }
 
@@ -71,5 +88,7 @@ private extension ProductVariationFormActionsFactory_ReadonlyVariationTests {
         static let variation = MockProductVariation().productVariation()
             .copy(image: image, description: "hello", regularPrice: "1", manageStock: false,
                   weight: "2", dimensions: ProductDimensions(length: "", width: "", height: ""))
+        // Variation with decimal stock quantity
+        static let variationWithDecimalStockQuantity = MockProductVariation().productVariation().copy(regularPrice: "1", stockQuantity: 1.5)
     }
 }

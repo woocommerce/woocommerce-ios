@@ -2,7 +2,6 @@ import Foundation
 import Networking
 import Storage
 
-
 // MARK: - ProductStore
 //
 public class ProductStore: Store {
@@ -17,7 +16,7 @@ public class ProductStore: Store {
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
     }
 
-    init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: ProductsRemoteProtocol) {
+    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, remote: ProductsRemoteProtocol) {
         self.remote = remote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -320,7 +319,7 @@ private extension ProductStore {
 
 // MARK: - Storage: Product
 //
-private extension ProductStore {
+extension ProductStore {
 
     /// Deletes any Storage.Product with the specified `siteID` and `productID`
     ///

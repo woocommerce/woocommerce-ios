@@ -8,7 +8,7 @@ final class ProductVariationDetailsFactoryTests: XCTestCase {
         let parentProduct = MockProduct().product()
 
         // Action
-        let viewController = try waitFor { promise in
+        let viewController = waitFor { promise in
             ProductVariationDetailsFactory.productVariationDetails(productVariation: productVariation,
                                                                    parentProduct: parentProduct,
                                                                    presentationStyle: .navigationStack,

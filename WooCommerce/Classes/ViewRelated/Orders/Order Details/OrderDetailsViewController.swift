@@ -4,14 +4,13 @@ import Contacts
 import Yosemite
 import SafariServices
 
-
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
 //
 final class OrderDetailsViewController: UIViewController {
 
     /// Main TableView.
     ///
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     /// Pull To Refresh Support.
     ///
@@ -20,6 +19,10 @@ final class OrderDetailsViewController: UIViewController {
         refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
         return refreshControl
     }()
+
+    /// Top banner that announces shipping labels features.
+    ///
+    private var topBannerView: TopBannerView?
 
     /// EntityListener: Update / Deletion Notifications.
     ///
@@ -55,6 +58,7 @@ final class OrderDetailsViewController: UIViewController {
         registerTableViewHeaderFooters()
         configureEntityListener()
         configureViewModel()
+        updateTopBannerView()
 
         // FIXME: this is a hack. https://github.com/woocommerce/woocommerce-ios/issues/1779
         reloadTableViewSectionsAndData()
@@ -66,10 +70,13 @@ final class OrderDetailsViewController: UIViewController {
         syncProducts()
         syncProductVariations()
         syncRefunds()
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease1) {
-            syncShippingLabels()
-        }
+        syncShippingLabels()
         syncTrackingsHidingAddButtonIfNecessary()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateHeaderHeight()
     }
 
     private func syncTrackingsHidingAddButtonIfNecessary() {
@@ -104,10 +111,9 @@ private extension OrderDetailsViewController {
     /// Setup: Navigation
     ///
     func configureNavigation() {
-        title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Order number title")
-
-        // Don't show the Order details title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+        let titleFormat = NSLocalizedString("Order #%1$@", comment: "Order number title. Parameters: %1$@ - order number")
+        title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
+        removeNavigationBackBarButtonText()
     }
 
     /// Setup: EntityListener
@@ -117,7 +123,7 @@ private extension OrderDetailsViewController {
             guard let self = self else {
                 return
             }
-            self.viewModel.updateOrderStatus(order: order)
+            self.viewModel.update(order: order)
             self.reloadTableViewSectionsAndData()
         }
     }
@@ -148,6 +154,8 @@ private extension OrderDetailsViewController {
         }
 
         tableView.reloadData()
+
+        updateTopBannerView()
     }
 
     /// Reloads the tableView's sections and data.
@@ -191,6 +199,64 @@ private extension OrderDetailsViewController {
         notices.displayDeleteErrorNotice(order: order, tracking: tracking) { [weak self] in
             self?.deleteTracking(tracking)
         }
+    }
+}
+
+// MARK: - Top Banner
+//
+private extension OrderDetailsViewController {
+    func updateTopBannerView() {
+        let factory = ShippingLabelsTopBannerFactory(shippingLabels: viewModel.dataSource.shippingLabels)
+        let isExpanded = topBannerView?.isExpanded ?? false
+        factory.createTopBannerIfNeeded(isExpanded: isExpanded,
+                                        expandedStateChangeHandler: { [weak self] in
+                                            self?.tableView.updateHeaderHeight()
+                                        }, onGiveFeedbackButtonPressed: { [weak self] in
+                                            self?.presentShippingLabelsFeedbackSurvey()
+                                        }, onDismissButtonPressed: { [weak self] in
+                                            self?.dismissTopBanner()
+                                        }, onCompletion: { [weak self] topBannerView in
+                                            if let topBannerView = topBannerView {
+                                                self?.showTopBannerView(topBannerView)
+                                            } else {
+                                                self?.hideTopBannerView()
+                                            }
+                                        })
+    }
+
+    func showTopBannerView(_ topBannerView: TopBannerView) {
+        guard tableView.tableHeaderView == nil else {
+            return
+        }
+
+        self.topBannerView = topBannerView
+        // A frame-based container view is needed for table view's `tableHeaderView` and its height is recalculated in `viewDidLayoutSubviews`, so that the
+        // top banner view can be Auto Layout based with dynamic height.
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
+        headerContainer.addSubview(topBannerView)
+        headerContainer.pinSubviewToSafeArea(topBannerView, insets: Constants.headerContainerInsets)
+        tableView.tableHeaderView = headerContainer
+        tableView.updateHeaderHeight()
+    }
+
+    func hideTopBannerView() {
+        guard tableView.tableHeaderView != nil else {
+            return
+        }
+
+        topBannerView?.removeFromSuperview()
+        topBannerView = nil
+        tableView.tableHeaderView = nil
+        tableView.updateHeaderHeight()
+    }
+
+    func presentShippingLabelsFeedbackSurvey() {
+        let navigationController = SurveyCoordinatingController(survey: .shippingLabelsRelease1Feedback)
+        present(navigationController, animated: true, completion: nil)
+    }
+
+    func dismissTopBanner() {
+        hideTopBannerView()
     }
 }
 
@@ -305,8 +371,8 @@ private extension OrderDetailsViewController {
 
     func handleCellAction(_ type: OrderDetailsDataSource.CellActionType, at indexPath: IndexPath?) {
         switch type {
-        case .fulfill:
-            fulfillWasPressed()
+        case .markComplete:
+            markOrderCompleteWasPressed()
         case .summary:
             displayOrderStatusList()
         case .tracking:
@@ -323,15 +389,21 @@ private extension OrderDetailsViewController {
             }
             let coordinator = ReprintShippingLabelCoordinator(shippingLabel: shippingLabel, sourceViewController: navigationController)
             coordinator.showReprintUI()
+        case .createShippingLabel:
+            let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
+            navigationController?.show(shippingLabelFormVC, sender: self)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         }
     }
 
-    func fulfillWasPressed() {
-        ServiceLocator.analytics.track(.orderDetailFulfillButtonTapped)
-        let fulfillViewController = FulfillViewController(order: viewModel.order, products: viewModel.products)
-        navigationController?.pushViewController(fulfillViewController, animated: true)
+    func markOrderCompleteWasPressed() {
+        ServiceLocator.analytics.track(.orderFulfillmentCompleteButtonTapped)
+
+        let fulfillmentProcess = viewModel.markCompleted()
+
+        let presenter = OrderFulfillmentNoticePresenter()
+        presenter.present(process: fulfillmentProcess)
     }
 
     func trackingWasPressed(at indexPath: IndexPath) {
@@ -390,6 +462,7 @@ private extension OrderDetailsViewController {
         actionSheet.addCancelActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.cancelAction)
 
         actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.copyTrackingNumberAction) { [weak self] _ in
+            ServiceLocator.analytics.track(event: .shipmentTrackingMenu(action: .copy))
             self?.viewModel.dataSource.sendToPasteboard(shippingLabel.trackingNumber, includeTrailingNewline: false)
         }
 
@@ -397,6 +470,7 @@ private extension OrderDetailsViewController {
         if let url = ShippingLabelTrackingURLGenerator.url(for: shippingLabel) {
             actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.trackShipmentAction) { [weak self] _ in
                 guard let self = self else { return }
+                ServiceLocator.analytics.track(event: .shipmentTrackingMenu(action: .track))
                 let safariViewController = SFSafariViewController(url: url)
                 safariViewController.modalPresentationStyle = .pageSheet
                 self.present(safariViewController, animated: true, completion: nil)
@@ -474,20 +548,6 @@ extension OrderDetailsViewController: UITableViewDelegate {
     }
 }
 
-
-// MARK: - Segues
-//
-extension OrderDetailsViewController {
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let productListViewController = segue.destination as? ProductListViewController {
-            productListViewController.viewModel = viewModel
-            productListViewController.products = viewModel.products
-        }
-    }
-}
-
-
 // MARK: - Trackings alert
 // Track / delete tracking alert
 private extension OrderDetailsViewController {
@@ -529,16 +589,100 @@ private extension OrderDetailsViewController {
 }
 
 
-// MARK: - Present Order Status List
+// MARK: - Order Status List Child View
 //
 private extension OrderDetailsViewController {
     private func displayOrderStatusList() {
         ServiceLocator.analytics.track(.orderDetailOrderStatusEditButtonTapped,
                                        withProperties: ["status": viewModel.order.status.rawValue])
-        let statusList = OrderStatusListViewController(order: viewModel.order, currentStatus: viewModel.orderStatus)
+
+        let statusList = OrderStatusListViewController(siteID: viewModel.order.siteID,
+                                                       status: viewModel.order.status)
+
+        statusList.didSelectCancel = {
+            statusList.dismiss(animated: true, completion: nil)
+        }
+
+        statusList.didSelectApply = { (selectedStatus) in
+            statusList.dismiss(animated: true) {
+                self.setOrderStatus(to: selectedStatus)
+            }
+        }
+
         let navigationController = UINavigationController(rootViewController: statusList)
 
         present(navigationController, animated: true)
+    }
+
+    func setOrderStatus(to newStatus: OrderStatusEnum?) {
+        guard let newStatus = newStatus else {
+            return
+        }
+        let orderID = viewModel.order.orderID
+        let undoStatus = viewModel.order.status
+        let done = updateOrderStatusAction(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, status: newStatus)
+        let undo = updateOrderStatusAction(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, status: undoStatus)
+
+        ServiceLocator.stores.dispatch(done)
+
+        ServiceLocator.analytics.track(.orderStatusChange,
+                                       withProperties: ["id": orderID,
+                                                        "from": undoStatus.rawValue,
+                                                        "to": newStatus.rawValue])
+
+        displayOrderStatusUpdatedNotice {
+            ServiceLocator.stores.dispatch(undo)
+            ServiceLocator.analytics.track(.orderStatusChange,
+                                           withProperties: ["id": orderID,
+                                                            "from": newStatus.rawValue,
+                                                            "to": undoStatus.rawValue])
+        }
+    }
+
+    /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
+    ///
+    private func updateOrderStatusAction(siteID: Int64, orderID: Int64, status: OrderStatusEnum) -> Action {
+        return OrderAction.updateOrder(siteID: siteID, orderID: orderID, status: status, onCompletion: { [weak self] error in
+            guard let error = error else {
+                NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+                self?.syncNotes()
+                ServiceLocator.analytics.track(.orderStatusChangeSuccess)
+                return
+            }
+
+            ServiceLocator.analytics.track(.orderStatusChangeFailed, withError: error)
+            DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(status)]. Error: \(error)")
+
+            self?.displayOrderStatusErrorNotice(orderID: orderID, status: status)
+        })
+    }
+
+    /// Enqueues the `Order Updated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
+    ///
+    private func displayOrderStatusUpdatedNotice(onUndoAction: @escaping () -> Void) {
+        let message = NSLocalizedString("Order status updated", comment: "Order status update success notice")
+        let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
+        let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
+
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Enqueues the `Unable to Change Status of Order` Notice.
+    ///
+    private func displayOrderStatusErrorNotice(orderID: Int64, status: OrderStatusEnum) {
+        let titleFormat = NSLocalizedString(
+            "Unable to change status of order #%1$d",
+            comment: "Content of error presented when updating the status of an Order fails. "
+            + "It reads: Unable to change status of order #{order number}. "
+            + "Parameters: %1$d - order number"
+        )
+        let title = String.localizedStringWithFormat(titleFormat, orderID)
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.setOrderStatus(to: status)
+        }
+
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -573,6 +717,8 @@ private extension OrderDetailsViewController {
     }
 
     enum Constants {
+        static let headerDefaultHeight = CGFloat(130)
+        static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 8, right: 0)
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
     }

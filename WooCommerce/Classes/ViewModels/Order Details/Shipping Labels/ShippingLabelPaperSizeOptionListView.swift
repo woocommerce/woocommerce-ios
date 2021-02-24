@@ -14,7 +14,7 @@ struct ShippingLabelPaperSizeOptionListView: View {
 
     var body: some View {
         ScrollView {
-            GridStackView(rows: numberOfRows, columns: numberOfColumnsPerRow) { row, col in
+            GridStackView(rows: numberOfRows, columns: numberOfColumnsPerRow, spacingBetweenColumns: 20) { row, col in
                 let index = row * numberOfColumnsPerRow + col
                 if let paperSize = paperSizeOptions[safe: index] {
                     ShippingLabelPaperSizeOptionView(paperSize: paperSize)
@@ -23,7 +23,7 @@ struct ShippingLabelPaperSizeOptionListView: View {
                     Spacer()
                         .frame(maxWidth: .infinity)
                 }
-            }
+            }.padding(.init(top: 0, leading: 28, bottom: 25, trailing: 28))
         }.background(Color(UIColor.basicBackground))
     }
 }
@@ -39,6 +39,12 @@ struct ShippingLabelPaperSizeOptionListView_Previews: PreviewProvider {
             .environment(\.colorScheme, .light)
         ShippingLabelPaperSizeOptionListView(paperSizeOptions: paperSizeOptions)
             .environment(\.colorScheme, .dark)
+        ShippingLabelPaperSizeOptionListView(paperSizeOptions: paperSizeOptions)
+            .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+            .previewLayout(.fixed(width: 414, height: 768))
+        ShippingLabelPaperSizeOptionListView(paperSizeOptions: paperSizeOptions)
+            .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+            .previewLayout(.fixed(width: 896, height: 600))
         ShippingLabelPaperSizeOptionListView(paperSizeOptions: paperSizeOptions)
             .previewLayout(.fixed(width: 1024, height: 768))
         ShippingLabelPaperSizeOptionListView(paperSizeOptions: [.legal, .letter])

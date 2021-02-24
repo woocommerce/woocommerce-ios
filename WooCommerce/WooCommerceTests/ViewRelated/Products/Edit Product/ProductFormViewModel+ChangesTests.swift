@@ -15,8 +15,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
         let taxClass = TaxClass(siteID: product.siteID, name: "standard", slug: product.taxClass ?? "standard")
 
         // Action
@@ -54,8 +53,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         viewModel.updateName("this new product name")
@@ -71,8 +69,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         let settings = ProductSettings(from: product, password: "secret secret")
@@ -89,8 +86,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
         let expectation = self.expectation(description: "Wait for image upload")
         productImageActionHandler.addUpdateObserver(self) { statuses in
             if statuses.productImageStatuses.isNotEmpty {
@@ -113,8 +109,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         let productImage = ProductImage(imageID: 6,
@@ -136,8 +131,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         viewModel.updateDescription("Another way to describe the product?")
@@ -153,8 +147,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         let categoryID = Int64(1234)
@@ -175,8 +168,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         let tagID = Int64(1234)
@@ -196,8 +188,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         viewModel.updateShortDescription("A short one")
@@ -213,8 +204,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         viewModel.updatePriceSettings(regularPrice: "999999", salePrice: "888888", dateOnSaleStart: nil, dateOnSaleEnd: nil, taxStatus: .none, taxClass: nil)
@@ -230,8 +220,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         viewModel.updateInventorySettings(sku: "", manageStock: false, soldIndividually: true, stockQuantity: 888888, backordersSetting: nil, stockStatus: nil)
@@ -247,8 +236,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         viewModel.updateShippingSettings(weight: "88888",
@@ -267,8 +255,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         viewModel.updateDownloadableFiles(downloadableFiles: MockProduct().sampleDownloadsMutated(), downloadLimit: 1, downloadExpiry: 1)
@@ -284,8 +271,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         viewModel.updateDownloadableFiles(downloadableFiles: MockProduct().sampleDownloads(), downloadLimit: 5, downloadExpiry: 1)
@@ -301,8 +287,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .edit,
-                                             productImageActionHandler: productImageActionHandler,
-                                             isEditProductsRelease5Enabled: false)
+                                             productImageActionHandler: productImageActionHandler)
 
         // Action
         viewModel.updateDownloadableFiles(downloadableFiles: MockProduct().sampleDownloads(), downloadLimit: 1, downloadExpiry: 5)

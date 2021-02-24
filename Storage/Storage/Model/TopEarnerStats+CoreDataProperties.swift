@@ -12,6 +12,7 @@ extension TopEarnerStats {
     @NSManaged public var limit: String
     @NSManaged public var date: String
     @NSManaged public var items: Set<TopEarnerStatsItem>?
+    @NSManaged public var siteID: Int64
 }
 
 // MARK: Generated accessors for items

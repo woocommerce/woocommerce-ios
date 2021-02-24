@@ -150,11 +150,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   lane :new_beta_release do | options |
     ios_betabuild_prechecks(options)
     ios_update_metadata(options)
-    violations = ios_lint_localizations(input_dir: 'WooCommerce/Resources', abort_on_violations: false)
-    unless (violations.nil? || violations.empty?)
-      abort = UI.confirm("Violations found, we suggest fixing them in GlotPress first and retrying the beta afterwards. Abort?")
-      UI.abort_with_message!("Aborting the beta due to localization violations. Reach out to i18n folks to help you fix them.") if abort
-    end
+    ios_lint_localizations(input_dir: 'WooCommerce/Resources', allow_retry: true)
     ios_bump_version_beta()
     ios_tag_build()
   end
@@ -212,7 +208,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     ios_finalize_prechecks(options)
     unless ios_current_branch_is_hotfix
       ios_update_metadata(options)
-      ios_lint_localizations(input_dir: 'WooCommerce/Resources')
+      ios_lint_localizations(input_dir: 'WooCommerce/Resources', allow_retry: true)
       ios_bump_version_beta()
     end
     ios_final_tag(options)
@@ -404,6 +400,9 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     # Ensure we're using the latest Pods
     sh('bundle exec pod install --verbose')
 
+    # Ensure we're using the right version of Xcode
+    xcversion(version: "~> 12.0")
+
     scan(
       workspace: File.join(fastlane_directory, "../WooCommerce.xcworkspace"),
       scheme: "WooCommerceScreenshots",
@@ -414,6 +413,9 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
 
   desc "Take Screenshots"
   lane :take_screenshots do | options |
+
+    # Ensure we're using the right version of Xcode
+    xcversion(version: "~> 12.0")
 
     # By default, clear previous screenshots
     languages = ios_locales
@@ -471,7 +473,10 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       stop_after_first_error: true,
 
       # Allow the caller to invoke dark mode
-      dark_mode: options[:mode].to_s.downcase == "dark"
+      dark_mode: options[:mode].to_s.downcase == "dark",
+
+      # Make the status bar pretty
+      override_status_bar: true,
     )
 
   end
@@ -533,7 +538,6 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
 
       # Screenshots
       "app_store_screenshot-1"    => {desc: "app_store_screenshot_1.txt"},
-      "app_store_screenshot-1_b"  => {desc: "app_store_screenshot_1b.txt"},
       "app_store_screenshot-2"    => {desc: "app_store_screenshot_2.txt"},
       "app_store_screenshot-3"    => {desc: "app_store_screenshot_3.txt"},
       "app_store_screenshot-4"    => {desc: "app_store_screenshot_4.txt"},
@@ -549,30 +553,50 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       download_path: "./fastlane/metadata"
     )
 
-    # Create the marketing and privacy URL files
-    metadata_locales.each { |locale|
-      marketing_path = Dir.pwd + "/metadata/#{locale}/marketing_url.txt"
-      write_file(marketing_path, 'https://woocommerce.com/mobile/')
-      
-      privacy_path = Dir.pwd + "/metadata/#{locale}/privacy_url.txt"
-      write_file(privacy_path, "https://automattic.com/privacy/")
+    # Ensure that localizations are present in the right places (some locale codes aren't correct)
+    {
+      "ar" => "ar-SA",
+      "de" => "de-DE",
+      "es" => "es-ES",
+      "fr" => "fr-FR",
+      "nl" => "nl-NL",
+      "zh-cn" => "zh-Hans",
+      "zh-tw" => "zh-Hant"
+    }.each do |source, destination|
+      source_dir = File.join(Dir.pwd, "metadata", source)
+      Dir.children(source_dir).each do |file| 
+        source_file = File.join(source_dir, file)
+        destination_file = File.join(Dir.pwd, "metadata", destination, file)
+        FileUtils.mv(source_file, destination_file)
+      end
+      FileUtils.remove_dir(source_dir)
+    end
 
-      support_path = Dir.pwd + "/metadata/#{locale}/support_url.txt"
-      write_file(support_path, "https://docs.woocommerce.com/")
-    }
-  end
+    # Copy source files into `en-US`
+    enUS_path = File.join(Dir.pwd, 'metadata', 'en-US')
 
-  desc "Upload App Store Data"
-  lane :upload_app_store_data do | options |
-    
-    deliver(
-      app_identifier: 'com.automattic.woocommerce',
-      copyright: '2019 WooCommerce',
-      skip_binary_upload: true,
-      team_id: '299112',
-      skip_screenshots: true,
-      ignore_language_directory_validation: true
-    )
+    FileUtils.mkdir_p(enUS_path)
+
+    [
+      "promo_screenshot_1.txt",
+      "promo_screenshot_2.txt",
+      "promo_screenshot_3.txt",
+      "promo_screenshot_4.txt",
+      "promo_screenshot_5.txt",
+    ].each do |filename|
+      source = File.join(Dir.pwd, 'appstoreres', 'metadata', 'source', filename)
+      destination = File.join(enUS_path, filename)
+      FileUtils.cp(source, destination)
+    end
+
+    # Replace the `default` directory with the contents of `en-US`
+    default_path = File.join(Dir.pwd, 'metadata', 'default')
+    FileUtils.remove_dir(default_path) if File.directory?(default_path)
+    FileUtils.copy_entry(enUS_path, default_path)
+
+    # Never store review information (it contains passwords and PII)
+    review_info_path = File.join(Dir.pwd, 'metadata', 'review_information')
+    FileUtils.remove_dir(review_info_path) if File.directory?(review_info_path)
   end
 
   desc "Create Promo Screenshots"
@@ -667,7 +691,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   end
 
   def ios_locales
-    "ar de-DE es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant en-US".split()
+    "ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant".split()
   end
 
   def glotpress_locales
@@ -698,7 +722,7 @@ end
   end
 
   def simulator_version()
-    return '13.3'
+    return '14.3'
   end
 
 ########################################################################

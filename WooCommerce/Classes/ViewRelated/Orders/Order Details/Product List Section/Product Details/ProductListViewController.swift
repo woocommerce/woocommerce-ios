@@ -2,7 +2,11 @@ import UIKit
 import Yosemite
 
 
-class ProductListViewController: UIViewController {
+/// A simple Product List presented from the Order Details screen.
+///
+/// The list shows the product name and the purchased quantity.
+///
+final class ProductListViewController: UIViewController {
     @IBOutlet private var tableView: UITableView!
     private var items = [OrderItem]()
 
@@ -17,6 +21,7 @@ class ProductListViewController: UIViewController {
         super.viewDidLoad()
 
         self.items = viewModel.order.items
+        self.products = viewModel.products
         configureMainView()
         configureTableView()
     }
@@ -30,11 +35,11 @@ private extension ProductListViewController {
     /// Setup: Main View
     ///
     func configureMainView() {
-        title = NSLocalizedString("Details Order #\(viewModel.order.number)", comment: "Screen title: Details Order number (number)")
+        let titleFormat = NSLocalizedString("Details Order #%1$@", comment: "Screen title: Details Order number. Parameters: %1$@ - order number")
+        title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
         view.backgroundColor = .listBackground
 
-        // Don't show the Order details title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+        removeNavigationBackBarButtonText()
     }
 
     /// Setup: TableView
@@ -121,7 +126,7 @@ private extension ProductListViewController {
     func productWasPressed(orderItem: OrderItem) {
         let loaderViewController = ProductLoaderViewController(model: .init(orderItem: orderItem),
                                                                siteID: viewModel.order.siteID,
-                                                               forceReadOnly: false)
+                                                               forceReadOnly: true)
         let navController = WooNavigationController(rootViewController: loaderViewController)
         present(navController, animated: true, completion: nil)
     }

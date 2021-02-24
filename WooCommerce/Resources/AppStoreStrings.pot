@@ -57,10 +57,13 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v5.7-whats-new"
+msgctxt "v6.0-whats-new"
 msgid ""
-"The app now supports iOS 13 and up which will allow for more rapid feature development.\n"
-"We’ve improved error handling in the login flow, fixed a bug that prevented thumbnail images from appearing for product variations on the order details screen, and centered the footer spinner vertically and horizontally.\n"
+"What’s new in our 6.0 release?\n"
+"\n"
+"You asked, we listened! Due to popular demand, the product SKU is displayed once again in the Order Details screen.\n"
+"\n"
+"We also made various enhancements, including support for drag-and-drop sorting to Linked Products, consistency fixes to visitor stats in your dashboard and top performers in your “This Week” tab, and an improvement that reduces the risk of crashes when you update the app.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

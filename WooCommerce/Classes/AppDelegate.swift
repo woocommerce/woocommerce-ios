@@ -10,6 +10,8 @@ import WordPressKit
 import WordPressAuthenticator
 import AutomatticTracks
 
+import class Yosemite.ScreenshotStoresManager
+
 #if DEBUG
 import Wormholy
 #endif
@@ -36,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     /// Tab Bar Controller
     ///
     var tabBarController: MainTabBarController? {
-        return window?.rootViewController as? MainTabBarController
+        appCoordinator?.tabBarController
     }
 
     /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
@@ -152,17 +154,11 @@ private extension AppDelegate {
     /// Sets up the main UIWindow instance.
     ///
     func setupMainWindow() {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
+        let window = UIWindow()
+        window.makeKeyAndVisible()
+        self.window = window
 
-        window = UIWindow()
-        window?.rootViewController = storyboard.instantiateInitialViewController()
-        window?.makeKeyAndVisible()
-
-        guard let tabBarController = tabBarController else {
-            assertionFailure("Unexpected root view controller: \(String(describing: window?.rootViewController))")
-            return
-        }
-        appCoordinator = AppCoordinator(tabBarController: tabBarController)
+        appCoordinator = AppCoordinator(window: window)
     }
 
     /// Sets up all of the component(s) Appearance.
@@ -267,7 +263,7 @@ private extension AppDelegate {
     ///
     func setupNoticePresenter() {
         var noticePresenter = ServiceLocator.noticePresenter
-        noticePresenter.presentingViewController = window?.rootViewController
+        noticePresenter.presentingViewController = appCoordinator?.tabBarController
     }
 
     /// Push Notifications: Authorization + Registration!
@@ -318,11 +314,15 @@ private extension AppDelegate {
     }
 
     func handleLaunchArguments() {
-        if ProcessInfo.processInfo.arguments.contains("logout-at-launch") {
-          ServiceLocator.stores.deauthenticate()
+        if BuildConfiguration.shouldLogoutAtLaunch {
+            ServiceLocator.stores.deauthenticate()
         }
 
-        if ProcessInfo.processInfo.arguments.contains("disable-animations") {
+        if BuildConfiguration.shouldUseScreenshotsNetworkLayer {
+            ServiceLocator.setStores(ScreenshotStoresManager(storageManager: ServiceLocator.storageManager))
+        }
+
+        if BuildConfiguration.shouldDisableAnimations {
             UIView.setAnimationsEnabled(false)
 
             /// Trick found at: https://twitter.com/twannl/status/1232966604142653446

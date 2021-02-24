@@ -48,7 +48,7 @@ final class RefundShippingLabelViewModelTests: XCTestCase {
                                                      stores: stores)
 
         // When
-        let refundResult = try waitFor { promise in
+        let refundResult = waitFor { promise in
             viewModel.refundShippingLabel { result in
                 promise(result)
             }
@@ -76,7 +76,7 @@ final class RefundShippingLabelViewModelTests: XCTestCase {
                                                      stores: stores)
 
         // When
-        let refundResult = try waitFor { promise in
+        let refundResult = waitFor { promise in
             viewModel.refundShippingLabel { result in
                 promise(result)
             }
@@ -84,6 +84,25 @@ final class RefundShippingLabelViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(try XCTUnwrap(refundResult.failure) as? RefundError, expectedError)
+    }
+
+    func test_refundShippingLabel_logs_analytics() throws {
+        // Given
+        let shippingLabel = MockShippingLabel.emptyLabel().copy(refundableAmount: 1000.331134)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = RefundShippingLabelViewModel(shippingLabel: shippingLabel,
+                                                     currencyFormatter: CurrencyFormatter(currencySettings: .init()),
+                                                     stores: stores,
+                                                     analytics: analytics)
+
+        // When
+        viewModel.refundShippingLabel { _ in }
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.count, 1)
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, "shipping_label_refund_requested")
     }
 }
 

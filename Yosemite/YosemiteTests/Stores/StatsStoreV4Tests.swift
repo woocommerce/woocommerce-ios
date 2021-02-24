@@ -142,9 +142,9 @@ final class StatsStoreV4Tests: XCTestCase {
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 0)
-        statsStore.upsertStoredSiteVisitStats(readOnlyStats: sampleSiteVisitStats())
+        statsStore.upsertStoredSiteVisitStats(readOnlyStats: sampleSiteVisitStats(), timeRange: .thisYear)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 1)
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteVisitStatsItem.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStatsItem.self), 2)
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "site-visits-alt")
         let action = StatsActionV4
@@ -207,11 +207,12 @@ final class StatsStoreV4Tests: XCTestCase {
     func testUpsertStoredSiteVisitStatsEffectivelyPersistsNewSiteVisitStats() {
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteSiteVisitStats = sampleSiteVisitStats()
+        let timeRange = StatsTimeRangeV4.thisYear
 
-        XCTAssertNil(viewStorage.loadSiteVisitStats(granularity: StatGranularity.year.rawValue))
-        statsStore.upsertStoredSiteVisitStats(readOnlyStats: remoteSiteVisitStats)
+        XCTAssertNil(viewStorage.loadSiteVisitStats(granularity: StatGranularity.year.rawValue, timeRange: timeRange.rawValue))
+        statsStore.upsertStoredSiteVisitStats(readOnlyStats: remoteSiteVisitStats, timeRange: timeRange)
 
-        let storageSiteVisitStats = viewStorage.loadSiteVisitStats(granularity: StatGranularity.year.rawValue)
+        let storageSiteVisitStats = viewStorage.loadSiteVisitStats(granularity: StatGranularity.year.rawValue, timeRange: timeRange.rawValue)
         XCTAssertEqual(storageSiteVisitStats?.toReadOnly(), remoteSiteVisitStats)
     }
 
@@ -219,17 +220,18 @@ final class StatsStoreV4Tests: XCTestCase {
     ///
     func testUpdateStoredSiteVisitStatsEffectivelyUpdatesPreexistantSiteVisitStats() {
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let timeRange = StatsTimeRangeV4.thisYear
 
-        XCTAssertNil(viewStorage.loadSiteVisitStats(granularity: StatGranularity.year.rawValue))
-        statsStore.upsertStoredSiteVisitStats(readOnlyStats: sampleSiteVisitStats())
+        XCTAssertNil(viewStorage.loadSiteVisitStats(granularity: StatGranularity.year.rawValue, timeRange: timeRange.rawValue))
+        statsStore.upsertStoredSiteVisitStats(readOnlyStats: sampleSiteVisitStats(), timeRange: timeRange)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStatsItem.self), 2)
-        statsStore.upsertStoredSiteVisitStats(readOnlyStats: sampleSiteVisitStatsMutated())
+        statsStore.upsertStoredSiteVisitStats(readOnlyStats: sampleSiteVisitStatsMutated(), timeRange: timeRange)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStatsItem.self), 2)
 
         let expectedSiteVisitStats = sampleSiteVisitStatsMutated()
-        let storageSiteVisitStats = viewStorage.loadSiteVisitStats(granularity: StatGranularity.year.rawValue)
+        let storageSiteVisitStats = viewStorage.loadSiteVisitStats(granularity: StatGranularity.year.rawValue, timeRange: timeRange.rawValue)
         XCTAssertEqual(storageSiteVisitStats?.toReadOnly(), expectedSiteVisitStats)
     }
 
@@ -447,7 +449,8 @@ private extension StatsStoreV4Tests {
     // MARK: - Site Visit Stats Sample
 
     func sampleSiteVisitStats() -> Networking.SiteVisitStats {
-        return SiteVisitStats(date: "2015-08-06",
+        return SiteVisitStats(siteID: sampleSiteID,
+                              date: "2015-08-06",
                               granularity: .year,
                               items: [sampleSiteVisitStatsItem1(), sampleSiteVisitStatsItem2()])
     }
@@ -462,7 +465,8 @@ private extension StatsStoreV4Tests {
     }
 
     func sampleSiteVisitStatsMutated() -> Networking.SiteVisitStats {
-        return SiteVisitStats(date: "2015-08-06",
+        return SiteVisitStats(siteID: sampleSiteID,
+                              date: "2015-08-06",
                               granularity: .year,
                               items: [sampleSiteVisitStatsItem1Mutated(), sampleSiteVisitStatsItem2Mutated()])
     }
@@ -479,7 +483,8 @@ private extension StatsStoreV4Tests {
     // MARK: - Top Earner Stats Sample
 
     func sampleTopEarnerStats() -> Networking.TopEarnerStats {
-        return TopEarnerStats(date: "2020",
+        return TopEarnerStats(siteID: sampleSiteID,
+                              date: "2020",
                               granularity: .year,
                               limit: "3",
                               items: [sampleTopEarnerStatsItem1(), sampleTopEarnerStatsItem2()])
@@ -506,7 +511,8 @@ private extension StatsStoreV4Tests {
     }
 
     func sampleTopEarnerStatsMutated() -> Networking.TopEarnerStats {
-        return TopEarnerStats(date: "2020",
+        return TopEarnerStats(siteID: sampleSiteID,
+                              date: "2020",
                               granularity: .year,
                               limit: "3",
                               items: [sampleTopEarnerStatsMutatedItem1(), sampleTopEarnerStatsMutatedItem2()])

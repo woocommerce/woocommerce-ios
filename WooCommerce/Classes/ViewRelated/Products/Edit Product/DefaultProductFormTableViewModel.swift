@@ -12,7 +12,6 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     //
     var siteTimezone: TimeZone = TimeZone.siteTimezone
 
-    private let isEditProductsRelease5Enabled: Bool
     private let isAddProductVariationsEnabled: Bool
 
     init(product: ProductFormDataModel,
@@ -22,7 +21,6 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
-        self.isEditProductsRelease5Enabled = featureFlagService.isFeatureFlagEnabled(.editProductsRelease5)
         self.isAddProductVariationsEnabled = featureFlagService.isFeatureFlagEnabled(.addProductVariations)
         configureSections(product: product, actionsFactory: actionsFactory)
     }
@@ -90,8 +88,8 @@ private extension DefaultProductFormTableViewModel {
                 return .groupedProducts(viewModel: groupedProductsRow(product: product.product, isEditable: editable), isEditable: editable)
             case .variations:
                 return .variations(viewModel: variationsRow(product: product.product))
-            case .downloadableFiles:
-                return .downloadableFiles(viewModel: downloadsRow(product: product))
+            case .downloadableFiles(let editable):
+                return .downloadableFiles(viewModel: downloadsRow(product: product, isEditable: editable), isEditable: editable)
             case .linkedProducts(let editable):
                 return .linkedProducts(viewModel: linkedProductsRow(product: product, isEditable: editable), isEditable: editable)
             default:
@@ -106,6 +104,8 @@ private extension DefaultProductFormTableViewModel {
             switch action {
             case .priceSettings(let editable):
                 return .price(viewModel: variationPriceSettingsRow(productVariation: productVariation, isEditable: editable), isEditable: editable)
+            case .attributes(let editable):
+                return .attributes(viewModel: variationAttributesRow(productVariation: productVariation, isEditable: editable), isEditable: editable)
             case .shippingSettings(let editable):
                 return .shipping(viewModel: shippingSettingsRow(product: productVariation, isEditable: editable), isEditable: editable)
             case .inventorySettings(let editable):
@@ -206,7 +206,8 @@ private extension DefaultProductFormTableViewModel {
         }
 
         if let stockQuantity = product.stockQuantity, product.manageStock {
-            inventoryDetails.append(String.localizedStringWithFormat(Localization.stockQuantityFormat, stockQuantity))
+            let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSDecimalNumber, number: .decimal)
+            inventoryDetails.append(String.localizedStringWithFormat(Localization.stockQuantityFormat, localizedStockQuantity))
         } else if product.manageStock == false && product.isStockStatusEnabled() {
             let stockStatus = product.stockStatus
             inventoryDetails.append(stockStatus.description)
@@ -227,10 +228,12 @@ private extension DefaultProductFormTableViewModel {
         let details: String
         switch product.productType {
         case .simple:
-            switch product.virtual {
-            case true:
+            switch (product.downloadable, product.virtual) {
+            case (true, _):
+                details = Localization.downloadableProductType
+            case (false, true):
                 details = Localization.virtualProductType
-            case false:
+            case (false, false):
                 details = Localization.physicalProductType
             }
         case .custom(let customProductType):
@@ -418,9 +421,17 @@ private extension DefaultProductFormTableViewModel {
         return ProductFormSection.SettingsRow.WarningViewModel(icon: icon, title: title)
     }
 
+    func variationAttributesRow(productVariation: EditableProductVariationModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.customizeImage
+        let title = Localization.variationAttributesTitle
+        let details = productVariation.name
+
+        return .init(icon: icon, title: title, details: details, isActionable: isEditable)
+    }
+
     // MARK: Product downloads only
 
-    func downloadsRow(product: ProductFormDataModel) -> ProductFormSection.SettingsRow.ViewModel {
+    func downloadsRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.cloudImage
         let title = Localization.downloadsTitle
         var details = Localization.emptyDownloads
@@ -436,7 +447,8 @@ private extension DefaultProductFormTableViewModel {
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
-                                                        details: details)
+                                                        details: details,
+                                                        isActionable: isEditable)
     }
 
     // MARK: Linked products only
@@ -513,10 +525,12 @@ private extension DefaultProductFormTableViewModel {
         // Inventory
         static let skuFormat = NSLocalizedString("SKU: %@",
                                                  comment: "Format of the SKU on the Inventory Settings row")
-        static let stockQuantityFormat = NSLocalizedString("Quantity: %ld",
+        static let stockQuantityFormat = NSLocalizedString("Quantity: %@",
                                                            comment: "Format of the stock quantity on the Inventory Settings row")
 
         // Product Type
+        static let downloadableProductType = NSLocalizedString("Downloadable",
+                                                               comment: "Display label for simple downloadable product type.")
         static let virtualProductType = NSLocalizedString("Virtual",
                                                           comment: "Display label for simple virtual product type.")
         static let physicalProductType = NSLocalizedString("Physical",
@@ -562,6 +576,9 @@ private extension DefaultProductFormTableViewModel {
         static let variationStatusTitle =
             NSLocalizedString("Enabled",
                               comment: "Title of the status row on Product Variation main screen to enable/disable a variation")
+
+        // Variation attributes
+        static let variationAttributesTitle = NSLocalizedString("Attributes", comment: "Title of the attributes row on Product Variation main screen")
 
         // No price warning row
         static let noPriceWarningTitle =

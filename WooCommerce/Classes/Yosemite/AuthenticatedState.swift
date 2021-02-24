@@ -41,6 +41,7 @@ class AuthenticatedState: StoresManagerState {
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             PaymentGatewayStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductAttributeStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductAttributeTermStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductReviewStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductCategoryStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -119,6 +120,7 @@ private extension AuthenticatedState {
         let resetStoredProviders = AppSettingsAction.resetStoredProviders(onCompletion: nil)
         let resetStoredStatsVersionStates = AppSettingsAction.resetStatsVersionStates
         let resetFeatureSwitchStates = AppSettingsAction.resetFeatureSwitches
-        ServiceLocator.stores.dispatch([resetStoredProviders, resetStoredStatsVersionStates, resetFeatureSwitchStates])
+        let resetProductsSettings = AppSettingsAction.resetProductsSettings
+        ServiceLocator.stores.dispatch([resetStoredProviders, resetStoredStatsVersionStates, resetFeatureSwitchStates, resetProductsSettings])
     }
 }

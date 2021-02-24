@@ -43,12 +43,12 @@ struct ProductsTopBannerFactory {
 private extension ProductsTopBannerFactory {
     enum Localization {
         static let title =
-            NSLocalizedString("Create products from the app!",
-                              comment: "The title of the Work In Progress top banner on the Products tab when Products feature switch is enabled.")
+            NSLocalizedString("New features available!",
+                              comment: "The title of the top banner on the Products tab.")
         static let info =
             NSLocalizedString(
-                "It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!",
-                comment: "The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled.")
+                "You can now add downloadable files to a product and link upsell & cross-sell products. No longer want a product? Trash it!",
+                comment: "The info of the top banner on the Products tab.")
         static let giveFeedback =
             NSLocalizedString("Give feedback",
                               comment: "The title of the button to give feedback about products beta features on the banner on the products tab")

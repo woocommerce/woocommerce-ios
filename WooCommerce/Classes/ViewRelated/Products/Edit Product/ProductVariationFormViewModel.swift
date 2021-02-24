@@ -161,7 +161,7 @@ extension ProductVariationFormViewModel {
     func updateInventorySettings(sku: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,
-                                 stockQuantity: Int64?,
+                                 stockQuantity: Decimal?,
                                  backordersSetting: ProductBackordersSetting?,
                                  stockStatus: ProductStockStatus?) {
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(sku: sku,
@@ -228,6 +228,16 @@ extension ProductVariationFormViewModel {
 
     func updateLinkedProducts(upsellIDs: [Int64], crossSellIDs: [Int64]) {
         // no-op
+    }
+
+    func updateVariationAttributes(_ attributes: [ProductVariationAttribute]) {
+        productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(attributes: attributes),
+                                                         allAttributes: allAttributes,
+                                                         parentProductSKU: parentProductSKU)
+    }
+
+    func updateProductVariations(from product: Product) {
+        //no-op
     }
 }
 

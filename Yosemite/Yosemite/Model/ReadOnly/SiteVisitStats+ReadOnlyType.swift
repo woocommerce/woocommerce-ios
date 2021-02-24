@@ -13,6 +13,8 @@ extension Yosemite.SiteVisitStats: ReadOnlyType {
             return false
         }
 
-        return storageSiteVisitStats.granularity == granularity.rawValue && storageSiteVisitStats.date == date
+        return storageSiteVisitStats.siteID == siteID &&
+            storageSiteVisitStats.granularity == granularity.rawValue &&
+            storageSiteVisitStats.date == date
     }
 }

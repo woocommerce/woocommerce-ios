@@ -2,7 +2,7 @@ import Networking
 
 /// How products are sorted in a product list.
 ///
-public enum ProductsSortOrder {
+public enum ProductsSortOrder: String {
     // From the newest to the oldest
     case dateDescending
     // From the oldest to the newest
@@ -11,6 +11,8 @@ public enum ProductsSortOrder {
     case nameDescending
     // Product name from A to Z
     case nameAscending
+
+    public static let `default`: ProductsSortOrder = .nameAscending
 }
 
 // MARK: ProductsRemote

@@ -28,7 +28,7 @@ final class PaymentsGatewayRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "payment_gateways", filename: "payment-gateway-list")
 
         // When
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             remote.loadAllPaymentGateways(siteID: self.sampleSiteID) { result in
                 promise(result)
             }

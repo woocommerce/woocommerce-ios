@@ -72,6 +72,19 @@
                      ]
                  }
              ],
+             "fee_lines": [
+                 {
+                     "id": 60,
+                     "name": "$125.50 fee",
+                     "tax_class": "",
+                     "tax_status": "taxable",
+                     "amount": "125.5",
+                     "total": "125.50",
+                     "total_tax": "0.00",
+                     "taxes": [],
+                     "meta_data": []
+                 }
+             ],
              "payment_method": "stripe",
              "payment_method_title": "Credit Card (Stripe)",
              "date_paid_gmt": "2018-04-03T23:05:14",
@@ -238,7 +251,8 @@
                             "price": 20
                             }
                             ],
-             "coupon_lines": []
+             "coupon_lines": [],
+             "fee_lines": []
              },
              {
              "id": 960,
@@ -309,7 +323,8 @@
                             "price": 20
                             }
                             ],
-             "coupon_lines": []
+             "coupon_lines": [],
+             "fee_lines": []
              },
              {
                  "id": 560,
@@ -1254,7 +1269,7 @@
                      }
                  ],
                  "fee_lines": [],
-                 "coupon_lines": [],
+                 "coupon_lines": [],                 
                  "refunds": [
                      {
                          "id": 1172,

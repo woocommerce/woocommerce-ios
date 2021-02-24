@@ -100,19 +100,14 @@ private extension BillingInformationViewController {
 
     /// Displays an alert that offers several contact methods to reach the customer: [Phone / Message]
     ///
-    func displayContactCustomerAlert(from: UIViewController) {
-        guard let sourceView = from.view else {
-            return
-        }
+    func displayContactCustomerAlert(from sourceView: UIView) {
 
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
         actionSheet.addCancelActionWithTitle(ContactAction.dismiss)
         actionSheet.addDefaultActionWithTitle(ContactAction.call) { [weak self] _ in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
 
             guard let phoneURL = self.order.billingAddress?.cleanedPhoneNumberAsActionableURL else {
                 return
@@ -123,15 +118,16 @@ private extension BillingInformationViewController {
         }
 
         actionSheet.addDefaultActionWithTitle(ContactAction.message) { [weak self] _ in
+            guard let self = self else { return }
             ServiceLocator.analytics.track(.orderDetailCustomerSMSOptionTapped)
-            self?.displayMessageComposerIfPossible(from: from)
+            self.displayMessageComposerIfPossible(from: self)
         }
 
         let popoverController = actionSheet.popoverPresentationController
         popoverController?.sourceView = sourceView
         popoverController?.sourceRect = sourceView.bounds
 
-        from.present(actionSheet, animated: true)
+        present(actionSheet, animated: true)
 
         ServiceLocator.analytics.track(.orderDetailCustomerPhoneMenuTapped)
     }
@@ -166,8 +162,8 @@ private extension BillingInformationViewController {
 
     /// Create an action sheet that offers the option to copy the email address
     ///
-    func displayEmailCopyAlert(from: UIViewController) {
-        guard let sourceView = from.view, let email = order.billingAddress?.email else {
+    func displayEmailCopyAlert(from sourceView: UIView) {
+        guard let email = order.billingAddress?.email else {
             return
         }
 
@@ -184,7 +180,7 @@ private extension BillingInformationViewController {
         popoverController?.sourceView = sourceView
         popoverController?.sourceRect = sourceView.bounds
 
-        from.present(actionSheet, animated: true)
+        present(actionSheet, animated: true)
 
         ServiceLocator.analytics.track(.orderDetailCustomerEmailMenuTapped)
     }
@@ -251,13 +247,19 @@ extension BillingInformationViewController: UITableViewDelegate {
 
         switch sections[indexPath.section].rows[indexPath.row] {
         case .billingPhone:
-            displayContactCustomerAlert(from: self)
+            if let indexPath = sections.indexPathForRow(.billingPhone),
+                let cell = tableView.cellForRow(at: indexPath) as? WooBasicTableViewCell {
+                displayContactCustomerAlert(from: cell)
+            }
             break
 
         case .billingEmail:
             ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
             guard displayEmailComposerIfPossible(from: self) else {
-                displayEmailCopyAlert(from: self)
+                if let indexPath = sections.indexPathForRow(.billingEmail),
+                    let cell = tableView.cellForRow(at: indexPath) as? WooBasicTableViewCell {
+                    displayEmailCopyAlert(from: cell)
+                }
                 return
             }
 
@@ -452,7 +454,7 @@ private extension BillingInformationViewController {
 
 // MARK: - Section: Represents a TableView Section
 //
-private struct Section {
+private struct Section: RowIterable {
 
     /// Section's Title
     ///
@@ -469,7 +471,7 @@ private struct Section {
 
 // MARK: - Row: Represents a TableView Row
 //
-private enum Row {
+private enum Row: CaseIterable {
 
     /// Represents an address row
     ///

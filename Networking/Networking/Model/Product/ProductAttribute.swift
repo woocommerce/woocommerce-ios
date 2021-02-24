@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a ProductAttribute entity.
 ///
-public struct ProductAttribute: Decodable {
+public struct ProductAttribute: Codable {
     public let siteID: Int64
     public let attributeID: Int64
     public let name: String
@@ -68,8 +68,32 @@ public struct ProductAttribute: Decodable {
                   variation: variation,
                   options: options)
     }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(attributeID, forKey: .attributeID)
+        try container.encode(name, forKey: .name)
+        try container.encode(options, forKey: .options)
+        try container.encode(position, forKey: .position)
+        try container.encode(visible, forKey: .visible)
+        try container.encode(variation, forKey: .variation)
+    }
 }
 
+public extension ProductAttribute {
+    /// Returns weather an attribute belongs to a product(local) or to the store(global)
+    ///
+    var isLocal: Bool {
+        attributeID == 0 // Currently the only way to know if an attribute is local is if it has a zero ID
+    }
+
+    /// Returns weather an attribute belongs to a product(local) or to the store(global)
+    ///
+    var isGlobal: Bool {
+        !isLocal
+    }
+}
 
 /// Defines all the ProductAttribute CodingKeys.
 ///

@@ -58,9 +58,7 @@ private extension HelpAndSupportViewController {
     ///
     func configureNavigation() {
         title = NSLocalizedString("Help", comment: "Help and Support navigation title")
-
-        // Don't show the Settings title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+        removeNavigationBackBarButtonText()
 
         // Dismiss
         navigationItem.leftBarButtonItem = {
@@ -269,7 +267,12 @@ private extension HelpAndSupportViewController {
     /// View application log action
     ///
     func applicationLogWasPressed() {
-        performSegue(withIdentifier: Constants.appLogSegue, sender: nil)
+        let identifier = ApplicationLogViewController.classNameWithoutNamespaces
+        guard let applicationLogVC = UIStoryboard.dashboard.instantiateViewController(identifier: identifier) as? ApplicationLogViewController else {
+            DDLogError("Error: attempted to instantiate ApplicationLogViewController. Instantiation failed.")
+            return
+        }
+        navigationController?.pushViewController(applicationLogVC, animated: true)
     }
 
     @objc func dismissWasPressed() {
@@ -334,7 +337,6 @@ extension HelpAndSupportViewController: UITableViewDelegate {
 private struct Constants {
     static let rowHeight = CGFloat(44)
     static let footerHeight = 44
-    static let appLogSegue = "ShowApplicationLogViewController"
 }
 
 private struct Section {

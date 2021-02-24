@@ -38,6 +38,10 @@ enum StorePickerConfiguration {
     /// Setup the store picker for use as a basic modal in app
     ///
     case standard
+
+    /// Setup the store picker for use as list of stores
+    ///
+    case listStores
 }
 
 
@@ -55,15 +59,6 @@ class StorePickerViewController: UIViewController {
 
     // MARK: - Private Properties
 
-    /// White-Background View, to be placed surrounding the bottom area.
-    ///
-    @IBOutlet private var actionBackgroundView: UIView! {
-        didSet {
-            actionBackgroundView.layer.masksToBounds = false
-            actionBackgroundView.layer.shadowOpacity = StorePickerConstants.backgroundShadowOpacity
-        }
-    }
-
     /// Default Action Button.
     ///
     @IBOutlet private var actionButton: FancyAnimatedButton! {
@@ -80,7 +75,7 @@ class StorePickerViewController: UIViewController {
         didSet {
             secondaryActionButton.backgroundColor = .clear
             secondaryActionButton.titleFont = StyleManager.actionButtonTitleFont
-            secondaryActionButton.setTitle(NSLocalizedString("Try another account",
+            secondaryActionButton.setTitle(NSLocalizedString("Try With Another Account",
                                                              comment: "Button to trigger connection to another account in store picker"),
                                            for: .normal)
         }
@@ -157,6 +152,8 @@ class StorePickerViewController: UIViewController {
             startListeningToNotifications()
         case .switchingStores:
             secondaryActionButton.isHidden = true
+        case .listStores:
+            hideActionButtons()
         default:
             break
         }
@@ -207,7 +204,7 @@ private extension StorePickerViewController {
             guard let self = self else {
                 return
             }
-            ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin)
+            self.presentHelp()
         }
     }
 
@@ -220,6 +217,15 @@ private extension StorePickerViewController {
                                                            action: #selector(cleanupAndDismiss))
     }
 
+    func setupNavigationForListOfConnectedStores() {
+        title = NSLocalizedString("Connected Stores", comment: "Page title for the list of connected stores")
+    }
+
+    func hideActionButtons() {
+        actionButton.isHidden = true
+        secondaryActionButton.isHidden = true
+    }
+
     func setupViewForCurrentConfiguration() {
         guard isViewLoaded else {
             return
@@ -228,6 +234,9 @@ private extension StorePickerViewController {
         switch configuration {
         case .switchingStores:
             setupNavigation()
+        case .listStores:
+            hideActionButtons()
+            setupNavigationForListOfConnectedStores()
         default:
             navigationController?.setNavigationBarHidden(true, animated: true)
         }
@@ -246,6 +255,10 @@ private extension StorePickerViewController {
 
     func backgroundColor() -> UIColor {
         return WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor ?? .listBackground
+    }
+
+    func presentHelp() {
+        ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin)
     }
 }
 
@@ -290,6 +303,10 @@ private extension StorePickerViewController {
     /// Sets the first available Store as the default one. If possible!
     ///
     func preselectStoreIfPossible() {
+        guard configuration != .listStores else {
+            return
+        }
+
         guard case let .available(sites) = state, let firstSite = sites.first else {
             return
         }
@@ -396,7 +413,6 @@ private extension StorePickerViewController {
             return
         }
 
-        ServiceLocator.stores.deauthenticate()
         delegate?.restartAuthentication()
     }
 
@@ -551,6 +567,10 @@ extension StorePickerViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        guard configuration != .listStores else {
+            return nil
+        }
+
         return state.headerTitle?.uppercased()
     }
 
@@ -589,7 +609,7 @@ extension StorePickerViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        guard state.multipleStoresAvailable else {
+        guard state.multipleStoresAvailable && configuration != .listStores else {
             // If we only have a single store available, don't allow the row to be selected
             return false
         }
@@ -625,7 +645,6 @@ extension StorePickerViewController: UITableViewDelegate {
 // MARK: - StorePickerConstants: Contains all of the constants required by the Picker.
 //
 private enum StorePickerConstants {
-    static let backgroundShadowOpacity = Float(0.2)
     static let numberOfSections = 1
     static let emptyStateRowCount = 1
     static let estimatedRowHeight = CGFloat(50)

@@ -5,6 +5,7 @@ import XCTest
 /// TopEarnerStatsMapper Unit Tests
 ///
 class TopEarnerStatsMapperTests: XCTestCase {
+    private let sampleSiteID: Int64 = 16
 
     /// Verifies that all of the day unit TopEarnerStats fields are parsed correctly.
     ///
@@ -14,6 +15,7 @@ class TopEarnerStatsMapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(dayStats.siteID, sampleSiteID)
         XCTAssertEqual(dayStats.granularity, .day)
         XCTAssertEqual(dayStats.date, "2018-06-08")
         XCTAssertEqual(dayStats.limit, "5")
@@ -37,6 +39,7 @@ class TopEarnerStatsMapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(weekStats.siteID, sampleSiteID)
         XCTAssertEqual(weekStats.granularity, .week)
         XCTAssertEqual(weekStats.date, "2018-W12")
         XCTAssertEqual(weekStats.limit, "5")
@@ -69,6 +72,7 @@ class TopEarnerStatsMapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(monthStats.siteID, sampleSiteID)
         XCTAssertEqual(monthStats.granularity, .month)
         XCTAssertEqual(monthStats.date, "2018-08")
         XCTAssertEqual(monthStats.limit, "5")
@@ -101,6 +105,7 @@ class TopEarnerStatsMapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(yearStats.siteID, sampleSiteID)
         XCTAssertEqual(yearStats.granularity, .year)
         XCTAssertEqual(yearStats.date, "2018")
         XCTAssertEqual(yearStats.limit, "5")
@@ -138,7 +143,7 @@ private extension TopEarnerStatsMapperTests {
             return nil
         }
 
-        return try! TopEarnerStatsMapper().map(response: response)
+        return try! TopEarnerStatsMapper(siteID: sampleSiteID).map(response: response)
     }
 
     /// Returns the TopEarnerStatsMapper output upon receiving `top-performers-day`

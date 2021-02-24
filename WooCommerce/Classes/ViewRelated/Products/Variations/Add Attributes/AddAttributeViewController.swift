@@ -9,16 +9,23 @@ final class AddAttributeViewController: UIViewController {
 
     private let viewModel: AddAttributeViewModel
 
+    /// Closure to be invoked(with the updated product)  when the update/create attribute operation finishes successfully.
+    ///
+    private let onCompletion: (Product) -> Void
+
     /// Keyboard management
     ///
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
     }
 
-    /// Init
+    /// Initializer for `AddAttributeViewController`
     ///
-    init(viewModel: AddAttributeViewModel) {
+    /// - Parameters:
+    ///   - onCompletion: Closure to be invoked(with the updated product)  when the update/create attribute operation finishes successfully.
+    init(viewModel: AddAttributeViewModel, onCompletion: @escaping (Product) -> Void) {
         self.viewModel = viewModel
+        self.onCompletion = onCompletion
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -47,7 +54,7 @@ private extension AddAttributeViewController {
 
     func configureNavigationBar() {
         title = Localization.titleView
-
+        removeNavigationBackBarButtonText()
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.nextNavBarButton,
                                                            style: .plain,
                                                            target: self,
@@ -176,7 +183,8 @@ extension AddAttributeViewController: UITableViewDelegate {
         guard row == .existingAttribute else {
             return
         }
-        presentAddAttributeOptions(for: viewModel.localAndGlobalAttributes[indexPath.row])
+        let attribute = viewModel.localAndGlobalAttributes[indexPath.row]
+        presentAddAttributeOptions(for: .existing(attribute: attribute))
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -232,9 +240,12 @@ private extension AddAttributeViewController {
                                                          onTextChange: { [weak self] newAttributeName in
                                                             self?.viewModel.handleNewAttributeNameChange(newAttributeName)
                                                             self?.enableDoneButton(self?.viewModel.newAttributeName != nil)
-
-            }, onTextDidBeginEditing: {
-        }, inputFormatter: nil, keyboardType: .default)
+                                                         }, onTextDidBeginEditing: {
+                                                         }, onTextDidReturn: { [weak self] _ in
+                                                            self?.doneButtonPressed()
+                                                         }, inputFormatter: nil,
+                                                         keyboardType: .default,
+                                                         returnKeyType: .next)
         cell.configure(viewModel: viewModel)
         cell.applyStyle(style: .body)
     }
@@ -266,19 +277,18 @@ extension AddAttributeViewController: KeyboardScrollable {
 extension AddAttributeViewController {
 
     @objc private func doneButtonPressed() {
-        presentAddAttributeOptions(for: viewModel.newAttributeName)
+        guard let name = viewModel.newAttributeName else {
+            return
+        }
+        presentAddAttributeOptions(for: .new(name: name))
     }
 
-    private func presentAddAttributeOptions(for newAttribute: String?) {
-        let viewModel = AddAttributeOptionsViewModel(newAttribute: newAttribute)
-        let addAttributeOptionsVC = AddAttributeOptionsViewController(viewModel: viewModel)
-        navigationController?.pushViewController(addAttributeOptionsVC, animated: true)
-    }
-
-    private func presentAddAttributeOptions(for existingAttribute: ProductAttribute) {
-        let viewModel = AddAttributeOptionsViewModel(existingAttribute: existingAttribute)
-        let addAttributeOptionsVC = AddAttributeOptionsViewController(viewModel: viewModel)
-        navigationController?.pushViewController(addAttributeOptionsVC, animated: true)
+    /// Presents `AddAttributeOptionsViewController` and passes the same `onCompletion` closure, for our presenterVC  to handle.
+    ///
+    private func presentAddAttributeOptions(for attribute: AddAttributeOptionsViewModel.Attribute) {
+        let viewModel = AddAttributeOptionsViewModel(product: self.viewModel.product, attribute: attribute)
+        let addAttributeOptionsVC = AddAttributeOptionsViewController(viewModel: viewModel, onCompletion: onCompletion)
+        show(addAttributeOptionsVC, sender: nil)
     }
 }
 
@@ -313,7 +323,7 @@ private extension AddAttributeViewController {
     enum Localization {
         static let titleView = NSLocalizedString("Add attribute", comment: "Add Product Attribute screen navigation title")
         static let nextNavBarButton = NSLocalizedString("Next", comment: "Next nav bar button title in Add Product Attribute screen")
-        static let titleCellPlaceholder = NSLocalizedString("Attribute name",
+        static let titleCellPlaceholder = NSLocalizedString("New Attribute Name",
                                                             comment: "Add Product Attribute. Placeholder of cell presenting the title of the new attribute.")
         static let syncErrorMessage = NSLocalizedString("Unable to load product attributes", comment: "Load Product Attributes Action Failed")
         static let retryAction = NSLocalizedString("Retry", comment: "Retry Action")

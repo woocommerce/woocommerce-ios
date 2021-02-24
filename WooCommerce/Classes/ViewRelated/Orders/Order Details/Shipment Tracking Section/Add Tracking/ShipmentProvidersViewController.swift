@@ -285,8 +285,13 @@ private extension ShipmentProvidersViewController {
         }
 
         let emptyState: EmptyListMessageWithActionView = EmptyListMessageWithActionView.instantiateFromNib()
-        emptyState.messageText = NSLocalizedString("No results found for \(term)\nAdd a custom carrier",
-            comment: "Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier'")
+        let messageFormat = NSLocalizedString(
+            "No results found for %1$@\nAdd a custom carrier",
+            comment: "Empty state for the list of shipment carriers. "
+                + "It reads: 'No results for DHL. Add a custom carrier'. "
+                + "Parameters: %1$@ - carrier name"
+        )
+        emptyState.messageText = String.localizedStringWithFormat(messageFormat, term)
         emptyState.actionText = NSLocalizedString("Custom Carrier",
                                                   comment: "Title of button to add a custom tracking carrier if filtering the list yields no results."
         )

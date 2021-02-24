@@ -1,8 +1,7 @@
+import Combine
 import Foundation
 import Yosemite
 import Observables
-
-
 
 // MARK: - DefaultStoresManager
 //
@@ -42,7 +41,7 @@ class DefaultStoresManager: StoresManager {
         }
         didSet {
             state.didEnter()
-            isLoggedInSubject.send(isAuthenticated)
+            isLoggedIn = isAuthenticated
         }
     }
 
@@ -52,15 +51,25 @@ class DefaultStoresManager: StoresManager {
         return state is AuthenticatedState
     }
 
-    var isLoggedIn: Observable<Bool> {
-        isLoggedInSubject
+    @Published private var isLoggedIn: Bool = false
+
+    var isLoggedInPublisher: AnyPublisher<Bool, Never> {
+        $isLoggedIn
+            .removeDuplicates()
+            .eraseToAnyPublisher()
     }
-    private let isLoggedInSubject = BehaviorSubject<Bool>(false)
 
     /// Indicates if we need a Default StoreID, or there's one already set.
     ///
     var needsDefaultStore: Bool {
         return sessionManager.defaultStoreID == nil
+    }
+
+    var needsDefaultStorePublisher: AnyPublisher<Bool, Never> {
+        sessionManager.defaultStoreIDPublisher
+            .map { $0 == nil }
+            .removeDuplicates()
+            .eraseToAnyPublisher()
     }
 
     var siteID: Observable<Int64?> {
@@ -73,7 +82,7 @@ class DefaultStoresManager: StoresManager {
         _sessionManager = sessionManager
         self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
 
-        isLoggedInSubject.send(isAuthenticated)
+        isLoggedIn = isAuthenticated
 
         restoreSessionAccountIfPossible()
         restoreSessionSiteIfPossible()

@@ -30,6 +30,8 @@ class AccountSettingsRemoteTests: XCTestCase {
             XCTAssertNotNil(accountSettings)
             XCTAssertEqual(1, accountSettings!.userID)
             XCTAssertTrue(accountSettings!.tracksOptOut)
+            XCTAssertEqual(accountSettings!.firstName, "Dem 123")
+            XCTAssertEqual(accountSettings!.lastName, "Nines")
 
             expectation.fulfill()
         }

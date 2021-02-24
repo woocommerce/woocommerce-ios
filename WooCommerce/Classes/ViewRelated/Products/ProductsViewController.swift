@@ -5,6 +5,7 @@ import Yosemite
 import class AutomatticTracks.CrashLogging
 
 /// Shows a list of products with pull to refresh and infinite scroll
+/// TODO: it will be good to have unit tests for this, introducing a `ViewModel`
 ///
 final class ProductsViewController: UIViewController {
 
@@ -69,9 +70,11 @@ final class ProductsViewController: UIViewController {
         return resultsController
     }()
 
-    private var sortOrder: ProductsSortOrder = .nameAscending {
+    private var sortOrder: ProductsSortOrder = .default {
         didSet {
             if sortOrder != oldValue {
+                updateLocalProductSettings(sort: sortOrder,
+                                           filters: filters)
                 resultsController.updateSortOrder(sortOrder)
 
                 /// Reload data because `updateSortOrder` generates a new `predicate` which calls `performFetch`
@@ -110,6 +113,8 @@ final class ProductsViewController: UIViewController {
     private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
         didSet {
             if filters != oldValue {
+                updateLocalProductSettings(sort: sortOrder,
+                                           filters: filters)
                 updateFilterButtonTitle(filters: filters)
 
                 resultsController.updatePredicate(siteID: siteID,
@@ -155,7 +160,15 @@ final class ProductsViewController: UIViewController {
 
         updateTopBannerView()
 
-        syncingCoordinator.resynchronize()
+        /// We sync the local product settings for configuring local sorting and filtering.
+        /// If there are some info stored when this screen is loaded, the data will be updated using the stored sort/filters.
+        /// If no info are stored (so there is a failure), we resynchronize the syncingCoordinator for updating the screen using the default sort/filters.
+        ///
+        syncLocalProductsSettings { [weak self] (result) in
+            if result.isFailure {
+                self?.syncingCoordinator.resynchronize()
+            }
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -181,7 +194,8 @@ private extension ProductsViewController {
 
         let searchViewController = SearchViewController(storeID: siteID,
                                                         command: ProductSearchUICommand(siteID: siteID),
-                                                        cellType: ProductsTabProductTableViewCell.self)
+                                                        cellType: ProductsTabProductTableViewCell.self,
+                                                        cellSeparator: .none)
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
         present(navigationController, animated: true, completion: nil)
@@ -357,7 +371,7 @@ private extension ProductsViewController {
     /// Fetches products feedback visibility from AppSettingsStore and update products top banner accordingly
     ///
     func updateTopBannerView() {
-        let action = AppSettingsAction.loadFeedbackVisibility(type: .productsM4) { [weak self] result in
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .productsM5) { [weak self] result in
             switch result {
             case .success(let visible):
                 if visible {
@@ -552,14 +566,14 @@ private extension ProductsViewController {
     ///
     func presentProductsFeedback() {
         // Present survey
-        let navigationController = SurveyCoordinatingController(survey: .productsM4Feedback)
+        let navigationController = SurveyCoordinatingController(survey: .productsM5Feedback)
         present(navigationController, animated: true, completion: nil)
     }
 
     /// Mark feedback request as dismissed and update banner visibility
     ///
     func dismissProductsBanner() {
-        let action = AppSettingsAction.updateFeedbackStatus(type: .productsM4, status: .dismissed) { [weak self] result in
+        let action = AppSettingsAction.updateFeedbackStatus(type: .productsM5, status: .dismissed) { [weak self] result in
             if let error = result.failure {
                 CrashLogging.logError(error)
             }
@@ -666,6 +680,40 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                     onCompletion?(result.isSuccess)
         }
 
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Update local Products Settings (eg. sort order or filters stored in Products settings)
+    ///
+    private func updateLocalProductSettings(sort: ProductsSortOrder? = nil,
+                                            filters: FilterProductListViewModel.Filters) {
+        let action = AppSettingsAction.upsertProductsSettings(siteID: siteID,
+                                                              sort: sort?.rawValue,
+                                                              stockStatusFilter: filters.stockStatus,
+                                                              productStatusFilter: filters.productStatus,
+                                                              productTypeFilter: filters.productType) { (error) in
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Fetch local Products Settings (eg.  sort order or filters stored in Products settings)
+    ///
+    private func syncLocalProductsSettings(onCompletion: @escaping (Result<StoredProductSettings.Setting, Error>) -> Void) {
+        let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
+            switch result {
+            case .success(let settings):
+                if let sort = settings.sort {
+                    self?.sortOrder = ProductsSortOrder(rawValue: sort) ?? .default
+                }
+                self?.filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
+                                                                   productStatus: settings.productStatusFilter,
+                                                                   productType: settings.productTypeFilter,
+                                                                   numberOfActiveFilters: settings.numberOfActiveFilters())
+            case .failure:
+                break
+            }
+            onCompletion(result)
+        }
         ServiceLocator.stores.dispatch(action)
     }
 }

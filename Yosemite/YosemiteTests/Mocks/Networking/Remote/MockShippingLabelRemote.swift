@@ -23,6 +23,10 @@ final class MockShippingLabelRemote {
         let shippingLabelID: Int64
     }
 
+    private struct AddressValidationResultKey: Hashable {
+        let siteID: Int64
+    }
+
     /// The results to return based on the given arguments in `loadShippingLabels`
     private var loadAllResults = [LoadAllResultKey: Result<OrderShippingLabelListResponse, Error>]()
 
@@ -31,6 +35,9 @@ final class MockShippingLabelRemote {
 
     /// The results to return based on the given arguments in `refundShippingLabel`
     private var refundResults = [RefundResultKey: Result<ShippingLabelRefund, Error>]()
+
+    /// The results to return based on the given arguments in `addressValidation`
+    private var addressValidationResults = [AddressValidationResultKey: Result<ShippingLabelAddressValidationResponse, Error>]()
 
     /// Set the value passed to the `completion` block if `loadShippingLabels` is called.
     func whenLoadingShippingLabels(siteID: Int64,
@@ -56,6 +63,13 @@ final class MockShippingLabelRemote {
                                     thenReturn result: Result<ShippingLabelRefund, Error>) {
         let key = RefundResultKey(siteID: siteID, orderID: orderID, shippingLabelID: shippingLabelID)
         refundResults[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `addressValidation` is called.
+    func whenValidatingAddress(siteID: Int64,
+                               thenReturn result: Result<ShippingLabelAddressValidationResponse, Error>) {
+        let key = AddressValidationResultKey(siteID: siteID)
+        addressValidationResults[key] = result
     }
 }
 
@@ -96,6 +110,20 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
 
             let key = RefundResultKey(siteID: siteID, orderID: orderID, shippingLabelID: shippingLabelID)
             if let result = self.refundResults[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func addressValidation(siteID: Int64, address: ShippingLabelAddressVerification,
+                           completion: @escaping (Result<ShippingLabelAddressValidationResponse, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = AddressValidationResultKey(siteID: siteID)
+            if let result = self.addressValidationResults[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

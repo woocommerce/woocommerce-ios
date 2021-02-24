@@ -31,6 +31,7 @@ final class LinkedProductsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        ServiceLocator.analytics.track(.linkedProducts, withProperties: ["action": "shown"])
         configureNavigationBar()
         configureMainView()
         configureTableView()
@@ -139,10 +140,12 @@ private extension LinkedProductsViewController {
 
     func configureUpsellsProducts(cell: NumberOfLinkedProductsTableViewCell) {
         cell.configure(content: Localization.upsellAndCrossSellProducts(count: viewModel.upsellIDs.count))
+        cell.selectionStyle = .none
     }
 
     func configureCrossSellsProducts(cell: NumberOfLinkedProductsTableViewCell) {
         cell.configure(content: Localization.upsellAndCrossSellProducts(count: viewModel.crossSellIDs.count))
+        cell.selectionStyle = .none
     }
 
     func configureUpsellsButton(cell: ButtonTableViewCell) {
@@ -150,13 +153,8 @@ private extension LinkedProductsViewController {
             return
         }
 
-        // TODO: add analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
         let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.titleScreenAddUpsellProducts,
-                                                                                           addButtonEvent: .groupedProductLinkedProductsAddButtonTapped,
-                                                                                           productsAddedEvent: .groupedProductLinkedProductsAdded,
-                                                                                           doneButtonTappedEvent: .groupedProductLinkedProductsDoneButtonTapped,
-                                                                                           deleteButtonTappedEvent:
-                                                                                            .groupedProductLinkedProductsDeleteButtonTapped)
+                                                                                           trackingContext: "upsells")
 
         let viewController = LinkedProductsListSelectorViewController(product: product.product,
                                                                       linkedProductIDs: viewModel.upsellIDs,
@@ -178,13 +176,8 @@ private extension LinkedProductsViewController {
             return
         }
 
-        // TODO: add analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
-        let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.titleScreenAddUpsellProducts,
-                                                                                           addButtonEvent: .groupedProductLinkedProductsAddButtonTapped,
-                                                                                           productsAddedEvent: .groupedProductLinkedProductsAdded,
-                                                                                           doneButtonTappedEvent: .groupedProductLinkedProductsDoneButtonTapped,
-                                                                                           deleteButtonTappedEvent:
-                                                                                            .groupedProductLinkedProductsDeleteButtonTapped)
+        let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.titleScreenAddCrossSellProducts,
+                                                                                           trackingContext: "cross_sells")
 
         let viewController = LinkedProductsListSelectorViewController(product: product.product,
                                                                       linkedProductIDs: viewModel.crossSellIDs,
@@ -296,9 +289,8 @@ private extension LinkedProductsViewController {
             }()
         }
 
-        static let titleScreenAddUpsellProducts = NSLocalizedString("Upsells Products",
-                                                                    comment: "Navigation bar title for editing linked products for upsell products")
-        static let titleScreenAddCrossSellProducts = NSLocalizedString("Cross-sells Products",
+        static let titleScreenAddUpsellProducts = NSLocalizedString("Upsells", comment: "Navigation bar title for editing linked products for upsell products")
+        static let titleScreenAddCrossSellProducts = NSLocalizedString("Cross-sells",
                                                                        comment: "Navigation bar title for editing linked products for cross-sell products")
     }
 }

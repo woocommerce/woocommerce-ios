@@ -4,19 +4,19 @@ import XCTest
 class SingleProductScreen: BaseScreen {
 
     struct ElementStringIDs {
-        static let updateButton = "single-product-update-button"
+        static let editProductMenuButton = "edit-product-more-options-button"
     }
 
-    private let updateButton = XCUIApplication().buttons[ElementStringIDs.updateButton]
+    private let editProductMenuButton = XCUIApplication().buttons[ElementStringIDs.editProductMenuButton]
 
     static var isVisible: Bool {
-        let updateButton = XCUIApplication().buttons[ElementStringIDs.updateButton]
+        let updateButton = XCUIApplication().buttons[ElementStringIDs.editProductMenuButton]
         return updateButton.exists && updateButton.isHittable
     }
 
     init() {
-        super.init(element: updateButton)
-        XCTAssert(updateButton.waitForExistence(timeout: 3))
+        super.init(element: editProductMenuButton)
+        XCTAssert(editProductMenuButton.waitForExistence(timeout: 3))
     }
 
     @discardableResult

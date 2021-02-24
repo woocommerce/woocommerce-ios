@@ -401,6 +401,184 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
         // Product attributes should be deleted.
         XCTAssertEqual(try targetContext.count(entityName: "ProductAttribute"), 0)
+
+        // The Product.attributes inverse relationship should be gone too.
+        let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
+        XCTAssertEqual(migratedProduct.mutableSetValue(forKey: "attributes").count, 0)
+
+        // We should still be able to add new attributes.
+        let anotherAttribute = insertProductAttribute(to: targetContext)
+        migratedProduct.mutableSetValue(forKey: "attributes").add(anotherAttribute)
+        XCTAssertNoThrow(try targetContext.save())
+    }
+
+    func test_migrating_from_40_to_41_allow_use_to_create_ProductAttribute_terms() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 40")
+        let sourceContext = sourceContainer.viewContext
+
+        insertProductAttribute(to: sourceContext)
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 41")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        // Confidence-check
+        XCTAssertEqual(try targetContext.count(entityName: "ProductAttribute"), 1)
+
+        // Test we can add a term to a migrated `ProductAttribute`.
+        let migratedAttribute = try XCTUnwrap(targetContext.first(entityName: "ProductAttribute"))
+        let term = insertProductAttributeTerm(to: targetContext)
+        migratedAttribute.mutableSetValue(forKey: "terms").add(term)
+
+        XCTAssertNoThrow(try targetContext.save())
+        // The ProductAttribute.attribute inverse relationship should be updated.
+        XCTAssertEqual(term.value(forKey: "attribute") as? NSManagedObject, migratedAttribute)
+    }
+
+    func test_migrating_from_41_to_42_allow_use_to_create_Order_feeLines() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 41")
+        let sourceContext = sourceContainer.viewContext
+
+        insertOrder(to: sourceContext)
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 42")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        // Confidence-check
+        XCTAssertEqual(try targetContext.count(entityName: "Order"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "OrderFeeLine"), 0)
+
+        // Test we can add a fee to a migrated `Order`.
+        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+        let fee = insertOrderFeeLine(to: targetContext)
+        migratedOrder.mutableSetValue(forKey: "fees").add(fee)
+
+        XCTAssertNoThrow(try targetContext.save())
+
+        // Confidence-check
+        XCTAssertEqual(try targetContext.count(entityName: "OrderFeeLine"), 1)
+
+        // The relationship between Order and OrderFeeLine should be updated.
+        XCTAssertEqual(migratedOrder.value(forKey: "fees") as? Set<NSManagedObject>, [fee])
+
+        // The OrderFeeLine.order inverse relationship should be updated.
+        XCTAssertEqual(fee.value(forKey: "order") as? NSManagedObject, migratedOrder)
+    }
+
+    func test_migrating_from_42_to_43_deletes_SiteVisitStats_and_TopEarnerStats_objects_and_requires_siteID_for_new_objects() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 42")
+        let sourceContext = sourceContainer.viewContext
+
+        insertSiteVisitStats(to: sourceContext)
+        insertTopEarnerStats(to: sourceContext)
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "SiteVisitStats"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "TopEarnerStats"), 1)
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 43")
+        let targetContext = targetContainer.viewContext
+
+        // Assert
+        // Pre-existing `SiteVisitStats` and `TopEarnerStats` objects should be deleted since model version 43 starts requiring a `siteID`.
+        XCTAssertEqual(try targetContext.count(entityName: "SiteVisitStats"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "TopEarnerStats"), 0)
+
+        // We should be able to add a new `SiteVisitStats` and `TopEarnerStats` with `siteID`.
+        let siteVisitStats = insertSiteVisitStats(to: targetContext)
+        siteVisitStats.setValue(66, forKey: "siteID")
+        let topEarnerStats = insertTopEarnerStats(to: targetContext)
+        topEarnerStats.setValue(66, forKey: "siteID")
+        XCTAssertNoThrow(try targetContext.save())
+    }
+
+    func test_migrating_from_43_to_44_migrates_SiteVisitStats_with_empty_timeRange() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 43")
+        let sourceContext = sourceContainer.viewContext
+
+        insertSiteVisitStats(to: sourceContext)
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "SiteVisitStats"), 1)
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 44")
+        let targetContext = targetContainer.viewContext
+
+        // Assert
+        XCTAssertEqual(try targetContext.count(entityName: "SiteVisitStats"), 1)
+
+        let migratedSiteVisitStats = try XCTUnwrap(targetContext.first(entityName: "SiteVisitStats"))
+        XCTAssertEqual(migratedSiteVisitStats.value(forKey: "timeRange") as? String, "")
+
+        // We should be able to set `SiteVisitStats`'s `timeRange` to a different value.
+        migratedSiteVisitStats.setValue("today", forKey: "timeRange")
+        XCTAssertNoThrow(try targetContext.save())
+    }
+
+    func test_migrating_from_44_to_45_migrates_AccountSettings_with_empty_firstName_and_lastName() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 44")
+        let sourceContext = sourceContainer.viewContext
+
+        insertAccountSettingsWithoutFirstNameAndLastName(to: sourceContext)
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "AccountSettings"), 1)
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 45")
+        let targetContext = targetContainer.viewContext
+
+        // Assert
+        XCTAssertEqual(try targetContext.count(entityName: "AccountSettings"), 1)
+
+        let migratedSiteVisitStats = try XCTUnwrap(targetContext.first(entityName: "AccountSettings"))
+        XCTAssertNil(migratedSiteVisitStats.value(forKey: "firstName") as? String)
+        XCTAssertNil(migratedSiteVisitStats.value(forKey: "lastName") as? String)
+
+        // We should be able to set `AccountSetttings`'s `firstName` and `lastName` to a different value.
+        migratedSiteVisitStats.setValue("Mario", forKey: "firstName")
+        migratedSiteVisitStats.setValue("Rossi", forKey: "lastName")
+        XCTAssertNoThrow(try targetContext.save())
+    }
+
+    func test_migrating_from_45_to_46_migrates_ProductVariation_stockQuantity_from_Int64_to_Decimal() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 45")
+        let sourceContext = sourceContainer.viewContext
+
+        let productVariation = insertProductVariation(to: sourceContext)
+        productVariation.setValue(10, forKey: "stockQuantity")
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "ProductVariation"), 1)
+        XCTAssertEqual(productVariation.entity.attributesByName["stockQuantity"]?.attributeType, .integer64AttributeType)
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 46")
+        let targetContext = targetContainer.viewContext
+
+        // Assert
+        XCTAssertEqual(try targetContext.count(entityName: "ProductVariation"), 1)
+
+        // Make sure stock quantity value is migrated as Decimal attribute type
+        let migratedVariation = try XCTUnwrap(targetContext.first(entityName: "ProductVariation"))
+        XCTAssertEqual(migratedVariation.entity.attributesByName["stockQuantity"]?.attributeType, .decimalAttributeType)
     }
 }
 
@@ -415,7 +593,7 @@ private extension MigrationTests {
         let model = try XCTUnwrap(modelsInventory.model(for: .init(name: versionName)))
         let container = makePersistentContainer(storeURL: storeURL, model: model)
 
-        let loadingError: Error? = try waitFor { promise in
+        let loadingError: Error? = waitFor { promise in
             container.loadPersistentStores { _, error in
                 promise(error)
             }
@@ -446,14 +624,15 @@ private extension MigrationTests {
         try container.persistentStoreCoordinator.remove(persistentStore)
 
         // Migrate the store
-        let migrator = CoreDataIterativeMigrator(modelsInventory: modelsInventory)
+        let migrator = CoreDataIterativeMigrator(coordinator: container.persistentStoreCoordinator,
+                                                 modelsInventory: modelsInventory)
         let (isMigrationSuccessful, _) =
             try migrator.iterativeMigrate(sourceStore: storeURL, storeType: storeDescription.type, to: targetModel)
         XCTAssertTrue(isMigrationSuccessful)
 
         // Load a new container
         let migratedContainer = makePersistentContainer(storeURL: storeURL, model: targetModel)
-        let loadingError: Error? = try waitFor { promise in
+        let loadingError: Error? = waitFor { promise in
             migratedContainer.loadPersistentStores { _, error in
                 promise(error)
             }
@@ -534,6 +713,15 @@ private extension MigrationTests {
     }
 
     @discardableResult
+    func insertOrderFeeLine(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderFeeLine", properties: [
+            "feeID": 134,
+            "name": "Woo",
+            "total": "125.0"
+        ])
+    }
+
+    @discardableResult
     func insertRefund(to context: NSManagedObjectContext) -> NSManagedObject {
         context.insert(entityName: "Refund", properties: [
             "refundID": 123,
@@ -588,6 +776,13 @@ private extension MigrationTests {
         context.insert(entityName: "ProductCategory", properties: [
             "name": "",
             "slug": ""
+        ])
+    }
+
+    func insertProductAttributeTerm(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "ProductAttributeTerm", properties: [
+            "name": "New Term",
+            "slug": "new_term"
         ])
     }
 
@@ -657,6 +852,31 @@ private extension MigrationTests {
             "siteID": 134,
             "orderID": 191,
             "paperSize": "legal"
+        ])
+    }
+
+    @discardableResult
+    func insertSiteVisitStats(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "SiteVisitStats", properties: [
+            "date": "2021-01-22",
+            "granularity": "day"
+        ])
+    }
+
+    @discardableResult
+    func insertTopEarnerStats(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "TopEarnerStats", properties: [
+            "date": "2021-01-22",
+            "granularity": "day",
+            "limit": "3"
+        ])
+    }
+
+    @discardableResult
+    func insertAccountSettingsWithoutFirstNameAndLastName(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "AccountSettings", properties: [
+            "userID": 0,
+            "tracksOptOut": true
         ])
     }
 }

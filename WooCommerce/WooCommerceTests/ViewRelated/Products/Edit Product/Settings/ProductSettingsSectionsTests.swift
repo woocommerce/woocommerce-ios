@@ -22,8 +22,7 @@ final class ProductSettingsSectionsTests: XCTestCase {
 
         // When
         let section = ProductSettingsSections.PublishSettings(settings,
-                                                              productType: productType,
-                                                              isEditProductsRelease5Enabled: true)
+                                                              productType: productType)
 
         // Then
         XCTAssertNil(section.rows.first(where: {
@@ -47,8 +46,7 @@ final class ProductSettingsSectionsTests: XCTestCase {
 
         // When
         let section = ProductSettingsSections.PublishSettings(settings,
-                                                              productType: productType,
-                                                              isEditProductsRelease5Enabled: true)
+                                                              productType: productType)
 
         // Then
         XCTAssertNotNil(section.rows.first(where: {
@@ -72,8 +70,7 @@ final class ProductSettingsSectionsTests: XCTestCase {
 
           // When
          let section = ProductSettingsSections.PublishSettings(settings,
-                                                               productType: productType,
-                                                               isEditProductsRelease5Enabled: true)
+                                                               productType: productType)
 
           // Then
          XCTAssertNil(section.rows.first(where: {
@@ -97,37 +94,11 @@ final class ProductSettingsSectionsTests: XCTestCase {
 
           // When
          let section = ProductSettingsSections.PublishSettings(settings,
-                                                               productType: productType,
-                                                               isEditProductsRelease5Enabled: true)
+                                                               productType: productType)
 
           // Then
          XCTAssertNotNil(section.rows.first(where: {
              $0 is ProductSettingsRows.DownloadableProduct
          }))
      }
-
-    func test_when_isEditProductsRelease5Enabled_is_false_the_downloadable_product_option_is_hidden() {
-        // Given
-        let settings = ProductSettings(status: .draft,
-                                       featured: false,
-                                       password: nil,
-                                       catalogVisibility: .catalog,
-                                       virtual: false,
-                                       reviewsAllowed: false,
-                                       slug: "",
-                                       purchaseNote: nil,
-                                       menuOrder: 0,
-                                       downloadable: false)
-        let productType = ProductType.simple
-
-         // When
-        let section = ProductSettingsSections.PublishSettings(settings,
-                                                              productType: productType,
-                                                              isEditProductsRelease5Enabled: false)
-
-         // Then
-        XCTAssertNil(section.rows.first(where: {
-            $0 is ProductSettingsRows.DownloadableProduct
-        }))
-    }
 }

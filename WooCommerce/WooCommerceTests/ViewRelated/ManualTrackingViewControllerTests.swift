@@ -43,7 +43,7 @@ final class ManualTrackingViewControllerTests: XCTestCase {
     func testBackButtonItemIsConfiguredAsEmpty() {
         let backBarButton = subject?.navigationItem.backBarButtonItem
 
-        XCTAssertEqual(backBarButton?.title, String())
+        XCTAssertNil(backBarButton?.title)
     }
 
     func testVCIsTableViewDataSource() {

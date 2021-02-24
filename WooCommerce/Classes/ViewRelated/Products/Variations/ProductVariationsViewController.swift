@@ -410,7 +410,8 @@ extension ProductVariationsViewController: UITableViewDelegate {
                                                       allAttributes: allAttributes,
                                                       parentProductSKU: parentProductSKU,
                                                       formType: formType,
-                                                      productImageActionHandler: productImageActionHandler)
+                                                      productImageActionHandler: productImageActionHandler,
+                                                      isAddProductVariationsEnabled: isAddProductVariationsEnabled)
         let viewController = ProductFormViewController(viewModel: viewModel,
                                                        eventLogger: ProductVariationFormEventLogger(),
                                                        productImageActionHandler: productImageActionHandler,

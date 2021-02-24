@@ -57,8 +57,6 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                                        network: network,
                                                        cardReaderService: mockCardReaderService)
 
-        //let expectation = self.expectation(description: "Start discovery")
-
         let action = CardPresentPaymentAction.startCardReaderDiscovery { discoveredReaders in
             //
         }

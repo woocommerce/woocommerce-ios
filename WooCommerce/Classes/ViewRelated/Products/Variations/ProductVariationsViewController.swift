@@ -92,6 +92,7 @@ final class ProductVariationsViewController: UIViewController {
 
     private var product: Product {
         didSet {
+            configureEmptyState()
             onProductUpdate?(product)
         }
     }
@@ -153,12 +154,9 @@ final class ProductVariationsViewController: UIViewController {
         configureHeaderContainerView()
         configureAddButton()
         updateTopBannerView()
+        configureEmptyState()
 
         syncingCoordinator.synchronizeFirstPage()
-
-        if product.variations.isEmpty {
-            displayEmptyViewController()
-        }
     }
 
     override func viewDidLayoutSubviews() {
@@ -233,6 +231,16 @@ private extension ProductVariationsViewController {
     ///
     func registerTableViewCells() {
         tableView.register(ProductsTabProductTableViewCell.self)
+    }
+
+    /// Shows or hides the empty state screen.
+    ///
+    func configureEmptyState() {
+        if viewModel.shouldShowEmptyState(for: product) {
+            displayEmptyViewController()
+        } else {
+            removeEmptyViewController()
+        }
     }
 
     /// Shows the EmptyStateViewController
@@ -457,7 +465,6 @@ private extension ProductVariationsViewController {
         let editAttributeViewController = EditAttributesViewController(viewModel: editAttributesViewModel)
         editAttributeViewController.onVariationCreation = { [weak self] updatedProduct in
             self?.product = updatedProduct
-            self?.removeEmptyViewController()
             navigationController.popViewController(animated: true)
         }
         editAttributeViewController.onAttributesUpdate = { [weak self] updatedProduct in

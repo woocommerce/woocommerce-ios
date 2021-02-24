@@ -34,10 +34,11 @@ enum ProductFormSection: Equatable {
         case sku(viewModel: ViewModel, isEditable: Bool)
         case groupedProducts(viewModel: ViewModel, isEditable: Bool)
         case variations(viewModel: ViewModel)
-        case downloadableFiles(viewModel: ViewModel)
+        case downloadableFiles(viewModel: ViewModel, isEditable: Bool)
         case noPriceWarning(viewModel: WarningViewModel)
         case status(viewModel: SwitchableViewModel, isEditable: Bool)
         case linkedProducts(viewModel: ViewModel, isEditable: Bool)
+        case attributes(viewModel: ViewModel, isEditable: Bool)
 
         struct ViewModel {
             let icon: UIImage

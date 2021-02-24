@@ -1,6 +1,5 @@
-// Generated using Sourcery 0.18.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 1.0.3 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
-
 
 
 extension Order {
@@ -29,7 +28,8 @@ extension Order {
         shippingAddress: NullableCopiableProp<Address> = .copy,
         shippingLines: CopiableProp<[ShippingLine]> = .copy,
         coupons: CopiableProp<[OrderCouponLine]> = .copy,
-        refunds: CopiableProp<[OrderRefundCondensed]> = .copy
+        refunds: CopiableProp<[OrderRefundCondensed]> = .copy,
+        fees: CopiableProp<[OrderFeeLine]> = .copy
     ) -> Order {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -56,6 +56,7 @@ extension Order {
         let shippingLines = shippingLines ?? self.shippingLines
         let coupons = coupons ?? self.coupons
         let refunds = refunds ?? self.refunds
+        let fees = fees ?? self.fees
 
         return Order(
             siteID: siteID,
@@ -82,7 +83,8 @@ extension Order {
             shippingAddress: shippingAddress,
             shippingLines: shippingLines,
             coupons: coupons,
-            refunds: refunds
+            refunds: refunds,
+            fees: fees
         )
     }
 }
@@ -122,7 +124,7 @@ extension Product {
         taxStatusKey: CopiableProp<String> = .copy,
         taxClass: NullableCopiableProp<String> = .copy,
         manageStock: CopiableProp<Bool> = .copy,
-        stockQuantity: NullableCopiableProp<Int64> = .copy,
+        stockQuantity: NullableCopiableProp<Decimal> = .copy,
         stockStatusKey: CopiableProp<String> = .copy,
         backordersKey: CopiableProp<String> = .copy,
         backordersAllowed: CopiableProp<Bool> = .copy,
@@ -337,7 +339,7 @@ extension ProductVariation {
         taxStatusKey: CopiableProp<String> = .copy,
         taxClass: NullableCopiableProp<String> = .copy,
         manageStock: CopiableProp<Bool> = .copy,
-        stockQuantity: NullableCopiableProp<Int64> = .copy,
+        stockQuantity: NullableCopiableProp<Decimal> = .copy,
         stockStatus: CopiableProp<ProductStockStatus> = .copy,
         backordersKey: CopiableProp<String> = .copy,
         backordersAllowed: CopiableProp<Bool> = .copy,

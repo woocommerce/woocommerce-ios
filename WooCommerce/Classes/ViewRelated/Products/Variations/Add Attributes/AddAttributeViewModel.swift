@@ -12,7 +12,7 @@ final class AddAttributeViewModel {
     ///
     private let storesManager: StoresManager
 
-    private let product: Product
+    let product: Product
     private(set) var localAndGlobalAttributes: [ProductAttribute] = []
 
     private(set) var sections: [Section] = []
@@ -117,7 +117,8 @@ extension AddAttributeViewModel {
 
 private extension AddAttributeViewModel {
     enum Localization {
-        static let footerTextField = NSLocalizedString("Variation type (ie Color, Size)", comment: "Footer of text field section in Add Attribute screen")
+        static let footerTextField = NSLocalizedString("To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first",
+                                                       comment: "Footer of text field section in Add Attribute screen")
         static let headerAttributes = NSLocalizedString("Or tap to select existing attribute", comment: "Header of attributes section in Add Attribute screen")
     }
 }

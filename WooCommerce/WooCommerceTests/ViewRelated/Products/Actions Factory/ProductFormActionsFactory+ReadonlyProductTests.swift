@@ -11,8 +11,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                formType: .readonly,
-                                                isEditProductsRelease5Enabled: false)
+                                                formType: .readonly)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.name(editable: false)]
@@ -26,8 +25,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                formType: .readonly,
-                                                isEditProductsRelease5Enabled: false)
+                                                formType: .readonly)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: false), .name(editable: false), .description(editable: false)]
@@ -40,11 +38,31 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
                                                                        .categories(editable: false),
                                                                        .tags(editable: false),
                                                                        .shortDescription(editable: false),
+                                                                       .linkedProducts(editable: false),
                                                                        .productType(editable: false)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
+
+    func test_readonly_simple_product_with_decimal_stock_quantities_has_readonly_inventory_settings() {
+        // Arrange
+        let product = Product().copy(productTypeKey: ProductType.simple.rawValue, stockQuantity: 1.5)
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit)
+
+        // Assert
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true),
+                                                                       .reviews,
+                                                                       .shippingSettings(editable: true),
+                                                                       .inventorySettings(editable: false),
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: true)]
+        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
     }
 
     // MARK: - Affiliate products
@@ -56,8 +74,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                formType: .readonly,
-                                                isEditProductsRelease5Enabled: false)
+                                                formType: .readonly)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: false), .name(editable: false), .description(editable: false)]
@@ -70,6 +87,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
                                                                        .categories(editable: false),
                                                                        .tags(editable: false),
                                                                        .shortDescription(editable: false),
+                                                                       .linkedProducts(editable: false),
                                                                        .productType(editable: false)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
@@ -84,8 +102,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                formType: .readonly,
-                                                isEditProductsRelease5Enabled: false)
+                                                formType: .readonly)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: false), .name(editable: false), .description(editable: false)]
@@ -96,6 +113,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
                                                                        .categories(editable: false),
                                                                        .tags(editable: false),
                                                                        .shortDescription(editable: false),
+                                                                       .linkedProducts(editable: false),
                                                                        .productType(editable: false)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
@@ -112,8 +130,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                formType: .readonly,
-                                                isEditProductsRelease5Enabled: false)
+                                                formType: .readonly)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: false), .name(editable: false), .description(editable: false)]
@@ -125,6 +142,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
                                                                        .categories(editable: false),
                                                                        .tags(editable: false),
                                                                        .shortDescription(editable: false),
+                                                                       .linkedProducts(editable: false),
                                                                        .productType(editable: false)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
@@ -139,8 +157,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                formType: .readonly,
-                                                isEditProductsRelease5Enabled: false)
+                                                formType: .readonly)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: false), .name(editable: false), .description(editable: false)]
@@ -151,6 +168,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
                                                                        .categories(editable: false),
                                                                        .tags(editable: false),
                                                                        .shortDescription(editable: false),
+                                                                       .linkedProducts(editable: false),
                                                                        .productType(editable: false)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
@@ -167,8 +185,7 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
 
         // Action
         let factory = ProductFormActionsFactory(product: model,
-                                                formType: .readonly,
-                                                isEditProductsRelease5Enabled: false)
+                                                formType: .readonly)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: false), .name(editable: false), .description(editable: false)]
@@ -181,11 +198,31 @@ final class ProductFormActionsFactory_ReadonlyProductTests: XCTestCase {
                                                                        .categories(editable: false),
                                                                        .tags(editable: false),
                                                                        .shortDescription(editable: false),
+                                                                       .linkedProducts(editable: false),
                                                                        .productType(editable: false)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
+
+    func test_readonly_variable_product_with_decimal_stock_quantities_has_readonly_inventory_settings() {
+        // Arrange
+        let product = Product().copy(productTypeKey: ProductType.variable.rawValue, stockQuantity: 1.5)
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit)
+
+        // Assert
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.variations,
+                                                                       .reviews,
+                                                                       .shippingSettings(editable: true),
+                                                                       .inventorySettings(editable: false),
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: true)]
+        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
     }
 }
 

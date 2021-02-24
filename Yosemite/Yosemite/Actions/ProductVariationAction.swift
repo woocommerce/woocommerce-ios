@@ -14,6 +14,13 @@ public enum ProductVariationAction: Action {
     ///
     case retrieveProductVariation(siteID: Int64, productID: Int64, variationID: Int64, onCompletion: (Result<ProductVariation, Error>) -> Void)
 
+    /// Create a new ProductVariation.
+    ///
+    case createProductVariation(siteID: Int64,
+                                 productID: Int64,
+                                 newVariation: CreateProductVariation,
+                                 onCompletion: (Result<ProductVariation, Error>) -> Void)
+
     /// Updates a specified ProductVariation.
     ///
     case updateProductVariation(productVariation: ProductVariation, onCompletion: (Result<ProductVariation, ProductUpdateError>) -> Void)
@@ -21,4 +28,8 @@ public enum ProductVariationAction: Action {
     /// Requests the variations in a specified Order that have not been fetched.
     ///
     case requestMissingVariations(for: Order, onCompletion: (Error?) -> Void)
+
+    /// Delete an existing ProductVariation.
+    ///
+    case deleteProductVariation(productVariation: ProductVariation, onCompletion: (Result<Void, ProductUpdateError>) -> Void)
 }

@@ -63,4 +63,11 @@ struct AuthenticationConstants {
         "Find your store address",
         comment: "The hint button's title text to help users find their store address."
     )
+
+    /// Footer for Terms of Service of Sign In With Apple and Sign In with Google
+    //
+    static let signupTermsOfService = NSLocalizedString(
+        "If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.",
+        comment: "Legal disclaimer for signing up. The underscores _..._ denote underline."
+    )
 }

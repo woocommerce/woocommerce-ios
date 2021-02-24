@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "black-coral-shades.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

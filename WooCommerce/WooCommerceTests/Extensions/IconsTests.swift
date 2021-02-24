@@ -11,6 +11,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.arrowUp)
     }
 
+    func test_alignJustify_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.alignJustifyImage)
+    }
+
     func testNoticeImageIsNotNil() {
         XCTAssertNotNil(UIImage.noticeImage)
     }
@@ -73,6 +77,10 @@ final class IconsTests: XCTestCase {
 
     func testCreditCardImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.creditCardImage)
+    }
+
+    func testCustomizeImageIsNotNil() {
+        XCTAssertNotNil(UIImage.customizeImage)
     }
 
     func testDeleteImageIconIsNotNil() {
@@ -387,5 +395,9 @@ final class IconsTests: XCTestCase {
 
     func test_errorImage_is_not_nil() {
         XCTAssertNotNil(UIImage.errorImage)
+    }
+
+    func test_emptyBoxImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.emptyBoxImage)
     }
 }

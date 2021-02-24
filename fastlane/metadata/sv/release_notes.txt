@@ -1,0 +1,5 @@
+Vad är nytt i vår 6.0-utgåva?
+
+Du frågade, vi lyssnade! På grund av allmän begäran visas produkt-SKU en gång till på skärmen för beställningsinformation.
+
+Vi gjorde också olika förbättringar, inklusive stöd för sortering genom dra-och-släpp till länkade produkter, konsekvenskorrigeringar till besökarstatistik i översikten och toppresultat på fliken "Den här veckan" och en förbättring som minskar risken för kraschar när du uppdaterar appen.

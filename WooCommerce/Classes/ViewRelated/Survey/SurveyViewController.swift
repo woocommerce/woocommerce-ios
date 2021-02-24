@@ -63,7 +63,8 @@ final class SurveyViewController: UIViewController, SurveyViewControllerOutputs 
 extension SurveyViewController {
     enum Source {
         case inAppFeedback
-        case productsM4Feedback
+        case productsM5Feedback
+        case shippingLabelsRelease1Feedback
 
         fileprivate var url: URL {
             switch self {
@@ -71,12 +72,18 @@ extension SurveyViewController {
                 return WooConstants.URLs.inAppFeedback
                     .asURL()
                     .tagPlatform("ios")
+                    .tagAppVersion(Bundle.main.bundleVersion())
 
-            case .productsM4Feedback:
+            case .productsM5Feedback:
                 return WooConstants.URLs.productsM4Feedback
                     .asURL()
                     .tagPlatform("ios")
-                    .tagProductMilestone("4")
+                    .tagProductMilestone("5")
+            case .shippingLabelsRelease1Feedback:
+                return WooConstants.URLs.shippingLabelsRelease1Feedback
+                    .asURL()
+                    .tagPlatform("ios")
+                    .tagShippingLabelsMilestone("1")
             }
         }
 
@@ -84,7 +91,7 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return Localization.title
-            case .productsM4Feedback:
+            case .productsM5Feedback, .shippingLabelsRelease1Feedback:
                 return Localization.giveFeedback
             }
         }
@@ -94,8 +101,10 @@ extension SurveyViewController {
             switch self {
             case .inAppFeedback:
                 return .general
-            case .productsM4Feedback:
+            case .productsM5Feedback:
                 return .productsM4
+            case .shippingLabelsRelease1Feedback:
+                return .shippingLabelsRelease1
             }
         }
     }
@@ -137,8 +146,16 @@ extension URL {
         appendingQueryItem(URLQueryItem(name: Tags.surveyRequestPlatformTag, value: platformName))
     }
 
+    func tagAppVersion(_ version: String) -> URL {
+        appendingQueryItem(URLQueryItem(name: Tags.surveyRequestAppVersionTag, value: version))
+    }
+
     func tagProductMilestone(_ milestone: String) -> URL {
         appendingQueryItem(URLQueryItem(name: Tags.surveyRequestProductMilestoneTag, value: milestone))
+    }
+
+    func tagShippingLabelsMilestone(_ milestone: String) -> URL {
+        appendingQueryItem(URLQueryItem(name: Tags.surveyRequestShippingLabelsMilestoneTag, value: milestone))
     }
 
     private func appendingQueryItem(_ queryItem: URLQueryItem) -> URL {
@@ -157,7 +174,9 @@ extension URL {
 
     private enum Tags {
         static let surveyRequestPlatformTag = "woo-mobile-platform"
+        static let surveyRequestAppVersionTag = "app-version"
         static let surveyRequestProductMilestoneTag = "product-milestone"
+        static let surveyRequestShippingLabelsMilestoneTag = "shipping_label_milestone"
     }
 }
 

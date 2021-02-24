@@ -4,3 +4,6 @@
 storage_mode("google_cloud")
 google_cloud_bucket_name("a8c-fastlane-match")
 google_cloud_keys_file(".configure-files/google_cloud_keys.json")
+
+# Use the decrypted API Key for authentication
+api_key_path ".configure-files/app_store_connect_fastlane_api_key.json"

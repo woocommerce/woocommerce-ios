@@ -1,13 +1,61 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+6.2
+-----
+
+- [*] Fix: Load product inventory settings in read-only mode when the product has a decimal stock quantity. This fixes the products tab not loading due to product decoding errors when third-party plugins enable decimal stock quantities. [https://github.com/woocommerce/woocommerce-ios/pull/3717]
+
+6.1
+-----
+- [**] Products: When editing variable products, you can now edit the variation attributes to select different attribute options. [https://github.com/woocommerce/woocommerce-ios/pull/3628]
+- [*] Fixes a bug where long pressing the back button sometimes displayed an empty list of screens.
+- [*] Product Type: Updated product type detail to display "Downloadable" if a product is downloadable. [https://github.com/woocommerce/woocommerce-ios/pull/3647]
+- [*] Product Description: Updated the placeholder text in the Aztec Editor screens to provide more context. [https://github.com/woocommerce/woocommerce-ios/pull/3668]
+- [*] Fix: Update the downloadable files row to read-only, if the product is accessed from Order Details. [https://github.com/woocommerce/woocommerce-ios/pull/3669]
+- [*] Fix: Thumbnail image of a product wasn't being loaded correctly in Order Details. [https://github.com/woocommerce/woocommerce-ios/pull/3678]
+- [*] Fix: Allow product's `regular_price` to be a number and `sold_individually` to be `null` as some third-party plugins could alter the type in the API. This could help with the products tab not loading due to product decoding errors. [https://github.com/woocommerce/woocommerce-ios/pull/3679]
+- [internal] Attempted fix for a crash in product image upload. [https://github.com/woocommerce/woocommerce-ios/pull/3693]
+
+6.0
+-----
+- [**] Due to popular demand, the product SKU is displayed once again in Order Details screen. [https://github.com/woocommerce/woocommerce-ios/pull/3564]
+- [*] Updated copyright notice to WooCommerce
+- [*] Fix: top performers in "This Week" tab should be showing the same data as in WC Admin.
+- [*] Fix: visitor stats in Dashboard should be more consistent with web data on days when the end date for more than one tab is the same (e.g. "This Week" and "This Month" both end on January 31). [https://github.com/woocommerce/woocommerce-ios/pull/3532]
+- [*] Fix: navbar title on cross-sells products list displayed title for upsells [https://github.com/woocommerce/woocommerce-ios/pull/3565]
+- [*] Added drag-and-drop sorting to Linked Products [https://github.com/woocommerce/woocommerce-ios/pull/3548]
+- [internal] Refactored Core Data migrator stack to help reduce crashes [https://github.com/woocommerce/woocommerce-ios/pull/3523]
+
+
+5.9
+-----
+- [**] Product List: if a user applies custom sort orders and filters in the Product List, now when they reopen the app will be able to see the previous settings applied. [https://github.com/woocommerce/woocommerce-ios/pull/3454]
+- [*] Removed fulfillment screen and moved fulfillment to the order details screen. [https://github.com/woocommerce/woocommerce-ios/pull/3453]
+- [*] Fix: billing information action sheets now are presented correctly on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/3457]
+- [*] fix: the rows in the product search list now don't have double separators. [https://github.com/woocommerce/woocommerce-ios/pull/3456]
+- [*] Fix: During login, the spinner when a continue button is in loading state is now visible in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/3472]
+- [*] fix: when adding a note to an order, the text gets no more deleted if you tap on “Email note to customer”. [https://github.com/woocommerce/woocommerce-ios/pull/3473]
+- [*] Added Fees to order details. [https://github.com/woocommerce/woocommerce-ios/pull/3475]
+- [*] fix: now we don't show any more similar alert notices if an error occurred. [https://github.com/woocommerce/woocommerce-ios/pull/3474]
+- [*] fix: in Settings > Switch Store, the spinner in the "Continue" button at the bottom is now visible in dark mode. [https://github.com/woocommerce/woocommerce-ios/pull/3468]
+- [*] fix: in order details, the shipping and billing address are displayed in the order of the country (in some eastern Asian countries, the address starts from the largest unit to the smallest). [https://github.com/woocommerce/woocommerce-ios/pull/3469]
+- [*] fix: product is now read-only when opened from the order details. [https://github.com/woocommerce/woocommerce-ios/pull/3491]
+- [*] fix: pull to refresh on the order status picker screen does not resets anymore the current selection. [https://github.com/woocommerce/woocommerce-ios/pull/3493]
+- [*] When adding or editing a link (e.g. in a product description) link settings are now presented as a popover on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/3492]
+- [*] fix: the glitch when launching the app in logged out state or after tapping "Try another account" in store picker is now gone. [https://github.com/woocommerce/woocommerce-ios/pull/3498]
+- [*] Minor enhancements: in product editing form > product reviews list, the rows don't show highlighted state on tap anymore since they are not actionable. Same for the number of upsell and cross-sell products in product editing form > linked products. [https://github.com/woocommerce/woocommerce-ios/pull/3502]
+
+
 5.8
 -----
+- [***] Products M5 features are now available to all. Products M5 features: add and edit linked products, add and edit downloadable files, product deletion. [https://github.com/woocommerce/woocommerce-ios/pull/3420]
+- [***] Shipping labels M1 features are now available to all: view shipping label details, request a refund, and reprint a shipping label via AirPrint. [https://github.com/woocommerce/woocommerce-ios/pull/3436]
+- [**] Improved login flow, including better error handling. [https://github.com/woocommerce/woocommerce-ios/pull/3332]
 
 
 5.7
 -----
 - [***] Dropped iOS 12 support. From now we support iOS 13 and later. [https://github.com/woocommerce/woocommerce-ios/pull/3216]
-- [**] Improved login flow, including better error handling. [https://github.com/woocommerce/woocommerce-ios/pull/3332]
 - [*] Fixed spinner appearance in the footer of orders list. [https://github.com/woocommerce/woocommerce-ios/pull/3249]
 - [*] In order details, the image for a line item associated with a variation is shown now after the variation has been synced. [https://github.com/woocommerce/woocommerce-ios/pull/3314]
 - [internal] Refactored Core Data stack so more errors will be propagated. [https://github.com/woocommerce/woocommerce-ios/pull/3267]

@@ -123,7 +123,6 @@ private extension ProductFormViewModel_SaveTests {
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         return ProductFormViewModel(product: model,
                                     formType: formType,
-                                    productImageActionHandler: productImageActionHandler,
-                                    isEditProductsRelease5Enabled: true)
+                                    productImageActionHandler: productImageActionHandler)
     }
 }

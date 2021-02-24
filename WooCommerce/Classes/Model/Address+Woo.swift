@@ -106,6 +106,7 @@ private extension Address {
         address.state = state
         address.postalCode = postcode
         address.country = country
+        address.isoCountryCode = country
 
         return address
     }

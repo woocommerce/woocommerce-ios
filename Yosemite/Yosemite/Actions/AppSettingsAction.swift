@@ -68,6 +68,25 @@ public enum AppSettingsAction: Action {
     ///
     case resetFeatureSwitches
 
+    // MARK: - Products Settings
+
+    /// Loads the products settings
+    ///
+    case loadProductsSettings(siteID: Int64, onCompletion: (Result<StoredProductSettings.Setting, Error>) -> Void)
+
+    /// Add or Update products settings
+    ///
+    case upsertProductsSettings(siteID: Int64,
+                                sort: String? = nil,
+                                stockStatusFilter: ProductStockStatus? = nil,
+                                productStatusFilter: ProductStatus? = nil,
+                                productTypeFilter: ProductType? = nil,
+                                onCompletion: (Error?) -> Void)
+
+    /// Clears all the products settings
+    ///
+    case resetProductsSettings
+
     // MARK: - General App Settings
 
     /// Saves the `date` as the last known date that the app was installed. This does not do

@@ -41,18 +41,18 @@ final class LinkedProductListSelectorDataSource: PaginatedListSelectorDataSource
     private let siteID: Int64
     private let product: Product
     private let imageService: ImageService
-    private let deleteButtonTappedEvent: WooAnalyticsStat
+    private let trackingContext: String
 
     init(product: Product,
          linkedProductIDs: [Int64],
          imageService: ImageService = ServiceLocator.imageService,
-         deleteButtonTappedEvent: WooAnalyticsStat) {
+         trackingContext: String) {
         self.siteID = product.siteID
         self.product = product
         self.originalLinkedProductIDs = linkedProductIDs
         self.linkedProductIDs = linkedProductIDs
         self.imageService = imageService
-        self.deleteButtonTappedEvent = deleteButtonTappedEvent
+        self.trackingContext = trackingContext
     }
 
     func createResultsController() -> ResultsController<StorageProduct> {
@@ -74,12 +74,12 @@ final class LinkedProductListSelectorDataSource: PaginatedListSelectorDataSource
     func configureCell(cell: ProductsTabProductTableViewCell, model: Product) {
         cell.selectionStyle = .none
 
-        let viewModel = ProductsTabProductViewModel(product: model)
+        let viewModel = ProductsTabProductViewModel(product: model, isDraggable: true)
         cell.update(viewModel: viewModel, imageService: imageService)
 
         cell.configureAccessoryDeleteButton { [weak self] in
             guard let self = self else { return }
-            ServiceLocator.analytics.track(self.deleteButtonTappedEvent)
+            ServiceLocator.analytics.track(.connectedProductsList, withProperties: ["action": "delete_tapped", "context": self.trackingContext])
             self.deleteProduct(model)
         }
     }
@@ -121,5 +121,21 @@ extension LinkedProductListSelectorDataSource {
     /// Returns whether there are unsaved changes.
     func hasUnsavedChanges() -> Bool {
         return linkedProductIDs != originalLinkedProductIDs
+    }
+}
+
+extension LinkedProductListSelectorDataSource: DraggablePaginatedListSelectorDataSource {
+
+    /// Called when the user rearranges products.
+    func moveItem(from sourceIndex: Int, to destinationIndex: Int) {
+        guard sourceIndex < linkedProductIDs.count, sourceIndex != destinationIndex else {
+            return
+        }
+
+        // Use intermediate array to report only a single change to observers
+        var updatedLinkedProductIDs = linkedProductIDs
+        let item = updatedLinkedProductIDs.remove(at: sourceIndex)
+        updatedLinkedProductIDs.insert(item, at: destinationIndex)
+        linkedProductIDs = updatedLinkedProductIDs
     }
 }

@@ -90,7 +90,7 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
         // Action
         let newSKU = "94115"
         let newManageStock = !productVariation.manageStock
-        let newStockQuantity: Int64 = 17
+        let newStockQuantity: Decimal = 17
         let newBackordersSetting = ProductBackordersSetting.allowedAndNotifyCustomer
         let newStockStatus = ProductStockStatus.onBackOrder
         viewModel.updateInventorySettings(sku: newSKU,
@@ -127,6 +127,22 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(viewModel.productModel.images, newImages)
+    }
+
+    func test_updating_attributes() {
+        // Arrange
+        let productVariation = MockProductVariation().productVariation()
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+        let viewModel = ProductVariationFormViewModel(productVariation: model, productImageActionHandler: productImageActionHandler)
+
+        // Action
+        let newAttribute = ProductVariationAttribute(id: 1, name: "Color", option: "Blue")
+        let newAttributes = [newAttribute]
+        viewModel.updateVariationAttributes(newAttributes)
+
+        //Assert
+        XCTAssertEqual(viewModel.productModel.productVariation.attributes, newAttributes)
     }
 
     func testDisablingAVariationUpdatesItsStatusFromPublishToPrivate() {

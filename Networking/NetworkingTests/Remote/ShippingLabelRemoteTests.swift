@@ -23,7 +23,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "label/\(orderID)", filename: "order-shipping-labels")
 
         // When
-        let result = try waitFor { promise in
+        let result = waitFor { promise in
             remote.loadShippingLabels(siteID: self.sampleSiteID, orderID: orderID) { result in
                 promise(result)
             }
@@ -41,7 +41,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "label/print", filename: "shipping-label-print")
 
         // When
-        let printData: ShippingLabelPrintData = try waitFor { promise in
+        let printData: ShippingLabelPrintData = waitFor { promise in
             remote.printShippingLabel(siteID: self.sampleSiteID, shippingLabelID: 123, paperSize: .label) { result in
                 guard let printData = try? result.get() else {
                     XCTFail("Error printing shipping label: \(String(describing: result.failure))")
@@ -64,7 +64,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "label/\(orderID)/\(shippingLabelID)/refund", filename: "shipping-label-refund-success")
 
         // When
-        let result: Result<ShippingLabelRefund, Error> = try waitFor { promise in
+        let result: Result<ShippingLabelRefund, Error> = waitFor { promise in
             remote.refundShippingLabel(siteID: self.sampleSiteID,
                                        orderID: orderID,
                                        shippingLabelID: shippingLabelID) { result in
@@ -85,7 +85,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "label/\(orderID)/\(shippingLabelID)/refund", filename: "shipping-label-refund-error")
 
         // When
-        let result: Result<ShippingLabelRefund, Error> = try waitFor { promise in
+        let result: Result<ShippingLabelRefund, Error> = waitFor { promise in
             remote.refundShippingLabel(siteID: self.sampleSiteID,
                                        orderID: orderID,
                                        shippingLabelID: shippingLabelID) { result in
@@ -99,5 +99,63 @@ final class ShippingLabelRemoteTests: XCTestCase {
                      message: "Error: The WooCommerce Shipping & Tax server returned: Bad Request Unable to request refund. " +
                         "The parcel has been shipped. ( 400 )")
         XCTAssertEqual(result.failure as? DotcomError, expectedError)
+    }
+
+    func test_shippingAddressValidation_returns_address_on_success() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "normalize-address", filename: "shipping-label-address-validation-success")
+
+        // When
+        let result: Result<ShippingLabelAddressValidationResponse, Error> = waitFor { promise in
+            remote.addressValidation(siteID: self.sampleSiteID, address: self.sampleShippingLabelAddressVerification()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let address = try XCTUnwrap(result.get().address)
+        let errors = try result.get().errors
+        XCTAssertEqual(address, sampleShippingLabelAddress())
+        XCTAssertNil(errors)
+    }
+
+    func test_shippingAddressValidation_returns_errors_on_failure() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "normalize-address", filename: "shipping-label-address-validation-error")
+
+        // When
+        let result: Result<ShippingLabelAddressValidationResponse, Error> = waitFor { promise in
+            remote.addressValidation(siteID: self.sampleSiteID, address: self.sampleShippingLabelAddressVerification()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let address = try result.get().address
+        let errors = try XCTUnwrap(result.get().errors)
+        XCTAssertNil(address)
+        XCTAssertEqual(errors.addressError, "House number is missing")
+        XCTAssertEqual(errors.generalError, "Address not found")
+    }
+}
+
+private extension ShippingLabelRemoteTests {
+    func sampleShippingLabelAddressVerification() -> ShippingLabelAddressVerification {
+        let type: ShippingLabelAddressVerification.ShipType = .destination
+        return ShippingLabelAddressVerification(address: sampleShippingLabelAddress(), type: type)
+    }
+
+    func sampleShippingLabelAddress() -> ShippingLabelAddress {
+        return ShippingLabelAddress(company: "",
+                                    name: "Anitaa",
+                                    phone: "41535032",
+                                    country: "US",
+                                    state: "CA",
+                                    address1: "60 29TH ST # 343",
+                                    address2: "",
+                                    city: "SAN FRANCISCO",
+                                    postcode: "94110-4929")
     }
 }

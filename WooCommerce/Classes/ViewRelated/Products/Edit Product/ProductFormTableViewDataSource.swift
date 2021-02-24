@@ -13,12 +13,6 @@ private extension ProductFormSection.SettingsRow.ViewModel {
     }
 }
 
-private extension ProductFormSection.SettingsRow.WarningViewModel {
-    func toCellViewModel() -> ImageAndTitleAndTextTableViewCell.WarningViewModel {
-        return ImageAndTitleAndTextTableViewCell.WarningViewModel(icon: icon, title: title)
-    }
-}
-
 /// Configures the sections and rows of Product form table view based on the view model.
 ///
 final class ProductFormTableViewDataSource: NSObject {
@@ -156,7 +150,7 @@ private extension ProductFormTableViewDataSource {
             self?.onNameChange?(newName)
             },
                                                             style: .headline,
-                                                            edgeInsets: UIEdgeInsets(top: 8, left: 11, bottom: 8, right: 11))
+                                                            edgeInsets: UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0))
 
         cell.configure(with: cellViewModel)
         cell.accessibilityLabel = NSLocalizedString(
@@ -216,9 +210,10 @@ private extension ProductFormTableViewDataSource {
              .externalURL(let viewModel, _),
              .sku(let viewModel, _),
              .groupedProducts(let viewModel, _),
-             .downloadableFiles(let viewModel),
+             .downloadableFiles(let viewModel, _),
              .linkedProducts(let viewModel, _),
-             .variations(let viewModel):
+             .variations(let viewModel),
+             .attributes(let viewModel, _):
             configureSettings(cell: cell, viewModel: viewModel)
         case .reviews(let viewModel, let ratingCount, let averageRating):
             configureReviews(cell: cell, viewModel: viewModel, ratingCount: ratingCount, averageRating: averageRating)
@@ -269,6 +264,10 @@ private extension ProductFormTableViewDataSource {
         guard let cell = warningCell as? ImageAndTitleAndTextTableViewCell else {
             fatalError("Unexpected cell type \(warningCell) for view model: \(viewModel)")
         }
-        cell.updateUI(warningViewModel: viewModel.toCellViewModel())
+        cell.update(with: .warning,
+                    data: .init(title: viewModel.title,
+                                image: viewModel.icon,
+                                numberOfLinesForTitle: 0,
+                                isActionable: false))
     }
 }

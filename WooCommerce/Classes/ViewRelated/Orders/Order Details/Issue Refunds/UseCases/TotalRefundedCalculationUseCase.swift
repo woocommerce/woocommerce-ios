@@ -20,7 +20,12 @@ struct TotalRefundedCalculationUseCase {
     func totalRefunded() -> NSDecimalNumber {
         order.refunds.reduce(NSDecimalNumber.zero) { result, refundCondensed -> NSDecimalNumber in
             let totalAsDecimal = currencyFormatter.convertToDecimal(from: refundCondensed.total, locale: locale) ?? .zero
-            return result.adding(totalAsDecimal)
+
+            /// Even though the API returns refunds as negative, there is one case
+            /// where the refund is a positive number: right between issuing the refund
+            ///  and having the Order object updated with data from the API.
+            let total = totalAsDecimal.isNegative() ? totalAsDecimal : totalAsDecimal.multiplying(by: -1)
+            return result.adding(total)
         }
     }
 }

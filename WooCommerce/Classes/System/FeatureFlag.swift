@@ -10,13 +10,13 @@ enum FeatureFlag: Int {
     ///
     case barcodeScanner
 
-    /// Edit products - release 5
-    ///
-    case editProductsRelease5
-
     /// Add Product Variations
     ///
     case addProductVariations
+
+    /// Card Present Payments
+    ///
+    case cardPresentPayments
 
     /// Large titles on the main tabs
     ///
@@ -26,7 +26,7 @@ enum FeatureFlag: Int {
     ///
     case reviews
 
-    /// Shipping labels - release 1
+    /// Shipping labels - release 2
     ///
-    case shippingLabelsRelease1
+    case shippingLabelsRelease2
 }

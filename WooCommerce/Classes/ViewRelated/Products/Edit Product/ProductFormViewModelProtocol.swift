@@ -68,7 +68,7 @@ protocol ProductFormViewModelProtocol {
     func updateInventorySettings(sku: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,
-                                 stockQuantity: Int64?,
+                                 stockQuantity: Decimal?,
                                  backordersSetting: ProductBackordersSetting?,
                                  stockStatus: ProductStockStatus?)
 
@@ -96,6 +96,8 @@ protocol ProductFormViewModelProtocol {
 
     func updateLinkedProducts(upsellIDs: [Int64], crossSellIDs: [Int64])
 
+    func updateVariationAttributes(_ attributes: [ProductVariationAttribute])
+
     // Remote action
 
     /// Creates/updates a product remotely given an optional product status to override.
@@ -109,6 +111,10 @@ protocol ProductFormViewModelProtocol {
     // Reset action
 
     func resetPassword(_ password: String?)
+
+    /// Updates the original product variations(and attributes).
+    /// This is needed because variations and attributes, remote updates, happen outside this view model and we need a way to sync the original product.
+    func updateProductVariations(from product: Product)
 }
 
 extension ProductFormViewModelProtocol {

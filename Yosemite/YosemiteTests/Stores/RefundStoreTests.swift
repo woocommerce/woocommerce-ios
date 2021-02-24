@@ -465,36 +465,6 @@ class RefundStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 3)
         XCTAssertNil(retrieveError)
     }
-
-    func test_create_refund_updates_order_condensed_refund() throws {
-        // Given
-        storageManager.insertSampleOrder(readOnlyOrder: sampleOrder())
-        let refund = sampleRefund()
-        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectedCondensedRefund = OrderRefundCondensed(refundID: refund.refundID, reason: refund.reason, total: refund.amount)
-
-        // When
-        refundStore.upsertStoredRefund(readOnlyRefund: sampleRefund(), in: viewStorage)
-
-        // Then
-        let order = viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)?.toReadOnly()
-        XCTAssertEqual(order?.refunds, [expectedCondensedRefund])
-    }
-
-    func test_create_refund_does_not_duplicate_order_condensed_refund() throws {
-        // Given
-        let refund = sampleRefund()
-        let existingCondensedRefund = OrderRefundCondensed(refundID: refund.refundID, reason: refund.reason, total: refund.amount)
-        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        storageManager.insertSampleOrder(readOnlyOrder: sampleOrder().copy(refunds: [existingCondensedRefund]))
-
-        // When
-        refundStore.upsertStoredRefund(readOnlyRefund: sampleRefund(), in: viewStorage)
-
-        // Then
-        let order = viewStorage.loadOrder(siteID: sampleSiteID, orderID: sampleOrderID)?.toReadOnly()
-        XCTAssertEqual(order?.refunds, [existingCondensedRefund])
-    }
 }
 
 
@@ -583,7 +553,8 @@ private extension RefundStoreTests {
             shippingAddress: nil,
             shippingLines: [],
             coupons: [],
-            refunds: []
+            refunds: [],
+            fees: []
         )
     }
 

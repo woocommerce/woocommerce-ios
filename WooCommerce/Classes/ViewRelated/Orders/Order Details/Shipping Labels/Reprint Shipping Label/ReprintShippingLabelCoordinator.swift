@@ -6,14 +6,20 @@ final class ReprintShippingLabelCoordinator {
     private let sourceViewController: UIViewController
     private let shippingLabel: ShippingLabel
     private let stores: StoresManager
+    private let analytics: Analytics
 
     /// - Parameter shippingLabel: The shipping label to reprint.
     /// - Parameter sourceViewController: The view controller that shows the reprint UI in the first place.
     /// - Parameter stores: Handles Yosemite store actions.
-    init(shippingLabel: ShippingLabel, sourceViewController: UIViewController, stores: StoresManager = ServiceLocator.stores) {
+    /// - Parameter analytics: Tracks analytics events.
+    init(shippingLabel: ShippingLabel,
+         sourceViewController: UIViewController,
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.shippingLabel = shippingLabel
         self.sourceViewController = sourceViewController
         self.stores = stores
+        self.analytics = analytics
     }
 
     /// Shows the main screen for reprinting a shipping label.
@@ -103,6 +109,7 @@ private extension ReprintShippingLabelCoordinator {
 private extension ReprintShippingLabelCoordinator {
     /// Requests document data for reprinting a shipping label with the selected paper size.
     func requestDocumentForPrinting(paperSize: ShippingLabelPaperSize, completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
+        analytics.track(.shippingLabelReprintRequested)
         let action = ShippingLabelAction.printShippingLabel(siteID: shippingLabel.siteID,
                                                             shippingLabelID: shippingLabel.shippingLabelID,
                                                             paperSize: paperSize) { result in

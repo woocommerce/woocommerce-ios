@@ -1,16 +1,10 @@
-/* Translation-Revision-Date: 2020-12-10 14:54:04+0000 */
+/* Translation-Revision-Date: 2021-02-18 11:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
 
 /* No comment provided by engineer. */
-"#%1$@ %2$@ %3$@" = "#%1$@ %2$@ %3$@";
-
-/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
-
-/* In Order Details, the pattern to show the billed person's full name. For example, “John Doe”. The %1$@ is the first name. The %2$@ is the last name. */
-"%1$@ %2$@" = "%1$@ %2$@";
 
 /* Format for each Product attribute */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld אפשרויות)";
@@ -31,7 +25,7 @@
 "%1$@ left a review on %2$@" = "המשתמש %1$@ כתב ביקורת על %2$@";
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
-"%1$@ refund requested (%2$@)" = "%1$@ refund requested (%2$@)";
+"%1$@ refund requested (%2$@)" = "נשלחה בקשה עבור החזר כספי %1$@ ‏(%2$@)";
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ באמצעות %2$@";
@@ -40,7 +34,7 @@
 "%1$@ x %2$@" = "%1$@ x %2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
-"%1$@ • %2$@" = "%1$@ • %2$@";
+"%1$@ • %2$@" = "%1$@• %2$@";
 
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
@@ -58,7 +52,7 @@
 "%@ Items" = "%@ פריטים";
 
 /* Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS). */
-"%@ label refund requested" = "%@ label refund requested";
+"%@ label refund requested" = "נשלחה בקשה להחזר כספי עבור תווית %@";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%@ left a review on %@" = "המשתמש %1$@ כתב ביקורת על %2$@";
@@ -113,6 +107,9 @@
 /* Product title in Products list when there is no title */
 "(No Title)" = "(חסרה כותרת)";
 
+/* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
+"**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "**עליך לוודא שהאפשרות AirPrint מופעלת** בהגדרות המדפסת שלך. אולי יהיה עליך להגדיר את האפשרות הזאת במדפסת עצמה.\n\nיש לעיין בתיעוד שצורף למדפסת לפרטים.";
+
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "נבחר מוצר אחד";
 
@@ -148,6 +145,9 @@
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "קוד אימות מכיל מספרים בלבד.";
+
+/* Header of existing attribute options section in Add Attribute Options screen */
+"ADD OPTIONS" = "להוסיף אפשרויות";
 
 /* About this app (information page title) */
 "About" = "אודות";
@@ -198,6 +198,9 @@
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "הוספת מעקב";
 
+/* Title on add variation button when there are no variations */
+"Add Variation" = "להוסיף סוג";
+
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
 "Add a note" = "הוספת הערה";
@@ -215,7 +218,10 @@
 "Add a tracking" = "להוסיף למעקב";
 
 /* Add Product Attribute screen navigation title */
-"Add attribute" = "Add attribute";
+"Add attribute" = "להוסיף מאפיין";
+
+/* Footer of text field section in Add Attribute Options screen */
+"Add each option and press enter" = "יש להוסיף כל אפשרות בנפרד ולהקיש Enter";
 
 /* Title of the bottom sheet from the product form to add more product details.
    Title of the button at the bottom of the product form to add more product details. */
@@ -234,10 +240,13 @@
 "Add products' downloadable files' info remotely" = "ניתן להוסיף מרחוק את הפרטים של הקבצים שניתנים להורדה המוצרים";
 
 /* Title for adding variations row on Product main screen for a variable product */
-"Add variations" = "Add variations";
+"Add variations" = "להוסיף סוג";
 
 /* Subtitle of the product form bottom sheet action for editing shipping settings. */
 "Add weight and dimensions" = "להוסיף משקל וממדים";
+
+/* Title on the variations list screen when there are no variations */
+"Add your first variation" = "להוסיף את הסוג הראשון שלך";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "להוספת מעקב אחר הזמנה.";
@@ -270,7 +279,7 @@
 "Alternatively:" = "לחלופין:";
 
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
-"Amount Eligible For Refund" = "Amount Eligible For Refund";
+"Amount Eligible For Refund" = "ניתן לקבל החזר כספי עבור הסכום";
 
 /* An error description explaining that a Menu could not be created. */
 "An error occurred creating the Menu." = "אירעה שגיאה בעת יצירת התפריט.";
@@ -290,10 +299,11 @@
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "הערה אופציונלית לשלוח ללקוחות לאחר הרכישה";
 
-/* Title when there is no filter set. */
+/* Product variation attribute description where the attribute is set to any value.
+   Title when there is no filter set. */
 "Any" = "כל אפשרות";
 
-/* Format of a product varition attribute description where the attribute is set to any value. */
+/* Format of a product variation attribute description where the attribute is set to any value. */
 "Any %@" = "כל %@";
 
 /* Message shown when Apple authentication fails. */
@@ -334,7 +344,11 @@
 "Are you sure you want to remove this image?" = "האם ברצונך להסיר את התמונה?";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
-"Attribute name" = "Attribute name";
+"Attribute name" = "שם המאפיין";
+
+/* Edit Product Attributes screen navigation title
+   Title of the attributes row on Product Variation main screen */
+"Attributes" = "תכונות";
 
 /* No comment provided by engineer. */
 "Authenticating" = "מאמת";
@@ -373,9 +387,6 @@
 /* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "עמודה מספר %1$i, %2$@, ";
 
-/* Begin fulfill order button title */
-"Begin Fulfillment" = "להתחיל בהשלמת ההזמנה";
-
 /* Section header title for billing address in billing information */
 "Billing Address" = "כתובת לחיוב";
 
@@ -410,7 +421,7 @@
 "Can Not Request Link" = "לא ניתן לבקש קישור";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the action sheet - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
 "Cancel" = "ביטול";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -462,6 +473,9 @@
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "יש לבדוק את תיבת האימייל!";
 
+/* Navigation title on the shipping label paper size selector screen */
+"Choose Paper Size" = "יש לבחור גודל נייר";
+
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "לבחור מהמכשיר";
 
@@ -486,6 +500,9 @@
 /* Store Picker's Section Title: Displayed when there's a single pre-selected Store. */
 "Connected Store" = "חנות מחוברת";
 
+/* Page title for the list of connected stores */
+"Connected Stores" = "חנויות מחוברות";
+
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "מתחבר לוורדפרס.קום";
 
@@ -506,7 +523,7 @@
 "Continue" = "המשך";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
-"Continue With WordPress.com" = "Continue With WordPress.com";
+"Continue With WordPress.com" = "להמשיך עם WordPress.com";
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "המשך קריאה";
@@ -516,10 +533,6 @@
 
 /* Button title. Tapping begins log in using Google. */
 "Continue with Google" = "להמשיך עם Google";
-
-/* Button title. Takes the user to the login by email flow.
-   Button title. Tapping begins our normal log in process. */
-"Continue with WordPress.com" = "להמשיך עם WordPress.com";
 
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "להמשיך עם Apple";
@@ -534,7 +547,7 @@
 "Copy email address" = "להעתיק את כתובת האימייל";
 
 /* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
-"Copy tracking number" = "Copy tracking number";
+"Copy tracking number" = "להעתקת מספר המעקב";
 
 /* The title of the button for giving a negative feedback for the app. */
 "Could Be Better" = "יכול להיות יותר טוב";
@@ -572,14 +585,11 @@
 /* The button title text for creating a new account. */
 "Create Account" = "ליצור חשבון";
 
-/* The title of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
-"Create products from the app!" = "אפשר ליצור מוצרים דרך האפליקציה!";
-
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "יצירת מוצרים";
 
 /* Credit card payment method for shipping label. */
-"Credit card" = "Credit card";
+"Credit card" = "כרטיס אשראי";
 
 /* Cell title for Cross-sells products in Linked Products Settings screen */
 "Cross-sells" = "מכירות משלימות";
@@ -600,11 +610,7 @@
 /* Customer info section title */
 "Customer" = "לקוח";
 
-/* Section title for the customer's billing and shipping address */
-"Customer Information" = "פרטי לקוח";
-
-/* Customer note section title
-   Section title for a note from the customer */
+/* Customer note section title */
 "Customer Provided Note" = "הערה שסופקה על-ידי הלקוח";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
@@ -616,25 +622,15 @@
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "תאריך: מהישן לחדש";
 
-/* Statistical unit - a single day */
-"Day" = "יום";
-
-/* Plural of 'day' — a statistical unit */
-"Days" = "ימים";
-
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "ברירת מחדל";
 
-/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen
-   Button title Delete in Downloadable File Options Action Sheet - Button title Delete in Edit Product More Options Action Sheet */
+/* Button title Delete in Downloadable File Options Action Sheet
+   Button title Delete in Edit Product More Options Action Sheet */
 "Delete" = "מחיקה";
 
-/* Delete a Shipment Tracking
-   Delete tracking button title */
+/* Delete tracking button title */
 "Delete Tracking" = "מחיקת מעקב";
-
-/* Accessibility hint for Delete Shipment button in Order fulfillment screen */
-"Deletes a shipment's tracking information." = "הפעולה מוחקת את מידע המעקב של המשלוח.";
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "יש לתאר את המוצר שלך";
@@ -646,8 +642,8 @@
 /* The row label to tap for a detailed product list */
 "Details" = "פרטים";
 
-/* Screen title: Details Order number (number) */
-"Details Order #(viewModel.order.number)" = "פרטי הזמנה ‎#‎(viewModel.order.number)‎";
+/* Screen title: Details Order number. Parameters: %1$@ - order number */
+"Details Order #%1$@" = "פרטי הזמנה #%1$@";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "ההגדרה קובעת את המיקום של המוצרים בקטלוג. ככל שהערך המספרי נמוך יותר, הפריט יופיע במקום גבוה יותר ברשימת המוצרים. ניתן להשתמש גם בערכים שליליים";
@@ -674,7 +670,7 @@
 "Discount" = "הנחה";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner on the products tab */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Button title for dismissing filtering a list. - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - The title of the button to dismiss the banner in order details - The title of the button to dismiss the banner on the products tab */
 "Dismiss" = "בטל";
 
 /* Display label for the product's inventory backorders setting option */
@@ -691,13 +687,13 @@
 "Done" = "בוצע";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
-"Don’t know how to print from your device?" = "Don’t know how to print from your device?";
+"Don’t know how to print from your device?" = "אין לך מושג כיצד להדפיס באמצעות המכשיר שלך?";
 
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
-"Don’t know how to print from your phone?" = "Don’t know how to print from your phone?";
+"Don’t know how to print from your phone?" = "אין לך מושג כיצד להדפיס באמצעות הטלפון שלך?";
 
-/* WordPress.com (unmapped!) error */
-"Dotcom Error: [(code)] (theMessage)" = "שגיאת Dotcom: [(code)] (theMessage)";
+/* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
+"Dotcom Error: [%1$@] %2$@" = "שגיאת Dotcom: ‏[%1$@] %2$@";
 
 /* WordPress.com error thrown when the the request REST API url is invalid. */
 "Dotcom Invalid REST Route" = "שגיאת Dotcom עקב נתיב REST לא תקף";
@@ -747,16 +743,16 @@
 "Download limit" = "Download limit";
 
 /* Edit product downloadable files screen - Screen title */
-"Downloadable Files" = "Downloadable Files";
-
-/* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "קבצים שניתנים להורדה";
 
-/* Downloadable Product label in Product Settings */
-"Downloadable Product" = "מוצר שניתן להורדה";
+/* Edit product downloadable files screen - Screen title */
+"Downloadable Files" = "Downloadable Files";
 
 /* Downloadable Product label in Product Settings */
 "Downloadable Product" = "Downloadable Product";
+
+/* Downloadable Product label in Product Settings */
+"Downloadable Product" = "מוצר שניתן להורדה";
 
 /* Title of the Downloadable Files row on Product main screen */
 "Downloadable files" = "קבצים שניתנים להורדה";
@@ -804,15 +800,18 @@
 /* The title used when asking the user for feedback for the app. */
 "Enjoying the WooCommerce app?" = "האפליקציה של WooCommerce מהנה לדעתך?";
 
+/* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
+"Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "יש לוודא **שבמדפסת שלך מותקנת קושחה מעודכנת**. יש לעיין בתיעוד של המדפסת להוראות כיצד לעדכן.";
+
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
-"Enter Another Store" = "Enter Another Store";
+"Enter Another Store" = "יש להזין חנות אחרת";
 
 /* Placeholder of the text field for editing the external URL for an external/affiliate product */
 "Enter URL" = "להזין כתובת URL";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with an email address that is not a WordPress.com account
    Button title. Takes the user to the login by store address flow. */
-"Enter Your Store Address" = "Enter Your Store Address";
+"Enter Your Store Address" = "להזין את הכתובת של החנות שלך";
 
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "יש להזין את שם הספק";
@@ -840,10 +839,10 @@
 "Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
 
 /* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "יש להזין את מספר הפעמים שניתן להוריד את הקובץ או להשאיר ריק כדי לאפשר הורדות ללא הגבלה";
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
 
 /* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Enter the number of time file can be downloaded or leave blank for unlimited downloads";
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "יש להזין את מספר הפעמים שניתן להוריד את הקובץ או להשאיר ריק כדי לאפשר הורדות ללא הגבלה";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "יש להזין את הסיסמה לחשבון WordPress.com שלך.";
@@ -861,11 +860,14 @@
 "Enter your email address to log in or create a WordPress.com account." = "יש להזין את כתובת האימייל שלך כדי להתחבר או ליצור חשבון ב-WordPress.com.";
 
 /* Button title. Takes the user to the login by site address flow. */
-"Enter your existing site address" = "Enter your existing site address";
+"Enter your existing site address" = "יש להזין את הכתובת של האתר החדש שלך";
 
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "במקום זאת יש להזין סיסמה.";
+
+/* Alert title when there is an error requesting shipping label document for reprinting */
+"Error previewing shipping label" = "אירעה שגיאה בתצוגה המקדימה של תווית המשלוח";
 
 /* Experimental features navigation title
    Navigates to experimental features screen */
@@ -883,6 +885,9 @@
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "לא הצלחנו לערוך בסדרה בקשה אל REST API.";
 
+/* Content of error presented when undo of Mark Order Completed failed. It reads: Failed to undo fulfillment of order #{order number}. Parameters: %1$d - order number */
+"Failed to undo fulfillment of order #%1$d" = "נכשל ביטול ההשלמה של הזמנה #⁦%1$d⁩";
+
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
 
@@ -891,6 +896,9 @@
 
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "המשוב נשלח!";
+
+/* Fees label for payment view */
+"Fees" = "עמלות";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -902,11 +910,11 @@
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
-"File URL" = "File URL";
+"File URL" = "כתובת URL של קובץ";
 
 /* Placeholder of the cell text field in Product Downloadable File URL
    Title of the cell in Product Downloadable File URL > File URL */
-"File URL" = "כתובת URL של קובץ";
+"File URL" = "File URL";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "למלא באמצעות מנהל סיסמאות";
@@ -924,11 +932,14 @@
 /* Navigation bar title format for filtering a list of products with filters applied. */
 "Filters (%ld)" = "מסננים (%ld)";
 
+/* Button linking to webview explaining how to find your connected emailPresented when logging in with a store address that does not match the account entered */
+"Find your connected email" = "למצוא את כתובת האימייל המחוברת שלך";
+
 /* The hint button's title text to help users find their site address. */
 "Find your site address" = "למצוא את הכותרת של האתר שלך";
 
 /* The hint button's title text to help users find their store address. */
-"Find your store address" = "Find your store address";
+"Find your store address" = "למצוא את הכתובת של החנות שלך";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Follow your favorite sites and discover new reads." = "כדאי לעקוב אחר האתרים המועדפים שלך ולגלות חומרי קריאה חדשים.";
@@ -944,9 +955,6 @@
 
 /* Title of the downloadable file bottom sheet action for adding file from device. */
 "From device" = "מהמכשיר";
-
-/* Order Fulfillment Title */
-"Fulfill Order #(order.number)" = "השלמת הזמנה ‎#(order.number)‎";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "קבלת תובנות על ביצועי המוצרים בחנות שלך";
@@ -964,7 +972,7 @@
 "Getting account information" = "טוען פרטי חשבון";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
-   Title on the navigation bar for the products feedback survey */
+   The title of the button to give feedback about shipping labels features on the banner in order details - Title on the navigation bar for the products feedback survey */
 "Give feedback" = "להעניק משוב";
 
 /* Option to select the Gmail app when logging in with magic links */
@@ -986,7 +994,7 @@
 "Grouped products" = "מוצרים מקובצים";
 
 /* In Order Details, the name of the billed person when there are no name and last name.
-   In Order List, the name of the billed person when there are no name and last name. */
+   In Order List, the name of the billed person when there are no first and last name. */
 "Guest" = "אורח";
 
 /* My Store > Settings > Help & Support section title */
@@ -1065,13 +1073,19 @@
 "If disabled the note will be private" = "אם האפשרות מושבתת, הפתק יהיה פרטי";
 
 /* Header text when reprinting a shipping label */
-"If there was a printing error when you purchased the label, you can print it again." = "If there was a printing error when you purchased the label, you can print it again.";
+"If there was a printing error when you purchased the label, you can print it again." = "אם אירעה שגיאת הדפסה כשרכשת את התווית, אפשר להדפיס אותה שוב.";
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "If you already have a store, you’ll need to install the free Jetpack plugin and connect it to your WordPress.com account." = "אם כבר יש לך חנות, יהיה עליך להתקין את התוסף החינמי של Jetpack ולחבר אותו לחשבון שלך ב-WordPress.com.";
 
 /* Info text when reprinting a shipping label */
-"If you already used the label in a package, printing and using it again is a violation of our terms of service" = "If you already used the label in a package, printing and using it again is a violation of our terms of service";
+"If you already used the label in a package, printing and using it again is a violation of our terms of service" = "אם כבר השתמשת בתווית בחבילה, הדפסתה ושימוש חוזר בה מהווים הפרה של תנאי השירות שלנו";
+
+/* Step 4 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
+"If you are still experiencing issues printing from your phone, you can save your label as PDF and **send it by email** to print it from another device." = "אם עדיין יש בעיות בהדפסה מהטלפון שלך, אפשר לשמור את התווית שלך כקובץ PDF **ולשלוח אותה באימייל** כדי להדפיס אותה ממכשיר אחר.";
+
+/* Legal disclaimer for signing up. The underscores _..._ denote underline. */
+"If you continue with Apple and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "אם בחרת להמשיך עם Apple ועדיין אין לך חשבון ב-WordPress.com, חשבון ייווצר עבורך ויש הסכמה מצידך _לתנאי השירות_ שלנו.";
 
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "אם בחרת להמשיך עם Apple או עם Google ועדיין אין לך חשבון ב-WordPress.com, חשבון ייווצר עבורך ויש הסכמה מצידך לתנאי השירות שלנו.";
@@ -1081,7 +1095,7 @@
 "In stock" = "במלאי";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
-"In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection";
+"In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection" = "באזור הניהול של האתר שלך אפשר למצוא את כתובת האימייל שבה השתמשת כדי להתחבר אל WordPress.com מלוח הבקרה של Jetpack במקטע 'חשבונות מקושרים' > 'חיבור החשבון'";
 
 /* Application's Inactive State */
 "Inactive" = "לא פעיל";
@@ -1141,8 +1155,11 @@
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "מנפיק החזר כספי...";
 
+/* Message explaining that the site entered and the acount logged into do not match. Reads like 'It looks like awebsite.com is connected to a different account */
+"It looks like %@ is connected to a different account." = "נראה שהאתר %@ מחובר לחשבון שונה.";
+
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
-"It looks like this email isn't associated with a WordPress.com account." = "It looks like this email isn't associated with a WordPress.com account.";
+"It looks like this email isn't associated with a WordPress.com account." = "נראה שכתובת האימייל לא משויכת לחשבון שלך ב-WordPress.com.";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "נראה ששם המשתמש או הסיסמה לא רשומים באתר זה.";
@@ -1153,11 +1170,8 @@
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "נטוי";
 
-/* The info of the Work In Progress top banner on the Products tab when Products feature switch is enabled. */
-"It’s now possible to create simple, grouped \nand external products on the go from the Woo app. Not ready yet? Save them as draft!" = "כעת ניתן ליצור מוצרים פשוטים, מקובצים \nוחיצוניים מכל מקום, מתוך האפליקציה Woo. לא הכול מוכן? אפשר לשמור אותם בתור טיוטה!";
-
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
-"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats" = "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats";
+"Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack הוא תוסף חינמי של WordPress שמחבר לחנות שלך כלים שיספקו לך את חוויית השימוש הטובה ביותר במכשיר הנייד, כולל הודעות דחיפה ונתונים סטטיסטיים";
 
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "להמשך העריכה";
@@ -1166,7 +1180,10 @@
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "לתשומת ליבך, זה לא כרטיס תמיכה ולא נוכל לענות למשוב באופן פרטי";
 
 /* Title of label paper size option for printing a shipping label */
-"Label (4 x 6 in)" = "Label (4 x 6 in)";
+"Label (4 x 6 in)" = "תווית (4 x‏ 6 אינץ')";
+
+/* Navigation bar title of shipping label paper size options screen */
+"Label Format Options" = "אפשרויות לפורמט תווית";
 
 /* Last 24 hours section header */
 "Last 24 hours" = "24 השעות האחרונות";
@@ -1182,16 +1199,16 @@
 "Learn more" = "מידע נוסף";
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
-"Learn more about Jetpack" = "Learn more about Jetpack";
+"Learn more about Jetpack" = "מידע נוסף על Jetpack";
 
 /* Title of legal paper size option for printing a shipping label */
-"Legal (8.5 x 14 in)" = "Legal (8.5 x 14 in)";
+"Legal (8.5 x 14 in)" = "משפטי (8.5 x‏ 14 אינץ')";
 
 /* Title of the cell in Product Shipping Settings > Length */
 "Length" = "אורך";
 
 /* Title of letter paper size option for printing a shipping label */
-"Letter (8.5 x 11 in)" = "Letter (8.5 x 11 in)";
+"Letter (8.5 x 11 in)" = "מכתב (8.5 x‏ 11 אינץ')";
 
 /* Licenses (information page title) */
 "Licenses" = "רישיונות";
@@ -1237,10 +1254,10 @@
 
 /* Action button that will restart the login flow.Presented when logging in with a site address that does not have a valid Jetpack installation
    Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
-"Log In With Another Account" = "Log In With Another Account";
+"Log In With Another Account" = "להתחבר עם חשבון אחר";
 
-/* Alert button title - confirms and logs out the user
-   Log out button title */
+/* Action button triggering a Log Out.Presented when logging in with a store address that does not match the account entered
+   Alert button title - confirms and logs out the user - Log out button title */
 "Log Out" = "התנתקות";
 
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
@@ -1248,6 +1265,10 @@
 
 /* A generic error message for a failed log in. */
 "Log in failed. Please try again." = "התחברות נכשלה. נא לנסות שנית.";
+
+/* Button title. Takes the user to the login by email flow.
+   Button title. Tapping begins our normal log in process. */
+"Log in or sign up with WordPress.com" = "יש להתחבר או להירשם עם WordPress.com";
 
 /* Instruction text on the login's email address screen. */
 "Log in to the WordPress.com account you used to connect Jetpack." = "יש להיכנס לחשבון WordPress.com שדרכו חיברת את Jetpack.";
@@ -1332,12 +1353,6 @@
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %@, maximum value %@" = "ערך מינימלי: %1$@, ערך מקסימלי: %2$@";
 
-/* Statistical unit - a single week */
-"Month" = "חודש";
-
-/* Plural of 'month' — a statistical unit */
-"Months" = "חודשים";
-
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
 "More" = "עוד";
@@ -1371,7 +1386,7 @@
 "Navigates to Settings." = "העברה לעמוד 'הגדרות'.";
 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
-"Need help finding the connected email?" = "Need help finding the connected email?";
+"Need help finding the connected email?" = "נדרשת לך עזרה עם האימייל להתחברות?";
 
 /* A button title. */
 "Need help finding your site address?" = "צריך עזרה במציאת כתובת האתר שלך?";
@@ -1387,10 +1402,13 @@
 "Need some help?" = "נדרשת לך עזרה?";
 
 /* The title for the net amount paid cell */
-"Net" = "נטו";
+"Net Payment" = "תשלום נטו";
 
-/* Next nav bar button title in Add Product Attribute screen
-   Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
+/* The title of the top banner on the Products tab. */
+"New features available!" = "אפשרויות חדשות זמינות!";
+
+/* Next nav bar button title in Add Product Attribute Options screen
+   Next nav bar button title in Add Product Attribute screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "הבא";
 
 /* Empty Product Reviews List Message */
@@ -1410,31 +1428,28 @@
 "No data available" = "אין נתונים זמינים";
 
 /* Placeholder of the cell text field in Download expiration */
-"No expiration" = "ללא תאריך תוקף";
-
-/* Placeholder of the cell text field in Download expiration */
 "No expiration" = "No expiration";
 
-/* Placeholder for empty Downloadable Files row on Product main screen */
-"No files yet" = "אין עדיין קבצים";
+/* Placeholder of the cell text field in Download expiration */
+"No expiration" = "ללא תאריך תוקף";
 
 /* Placeholder for empty Downloadable Files row on Product main screen */
 "No files yet" = "No files yet";
+
+/* Placeholder for empty Downloadable Files row on Product main screen */
+"No files yet" = "אין עדיין קבצים";
 
 /* Placeholder text shown when there are no images for the WordPress Media Library yet */
 "No images yet" = "עדיין אין תמונות";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "ללא מגבלה";
+"No limit" = "No limit";
 
 /* Placeholder of the cell text field in Download limit */
-"No limit" = "No limit";
+"No limit" = "ללא מגבלה";
 
 /* Shown in a Product Variation cell if the variation is enabled but does not have a price */
 "No price set" = "טרם צוין מחיר";
-
-/* The text on the placeholder overlay when there are no product variations on the Products tab */
-"No product variations yet" = "אין עוד סוגים למוצר";
 
 /* Placeholder for the linked products list selector screen
    Placeholder text when there are no products on the product list selector - The text on the placeholder overlay when there are no products on the Products tab */
@@ -1443,8 +1458,8 @@
 /* Placeholder for empty product ratings */
 "No ratings" = "אין דירוגים";
 
-/* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier' */
-"No results found for (term)\nAdd a custom carrier" = "לא נמצאו תוצאות עבור (המונח)\nלהוספת ספק משלוחים מותאם";
+/* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier'. Parameters: %1$@ - carrier name */
+"No results found for %1$@\nAdd a custom carrier" = "לא נמצאו תוצאות עבור %1$@\nיש להוסיף ספק מותאם";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "אין רווחים בתקופה זאת";
@@ -1461,7 +1476,8 @@
 /* Placeholder of the Product Variations row on Product main screen for a variable product */
 "No variations yet" = "אין עוד סוגים למוצר";
 
-/* Display label for the product's tax status setting option */
+/* Display label for the order fee's tax status setting option
+   Display label for the product's tax status setting option */
 "None" = "ללא";
 
 /* Instructions after a Magic Link was sent, but the email can't be found in their inbox. */
@@ -1474,8 +1490,11 @@
 "Note to customer" = "הערה ללקוח";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error creating a new product category - Dismiss button on the alert when there is an error creating new product tags. - Dismiss button on the alert when there is an error requesting shipping label document for reprinting - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "אישור";
+
+/* Header of selected attribute options section in Add Attribute Options screen */
+"OPTIONS OFFERED" = "אפשרויות זמינות";
 
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "כבוי";
@@ -1520,12 +1539,18 @@
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "פתיחת רשימה של מצבים זמינים.";
 
+/* Placeholder of cell presenting the title of the new attribute option. */
+"Option name" = "שם האפשרות";
+
 /* Add Product Category. Placeholder of cell presenting the parent category.
    Placeholder of the cell text field in Product Inventory Settings > SKU */
 "Optional" = "אופציונלי";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "מידע על מעקב אופציונלי";
+
+/* Header of attributes section in Edit Product Attributes screen */
+"Options" = "אפשרויות";
 
 /* Divider on initial auth view separating auth options. */
 "Or" = "או";
@@ -1534,14 +1559,11 @@
 "Or log in by _entering your site address_." = "לחלופין, ניתן להתחבר באמצעות _הזנת הכתובת של האתר שלך_.";
 
 /* Header of attributes section in Add Attribute screen */
-"Or tap to select existing attribute" = "Or tap to select existing attribute";
+"Or tap to select existing attribute" = "או להקיש כדי לבחור מאפיינים קיימים";
 
-/* Add a note screen - title. Example: Order #15
-   Order number title */
-"Order #(viewModel.order.number)" = "הזמנה ‎#‎(viewModel.order.number)‎";
-
-/* Displayed whenever an Order gets deleted. It reads: Order {order number} has been deleted from your store. */
-"Order %@ has been deleted from your store" = "ההזמנה %@ נמחקה מהחנות שלך";
+/* Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number
+   Order number title. Parameters: %1$@ - order number */
+"Order #%1$@" = "הזמנה #%1$@";
 
 /* Order notes section title */
 "Order Notes" = "הערות להזמנה";
@@ -1582,13 +1604,13 @@
 "Package %d" = "חבילה %d";
 
 /* Title of package details in shipping label details */
-"Package Details" = "Package Details";
+"Package Details" = "פרטי החבילה";
 
 /* The title for the customer payment cell */
-"Paid By Customer" = "שולם על ידי הלקוח";
+"Paid" = "שולם";
 
 /* Title of the paper size selector row for reprinting a shipping label */
-"Paper Size" = "Paper Size";
+"Paper Size" = "גודל נייר";
 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "קטגוריית אב";
@@ -1607,7 +1629,7 @@
 "Payment" = "תשלום";
 
 /* Title of payment method in shipping label details */
-"Payment Method" = "Payment Method";
+"Payment Method" = "שיטת תשלום";
 
 /* Display label for the review's pending status */
 "Pending" = "ממתין לאישור";
@@ -1679,7 +1701,8 @@
 /* The message of the alert when there is an error uploading an image */
 "Please try again." = "יש לנסות שוב.";
 
-/* Text on the loading view of the survey screen indicating the user to wait */
+/* Message of in-progress modal when requesting shipping label document for reprinting
+   Text on the loading view of the survey screen indicating the user to wait */
 "Please wait" = "רק רגע";
 
 /* Message of the in-progress UI while updating the Product remotely */
@@ -1711,7 +1734,16 @@
 "Price" = "מחיר";
 
 /* Button title to generate a shipping label document for printing */
-"Print Shipping Label" = "Print Shipping Label";
+"Print Shipping Label" = "להדפיס תווית משלוח";
+
+/* Navigation bar title of shipping label printing instructions screen */
+"Print from your Phone" = "להדפיס מהטלפון שלך";
+
+/* The title of the shipping labels top banner in order details */
+"Print shipping labels from your device!" = "אפשר להדפיס תווית משלוח מהמכשיר שלך!";
+
+/* Title of in-progress modal when requesting shipping label document for reprinting */
+"Printing Label" = "מדפיס תווית";
 
 /* Opens the California Privacy Policy web page */
 "Privacy Notice for California Users" = "הצהרת פרטיות למשתמשים מקליפורניה";
@@ -1736,7 +1768,7 @@
 "Processing" = "בטיפול";
 
 /* Description for Top Performers left column header
-   Product section title - Product section title if there is only one product. - Section header title for the product */
+   Product section title - Product section title if there is only one product. */
 "Product" = "מוצר";
 
 /* Edit Product External Link navigation title */
@@ -1803,7 +1835,7 @@
 "Publishing your product..." = "מפרסם את המוצר שלך...";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */
-"Purchase Date" = "Purchase Date";
+"Purchase Date" = "תאריך הרכישה";
 
 /* Product Note navigation title
    Purchase note label in Product Settings */
@@ -1815,8 +1847,7 @@
 /* Quantity abbreviation for section title */
 "QTY" = "כמות";
 
-/* Quantity abbreviation for section title
-   Section header title - abbreviation for quantity */
+/* Quantity abbreviation for section title */
 "Qty" = "כמות";
 
 /* The accessibility label for the quantity button when selecting an item to refund
@@ -1824,10 +1855,10 @@
 "Quantity" = "כמות";
 
 /* Navigation title on the quantity item selector screen */
-"Quantity to refund" = "Quantity to refund";
+"Quantity to refund" = "כמות להחזר הכספי";
 
 /* Navigation title on the quantity item selector screen */
-"Quantity to refund" = "כמות להחזר הכספי";
+"Quantity to refund" = "Quantity to refund";
 
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %ld" = "כמות: %ld";
@@ -1848,16 +1879,16 @@
 "Reason for Refund (Optional)" = "Reason for Refund (Optional)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for refunding order" = "סיבה להחזר הכספי על ההזמנה";
-
-/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Reason for refunding order";
 
-/* The title of the button to confirm the refund. */
-"Refund" = "החזר כספי";
+/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
+"Reason for refunding order" = "סיבה להחזר הכספי על ההזמנה";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "Refund";
+
+/* The title of the button to confirm the refund. */
+"Refund" = "החזר כספי";
 
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "החזר כספי #%@";
@@ -1870,19 +1901,19 @@
 "Refund Details" = "פרטי ההחזר";
 
 /* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
-"Refund Label (%1$@)" = "Refund Label (%1$@)";
-
-/* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "להנפיק החזר כספי עבור משלוח";
+"Refund Label (%1$@)" = "החזר כספי עבור תווית (%1$@)";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
 "Refund Shipping" = "Refund Shipping";
 
-/* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Refund Via";
+/* Title of the switch in the IssueRefund screen to refund shipping */
+"Refund Shipping" = "להנפיק החזר כספי עבור משלוח";
 
 /* The title of the section containing information about how the refund will be processed. */
 "Refund Via" = "החזר כספי דרך";
+
+/* The title of the section containing information about how the refund will be processed. */
+"Refund Via" = "Refund Via";
 
 /* The title for the refunded amount cell */
 "Refunded" = "הוחזר";
@@ -1892,7 +1923,7 @@
 "Refunded Products" = "מוצרים שעליהם ניתן החזר כספי";
 
 /* Title of the refund detail cell when the refund was done manually. */
-"Refunded manually" = "Refunded manually";
+"Refunded manually" = "בוצע החזר כספי ידני";
 
 /* It reads, 'Refunded manually via <payment method>' */
 "Refunded manually via %@" = "החזר כספי בוצע באופן ידני באמצעות %@";
@@ -1972,7 +2003,7 @@
 "SKU already in use by another product" = "הקוד של SKU כבר נמצא בשימוש של מוצר אחר";
 
 /* SKU label in order details > product row. The variable shows the SKU of the product. */
-"SKU: %1$@" = "SKU: %1$@";
+"SKU: %1$@" = "מק\"ט: %1$@";
 
 /* Format of the SKU on the Inventory Settings row */
 "SKU: %@" = "מק\"ט: ‎%@";
@@ -2041,20 +2072,23 @@
 /* Display label for the product's catalog visibility */
 "Search results only" = "תוצאות חיפוש בלבד";
 
+/* Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
+"See Connected Stores" = "להציג חנויות מחוברות";
+
 /* Action button linking to instructions for installing Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
-"See Instructions" = "See Instructions";
+"See Instructions" = "להציג את ההוראות";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "See comments and notifications in real time." = "להציג תגובות והודעות בזמן אמת.";
 
 /* Link title to see all paper size options */
-"See layout and paper sizes options" = "See layout and paper sizes options";
-
-/* Select all button title in the issue refund screen */
-"Select All" = "Select All";
+"See layout and paper sizes options" = "להציג אפשרויות של פריסה וגודל נייר";
 
 /* Select all button title in the issue refund screen */
 "Select All" = "לבחור הכול";
+
+/* Select all button title in the issue refund screen */
+"Select All" = "Select All";
 
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "לבחור קטגוריית אם";
@@ -2109,17 +2143,17 @@
 "Share your Store" = "שיתוף החנות שלך";
 
 /* Title of origin address in shipping label details */
-"Ship from" = "Ship from";
+"Ship from" = "לשלוח מאת";
 
 /* Title of destination address in shipping label details */
-"Ship to" = "Ship to";
+"Ship to" = "לשלוח אל";
 
 /* A unit test string for order tracking. Reads as: 'Shipment Company HK Post'
    Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
 "Shipment Company %@" = "חברת משלוח %@";
 
 /* Navigation bar title of shipping label details */
-"Shipment Details" = "Shipment Details";
+"Shipment Details" = "פרטי המשלוח";
 
 /* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
    Date an item was shipped */
@@ -2130,7 +2164,7 @@
 "Shipping" = "משלוח";
 
 /* Title of shipping carrier and rates in shipping label details */
-"Shipping Carrier and Rates" = "Shipping Carrier and Rates";
+"Shipping Carrier and Rates" = "ספק המשלוח והתעריפים";
 
 /* Title of view displaying all available Shipment Tracking Carriers */
 "Shipping Carriers" = "ספק משלוח";
@@ -2209,6 +2243,9 @@
 /* Button title. Tapping begins our normal sign up process. */
 "Sign up with Email" = "הרשמה באמצעות אימייל";
 
+/* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
+"Signed in as @%1$@" = "מחובר בתור @%1$@";
+
 /* Display label for simple product type. */
 "Simple" = "פשוט";
 
@@ -2236,7 +2273,7 @@
 "Someone" = "לא ידוע";
 
 /* Notice format when a shipping label refund request fails. */
-"Something went wrong with the refund. Please try again." = "Something went wrong with the refund. Please try again.";
+"Something went wrong with the refund. Please try again." = "משהו השתבש בביצוע ההחזר הכספי. יש לנסות שוב.";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "שם המשתמש מכיל ביטוי לא תקני %@.";
@@ -2342,8 +2379,8 @@
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "החלפת חנות";
 
-/* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. */
-"Switched to (newStoreName). You will only receive notifications from this store." = "החלפה אל (newStoreName). ההודעות שיתקבלו יהיו עבור החנות הזו בלבד.";
+/* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. Parameters: %1$@ - store name */
+"Switched to %1$@. You will only receive notifications from this store." = "הוחלף אל %1$@. ההודעות שיתקבלו יהיו עבור החנות הזו בלבד.";
 
 /* Accessibility Identifier for the H1 Aztec Style */
 "Switches to the Heading 1 font size" = "מבצע החלפה לגודל גופן 1 בכותרת";
@@ -2383,10 +2420,10 @@
 "Tap to insert a Link" = "יש להקיש כדי להוסיף קישור";
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
-"Tap to modify the item refund quantity" = "Tap to modify the item refund quantity";
+"Tap to modify the item refund quantity" = "יש להקיש כדי לשנות את סכום ההחזר הכספי עבור הפריט";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
-"Tap to show instructions on how to print a shipping label on the mobile device" = "Tap to show instructions on how to print a shipping label on the mobile device";
+"Tap to show instructions on how to print a shipping label on the mobile device" = "יש להקיש להוראות כיצד להדפיס את תווית משלוח באמצעות המכשיר הנייד";
 
 /* Accessibility hint for block quote button on formatting toolbar. */
 "Tap to toggle Block Quote" = "יש להקיש כדי לשנות ציטוט הבלוק";
@@ -2452,7 +2489,8 @@
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "מצב מס";
 
-/* Display label for the product's tax status setting option */
+/* Display label for the order fee's tax status setting option
+   Display label for the product's tax status setting option */
 "Taxable" = "חייב במיסים";
 
 /* Taxes label for payment view */
@@ -2547,7 +2585,7 @@
 "The stock quantity for this product. Editable." = "כמות המלאי של המוצר. ניתן לעריכה.";
 
 /* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
-"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "The website is not a WordPress site. For us to connect to it, the site must have WordPress installed.";
+"The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "זה לא אתר של WordPress. כדי שנוכל להתחבר לאתר, השירות של WordPress חייב להיות מותקן באתר.";
 
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "אירעה בעיה בעת חסימת רשומות מהאתר שצוין.";
@@ -2592,10 +2630,10 @@
 "This is the name of the file shown to the customer." = "זהו שם הקובץ שמוצג ללקוח.";
 
 /* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "זוהי כתובת ה-URL של הקובץ שאליו הלקוחות יקבלו גישה. כתובות ה-URL שהוזנו צריכות להיות מקודדות כבר.";
 
 /* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "זוהי כתובת ה-URL של הקובץ שאליו הלקוחות יקבלו גישה. כתובות ה-URL שהוזנו צריכות להיות מקודדות כבר.";
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2605,7 +2643,7 @@
 "This product couldn't be loaded" = "לא ניתן לטעון את המוצר";
 
 /* Message displayed when loading a specific product fails because product was deleted */
-"This product has been deleted and is no longer visible" = "This product has been deleted and is no longer visible";
+"This product has been deleted and is no longer visible" = "המוצר נמחק ולא ניתן עוד להציג אותו";
 
 /* Footer text in Product Catalog Visibility */
 "This setting determines which shop pages products will be listed on." = "הגדרה זו קובעת על אילו מעמודי החנות תופיע רשימת מוצרים.";
@@ -2642,7 +2680,7 @@
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "כדי להמשיך עם חשבון Google, ראשית יש להתחבר עם הסיסמה שלך ב-WordPress.com. נבקש את הנתון הזה פעם אחת בלבד.";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
-"To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store.";
+"To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "כדי להשתמש באפליקציה הזאת עבור %@ עליך להתקין את התוסף של Jetpack ולחבר אותו בחנות שלך.";
 
 /* Tab selector title that shows the statistics for today
    Today Section Header - Top Performers section title - today */
@@ -2670,7 +2708,7 @@
 "Track Shipment" = "מעקב אחר משלוח";
 
 /* Track shipment of a shipping label from the shipping label tracking more menu action sheet */
-"Track shipment" = "Track shipment";
+"Track shipment" = "מעקב אחר משלוח";
 
 /* Order tracking section title */
 "Tracking" = "מבצע מעקב";
@@ -2709,23 +2747,20 @@
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "אי אפשר להתחבר";
 
-/* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number} */
-"Unable to add note to order #(viewModel.order.orderID)" = "אין אפשרות להוסיף פתק להזמנה #(viewModel.order.orderID)";
+/* Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}. Parameters: %1$d - order number */
+"Unable to add note to order #%1$d" = "אין אפשרות להוסיף פתק להזמנה ⁦%1$d⁩#";
 
-/* Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number} */
-"Unable to add tracking to order #(orderID)" = "אין אפשרות להוסיף מעקב להזמנה #(orderID)";
+/* Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number}. Parameters: %1$d - order number */
+"Unable to add tracking to order #%1$d" = "אין אפשרות להוסיף מעקב להזמנה ⁦%1$d⁩#";
 
-/* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number} */
-"Unable to change status of order #(orderID)" = "אין אפשרות לעדכן את מצב ההזמנה #(orderID)";
+/* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}. Parameters: %1$d - order number */
+"Unable to change status of order #%1$d" = "אין אפשרות לעדכן את מצב ההזמנה ⁦%1$d⁩#";
 
-/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
-"Unable to delete tracking for order #(order.orderID)" = "אין אפשרות למחוק את המעקב אחר ההזמנה #(order.orderID)";
+/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
+"Unable to delete tracking for order #%1$d" = "אין אפשרות למחוק את המעקב אחר ההזמנה ⁦%1$d⁩#";
 
-/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
-"Unable to delete tracking for order #(orderID)" = "אין אפשרות למחוק את המעקב אחר ההזמנה #(orderID)";
-
-/* Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number} */
-"Unable to fulfill order #(orderID)" = "אין אפשרות להשלים את ההזמנה #(orderID)";
+/* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
+"Unable to fulfill order #%1$d" = "אין אפשרות להשלים את ההזמנה ⁦%1$d⁩#";
 
 /* Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers */
 "Unable to load Shipment Carriers" = "אין אפשרות לטעון את ספקי המשלוח";
@@ -2737,7 +2772,7 @@
 "Unable to load content" = "אין אפשרות להעלות את התוכן";
 
 /* Load Product Attributes Action Failed */
-"Unable to load product attributes" = "Unable to load product attributes";
+"Unable to load product attributes" = "לא ניתן היה לטעון את מאפייני המוצר";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "אין אפשרות לסמן את הביקורת בתור \"%@\"";
@@ -2811,10 +2846,10 @@
 "Update product inventory and SKU" = "לעדכן את המלאי וה-SKU של המוצר";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "לעדכן מרחוק את הפרטים של קובצי המוצר שניתנים להורדה";
+"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
 
 /* Accessibility label to update products' downloadable files' info remotely */
-"Update products' downloadable files' info remotely" = "Update products' downloadable files' info remotely";
+"Update products' downloadable files' info remotely" = "לעדכן מרחוק את הפרטים של קובצי המוצר שניתנים להורדה";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "יש לעדכן ל-WooCommerce 3.5 כדי להמשיך להשתמש באפליקציה זו";
@@ -2862,7 +2897,7 @@
 "Variable product" = "מוצר עם וריאציות";
 
 /* Footer of text field section in Add Attribute screen */
-"Variation type (ie Color, Size)" = "Variation type (ie Color, Size)";
+"Variation type (ie Color, Size)" = "פרטי הסוג (למשל צבע, גודל)";
 
 /* Title of the Product Variations row on Product main screen for a variable product
    Title that appears on top of the Product Variation List screen. */
@@ -2876,6 +2911,9 @@
 
 /* two factor code placeholder */
 "Verification code" = "קוד אימות";
+
+/* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
+"Verify your printer and device are connected to the **same Wi-Fi network**.\n\nCheck your printer's documentation for information on connecting it to your Wi-Fi network." = "יש לוודא שהמדפסת והמכשיר מחוברים אל **אותה רשת Wi-Fi**.\n\nיש לעיין בתיעוד של המדפסת שלך למידע על חיבור המדפסת לרשת Wi-Fi.";
 
 /* Displays the version of the App */
 "Version %@" = "גרסה %@";
@@ -2895,10 +2933,10 @@
 "View Shipment Details" = "להציג את פרטי המשלוח";
 
 /* The action to update downloadable files settings for a product */
-"View downloadable file settings" = "להציג הגדרות של קבצים שניתנים להורדה";
+"View downloadable file settings" = "View downloadable file settings";
 
 /* The action to update downloadable files settings for a product */
-"View downloadable file settings" = "View downloadable file settings";
+"View downloadable file settings" = "להציג הגדרות של קבצים שניתנים להורדה";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "הצגה של קריאות תמיכה שנשלחו בעבר";
@@ -2943,6 +2981,9 @@
 /* Shown in the prologue carousel (promotional screens) during first launch. */
 "Watch your audience grow with in-depth analytics." = "באמצעות ניתוחי עומק ניתן לעקוב אחר הצמיחה של קהל המבקרים.";
 
+/* The info of the shipping labels top banner in order details */
+"We are working on making it easier for you to print shipping labels directly from your device! For now, if you have created labels for an order in your store admin with WooCommerce Shipping, you can print them in your Order details here." = "אנחנו פועלים כדי ליצור תהליך הדפסה קל יותר לתוויות משלוח ישירות מהמכשיר שלך! בינתיים, אם יצרת תוויות משלוח עבור הזמנה במנהל החנות שלך באמצעות WooCommerce Shipping, אפשר להדפיס אותן בפרטי ההזמנה שלך כאן.";
+
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "אין לנו אפשרות להציג את הניתוח האנליטי של החנות שלך";
 
@@ -2983,12 +3024,6 @@
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "שלחנו אליך אימייל עם קישור להרשמה כדי ליצור את החשבון החדש שלך ב-WordPress.com. עליך לבדוק את האימייל ממכשיר זה ולהקיש על הקישור בהודעה שקיבלת מ-WordPress.com.";
 
-/* Statistical unit - a single week */
-"Week" = "שבוע";
-
-/* Plural of 'week' — a statistical unit */
-"Weeks" = "שבועות";
-
 /* Title of the cell in Product Shipping Settings > Weight */
 "Weight" = "משקל";
 
@@ -2999,13 +3034,11 @@
 "Welcome to the world’s most popular website builder." = "ברוך בואך לכלי הפופולרי ביותר בעולם לבניית אתרי אינטרנט.";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
-"What email do I use to sign in?" = "What email do I use to sign in?";
+"What email do I use to sign in?" = "באיזה אימייל השתמשתי כדי להתחבר?";
 
-/* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
-"What is Jetpack" = "What is Jetpack";
-
-/* Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
-"What is Jetpack?" = "What is Jetpack?";
+/* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
+   Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
+"What is Jetpack?" = "מה זה Jetpack?";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "מה כתובת האתר שלי?";
@@ -3035,14 +3068,11 @@
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %@ uses WordPress %@. We recommend to update to the latest version, or at least %@" = "גרסת WordPress ישנה מדי. האתר %1$@ משתמש ב-WordPress בגרסה %2$@. מומלץ לשדרג לגרסה העדכנית ביותר, או לפחות לגרסה %3$@";
 
+/* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
+"Wrong account?" = "חשבון שגוי?";
+
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
-
-/* Statistical unit - a single year */
-"Year" = "שנה";
-
-/* Plural of 'year' — a statistical unit */
-"Years" = "שנים";
 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "כן, אני רוצה לשנות";
@@ -3050,8 +3080,11 @@
 /* Yesterday Section Header */
 "Yesterday" = "אתמול";
 
+/* The info of the top banner on the Products tab. */
+"You can now add downloadable files to a product and link upsell & cross-sell products. No longer want a product? Trash it!" = "כעת אפשר להוסיף קבצים שניתנים להורדה למוצר ולקשר מוצרים של שדרוגי מכירות ושל מכירות משלימות. אין לך עוד צורך במוצר מסוים? אפשר להעביר אותו לפח!";
+
 /* Header text in Refund Shipping Label screen */
-"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process.";
+"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "אפשר לבקש החזר כספי עבור תווית משלוח שלא נעשה בה שימוש כדי לשלוח חבילה.\nתהליך עיבוד הבקשה יארך 14 ימים לפחות.";
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "לא ניתן להשתמש בכתובת אימייל זו להרשמה. ספק זה חוסם חלק מהאימיילים שלנו. יש להשתמש בספק אימייל אחר.";
@@ -3066,7 +3099,7 @@
 "Your notifications travel with you — see comments and likes as they happen." = "ההודעות שלך אתך בכל מקום - אפשר לראות תגובות ולייקים בזמן אמת.";
 
 /* Body text of alert helping users understand their site address */
-"Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "עם הכניסה לאתר בדפדפן Safari, כתובת האתר תופיע בסרגל העליון של המסך.";
+"Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "עם הכניסה לאתר בדפדפן Safari, כתובת האתר שלך תופיע בסרגל העליון של המסך.";
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[תגובה]";
@@ -3096,18 +3129,19 @@
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "כתובת URL לא ידועה";
 
-/* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need... */
-"your site" = "your site";
+/* Placeholder for site url, if the url is unknown.Presented when logging in with a site address that does not have a valid Jetpack installation.The error would read: to use this app for your site you'll need...
+   Placeholder for site url, if the url is unknown.Presented when logging in with a store address that does not match the account entered. */
+"your site" = "האתר שלך";
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} התחברות עם Google.";
 
 /* About View's Footer Text. The variable is the current year */
-"© %@ Automattic, Inc." = "‎‎© %@ Automattic, Inc.‎‎‎";
+"© %@ WooCommerce, Inc. and WooCommerce Ireland Ltd." = "© %@ WooCommerce, Inc.‎ וחברת WooCommerce Ireland Ltd.‎";
 
 /* Customer note, wrapped in quotes */
 "“%@”" = "“%@”";
 
 /* Text of the notice that is displayed after the refund is created. */
-"🎉 Products successfully refunded" = "";
+"🎉 Products successfully refunded" = "החזר כספי עבור 🎉 מוצרים בוצע בהצלחה";
 

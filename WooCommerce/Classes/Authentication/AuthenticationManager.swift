@@ -38,6 +38,7 @@ class AuthenticationManager: Authentication {
                                                                 showLoginOptions: true,
                                                                 enableSignUp: false,
                                                                 enableSignInWithApple: isSignInWithAppleEnabled,
+                                                                enableSignupWithGoogle: false,
                                                                 enableUnifiedAuth: true,
                                                                 continueWithSiteAddressFirst: true)
 
@@ -56,6 +57,7 @@ class AuthenticationManager: Authentication {
                                                 primaryTitleColor: .primaryButtonTitle,
                                                 secondaryTitleColor: systemLabelLightModeColor,
                                                 disabledTitleColor: .textSubtle,
+                                                disabledButtonActivityIndicatorColor: .textSubtle,
                                                 textButtonColor: .accent,
                                                 textButtonHighlightColor: .accentDark,
                                                 instructionColor: .textSubtle,
@@ -79,6 +81,7 @@ class AuthenticationManager: Authentication {
                                                                   continueWithWPButtonTitle: AuthenticationConstants.continueWithWPButtonTitle,
                                                                   enterYourSiteAddressButtonTitle: AuthenticationConstants.enterYourSiteAddressButtonTitle,
                                                                   findSiteButtonTitle: AuthenticationConstants.findYourStoreAddressButtonTitle,
+                                                                  signupTermsOfService: AuthenticationConstants.signupTermsOfService,
                                                                   getStartedTitle: AuthenticationConstants.loginTitle)
 
         let unifiedStyle = WordPressAuthenticatorUnifiedStyle(borderColor: .divider,
@@ -107,16 +110,23 @@ class AuthenticationManager: Authentication {
         WordPressAuthenticator.shared.delegate = self
     }
 
-    /// Displays the Login Flow using the specified UIViewController as presenter.
+    /// Returns the Login Flow view controller.
     ///
-    func displayAuthentication(from presenter: UIViewController, animated: Bool, onCompletion: @escaping () -> Void) {
-        WordPressAuthenticator.showLogin(from: presenter, animated: animated, onLoginButtonTapped: { [weak self] in
-            guard let self = self else { return }
-            // Resets Apple ID at the beginning of the authentication.
-            self.appleUserID = nil
+    func authenticationUI() -> UIViewController {
+        let loginViewController: UIViewController = {
+            let loginUI = WordPressAuthenticator.loginUI(onLoginButtonTapped: { [weak self] in
+                guard let self = self else { return }
+                // Resets Apple ID at the beginning of the authentication.
+                self.appleUserID = nil
 
-            ServiceLocator.analytics.track(.loginPrologueContinueTapped)
-        }, onCompletion: onCompletion)
+                ServiceLocator.analytics.track(.loginPrologueContinueTapped)
+            })
+            guard let loginVC = loginUI else {
+                fatalError("Cannot instantiate login UI from WordPressAuthenticator")
+            }
+            return loginVC
+        }()
+        return loginViewController
     }
 
     /// Handles an Authentication URL Callback. Returns *true* on success.
@@ -130,7 +140,8 @@ class AuthenticationManager: Authentication {
         }
 
         if WordPressAuthenticator.shared.isWordPressAuthUrl(url) {
-            return WordPressAuthenticator.shared.handleWordPressAuthUrl(url, allowWordPressComAuth: true, rootViewController: rootViewController)
+            return WordPressAuthenticator.shared.handleWordPressAuthUrl(url,
+                                                                        rootViewController: rootViewController)
         }
 
         return false
@@ -206,6 +217,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func shouldPresentUsernamePasswordController(for siteInfo: WordPressComSiteInfo?, onCompletion: @escaping (WordPressAuthenticatorResult) -> Void) {
 
+        /// Jetpack is required. Present an error if we don't detect a valid installation.
         guard let site = siteInfo, site.hasValidJetpack == true else {
             let viewModel = JetpackErrorViewModel(siteURL: siteInfo?.url)
             let installJetpackUI = ULErrorViewController(viewModel: viewModel)
@@ -217,14 +229,48 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
 
-        let isSelfHosted = site.isWP && !site.isWPCom
-        let authenticationResult: WordPressAuthenticatorResult = .presentPasswordController(value: isSelfHosted)
+        /// WordPress must be present.
+        guard site.isWP else {
+            let viewModel = NotWPErrorViewModel()
+            let notWPErrorUI = ULErrorViewController(viewModel: viewModel)
+
+            let authenticationResult: WordPressAuthenticatorResult = .injectViewController(value: notWPErrorUI)
+
+            onCompletion(authenticationResult)
+
+            return
+        }
+
+        /// For self-hosted sites, navigate to enter the email address associated to the wp.com account:
+        /// https://github.com/woocommerce/woocommerce-ios/issues/3426
+        guard site.isWPCom else {
+            let authenticationResult: WordPressAuthenticatorResult = .presentEmailController
+
+            onCompletion(authenticationResult)
+
+            return
+        }
+
+        /// We should never reach this point, as WPAuthenticator won't call its delegate for this case.
+        ///
+        DDLogWarn("⚠️ Present password controller for site: \(site.url)")
+        let authenticationResult: WordPressAuthenticatorResult = .presentPasswordController(value: false)
         onCompletion(authenticationResult)
     }
 
     /// Presents the Login Epilogue, in the specified NavigationController.
     ///
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, onDismiss: @escaping () -> Void) {
+        let matcher = ULAccountMatcher()
+
+        guard let siteURL = credentials.wpcom?.siteURL, matcher.match(originalURL: siteURL) else {
+            DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: credentials.wpcom?.siteURL))")
+            let viewModel = WrongAccountErrorViewModel(siteURL: credentials.wpcom?.siteURL)
+            let mismatchAccountUI = ULAccountMismatchViewController(viewModel: viewModel)
+
+            return navigationController.show(mismatchAccountUI, sender: nil)
+        }
+
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
         storePickerCoordinator?.onDismiss = onDismiss
         storePickerCoordinator?.start()

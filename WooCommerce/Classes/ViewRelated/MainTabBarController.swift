@@ -369,20 +369,15 @@ private extension MainTabBarController {
             return
         }
 
-        let isLargeTitlesFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles)
-
         // Initialize each tab's root view controller
         let dashboardViewController = createDashboardViewController(siteID: siteID)
-        dashboardNavigationController
-            .addViewController(dashboardViewController, isLargeTitleEnabled: true, isLargeTitlesFeatureFlagEnabled: isLargeTitlesFeatureFlagEnabled)
+        dashboardNavigationController.viewControllers = [dashboardViewController]
 
         let ordersViewController = createOrdersViewController(siteID: siteID)
-        ordersNavigationController
-            .addViewController(ordersViewController, isLargeTitleEnabled: true, isLargeTitlesFeatureFlagEnabled: isLargeTitlesFeatureFlagEnabled)
+        ordersNavigationController.viewControllers = [ordersViewController]
 
         let productsViewController = createProductsViewController(siteID: siteID)
-        productsNavigationController
-            .addViewController(productsViewController, isLargeTitleEnabled: true, isLargeTitlesFeatureFlagEnabled: isLargeTitlesFeatureFlagEnabled)
+        productsNavigationController.viewControllers = [productsViewController]
 
         let reviewsTabCoordinator = createReviewsTabCoordinator(siteID: siteID)
         self.reviewsTabCoordinator = reviewsTabCoordinator

@@ -70,7 +70,8 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
              .downloadableFiles,
              .linkedProducts,
              .status,
-             .noPriceWarning:
+             .noPriceWarning,
+             .attributes:
             return [ImageAndTitleAndTextTableViewCell.self]
         case .reviews:
             return [ProductReviewsTableViewCell.self]
@@ -97,7 +98,8 @@ extension ProductFormSection.SettingsRow: ReusableTableRow {
              .downloadableFiles,
              .linkedProducts,
              .status,
-             .noPriceWarning:
+             .noPriceWarning,
+             .attributes:
             return ImageAndTitleAndTextTableViewCell.self
         case .reviews:
             return ProductReviewsTableViewCell.self

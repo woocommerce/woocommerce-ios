@@ -173,7 +173,7 @@ private extension ReprintShippingLabelViewController {
         switch cell {
         case let cell as BasicTableViewCell where row == .headerText:
             configureHeaderText(cell: cell)
-        case let cell as TopLeftImageTableViewCell where row == .infoText:
+        case let cell as ImageAndTitleAndTextTableViewCell where row == .infoText:
             configureInfoText(cell: cell)
         case let cell as TitleAndValueTableViewCell where row == .paperSize:
             configurePaperSize(cell: cell)
@@ -181,9 +181,9 @@ private extension ReprintShippingLabelViewController {
             configureSpacerBetweenInfoTextAndPaperSizeSelector(cell: cell)
         case let cell as SpacerTableViewCell where row == .spacerBetweenPaperSizeSelectorAndInfoLinks:
             configureSpacerBetweenPaperSizeSelectorAndInfoLinks(cell: cell)
-        case let cell as TopLeftImageTableViewCell where row == .paperSizeOptions:
+        case let cell as ImageAndTitleAndTextTableViewCell where row == .paperSizeOptions:
             configurePaperSizeOptions(cell: cell)
-        case let cell as TopLeftImageTableViewCell where row == .printingInstructions:
+        case let cell as ImageAndTitleAndTextTableViewCell where row == .printingInstructions:
             configurePrintingInstructions(cell: cell)
         default:
             break
@@ -197,13 +197,15 @@ private extension ReprintShippingLabelViewController {
         cell.hideSeparator()
     }
 
-    func configureInfoText(cell: TopLeftImageTableViewCell) {
-        cell.apply(style: .body)
-        cell.configure(image: .infoOutlineImage,
-                       imageTintColor: .systemColor(.secondaryLabel),
-                       text: Localization.infoText,
-                       textColor: .systemColor(.secondaryLabel))
-        cell.hideSeparator()
+    func configureInfoText(cell: ImageAndTitleAndTextTableViewCell) {
+        cell.update(with: .imageAndTitleOnly(fontStyle: .body),
+                    data: .init(title: Localization.infoText,
+                                textTintColor: .systemColor(.secondaryLabel),
+                                image: .infoOutlineImage,
+                                imageTintColor: .systemColor(.secondaryLabel),
+                                numberOfLinesForTitle: 0,
+                                isActionable: false,
+                                showsSeparator: false))
     }
 
     func configurePaperSize(cell: TitleAndValueTableViewCell) {
@@ -219,25 +221,31 @@ private extension ReprintShippingLabelViewController {
         cell.configure(height: Constants.verticalSpacingBetweenPaperSizeSelectorAndInfoLinks)
     }
 
-    func configurePaperSizeOptions(cell: TopLeftImageTableViewCell) {
-        cell.configure(image: .pagesFootnoteImage,
-                       imageTintColor: .systemColor(.secondaryLabel),
-                       text: Localization.paperSizeOptionsButtonTitle,
-                       textColor: .systemColor(.secondaryLabel))
+    func configurePaperSizeOptions(cell: ImageAndTitleAndTextTableViewCell) {
+        cell.update(with: .imageAndTitleOnly(fontStyle: .footnote),
+                    data: .init(title: Localization.paperSizeOptionsButtonTitle,
+                                textTintColor: .systemColor(.secondaryLabel),
+                                image: .pagesFootnoteImage,
+                                imageTintColor: .systemColor(.secondaryLabel),
+                                numberOfLinesForTitle: 0,
+                                isActionable: false,
+                                showsSeparator: false))
         configureCommonStylesForInfoLinkCell(cell)
     }
 
-    func configurePrintingInstructions(cell: TopLeftImageTableViewCell) {
-        cell.configure(image: .infoOutlineFootnoteImage,
-                       imageTintColor: .systemColor(.secondaryLabel),
-                       text: Localization.printingInstructionsButtonTitle,
-                       textColor: .systemColor(.secondaryLabel))
+    func configurePrintingInstructions(cell: ImageAndTitleAndTextTableViewCell) {
+        cell.update(with: .imageAndTitleOnly(fontStyle: .footnote),
+                    data: .init(title: Localization.printingInstructionsButtonTitle,
+                                textTintColor: .systemColor(.secondaryLabel),
+                                image: .infoOutlineFootnoteImage,
+                                imageTintColor: .systemColor(.secondaryLabel),
+                                numberOfLinesForTitle: 0,
+                                isActionable: false,
+                                showsSeparator: false))
         configureCommonStylesForInfoLinkCell(cell)
     }
 
-    func configureCommonStylesForInfoLinkCell(_ cell: TopLeftImageTableViewCell) {
-        cell.apply(style: .footnote)
-        cell.hideSeparator()
+    func configureCommonStylesForInfoLinkCell(_ cell: ImageAndTitleAndTextTableViewCell) {
         cell.selectionStyle = .default
     }
 }
@@ -281,13 +289,13 @@ private extension ReprintShippingLabelViewController {
             case .headerText:
                 return BasicTableViewCell.self
             case .infoText:
-                return TopLeftImageTableViewCell.self
+                return ImageAndTitleAndTextTableViewCell.self
             case .spacerBetweenInfoTextAndPaperSizeSelector, .spacerBetweenPaperSizeSelectorAndInfoLinks:
                 return SpacerTableViewCell.self
             case .paperSize:
                 return TitleAndValueTableViewCell.self
             case .paperSizeOptions, .printingInstructions:
-                return TopLeftImageTableViewCell.self
+                return ImageAndTitleAndTextTableViewCell.self
             }
         }
 

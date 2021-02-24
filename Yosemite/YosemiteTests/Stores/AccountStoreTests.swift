@@ -169,6 +169,34 @@ class AccountStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `synchronizeAccountSettings` effectively update any retrieved settings.
+    ///
+    func test_synchronizeAccountSettings_effectively_update_retrieved_settings() throws {
+        // Given
+        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        storageManager.insertSampleAccountSettings(readOnlyAccountSettings: sampleAccountSettings())
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "me/settings", filename: "me-settings")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.AccountSettings.self), 1)
+
+        let result: Result<Yosemite.AccountSettings?, Error> = waitFor { promise in
+            let action = AccountAction.synchronizeAccountSettings(userID: 10) { account, _ in
+                promise(.success(account))
+            }
+            accountStore.onAction(action)
+        }
+
+        // Then
+        let account = try result.get()
+        let expectedAccount = Networking.AccountSettings(userID: 10,
+                                                         tracksOptOut: true,
+                                                         firstName: "Dem 123",
+                                                         lastName: "Nines")
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.AccountSettings.self), 1)
+        XCTAssertEqual(account, expectedAccount)
+        XCTAssertTrue(result.isSuccess)
+    }
 
     // MARK: - AccountAction.synchronizeSites
 
@@ -334,6 +362,13 @@ private extension AccountStoreTests {
                        email: "yosemite@yosemite.com",
                        username: "YOLO",
                        gravatarUrl: "https://automattic.com/yosemite.png")
+    }
+
+    func sampleAccountSettings() -> Networking.AccountSettings {
+        return AccountSettings(userID: 10,
+                               tracksOptOut: true,
+                               firstName: nil,
+                               lastName: nil)
     }
 
     /// Sample Site

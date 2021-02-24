@@ -22,7 +22,7 @@ class SiteSettingsMapperTests: XCTestCase {
         XCTAssertEqual(firstSetting.settingID, "woocommerce_store_address")
         XCTAssertEqual(firstSetting.settingDescription, "The street address for your business location.")
         XCTAssertEqual(firstSetting.label, "Address line 1")
-        XCTAssertTrue(firstSetting.value.isEmpty == true)
+        XCTAssertEqual(firstSetting.value, "60 29th Street #343")
 
         let currencySetting = settings[14]
         XCTAssertNotNil(currencySetting)

@@ -59,8 +59,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             }
 
             actionsFactory = ProductFormActionsFactory(product: product,
-                                                       formType: formType,
-                                                       isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
+                                                       formType: formType)
             productSubject.send(product)
         }
     }
@@ -81,22 +80,18 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     }
 
     private let productImageActionHandler: ProductImageActionHandler
-    private let isEditProductsRelease5Enabled: Bool
 
     private var cancellable: ObservationToken?
 
     init(product: EditableProductModel,
          formType: ProductFormType,
-         productImageActionHandler: ProductImageActionHandler,
-         isEditProductsRelease5Enabled: Bool) {
+         productImageActionHandler: ProductImageActionHandler) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
-        self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
         self.originalProduct = product
         self.product = product
         self.actionsFactory = ProductFormActionsFactory(product: product,
-                                                        formType: formType,
-                                                        isEditProductsRelease5Enabled: isEditProductsRelease5Enabled)
+                                                        formType: formType)
         self.isUpdateEnabledSubject = PublishSubject<Bool>()
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
@@ -135,7 +130,6 @@ extension ProductFormViewModel {
     }
 
     func canDeleteProduct() -> Bool {
-        isEditProductsRelease5Enabled &&
         formType == .edit
     }
 }
@@ -184,7 +178,7 @@ extension ProductFormViewModel {
     func updateInventorySettings(sku: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,
-                                 stockQuantity: Int64?,
+                                 stockQuantity: Decimal?,
                                  backordersSetting: ProductBackordersSetting?,
                                  stockStatus: ProductStockStatus?) {
         product = EditableProductModel(product: product.product.copy(sku: sku,
@@ -252,6 +246,30 @@ extension ProductFormViewModel {
     func updateLinkedProducts(upsellIDs: [Int64], crossSellIDs: [Int64]) {
         product = EditableProductModel(product: product.product.copy(upsellIDs: upsellIDs,
                                                                      crossSellIDs: crossSellIDs))
+    }
+
+    func updateVariationAttributes(_ attributes: [ProductVariationAttribute]) {
+        // no-op
+    }
+
+    /// Updates the original product variations(and attributes).
+    /// This is needed because variations and attributes, remote updates, happen outside this view model and wee need a way to sync our original product.
+    ///
+    func updateProductVariations(from newProduct: Product) {
+        let newOriginalProduct = EditableProductModel(product: originalProduct.product.copy(attributes: newProduct.attributes,
+                                                                                            variations: newProduct.variations))
+
+        // If the product doesn't have any pending changes, we can safely override the original product
+        guard hasUnsavedChanges() else {
+            return resetProduct(newOriginalProduct)
+        }
+
+        // If the product has pending changes, we need to override the `originalProduct` first and the `living product` later with a saved copy.
+        // This is because, overriding `originalProduct` also overrides the `living product`.
+        let productWithChanges = EditableProductModel(product: product.product.copy(attributes: newProduct.attributes,
+                                                                                    variations: newProduct.variations))
+        resetProduct(newOriginalProduct)
+        product = productWithChanges
     }
 }
 

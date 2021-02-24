@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 /// This struct represents an analytics event. It is a combination of `WooAnalyticsStat` and
 /// its properties.
@@ -39,7 +40,7 @@ import Foundation
 ///
 public struct WooAnalyticsEvent {
     let statName: WooAnalyticsStat
-    let properties: [String: String]
+    let properties: [String: WooAnalyticsEventPropertyType]
 }
 
 // MARK: - In-app Feedback and Survey
@@ -60,6 +61,8 @@ extension WooAnalyticsEvent {
         /// Shown in products banner for Milestone 4 features. New product banners should have
         /// their own `FeedbackContext` option.
         case productsM4 = "products_m4"
+        /// Shown in shipping labels banner for Milestone 1 features.
+        case shippingLabelsRelease1 = "shipping_labels_m1"
     }
 
     /// The action performed on the survey screen.
@@ -75,6 +78,27 @@ extension WooAnalyticsEvent {
         case dismissed
     }
 
+    /// The action performed on a shipment tracking number like in a shipping label card in order details.
+    public enum ShipmentTrackingMenuAction: String {
+        case track
+        case copy
+    }
+
+    /// The result of a shipping labels API GET request.
+    public enum ShippingLabelsAPIRequestResult {
+        case success
+        case failed(error: Error)
+
+        fileprivate var rawValue: String {
+            switch self {
+            case .success:
+                return "success"
+            case .failed:
+                return "failed"
+            }
+        }
+    }
+
     static func appFeedbackPrompt(action: AppFeedbackPromptAction) -> WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .appFeedbackPrompt, properties: ["action": action.rawValue])
     }
@@ -85,6 +109,30 @@ extension WooAnalyticsEvent {
 
     static func featureFeedbackBanner(context: FeedbackContext, action: FeatureFeedbackBannerAction) -> WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .featureFeedbackBanner, properties: ["context": context.rawValue, "action": action.rawValue])
+    }
+
+    static func shipmentTrackingMenu(action: ShipmentTrackingMenuAction) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .shipmentTrackingMenuAction, properties: ["action": action.rawValue])
+    }
+
+    static func shippingLabelsAPIRequest(result: ShippingLabelsAPIRequestResult) -> WooAnalyticsEvent {
+        switch result {
+        case .success:
+            return WooAnalyticsEvent(statName: .shippingLabelsAPIRequest, properties: ["action": result.rawValue])
+        case .failed(let error):
+            return WooAnalyticsEvent(statName: .shippingLabelsAPIRequest, properties: [
+                "action": result.rawValue,
+                "error": error.localizedDescription
+            ])
+        }
+    }
+
+    static func ordersListLoaded(totalDuration: TimeInterval, pageNumber: Int, status: OrderStatus?) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .ordersListLoaded, properties: [
+            "status": status?.slug ?? String(),
+            "page_number": Int64(pageNumber),
+            "total_duration": Double(totalDuration)
+        ])
     }
 }
 

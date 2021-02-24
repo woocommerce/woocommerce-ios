@@ -29,7 +29,7 @@ final class AddAttributeViewModelTests: XCTestCase {
 
         // When
         viewModel.performFetch()
-        let result: Bool = try waitFor { promise in
+        let result: Bool = waitFor { promise in
             viewModel.observeProductAttributesListStateChanges { state in
                 if state == .synced {
                     promise(true)
@@ -53,7 +53,7 @@ final class AddAttributeViewModelTests: XCTestCase {
 
         // When
         viewModel.performFetch()
-        let result: Bool = try waitFor { promise in
+        let result: Bool = waitFor { promise in
             viewModel.observeProductAttributesListStateChanges { state in
                 if state == .failed {
                     promise(true)

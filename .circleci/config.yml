@@ -21,6 +21,10 @@ commands:
             fi
             chruby ruby-2.6.6
             gem install bundler
+
+            # Add support for fetching SPM packages from GitHub
+            for ip in $(dig @8.8.8.8 github.com +short); do ssh-keyscan github.com,$ip; ssh-keyscan $ip; done 2>/dev/null >> ~/.ssh/known_hosts
+
 jobs:
   Build Tests:
     executor:
@@ -50,6 +54,7 @@ jobs:
       xcode-version: "12.0.0"
     steps:
       - git/shallow-checkout
+      - fix-image
       - ios/boot-simulator:
           xcode-version: "12.0.0"
           device: iPhone 11
@@ -77,6 +82,7 @@ jobs:
       xcode-version: "12.0.0"
     steps:
       - git/shallow-checkout
+      - fix-image
       - ios/boot-simulator:
           xcode-version: "12.0.0"
           device: << parameters.device >>

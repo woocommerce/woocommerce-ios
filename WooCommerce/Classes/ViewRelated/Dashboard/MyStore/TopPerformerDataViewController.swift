@@ -10,8 +10,11 @@ final class TopPerformerDataViewController: UIViewController {
 
     // MARK: - Properties
 
+    private let timeRange: StatsTimeRangeV4
     private let granularity: StatGranularity
     private let siteID: Int64
+    private let siteTimeZone: TimeZone
+    private let currentDate: Date
 
     var hasTopEarnerStatsItems: Bool {
         return (topEarnerStats?.items?.count ?? 0) > 0
@@ -27,8 +30,11 @@ final class TopPerformerDataViewController: UIViewController {
     ///
     private lazy var resultsController: ResultsController<StorageTopEarnerStats> = {
         let storageManager = ServiceLocator.storageManager
-        let formattedDateString = StatsStoreV4.buildDateString(from: Date(), with: granularity)
-        let predicate = NSPredicate(format: "granularity = %@ AND date = %@", granularity.rawValue, formattedDateString)
+        let formattedDateString: String = {
+            let date = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimeZone)
+            return StatsStoreV4.buildDateString(from: date, with: granularity)
+        }()
+        let predicate = NSPredicate(format: "granularity = %@ AND date = %@ AND siteID = %ld", granularity.rawValue, formattedDateString, siteID)
         let descriptor = NSSortDescriptor(key: "date", ascending: true)
 
         return ResultsController<StorageTopEarnerStats>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
@@ -61,9 +67,12 @@ final class TopPerformerDataViewController: UIViewController {
 
     /// Designated Initializer
     ///
-    init(siteID: Int64, granularity: StatGranularity) {
+    init(siteID: Int64, siteTimeZone: TimeZone, currentDate: Date, timeRange: StatsTimeRangeV4) {
         self.siteID = siteID
-        self.granularity = granularity
+        self.siteTimeZone = siteTimeZone
+        self.currentDate = currentDate
+        self.granularity = timeRange.topEarnerStatsGranularity
+        self.timeRange = timeRange
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 

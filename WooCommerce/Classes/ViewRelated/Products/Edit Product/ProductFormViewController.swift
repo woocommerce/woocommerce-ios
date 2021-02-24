@@ -39,7 +39,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let productUIImageLoader: ProductUIImageLoader
 
     private let currency: String
-    private let isEditProductsRelease5Enabled: Bool
     private let isAddProductVariationsEnabled: Bool
 
     private lazy var exitForm: () -> Void = {
@@ -60,13 +59,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
-         isEditProductsRelease5Enabled: Bool,
          isAddProductVariationsEnabled: Bool) {
         self.viewModel = viewModel
         self.eventLogger = eventLogger
         self.currency = currency
         self.presentationStyle = presentationStyle
-        self.isEditProductsRelease5Enabled = isEditProductsRelease5Enabled
         self.isAddProductVariationsEnabled = isAddProductVariationsEnabled
         self.productImageActionHandler = productImageActionHandler
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
@@ -230,7 +227,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
         if viewModel.canDeleteProduct() {
             actionSheet.addDestructiveActionWithTitle(ActionSheetStrings.delete) { [weak self] _ in
-                // TODO: Analytics M5
                 self?.displayDeleteProductAlert()
             }
         }
@@ -276,14 +272,17 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             case .reviews:
                 ServiceLocator.analytics.track(.productDetailViewReviewsTapped)
                 showReviews()
-            case .downloadableFiles:
-                //TODO: Add Analytics M5
+            case .downloadableFiles(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
+                ServiceLocator.analytics.track(.productDetailViewDownloadableFilesTapped)
                 showDownloadableFiles()
             case .linkedProducts(_, let isEditable):
                 guard isEditable else {
                     return
                 }
-                // TODO: Add Analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+                ServiceLocator.analytics.track(.productDetailViewLinkedProductsTapped)
                 editLinkedProducts()
             case .productType(_, let isEditable):
                 guard isEditable else {
@@ -343,24 +342,25 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 ServiceLocator.analytics.track(.productDetailViewGroupedProductsTapped)
                 editGroupedProducts()
                 break
-            case .variations:
+            case .variations(let row):
                 ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
-                guard let product = product as? EditableProductModel else {
+                guard let product = product as? EditableProductModel, row.isActionable else {
                     return
                 }
-                guard product.product.variations.isNotEmpty else {
-                    if isAddProductVariationsEnabled {
-                        let viewModel = AddAttributeViewModel(product: product.product)
-                        let addAttributeViewController = AddAttributeViewController(viewModel: viewModel)
-                        navigationController?.pushViewController(addAttributeViewController, animated: true)
-                    }
-                    return
-                }
-                let variationsViewController = ProductVariationsViewController(product: product.product,
+                let variationsViewModel = ProductVariationsViewModel(product: product.product, isAddProductVariationsEnabled: isAddProductVariationsEnabled)
+                let variationsViewController = ProductVariationsViewController(viewModel: variationsViewModel,
+                                                                               product: product.product,
                                                                                formType: viewModel.formType,
-                                                                               isEditProductsRelease5Enabled: isEditProductsRelease5Enabled,
                                                                                isAddProductVariationsEnabled: isAddProductVariationsEnabled)
+                variationsViewController.onProductUpdate = { [viewModel] updatedProduct in
+                    viewModel.updateProductVariations(from: updatedProduct)
+                }
                 show(variationsViewController, sender: self)
+            case .attributes(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
+                editVariationAttributes()
             case .status, .noPriceWarning:
                 break
             }
@@ -547,7 +547,7 @@ private extension ProductFormViewController {
                                                                             ServiceLocator.analytics.track(.productDetailViewSKUTapped)
                                                                             self?.editSKU()
                                                                         case .editLinkedProducts:
-                                                                            // TODO: Analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+                                                                            ServiceLocator.analytics.track(.productDetailViewLinkedProductsTapped)
                                                                             self?.editLinkedProducts()
                                                                         }
                                                                     }
@@ -595,14 +595,23 @@ private extension ProductFormViewController {
 
         // Waits for all product images to be uploaded before updating the product remotely.
         group.enter()
+        // Since `group.leave()` should only be called once to balance `group.enter()`, we track whether there are images pending upload in the image closure.
+        var hasNoImagesPendingUpload = false
         let observationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
-            guard productImageStatuses.hasPendingUpload == false else {
+            guard hasNoImagesPendingUpload == false else {
                 return
             }
 
             guard let self = self else {
+                group.leave()
                 return
             }
+
+            guard productImageStatuses.hasPendingUpload == false else {
+                return
+            }
+
+            hasNoImagesPendingUpload = true
 
             self.viewModel.updateImages(productImageStatuses.images)
             group.leave()
@@ -699,6 +708,7 @@ private extension ProductFormViewController {
                         self?.displayError(error: error)
                     }
                 case .success:
+                    ServiceLocator.analytics.track(.productDetailProductDeleted)
                     // Dismisses the in-progress UI.
                     self.navigationController?.dismiss(animated: true, completion: nil)
                     // Dismiss or Pop the Product Form
@@ -716,7 +726,6 @@ private extension ProductFormViewController {
         let viewController = ProductSettingsViewController(product: product.product,
                                                            password: password,
                                                            formType: viewModel.formType,
-                                                           isEditProductsRelease5Enabled: isEditProductsRelease5Enabled,
                                                            completion: { [weak self] (productSettings) in
             guard let self = self else {
                 return
@@ -944,13 +953,16 @@ private extension ProductFormViewController {
         let command = ProductTypeBottomSheetListSelectorCommand(selected: viewModel.productModel.productType) { [weak self] (selectedProductType) in
             self?.dismiss(animated: true, completion: nil)
 
-            if let originalProductType = self?.product.productType {
-                ServiceLocator.analytics.track(.productTypeChanged, withProperties: [
-                    "from": originalProductType.rawValue,
-                    "to": selectedProductType.rawValue
-                ])
+            guard let originalProductType = self?.product.productType else {
+                return
             }
-            self?.presentProductTypeChangeAlert(completion: { (change) in
+
+            ServiceLocator.analytics.track(.productTypeChanged, withProperties: [
+                "from": originalProductType.rawValue,
+                "to": selectedProductType.rawValue
+            ])
+
+            self?.presentProductTypeChangeAlert(for: originalProductType, completion: { (change) in
                 guard change == true else {
                     return
                 }
@@ -1157,7 +1169,7 @@ private extension ProductFormViewController {
         guard hasUnsavedChanges else {
             return
         }
-        // TODO: Add Analytics M5 https://github.com/woocommerce/woocommerce-ios/issues/3151
+        ServiceLocator.analytics.track(.linkedProducts, withProperties: ["action": "done"])
 
         viewModel.updateLinkedProducts(upsellIDs: upsellIDs, crossSellIDs: crossSellIDs)
     }
@@ -1172,11 +1184,7 @@ private extension ProductFormViewController {
         }
 
         let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.groupedProductsViewTitle,
-                                                                                           addButtonEvent: .groupedProductLinkedProductsAddButtonTapped,
-                                                                                           productsAddedEvent: .groupedProductLinkedProductsAdded,
-                                                                                           doneButtonTappedEvent: .groupedProductLinkedProductsDoneButtonTapped,
-                                                                                           deleteButtonTappedEvent:
-                                                                                            .groupedProductLinkedProductsDeleteButtonTapped)
+                                                                                           trackingContext: "grouped_products")
 
         let viewController = LinkedProductsListSelectorViewController(product: product.product,
                                                                       linkedProductIDs: product.product.groupedProducts,
@@ -1264,6 +1272,37 @@ private extension ProductFormViewController {
             return
         }
         viewModel.updateDownloadableFiles(downloadableFiles: data.downloadableFiles, downloadLimit: data.downloadLimit, downloadExpiry: data.downloadExpiry)
+    }
+}
+
+// MARK: Action - Edit Product Variation Attributes
+//
+private extension ProductFormViewController {
+    func editVariationAttributes() {
+        guard let productVariationModel = product as? EditableProductVariationModel else {
+            return
+        }
+
+        let attributePickerViewController = AttributePickerViewController(variationModel: productVariationModel) { [weak self] (attributes) in
+            self?.onEditVariationAttributesCompletion(attributes: attributes)
+        }
+        show(attributePickerViewController, sender: self)
+    }
+
+    func onEditVariationAttributesCompletion(attributes: [ProductVariationAttribute]) {
+        guard let productVariation = product as? EditableProductVariationModel else {
+            return
+        }
+
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+
+        let hasChangedData = attributes != productVariation.productVariation.attributes
+        guard hasChangedData else {
+            return
+        }
+        viewModel.updateVariationAttributes(attributes)
     }
 }
 

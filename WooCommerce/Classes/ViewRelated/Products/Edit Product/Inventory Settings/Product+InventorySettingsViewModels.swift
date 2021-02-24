@@ -12,7 +12,7 @@ extension Product {
                                                         onTextChange: onTextChange)
     }
 
-    static func createStockQuantityViewModel(stockQuantity: Int64?, onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
+    static func createStockQuantityViewModel(stockQuantity: Decimal?, onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
         let title = NSLocalizedString("Quantity", comment: "Title of the cell in Product Inventory Settings > Quantity")
         let value = "\(stockQuantity ?? 0)"
         let accessibilityHint = NSLocalizedString(

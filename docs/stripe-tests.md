@@ -76,4 +76,4 @@ That, in turn, means that tests against the Stripe SDK will crash unless those t
 
 ## Business logic
 
-The business logic of the integration is encapsulated in `CardPresentPaymentStore`. This logic is unit tested in the YosemiteTests, like any other Storein the codebase
+The business logic of the integration is encapsulated in `CardPresentPaymentStore`. This logic is unit tested in the YosemiteTests, like any other Store in the codebase

@@ -35,4 +35,11 @@ final class ProductVariationsViewModel {
         let useCase = GenerateVariationUseCase(product: product, stores: stores)
         useCase.generateVariation(onCompletion: onCompletion)
     }
+
+    /// Defines the empty state screen visibility
+    /// TODO: This method should turned into a computed variable, once the `ViewController` is refactored to use `MMVM`.
+    ///
+    func shouldShowEmptyState(for newProduct: Product) -> Bool {
+        newProduct.variations.isEmpty || newProduct.attributes.isEmpty
+    }
 }

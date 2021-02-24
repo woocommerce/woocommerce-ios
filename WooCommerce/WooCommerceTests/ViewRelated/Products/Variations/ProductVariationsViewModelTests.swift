@@ -40,4 +40,42 @@ final class ProductVariationsViewModelTests: XCTestCase {
         // Assert
         XCTAssertEqual(viewModel.showMoreButton, false)
     }
+
+    func test_empty_state_is_shown_when_product_does_not_have_variations_but_has_attributes() {
+        // Given
+        let attribute = ProductAttribute(siteID: 0, attributeID: 0, name: "attr", position: 0, visible: true, variation: true, options: [])
+        let product = Product().copy(attributes: [attribute], variations: [])
+        let viewModel = ProductVariationsViewModel(product: product, isAddProductVariationsEnabled: false)
+
+        // Then
+        let showEmptyState = viewModel.shouldShowEmptyState(for: product)
+
+        // Then
+        XCTAssertTrue(showEmptyState)
+    }
+
+    func test_empty_state_is_shown_when_product_does_not_have_attributes_but_has_variations() {
+        // Given
+        let product = Product().copy(attributes: [], variations: [1, 2])
+        let viewModel = ProductVariationsViewModel(product: product, isAddProductVariationsEnabled: false)
+
+        // Then
+        let showEmptyState = viewModel.shouldShowEmptyState(for: product)
+
+        // Then
+        XCTAssertTrue(showEmptyState)
+    }
+
+    func test_empty_state_is_not_shown_when_product_has_attributes_and_variations() {
+        // Given
+        let attribute = ProductAttribute(siteID: 0, attributeID: 0, name: "attr", position: 0, visible: true, variation: true, options: [])
+        let product = Product().copy(attributes: [attribute], variations: [1, 2])
+        let viewModel = ProductVariationsViewModel(product: product, isAddProductVariationsEnabled: false)
+
+        // Then
+        let showEmptyState = viewModel.shouldShowEmptyState(for: product)
+
+        // Then
+        XCTAssertFalse(showEmptyState)
+    }
 }

@@ -23,8 +23,6 @@ public struct CardReader {
 
     /// The type of card reader
     public let readerType: CardReaderType
-
-    internal let stripeReader: StripeCardReader
 }
 
 

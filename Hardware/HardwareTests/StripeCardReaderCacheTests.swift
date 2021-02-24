@@ -41,8 +41,7 @@ final class StripeCardReaderCacheTests: XCTestCase {
                                     status: .init(connected: true, remembered: true),
                                     softwareVersion: nil,
                                     batteryLevel: 0.0,
-                                    readerType: .mobile,
-                                    stripeReader: mockStripeBBPOSReader)
+                                    readerType: .mobile)
 
         let readerMatching = cache.reader(matching: cardReader)
 

@@ -16,8 +16,6 @@ extension CardReader {
         self.batteryLevel = reader.batteryLevel?.floatValue
 
         self.readerType = CardReaderType.with(readerType: reader.deviceType)
-
-        self.stripeReader = reader
     }
 }
 
@@ -39,50 +37,3 @@ protocol StripeCardReader {
 
 
 extension Reader: StripeCardReader { }
-
-
-/**
- An alternative solution could be:
-
- public struct CardReader {
-    private let stripeReader: StripeCardReader
-
-     /// The CardReader serial number
-     public var serial: String {
-        stripeReader.serialNumber
-    }
-
-     /// The CardReader vendor identifier
-     public var vendorIdentifier: String? {
-        stripeReader.stripeId
-    }
-
-     /// A readable name. It could be nil
-     public var  name: String? { stripeReader.label }
-
-     /// The Hardware status.
-     public var status: CardReaderStatus {
-        let connected = reader.status == .online
-        return CardReaderStatus(connected: connected, remembered: false)
-    }
-
-     /// The reader's sofware version, if available
-     public var softwareVersion: String? { stripeReader.deviceSoftwareVersion }
-
-     /// The reader's battery level, if available.
-     /// For Stripe Card Readers, it would be a number between 0 and 1
-     public var  batteryLevel: Float? { you get the point }
-
-     /// The type of card reader
-     public var readerType: CardReaderType { I won't repeat this either }
- }
-
- extension CardReader {
-
-     /// Convenience initializer
-     /// - Parameter reader: An instance of a StripeTerminal.Reader
-     init(reader: StripeCardReader) {
-         self.stripeReader = reader
-     }
- }
- */

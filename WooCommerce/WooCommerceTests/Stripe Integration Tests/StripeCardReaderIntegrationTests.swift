@@ -9,7 +9,7 @@ import Combine
 /// because these are integration test, and we do not want to mock anything,
 /// at this point, other than the actual hardware
 final class StripeCardReaderIntegrationTests: XCTestCase {
-    private var cancellables: Set<AnyCancellable>!
+    private var cancellables: Set<AnyCancellable> = []
 
     override func setUp() {
         super.setUp()
@@ -45,18 +45,10 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
 
         let readerService = ServiceLocator.cardReaderService
 
-        readerService.discoveredReaders.sink { completion in
+        readerService.discoveredReaders.dropFirst(1).sink { completion in
             readerService.cancelDiscovery()
             discoveredReaders.fulfill()
         } receiveValue: { readers in
-            // The Stripe Terminal SDK published an empty list of discovered readers first
-            // and it will continue publishing as new readers are discovered.
-            // So we ignore the first call to receiveValue, and perform the test on the first call to
-            // receive value that is receiving a non-empty array.
-            guard !readers.isEmpty else {
-                return
-            }
-
             // There should be at least one non nil reader
             guard let _ = readers.first else {
                 readerService.cancelDiscovery()
@@ -78,18 +70,10 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
 
         let readerService = ServiceLocator.cardReaderService
 
-        readerService.discoveredReaders.sink { completion in
+        readerService.discoveredReaders.dropFirst(1).sink { completion in
             readerService.cancelDiscovery()
             discoveredReaders.fulfill()
         } receiveValue: { readers in
-            // The Stripe Terminal SDK published an empty list of discovered readers first
-            // and it will continue publishing as new readers are discovered.
-            // So we ignore the first call to receiveValue, and perform the test on the first call to
-            // receive value that is receiving a non-empty array.
-            guard !readers.isEmpty else {
-                return
-            }
-
             // There should be at least one non nil reader
             guard let firstReader = readers.first else {
                 return

@@ -38,6 +38,15 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         mockCardReaderService = MockCardReaderService()
     }
 
+    override func tearDown() {
+        dispatcher = nil
+        storageManager = nil
+        network = nil
+        mockCardReaderService = nil
+
+        super.tearDown()
+    }
+
     // MARK: - CardPresentPaymentAction.startCardReaderDiscovery
 
     /// Verifies that CardPresentPaymentAction.startCardReaderDiscovery hits the `start` method in the service.
@@ -47,8 +56,6 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                                        storageManager: storageManager,
                                                        network: network,
                                                        cardReaderService: mockCardReaderService)
-
-        //let expectation = self.expectation(description: "Start discovery")
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery { discoveredReaders in
             //

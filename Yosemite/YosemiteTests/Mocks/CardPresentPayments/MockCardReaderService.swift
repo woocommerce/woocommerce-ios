@@ -39,7 +39,7 @@ final class MockCardReaderService: CardReaderService {
     }
 
     func cancelDiscovery() {
-        
+
     }
 
     func connect(_ reader: Hardware.CardReader) -> Future<Void, Error> {

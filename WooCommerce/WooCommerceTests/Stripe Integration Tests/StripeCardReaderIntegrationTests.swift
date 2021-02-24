@@ -42,7 +42,7 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
                 return
             }
 
-            // We blisfully ignore the actual values received (for now)
+            // We blissfully ignore the actual values received (for now)
             discoveredReaders.fulfill()
         }.store(in: &cancellables)
 

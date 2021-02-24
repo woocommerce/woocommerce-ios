@@ -137,6 +137,8 @@ extension EditAttributesViewController {
             self.onAttributesUpdate?(updatedProduct)
             self.tableView.reloadData()
             self.navigationController?.popViewController(animated: true)
+
+            // TODO: Pop until product if there aren't any more attributes
         }
         show(editViewController, sender: true)
     }

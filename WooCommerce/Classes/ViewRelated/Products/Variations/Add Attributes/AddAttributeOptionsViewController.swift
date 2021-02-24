@@ -11,7 +11,7 @@ final class AddAttributeOptionsViewController: UIViewController {
 
     private let noticePresenter: NoticePresenter
 
-    /// Closure to be invoked(with the updated product)  when the update/create attribute operation finishes successfully.
+    /// Closure to be invoked(with the updated product) when the update/create/remove attribute operation finishes successfully.
     ///
     private let onCompletion: (Product) -> Void
 
@@ -24,7 +24,7 @@ final class AddAttributeOptionsViewController: UIViewController {
     /// Initializer for `AddAttributeOptionsViewController`
     ///
     /// - Parameters:
-    ///   - onCompletion: Closure to be invoked(with the updated product)  when the update/create attribute operation finishes successfully.
+    ///   - onCompletion: Closure to be invoked(with the updated product) qwhen the update/create/remove attribute operation finishes successfully.
     init(viewModel: AddAttributeOptionsViewModel,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
          onCompletion: @escaping (Product) -> Void) {
@@ -67,7 +67,7 @@ private extension AddAttributeOptionsViewController {
         }
 
         // Assemble buttons based view model visibility
-        let moreButton = UIBarButtonItem(image: .moreImage, style: .plain, target: self, action: #selector(moreButtonPressed))
+        let moreButton = UIBarButtonItem(image: .moreImage, style: .plain, target: self, action: #selector(moreButtonPressed(_:)))
         let buttons = [
             createNextButton(enabled: viewModel.isNextButtonEnabled),
             viewModel.showMoreButton ? moreButton : nil
@@ -84,7 +84,7 @@ private extension AddAttributeOptionsViewController {
     }
 
     func createNextButton(enabled: Bool) -> UIBarButtonItem {
-        let button = UIBarButtonItem(title: Localization.nextNavBarButton, style: .plain, target: self, action: #selector(moreButtonPressed(_:)))
+        let button = UIBarButtonItem(title: Localization.nextNavBarButton, style: .plain, target: self, action: #selector(nextButtonPressed))
         button.isEnabled = enabled
         return button
     }
@@ -375,10 +375,25 @@ extension AddAttributeOptionsViewController {
 
         alertController.addCancelActionWithTitle(Localization.cancelAction)
         alertController.addDestructiveActionWithTitle(Localization.removeAction) { [weak self] _ in
-            // Call view model
+            self?.removeCurrentAttribute()
         }
 
         present(alertController, animated: true)
+    }
+
+    /// Tells the view model to remove the current attribute and pops the view controller after completion
+    ///
+    func removeCurrentAttribute() {
+        viewModel.removeCurrentAttribute { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case let .success(product):
+                self.onCompletion(product)
+            case let .failure(error):
+                // TODO: Show error notice
+                DDLogError(error.localizedDescription)
+            }
+        }
     }
 }
 

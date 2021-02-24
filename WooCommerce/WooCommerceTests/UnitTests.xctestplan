@@ -24,6 +24,9 @@
   },
   "testTargets" : [
     {
+      "skippedTests" : [
+        "StripeCardReaderIntegrationTests"
+      ],
       "target" : {
         "containerPath" : "container:WooCommerce.xcodeproj",
         "identifier" : "B56DB3DC2049BFAA00D4AA8E",

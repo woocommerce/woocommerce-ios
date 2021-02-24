@@ -182,14 +182,14 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
 
         let mockStoresManager = MockStoresManager(sessionManager: SessionManager.testingInstance)
-        mockDeleteVariation(storesManager: mockStoresManager, result: .success(sampleProductVariation))
+        mockDeleteVariation(storesManager: mockStoresManager, result: .success(()))
 
         let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                       productImageActionHandler: productImageActionHandler,
                                                       storesManager: mockStoresManager)
 
         // When
-        let result: Result<EditableProductVariationModel, ProductUpdateError> = waitFor { promise in
+        let result: Result<Void, ProductUpdateError> = waitFor { promise in
             viewModel.deleteProductRemotely { result in
                 promise(result)
             }
@@ -197,8 +197,6 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        let returnedEditableProductVariation = try result.get()
-        XCTAssertEqual(returnedEditableProductVariation.productVariation, sampleProductVariation)
         XCTAssertEqual(mockStoresManager.receivedActions.count, 1)
         XCTAssertNotNil(mockStoresManager.receivedActions[0] as? ProductVariationAction)
     }
@@ -217,7 +215,7 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
                                                       storesManager: mockStoresManager)
 
         // When
-        let result: Result<EditableProductVariationModel, ProductUpdateError> = waitFor { promise in
+        let result: Result<Void, ProductUpdateError> = waitFor { promise in
             viewModel.deleteProductRemotely { result in
                 promise(result)
             }
@@ -231,7 +229,7 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
 }
 
 private extension ProductVariationFormViewModel_UpdatesTests {
-    func mockDeleteVariation(storesManager: MockStoresManager, result: Result<ProductVariation, ProductUpdateError>) {
+    func mockDeleteVariation(storesManager: MockStoresManager, result: Result<Void, ProductUpdateError>) {
         storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             if case let ProductVariationAction.deleteProductVariation(_, onCompletion) = action {
                 onCompletion(result)

@@ -265,17 +265,11 @@ extension ProductVariationFormViewModel {
         storesManager.dispatch(updateAction)
     }
 
-    func deleteProductRemotely(onCompletion: @escaping (Result<EditableProductVariationModel, ProductUpdateError>) -> Void) {
-        let deleteAction = ProductVariationAction.deleteProductVariation(productVariation: productVariation.productVariation) { [weak self] result in
-            guard let self = self else {
-                return
-            }
+    func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {
+        let deleteAction = ProductVariationAction.deleteProductVariation(productVariation: productVariation.productVariation) { result in
             switch result {
-            case .success(let productVariation):
-                let model = EditableProductVariationModel(productVariation: productVariation,
-                                                          allAttributes: self.allAttributes,
-                                                          parentProductSKU: self.parentProductSKU)
-                onCompletion(.success(model))
+            case .success:
+                onCompletion(.success(()))
             case .failure(let error):
                 onCompletion(.failure(error))
             }

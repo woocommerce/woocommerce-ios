@@ -106,7 +106,7 @@ protocol ProductFormViewModelProtocol {
     ///   - onCompletion: Called when the product is saved remotely.
     func saveProductRemotely(status: ProductStatus?, onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void)
 
-    func deleteProductRemotely(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void)
+    func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void)
 
     // Reset action
 

@@ -73,7 +73,9 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
     }
 
     func test_connecting_to_reader_works() {
-        let discoveredReaders = expectation(description: "Connected to reader")
+        let discoveredReaders = expectation(description: "Discovered readers")
+        let connectedToReader = expectation(description: "Connected to a reader")
+        let connectedreaderIsPublished = expectation(description: "ConnectedReader is published")
 
         let readerService = ServiceLocator.cardReaderService
 
@@ -85,20 +87,26 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
             guard let firstReader = readers.first else {
                 return
             }
-            print("==== testing connection with reader ", firstReader)
+            discoveredReaders.fulfill()
+            readerService.cancelDiscovery()
             readerService.connect(firstReader).sink { completion in
-                print("==== completed a")
                 readerService.cancelDiscovery()
             } receiveValue: { _ in
-                print("==== completed B")
                 readerService.cancelDiscovery()
-                discoveredReaders.fulfill()
+                connectedToReader.fulfill()
             }.store(in: &self.cancellables)
 
         }.store(in: &cancellables)
 
+        // Test also that connectedReaders is updated
+        readerService.connectedReaders.sink { connectedReader in
+            if connectedReader.count > 0 {
+                connectedreaderIsPublished.fulfill()
+            }
+        }.store(in: &self.cancellables)
+
         readerService.start()
-        wait(for: [discoveredReaders], timeout: Constants.expectationTimeout)
+        wait(for: [discoveredReaders, connectedToReader, connectedreaderIsPublished], timeout: Constants.expectationTimeout)
     }
 
 }

@@ -79,12 +79,14 @@ Integration tests that go just beyond discovering readers are not easy to run (a
 There are some prerequistes for running some of the integration tests:
 
 * Install WooCommerce Payments on a WooCommerce site. Do not run the setup assisntant yet.
-* Install [the dev plugin](https://github.com/Automattic/woocommerce-payments-dev-tools) by downloading the repo as a zip and uploading it to the sie as a new plugin, and activate it.
-* After activating the plugin, look in wp-admin all the way at the bottom of the sidebar menu for WCPay Dev.
+* Install [the dev plugin](https://github.com/Automattic/woocommerce-payments-dev-tools) by downloading the repo as a zip and uploading it to the site as a new plugin, and activate it.
+* After activating the Dev Tools plugin, look in wp-admin all the way at the bottom of the sidebar menu for WCPay Dev.
 * Uncheck Proxy WPCOM requests
 * Run the WooCommerce Payments setup assistant. It should indicate that it is running in "TEST DATA" mode. That would allow entering mock data.
 
-At the time of writing this, we do not have the infrastructure to obtain that connection token by performing an authenicated request to a WooCommerce store. So integration tests that requir a connection token will require to edit WCPayTokenProvider and update the mock token with a value obtainied from your store's wp-admin. In order to do that, ping @allendav or @ctarda to get a private plugin that would display connection tokens in wp-admin.
+At the time of writing this, we do not have the infrastructure to obtain that connection token by performing an authenicated request to a WooCommerce store. So integration tests that requir a connection token will require to edit WCPayTokenProvider and update the mock token with a value obtainied from your store's wp-admin. In order to do that you would need to download and install [this plugin](https://github.com/Automattic/woocommerce-payments-card-reader-token-helper). 
+
+After installing and activating the plugin, connection tokens would be available in a notice at the top of most wp-admin pages. 
 
 ## Business logic
 

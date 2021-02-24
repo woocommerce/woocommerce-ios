@@ -137,14 +137,14 @@ extension StripeCardReaderService: CardReaderService {
         return Future() { [weak self] promise in
 
             guard let self = self else {
-                print("==== no self")
                 promise(Result.failure(CardReaderServiceError.connection))
                 return
             }
 
             // Find a cached reader that matches.
             // If this fails, that means that we are in an internal state that we do not expect.
-            // Therefore it is better to let the user know that something went wrong, and
+            // Therefore it is better to let the user know that something went wrong.
+            // Proper error handling is coming in https://github.com/woocommerce/woocommerce-ios/issues/3734
             guard let stripeReader = self.discoveredStripeReadersCache.reader(matching: reader) as? Reader else {
                 promise(Result.failure(CardReaderServiceError.connection))
                 return
@@ -156,13 +156,14 @@ extension StripeCardReaderService: CardReaderService {
                     return
                 }
 
+                // Clear cached readers, as per Stripe's documentation.
+                self.discoveredStripeReadersCache.clear()
+
                 if let _ = error {
-                    self.discoveredStripeReadersCache.clear()
                     promise(Result.failure(CardReaderServiceError.connection))
                 }
 
                 if let reader = reader {
-                    self.discoveredStripeReadersCache.clear()
                     self.connectedReadersSubject.send([CardReader(reader: reader)])
                     promise(Result.success(()))
                 }

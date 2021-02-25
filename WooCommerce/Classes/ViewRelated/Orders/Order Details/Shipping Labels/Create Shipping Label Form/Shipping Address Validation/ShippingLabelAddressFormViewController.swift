@@ -63,7 +63,7 @@ private extension ShippingLabelAddressFormViewController {
 
         removeNavigationBackBarButtonText()
     }
-    
+
     func configureRightButtonItemAsLoader() {
         let indicator = UIActivityIndicatorView(style: .medium)
         indicator.color = .primaryButtonTitle
@@ -212,7 +212,7 @@ private extension ShippingLabelAddressFormViewController {
                                                                      text: viewModel.address?.phone,
                                                                      placeholder: Localization.phoneFieldPlaceholder,
                                                                      state: .normal,
-                                                                     keyboardType: .default,
+                                                                     keyboardType: .phonePad,
                                                                      textFieldAlignment: .leading) { [weak self] (newText) in
             self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }
@@ -266,7 +266,7 @@ private extension ShippingLabelAddressFormViewController {
                                                                      text: viewModel.address?.postcode,
                                                                      placeholder: Localization.postcodeFieldPlaceholder,
                                                                      state: .normal,
-                                                                     keyboardType: .default,
+                                                                     keyboardType: .phonePad,
                                                                      textFieldAlignment: .leading) { [weak self] (newText) in
             self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }

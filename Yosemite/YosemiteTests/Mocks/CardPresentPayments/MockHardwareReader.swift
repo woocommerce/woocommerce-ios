@@ -1,6 +1,7 @@
 @testable import Hardware
-struct MockHardwareReader {
-    static func bbpos() -> Hardware.CardReader {
+
+struct MockCardReader {
+    static func bbpos() -> CardReader {
         CardReader(serial: "WPE-SIMULATOR-1",
                    vendorIdentifier: "SIMULATOR",
                    name: "Simulated WisePOS E",
@@ -10,7 +11,7 @@ struct MockHardwareReader {
                    readerType: .mobile)
     }
 
-    static func verifone() -> Hardware.CardReader {
+    static func verifone() -> CardReader {
         CardReader(serial: "P400-SIMULATOR-1",
                    vendorIdentifier: "SIMULATOR",
                    name: "Simulated Verifone P400",

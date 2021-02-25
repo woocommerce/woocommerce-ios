@@ -11,11 +11,7 @@ public final class CardPresentPaymentStore: Store {
     // If retaining the service here ended up being a problem, we would need to move this Store out of Yosemite and push it up to WooCommerce.
     private let cardReaderService: CardReaderService
 
-    private var cancellable: AnyCancellable?
-
-    // To be removed when we implement the Storage Layer properly:
-    // https://github.com/woocommerce/woocommerce-ios/issues/3739
-    private var hardwareReadersCache: [Hardware.CardReader] = []
+    private var cancellables: Set<AnyCancellable> = []
 
     public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, cardReaderService: CardReaderService) {
         self.cardReaderService = cardReaderService
@@ -55,55 +51,34 @@ private extension CardPresentPaymentStore {
         // Over simplification. This is the point where we would receive
         // new data via the CardReaderService's stream of discovered readers
         // In here, we should redirect that data to Storage and also up to the UI.
-        // For now we are sending the data up to the UI after mapping CardReaderService.CardReader
-        // to Yosemite.CardReader.
-        cancellable = cardReaderService.discoveredReaders.sink { [weak self] readers in
-
-            guard let self = self else {
-                return
-            }
-
-            self.cacheHardwareReaders(readers)
-
-            let yosemiteReaders = readers.map {
-                Yosemite.CardReader(name: $0.name, serialNumber: $0.serial)
-            }
-
-            completion(yosemiteReaders)
-        }
+        // For now we are sending the data up to the UI directly
+        cardReaderService.discoveredReaders.sink { readers in
+            completion(readers)
+        }.store(in: &cancellables)
     }
 
     func connect(reader: Yosemite.CardReader, onCompletion: @escaping (Result<Yosemite.CardReader, Error>) -> Void) {
-        guard let hardwareReader = hardwareReaderMatching(reader) else {
-            // Wrong internal state. Return an error
-            return
-        }
-
-        cancellable = cardReaderService.connect(hardwareReader).sink(receiveCompletion: { error in
+        cardReaderService.connect(reader).sink(receiveCompletion: { error in
             //
             print("===== completion received")
         }, receiveValue: { (result) in
             //
             print("value received === ", result)
-        })
+        }).store(in: &cancellables)
+
+        cardReaderService.connectedReaders.sink { connectedHardwareReaders in
+            guard let firstReader = connectedHardwareReaders.first else {
+//                let result: Result<Yosemite.CardReader, Error> = .failure(CardPresentPaymentError.internalState)
+//                onCompletion(result)
+                return
+            }
+            let result: Result<Yosemite.CardReader, Error> = .success(firstReader)
+            onCompletion(result)
+        }.store(in: &cancellables)
     }
 }
 
 
-/// This extension will go away as soon as we start
-/// adding support for persistance in Storage.
-/// https://github.com/woocommerce/woocommerce-ios/issues/3739
-/// For now, we will use it to "fake" a storage layer
-/// We could inject a StorageManagerType to implement this
-/// but it's probably not worth the effort at this point.
-private extension CardPresentPaymentStore {
-    func cacheHardwareReaders(_ readers: [Hardware.CardReader]) {
-        hardwareReadersCache = readers
-    }
-
-    func hardwareReaderMatching(_ reader: Yosemite.CardReader) -> Hardware.CardReader? {
-        return hardwareReadersCache.filter {
-            $0.id == reader.id
-        }.first
-    }
+public enum CardPresentPaymentError: Error {
+    case internalState
 }

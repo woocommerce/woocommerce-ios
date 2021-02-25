@@ -9,7 +9,7 @@ final class MockCardReaderService: CardReaderService {
     }
 
     var connectedReaders: AnyPublisher<[Hardware.CardReader], Never> {
-        CurrentValueSubject<[Hardware.CardReader], Never>([]).eraseToAnyPublisher()
+        connectedReadersSubject.eraseToAnyPublisher()
     }
 
     var serviceStatus: AnyPublisher<CardReaderServiceStatus, Never> {
@@ -30,6 +30,9 @@ final class MockCardReaderService: CardReaderService {
 
     var didHitStart = false
 
+    private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
+
+
     init() {
 
     }
@@ -44,8 +47,10 @@ final class MockCardReaderService: CardReaderService {
 
     func connect(_ reader: Hardware.CardReader) -> Future<Void, Error> {
         Future() { promise in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self] in
+                let connectedReader = MockCardReader.bbpos()
                 promise(Result.success(()))
+                self?.connectedReadersSubject.send([connectedReader])
             }
         }
     }

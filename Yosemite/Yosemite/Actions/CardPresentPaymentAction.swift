@@ -7,5 +7,5 @@ public enum CardPresentPaymentAction: Action {
 
     /// Connect to a specific CardReader.
     ///
-    case connect(reader: CardReader, onCompletion: (Result<CardReader, Error>) -> Void)
+    case connect(reader: CardReader, onCompletion: (Result<[CardReader], Error>) -> Void)
 }

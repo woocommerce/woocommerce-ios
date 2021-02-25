@@ -96,8 +96,11 @@ final class CardPresentPaymentStoreTests: XCTestCase {
             switch result {
             case .failure:
                 XCTFail()
-            case .success(let connectedReader):
-                XCTAssertEqual(reader.id, connectedReader.id)
+            case .success(let connectedReaders):
+                guard let firstConnectedReader = connectedReaders.first else {
+                    return
+                }
+                XCTAssertEqual(reader.id, firstConnectedReader.id)
                 expectation.fulfill()
             }
         }

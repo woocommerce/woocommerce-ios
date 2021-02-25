@@ -57,23 +57,14 @@ private extension CardPresentPaymentStore {
         }.store(in: &cancellables)
     }
 
-    func connect(reader: Yosemite.CardReader, onCompletion: @escaping (Result<Yosemite.CardReader, Error>) -> Void) {
+    func connect(reader: Yosemite.CardReader, onCompletion: @escaping (Result<[Yosemite.CardReader], Error>) -> Void) {
+        // We tiptoe around this for now. 
         cardReaderService.connect(reader).sink(receiveCompletion: { error in
-            //
-            print("===== completion received")
         }, receiveValue: { (result) in
-            //
-            print("value received === ", result)
         }).store(in: &cancellables)
 
         cardReaderService.connectedReaders.sink { connectedHardwareReaders in
-            guard let firstReader = connectedHardwareReaders.first else {
-//                let result: Result<Yosemite.CardReader, Error> = .failure(CardPresentPaymentError.internalState)
-//                onCompletion(result)
-                return
-            }
-            let result: Result<Yosemite.CardReader, Error> = .success(firstReader)
-            onCompletion(result)
+            onCompletion(.success(connectedHardwareReaders))
         }.store(in: &cancellables)
     }
 }
@@ -81,4 +72,5 @@ private extension CardPresentPaymentStore {
 
 public enum CardPresentPaymentError: Error {
     case internalState
+    case hardware
 }

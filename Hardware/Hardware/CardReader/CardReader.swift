@@ -35,3 +35,11 @@ extension CardReader: Identifiable {
         serial
     }
 }
+
+
+/// Instances of CardReader do not mutate state during their lifecycle.
+extension CardReader: Equatable {
+    public static func ==(lhs: CardReader, rhs: CardReader) -> Bool {
+        lhs.serial == rhs.serial
+    }
+}

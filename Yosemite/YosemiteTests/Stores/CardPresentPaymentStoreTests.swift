@@ -97,6 +97,8 @@ final class CardPresentPaymentStoreTests: XCTestCase {
             case .failure:
                 XCTFail()
             case .success(let connectedReaders):
+                // This could be called with an empty collection of readers.
+                // So we do not make the test fail if connectedReaders is Empty
                 guard let firstConnectedReader = connectedReaders.first else {
                     return
                 }

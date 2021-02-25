@@ -113,7 +113,9 @@ private extension ShippingLabelFormViewController {
             let shippingLabelAddress = self.viewModel.originAddress
             let shippingAddressValidationVC = ShippingLabelAddressFormViewController(siteID: self.viewModel.siteID,
                                                                                      type: .origin,
-                                                                                     address: shippingLabelAddress)
+                                                                                     address: shippingLabelAddress, completion: { (shippingLabelAddress) in
+                                                                                        // TODO: handle updated shipping label address
+                                                                                     })
             self.navigationController?.pushViewController(shippingAddressValidationVC, animated: true)
         }
     }
@@ -128,7 +130,9 @@ private extension ShippingLabelFormViewController {
             let shippingLabelAddress = self.viewModel.destinationAddress
             let shippingAddressValidationVC = ShippingLabelAddressFormViewController(siteID: self.viewModel.siteID,
                                                                                      type: .destination,
-                                                                                     address: shippingLabelAddress)
+                                                                                     address: shippingLabelAddress, completion: { (shippingLabelAddress) in
+                                                                                        // TODO: handle updated shipping label address
+                                                                                     })
             self.navigationController?.pushViewController(shippingAddressValidationVC, animated: true)
         }
     }

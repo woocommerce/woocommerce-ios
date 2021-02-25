@@ -25,6 +25,11 @@ final class ShippingLabelAddressFormViewController: UIViewController {
 
     private let viewModel: ShippingLabelAddressFormViewModel
 
+    // Completion callback
+    //
+    typealias Completion = (_ address: ShippingLabelAddress?) -> Void
+    private let onCompletion: Completion
+
     /// Needed to scroll content to a visible area when the keyboard appears.
     ///
     private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] frame in
@@ -33,8 +38,9 @@ final class ShippingLabelAddressFormViewController: UIViewController {
 
     /// Init
     ///
-    init(siteID: Int64, type: ShipType, address: ShippingLabelAddress?) {
+    init(siteID: Int64, type: ShipType, address: ShippingLabelAddress?, completion: @escaping Completion) {
         viewModel = ShippingLabelAddressFormViewModel(siteID: siteID, type: type, address: address)
+        onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -118,15 +124,17 @@ private extension ShippingLabelAddressFormViewController {
 private extension ShippingLabelAddressFormViewController {
 
     @objc func doneButtonTapped() {
-        // TODO: after the validation, return to the previous controller passing the new address.
         configureRightButtonItemAsLoader()
         viewModel.validateAddress { [weak self] (success, error) in
-            self?.configureNavigationBar()
-            self?.updateTopBannerView()
-            self?.tableView.reloadData()
+            guard let self = self else { return }
+            self.configureNavigationBar()
+            self.updateTopBannerView()
+            self.tableView.reloadData()
+            if success {
+                self.onCompletion(self.viewModel.address)
+            }
         }
     }
-
 }
 
 // MARK: - UITableViewDataSource Conformance

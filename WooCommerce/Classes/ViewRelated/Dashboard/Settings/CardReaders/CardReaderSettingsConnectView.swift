@@ -8,7 +8,15 @@ final class CardReaderSettingsConnectView: NSObject {
 
     override init() {
         super.init()
-        rows = [.connectHeader, .connectImage, .connectHelp1, .connectHelp2, .connectHelp3, .connectButton, .connectLearnMore]
+        rows = [
+            .connectHeader,
+            .connectImage,
+            .connectHelpHintChargeReader,
+            .connectHelpHintTurnOnReader,
+            .connectHelpHintEnableBluetooth,
+            .connectButton,
+            .connectLearnMore
+        ]
     }
 
     public func rowTypes() -> [UITableViewCell.Type] {
@@ -27,12 +35,12 @@ final class CardReaderSettingsConnectView: NSObject {
             configureHeader(cell: cell)
         case let cell as ImageTableViewCell where row == .connectImage:
             configureImage(cell: cell)
-        case let cell as NumberedListItemTableViewCell where row == .connectHelp1:
-            configureHelp1(cell: cell)
-        case let cell as NumberedListItemTableViewCell where row == .connectHelp2:
-            configureHelp2(cell: cell)
-        case let cell as NumberedListItemTableViewCell where row == .connectHelp3:
-            configureHelp3(cell: cell)
+        case let cell as NumberedListItemTableViewCell where row == .connectHelpHintChargeReader:
+            configureHelpHintChargeReader(cell: cell)
+        case let cell as NumberedListItemTableViewCell where row == .connectHelpHintTurnOnReader:
+            configureHelpHintTurnOnReader(cell: cell)
+        case let cell as NumberedListItemTableViewCell where row == .connectHelpHintEnableBluetooth:
+            configureHelpHintEnableBluetooth(cell: cell)
         case let cell as ButtonTableViewCell where row == .connectButton:
             configureButton(cell: cell)
         case let cell as LearnMoreTableViewCell where row == .connectLearnMore:
@@ -57,38 +65,38 @@ final class CardReaderSettingsConnectView: NSObject {
         cell.selectionStyle = .none
     }
 
-    private func configureHelp1(cell: NumberedListItemTableViewCell) {
+    private func configureHelpHintChargeReader(cell: NumberedListItemTableViewCell) {
         cell.numberLabel?.text = NSLocalizedString(
             "1",
-            comment: "Settings > Manage Card Reader > Connect > List item, number 1"
+            comment: "Settings > Manage Card Reader > Connect > Help hint number 1"
         )
         cell.itemTextLabel?.text = NSLocalizedString(
             "Make sure card reader is charged",
-            comment: "Settings > Manage Card Reader > Connect > Help hint for connecting reader")
+            comment: "Settings > Manage Card Reader > Connect > Hint to charge card reader")
         cell.hideSeparator()
         cell.selectionStyle = .none
     }
 
-    private func configureHelp2(cell: NumberedListItemTableViewCell) {
+    private func configureHelpHintTurnOnReader(cell: NumberedListItemTableViewCell) {
         cell.numberLabel?.text = NSLocalizedString(
             "2",
-            comment: "Settings > Manage Card Reader > Connect > List item, number 2"
+            comment: "Settings > Manage Card Reader > Connect > Help hint number 2"
         )
         cell.itemTextLabel?.text = NSLocalizedString(
             "Turn card reader on and place it next to mobile device",
-            comment: "Settings > Manage Card Reader > Connect > Help hint for connecting reader")
+            comment: "Settings > Manage Card Reader > Connect > Hint to power on reader")
         cell.hideSeparator()
         cell.selectionStyle = .none
     }
 
-    private func configureHelp3(cell: NumberedListItemTableViewCell) {
+    private func configureHelpHintEnableBluetooth(cell: NumberedListItemTableViewCell) {
         cell.numberLabel?.text = NSLocalizedString(
             "3",
-            comment: "Settings > Manage Card Reader > Connect > List item, number 3"
+            comment: "Settings > Manage Card Reader > Connect > Help hint number 3"
         )
         cell.itemTextLabel?.text = NSLocalizedString(
             "Turn mobile device Bluetooth on",
-            comment: "Settings > Manage Card Reader > Connect > Help hint for connecting reader")
+            comment: "Settings > Manage Card Reader > Connect > Hint to enable Bluetooth")
         cell.hideSeparator()
         cell.selectionStyle = .none
    }
@@ -118,9 +126,9 @@ final class CardReaderSettingsConnectView: NSObject {
 private enum Row: CaseIterable {
     case connectHeader
     case connectImage
-    case connectHelp1
-    case connectHelp2
-    case connectHelp3
+    case connectHelpHintChargeReader
+    case connectHelpHintTurnOnReader
+    case connectHelpHintEnableBluetooth
     case connectButton
     case connectLearnMore
 
@@ -130,11 +138,11 @@ private enum Row: CaseIterable {
             return TitleTableViewCell.self
         case .connectImage:
             return ImageTableViewCell.self
-        case .connectHelp1:
+        case .connectHelpHintChargeReader:
             return NumberedListItemTableViewCell.self
-        case .connectHelp2:
+        case .connectHelpHintTurnOnReader:
             return NumberedListItemTableViewCell.self
-        case .connectHelp3:
+        case .connectHelpHintEnableBluetooth:
             return NumberedListItemTableViewCell.self
         case .connectButton:
             return ButtonTableViewCell.self
@@ -179,7 +187,7 @@ extension CardReaderSettingsConnectView: UITableViewDelegate {
         if row == .connectImage {
             return 250
         }
-        if row == .connectHelp1 || row == .connectHelp2 || row == .connectHelp3 {
+        if row == .connectHelpHintChargeReader || row == .connectHelpHintTurnOnReader || row == .connectHelpHintEnableBluetooth {
             return 70
         }
         return UITableView.automaticDimension

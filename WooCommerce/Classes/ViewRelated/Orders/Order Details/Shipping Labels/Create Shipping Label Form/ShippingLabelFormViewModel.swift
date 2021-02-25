@@ -55,7 +55,7 @@ private extension ShippingLabelFormViewModel {
                               city: siteAddress.city,
                               state: siteAddress.state,
                               postcode: siteAddress.postalCode,
-                              country: siteAddress.countryName ?? "",
+                              country: siteAddress.countryCode,
                               phone: "",
                               email: account?.email)
         return fromAddressToShippingLabelAddress(address: address)

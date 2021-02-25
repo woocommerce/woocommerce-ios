@@ -63,6 +63,13 @@ private extension ShippingLabelAddressFormViewController {
 
         removeNavigationBackBarButtonText()
     }
+    
+    func configureRightButtonItemAsLoader() {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.color = .primaryButtonTitle
+        indicator.startAnimating()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: indicator)
+    }
 
     func configureMainView() {
         view.backgroundColor = .listBackground
@@ -112,7 +119,9 @@ private extension ShippingLabelAddressFormViewController {
 
     @objc func doneButtonTapped() {
         // TODO: after the validation, return to the previous controller passing the new address.
+        configureRightButtonItemAsLoader()
         viewModel.validateAddress { [weak self] (success, error) in
+            self?.configureNavigationBar()
             self?.updateTopBannerView()
             self?.tableView.reloadData()
         }

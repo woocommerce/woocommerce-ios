@@ -72,9 +72,3 @@ private extension CardPresentPaymentStore {
         }.store(in: &cancellables)
     }
 }
-
-
-public enum CardPresentPaymentError: Error {
-    case internalState
-    case hardware
-}

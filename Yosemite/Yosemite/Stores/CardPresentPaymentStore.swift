@@ -35,6 +35,8 @@ public final class CardPresentPaymentStore: Store {
         switch action {
         case .startCardReaderDiscovery(let completion):
             startCardReaderDiscovery(completion: completion)
+        case .connect(let reader, let completion):
+            connect(reader: reader, onCompletion: completion)
         }
     }
 }
@@ -52,12 +54,16 @@ private extension CardPresentPaymentStore {
         // For now we are sending the data up to the UI after mapping CardReaderService.CardReader
         // to Yosemite.CardReader.
         cancellable = cardReaderService.discoveredReaders.sink { readers in
-            let yosemiteReaaders = readers.map {
+            let yosemiteReaders = readers.map {
                 Yosemite.CardReader(name: $0.name, serialNumber: $0.serial)
             }
 
             // This hurts a bit, but for now it works
-            completion(yosemiteReaaders)
+            completion(yosemiteReaders)
         }
+    }
+
+    func connect(reader: CardReader, onCompletion: @escaping (Result<CardReader, Error>) -> Void) {
+
     }
 }

@@ -380,8 +380,8 @@ extension AddAttributeOptionsViewController {
         alertController.addCancelActionWithTitle(Localization.cancelAction)
         alertController.addDestructiveActionWithTitle(Localization.removeAction) { [weak self] _ in
             guard let self = self else { return }
-            self.removeCurrentAttribute()
             self.analytics.track(event: WooAnalyticsEvent.Variations.removeAttributeButtonTapped(productID: self.viewModel.product.productID))
+            self.removeCurrentAttribute()
         }
 
         present(alertController, animated: true)

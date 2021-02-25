@@ -103,9 +103,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                     return
                 }
 
-                XCTAssertTrue(connectedReaders.contains(where: {
-                    $0.id == reader.id
-                }))
+                XCTAssertTrue(connectedReaders.contains(reader))
 
                 expectation.fulfill()
             }

@@ -111,12 +111,14 @@ private extension ShippingLabelFormViewController {
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             guard let self = self else { return }
             let shippingLabelAddress = self.viewModel.originAddress
-            let shippingAddressValidationVC = ShippingLabelAddressFormViewController(siteID: self.viewModel.siteID,
-                                                                                     type: .origin,
-                                                                                     address: shippingLabelAddress, completion: { (shippingLabelAddress) in
-                                                                                        // TODO: handle updated shipping label address
-                                                                                     })
-            self.navigationController?.pushViewController(shippingAddressValidationVC, animated: true)
+            let shippingAddressVC = ShippingLabelAddressFormViewController(siteID: self.viewModel.siteID,
+                                                                           type: .origin,
+                                                                           address: shippingLabelAddress,
+                                                                           completion: { [weak self] (shippingLabelAddress) in
+                                                                            guard let self = self else { return }
+                                                                            self.viewModel.handleOriginAddressValueChanges(address: shippingLabelAddress)
+                                                                           })
+            self.navigationController?.pushViewController(shippingAddressVC, animated: true)
         }
     }
 
@@ -128,12 +130,14 @@ private extension ShippingLabelFormViewController {
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             guard let self = self else { return }
             let shippingLabelAddress = self.viewModel.destinationAddress
-            let shippingAddressValidationVC = ShippingLabelAddressFormViewController(siteID: self.viewModel.siteID,
-                                                                                     type: .destination,
-                                                                                     address: shippingLabelAddress, completion: { (shippingLabelAddress) in
-                                                                                        // TODO: handle updated shipping label address
-                                                                                     })
-            self.navigationController?.pushViewController(shippingAddressValidationVC, animated: true)
+            let shippingAddressVC = ShippingLabelAddressFormViewController(siteID: self.viewModel.siteID,
+                                                                           type: .destination,
+                                                                           address: shippingLabelAddress,
+                                                                           completion: { [weak self] (shippingLabelAddress) in
+                                                                            guard let self = self else { return }
+                                                                            self.viewModel.handleDestinationAddressValueChanges(address: shippingLabelAddress)
+                                                                           })
+            self.navigationController?.pushViewController(shippingAddressVC, animated: true)
         }
     }
 

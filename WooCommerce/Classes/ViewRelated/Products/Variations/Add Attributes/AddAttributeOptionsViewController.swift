@@ -367,7 +367,7 @@ extension AddAttributeOptionsViewController {
 
     /// Presents a confirmation alert and removes the attribute if the merchant confirms it.
     ///
-    @objc private func presentRemoveAttributeConfirmation() {
+    private func presentRemoveAttributeConfirmation() {
         let alertController = UIAlertController(title: Localization.removeConfirmationTitle,
                                                 message: Localization.removeConfirmationInfo,
                                                 preferredStyle: .alert)

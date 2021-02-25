@@ -11,7 +11,7 @@ final class ProductVariationsViewModelTests: XCTestCase {
         let viewModel = ProductVariationsViewModel(isAddProductVariationsEnabled: true)
 
         // When
-        let showMoreButton = viewModel.showMoreButton(for: product)
+        let showMoreButton = viewModel.shouldShowMoreButton(for: product)
 
         // Then
         XCTAssertTrue(showMoreButton)
@@ -24,7 +24,7 @@ final class ProductVariationsViewModelTests: XCTestCase {
         let viewModel = ProductVariationsViewModel(isAddProductVariationsEnabled: true)
 
         // When
-        let showMoreButton = viewModel.showMoreButton(for: product)
+        let showMoreButton = viewModel.shouldShowMoreButton(for: product)
 
         // Then
         XCTAssertFalse(showMoreButton)
@@ -37,7 +37,7 @@ final class ProductVariationsViewModelTests: XCTestCase {
         let viewModel = ProductVariationsViewModel(isAddProductVariationsEnabled: false)
 
         // When
-        let showMoreButton = viewModel.showMoreButton(for: product)
+        let showMoreButton = viewModel.shouldShowMoreButton(for: product)
 
         // Then
         XCTAssertFalse(showMoreButton)
@@ -49,7 +49,7 @@ final class ProductVariationsViewModelTests: XCTestCase {
         let viewModel = ProductVariationsViewModel(isAddProductVariationsEnabled: true)
 
         // When
-        let showMoreButton = viewModel.showMoreButton(for: product)
+        let showMoreButton = viewModel.shouldShowMoreButton(for: product)
 
         // Then
         XCTAssertFalse(showMoreButton)
@@ -61,7 +61,7 @@ final class ProductVariationsViewModelTests: XCTestCase {
         let viewModel = ProductVariationsViewModel(isAddProductVariationsEnabled: false)
 
         // When
-        let showMoreButton = viewModel.showMoreButton(for: product)
+        let showMoreButton = viewModel.shouldShowMoreButton(for: product)
 
         // Then
         XCTAssertFalse(showMoreButton)

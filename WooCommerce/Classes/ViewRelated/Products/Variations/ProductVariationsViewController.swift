@@ -186,7 +186,7 @@ private extension ProductVariationsViewController {
     /// Configure right button item.
     ///
     func configureRightButtonItem() {
-        guard viewModel.showMoreButton(for: product) else {
+        guard viewModel.shouldShowMoreButton(for: product) else {
             return navigationItem.rightBarButtonItem = nil
         }
 

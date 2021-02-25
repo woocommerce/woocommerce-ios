@@ -44,7 +44,9 @@ final class MockCardReaderService: CardReaderService {
 
     func connect(_ reader: Hardware.CardReader) -> Future<Void, Error> {
         Future() { promise in
-            // To be implemented
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                promise(Result.success(()))
+            }
         }
     }
 

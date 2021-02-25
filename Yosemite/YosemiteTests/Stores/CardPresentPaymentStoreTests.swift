@@ -82,4 +82,30 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    func test_connect_to_reader_action_returns_card_reader() {
+        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
+                                                       storageManager: storageManager,
+                                                       network: network,
+                                                       cardReaderService: mockCardReaderService)
+
+        let expectation = self.expectation(description: "Connect to card reader")
+
+        let hardwareReader = MockHardwareReader.bbpos()
+        let reader = CardReader(name: hardwareReader.name, serialNumber: hardwareReader.serial)
+
+        let action = CardPresentPaymentAction.connect(reader: reader) { result in
+            switch result {
+            case .failure:
+                XCTFail()
+            case .success(let connectedReader):
+                XCTAssertEqual(reader.id, connectedReader.id)
+                expectation.fulfill()
+            }
+        }
+
+        cardPresentStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }

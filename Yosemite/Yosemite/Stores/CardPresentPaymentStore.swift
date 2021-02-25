@@ -65,6 +65,8 @@ private extension CardPresentPaymentStore {
         }, receiveValue: { (result) in
         }).store(in: &cancellables)
 
+        // Dispatch completion block everytime the service published a new
+        // collection of connected readers
         cardReaderService.connectedReaders.sink { connectedHardwareReaders in
             onCompletion(.success(connectedHardwareReaders))
         }.store(in: &cancellables)

@@ -25,8 +25,8 @@ final class ShippingLabelAddressFormViewController: UIViewController {
 
     private let viewModel: ShippingLabelAddressFormViewModel
 
-    // Completion callback
-    //
+    /// Completion callback
+    ///
     typealias Completion = (_ address: ShippingLabelAddress?) -> Void
     private let onCompletion: Completion
 

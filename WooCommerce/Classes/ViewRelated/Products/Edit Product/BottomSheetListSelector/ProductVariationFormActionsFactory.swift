@@ -43,6 +43,7 @@ private extension ProductVariationFormActionsFactory {
         let shouldShowPriceSettingsRow = editable || productVariation.regularPrice?.isNotEmpty == true
         let shouldShowNoPriceWarningRow = productVariation.isEnabledAndMissingPrice
         let shouldShowShippingSettingsRow = productVariation.isShippingEnabled()
+        let canEditInventorySettingsRow = editable && productVariation.hasIntegerStockQuantity
 
         let actions: [ProductFormEditAction?] = [
             shouldShowPriceSettingsRow ? .priceSettings(editable: editable): nil,
@@ -50,7 +51,7 @@ private extension ProductVariationFormActionsFactory {
             .attributes(editable: editable),
             .status(editable: editable),
             shouldShowShippingSettingsRow ? .shippingSettings(editable: editable): nil,
-            .inventorySettings(editable: editable),
+            .inventorySettings(editable: canEditInventorySettingsRow),
         ]
         return actions.compactMap { $0 }
     }

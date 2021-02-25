@@ -74,6 +74,7 @@ public typealias ShippingLabelAddress = Networking.ShippingLabelAddress
 public typealias ShippingLabelAddressVerification = Networking.ShippingLabelAddressVerification
 public typealias ShipType = Networking.ShippingLabelAddressVerification.ShipType
 public typealias ShippingLabelAddressValidationResponse = Networking.ShippingLabelAddressValidationResponse
+public typealias ShippingLabelAddressValidationError = Networking.ShippingLabelAddressValidationError
 public typealias ShippingLabelPaperSize = Networking.ShippingLabelPaperSize
 public typealias ShippingLabelPrintData = Networking.ShippingLabelPrintData
 public typealias ShippingLabelRefund = Networking.ShippingLabelRefund
@@ -97,6 +98,7 @@ public typealias StoredProductSettings = Networking.StoredProductSettings
 // MARK: - Exported Storage Symbols
 
 public typealias StorageAccount = Storage.Account
+public typealias StorageAccountSettings = Storage.AccountSettings
 public typealias StorageAttribute = Storage.GenericAttribute
 public typealias StorageNote = Storage.Note
 public typealias StorageOrder = Storage.Order

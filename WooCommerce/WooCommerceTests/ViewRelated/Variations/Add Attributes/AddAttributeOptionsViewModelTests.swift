@@ -61,6 +61,35 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isNextButtonEnabled)
     }
 
+    func test_next_button_is_enabled_after_removing_preselected_options() {
+        // Given
+        let attribute = sampleAttribute(name: "Size", options: ["S", "M", "L"])
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: attribute))
+        XCTAssertFalse(viewModel.isNextButtonEnabled)
+
+        // When
+        viewModel.removeSelectedOption(atIndex: 2)
+
+        // Then
+        XCTAssertTrue(viewModel.isNextButtonEnabled)
+    }
+
+    func test_more_button_is_not_visible_when_editing_is_disabled() {
+        // Given, When
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName), allowsEditing: false)
+
+        // Then
+        XCTAssertFalse(viewModel.showMoreButton)
+    }
+
+    func test_more_button_is_visible_when_editing_is_enabled() {
+        // Given, When
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName), allowsEditing: true)
+
+        // Then
+        XCTAssertTrue(viewModel.showMoreButton)
+    }
+
     func test_empty_names_are_not_added_as_options() throws {
         // Given
         let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName))
@@ -369,6 +398,40 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         XCTAssertEqual(updatedProduct.attributes, [expectedAttribute])
     }
 
+    func test_removing_current_attribute_correctly_updates_product_attributes() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(product, onCompletion):
+                    onCompletion(.success(product))
+            default:
+                break
+            }
+        }
+
+        let attribute1 = sampleAttribute(name: "Color", options: ["Green", "Blue"])
+        let attribute2 = sampleAttribute(name: "Size", options: ["Large", "Small"])
+        let initialProduct = sampleProduct().copy(attributes: [attribute1, attribute2])
+        let viewModel = AddAttributeOptionsViewModel(product: initialProduct, attribute: .existing(attribute: attribute2), stores: stores)
+
+
+        // When
+        let updatedProduct: Product = waitFor { promise in
+            viewModel.removeCurrentAttribute { result in
+                switch result {
+                case .success(let product):
+                    promise(product)
+                case .failure:
+                    break
+                }
+            }
+        }
+
+        // Then
+        XCTAssertEqual(updatedProduct.attributes, [attribute1])
+    }
+
     func test_saving_new_attribute_does_not_override_existing_local_attribute() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -403,6 +466,77 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         // Then
         let expectedAttribute = sampleAttribute(attributeID: 0, name: "attr-2", options: ["Option 1", "Option 2"])
         XCTAssertEqual(updatedProduct.attributes, [initialAttribute, expectedAttribute])
+    }
+
+    func test_existing_local_attribute_should_preselect_options() throws {
+        // Given
+        let attribute = sampleAttribute(attributeID: 0, name: "Color", options: ["Green", "Blue", "Red"])
+        XCTAssertTrue(attribute.isLocal)
+
+        // When
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: attribute))
+
+        // Then
+        let textFieldSection = try XCTUnwrap(viewModel.sections.last?.rows)
+        XCTAssertEqual(textFieldSection, [
+            AddAttributeOptionsViewController.Row.selectedOptions(name: "Green"),
+            AddAttributeOptionsViewController.Row.selectedOptions(name: "Blue"),
+            AddAttributeOptionsViewController.Row.selectedOptions(name: "Red")
+        ])
+    }
+
+    func test_existing_global_attribute_should_preselect_options() throws {
+        // Given
+        let attribute = sampleAttribute(name: "Size", options: ["S", "M", "L"])
+        XCTAssertTrue(attribute.isGlobal)
+
+        // When
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: attribute))
+
+        // Then
+        let textFieldSection = try XCTUnwrap(viewModel.sections.last?.rows)
+        XCTAssertEqual(textFieldSection, [
+            AddAttributeOptionsViewController.Row.selectedOptions(name: "S"),
+            AddAttributeOptionsViewController.Row.selectedOptions(name: "M"),
+            AddAttributeOptionsViewController.Row.selectedOptions(name: "L")
+        ])
+    }
+
+    func test_new_attribute_should_allow_reorder() throws {
+        // Given
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName))
+
+        // When
+        viewModel.addNewOption(name: "Option 1")
+        viewModel.addNewOption(name: "Option 2")
+
+        // Then
+        let selectedSection = try XCTUnwrap(viewModel.sections.last)
+        XCTAssertTrue(selectedSection.allowsReorder)
+    }
+
+    func test_local_attribute_should_allow_reorder() throws {
+        // Given, When
+        let attribute = sampleAttribute(attributeID: 0, name: "Color", options: ["Green", "Blue", "Red"])
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: attribute))
+
+
+        // Then
+        let selectedSection = try XCTUnwrap(viewModel.sections.last)
+        XCTAssertTrue(selectedSection.allowsReorder)
+        XCTAssertTrue(attribute.isLocal)
+    }
+
+    func test_global_attribute_should_not_allow_reorder() throws {
+        // Given, When
+        let attribute = sampleAttribute(name: "Color", options: ["Green", "Blue", "Red"])
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: attribute))
+
+
+        // Then
+        let selectedSection = try XCTUnwrap(viewModel.sections.last)
+        XCTAssertFalse(selectedSection.allowsReorder)
+        XCTAssertTrue(attribute.isGlobal)
     }
 }
 

@@ -20,6 +20,16 @@ extension MockStorageManager {
         return newAccount
     }
 
+    /// Inserts a new AccountSettings into the specified context.
+    ///
+    @discardableResult
+    func insertSampleAccountSettings(readOnlyAccountSettings: AccountSettings) -> StorageAccountSettings {
+        let newAccountSettings = viewStorage.insertNewObject(ofType: StorageAccountSettings.self)
+        newAccountSettings.update(with: readOnlyAccountSettings)
+
+        return newAccountSettings
+    }
+
     /// Inserts a new (Sample) Product into the specified context.
     ///
     @discardableResult

@@ -6,6 +6,23 @@ final class ShippingLabelAddressFormViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var confirmButton: UIButton!
 
+    /// Stack view that contains the top warning banner and is contained in the table view header.
+    ///
+    private lazy var topStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [])
+        stackView.axis = .vertical
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+
+    /// Top banner that shows a warning in case there is an error in the address validation.
+    ///
+    private lazy var topBannerView: TopBannerView = {
+        let topBanner = ShippingLabelAddressTopBannerFactory.addressErrorTopBannerView()
+        topBanner.translatesAutoresizingMaskIntoConstraints = false
+        return topBanner
+    }()
+
     private let viewModel: ShippingLabelAddressFormViewModel
 
     /// Needed to scroll content to a visible area when the keyboard appears.
@@ -16,8 +33,8 @@ final class ShippingLabelAddressFormViewController: UIViewController {
 
     /// Init
     ///
-    init(type: ShipType, address: ShippingLabelAddress?) {
-        viewModel = ShippingLabelAddressFormViewModel(type: type, address: address)
+    init(siteID: Int64, type: ShipType, address: ShippingLabelAddress?) {
+        viewModel = ShippingLabelAddressFormViewModel(siteID: siteID, type: type, address: address)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -41,6 +58,9 @@ private extension ShippingLabelAddressFormViewController {
 
     func configureNavigationBar() {
         title = viewModel.type == .origin ? Localization.titleViewShipFrom : Localization.titleViewShipTo
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
+
         removeNavigationBackBarButtonText()
     }
 
@@ -57,6 +77,14 @@ private extension ShippingLabelAddressFormViewController {
         registerTableViewCells()
 
         tableView.dataSource = self
+
+        // Configure header container view
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
+        headerContainer.addSubview(topStackView)
+        headerContainer.pinSubviewToSafeArea(topStackView)
+        topStackView.addArrangedSubview(topBannerView)
+
+        tableView.tableHeaderView = headerContainer
     }
 
     func registerTableViewCells() {
@@ -65,12 +93,31 @@ private extension ShippingLabelAddressFormViewController {
         }
     }
 
+    func updateTopBannerView() {
+        topBannerView.isHidden = viewModel.addressValidationError?.generalError != nil
+        tableView.updateHeaderHeight()
+    }
+
     func configureConfirmButton() {
         confirmButton.setTitle(Localization.confirmButtonTitle, for: .normal)
         // TODO: implement confirm button action
         //confirmButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
         confirmButton.applySecondaryButtonStyle()
     }
+}
+
+// MARK: - Actions
+//
+private extension ShippingLabelAddressFormViewController {
+
+    @objc func doneButtonTapped() {
+        // TODO: after the validation, return to the previous controller passing the new address.
+        viewModel.validateAddress { [weak self] (success, error) in
+            self?.updateTopBannerView()
+            self?.tableView.reloadData()
+        }
+    }
+
 }
 
 // MARK: - UITableViewDataSource Conformance
@@ -111,6 +158,8 @@ private extension ShippingLabelAddressFormViewController {
             configureAddress(cell: cell, row: row)
         case let cell as TitleAndTextFieldTableViewCell where row == .address2:
             configureAddress2(cell: cell, row: row)
+        case let cell as BasicTableViewCell where row == .fieldError:
+            configureFieldError(cell: cell, row: row)
         case let cell as TitleAndTextFieldTableViewCell where row == .city:
             configureCity(cell: cell, row: row)
         case let cell as TitleAndTextFieldTableViewCell where row == .postcode:
@@ -126,111 +175,117 @@ private extension ShippingLabelAddressFormViewController {
     }
 
     func configureName(cell: TitleAndTextFieldTableViewCell, row: Row) {
-        let viewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.nameField,
-                                                                 text: "",
-                                                                 placeholder: Localization.nameFieldPlaceholder,
-                                                                 state: .normal,
-                                                                 keyboardType: .default,
-                                                                 textFieldAlignment: .leading) { (newText) in
-
+        let cellViewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.nameField,
+                                                                     text: viewModel.address?.name,
+                                                                     placeholder: Localization.nameFieldPlaceholder,
+                                                                     state: .normal,
+                                                                     keyboardType: .default,
+                                                                     textFieldAlignment: .leading) { [weak self] (newText) in
+            self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }
-        cell.configure(viewModel: viewModel)
+        cell.configure(viewModel: cellViewModel)
     }
 
     func configureCompany(cell: TitleAndTextFieldTableViewCell, row: Row) {
-        let viewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.companyField,
-                                                                 text: "",
-                                                                 placeholder: Localization.companyFieldPlaceholder,
-                                                                 state: .normal,
-                                                                 keyboardType: .default,
-                                                                 textFieldAlignment: .leading) { (newText) in
-
+        let cellViewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.companyField,
+                                                                     text: viewModel.address?.company,
+                                                                     placeholder: Localization.companyFieldPlaceholder,
+                                                                     state: .normal,
+                                                                     keyboardType: .default,
+                                                                     textFieldAlignment: .leading) { [weak self] (newText) in
+            self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }
-        cell.configure(viewModel: viewModel)
+        cell.configure(viewModel: cellViewModel)
     }
 
     func configurePhone(cell: TitleAndTextFieldTableViewCell, row: Row) {
-        let viewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.phoneField,
-                                                                 text: "",
-                                                                 placeholder: Localization.phoneFieldPlaceholder,
-                                                                 state: .normal,
-                                                                 keyboardType: .default,
-                                                                 textFieldAlignment: .leading) { (newText) in
-
+        let cellViewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.phoneField,
+                                                                     text: viewModel.address?.phone,
+                                                                     placeholder: Localization.phoneFieldPlaceholder,
+                                                                     state: .normal,
+                                                                     keyboardType: .default,
+                                                                     textFieldAlignment: .leading) { [weak self] (newText) in
+            self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }
-        cell.configure(viewModel: viewModel)
+        cell.configure(viewModel: cellViewModel)
     }
 
     func configureAddress(cell: TitleAndTextFieldTableViewCell, row: Row) {
-        let viewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.addressField,
-                                                                 text: "",
-                                                                 placeholder: Localization.addressFieldPlaceholder,
-                                                                 state: .normal,
-                                                                 keyboardType: .default,
-                                                                 textFieldAlignment: .leading) { (newText) in
-
+        let cellViewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.addressField,
+                                                                     text: viewModel.address?.address1,
+                                                                     placeholder: Localization.addressFieldPlaceholder,
+                                                                     state: .normal,
+                                                                     keyboardType: .default,
+                                                                     textFieldAlignment: .leading) { [weak self] (newText) in
+            self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }
-        cell.configure(viewModel: viewModel)
+        cell.configure(viewModel: cellViewModel)
     }
 
     func configureAddress2(cell: TitleAndTextFieldTableViewCell, row: Row) {
-        let viewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.address2Field,
-                                                                 text: "",
-                                                                 placeholder: Localization.address2FieldPlaceholder,
-                                                                 state: .normal,
-                                                                 keyboardType: .default,
-                                                                 textFieldAlignment: .leading) { (newText) in
-
+        let cellViewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.address2Field,
+                                                                     text: viewModel.address?.address2,
+                                                                     placeholder: Localization.address2FieldPlaceholder,
+                                                                     state: .normal,
+                                                                     keyboardType: .default,
+                                                                     textFieldAlignment: .leading) { [weak self] (newText) in
+            self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }
-        cell.configure(viewModel: viewModel)
+        cell.configure(viewModel: cellViewModel)
+    }
+
+    func configureFieldError(cell: BasicTableViewCell, row: Row) {
+        cell.textLabel?.text = viewModel.addressValidationError?.addressError
+        cell.textLabel?.textColor = .error
+        cell.backgroundColor = .listBackground
     }
 
     func configureCity(cell: TitleAndTextFieldTableViewCell, row: Row) {
-        let viewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.cityField,
-                                                                 text: "",
-                                                                 placeholder: Localization.cityFieldPlaceholder,
-                                                                 state: .normal,
-                                                                 keyboardType: .default,
-                                                                 textFieldAlignment: .leading) { (newText) in
-
+        let cellViewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.cityField,
+                                                                     text: viewModel.address?.city,
+                                                                     placeholder: Localization.cityFieldPlaceholder,
+                                                                     state: .normal,
+                                                                     keyboardType: .default,
+                                                                     textFieldAlignment: .leading) { [weak self] (newText) in
+            self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }
-        cell.configure(viewModel: viewModel)
+        cell.configure(viewModel: cellViewModel)
     }
 
     func configurePostcode(cell: TitleAndTextFieldTableViewCell, row: Row) {
-        let viewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.postcodeField,
-                                                                 text: "",
-                                                                 placeholder: Localization.postcodeFieldPlaceholder,
-                                                                 state: .normal,
-                                                                 keyboardType: .default,
-                                                                 textFieldAlignment: .leading) { (newText) in
-
+        let cellViewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.postcodeField,
+                                                                     text: viewModel.address?.postcode,
+                                                                     placeholder: Localization.postcodeFieldPlaceholder,
+                                                                     state: .normal,
+                                                                     keyboardType: .default,
+                                                                     textFieldAlignment: .leading) { [weak self] (newText) in
+            self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }
-        cell.configure(viewModel: viewModel)
+        cell.configure(viewModel: cellViewModel)
     }
 
     func configureState(cell: TitleAndTextFieldTableViewCell, row: Row) {
-        let viewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.stateField,
-                                                                 text: "",
-                                                                 placeholder: Localization.stateFieldPlaceholder,
-                                                                 state: .normal,
-                                                                 keyboardType: .default,
-                                                                 textFieldAlignment: .leading) { (newText) in
-
+        let cellViewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.stateField,
+                                                                     text: viewModel.address?.state,
+                                                                     placeholder: Localization.stateFieldPlaceholder,
+                                                                     state: .normal,
+                                                                     keyboardType: .default,
+                                                                     textFieldAlignment: .leading) { [weak self] (newText) in
+            self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }
-        cell.configure(viewModel: viewModel)
+        cell.configure(viewModel: cellViewModel)
     }
 
     func configureCountry(cell: TitleAndTextFieldTableViewCell, row: Row) {
-        let viewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.countryField,
-                                                                 text: "",
-                                                                 placeholder: Localization.countryFieldPlaceholder,
-                                                                 state: .normal,
-                                                                 keyboardType: .default,
-                                                                 textFieldAlignment: .leading) { (newText) in
-
+        let cellViewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.countryField,
+                                                                     text: viewModel.address?.country,
+                                                                     placeholder: Localization.countryFieldPlaceholder,
+                                                                     state: .normal,
+                                                                     keyboardType: .default,
+                                                                     textFieldAlignment: .leading) { [weak self] (newText) in
+            self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }
-        cell.configure(viewModel: viewModel)
+        cell.configure(viewModel: cellViewModel)
     }
 }
 
@@ -286,7 +341,7 @@ private extension ShippingLabelAddressFormViewController {
         static let nameFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
         static let companyField = NSLocalizedString("Company", comment: "Text field company in Shipping Label Address Validation")
         static let companyFieldPlaceholder = NSLocalizedString("Optional", comment: "Text field placeholder in Shipping Label Address Validation")
-        static let phoneField = NSLocalizedString("Phones", comment: "Text field phone in Shipping Label Address Validation")
+        static let phoneField = NSLocalizedString("Phone", comment: "Text field phone in Shipping Label Address Validation")
         static let phoneFieldPlaceholder = NSLocalizedString("Optional", comment: "Text field placeholder in Shipping Label Address Validation")
         static let addressField = NSLocalizedString("Address", comment: "Text field address in Shipping Label Address Validation")
         static let addressFieldPlaceholder = NSLocalizedString("Required", comment: "Text field placeholder in Shipping Label Address Validation")
@@ -303,5 +358,9 @@ private extension ShippingLabelAddressFormViewController {
 
         static let confirmButtonTitle = NSLocalizedString("Use Address as Entered",
                                                           comment: "Action to use the address in Shipping Label Validation screen as entered")
+    }
+
+    enum Constants {
+        static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
 }

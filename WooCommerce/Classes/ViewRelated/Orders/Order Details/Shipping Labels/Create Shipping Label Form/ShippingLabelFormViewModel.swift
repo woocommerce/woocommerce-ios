@@ -8,17 +8,29 @@ final class ShippingLabelFormViewModel {
     typealias Section = ShippingLabelFormViewController.Section
     typealias Row = ShippingLabelFormViewController.Row
 
+    let siteID: Int64
     let originAddress: ShippingLabelAddress?
     let destinationAddress: ShippingLabelAddress?
 
-    init(originAddress: Address?, destinationAddress: Address?) {
-        self.originAddress = ShippingLabelFormViewModel.fromAddressToShippingLabelAddress(address: originAddress)
+    init(siteID: Int64, originAddress: Address?, destinationAddress: Address?) {
+
+        self.siteID = siteID
+
+        let accountSettings = ShippingLabelFormViewModel.getStoredAccountSettings()
+        let company = ServiceLocator.stores.sessionManager.defaultSite?.name
+        let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount
+
+        self.originAddress = ShippingLabelFormViewModel.fromAddressToShippingLabelAddress(address: originAddress) ??
+            ShippingLabelFormViewModel.getDefaultOriginAddress(accountSettings: accountSettings,
+                                                               company: company,
+                                                               siteAddress: SiteAddress(),
+                                                               account: defaultAccount)
         self.destinationAddress = ShippingLabelFormViewModel.fromAddressToShippingLabelAddress(address: destinationAddress)
     }
 
     var sections: [Section] {
-        let shipFrom = Row(type: .shipFrom, dataState: .validated, displayMode: .editable)
-        let shipTo = Row(type: .shipTo, dataState: .pending, displayMode: .editable)
+        let shipFrom = Row(type: .shipFrom, dataState: .pending, displayMode: .editable)
+        let shipTo = Row(type: .shipTo, dataState: .pending, displayMode: .disabled)
         let packageDetails = Row(type: .packageDetails, dataState: .pending, displayMode: .disabled)
         let shippingCarrierAndRates = Row(type: .shippingCarrierAndRates, dataState: .pending, displayMode: .disabled)
         let paymentMethod = Row(type: .paymentMethod, dataState: .pending, displayMode: .disabled)
@@ -28,8 +40,28 @@ final class ShippingLabelFormViewModel {
 }
 
 // MARK: - Utils
-extension ShippingLabelFormViewModel {
-    private static func fromAddressToShippingLabelAddress(address: Address?) -> ShippingLabelAddress? {
+private extension ShippingLabelFormViewModel {
+    // We generate the default origin address using the information
+    // of the logged Account and of the website.
+    static func getDefaultOriginAddress(accountSettings: AccountSettings?,
+                                        company: String?,
+                                        siteAddress: SiteAddress,
+                                        account: Account?) -> ShippingLabelAddress? {
+        let address = Address(firstName: accountSettings?.firstName ?? "",
+                              lastName: accountSettings?.lastName ?? "",
+                              company: company ?? "",
+                              address1: siteAddress.address,
+                              address2: siteAddress.address2,
+                              city: siteAddress.city,
+                              state: siteAddress.state,
+                              postcode: siteAddress.postalCode,
+                              country: siteAddress.countryName ?? "",
+                              phone: "",
+                              email: account?.email)
+        return fromAddressToShippingLabelAddress(address: address)
+    }
+
+    static func fromAddressToShippingLabelAddress(address: Address?) -> ShippingLabelAddress? {
         guard let address = address else { return nil }
 
         // In this way we support localized name correctly,
@@ -48,5 +80,13 @@ extension ShippingLabelFormViewModel {
                                                         city: address.city,
                                                         postcode: address.postcode)
         return shippingLabelAddress
+    }
+
+    static func getStoredAccountSettings() -> AccountSettings? {
+        let storageManager = ServiceLocator.storageManager
+
+        let resultsController = ResultsController<StorageAccountSettings>(storageManager: storageManager, sortedBy: [])
+        try? resultsController.performFetch()
+        return resultsController.fetchedObjects.first
     }
 }

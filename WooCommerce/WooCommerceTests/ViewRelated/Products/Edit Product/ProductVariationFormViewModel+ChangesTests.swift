@@ -167,6 +167,7 @@ extension ProductVariationFormViewModel {
                   parentProductSKU: nil,
                   formType: formType,
                   productImageActionHandler: productImageActionHandler,
-                  storesManager: storesManager)
+                  storesManager: storesManager,
+                  isAddProductVariationsEnabled: false)
     }
 }

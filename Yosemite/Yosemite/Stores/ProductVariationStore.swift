@@ -46,6 +46,8 @@ public final class ProductVariationStore: Store {
             updateProductVariation(productVariation: productVariation, onCompletion: onCompletion)
         case .requestMissingVariations(let order, let onCompletion):
             requestMissingVariations(for: order, onCompletion: onCompletion)
+        case .deleteProductVariation(let productVariation, let onCompletion):
+            deleteProductVariation(productVariation: productVariation, onCompletion: onCompletion)
         }
     }
 }
@@ -202,6 +204,23 @@ private extension ProductVariationStore {
             onCompletion(nil)
         }
     }
+
+    /// Deletes the product variation.
+    ///
+    func deleteProductVariation(productVariation: ProductVariation, onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {
+        remote.deleteProductVariation(siteID: productVariation.siteID,
+                                      productID: productVariation.productID,
+                                      variationID: productVariation.productVariationID) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let productVariation):
+                self.deleteStoredProductVariation(siteID: productVariation.siteID, productVariationID: productVariation.productVariationID)
+                onCompletion(.success(()))
+            case .failure(let error):
+                onCompletion(.failure(ProductUpdateError(error: error)))
+            }
+        }
+    }
 }
 
 
@@ -231,6 +250,14 @@ private extension ProductVariationStore {
     func deleteStoredProductVariations(siteID: Int64, productID: Int64) {
         let storage = storageManager.viewStorage
         storage.deleteProductVariations(siteID: siteID, productID: productID)
+        storage.saveIfNeeded()
+    }
+
+    /// Deletes any Storage.ProductVariation with the specified `siteID` and `productID`
+    ///
+    func deleteStoredProductVariation(siteID: Int64, productVariationID: Int64) {
+        let storage = storageManager.viewStorage
+        storage.deleteProductVariation(siteID: siteID, productVariationID: productVariationID)
         storage.saveIfNeeded()
     }
 }

@@ -65,7 +65,14 @@ final class AddAttributeOptionsViewModel {
     /// Defines next button visibility
     ///
     var isNextButtonEnabled: Bool {
-        state.selectedOptions.isNotEmpty
+        let optionsToSubmit = state.selectedOptions.map { $0.name }
+        return state.selectedOptions.isNotEmpty && optionsToSubmit != attribute.previouslySelectedOptions
+    }
+
+    /// Defines the more(...) button visibility
+    ///
+    var showMoreButton: Bool {
+        allowsEditing
     }
 
     /// Defines ghost cells visibility
@@ -97,6 +104,10 @@ final class AddAttributeOptionsViewModel {
     /// Main attribute dependency.
     ///
     private let attribute: Attribute
+
+    /// Main allows editing dependency.
+    ///
+    private let allowsEditing: Bool
 
     /// When an attribute exists, returns an already configured `ResultsController`
     /// When there isn't an existing attribute, returns a dummy/un-initialized `ResultsController`
@@ -140,10 +151,12 @@ final class AddAttributeOptionsViewModel {
 
     init(product: Product,
          attribute: Attribute,
+         allowsEditing: Bool = false,
          stores: StoresManager = ServiceLocator.stores,
          viewStorage: StorageManagerType = ServiceLocator.storageManager) {
         self.product = product
         self.attribute = attribute
+        self.allowsEditing = allowsEditing
         self.stores = stores
         self.viewStorage = viewStorage
 
@@ -157,12 +170,13 @@ final class AddAttributeOptionsViewModel {
         switch attribute {
         case .new:
             updateSections()
-        case let .existing(attribute) where attribute.isGlobal:
-            synchronizeGlobalOptions(of: attribute)
-        case let .existing(attribute) where attribute.isLocal:
-            populateLocalOptions(of: attribute)
-        default:
-            break
+        case let .existing(attribute):
+            preselectCurrentOptions(of: attribute)
+            if attribute.isGlobal {
+                synchronizeGlobalOptions(of: attribute)
+            } else {
+                populateLocalOptions(of: attribute)
+            }
         }
     }
 }
@@ -210,8 +224,21 @@ extension AddAttributeOptionsViewModel {
     /// Gathers selected options and update the product's attributes
     ///
     func updateProductAttributes(onCompletion: @escaping ((Result<Product, ProductUpdateError>) -> Void)) {
-        state.isUpdating = true
         let newProduct = createUpdatedProduct()
+        performProductUpdate(newProduct, onCompletion: onCompletion)
+    }
+
+    /// Updates the product remotely by removing the current attribute
+    ///
+    func removeCurrentAttribute(onCompletion: @escaping ((Result<Product, ProductUpdateError>) -> Void)) {
+        let newProduct = createProductByRemovingCurrentAttribute()
+        performProductUpdate(newProduct, onCompletion: onCompletion)
+    }
+
+    /// Update the given product remotely.
+    ///
+    private func performProductUpdate(_ newProduct: Product, onCompletion: @escaping ((Result<Product, ProductUpdateError>) -> Void)) {
+        state.isUpdating = true
         let action = ProductAction.updateProduct(product: newProduct) { [weak self] result in
             guard let self = self else { return }
             self.state.isUpdating = false
@@ -238,6 +265,20 @@ extension AddAttributeOptionsViewModel {
             var attributes = product.attributes
             attributes.removeAll { $0.attributeID == newAttribute.attributeID && $0.name == newAttribute.name }
             attributes.append(newAttribute)
+            return attributes
+        }()
+
+        return product.copy(attributes: updatedAttributes)
+    }
+
+    /// Returns a product with the current attribute removed.
+    ///
+    private func createProductByRemovingCurrentAttribute() -> Product {
+        // Remove the current attribute from the product attribute array.
+        // Name has to be considered, because local attributes are zero-id based.
+        let updatedAttributes: [ProductAttribute] = {
+            var attributes = product.attributes
+            attributes.removeAll { $0.attributeID == attribute.attributeID && $0.name == attribute.name }
             return attributes
         }()
 
@@ -270,7 +311,17 @@ private extension AddAttributeOptionsViewModel {
             AddAttributeOptionsViewModel.Row.selectedOptions(name: option.name)
         }
 
-        return Section(header: Localization.headerSelectedOptions, footer: nil, rows: rows, allowsReorder: true, allowsSelection: false)
+        // Only allow reorder for local attributes(existing and new)
+        let allowsReorder: Bool = {
+            switch attribute {
+            case .new:
+                return true
+            case let .existing(productAttribute):
+                return productAttribute.isLocal
+            }
+        }()
+
+        return Section(header: Localization.headerSelectedOptions, footer: nil, rows: rows, allowsReorder: allowsReorder, allowsSelection: false)
     }
 
     func createExistingSection() -> Section? {
@@ -284,6 +335,14 @@ private extension AddAttributeOptionsViewModel {
         }
 
         return Section(header: Localization.headerExistingOptions, footer: nil, rows: rows, allowsReorder: false, allowsSelection: true)
+    }
+
+    /// Pre-selects options of a product attribute.
+    ///
+    func preselectCurrentOptions(of attribute: ProductAttribute) {
+        state.selectedOptions = attribute.options.map { option in
+            .local(name: option)
+        }
     }
 
     /// Synchronizes options for global attributes
@@ -305,6 +364,8 @@ private extension AddAttributeOptionsViewModel {
         stores.dispatch(fetchOptions)
     }
 
+    /// Populates existing options for a local attribute.
+    ///
     func populateLocalOptions(of attribute: ProductAttribute) {
         state.existingOptions = attribute.options.map { option in
             .local(name: option)
@@ -365,6 +426,17 @@ private extension AddAttributeOptionsViewModel.Attribute {
             return name
         case let .existing(attribute):
             return attribute.name
+        }
+    }
+
+    /// Returns the previously selected options of an attribute. (ie: set when creating a variation)
+    ///
+    var previouslySelectedOptions: [String] {
+        switch self {
+        case .new:
+            return []
+        case let .existing(attribute):
+            return attribute.options
         }
     }
 }

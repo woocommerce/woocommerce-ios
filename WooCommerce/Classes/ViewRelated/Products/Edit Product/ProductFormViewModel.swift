@@ -178,7 +178,7 @@ extension ProductFormViewModel {
     func updateInventorySettings(sku: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,
-                                 stockQuantity: Int64?,
+                                 stockQuantity: Decimal?,
                                  backordersSetting: ProductBackordersSetting?,
                                  stockStatus: ProductStockStatus?) {
         product = EditableProductModel(product: product.product.copy(sku: sku,
@@ -251,6 +251,26 @@ extension ProductFormViewModel {
     func updateVariationAttributes(_ attributes: [ProductVariationAttribute]) {
         // no-op
     }
+
+    /// Updates the original product variations(and attributes).
+    /// This is needed because variations and attributes, remote updates, happen outside this view model and wee need a way to sync our original product.
+    ///
+    func updateProductVariations(from newProduct: Product) {
+        let newOriginalProduct = EditableProductModel(product: originalProduct.product.copy(attributes: newProduct.attributes,
+                                                                                            variations: newProduct.variations))
+
+        // If the product doesn't have any pending changes, we can safely override the original product
+        guard hasUnsavedChanges() else {
+            return resetProduct(newOriginalProduct)
+        }
+
+        // If the product has pending changes, we need to override the `originalProduct` first and the `living product` later with a saved copy.
+        // This is because, overriding `originalProduct` also overrides the `living product`.
+        let productWithChanges = EditableProductModel(product: product.product.copy(attributes: newProduct.attributes,
+                                                                                    variations: newProduct.variations))
+        resetProduct(newOriginalProduct)
+        product = productWithChanges
+    }
 }
 
 // MARK: Remote actions
@@ -303,12 +323,12 @@ extension ProductFormViewModel {
         }
     }
 
-    func deleteProductRemotely(onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
+    func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {
         let remoteActionUseCase = ProductFormRemoteActionUseCase()
         remoteActionUseCase.deleteProduct(product: product) { result in
             switch result {
-            case .success(let data):
-                onCompletion(.success(data.product))
+            case .success:
+                onCompletion(.success(()))
             case .failure(let error):
                 onCompletion(.failure(error))
             }

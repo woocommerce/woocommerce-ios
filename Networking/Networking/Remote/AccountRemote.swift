@@ -23,7 +23,7 @@ public class AccountRemote: Remote {
     public func loadAccountSettings(for userID: Int64, completion: @escaping (AccountSettings?, Error?) -> Void) {
         let path = "me/settings"
         let parameters = [
-            "fields": "tracks_opt_out"
+            "fields": "tracks_opt_out,first_name,last_name"
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         let mapper = AccountSettingsMapper(userID: userID)

@@ -44,7 +44,8 @@ private extension ProductVariationDetailsFactory {
                                                       allAttributes: parentProduct.attributes,
                                                       parentProductSKU: parentProduct.sku,
                                                       formType: formType,
-                                                      productImageActionHandler: productImageActionHandler)
+                                                      productImageActionHandler: productImageActionHandler,
+                                                      isAddProductVariationsEnabled: isAddProductVariationsEnabled)
         vc = ProductFormViewController(viewModel: viewModel,
                                        eventLogger: ProductFormEventLogger(),
                                        productImageActionHandler: productImageActionHandler,

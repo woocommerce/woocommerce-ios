@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-02-09 11:32:07+0000 */
+/* Translation-Revision-Date: 2021-02-18 11:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -199,7 +199,7 @@
 "Add Tracking" = "トラッキングを追加";
 
 /* Title on add variation button when there are no variations */
-"Add Variation" = "Add Variation";
+"Add Variation" = "バリエーションを追加";
 
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
@@ -246,7 +246,7 @@
 "Add weight and dimensions" = "重さとサイズを追加";
 
 /* Title on the variations list screen when there are no variations */
-"Add your first variation" = "Add your first variation";
+"Add your first variation" = "最初のバリエーションを追加";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "注文に追跡を追加";
@@ -348,7 +348,7 @@
 
 /* Edit Product Attributes screen navigation title
    Title of the attributes row on Product Variation main screen */
-"Attributes" = "Attributes";
+"Attributes" = "属性";
 
 /* No comment provided by engineer. */
 "Authenticating" = "認証中";
@@ -1268,7 +1268,7 @@
 
 /* Button title. Takes the user to the login by email flow.
    Button title. Tapping begins our normal log in process. */
-"Log in or sign up with WordPress.com" = "Log in or sign up with WordPress.com";
+"Log in or sign up with WordPress.com" = "WordPress.com でログインまたは登録";
 
 /* Instruction text on the login's email address screen. */
 "Log in to the WordPress.com account you used to connect Jetpack." = "Jetpack を接続するのに使用した WordPress.com アカウントにログインします。";

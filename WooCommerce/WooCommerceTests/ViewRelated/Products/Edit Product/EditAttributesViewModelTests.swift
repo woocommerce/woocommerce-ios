@@ -59,36 +59,20 @@ final class EditAttributesViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.attributes, [expectedVM, expectedVM2])
     }
 
-    func test_create_variations_is_invoked_with_correct_parameters() {
+    func test_product_attributes_indexes_match_attributes_viewModel_indexes() {
         // Given
-        let attribute = sampleAttribute(attributeID: 0, name: "attr", options: ["Option 1", "Option 2"])
-        let attribute2 = sampleAttribute(attributeID: 1, name: "attr-2", options: ["Option 3", "Option 4"])
+        let attribute = sampleAttribute(name: "attr", options: ["Option 1", "Option 2"])
+        let attribute2 = sampleAttribute(name: "attr-2", options: ["Option 3", "Option 4"])
         let product = Product().copy(attributes: [attribute, attribute2])
 
-        let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: true, stores: mockStores)
-
         // When
-        let variationSubmitted: CreateProductVariation = waitFor { promise in
-            mockStores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
-               switch action {
-               case let .createProductVariation(_, _, newVariation, _):
-                promise(newVariation)
-               default:
-                   break
-               }
-            }
-
-            viewModel.generateVariation { _ in }
-        }
+        let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: false)
 
         // Then
-        let expectedAttributes = [
-            ProductVariationAttribute(id: 0, name: "attr", option: ""),
-            ProductVariationAttribute(id: 1, name: "attr-2", option: ""),
-        ]
-        let expectedVariation = CreateProductVariation(regularPrice: "", attributes: expectedAttributes)
-        XCTAssertEqual(expectedVariation, variationSubmitted)
+        XCTAssertEqual(viewModel.attributes.count, 2)
+        viewModel.attributes.enumerated().forEach { index, vm in
+            XCTAssertEqual(vm.title, viewModel.productAttributeAtIndex(index).name)
+        }
     }
 }
 

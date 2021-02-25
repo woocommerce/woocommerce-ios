@@ -27,7 +27,7 @@ extension ProductVariation {
     @NSManaged public var taxStatusKey: String
     @NSManaged public var taxClass: String?
     @NSManaged public var manageStock: Bool
-    @NSManaged public var stockQuantity: Int64
+    @NSManaged public var stockQuantity: NSDecimalNumber
     @NSManaged public var stockStatusKey: String
     @NSManaged public var backordersKey: String
     @NSManaged public var backordersAllowed: Bool

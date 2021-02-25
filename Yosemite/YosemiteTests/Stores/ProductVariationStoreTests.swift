@@ -671,6 +671,64 @@ final class ProductVariationStoreTests: XCTestCase {
         // The successfully loaded variation should still be saved to storage.
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
     }
+
+    // MARK: - ProductVariationAction.deleteProductVariation
+
+    func test_deleteProductVariation_deletes_data_from_storage_and_returns_expected_data() {
+        // Given
+        let remote = MockProductVariationsRemote()
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let sampleProductVariationID: Int64 = 1275
+        let sampleVariation = sampleProductVariation(siteID: sampleSiteID,
+                                                     productID: sampleProductID,
+                                                     id: sampleProductVariationID)
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: sampleVariation)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+        remote.whenDeletingProductVariation(siteID: sampleSiteID,
+                                            productID: sampleProductID,
+                                            productVariationID: sampleProductVariationID,
+                                            thenReturn: .success(sampleVariation))
+
+        // When
+        let result: Result<Void, ProductUpdateError> = waitFor { promise in
+            let action = ProductVariationAction.deleteProductVariation(productVariation: sampleVariation) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
+    }
+
+    func test_deleteProductVariation_returns_error_upon_response_error() {
+        // Given
+        let remote = MockProductVariationsRemote()
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        let sampleProductVariationID: Int64 = 1275
+        let sampleVariation = sampleProductVariation(siteID: sampleSiteID,
+                                                     productID: sampleProductID,
+                                                     id: sampleProductVariationID)
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: sampleVariation)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+        remote.whenDeletingProductVariation(siteID: sampleSiteID,
+                                            productID: sampleProductID,
+                                            productVariationID: sampleProductVariationID,
+                                            thenReturn: .failure(NSError(domain: "", code: 400, userInfo: nil)))
+
+        // When
+        let result: Result<Void, ProductUpdateError> = waitFor { promise in
+            let action = ProductVariationAction.deleteProductVariation(productVariation: sampleVariation) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+    }
 }
 
 
@@ -724,7 +782,7 @@ private extension ProductVariationStoreTests {
                                 taxStatusKey: "taxable",
                                 taxClass: "",
                                 manageStock: true,
-                                stockQuantity: 16,
+                                stockQuantity: 16.5,
                                 stockStatus: .inStock,
                                 backordersKey: "notify",
                                 backordersAllowed: true,

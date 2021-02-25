@@ -5,7 +5,10 @@ final class EditableProductVariationModel {
     let productVariation: ProductVariation
 
     let allAttributes: [ProductAttribute]
-    private lazy var variationName: String = generateName(variationAttributes: productVariation.attributes, allAttributes: allAttributes)
+
+    private lazy var variationAttributes: [VariationAttributeViewModel] = {
+        return generateVariationAttributes(productVariationAttributes: productVariation.attributes, allAttributes: allAttributes)
+    }()
 
     init(productVariation: ProductVariation, allAttributes: [ProductAttribute], parentProductSKU: String?) {
         self.allAttributes = allAttributes
@@ -19,18 +22,19 @@ final class EditableProductVariationModel {
 }
 
 private extension EditableProductVariationModel {
-    func generateName(variationAttributes: [ProductVariationAttribute], allAttributes: [ProductAttribute]) -> String {
+
+    func generateVariationAttributes(productVariationAttributes: [ProductVariationAttribute],
+                                     allAttributes: [ProductAttribute]) -> [VariationAttributeViewModel] {
         return allAttributes
             .sorted(by: { (lhs, rhs) -> Bool in
                 lhs.position < rhs.position
             })
-            .map { attribute in
-            guard let variationAttribute = variationAttributes.first(where: { $0.id == attribute.attributeID && $0.name == attribute.name }) else {
-                // The variation doesn't have an option set for this attribute, and we show "Any \(attributeName)" in this case.
-                return String.localizedStringWithFormat(Localization.anyAttributeFormat, attribute.name)
+            .map { attribute -> VariationAttributeViewModel in
+            guard let variationAttribute = productVariation.attributes.first(where: { $0.id == attribute.attributeID && $0.name == attribute.name }) else {
+                return VariationAttributeViewModel(name: attribute.name)
             }
-            return variationAttribute.option
-        }.joined(separator: " - ")
+            return VariationAttributeViewModel(productVariationAttribute: variationAttribute)
+        }
     }
 }
 
@@ -44,7 +48,7 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
     }
 
     var name: String {
-        variationName
+        variationAttributes.map { $0.nameOrValue }.joined(separator: " - ")
     }
 
     var description: String? {
@@ -139,8 +143,12 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
         productVariation.stockStatus
     }
 
-    var stockQuantity: Int64? {
+    var stockQuantity: Decimal? {
         productVariation.stockQuantity
+    }
+
+    var hasIntegerStockQuantity: Bool {
+        productVariation.hasIntegerStockQuantity
     }
 
     var backordersKey: String {
@@ -217,12 +225,5 @@ extension EditableProductVariationModel {
 extension EditableProductVariationModel: Equatable {
     static func ==(lhs: EditableProductVariationModel, rhs: EditableProductVariationModel) -> Bool {
         return lhs.productVariation == rhs.productVariation
-    }
-}
-
-extension EditableProductVariationModel {
-    enum Localization {
-        static let anyAttributeFormat =
-            NSLocalizedString("Any %1$@", comment: "Format of a product variation attribute description where the attribute is set to any value.")
     }
 }

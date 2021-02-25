@@ -90,7 +90,13 @@ final class ProductVariationsViewController: UIViewController {
         return stateCoordinator
     }()
 
-    private var product: Product
+    private var product: Product {
+        didSet {
+            configureRightButtonItem()
+            updateEmptyState()
+            onProductUpdate?(product)
+        }
+    }
 
     private var siteID: Int64 {
         product.siteID
@@ -112,10 +118,23 @@ final class ProductVariationsViewController: UIViewController {
     private let imageService: ImageService = ServiceLocator.imageService
     private let isAddProductVariationsEnabled: Bool
 
-    init(product: Product, formType: ProductFormType, isAddProductVariationsEnabled: Bool) {
+    private let viewModel: ProductVariationsViewModel
+    private let noticePresenter: NoticePresenter
+
+    /// Assign this closure to get notified when the underlying product changes due to new variations or new attributes.
+    ///
+    var onProductUpdate: ((Product) -> Void)?
+
+    init(viewModel: ProductVariationsViewModel,
+         product: Product,
+         formType: ProductFormType,
+         isAddProductVariationsEnabled: Bool,
+         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.product = product
         self.formType = formType
         self.isAddProductVariationsEnabled = isAddProductVariationsEnabled
+        self.viewModel = viewModel
+        self.noticePresenter = noticePresenter
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -136,12 +155,9 @@ final class ProductVariationsViewController: UIViewController {
         configureHeaderContainerView()
         configureAddButton()
         updateTopBannerView()
+        updateEmptyState()
 
         syncingCoordinator.synchronizeFirstPage()
-
-        if product.variations.isEmpty {
-            displayEmptyViewController()
-        }
     }
 
     override func viewDidLayoutSubviews() {
@@ -164,14 +180,16 @@ private extension ProductVariationsViewController {
             "Variations",
             comment: "Title that appears on top of the Product Variation List screen."
         )
-        if product.variations.isNotEmpty && isAddProductVariationsEnabled {
-            configureMoreOptionsButton()
-        }
+        configureRightButtonItem()
     }
 
-    /// Configure More Options button.
+    /// Configure right button item.
     ///
-    func configureMoreOptionsButton() {
+    func configureRightButtonItem() {
+        guard viewModel.shouldShowMoreButton(for: product) else {
+            return navigationItem.rightBarButtonItem = nil
+        }
+
         let moreButton = UIBarButtonItem(image: .moreImage,
                                          style: .plain,
                                          target: self,
@@ -216,6 +234,16 @@ private extension ProductVariationsViewController {
     ///
     func registerTableViewCells() {
         tableView.register(ProductsTabProductTableViewCell.self)
+    }
+
+    /// Shows or hides the empty state screen.
+    ///
+    func updateEmptyState() {
+        if viewModel.shouldShowEmptyState(for: product) {
+            displayEmptyViewController()
+        } else {
+            removeEmptyViewController()
+        }
     }
 
     /// Shows the EmptyStateViewController
@@ -393,7 +421,8 @@ extension ProductVariationsViewController: UITableViewDelegate {
                                                       allAttributes: allAttributes,
                                                       parentProductSKU: parentProductSKU,
                                                       formType: formType,
-                                                      productImageActionHandler: productImageActionHandler)
+                                                      productImageActionHandler: productImageActionHandler,
+                                                      isAddProductVariationsEnabled: isAddProductVariationsEnabled)
         let viewController = ProductFormViewController(viewModel: viewModel,
                                                        eventLogger: ProductVariationFormEventLogger(),
                                                        productImageActionHandler: productImageActionHandler,
@@ -424,6 +453,9 @@ private extension ProductVariationsViewController {
             guard let self = self else { return }
             self.product = updatedProduct
             self.navigateToEditAttributeViewController(allowVariationCreation: true)
+
+            // Update variations: Edge case product didn't had attributes but had variations
+            self.syncingCoordinator.synchronizeFirstPage()
         }
         show(addAttributeViewController, sender: self)
     }
@@ -437,9 +469,14 @@ private extension ProductVariationsViewController {
 
         let editAttributesViewModel = EditAttributesViewModel(product: product, allowVariationCreation: allowVariationCreation)
         let editAttributeViewController = EditAttributesViewController(viewModel: editAttributesViewModel)
-        editAttributeViewController.onVariationCreation = { [weak self] _ in
-            self?.removeEmptyViewController()
-            self?.navigationController?.popViewController(animated: true)
+        editAttributeViewController.onVariationCreation = { [weak self] updatedProduct in
+            self?.product = updatedProduct
+            navigationController.popViewController(animated: true)
+        }
+        editAttributeViewController.onAttributesUpdate = { [weak self] updatedProduct in
+            guard let self = self else { return }
+            self.product = updatedProduct
+            self.onAttributesUpdate(editAttributesViewController: editAttributeViewController)
         }
 
         guard let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) else {
@@ -448,6 +485,18 @@ private extension ProductVariationsViewController {
 
         let viewControllersUntilSelf = navigationController.viewControllers[0...indexOfSelf]
         navigationController.setViewControllers(viewControllersUntilSelf + [editAttributeViewController], animated: true)
+    }
+
+    /// Refreshes the product variations list and navigates to the appropriate screen.
+    /// Navigates back to edit attribute screen if the product has attributes.
+    /// Navigates back to variations list if the product doesn't has attributes.
+    ///
+    private func onAttributesUpdate(editAttributesViewController: UIViewController) {
+        // Refresh variations because updating an attribute updates the product variations.
+        syncingCoordinator.synchronizeFirstPage()
+
+        let viewControllerToShow = product.attributes.isNotEmpty ? editAttributesViewController : self
+        navigationController?.popToViewController(viewControllerToShow, animated: true)
     }
 }
 
@@ -461,7 +510,7 @@ private extension ProductVariationsViewController {
     }
 
     @objc func addButtonTapped() {
-        // TODO-3539: Generate new variation
+        createVariation()
     }
 }
 
@@ -518,7 +567,7 @@ private extension ProductVariationsViewController {
             self?.sync(pageNumber: pageNumber, pageSize: pageSize)
         }
 
-        ServiceLocator.noticePresenter.enqueue(notice: notice)
+        noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -551,6 +600,23 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
         }
 
         ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Creates a variation and presents a loading screen while it is created.
+    ///
+    private func createVariation() {
+        let progressViewController = InProgressViewController(viewProperties: .init(title: Localization.generatingVariation,
+                                                                                    message: Localization.waitInstructions))
+        present(progressViewController, animated: true)
+        viewModel.generateVariation(for: product) { [onProductUpdate, noticePresenter] result in
+            progressViewController.dismiss(animated: true)
+
+            guard let variation = try? result.get() else {
+                return noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
+            }
+
+            onProductUpdate?(variation)
+        }
     }
 }
 
@@ -644,5 +710,11 @@ private extension ProductVariationsViewController {
         static let moreButtonLabel = NSLocalizedString("More options", comment: "Accessibility label to show the More Options action sheet")
         static let editAttributesAction = NSLocalizedString("Edit Attributes", comment: "Action to edit the attributes and options used for variations")
         static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel button in the More Options action sheet")
+
+        static let generatingVariation = NSLocalizedString("Generating Variation", comment: "Title for the progress screen while generating a variation")
+        static let waitInstructions = NSLocalizedString("Please wait while we create the new variation",
+                                                        comment: "Instructions for the progress screen while generating a variation")
+        static let generateVariationError = NSLocalizedString("The variation couldn't be generated.",
+                                                              comment: "Error title when failing to generate a variation.")
     }
 }

@@ -1,6 +1,7 @@
 import Combine
 import UIKit
 import Yosemite
+import class AutomatticTracks.CrashLogging
 
 /// Coordinates app navigation based on authentication state: tab bar UI is shown when the app is logged in, and authentication UI is shown
 /// when the app is logged out.
@@ -38,14 +39,12 @@ final class AppCoordinator {
 
                 // More details about the UI states: https://github.com/woocommerce/woocommerce-ios/pull/3498
                 switch (isLoggedIn, needsDefaultStore) {
-                case (false, true):
+                case (false, true), (false, false):
                     self.displayAuthenticator()
                 case (true, true):
                     self.displayStorePicker()
                 case (true, false):
                     self.displayLoggedInUI()
-                default:
-                    break
                 }
                 self.isLoggedIn = isLoggedIn
             }

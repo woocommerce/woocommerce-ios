@@ -13,10 +13,16 @@ app_identifier "com.automattic.woocommerce"
 screenshots_path "./fastlane/promo_screenshots/"
 
 # Make sure to update these keys for a new version
-app_version "6.0"
+app_version "6.1"
 
 team_id "299112"
 
 skip_binary_upload true
 overwrite_screenshots true
 phased_release true
+
+# Use the decrypted API Key for authentication
+api_key_path ".configure-files/app_store_connect_fastlane_api_key.json"
+
+# Not supported when using the API, and we don't use IAP anyway
+precheck_include_in_app_purchases false

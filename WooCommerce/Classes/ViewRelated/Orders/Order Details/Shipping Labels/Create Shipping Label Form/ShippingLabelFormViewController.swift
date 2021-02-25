@@ -10,8 +10,9 @@ final class ShippingLabelFormViewController: UIViewController {
     /// Init
     ///
     init(order: Order) {
-        // TODO: pass the real origin address. It will be implemented in a next PR that fetch the store address.
-        viewModel = ShippingLabelFormViewModel(originAddress: order.billingAddress, destinationAddress: order.shippingAddress)
+        viewModel = ShippingLabelFormViewModel(siteID: order.siteID,
+                                               originAddress: nil,
+                                               destinationAddress: order.shippingAddress)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -108,9 +109,12 @@ private extension ShippingLabelFormViewController {
                        title: Localization.shipFromCellTitle,
                        body: "To be implemented",
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
-            let shippingLabelAddress = self?.viewModel.originAddress
-            let shippingAddressValidationVC = ShippingLabelAddressFormViewController(type: .origin, address: shippingLabelAddress)
-            self?.navigationController?.pushViewController(shippingAddressValidationVC, animated: true)
+            guard let self = self else { return }
+            let shippingLabelAddress = self.viewModel.originAddress
+            let shippingAddressValidationVC = ShippingLabelAddressFormViewController(siteID: self.viewModel.siteID,
+                                                                                     type: .origin,
+                                                                                     address: shippingLabelAddress)
+            self.navigationController?.pushViewController(shippingAddressValidationVC, animated: true)
         }
     }
 
@@ -120,9 +124,12 @@ private extension ShippingLabelFormViewController {
                        title: Localization.shipToCellTitle,
                        body: "To be implemented",
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
-            let shippingLabelAddress = self?.viewModel.destinationAddress
-            let shippingAddressValidationVC = ShippingLabelAddressFormViewController(type: .destination, address: shippingLabelAddress)
-            self?.navigationController?.pushViewController(shippingAddressValidationVC, animated: true)
+            guard let self = self else { return }
+            let shippingLabelAddress = self.viewModel.destinationAddress
+            let shippingAddressValidationVC = ShippingLabelAddressFormViewController(siteID: self.viewModel.siteID,
+                                                                                     type: .destination,
+                                                                                     address: shippingLabelAddress)
+            self.navigationController?.pushViewController(shippingAddressValidationVC, animated: true)
         }
     }
 

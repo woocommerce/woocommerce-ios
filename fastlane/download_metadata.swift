@@ -3,11 +3,12 @@
 import Foundation
 
 let glotPressSubtitleKey = "app_store_subtitle"
-let glotPressWhatsNewKey = "v6.0-whats-new"
+let glotPressWhatsNewKey = "v6.1-whats-new"
 let glotPressDescriptionKey = "app_store_desc"
 let glotPressKeywordsKey = "app_store_keywords"
 let glotPressPromoTextKey = "app_store_promo_text"
-let baseFolder = "./metadata"
+let scriptDir = URL(fileURLWithPath: (CommandLine.arguments.first ?? "./main.swift")).deletingLastPathComponent()
+let baseFolder = scriptDir.appendingPathComponent("metadata").path
 
 // iTunes Connect language code: GlotPress code
 let languages = [

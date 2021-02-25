@@ -15,7 +15,11 @@ final class EditAttributesViewController: UIViewController {
 
     /// Assign this closure to be notified after a variation is created.
     ///
-    var onVariationCreation: ((ProductVariation) -> Void)?
+    var onVariationCreation: ((Product) -> Void)?
+
+    /// Assign this closure to be notified after an attribute  is created or updated.
+    ///
+    var onAttributesUpdate: ((Product) -> Void)?
 
     init(viewModel: EditAttributesViewModel, noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.viewModel = viewModel
@@ -115,10 +119,24 @@ extension EditAttributesViewController {
         let addAttributeViewController = AddAttributeViewController(viewModel: addAttributeVM) { [weak self] updatedProduct in
             guard let self = self else { return }
             self.viewModel.updateProduct(updatedProduct)
+            self.onAttributesUpdate?(updatedProduct)
             self.tableView.reloadData()
-            self.navigationController?.popToViewController(self, animated: true)
         }
         show(addAttributeViewController, sender: self)
+    }
+
+    /// Navigates to `AddAttributeOptionsViewController` to provide delete/rename/edit-options functionality.
+    /// Upon completion, update the product and notify invoker
+    ///
+    private func navigateToEditAttribute(_ attribute: ProductAttribute) {
+        let editViewModel = AddAttributeOptionsViewModel(product: viewModel.product, attribute: .existing(attribute: attribute), allowsEditing: true)
+        let editViewController = AddAttributeOptionsViewController(viewModel: editViewModel) { [weak self] updatedProduct in
+            guard let self = self else { return }
+            self.viewModel.updateProduct(updatedProduct)
+            self.onAttributesUpdate?(updatedProduct)
+            self.tableView.reloadData()
+        }
+        show(editViewController, sender: true)
     }
 }
 
@@ -138,7 +156,9 @@ extension EditAttributesViewController: UITableViewDataSource, UITableViewDelega
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // TODO: Navigate to edit attribute
+        tableView.deselectRow(at: indexPath, animated: true)
+        let attribute = viewModel.productAttributeAtIndex(indexPath.row)
+        navigateToEditAttribute(attribute)
     }
 }
 

@@ -76,7 +76,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
             XCTAssertTrue(expectedVariation.downloadable)
 
             XCTAssertTrue(expectedVariation.manageStock)
-            XCTAssertEqual(expectedVariation.stockQuantity, 16)
+            XCTAssertEqual(expectedVariation.stockQuantity, 16.5)
             XCTAssertEqual(expectedVariation.backordersKey, "notify")
             XCTAssertTrue(expectedVariation.backordersAllowed)
             XCTAssertFalse(expectedVariation.backordered)
@@ -251,6 +251,53 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(try XCTUnwrap(result).isFailure)
+    }
+
+    // MARK: - Delete ProductVariation
+
+    /// Verifies that deleteProductVariation properly parses the `product-variation` sample response.
+    ///
+    func test_deleteProductVariation_properly_returns_parsed_ProductVariation() throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let sampleProductVariationID: Int64 = 1275
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations/\(sampleProductVariationID)", filename: "product-variation")
+
+        // When
+        let result = waitFor { promise in
+            remote.deleteProductVariation(siteID: self.sampleSiteID,
+                                          productID: self.sampleProductID,
+                                          variationID: sampleProductVariationID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+
+        let productVariation = try result.get()
+        XCTAssertEqual(productVariation.productID, sampleProductID)
+        XCTAssertEqual(productVariation.productVariationID, sampleProductVariationID)
+    }
+
+    /// Verifies that deleteProductVariation properly relays Networking Layer errors.
+    ///
+    func test_deleteProductVariation_properly_relays_networking_errors() {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let sampleProductVariationID: Int64 = 1275
+
+        // When
+        let result = waitFor { promise in
+            remote.deleteProductVariation(siteID: self.sampleSiteID,
+                                          productID: self.sampleProductID,
+                                          variationID: sampleProductVariationID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
     }
 }
 

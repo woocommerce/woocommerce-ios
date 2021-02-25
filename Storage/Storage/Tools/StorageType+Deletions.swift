@@ -30,6 +30,16 @@ public extension StorageType {
         }
     }
 
+    /// Deletes single stored Product Variation for the provided siteID and productVariationID.
+    ///
+    func deleteProductVariation(siteID: Int64, productVariationID: Int64) {
+        guard let productVariation = loadProductVariation(siteID: siteID, productVariationID: productVariationID) else {
+            return
+        }
+
+        deleteObject(productVariation)
+    }
+
     /// Deletes all of the stored Product Shipping Class models for the provided siteID.
     ///
     func deleteProductShippingClasses(siteID: Int64) {

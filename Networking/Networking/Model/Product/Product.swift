@@ -45,7 +45,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
     public let taxClass: String?
 
     public let manageStock: Bool
-    public let stockQuantity: Int64?    // API reports Int or null
+    public let stockQuantity: Decimal?    // Core API reports Int or null; some extensions allow decimal values as well
     public let stockStatusKey: String   // instock, outofstock, backorder
 
     public let backordersKey: String    // no, notify, yes
@@ -109,6 +109,17 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         return ProductTaxStatus(rawValue: taxStatusKey)
     }
 
+    /// Whether the product has an integer (or nil) stock quantity.
+    /// Decimal (non-integer) stock quantities currently aren't accepted by the Core API.
+    /// Related issue: https://github.com/woocommerce/woocommerce-ios/issues/3494
+    public var hasIntegerStockQuantity: Bool {
+        guard let stockQuantity = stockQuantity else {
+            return true
+        }
+
+        return stockQuantity.isInteger
+    }
+
     /// Product struct initializer.
     ///
     public init(siteID: Int64,
@@ -144,7 +155,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
                 taxStatusKey: String,
                 taxClass: String?,
                 manageStock: Bool,
-                stockQuantity: Int64?,
+                stockQuantity: Decimal?,
                 stockStatusKey: String,
                 backordersKey: String,
                 backordersAllowed: Bool,
@@ -320,7 +331,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
                                                                 })
         ]) ?? false
 
-        let stockQuantity = try container.decodeIfPresent(Int64.self, forKey: .stockQuantity)
+        let stockQuantity = try container.decodeIfPresent(Decimal.self, forKey: .stockQuantity)
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
 
         let backordersKey = try container.decode(String.self, forKey: .backordersKey)
@@ -463,7 +474,12 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         try container.encode(sku, forKey: .sku)
         try container.encode(manageStock, forKey: .manageStock)
         try container.encode(soldIndividually, forKey: .soldIndividually)
-        try container.encode(stockQuantity, forKey: .stockQuantity)
+
+        // API currently only accepts integer values for stock quantity
+        if hasIntegerStockQuantity {
+            try container.encode(stockQuantity, forKey: .stockQuantity)
+        }
+
         try container.encode(backordersKey, forKey: .backordersKey)
         try container.encode(stockStatusKey, forKey: .stockStatusKey)
         try container.encode(virtual, forKey: .virtual)

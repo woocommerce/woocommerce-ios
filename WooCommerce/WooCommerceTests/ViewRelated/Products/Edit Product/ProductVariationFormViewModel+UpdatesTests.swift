@@ -90,7 +90,7 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
         // Action
         let newSKU = "94115"
         let newManageStock = !productVariation.manageStock
-        let newStockQuantity: Int64 = 17
+        let newStockQuantity: Decimal = 17
         let newBackordersSetting = ProductBackordersSetting.allowedAndNotifyCustomer
         let newStockStatus = ProductStockStatus.onBackOrder
         viewModel.updateInventorySettings(sku: newSKU,
@@ -171,5 +171,69 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(viewModel.productModel.status, .publish)
+    }
+
+    // MARK: - Deletion
+
+    func test_deleting_variation_successfully_returns_success_result() throws {
+        // Given
+        let sampleProductVariation = MockProductVariation().productVariation()
+        let model = EditableProductVariationModel(productVariation: sampleProductVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+
+        let mockStoresManager = MockStoresManager(sessionManager: SessionManager.testingInstance)
+        mockDeleteVariation(storesManager: mockStoresManager, result: .success(()))
+
+        let viewModel = ProductVariationFormViewModel(productVariation: model,
+                                                      productImageActionHandler: productImageActionHandler,
+                                                      storesManager: mockStoresManager)
+
+        // When
+        let result: Result<Void, ProductUpdateError> = waitFor { promise in
+            viewModel.deleteProductRemotely { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(mockStoresManager.receivedActions.count, 1)
+        XCTAssertNotNil(mockStoresManager.receivedActions[0] as? ProductVariationAction)
+    }
+
+    func test_deleting_variation_failure_returns_error() {
+        // Given
+        let sampleProductVariation = MockProductVariation().productVariation()
+        let model = EditableProductVariationModel(productVariation: sampleProductVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
+
+        let mockStoresManager = MockStoresManager(sessionManager: SessionManager.testingInstance)
+        mockDeleteVariation(storesManager: mockStoresManager, result: .failure(.unexpected))
+
+        let viewModel = ProductVariationFormViewModel(productVariation: model,
+                                                      productImageActionHandler: productImageActionHandler,
+                                                      storesManager: mockStoresManager)
+
+        // When
+        let result: Result<Void, ProductUpdateError> = waitFor { promise in
+            viewModel.deleteProductRemotely { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(mockStoresManager.receivedActions.count, 1)
+        XCTAssertNotNil(mockStoresManager.receivedActions[0] as? ProductVariationAction)
+    }
+}
+
+private extension ProductVariationFormViewModel_UpdatesTests {
+    func mockDeleteVariation(storesManager: MockStoresManager, result: Result<Void, ProductUpdateError>) {
+        storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            if case let ProductVariationAction.deleteProductVariation(_, onCompletion) = action {
+                onCompletion(result)
+            }
+        }
     }
 }

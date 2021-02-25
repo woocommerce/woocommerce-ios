@@ -97,14 +97,10 @@ public extension StatsStoreV4 {
                        latestDateToInclude: Date,
                        quantity: Int,
                        onCompletion: @escaping (Error?) -> Void) {
-        let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
-        let earliestDate = dateFormatter.string(from: earliestDateToInclude)
-        let latestDate = dateFormatter.string(from: latestDateToInclude)
-
         orderStatsRemote.loadOrderStats(for: siteID,
                               unit: timeRange.intervalGranularity,
-                              earliestDateToInclude: earliestDate,
-                              latestDateToInclude: latestDate,
+                              earliestDateToInclude: earliestDateToInclude,
+                              latestDateToInclude: latestDateToInclude,
                               quantity: quantity) { [weak self] (orderStatsV4, error) in
             guard let orderStatsV4 = orderStatsV4 else {
                 onCompletion(error)

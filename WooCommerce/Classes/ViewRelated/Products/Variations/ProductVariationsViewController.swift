@@ -92,6 +92,8 @@ final class ProductVariationsViewController: UIViewController {
 
     private var product: Product {
         didSet {
+            configureRightButtonItem()
+            updateEmptyState()
             onProductUpdate?(product)
         }
     }
@@ -153,12 +155,9 @@ final class ProductVariationsViewController: UIViewController {
         configureHeaderContainerView()
         configureAddButton()
         updateTopBannerView()
+        updateEmptyState()
 
         syncingCoordinator.synchronizeFirstPage()
-
-        if product.variations.isEmpty {
-            displayEmptyViewController()
-        }
     }
 
     override func viewDidLayoutSubviews() {
@@ -181,14 +180,16 @@ private extension ProductVariationsViewController {
             "Variations",
             comment: "Title that appears on top of the Product Variation List screen."
         )
-        if viewModel.showMoreButton {
-            configureMoreOptionsButton()
-        }
+        configureRightButtonItem()
     }
 
-    /// Configure More Options button.
+    /// Configure right button item.
     ///
-    func configureMoreOptionsButton() {
+    func configureRightButtonItem() {
+        guard viewModel.shouldShowMoreButton(for: product) else {
+            return navigationItem.rightBarButtonItem = nil
+        }
+
         let moreButton = UIBarButtonItem(image: .moreImage,
                                          style: .plain,
                                          target: self,
@@ -233,6 +234,16 @@ private extension ProductVariationsViewController {
     ///
     func registerTableViewCells() {
         tableView.register(ProductsTabProductTableViewCell.self)
+    }
+
+    /// Shows or hides the empty state screen.
+    ///
+    func updateEmptyState() {
+        if viewModel.shouldShowEmptyState(for: product) {
+            displayEmptyViewController()
+        } else {
+            removeEmptyViewController()
+        }
     }
 
     /// Shows the EmptyStateViewController
@@ -442,6 +453,9 @@ private extension ProductVariationsViewController {
             guard let self = self else { return }
             self.product = updatedProduct
             self.navigateToEditAttributeViewController(allowVariationCreation: true)
+
+            // Update variations: Edge case product didn't had attributes but had variations
+            self.syncingCoordinator.synchronizeFirstPage()
         }
         show(addAttributeViewController, sender: self)
     }
@@ -457,11 +471,12 @@ private extension ProductVariationsViewController {
         let editAttributeViewController = EditAttributesViewController(viewModel: editAttributesViewModel)
         editAttributeViewController.onVariationCreation = { [weak self] updatedProduct in
             self?.product = updatedProduct
-            self?.removeEmptyViewController()
-            self?.navigationController?.popViewController(animated: true)
+            navigationController.popViewController(animated: true)
         }
         editAttributeViewController.onAttributesUpdate = { [weak self] updatedProduct in
-            self?.product = updatedProduct
+            guard let self = self else { return }
+            self.product = updatedProduct
+            self.onAttributesUpdate(editAttributesViewController: editAttributeViewController)
         }
 
         guard let indexOfSelf = navigationController.viewControllers.firstIndex(of: self) else {
@@ -470,6 +485,18 @@ private extension ProductVariationsViewController {
 
         let viewControllersUntilSelf = navigationController.viewControllers[0...indexOfSelf]
         navigationController.setViewControllers(viewControllersUntilSelf + [editAttributeViewController], animated: true)
+    }
+
+    /// Refreshes the product variations list and navigates to the appropriate screen.
+    /// Navigates back to edit attribute screen if the product has attributes.
+    /// Navigates back to variations list if the product doesn't has attributes.
+    ///
+    private func onAttributesUpdate(editAttributesViewController: UIViewController) {
+        // Refresh variations because updating an attribute updates the product variations.
+        syncingCoordinator.synchronizeFirstPage()
+
+        let viewControllerToShow = product.attributes.isNotEmpty ? editAttributesViewController : self
+        navigationController?.popToViewController(viewControllerToShow, animated: true)
     }
 }
 
@@ -581,7 +608,7 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
         let progressViewController = InProgressViewController(viewProperties: .init(title: Localization.generatingVariation,
                                                                                     message: Localization.waitInstructions))
         present(progressViewController, animated: true)
-        viewModel.generateVariation { [onProductUpdate, noticePresenter] result in
+        viewModel.generateVariation(for: product) { [onProductUpdate, noticePresenter] result in
             progressViewController.dismiss(animated: true)
 
             guard let variation = try? result.get() else {

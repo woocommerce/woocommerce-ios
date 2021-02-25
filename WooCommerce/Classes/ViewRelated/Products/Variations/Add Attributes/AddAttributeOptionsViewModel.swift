@@ -61,6 +61,12 @@ final class AddAttributeOptionsViewModel {
         return state.selectedOptions.isNotEmpty && optionsToSubmit != attribute.previouslySelectedOptions
     }
 
+    /// Defines the more(...) button visibility
+    ///
+    var showMoreButton: Bool {
+        allowsEditing
+    }
+
     /// Defines ghost cells visibility
     ///
     var showGhostTableView: Bool {
@@ -84,6 +90,10 @@ final class AddAttributeOptionsViewModel {
     /// Main attribute dependency.
     ///
     private let attribute: Attribute
+
+    /// Main allows editing dependency.
+    ///
+    private let allowsEditing: Bool
 
     /// When an attribute exists, returns an already configured `ResultsController`
     /// When there isn't an existing attribute, returns a dummy/un-initialized `ResultsController`
@@ -127,10 +137,12 @@ final class AddAttributeOptionsViewModel {
 
     init(product: Product,
          attribute: Attribute,
+         allowsEditing: Bool = false,
          stores: StoresManager = ServiceLocator.stores,
          viewStorage: StorageManagerType = ServiceLocator.storageManager) {
         self.product = product
         self.attribute = attribute
+        self.allowsEditing = allowsEditing
         self.stores = stores
         self.viewStorage = viewStorage
 
@@ -191,8 +203,21 @@ extension AddAttributeOptionsViewModel {
     /// Gathers selected options and update the product's attributes
     ///
     func updateProductAttributes(onCompletion: @escaping ((Result<Product, ProductUpdateError>) -> Void)) {
-        state.isUpdating = true
         let newProduct = createUpdatedProduct()
+        performProductUpdate(newProduct, onCompletion: onCompletion)
+    }
+
+    /// Updates the product remotely by removing the current attribute
+    ///
+    func removeCurrentAttribute(onCompletion: @escaping ((Result<Product, ProductUpdateError>) -> Void)) {
+        let newProduct = createProductByRemovingCurrentAttribute()
+        performProductUpdate(newProduct, onCompletion: onCompletion)
+    }
+
+    /// Update the given product remotely.
+    ///
+    private func performProductUpdate(_ newProduct: Product, onCompletion: @escaping ((Result<Product, ProductUpdateError>) -> Void)) {
+        state.isUpdating = true
         let action = ProductAction.updateProduct(product: newProduct) { [weak self] result in
             guard let self = self else { return }
             self.state.isUpdating = false
@@ -219,6 +244,20 @@ extension AddAttributeOptionsViewModel {
             var attributes = product.attributes
             attributes.removeAll { $0.attributeID == newAttribute.attributeID && $0.name == newAttribute.name }
             attributes.append(newAttribute)
+            return attributes
+        }()
+
+        return product.copy(attributes: updatedAttributes)
+    }
+
+    /// Returns a product with the current attribute removed.
+    ///
+    private func createProductByRemovingCurrentAttribute() -> Product {
+        // Remove the current attribute from the product attribute array.
+        // Name has to be considered, because local attributes are zero-id based.
+        let updatedAttributes: [ProductAttribute] = {
+            var attributes = product.attributes
+            attributes.removeAll { $0.attributeID == attribute.attributeID && $0.name == attribute.name }
             return attributes
         }()
 

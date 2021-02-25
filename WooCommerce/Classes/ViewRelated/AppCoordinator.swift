@@ -39,11 +39,7 @@ final class AppCoordinator {
 
                 // More details about the UI states: https://github.com/woocommerce/woocommerce-ios/pull/3498
                 switch (isLoggedIn, needsDefaultStore) {
-                case (false, true):
-                    self.displayAuthenticator()
-                case (false, false):
-                    // TODO-3711: let's delete the logging once we verify the crash is caused by this case.
-                    CrashLogging.logMessage("Unexpected app state where `isLoggedIn` and `needsDefaultStore` are both `false`", level: .info)
+                case (false, true), (false, false):
                     self.displayAuthenticator()
                 case (true, true):
                     self.displayStorePicker()

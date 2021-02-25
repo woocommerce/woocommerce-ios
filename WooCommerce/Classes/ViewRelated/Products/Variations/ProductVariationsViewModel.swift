@@ -5,10 +5,6 @@ import Yosemite
 ///
 final class ProductVariationsViewModel {
 
-    /// Main product dependency.
-    ///
-    private let product: Product
-
     /// Defines if the Add Product Variations feature is enabled
     ///
     private let isAddProductVariationsEnabled: Bool
@@ -17,22 +13,30 @@ final class ProductVariationsViewModel {
     ///
     private let stores: StoresManager
 
-    /// Defines if the More Options button should be shown
-    ///
-    var showMoreButton: Bool {
-        product.variations.isNotEmpty && isAddProductVariationsEnabled
-    }
-
-    init(product: Product, isAddProductVariationsEnabled: Bool, stores: StoresManager = ServiceLocator.stores) {
-        self.product = product
+    init(isAddProductVariationsEnabled: Bool, stores: StoresManager = ServiceLocator.stores) {
         self.isAddProductVariationsEnabled = isAddProductVariationsEnabled
         self.stores = stores
     }
 
     /// Generates a variation in the host site using the product attributes
     ///
-    func generateVariation(onCompletion: @escaping (Result<Product, Error>) -> Void) {
+    func generateVariation(for product: Product, onCompletion: @escaping (Result<Product, Error>) -> Void) {
         let useCase = GenerateVariationUseCase(product: product, stores: stores)
         useCase.generateVariation(onCompletion: onCompletion)
+    }
+}
+
+/// TODO: This functions need to be converted to computed variables, once the `ViewController` is refactored to use `MMVM`.
+extension ProductVariationsViewModel {
+    /// Defines the empty state screen visibility
+    ///
+    func shouldShowEmptyState(for product: Product) -> Bool {
+        product.variations.isEmpty || product.attributes.isEmpty
+    }
+
+    /// Defines if the More Options button should be shown
+    ///
+    func shouldShowMoreButton(for product: Product) -> Bool {
+        product.variations.isNotEmpty && product.attributes.isNotEmpty && isAddProductVariationsEnabled
     }
 }

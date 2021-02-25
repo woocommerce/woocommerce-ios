@@ -223,11 +223,11 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .createProductVariation, properties: [Keys.productID: "\(productID)"])
         }
 
-        static func createVariationSuccess(productID: Int64, time: Int) -> WooAnalyticsEvent {
+        static func createVariationSuccess(productID: Int64, time: Double) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .createProductVariationSuccess, properties: [Keys.productID: "\(productID)", Keys.serverTime: "\(time)"])
         }
 
-        static func createVariationFail(productID: Int64, time: Int, error: LocalizedError) -> WooAnalyticsEvent {
+        static func createVariationFail(productID: Int64, time: Double, error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .createProductVariationFailed, properties: [Keys.productID: "\(productID)",
                                                                                     Keys.serverTime: "\(time)",
                                                                                     Keys.errorDescription: error.localizedDescription])
@@ -249,11 +249,11 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .createProductAttribute, properties: [Keys.productID: "\(productID)"])
         }
 
-        static func createAttributeSuccess(productID: Int64, time: Int) -> WooAnalyticsEvent {
+        static func createAttributeSuccess(productID: Int64, time: Double) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .createProductAttributeSuccess, properties: [Keys.productID: "\(productID)", Keys.serverTime: "\(time)"])
         }
 
-        static func createAttributeFail(productID: Int64, time: Int, error: LocalizedError) -> WooAnalyticsEvent {
+        static func createAttributeFail(productID: Int64, time: Double, error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .createProductAttributeFail, properties: [Keys.productID: "\(productID)",
                                                                                   Keys.serverTime: "\(time)",
                                                                                   Keys.errorDescription: error.localizedDescription])

@@ -515,8 +515,8 @@ private extension ProductVariationsViewController {
     }
 
     @objc func addButtonTapped() {
-        createVariation()
         analytics.track(event: WooAnalyticsEvent.Variations.addMoreVariationsButtonTapped(productID: product.productID))
+        createVariation()
     }
 }
 

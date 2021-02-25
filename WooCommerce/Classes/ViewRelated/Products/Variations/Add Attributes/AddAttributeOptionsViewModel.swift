@@ -135,16 +135,22 @@ final class AddAttributeOptionsViewModel {
     ///
     private let viewStorage: StorageManagerType
 
+    /// For tracking attribute creation
+    ///
+    private let analytics: Analytics
+
     init(product: Product,
          attribute: Attribute,
          allowsEditing: Bool = false,
          stores: StoresManager = ServiceLocator.stores,
-         viewStorage: StorageManagerType = ServiceLocator.storageManager) {
+         viewStorage: StorageManagerType = ServiceLocator.storageManager,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.product = product
         self.attribute = attribute
         self.allowsEditing = allowsEditing
         self.stores = stores
         self.viewStorage = viewStorage
+        self.analytics = analytics
 
         switch attribute {
         case .new:
@@ -217,11 +223,27 @@ extension AddAttributeOptionsViewModel {
     /// Update the given product remotely.
     ///
     private func performProductUpdate(_ newProduct: Product, onCompletion: @escaping ((Result<Product, ProductUpdateError>) -> Void)) {
+
+        // Track operation trigger
+        let startDate = Date()
+        analytics.track(event: WooAnalyticsEvent.Variations.createAttribute(productID: product.productID))
+
         state.isUpdating = true
         let action = ProductAction.updateProduct(product: newProduct) { [weak self] result in
             guard let self = self else { return }
             self.state.isUpdating = false
             onCompletion(result)
+
+            // Track operation result
+            let elapsedTime = Date().timeIntervalSince(startDate)
+            switch result {
+            case .success:
+                self.analytics.track(event: WooAnalyticsEvent.Variations.createAttributeSuccess(productID: self.product.productID, time: elapsedTime))
+            case let .failure(error):
+                self.analytics.track(event: WooAnalyticsEvent.Variations.createAttributeFail(productID: self.product.productID,
+                                                                                             time: elapsedTime,
+                                                                                             error: error))
+            }
         }
         stores.dispatch(action)
     }

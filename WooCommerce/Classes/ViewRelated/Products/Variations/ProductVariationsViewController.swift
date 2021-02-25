@@ -529,6 +529,7 @@ private extension ProductVariationsViewController {
 
         let editAttributesAction = UIAlertAction(title: Localization.editAttributesAction, style: .default) { [weak self] _ in
             self?.navigateToEditAttributeViewController(allowVariationCreation: false)
+            self?.trackEditAttributesButtonPressed()
         }
         actionSheet.addAction(editAttributesAction)
 
@@ -539,6 +540,10 @@ private extension ProductVariationsViewController {
         popoverController?.barButtonItem = sender
 
         present(actionSheet, animated: true)
+    }
+
+    func trackEditAttributesButtonPressed() {
+        analytics.track(event: WooAnalyticsEvent.Variations.editAttributesButtonTapped(productID: product.productID))
     }
 }
 

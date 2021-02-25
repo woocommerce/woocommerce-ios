@@ -107,7 +107,7 @@ private extension ShippingLabelFormViewController {
         cell.configure(state: row.cellState,
                        icon: .shippingImage,
                        title: Localization.shipFromCellTitle,
-                       body: "To be implemented",
+                       body: viewModel.originAddress?.fullNameWithCompanyAndAddress,
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             guard let self = self else { return }
             let shippingLabelAddress = self.viewModel.originAddress
@@ -126,7 +126,7 @@ private extension ShippingLabelFormViewController {
         cell.configure(state: row.cellState,
                        icon: .houseOutlinedImage,
                        title: Localization.shipToCellTitle,
-                       body: "To be implemented",
+                       body: viewModel.destinationAddress?.fullNameWithCompanyAndAddress,
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             guard let self = self else { return }
             let shippingLabelAddress = self.viewModel.destinationAddress

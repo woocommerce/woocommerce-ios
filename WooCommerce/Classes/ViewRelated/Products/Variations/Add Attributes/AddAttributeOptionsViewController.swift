@@ -351,7 +351,7 @@ extension AddAttributeOptionsViewController {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
-        let removeAction = UIAlertAction(title: Localization.removeAction, style: .default) { [weak self] _ in
+        let removeAction = UIAlertAction(title: Localization.removeAction, style: .destructive) { [weak self] _ in
             self?.presentRemoveAttributeConfirmation()
         }
         actionSheet.addAction(removeAction)

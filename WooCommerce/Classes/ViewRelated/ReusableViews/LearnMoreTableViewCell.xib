@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="74" id="iwJ-in-vYF" customClass="LearnMoreTableViewCell" customModule="WooCommerce" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="74"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="iwJ-in-vYF" id="LCt-GL-faI">
+                <rect key="frame" x="0.0" y="0.0" width="414" height="74"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoLight" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zTM-KS-b6r">
+                        <rect key="frame" x="20" y="27" width="20" height="20"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="20" id="JSv-z4-9Zr"/>
+                            <constraint firstAttribute="height" constant="20" id="Osj-o1-fKz"/>
+                        </constraints>
+                        <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </button>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ot5-CO-8GF">
+                        <rect key="frame" x="60" y="30" width="334" height="14.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="zTM-KS-b6r" firstAttribute="centerY" secondItem="LCt-GL-faI" secondAttribute="centerY" id="1dG-Vh-eS9"/>
+                    <constraint firstItem="Ot5-CO-8GF" firstAttribute="leading" secondItem="zTM-KS-b6r" secondAttribute="trailing" constant="20" id="7aG-39-Efb"/>
+                    <constraint firstAttribute="trailing" secondItem="Ot5-CO-8GF" secondAttribute="trailing" constant="20" id="8Om-ew-KS1"/>
+                    <constraint firstItem="Ot5-CO-8GF" firstAttribute="centerY" secondItem="LCt-GL-faI" secondAttribute="centerY" id="TyM-r2-SNX"/>
+                    <constraint firstItem="zTM-KS-b6r" firstAttribute="leading" secondItem="LCt-GL-faI" secondAttribute="leading" constant="20" id="ocx-j6-qGN"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="learnMoreLabel" destination="Ot5-CO-8GF" id="Xip-4J-wAO"/>
+            </connections>
+            <point key="canvasLocation" x="37.681159420289859" y="103.79464285714285"/>
+        </tableViewCell>
+    </objects>
+</document>

@@ -438,9 +438,19 @@
 		26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */; };
 		26FE09E424DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E324DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift */; };
 		26FF455F24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FF455E24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift */; };
+		31186FF325DF220B001A28D3 /* CardReaderSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31186FF225DF220B001A28D3 /* CardReaderSettingsViewModel.swift */; };
+		3118700725E06758001A28D3 /* CardReaderSettingsConnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3118700625E06758001A28D3 /* CardReaderSettingsConnectView.swift */; };
 		31316F9C25CB20FD00D9F129 /* OrderStatusListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31316F9B25CB20FD00D9F129 /* OrderStatusListViewModel.swift */; };
 		316837DA25CCA90C00E36B2F /* OrderStatusListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316837D925CCA90C00E36B2F /* OrderStatusListDataSource.swift */; };
+		318109C625E59E4000EE0BE7 /* TitleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318109C525E59E4000EE0BE7 /* TitleTableViewCell.swift */; };
+		318109D625E5A7E300EE0BE7 /* TitleTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 318109D525E5A7E300EE0BE7 /* TitleTableViewCell.xib */; };
+		318109DC25E5B51900EE0BE7 /* ImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318109DB25E5B51900EE0BE7 /* ImageTableViewCell.swift */; };
+		318109E225E5B55C00EE0BE7 /* ImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 318109E125E5B55C00EE0BE7 /* ImageTableViewCell.xib */; };
+		318109E825E5B8D600EE0BE7 /* NumberedListItemTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318109E725E5B8D600EE0BE7 /* NumberedListItemTableViewCell.swift */; };
+		318109EE25E5B8FF00EE0BE7 /* NumberedListItemTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 318109ED25E5B8FF00EE0BE7 /* NumberedListItemTableViewCell.xib */; };
 		318A9E9125D302370032C245 /* CardReaderSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318A9E9025D302370032C245 /* CardReaderSettingsViewController.swift */; };
+		31FE28C225E6D338003519F2 /* LearnMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FE28C125E6D338003519F2 /* LearnMoreTableViewCell.swift */; };
+		31FE28C825E6D384003519F2 /* LearnMoreTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31FE28C725E6D384003519F2 /* LearnMoreTableViewCell.xib */; };
 		4506BD712461965300FE6377 /* ProductVisibilityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */; };
 		4506BD722461965300FE6377 /* ProductVisibilityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */; };
 		450C2CB024CF006A00D570DD /* ProductTagsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450C2CAF24CF006A00D570DD /* ProductTagsDataSource.swift */; };
@@ -1575,9 +1585,19 @@
 		26FE09E324DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppFeedbackCardViewControllerTests.swift; sourceTree = "<group>"; };
 		26FF455E24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeprecatedStatsDashboardViewController.swift; sourceTree = "<group>"; };
 		2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		31186FF225DF220B001A28D3 /* CardReaderSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsViewModel.swift; sourceTree = "<group>"; };
+		3118700625E06758001A28D3 /* CardReaderSettingsConnectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsConnectView.swift; sourceTree = "<group>"; };
 		31316F9B25CB20FD00D9F129 /* OrderStatusListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusListViewModel.swift; sourceTree = "<group>"; };
 		316837D925CCA90C00E36B2F /* OrderStatusListDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusListDataSource.swift; sourceTree = "<group>"; };
+		318109C525E59E4000EE0BE7 /* TitleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleTableViewCell.swift; sourceTree = "<group>"; };
+		318109D525E5A7E300EE0BE7 /* TitleTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TitleTableViewCell.xib; sourceTree = "<group>"; };
+		318109DB25E5B51900EE0BE7 /* ImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTableViewCell.swift; sourceTree = "<group>"; };
+		318109E125E5B55C00EE0BE7 /* ImageTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageTableViewCell.xib; sourceTree = "<group>"; };
+		318109E725E5B8D600EE0BE7 /* NumberedListItemTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberedListItemTableViewCell.swift; sourceTree = "<group>"; };
+		318109ED25E5B8FF00EE0BE7 /* NumberedListItemTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NumberedListItemTableViewCell.xib; sourceTree = "<group>"; };
 		318A9E9025D302370032C245 /* CardReaderSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsViewController.swift; sourceTree = "<group>"; };
+		31FE28C125E6D338003519F2 /* LearnMoreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnMoreTableViewCell.swift; sourceTree = "<group>"; };
+		31FE28C725E6D384003519F2 /* LearnMoreTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LearnMoreTableViewCell.xib; sourceTree = "<group>"; };
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
 		4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVisibilityViewController.swift; sourceTree = "<group>"; };
 		4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductVisibilityViewController.xib; sourceTree = "<group>"; };
@@ -3322,6 +3342,8 @@
 			isa = PBXGroup;
 			children = (
 				318A9E9025D302370032C245 /* CardReaderSettingsViewController.swift */,
+				31186FF225DF220B001A28D3 /* CardReaderSettingsViewModel.swift */,
+				3118700625E06758001A28D3 /* CardReaderSettingsConnectView.swift */,
 			);
 			path = CardReaders;
 			sourceTree = "<group>";
@@ -5090,14 +5112,20 @@
 				B50BB4152141828F00AF0F3C /* FooterSpinnerView.swift */,
 				CE24BCCD212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift */,
 				CE24BCCE212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib */,
+				318109DB25E5B51900EE0BE7 /* ImageTableViewCell.swift */,
+				318109E125E5B55C00EE0BE7 /* ImageTableViewCell.xib */,
 				7441E1D121503F77004E6ECE /* IntrinsicTableView.swift */,
 				740382D92267D94100A627F4 /* LargeImageTableViewCell.swift */,
 				740382DA2267D94100A627F4 /* LargeImageTableViewCell.xib */,
+				31FE28C125E6D338003519F2 /* LearnMoreTableViewCell.swift */,
+				31FE28C725E6D384003519F2 /* LearnMoreTableViewCell.xib */,
 				CE2A9FBD23BFB1BD002BEC1C /* LedgerTableViewCell.swift */,
 				CE2A9FBE23BFB1BE002BEC1C /* LedgerTableViewCell.xib */,
 				CE1EC8EA20B8A3FF009762BF /* LeftImageTableViewCell.swift */,
 				CE1EC8EB20B8A3FF009762BF /* LeftImageTableViewCell.xib */,
 				26FE09DC24D9F3F600B9BDF5 /* LoadingView.swift */,
+				318109E725E5B8D600EE0BE7 /* NumberedListItemTableViewCell.swift */,
+				318109ED25E5B8FF00EE0BE7 /* NumberedListItemTableViewCell.xib */,
 				B5BE75DA213F1D1E00909A14 /* OverlayMessageView.swift */,
 				B5BE75DC213F1D3D00909A14 /* OverlayMessageView.xib */,
 				CE0F17CD22A8105800964A63 /* ReadMoreTableViewCell.swift */,
@@ -5116,6 +5144,8 @@
 				026B3C56249A046E00F7823C /* TextFieldTextAlignment.swift */,
 				CE583A092107937F00D73C1C /* TextViewTableViewCell.swift */,
 				CE583A0A2107937F00D73C1C /* TextViewTableViewCell.xib */,
+				318109C525E59E4000EE0BE7 /* TitleTableViewCell.swift */,
+				318109D525E5A7E300EE0BE7 /* TitleTableViewCell.xib */,
 				020BE74B23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.swift */,
 				020BE74C23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.xib */,
 				4512055024655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.swift */,
@@ -5560,6 +5590,7 @@
 				45AE582D230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib in Resources */,
 				B5D1AFC820BC7B9600DB0E8C /* StorePickerViewController.xib in Resources */,
 				45CDAFAF2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.xib in Resources */,
+				318109D625E5A7E300EE0BE7 /* TitleTableViewCell.xib in Resources */,
 				CE1D5A56228A0AD200DF3715 /* TwoColumnTableViewCell.xib in Resources */,
 				B57C744320F54F1C00EEFC87 /* AccountHeaderView.xib in Resources */,
 				4506BD722461965300FE6377 /* ProductVisibilityViewController.xib in Resources */,
@@ -5620,6 +5651,7 @@
 				0262DA5423A238460029AF30 /* UnitInputTableViewCell.xib in Resources */,
 				B5BE75DD213F1D3D00909A14 /* OverlayMessageView.xib in Resources */,
 				57C503DE23E8CE0D00EC0790 /* OrdersTabbedViewController.xib in Resources */,
+				31FE28C825E6D384003519F2 /* LearnMoreTableViewCell.xib in Resources */,
 				02F4F510237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.xib in Resources */,
 				45AE150324A23F03005AA948 /* ProductParentCategoriesViewController.xib in Resources */,
 				45A0E4CC2566B56000D4E8C3 /* NumberOfLinkedProductsTableViewCell.xib in Resources */,
@@ -5660,6 +5692,7 @@
 				02482A8C237BE8C7007E73ED /* LinkSettingsViewController.xib in Resources */,
 				740ADFE521C33688009EE5A9 /* licenses.html in Resources */,
 				CE2A9FC023BFB1BE002BEC1C /* LedgerTableViewCell.xib in Resources */,
+				318109EE25E5B8FF00EE0BE7 /* NumberedListItemTableViewCell.xib in Resources */,
 				45C8B2592313FA570002FA77 /* CustomerNoteTableViewCell.xib in Resources */,
 				0286B27C23C7051F003D784B /* ProductImagesViewController.xib in Resources */,
 				02F49ADE23BF3A4100FA0BFA /* ErrorSectionHeaderView.xib in Resources */,
@@ -5674,6 +5707,7 @@
 				CE21B3E120FFC59700A259D5 /* ProductDetailsTableViewCell.xib in Resources */,
 				021A84E1257DFC2A00BC71D1 /* RefundShippingLabelViewController.xib in Resources */,
 				CE35F11C2343F3B1007B2A6B /* TwoColumnHeadlineFootnoteTableViewCell.xib in Resources */,
+				318109E225E5B55C00EE0BE7 /* ImageTableViewCell.xib in Resources */,
 				451A04E72386CE8700E368C9 /* ProductImagesHeaderTableViewCell.xib in Resources */,
 				CE85FD5320F677770080B73E /* Dashboard.storyboard in Resources */,
 				B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */,
@@ -5897,8 +5931,10 @@
 				B509FED121C041DF000076A9 /* Locale+Woo.swift in Sources */,
 				B5DB01B52114AB2D00A4F797 /* CrashLogging.swift in Sources */,
 				024DF31E23743045006658FE /* TextList+AztecFormatting.swift in Sources */,
+				318109C625E59E4000EE0BE7 /* TitleTableViewCell.swift in Sources */,
 				0260F40123224E8100EDA10A /* ProductsViewController.swift in Sources */,
 				4569D3C325DC008700CDC3E2 /* SiteAddress.swift in Sources */,
+				31FE28C225E6D338003519F2 /* LearnMoreTableViewCell.swift in Sources */,
 				02D45647231CB1FB008CF0A9 /* UIImage+Dot.swift in Sources */,
 				7459A6C621B0680300F83A78 /* RequirementsChecker.swift in Sources */,
 				CE1D5A55228A0AD200DF3715 /* TwoColumnTableViewCell.swift in Sources */,
@@ -5916,6 +5952,7 @@
 				456CB50D2444BFAC00992A05 /* ProductPurchaseNoteViewController.swift in Sources */,
 				029F29FC24D94106004751CA /* EditableProductVariationModel.swift in Sources */,
 				0218B4EC242E06F00083A847 /* MediaType+WPMediaType.swift in Sources */,
+				3118700725E06758001A28D3 /* CardReaderSettingsConnectView.swift in Sources */,
 				0216271E2375044D000208D2 /* AztecFormatBar+Update.swift in Sources */,
 				026CF63A237E9ABE009563D4 /* ProductVariationsViewController.swift in Sources */,
 				45D685FE23D0FB25005F87D0 /* Throttler.swift in Sources */,
@@ -6216,6 +6253,7 @@
 				B5980A6121AC878900EBF596 /* UIDevice+Woo.swift in Sources */,
 				02521E11243DC3C400DC7810 /* CancellableMedia.swift in Sources */,
 				B517EA18218B232700730EC4 /* StringFormatter+Notes.swift in Sources */,
+				318109DC25E5B51900EE0BE7 /* ImageTableViewCell.swift in Sources */,
 				57C5FF7F250925C90074EC26 /* OrderListViewModel.swift in Sources */,
 				CE583A072107849F00D73C1C /* SwitchTableViewCell.swift in Sources */,
 				D8149F562251EE300006A245 /* UITextField+Helpers.swift in Sources */,
@@ -6348,6 +6386,7 @@
 				02BA12852461674B008D8325 /* Optional+String.swift in Sources */,
 				744F00D221B582A9007EFA93 /* StarRatingView.swift in Sources */,
 				45F627B9253603AE00894B86 /* ProductDownloadSettingsViewModel.swift in Sources */,
+				318109E825E5B8D600EE0BE7 /* NumberedListItemTableViewCell.swift in Sources */,
 				0282DD96233C960C006A5FDB /* SearchResultCell.swift in Sources */,
 				260C32BE2527A2DE00157BC2 /* IssueRefundViewModel.swift in Sources */,
 				450C2CBA24D3127500D570DD /* ProductReviewsTableViewCell.swift in Sources */,
@@ -6369,6 +6408,7 @@
 				02279587237A50C900787C63 /* AztecHeaderFormatBarCommand.swift in Sources */,
 				025C006B2550DE4700FAC222 /* BarcodeScannerViewController.swift in Sources */,
 				A6557218258B7510008AE7CA /* OrderListCellViewModel.swift in Sources */,
+				31186FF325DF220B001A28D3 /* CardReaderSettingsViewModel.swift in Sources */,
 				D8915DC12372C8AC00F63762 /* ColorStudio.swift in Sources */,
 				F997174523DC068500592D8E /* XLPagerStrip+AccessibilityIdentifier.swift in Sources */,
 				D8C2A28B231931D100F503E9 /* ReviewViewModel.swift in Sources */,

@@ -58,7 +58,9 @@ private extension CardPresentPaymentStore {
     }
 
     func connect(reader: Yosemite.CardReader, onCompletion: @escaping (Result<[Yosemite.CardReader], Error>) -> Void) {
-        // We tiptoe around this for now. 
+        // We tiptoe around this for now. We will get into error handling later:
+        // https://github.com/woocommerce/woocommerce-ios/issues/3734
+        // https://github.com/woocommerce/woocommerce-ios/issues/3741
         cardReaderService.connect(reader).sink(receiveCompletion: { error in
         }, receiveValue: { (result) in
         }).store(in: &cancellables)

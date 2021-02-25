@@ -93,7 +93,7 @@ final class ProductVariationsViewController: UIViewController {
     private var product: Product {
         didSet {
             configureRightButtonItem()
-            configureEmptyState()
+            updateEmptyState()
             onProductUpdate?(product)
         }
     }
@@ -155,7 +155,7 @@ final class ProductVariationsViewController: UIViewController {
         configureHeaderContainerView()
         configureAddButton()
         updateTopBannerView()
-        configureEmptyState()
+        updateEmptyState()
 
         syncingCoordinator.synchronizeFirstPage()
     }
@@ -238,7 +238,7 @@ private extension ProductVariationsViewController {
 
     /// Shows or hides the empty state screen.
     ///
-    func configureEmptyState() {
+    func updateEmptyState() {
         if viewModel.shouldShowEmptyState(for: product) {
             displayEmptyViewController()
         } else {

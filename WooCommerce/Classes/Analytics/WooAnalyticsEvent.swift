@@ -263,8 +263,8 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .renameProductAttributeButtonTapped, properties: [Keys.productID: "\(productID)"])
         }
 
-        static func removeAttributeButtonTapped(productID: Int64, variationID: Int64) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .removeProductAttributeButtonTapped, properties: [Keys.productID: "\(productID)", Keys.variationID: "\(variationID)"])
+        static func removeAttributeButtonTapped(productID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .removeProductAttributeButtonTapped, properties: [Keys.productID: "\(productID)"])
         }
 
         static func editVariationAttributeOptionsRowTapped(productID: Int64, variationID: Int64) -> WooAnalyticsEvent {

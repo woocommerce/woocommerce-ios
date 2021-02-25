@@ -85,7 +85,7 @@ final class AddAttributeOptionsViewModel {
 
     /// Main product dependency.
     ///
-    private let product: Product
+    let product: Product
 
     /// Main attribute dependency.
     ///

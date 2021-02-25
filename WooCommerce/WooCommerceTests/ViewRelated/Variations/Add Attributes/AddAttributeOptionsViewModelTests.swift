@@ -74,6 +74,22 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isNextButtonEnabled)
     }
 
+    func test_more_button_is_not_visible_when_editing_is_disabled() {
+        // Given, When
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName), allowsEditing: false)
+
+        // Then
+        XCTAssertFalse(viewModel.showMoreButton)
+    }
+
+    func test_more_button_is_visible_when_editing_is_enabled() {
+        // Given, When
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName), allowsEditing: true)
+
+        // Then
+        XCTAssertTrue(viewModel.showMoreButton)
+    }
+
     func test_empty_names_are_not_added_as_options() throws {
         // Given
         let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName))
@@ -358,6 +374,40 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         // Then
         let expectedAttribute = sampleAttribute(options: ["Option 1", "Option 2"])
         XCTAssertEqual(updatedProduct.attributes, [expectedAttribute])
+    }
+
+    func test_removing_current_attribute_correctly_updates_product_attributes() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .updateProduct(product, onCompletion):
+                    onCompletion(.success(product))
+            default:
+                break
+            }
+        }
+
+        let attribute1 = sampleAttribute(name: "Color", options: ["Green", "Blue"])
+        let attribute2 = sampleAttribute(name: "Size", options: ["Large", "Small"])
+        let initialProduct = sampleProduct().copy(attributes: [attribute1, attribute2])
+        let viewModel = AddAttributeOptionsViewModel(product: initialProduct, attribute: .existing(attribute: attribute2), stores: stores)
+
+
+        // When
+        let updatedProduct: Product = waitFor { promise in
+            viewModel.removeCurrentAttribute { result in
+                switch result {
+                case .success(let product):
+                    promise(product)
+                case .failure:
+                    break
+                }
+            }
+        }
+
+        // Then
+        XCTAssertEqual(updatedProduct.attributes, [attribute1])
     }
 
     func test_saving_new_attribute_does_not_override_existing_local_attribute() throws {

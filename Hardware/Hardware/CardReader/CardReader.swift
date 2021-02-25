@@ -1,5 +1,6 @@
 /// Models a Card Reader. This is the public struct that clients of
 /// Hardware are expected to consume.
+/// CardReader is meant to be inmutable. 
 public struct CardReader {
 
     /// The CardReader serial number

@@ -131,6 +131,8 @@ private extension ShippingLabelAddressFormViewController {
             self.updateTopBannerView()
             self.tableView.reloadData()
             if success {
+                // TODO: If the API response returns a suggested address,
+                // we need to display the suggested response and allow the users to select the suggested address.
                 self.onCompletion(self.viewModel.address)
             }
         }

@@ -1,5 +1,6 @@
 /// Models a Card Reader. This is the public struct that clients of
 /// Hardware are expected to consume.
+/// CardReader is meant to be inmutable. 
 public struct CardReader {
 
     /// The CardReader serial number
@@ -33,5 +34,13 @@ extension CardReader: Identifiable {
     /// differentiate serial number from identifier.
     public var id: String {
         serial
+    }
+}
+
+
+/// Instances of CardReader do not mutate state during their lifecycle.
+extension CardReader: Equatable {
+    public static func ==(lhs: CardReader, rhs: CardReader) -> Bool {
+        lhs.serial == rhs.serial
     }
 }

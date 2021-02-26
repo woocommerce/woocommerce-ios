@@ -1,6 +1,7 @@
 import Foundation
 import Networking
 import Storage
+import Hardware
 
 
 
@@ -93,6 +94,7 @@ public typealias TopEarnerStats = Networking.TopEarnerStats
 public typealias TopEarnerStatsItem = Networking.TopEarnerStatsItem
 public typealias WooAPIVersion = Networking.WooAPIVersion
 public typealias StoredProductSettings = Networking.StoredProductSettings
+public typealias CardReader = Hardware.CardReader
 
 
 // MARK: - Exported Storage Symbols

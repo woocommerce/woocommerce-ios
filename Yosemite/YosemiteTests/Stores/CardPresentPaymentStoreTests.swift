@@ -82,4 +82,35 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    func test_connect_to_reader_action_updates_returns_provided_reader_on_success() {
+        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
+                                                       storageManager: storageManager,
+                                                       network: network,
+                                                       cardReaderService: mockCardReaderService)
+
+        let expectation = self.expectation(description: "Connect to card reader")
+
+        let reader = MockCardReader.bbposChipper2XBT()
+        let action = CardPresentPaymentAction.connect(reader: reader) { result in
+            switch result {
+            case .failure:
+                XCTFail()
+            case .success(let connectedReaders):
+                // This could be called with an empty collection of readers.
+                // So we do not make the test fail if connectedReaders is Empty
+                guard !connectedReaders.isEmpty else {
+                    return
+                }
+
+                XCTAssertTrue(connectedReaders.contains(reader))
+
+                expectation.fulfill()
+            }
+        }
+
+        cardPresentStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }

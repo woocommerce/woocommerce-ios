@@ -11,7 +11,7 @@ public final class CardPresentPaymentStore: Store {
     // If retaining the service here ended up being a problem, we would need to move this Store out of Yosemite and push it up to WooCommerce.
     private let cardReaderService: CardReaderService
 
-    private var cancellable: AnyCancellable?
+    private var cancellables: Set<AnyCancellable> = []
 
     public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, cardReaderService: CardReaderService) {
         self.cardReaderService = cardReaderService
@@ -35,6 +35,8 @@ public final class CardPresentPaymentStore: Store {
         switch action {
         case .startCardReaderDiscovery(let completion):
             startCardReaderDiscovery(completion: completion)
+        case .connect(let reader, let completion):
+            connect(reader: reader, onCompletion: completion)
         }
     }
 }
@@ -49,15 +51,24 @@ private extension CardPresentPaymentStore {
         // Over simplification. This is the point where we would receive
         // new data via the CardReaderService's stream of discovered readers
         // In here, we should redirect that data to Storage and also up to the UI.
-        // For now we are sending the data up to the UI after mapping CardReaderService.CardReader
-        // to Yosemite.CardReader.
-        cancellable = cardReaderService.discoveredReaders.sink { readers in
-            let yosemiteReaaders = readers.map {
-                Yosemite.CardReader(name: $0.name, serialNumber: $0.serial)
-            }
+        // For now we are sending the data up to the UI directly
+        cardReaderService.discoveredReaders.sink { readers in
+            completion(readers)
+        }.store(in: &cancellables)
+    }
 
-            // This hurts a bit, but for now it works
-            completion(yosemiteReaaders)
-        }
+    func connect(reader: Yosemite.CardReader, onCompletion: @escaping (Result<[Yosemite.CardReader], Error>) -> Void) {
+        // We tiptoe around this for now. We will get into error handling later:
+        // https://github.com/woocommerce/woocommerce-ios/issues/3734
+        // https://github.com/woocommerce/woocommerce-ios/issues/3741
+        cardReaderService.connect(reader).sink(receiveCompletion: { error in
+        }, receiveValue: { (result) in
+        }).store(in: &cancellables)
+
+        // Dispatch completion block everytime the service published a new
+        // collection of connected readers
+        cardReaderService.connectedReaders.sink { connectedHardwareReaders in
+            onCompletion(.success(connectedHardwareReaders))
+        }.store(in: &cancellables)
     }
 }

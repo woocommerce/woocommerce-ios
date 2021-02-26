@@ -9,7 +9,7 @@ final class StripeCardReaderCacheTests: XCTestCase {
     }
 
     func test_cache_contains_cached_readers_after_adding_one_reader() {
-        let mockReader = MockStripeCardReader.bbpos()
+        let mockReader = MockStripeCardReader.bbposChipper2XBT()
 
         let cache = StripeCardReaderDiscoveryCache()
         cache.insert(mockReader)
@@ -19,7 +19,7 @@ final class StripeCardReaderCacheTests: XCTestCase {
     }
 
     func test_cache_contains_cached_readers_after_adding_an_array_of_readers() {
-        let mockReader = MockStripeCardReader.bbpos()
+        let mockReader = MockStripeCardReader.bbposChipper2XBT()
 
         let cache = StripeCardReaderDiscoveryCache()
         cache.insert([mockReader])
@@ -29,8 +29,8 @@ final class StripeCardReaderCacheTests: XCTestCase {
     }
 
     func test_cache_matches_stripe_reader() {
-        let mockStripeBBPOSReader = MockStripeCardReader.bbpos()
-        let mockStripeVerifoneReader = MockStripeCardReader.verifone()
+        let mockStripeBBPOSReader = MockStripeCardReader.bbposChipper2XBT()
+        let mockStripeVerifoneReader = MockStripeCardReader.verifoneP400()
 
         let cache = StripeCardReaderDiscoveryCache()
         cache.insert([mockStripeBBPOSReader, mockStripeVerifoneReader, mockStripeVerifoneReader, mockStripeBBPOSReader])
@@ -49,7 +49,7 @@ final class StripeCardReaderCacheTests: XCTestCase {
     }
 
     func test_cache_clears_cache() {
-        let mockReader = MockStripeCardReader.bbpos()
+        let mockReader = MockStripeCardReader.bbposChipper2XBT()
 
         let cache = StripeCardReaderDiscoveryCache()
         cache.insert([mockReader])

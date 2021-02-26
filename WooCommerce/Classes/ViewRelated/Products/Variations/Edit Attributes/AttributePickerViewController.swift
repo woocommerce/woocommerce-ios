@@ -5,14 +5,16 @@ final class AttributePickerViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
     private let viewModel: AttributePickerViewModel
+    private let analytics: Analytics
 
     typealias Completion = (_ attributes: [ProductVariationAttribute]) -> Void
     private let onCompletion: Completion
 
     /// Init
     ///
-    init(variationModel: EditableProductVariationModel, onCompletion: @escaping Completion) {
+    init(variationModel: EditableProductVariationModel, analytics: Analytics = ServiceLocator.analytics, onCompletion: @escaping Completion) {
         self.viewModel = .init(variationModel: variationModel)
+        self.analytics = analytics
         self.onCompletion = onCompletion
         super.init(nibName: nil, bundle: nil)
     }
@@ -138,6 +140,8 @@ private extension AttributePickerViewController {
 
     @objc func doneButtonPressed() {
         onCompletion(viewModel.resultAttributes)
+        analytics.track(event: WooAnalyticsEvent.Variations.editVariationAttributeOptionsDoneButtonTapped(productID: viewModel.variation.productID,
+                                                                                                          variationID: viewModel.variation.productVariationID))
     }
 
     func presentAttributeOptions(for existingAttribute: ProductAttribute?) {

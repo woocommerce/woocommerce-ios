@@ -29,6 +29,12 @@ final class AttributePickerViewModel {
         editableAttributes
     }
 
+    /// Returns the underlying variation
+    ///
+    var variation: ProductVariation {
+        variationModel.productVariation
+    }
+
     /// Selected option for variation attribute. Will be `nil` if option is "any"
     func selectedOption(for attribute: ProductAttribute) -> ProductVariationAttribute? {
         return editableAttributes.first(where: { $0.id == attribute.attributeID && $0.name == attribute.name })

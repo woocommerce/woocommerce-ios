@@ -421,6 +421,24 @@ public enum WooAnalyticsStat: String {
     case createOrderRefundNextButtonTapped = "create_order_refund_next_button_tapped"
     case createOrderRefundSummaryRefundButtonTapped = "create_order_refund_summary_refund_button_tapped"
     case createOrderRefundShippingOptionTapped = "create_order_refund_shipping_option_tapped"
+
+    // MARK: Add Variations events
+    //
+    case addFirstVariationButtonTapped = "add_first_variation_button_tapped"
+    case addMoreVariationsButtonTapped = "add_more_variations_button_tapped"
+    case createProductVariation = "create_product_variation"
+    case createProductVariationSuccess = "create_product_variation_success"
+    case createProductVariationFailed = "create_product_variation_fail"
+    case removeProductVariationButtonTapped = "remove_product_variation_button_tapped"
+    case editProductAttributesButtonTapped = "edit_product_attributes_button_tapped"
+    case addProductAttributeButtonTapped = "add_product_attribute_button_tapped"
+    case updateProductAttribute = "create_product_attribute"
+    case updateProductAttributeSuccess = "update_product_attribute_success"
+    case updateProductAttributeFail = "update_product_attribute_fail"
+    case renameProductAttributeButtonTapped = "rename_product_attribute_button_tapped"
+    case removeProductAttributeButtonTapped = "remove_product_attribute_button_tapped"
+    case editProductVariationAttributeOptionsRowTapped = "edit_product_variation_attribute_options_row_tapped"
+    case editProductVariationAttributeOptionsDoneButtonTapped = "edit_product_variation_attribute_options_done_button_tapped"
 }
 
 public extension WooAnalyticsStat {

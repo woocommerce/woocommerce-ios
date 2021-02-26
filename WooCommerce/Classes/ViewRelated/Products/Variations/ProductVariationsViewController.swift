@@ -120,6 +120,7 @@ final class ProductVariationsViewController: UIViewController {
 
     private let viewModel: ProductVariationsViewModel
     private let noticePresenter: NoticePresenter
+    private let analytics: Analytics
 
     /// Assign this closure to get notified when the underlying product changes due to new variations or new attributes.
     ///
@@ -129,12 +130,14 @@ final class ProductVariationsViewController: UIViewController {
          product: Product,
          formType: ProductFormType,
          isAddProductVariationsEnabled: Bool,
-         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.product = product
         self.formType = formType
         self.isAddProductVariationsEnabled = isAddProductVariationsEnabled
         self.viewModel = viewModel
         self.noticePresenter = noticePresenter
+        self.analytics = analytics
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -458,6 +461,8 @@ private extension ProductVariationsViewController {
             self.syncingCoordinator.synchronizeFirstPage()
         }
         show(addAttributeViewController, sender: self)
+
+        analytics.track(event: WooAnalyticsEvent.Variations.addFirstVariationButtonTapped(productID: product.productID))
     }
 
     /// Cleans the navigation stack until `self` and navigates to `EditAttributesViewController`
@@ -510,6 +515,7 @@ private extension ProductVariationsViewController {
     }
 
     @objc func addButtonTapped() {
+        analytics.track(event: WooAnalyticsEvent.Variations.addMoreVariationsButtonTapped(productID: product.productID))
         createVariation()
     }
 }
@@ -523,6 +529,7 @@ private extension ProductVariationsViewController {
 
         let editAttributesAction = UIAlertAction(title: Localization.editAttributesAction, style: .default) { [weak self] _ in
             self?.navigateToEditAttributeViewController(allowVariationCreation: false)
+            self?.trackEditAttributesButtonPressed()
         }
         actionSheet.addAction(editAttributesAction)
 
@@ -533,6 +540,10 @@ private extension ProductVariationsViewController {
         popoverController?.barButtonItem = sender
 
         present(actionSheet, animated: true)
+    }
+
+    func trackEditAttributesButtonPressed() {
+        analytics.track(event: WooAnalyticsEvent.Variations.editAttributesButtonTapped(productID: product.productID))
     }
 }
 

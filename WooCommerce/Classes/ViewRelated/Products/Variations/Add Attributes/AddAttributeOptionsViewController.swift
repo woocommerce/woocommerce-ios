@@ -11,6 +11,8 @@ final class AddAttributeOptionsViewController: UIViewController {
 
     private let noticePresenter: NoticePresenter
 
+    private let analytics: Analytics
+
     /// Closure to be invoked(with the updated product) when the update/create/remove attribute operation finishes successfully.
     ///
     private let onCompletion: (Product) -> Void
@@ -44,9 +46,11 @@ final class AddAttributeOptionsViewController: UIViewController {
     ///   - onCompletion: Closure to be invoked(with the updated product) when the update/create/remove attribute operation finishes successfully.
     init(viewModel: AddAttributeOptionsViewModel,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+         analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping (Product) -> Void) {
         self.viewModel = viewModel
         self.noticePresenter = noticePresenter
+        self.analytics = analytics
         self.onCompletion = onCompletion
         super.init(nibName: nil, bundle: nil)
     }
@@ -420,7 +424,9 @@ extension AddAttributeOptionsViewController {
 
         alertController.addCancelActionWithTitle(Localization.cancelAction)
         alertController.addDestructiveActionWithTitle(Localization.removeAction) { [weak self] _ in
-            self?.removeCurrentAttribute()
+            guard let self = self else { return }
+            self.analytics.track(event: WooAnalyticsEvent.Variations.removeAttributeButtonTapped(productID: self.viewModel.product.productID))
+            self.removeCurrentAttribute()
         }
 
         present(alertController, animated: true)

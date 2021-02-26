@@ -21,6 +21,23 @@ final class AddAttributeOptionsViewController: UIViewController {
         self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
     }
 
+    /// Sync error state screen
+    ///
+    private lazy var syncErrorViewController: EmptyStateViewController = {
+        let syncErrorVC = EmptyStateViewController(style: .list)
+
+        let message = NSAttributedString(string: Localization.syncErrorMessage, attributes: [.font: EmptyStateViewController.Config.messageFont])
+        let errorStateConfig = EmptyStateViewController.Config.withButton(message: message,
+                                                   image: .errorImage,
+                                                   details: "",
+                                                   buttonTitle: Localization.retryAction) { [weak self] in
+            self?.viewModel.synchronizeOptions()
+        }
+
+        syncErrorVC.configure(errorStateConfig)
+        return syncErrorVC
+    }()
+
     /// Initializer for `AddAttributeOptionsViewController`
     ///
     /// - Parameters:
@@ -141,6 +158,34 @@ private extension AddAttributeOptionsViewController {
         } else {
             removeGhostTableView()
         }
+
+        if viewModel.showSyncError {
+            displaySyncErrorViewController()
+        } else {
+            removeSyncErrorViewController()
+        }
+    }
+
+    /// Shows the EmptyStateViewController for options sync error state
+    ///
+    func displaySyncErrorViewController() {
+        addChild(syncErrorViewController)
+
+        syncErrorViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(syncErrorViewController.view)
+
+        syncErrorViewController.view.pinSubviewToAllEdges(view)
+        syncErrorViewController.didMove(toParent: self)
+    }
+
+    func removeSyncErrorViewController() {
+        guard syncErrorViewController.parent == self else {
+            return
+        }
+
+        syncErrorViewController.willMove(toParent: nil)
+        syncErrorViewController.view.removeFromSuperview()
+        syncErrorViewController.removeFromParent()
     }
 }
 
@@ -434,6 +479,10 @@ private extension AddAttributeOptionsViewController {
                                                             comment: "Placeholder of cell presenting the title of the new attribute option.")
         static let updateAttributeError = NSLocalizedString("The attribute couldn't be saved.",
                                                             comment: "Error title when trying to update or create an attribute remotely.")
+
+        static let syncErrorMessage = NSLocalizedString("Unable to load attribute options", comment: "Load Attribute Options Action Failed")
+        static let retryAction = NSLocalizedString("Retry", comment: "Retry Action")
+
         static let removeAttributeError = NSLocalizedString("The attribute couldn't be removed.",
                                                             comment: "Error title when trying to remove an attribute remotely.")
 

@@ -245,16 +245,16 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .addProductAttributeButtonTapped, properties: [Keys.productID: "\(productID)"])
         }
 
-        static func createAttribute(productID: Int64) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .createProductAttribute, properties: [Keys.productID: "\(productID)"])
+        static func updateAttribute(productID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .updateProductAttribute, properties: [Keys.productID: "\(productID)"])
         }
 
-        static func createAttributeSuccess(productID: Int64, time: Double) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .createProductAttributeSuccess, properties: [Keys.productID: "\(productID)", Keys.serverTime: "\(time)"])
+        static func updateAttributeSuccess(productID: Int64, time: Double) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .updateProductAttributeSuccess, properties: [Keys.productID: "\(productID)", Keys.serverTime: "\(time)"])
         }
 
-        static func createAttributeFail(productID: Int64, time: Double, error: Error) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .createProductAttributeFail, properties: [Keys.productID: "\(productID)",
+        static func updateAttributeFail(productID: Int64, time: Double, error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .updateProductAttributeFail, properties: [Keys.productID: "\(productID)",
                                                                                   Keys.serverTime: "\(time)",
                                                                                   Keys.errorDescription: error.localizedDescription])
         }

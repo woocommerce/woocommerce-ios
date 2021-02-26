@@ -226,7 +226,7 @@ extension AddAttributeOptionsViewModel {
 
         // Track operation trigger
         let startDate = Date()
-        analytics.track(event: WooAnalyticsEvent.Variations.createAttribute(productID: product.productID))
+        analytics.track(event: WooAnalyticsEvent.Variations.updateAttribute(productID: product.productID))
 
         state.isUpdating = true
         let action = ProductAction.updateProduct(product: newProduct) { [weak self] result in
@@ -238,9 +238,9 @@ extension AddAttributeOptionsViewModel {
             let elapsedTime = Date().timeIntervalSince(startDate)
             switch result {
             case .success:
-                self.analytics.track(event: WooAnalyticsEvent.Variations.createAttributeSuccess(productID: self.product.productID, time: elapsedTime))
+                self.analytics.track(event: WooAnalyticsEvent.Variations.updateAttributeSuccess(productID: self.product.productID, time: elapsedTime))
             case let .failure(error):
-                self.analytics.track(event: WooAnalyticsEvent.Variations.createAttributeFail(productID: self.product.productID,
+                self.analytics.track(event: WooAnalyticsEvent.Variations.updateAttributeFail(productID: self.product.productID,
                                                                                              time: elapsedTime,
                                                                                              error: error))
             }

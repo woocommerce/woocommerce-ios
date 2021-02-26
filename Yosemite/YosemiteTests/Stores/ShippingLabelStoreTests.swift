@@ -354,7 +354,9 @@ final class ShippingLabelStoreTests: XCTestCase {
     func test_validateAddress_returns_ShippingLabelAddressValidationResponse_on_success() throws {
         // Given
         let remote = MockShippingLabelRemote()
-        let expectedResult = ShippingLabelAddressValidationResponse(address: sampleShippingLabelAddress(), errors: nil)
+        let expectedResult = ShippingLabelAddressValidationResponse(address: sampleShippingLabelAddress(),
+                                                                    errors: nil,
+                                                                    isTrivialNormalization: true)
         remote.whenValidatingAddress(siteID: sampleSiteID,
                                      thenReturn: .success(expectedResult))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)

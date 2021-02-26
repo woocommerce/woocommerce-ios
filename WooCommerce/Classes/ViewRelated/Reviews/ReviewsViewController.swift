@@ -124,10 +124,9 @@ final class ReviewsViewController: UIViewController {
         super.viewWillAppear(animated)
 
         resetApplicationBadge()
-        transitionToResultsUpdatedState()
 
-        if isEmpty {
-            transitionToSyncingState(pageNumber: SyncingCoordinator.Defaults.pageFirstIndex)
+        if state == .emptyUnfiltered {
+            syncingCoordinator.resynchronize()
         }
 
         if AppRatingManager.shared.shouldPromptForAppReview(section: Constants.section) {

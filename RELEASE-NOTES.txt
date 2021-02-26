@@ -4,6 +4,7 @@
 -----
 
 - [*] Fix: Load product inventory settings in read-only mode when the product has a decimal stock quantity. This fixes the products tab not loading due to product decoding errors when third-party plugins enable decimal stock quantities. [https://github.com/woocommerce/woocommerce-ios/pull/3717]
+- [*] Fix: Loading state stuck in Reviews List. [https://github.com/woocommerce/woocommerce-ios/pull/3753]
 
 6.1
 -----
@@ -14,7 +15,6 @@
 - [*] Fix: Update the downloadable files row to read-only, if the product is accessed from Order Details. [https://github.com/woocommerce/woocommerce-ios/pull/3669]
 - [*] Fix: Thumbnail image of a product wasn't being loaded correctly in Order Details. [https://github.com/woocommerce/woocommerce-ios/pull/3678]
 - [*] Fix: Allow product's `regular_price` to be a number and `sold_individually` to be `null` as some third-party plugins could alter the type in the API. This could help with the products tab not loading due to product decoding errors. [https://github.com/woocommerce/woocommerce-ios/pull/3679]
-- [*] Fix: Loading state stuck in Reviews List. [https://github.com/woocommerce/woocommerce-ios/pull/3753]
 - [internal] Attempted fix for a crash in product image upload. [https://github.com/woocommerce/woocommerce-ios/pull/3693]
 
 6.0

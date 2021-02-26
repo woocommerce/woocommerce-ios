@@ -16,6 +16,7 @@ final class CardReaderSettingsViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         setTableSource()
+        setTableFooter()
 
         self.viewmodel = CardReaderSettingsViewModel()
         viewmodel.$activeView
@@ -29,7 +30,8 @@ final class CardReaderSettingsViewController: UIViewController {
             .sink { [weak self] activeAlert in
                 self?.setAlert()
             }
-            .store(in: &subscriptions)    }
+            .store(in: &subscriptions)
+    }
 
     private func setTableSource() {
         switch self.viewmodel.activeView {
@@ -40,6 +42,11 @@ final class CardReaderSettingsViewController: UIViewController {
         case .noReaders:
             noop() // TODO. Not yet implemented.
         }
+    }
+
+    /// Set the footer to supress unwanted separators on "short" tables.
+    private func setTableFooter() {
+        tableView.tableFooterView = UIView()
     }
 
     private func setAlert() {
@@ -79,7 +86,21 @@ final class CardReaderSettingsViewController: UIViewController {
     }
 
     private func addConnectedView() {
-        
+        connectedView.onPressedDisconnect = {
+            self.viewmodel.disconnectAndForget()
+        }
+
+        for rowType in connectedView.rowTypes() {
+            tableView.registerNib(for: rowType)
+        }
+
+        if viewmodel.connectedReader != nil {
+            connectedView.update(reader: viewmodel.connectedReader!)
+        }
+
+        tableView.dataSource = connectedView
+        tableView.delegate = connectedView
+        tableView.reloadData()
     }
 
     private func noop() {
@@ -104,7 +125,7 @@ final class CardReaderSettingsViewController: UIViewController {
 
     private func addFoundReaderModal() {
         // TODO Use FancyAlert instead
-        let foundReaderName = self.viewmodel.foundReader?.name ?? ""
+        let foundReaderName = self.viewmodel.foundReader?.serialNumber ?? ""
         alert = UIAlertController(
             title: "Found reader",
             message: "Do you want to connect to " + foundReaderName + "?",

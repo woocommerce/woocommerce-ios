@@ -2,15 +2,29 @@ import UIKit
 
 final class CardReaderSettingsConnectedReaderView: NSObject {
 
+    private var cardReader: CardReader?
+
     private var rows = [Row]()
 
     var onPressedDisconnect: (() -> ())?
+
+    override init() {
+        super.init()
+        rows = [
+            .connectedReader,
+            .disconnectButton
+        ]
+    }
 
     public func rowTypes() -> [UITableViewCell.Type] {
         return [
             ConnectedReaderTableViewCell.self,
             ButtonTableViewCell.self
         ]
+    }
+
+    public func update(reader: CardReader) {
+        cardReader = reader
     }
 
     private func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
@@ -25,7 +39,17 @@ final class CardReaderSettingsConnectedReaderView: NSObject {
     }
 
     private func configureConnectedReader(cell: ConnectedReaderTableViewCell) {
-        // TODO - set up the fields on the cell, e.g. reader name, battery level, etc
+        let batteryLevel = cardReader?.batteryLevel ?? 1.0
+        let batteryLevelPercent = Int(100 * batteryLevel)
+        let batteryLevelString = NumberFormatter.localizedString(from: batteryLevelPercent as NSNumber, number: .decimal)
+
+        let batteryLabelFormat = NSLocalizedString(
+            "%1$@%% Battery",
+            comment: "Settings > Manage Card Reader > Connected Reader >> Battery level as a percentage"
+        )
+
+        cell.batteryLevelLabel?.text = String.localizedStringWithFormat(batteryLabelFormat, batteryLevelString)
+        cell.serialNumberLabel?.text = cardReader?.serialNumber ?? "Unknown"
         cell.hideSeparator()
         cell.selectionStyle = .none
     }
@@ -90,3 +114,14 @@ extension CardReaderSettingsConnectedReaderView: UITableViewDataSource {
         return cell
     }
 }
+
+// MARK: - UITableViewDelegate Conformance
+//
+extension CardReaderSettingsConnectedReaderView: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let row = rowAtIndexPath(indexPath)
+        if row == .connectedReader {
+            return 60
+        }
+        return UITableView.automaticDimension
+    }}

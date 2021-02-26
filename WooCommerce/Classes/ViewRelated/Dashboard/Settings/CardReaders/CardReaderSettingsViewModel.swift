@@ -2,7 +2,8 @@ import Foundation
 import Combine
 
 struct CardReader {
-    var name: String
+    var serialNumber: String
+    var batteryLevel: Float
 }
 
 enum CardReaderSettingsViewActiveView {
@@ -23,6 +24,7 @@ enum CardReaderSettingsViewActiveAlert {
 }
 
 final class CardReaderSettingsViewModel: ObservableObject {
+    /// Followed by CardReaderSettingsViewController to select child views and show/hide alerts.
     @Published var activeView: CardReaderSettingsViewActiveView
     @Published var activeAlert: CardReaderSettingsViewActiveAlert
 
@@ -35,12 +37,12 @@ final class CardReaderSettingsViewModel: ObservableObject {
     init() {
         // TODO fetch initial state from Yosemite.CardReader.
         // The initial activeView and alert will be based on the knownReaders, connectedReaders and serviceState
-        self.activeView = .connectYourReader
-        self.activeAlert = .none
-        self.knownReaders = []
-        self.foundReader = nil
-        self.connectedReader = nil
-        self.timer = nil // TODO Remove
+        activeView = .connectYourReader
+        activeAlert = .none
+        knownReaders = []
+        foundReader = nil
+        connectedReader = nil
+        timer = nil // TODO Remove
     }
 
     func startSearch() {
@@ -53,8 +55,8 @@ final class CardReaderSettingsViewModel: ObservableObject {
 
     // TODO Remove
     @objc private func dummyFoundReader() {
-        self.foundReader = CardReader(name: "CHB204909001234")
-        self.activeAlert = .foundReader
+        foundReader = CardReader(serialNumber: "CHB204909001234", batteryLevel: 0.885)
+        activeAlert = .foundReader
     }
 
     func stopSearch() {
@@ -76,11 +78,19 @@ final class CardReaderSettingsViewModel: ObservableObject {
         activeAlert = .none
     }
 
+    func disconnectAndForget() {
+        // TODO dispatch an action to disconnect.
+        connectedReader = nil
+        activeView = .connectYourReader
+        activeAlert = .none
+    }
+
     // TODO Remove
     @objc private func dummyConnectedReader() {
-        self.connectedReader = self.foundReader
-        self.activeView = .connectedToReader
-        self.activeAlert = .none
+        connectedReader = foundReader
+        foundReader = nil
+        activeView = .connectedToReader
+        activeAlert = .none
     }
 
     func updateSoftware() {

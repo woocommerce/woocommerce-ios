@@ -75,14 +75,9 @@ final class OrderStatusListViewController: UIViewController {
 //
 extension OrderStatusListViewController {
     func configureNavigationBar() {
-        configureNavigationBarStyle()
         configureTitle()
         configureLeftButton()
         configureRightButton()
-    }
-
-    func configureNavigationBarStyle() {
-        navigationController?.navigationBar.barStyle = .black
     }
 
     func configureTitle() {

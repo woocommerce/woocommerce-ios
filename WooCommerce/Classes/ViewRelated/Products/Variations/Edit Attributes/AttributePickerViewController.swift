@@ -29,6 +29,7 @@ final class AttributePickerViewController: UIViewController {
         registerTableViewHeaderSections()
         registerTableViewCells()
         configureTableView()
+        handleSwipeBackGesture()
     }
 }
 
@@ -132,6 +133,23 @@ private extension AttributePickerViewController {
     }
 }
 
+// MARK: Back Navigation
+extension AttributePickerViewController {
+
+    override func shouldPopOnBackButton() -> Bool {
+        guard viewModel.isChanged else {
+            return true
+        }
+
+        presentBackNavigationActionSheet()
+        return false
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
+    }
+}
+
 // MARK: - Navigation actions handling
 //
 private extension AttributePickerViewController {
@@ -169,6 +187,12 @@ private extension AttributePickerViewController {
         viewModel.update(oldAttribute: oldAttribute, to: newAttribute)
         tableView.reloadData()
         updateDoneButton()
+    }
+
+    func presentBackNavigationActionSheet() {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
     }
 }
 

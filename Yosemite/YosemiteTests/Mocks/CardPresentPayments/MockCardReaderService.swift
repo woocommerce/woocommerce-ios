@@ -48,7 +48,7 @@ final class MockCardReaderService: CardReaderService {
     func connect(_ reader: Hardware.CardReader) -> Future<Void, Error> {
         Future() { promise in
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self] in
-                let connectedReader = MockCardReader.bbpos()
+                let connectedReader = MockCardReader.bbposChipper2XBT()
                 promise(Result.success(()))
                 self?.connectedReadersSubject.send([connectedReader])
             }

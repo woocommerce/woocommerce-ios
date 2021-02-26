@@ -91,7 +91,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         let expectation = self.expectation(description: "Connect to card reader")
 
-        let reader = MockCardReader.bbpos()
+        let reader = MockCardReader.bbposChipper2XBT()
         let action = CardPresentPaymentAction.connect(reader: reader) { result in
             switch result {
             case .failure:

@@ -112,11 +112,22 @@ private extension TracksProvider {
 
 
 extension TracksProvider: WPAnalyticsTracker {
-    public func trackString(_ event: String!) {
+    public func trackString(_ event: String?) {
         trackString(event, withProperties: nil)
     }
 
-    public func trackString(_ event: String!, withProperties properties: [AnyHashable : Any]!) {
+    public func trackString(_ event: String?, withProperties properties: [AnyHashable: Any]?) {
+        guard let eventName = event else {
+            DDLogInfo("🔴 Attempted to track an event without names.")
+            return
+        }
+        if properties == nil {
+            DDLogInfo("🔵 Tracked: \(eventName)")
+        } else {
+            DDLogInfo("🔵 Tracked: \(eventName) <properties>")
+        }
+
+        tracksService.trackEventName(eventName, withCustomProperties: properties)
 //        if (properties == nil) {
 //            DDLogInfo(@"🔵 Tracked: %@", event);
 //        } else {
@@ -135,6 +146,7 @@ extension TracksProvider: WPAnalyticsTracker {
     }
 
     public func track(_ stat: WPAnalyticsStat, withProperties properties: [AnyHashable : Any]!) {
+        print("==== hitting the wrong thing")
 //        TracksEventPair *eventPair = [[self class] eventPairForStat:stat];
 //        if (!eventPair) {
 //            DDLogInfo(@"WPAnalyticsStat not supported by WPAnalyticsTrackerAutomatticTracks: %@", @(stat));

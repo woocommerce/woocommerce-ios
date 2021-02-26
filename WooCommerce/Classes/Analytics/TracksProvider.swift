@@ -1,9 +1,10 @@
 import Foundation
 import Yosemite
 import AutomatticTracks
+import WordPressShared
 
 
-public class TracksProvider: AnalyticsProvider {
+public class TracksProvider: NSObject, AnalyticsProvider {
 
     lazy private var contextManager: TracksContextManager = {
         return TracksContextManager()
@@ -13,12 +14,6 @@ public class TracksProvider: AnalyticsProvider {
         tracksService.eventNamePrefix = Constants.eventNamePrefix
         return tracksService
     }()
-
-
-    /// Designated Initializer
-    ///
-    init() {
-    }
 }
 
 
@@ -27,7 +22,7 @@ public class TracksProvider: AnalyticsProvider {
 public extension TracksProvider {
     func refreshUserData() {
         switchTracksUsersIfNeeded()
-        refreshMetadata()
+        refreshTracksMetadata()
     }
 
     func track(_ eventName: String) {
@@ -88,7 +83,7 @@ private extension TracksProvider {
         }
     }
 
-    func refreshMetadata() {
+    func refreshTracksMetadata() {
         DDLogInfo("♻️ Refreshing tracks metadata...")
         var userProperties = [String: Any]()
         userProperties[UserProperties.platformKey] = "iOS"
@@ -112,5 +107,45 @@ private extension TracksProvider {
         static let platformKey          = "platform"
         static let voiceOverKey         = "accessibility_voice_over_enabled"
         static let rtlKey               = "is_rtl_language"
+    }
+}
+
+
+extension TracksProvider: WPAnalyticsTracker {
+    public func trackString(_ event: String!) {
+        trackString(event, withProperties: nil)
+    }
+
+    public func trackString(_ event: String!, withProperties properties: [AnyHashable : Any]!) {
+//        if (properties == nil) {
+//            DDLogInfo(@"🔵 Tracked: %@", event);
+//        } else {
+//            NSArray<NSString *> *propertyKeys = [[properties allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+//            NSString *propertiesDescription = [[propertyKeys wp_map:^NSString *(NSString *key) {
+//                return [NSString stringWithFormat:@"%@: %@", key, properties[key]];
+//            }] componentsJoinedByString:@", "];
+//            DDLogInfo(@"🔵 Tracked: %@ <%@>", event, propertiesDescription);
+//        }
+//
+//        [self.tracksService trackEventName:event withCustomProperties:properties];
+    }
+
+    public func track(_ stat: WPAnalyticsStat) {
+        track(stat, withProperties: nil)
+    }
+
+    public func track(_ stat: WPAnalyticsStat, withProperties properties: [AnyHashable : Any]!) {
+//        TracksEventPair *eventPair = [[self class] eventPairForStat:stat];
+//        if (!eventPair) {
+//            DDLogInfo(@"WPAnalyticsStat not supported by WPAnalyticsTrackerAutomatticTracks: %@", @(stat));
+//            return;
+//        }
+//
+//        NSMutableDictionary *mergedProperties = [NSMutableDictionary new];
+//
+//        [mergedProperties addEntriesFromDictionary:eventPair.properties];
+//        [mergedProperties addEntriesFromDictionary:properties];
+//
+//        [self trackString:eventPair.eventName withProperties:mergedProperties];
     }
 }

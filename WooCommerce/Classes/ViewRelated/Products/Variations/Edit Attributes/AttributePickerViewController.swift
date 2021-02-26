@@ -189,7 +189,7 @@ private extension AttributePickerViewController {
         updateDoneButton()
     }
 
-    private func presentBackNavigationActionSheet() {
+    func presentBackNavigationActionSheet() {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         })

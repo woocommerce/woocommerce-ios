@@ -1,5 +1,5 @@
-What’s new in our 6.0 release?
+We’re excited to announce updates to the WooCommerce iOS app.
 
-You asked, we listened! Due to popular demand, the product SKU is displayed once again in the Order Details screen.
-
-We also made various enhancements, including support for drag-and-drop sorting to Linked Products, consistency fixes to visitor stats in your dashboard and top performers in your “This Week” tab, and an improvement that reduces the risk of crashes when you update the app.
+It’s now easier than ever to edit the attributes of variable products — for instance, the color and size of clothing.
+We fixed bugs affecting the “Back” button and the display of product thumbnails.
+Plus, for items that fit the description, product type details now include “Downloadable.”

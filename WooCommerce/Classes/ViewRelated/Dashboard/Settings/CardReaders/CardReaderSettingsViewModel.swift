@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import OSLog
 
 struct CardReader {
     var serialNumber: String
@@ -27,12 +28,13 @@ final class CardReaderSettingsViewModel: ObservableObject {
     /// Followed by CardReaderSettingsViewController to select child views and show/hide alerts.
     @Published var activeView: CardReaderSettingsViewActiveView
     @Published var activeAlert: CardReaderSettingsViewActiveAlert
+    @Published var connectedReader: CardReader?
 
     var knownReaders: [CardReader]
     var foundReader: CardReader?
-    var connectedReader: CardReader?
 
     var timer: Timer? // TODO Remove
+    var batteryTimer: Timer? // TODO Remove
 
     init() {
         // TODO fetch initial state from Yosemite.CardReader.
@@ -43,6 +45,13 @@ final class CardReaderSettingsViewModel: ObservableObject {
         foundReader = nil
         connectedReader = nil
         timer = nil // TODO Remove
+
+        // TODO Remove - simulates a declining battery level with a timer
+        batteryTimer = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(dummyUpdateBattery), userInfo: nil, repeats: true)
+    }
+
+    deinit {
+        batteryTimer?.invalidate()
     }
 
     func startSearch() {
@@ -57,6 +66,20 @@ final class CardReaderSettingsViewModel: ObservableObject {
     @objc private func dummyFoundReader() {
         foundReader = CardReader(serialNumber: "CHB204909001234", batteryLevel: 0.885)
         activeAlert = .foundReader
+    }
+
+    // TODO Remove
+    @objc private func dummyUpdateBattery() {
+        guard var batteryLevel = connectedReader?.batteryLevel else {
+            return
+        }
+
+        batteryLevel = batteryLevel * 0.99
+        connectedReader?.batteryLevel = batteryLevel
+
+        if #available(iOS 14.0, *) {
+            os_log("In dummyUpdateBattery, batteryLevel = %.2f", log: .default, type: .debug, batteryLevel)
+        }
     }
 
     func stopSearch() {

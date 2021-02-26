@@ -31,10 +31,17 @@ final class CardReaderSettingsViewController: UIViewController {
                 self?.setAlert()
             }
             .store(in: &subscriptions)
+        viewmodel.$connectedReader
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] connectedReader in
+                self?.connectedView.connectedReader = connectedReader
+                self?.tableView.reloadData()
+            }
+            .store(in: &subscriptions)
     }
 
     private func setTableSource() {
-        switch self.viewmodel.activeView {
+        switch viewmodel.activeView {
         case .connectYourReader:
             addCleanSlateView()
         case .connectedToReader:
@@ -94,10 +101,7 @@ final class CardReaderSettingsViewController: UIViewController {
             tableView.registerNib(for: rowType)
         }
 
-        if viewmodel.connectedReader != nil {
-            connectedView.update(reader: viewmodel.connectedReader!)
-        }
-
+        connectedView.connectedReader = viewmodel.connectedReader
         tableView.dataSource = connectedView
         tableView.delegate = connectedView
         tableView.reloadData()

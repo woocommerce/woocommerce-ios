@@ -2,11 +2,12 @@ import UIKit
 
 final class CardReaderSettingsConnectedReaderView: NSObject {
 
-    private var cardReader: CardReader?
-
-    private var rows = [Row]()
+    /// A simple model for this "ViewModel" - just a reference to the CardReaderSettingsViewModel connected reader
+    var connectedReader: CardReader?
 
     var onPressedDisconnect: (() -> ())?
+
+    private var rows = [Row]()
 
     override init() {
         super.init()
@@ -24,7 +25,7 @@ final class CardReaderSettingsConnectedReaderView: NSObject {
     }
 
     public func update(reader: CardReader) {
-        cardReader = reader
+        connectedReader = reader
     }
 
     private func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
@@ -39,7 +40,7 @@ final class CardReaderSettingsConnectedReaderView: NSObject {
     }
 
     private func configureConnectedReader(cell: ConnectedReaderTableViewCell) {
-        let batteryLevel = cardReader?.batteryLevel ?? 1.0
+        let batteryLevel = connectedReader?.batteryLevel ?? 1.0
         let batteryLevelPercent = Int(100 * batteryLevel)
         let batteryLevelString = NumberFormatter.localizedString(from: batteryLevelPercent as NSNumber, number: .decimal)
 
@@ -49,7 +50,7 @@ final class CardReaderSettingsConnectedReaderView: NSObject {
         )
 
         cell.batteryLevelLabel?.text = String.localizedStringWithFormat(batteryLabelFormat, batteryLevelString)
-        cell.serialNumberLabel?.text = cardReader?.serialNumber ?? "Unknown"
+        cell.serialNumberLabel?.text = connectedReader?.serialNumber ?? "Unknown"
         cell.hideSeparator()
         cell.selectionStyle = .none
     }

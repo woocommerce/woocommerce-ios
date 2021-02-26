@@ -10,6 +10,7 @@ final class CardReaderSettingsViewController: UIViewController {
     private var alert: UIAlertController?
 
     private lazy var connectView = CardReaderSettingsConnectView()
+    private lazy var connectedView = CardReaderSettingsConnectedReaderView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,28 +32,27 @@ final class CardReaderSettingsViewController: UIViewController {
             .store(in: &subscriptions)    }
 
     private func setTableSource() {
-        alert?.dismiss(animated: true, completion: nil)
-
         switch self.viewmodel.activeView {
         case .connectYourReader:
             addCleanSlateView()
-        case .manageYourReader:
-            addListView()
-        case .noReaderFound:
-            addListView()
+        case .connectedToReader:
+            addConnectedView()
+        case .noReaders:
+            noop() // TODO. Not yet implemented.
         }
     }
 
     private func setAlert() {
+        alert?.dismiss(animated: true, completion: nil)
         switch self.viewmodel.activeAlert {
         case .none:
             noop()
         case .searching:
             addSearchingModal()
         case .foundReader:
-            noop()
+            addFoundReaderModal()
         case .connecting:
-            noop()
+            addConnectingToReaderModal()
         case .tutorial:
             noop()
         case .updateAvailable:
@@ -78,8 +78,8 @@ final class CardReaderSettingsViewController: UIViewController {
         tableView.reloadData()
     }
 
-    private func addListView() {
-        // TODO Implement
+    private func addConnectedView() {
+        
     }
 
     private func noop() {
@@ -95,6 +95,43 @@ final class CardReaderSettingsViewController: UIViewController {
         )
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { UIAlertAction in
             self.viewmodel.stopSearch()
+        }
+        alert?.addAction(cancelAction)
+        if alert != nil {
+            self.present(alert!, animated: true, completion: nil)
+        }
+    }
+
+    private func addFoundReaderModal() {
+        // TODO Use FancyAlert instead
+        let foundReaderName = self.viewmodel.foundReader?.name ?? ""
+        alert = UIAlertController(
+            title: "Found reader",
+            message: "Do you want to connect to " + foundReaderName + "?",
+            preferredStyle: UIAlertController.Style.alert
+        )
+        let okAction = UIAlertAction(title: "Connect to Reader", style: .default) { UIAlertAction in
+            self.viewmodel.connect()
+        }
+        alert?.addAction(okAction)
+        let cancelAction = UIAlertAction(title: "Keep Searching", style: .cancel) { UIAlertAction in
+            self.viewmodel.startSearch()
+        }
+        alert?.addAction(cancelAction)
+        if alert != nil {
+            self.present(alert!, animated: true, completion: nil)
+        }
+    }
+
+    private func addConnectingToReaderModal() {
+        // TODO Use FancyAlert instead
+        alert = UIAlertController(
+            title: "Connecting to reader",
+            message: "Please wait",
+            preferredStyle: UIAlertController.Style.alert
+        )
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { UIAlertAction in
+            self.viewmodel.stopConnect()
         }
         alert?.addAction(cancelAction)
         if alert != nil {

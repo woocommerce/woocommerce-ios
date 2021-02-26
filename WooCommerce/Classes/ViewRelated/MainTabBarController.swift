@@ -83,10 +83,10 @@ final class MainTabBarController: UITabBarController {
 
     /// Tab view controllers
     ///
-    private let dashboardNavigationController: UINavigationController = WooNavigationController()
-    private let ordersNavigationController: UINavigationController = WooNavigationController()
-    private let productsNavigationController: UINavigationController = WooNavigationController()
-    private let reviewsNavigationController: UINavigationController = WooNavigationController()
+    private let dashboardNavigationController = WooTabNavigationController()
+    private let ordersNavigationController = WooTabNavigationController()
+    private let productsNavigationController = WooTabNavigationController()
+    private let reviewsNavigationController = WooTabNavigationController()
     private var reviewsTabCoordinator: Coordinator?
 
     private var cancellableSiteID: ObservationToken?

@@ -82,7 +82,7 @@ extension ShippingLabelAddressFormViewModel {
             case .failure(let error):
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
                 self?.isAddressValidated = false
-                self?.addressValidationError = nil
+                self?.addressValidationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
                 onSuccess?(false, nil)
             }
         }

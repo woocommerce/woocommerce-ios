@@ -107,7 +107,7 @@ private extension ShippingLabelAddressFormViewController {
     }
 
     func updateTopBannerView() {
-        topBannerView.isHidden = viewModel.addressValidationError?.generalError != nil
+        topBannerView.isHidden = viewModel.addressValidationError?.generalError == nil
         tableView.updateHeaderHeight()
     }
 
@@ -228,10 +228,11 @@ private extension ShippingLabelAddressFormViewController {
     }
 
     func configureAddress(cell: TitleAndTextFieldTableViewCell, row: Row) {
+        let state: TitleAndTextFieldTableViewCell.ViewModel.State = viewModel.addressValidationError?.addressError == nil ? .normal : .error
         let cellViewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.addressField,
                                                                      text: viewModel.address?.address1,
                                                                      placeholder: Localization.addressFieldPlaceholder,
-                                                                     state: .normal,
+                                                                     state: state,
                                                                      keyboardType: .default,
                                                                      textFieldAlignment: .leading) { [weak self] (newText) in
             self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)

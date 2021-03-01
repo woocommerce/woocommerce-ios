@@ -284,8 +284,10 @@ private extension OrderDetailsDataSource {
             configureAggregateOrderItem(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .shippingLabelCreateButton:
             configureCreateShippingLabelButton(cell: cell, at: indexPath)
-        case let cell as ButtonTableViewCell where row == .markCompleteButton:
-            configureMarkCompleteButton(cell: cell)
+        case let cell as ButtonTableViewCell where row == .markCompletePrimaryButton:
+            configureMarkCompleteButton(cell: cell, buttonStyle: .primary)
+        case let cell as ButtonTableViewCell where row == .markCompleteSecondaryButton:
+            configureMarkCompleteButton(cell: cell, buttonStyle: .secondary)
         case let cell as ButtonTableViewCell where row == .shippingLabelReprintButton:
             configureReprintShippingLabelButton(cell: cell, at: indexPath)
         case let cell as OrderTrackingTableViewCell where row == .tracking:
@@ -603,8 +605,8 @@ private extension OrderDetailsDataSource {
         )
     }
 
-    private func configureMarkCompleteButton(cell: ButtonTableViewCell) {
-        cell.configure(title: Titles.markComplete) { [weak self] in
+    private func configureMarkCompleteButton(cell: ButtonTableViewCell, buttonStyle: ButtonTableViewCell.Style) {
+        cell.configure(style: buttonStyle, title: Titles.markComplete) { [weak self] in
             self?.onCellAction?(.markComplete, nil)
         }
         cell.showSeparator()
@@ -763,7 +765,8 @@ extension OrderDetailsDataSource {
             }
 
             if isProcessingPayment {
-                rows.append(.markCompleteButton)
+                let markCompleteButtonRow: Row = rows.contains(.shippingLabelCreateButton) ? .markCompleteSecondaryButton : .markCompletePrimaryButton
+                rows.append(markCompleteButtonRow)
             } else if isRefundedStatus == false {
                 rows.append(.details)
             }
@@ -1186,7 +1189,8 @@ extension OrderDetailsDataSource {
     enum Row {
         case summary
         case aggregateOrderItem
-        case markCompleteButton
+        case markCompletePrimaryButton
+        case markCompleteSecondaryButton
         case details
         case refundedProducts
         case issueRefundButton
@@ -1218,7 +1222,7 @@ extension OrderDetailsDataSource {
                 return SummaryTableViewCell.reuseIdentifier
             case .aggregateOrderItem:
                 return ProductDetailsTableViewCell.reuseIdentifier
-            case .markCompleteButton:
+            case .markCompletePrimaryButton, .markCompleteSecondaryButton:
                 return ButtonTableViewCell.reuseIdentifier
             case .details:
                 return WooBasicTableViewCell.reuseIdentifier

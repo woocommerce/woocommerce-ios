@@ -94,7 +94,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let productsSection = try section(withTitle: Title.products, from: dataSource)
-        let buttonRow = row(row: .markCompleteButton, in: productsSection)
+        let buttonRow = row(row: .markCompletePrimaryButton, in: productsSection)
         XCTAssertNotNil(buttonRow)
     }
 
@@ -108,8 +108,8 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let productsSection = try section(withTitle: Title.products, from: dataSource)
-        let buttonRow = row(row: .markCompleteButton, in: productsSection)
-        XCTAssertNil(buttonRow)
+        XCTAssertNil(row(row: .markCompletePrimaryButton, in: productsSection))
+        XCTAssertNil(row(row: .markCompleteSecondaryButton, in: productsSection))
     }
 }
 

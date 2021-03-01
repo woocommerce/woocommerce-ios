@@ -17,7 +17,7 @@ final class WooTabNavigationController: UINavigationController {
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) ? .default: StyleManager.statusBarLight
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) ? .default : StyleManager.statusBarLight
     }
 }
 

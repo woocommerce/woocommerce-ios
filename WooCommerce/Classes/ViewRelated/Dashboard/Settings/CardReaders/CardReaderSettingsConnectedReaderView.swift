@@ -51,7 +51,6 @@ final class CardReaderSettingsConnectedReaderView: NSObject {
 
         cell.batteryLevelLabel?.text = String.localizedStringWithFormat(batteryLabelFormat, batteryLevelString)
         cell.serialNumberLabel?.text = connectedReader?.serialNumber ?? "Unknown"
-        cell.hideSeparator()
         cell.selectionStyle = .none
     }
 
@@ -63,7 +62,6 @@ final class CardReaderSettingsConnectedReaderView: NSObject {
         cell.configure(title: buttonTitle) { [weak self] in
             self?.onPressedDisconnect?()
         }
-        cell.hideSeparator()
         cell.selectionStyle = .none
     }
 }

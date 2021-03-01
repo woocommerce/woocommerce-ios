@@ -98,10 +98,11 @@ private extension CardReaderSettingsConnectedReaderView {
 //
 extension CardReaderSettingsConnectedReaderView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return NSLocalizedString(
-            "CONNECTED READER",
+        let sectionHeaderTitle = NSLocalizedString(
+            "Connected Reader",
             comment: "Settings > Manage Card Reader > Connected Reader Table Section Heading"
         )
+        return sectionHeaderTitle.uppercased()
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

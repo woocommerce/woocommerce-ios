@@ -53,6 +53,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
+        observeViewModel()
         configureConfirmButton()
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
     }
@@ -64,10 +65,17 @@ private extension ShippingLabelAddressFormViewController {
 
     func configureNavigationBar() {
         title = viewModel.type == .origin ? Localization.titleViewShipFrom : Localization.titleViewShipTo
-
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
-
         removeNavigationBackBarButtonText()
+        if viewModel.showLoadingIndicator {
+            configureRightButtonItemAsLoader()
+        }
+        else {
+            configureRightBarButtonItemAsDone()
+        }
+    }
+
+    func configureRightBarButtonItemAsDone() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
     }
 
     func configureRightButtonItemAsLoader() {
@@ -106,6 +114,15 @@ private extension ShippingLabelAddressFormViewController {
         }
     }
 
+    func observeViewModel() {
+        viewModel.onChange = { [weak self] in
+            guard let self = self else { return }
+            self.configureNavigationBar()
+            self.updateTopBannerView()
+            self.tableView.reloadData()
+        }
+    }
+
     func updateTopBannerView() {
         topBannerView.isHidden = !viewModel.shouldShowTopBannerView
         tableView.updateHeaderHeight()
@@ -124,12 +141,8 @@ private extension ShippingLabelAddressFormViewController {
 private extension ShippingLabelAddressFormViewController {
 
     @objc func doneButtonTapped() {
-        configureRightButtonItemAsLoader()
         viewModel.validateAddress { [weak self] (success, error) in
             guard let self = self else { return }
-            self.configureNavigationBar()
-            self.updateTopBannerView()
-            self.tableView.reloadData()
             if success {
                 // TODO: If the API response returns a suggested address,
                 // we need to display the suggested response and allow the users to select the suggested address.

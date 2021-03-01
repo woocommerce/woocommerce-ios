@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-02-12 14:03:12+0000 */
+/* Translation-Revision-Date: 2021-02-25 13:44:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -181,6 +181,9 @@
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "Lägg till fil";
 
+/* Action to add new attribute on the Product Attributes screen */
+"Add New Attribute" = "Lägg till nytt attribut";
+
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Lägg till foto";
 
@@ -198,7 +201,8 @@
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "Lägg till spårning";
 
-/* Title on add variation button when there are no variations */
+/* Action to add new variation on the variations list
+   Title on add variation button when there are no variations */
 "Add Variation" = "Lägg till variation";
 
 /* Accessibility label for the 'Add a note' button
@@ -247,6 +251,12 @@
 
 /* Title on the variations list screen when there are no variations */
 "Add your first variation" = "Lägg till din första variation";
+
+/* Text field address in Shipping Label Address Validation */
+"Address" = "Adress";
+
+/* Text field address 2 in Shipping Label Address Validation */
+"Address 2" = "Adress 2";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Lägger till spårning för en order.";
@@ -303,8 +313,9 @@
    Title when there is no filter set. */
 "Any" = "Alla";
 
-/* Format of a product variation attribute description where the attribute is set to any value. */
-"Any %@" = "Valfri %@";
+/* Format of a product variation attribute description where the attribute is set to any value.
+   Product variation attribute description where the attribute is set to any value. */
+"Any %1$@" = "Any %1$@";
 
 /* Message shown when Apple authentication fails. */
 "Apple authentication failed.\nPlease make sure you are signed in to iCloud with an Apple ID that uses two-factor authentication." = "Autentiseringen via Apple misslyckades.\nSe till att du är inloggad på iCloud med ett Apple-ID som använder tvåfaktorautentisering.";
@@ -342,9 +353,6 @@
 
 /* Message on the alert when the user taps to delete a Product image */
 "Are you sure you want to remove this image?" = "Är du säker på att du vill ta bort den här bilden?";
-
-/* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
-"Attribute name" = "Attributnamn";
 
 /* Edit Product Attributes screen navigation title
    Title of the attributes row on Product Variation main screen */
@@ -421,7 +429,7 @@
 "Can Not Request Link" = "Kan inte begära länk";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
 "Cancel" = "Avbryt";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -437,6 +445,9 @@
 /* The title of the alert when there is an error uploading an image
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Det går inte att ladda upp bilden";
+
+/* Card reader settings screen title */
+"Card Readers" = "Card Readers";
 
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "Transportföretagsnamn";
@@ -461,6 +472,9 @@
 /* Body of the alert when a user is changing the product type */
 "Changing the product type will modify some of the product data" = "Om du ändrar produkttypen ändras en del av produktinformationen";
 
+/* Body of the alert when a user is changing the product type */
+"Changing the product type will modify some of the product data and delete all your attributes and variations" = "Changing the product type will modify some of the product data and delete all your attributes and variations";
+
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Kontrollera att angiven URL är giltig";
 
@@ -479,11 +493,17 @@
 /* Menu option for selecting media from the device's photo library. */
 "Choose from device" = "Välj från enheten";
 
+/* Text field city in Shipping Label Address Validation */
+"City" = "Ort";
+
 /* Button title for clearing all filters for the list. */
 "Clear all" = "Rensa allt";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Samla in information";
+
+/* Text field company in Shipping Label Address Validation */
+"Company" = "Företag";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "Skapar ett nytt e-postmeddelande till faktureringskunden.";
@@ -518,8 +538,8 @@
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "Kontakta oss här";
 
-/* The button title text when there is a next step for logging in or signing up.
-   Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
+/* Continue button inside every cell inside Create Shipping Label form
+   The button title text when there is a next step for logging in or signing up. - Title of dismiss button presented when users attempt to log in without Jetpack installed or connected */
 "Continue" = "Fortsätt";
 
 /* Button title. Takes the user to the login with WordPress.com flow. */
@@ -576,6 +596,9 @@
 /* Error message when tag loading failed */
 "Couldn't load tags." = "Det gick inte att ladda etiketterna.";
 
+/* Text field country in Shipping Label Address Validation */
+"Country" = "Land";
+
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "Kraschfelsökningsmeny";
 
@@ -585,17 +608,19 @@
 /* The button title text for creating a new account. */
 "Create Account" = "Skapa konto";
 
+/* Create Shipping Label form navigation title
+   Text on the button that starts shipping label creation */
+"Create Shipping Label" = "Skapa fraktetikett";
+
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "Skapar produkter";
 
 /* Credit card payment method for shipping label. */
 "Credit card" = "Kreditkort";
 
-/* Cell title for Cross-sells products in Linked Products Settings screen */
+/* Cell title for Cross-sells products in Linked Products Settings screen
+   Navigation bar title for editing linked products for cross-sell products */
 "Cross-sells" = "Korsförsäljning";
-
-/* Navigation bar title for editing linked products for cross-sell products */
-"Cross-sells Products" = "Korsförsäljningsprodukter";
 
 /* Cell title: the current date. */
 "Current" = "Nuvarande";
@@ -634,6 +659,9 @@
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "Beskriv din produkt";
+
+/* The default placeholder text for the of the Aztec editor screen. */
+"Describe your product to your future customers..." = "Beskriv din produkt till dina blivande kunder …";
 
 /* The navigation bar title of the Aztec editor screen.
    Title in the Product description row on Product form screen when the description is non-empty. */
@@ -731,16 +759,19 @@
 "Download Settings" = "Inställningar för nedladdning";
 
 /* Title of the cell in Product Download Expiration > Download expiration */
-"Download expiration" = "Tidsgräns för nedladdning";
-
-/* Title of the cell in Product Download Expiration > Download expiration */
 "Download expiration" = "Download expiration";
 
+/* Title of the cell in Product Download Expiration > Download expiration */
+"Download expiration" = "Tidsgräns för nedladdning";
+
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Nedladdningsgräns";
 
 /* Title of the cell in Product Download limit > Download limit */
 "Download limit" = "Nedladdningsgräns";
+
+/* Display label for simple downloadable product type. */
+"Downloadable" = "Nedladdningsbar";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "Nedladdningsbara filer";
@@ -765,6 +796,10 @@
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Identifiera enkelt dina produkter med unika koder";
+
+/* Action to edit the attributes and options used for variations
+   Navigation title for the Product Attributes screen */
+"Edit Attributes" = "Redigera attribut";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Redigera produkter";
@@ -833,16 +868,16 @@
 "Enter the external URL to the product." = "Ange den externa URL:en till produkten.";
 
 /* Footer text for Download Expiration */
-"Enter the number of days before a download link expires, or leave blank if never it expires" = "Ange antal dagar tills en nedladdningslänk löper ut, eller lämna fältet tomt om länken aldrig löper ut";
-
-/* Footer text for Download Expiration */
 "Enter the number of days before a download link expires, or leave blank if never it expires" = "Enter the number of days before a download link expires, or leave blank if never it expires";
 
-/* Footer text for Downloadable Limit */
-"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Ange antalet gånger filen kan laddas ner eller lämna tom för obegränsad nedladdning";
+/* Footer text for Download Expiration */
+"Enter the number of days before a download link expires, or leave blank if never it expires" = "Ange antal dagar tills en nedladdningslänk löper ut, eller lämna fältet tomt om länken aldrig löper ut";
 
 /* Footer text for Downloadable Limit */
 "Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Ange antalet gånger som filen kan laddas ned eller lämna fältet tomt för obegränsade nerladdningar";
+
+/* Footer text for Downloadable Limit */
+"Enter the number of time file can be downloaded or leave blank for unlimited downloads" = "Ange antalet gånger filen kan laddas ner eller lämna tom för obegränsad nedladdning";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Ange lösenordet för ditt konto på WordPress.com.";
@@ -958,6 +993,9 @@
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Få insikt i hur produkter presterar i din butik";
+
+/* Title for the progress screen while generating a variation */
+"Generating Variation" = "Genererar variation";
 
 /* View title for initial auth views. */
 "Get Started" = "Kom igång";
@@ -1301,6 +1339,9 @@
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "Gör dina produkter lättare att hitta med etiketter";
 
+/* Navigates to Card Reader management screen */
+"Manage card readers" = "Manage card readers";
+
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Hantera ordrar, spåra försäljning och övervaka butiksaktivitet med varningar i realtid.";
 
@@ -1360,7 +1401,8 @@
 /* Title of the More Options section on Product Settings screen */
 "More Options" = "Fler alternativ";
 
-/* Accessibility label for the Edit Product More Options action sheet */
+/* Accessibility label for the Edit Product More Options action sheet
+   Accessibility label to show the More Options action sheet */
 "More options" = "Fler alternativ";
 
 /* Confirmation button on the alert when the user is moving a product to the trash */
@@ -1379,7 +1421,8 @@
    Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
 "My store" = "Min butik";
 
-/* Name text field placeholder */
+/* Name text field placeholder
+   Text field name in Shipping Label Address Validation */
 "Name" = "Namn";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
@@ -1403,6 +1446,9 @@
 
 /* The title for the net amount paid cell */
 "Net Payment" = "Nettobetalning";
+
+/* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
+"New Attribute Name" = "Nytt attributnamn";
 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "Nya funktioner tillgängliga!";
@@ -1543,7 +1589,7 @@
 "Option name" = "Namn på alternativ";
 
 /* Add Product Category. Placeholder of cell presenting the parent category.
-   Placeholder of the cell text field in Product Inventory Settings > SKU */
+   Placeholder of the cell text field in Product Inventory Settings > SKU - Text field placeholder in Shipping Label Address Validation */
 "Optional" = "Valfritt";
 
 /* No comment provided by engineer. */
@@ -1603,7 +1649,8 @@
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
 "Package %d" = "Förpackning %d";
 
-/* Title of package details in shipping label details */
+/* Title of package details in shipping label details
+   Title of the cell Package Details inside Create Shipping Label form */
 "Package Details" = "Förpackningsinformation";
 
 /* The title for the customer payment cell */
@@ -1628,7 +1675,8 @@
 /* Payment section title */
 "Payment" = "Betalning";
 
-/* Title of payment method in shipping label details */
+/* Title of payment method in shipping label details
+   Title of the cell Payment Method inside Create Shipping Label form */
 "Payment Method" = "Betalningsmetod";
 
 /* Display label for the review's pending status */
@@ -1640,6 +1688,9 @@
 
 /* Display label for the product's pending status */
 "Pending review" = "Inväntar granskning";
+
+/* Text field phone in Shipping Label Address Validation */
+"Phone" = "Telefon";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Telefonnummer %@";
@@ -1705,14 +1756,17 @@
    Text on the loading view of the survey screen indicating the user to wait */
 "Please wait" = "Vänta";
 
+/* Instructions for the progress screen while generating a variation */
+"Please wait while we create the new variation" = "Vänta medan vi skapar den nya variationen";
+
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Vänta tills vi publicerar den här produkten i din butik";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Vänta medan vi sparar denna produkt till din butik";
+"Please wait while we save this product to your store" = "Vänta tills vi sparar den här produkten i din butik";
 
 /* Message of the in-progress UI while saving a Product as draft remotely */
-"Please wait while we save this product to your store" = "Vänta tills vi sparar den här produkten i din butik";
+"Please wait while we save this product to your store" = "Vänta medan vi sparar denna produkt till din butik";
 
 /* Message of the in-progress UI while deleting the Product remotely */
 "Please wait while we update your store details" = "Vänta medan vi uppdaterar dina butiksdetaljer";
@@ -1720,14 +1774,17 @@
 /* Text on the loading view of the product downloadable file screen indicating the user to wait */
 "Please wait..." = "Vänta …";
 
+/* Text field postcode in Shipping Label Address Validation */
+"Postcode" = "Postnummer";
+
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Drivs av Automattic";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Previously Refunded";
+"Previously Refunded" = "Tidigare återbetalt";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Tidigare återbetalt";
+"Previously Refunded" = "Previously Refunded";
 
 /* Product Price Settings navigation title
    Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
@@ -1879,16 +1936,16 @@
 "Reason for Refund (Optional)" = "Orsak till återbetalning (valfritt)";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for refunding order" = "Reason for refunding order";
-
-/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Orsak till återbetalning av order";
 
-/* The title of the button to confirm the refund. */
-"Refund" = "Återbetala";
+/* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
+"Reason for refunding order" = "Reason for refunding order";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "Återbetalning";
+
+/* The title of the button to confirm the refund. */
+"Refund" = "Återbetala";
 
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "Återbetala #%@";
@@ -1965,6 +2022,9 @@
 /* Navigation bar title to request a refund for a shipping label
    Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "Begär en återbetalning";
+
+/* Text field placeholder in Shipping Label Address Validation */
+"Required" = "Obligatoriskt";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Återställ aktivitetslogg";
@@ -2085,10 +2145,10 @@
 "See layout and paper sizes options" = "Se alternativen för layout och pappersstorlek";
 
 /* Select all button title in the issue refund screen */
-"Select All" = "Välj alla";
+"Select All" = "Select All";
 
 /* Select all button title in the issue refund screen */
-"Select All" = "Select All";
+"Select All" = "Välj alla";
 
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "Välj överordnad kategori";
@@ -2142,10 +2202,12 @@
 /* Action: Opens the Store in a browser */
 "Share your Store" = "Dela din butik";
 
-/* Title of origin address in shipping label details */
+/* Shipping Label Address Validation navigation title
+   Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
 "Ship from" = "Avsändare";
 
-/* Title of destination address in shipping label details */
+/* Shipping Label Address Validation navigation title
+   Title of destination address in shipping label details - Title of the cell Ship From inside Create Shipping Label form */
 "Ship to" = "Leverans";
 
 /* A unit test string for order tracking. Reads as: 'Shipment Company HK Post'
@@ -2163,7 +2225,8 @@
    Shipping label for payment view - Title of the product form bottom sheet action for editing shipping settings. - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Frakt";
 
-/* Title of shipping carrier and rates in shipping label details */
+/* Title of shipping carrier and rates in shipping label details
+   Title of the cell Shipping Carrier inside Create Shipping Label form */
 "Shipping Carrier and Rates" = "Transportföretag och avgifter";
 
 /* Title of view displaying all available Shipment Tracking Carriers */
@@ -2337,11 +2400,11 @@
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Standardmoms";
 
-/* Aztec's Text Placeholder */
-"Start writing..." = "Börja skriva...";
-
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "Startperiod %1$@, slutperiod %2$@";
+
+/* Text field state in Shipping Label Address Validation */
+"State" = "Stat";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -2496,6 +2559,9 @@
 /* Taxes label for payment view */
 "Taxes" = "Momser";
 
+/* The placeholder text for the of the Aztec editor screen. */
+"Tell us more about %1$@..." = "Tell us more about %1$@...";
+
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Användarvillkor";
 
@@ -2538,6 +2604,9 @@
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "Det finns ingen gilitg värd för webbadressen.";
+
+/* Error title when trying to update or create an attribute remotely. */
+"The attribute couldn't be saved." = "Attributet kunde inte sparas.";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Certifikatet för den här servern är inte giltigt. Det kan hända att du ansluter till en server som påstår sig vara \"%@\", vilket kan försätta din sekretessbelagda information i fara.\n\nVill du lita på certifikatet i alla fall?";
@@ -2583,6 +2652,9 @@
 
 /* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
 "The stock quantity for this product. Editable." = "Lagermängden för den här produkten. Redigerbar.";
+
+/* Error title when failing to generate a variation. */
+"The variation couldn't be generated." = "Variationen kunde inte genereras.";
 
 /* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
 "The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "Den här webbplatsen är inte en WordPress-webbplats. Webbplatsen måste använda WordPress för att vi ska kunna ansluta till den.";
@@ -2630,10 +2702,10 @@
 "This is the name of the file shown to the customer." = "Det här är namnet på den fil som visas för kunden.";
 
 /* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Det här är URL:en till den fil som kunderna kommer att få tillgång till. URL:er som anges bör redan vara kodade.";
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
 
 /* Footer text for Downloadable File URL */
-"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
+"This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Det här är URL:en till den fil som kunderna kommer att få tillgång till. URL:er som anges bör redan vara kodade.";
 
 /* Accessibility label for the Shipping notice
    Shipping notice row label when there is more than one shipping method */
@@ -2666,6 +2738,9 @@
 
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "Till";
+
+/* Footer of text field section in Add Attribute screen */
+"To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Fyll i din e-postadress för att skapa ditt nya WordPress.com-konto.";
@@ -2732,7 +2807,7 @@
 "Trust" = "Godkänn";
 
 /* Button to trigger connection to another account in store picker */
-"Try another account" = "Prova med ett annat konto";
+"Try With Another Account" = "Prova med ett annat konto";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Prova med en annan e-postadress";
@@ -2877,11 +2952,12 @@
    Updated on <date> */
 "Updated on %@" = "Uppdaterad den %@";
 
-/* Cell title for Upsells products in Linked Products Settings screen */
+/* Cell title for Upsells products in Linked Products Settings screen
+   Navigation bar title for editing linked products for upsell products */
 "Upsells" = "Merförsäljning";
 
-/* Navigation bar title for editing linked products for upsell products */
-"Upsells Products" = "Merförsäljande produkter";
+/* Action to use the address in Shipping Label Validation screen as entered */
+"Use Address as Entered" = "Använd adress som angavs";
 
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
@@ -2895,9 +2971,6 @@
 
 /* Action sheet option when the user wants to change the Product type to varible product */
 "Variable product" = "Variabel produkt";
-
-/* Footer of text field section in Add Attribute screen */
-"Variation type (ie Color, Size)" = "Variationstyp (dvs. färg, storlek)";
 
 /* Title of the Product Variations row on Product main screen for a variable product
    Title that appears on top of the Product Variation List screen. */

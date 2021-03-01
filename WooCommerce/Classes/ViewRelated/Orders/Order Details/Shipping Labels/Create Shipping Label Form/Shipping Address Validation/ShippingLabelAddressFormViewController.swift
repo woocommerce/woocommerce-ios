@@ -68,8 +68,7 @@ private extension ShippingLabelAddressFormViewController {
         removeNavigationBackBarButtonText()
         if viewModel.showLoadingIndicator {
             configureRightButtonItemAsLoader()
-        }
-        else {
+        } else {
             configureRightBarButtonItemAsDone()
         }
     }

@@ -1,5 +1,0 @@
-Nouveauté de la version 6.0
-
-Nous vous avons écouté ! Suite à une demande récurrente, l’UGS du produit apparaît également dans l’écran Détails de la commande.
-
-Nous avons également apporté diverses améliorations, dont la prise en charge du tri par glisser-déposer des produits liés, la résolution de problèmes de cohérence dans les statistiques relatives aux visiteurs dans votre tableau de bord et l’affichage des produits les plus performants dans votre onglet « Cette semaine ». Nous avons également réduit le risque de défaillance lors de la mise à jour de l’application.

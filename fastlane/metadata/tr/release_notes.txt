@@ -1,5 +1,0 @@
-6.0 sürümümüzdeki yenilikler nelerdir?
-
-Siz istediniz, biz yaptık! Yaygın talepten dolayı ürün SKU'su Sipariş Ayrıntıları ekranında yeniden görüntüleniyor.
-
-Ayrıca Bağlantılı Ürünlere sürükleyip bırakarak sıralama desteği, yönetim panelinizdeki ziyaretçi istatistikleri ile "Bu Hafta" sekmenizdeki en iyi performans gösteren ürünlere yönelik tutarlılık açısından düzeltmeler ve uygulamayı güncellerken meydana gelen kilitlenme riskini azaltan bir iyileştirme de dahil olmak üzere çeşitli iyileştirmeler yaptık.

@@ -273,10 +273,12 @@ extension ProductVariationFormViewModel {
     }
 
     func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {
-        let deleteAction = ProductVariationAction.deleteProductVariation(productVariation: productVariation.productVariation) { result in
+        let deleteAction = ProductVariationAction.deleteProductVariation(productVariation: productVariation.productVariation) { [weak self] result in
             switch result {
             case .success:
-                self.onVariationDeletion?(self.productVariation.productVariation)
+                if let self = self {
+                    self.onVariationDeletion?(self.productVariation.productVariation)
+                }
                 onCompletion(.success(()))
             case .failure(let error):
                 onCompletion(.failure(error))

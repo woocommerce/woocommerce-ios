@@ -13,7 +13,7 @@ extension ShippingLabelAddress {
     var fullNameWithCompanyAndAddress: String {
         var output: [String] = [fullNameWithCompany]
 
-        if let formattedPostalAddress = formattedPostalAddress, formattedPostalAddress.isEmpty == false {
+        if let formattedPostalAddress = formattedPostalAddress, formattedPostalAddress.isNotEmpty {
             output.append(formattedPostalAddress)
         }
 
@@ -35,10 +35,10 @@ private extension ShippingLabelAddress {
     var fullNameWithCompany: String {
         var output: [String] = []
 
-        if name.isEmpty == false {
+        if name.isNotEmpty {
             output.append(name)
         }
-        if company.isEmpty == false {
+        if company.isNotEmpty {
             output.append(company)
         }
 
@@ -49,7 +49,7 @@ private extension ShippingLabelAddress {
     /// Per US Post Office standardized rules for address lines. Ref. https://pe.usps.com/text/pub28/28c2_001.htm
     ///
     var combinedAddress: String {
-        guard address2.isEmpty == false else {
+        guard address2.isNotEmpty else {
             return address1
         }
 

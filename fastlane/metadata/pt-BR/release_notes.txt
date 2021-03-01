@@ -1,5 +1,0 @@
-Novidades da versão 6.0.
-
-Você pediu, nós atendemos! Devido a inúmeros pedidos, o SKU do produto é exibido mais uma vez na tela de Detalhes do pedido.
-
-Também fizemos várias melhorias, incluindo suporte para classificação com arraste e solte para os Produtos vinculados, correções de consistência para estatísticas de visitantes no painel e melhor desempenho na guia “Esta semana”, além de uma melhoria que reduz o risco de travamentos ao atualizar o aplicativo.

@@ -188,6 +188,11 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
                                                       productImageActionHandler: productImageActionHandler,
                                                       storesManager: mockStoresManager)
 
+        let expectationForDeletionCallback = expectation(description: "Deletion callback")
+        viewModel.onVariationDeletion = { _ in
+            expectationForDeletionCallback.fulfill()
+        }
+
         // When
         let result: Result<Void, ProductUpdateError> = waitFor { promise in
             viewModel.deleteProductRemotely { result in
@@ -197,6 +202,7 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
+        wait(for: [expectationForDeletionCallback], timeout: Constants.expectationTimeout)
         XCTAssertEqual(mockStoresManager.receivedActions.count, 1)
         XCTAssertNotNil(mockStoresManager.receivedActions[0] as? ProductVariationAction)
     }
@@ -213,6 +219,9 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
         let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                       productImageActionHandler: productImageActionHandler,
                                                       storesManager: mockStoresManager)
+        viewModel.onVariationDeletion = { _ in
+            XCTFail("Deletion callback shouldn't be called on error")
+        }
 
         // When
         let result: Result<Void, ProductUpdateError> = waitFor { promise in

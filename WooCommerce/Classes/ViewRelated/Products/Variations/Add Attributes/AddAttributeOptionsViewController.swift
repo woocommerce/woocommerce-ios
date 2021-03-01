@@ -11,6 +11,8 @@ final class AddAttributeOptionsViewController: UIViewController {
 
     private let noticePresenter: NoticePresenter
 
+    private let analytics: Analytics
+
     /// Closure to be invoked(with the updated product) when the update/create/remove attribute operation finishes successfully.
     ///
     private let onCompletion: (Product) -> Void
@@ -21,15 +23,30 @@ final class AddAttributeOptionsViewController: UIViewController {
         self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
     }
 
+    /// Empty state screen
+    ///
+    private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
+
+    /// Sync error state config for EmptyStateViewController
+    ///
+    private lazy var errorStateConfig: EmptyStateViewController.Config = {
+        let message = NSAttributedString(string: Localization.syncErrorMessage, attributes: [.font: EmptyStateViewController.Config.messageFont])
+        return .withButton(message: message, image: .errorImage, details: "", buttonTitle: Localization.retryAction) { [weak self] in
+            self?.viewModel.synchronizeOptions()
+        }
+    }()
+
     /// Initializer for `AddAttributeOptionsViewController`
     ///
     /// - Parameters:
     ///   - onCompletion: Closure to be invoked(with the updated product) when the update/create/remove attribute operation finishes successfully.
     init(viewModel: AddAttributeOptionsViewModel,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+         analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping (Product) -> Void) {
         self.viewModel = viewModel
         self.noticePresenter = noticePresenter
+        self.analytics = analytics
         self.onCompletion = onCompletion
         super.init(nibName: nil, bundle: nil)
     }
@@ -141,6 +158,35 @@ private extension AddAttributeOptionsViewController {
         } else {
             removeGhostTableView()
         }
+
+        if viewModel.showSyncError {
+            displaySyncErrorViewController()
+        } else {
+            removeEmptyStateViewController()
+        }
+    }
+
+    /// Shows the EmptyStateViewController for options sync error state
+    ///
+    func displaySyncErrorViewController() {
+        addChild(emptyStateViewController)
+
+        emptyStateViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(emptyStateViewController.view)
+
+        emptyStateViewController.view.pinSubviewToAllEdges(view)
+        emptyStateViewController.didMove(toParent: self)
+        emptyStateViewController.configure(errorStateConfig)
+    }
+
+    func removeEmptyStateViewController() {
+        guard emptyStateViewController.parent == self else {
+            return
+        }
+
+        emptyStateViewController.willMove(toParent: nil)
+        emptyStateViewController.view.removeFromSuperview()
+        emptyStateViewController.removeFromParent()
     }
 }
 
@@ -392,7 +438,9 @@ extension AddAttributeOptionsViewController {
 
         alertController.addCancelActionWithTitle(Localization.cancelAction)
         alertController.addDestructiveActionWithTitle(Localization.removeAction) { [weak self] _ in
-            self?.removeCurrentAttribute()
+            guard let self = self else { return }
+            self.analytics.track(event: WooAnalyticsEvent.Variations.removeAttributeButtonTapped(productID: self.viewModel.product.productID))
+            self.removeCurrentAttribute()
         }
 
         present(alertController, animated: true)
@@ -451,6 +499,10 @@ private extension AddAttributeOptionsViewController {
                                                             comment: "Placeholder of cell presenting the title of the new attribute option.")
         static let updateAttributeError = NSLocalizedString("The attribute couldn't be saved.",
                                                             comment: "Error title when trying to update or create an attribute remotely.")
+
+        static let syncErrorMessage = NSLocalizedString("Unable to load attribute options", comment: "Load Attribute Options Action Failed")
+        static let retryAction = NSLocalizedString("Retry", comment: "Retry Action")
+
         static let removeAttributeError = NSLocalizedString("The attribute couldn't be removed.",
                                                             comment: "Error title when trying to remove an attribute remotely.")
 

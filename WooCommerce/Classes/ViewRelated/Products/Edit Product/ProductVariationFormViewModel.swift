@@ -57,6 +57,10 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
         }
     }
 
+    /// Assign this closure to get notified when the variation is deleted.
+    ///
+    var onVariationDeletion: ((ProductVariation) -> Void)?
+
     private let allAttributes: [ProductAttribute]
     private let parentProductSKU: String?
     private let productImageActionHandler: ProductImageActionHandler
@@ -269,9 +273,12 @@ extension ProductVariationFormViewModel {
     }
 
     func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {
-        let deleteAction = ProductVariationAction.deleteProductVariation(productVariation: productVariation.productVariation) { result in
+        let deleteAction = ProductVariationAction.deleteProductVariation(productVariation: productVariation.productVariation) { [weak self] result in
             switch result {
             case .success:
+                if let self = self {
+                    self.onVariationDeletion?(self.productVariation.productVariation)
+                }
                 onCompletion(.success(()))
             case .failure(let error):
                 onCompletion(.failure(error))

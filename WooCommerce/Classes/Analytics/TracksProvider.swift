@@ -1,9 +1,10 @@
 import Foundation
 import Yosemite
 import AutomatticTracks
+import WordPressShared
 
 
-public class TracksProvider: AnalyticsProvider {
+public class TracksProvider: NSObject, AnalyticsProvider {
 
     lazy private var contextManager: TracksContextManager = {
         return TracksContextManager()
@@ -13,12 +14,6 @@ public class TracksProvider: AnalyticsProvider {
         tracksService.eventNamePrefix = Constants.eventNamePrefix
         return tracksService
     }()
-
-
-    /// Designated Initializer
-    ///
-    init() {
-    }
 }
 
 
@@ -27,7 +22,7 @@ public class TracksProvider: AnalyticsProvider {
 public extension TracksProvider {
     func refreshUserData() {
         switchTracksUsersIfNeeded()
-        refreshMetadata()
+        refreshTracksMetadata()
     }
 
     func track(_ eventName: String) {
@@ -88,7 +83,7 @@ private extension TracksProvider {
         }
     }
 
-    func refreshMetadata() {
+    func refreshTracksMetadata() {
         DDLogInfo("♻️ Refreshing tracks metadata...")
         var userProperties = [String: Any]()
         userProperties[UserProperties.platformKey] = "iOS"
@@ -112,5 +107,29 @@ private extension TracksProvider {
         static let platformKey          = "platform"
         static let voiceOverKey         = "accessibility_voice_over_enabled"
         static let rtlKey               = "is_rtl_language"
+    }
+}
+
+extension TracksProvider: WPAnalyticsTracker {
+    public func trackString(_ event: String?) {
+        trackString(event, withProperties: nil)
+    }
+
+    public func trackString(_ event: String?, withProperties properties: [AnyHashable: Any]?) {
+        guard let eventName = event else {
+            DDLogInfo("🔴 Attempted to track an event without name.")
+            return
+        }
+
+        track(eventName, withProperties: properties)
+    }
+
+    public func track(_ stat: WPAnalyticsStat) {
+        // no op. 
+        track(stat, withProperties: nil)
+    }
+
+    public func track(_ stat: WPAnalyticsStat, withProperties properties: [AnyHashable: Any]?) {
+        // no op
     }
 }

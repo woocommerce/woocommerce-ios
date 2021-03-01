@@ -57,13 +57,13 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v6.0-whats-new"
+msgctxt "v6.1-whats-new"
 msgid ""
-"What’s new in our 6.0 release?\n"
+"We’re excited to announce updates to the WooCommerce iOS app.\n"
 "\n"
-"You asked, we listened! Due to popular demand, the product SKU is displayed once again in the Order Details screen.\n"
-"\n"
-"We also made various enhancements, including support for drag-and-drop sorting to Linked Products, consistency fixes to visitor stats in your dashboard and top performers in your “This Week” tab, and an improvement that reduces the risk of crashes when you update the app.\n"
+"It’s now easier than ever to edit the attributes of variable products — for instance, the color and size of clothing.\n"
+"We fixed bugs affecting the “Back” button and the display of product thumbnails.\n"
+"Plus, for items that fit the description, product type details now include “Downloadable.”\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

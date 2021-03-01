@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import WordPressShared
 
 public class WooAnalytics: Analytics {
 
@@ -30,10 +31,10 @@ public class WooAnalytics: Analytics {
 
     /// Designated Initializer
     ///
-    init(analyticsProvider: AnalyticsProvider) {
+    init(analyticsProvider: AnalyticsProvider & WPAnalyticsTracker) {
         self.analyticsProvider = analyticsProvider
+        WPAnalytics.register(analyticsProvider)
     }
-
 }
 
 

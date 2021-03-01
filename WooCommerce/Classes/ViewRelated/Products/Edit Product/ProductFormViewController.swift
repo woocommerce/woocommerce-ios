@@ -361,6 +361,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                     return
                 }
                 editVariationAttributes()
+                trackEditVariationAttributesRowTapped()
             case .status, .noPriceWarning:
                 break
             }
@@ -672,6 +673,7 @@ private extension ProductFormViewController {
                     return
                 }
 
+                self?.trackVariationRemoveButtonTapped()
                 self?.showVariationDeletionProgress()
                 self?.deleteProduct()
             }
@@ -725,6 +727,24 @@ private extension ProductFormViewController {
             self?.viewModel.resetPassword(originalPassword)
         })
         navigationController?.pushViewController(viewController, animated: true)
+    }
+
+    func trackVariationRemoveButtonTapped() {
+        guard let variation = (product as? EditableProductVariationModel)?.productVariation else {
+            return
+        }
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Variations.removeVariationButtonTapped(productID: variation.productID,
+                                                                                                       variationID: variation.productVariationID))
+    }
+
+    func trackEditVariationAttributesRowTapped() {
+        guard let variation = (product as? EditableProductVariationModel)?.productVariation else {
+            return
+        }
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Variations.editVariationAttributeOptionsRowTapped(productID: variation.productID,
+                                                                                                                  variationID: variation.productVariationID))
     }
 }
 

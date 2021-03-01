@@ -36,4 +36,44 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(originAddress?.city, "San Francisco")
         XCTAssertEqual(originAddress?.postcode, "94121-2303")
     }
+
+    func test_handleOriginAddressValueChanges_returns_updated_ShippingLabelAddress() {
+        // Given
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(siteID: 10, originAddress: nil, destinationAddress: nil)
+        let expectedShippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
+                                                           name: "Skylar Ferry",
+                                                           phone: "12345",
+                                                           country: "United States",
+                                                           state: "CA",
+                                                           address1: "60 29th",
+                                                           address2: "Street #343",
+                                                           city: "San Francisco",
+                                                           postcode: "94121-2303")
+
+        // When
+        shippingLabelFormViewModel.handleOriginAddressValueChanges(address: expectedShippingAddress)
+
+        // Then
+        XCTAssertEqual(shippingLabelFormViewModel.originAddress, expectedShippingAddress)
+    }
+
+    func test_handleDestinationAddressValueChanges_returns_updated_ShippingLabelAddress() {
+        // Given
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(siteID: 10, originAddress: nil, destinationAddress: nil)
+        let expectedShippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
+                                                           name: "Skylar Ferry",
+                                                           phone: "12345",
+                                                           country: "United States",
+                                                           state: "CA",
+                                                           address1: "60 29th",
+                                                           address2: "Street #343",
+                                                           city: "San Francisco",
+                                                           postcode: "94121-2303")
+
+        // When
+        shippingLabelFormViewModel.handleDestinationAddressValueChanges(address: expectedShippingAddress)
+
+        // Then
+        XCTAssertEqual(shippingLabelFormViewModel.destinationAddress, expectedShippingAddress)
+    }
 }

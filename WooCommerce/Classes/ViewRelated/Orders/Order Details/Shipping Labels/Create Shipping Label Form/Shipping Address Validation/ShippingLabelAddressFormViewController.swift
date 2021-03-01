@@ -25,6 +25,11 @@ final class ShippingLabelAddressFormViewController: UIViewController {
 
     private let viewModel: ShippingLabelAddressFormViewModel
 
+    /// Completion callback
+    ///
+    typealias Completion = (_ address: ShippingLabelAddress?) -> Void
+    private let onCompletion: Completion
+
     /// Needed to scroll content to a visible area when the keyboard appears.
     ///
     private lazy var keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] frame in
@@ -33,8 +38,9 @@ final class ShippingLabelAddressFormViewController: UIViewController {
 
     /// Init
     ///
-    init(siteID: Int64, type: ShipType, address: ShippingLabelAddress?) {
+    init(siteID: Int64, type: ShipType, address: ShippingLabelAddress?, completion: @escaping Completion) {
         viewModel = ShippingLabelAddressFormViewModel(siteID: siteID, type: type, address: address)
+        onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -47,6 +53,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
+        observeViewModel()
         configureConfirmButton()
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
     }
@@ -58,10 +65,23 @@ private extension ShippingLabelAddressFormViewController {
 
     func configureNavigationBar() {
         title = viewModel.type == .origin ? Localization.titleViewShipFrom : Localization.titleViewShipTo
-
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
-
         removeNavigationBackBarButtonText()
+        if viewModel.showLoadingIndicator {
+            configureRightButtonItemAsLoader()
+        } else {
+            configureRightBarButtonItemAsDone()
+        }
+    }
+
+    func configureRightBarButtonItemAsDone() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
+    }
+
+    func configureRightButtonItemAsLoader() {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.color = .primaryButtonTitle
+        indicator.startAnimating()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: indicator)
     }
 
     func configureMainView() {
@@ -93,8 +113,17 @@ private extension ShippingLabelAddressFormViewController {
         }
     }
 
+    func observeViewModel() {
+        viewModel.onChange = { [weak self] in
+            guard let self = self else { return }
+            self.configureNavigationBar()
+            self.updateTopBannerView()
+            self.tableView.reloadData()
+        }
+    }
+
     func updateTopBannerView() {
-        topBannerView.isHidden = viewModel.addressValidationError?.generalError != nil
+        topBannerView.isHidden = !viewModel.shouldShowTopBannerView
         tableView.updateHeaderHeight()
     }
 
@@ -111,13 +140,15 @@ private extension ShippingLabelAddressFormViewController {
 private extension ShippingLabelAddressFormViewController {
 
     @objc func doneButtonTapped() {
-        // TODO: after the validation, return to the previous controller passing the new address.
         viewModel.validateAddress { [weak self] (success, error) in
-            self?.updateTopBannerView()
-            self?.tableView.reloadData()
+            guard let self = self else { return }
+            if success {
+                // TODO: If the API response returns a suggested address,
+                // we need to display the suggested response and allow the users to select the suggested address.
+                self.onCompletion(self.viewModel.address)
+            }
         }
     }
-
 }
 
 // MARK: - UITableViewDataSource Conformance
@@ -203,7 +234,7 @@ private extension ShippingLabelAddressFormViewController {
                                                                      text: viewModel.address?.phone,
                                                                      placeholder: Localization.phoneFieldPlaceholder,
                                                                      state: .normal,
-                                                                     keyboardType: .default,
+                                                                     keyboardType: .phonePad,
                                                                      textFieldAlignment: .leading) { [weak self] (newText) in
             self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }
@@ -211,10 +242,11 @@ private extension ShippingLabelAddressFormViewController {
     }
 
     func configureAddress(cell: TitleAndTextFieldTableViewCell, row: Row) {
+        let state: TitleAndTextFieldTableViewCell.ViewModel.State = viewModel.addressValidationError?.addressError == nil ? .normal : .error
         let cellViewModel = TitleAndTextFieldTableViewCell.ViewModel(title: Localization.addressField,
                                                                      text: viewModel.address?.address1,
                                                                      placeholder: Localization.addressFieldPlaceholder,
-                                                                     state: .normal,
+                                                                     state: state,
                                                                      keyboardType: .default,
                                                                      textFieldAlignment: .leading) { [weak self] (newText) in
             self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
@@ -257,7 +289,7 @@ private extension ShippingLabelAddressFormViewController {
                                                                      text: viewModel.address?.postcode,
                                                                      placeholder: Localization.postcodeFieldPlaceholder,
                                                                      state: .normal,
-                                                                     keyboardType: .default,
+                                                                     keyboardType: .phonePad,
                                                                      textFieldAlignment: .leading) { [weak self] (newText) in
             self?.viewModel.handleAddressValueChanges(row: row, newValue: newText)
         }

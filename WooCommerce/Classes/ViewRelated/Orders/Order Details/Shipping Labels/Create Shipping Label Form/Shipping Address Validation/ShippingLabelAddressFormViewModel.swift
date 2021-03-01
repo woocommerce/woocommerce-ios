@@ -3,6 +3,15 @@ import Yosemite
 
 final class ShippingLabelAddressFormViewModel: NSObject {
 
+    /// Defines the necessary state to produce the ViewModel's outputs.
+    ///
+    fileprivate struct State {
+
+        /// Indicates if the view model is validating an address
+        ///
+        var isLoading: Bool = false
+    }
+
     typealias Section = ShippingLabelAddressFormViewController.Section
     typealias Row = ShippingLabelAddressFormViewController.Row
 
@@ -13,6 +22,26 @@ final class ShippingLabelAddressFormViewModel: NSObject {
     private(set) var isAddressValidated: Bool = false
 
     private let stores: StoresManager
+
+    /// Closure to notify the `ViewController` when the view model properties change.
+    ///
+    var onChange: (() -> (Void))?
+
+    /// Current `ViewModel` state.
+    ///
+    private var state: State = State() {
+        didSet {
+            onChange?()
+        }
+    }
+
+    var shouldShowTopBannerView: Bool {
+        return addressValidationError?.generalError != nil
+    }
+
+    var showLoadingIndicator: Bool {
+        return state.isLoading
+    }
 
     init(siteID: Int64, type: ShipType, address: ShippingLabelAddress?, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
@@ -64,6 +93,7 @@ final class ShippingLabelAddressFormViewModel: NSObject {
 extension ShippingLabelAddressFormViewModel {
     func validateAddress(onSuccess: ((Bool, ShippingLabelAddressValidationError?) -> ())? = nil) {
 
+        state.isLoading = true
         let addressToBeVerified = ShippingLabelAddressVerification(address: address, type: type)
 
         let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] (result) in
@@ -72,17 +102,20 @@ extension ShippingLabelAddressFormViewModel {
                 if (try? result.get().errors) == nil {
                     self?.isAddressValidated = true
                     self?.addressValidationError = nil
+                    self?.state.isLoading = false
                     onSuccess?(true, nil)
                 }
                 else {
                     self?.isAddressValidated = false
                     self?.addressValidationError = try? result.get().errors
+                    self?.state.isLoading = false
                     onSuccess?(false, try? result.get().errors)
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
                 self?.isAddressValidated = false
-                self?.addressValidationError = nil
+                self?.addressValidationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
+                self?.state.isLoading = false
                 onSuccess?(false, nil)
             }
         }

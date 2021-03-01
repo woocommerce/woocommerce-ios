@@ -21,6 +21,9 @@ final class DashboardViewController: UIViewController {
         return UIView(frame: .zero)
     }()
 
+    // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
+    private let hiddenScrollView = UIScrollView()
+
     // MARK: View Lifecycle
 
     init(siteID: Int64) {
@@ -96,6 +99,12 @@ private extension DashboardViewController {
     }
 
     func configureDashboardUIContainer() {
+        hiddenScrollView.configureForLargeTitleWorkaround()
+        // Adds the "hidden" scroll view to the root of the UIViewController for large titles.
+        view.addSubview(hiddenScrollView)
+        hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
+
         // A container view is added to respond to safe area insets from the view controller.
         // This is needed when the child view controller's view has to use a frame-based layout
         // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
@@ -106,8 +115,15 @@ private extension DashboardViewController {
 
     func reloadDashboardUIStatsVersion() {
         dashboardUIFactory.reloadDashboardUI(onUIUpdate: { [weak self] dashboardUI in
+            dashboardUI.scrollDelegate = self
             self?.onDashboardUIUpdate(updatedDashboardUI: dashboardUI)
         })
+    }
+}
+
+extension DashboardViewController: DashboardUIScrollDelegate {
+    func dashboardUIScrollViewDidScroll(_ scrollView: UIScrollView) {
+        hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
     }
 }
 

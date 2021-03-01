@@ -29,10 +29,6 @@ final class RenameAttributesViewController: UIViewController {
         enableDoneButton(true)
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-    }
-
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         configureTextFieldFirstResponder()
@@ -87,7 +83,7 @@ extension RenameAttributesViewController {
     @objc private func doneButtonTapped() {
         // TODO: Update the attribute name if it has changed
         // For now, just navigate back
-        self.navigationController?.popViewController(animated: true)
+        navigationController?.popViewController(animated: true)
     }
 
     override func shouldPopOnBackButton() -> Bool {
@@ -171,7 +167,7 @@ private extension RenameAttributesViewController {
                                                          placeholder: placeholder,
                                                          onTextChange: { [weak self] newAttributeName in
                                                             self?.viewModel.handleAttributeNameChange(newAttributeName)
-                                                            self?.enableDoneButton(self?.viewModel.newAttributeName != nil)
+                                                            self?.enableDoneButton(self?.viewModel.newAttributeName != "")
                                                          },
                                                          onTextDidBeginEditing: nil,
                                                          onTextDidReturn: { [weak self] _ in

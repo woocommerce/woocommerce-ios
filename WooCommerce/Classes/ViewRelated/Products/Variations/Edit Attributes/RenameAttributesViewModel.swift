@@ -17,11 +17,6 @@ final class RenameAttributesViewModel {
 extension RenameAttributesViewModel {
 
     func handleAttributeNameChange(_ name: String?) {
-        guard name != nil && name?.isNotEmpty == true else {
-            newAttributeName = nil
-            return
-        }
-
         newAttributeName = name
     }
 

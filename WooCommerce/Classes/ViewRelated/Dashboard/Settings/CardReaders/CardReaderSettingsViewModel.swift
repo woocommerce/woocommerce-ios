@@ -1,6 +1,5 @@
 import Foundation
 import Combine
-import OSLog
 
 struct CardReader {
     var serialNumber: String
@@ -76,10 +75,6 @@ final class CardReaderSettingsViewModel: ObservableObject {
 
         batteryLevel = batteryLevel * 0.99
         connectedReader?.batteryLevel = batteryLevel
-
-        if #available(iOS 14.0, *) {
-            os_log("In dummyUpdateBattery, batteryLevel = %.2f", log: .default, type: .debug, batteryLevel)
-        }
     }
 
     func stopSearch() {

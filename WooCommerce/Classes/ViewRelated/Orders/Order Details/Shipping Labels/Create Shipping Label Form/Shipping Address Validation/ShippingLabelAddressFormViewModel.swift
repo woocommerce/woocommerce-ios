@@ -14,6 +14,10 @@ final class ShippingLabelAddressFormViewModel: NSObject {
 
     private let stores: StoresManager
 
+    var shouldShowTopBannerView: Bool {
+        return addressValidationError?.generalError == nil
+    }
+
     init(siteID: Int64, type: ShipType, address: ShippingLabelAddress?, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.type = type

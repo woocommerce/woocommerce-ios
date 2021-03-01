@@ -107,7 +107,7 @@ private extension ShippingLabelAddressFormViewController {
     }
 
     func updateTopBannerView() {
-        topBannerView.isHidden = viewModel.addressValidationError?.generalError == nil
+        topBannerView.isHidden = viewModel.shouldShowTopBannerView
         tableView.updateHeaderHeight()
     }
 

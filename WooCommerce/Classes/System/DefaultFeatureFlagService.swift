@@ -9,6 +9,8 @@ struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .cardPresentPayments:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .largeTitles:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsRelease2:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

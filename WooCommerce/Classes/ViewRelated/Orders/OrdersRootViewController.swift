@@ -95,11 +95,13 @@ private extension OrdersRootViewController {
     }
 
     func configureContainerView() {
-        hiddenScrollView.configureForLargeTitleWorkaround()
-        // Adds the "hidden" scroll view to the root of the UIViewController for large title workaround.
-        view.addSubview(hiddenScrollView)
-        hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
-        view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
+            hiddenScrollView.configureForLargeTitleWorkaround()
+            // Adds the "hidden" scroll view to the root of the UIViewController for large title workaround.
+            view.addSubview(hiddenScrollView)
+            hiddenScrollView.translatesAutoresizingMaskIntoConstraints = false
+            view.pinSubviewToAllEdges(hiddenScrollView, insets: .zero)
+        }
 
         // A container view is added to respond to safe area insets from the view controller.
         // This is needed when the child view controller's view has to use a frame-based layout
@@ -115,7 +117,9 @@ private extension OrdersRootViewController {
         containerView.addSubview(contentView)
         ordersViewController.didMove(toParent: self)
 
-        ordersViewController.scrollDelegate = self
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
+            ordersViewController.scrollDelegate = self
+        }
     }
 }
 

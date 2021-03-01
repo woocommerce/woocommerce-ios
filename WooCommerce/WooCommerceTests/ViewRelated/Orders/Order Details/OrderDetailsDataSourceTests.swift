@@ -84,18 +84,34 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(issueRefundRow)
     }
 
-    func test_markOrderComplete_button_is_visible_if_order_is_processing() throws {
+    func test_markOrderComplete_button_is_visible_and_primary_style_if_order_is_processing_and_not_eligible_for_shipping_label_creation() throws {
         // Given
         let order = makeOrder().copy(status: .processing)
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.isEligibleForShippingLabelCreation = false
 
         // When
         dataSource.reloadSections()
 
         // Then
         let productsSection = try section(withTitle: Title.products, from: dataSource)
-        let buttonRow = row(row: .markCompletePrimaryButton, in: productsSection)
-        XCTAssertNotNil(buttonRow)
+        XCTAssertNotNil(row(row: .markCompletePrimaryButton, in: productsSection))
+        XCTAssertNil(row(row: .markCompleteSecondaryButton, in: productsSection))
+    }
+
+    func test_markOrderComplete_button_is_visible_and_secondary_style_if_order_is_processing_and_eligible_for_shipping_label_creation() throws {
+        // Given
+        let order = makeOrder().copy(status: .processing)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.isEligibleForShippingLabelCreation = true
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let productsSection = try section(withTitle: Title.products, from: dataSource)
+        XCTAssertNotNil(row(row: .markCompleteSecondaryButton, in: productsSection))
+        XCTAssertNil(row(row: .markCompletePrimaryButton, in: productsSection))
     }
 
     func test_markOrderComplete_button_is_hidden_if_order_is_not_processing() throws {

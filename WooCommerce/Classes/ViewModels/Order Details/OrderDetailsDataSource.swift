@@ -38,6 +38,10 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var trackingIsReachable: Bool = false
 
+    /// Whether the order is eligible for shipping label creation.
+    ///
+    var isEligibleForShippingLabelCreation: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease2)
+
     /// Closure to be executed when the cell was tapped.
     ///
     var onCellAction: ((CellActionType, IndexPath?) -> Void)?
@@ -760,7 +764,7 @@ extension OrderDetailsDataSource {
 
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease2) {
+            if isEligibleForShippingLabelCreation {
                 rows.append(.shippingLabelCreateButton)
             }
 

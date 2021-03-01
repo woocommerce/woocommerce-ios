@@ -426,6 +426,14 @@ extension ProductVariationsViewController: UITableViewDelegate {
                                                       formType: formType,
                                                       productImageActionHandler: productImageActionHandler,
                                                       isAddProductVariationsEnabled: isAddProductVariationsEnabled)
+        viewModel.onVariationDeletion = { [weak self] variation in
+            guard let self = self else { return }
+
+            // Remove deleted variation from variations array
+            let variationsUpdated = self.product.variations.filter { $0 != variation.productVariationID }
+            let updatedProduct = self.product.copy(variations: variationsUpdated)
+            self.product = updatedProduct
+        }
         let viewController = ProductFormViewController(viewModel: viewModel,
                                                        eventLogger: ProductVariationFormEventLogger(),
                                                        productImageActionHandler: productImageActionHandler,

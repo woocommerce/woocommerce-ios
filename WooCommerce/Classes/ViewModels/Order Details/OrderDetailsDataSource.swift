@@ -38,6 +38,10 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var trackingIsReachable: Bool = false
 
+    /// Whether the order is eligible for shipping label creation.
+    ///
+    var isEligibleForShippingLabelCreation: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease2)
+
     /// Closure to be executed when the cell was tapped.
     ///
     var onCellAction: ((CellActionType, IndexPath?) -> Void)?
@@ -284,8 +288,10 @@ private extension OrderDetailsDataSource {
             configureAggregateOrderItem(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .shippingLabelCreateButton:
             configureCreateShippingLabelButton(cell: cell, at: indexPath)
-        case let cell as ButtonTableViewCell where row == .markCompleteButton:
-            configureMarkCompleteButton(cell: cell)
+        case let cell as ButtonTableViewCell where row == .markCompleteButton(style: .primary):
+            configureMarkCompleteButton(cell: cell, buttonStyle: .primary)
+        case let cell as ButtonTableViewCell where row == .markCompleteButton(style: .secondary):
+            configureMarkCompleteButton(cell: cell, buttonStyle: .secondary)
         case let cell as ButtonTableViewCell where row == .shippingLabelReprintButton:
             configureReprintShippingLabelButton(cell: cell, at: indexPath)
         case let cell as OrderTrackingTableViewCell where row == .tracking:
@@ -603,8 +609,8 @@ private extension OrderDetailsDataSource {
         )
     }
 
-    private func configureMarkCompleteButton(cell: ButtonTableViewCell) {
-        cell.configure(title: Titles.markComplete) { [weak self] in
+    private func configureMarkCompleteButton(cell: ButtonTableViewCell, buttonStyle: ButtonTableViewCell.Style) {
+        cell.configure(style: buttonStyle, title: Titles.markComplete) { [weak self] in
             self?.onCellAction?(.markComplete, nil)
         }
         cell.showSeparator()
@@ -758,12 +764,13 @@ extension OrderDetailsDataSource {
 
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease2) {
+            if isEligibleForShippingLabelCreation {
                 rows.append(.shippingLabelCreateButton)
             }
 
             if isProcessingPayment {
-                rows.append(.markCompleteButton)
+                let buttonStyle: ButtonTableViewCell.Style = rows.contains(.shippingLabelCreateButton) ? .secondary : .primary
+                rows.append(.markCompleteButton(style: buttonStyle))
             } else if isRefundedStatus == false {
                 rows.append(.details)
             }
@@ -1183,10 +1190,10 @@ extension OrderDetailsDataSource {
 
     /// Rows listed in the order they appear on screen
     ///
-    enum Row {
+    enum Row: Equatable {
         case summary
         case aggregateOrderItem
-        case markCompleteButton
+        case markCompleteButton(style: ButtonTableViewCell.Style)
         case details
         case refundedProducts
         case issueRefundButton

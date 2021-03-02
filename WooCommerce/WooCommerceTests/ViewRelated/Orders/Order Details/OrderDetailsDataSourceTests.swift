@@ -84,18 +84,34 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(issueRefundRow)
     }
 
-    func test_markOrderComplete_button_is_visible_if_order_is_processing() throws {
+    func test_markOrderComplete_button_is_visible_and_primary_style_if_order_is_processing_and_not_eligible_for_shipping_label_creation() throws {
         // Given
         let order = makeOrder().copy(status: .processing)
         let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.isEligibleForShippingLabelCreation = false
 
         // When
         dataSource.reloadSections()
 
         // Then
         let productsSection = try section(withTitle: Title.products, from: dataSource)
-        let buttonRow = row(row: .markCompleteButton, in: productsSection)
-        XCTAssertNotNil(buttonRow)
+        XCTAssertNotNil(row(row: .markCompleteButton(style: .primary), in: productsSection))
+        XCTAssertNil(row(row: .markCompleteButton(style: .secondary), in: productsSection))
+    }
+
+    func test_markOrderComplete_button_is_visible_and_secondary_style_if_order_is_processing_and_eligible_for_shipping_label_creation() throws {
+        // Given
+        let order = makeOrder().copy(status: .processing)
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager)
+        dataSource.isEligibleForShippingLabelCreation = true
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let productsSection = try section(withTitle: Title.products, from: dataSource)
+        XCTAssertNotNil(row(row: .markCompleteButton(style: .secondary), in: productsSection))
+        XCTAssertNil(row(row: .markCompleteButton(style: .primary), in: productsSection))
     }
 
     func test_markOrderComplete_button_is_hidden_if_order_is_not_processing() throws {
@@ -108,8 +124,8 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let productsSection = try section(withTitle: Title.products, from: dataSource)
-        let buttonRow = row(row: .markCompleteButton, in: productsSection)
-        XCTAssertNil(buttonRow)
+        XCTAssertNil(row(row: .markCompleteButton(style: .primary), in: productsSection))
+        XCTAssertNil(row(row: .markCompleteButton(style: .secondary), in: productsSection))
     }
 }
 

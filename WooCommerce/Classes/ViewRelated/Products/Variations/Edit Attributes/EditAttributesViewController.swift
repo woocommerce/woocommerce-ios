@@ -12,6 +12,7 @@ final class EditAttributesViewController: UIViewController {
     private let viewModel: EditAttributesViewModel
 
     private let noticePresenter: NoticePresenter
+    private let analytics: Analytics
 
     /// Assign this closure to be notified after a variation is created.
     ///
@@ -21,9 +22,12 @@ final class EditAttributesViewController: UIViewController {
     ///
     var onAttributesUpdate: ((Product) -> Void)?
 
-    init(viewModel: EditAttributesViewModel, noticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+    init(viewModel: EditAttributesViewModel,
+         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.viewModel = viewModel
         self.noticePresenter = noticePresenter
+        self.analytics = analytics
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -93,6 +97,7 @@ extension EditAttributesViewController {
 
     @objc private func addButtonTapped() {
         navigateToAddAttributeViewController()
+        analytics.track(event: WooAnalyticsEvent.Variations.addAttributeButtonTapped(productID: viewModel.product.productID))
     }
 
     /// Creates a variation and presents a loading screen while it is created.

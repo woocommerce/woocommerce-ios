@@ -196,3 +196,85 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+// MARK: - Variations
+//
+extension WooAnalyticsEvent {
+    // Namespace
+    enum Variations {
+        /// Common event keys
+        ///
+        private enum Keys {
+            static let productID = "product_id"
+            static let variationID = "product_variation_id"
+            static let serverTime = "time"
+            static let errorDescription = "error_description"
+        }
+
+        static func addFirstVariationButtonTapped(productID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .addFirstVariationButtonTapped, properties: [Keys.productID: "\(productID)"])
+        }
+
+        static func addMoreVariationsButtonTapped(productID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .addMoreVariationsButtonTapped, properties: [Keys.productID: "\(productID)"])
+        }
+
+        static func createVariation(productID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .createProductVariation, properties: [Keys.productID: "\(productID)"])
+        }
+
+        static func createVariationSuccess(productID: Int64, time: Double) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .createProductVariationSuccess, properties: [Keys.productID: "\(productID)", Keys.serverTime: "\(time)"])
+        }
+
+        static func createVariationFail(productID: Int64, time: Double, error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .createProductVariationFailed, properties: [Keys.productID: "\(productID)",
+                                                                                    Keys.serverTime: "\(time)",
+                                                                                    Keys.errorDescription: error.localizedDescription])
+        }
+
+        static func removeVariationButtonTapped(productID: Int64, variationID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .removeProductVariationButtonTapped, properties: [Keys.productID: "\(productID)", Keys.variationID: "\(variationID)"])
+        }
+
+        static func editAttributesButtonTapped(productID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .editProductAttributesButtonTapped, properties: [Keys.productID: "\(productID)"])
+        }
+
+        static func addAttributeButtonTapped(productID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .addProductAttributeButtonTapped, properties: [Keys.productID: "\(productID)"])
+        }
+
+        static func updateAttribute(productID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .updateProductAttribute, properties: [Keys.productID: "\(productID)"])
+        }
+
+        static func updateAttributeSuccess(productID: Int64, time: Double) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .updateProductAttributeSuccess, properties: [Keys.productID: "\(productID)", Keys.serverTime: "\(time)"])
+        }
+
+        static func updateAttributeFail(productID: Int64, time: Double, error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .updateProductAttributeFail, properties: [Keys.productID: "\(productID)",
+                                                                                  Keys.serverTime: "\(time)",
+                                                                                  Keys.errorDescription: error.localizedDescription])
+        }
+
+        static func renameAttributeButtonTapped(productID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .renameProductAttributeButtonTapped, properties: [Keys.productID: "\(productID)"])
+        }
+
+        static func removeAttributeButtonTapped(productID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .removeProductAttributeButtonTapped, properties: [Keys.productID: "\(productID)"])
+        }
+
+        static func editVariationAttributeOptionsRowTapped(productID: Int64, variationID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .editProductVariationAttributeOptionsRowTapped, properties: [Keys.productID: "\(productID)",
+                                                                                                     Keys.variationID: "\(variationID)"])
+        }
+
+        static func editVariationAttributeOptionsDoneButtonTapped(productID: Int64, variationID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .editProductVariationAttributeOptionsDoneButtonTapped, properties: [Keys.productID: "\(productID)",
+                                                                                                            Keys.variationID: "\(variationID)"])
+        }
+    }
+}

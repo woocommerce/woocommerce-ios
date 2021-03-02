@@ -59,7 +59,8 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let validationError = ShippingLabelAddressValidationError(addressError: "Error", generalError: nil)
         let expectedValidationResponse = ShippingLabelAddressValidationResponse(address: nil,
-                                                                                errors: validationError)
+                                                                                errors: validationError,
+                                                                                isTrivialNormalization: nil)
 
         // When
         stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
@@ -92,9 +93,9 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         // Given
         let shippingAddress = MockShippingLabelAddress.sampleAddress()
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        //let validationError = ShippingLabelAddressValidationError(addressError: "Error", generalError: nil)
         let expectedValidationResponse = ShippingLabelAddressValidationResponse(address: shippingAddress,
-                                                                                errors: nil)
+                                                                                errors: nil,
+                                                                                isTrivialNormalization: true)
 
         // When
         stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
@@ -120,7 +121,8 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let validationError = ShippingLabelAddressValidationError(addressError: "Error", generalError: nil)
         let expectedValidationResponse = ShippingLabelAddressValidationResponse(address: nil,
-                                                                                errors: validationError)
+                                                                                errors: validationError,
+                                                                                isTrivialNormalization: nil)
 
         // When
         stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
@@ -160,7 +162,38 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         viewModel.validateAddress()
 
         // Then
+        let validationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
         XCTAssertEqual(viewModel.isAddressValidated, false)
-        XCTAssertEqual(viewModel.addressValidationError, nil)
+        XCTAssertEqual(viewModel.addressValidationError, validationError)
+    }
+
+    func test_address_validation_toggle_shouldShowTopBannerView() {
+        // Given
+        let shippingAddress = MockShippingLabelAddress.sampleAddress()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let expectedValidationResponse = ShippingLabelAddressValidationResponse(address: shippingAddress,
+                                                                                errors: nil,
+                                                                                isTrivialNormalization: true)
+
+        // When
+        stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
+            switch action {
+            case let .validateAddress(_, _, onCompletion):
+                DispatchQueue.main.async {
+                    onCompletion(.success(expectedValidationResponse))
+                }
+            default:
+                break
+            }
+        }
+
+        let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, stores: stores)
+        viewModel.validateAddress()
+
+        // Then
+        XCTAssertTrue(viewModel.showLoadingIndicator)
+        waitUntil { () -> Bool in
+            !viewModel.showLoadingIndicator
+        }
     }
 }

@@ -107,14 +107,18 @@ private extension ShippingLabelFormViewController {
         cell.configure(state: row.cellState,
                        icon: .shippingImage,
                        title: Localization.shipFromCellTitle,
-                       body: "To be implemented",
+                       body: viewModel.originAddress?.fullNameWithCompanyAndAddress,
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             guard let self = self else { return }
             let shippingLabelAddress = self.viewModel.originAddress
-            let shippingAddressValidationVC = ShippingLabelAddressFormViewController(siteID: self.viewModel.siteID,
-                                                                                     type: .origin,
-                                                                                     address: shippingLabelAddress)
-            self.navigationController?.pushViewController(shippingAddressValidationVC, animated: true)
+            let shippingAddressVC = ShippingLabelAddressFormViewController(siteID: self.viewModel.siteID,
+                                                                           type: .origin,
+                                                                           address: shippingLabelAddress,
+                                                                           completion: { [weak self] (shippingLabelAddress) in
+                                                                            guard let self = self else { return }
+                                                                            self.viewModel.handleOriginAddressValueChanges(address: shippingLabelAddress)
+                                                                           })
+            self.navigationController?.pushViewController(shippingAddressVC, animated: true)
         }
     }
 
@@ -122,14 +126,18 @@ private extension ShippingLabelFormViewController {
         cell.configure(state: row.cellState,
                        icon: .houseOutlinedImage,
                        title: Localization.shipToCellTitle,
-                       body: "To be implemented",
+                       body: viewModel.destinationAddress?.fullNameWithCompanyAndAddress,
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             guard let self = self else { return }
             let shippingLabelAddress = self.viewModel.destinationAddress
-            let shippingAddressValidationVC = ShippingLabelAddressFormViewController(siteID: self.viewModel.siteID,
-                                                                                     type: .destination,
-                                                                                     address: shippingLabelAddress)
-            self.navigationController?.pushViewController(shippingAddressValidationVC, animated: true)
+            let shippingAddressVC = ShippingLabelAddressFormViewController(siteID: self.viewModel.siteID,
+                                                                           type: .destination,
+                                                                           address: shippingLabelAddress,
+                                                                           completion: { [weak self] (shippingLabelAddress) in
+                                                                            guard let self = self else { return }
+                                                                            self.viewModel.handleDestinationAddressValueChanges(address: shippingLabelAddress)
+                                                                           })
+            self.navigationController?.pushViewController(shippingAddressVC, animated: true)
         }
     }
 

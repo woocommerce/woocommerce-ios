@@ -9,8 +9,8 @@ final class ShippingLabelFormViewModel {
     typealias Row = ShippingLabelFormViewController.Row
 
     let siteID: Int64
-    let originAddress: ShippingLabelAddress?
-    let destinationAddress: ShippingLabelAddress?
+    private(set) var originAddress: ShippingLabelAddress?
+    private(set) var destinationAddress: ShippingLabelAddress?
 
     init(siteID: Int64, originAddress: Address?, destinationAddress: Address?) {
 
@@ -37,6 +37,14 @@ final class ShippingLabelFormViewModel {
         let rows: [Row] = [shipFrom, shipTo, packageDetails, shippingCarrierAndRates, paymentMethod]
         return [Section(rows: rows)]
     }
+
+    func handleOriginAddressValueChanges(address: ShippingLabelAddress?) {
+        originAddress = address
+    }
+
+    func handleDestinationAddressValueChanges(address: ShippingLabelAddress?) {
+        destinationAddress = address
+    }
 }
 
 // MARK: - Utils
@@ -55,7 +63,7 @@ private extension ShippingLabelFormViewModel {
                               city: siteAddress.city,
                               state: siteAddress.state,
                               postcode: siteAddress.postalCode,
-                              country: siteAddress.countryName ?? "",
+                              country: siteAddress.countryCode,
                               phone: "",
                               email: account?.email)
         return fromAddressToShippingLabelAddress(address: address)

@@ -11,6 +11,8 @@ final class AddAttributeOptionsViewController: UIViewController {
 
     private let noticePresenter: NoticePresenter
 
+    private let analytics: Analytics
+
     /// Closure to be invoked(with the updated product) when the update/create/remove attribute operation finishes successfully.
     ///
     private let onCompletion: (Product) -> Void
@@ -21,21 +23,17 @@ final class AddAttributeOptionsViewController: UIViewController {
         self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
     }
 
-    /// Sync error state screen
+    /// Empty state screen
     ///
-    private lazy var syncErrorViewController: EmptyStateViewController = {
-        let syncErrorVC = EmptyStateViewController(style: .list)
+    private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
 
+    /// Sync error state config for EmptyStateViewController
+    ///
+    private lazy var errorStateConfig: EmptyStateViewController.Config = {
         let message = NSAttributedString(string: Localization.syncErrorMessage, attributes: [.font: EmptyStateViewController.Config.messageFont])
-        let errorStateConfig = EmptyStateViewController.Config.withButton(message: message,
-                                                   image: .errorImage,
-                                                   details: "",
-                                                   buttonTitle: Localization.retryAction) { [weak self] in
+        return .withButton(message: message, image: .errorImage, details: "", buttonTitle: Localization.retryAction) { [weak self] in
             self?.viewModel.synchronizeOptions()
         }
-
-        syncErrorVC.configure(errorStateConfig)
-        return syncErrorVC
     }()
 
     /// Initializer for `AddAttributeOptionsViewController`
@@ -44,9 +42,11 @@ final class AddAttributeOptionsViewController: UIViewController {
     ///   - onCompletion: Closure to be invoked(with the updated product) when the update/create/remove attribute operation finishes successfully.
     init(viewModel: AddAttributeOptionsViewModel,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+         analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping (Product) -> Void) {
         self.viewModel = viewModel
         self.noticePresenter = noticePresenter
+        self.analytics = analytics
         self.onCompletion = onCompletion
         super.init(nibName: nil, bundle: nil)
     }
@@ -162,30 +162,31 @@ private extension AddAttributeOptionsViewController {
         if viewModel.showSyncError {
             displaySyncErrorViewController()
         } else {
-            removeSyncErrorViewController()
+            removeEmptyStateViewController()
         }
     }
 
     /// Shows the EmptyStateViewController for options sync error state
     ///
     func displaySyncErrorViewController() {
-        addChild(syncErrorViewController)
+        addChild(emptyStateViewController)
 
-        syncErrorViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(syncErrorViewController.view)
+        emptyStateViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(emptyStateViewController.view)
 
-        syncErrorViewController.view.pinSubviewToAllEdges(view)
-        syncErrorViewController.didMove(toParent: self)
+        emptyStateViewController.view.pinSubviewToAllEdges(view)
+        emptyStateViewController.didMove(toParent: self)
+        emptyStateViewController.configure(errorStateConfig)
     }
 
-    func removeSyncErrorViewController() {
-        guard syncErrorViewController.parent == self else {
+    func removeEmptyStateViewController() {
+        guard emptyStateViewController.parent == self else {
             return
         }
 
-        syncErrorViewController.willMove(toParent: nil)
-        syncErrorViewController.view.removeFromSuperview()
-        syncErrorViewController.removeFromParent()
+        emptyStateViewController.willMove(toParent: nil)
+        emptyStateViewController.view.removeFromSuperview()
+        emptyStateViewController.removeFromParent()
     }
 }
 
@@ -420,7 +421,9 @@ extension AddAttributeOptionsViewController {
 
         alertController.addCancelActionWithTitle(Localization.cancelAction)
         alertController.addDestructiveActionWithTitle(Localization.removeAction) { [weak self] _ in
-            self?.removeCurrentAttribute()
+            guard let self = self else { return }
+            self.analytics.track(event: WooAnalyticsEvent.Variations.removeAttributeButtonTapped(productID: self.viewModel.product.productID))
+            self.removeCurrentAttribute()
         }
 
         present(alertController, animated: true)

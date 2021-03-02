@@ -16,6 +16,10 @@ final class RenameAttributesViewModel {
 // MARK: - Actions
 extension RenameAttributesViewModel {
 
+    var shouldEnableDoneButton: Bool {
+        newAttributeName != ""
+    }
+
     func handleAttributeNameChange(_ name: String?) {
         newAttributeName = name
     }

@@ -166,8 +166,9 @@ private extension RenameAttributesViewController {
         let cellViewModel = TextFieldTableViewCell.ViewModel(text: viewModel.attributeName,
                                                          placeholder: placeholder,
                                                          onTextChange: { [weak self] newAttributeName in
-                                                            self?.viewModel.handleAttributeNameChange(newAttributeName)
-                                                            self?.enableDoneButton(self?.viewModel.newAttributeName != "")
+                                                            guard let self = self else {return}
+                                                            self.viewModel.handleAttributeNameChange(newAttributeName)
+                                                            self.enableDoneButton(self.viewModel.shouldEnableDoneButton)
                                                          },
                                                          onTextDidBeginEditing: nil,
                                                          onTextDidReturn: { [weak self] _ in

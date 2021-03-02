@@ -34,6 +34,6 @@ extension RenameAttributesViewModel {
     }
 
     func hasUnsavedChanges() -> Bool {
-        return newAttributeName != attributeName
+        return newAttributeName != attributeName && newAttributeName != nil
     }
 }

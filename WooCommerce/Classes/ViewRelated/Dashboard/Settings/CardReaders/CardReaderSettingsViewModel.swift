@@ -47,7 +47,11 @@ final class CardReaderSettingsViewModel: ObservableObject {
 
         let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
 
-        let action = CardPresentPaymentAction.initialize(siteID: siteID)
+        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: siteID, onCompletion: { cardReaders in
+            print("==== just for testing")
+            print("discovered card readers ==", cardReaders)
+            print("//// just for testing")
+        })
 
 //        let action = SitePostAction.retrieveSitePostPassword(siteID: siteID, postID: productID) { (password, error) in
 //            guard let _ = password else {

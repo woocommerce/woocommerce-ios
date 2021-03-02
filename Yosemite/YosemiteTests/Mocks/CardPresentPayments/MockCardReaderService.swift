@@ -37,6 +37,10 @@ final class MockCardReaderService: CardReaderService {
 
     }
 
+    func setNetworkingAdapter(_ adapter: CardReaderNetworkingAdapter) {
+        //
+    }
+
     func start() {
         didHitStart = true
     }

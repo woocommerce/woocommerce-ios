@@ -36,10 +36,8 @@ public final class CardPresentPaymentStore: Store {
         }
 
         switch action {
-        case .initialize(let siteID):
-            initialize(siteID: siteID)
-        case .startCardReaderDiscovery(let completion):
-            startCardReaderDiscovery(completion: completion)
+        case .startCardReaderDiscovery(let siteID, let completion):
+            startCardReaderDiscovery(siteID: siteID, completion: completion)
         case .connect(let reader, let completion):
             connect(reader: reader, onCompletion: completion)
         }
@@ -50,17 +48,8 @@ public final class CardPresentPaymentStore: Store {
 // MARK: - Services
 //
 private extension CardPresentPaymentStore {
-    func initialize(siteID: Int64) {
-        remote.loadConnectionToken(for: siteID) { [weak self] (token, error) in
-            print("======== load connection token completed")
-            print("token ", token?.token)
-            print("error ", error)
-            print("//////// load connection token completed")
-        }
-    }
-
-    func startCardReaderDiscovery(completion: @escaping (_ readers: [CardReader]) -> Void) {
-        cardReaderService.start()
+    func startCardReaderDiscovery(siteID: Int64, completion: @escaping (_ readers: [CardReader]) -> Void) {
+        cardReaderService.start(WCPayTokenProvider(siteID: siteID, remote: self.remote))
 
         // Over simplification. This is the point where we would receive
         // new data via the CardReaderService's stream of discovered readers
@@ -84,5 +73,25 @@ private extension CardPresentPaymentStore {
         cardReaderService.connectedReaders.sink { connectedHardwareReaders in
             onCompletion(.success(connectedHardwareReaders))
         }.store(in: &cancellables)
+    }
+}
+
+
+/// Implementation of the CardReaderNetworkingAdapter
+/// that fetches a token using WCPayRemote
+/// to 
+final class WCPayTokenProvider: CardReaderNetworkingAdapter {
+    private let siteID: Int64
+    private let remote: WCPayRemote
+
+    init(siteID: Int64, remote: WCPayRemote) {
+        self.siteID = siteID
+        self.remote = remote
+    }
+
+    func fetchToken(completion: @escaping(String?, Error?) -> Void) {
+        remote.loadConnectionToken(for: siteID) { token, error in
+            completion(token?.token, error)
+        }
     }
 }

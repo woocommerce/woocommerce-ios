@@ -5,20 +5,18 @@ import Alamofire
 ///
 public class WCPayRemote: Remote {
 
+    /// Loads a WCPay connection token for a given site ID and parses the rsponse
+    /// - Parameters:
+    ///   - siteID: Site for which we'll fetch the WCPay Connection token.
+    ///   - completion: Closure to be executed upon completion.
     public func loadConnectionToken(for siteID: Int64,
                                     completion: @escaping(WCPayConnectionToken?, Error?) -> Void) {
-        let path = "wcpay/terminal/connection_tokens"
+        let path = "payments/connection_tokens"
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path)
-        //let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path)
-        //let request = AuthenticatedRequest(credentials: <#T##Credentials#>, request: <#T##URLRequestConvertible#>)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path)
 
-        let mapper = WCPayConnectionTokenMapper(siteID: siteID)
-
-        print("Request as url request ", try! request.asURLRequest())
-        print("url ", try! request.asURLRequest().url)
+        let mapper = WCPayConnectionTokenMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
     }
-
 }

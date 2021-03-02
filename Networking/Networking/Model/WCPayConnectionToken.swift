@@ -1,12 +1,12 @@
+/// Represent a WCPay connection token Entity.
+///
 public struct WCPayConnectionToken: Decodable {
-    /// WordPress.com Site Identifier.
-    ///
-    public let siteID: Int64
     public let token: String
+    public let testMode: Bool
 
-    public init(siteID: Int64, token: String) {
-        self.siteID = siteID
+    public init(token: String, testMode: Bool) {
         self.token = token
+        self.testMode = testMode
     }
 
     /// The public initializer for WCPay Connection Token.
@@ -14,19 +14,17 @@ public struct WCPayConnectionToken: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let siteID = try container.decode(Int64.self, forKey: .siteID)
-        let token = try container.decode(String.self, forKey: .token)
+        let token = try container.decode(String.self, forKey: .secret)
+        let testMode = try container.decode(Bool.self, forKey: .testMode)
 
-        self.init(siteID: siteID, token: token)
+        self.init(token: token, testMode: testMode)
     }
 }
 
 
-/// Defines all of the Site Post CodingKeys
-///
 private extension WCPayConnectionToken {
     enum CodingKeys: String, CodingKey {
-        case siteID = "site_ID"
-        case token  = "token"
+        case secret     = "secret"
+        case testMode   = "test_mode"
     }
 }

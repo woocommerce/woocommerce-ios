@@ -335,8 +335,6 @@ extension ShippingLabelAddressFormViewController {
     }
 
     enum Row: CaseIterable {
-        case topBanner
-
         case name
         case company
         case phone
@@ -351,7 +349,7 @@ extension ShippingLabelAddressFormViewController {
 
         fileprivate var type: UITableViewCell.Type {
             switch self {
-            case .topBanner, .fieldError:
+            case .fieldError:
                 return BasicTableViewCell.self
             case .name, .company, .phone, .address, .address2, .city, .postcode, .state, .country:
                 return TitleAndTextFieldTableViewCell.self

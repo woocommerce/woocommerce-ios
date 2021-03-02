@@ -144,6 +144,21 @@ private enum Row: CaseIterable {
         }
     }
 
+    var height: CGFloat {
+        switch self {
+        case .connectHeader,
+             .connectButton:
+            return UITableView.automaticDimension
+        case .connectImage:
+            return 250
+        case .connectHelpHintChargeReader,
+             .connectHelpHintTurnOnReader,
+             .connectHelpHintEnableBluetooth,
+             .connectLearnMore:
+            return 70
+        }
+    }
+
     var reuseIdentifier: String {
         return type.reuseIdentifier
     }
@@ -177,16 +192,7 @@ extension CardReaderSettingsConnectView: UITableViewDataSource {
 extension CardReaderSettingsConnectView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let row = rowAtIndexPath(indexPath)
-        if row == .connectImage {
-            return 250
-        }
-        if row == .connectHelpHintChargeReader || row == .connectHelpHintTurnOnReader || row == .connectHelpHintEnableBluetooth {
-            return 70
-        }
-        if row == .connectLearnMore {
-            return 70
-        }
-        return UITableView.automaticDimension
+        return row.height
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

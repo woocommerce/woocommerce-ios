@@ -79,6 +79,15 @@ private enum Row: CaseIterable {
         }
     }
 
+    var height: CGFloat {
+        switch self {
+        case .connectedReader:
+            return 60
+        case .disconnectButton:
+            return UITableView.automaticDimension
+        }
+    }
+
     var reuseIdentifier: String {
         return type.reuseIdentifier
     }
@@ -120,8 +129,5 @@ extension CardReaderSettingsConnectedReaderView: UITableViewDataSource {
 extension CardReaderSettingsConnectedReaderView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let row = rowAtIndexPath(indexPath)
-        if row == .connectedReader {
-            return 60
-        }
-        return UITableView.automaticDimension
+        return row.height
     }}

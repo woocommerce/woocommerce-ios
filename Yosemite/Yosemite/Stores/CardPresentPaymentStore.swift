@@ -11,10 +11,13 @@ public final class CardPresentPaymentStore: Store {
     // If retaining the service here ended up being a problem, we would need to move this Store out of Yosemite and push it up to WooCommerce.
     private let cardReaderService: CardReaderService
 
+    private let remote: WCPayRemote
+
     private var cancellables: Set<AnyCancellable> = []
 
     public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, cardReaderService: CardReaderService) {
         self.cardReaderService = cardReaderService
+        self.remote = WCPayRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -33,6 +36,8 @@ public final class CardPresentPaymentStore: Store {
         }
 
         switch action {
+        case .initialize(let siteID):
+            initialize(siteID: siteID)
         case .startCardReaderDiscovery(let completion):
             startCardReaderDiscovery(completion: completion)
         case .connect(let reader, let completion):
@@ -45,6 +50,15 @@ public final class CardPresentPaymentStore: Store {
 // MARK: - Services
 //
 private extension CardPresentPaymentStore {
+    func initialize(siteID: Int64) {
+        remote.loadConnectionToken(for: siteID) { [weak self] (token, error) in
+            print("======== load connection token completed")
+            print("token ", token?.token)
+            print("error ", error)
+            print("//////// load connection token completed")
+        }
+    }
+
     func startCardReaderDiscovery(completion: @escaping (_ readers: [CardReader]) -> Void) {
         cardReaderService.start()
 

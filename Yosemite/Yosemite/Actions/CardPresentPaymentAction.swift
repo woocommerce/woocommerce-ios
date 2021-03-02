@@ -1,6 +1,7 @@
 // MARK: - CardPresentPaymentAction: Defines all of the Actions supported by the CardPresentPaymentStore.
 //
 public enum CardPresentPaymentAction: Action {
+    case initialize(siteID: Int64)
     /// Start the Card Reader discovery process.
     ///
     case startCardReaderDiscovery(onCompletion: ([CardReader]) -> Void)

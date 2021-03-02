@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import Yosemite
 
 struct CardReader {
     var name: String
@@ -43,6 +44,22 @@ final class CardReaderSettingsViewModel: ObservableObject {
     func startSearch() {
         // TODO dispatch an action to start searching.
         activeAlert = .searching
+
+        let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
+
+        let action = CardPresentPaymentAction.initialize(siteID: siteID)
+
+//        let action = SitePostAction.retrieveSitePostPassword(siteID: siteID, postID: productID) { (password, error) in
+//            guard let _ = password else {
+//                DDLogError("⛔️ Error fetching product password: \(error.debugDescription)")
+//                onCompletion?(nil, error)
+//                return
+//            }
+//
+//            onCompletion?(password, nil)
+//        }
+
+        ServiceLocator.stores.dispatch(action)
     }
 
     func stopSearch() {

@@ -1,4 +1,5 @@
 import XCTest
+import TestKit
 @testable import Networking
 @testable import WooCommerce
 @testable import Yosemite
@@ -95,7 +96,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .new(name: sampleAttributeName))
 
         // When
-        viewModel.addNewOption(name: "")
+        viewModel.addNewOption(name: "Hello")
 
         // Then
         let textFieldSection = try XCTUnwrap(viewModel.sections.last?.rows)

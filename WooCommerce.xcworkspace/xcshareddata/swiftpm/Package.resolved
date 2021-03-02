@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "Difference",
+        "repositoryURL": "https://github.com/krzysztofzablocki/Difference.git",
+        "state": {
+          "branch": "master",
+          "revision": "6b121174e4a4bfed28ef8bb725156fac6e7c12bc",
+          "version": null
+        }
+      },
+      {
         "package": "Embassy",
         "repositoryURL": "https://github.com/envoy/Embassy",
         "state": {

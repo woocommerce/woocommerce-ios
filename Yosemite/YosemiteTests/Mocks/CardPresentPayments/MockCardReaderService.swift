@@ -37,7 +37,7 @@ final class MockCardReaderService: CardReaderService {
 
     }
 
-    func setNetworkingAdapter(_ adapter: CardReaderNetworkingAdapter) {
+    func setNetworkingAdapter(_ adapter: RemoteConfigProvider) {
         //
     }
 

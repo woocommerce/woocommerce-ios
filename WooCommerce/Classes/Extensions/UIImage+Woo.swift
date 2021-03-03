@@ -58,6 +58,12 @@ extension UIImage {
             .applyTintColor(.placeholderImage)!
     }
 
+    /// Card Reader Scanning Image
+    ///
+    static var cardReaderScanningImage: UIImage {
+        return UIImage(named: "card-reader-scanning")!
+    }
+
     /// Product categories Icon
     ///
     static var categoriesIcon: UIImage {

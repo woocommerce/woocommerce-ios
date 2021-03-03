@@ -118,18 +118,37 @@ private extension ShippingLabelFormViewController {
                        body: viewModel.originAddress?.fullNameWithCompanyAndAddress,
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             guard let self = self else { return }
-            let shippingLabelAddress = self.viewModel.originAddress
-            let shippingAddressVC = ShippingLabelAddressFormViewController(siteID: self.viewModel.siteID,
-                                                                           type: .origin,
-                                                                           address: shippingLabelAddress,
-                                                                           completion: { [weak self] (shippingLabelAddress) in
-                                                                            guard let self = self else { return }
-                                                                            self.viewModel.handleOriginAddressValueChanges(address: shippingLabelAddress,
-                                                                                                                           validated: true)
+            self.viewModel.validateAddress(type: .origin) { [weak self] (validationState, response) in
+                guard let self = self else { return }
+                let shippingLabelAddress = self.viewModel.originAddress
+                switch validationState {
+                case .validated:
+                    self.viewModel.handleOriginAddressValueChanges(address: shippingLabelAddress,
+                                                                   validated: true)
+                case .suggestedAddress:
+                    let vc = ShippingLabelSuggestedAddressViewController(type: .origin,
+                                                                         address: shippingLabelAddress,
+                                                                         suggestedAddress: response?.address) { [weak self] (newShippingLabelAddress) in
+                        self?.viewModel.handleOriginAddressValueChanges(address: newShippingLabelAddress,
+                                                                        validated: true)
+                    }
+                    self.navigationController?.pushViewController(vc, animated: true)
+                default:
+                    let shippingAddressVC = ShippingLabelAddressFormViewController(siteID: self.viewModel.siteID,
+                                                                                   type: .origin,
+                                                                                   address: shippingLabelAddress,
+                                                                                   completion: { [weak self] (newShippingLabelAddress) in
+                                                                                    guard let self = self else { return }
+                            self.viewModel.handleOriginAddressValueChanges(address: newShippingLabelAddress, validated: true)
 
-                                                                           })
-            self.navigationController?.pushViewController(shippingAddressVC, animated: true)
+                                                                                   })
+                    self.navigationController?.pushViewController(shippingAddressVC, animated: true)
+                }
+            }
         }
+
+        cell.showActivityIndicator(viewModel.state.isValidatingOriginAddress)
+        cell.enableButton(!viewModel.state.isValidatingOriginAddress)
     }
 
     func configureShipTo(cell: ShippingLabelFormStepTableViewCell, row: Row) {
@@ -139,17 +158,37 @@ private extension ShippingLabelFormViewController {
                        body: viewModel.destinationAddress?.fullNameWithCompanyAndAddress,
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
             guard let self = self else { return }
-            let shippingLabelAddress = self.viewModel.destinationAddress
-            let shippingAddressVC = ShippingLabelAddressFormViewController(siteID: self.viewModel.siteID,
-                                                                           type: .destination,
-                                                                           address: shippingLabelAddress,
-                                                                           completion: { [weak self] (shippingLabelAddress) in
-                                                                            guard let self = self else { return }
-                                                                            self.viewModel.handleDestinationAddressValueChanges(address: shippingLabelAddress,
-                                                                                                                                validated: true)
-                                                                           })
-            self.navigationController?.pushViewController(shippingAddressVC, animated: true)
+
+            self.viewModel.validateAddress(type: .destination) { [weak self] (validationState, response) in
+                guard let self = self else { return }
+                let shippingLabelAddress = self.viewModel.destinationAddress
+                switch validationState {
+                case .validated:
+                    self.viewModel.handleDestinationAddressValueChanges(address: shippingLabelAddress,
+                                                                   validated: true)
+                case .suggestedAddress:
+                    let vc = ShippingLabelSuggestedAddressViewController(type: .destination,
+                                                                         address: shippingLabelAddress,
+                                                                         suggestedAddress: response?.address) { [weak self] (newShippingLabelAddress) in
+                        self?.viewModel.handleDestinationAddressValueChanges(address: newShippingLabelAddress,
+                                                                        validated: true)
+                    }
+                    self.navigationController?.pushViewController(vc, animated: true)
+                default:
+                    let shippingAddressVC = ShippingLabelAddressFormViewController(siteID: self.viewModel.siteID,
+                                                                                   type: .destination,
+                                                                                   address: shippingLabelAddress,
+                                                                                   completion: { [weak self] (newShippingLabelAddress) in
+                                                                                    guard let self = self else { return }
+                            self.viewModel.handleDestinationAddressValueChanges(address: newShippingLabelAddress, validated: true)
+
+                                                                                   })
+                    self.navigationController?.pushViewController(shippingAddressVC, animated: true)
+                }
+            }
         }
+        cell.showActivityIndicator(viewModel.state.isValidatingDestinationAddress)
+        cell.enableButton(!viewModel.state.isValidatingDestinationAddress)
     }
 
     func configurePackageDetails(cell: ShippingLabelFormStepTableViewCell, row: Row) {

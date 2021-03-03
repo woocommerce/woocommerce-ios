@@ -53,7 +53,7 @@ extension StripeCardReaderService: CardReaderService {
 
     // MARK: - CardReaderService conformance. Commands
 
-    public func start(_ configProvider: RemoteConfigProvider) {
+    public func start(_ configProvider: CardReaderConfigProvider) {
         // This is enough code to pass a unit test.
         // The final version of this method would be completely different.
         // But for now, we want to start the discovery process using the
@@ -185,7 +185,7 @@ extension StripeCardReaderService: DiscoveryDelegate {
 
 
 private extension StripeCardReaderService {
-    private func setConfigProvider(_ configProvider: RemoteConfigProvider) {
+    private func setConfigProvider(_ configProvider: CardReaderConfigProvider) {
         let tokenProvider = DefaultConnectionTokenProvider(provider: configProvider)
 
         if !Terminal.hasTokenProvider() {

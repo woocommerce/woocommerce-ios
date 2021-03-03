@@ -41,7 +41,7 @@
 		D8DF5F4425DD9F36008AFE25 /* CardReaderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DF5F4325DD9F36008AFE25 /* CardReaderType.swift */; };
 		D8DF5F4A25DD9F7A008AFE25 /* CardReader+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DF5F4925DD9F7A008AFE25 /* CardReader+Stripe.swift */; };
 		D8DF5F4E25DD9F91008AFE25 /* CardReaderType+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8DF5F4D25DD9F91008AFE25 /* CardReaderType+Stripe.swift */; };
-		D8EDFE2A25EED21D003D2213 /* RemoteConfigProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EDFE2925EED21D003D2213 /* RemoteConfigProvider.swift */; };
+		D8EDFE2A25EED21D003D2213 /* CardReaderConfigProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EDFE2925EED21D003D2213 /* CardReaderConfigProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,7 +96,7 @@
 		D8DF5F4325DD9F36008AFE25 /* CardReaderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderType.swift; sourceTree = "<group>"; };
 		D8DF5F4925DD9F7A008AFE25 /* CardReader+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardReader+Stripe.swift"; sourceTree = "<group>"; };
 		D8DF5F4D25DD9F91008AFE25 /* CardReaderType+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardReaderType+Stripe.swift"; sourceTree = "<group>"; };
-		D8EDFE2925EED21D003D2213 /* RemoteConfigProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteConfigProvider.swift; sourceTree = "<group>"; };
+		D8EDFE2925EED21D003D2213 /* CardReaderConfigProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderConfigProvider.swift; sourceTree = "<group>"; };
 		DB2B86965868C0EC25910D7D /* Pods-HardwareTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HardwareTests.release-alpha.xcconfig"; path = "Target Support Files/Pods-HardwareTests/Pods-HardwareTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		E9F0AC202B287C1221EA2C99 /* Pods_Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -199,7 +199,7 @@
 				D88FDB2325DD21B000CB0DBD /* PaymentIntentParameters.swift */,
 				D88FDB2025DD21AF00CB0DBD /* PaymentStatus.swift */,
 				D81AE86325E6B77F00D9CFD3 /* CardReaderServiceError.swift */,
-				D8EDFE2925EED21D003D2213 /* RemoteConfigProvider.swift */,
+				D8EDFE2925EED21D003D2213 /* CardReaderConfigProvider.swift */,
 			);
 			path = CardReader;
 			sourceTree = "<group>";
@@ -423,7 +423,7 @@
 				D8DF5F4425DD9F36008AFE25 /* CardReaderType.swift in Sources */,
 				D88FDB2925DD21B000CB0DBD /* CardReaderServiceDiscoveryStatus.swift in Sources */,
 				D88FDB3925DD21D300CB0DBD /* StripeCardReaderService.swift in Sources */,
-				D8EDFE2A25EED21D003D2213 /* RemoteConfigProvider.swift in Sources */,
+				D8EDFE2A25EED21D003D2213 /* CardReaderConfigProvider.swift in Sources */,
 				D88FDB2F25DD21B000CB0DBD /* PaymentIntent.swift in Sources */,
 				D88FDB3025DD21B000CB0DBD /* CardReaderService.swift in Sources */,
 				D88FDB2C25DD21B000CB0DBD /* CardReaderStatus.swift in Sources */,

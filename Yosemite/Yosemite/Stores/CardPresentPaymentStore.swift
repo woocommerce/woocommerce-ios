@@ -79,7 +79,7 @@ private extension CardPresentPaymentStore {
 
 /// Implementation of the CardReaderNetworkingAdapter
 /// that fetches a token using WCPayRemote
-private final class WCPayTokenProvider: RemoteConfigProvider {
+private final class WCPayTokenProvider: CardReaderConfigProvider {
     private let siteID: Int64
     private let remote: WCPayRemote
 

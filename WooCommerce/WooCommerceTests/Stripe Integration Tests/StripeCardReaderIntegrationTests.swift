@@ -112,7 +112,7 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
 }
 
 
-private final class MockTokenProvider: RemoteConfigProvider {
+private final class MockTokenProvider: CardReaderConfigProvider {
     func fetchToken(completion: @escaping(String?, Error?) -> Void) {
         completion("a token", nil)
     }

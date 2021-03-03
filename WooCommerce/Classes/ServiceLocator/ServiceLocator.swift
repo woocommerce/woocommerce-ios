@@ -60,7 +60,7 @@ final class ServiceLocator {
 
     /// Support for external Card Readers
     ///
-    private static var _cardReader: CardReaderService = StripeCardReaderService(tokenProvider: WCPayTokenProvider())
+    private static var _cardReader: CardReaderService = StripeCardReaderService()
 
     // MARK: - Getters
 

@@ -11,10 +11,13 @@ public final class CardPresentPaymentStore: Store {
     // If retaining the service here ended up being a problem, we would need to move this Store out of Yosemite and push it up to WooCommerce.
     private let cardReaderService: CardReaderService
 
+    private let remote: WCPayRemote
+
     private var cancellables: Set<AnyCancellable> = []
 
     public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, cardReaderService: CardReaderService) {
         self.cardReaderService = cardReaderService
+        self.remote = WCPayRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -33,8 +36,8 @@ public final class CardPresentPaymentStore: Store {
         }
 
         switch action {
-        case .startCardReaderDiscovery(let completion):
-            startCardReaderDiscovery(completion: completion)
+        case .startCardReaderDiscovery(let siteID, let completion):
+            startCardReaderDiscovery(siteID: siteID, completion: completion)
         case .connect(let reader, let completion):
             connect(reader: reader, onCompletion: completion)
         }
@@ -45,8 +48,8 @@ public final class CardPresentPaymentStore: Store {
 // MARK: - Services
 //
 private extension CardPresentPaymentStore {
-    func startCardReaderDiscovery(completion: @escaping (_ readers: [CardReader]) -> Void) {
-        cardReaderService.start()
+    func startCardReaderDiscovery(siteID: Int64, completion: @escaping (_ readers: [CardReader]) -> Void) {
+        cardReaderService.start(WCPayTokenProvider(siteID: siteID, remote: self.remote))
 
         // Over simplification. This is the point where we would receive
         // new data via the CardReaderService's stream of discovered readers
@@ -70,5 +73,24 @@ private extension CardPresentPaymentStore {
         cardReaderService.connectedReaders.sink { connectedHardwareReaders in
             onCompletion(.success(connectedHardwareReaders))
         }.store(in: &cancellables)
+    }
+}
+
+
+/// Implementation of the CardReaderNetworkingAdapter
+/// that fetches a token using WCPayRemote
+private final class WCPayTokenProvider: CardReaderConfigProvider {
+    private let siteID: Int64
+    private let remote: WCPayRemote
+
+    init(siteID: Int64, remote: WCPayRemote) {
+        self.siteID = siteID
+        self.remote = remote
+    }
+
+    func fetchToken(completion: @escaping(String?, Error?) -> Void) {
+        remote.loadConnectionToken(for: siteID) { token, error in
+            completion(token?.token, error)
+        }
     }
 }

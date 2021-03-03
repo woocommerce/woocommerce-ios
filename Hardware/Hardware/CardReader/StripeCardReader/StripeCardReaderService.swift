@@ -17,15 +17,6 @@ public final class StripeCardReaderService: NSObject {
     /// see
     ///  https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPDiscoveryDelegate.html#/c:objc(pl)SCPDiscoveryDelegate(im)terminal:didUpdateDiscoveredReaders:
     private let discoveredStripeReadersCache = StripeCardReaderDiscoveryCache()
-
-    public init(tokenProvider: ConnectionTokenProvider) {
-        // Per Stripe SDK's instructions, the first we need to do is set the token provider, before calling `shared`
-        // If we don't, an assertion will 💥
-        // We can only set the token once
-        if !Terminal.hasTokenProvider() {
-            Terminal.setTokenProvider(tokenProvider)
-        }
-    }
 }
 
 
@@ -62,12 +53,14 @@ extension StripeCardReaderService: CardReaderService {
 
     // MARK: - CardReaderService conformance. Commands
 
-    public func start() {
+    public func start(_ configProvider: CardReaderConfigProvider) {
         // This is enough code to pass a unit test.
         // The final version of this method would be completely different.
         // But for now, we want to start the discovery process using the
         // simulate reader included in the Stripe Terminal SDK
         // https://stripe.com/docs/terminal/integration?country=CA&platform=ios&reader=p400#dev-test
+
+        setConfigProvider(configProvider)
 
         // Attack the test terminal, provided by the SDK
         let config = DiscoveryConfiguration(
@@ -192,6 +185,14 @@ extension StripeCardReaderService: DiscoveryDelegate {
 
 
 private extension StripeCardReaderService {
+    private func setConfigProvider(_ configProvider: CardReaderConfigProvider) {
+        let tokenProvider = DefaultConnectionTokenProvider(provider: configProvider)
+
+        if !Terminal.hasTokenProvider() {
+            Terminal.setTokenProvider(tokenProvider)
+        }
+    }
+
     func cancelReaderDiscovery() {
         discoveryCancellable?.cancel { [weak self] error in
             guard let self = self,

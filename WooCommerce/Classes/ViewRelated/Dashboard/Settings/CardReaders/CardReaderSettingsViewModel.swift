@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import Yosemite
 
 struct CardReader {
     var serialNumber: String
@@ -54,8 +55,19 @@ final class CardReaderSettingsViewModel: ObservableObject {
     }
 
     func startSearch() {
-        // TODO dispatch an action to start searching.
         activeAlert = .searching
+
+        let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
+
+        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: siteID, onCompletion: { cardReaders in
+            // TODO. To be implemented
+            // Leaving these prints here to help test the PR
+            print("==== new card readers discovered begins ====")
+            print("new readers: ", cardReaders)
+            print("==== new card readers discovered ends   ====")
+        })
+
+        ServiceLocator.stores.dispatch(action)
 
         // TODO Remove - simulates searching with a timer
         timer = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(dummyFoundReader), userInfo: nil, repeats: false)

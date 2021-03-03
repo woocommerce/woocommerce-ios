@@ -53,20 +53,14 @@ final class AddAttributeOptionsViewModel {
 
     /// Name of the attribute
     ///
-    var attributeName: String {
-        switch attribute {
-        case .new(let name):
-            return name
-        case .existing(let attribute):
-            return attribute.name
-        }
-    }
+    var currentAttributeName: String
 
     /// Defines next button visibility
     ///
     var isNextButtonEnabled: Bool {
         let optionsToSubmit = state.selectedOptions.map { $0.name }
-        return state.selectedOptions.isNotEmpty && optionsToSubmit != attribute.previouslySelectedOptions
+        let attributeHasChanges = currentAttributeName != attribute.name || optionsToSubmit != attribute.previouslySelectedOptions
+        return attributeHasChanges && state.selectedOptions.isNotEmpty
     }
 
     /// Defines the more(...) button visibility
@@ -161,6 +155,7 @@ final class AddAttributeOptionsViewModel {
          analytics: Analytics = ServiceLocator.analytics) {
         self.product = product
         self.attribute = attribute
+        self.currentAttributeName = attribute.name
         self.allowsEditing = allowsEditing
         self.stores = stores
         self.viewStorage = viewStorage
@@ -269,13 +264,13 @@ extension AddAttributeOptionsViewModel {
         stores.dispatch(action)
     }
 
-    /// Returns a product with its attributes updated with the new attribute to create.
+    /// Returns a product with its name and options updated with the new attribute to create.
     ///
     private func createUpdatedProduct() -> Product {
         let newOptions = state.selectedOptions.map { $0.name }
         let newAttribute = ProductAttribute(siteID: product.siteID,
                                             attributeID: attribute.attributeID,
-                                            name: attribute.name,
+                                            name: currentAttributeName,
                                             position: 0,
                                             visible: true,
                                             variation: true,
@@ -285,7 +280,7 @@ extension AddAttributeOptionsViewModel {
         // Name has to be considered, because local attributes are zero-id based.
         let updatedAttributes: [ProductAttribute] = {
             var attributes = product.attributes
-            attributes.removeAll { $0.attributeID == newAttribute.attributeID && $0.name == newAttribute.name }
+            attributes.removeAll { $0.attributeID == attribute.attributeID && $0.name == attribute.name }
             attributes.append(newAttribute)
             return attributes
         }()

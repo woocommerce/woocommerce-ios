@@ -5,14 +5,18 @@ final class RenameAttributesViewController: UIViewController {
 
     @IBOutlet weak private var tableView: UITableView!
 
+    private let onCompletion: (String) -> Void
+
     private let viewModel: RenameAttributesViewModel
 
     private let sections: [Section]
 
     /// Initializer for `RenameAttributesViewController`
     ///
-    init(viewModel: RenameAttributesViewModel) {
+    init(viewModel: RenameAttributesViewModel,
+         onCompletion: @escaping (String) -> Void) {
         self.viewModel = viewModel
+        self.onCompletion = onCompletion
         self.sections = [Section(footer: Localization.footerText, rows: [.attributeName])]
         super.init(nibName: nil, bundle: nil)
     }
@@ -81,9 +85,10 @@ private extension RenameAttributesViewController {
 
 extension RenameAttributesViewController {
     @objc private func doneButtonTapped() {
-        // TODO: Update the attribute name if it has changed
-        // For now, just navigate back
-        navigationController?.popViewController(animated: true)
+        guard let newAttributeName = viewModel.newAttributeName else {
+            return onCompletion(viewModel.attributeName)
+        }
+        onCompletion(newAttributeName)
     }
 
     override func shouldPopOnBackButton() -> Bool {

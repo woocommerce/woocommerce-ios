@@ -5,6 +5,18 @@ import Yosemite
 ///
 final class ShippingLabelFormViewModel {
 
+    /// Defines the necessary state to produce the ViewModel's outputs.
+    ///
+    struct State {
+
+        var sections: [Section] = []
+
+        /// Indicates if the view model is validating an address
+        ///
+        var isValidatingOriginAddress: Bool = false
+        var isValidatingDestinationAddress: Bool = false
+    }
+
     typealias Section = ShippingLabelFormViewController.Section
     typealias Row = ShippingLabelFormViewController.Row
 
@@ -12,7 +24,18 @@ final class ShippingLabelFormViewModel {
     private(set) var originAddress: ShippingLabelAddress?
     private(set) var destinationAddress: ShippingLabelAddress?
 
-    private(set) var sections: [Section] = []
+
+    /// Closure to notify the `ViewController` when the view model properties change.
+    ///
+    var onChange: (() -> (Void))?
+
+    /// Current `ViewModel` state.
+    ///
+    private(set) var state: State = State() {
+        didSet {
+            onChange?()
+        }
+    }
 
     init(siteID: Int64, originAddress: Address?, destinationAddress: Address?) {
 
@@ -29,7 +52,7 @@ final class ShippingLabelFormViewModel {
                                                                account: defaultAccount)
         self.destinationAddress = ShippingLabelFormViewModel.fromAddressToShippingLabelAddress(address: destinationAddress)
 
-        sections = ShippingLabelFormViewModel.generateInitialSections()
+        state.sections = ShippingLabelFormViewModel.generateInitialSections()
     }
 
     func handleOriginAddressValueChanges(address: ShippingLabelAddress?, validated: Bool) {
@@ -56,7 +79,6 @@ final class ShippingLabelFormViewModel {
 
 }
 
-
 // MARK: - State Machine
 private extension ShippingLabelFormViewModel {
 
@@ -71,7 +93,7 @@ private extension ShippingLabelFormViewModel {
     func updateRowState(type: ShippingLabelFormViewController.RowType,
                         dataState: ShippingLabelFormViewController.DataState,
                         displayMode: ShippingLabelFormViewController.DisplayMode) {
-        guard var rows = sections.first?.rows else {
+        guard var rows = state.sections.first?.rows else {
             return
         }
 
@@ -86,7 +108,7 @@ private extension ShippingLabelFormViewModel {
             }
         }
 
-        sections = [Section(rows: rows)]
+        state.sections = [Section(rows: rows)]
     }
 }
 
@@ -141,3 +163,36 @@ private extension ShippingLabelFormViewModel {
         return resultsController.fetchedObjects.first
     }
 }
+
+// MARK: - Remote API
+//extension ShippingLabelFormViewModel {
+//    func validateAddress(address: ShippingLabelAddress, type: ShipType, onSuccess: ((Bool, ShippingLabelAddressValidationError?) -> ())? = nil) {
+//
+//        let addressToBeVerified = ShippingLabelAddressVerification(address: address, type: type)
+//
+//        let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] (result) in
+//            switch result {
+//            case .success:
+//                if (try? result.get().errors) == nil {
+//                    self?.isAddressValidated = true
+//                    self?.addressValidationError = nil
+//                    self?.state.isLoading = false
+//                    onSuccess?(true, nil)
+//                }
+//                else {
+//                    self?.isAddressValidated = false
+//                    self?.addressValidationError = try? result.get().errors
+//                    self?.state.isLoading = false
+//                    onSuccess?(false, try? result.get().errors)
+//                }
+//            case .failure(let error):
+//                DDLogError("⛔️ Error validating shipping label address: \(error)")
+//                self?.isAddressValidated = false
+//                self?.addressValidationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
+//                self?.state.isLoading = false
+//                onSuccess?(false, nil)
+//            }
+//        }
+//        stores.dispatch(action)
+//    }
+//}

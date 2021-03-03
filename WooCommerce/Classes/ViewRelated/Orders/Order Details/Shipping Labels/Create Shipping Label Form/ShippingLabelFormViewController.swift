@@ -26,6 +26,7 @@ final class ShippingLabelFormViewController: UIViewController {
         configureMainView()
         configureTableView()
         registerTableViewCells()
+        observeViewModel()
     }
 }
 
@@ -57,6 +58,13 @@ private extension ShippingLabelFormViewController {
             tableView.registerNib(for: row.type)
         }
     }
+
+    func observeViewModel() {
+        viewModel.onChange = { [weak self] in
+            guard let self = self else { return }
+            self.tableView.reloadData()
+        }
+    }
 }
 
 // MARK: - UITableViewDataSource Conformance
@@ -64,15 +72,15 @@ private extension ShippingLabelFormViewController {
 extension ShippingLabelFormViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return viewModel.sections.count
+        return viewModel.state.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.sections[section].rows.count
+        return viewModel.state.sections[section].rows.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = viewModel.sections[indexPath.section].rows[indexPath.row]
+        let row = viewModel.state.sections[indexPath.section].rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.type.reuseIdentifier, for: indexPath)
         configure(cell, for: row, at: indexPath)
 
@@ -118,7 +126,6 @@ private extension ShippingLabelFormViewController {
                                                                             guard let self = self else { return }
                                                                             self.viewModel.handleOriginAddressValueChanges(address: shippingLabelAddress,
                                                                                                                            validated: true)
-                                                                            self.tableView.reloadData()
 
                                                                            })
             self.navigationController?.pushViewController(shippingAddressVC, animated: true)
@@ -140,7 +147,6 @@ private extension ShippingLabelFormViewController {
                                                                             guard let self = self else { return }
                                                                             self.viewModel.handleDestinationAddressValueChanges(address: shippingLabelAddress,
                                                                                                                                 validated: true)
-                                                                            self.tableView.reloadData()
                                                                            })
             self.navigationController?.pushViewController(shippingAddressVC, animated: true)
         }

@@ -81,7 +81,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(siteID: 10, originAddress: nil, destinationAddress: nil)
         let expectedShippingAddress = MockShippingLabelAddress.sampleAddress()
-        let currentRows = shippingLabelFormViewModel.sections.first?.rows
+        let currentRows = shippingLabelFormViewModel.state.sections.first?.rows
 
         // When
         XCTAssertEqual(currentRows?[0].type, .shipFrom)
@@ -96,7 +96,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         shippingLabelFormViewModel.handleOriginAddressValueChanges(address: expectedShippingAddress, validated: true)
 
         // Then
-        let updatedRows = shippingLabelFormViewModel.sections.first?.rows
+        let updatedRows = shippingLabelFormViewModel.state.sections.first?.rows
         XCTAssertEqual(updatedRows?[0].type, .shipFrom)
         XCTAssertEqual(updatedRows?[0].dataState, .validated)
         XCTAssertEqual(updatedRows?[0].displayMode, .editable)
@@ -115,7 +115,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
 
         // When
         shippingLabelFormViewModel.handleOriginAddressValueChanges(address: expectedShippingAddress, validated: true)
-        let currentRows = shippingLabelFormViewModel.sections.first?.rows
+        let currentRows = shippingLabelFormViewModel.state.sections.first?.rows
         XCTAssertEqual(currentRows?[0].type, .shipFrom)
         XCTAssertEqual(currentRows?[0].dataState, .validated)
         XCTAssertEqual(currentRows?[0].displayMode, .editable)
@@ -128,7 +128,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         shippingLabelFormViewModel.handleDestinationAddressValueChanges(address: expectedShippingAddress, validated: true)
 
         // Then
-        let updatedRows = shippingLabelFormViewModel.sections.first?.rows
+        let updatedRows = shippingLabelFormViewModel.state.sections.first?.rows
         XCTAssertEqual(updatedRows?[0].type, .shipFrom)
         XCTAssertEqual(updatedRows?[0].dataState, .validated)
         XCTAssertEqual(updatedRows?[0].displayMode, .editable)

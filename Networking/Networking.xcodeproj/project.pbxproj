@@ -381,6 +381,8 @@
 		CEF88DAB233E911A00BED485 /* order-fully-refunded.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF88DAA233E911A00BED485 /* order-fully-refunded.json */; };
 		CEF88DAD233E95B000BED485 /* OrderRefundCondensed.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF88DAC233E95B000BED485 /* OrderRefundCondensed.swift */; };
 		CEF88DAF233E9F7E00BED485 /* order-details-partially-refunded.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF88DAE233E9F7D00BED485 /* order-details-partially-refunded.json */; };
+		D800DA0A25EFEB9C001E13CE /* WCPayRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D800DA0925EFEB9C001E13CE /* WCPayRemoteTests.swift */; };
+		D800DA0E25EFEC21001E13CE /* wcpay-connection-token.json in Resources */ = {isa = PBXBuildFile; fileRef = D800DA0D25EFEC21001E13CE /* wcpay-connection-token.json */; };
 		D823D9032237450A00C90817 /* shipment_tracking_new.json in Resources */ = {isa = PBXBuildFile; fileRef = D823D9022237450A00C90817 /* shipment_tracking_new.json */; };
 		D823D905223746CE00C90817 /* NewShipmentTrackingMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D823D904223746CE00C90817 /* NewShipmentTrackingMapper.swift */; };
 		D823D90722376B4800C90817 /* shipment_tracking_new_custom_provider.json in Resources */ = {isa = PBXBuildFile; fileRef = D823D90622376B4800C90817 /* shipment_tracking_new_custom_provider.json */; };
@@ -817,6 +819,8 @@
 		CEF88DAC233E95B000BED485 /* OrderRefundCondensed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundCondensed.swift; sourceTree = "<group>"; };
 		CEF88DAE233E9F7D00BED485 /* order-details-partially-refunded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-details-partially-refunded.json"; sourceTree = "<group>"; };
 		D7865552BE07C116627FE528 /* Pods-NetworkingTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		D800DA0925EFEB9C001E13CE /* WCPayRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayRemoteTests.swift; sourceTree = "<group>"; };
+		D800DA0D25EFEC21001E13CE /* wcpay-connection-token.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-connection-token.json"; sourceTree = "<group>"; };
 		D823D9022237450A00C90817 /* shipment_tracking_new.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = shipment_tracking_new.json; sourceTree = "<group>"; };
 		D823D904223746CE00C90817 /* NewShipmentTrackingMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewShipmentTrackingMapper.swift; sourceTree = "<group>"; };
 		D823D90622376B4800C90817 /* shipment_tracking_new_custom_provider.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = shipment_tracking_new_custom_provider.json; sourceTree = "<group>"; };
@@ -1049,6 +1053,7 @@
 				026CF621237D7E61009563D4 /* ProductVariationsRemoteTests.swift */,
 				025CA2C5238F4F3500B05C81 /* ProductShippingClassRemoteTests.swift */,
 				02E7FFCA256218F600C53030 /* ShippingLabelRemoteTests.swift */,
+				D800DA0925EFEB9C001E13CE /* WCPayRemoteTests.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -1376,6 +1381,7 @@
 				74ABA1C6213F19FD00FFAD30 /* top-performers-month.json */,
 				74ABA1C7213F19FE00FFAD30 /* top-performers-year.json */,
 				7495AACE225D366D00801A89 /* variation-as-product.json */,
+				D800DA0D25EFEC21001E13CE /* wcpay-connection-token.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -1806,6 +1812,7 @@
 				457FC68C2382B2FD00B41B02 /* product-update.json in Resources */,
 				CE19CB11222486A600E8AF7A /* order-statuses.json in Resources */,
 				02F096C22406691100C0C1D5 /* media-library.json in Resources */,
+				D800DA0E25EFEC21001E13CE /* wcpay-connection-token.json in Resources */,
 				74159628224D63CE003C21CF /* settings-product-alt.json in Resources */,
 				45AB8B2024AB3E1F00B5B36E /* product-tags-empty.json in Resources */,
 				451274A625276C82009911FF /* product-variation.json in Resources */,
@@ -2137,6 +2144,7 @@
 				CE0A0F1D22398D520075ED8D /* ProductListMapperTests.swift in Sources */,
 				025CA2C6238F4F3500B05C81 /* ProductShippingClassRemoteTests.swift in Sources */,
 				26B64548259BF2B900EF3FB3 /* ProductAttributeTermListMapperTests.swift in Sources */,
+				D800DA0A25EFEB9C001E13CE /* WCPayRemoteTests.swift in Sources */,
 				CC851D1425E52AB500249E9C /* Decimal+ExtensionsTests.swift in Sources */,
 				B554FA8B2180B1D500C54DFF /* NotificationsRemoteTests.swift in Sources */,
 				B518662A20A09C6F00037A38 /* OrdersRemoteTests.swift in Sources */,

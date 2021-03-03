@@ -1,0 +1,5 @@
+{
+  "object": "terminal.connection_token",
+  "secret": "a connection token",
+  "test_mode": false
+}

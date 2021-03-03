@@ -30,6 +30,10 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     /// Mock Card Reader Service: In memory
     private var mockCardReaderService: MockCardReaderService!
 
+    /// Dummy Site ID
+    ///
+    private let sampleSiteID: Int64 = 1234
+
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -57,7 +61,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                                        network: network,
                                                        cardReaderService: mockCardReaderService)
 
-        let action = CardPresentPaymentAction.startCardReaderDiscovery { discoveredReaders in
+        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID) { discoveredReaders in
             //
         }
 
@@ -74,7 +78,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         let expectation = self.expectation(description: "Readers discovered")
 
-        let action = CardPresentPaymentAction.startCardReaderDiscovery { discoveredReaders in
+        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID) { discoveredReaders in
             expectation.fulfill()
         }
 

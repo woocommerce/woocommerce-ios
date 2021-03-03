@@ -483,9 +483,8 @@ private extension OrderDetailsDataSource {
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = Title.shippingLabelCreationInfoAction
         cell.accessibilityHint =
-            NSLocalizedString("Tap to show instructions on how to create a shipping label on the mobile device",
-                              comment:
-                                "VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device")
+            NSLocalizedString("Tap to show information about creating a shipping label",
+                              comment: "VoiceOver accessibility hint for the row that shows information about creating a shipping label")
     }
 
     private func configureShippingLabelDetail(cell: WooBasicTableViewCell) {

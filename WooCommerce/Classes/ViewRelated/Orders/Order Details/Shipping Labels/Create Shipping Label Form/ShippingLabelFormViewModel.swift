@@ -24,6 +24,7 @@ final class ShippingLabelFormViewModel {
     private(set) var originAddress: ShippingLabelAddress?
     private(set) var destinationAddress: ShippingLabelAddress?
 
+    private let stores: StoresManager
 
     /// Closure to notify the `ViewController` when the view model properties change.
     ///
@@ -37,7 +38,7 @@ final class ShippingLabelFormViewModel {
         }
     }
 
-    init(siteID: Int64, originAddress: Address?, destinationAddress: Address?) {
+    init(siteID: Int64, originAddress: Address?, destinationAddress: Address?, stores: StoresManager = ServiceLocator.stores) {
 
         self.siteID = siteID
 
@@ -53,6 +54,7 @@ final class ShippingLabelFormViewModel {
         self.destinationAddress = ShippingLabelFormViewModel.fromAddressToShippingLabelAddress(address: destinationAddress)
 
         state.sections = ShippingLabelFormViewModel.generateInitialSections()
+        self.stores = stores
     }
 
     func handleOriginAddressValueChanges(address: ShippingLabelAddress?, validated: Bool) {
@@ -162,37 +164,62 @@ private extension ShippingLabelFormViewModel {
         try? resultsController.performFetch()
         return resultsController.fetchedObjects.first
     }
+
+    func isValidatingAddress(_ validating: Bool, type: ShipType) {
+        switch type {
+        case .origin:
+            state.isValidatingOriginAddress = validating
+        case .destination:
+            state.isValidatingDestinationAddress = validating
+        }
+    }
 }
 
 // MARK: - Remote API
-//extension ShippingLabelFormViewModel {
-//    func validateAddress(address: ShippingLabelAddress, type: ShipType, onSuccess: ((Bool, ShippingLabelAddressValidationError?) -> ())? = nil) {
-//
-//        let addressToBeVerified = ShippingLabelAddressVerification(address: address, type: type)
-//
-//        let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] (result) in
-//            switch result {
-//            case .success:
-//                if (try? result.get().errors) == nil {
-//                    self?.isAddressValidated = true
-//                    self?.addressValidationError = nil
-//                    self?.state.isLoading = false
-//                    onSuccess?(true, nil)
-//                }
-//                else {
-//                    self?.isAddressValidated = false
-//                    self?.addressValidationError = try? result.get().errors
-//                    self?.state.isLoading = false
-//                    onSuccess?(false, try? result.get().errors)
-//                }
-//            case .failure(let error):
-//                DDLogError("⛔️ Error validating shipping label address: \(error)")
-//                self?.isAddressValidated = false
-//                self?.addressValidationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
-//                self?.state.isLoading = false
-//                onSuccess?(false, nil)
-//            }
-//        }
-//        stores.dispatch(action)
-//    }
-//}
+extension ShippingLabelFormViewModel {
+    func validateAddress(type: ShipType, onCompletion: ((ValidationState, ShippingLabelAddressValidationResponse?) -> ())? = nil) {
+
+        guard let address = type == .origin ? originAddress : destinationAddress else { return }
+
+        let addressToBeVerified = ShippingLabelAddressVerification(address: address, type: type)
+
+        isValidatingAddress(true, type: type)
+
+        let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] (result) in
+
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                let response = try? result.get()
+
+                // No errors, the address is validated
+                if response?.errors == nil && response?.isTrivialNormalization == true {
+                    self.isValidatingAddress(false, type: type)
+                    onCompletion?(.validated, response)
+                }
+                // No errors, but there is a suggested address
+                else if response?.errors == nil && response?.isTrivialNormalization == false {
+                    self.isValidatingAddress(false, type: type)
+                    onCompletion?(.suggestedAddress, response)
+                }
+                // There are some address validation errors
+                else {
+                    self.isValidatingAddress(false, type: type)
+                    onCompletion?(.validationError, response)
+                }
+            case .failure(let error):
+                DDLogError("⛔️ Error validating shipping label address: \(error)")
+                self.isValidatingAddress(false, type: type)
+                onCompletion?(.genericError, nil)
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    enum ValidationState {
+        case validated
+        case suggestedAddress
+        case validationError
+        case genericError
+    }
+}

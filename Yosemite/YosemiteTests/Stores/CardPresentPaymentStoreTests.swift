@@ -87,7 +87,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    func test_start_discovery_action_passes_configuraton_rovider_to_service() {
+    func test_start_discovery_action_passes_configuraton_provider_to_service() {
         let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
                                                        storageManager: storageManager,
                                                        network: network,
@@ -100,6 +100,35 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         cardPresentStore.onAction(action)
 
         XCTAssertTrue(mockCardReaderService.didReceiveAConfigurationProvider)
+    }
+
+    /// This test is meant to cover the error when there is a failure to fetch
+    /// the connection token
+    /// We do not have proper error handling for now, but it is in the pipeline
+    /// https://github.com/woocommerce/woocommerce-ios/issues/3734
+    /// https://github.com/woocommerce/woocommerce-ios/issues/3741
+    /// This test will be edited to assert an error was received when
+    /// proper error support is implemented. 
+    func test_start_discovery_action_returns_empty_error_when_token_fetching_fails() {
+        let expectation = self.expectation(description: "Empty readers on failure to obtain a connection token")
+
+        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
+                                                       storageManager: storageManager,
+                                                       network: network,
+                                                       cardReaderService: mockCardReaderService)
+
+        network.simulateResponse(requestUrlSuffix: "payments/connection_tokens", filename: "generic_error")
+
+        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID) { discoveredReaders in
+            XCTAssertTrue(self.mockCardReaderService.didReceiveAConfigurationProvider)
+            if discoveredReaders.count == 0 {
+                expectation.fulfill()
+            }
+        }
+
+        cardPresentStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
     func test_connect_to_reader_action_updates_returns_provided_reader_on_success() {

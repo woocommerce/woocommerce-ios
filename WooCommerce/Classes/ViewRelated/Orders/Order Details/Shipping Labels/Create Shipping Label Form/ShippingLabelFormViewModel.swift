@@ -54,6 +54,12 @@ final class ShippingLabelFormViewModel {
         return [Section(rows: rows)]
     }
 
+}
+
+
+// MARK: - State Machine
+private extension ShippingLabelFormViewModel {
+
     /// We have a state machine that keeps track of a list of rows with corresponding data state and UI state.
     /// On each state change (any data change from any rows or API validation response), the state machine:
     /// First updates the date state of affected rows
@@ -62,9 +68,9 @@ final class ShippingLabelFormViewModel {
     /// - All previous rows (lower index) have data state as validated
     /// - For the first row, it is always editable
     ///
-    private func updateRowState(type: ShippingLabelFormViewController.RowType,
-                                dataState: ShippingLabelFormViewController.DataState,
-                                displayMode: ShippingLabelFormViewController.DisplayMode) {
+    func updateRowState(type: ShippingLabelFormViewController.RowType,
+                        dataState: ShippingLabelFormViewController.DataState,
+                        displayMode: ShippingLabelFormViewController.DisplayMode) {
         guard var rows = sections.first?.rows else {
             return
         }

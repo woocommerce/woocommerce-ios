@@ -23,11 +23,11 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="NOW-uQ-x7Y">
-                    <rect key="frame" x="0.0" y="44" width="414" height="714"/>
+                    <rect key="frame" x="0.0" y="44" width="414" height="694"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                 </tableView>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="7hH-ph-gl0">
-                    <rect key="frame" x="16" y="768" width="382" height="104"/>
+                    <rect key="frame" x="16" y="748" width="382" height="104"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Ji-AX-zfH">
                             <rect key="frame" x="0.0" y="0.0" width="382" height="50"/>
@@ -56,8 +56,8 @@
                 <constraint firstItem="NOW-uQ-x7Y" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="3X0-2P-tKl"/>
                 <constraint firstItem="7hH-ph-gl0" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="Ayb-JM-ZMD"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="7hH-ph-gl0" secondAttribute="trailing" constant="16" id="BIH-og-6hK"/>
-                <constraint firstItem="7hH-ph-gl0" firstAttribute="top" secondItem="NOW-uQ-x7Y" secondAttribute="bottom" constant="10" id="JT5-2t-mCH"/>
-                <constraint firstItem="7hH-ph-gl0" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" constant="10" id="cAy-hV-e5F"/>
+                <constraint firstItem="7hH-ph-gl0" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" constant="-10" id="cAy-hV-e5F"/>
+                <constraint firstItem="7hH-ph-gl0" firstAttribute="top" secondItem="NOW-uQ-x7Y" secondAttribute="bottom" constant="10" id="hHo-9r-Std"/>
                 <constraint firstItem="NOW-uQ-x7Y" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="njd-IR-9Fc"/>
             </constraints>
             <point key="canvasLocation" x="71.014492753623188" y="75"/>

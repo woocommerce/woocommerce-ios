@@ -1,5 +1,6 @@
 import UIKit
 import Combine
+import Yosemite
 
 final class CardReaderSettingsViewController: UIViewController {
 
@@ -129,7 +130,7 @@ final class CardReaderSettingsViewController: UIViewController {
 
     private func addFoundReaderModal() {
         // TODO Use FancyAlert instead
-        let foundReaderName = self.viewmodel.foundReader?.serialNumber ?? ""
+        let foundReaderName = self.viewmodel.foundReader?.serial ?? ""
         alert = UIAlertController(
             title: "Found reader",
             message: "Do you want to connect to " + foundReaderName + "?",

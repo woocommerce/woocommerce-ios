@@ -1,4 +1,5 @@
 import UIKit
+import Yosemite
 
 final class CardReaderSettingsConnectedReaderView: NSObject {
 
@@ -50,7 +51,7 @@ final class CardReaderSettingsConnectedReaderView: NSObject {
         )
 
         cell.batteryLevelLabel?.text = String.localizedStringWithFormat(batteryLabelFormat, batteryLevelString)
-        cell.serialNumberLabel?.text = connectedReader?.serialNumber ?? "Unknown"
+        cell.serialNumberLabel?.text = connectedReader?.serial ?? "Unknown"
         cell.selectionStyle = .none
     }
 

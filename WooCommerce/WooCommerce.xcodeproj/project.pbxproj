@@ -3361,7 +3361,6 @@
 				4515C88C25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.xib */,
 				4515C89725D6C00E0099C8E3 /* ShippingLabelAddressFormViewModel.swift */,
 				45C91CFD25E55A1200FD8812 /* ShippingLabelAddressTopBannerFactory.swift */,
-				456C7EE825EE71C10016CBC6 /* Shipping Address Suggested Address */,
 			);
 			path = "Shipping Address Validation";
 			sourceTree = "<group>";
@@ -3438,6 +3437,7 @@
 				456396A625C81C9A001F1A26 /* ShippingLabelFormViewController.xib */,
 				456396AD25C81D81001F1A26 /* ShippingLabelFormViewModel.swift */,
 				4515C88A25D6BD520099C8E3 /* Shipping Address Validation */,
+				456C7EE825EE71C10016CBC6 /* Shipping Address Suggested Address */,
 				456396B325C8266D001F1A26 /* Cells */,
 			);
 			path = "Create Shipping Label Form";

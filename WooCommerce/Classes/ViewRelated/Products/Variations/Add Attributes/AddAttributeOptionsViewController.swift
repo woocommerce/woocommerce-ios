@@ -95,7 +95,11 @@ private extension AddAttributeOptionsViewController {
 
     func createUpdateIndicatorButton() -> UIBarButtonItem {
         let indicator = UIActivityIndicatorView(style: .medium)
-        indicator.color = .primaryButtonTitle
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
+            indicator.color = .accent
+        } else {
+            indicator.color = .primaryButtonTitle
+        }
         indicator.startAnimating()
         return UIBarButtonItem(customView: indicator)
     }

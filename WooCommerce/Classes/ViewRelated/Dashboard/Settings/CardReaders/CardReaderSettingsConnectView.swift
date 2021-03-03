@@ -55,13 +55,11 @@ final class CardReaderSettingsConnectView: NSObject {
             "Connect your card reader",
             comment: "Settings > Manage Card Reader > Prompt user to connect their first reader"
         )
-        cell.hideSeparator()
         cell.selectionStyle = .none
     }
 
     private func configureImage(cell: ImageTableViewCell) {
         cell.detailImageView?.image = UIImage(named: "card-reader-connect")
-        cell.hideSeparator()
         cell.selectionStyle = .none
     }
 
@@ -73,7 +71,6 @@ final class CardReaderSettingsConnectView: NSObject {
         cell.itemTextLabel?.text = NSLocalizedString(
             "Make sure card reader is charged",
             comment: "Settings > Manage Card Reader > Connect > Hint to charge card reader")
-        cell.hideSeparator()
         cell.selectionStyle = .none
     }
 
@@ -85,7 +82,6 @@ final class CardReaderSettingsConnectView: NSObject {
         cell.itemTextLabel?.text = NSLocalizedString(
             "Turn card reader on and place it next to mobile device",
             comment: "Settings > Manage Card Reader > Connect > Hint to power on reader")
-        cell.hideSeparator()
         cell.selectionStyle = .none
     }
 
@@ -97,7 +93,6 @@ final class CardReaderSettingsConnectView: NSObject {
         cell.itemTextLabel?.text = NSLocalizedString(
             "Turn mobile device Bluetooth on",
             comment: "Settings > Manage Card Reader > Connect > Hint to enable Bluetooth")
-        cell.hideSeparator()
         cell.selectionStyle = .none
    }
 
@@ -109,7 +104,6 @@ final class CardReaderSettingsConnectView: NSObject {
         cell.configure(title: buttonTitle) { [weak self] in
             self?.onPressedConnect?()
         }
-        cell.hideSeparator()
         cell.selectionStyle = .none
     }
 
@@ -118,7 +112,6 @@ final class CardReaderSettingsConnectView: NSObject {
             "Learn more about accepting payments with your mobile device and ordering card readers",
             comment: "Settings > Manage Card Reader > Connect > A prompt for new users to start accepting mobile payments"
         )
-        cell.hideSeparator()
         cell.selectionStyle = .none
     }
 }
@@ -148,6 +141,21 @@ private enum Row: CaseIterable {
             return ButtonTableViewCell.self
         case .connectLearnMore:
             return LearnMoreTableViewCell.self
+        }
+    }
+
+    var height: CGFloat {
+        switch self {
+        case .connectHeader,
+             .connectButton:
+            return UITableView.automaticDimension
+        case .connectImage:
+            return 250
+        case .connectHelpHintChargeReader,
+             .connectHelpHintTurnOnReader,
+             .connectHelpHintEnableBluetooth,
+             .connectLearnMore:
+            return 70
         }
     }
 
@@ -184,13 +192,7 @@ extension CardReaderSettingsConnectView: UITableViewDataSource {
 extension CardReaderSettingsConnectView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let row = rowAtIndexPath(indexPath)
-        if row == .connectImage {
-            return 250
-        }
-        if row == .connectHelpHintChargeReader || row == .connectHelpHintTurnOnReader || row == .connectHelpHintEnableBluetooth {
-            return 70
-        }
-        return UITableView.automaticDimension
+        return row.height
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

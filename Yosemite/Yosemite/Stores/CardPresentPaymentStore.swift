@@ -38,6 +38,8 @@ public final class CardPresentPaymentStore: Store {
         switch action {
         case .startCardReaderDiscovery(let siteID, let completion):
             startCardReaderDiscovery(siteID: siteID, completion: completion)
+        case .cancelCardReaderDiscovery(let completion):
+            cancelCardReaderDiscovery(completion: completion)
         case .connect(let reader, let completion):
             connect(reader: reader, onCompletion: completion)
         }
@@ -57,6 +59,13 @@ private extension CardPresentPaymentStore {
         // For now we are sending the data up to the UI directly
         cardReaderService.discoveredReaders.sink { readers in
             completion(readers)
+        }.store(in: &cancellables)
+    }
+
+    func cancelCardReaderDiscovery(completion: @escaping (CardReaderServiceDiscoveryStatus) -> Void) {
+        cardReaderService.cancelDiscovery()
+        cardReaderService.discoveryStatus.sink { status in
+            completion(status)
         }.store(in: &cancellables)
     }
 

@@ -95,6 +95,7 @@ public typealias TopEarnerStatsItem = Networking.TopEarnerStatsItem
 public typealias WooAPIVersion = Networking.WooAPIVersion
 public typealias StoredProductSettings = Networking.StoredProductSettings
 public typealias CardReader = Hardware.CardReader
+public typealias CardReaderServiceDiscoveryStatus = Hardware.CardReaderServiceDiscoveryStatus
 
 
 // MARK: - Exported Storage Symbols

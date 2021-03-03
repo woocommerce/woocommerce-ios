@@ -54,4 +54,3 @@ final class WCPayRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 }
-

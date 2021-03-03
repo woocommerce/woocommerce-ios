@@ -61,9 +61,10 @@ final class CardReaderSettingsViewModel: ObservableObject {
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: siteID, onCompletion: { cardReaders in
             // TODO. To be implemented
-            print("==== just for testing")
-            print("discovered card readers ==", cardReaders)
-            print("//// just for testing")
+            // Leaving these prints here to help test the PR
+            print("==== new card readers discovered begins ====")
+            print("new readers: ", cardReaders)
+            print("==== new card readers discovered ends   ====")
         })
 
         ServiceLocator.stores.dispatch(action)

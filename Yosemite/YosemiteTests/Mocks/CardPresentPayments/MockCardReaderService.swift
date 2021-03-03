@@ -29,6 +29,7 @@ final class MockCardReaderService: CardReaderService {
     }
 
     var didHitStart = false
+    var didReceiveAConfigurationProvider = false
 
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
 
@@ -39,6 +40,7 @@ final class MockCardReaderService: CardReaderService {
 
     func start(_ configProvider: RemoteConfigProvider) {
         didHitStart = true
+        didReceiveAConfigurationProvider = true
     }
 
     func cancelDiscovery() {

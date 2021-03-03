@@ -51,7 +51,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                                            postcode: "94121-2303")
 
         // When
-        shippingLabelFormViewModel.handleOriginAddressValueChanges(address: expectedShippingAddress)
+        shippingLabelFormViewModel.handleOriginAddressValueChanges(address: expectedShippingAddress, validated: true)
 
         // Then
         XCTAssertEqual(shippingLabelFormViewModel.originAddress, expectedShippingAddress)
@@ -71,7 +71,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                                            postcode: "94121-2303")
 
         // When
-        shippingLabelFormViewModel.handleDestinationAddressValueChanges(address: expectedShippingAddress)
+        shippingLabelFormViewModel.handleDestinationAddressValueChanges(address: expectedShippingAddress, validated: true)
 
         // Then
         XCTAssertEqual(shippingLabelFormViewModel.destinationAddress, expectedShippingAddress)

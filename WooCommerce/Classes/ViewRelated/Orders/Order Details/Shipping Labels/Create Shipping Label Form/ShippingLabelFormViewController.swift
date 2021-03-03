@@ -116,7 +116,10 @@ private extension ShippingLabelFormViewController {
                                                                            address: shippingLabelAddress,
                                                                            completion: { [weak self] (shippingLabelAddress) in
                                                                             guard let self = self else { return }
-                                                                            self.viewModel.handleOriginAddressValueChanges(address: shippingLabelAddress)
+                                                                            self.viewModel.handleOriginAddressValueChanges(address: shippingLabelAddress,
+                                                                                                                           validated: true)
+                                                                            self.tableView.reloadData()
+
                                                                            })
             self.navigationController?.pushViewController(shippingAddressVC, animated: true)
         }
@@ -135,7 +138,9 @@ private extension ShippingLabelFormViewController {
                                                                            address: shippingLabelAddress,
                                                                            completion: { [weak self] (shippingLabelAddress) in
                                                                             guard let self = self else { return }
-                                                                            self.viewModel.handleDestinationAddressValueChanges(address: shippingLabelAddress)
+                                                                            self.viewModel.handleDestinationAddressValueChanges(address: shippingLabelAddress,
+                                                                                                                                validated: true)
+                                                                            self.tableView.reloadData()
                                                                            })
             self.navigationController?.pushViewController(shippingAddressVC, animated: true)
         }

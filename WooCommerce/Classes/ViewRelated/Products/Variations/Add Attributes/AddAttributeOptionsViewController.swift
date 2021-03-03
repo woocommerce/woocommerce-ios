@@ -397,10 +397,12 @@ extension AddAttributeOptionsViewController {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
-        let renameAction = UIAlertAction(title: Localization.renameAction, style: .default) { [weak self] _ in
-            self?.navigateToRenameAttribute()
+        if viewModel.allowsRename {
+            let renameAction = UIAlertAction(title: Localization.renameAction, style: .default) { [weak self] _ in
+                self?.navigateToRenameAttribute()
+            }
+            actionSheet.addAction(renameAction)
         }
-        actionSheet.addAction(renameAction)
 
         let removeAction = UIAlertAction(title: Localization.removeAction, style: .destructive) { [weak self] _ in
             self?.presentRemoveAttributeConfirmation()

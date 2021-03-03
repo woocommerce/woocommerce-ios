@@ -87,6 +87,17 @@ final class AddAttributeOptionsViewModel {
         state.syncState == .failed
     }
 
+    /// Defines if the attribute can be renamed (existing local attributes only)
+    ///
+    var allowsRename: Bool {
+        switch attribute {
+        case .new:
+            return false
+        case let .existing(productAttribute):
+            return productAttribute.isLocal
+        }
+    }
+
     /// Closure to notify the `ViewController` when the view model properties change.
     ///
     var onChange: (() -> (Void))?

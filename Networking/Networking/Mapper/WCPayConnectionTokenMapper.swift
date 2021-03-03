@@ -14,7 +14,7 @@ struct WCPayConnectionTokenMapper: Mapper {
 
 // WCPayConnectionTokenEnvelope Disposable Entity
 ///
-/// `Load connection Token` endpoint returns the requested order refund document in the `data` key. This entity
+/// `Load connection Token` endpoint returns the requested connection token and test mode document in the `data` key. This entity
 /// allows us to parse all the things with JSONDecoder.
 ///
 private struct WCPayConnectionTokenEnvelope: Decodable {

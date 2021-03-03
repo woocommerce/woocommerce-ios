@@ -53,7 +53,7 @@ final class AddAttributeOptionsViewModel {
 
     /// Name of the attribute
     ///
-    var currentAttributeName: String
+    private(set) var currentAttributeName: String
 
     /// Defines next button visibility
     ///
@@ -231,6 +231,12 @@ extension AddAttributeOptionsViewModel {
         }
 
         addNewOption(name: option.name)
+    }
+
+    /// Sets the current attribute name
+    ///
+    func setCurrentAttributeName(_ newName: String) {
+        currentAttributeName = newName
     }
 
     /// Gathers selected options and update the product's attributes

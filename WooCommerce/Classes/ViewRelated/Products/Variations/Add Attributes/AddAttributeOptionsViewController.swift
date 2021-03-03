@@ -424,7 +424,7 @@ extension AddAttributeOptionsViewController {
         let viewModel = RenameAttributesViewModel(attributeName: self.viewModel.currentAttributeName)
         let renameAttributeViewController = RenameAttributesViewController(viewModel: viewModel) { [weak self] updatedAttributeName in
             // Sets new attribute name and refreshes the view to reflect the change
-            self?.viewModel.currentAttributeName = updatedAttributeName
+            self?.viewModel.setCurrentAttributeName(updatedAttributeName)
             self?.renderViewModel()
             self?.navigationController?.popViewController(animated: true)
         }

@@ -59,7 +59,7 @@ final class CardReaderSettingsViewModel: ObservableObject {
 
         let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
 
-        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: siteID, onCompletion: { cardReaders in
+        let discoveryAction = CardPresentPaymentAction.startCardReaderDiscovery(siteID: siteID, onCompletion: { cardReaders in
             // TODO. To be implemented
             // Leaving these prints here to help test the PR
             print("==== new card readers discovered begins ====")
@@ -67,7 +67,15 @@ final class CardReaderSettingsViewModel: ObservableObject {
             print("==== new card readers discovered ends   ====")
         })
 
-        ServiceLocator.stores.dispatch(action)
+        ServiceLocator.stores.dispatch(discoveryAction)
+
+        let discoveryCancellationAction = CardPresentPaymentAction.cancelCardReaderDiscovery { status in
+            print("===== cancellation begins ====")
+            print("new status ", status)
+            print("===== cancellation ends ====")
+        }
+
+        ServiceLocator.stores.dispatch(discoveryCancellationAction)
 
         // TODO Remove - simulates searching with a timer
         timer = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(dummyFoundReader), userInfo: nil, repeats: false)

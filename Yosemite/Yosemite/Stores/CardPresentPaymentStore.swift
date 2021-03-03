@@ -63,10 +63,11 @@ private extension CardPresentPaymentStore {
     }
 
     func cancelCardReaderDiscovery(completion: @escaping (CardReaderServiceDiscoveryStatus) -> Void) {
-        cardReaderService.cancelDiscovery()
         cardReaderService.discoveryStatus.sink { status in
             completion(status)
         }.store(in: &cancellables)
+
+        cardReaderService.cancelDiscovery()
     }
 
     func connect(reader: Yosemite.CardReader, onCompletion: @escaping (Result<[Yosemite.CardReader], Error>) -> Void) {

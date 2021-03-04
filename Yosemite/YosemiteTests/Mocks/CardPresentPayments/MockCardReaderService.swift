@@ -17,7 +17,7 @@ final class MockCardReaderService: CardReaderService {
     }
 
     var discoveryStatus: AnyPublisher<CardReaderServiceDiscoveryStatus, Never> {
-        CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle).eraseToAnyPublisher()
+        discoveryStatusSubject.eraseToAnyPublisher()
     }
 
     var paymentStatus: AnyPublisher<PaymentStatus, Never> {
@@ -29,9 +29,11 @@ final class MockCardReaderService: CardReaderService {
     }
 
     var didHitStart = false
+    var didHitCancel = false
     var didReceiveAConfigurationProvider = false
 
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
+    private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
 
 
     init() {
@@ -41,10 +43,18 @@ final class MockCardReaderService: CardReaderService {
     func start(_ configProvider: CardReaderConfigProvider) {
         didHitStart = true
         didReceiveAConfigurationProvider = true
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self] in
+            self?.discoveryStatusSubject.send(.discovering)
+        }
     }
 
     func cancelDiscovery() {
+        didHitCancel = true
 
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self] in
+            self?.discoveryStatusSubject.send(.idle)
+        }
     }
 
     func connect(_ reader: Hardware.CardReader) -> Future<Void, Error> {

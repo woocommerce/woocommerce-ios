@@ -149,7 +149,7 @@ private extension AddAttributeOptionsViewController {
     }
 
     func renderViewModel() {
-        title = viewModel.attributeName
+        title = viewModel.getCurrentAttributeName
         configureRightButtonItem()
         tableView.reloadData()
 
@@ -397,11 +397,13 @@ extension AddAttributeOptionsViewController {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
-        let renameAction = UIAlertAction(title: Localization.renameAction, style: .default) { [weak self] _ in
-            self?.trackRenameAttributeButtonTapped()
-            self?.navigateToRenameAttribute()
+        if viewModel.allowsRename {
+            let renameAction = UIAlertAction(title: Localization.renameAction, style: .default) { [weak self] _ in
+                self?.trackRenameAttributeButtonTapped()
+                self?.navigateToRenameAttribute()
+            }
+            actionSheet.addAction(renameAction)
         }
-        actionSheet.addAction(renameAction)
 
         let removeAction = UIAlertAction(title: Localization.removeAction, style: .destructive) { [weak self] _ in
             self?.presentRemoveAttributeConfirmation()
@@ -424,8 +426,12 @@ extension AddAttributeOptionsViewController {
     /// Navigates to `RenameAttributesViewController`
     ///
     private func navigateToRenameAttribute() {
-        let viewModel = RenameAttributesViewModel(attributeName: self.viewModel.attributeName)
-        let renameAttributeViewController = RenameAttributesViewController(viewModel: viewModel)
+        let viewModel = RenameAttributesViewModel(attributeName: self.viewModel.getCurrentAttributeName)
+        let renameAttributeViewController = RenameAttributesViewController(viewModel: viewModel) { [weak self] updatedAttributeName in
+            // Sets new attribute name
+            self?.viewModel.setCurrentAttributeName(updatedAttributeName)
+            self?.navigationController?.popViewController(animated: true)
+        }
         show(renameAttributeViewController, sender: nil)
     }
 

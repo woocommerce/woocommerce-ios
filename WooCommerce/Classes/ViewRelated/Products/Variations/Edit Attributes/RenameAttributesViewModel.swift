@@ -3,16 +3,16 @@ import Yosemite
 
 final class RenameAttributesViewModel {
 
-    /// Current name of the product attribute
+    /// Original name of the product attribute
     ///
-    let attributeName: String
+    private let originalAttributeName: String
 
     /// New name of the product attribute
     ///
-    private(set) var newAttributeName: String?
+    private var newAttributeName: String?
 
     init(attributeName: String) {
-        self.attributeName = attributeName
+        self.originalAttributeName = attributeName
     }
 
 }
@@ -26,6 +26,12 @@ extension RenameAttributesViewModel {
         newAttributeName != ""
     }
 
+    /// Name of the attribute
+    ///
+    var attributeName: String {
+        newAttributeName ?? originalAttributeName
+    }
+
     /// Sets the new attribute name
     ///
     /// - Parameter name: New attribute name
@@ -34,6 +40,6 @@ extension RenameAttributesViewModel {
     }
 
     func hasUnsavedChanges() -> Bool {
-        return newAttributeName != attributeName && newAttributeName != nil
+        return attributeName != originalAttributeName && newAttributeName != nil
     }
 }

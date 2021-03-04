@@ -75,13 +75,13 @@ extension StripeCardReaderService: CardReaderService {
          *
          *Note that if discoverReaders is canceled, the completion block will be called with nil (rather than an SCPErrorCanceled error).
          */
-        discoveryCancellable = Terminal.shared.discoverReaders(config, delegate: self, completion: { error in
+        discoveryCancellable = Terminal.shared.discoverReaders(config, delegate: self, completion: { [weak self] error in
             guard let error = error else {
-                self.switchStatusToIdle()
-                return
+                return self?.switchStatusToIdle()
+
             }
 
-            self.internalError(error)
+            self?.internalError(error)
         })
     }
 

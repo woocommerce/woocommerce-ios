@@ -51,6 +51,7 @@ private extension ShippingLabelFormViewController {
         registerTableViewCells()
 
         tableView.dataSource = self
+        tableView.delegate = self
     }
 
     func registerTableViewCells() {
@@ -85,6 +86,23 @@ extension ShippingLabelFormViewController: UITableViewDataSource {
         configure(cell, for: row, at: indexPath)
 
         return cell
+    }
+}
+
+// MARK: - UITableViewDelegate Conformance
+//
+extension ShippingLabelFormViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let row = viewModel.state.sections[indexPath.section].rows[indexPath.row]
+        switch row {
+        case Row(type: .shipFrom, dataState: .validated, displayMode: .editable):
+            displayEditAddressFormVC(address: viewModel.originAddress, type: .origin)
+        case Row(type: .shipTo, dataState: .validated, displayMode: .editable):
+            displayEditAddressFormVC(address: viewModel.destinationAddress, type: .destination)
+        default:
+            break
+        }
     }
 }
 

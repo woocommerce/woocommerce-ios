@@ -77,8 +77,8 @@ extension StripeCardReaderService: CardReaderService {
          */
         discoveryCancellable = Terminal.shared.discoverReaders(config, delegate: self, completion: { [weak self] error in
             guard let error = error else {
-                return self?.switchStatusToIdle()
-
+                self?.switchStatusToIdle()
+                return
             }
 
             self?.internalError(error)

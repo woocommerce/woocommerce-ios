@@ -167,7 +167,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    func test_cancel_discovery_after_start_changes_discovery_status_to_idle_eventually() {
+    func test_cancel_discovery_after_start_rdpchanges_discovery_status_to_idle_eventually() {
         let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
                                                        storageManager: storageManager,
                                                        network: network,

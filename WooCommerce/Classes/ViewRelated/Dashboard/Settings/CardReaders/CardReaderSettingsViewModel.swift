@@ -70,6 +70,8 @@ final class CardReaderSettingsViewModel: ObservableObject {
         ServiceLocator.stores.dispatch(discoveryAction)
 
         let discoveryCancellationAction = CardPresentPaymentAction.cancelCardReaderDiscovery { status in
+            // TODO. To be implemented
+            // Leaving these prints here to help test the PR
             print("===== cancellation begins ====")
             print("new status ", status)
             print("===== cancellation ends ====")

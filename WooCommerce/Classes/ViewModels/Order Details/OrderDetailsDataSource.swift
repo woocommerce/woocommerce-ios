@@ -398,6 +398,7 @@ private extension OrderDetailsDataSource {
     private func configurePayment(cell: LedgerTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.configure(with: paymentViewModel)
+        cell.accessibilityIdentifier = "single-order-payment-cell"
     }
 
     private func configureCustomerPaid(cell: TwoColumnHeadlineFootnoteTableViewCell) {
@@ -670,6 +671,7 @@ private extension OrderDetailsDataSource {
                 comment: "Order details > customer info > shipping details. " +
                 "This is where the address would normally display."
         )
+        cell.accessibilityIdentifier = "customer-shipping-details-address"
     }
 
     private func configureShippingMethod(cell: CustomerNoteTableViewCell) {

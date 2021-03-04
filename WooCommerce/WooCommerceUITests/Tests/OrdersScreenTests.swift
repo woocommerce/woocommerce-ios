@@ -6,7 +6,7 @@ class OrdersScreenTests: XCTestCase {
         continueAfterFailure = false
 
         // UI tests must launch the application that they test.
-        let app = XCUIApplication()
+        // let app = XCUIApplication()
         //comment out when testing without mocks:
         //app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api"]
         // comment out when testing from simulator already logged-in state:

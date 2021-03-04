@@ -24,6 +24,7 @@ final class ShippingLabelSuggestedAddressViewController: UIViewController {
         return topBanner
     }()
 
+    private let siteID: Int64
     private let type: ShipType
     private let address: ShippingLabelAddress?
     private let suggestedAddress: ShippingLabelAddress?
@@ -43,7 +44,8 @@ final class ShippingLabelSuggestedAddressViewController: UIViewController {
 
     /// Init
     ///
-    init(type: ShipType, address: ShippingLabelAddress?, suggestedAddress: ShippingLabelAddress?, completion: @escaping Completion) {
+    init(siteID: Int64, type: ShipType, address: ShippingLabelAddress?, suggestedAddress: ShippingLabelAddress?, completion: @escaping Completion) {
+        self.siteID = siteID
         self.type = type
         self.address = address
         self.suggestedAddress = suggestedAddress
@@ -109,14 +111,51 @@ private extension ShippingLabelSuggestedAddressViewController {
     func configureUseAddressButton() {
         let title = selectedAddress == .entered ? Localization.useAddressEnteredButton : Localization.useAddressSuggestedButton
         useAddressButton.setTitle(title, for: .normal)
-        //useAddressButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
+        useAddressButton.addTarget(self, action: #selector(didTapUseAddressButton), for: .touchUpInside)
         useAddressButton.applyPrimaryButtonStyle()
     }
 
     func configureEditAddressButton() {
         editAddressButton.setTitle(Localization.editAddressButton, for: .normal)
-        //editAddressButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
+        editAddressButton.addTarget(self, action: #selector(didTapEditAddressButton), for: .touchUpInside)
         editAddressButton.applySecondaryButtonStyle()
+    }
+}
+
+// MARK: - Actions
+//
+private extension ShippingLabelSuggestedAddressViewController {
+    @objc func didTapUseAddressButton() {
+        switch selectedAddress {
+        case .entered:
+            onCompletion(address)
+            self.navigationController?.popViewController(animated: true)
+        case .suggested:
+            onCompletion(suggestedAddress)
+            self.navigationController?.popViewController(animated: true)
+        }
+    }
+
+    @objc func didTapEditAddressButton() {
+        switch selectedAddress {
+        case .entered:
+            displayEditAddressFormVC(siteID: siteID, address: address, type: type)
+        case .suggested:
+            displayEditAddressFormVC(siteID: siteID, address: suggestedAddress, type: type)
+        }
+
+    }
+
+    func displayEditAddressFormVC(siteID: Int64, address: ShippingLabelAddress?, type: ShipType) {
+        let shippingAddressVC = ShippingLabelAddressFormViewController(siteID: siteID,
+                                                                       type: type,
+                                                                       address: address,
+                                                                       completion: { [weak self] (newShippingLabelAddress) in
+                                                                        guard let self = self else { return }
+                                                                        self.onCompletion(newShippingLabelAddress)
+                                                                        self.navigationController?.popViewController(animated: true)
+                                                                       })
+        self.navigationController?.pushViewController(shippingAddressVC, animated: true)
     }
 }
 

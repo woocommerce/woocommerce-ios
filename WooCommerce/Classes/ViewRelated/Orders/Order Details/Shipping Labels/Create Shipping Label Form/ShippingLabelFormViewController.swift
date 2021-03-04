@@ -126,7 +126,7 @@ private extension ShippingLabelFormViewController {
                     self.viewModel.handleOriginAddressValueChanges(address: shippingLabelAddress,
                                                                    validated: true)
                 case .suggestedAddress:
-                    self.displaySuggestedAddressVC(address: shippingLabelAddress, suggestedAddress: response?.address)
+                    self.displaySuggestedAddressVC(address: shippingLabelAddress, suggestedAddress: response?.address, type: .origin)
                 default:
                     self.displayEditAddressFormVC(address: shippingLabelAddress, type: .origin)
                 }
@@ -153,7 +153,7 @@ private extension ShippingLabelFormViewController {
                     self.viewModel.handleDestinationAddressValueChanges(address: shippingLabelAddress,
                                                                    validated: true)
                 case .suggestedAddress:
-                    self.displaySuggestedAddressVC(address: shippingLabelAddress, suggestedAddress: response?.address)
+                    self.displaySuggestedAddressVC(address: shippingLabelAddress, suggestedAddress: response?.address, type: .destination)
                 default:
                     self.displayEditAddressFormVC(address: shippingLabelAddress, type: .destination)
                 }
@@ -210,8 +210,9 @@ private extension ShippingLabelFormViewController {
         self.navigationController?.pushViewController(shippingAddressVC, animated: true)
     }
 
-    func displaySuggestedAddressVC(address: ShippingLabelAddress?, suggestedAddress: ShippingLabelAddress?) {
-        let vc = ShippingLabelSuggestedAddressViewController(type: .origin,
+    func displaySuggestedAddressVC(address: ShippingLabelAddress?, suggestedAddress: ShippingLabelAddress?, type: ShipType) {
+        let vc = ShippingLabelSuggestedAddressViewController(siteID: self.viewModel.siteID,
+                                                             type: type,
                                                              address: address,
                                                              suggestedAddress: suggestedAddress) { [weak self] (newShippingLabelAddress) in
             self?.viewModel.handleOriginAddressValueChanges(address: newShippingLabelAddress,

@@ -28,8 +28,13 @@ final class MockCardReaderService: CardReaderService {
         PassthroughSubject<CardReaderEvent, Never>().eraseToAnyPublisher()
     }
 
+    /// Boolean flag Indicates that clients have called the start method
     var didHitStart = false
+
+    /// Boolean flag Indicates that clients have called the cancel method
     var didHitCancel = false
+
+    /// Boolean flag Indicates that clients have provided a CardReaderConfigProvider
     var didReceiveAConfigurationProvider = false
 
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
@@ -52,6 +57,7 @@ final class MockCardReaderService: CardReaderService {
     func cancelDiscovery() {
         didHitCancel = true
 
+        /// Delaying the effect of this method so that unit tests are actually async
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self] in
             self?.discoveryStatusSubject.send(.idle)
         }
@@ -59,6 +65,7 @@ final class MockCardReaderService: CardReaderService {
 
     func connect(_ reader: Hardware.CardReader) -> Future<Void, Error> {
         Future() { promise in
+            /// Delaying the effect of this method so that unit tests are actually async
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {[weak self] in
                 let connectedReader = MockCardReader.bbposChipper2XBT()
                 promise(Result.success(()))
@@ -70,6 +77,7 @@ final class MockCardReaderService: CardReaderService {
     func disconnect(_ reader: Hardware.CardReader) -> Future<Void, Error> {
         Future() { promise in
             // This will be removed. We just want to pretend we are doing a roundtrip to the SDK for now.
+            /// Delaying the effect of this method so that unit tests are actually async
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 promise(Result.success(()))
             }

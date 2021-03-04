@@ -62,7 +62,7 @@
                                                     <constraint firstAttribute="bottom" secondItem="xy8-tj-Ti2" secondAttribute="bottom" id="qwz-ND-W7l"/>
                                                 </constraints>
                                             </view>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cZb-NY-jcb">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cZb-NY-jcb" customClass="ButtonActivityIndicator" customModule="WooCommerce" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="56" width="346" height="34"/>
                                                 <state key="normal" title="Button"/>
                                                 <connections>

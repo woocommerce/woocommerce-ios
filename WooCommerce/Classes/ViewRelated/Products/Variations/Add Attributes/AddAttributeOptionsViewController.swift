@@ -399,6 +399,7 @@ extension AddAttributeOptionsViewController {
 
         if viewModel.allowsRename {
             let renameAction = UIAlertAction(title: Localization.renameAction, style: .default) { [weak self] _ in
+                self?.trackRenameAttributeButtonTapped()
                 self?.navigateToRenameAttribute()
             }
             actionSheet.addAction(renameAction)
@@ -416,6 +417,10 @@ extension AddAttributeOptionsViewController {
         popoverController?.barButtonItem = sender
 
         present(actionSheet, animated: true)
+    }
+
+    func trackRenameAttributeButtonTapped() {
+        analytics.track(event: WooAnalyticsEvent.Variations.renameAttributeButtonTapped(productID: viewModel.product.productID))
     }
 
     /// Navigates to `RenameAttributesViewController`

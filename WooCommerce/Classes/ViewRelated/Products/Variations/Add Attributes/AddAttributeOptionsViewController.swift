@@ -149,7 +149,7 @@ private extension AddAttributeOptionsViewController {
     }
 
     func renderViewModel() {
-        title = viewModel.currentAttributeName
+        title = viewModel.getCurrentAttributeName()
         configureRightButtonItem()
         tableView.reloadData()
 
@@ -421,11 +421,10 @@ extension AddAttributeOptionsViewController {
     /// Navigates to `RenameAttributesViewController`
     ///
     private func navigateToRenameAttribute() {
-        let viewModel = RenameAttributesViewModel(attributeName: self.viewModel.currentAttributeName)
+        let viewModel = RenameAttributesViewModel(attributeName: self.viewModel.getCurrentAttributeName())
         let renameAttributeViewController = RenameAttributesViewController(viewModel: viewModel) { [weak self] updatedAttributeName in
-            // Sets new attribute name and refreshes the view to reflect the change
+            // Sets new attribute name
             self?.viewModel.setCurrentAttributeName(updatedAttributeName)
-            self?.renderViewModel()
             self?.navigationController?.popViewController(animated: true)
         }
         show(renameAttributeViewController, sender: nil)

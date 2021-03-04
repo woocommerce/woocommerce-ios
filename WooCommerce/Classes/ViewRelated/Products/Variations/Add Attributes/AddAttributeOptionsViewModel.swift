@@ -49,17 +49,17 @@ final class AddAttributeOptionsViewModel {
         /// Indicates if the view model is updating the product's attributes
         ///
         var isUpdating: Bool = false
-    }
 
-    /// Name of the attribute
-    ///
-    private(set) var currentAttributeName: String
+        /// Name of the attribute
+        ///
+        var currentAttributeName: String = ""
+    }
 
     /// Defines next button visibility
     ///
     var isNextButtonEnabled: Bool {
         let optionsToSubmit = state.selectedOptions.map { $0.name }
-        let attributeHasChanges = currentAttributeName != attribute.name || optionsToSubmit != attribute.previouslySelectedOptions
+        let attributeHasChanges = state.currentAttributeName != attribute.name || optionsToSubmit != attribute.previouslySelectedOptions
         return attributeHasChanges && state.selectedOptions.isNotEmpty
     }
 
@@ -166,7 +166,7 @@ final class AddAttributeOptionsViewModel {
          analytics: Analytics = ServiceLocator.analytics) {
         self.product = product
         self.attribute = attribute
-        self.currentAttributeName = attribute.name
+        self.state.currentAttributeName = attribute.name
         self.allowsEditing = allowsEditing
         self.stores = stores
         self.viewStorage = viewStorage
@@ -233,10 +233,16 @@ extension AddAttributeOptionsViewModel {
         addNewOption(name: option.name)
     }
 
-    /// Sets the current attribute name
+    /// Sets the current attribute name to a new name
     ///
     func setCurrentAttributeName(_ newName: String) {
-        currentAttributeName = newName
+        state.currentAttributeName = newName
+    }
+
+    /// Gets the current attribute name
+    ///
+    func getCurrentAttributeName() -> String {
+        return state.currentAttributeName
     }
 
     /// Gathers selected options and update the product's attributes
@@ -285,9 +291,10 @@ extension AddAttributeOptionsViewModel {
     ///
     private func createUpdatedProduct() -> Product {
         let newOptions = state.selectedOptions.map { $0.name }
+        let newName = state.currentAttributeName
         let newAttribute = ProductAttribute(siteID: product.siteID,
                                             attributeID: attribute.attributeID,
-                                            name: currentAttributeName,
+                                            name: newName,
                                             position: 0,
                                             visible: true,
                                             variation: true,

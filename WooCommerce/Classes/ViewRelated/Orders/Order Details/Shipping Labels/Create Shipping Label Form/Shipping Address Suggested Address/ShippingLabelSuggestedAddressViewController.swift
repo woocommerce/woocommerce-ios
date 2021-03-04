@@ -197,12 +197,12 @@ extension ShippingLabelSuggestedAddressViewController {
 
 private extension ShippingLabelSuggestedAddressViewController {
     enum Localization {
-        static let titleViewShipFrom = NSLocalizedString("Ship from", comment: "Shipping Label Address Suggested navigation title")
-        static let titleViewShipTo = NSLocalizedString("Ship to", comment: "Shipping Label Address Validation navigation title")
+        static let titleViewShipFrom = NSLocalizedString("Ship from", comment: "Shipping Label Suggested Address navigation title")
+        static let titleViewShipTo = NSLocalizedString("Ship to", comment: "Shipping Label Suggested Address navigation title")
         static let useAddressEnteredButton = NSLocalizedString("Use Address Entered",
-                                                               comment: "Action to use the address in Shipping Label Suggested screen as entered")
-        static let addressEntered = NSLocalizedString("Address Entered", comment: "Shipping Label Address Suggested address entered placeholder")
-        static let addressSuggested = NSLocalizedString("Address Suggested", comment: "Shipping Label Address Suggested address suggested placeholder")
+                                                               comment: "Action to use the address in Shipping Label Suggested screen as entered placeholder")
+        static let addressEntered = NSLocalizedString("Address Entered", comment: "Shipping Label Suggested Address entered placeholder")
+        static let addressSuggested = NSLocalizedString("Address Suggested", comment: "Shipping Label Suggested address entered placeholder")
         static let useAddressSuggestedButton = NSLocalizedString("Use Suggested Address",
                                                                  comment: "Action to use the address in Shipping Label Suggested screen as suggested")
         static let editAddressButton = NSLocalizedString("Edit Address", comment: "Action to edit the address in Shipping Label Suggested screen")

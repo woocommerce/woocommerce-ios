@@ -382,7 +382,7 @@ private extension DefaultProductFormTableViewModel {
                 .map({ String.localizedStringWithFormat(format, $0.name, $0.options.count) })
                 .joined(separator: "\n")
         default:
-            details = Localization.variationsPlaceholder
+            details = ""
         }
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,

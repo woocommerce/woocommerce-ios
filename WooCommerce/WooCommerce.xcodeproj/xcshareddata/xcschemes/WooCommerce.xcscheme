@@ -38,11 +38,11 @@
       </MacroExpansion>
       <TestPlans>
          <TestPlanReference
-            reference = "container:WooCommerceTests/UnitTests.xctestplan">
+            reference = "container:WooCommerceTests/UnitTests.xctestplan"
+            default = "YES">
          </TestPlanReference>
          <TestPlanReference
-            reference = "container:WooCommerceUITests/UITests.xctestplan"
-            default = "YES">
+            reference = "container:WooCommerceUITests/UITests.xctestplan">
          </TestPlanReference>
       </TestPlans>
       <Testables>

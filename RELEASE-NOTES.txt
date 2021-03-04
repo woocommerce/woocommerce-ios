@@ -5,6 +5,7 @@
 
 - [*] Fix: Load product inventory settings in read-only mode when the product has a decimal stock quantity. This fixes the products tab not loading due to product decoding errors when third-party plugins enable decimal stock quantities. [https://github.com/woocommerce/woocommerce-ios/pull/3717]
 - [*] Fix: Loading state stuck in Reviews List. [https://github.com/woocommerce/woocommerce-ios/pull/3753]
+- [***] Products: When editing a product, you can now create/delete/update product variations, product attributes and product attribute options.
 
 6.1
 -----

@@ -241,8 +241,8 @@ extension AddAttributeOptionsViewModel {
 
     /// Gets the current attribute name
     ///
-    func getCurrentAttributeName() -> String {
-        return state.currentAttributeName
+    var getCurrentAttributeName: String {
+        state.currentAttributeName
     }
 
     /// Gathers selected options and update the product's attributes

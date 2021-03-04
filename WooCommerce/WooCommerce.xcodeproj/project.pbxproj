@@ -615,40 +615,7 @@
 		6856DE479EC3B2265AC1F775 /* Calendar+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6856D66A1963092C34D20674 /* Calendar+Extensions.swift */; };
 		6856DF20E1BDCC391635F707 /* AgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6856D1A5F72A36AB3704D19D /* AgeTests.swift */; };
 		6E44739025D51B1B00E53811 /* OrdersScreenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E44738F25D51B1B00E53811 /* OrdersScreenTests.swift */; };
-		6E49458225E6BF9C0078F702 /* start.sh in Resources */ = {isa = PBXBuildFile; fileRef = CCFC011023E9E3F400157A78 /* start.sh */; };
-		6E49458325E6BF9C0078F702 /* stop.sh in Resources */ = {isa = PBXBuildFile; fileRef = CCFC011123E9E40B00157A78 /* stop.sh */; };
 		6E49458425E6BF9C0078F702 /* oauth2_token-error.json in Resources */ = {isa = PBXBuildFile; fileRef = D8CD0604258B384E00B52D63 /* oauth2_token-error.json */; };
-		6E49458525E6BF9C0078F702 /* oauth2_token.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00BC23E9BD5500157A78 /* oauth2_token.json */; };
-		6E49458625E6BF9C0078F702 /* auth_options.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00BD23E9BD5500157A78 /* auth_options.json */; };
-		6E49458725E6BF9C0078F702 /* reports_revenue_stats.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00C223E9BD5500157A78 /* reports_revenue_stats.json */; };
-		6E49458825E6BF9C0078F702 /* settings_products.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00C623E9BD5500157A78 /* settings_products.json */; };
-		6E49458925E6BF9C0078F702 /* settings_general.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00C723E9BD5500157A78 /* settings_general.json */; };
-		6E49458A25E6BF9C0078F702 /* products.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00C923E9BD5500157A78 /* products.json */; };
-		6E49458B25E6BF9C0078F702 /* orders_2201_shipment_trackings.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00CB23E9BD5500157A78 /* orders_2201_shipment_trackings.json */; };
-		6E49458C25E6BF9C0078F702 /* orders_totals.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00CC23E9BD5500157A78 /* orders_totals.json */; };
-		6E49458D25E6BF9C0078F702 /* orders.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00CD23E9BD5500157A78 /* orders.json */; };
-		6E49458E25E6BF9C0078F702 /* orders_2201_notes.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00CE23E9BD5500157A78 /* orders_2201_notes.json */; };
-		6E49458F25E6BF9C0078F702 /* orders_2201_refunds.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00CF23E9BD5500157A78 /* orders_2201_refunds.json */; };
-		6E49459025E6BF9C0078F702 /* reports_orders_totals-processing.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00D123E9BD5500157A78 /* reports_orders_totals-processing.json */; };
-		6E49459125E6BF9C0078F702 /* reports_orders_totals.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00D223E9BD5500157A78 /* reports_orders_totals.json */; };
-		6E49459225E6BF9C0078F702 /* products_reviews-all.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00D423E9BD5500157A78 /* products_reviews-all.json */; };
-		6E49459325E6BF9C0078F702 /* rest_api.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00D523E9BD5500157A78 /* rest_api.json */; };
-		6E49459425E6BF9C0078F702 /* rest_v11_me.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00D723E9BD5500157A78 /* rest_v11_me.json */; };
-		6E49459525E6BF9C0078F702 /* rest_v11_me_sites.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00D823E9BD5500157A78 /* rest_v11_me_sites.json */; };
-		6E49459625E6BF9C0078F702 /* rest_v11_notifications_note_hashes.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00DA23E9BD5500157A78 /* rest_v11_notifications_note_hashes.json */; };
-		6E49459725E6BF9C0078F702 /* rest_v11_notifications.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00DB23E9BD5500157A78 /* rest_v11_notifications.json */; };
-		6E49459825E6BF9C0078F702 /* stats_orders-day.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E323E9BD5500157A78 /* stats_orders-day.json */; };
-		6E49459925E6BF9C0078F702 /* stats_orders-week.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00DD23E9BD5500157A78 /* stats_orders-week.json */; };
-		6E49459A25E6BF9C0078F702 /* stats_orders-month.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E423E9BD5500157A78 /* stats_orders-month.json */; };
-		6E49459B25E6BF9C0078F702 /* stats_orders-year.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E623E9BD5500157A78 /* stats_orders-year.json */; };
-		6E49459C25E6BF9C0078F702 /* stats_top_earners-day.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00DF23E9BD5500157A78 /* stats_top_earners-day.json */; };
-		6E49459D25E6BF9C0078F702 /* stats_top_earners-week.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00DE23E9BD5500157A78 /* stats_top_earners-week.json */; };
-		6E49459E25E6BF9C0078F702 /* stats_top_earners-month.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E723E9BD5500157A78 /* stats_top_earners-month.json */; };
-		6E49459F25E6BF9C0078F702 /* stats_top_earners-year.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E523E9BD5500157A78 /* stats_top_earners-year.json */; };
-		6E4945A025E6BF9C0078F702 /* stats_visits-day.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E823E9BD5500157A78 /* stats_visits-day.json */; };
-		6E4945A125E6BF9C0078F702 /* stats_visits-week.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E223E9BD5500157A78 /* stats_visits-week.json */; };
-		6E4945A225E6BF9C0078F702 /* stats_visits-month.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E123E9BD5500157A78 /* stats_visits-month.json */; };
-		6E4945A325E6BF9C0078F702 /* stats_visits-year.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00E023E9BD5500157A78 /* stats_visits-year.json */; };
 		740382DB2267D94100A627F4 /* LargeImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740382D92267D94100A627F4 /* LargeImageTableViewCell.swift */; };
 		740382DC2267D94100A627F4 /* LargeImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 740382DA2267D94100A627F4 /* LargeImageTableViewCell.xib */; };
 		740987B321B87760000E4C80 /* FancyAnimatedButton+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740987B221B87760000E4C80 /* FancyAnimatedButton+Woo.swift */; };
@@ -5663,40 +5630,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6E49458225E6BF9C0078F702 /* start.sh in Resources */,
-				6E49458325E6BF9C0078F702 /* stop.sh in Resources */,
 				6E49458425E6BF9C0078F702 /* oauth2_token-error.json in Resources */,
-				6E49458525E6BF9C0078F702 /* oauth2_token.json in Resources */,
-				6E49458625E6BF9C0078F702 /* auth_options.json in Resources */,
-				6E49458725E6BF9C0078F702 /* reports_revenue_stats.json in Resources */,
-				6E49458825E6BF9C0078F702 /* settings_products.json in Resources */,
-				6E49458925E6BF9C0078F702 /* settings_general.json in Resources */,
-				6E49458A25E6BF9C0078F702 /* products.json in Resources */,
-				6E49458B25E6BF9C0078F702 /* orders_2201_shipment_trackings.json in Resources */,
-				6E49458C25E6BF9C0078F702 /* orders_totals.json in Resources */,
-				6E49458D25E6BF9C0078F702 /* orders.json in Resources */,
-				6E49458E25E6BF9C0078F702 /* orders_2201_notes.json in Resources */,
-				6E49458F25E6BF9C0078F702 /* orders_2201_refunds.json in Resources */,
-				6E49459025E6BF9C0078F702 /* reports_orders_totals-processing.json in Resources */,
-				6E49459125E6BF9C0078F702 /* reports_orders_totals.json in Resources */,
-				6E49459225E6BF9C0078F702 /* products_reviews-all.json in Resources */,
-				6E49459325E6BF9C0078F702 /* rest_api.json in Resources */,
-				6E49459425E6BF9C0078F702 /* rest_v11_me.json in Resources */,
-				6E49459525E6BF9C0078F702 /* rest_v11_me_sites.json in Resources */,
-				6E49459625E6BF9C0078F702 /* rest_v11_notifications_note_hashes.json in Resources */,
-				6E49459725E6BF9C0078F702 /* rest_v11_notifications.json in Resources */,
-				6E49459825E6BF9C0078F702 /* stats_orders-day.json in Resources */,
-				6E49459925E6BF9C0078F702 /* stats_orders-week.json in Resources */,
-				6E49459A25E6BF9C0078F702 /* stats_orders-month.json in Resources */,
-				6E49459B25E6BF9C0078F702 /* stats_orders-year.json in Resources */,
-				6E49459C25E6BF9C0078F702 /* stats_top_earners-day.json in Resources */,
-				6E49459D25E6BF9C0078F702 /* stats_top_earners-week.json in Resources */,
-				6E49459E25E6BF9C0078F702 /* stats_top_earners-month.json in Resources */,
-				6E49459F25E6BF9C0078F702 /* stats_top_earners-year.json in Resources */,
-				6E4945A025E6BF9C0078F702 /* stats_visits-day.json in Resources */,
-				6E4945A125E6BF9C0078F702 /* stats_visits-week.json in Resources */,
-				6E4945A225E6BF9C0078F702 /* stats_visits-month.json in Resources */,
-				6E4945A325E6BF9C0078F702 /* stats_visits-year.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

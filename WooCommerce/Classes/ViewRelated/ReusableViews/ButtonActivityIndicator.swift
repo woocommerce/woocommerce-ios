@@ -4,7 +4,7 @@ import UIKit
 ///
 final class ButtonActivityIndicator: UIButton {
 
-    private let indicator: UIActivityIndicatorView = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.medium)
+    private let indicator: UIActivityIndicatorView = UIActivityIndicatorView(style: .medium)
 
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -27,7 +27,7 @@ final class ButtonActivityIndicator: UIButton {
         indicator.center = CGPoint(x: self.bounds.size.width/2, y: self.bounds.size.height/2)
         UIView.transition(with: self, duration: Constants.animationDuration, options: .curveEaseOut, animations: { [weak self] in
             self?.titleLabel?.alpha = 0.0
-        }) { [weak self] (finished) in
+        }) { [weak self] (_) in
             guard let self = self else { return }
             self.addSubview(self.indicator)
             self.indicator.startAnimating()

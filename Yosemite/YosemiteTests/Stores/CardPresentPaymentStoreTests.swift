@@ -131,6 +131,21 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    func test_cancel_discovery_action_hits_cancel_in_service() {
+        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
+                                                       storageManager: storageManager,
+                                                       network: network,
+                                                       cardReaderService: mockCardReaderService)
+
+        let action = CardPresentPaymentAction.cancelCardReaderDiscovery { newStatus in
+            //
+        }
+
+        cardPresentStore.onAction(action)
+
+        XCTAssertTrue(mockCardReaderService.didHitCancel)
+    }
+
     func test_connect_to_reader_action_updates_returns_provided_reader_on_success() {
         let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
                                                        storageManager: storageManager,

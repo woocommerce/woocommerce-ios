@@ -181,17 +181,21 @@ final class ProductFormViewModelTests: XCTestCase {
         // When
         let attributes = ProductAttribute(siteID: 0, attributeID: 0, name: "Color", position: 0, visible: true, variation: true, options: ["Green, Blue"])
         let newProduct = product.copy(attributes: [attributes], variations: [1])
-        viewModel.updateProductVariations(from: newProduct)
 
-        // Then
-        let action = try XCTUnwrap(mockStores.receivedActions.first as? ProductAction)
-        switch action {
-        case .replaceProductLocally:
-            break // Expected
-        default:
-            XCTFail("Unexpected action. Got \(action). Expected \(ProductAction.replaceProductLocally(product: newProduct, onCompletion: {}))")
+        let receivedReplaceProductAction: Bool = waitFor { promise in
+            mockStores.whenReceivingAction(ofType: ProductAction.self) { action in
+                switch action {
+                case .replaceProductLocally:
+                    promise(true)
+                default:
+                    promise(false)
+                }
+            }
+            viewModel.updateProductVariations(from: newProduct)
         }
 
+        // Then
+        XCTAssertTrue(receivedReplaceProductAction)
     }
 }
 

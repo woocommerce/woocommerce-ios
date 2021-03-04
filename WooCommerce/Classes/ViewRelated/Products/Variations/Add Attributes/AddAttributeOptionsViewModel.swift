@@ -51,9 +51,9 @@ final class AddAttributeOptionsViewModel {
         var isUpdating: Bool = false
     }
 
-    /// Title of the navigation bar
+    /// Name of the attribute
     ///
-    var titleView: String? {
+    var attributeName: String {
         switch attribute {
         case .new(let name):
             return name

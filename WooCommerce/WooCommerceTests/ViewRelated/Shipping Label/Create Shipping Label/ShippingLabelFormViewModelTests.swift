@@ -82,8 +82,6 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(siteID: 10, originAddress: nil, destinationAddress: nil)
         let expectedShippingAddress = MockShippingLabelAddress.sampleAddress()
         let currentRows = shippingLabelFormViewModel.state.sections.first?.rows
-
-        // When
         XCTAssertEqual(currentRows?[0].type, .shipFrom)
         XCTAssertEqual(currentRows?[0].dataState, .pending)
         XCTAssertEqual(currentRows?[0].displayMode, .editable)
@@ -93,6 +91,9 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(currentRows?[2].type, .packageDetails)
         XCTAssertEqual(currentRows?[2].dataState, .pending)
         XCTAssertEqual(currentRows?[2].displayMode, .disabled)
+
+        // When
+
         shippingLabelFormViewModel.handleOriginAddressValueChanges(address: expectedShippingAddress, validated: true)
 
         // Then

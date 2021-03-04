@@ -418,7 +418,7 @@ extension AddAttributeOptionsViewController {
     }
 
     func trackRenameAttributeButtonTapped() {
-        analytics.track(event: WooAnalyticsEvent.Variations.renameAttributeButtonTapped(productID: self.viewModel.product.productID))
+        analytics.track(event: WooAnalyticsEvent.Variations.renameAttributeButtonTapped(productID: viewModel.product.productID))
     }
 
     /// Navigates to `RenameAttributesViewController`

@@ -294,7 +294,8 @@ extension AddAttributeOptionsViewModel {
                                             options: newOptions)
 
         // Here we remove any possible existing attribute with the same ID and Name. For then re-adding the new updated attribute
-        // Name has to be considered, because local attributes are zero-id based.
+        // Name has to be considered, because local attributes are zero-id based. We use `attribute` instead of `newAttribute` because
+        // the new Name may not match the old one that needs to be removed, if the attribute was renamed.
         let updatedAttributes: [ProductAttribute] = {
             var attributes = product.attributes
             attributes.removeAll { $0.attributeID == attribute.attributeID && $0.name == attribute.name }

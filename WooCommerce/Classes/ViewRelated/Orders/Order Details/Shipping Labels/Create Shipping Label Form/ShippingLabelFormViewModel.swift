@@ -165,7 +165,7 @@ private extension ShippingLabelFormViewModel {
         return resultsController.fetchedObjects.first
     }
 
-    func isValidatingAddress(_ validating: Bool, type: ShipType) {
+    func updateValidatingAddressState(_ validating: Bool, type: ShipType) {
         switch type {
         case .origin:
             state.isValidatingOriginAddress = validating
@@ -183,7 +183,7 @@ extension ShippingLabelFormViewModel {
 
         let addressToBeVerified = ShippingLabelAddressVerification(address: address, type: type)
 
-        isValidatingAddress(true, type: type)
+        updateValidatingAddressState(true, type: type)
 
         let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] (result) in
 
@@ -194,22 +194,22 @@ extension ShippingLabelFormViewModel {
 
                 // No errors, the address is validated
                 if response?.errors == nil && response?.isTrivialNormalization == true {
-                    self.isValidatingAddress(false, type: type)
+                    self.updateValidatingAddressState(false, type: type)
                     onCompletion?(.validated, response)
                 }
                 // No errors, but there is a suggested address
                 else if response?.errors == nil && response?.isTrivialNormalization == false {
-                    self.isValidatingAddress(false, type: type)
+                    self.updateValidatingAddressState(false, type: type)
                     onCompletion?(.suggestedAddress, response)
                 }
                 // There are some address validation errors
                 else {
-                    self.isValidatingAddress(false, type: type)
+                    self.updateValidatingAddressState(false, type: type)
                     onCompletion?(.validationError, response)
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
-                self.isValidatingAddress(false, type: type)
+                self.updateValidatingAddressState(false, type: type)
                 onCompletion?(.genericError, nil)
             }
         }

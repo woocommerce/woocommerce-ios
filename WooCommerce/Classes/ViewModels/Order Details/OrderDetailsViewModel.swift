@@ -211,6 +211,10 @@ extension OrderDetailsViewModel {
                                                                    forceReadOnly: true)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
+        case .shippingLabelCreationInfo:
+            let infoViewController = ShippingLabelCreationInfoViewController()
+            let navigationController = WooNavigationController(rootViewController: infoViewController)
+            viewController.present(navigationController, animated: true, completion: nil)
         case .shippingLabelDetail:
             guard let shippingLabel = dataSource.shippingLabel(at: indexPath) else {
                 return

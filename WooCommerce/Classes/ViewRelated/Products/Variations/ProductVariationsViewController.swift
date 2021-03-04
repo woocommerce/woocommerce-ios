@@ -277,7 +277,7 @@ private extension ProductVariationsViewController {
     func configureHeaderContainerView() {
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
         headerContainer.addSubview(topStackView)
-        headerContainer.pinSubviewToSafeArea(topStackView)
+        headerContainer.pinSubviewToAllEdges(topStackView)
         topStackView.addArrangedSubview(topBannerView)
 
         tableView.tableHeaderView = headerContainer

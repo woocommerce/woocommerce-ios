@@ -261,6 +261,16 @@ extension UIColor {
     static var ratingStarEmpty: UIColor {
         return .systemColor(.systemGray4)
     }
+
+    /// Color for loading indicators within navigation bars
+    ///
+    static var navigationBarLoadingIndicator: UIColor {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
+            return .accent
+        } else {
+            return .white
+        }
+    }
 }
 
 // MARK: - UI elements.

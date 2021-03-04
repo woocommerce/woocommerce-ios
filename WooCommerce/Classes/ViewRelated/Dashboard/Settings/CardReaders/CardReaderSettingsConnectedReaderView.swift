@@ -3,6 +3,20 @@ import Yosemite
 
 final class CardReaderSettingsConnectedReaderView: NSObject {
 
+    private enum DefaultStrings: String {
+        case noSerialNumber
+
+        var userFacingString: String {
+            switch self {
+            case .noSerialNumber:
+                return NSLocalizedString(
+                    "Unknown",
+                    comment: "Settings > Manage Card Reader > Connected Reader > Displayed for card readers without a serial number"
+                )
+            }
+        }
+    }
+
     /// A simple model for this "ViewModel" - just a reference to the CardReaderSettingsViewModel connected reader
     var connectedReader: CardReader?
 
@@ -47,11 +61,11 @@ final class CardReaderSettingsConnectedReaderView: NSObject {
 
         let batteryLabelFormat = NSLocalizedString(
             "%1$@%% Battery",
-            comment: "Settings > Manage Card Reader > Connected Reader >> Battery level as a percentage"
+            comment: "Settings > Manage Card Reader > Connected Reader > Battery level as a percentage"
         )
 
         cell.batteryLevelLabel?.text = String.localizedStringWithFormat(batteryLabelFormat, batteryLevelString)
-        cell.serialNumberLabel?.text = connectedReader?.serial ?? "Unknown"
+        cell.serialNumberLabel?.text = connectedReader?.serial ?? DefaultStrings.noSerialNumber.userFacingString
         cell.selectionStyle = .none
     }
 

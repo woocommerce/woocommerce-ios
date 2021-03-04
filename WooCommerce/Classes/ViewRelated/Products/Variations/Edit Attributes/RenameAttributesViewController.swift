@@ -85,10 +85,7 @@ private extension RenameAttributesViewController {
 
 extension RenameAttributesViewController {
     @objc private func doneButtonTapped() {
-        guard let newAttributeName = viewModel.newAttributeName else {
-            return onCompletion(viewModel.attributeName)
-        }
-        onCompletion(newAttributeName)
+        onCompletion(viewModel.attributeName)
     }
 
     override func shouldPopOnBackButton() -> Bool {

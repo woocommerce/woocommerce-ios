@@ -19,8 +19,7 @@ struct ProductDetailsFactory {
         let vc = productDetails(product: product,
                                 presentationStyle: presentationStyle,
                                 currencySettings: currencySettings,
-                                isEditProductsEnabled: forceReadOnly ? false: true,
-                                isAddProductVariationsEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.addProductVariations))
+                                isEditProductsEnabled: forceReadOnly ? false: true)
         onCompletion(vc)
     }
 }
@@ -29,8 +28,7 @@ private extension ProductDetailsFactory {
     static func productDetails(product: Product,
                                presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings,
-                               isEditProductsEnabled: Bool,
-                               isAddProductVariationsEnabled: Bool) -> UIViewController {
+                               isEditProductsEnabled: Bool) -> UIViewController {
         let vc: UIViewController
         let productModel = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
@@ -42,8 +40,7 @@ private extension ProductDetailsFactory {
         vc = ProductFormViewController(viewModel: viewModel,
                                        eventLogger: ProductFormEventLogger(),
                                        productImageActionHandler: productImageActionHandler,
-                                       presentationStyle: presentationStyle,
-                                       isAddProductVariationsEnabled: isAddProductVariationsEnabled)
+                                       presentationStyle: presentationStyle)
         // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         vc.hidesBottomBarWhenPushed = true
         return vc

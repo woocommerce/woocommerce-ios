@@ -5,16 +5,11 @@ import Yosemite
 ///
 final class ProductVariationsViewModel {
 
-    /// Defines if the Add Product Variations feature is enabled
-    ///
-    private let isAddProductVariationsEnabled: Bool
-
     /// Stores dependency. Needed to generate variations
     ///
     private let stores: StoresManager
 
-    init(isAddProductVariationsEnabled: Bool, stores: StoresManager = ServiceLocator.stores) {
-        self.isAddProductVariationsEnabled = isAddProductVariationsEnabled
+    init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
     }
 
@@ -37,6 +32,6 @@ extension ProductVariationsViewModel {
     /// Defines if the More Options button should be shown
     ///
     func shouldShowMoreButton(for product: Product) -> Bool {
-        product.variations.isNotEmpty && product.attributes.isNotEmpty && isAddProductVariationsEnabled
+        product.variations.isNotEmpty && product.attributes.isNotEmpty
     }
 }

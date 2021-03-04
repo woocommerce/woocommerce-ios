@@ -39,7 +39,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let productUIImageLoader: ProductUIImageLoader
 
     private let currency: String
-    private let isAddProductVariationsEnabled: Bool
 
     private lazy var exitForm: () -> Void = {
         presentationStyle.createExitForm(viewController: self)
@@ -58,13 +57,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
-         presentationStyle: ProductFormPresentationStyle,
-         isAddProductVariationsEnabled: Bool) {
+         presentationStyle: ProductFormPresentationStyle) {
         self.viewModel = viewModel
         self.eventLogger = eventLogger
         self.currency = currency
         self.presentationStyle = presentationStyle
-        self.isAddProductVariationsEnabled = isAddProductVariationsEnabled
         self.productImageActionHandler = productImageActionHandler
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
@@ -347,11 +344,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard let product = product as? EditableProductModel, row.isActionable else {
                     return
                 }
-                let variationsViewModel = ProductVariationsViewModel(isAddProductVariationsEnabled: isAddProductVariationsEnabled)
+                let variationsViewModel = ProductVariationsViewModel()
                 let variationsViewController = ProductVariationsViewController(viewModel: variationsViewModel,
                                                                                product: product.product,
-                                                                               formType: viewModel.formType,
-                                                                               isAddProductVariationsEnabled: isAddProductVariationsEnabled)
+                                                                               formType: viewModel.formType)
                 variationsViewController.onProductUpdate = { [viewModel] updatedProduct in
                     viewModel.updateProductVariations(from: updatedProduct)
                 }

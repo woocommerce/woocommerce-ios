@@ -116,7 +116,6 @@ final class ProductVariationsViewController: UIViewController {
 
     private let formType: ProductFormType
     private let imageService: ImageService = ServiceLocator.imageService
-    private let isAddProductVariationsEnabled: Bool
 
     private let viewModel: ProductVariationsViewModel
     private let noticePresenter: NoticePresenter
@@ -129,12 +128,10 @@ final class ProductVariationsViewController: UIViewController {
     init(viewModel: ProductVariationsViewModel,
          product: Product,
          formType: ProductFormType,
-         isAddProductVariationsEnabled: Bool,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
          analytics: Analytics = ServiceLocator.analytics) {
         self.product = product
         self.formType = formType
-        self.isAddProductVariationsEnabled = isAddProductVariationsEnabled
         self.viewModel = viewModel
         self.noticePresenter = noticePresenter
         self.analytics = analytics
@@ -284,9 +281,6 @@ private extension ProductVariationsViewController {
     }
 
     func configureAddButton() {
-        guard isAddProductVariationsEnabled else {
-            return
-        }
         let buttonContainer = UIView()
         buttonContainer.backgroundColor = .listForeground
 
@@ -424,8 +418,7 @@ extension ProductVariationsViewController: UITableViewDelegate {
                                                       allAttributes: allAttributes,
                                                       parentProductSKU: parentProductSKU,
                                                       formType: formType,
-                                                      productImageActionHandler: productImageActionHandler,
-                                                      isAddProductVariationsEnabled: isAddProductVariationsEnabled)
+                                                      productImageActionHandler: productImageActionHandler)
         viewModel.onVariationDeletion = { [weak self] variation in
             guard let self = self else { return }
 
@@ -438,8 +431,7 @@ extension ProductVariationsViewController: UITableViewDelegate {
                                                        eventLogger: ProductVariationFormEventLogger(),
                                                        productImageActionHandler: productImageActionHandler,
                                                        currency: currency,
-                                                       presentationStyle: .navigationStack,
-                                                       isAddProductVariationsEnabled: isAddProductVariationsEnabled)
+                                                       presentationStyle: .navigationStack)
         navigationController?.pushViewController(viewController, animated: true)
     }
 

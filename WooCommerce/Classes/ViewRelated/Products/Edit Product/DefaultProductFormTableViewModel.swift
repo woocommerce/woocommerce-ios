@@ -12,16 +12,12 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     //
     var siteTimezone: TimeZone = TimeZone.siteTimezone
 
-    private let isAddProductVariationsEnabled: Bool
-
     init(product: ProductFormDataModel,
          actionsFactory: ProductFormActionsFactoryProtocol,
          currency: String,
-         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
-        self.isAddProductVariationsEnabled = featureFlagService.isFeatureFlagEnabled(.addProductVariations)
         configureSections(product: product, actionsFactory: actionsFactory)
     }
 }
@@ -375,7 +371,7 @@ private extension DefaultProductFormTableViewModel {
 
     func variationsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.variationsImage
-        let title = (product.variations.isEmpty && isAddProductVariationsEnabled) ? Localization.addVariationsTitle : Localization.variationsTitle
+        let title = product.variations.isEmpty ? Localization.addVariationsTitle : Localization.variationsTitle
 
         let details: String
         let format = NSLocalizedString("%1$@ (%2$ld options)", comment: "Format for each Product attribute")
@@ -386,20 +382,13 @@ private extension DefaultProductFormTableViewModel {
                 .map({ String.localizedStringWithFormat(format, $0.name, $0.options.count) })
                 .joined(separator: "\n")
         default:
-            if isAddProductVariationsEnabled {
-                details = ""
-            }
-            else {
-                details = Localization.variationsPlaceholder
-            }
+            details = Localization.variationsPlaceholder
         }
-
-        let isActionable = product.variations.isNotEmpty || (product.variations.isEmpty && isAddProductVariationsEnabled)
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
                                                         details: details,
-                                                        isActionable: isActionable)
+                                                        isActionable: true)
     }
 
     // MARK: Product variation only

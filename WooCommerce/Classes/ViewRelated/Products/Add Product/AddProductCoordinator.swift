@@ -56,7 +56,6 @@ private extension AddProductCoordinator {
         let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
         let productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
                                                                   product: model)
-        let isAddProductVariationsEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.addProductVariations)
         let viewModel = ProductFormViewModel(product: model,
                                              formType: .add,
                                              productImageActionHandler: productImageActionHandler)
@@ -64,8 +63,7 @@ private extension AddProductCoordinator {
                                                        eventLogger: ProductFormEventLogger(),
                                                        productImageActionHandler: productImageActionHandler,
                                                        currency: currency,
-                                                       presentationStyle: .navigationStack,
-                                                       isAddProductVariationsEnabled: isAddProductVariationsEnabled)
+                                                       presentationStyle: .navigationStack)
         // Since the Add Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         viewController.hidesBottomBarWhenPushed = true
         navigationController.pushViewController(viewController, animated: true)

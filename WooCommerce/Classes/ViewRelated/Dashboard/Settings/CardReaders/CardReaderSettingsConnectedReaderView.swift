@@ -2,24 +2,7 @@ import UIKit
 import Yosemite
 
 final class CardReaderSettingsConnectedReaderView: NSObject {
-
-    private enum DefaultStrings: String {
-        case noSerialNumber
-
-        var userFacingString: String {
-            switch self {
-            case .noSerialNumber:
-                return NSLocalizedString(
-                    "Unknown",
-                    comment: "Settings > Manage Card Reader > Connected Reader > Displayed for card readers without a serial number"
-                )
-            }
-        }
-    }
-
-    /// A simple model for this "ViewModel" - just a reference to the CardReaderSettingsViewModel connected reader
-    var connectedReader: CardReader?
-
+    var viewModel = CardReaderViewModel()
     var onPressedDisconnect: (() -> ())?
 
     private var rows = [Row]()
@@ -39,10 +22,6 @@ final class CardReaderSettingsConnectedReaderView: NSObject {
         ]
     }
 
-    public func update(reader: CardReader) {
-        connectedReader = reader
-    }
-
     private func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as ConnectedReaderTableViewCell where row == .connectedReader:
@@ -55,17 +34,8 @@ final class CardReaderSettingsConnectedReaderView: NSObject {
     }
 
     private func configureConnectedReader(cell: ConnectedReaderTableViewCell) {
-        let batteryLevel = connectedReader?.batteryLevel ?? 1.0
-        let batteryLevelPercent = Int(100 * batteryLevel)
-        let batteryLevelString = NumberFormatter.localizedString(from: batteryLevelPercent as NSNumber, number: .decimal)
-
-        let batteryLabelFormat = NSLocalizedString(
-            "%1$@%% Battery",
-            comment: "Settings > Manage Card Reader > Connected Reader > Battery level as a percentage"
-        )
-
-        cell.batteryLevelLabel?.text = String.localizedStringWithFormat(batteryLabelFormat, batteryLevelString)
-        cell.serialNumberLabel?.text = connectedReader?.serial ?? DefaultStrings.noSerialNumber.userFacingString
+        cell.serialNumberLabel?.text = viewModel.displayName
+        cell.batteryLevelLabel?.text = viewModel.batteryStatus
         cell.selectionStyle = .none
     }
 

@@ -19,23 +19,79 @@ enum CardReaderSettingsViewActiveAlert {
     case updating
 }
 
+struct CardReaderViewModel {
+    var displayName: String
+    var batteryStatus: String
+
+    init(_ reader: CardReader? = nil) {
+        let unknownName = NSLocalizedString(
+            "Unknown Name",
+            comment: "Displayed in the unlikely event a card reader has an empty serial number"
+        )
+        let unknownBatteryStatus = NSLocalizedString(
+            "Unknown Battery Level",
+            comment: "Displayed in the unlikely event a card reader has an indeterminate battery status"
+        )
+
+        guard reader != nil else {
+            self.displayName = unknownName
+            self.batteryStatus = unknownBatteryStatus
+            return
+        }
+
+        self.displayName = reader?.serial ?? unknownName
+
+        guard let batteryLevel = reader?.batteryLevel else {
+            self.batteryStatus = unknownBatteryStatus
+            return
+        }
+
+        let batteryLevelPercent = Int(100 * batteryLevel)
+        let batteryLevelString = NumberFormatter.localizedString(from: batteryLevelPercent as NSNumber, number: .decimal)
+        let batteryLabelFormat = NSLocalizedString(
+            "%1$@%% Battery",
+            comment: "Card reader battery level as an integer percentage"
+        )
+
+        self.batteryStatus = String.localizedStringWithFormat(batteryLabelFormat, batteryLevelString)
+    }
+}
+
 final class CardReaderSettingsViewModel: ObservableObject {
     /// Followed by CardReaderSettingsViewController to select child views and show/hide alerts.
     @Published var activeView: CardReaderSettingsViewActiveView
     @Published var activeAlert: CardReaderSettingsViewActiveAlert
-    @Published var connectedReader: CardReader?
+    @Published var connectedReaderViewModel: CardReaderViewModel
+    @Published var foundReadersViewModels: [CardReaderViewModel]
 
-    var knownReaders: [CardReader]
-    var foundReader: CardReader?
+    private var connectedReader: CardReader? {
+        didSet {
+            updateConnectedReaderViewModel()
+        }
+    }
+    private var foundReaders: [CardReader] {
+        didSet {
+            updateFoundReadersViewModels()
+        }
+    }
 
     init() {
         // TODO fetch initial state from Yosemite.CardReader.
         // The initial activeView and alert will be based on the knownReaders, connectedReaders and serviceState
         activeView = .connectYourReader
         activeAlert = .none
-        knownReaders = []
-        foundReader = nil
+        connectedReaderViewModel = CardReaderViewModel()
+        foundReadersViewModels = []
         connectedReader = nil
+        foundReaders = []
+    }
+
+    private func updateConnectedReaderViewModel() {
+        connectedReaderViewModel = CardReaderViewModel(connectedReader)
+    }
+
+    private func updateFoundReadersViewModels() {
+        foundReadersViewModels = foundReaders.map { CardReaderViewModel($0) }
     }
 
     func startSearch() {
@@ -51,17 +107,21 @@ final class CardReaderSettingsViewModel: ObservableObject {
     }
 
     private func discoveredReader(cardReaders: [CardReader]) -> Void {
-        if activeAlert == .foundReader {
+        // TODO - more than one reader? sort in the manner in which we'd like the rows presented
+        guard activeAlert != .foundReader else {
             return
         }
 
-        if cardReaders.isEmpty {
+        guard cardReaders.count > 0 else {
             return
         }
 
         // TODO - show the multiple-readers-found UITableView when more than one reader is found
-        // For now, just show the tail of the array
-        foundReader = cardReaders.last
+        // For now, just show the tail (last) of the array
+        guard let cardReader = cardReaders.last else {
+            return
+        }
+        foundReaders = [cardReader]
         activeAlert = .foundReader
     }
 

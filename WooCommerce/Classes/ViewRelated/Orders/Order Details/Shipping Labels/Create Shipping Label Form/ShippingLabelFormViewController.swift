@@ -220,10 +220,17 @@ private extension ShippingLabelFormViewController {
         let shippingAddressVC = ShippingLabelAddressFormViewController(siteID: self.viewModel.siteID,
                                                                        type: type,
                                                                        address: address,
-                                                                       completion: { [weak self] (newShippingLabelAddress) in
+                                                                       completion: { [weak self]
+                                                                        (newShippingLabelAddress) in
                                                                         guard let self = self else { return }
-                self.viewModel.handleDestinationAddressValueChanges(address: newShippingLabelAddress, validated: true)
-
+                                        switch type {
+                                        case .origin:
+                                            self.viewModel.handleOriginAddressValueChanges(address: newShippingLabelAddress,
+                                                                                           validated: true)
+                                        case .destination:
+                                            self.viewModel.handleDestinationAddressValueChanges(address: newShippingLabelAddress,
+                                                                                                validated: true)
+                                        }
                                                                        })
         self.navigationController?.pushViewController(shippingAddressVC, animated: true)
     }
@@ -233,8 +240,14 @@ private extension ShippingLabelFormViewController {
                                                              type: type,
                                                              address: address,
                                                              suggestedAddress: suggestedAddress) { [weak self] (newShippingLabelAddress) in
-            self?.viewModel.handleOriginAddressValueChanges(address: newShippingLabelAddress,
-                                                            validated: true)
+            switch type {
+            case .origin:
+                self?.viewModel.handleOriginAddressValueChanges(address: newShippingLabelAddress,
+                                                                validated: true)
+            case .destination:
+                self?.viewModel.handleDestinationAddressValueChanges(address: newShippingLabelAddress,
+                                                                     validated: true)
+            }
         }
         self.navigationController?.pushViewController(vc, animated: true)
     }

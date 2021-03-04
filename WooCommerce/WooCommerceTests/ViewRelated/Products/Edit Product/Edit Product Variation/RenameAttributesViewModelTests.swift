@@ -40,4 +40,17 @@ class RenameAttributesViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
+    func test_attribute_name_updates_from_original_to_new_attribute_name() {
+        // Given
+        let attribute = ProductVariationAttribute(id: 0, name: "Color", option: "Blue")
+        let viewModel = RenameAttributesViewModel(attributeName: attribute.name)
+        XCTAssertEqual(viewModel.attributeName, "Color")
+
+        // When
+        viewModel.handleAttributeNameChange("New Color")
+
+        // Then
+        XCTAssertEqual(viewModel.attributeName, "New Color")
+    }
+
 }

@@ -378,6 +378,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         let initialProduct = sampleProduct().copy(attributes: [initialAttribute])
         let viewModel = AddAttributeOptionsViewModel(product: initialProduct, attribute: .existing(attribute: initialAttribute), stores: stores)
 
+        viewModel.setCurrentAttributeName("New Attribute Name")
         viewModel.addNewOption(name: "Option 1")
         viewModel.addNewOption(name: "Option 2")
 
@@ -394,7 +395,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         }
 
         // Then
-        let expectedAttribute = sampleAttribute(options: ["Option 1", "Option 2"])
+        let expectedAttribute = sampleAttribute(name: "New Attribute Name", options: ["Option 1", "Option 2"])
         XCTAssertEqual(updatedProduct.attributes, [expectedAttribute])
     }
 
@@ -537,6 +538,39 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         let selectedSection = try XCTUnwrap(viewModel.sections.last)
         XCTAssertFalse(selectedSection.allowsReorder)
         XCTAssertTrue(attribute.isGlobal)
+    }
+
+    func test_local_attribute_should_allow_rename() {
+        // Given, When
+        let attribute = sampleAttribute(attributeID: 0, name: "Color", options: ["Green", "Blue", "Red"])
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: attribute))
+
+        // Then
+        XCTAssertTrue(attribute.isLocal)
+        XCTAssertTrue(viewModel.allowsRename)
+    }
+
+    func test_global_attribute_should_not_allow_rename() {
+        // Given, When
+        let attribute = sampleAttribute(name: "Color", options: ["Green", "Blue", "Red"])
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: attribute))
+
+        // Then
+        XCTAssertTrue(attribute.isGlobal)
+        XCTAssertFalse(viewModel.allowsRename)
+    }
+
+    func test_next_button_is_enabled_after_renaming_attribute() {
+        // Given
+        let attribute = sampleAttribute(name: "Color", options: ["Green", "Blue", "Red"])
+        let viewModel = AddAttributeOptionsViewModel(product: sampleProduct(), attribute: .existing(attribute: attribute))
+        XCTAssertFalse(viewModel.isNextButtonEnabled)
+
+        // When
+        viewModel.setCurrentAttributeName("New Color")
+
+        // Then
+        XCTAssertTrue(viewModel.isNextButtonEnabled)
     }
 }
 

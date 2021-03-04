@@ -79,6 +79,8 @@ public class ProductStore: Store {
             updateProduct(product: product, onCompletion: onCompletion)
         case .validateProductSKU(let sku, let siteID, let onCompletion):
             validateProductSKU(sku, siteID: siteID, onCompletion: onCompletion)
+        case let .replaceProductLocally(product, onCompletion):
+            replaceProductLocally(product: product, onCompletion: onCompletion)
         }
     }
 }
@@ -313,6 +315,12 @@ private extension ProductStore {
             let isValid = (result != nil && result == sku) ? false : true
             onCompletion(isValid)
         }
+    }
+
+    /// Upserts a product in our local storage
+    ///
+    func replaceProductLocally(product: Product, onCompletion: @escaping () -> Void) {
+        upsertStoredProductsInBackground(readOnlyProducts: [product], onCompletion: onCompletion)
     }
 }
 

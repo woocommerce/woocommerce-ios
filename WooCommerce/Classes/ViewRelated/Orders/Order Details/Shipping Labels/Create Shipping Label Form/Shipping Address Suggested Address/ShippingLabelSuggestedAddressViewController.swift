@@ -34,6 +34,13 @@ final class ShippingLabelSuggestedAddressViewController: UIViewController {
     typealias Completion = (_ address: ShippingLabelAddress?) -> Void
     private let onCompletion: Completion
 
+    private var selectedAddress: SelectedAddress = .suggested {
+        didSet {
+            tableView.reloadData()
+            configureUseAddressButton()
+        }
+    }
+
     /// Init
     ///
     init(type: ShipType, address: ShippingLabelAddress?, suggestedAddress: ShippingLabelAddress?, completion: @escaping Completion) {
@@ -81,6 +88,7 @@ private extension ShippingLabelSuggestedAddressViewController {
         registerTableViewCells()
 
         tableView.dataSource = self
+        tableView.delegate = self
 
         // Configure header container view
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
@@ -99,7 +107,8 @@ private extension ShippingLabelSuggestedAddressViewController {
     }
 
     func configureUseAddressButton() {
-        useAddressButton.setTitle(Localization.useAddressSuggestedButton, for: .normal)
+        let title = selectedAddress == .entered ? Localization.useAddressEnteredButton : Localization.useAddressSuggestedButton
+        useAddressButton.setTitle(title, for: .normal)
         //useAddressButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
         useAddressButton.applyPrimaryButtonStyle()
     }
@@ -132,6 +141,21 @@ extension ShippingLabelSuggestedAddressViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - UITableViewDelegate Conformance
+//
+extension ShippingLabelSuggestedAddressViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let row = sections[indexPath.section].rows[indexPath.row]
+        switch row {
+        case .addressEntered:
+            selectedAddress = .entered
+        case .addressSuggested:
+            selectedAddress = .suggested
+        }
+    }
+}
+
 // MARK: - Cell configuration
 //
 private extension ShippingLabelSuggestedAddressViewController {
@@ -150,10 +174,11 @@ private extension ShippingLabelSuggestedAddressViewController {
     }
 
     func configureAddressEntered(cell: ImageAndTitleAndTextTableViewCell, row: Row) {
+        let isAddressEntered = selectedAddress == .entered
         let cellViewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: Localization.addressEntered,
                                                                         text: address?.fullNameWithCompanyAndAddress,
-                                                                        image: .shippingImage,
-                                                                        imageTintColor: Constants.cellImageColor,
+                                                                        image: .checkmarkImage,
+                                                                        imageTintColor: isAddressEntered ? .textBrand : .clear,
                                                                         numberOfLinesForTitle: 0,
                                                                         numberOfLinesForText: 0,
                                                                         isActionable: false)
@@ -161,10 +186,11 @@ private extension ShippingLabelSuggestedAddressViewController {
     }
 
     func configureAddressSuggested(cell: ImageAndTitleAndTextTableViewCell, row: Row) {
+        let isSuggestedAddress = selectedAddress == .suggested
         let cellViewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: Localization.addressSuggested,
                                                                         text: suggestedAddress?.fullNameWithCompanyAndAddress,
-                                                                        image: .shippingImage,
-                                                                        imageTintColor: Constants.cellImageColor,
+                                                                        image: .checkmarkImage,
+                                                                        imageTintColor: isSuggestedAddress ? .textBrand : .clear,
                                                                         numberOfLinesForTitle: 0,
                                                                         numberOfLinesForText: 0,
                                                                         isActionable: false)
@@ -210,6 +236,10 @@ private extension ShippingLabelSuggestedAddressViewController {
 
     enum Constants {
         static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        static let cellImageColor: UIColor = .textSubtle
+    }
+
+    enum SelectedAddress {
+        case entered
+        case suggested
     }
 }

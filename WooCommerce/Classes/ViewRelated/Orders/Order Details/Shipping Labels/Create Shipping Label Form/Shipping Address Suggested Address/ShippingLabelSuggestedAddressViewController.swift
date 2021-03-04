@@ -101,7 +101,7 @@ private extension ShippingLabelSuggestedAddressViewController {
     func configureUseAddressButton() {
         useAddressButton.setTitle(Localization.useAddressSuggestedButton, for: .normal)
         //useAddressButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
-        useAddressButton.applySecondaryButtonStyle()
+        useAddressButton.applyPrimaryButtonStyle()
     }
 
     func configureEditAddressButton() {
@@ -139,9 +139,9 @@ private extension ShippingLabelSuggestedAddressViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as BasicTableViewCell where row == .addressEntered:
+        case let cell as ImageAndTitleAndTextTableViewCell where row == .addressEntered:
             configureAddressEntered(cell: cell, row: row)
-        case let cell as BasicTableViewCell where row == .addressSuggested:
+        case let cell as ImageAndTitleAndTextTableViewCell where row == .addressSuggested:
             configureAddressSuggested(cell: cell, row: row)
         default:
             fatalError("Cannot instantiate \(cell) with row \(row.type)")
@@ -149,12 +149,26 @@ private extension ShippingLabelSuggestedAddressViewController {
         }
     }
 
-    func configureAddressEntered(cell: BasicTableViewCell, row: Row) {
-        cell.textLabel?.text = address?.fullNameWithCompanyAndAddress
+    func configureAddressEntered(cell: ImageAndTitleAndTextTableViewCell, row: Row) {
+        let cellViewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: Localization.addressEntered,
+                                                                        text: address?.fullNameWithCompanyAndAddress,
+                                                                        image: .shippingImage,
+                                                                        imageTintColor: Constants.cellImageColor,
+                                                                        numberOfLinesForTitle: 0,
+                                                                        numberOfLinesForText: 0,
+                                                                        isActionable: false)
+        cell.updateUI(viewModel: cellViewModel)
     }
 
-    func configureAddressSuggested(cell: BasicTableViewCell, row: Row) {
-        cell.textLabel?.text = suggestedAddress?.fullNameWithCompanyAndAddress
+    func configureAddressSuggested(cell: ImageAndTitleAndTextTableViewCell, row: Row) {
+        let cellViewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: Localization.addressSuggested,
+                                                                        text: suggestedAddress?.fullNameWithCompanyAndAddress,
+                                                                        image: .shippingImage,
+                                                                        imageTintColor: Constants.cellImageColor,
+                                                                        numberOfLinesForTitle: 0,
+                                                                        numberOfLinesForText: 0,
+                                                                        isActionable: false)
+        cell.updateUI(viewModel: cellViewModel)
     }
 }
 
@@ -171,7 +185,7 @@ extension ShippingLabelSuggestedAddressViewController {
         fileprivate var type: UITableViewCell.Type {
             switch self {
             case .addressEntered, .addressSuggested:
-                return BasicTableViewCell.self
+                return ImageAndTitleAndTextTableViewCell.self
             }
         }
 
@@ -183,10 +197,12 @@ extension ShippingLabelSuggestedAddressViewController {
 
 private extension ShippingLabelSuggestedAddressViewController {
     enum Localization {
-        static let titleViewShipFrom = NSLocalizedString("Ship from", comment: "Shipping Label Address Validation navigation title")
+        static let titleViewShipFrom = NSLocalizedString("Ship from", comment: "Shipping Label Address Suggested navigation title")
         static let titleViewShipTo = NSLocalizedString("Ship to", comment: "Shipping Label Address Validation navigation title")
         static let useAddressEnteredButton = NSLocalizedString("Use Address Entered",
                                                                comment: "Action to use the address in Shipping Label Suggested screen as entered")
+        static let addressEntered = NSLocalizedString("Address Entered", comment: "Shipping Label Address Suggested address entered placeholder")
+        static let addressSuggested = NSLocalizedString("Address Suggested", comment: "Shipping Label Address Suggested address suggested placeholder")
         static let useAddressSuggestedButton = NSLocalizedString("Use Suggested Address",
                                                                  comment: "Action to use the address in Shipping Label Suggested screen as suggested")
         static let editAddressButton = NSLocalizedString("Edit Address", comment: "Action to edit the address in Shipping Label Suggested screen")
@@ -194,5 +210,6 @@ private extension ShippingLabelSuggestedAddressViewController {
 
     enum Constants {
         static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        static let cellImageColor: UIColor = .textSubtle
     }
 }

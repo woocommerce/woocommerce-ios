@@ -7,7 +7,7 @@ final class ShippingLabelFormStepTableViewCell: UITableViewCell {
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var stackView: UIStackView!
     @IBOutlet private weak var bodyLabel: UILabel!
-    @IBOutlet private weak var button: UIButton!
+    @IBOutlet private weak var button: ButtonActivityIndicator!
     @IBOutlet private weak var disclosureIndicatorView: UIView!
     @IBOutlet private weak var chevronView: UIImageView!
     @IBOutlet private weak var separator: UIView!
@@ -45,6 +45,18 @@ final class ShippingLabelFormStepTableViewCell: UITableViewCell {
         button.setTitle(buttonTitle, for: .normal)
         self.onButtonTouchUp = onButtonTouchUp
         configureCellBasedOnState(state)
+    }
+
+    func showActivityIndicator(_ show: Bool) {
+        guard show else {
+            button.hideActivityIndicator()
+            return
+        }
+        button.showActivityIndicator()
+    }
+
+    func enableButton(_ enabled: Bool) {
+        button.isEnabled = enabled
     }
 }
 

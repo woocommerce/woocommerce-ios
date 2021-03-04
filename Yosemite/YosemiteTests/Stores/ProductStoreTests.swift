@@ -1419,7 +1419,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
     }
 
-    func test_replace_product_does_replaces_product_locally() throws {
+    func test_calling_replaceProductLocally_replaces_product_locally() throws {
         // Given
         let product = sampleProduct()
         storageManager.insertSampleProduct(readOnlyProduct: product)

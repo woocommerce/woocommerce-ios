@@ -9,7 +9,7 @@ public final class StripeCardReaderService: NSObject {
     private let discoveredReadersSubject = CurrentValueSubject<[CardReader], Never>([])
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
     private let serviceStatusSubject = CurrentValueSubject<CardReaderServiceStatus, Never>(.ready)
-    private let discoveryStatusSubject = PassthroughSubject<CardReaderServiceDiscoveryStatus, Never>()
+    private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
     private let paymentStatusSubject = CurrentValueSubject<PaymentStatus, Never>(.notReady)
     private let readerEventsSubject = PassthroughSubject<CardReaderEvent, Never>()
 
@@ -17,8 +17,6 @@ public final class StripeCardReaderService: NSObject {
     /// see
     ///  https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPDiscoveryDelegate.html#/c:objc(pl)SCPDiscoveryDelegate(im)terminal:didUpdateDiscoveredReaders:
     private let discoveredStripeReadersCache = StripeCardReaderDiscoveryCache()
-
-    private var isDiscovering = false
 }
 
 
@@ -99,7 +97,7 @@ extension StripeCardReaderService: CardReaderService {
          * discovering mode before attempting a cancellation
          *
          */
-        guard isDiscovering else {
+        guard discoveryStatusSubject.value == .discovering else {
             return
         }
         print("||||||| Service calling cancel in service", self)
@@ -241,17 +239,14 @@ private extension StripeCardReaderService {
 private extension StripeCardReaderService {
     func switchStatusToIdle() {
         updateDiscoveryStatus(to: .idle)
-        isDiscovering = false
     }
 
     func switchStatusToDiscovering() {
         updateDiscoveryStatus(to: .discovering)
-        isDiscovering = true
     }
 
     func switchStatusToFault() {
         updateDiscoveryStatus(to: .fault)
-        isDiscovering = false
     }
 
     func updateDiscoveryStatus(to newStatus: CardReaderServiceDiscoveryStatus) {

@@ -65,7 +65,7 @@ final class CardReaderSettingsViewModel: ObservableObject {
         let discoveryAction = CardPresentPaymentAction.startCardReaderDiscovery(siteID: siteID, onCompletion: { cardReaders in
             // TODO. To be implemented
             // Leaving these prints here to help test the PR
-            print("==== View model new card readers discovered begins ====")
+            print("==== View model new card readers discovered callback ====")
             print("View Model  - new readers: ", cardReaders)
             //print("==== new card readers discovered ends   ====")
         })
@@ -75,7 +75,7 @@ final class CardReaderSettingsViewModel: ObservableObject {
         let discoveryCancellationAction = CardPresentPaymentAction.cancelCardReaderDiscovery { status in
             // TODO. To be implemented
             // Leaving these prints here to help test the PR
-            print("===== View model - cancellation begins ====")
+            print("===== View model - cancellation callback ====")
             print("View model. new status received ", status)
             //print("===== View model - cancellation ends ====")
         }

@@ -37,7 +37,7 @@ final class SurveyViewControllerTests: XCTestCase {
                         .tagProductMilestone("5")
                         .tagAppVersion(Bundle.main.bundleVersion()))
     }
-    
+
     func test_it_loads_the_correct_shipping_labels_release_survey() throws {
         // Given
         let viewController = SurveyViewController(survey: .shippingLabelsRelease1Feedback, onCompletion: {})

@@ -57,13 +57,16 @@ private extension CardPresentPaymentStore {
         // new data via the CardReaderService's stream of discovered readers
         // In here, we should redirect that data to Storage and also up to the UI.
         // For now we are sending the data up to the UI directly
+        print("**** Store. starting discovery*")
         cardReaderService.discoveredReaders.sink { readers in
             completion(readers)
         }.store(in: &cancellables)
     }
 
     func cancelCardReaderDiscovery(completion: @escaping (CardReaderServiceDiscoveryStatus) -> Void) {
+        print("**** Store. cancelling discovery*")
         cardReaderService.discoveryStatus.sink { status in
+            print("///// status received ", status)
             completion(status)
         }.store(in: &cancellables)
 

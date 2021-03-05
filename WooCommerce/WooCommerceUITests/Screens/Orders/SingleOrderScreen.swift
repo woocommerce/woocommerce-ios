@@ -5,9 +5,9 @@ final class SingleOrderScreen: BaseScreen {
 
     struct ElementStringIDs {
         static let summaryTitleLabel = "summary-table-view-cell-title-label"
-        static let productsSection = "Products" // TODO: add accessibility indicator. Using "Product" from Accessibility inspector for the moment.
-        static let paymentsSection = "single-order-payment-cell" // TODO: add accessibility indicator Using "Product Total" from Accessibility inspector for the  moment.
-        static let customerSection = "Shipping details" // TODO: add accessibility indicator. Using "Shipping details" from Accessibility inspector for the moment.
+        static let productsSection = "single-product-cell"
+        static let paymentsSection = "single-order-payment-cell"
+        static let customerSection = "customer-shipping-details-address"
     }
 
     let tabBar = TabNavComponent()
@@ -23,12 +23,12 @@ final class SingleOrderScreen: BaseScreen {
 
     init() {
         summaryTitleLabel = XCUIApplication().staticTexts[ElementStringIDs.summaryTitleLabel]
-        productsSection = XCUIApplication().staticTexts[ElementStringIDs.productsSection]
+        productsSection = XCUIApplication().cells[ElementStringIDs.productsSection]
         paymentsSection = XCUIApplication().cells[ElementStringIDs.paymentsSection]
-        customerSection = XCUIApplication().staticTexts[ElementStringIDs.customerSection]
+        customerSection = XCUIApplication().cells[ElementStringIDs.customerSection]
 
         super.init(element: summaryTitleLabel)
-    
+        
         XCTAssert(productsSection.exists)
         XCTAssert(paymentsSection.exists)
         XCTAssert(customerSection.exists)

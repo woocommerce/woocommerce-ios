@@ -578,6 +578,7 @@ private extension OrderDetailsDataSource {
                                                         currency: order.currency)
 
         cell.configure(item: itemViewModel, imageService: imageService)
+        cell.accessibilityIdentifier = "single-product-cell"
     }
 
     private func configureRefundedProducts(_ cell: WooBasicTableViewCell) {

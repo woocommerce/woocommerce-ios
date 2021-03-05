@@ -558,8 +558,6 @@ private extension DefaultProductFormTableViewModel {
         static let variationsTitle =
             NSLocalizedString("Variations",
                               comment: "Title of the Product Variations row on Product main screen for a variable product")
-        static let variationsPlaceholder = NSLocalizedString("No variations yet",
-                                                             comment: "Placeholder of the Product Variations row on Product main screen for a variable product")
 
         // Variation status
         static let variationStatusTitle =

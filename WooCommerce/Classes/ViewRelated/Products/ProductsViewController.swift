@@ -230,7 +230,7 @@ private extension ProductsViewController {
         )
 
         navigationItem.leftBarButtonItem = {
-            let button = UIBarButtonItem(image: .searchImage,
+            let button = UIBarButtonItem(image: .searchBarButtonItemImage,
                                          style: .plain,
                                          target: self,
                                          action: #selector(displaySearchProducts))
@@ -251,7 +251,7 @@ private extension ProductsViewController {
     func configureNavigationBarRightButtonItems() {
         var rightBarButtonItems = [UIBarButtonItem]()
         let buttonItem: UIBarButtonItem = {
-            let button = UIBarButtonItem(image: .plusImage,
+            let button = UIBarButtonItem(image: .plusBarButtonItemImage,
                                          style: .plain,
                                          target: self,
                                          action: #selector(addProduct(_:)))

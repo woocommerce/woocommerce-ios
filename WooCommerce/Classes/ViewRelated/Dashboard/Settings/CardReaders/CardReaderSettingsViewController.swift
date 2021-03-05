@@ -1,6 +1,7 @@
 import UIKit
 import Combine
 import Yosemite
+import WordPressUI
 
 final class CardReaderSettingsViewController: UIViewController {
 
@@ -9,6 +10,7 @@ final class CardReaderSettingsViewController: UIViewController {
     private var subscriptions = Set<AnyCancellable>()
     private var viewModel = CardReaderSettingsViewModel()
     private var alert: UIAlertController?
+    private var fancyAlert: FancyAlertViewController?
 
     private lazy var connectView = CardReaderSettingsConnectView()
     private lazy var connectedView = CardReaderSettingsConnectedReaderView()
@@ -58,12 +60,13 @@ final class CardReaderSettingsViewController: UIViewController {
     }
 
     private func setAlert() {
-        alert?.dismiss(animated: true, completion: nil)
+        alert?.dismiss(animated: true, completion: nil) // TODO remove after all alerts are fancy
+        fancyAlert?.dismiss(animated: true, completion: nil)
         switch viewModel.activeAlert {
         case .none:
             noop()
         case .searching:
-            addSearchingModal()
+            addSearchingAlert()
         case .foundReader:
             addFoundReaderModal()
         case .connecting:
@@ -112,19 +115,10 @@ final class CardReaderSettingsViewController: UIViewController {
         // TODO cleanup
     }
 
-    private func addSearchingModal() {
-        // TODO Use FancyAlert instead - all these strings will be moved there
-        alert = UIAlertController(
-            title: "Scanning for readers",
-            message: "Press the power button of your reader until you see a flashing blue light",
-            preferredStyle: UIAlertController.Style.alert
-        )
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { UIAlertAction in
-            self.viewModel.stopSearch()
-        }
-        alert?.addAction(cancelAction)
-        if alert != nil {
-            self.present(alert!, animated: true, completion: nil)
+    private func addSearchingAlert() {
+        fancyAlert = FancyAlertViewController.makeScanningForCardReadersAlertController(onCancel: viewModel.stopSearch)
+        if fancyAlert != nil {
+            self.present(fancyAlert!, animated: true, completion: nil)
         }
     }
 

@@ -131,7 +131,7 @@ final class CardReaderSettingsViewModel: ObservableObject {
     }
 
     /// Views can call this method to stop searching for readers.
-    func stopSearch() {
+    func stopSearch() -> Void {
         // TODO dispatch an action to stop searching.
         activeAlert = .none
     }

@@ -95,7 +95,7 @@ private extension AddAttributeOptionsViewController {
 
     func createUpdateIndicatorButton() -> UIBarButtonItem {
         let indicator = UIActivityIndicatorView(style: .medium)
-        indicator.color = .primaryButtonTitle
+        indicator.color = .navigationBarLoadingIndicator
         indicator.startAnimating()
         return UIBarButtonItem(customView: indicator)
     }

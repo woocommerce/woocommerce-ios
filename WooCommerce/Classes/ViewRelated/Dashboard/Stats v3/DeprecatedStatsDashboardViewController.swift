@@ -4,6 +4,9 @@ import UIKit
 /// Empty state screen shown when the store stats version is not supported
 ///
 final class DeprecatedDashboardStatsViewController: UIViewController {
+    /// For navigation bar large title workaround.
+    ///
+    weak var scrollDelegate: DashboardUIScrollDelegate?
 
     /// Empty state screen
     ///

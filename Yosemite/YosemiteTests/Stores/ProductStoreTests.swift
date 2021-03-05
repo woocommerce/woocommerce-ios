@@ -1,4 +1,5 @@
 import XCTest
+import TestKit
 @testable import Yosemite
 @testable import Networking
 @testable import Storage
@@ -1416,6 +1417,29 @@ final class ProductStoreTests: XCTestCase {
         // Assert
         XCTAssertEqual(retrievedProducts, [])
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+    }
+
+    func test_calling_replaceProductLocally_replaces_product_locally() throws {
+        // Given
+        let product = sampleProduct()
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+
+        let remote = MockProductsRemote()
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let newProduct = product.copy(variations: [1, 2, 3])
+        let finished: Bool = waitFor { promise in
+            let action = ProductAction.replaceProductLocally(product: newProduct, onCompletion: {
+                promise(true)
+            })
+            productStore.onAction(action)
+        }
+
+        // Then
+        let replacedProduct = storageManager.viewStorage.loadProduct(siteID: sampleSiteID, productID: sampleProductID)?.toReadOnly()
+        XCTAssertEqual(newProduct, replacedProduct)
+        XCTAssertTrue(finished)
     }
 }
 

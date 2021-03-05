@@ -83,9 +83,12 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private var cancellable: ObservationToken?
 
+    private let stores: StoresManager
+
     init(product: EditableProductModel,
          formType: ProductFormType,
-         productImageActionHandler: ProductImageActionHandler) {
+         productImageActionHandler: ProductImageActionHandler,
+         stores: StoresManager = ServiceLocator.stores) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
@@ -93,6 +96,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.actionsFactory = ProductFormActionsFactory(product: product,
                                                         formType: formType)
         self.isUpdateEnabledSubject = PublishSubject<Bool>()
+        self.stores = stores
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             if allStatuses.productImageStatuses.hasPendingUpload {
@@ -259,6 +263,9 @@ extension ProductFormViewModel {
         let newOriginalProduct = EditableProductModel(product: originalProduct.product.copy(attributes: newProduct.attributes,
                                                                                             variations: newProduct.variations))
 
+        // Make sure the product is updated locally. Useful for screens that are observing the product or a list of products.
+        updateStoredProduct(with: newOriginalProduct.product)
+
         // If the product doesn't have any pending changes, we can safely override the original product
         guard hasUnsavedChanges() else {
             return resetProduct(newOriginalProduct)
@@ -270,6 +277,13 @@ extension ProductFormViewModel {
                                                                                     variations: newProduct.variations))
         resetProduct(newOriginalProduct)
         product = productWithChanges
+    }
+
+    /// Fires a `Yosemite` action to update the product in our storage layer
+    ///
+    func updateStoredProduct(with newProduct: Product) {
+        let action = ProductAction.replaceProductLocally(product: newProduct, onCompletion: {})
+        stores.dispatch(action)
     }
 }
 

@@ -129,8 +129,7 @@ private extension ShippingLabelAddressFormViewController {
 
     func configureConfirmButton() {
         confirmButton.setTitle(Localization.confirmButtonTitle, for: .normal)
-        // TODO: implement confirm button action
-        //confirmButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
+        confirmButton.addTarget(self, action: #selector(confirmButtonTapped), for: .touchUpInside)
         confirmButton.applySecondaryButtonStyle()
     }
 }
@@ -147,6 +146,11 @@ private extension ShippingLabelAddressFormViewController {
                 self.navigationController?.popViewController(animated: true)
             }
         }
+    }
+
+    @objc func confirmButtonTapped() {
+        onCompletion(viewModel.address)
+        navigationController?.popViewController(animated: true)
     }
 }
 

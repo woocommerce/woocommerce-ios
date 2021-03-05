@@ -2,6 +2,7 @@ import XCTest
 
 @testable import WooCommerce
 import Yosemite
+import TestKit
 
 final class ProductFormViewModelTests: XCTestCase {
     // MARK: `canViewProductInStore`
@@ -154,7 +155,7 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertFalse(canDeleteProduct)
     }
 
-    func est_update_variations_updates_original_product_while_maintaining_pending_changes() throws {
+    func test_update_variations_updates_original_product_while_maintaining_pending_changes() throws {
         // Given
         let product = Product()
         let viewModel = createViewModel(product: product, formType: .edit)
@@ -170,14 +171,41 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productModel.product.variations, newProduct.variations)
         XCTAssertEqual(viewModel.productModel.product.attributes, newProduct.attributes)
     }
+
+    func test_update_variations_fires_replace_product_action() throws {
+        // Given
+        let product = Product()
+        let mockStores = MockStoresManager(sessionManager: SessionManager.testingInstance)
+        let viewModel = createViewModel(product: product, formType: .edit, stores: mockStores)
+
+        // When
+        let attributes = ProductAttribute(siteID: 0, attributeID: 0, name: "Color", position: 0, visible: true, variation: true, options: ["Green, Blue"])
+        let newProduct = product.copy(attributes: [attributes], variations: [1])
+
+        let receivedReplaceProductAction: Bool = waitFor { promise in
+            mockStores.whenReceivingAction(ofType: ProductAction.self) { action in
+                switch action {
+                case .replaceProductLocally:
+                    promise(true)
+                default:
+                    promise(false)
+                }
+            }
+            viewModel.updateProductVariations(from: newProduct)
+        }
+
+        // Then
+        XCTAssertTrue(receivedReplaceProductAction)
+    }
 }
 
 private extension ProductFormViewModelTests {
-    func createViewModel(product: Product, formType: ProductFormType) -> ProductFormViewModel {
+    func createViewModel(product: Product, formType: ProductFormType, stores: StoresManager = ServiceLocator.stores) -> ProductFormViewModel {
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         return ProductFormViewModel(product: model,
                                     formType: formType,
-                                    productImageActionHandler: productImageActionHandler)
+                                    productImageActionHandler: productImageActionHandler,
+                                    stores: stores)
     }
 }

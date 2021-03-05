@@ -24,6 +24,13 @@ final class SettingsViewController: UIViewController {
         return ServiceLocator.stores.sessionManager.defaultAccount?.displayName ?? String()
     }
 
+    /// Main Site's Name
+    ///
+    private var siteName: String {
+        let nameAsString = ServiceLocator.stores.sessionManager.defaultSite?.name as String?
+        return nameAsString ?? String()
+    }
+
     /// Main Site's URL
     ///
     private var siteUrl: String {
@@ -125,38 +132,59 @@ private extension SettingsViewController {
             "Selected Store",
             comment: "My Store > Settings > Selected Store information section. " +
             "This is the heading listed above the information row that displays the store website and their username."
-            ).uppercased()
-        let improveTheAppTitle = NSLocalizedString("Help Improve The App", comment: "My Store > Settings > Privacy settings section").uppercased()
-        let aboutSettingsTitle = NSLocalizedString("About the app", comment: "My Store > Settings > About app section").uppercased()
-        let otherTitle = NSLocalizedString("Other", comment: "My Store > Settings > Other app section").uppercased()
+        ).uppercased()
+        let storeSettingsTitle = NSLocalizedString(
+            "Store Settings",
+            comment: "My Store > Settings > Store Settings section title"
+        ).uppercased()
+        let helpAndFeedbackTitle = NSLocalizedString(
+            "Help & Feedback",
+            comment: "My Store > Settings > Help and Feedback settings section title"
+        ).uppercased()
+        let appSettingsTitle = NSLocalizedString(
+            "App Settings",
+            comment: "My Store > Settings > App (Application) settings section title"
+        ).uppercased()
+        let aboutTheAppTitle = NSLocalizedString(
+            "About the App",
+            comment: "My Store > Settings > About the App (Application) section title"
+        ).uppercased()
+        let otherTitle = NSLocalizedString(
+            "Other",
+            comment: "My Store > Settings > Other app section"
+        ).uppercased()
 
         let storeRows: [Row] = sites.count > 1 ?
             [.selectedStore, .switchStore] : [.selectedStore]
 
+        // Selected Store
         sections = [
-            Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
+            Section(title: selectedStoreTitle, rows: storeRows, footerHeight: UITableView.automaticDimension),
         ]
 
-        /// Iif we are going to show a card reader section we want a minimal section footer height for the support section above it.
+        // Store Settings
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) {
-            sections.append(Section(title: nil, rows: [.support], footerHeight: CGFloat.leastNonzeroMagnitude))
-            sections.append(Section(title: nil, rows: [.cardReaders], footerHeight: UITableView.automaticDimension))
-        } else {
-            sections.append(Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension))
+            sections.append(Section(title: storeSettingsTitle, rows: [.cardReaders], footerHeight: UITableView.automaticDimension))
         }
 
+        // Help & Feedback
         if couldShowBetaFeaturesRow() {
-            sections.append(Section(title: improveTheAppTitle, rows: [.privacy, .betaFeatures, .sendFeedback], footerHeight: UITableView.automaticDimension))
+            sections.append(Section(title: helpAndFeedbackTitle, rows: [.support, .betaFeatures, .sendFeedback], footerHeight: UITableView.automaticDimension))
         } else {
-            sections.append(Section(title: improveTheAppTitle, rows: [.privacy, .sendFeedback], footerHeight: UITableView.automaticDimension))
+            sections.append(Section(title: helpAndFeedbackTitle, rows: [.support, .sendFeedback], footerHeight: UITableView.automaticDimension))
         }
 
-        sections.append(Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension))
+        // App Settings
+        sections.append(Section(title: appSettingsTitle, rows: [.privacy], footerHeight: UITableView.automaticDimension))
 
+        // About the App
+        sections.append(Section(title: aboutTheAppTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension))
+
+        // Other
         #if DEBUG
-        sections.append(Section(title: otherTitle, rows: [.appSettings, .wormholy], footerHeight: CGFloat.leastNonzeroMagnitude))
+        sections.append(Section(title: otherTitle, rows: [.deviceSettings, .wormholy], footerHeight: CGFloat.leastNonzeroMagnitude))
         #else
-        sections.append(Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude))
+        sections.append(Section(title: otherTitle, rows: [.deviceSettings], footerHeight: CGFloat.leastNonzeroMagnitude))
         #endif
 
         sections.append(Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude))
@@ -190,7 +218,7 @@ private extension SettingsViewController {
             configureAbout(cell: cell)
         case let cell as BasicTableViewCell where row == .licenses:
             configureLicenses(cell: cell)
-        case let cell as BasicTableViewCell where row == .appSettings:
+        case let cell as BasicTableViewCell where row == .deviceSettings:
             configureAppSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .wormholy:
             configureWormholy(cell: cell)
@@ -202,7 +230,7 @@ private extension SettingsViewController {
     }
 
     func configureSelectedStore(cell: HeadlineLabelTableViewCell) {
-        cell.update(headline: siteUrl, body: accountName)
+        cell.update(headline: siteName, body: siteUrl)
         cell.selectionStyle = .none
     }
 
@@ -223,7 +251,7 @@ private extension SettingsViewController {
     func configureCardReaders(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Manage card readers", comment: "Navigates to Card Reader management screen")
+        cell.textLabel?.text = NSLocalizedString("Manage Card Reader", comment: "Navigates to Card Reader management screen")
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {
@@ -266,7 +294,7 @@ private extension SettingsViewController {
     func configureWormholy(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Launch Wormholy debug",
+        cell.textLabel?.text = NSLocalizedString("Launch Wormholy Debug",
                                                  comment: "Opens an internal library called Wormholy. Not visible to users.")
     }
 
@@ -387,7 +415,7 @@ private extension SettingsViewController {
         present(surveyNavigation, animated: true, completion: nil)
     }
 
-    func appSettingsWasPressed() {
+    func deviceSettingsWasPressed() {
         guard let targetURL = URL(string: UIApplication.openSettingsURLString) else {
             return
         }
@@ -496,8 +524,8 @@ extension SettingsViewController: UITableViewDelegate {
             aboutWasPressed()
         case .licenses:
             licensesWasPressed()
-        case .appSettings:
-            appSettingsWasPressed()
+        case .deviceSettings:
+            deviceSettingsWasPressed()
         case .wormholy:
             wormholyWasPressed()
         case .logout:
@@ -533,7 +561,7 @@ private enum Row: CaseIterable {
     case sendFeedback
     case about
     case licenses
-    case appSettings
+    case deviceSettings
     case wormholy
 
     var type: UITableViewCell.Type {
@@ -558,7 +586,7 @@ private enum Row: CaseIterable {
             return BasicTableViewCell.self
         case .licenses:
             return BasicTableViewCell.self
-        case .appSettings:
+        case .deviceSettings:
             return BasicTableViewCell.self
         case .wormholy:
             return BasicTableViewCell.self

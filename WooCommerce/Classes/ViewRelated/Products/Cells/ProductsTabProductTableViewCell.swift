@@ -159,7 +159,7 @@ private extension ProductsTabProductTableViewCell {
     }
 
     func configureDetailsLabel() {
-        detailsLabel.numberOfLines = 1
+        detailsLabel.numberOfLines = 0
     }
 
     func configureProductImageView() {

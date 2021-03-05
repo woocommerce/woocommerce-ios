@@ -63,4 +63,8 @@ public enum ProductAction: Action {
     /// Checks whether a Product SKU is valid against other Products in the store.
     ///
     case validateProductSKU(_ sku: String?, siteID: Int64, onCompletion: (Bool) -> Void)
+
+    /// Upserts a product in our local storage
+    ///
+    case replaceProductLocally(product: Product, onCompletion: () -> Void)
 }

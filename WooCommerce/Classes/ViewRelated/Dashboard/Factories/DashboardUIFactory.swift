@@ -5,6 +5,9 @@ import Yosemite
 /// Contains all UI content to show on Dashboard
 ///
 protocol DashboardUI: UIViewController {
+    /// For navigation bar large title workaround.
+    var scrollDelegate: DashboardUIScrollDelegate? { get set }
+
     /// Called when the Dashboard should display syncing error
     var displaySyncingErrorNotice: () -> Void { get set }
 
@@ -15,6 +18,12 @@ protocol DashboardUI: UIViewController {
     ///
     /// - Parameter completion: called when Dashboard data reload finishes
     func reloadData(completion: @escaping () -> Void)
+}
+
+/// Relays the scroll events to a delegate for navigation bar large title workaround.
+protocol DashboardUIScrollDelegate: class {
+    /// Called when a dashboard tab `UIScrollView`'s `scrollViewDidScroll` event is triggered from the user.
+    func dashboardUIScrollViewDidScroll(_ scrollView: UIScrollView)
 }
 
 final class DashboardUIFactory {

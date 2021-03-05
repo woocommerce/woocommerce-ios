@@ -117,9 +117,11 @@ final class CardReaderSettingsViewController: UIViewController {
 
     private func addSearchingAlert() {
         fancyAlert = FancyAlertViewController.makeScanningForCardReadersAlertController(onCancel: viewModel.stopSearch)
-        if fancyAlert != nil {
-            self.present(fancyAlert!, animated: true, completion: nil)
+        guard fancyAlert != nil else {
+            DDLogWarn("Unexpectedly unable to makeScanningForCardReadersAlertController")
+            return
         }
+        self.present(fancyAlert!, animated: true, completion: nil)
     }
 
     private func addFoundReaderModal() {

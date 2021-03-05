@@ -22,7 +22,7 @@ final class LoginTests: XCTestCase {
 
             // Log out
             .openSettingsPane()
-            .verifySelectedStoreDisplays(siteUrl: TestCredentials.siteUrl, displayName: TestCredentials.displayName)
+            .verifySelectedStoreDisplays(storeName: TestCredentials.storeName, siteUrl: TestCredentials.siteUrl)
             .logOut()
 
 
@@ -39,7 +39,7 @@ final class LoginTests: XCTestCase {
 
             // Log out
             .openSettingsPane()
-            .verifySelectedStoreDisplays(siteUrl: TestCredentials.siteUrl, displayName: TestCredentials.displayName)
+            .verifySelectedStoreDisplays(storeName: TestCredentials.storeName, siteUrl: TestCredentials.siteUrl)
             .logOut()
 
         XCTAssert(prologue.isLoaded())

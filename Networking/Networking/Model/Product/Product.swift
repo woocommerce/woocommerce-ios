@@ -109,6 +109,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         return ProductTaxStatus(rawValue: taxStatusKey)
     }
 
+    /// Filtered product attributes available for variations
+    /// (attributes with `variation == true`)
+    ///
     public var attributesForVariations: [ProductAttribute] {
         attributes.filter { $0.variation }
     }

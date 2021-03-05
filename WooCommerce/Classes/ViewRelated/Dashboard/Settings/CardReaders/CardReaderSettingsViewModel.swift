@@ -94,6 +94,7 @@ final class CardReaderSettingsViewModel: ObservableObject {
         foundReadersViewModels = foundReaders.map { CardReaderViewModel($0) }
     }
 
+    /// Views can call this method to start searching for readers.
     func startSearch() {
         activeAlert = .searching
 
@@ -106,6 +107,7 @@ final class CardReaderSettingsViewModel: ObservableObject {
         ServiceLocator.stores.dispatch(action)
     }
 
+    /// Called when a reader has been discovered (with an array of discovered readers).
     private func didDiscoverReaders(cardReaders: [CardReader]) -> Void {
         // TODO - more than one reader? sort in the manner in which we'd like the rows presented
         guard activeAlert != .foundReader else {
@@ -125,21 +127,23 @@ final class CardReaderSettingsViewModel: ObservableObject {
         activeAlert = .foundReader
     }
 
+    /// Views can call this method to stop searching for readers.
     func stopSearch() {
         // TODO dispatch an action to stop searching.
         activeAlert = .none
     }
 
+    /// Views can call this method to connect to a found reader.
     func connect() {
-        // TODO dispatch an action to connect.
         activeAlert = .connecting
 
         let action = CardPresentPaymentAction.connect(reader: foundReaders[0], onCompletion: { [weak self] result in
             switch result {
             case .success(let cardReaders):
                 self?.didConnectToReader(cardReaders: cardReaders)
-            case .failure(_):
-                // TODO failure message
+            case .failure(let error):
+                DDLogWarn(error.localizedDescription)
+                // TODO failure message to the user?
                 self?.activeAlert = .none
             }
         })
@@ -147,11 +151,13 @@ final class CardReaderSettingsViewModel: ObservableObject {
         ServiceLocator.stores.dispatch(action)
     }
 
+    /// Views can call this method to abort connecting to a reader.
     func stopConnect() {
         // TODO dispatch an action to interrupt connecting.
         activeAlert = .none
     }
 
+    /// Views can call this method to disconnect from the connected reader.
     func disconnectAndForget() {
         // TODO dispatch an action to disconnect.
         connectedReader = nil
@@ -159,6 +165,7 @@ final class CardReaderSettingsViewModel: ObservableObject {
         activeAlert = .none
     }
 
+    /// Called when a reader has been connected to.
     private func didConnectToReader(cardReaders: [CardReader]) -> Void {
         activeAlert = .none
         guard cardReaders.count > 0 else {
@@ -170,6 +177,7 @@ final class CardReaderSettingsViewModel: ObservableObject {
         self.connectedReader = cardReaders[0]
     }
 
+    /// Views can call this method to initiate a software update on the connected reader.
     func updateSoftware() {
         // TODO dispatch an action to update software on the connected reader
     }

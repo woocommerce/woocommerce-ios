@@ -229,22 +229,6 @@ private extension ProductsViewController {
             comment: "Title that appears on top of the Product List screen (plural form of the word Product)."
         )
 
-        navigationItem.leftBarButtonItem = {
-            let button = UIBarButtonItem(image: .searchBarButtonItemImage,
-                                         style: .plain,
-                                         target: self,
-                                         action: #selector(displaySearchProducts))
-            button.accessibilityTraits = .button
-            button.accessibilityLabel = NSLocalizedString("Search products", comment: "Search Products")
-            button.accessibilityHint = NSLocalizedString(
-                "Retrieves a list of products that contain a given keyword.",
-                comment: "VoiceOver accessibility hint, informing the user the button can be used to search products."
-            )
-            button.accessibilityIdentifier = "product-search-button"
-
-            return button
-        }()
-
         configureNavigationBarRightButtonItems()
     }
 
@@ -278,6 +262,23 @@ private extension ProductsViewController {
             }()
             rightBarButtonItems.append(buttonItem)
         }
+
+        let searchItem: UIBarButtonItem = {
+            let button = UIBarButtonItem(image: .searchBarButtonItemImage,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(displaySearchProducts))
+            button.accessibilityTraits = .button
+            button.accessibilityLabel = NSLocalizedString("Search products", comment: "Search Products")
+            button.accessibilityHint = NSLocalizedString(
+                "Retrieves a list of products that contain a given keyword.",
+                comment: "VoiceOver accessibility hint, informing the user the button can be used to search products."
+            )
+            button.accessibilityIdentifier = "product-search-button"
+
+            return button
+        }()
+        rightBarButtonItems.append(searchItem)
 
         navigationItem.rightBarButtonItems = rightBarButtonItems
     }

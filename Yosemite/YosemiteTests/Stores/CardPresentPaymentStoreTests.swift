@@ -131,6 +131,68 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    func test_cancel_discovery_action_hits_cancel_in_service() {
+        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
+                                                       storageManager: storageManager,
+                                                       network: network,
+                                                       cardReaderService: mockCardReaderService)
+
+        let action = CardPresentPaymentAction.cancelCardReaderDiscovery { newStatus in
+            //
+        }
+
+        cardPresentStore.onAction(action)
+
+        XCTAssertTrue(mockCardReaderService.didHitCancel)
+    }
+
+    /// We are still not handling errors, so we will need a new test here
+    /// for the case when cancelation fails, which apparently is a thing
+    func test_cancel_discovery_action_publishes_idle_as_new_discovery_status() {
+        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
+                                                       storageManager: storageManager,
+                                                       network: network,
+                                                       cardReaderService: mockCardReaderService)
+
+        let expectation = self.expectation(description: "Cancelling discovery published idle as discoveryStatus")
+
+        let action = CardPresentPaymentAction.cancelCardReaderDiscovery { newStatus in
+            if newStatus == .idle {
+                expectation.fulfill()
+            }
+        }
+
+        cardPresentStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_cancel_discovery_after_start_rdpchanges_discovery_status_to_idle_eventually() {
+        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
+                                                       storageManager: storageManager,
+                                                       network: network,
+                                                       cardReaderService: mockCardReaderService)
+
+        let expectation = self.expectation(description: "Cancelling discovery changes discoveryStatus to idle")
+
+        let startDiscoveryAction = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID) { _ in
+
+        }
+
+        cardPresentStore.onAction(startDiscoveryAction)
+
+        let action = CardPresentPaymentAction.cancelCardReaderDiscovery { newStatus in
+            print("=== hitting cancellation completion")
+            if newStatus == .idle {
+                expectation.fulfill()
+            }
+        }
+
+        cardPresentStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     func test_connect_to_reader_action_updates_returns_provided_reader_on_success() {
         let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
                                                        storageManager: storageManager,

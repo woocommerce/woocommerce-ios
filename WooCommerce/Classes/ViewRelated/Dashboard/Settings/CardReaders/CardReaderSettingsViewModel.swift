@@ -57,20 +57,33 @@ final class CardReaderSettingsViewModel: ObservableObject {
     func startSearch() {
         activeAlert = .searching
 
+
+        /// This sequence is here just to test that discovery can be cancelled
+        /// Dispatching these two actions will be remoed soon
         let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
 
-        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: siteID, onCompletion: { cardReaders in
+        let discoveryAction = CardPresentPaymentAction.startCardReaderDiscovery(siteID: siteID, onCompletion: { cardReaders in
             // TODO. To be implemented
             // Leaving these prints here to help test the PR
-            print("==== new card readers discovered begins ====")
-            print("new readers: ", cardReaders)
-            print("==== new card readers discovered ends   ====")
+            print("==== View model new card readers discovered callback ====")
+            print("View Model  - new readers: ", cardReaders)
+            //print("==== new card readers discovered ends   ====")
         })
 
-        ServiceLocator.stores.dispatch(action)
+        ServiceLocator.stores.dispatch(discoveryAction)
+
+        let discoveryCancellationAction = CardPresentPaymentAction.cancelCardReaderDiscovery { status in
+            // TODO. To be implemented
+            // Leaving these prints here to help test the PR
+            print("===== View model - cancellation callback ====")
+            print("View model. new status received ", status)
+            //print("===== View model - cancellation ends ====")
+        }
+
+        ServiceLocator.stores.dispatch(discoveryCancellationAction)
 
         // TODO Remove - simulates searching with a timer
-        timer = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(dummyFoundReader), userInfo: nil, repeats: false)
+        //timer = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(dummyFoundReader), userInfo: nil, repeats: false)
     }
 
     // TODO Remove

@@ -37,7 +37,7 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public var discoveryStatus: AnyPublisher<CardReaderServiceDiscoveryStatus, Never> {
-        discoveryStatusSubject.eraseToAnyPublisher()
+        discoveryStatusSubject.removeDuplicates().eraseToAnyPublisher()
     }
 
     /// The Publisher that emits the payment status
@@ -68,20 +68,46 @@ extension StripeCardReaderService: CardReaderService {
             simulated: true
         )
 
-        // Enough code to pass a test
-        discoveryCancellable = Terminal.shared.discoverReaders(config, delegate: self, completion: { error in
-            if let error = error {
-                print("discoverReaders failed: \(error)")
-            } else {
-                print("discoverReaders succeeded")
+        print("|||| Service. calling start in service ", self)
+        switchStatusToDiscovering()
+
+        /**
+         * https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)discoverReaders:delegate:completion:
+         *
+         *Note that if discoverReaders is canceled, the completion block will be called with nil (rather than an SCPErrorCanceled error).
+         */
+        discoveryCancellable = Terminal.shared.discoverReaders(config, delegate: self, completion: { [weak self] error in
+            guard let error = error else {
+                self?.switchStatusToIdle()
+                return
             }
+
+            self?.internalError(error)
         })
     }
 
     public func cancelDiscovery() {
-        // Bouncing to a private method just in case we need to do something else
-        // If we realize we don't, there is no point in having two methods doing the same
-        cancelReaderDiscovery()
+        /**
+         *https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)discoverReaders:delegate:completion:
+         *
+         * The discovery process will stop on its own when the terminal
+         * successfully connects to a reader, if the command is
+         * canceled, or if a discovery error occurs.
+         * So it does not hurt to check that we are actually in
+         * discovering mode before attempting a cancellation
+         *
+         */
+        guard discoveryStatusSubject.value == .discovering else {
+            return
+        }
+        print("||||||| Service calling cancel in service", self)
+        discoveryCancellable?.cancel { [weak self] error in
+            guard let error = error else {
+                self?.switchStatusToIdle()
+                return
+            }
+            self?.internalError(error)
+        }
     }
 
     public func disconnect(_ reader: CardReader) -> Future<Void, Error> {
@@ -205,6 +231,26 @@ private extension StripeCardReaderService {
 
     func resetDiscoveredReadersSubject() {
         discoveredReadersSubject.send([])
+    }
+}
+
+
+// MARK: - Discovery status
+private extension StripeCardReaderService {
+    func switchStatusToIdle() {
+        updateDiscoveryStatus(to: .idle)
+    }
+
+    func switchStatusToDiscovering() {
+        updateDiscoveryStatus(to: .discovering)
+    }
+
+    func switchStatusToFault() {
+        updateDiscoveryStatus(to: .fault)
+    }
+
+    func updateDiscoveryStatus(to newStatus: CardReaderServiceDiscoveryStatus) {
+        discoveryStatusSubject.send(newStatus)
     }
 }
 

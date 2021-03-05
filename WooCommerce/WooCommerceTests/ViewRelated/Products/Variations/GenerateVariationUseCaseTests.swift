@@ -72,7 +72,7 @@ private extension GenerateVariationUseCaseTests {
     func sampleAttribute(attributeID: Int64 = 1234, name: String, options: [String] = []) -> ProductAttribute {
         ProductAttribute(siteID: 123,
                          attributeID: attributeID,
-                         name: name ,
+                         name: name,
                          position: 0,
                          visible: true,
                          variation: true,
@@ -82,7 +82,7 @@ private extension GenerateVariationUseCaseTests {
     func sampleNonVariationAttribute(attributeID: Int64 = 9999, name: String, options: [String] = []) -> ProductAttribute {
         ProductAttribute(siteID: 123,
                          attributeID: attributeID,
-                         name: name ,
+                         name: name,
                          position: 0,
                          visible: true,
                          variation: false,

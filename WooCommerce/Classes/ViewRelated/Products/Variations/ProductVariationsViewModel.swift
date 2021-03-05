@@ -26,12 +26,12 @@ extension ProductVariationsViewModel {
     /// Defines the empty state screen visibility
     ///
     func shouldShowEmptyState(for product: Product) -> Bool {
-        product.variations.isEmpty || product.attributes.isEmpty
+        product.variations.isEmpty || product.attributesForVariations.isEmpty
     }
 
     /// Defines if the More Options button should be shown
     ///
     func shouldShowMoreButton(for product: Product) -> Bool {
-        product.variations.isNotEmpty && product.attributes.isNotEmpty
+        product.variations.isNotEmpty && product.attributesForVariations.isNotEmpty
     }
 }

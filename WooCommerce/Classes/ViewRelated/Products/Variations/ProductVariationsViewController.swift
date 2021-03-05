@@ -107,7 +107,7 @@ final class ProductVariationsViewController: UIViewController {
     }
 
     private var allAttributes: [ProductAttribute] {
-        product.attributes
+        product.attributesForVariations
     }
 
     private var parentProductSKU: String? {
@@ -500,7 +500,7 @@ private extension ProductVariationsViewController {
         // Refresh variations because updating an attribute updates the product variations.
         syncingCoordinator.synchronizeFirstPage()
 
-        let viewControllerToShow = product.attributes.isNotEmpty ? editAttributesViewController : self
+        let viewControllerToShow = allAttributes.isNotEmpty ? editAttributesViewController : self
         navigationController?.popToViewController(viewControllerToShow, animated: true)
     }
 }

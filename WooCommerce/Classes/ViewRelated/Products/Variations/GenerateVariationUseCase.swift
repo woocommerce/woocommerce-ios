@@ -58,7 +58,7 @@ final class GenerateVariationUseCase {
     /// Returns a `CreateProductVariation` type with no price and no options selected for any of it's attributes.
     ///
     private func createVariationParameter() -> CreateProductVariation {
-        let attributes = product.attributes.map { ProductVariationAttribute(id: $0.attributeID, name: $0.name, option: "") }
+        let attributes = product.attributesForVariations.map { ProductVariationAttribute(id: $0.attributeID, name: $0.name, option: "") }
         return CreateProductVariation(regularPrice: "", attributes: attributes)
     }
 }

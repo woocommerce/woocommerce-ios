@@ -1,12 +1,13 @@
 import UIKit
 import Combine
+import Yosemite
 
 final class CardReaderSettingsViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
 
     private var subscriptions = Set<AnyCancellable>()
-    private var viewmodel = CardReaderSettingsViewModel()
+    private var viewModel = CardReaderSettingsViewModel()
     private var alert: UIAlertController?
 
     private lazy var connectView = CardReaderSettingsConnectView()
@@ -18,30 +19,30 @@ final class CardReaderSettingsViewController: UIViewController {
         setTableSource()
         setTableFooter()
 
-        self.viewmodel = CardReaderSettingsViewModel()
-        viewmodel.$activeView
+        self.viewModel = CardReaderSettingsViewModel()
+        viewModel.$activeView
             .receive(on: DispatchQueue.main)
             .sink { [weak self] activeView in
                 self?.setTableSource()
             }
             .store(in: &subscriptions)
-        viewmodel.$activeAlert
+        viewModel.$activeAlert
             .receive(on: DispatchQueue.main)
             .sink { [weak self] activeAlert in
                 self?.setAlert()
             }
             .store(in: &subscriptions)
-        viewmodel.$connectedReader
+        viewModel.$connectedReaderViewModel
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] connectedReader in
-                self?.connectedView.connectedReader = connectedReader
+            .sink { [weak self] connectedReaderViewModel in
+                self?.connectedView.viewModel = connectedReaderViewModel
                 self?.tableView.reloadData()
             }
             .store(in: &subscriptions)
     }
 
     private func setTableSource() {
-        switch viewmodel.activeView {
+        switch viewModel.activeView {
         case .connectYourReader:
             addCleanSlateView()
         case .connectedToReader:
@@ -58,7 +59,7 @@ final class CardReaderSettingsViewController: UIViewController {
 
     private func setAlert() {
         alert?.dismiss(animated: true, completion: nil)
-        switch self.viewmodel.activeAlert {
+        switch viewModel.activeAlert {
         case .none:
             noop()
         case .searching:
@@ -80,7 +81,7 @@ final class CardReaderSettingsViewController: UIViewController {
 
     private func addCleanSlateView() {
         connectView.onPressedConnect = {
-            self.viewmodel.startSearch()
+            self.viewModel.startSearch()
         }
 
         for rowType in connectView.rowTypes() {
@@ -94,14 +95,14 @@ final class CardReaderSettingsViewController: UIViewController {
 
     private func addConnectedView() {
         connectedView.onPressedDisconnect = {
-            self.viewmodel.disconnectAndForget()
+            self.viewModel.disconnectAndForget()
         }
 
         for rowType in connectedView.rowTypes() {
             tableView.registerNib(for: rowType)
         }
 
-        connectedView.connectedReader = viewmodel.connectedReader
+        connectedView.viewModel = viewModel.connectedReaderViewModel
         tableView.dataSource = connectedView
         tableView.delegate = connectedView
         tableView.reloadData()
@@ -112,14 +113,14 @@ final class CardReaderSettingsViewController: UIViewController {
     }
 
     private func addSearchingModal() {
-        // TODO Use FancyAlert instead
+        // TODO Use FancyAlert instead - all these strings will be moved there
         alert = UIAlertController(
             title: "Scanning for readers",
             message: "Press the power button of your reader until you see a flashing blue light",
             preferredStyle: UIAlertController.Style.alert
         )
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { UIAlertAction in
-            self.viewmodel.stopSearch()
+            self.viewModel.stopSearch()
         }
         alert?.addAction(cancelAction)
         if alert != nil {
@@ -128,19 +129,19 @@ final class CardReaderSettingsViewController: UIViewController {
     }
 
     private func addFoundReaderModal() {
-        // TODO Use FancyAlert instead
-        let foundReaderName = self.viewmodel.foundReader?.serialNumber ?? ""
+        // TODO Use FancyAlert instead - all these strings will be moved there
+        let foundReaderName = viewModel.foundReadersViewModels[0].displayName
         alert = UIAlertController(
             title: "Found reader",
             message: "Do you want to connect to " + foundReaderName + "?",
             preferredStyle: UIAlertController.Style.alert
         )
         let okAction = UIAlertAction(title: "Connect to Reader", style: .default) { UIAlertAction in
-            self.viewmodel.connect()
+            self.viewModel.connect()
         }
         alert?.addAction(okAction)
         let cancelAction = UIAlertAction(title: "Keep Searching", style: .cancel) { UIAlertAction in
-            self.viewmodel.startSearch()
+            self.viewModel.startSearch()
         }
         alert?.addAction(cancelAction)
         if alert != nil {
@@ -156,7 +157,7 @@ final class CardReaderSettingsViewController: UIViewController {
             preferredStyle: UIAlertController.Style.alert
         )
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { UIAlertAction in
-            self.viewmodel.stopConnect()
+            self.viewModel.stopConnect()
         }
         alert?.addAction(cancelAction)
         if alert != nil {

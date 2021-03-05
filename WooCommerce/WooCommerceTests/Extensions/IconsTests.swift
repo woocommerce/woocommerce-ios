@@ -400,4 +400,8 @@ final class IconsTests: XCTestCase {
     func test_emptyBoxImage_is_not_nil() {
         XCTAssertNotNil(UIImage.emptyBoxImage)
     }
+
+    func test_cardReaderScanningImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.cardReaderScanningImage)
+    }
 }

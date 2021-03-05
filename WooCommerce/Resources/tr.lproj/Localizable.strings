@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-02-24 11:32:06+0000 */
+/* Translation-Revision-Date: 2021-03-04 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -182,7 +182,7 @@
 "Add File" = "Dosya ekle";
 
 /* Action to add new attribute on the Product Attributes screen */
-"Add New Attribute" = "Add New Attribute";
+"Add New Attribute" = "Yeni Öznitelik Ekle";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Fotoğraf Ekle";
@@ -256,7 +256,7 @@
 "Address" = "Adres";
 
 /* Text field address 2 in Shipping Label Address Validation */
-"Address 2" = "Address 2";
+"Address 2" = "Adres 2";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Bir siparişe takip ekler.";
@@ -315,7 +315,7 @@
 
 /* Format of a product variation attribute description where the attribute is set to any value.
    Product variation attribute description where the attribute is set to any value. */
-"Any %1$@" = "Any %1$@";
+"Any %1$@" = "Herhangi Bir %1$@";
 
 /* Message shown when Apple authentication fails. */
 "Apple authentication failed.\nPlease make sure you are signed in to iCloud with an Apple ID that uses two-factor authentication." = "Apple doğrulaması başarısız.\nLütfen iCloud'a iki faktörlü kimlik doğrulama kullanan bir Apple Kimliği ile giriş yaptığınızdan emin olun.";
@@ -447,7 +447,7 @@
 "Cannot upload image" = "Resim yüklenemiyor";
 
 /* Card reader settings screen title */
-"Card Readers" = "Card Readers";
+"Card Readers" = "Kart Okuyucular";
 
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "Kargo şirketi adı";
@@ -473,7 +473,7 @@
 "Changing the product type will modify some of the product data" = "Ürün türünün değiştirilmesi bazı ürün verilerini değiştirir";
 
 /* Body of the alert when a user is changing the product type */
-"Changing the product type will modify some of the product data and delete all your attributes and variations" = "Changing the product type will modify some of the product data and delete all your attributes and variations";
+"Changing the product type will modify some of the product data and delete all your attributes and variations" = "Ürün türünü değiştirdiğinizde ürün verilerinin bir kısmı değişir ve tüm özellikleriniz ile varyasyonlarınız silinir.";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Girilen URL'nin geçerli olup olmadığını kontrol edin";
@@ -503,7 +503,7 @@
 "Collect Information" = "Bilgi topla";
 
 /* Text field company in Shipping Label Address Validation */
-"Company" = "Company";
+"Company" = "Firma";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "Müşteriye yeni bir e-posta mesajı oluşturur.";
@@ -610,7 +610,7 @@
 
 /* Create Shipping Label form navigation title
    Text on the button that starts shipping label creation */
-"Create Shipping Label" = "Create Shipping Label";
+"Create Shipping Label" = "Gönderi Etiketi Oluşturun";
 
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "Ürün oluşturma";
@@ -661,7 +661,7 @@
 "Describe your product" = "Ürününü tanımla";
 
 /* The default placeholder text for the of the Aztec editor screen. */
-"Describe your product to your future customers..." = "Describe your product to your future customers...";
+"Describe your product to your future customers..." = "Ürününüzü gelecekteki müşterilerinize anlatın...";
 
 /* The navigation bar title of the Aztec editor screen.
    Title in the Product description row on Product form screen when the description is non-empty. */
@@ -771,7 +771,7 @@
 "Download limit" = "Download limit";
 
 /* Display label for simple downloadable product type. */
-"Downloadable" = "Downloadable";
+"Downloadable" = "İndirilebilir";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "İndirilebilir Dosyalar";
@@ -799,7 +799,7 @@
 
 /* Action to edit the attributes and options used for variations
    Navigation title for the Product Attributes screen */
-"Edit Attributes" = "Edit Attributes";
+"Edit Attributes" = "Özellikleri Düzenle";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Ürünleri Düzenle";
@@ -995,7 +995,7 @@
 "Gain insights into how products are performing on your store" = "Ürünlerin mağazanızdaki performansına dair içgörüler edinin";
 
 /* Title for the progress screen while generating a variation */
-"Generating Variation" = "Generating Variation";
+"Generating Variation" = "Varyasyon Oluşturma";
 
 /* View title for initial auth views. */
 "Get Started" = "Başlangıç";
@@ -1340,7 +1340,7 @@
 "Make your products easier to find with tags" = "Etiket kullanarak ürünlerinizin bulunmasını kolaylaştırın";
 
 /* Navigates to Card Reader management screen */
-"Manage card readers" = "Manage card readers";
+"Manage card readers" = "Kart okuyucuları yönet";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Siparişleri yönetin, satışları takip edin ve gerçek zamanlı uyarılarla mağaza etkinliğini izleyin.";
@@ -1448,7 +1448,7 @@
 "Net Payment" = "Net ödeme";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
-"New Attribute Name" = "New Attribute Name";
+"New Attribute Name" = "Yeni Özellik Adı";
 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "Yeni özellikler mevcut.";
@@ -1690,7 +1690,7 @@
 "Pending review" = "İnceleme bekliyor";
 
 /* Text field phone in Shipping Label Address Validation */
-"Phone" = "Phone";
+"Phone" = "Telefon";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Telefon numarası: %@";
@@ -1757,7 +1757,7 @@
 "Please wait" = "Lütfen bekleyin";
 
 /* Instructions for the progress screen while generating a variation */
-"Please wait while we create the new variation" = "Please wait while we create the new variation";
+"Please wait while we create the new variation" = "Yeni varyasyon oluşturulurken lütfen bekleyin";
 
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Bu ürün mağazanızda yayımlanırken lütfen bekleyin";
@@ -1775,7 +1775,7 @@
 "Please wait..." = "Lütfen bekleyin...";
 
 /* Text field postcode in Shipping Label Address Validation */
-"Postcode" = "Postcode";
+"Postcode" = "Posta Kodu";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Automattic tarafından desteklenmektedir";
@@ -2024,7 +2024,7 @@
 "Request a Refund" = "Geri Ödeme İste";
 
 /* Text field placeholder in Shipping Label Address Validation */
-"Required" = "Required";
+"Required" = "Gerekli";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Etkinlik Günlüğü’nü Sıfırla";
@@ -2560,7 +2560,7 @@
 "Taxes" = "Vergiler";
 
 /* The placeholder text for the of the Aztec editor screen. */
-"Tell us more about %1$@..." = "Tell us more about %1$@...";
+"Tell us more about %1$@..." = "Bize %1$@ ile ilgili daha fazla bilgi verin...";
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Hizmet Koşulları";
@@ -2606,7 +2606,7 @@
 "The URL is missing a valid host." = "URL'de geçerli ana bilgisayar yok.";
 
 /* Error title when trying to update or create an attribute remotely. */
-"The attribute couldn't be saved." = "The attribute couldn't be saved.";
+"The attribute couldn't be saved." = "Özellik kaydedilemedi.";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Bu sunucunun sertifikası geçersiz. “%@” taklidi yapan bir siteye bağlanıyor olabilirsiniz ki bu kişisel bilgilerinizin ele geçirilebilmesi açısından büyük bir risktir.\n\nSertifikaya güvenip devam etmek istiyor musunuz?";
@@ -2654,7 +2654,7 @@
 "The stock quantity for this product. Editable." = "Bu ürünün stok miktarı Düzenlenebilir.";
 
 /* Error title when failing to generate a variation. */
-"The variation couldn't be generated." = "The variation couldn't be generated.";
+"The variation couldn't be generated." = "Varyasyon oluşturulamadı.";
 
 /* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
 "The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "Web sitesi bir WordPress sitesi değil. Siteyle bağlantı kurabilmemiz için sitede WordPress yüklü olmalıdır.";
@@ -2740,7 +2740,7 @@
 "To" = "Şuraya:";
 
 /* Footer of text field section in Add Attribute screen */
-"To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first";
+"To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "Bir varyasyon oluşturmak için önce özelliklerini (yani \"Renk\", \"Boyut\") ayarlamanız gerekir";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Yeni WordPress.com hesabınızı oluşturmak için lütfen e-posta adresinizi girin.";
@@ -2807,7 +2807,7 @@
 "Trust" = "Güven";
 
 /* Button to trigger connection to another account in store picker */
-"Try With Another Account" = "Try With Another Account";
+"Try With Another Account" = "Başka Bir Hesapla Deneyin";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Başka bir e-posta ile deneyin";
@@ -2957,7 +2957,7 @@
 "Upsells" = "Yukarı satışlar";
 
 /* Action to use the address in Shipping Label Validation screen as entered */
-"Use Address as Entered" = "Use Address as Entered";
+"Use Address as Entered" = "Adresi Girildiği Gibi Kullan";
 
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-02-24 11:32:06+0000 */
+/* Translation-Revision-Date: 2021-03-04 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -182,7 +182,7 @@
 "Add File" = "Tambahkan File";
 
 /* Action to add new attribute on the Product Attributes screen */
-"Add New Attribute" = "Add New Attribute";
+"Add New Attribute" = "Tambahkan Atribut Baru";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Tambahkan foto";
@@ -256,7 +256,7 @@
 "Address" = "Alamat";
 
 /* Text field address 2 in Shipping Label Address Validation */
-"Address 2" = "Address 2";
+"Address 2" = "Alamat 2";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Menambahkan pelacakan ke pesanan.";
@@ -315,7 +315,7 @@
 
 /* Format of a product variation attribute description where the attribute is set to any value.
    Product variation attribute description where the attribute is set to any value. */
-"Any %1$@" = "Any %1$@";
+"Any %1$@" = "Setiap %1$@";
 
 /* Message shown when Apple authentication fails. */
 "Apple authentication failed.\nPlease make sure you are signed in to iCloud with an Apple ID that uses two-factor authentication." = "Autentikasi Apple gagal.\nPastikan Anda masuk ke iCloud dengan ID Apple yang menggunakan autentikasi dua faktor.";
@@ -447,7 +447,7 @@
 "Cannot upload image" = "Tidak dapat mengunggah gambar";
 
 /* Card reader settings screen title */
-"Card Readers" = "Card Readers";
+"Card Readers" = "Pembaca Kartu";
 
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "Nama operator";
@@ -473,7 +473,7 @@
 "Changing the product type will modify some of the product data" = "Mengubah jenis produk akan mengubah beberapa data produk";
 
 /* Body of the alert when a user is changing the product type */
-"Changing the product type will modify some of the product data and delete all your attributes and variations" = "Changing the product type will modify some of the product data and delete all your attributes and variations";
+"Changing the product type will modify some of the product data and delete all your attributes and variations" = "Jika jenis produk diubah, beberapa data produk akan ikut berubah dan semua atribut serta variasi akan dihapus.";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Pastikan URL yang dimasukkan sudah valid";
@@ -503,7 +503,7 @@
 "Collect Information" = "Kumpulkan informasi";
 
 /* Text field company in Shipping Label Address Validation */
-"Company" = "Company";
+"Company" = "Perusahaan";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "Menulis pesan email baru kepada pelanggan tertagih.";
@@ -610,7 +610,7 @@
 
 /* Create Shipping Label form navigation title
    Text on the button that starts shipping label creation */
-"Create Shipping Label" = "Create Shipping Label";
+"Create Shipping Label" = "Buat Label Pengiriman";
 
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "Membuat produk";
@@ -661,7 +661,7 @@
 "Describe your product" = "Deskripsikan produk Anda";
 
 /* The default placeholder text for the of the Aztec editor screen. */
-"Describe your product to your future customers..." = "Describe your product to your future customers...";
+"Describe your product to your future customers..." = "Jelaskan produk Anda ke calon pelanggan...";
 
 /* The navigation bar title of the Aztec editor screen.
    Title in the Product description row on Product form screen when the description is non-empty. */
@@ -771,7 +771,7 @@
 "Download limit" = "Download limit";
 
 /* Display label for simple downloadable product type. */
-"Downloadable" = "Downloadable";
+"Downloadable" = "Dapat diunduh";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "File Dapat Diunduh";
@@ -799,7 +799,7 @@
 
 /* Action to edit the attributes and options used for variations
    Navigation title for the Product Attributes screen */
-"Edit Attributes" = "Edit Attributes";
+"Edit Attributes" = "Sunting Atribut";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Sunting Produk";
@@ -995,7 +995,7 @@
 "Gain insights into how products are performing on your store" = "Dapatkan informasi mengenai performa produk di toko Anda";
 
 /* Title for the progress screen while generating a variation */
-"Generating Variation" = "Generating Variation";
+"Generating Variation" = "Membuat Variasi";
 
 /* View title for initial auth views. */
 "Get Started" = "Memulai";
@@ -1340,7 +1340,7 @@
 "Make your products easier to find with tags" = "Buat produk Anda lebih mudah ditemukan dengan tag";
 
 /* Navigates to Card Reader management screen */
-"Manage card readers" = "Manage card readers";
+"Manage card readers" = "Kelola pembaca kartu";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Kelola pesanan, lacak penjualan, dan pantau aktivitas toko dengan pemberitahuan real-time.";
@@ -1448,7 +1448,7 @@
 "Net Payment" = "Pembayaran Bersih";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
-"New Attribute Name" = "New Attribute Name";
+"New Attribute Name" = "Nama Atribut Baru";
 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "Tersedia fitur baru!";
@@ -1690,7 +1690,7 @@
 "Pending review" = "Menunggu peninjauan";
 
 /* Text field phone in Shipping Label Address Validation */
-"Phone" = "Phone";
+"Phone" = "Telepon";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Nomor telepon: %@";
@@ -1757,7 +1757,7 @@
 "Please wait" = "Harap tunggu…";
 
 /* Instructions for the progress screen while generating a variation */
-"Please wait while we create the new variation" = "Please wait while we create the new variation";
+"Please wait while we create the new variation" = "Harap tunggu sembari kami membuat variasi baru";
 
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Harap tunggu sementara kami memublikasikan produk ini ke toko Anda";
@@ -1775,7 +1775,7 @@
 "Please wait..." = "Harap tunggu...";
 
 /* Text field postcode in Shipping Label Address Validation */
-"Postcode" = "Postcode";
+"Postcode" = "Kode pos";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Didukung oleh Automattic";
@@ -2024,7 +2024,7 @@
 "Request a Refund" = "Minta Pengembalian Dana";
 
 /* Text field placeholder in Shipping Label Address Validation */
-"Required" = "Required";
+"Required" = "Wajib";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Reset Log Aktivitas";
@@ -2560,7 +2560,7 @@
 "Taxes" = "Pajak";
 
 /* The placeholder text for the of the Aztec editor screen. */
-"Tell us more about %1$@..." = "Tell us more about %1$@...";
+"Tell us more about %1$@..." = "Beri tahu kami selengkapnya tentang %1$@...";
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Ketentuan Layanan";
@@ -2606,7 +2606,7 @@
 "The URL is missing a valid host." = "URL tidak menemukan host yang valid.";
 
 /* Error title when trying to update or create an attribute remotely. */
-"The attribute couldn't be saved." = "The attribute couldn't be saved.";
+"The attribute couldn't be saved." = "Atribut tidak dapat disimpan.";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Sertifikat untuk server ini tidak sah. Anda mungkin tersambung dengan server yang menyamar sebagai “%@” yang bisa membuat informasi rahasia Anda beresiko,\n\nApakah Anda ingin mempercayai sertifikat itu?";
@@ -2654,7 +2654,7 @@
 "The stock quantity for this product. Editable." = "Kuantitas stok untuk produk ini. Dapat disunting.";
 
 /* Error title when failing to generate a variation. */
-"The variation couldn't be generated." = "The variation couldn't be generated.";
+"The variation couldn't be generated." = "Variasi tidak dapat dibuat.";
 
 /* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
 "The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "Situs web ini bukan situs WordPress. Agar kami dapat terhubung ke situs tersebut, situs harus menggunakan WordPress.";
@@ -2740,7 +2740,7 @@
 "To" = "ke";
 
 /* Footer of text field section in Add Attribute screen */
-"To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first";
+"To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "Untuk membuat variasi, Anda perlu mengatur atributnya (yaitu \"Warna\", \"Ukuran\") terlebih dahulu";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Untuk membuat akun WordPress.com Anda yang baru, masukkan alamat email Anda.";
@@ -2807,7 +2807,7 @@
 "Trust" = "Percayai";
 
 /* Button to trigger connection to another account in store picker */
-"Try With Another Account" = "Try With Another Account";
+"Try With Another Account" = "Coba dengan Akun Lain";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Coba dengan email lain";
@@ -2957,7 +2957,7 @@
 "Upsells" = "Upsell";
 
 /* Action to use the address in Shipping Label Validation screen as entered */
-"Use Address as Entered" = "Use Address as Entered";
+"Use Address as Entered" = "Gunakan Alamat yang Dimasukkan";
 
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */

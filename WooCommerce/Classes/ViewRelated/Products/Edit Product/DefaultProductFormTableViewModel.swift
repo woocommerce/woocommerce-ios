@@ -378,7 +378,7 @@ private extension DefaultProductFormTableViewModel {
 
         switch product.variations.count {
         case 1...:
-            details = product.attributes
+            details = product.attributesForVariations
                 .map({ String.localizedStringWithFormat(format, $0.name, $0.options.count) })
                 .joined(separator: "\n")
         default:

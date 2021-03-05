@@ -51,6 +51,7 @@ private extension ShippingLabelFormViewController {
         registerTableViewCells()
 
         tableView.dataSource = self
+        tableView.delegate = self
     }
 
     func registerTableViewCells() {
@@ -85,6 +86,23 @@ extension ShippingLabelFormViewController: UITableViewDataSource {
         configure(cell, for: row, at: indexPath)
 
         return cell
+    }
+}
+
+// MARK: - UITableViewDelegate Conformance
+//
+extension ShippingLabelFormViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let row = viewModel.state.sections[indexPath.section].rows[indexPath.row]
+        switch row {
+        case Row(type: .shipFrom, dataState: .validated, displayMode: .editable):
+            displayEditAddressFormVC(address: viewModel.originAddress, type: .origin)
+        case Row(type: .shipTo, dataState: .validated, displayMode: .editable):
+            displayEditAddressFormVC(address: viewModel.destinationAddress, type: .destination)
+        default:
+            break
+        }
     }
 }
 
@@ -126,7 +144,7 @@ private extension ShippingLabelFormViewController {
                     self.viewModel.handleOriginAddressValueChanges(address: shippingLabelAddress,
                                                                    validated: true)
                 case .suggestedAddress:
-                    self.displaySuggestedAddressVC(address: shippingLabelAddress, suggestedAddress: response?.address)
+                    self.displaySuggestedAddressVC(address: shippingLabelAddress, suggestedAddress: response?.address, type: .origin)
                 default:
                     self.displayEditAddressFormVC(address: shippingLabelAddress, type: .origin)
                 }
@@ -153,7 +171,7 @@ private extension ShippingLabelFormViewController {
                     self.viewModel.handleDestinationAddressValueChanges(address: shippingLabelAddress,
                                                                    validated: true)
                 case .suggestedAddress:
-                    self.displaySuggestedAddressVC(address: shippingLabelAddress, suggestedAddress: response?.address)
+                    self.displaySuggestedAddressVC(address: shippingLabelAddress, suggestedAddress: response?.address, type: .destination)
                 default:
                     self.displayEditAddressFormVC(address: shippingLabelAddress, type: .destination)
                 }
@@ -199,25 +217,38 @@ private extension ShippingLabelFormViewController {
 //
 private extension ShippingLabelFormViewController {
     func displayEditAddressFormVC(address: ShippingLabelAddress?, type: ShipType) {
-        let shippingAddressVC = ShippingLabelAddressFormViewController(siteID: self.viewModel.siteID,
+        let shippingAddressVC = ShippingLabelAddressFormViewController(siteID: viewModel.siteID,
                                                                        type: type,
                                                                        address: address,
                                                                        completion: { [weak self] (newShippingLabelAddress) in
                                                                         guard let self = self else { return }
-                self.viewModel.handleDestinationAddressValueChanges(address: newShippingLabelAddress, validated: true)
-
+                                        switch type {
+                                        case .origin:
+                                            self.viewModel.handleOriginAddressValueChanges(address: newShippingLabelAddress,
+                                                                                           validated: true)
+                                        case .destination:
+                                            self.viewModel.handleDestinationAddressValueChanges(address: newShippingLabelAddress,
+                                                                                                validated: true)
+                                        }
                                                                        })
-        self.navigationController?.pushViewController(shippingAddressVC, animated: true)
+        navigationController?.pushViewController(shippingAddressVC, animated: true)
     }
 
-    func displaySuggestedAddressVC(address: ShippingLabelAddress?, suggestedAddress: ShippingLabelAddress?) {
-        let vc = ShippingLabelSuggestedAddressViewController(type: .origin,
+    func displaySuggestedAddressVC(address: ShippingLabelAddress?, suggestedAddress: ShippingLabelAddress?, type: ShipType) {
+        let vc = ShippingLabelSuggestedAddressViewController(siteID: viewModel.siteID,
+                                                             type: type,
                                                              address: address,
                                                              suggestedAddress: suggestedAddress) { [weak self] (newShippingLabelAddress) in
-            self?.viewModel.handleOriginAddressValueChanges(address: newShippingLabelAddress,
-                                                            validated: true)
+            switch type {
+            case .origin:
+                self?.viewModel.handleOriginAddressValueChanges(address: newShippingLabelAddress,
+                                                                validated: true)
+            case .destination:
+                self?.viewModel.handleDestinationAddressValueChanges(address: newShippingLabelAddress,
+                                                                     validated: true)
+            }
         }
-        self.navigationController?.pushViewController(vc, animated: true)
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 

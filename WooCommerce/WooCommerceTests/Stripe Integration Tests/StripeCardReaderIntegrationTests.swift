@@ -32,7 +32,7 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
             }
         }.store(in: &cancellables)
 
-        readerService.start()
+        readerService.start(MockTokenProvider())
         wait(for: [receivedReaders], timeout: Constants.expectationTimeout)
     }
 
@@ -68,7 +68,7 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
             discoveredReaders.fulfill()
         }.store(in: &cancellables)
 
-        readerService.start()
+        readerService.start(MockTokenProvider())
         wait(for: [discoveredReaders], timeout: Constants.expectationTimeout)
     }
 
@@ -105,8 +105,15 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
             }
         }.store(in: &self.cancellables)
 
-        readerService.start()
+        readerService.start(MockTokenProvider())
         wait(for: [discoveredReaders, connectedToReader, connectedreaderIsPublished], timeout: Constants.expectationTimeout)
     }
 
+}
+
+
+private final class MockTokenProvider: CardReaderConfigProvider {
+    func fetchToken(completion: @escaping(String?, Error?) -> Void) {
+        completion("a token", nil)
+    }
 }

@@ -381,6 +381,8 @@
 		CEF88DAB233E911A00BED485 /* order-fully-refunded.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF88DAA233E911A00BED485 /* order-fully-refunded.json */; };
 		CEF88DAD233E95B000BED485 /* OrderRefundCondensed.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF88DAC233E95B000BED485 /* OrderRefundCondensed.swift */; };
 		CEF88DAF233E9F7E00BED485 /* order-details-partially-refunded.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF88DAE233E9F7D00BED485 /* order-details-partially-refunded.json */; };
+		D800DA0A25EFEB9C001E13CE /* WCPayRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D800DA0925EFEB9C001E13CE /* WCPayRemoteTests.swift */; };
+		D800DA0E25EFEC21001E13CE /* wcpay-connection-token.json in Resources */ = {isa = PBXBuildFile; fileRef = D800DA0D25EFEC21001E13CE /* wcpay-connection-token.json */; };
 		D823D9032237450A00C90817 /* shipment_tracking_new.json in Resources */ = {isa = PBXBuildFile; fileRef = D823D9022237450A00C90817 /* shipment_tracking_new.json */; };
 		D823D905223746CE00C90817 /* NewShipmentTrackingMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D823D904223746CE00C90817 /* NewShipmentTrackingMapper.swift */; };
 		D823D90722376B4800C90817 /* shipment_tracking_new_custom_provider.json in Resources */ = {isa = PBXBuildFile; fileRef = D823D90622376B4800C90817 /* shipment_tracking_new_custom_provider.json */; };
@@ -406,6 +408,9 @@
 		D88E229425AC9B420023F3B1 /* OrderFeeTaxStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88E229325AC9B420023F3B1 /* OrderFeeTaxStatus.swift */; };
 		D8C11A5C22DFCF8100D4A88D /* order-stats-v4-year-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = D8C11A5B22DFCF8100D4A88D /* order-stats-v4-year-alt.json */; };
 		D8C251D0230BD72700F49782 /* ProductReviewMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C251CF230BD72700F49782 /* ProductReviewMapper.swift */; };
+		D8EDFE1E25EE87F1003D2213 /* WCPayRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EDFE1D25EE87F1003D2213 /* WCPayRemote.swift */; };
+		D8EDFE2225EE88C9003D2213 /* WCPayConnectionToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EDFE2125EE88C9003D2213 /* WCPayConnectionToken.swift */; };
+		D8EDFE2625EE8A60003D2213 /* WCPayConnectionTokenMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EDFE2525EE8A60003D2213 /* WCPayConnectionTokenMapper.swift */; };
 		D8FBFF0B22D3ADB1006E3336 /* OrderStatsRemoteV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF0A22D3ADB1006E3336 /* OrderStatsRemoteV4.swift */; };
 		D8FBFF0D22D3AF4A006E3336 /* StatsGranularityV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF0C22D3AF4A006E3336 /* StatsGranularityV4.swift */; };
 		D8FBFF0F22D3B25E006E3336 /* WooAPIVersionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF0E22D3B25E006E3336 /* WooAPIVersionTests.swift */; };
@@ -814,6 +819,8 @@
 		CEF88DAC233E95B000BED485 /* OrderRefundCondensed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundCondensed.swift; sourceTree = "<group>"; };
 		CEF88DAE233E9F7D00BED485 /* order-details-partially-refunded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-details-partially-refunded.json"; sourceTree = "<group>"; };
 		D7865552BE07C116627FE528 /* Pods-NetworkingTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		D800DA0925EFEB9C001E13CE /* WCPayRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayRemoteTests.swift; sourceTree = "<group>"; };
+		D800DA0D25EFEC21001E13CE /* wcpay-connection-token.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-connection-token.json"; sourceTree = "<group>"; };
 		D823D9022237450A00C90817 /* shipment_tracking_new.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = shipment_tracking_new.json; sourceTree = "<group>"; };
 		D823D904223746CE00C90817 /* NewShipmentTrackingMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewShipmentTrackingMapper.swift; sourceTree = "<group>"; };
 		D823D90622376B4800C90817 /* shipment_tracking_new_custom_provider.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = shipment_tracking_new_custom_provider.json; sourceTree = "<group>"; };
@@ -839,6 +846,9 @@
 		D88E229325AC9B420023F3B1 /* OrderFeeTaxStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderFeeTaxStatus.swift; sourceTree = "<group>"; };
 		D8C11A5B22DFCF8100D4A88D /* order-stats-v4-year-alt.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-stats-v4-year-alt.json"; sourceTree = "<group>"; };
 		D8C251CF230BD72700F49782 /* ProductReviewMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewMapper.swift; sourceTree = "<group>"; };
+		D8EDFE1D25EE87F1003D2213 /* WCPayRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayRemote.swift; sourceTree = "<group>"; };
+		D8EDFE2125EE88C9003D2213 /* WCPayConnectionToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayConnectionToken.swift; sourceTree = "<group>"; };
+		D8EDFE2525EE8A60003D2213 /* WCPayConnectionTokenMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayConnectionTokenMapper.swift; sourceTree = "<group>"; };
 		D8FBFF0A22D3ADB1006E3336 /* OrderStatsRemoteV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsRemoteV4.swift; sourceTree = "<group>"; };
 		D8FBFF0C22D3AF4A006E3336 /* StatsGranularityV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsGranularityV4.swift; sourceTree = "<group>"; };
 		D8FBFF0E22D3B25E006E3336 /* WooAPIVersionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WooAPIVersionTests.swift; path = NetworkingTests/Requests/WooAPIVersionTests.swift; sourceTree = SOURCE_ROOT; };
@@ -1043,6 +1053,7 @@
 				026CF621237D7E61009563D4 /* ProductVariationsRemoteTests.swift */,
 				025CA2C5238F4F3500B05C81 /* ProductShippingClassRemoteTests.swift */,
 				02E7FFCA256218F600C53030 /* ShippingLabelRemoteTests.swift */,
+				D800DA0925EFEB9C001E13CE /* WCPayRemoteTests.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -1163,6 +1174,7 @@
 				74ABA1D0213F22CA00FFAD30 /* TopEarnersStatsRemote.swift */,
 				020D07BB23D856BF00FD9580 /* MediaRemote.swift */,
 				029BA4EF255D7282006171FD /* ShippingLabelRemote.swift */,
+				D8EDFE1D25EE87F1003D2213 /* WCPayRemote.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -1236,6 +1248,7 @@
 				74159624224D4045003C21CF /* SiteSettingGroup.swift */,
 				CE50345F21B5799F007573C6 /* SitePlan.swift */,
 				450106842399A7CB00E24722 /* TaxClass.swift */,
+				D8EDFE2125EE88C9003D2213 /* WCPayConnectionToken.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1368,6 +1381,7 @@
 				74ABA1C6213F19FD00FFAD30 /* top-performers-month.json */,
 				74ABA1C7213F19FE00FFAD30 /* top-performers-year.json */,
 				7495AACE225D366D00801A89 /* variation-as-product.json */,
+				D800DA0D25EFEC21001E13CE /* wcpay-connection-token.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -1427,6 +1441,7 @@
 				029BA53A255DFABD006171FD /* ShippingLabelPrintDataMapper.swift */,
 				021A84D9257DF92800BC71D1 /* ShippingLabelRefundMapper.swift */,
 				45A4B84D25D2E11300776FB4 /* ShippingLabelAddressValidationResponseMapper.swift */,
+				D8EDFE2525EE8A60003D2213 /* WCPayConnectionTokenMapper.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -1797,6 +1812,7 @@
 				457FC68C2382B2FD00B41B02 /* product-update.json in Resources */,
 				CE19CB11222486A600E8AF7A /* order-statuses.json in Resources */,
 				02F096C22406691100C0C1D5 /* media-library.json in Resources */,
+				D800DA0E25EFEC21001E13CE /* wcpay-connection-token.json in Resources */,
 				74159628224D63CE003C21CF /* settings-product-alt.json in Resources */,
 				45AB8B2024AB3E1F00B5B36E /* product-tags-empty.json in Resources */,
 				451274A625276C82009911FF /* product-variation.json in Resources */,
@@ -1966,12 +1982,14 @@
 				26B2F74D24C696E70065CCC8 /* LeaderboardRowContent.swift in Sources */,
 				D8FBFF1122D3B3FC006E3336 /* OrderStatsV4Mapper.swift in Sources */,
 				D823D905223746CE00C90817 /* NewShipmentTrackingMapper.swift in Sources */,
+				D8EDFE1E25EE87F1003D2213 /* WCPayRemote.swift in Sources */,
 				743057B5218B6ACD00441A76 /* Queue.swift in Sources */,
 				74A1D26821189A7100931DFA /* SiteVisitStats.swift in Sources */,
 				02C254B0256378D000A04423 /* ShippingLabelRefundStatus.swift in Sources */,
 				4568E2242459D3230007E478 /* Post.swift in Sources */,
 				B557DA0320975500005962F4 /* Remote.swift in Sources */,
 				B53EF53C21814900003E146F /* SuccessResultMapper.swift in Sources */,
+				D8EDFE2625EE8A60003D2213 /* WCPayConnectionTokenMapper.swift in Sources */,
 				02C254A4256371B200A04423 /* ShippingLabelSettings.swift in Sources */,
 				B554FA912180BCFC00C54DFF /* NoteHash.swift in Sources */,
 				CE0A0F19223987DF0075ED8D /* ProductListMapper.swift in Sources */,
@@ -2038,6 +2056,7 @@
 				B5BB1D1020A237FB00112D92 /* Address.swift in Sources */,
 				CE43066A23465F340073CBFF /* Refund.swift in Sources */,
 				B524194121AC60A700D6FC0A /* DotcomDevice.swift in Sources */,
+				D8EDFE2225EE88C9003D2213 /* WCPayConnectionToken.swift in Sources */,
 				4599FC5824A624BD0056157A /* ProductTagListMapper.swift in Sources */,
 				26B2F74B24C696C00065CCC8 /* LeaderboardRow.swift in Sources */,
 				45A4B86225D3086600776FB4 /* ShippingLabelAddressValidationError.swift in Sources */,
@@ -2125,6 +2144,7 @@
 				CE0A0F1D22398D520075ED8D /* ProductListMapperTests.swift in Sources */,
 				025CA2C6238F4F3500B05C81 /* ProductShippingClassRemoteTests.swift in Sources */,
 				26B64548259BF2B900EF3FB3 /* ProductAttributeTermListMapperTests.swift in Sources */,
+				D800DA0A25EFEB9C001E13CE /* WCPayRemoteTests.swift in Sources */,
 				CC851D1425E52AB500249E9C /* Decimal+ExtensionsTests.swift in Sources */,
 				B554FA8B2180B1D500C54DFF /* NotificationsRemoteTests.swift in Sources */,
 				B518662A20A09C6F00037A38 /* OrdersRemoteTests.swift in Sources */,

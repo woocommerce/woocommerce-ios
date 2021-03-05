@@ -30,6 +30,10 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     /// Mock Card Reader Service: In memory
     private var mockCardReaderService: MockCardReaderService!
 
+    /// Dummy Site ID
+    ///
+    private let sampleSiteID: Int64 = 1234
+
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -57,7 +61,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                                        network: network,
                                                        cardReaderService: mockCardReaderService)
 
-        let action = CardPresentPaymentAction.startCardReaderDiscovery { discoveredReaders in
+        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID) { discoveredReaders in
             //
         }
 
@@ -74,8 +78,114 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         let expectation = self.expectation(description: "Readers discovered")
 
-        let action = CardPresentPaymentAction.startCardReaderDiscovery { discoveredReaders in
+        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID) { discoveredReaders in
             expectation.fulfill()
+        }
+
+        cardPresentStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_start_discovery_action_passes_configuraton_provider_to_service() {
+        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
+                                                       storageManager: storageManager,
+                                                       network: network,
+                                                       cardReaderService: mockCardReaderService)
+
+        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID) { discoveredReaders in
+            //
+        }
+
+        cardPresentStore.onAction(action)
+
+        XCTAssertTrue(mockCardReaderService.didReceiveAConfigurationProvider)
+    }
+
+    /// This test is meant to cover the error when there is a failure to fetch
+    /// the connection token
+    /// We do not have proper error handling for now, but it is in the pipeline
+    /// https://github.com/woocommerce/woocommerce-ios/issues/3734
+    /// https://github.com/woocommerce/woocommerce-ios/issues/3741
+    /// This test will be edited to assert an error was received when
+    /// proper error support is implemented. 
+    func test_start_discovery_action_returns_empty_error_when_token_fetching_fails() {
+        let expectation = self.expectation(description: "Empty readers on failure to obtain a connection token")
+
+        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
+                                                       storageManager: storageManager,
+                                                       network: network,
+                                                       cardReaderService: mockCardReaderService)
+
+        network.simulateResponse(requestUrlSuffix: "payments/connection_tokens", filename: "generic_error")
+
+        let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID) { discoveredReaders in
+            XCTAssertTrue(self.mockCardReaderService.didReceiveAConfigurationProvider)
+            if discoveredReaders.count == 0 {
+                expectation.fulfill()
+            }
+        }
+
+        cardPresentStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_cancel_discovery_action_hits_cancel_in_service() {
+        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
+                                                       storageManager: storageManager,
+                                                       network: network,
+                                                       cardReaderService: mockCardReaderService)
+
+        let action = CardPresentPaymentAction.cancelCardReaderDiscovery { newStatus in
+            //
+        }
+
+        cardPresentStore.onAction(action)
+
+        XCTAssertTrue(mockCardReaderService.didHitCancel)
+    }
+
+    /// We are still not handling errors, so we will need a new test here
+    /// for the case when cancelation fails, which apparently is a thing
+    func test_cancel_discovery_action_publishes_idle_as_new_discovery_status() {
+        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
+                                                       storageManager: storageManager,
+                                                       network: network,
+                                                       cardReaderService: mockCardReaderService)
+
+        let expectation = self.expectation(description: "Cancelling discovery published idle as discoveryStatus")
+
+        let action = CardPresentPaymentAction.cancelCardReaderDiscovery { newStatus in
+            if newStatus == .idle {
+                expectation.fulfill()
+            }
+        }
+
+        cardPresentStore.onAction(action)
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_cancel_discovery_after_start_rdpchanges_discovery_status_to_idle_eventually() {
+        let cardPresentStore = CardPresentPaymentStore(dispatcher: dispatcher,
+                                                       storageManager: storageManager,
+                                                       network: network,
+                                                       cardReaderService: mockCardReaderService)
+
+        let expectation = self.expectation(description: "Cancelling discovery changes discoveryStatus to idle")
+
+        let startDiscoveryAction = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID) { _ in
+
+        }
+
+        cardPresentStore.onAction(startDiscoveryAction)
+
+        let action = CardPresentPaymentAction.cancelCardReaderDiscovery { newStatus in
+            print("=== hitting cancellation completion")
+            if newStatus == .idle {
+                expectation.fulfill()
+            }
         }
 
         cardPresentStore.onAction(action)

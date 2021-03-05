@@ -17,15 +17,6 @@ public final class StripeCardReaderService: NSObject {
     /// see
     ///  https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPDiscoveryDelegate.html#/c:objc(pl)SCPDiscoveryDelegate(im)terminal:didUpdateDiscoveredReaders:
     private let discoveredStripeReadersCache = StripeCardReaderDiscoveryCache()
-
-    public init(tokenProvider: ConnectionTokenProvider) {
-        // Per Stripe SDK's instructions, the first we need to do is set the token provider, before calling `shared`
-        // If we don't, an assertion will 💥
-        // We can only set the token once
-        if !Terminal.hasTokenProvider() {
-            Terminal.setTokenProvider(tokenProvider)
-        }
-    }
 }
 
 
@@ -46,7 +37,7 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public var discoveryStatus: AnyPublisher<CardReaderServiceDiscoveryStatus, Never> {
-        discoveryStatusSubject.eraseToAnyPublisher()
+        discoveryStatusSubject.removeDuplicates().eraseToAnyPublisher()
     }
 
     /// The Publisher that emits the payment status
@@ -62,12 +53,14 @@ extension StripeCardReaderService: CardReaderService {
 
     // MARK: - CardReaderService conformance. Commands
 
-    public func start() {
+    public func start(_ configProvider: CardReaderConfigProvider) {
         // This is enough code to pass a unit test.
         // The final version of this method would be completely different.
         // But for now, we want to start the discovery process using the
         // simulate reader included in the Stripe Terminal SDK
         // https://stripe.com/docs/terminal/integration?country=CA&platform=ios&reader=p400#dev-test
+
+        setConfigProvider(configProvider)
 
         // Attack the test terminal, provided by the SDK
         let config = DiscoveryConfiguration(
@@ -75,20 +68,46 @@ extension StripeCardReaderService: CardReaderService {
             simulated: true
         )
 
-        // Enough code to pass a test
-        discoveryCancellable = Terminal.shared.discoverReaders(config, delegate: self, completion: { error in
-            if let error = error {
-                print("discoverReaders failed: \(error)")
-            } else {
-                print("discoverReaders succeeded")
+        print("|||| Service. calling start in service ", self)
+        switchStatusToDiscovering()
+
+        /**
+         * https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)discoverReaders:delegate:completion:
+         *
+         *Note that if discoverReaders is canceled, the completion block will be called with nil (rather than an SCPErrorCanceled error).
+         */
+        discoveryCancellable = Terminal.shared.discoverReaders(config, delegate: self, completion: { [weak self] error in
+            guard let error = error else {
+                self?.switchStatusToIdle()
+                return
             }
+
+            self?.internalError(error)
         })
     }
 
     public func cancelDiscovery() {
-        // Bouncing to a private method just in case we need to do something else
-        // If we realize we don't, there is no point in having two methods doing the same
-        cancelReaderDiscovery()
+        /**
+         *https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)discoverReaders:delegate:completion:
+         *
+         * The discovery process will stop on its own when the terminal
+         * successfully connects to a reader, if the command is
+         * canceled, or if a discovery error occurs.
+         * So it does not hurt to check that we are actually in
+         * discovering mode before attempting a cancellation
+         *
+         */
+        guard discoveryStatusSubject.value == .discovering else {
+            return
+        }
+        print("||||||| Service calling cancel in service", self)
+        discoveryCancellable?.cancel { [weak self] error in
+            guard let error = error else {
+                self?.switchStatusToIdle()
+                return
+            }
+            self?.internalError(error)
+        }
     }
 
     public func disconnect(_ reader: CardReader) -> Future<Void, Error> {
@@ -192,6 +211,14 @@ extension StripeCardReaderService: DiscoveryDelegate {
 
 
 private extension StripeCardReaderService {
+    private func setConfigProvider(_ configProvider: CardReaderConfigProvider) {
+        let tokenProvider = DefaultConnectionTokenProvider(provider: configProvider)
+
+        if !Terminal.hasTokenProvider() {
+            Terminal.setTokenProvider(tokenProvider)
+        }
+    }
+
     func cancelReaderDiscovery() {
         discoveryCancellable?.cancel { [weak self] error in
             guard let self = self,
@@ -204,6 +231,26 @@ private extension StripeCardReaderService {
 
     func resetDiscoveredReadersSubject() {
         discoveredReadersSubject.send([])
+    }
+}
+
+
+// MARK: - Discovery status
+private extension StripeCardReaderService {
+    func switchStatusToIdle() {
+        updateDiscoveryStatus(to: .idle)
+    }
+
+    func switchStatusToDiscovering() {
+        updateDiscoveryStatus(to: .discovering)
+    }
+
+    func switchStatusToFault() {
+        updateDiscoveryStatus(to: .fault)
+    }
+
+    func updateDiscoveryStatus(to newStatus: CardReaderServiceDiscoveryStatus) {
+        discoveryStatusSubject.send(newStatus)
     }
 }
 

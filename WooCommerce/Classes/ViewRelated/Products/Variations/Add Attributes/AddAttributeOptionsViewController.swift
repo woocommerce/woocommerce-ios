@@ -149,7 +149,7 @@ private extension AddAttributeOptionsViewController {
     }
 
     func renderViewModel() {
-        title = viewModel.titleView
+        title = viewModel.getCurrentAttributeName
         configureRightButtonItem()
         tableView.reloadData()
 
@@ -397,6 +397,14 @@ extension AddAttributeOptionsViewController {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
+        if viewModel.allowsRename {
+            let renameAction = UIAlertAction(title: Localization.renameAction, style: .default) { [weak self] _ in
+                self?.trackRenameAttributeButtonTapped()
+                self?.navigateToRenameAttribute()
+            }
+            actionSheet.addAction(renameAction)
+        }
+
         let removeAction = UIAlertAction(title: Localization.removeAction, style: .destructive) { [weak self] _ in
             self?.presentRemoveAttributeConfirmation()
         }
@@ -409,6 +417,22 @@ extension AddAttributeOptionsViewController {
         popoverController?.barButtonItem = sender
 
         present(actionSheet, animated: true)
+    }
+
+    func trackRenameAttributeButtonTapped() {
+        analytics.track(event: WooAnalyticsEvent.Variations.renameAttributeButtonTapped(productID: viewModel.product.productID))
+    }
+
+    /// Navigates to `RenameAttributesViewController`
+    ///
+    private func navigateToRenameAttribute() {
+        let viewModel = RenameAttributesViewModel(attributeName: self.viewModel.getCurrentAttributeName)
+        let renameAttributeViewController = RenameAttributesViewController(viewModel: viewModel) { [weak self] updatedAttributeName in
+            // Sets new attribute name
+            self?.viewModel.setCurrentAttributeName(updatedAttributeName)
+            self?.navigationController?.popViewController(animated: true)
+        }
+        show(renameAttributeViewController, sender: nil)
     }
 
     /// Presents a confirmation alert and removes the attribute if the merchant confirms it.
@@ -489,6 +513,7 @@ private extension AddAttributeOptionsViewController {
         static let removeAttributeError = NSLocalizedString("The attribute couldn't be removed.",
                                                             comment: "Error title when trying to remove an attribute remotely.")
 
+        static let renameAction = NSLocalizedString("Rename", comment: "Title for renaming an attribute in the edit attribute action sheet.")
         static let removeAction = NSLocalizedString("Remove", comment: "Title for removing an attribute in the edit attribute action sheet.")
         static let cancelAction = NSLocalizedString("Cancel", comment: "Title for canceling the edit attribute action sheet.")
 

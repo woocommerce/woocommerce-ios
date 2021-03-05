@@ -98,6 +98,9 @@ final class CardReaderSettingsViewModel: ObservableObject {
     func startSearch() {
         activeAlert = .searching
 
+
+        /// This sequence is here just to test that discovery can be cancelled
+        /// Dispatching these two actions will be remoed soon
         let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: siteID, onCompletion: { [weak self] cardReaders in

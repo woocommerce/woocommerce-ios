@@ -49,24 +49,18 @@ final class AddAttributeOptionsViewModel {
         /// Indicates if the view model is updating the product's attributes
         ///
         var isUpdating: Bool = false
-    }
 
-    /// Name of the attribute
-    ///
-    var attributeName: String {
-        switch attribute {
-        case .new(let name):
-            return name
-        case .existing(let attribute):
-            return attribute.name
-        }
+        /// Name of the attribute
+        ///
+        var currentAttributeName: String = ""
     }
 
     /// Defines next button visibility
     ///
     var isNextButtonEnabled: Bool {
         let optionsToSubmit = state.selectedOptions.map { $0.name }
-        return state.selectedOptions.isNotEmpty && optionsToSubmit != attribute.previouslySelectedOptions
+        let attributeHasChanges = state.currentAttributeName != attribute.name || optionsToSubmit != attribute.previouslySelectedOptions
+        return attributeHasChanges && state.selectedOptions.isNotEmpty
     }
 
     /// Defines the more(...) button visibility
@@ -91,6 +85,17 @@ final class AddAttributeOptionsViewModel {
     ///
     var showSyncError: Bool {
         state.syncState == .failed
+    }
+
+    /// Defines if the attribute can be renamed (existing local attributes only)
+    ///
+    var allowsRename: Bool {
+        switch attribute {
+        case .new:
+            return false
+        case let .existing(productAttribute):
+            return productAttribute.isLocal
+        }
     }
 
     /// Closure to notify the `ViewController` when the view model properties change.
@@ -161,6 +166,7 @@ final class AddAttributeOptionsViewModel {
          analytics: Analytics = ServiceLocator.analytics) {
         self.product = product
         self.attribute = attribute
+        self.state.currentAttributeName = attribute.name
         self.allowsEditing = allowsEditing
         self.stores = stores
         self.viewStorage = viewStorage
@@ -227,6 +233,18 @@ extension AddAttributeOptionsViewModel {
         addNewOption(name: option.name)
     }
 
+    /// Sets the current attribute name to a new name
+    ///
+    func setCurrentAttributeName(_ newName: String) {
+        state.currentAttributeName = newName
+    }
+
+    /// Gets the current attribute name
+    ///
+    var getCurrentAttributeName: String {
+        state.currentAttributeName
+    }
+
     /// Gathers selected options and update the product's attributes
     ///
     func updateProductAttributes(onCompletion: @escaping ((Result<Product, ProductUpdateError>) -> Void)) {
@@ -269,23 +287,25 @@ extension AddAttributeOptionsViewModel {
         stores.dispatch(action)
     }
 
-    /// Returns a product with its attributes updated with the new attribute to create.
+    /// Returns a product with its name and options updated with the new attribute to create.
     ///
     private func createUpdatedProduct() -> Product {
         let newOptions = state.selectedOptions.map { $0.name }
+        let newName = state.currentAttributeName
         let newAttribute = ProductAttribute(siteID: product.siteID,
                                             attributeID: attribute.attributeID,
-                                            name: attribute.name,
+                                            name: newName,
                                             position: 0,
                                             visible: true,
                                             variation: true,
                                             options: newOptions)
 
         // Here we remove any possible existing attribute with the same ID and Name. For then re-adding the new updated attribute
-        // Name has to be considered, because local attributes are zero-id based.
+        // Name has to be considered, because local attributes are zero-id based. We use `attribute` instead of `newAttribute` because
+        // the new Name may not match the old one that needs to be removed, if the attribute was renamed.
         let updatedAttributes: [ProductAttribute] = {
             var attributes = product.attributes
-            attributes.removeAll { $0.attributeID == newAttribute.attributeID && $0.name == newAttribute.name }
+            attributes.removeAll { $0.attributeID == attribute.attributeID && $0.name == attribute.name }
             attributes.append(newAttribute)
             return attributes
         }()

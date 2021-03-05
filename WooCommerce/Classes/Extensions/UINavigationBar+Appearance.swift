@@ -13,7 +13,6 @@ extension UINavigationBar {
             let appearance = UINavigationBarAppearance()
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = .listForeground
-            appearance.shadowColor = .clear // Hides the navigation bar bottom border
             appearance.titleTextAttributes = [.foregroundColor: UIColor.text]
             appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.text]
 

@@ -3,6 +3,7 @@
 6.2
 -----
 
+- [***] Products: When editing a product, you can now create/delete/update product variations, product attributes and product attribute options. https://github.com/woocommerce/woocommerce-ios/pull/3791
 - [**] Large titles are enabled for the four main tabs like in Android. In Dashboard and Orders tab, a workaround is implemented with some UI/UX tradeoffs where the title size animation is not as smooth among other minor differences from Products and Reviews tab. We can encourage beta users to share any UI issues they find with large titles. [https://github.com/woocommerce/woocommerce-ios/pull/3763]
 - [*] Fix: Load product inventory settings in read-only mode when the product has a decimal stock quantity. This fixes the products tab not loading due to product decoding errors when third-party plugins enable decimal stock quantities. [https://github.com/woocommerce/woocommerce-ios/pull/3717]
 - [*] Fix: Loading state stuck in Reviews List. [https://github.com/woocommerce/woocommerce-ios/pull/3753]

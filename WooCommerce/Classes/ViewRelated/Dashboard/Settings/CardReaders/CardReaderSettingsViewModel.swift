@@ -100,13 +100,13 @@ final class CardReaderSettingsViewModel: ObservableObject {
         let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
 
         let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: siteID, onCompletion: { [weak self] cardReaders in
-            self?.discoveredReader(cardReaders: cardReaders)
+            self?.didDiscoverReaders(cardReaders: cardReaders)
         })
 
         ServiceLocator.stores.dispatch(action)
     }
 
-    private func discoveredReader(cardReaders: [CardReader]) -> Void {
+    private func didDiscoverReaders(cardReaders: [CardReader]) -> Void {
         // TODO - more than one reader? sort in the manner in which we'd like the rows presented
         guard activeAlert != .foundReader else {
             return
@@ -133,6 +133,18 @@ final class CardReaderSettingsViewModel: ObservableObject {
     func connect() {
         // TODO dispatch an action to connect.
         activeAlert = .connecting
+
+        let action = CardPresentPaymentAction.connect(reader: foundReaders[0], onCompletion: { [weak self] result in
+            switch result {
+            case .success(let cardReaders):
+                self?.didConnectToReader(cardReaders: cardReaders)
+            case .failure(_):
+                // TODO failure message
+                self?.activeAlert = .none
+            }
+        })
+
+        ServiceLocator.stores.dispatch(action)
     }
 
     func stopConnect() {
@@ -145,6 +157,17 @@ final class CardReaderSettingsViewModel: ObservableObject {
         connectedReader = nil
         activeView = .connectYourReader
         activeAlert = .none
+    }
+
+    private func didConnectToReader(cardReaders: [CardReader]) -> Void {
+        activeAlert = .none
+        guard cardReaders.count > 0 else {
+            // TODO log unexpected failure
+            return
+        }
+
+        activeView = .connectedToReader
+        self.connectedReader = cardReaders[0]
     }
 
     func updateSoftware() {

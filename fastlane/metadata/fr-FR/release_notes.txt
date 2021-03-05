@@ -1,0 +1,5 @@
+Nous sommes heureux de vous présenter les mises à jour de l’application WooCommerce pour iOS.
+
+Il est désormais encore plus facile de modifier les attributs des produits variables, par exemple la couleur et la taille.
+Nous avons corrigé des bugs affectant le bouton « Retour » et l’affichage de la miniature des produits.
+De plus, les informations détaillées des produits incluent maintenant « Téléchargeable », le cas échéant.

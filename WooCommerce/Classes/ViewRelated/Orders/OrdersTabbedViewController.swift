@@ -5,9 +5,17 @@ import struct Yosemite.OrderStatus
 import enum Yosemite.OrderStatusEnum
 import struct Yosemite.Note
 
+/// Relays the scroll events to a delegate for navigation bar large title workaround.
+protocol OrdersTabbedViewControllerScrollDelegate: class {
+    /// Called when an order list `UIScrollView`'s `scrollViewDidScroll` event is triggered from the user.
+    func orderListScrollViewDidScroll(_ scrollView: UIScrollView)
+}
+
 /// The main Orders view controller that is shown when the Orders tab is accessed.
 ///
 final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
+    /// For navigation bar large title workaround.
+    weak var scrollDelegate: OrdersTabbedViewControllerScrollDelegate?
 
     private lazy var analytics = ServiceLocator.analytics
 
@@ -87,6 +95,10 @@ final class OrdersTabbedViewController: ButtonBarPagerTabStripViewController {
 extension OrdersTabbedViewController: OrderListViewControllerDelegate {
     func orderListViewControllerWillSynchronizeOrders(_ viewController: UIViewController) {
         viewModel.syncOrderStatuses()
+    }
+
+    func orderListScrollViewDidScroll(_ scrollView: UIScrollView) {
+        scrollDelegate?.orderListScrollViewDidScroll(scrollView)
     }
 }
 

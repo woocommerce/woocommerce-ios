@@ -313,9 +313,13 @@ private extension ProductsViewController {
         tableView.sectionHeaderHeight = 0
 
         tableView.backgroundColor = .listBackground
-        tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
         tableView.separatorStyle = .none
+
+        // Adds the refresh control to table view manually so that the refresh control always appears below the navigation bar title in
+        // large or normal size to be consistent with Dashboard and Orders tab with large titles workaround.
+        // If we do `tableView.refreshControl = refreshControl`, the refresh control appears in the navigation bar when large title is shown.
+        tableView.addSubview(refreshControl)
 
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
         headerContainer.addSubview(topStackView)

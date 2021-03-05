@@ -217,11 +217,10 @@ private extension ShippingLabelFormViewController {
 //
 private extension ShippingLabelFormViewController {
     func displayEditAddressFormVC(address: ShippingLabelAddress?, type: ShipType) {
-        let shippingAddressVC = ShippingLabelAddressFormViewController(siteID: self.viewModel.siteID,
+        let shippingAddressVC = ShippingLabelAddressFormViewController(siteID: viewModel.siteID,
                                                                        type: type,
                                                                        address: address,
-                                                                       completion: { [weak self]
-                                                                        (newShippingLabelAddress) in
+                                                                       completion: { [weak self] (newShippingLabelAddress) in
                                                                         guard let self = self else { return }
                                         switch type {
                                         case .origin:
@@ -232,11 +231,11 @@ private extension ShippingLabelFormViewController {
                                                                                                 validated: true)
                                         }
                                                                        })
-        self.navigationController?.pushViewController(shippingAddressVC, animated: true)
+        navigationController?.pushViewController(shippingAddressVC, animated: true)
     }
 
     func displaySuggestedAddressVC(address: ShippingLabelAddress?, suggestedAddress: ShippingLabelAddress?, type: ShipType) {
-        let vc = ShippingLabelSuggestedAddressViewController(siteID: self.viewModel.siteID,
+        let vc = ShippingLabelSuggestedAddressViewController(siteID: viewModel.siteID,
                                                              type: type,
                                                              address: address,
                                                              suggestedAddress: suggestedAddress) { [weak self] (newShippingLabelAddress) in
@@ -249,7 +248,7 @@ private extension ShippingLabelFormViewController {
                                                                      validated: true)
             }
         }
-        self.navigationController?.pushViewController(vc, animated: true)
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 

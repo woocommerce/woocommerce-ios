@@ -129,24 +129,24 @@ private extension ShippingLabelSuggestedAddressViewController {
         switch selectedAddress {
         case .entered:
             onCompletion(address)
-            self.navigationController?.popViewController(animated: true)
+            navigationController?.popViewController(animated: true)
         case .suggested:
             onCompletion(suggestedAddress)
-            self.navigationController?.popViewController(animated: true)
+            navigationController?.popViewController(animated: true)
         }
     }
 
     @objc func didTapEditAddressButton() {
         switch selectedAddress {
         case .entered:
-            displayEditAddressFormVC(siteID: siteID, address: address, type: type)
+            displayEditAddressFormVC(address: address, type: type)
         case .suggested:
-            displayEditAddressFormVC(siteID: siteID, address: suggestedAddress, type: type)
+            displayEditAddressFormVC(address: suggestedAddress, type: type)
         }
 
     }
 
-    func displayEditAddressFormVC(siteID: Int64, address: ShippingLabelAddress?, type: ShipType) {
+    func displayEditAddressFormVC(address: ShippingLabelAddress?, type: ShipType) {
         let shippingAddressVC = ShippingLabelAddressFormViewController(siteID: siteID,
                                                                        type: type,
                                                                        address: address,
@@ -155,7 +155,7 @@ private extension ShippingLabelSuggestedAddressViewController {
                                                                         self.onCompletion(newShippingLabelAddress)
                                                                         self.navigationController?.popViewController(animated: true)
                                                                        })
-        self.navigationController?.pushViewController(shippingAddressVC, animated: true)
+        navigationController?.pushViewController(shippingAddressVC, animated: true)
     }
 }
 

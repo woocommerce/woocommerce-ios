@@ -1,0 +1,5 @@
+Kami senang bisa mengumumkan pembaruan untuk aplikasi iOS WooCommerce. 
+
+Sekarang penyuntingan atribut produk variabel bisa lebih mudah dilakukan, misalnya untuk warna dan ukuran pakaian.
+Kami telah memperbaiki bug yang memengaruhi tombol "Kembali" dan tampilan gambar mini produk.
+Selain itu, untuk item yang sesuai dengan deskripsi, detail jenis produk kini menyertakan keterangan "Dapat Diunduh".

@@ -1,0 +1,5 @@
+WooCommerce iOS uygulamasıyla ilgili güncellemeleri duyurmaktan heyecan duyuyoruz.
+
+Değişken ürünlerin niteliklerini (örneğin, giysinin rengi ve bedeni) düzenlemek artık her zamankinden daha kolay.
+"Geri" düğmesini ve ürün küçük resimlerinin görüntülenmesini etkileyen hatalar düzeltildi.
+Ayrıca açıklamaya uyan ürünler için ürün türü ayrıntılarında artık "İndirilebilir" öğesi de bulunuyor.

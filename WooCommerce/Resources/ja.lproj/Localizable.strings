@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-02-24 11:32:06+0000 */
+/* Translation-Revision-Date: 2021-03-05 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -182,7 +182,7 @@
 "Add File" = "ファイルを追加";
 
 /* Action to add new attribute on the Product Attributes screen */
-"Add New Attribute" = "Add New Attribute";
+"Add New Attribute" = "新規属性を追加";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "写真を追加";
@@ -256,7 +256,7 @@
 "Address" = "住所";
 
 /* Text field address 2 in Shipping Label Address Validation */
-"Address 2" = "Address 2";
+"Address 2" = "住所2";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "注文に追跡を追加";
@@ -315,7 +315,7 @@
 
 /* Format of a product variation attribute description where the attribute is set to any value.
    Product variation attribute description where the attribute is set to any value. */
-"Any %1$@" = "Any %1$@";
+"Any %1$@" = "任意の %1$@";
 
 /* Message shown when Apple authentication fails. */
 "Apple authentication failed.\nPlease make sure you are signed in to iCloud with an Apple ID that uses two-factor authentication." = "Apple の認証に失敗しました。\n2段階認証を使用する Apple ID で iCloud にサインインしてください。";
@@ -447,7 +447,7 @@
 "Cannot upload image" = "画像をアップロードできません";
 
 /* Card reader settings screen title */
-"Card Readers" = "Card Readers";
+"Card Readers" = "カードリーダー";
 
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "配送業者名";
@@ -473,7 +473,7 @@
 "Changing the product type will modify some of the product data" = "商品タイプを変更すると商品データの一部が変更されます";
 
 /* Body of the alert when a user is changing the product type */
-"Changing the product type will modify some of the product data and delete all your attributes and variations" = "Changing the product type will modify some of the product data and delete all your attributes and variations";
+"Changing the product type will modify some of the product data and delete all your attributes and variations" = "商品タイプを変更すると商品データの一部が変更され、属性とバリエーションがすべて削除されます";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "入力した URL が正しいかどうかを確認してください";
@@ -503,7 +503,7 @@
 "Collect Information" = "情報を収集";
 
 /* Text field company in Shipping Label Address Validation */
-"Company" = "Company";
+"Company" = "会社";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "請求対象の顧客に送信する新しいメールメッセージを作成します。";
@@ -610,7 +610,7 @@
 
 /* Create Shipping Label form navigation title
    Text on the button that starts shipping label creation */
-"Create Shipping Label" = "Create Shipping Label";
+"Create Shipping Label" = "配送ラベルを作成";
 
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "商品を作成中";
@@ -661,7 +661,7 @@
 "Describe your product" = "商品を説明";
 
 /* The default placeholder text for the of the Aztec editor screen. */
-"Describe your product to your future customers..." = "Describe your product to your future customers...";
+"Describe your product to your future customers..." = "将来の顧客に商品を説明してください...";
 
 /* The navigation bar title of the Aztec editor screen.
    Title in the Product description row on Product form screen when the description is non-empty. */
@@ -771,7 +771,7 @@
 "Download limit" = "Download limit";
 
 /* Display label for simple downloadable product type. */
-"Downloadable" = "Downloadable";
+"Downloadable" = "ダウンロード可能";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "ダウンロード可能なファイル";
@@ -799,7 +799,7 @@
 
 /* Action to edit the attributes and options used for variations
    Navigation title for the Product Attributes screen */
-"Edit Attributes" = "Edit Attributes";
+"Edit Attributes" = "属性を編集";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "商品を編集";
@@ -995,7 +995,7 @@
 "Gain insights into how products are performing on your store" = "ストアでの商品売り上げ状況の統計概要をチェック";
 
 /* Title for the progress screen while generating a variation */
-"Generating Variation" = "Generating Variation";
+"Generating Variation" = "バリエーションを生成しています";
 
 /* View title for initial auth views. */
 "Get Started" = "今すぐ始める";
@@ -1340,7 +1340,7 @@
 "Make your products easier to find with tags" = "タグを使用して商品を見つけやすくする";
 
 /* Navigates to Card Reader management screen */
-"Manage card readers" = "Manage card readers";
+"Manage card readers" = "カードリーダーを管理";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "注文を管理し、売り上げをトラッキングし、ストアのアクティビティをリアルタイムのアラートでモニターします。";
@@ -1448,7 +1448,7 @@
 "Net Payment" = "支払額 (正味)";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
-"New Attribute Name" = "New Attribute Name";
+"New Attribute Name" = "新規属性名";
 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "新機能を利用できます。";
@@ -1690,7 +1690,7 @@
 "Pending review" = "レビュー待ち";
 
 /* Text field phone in Shipping Label Address Validation */
-"Phone" = "Phone";
+"Phone" = "電話";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "電話番号: %@";
@@ -1757,7 +1757,7 @@
 "Please wait" = "しばらくお待ちください";
 
 /* Instructions for the progress screen while generating a variation */
-"Please wait while we create the new variation" = "Please wait while we create the new variation";
+"Please wait while we create the new variation" = "新しいバリエーションが作成されるまでしばらくお待ちください";
 
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "この製品をストアに公開するまでしばらくお待ちください";
@@ -1775,7 +1775,7 @@
 "Please wait..." = "しばらくお待ちください...";
 
 /* Text field postcode in Shipping Label Address Validation */
-"Postcode" = "Postcode";
+"Postcode" = "郵便番号";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Powered by Automattic";
@@ -2024,7 +2024,7 @@
 "Request a Refund" = "返金をリクエスト";
 
 /* Text field placeholder in Shipping Label Address Validation */
-"Required" = "Required";
+"Required" = "必須";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "アクティビティログをリセット";
@@ -2560,7 +2560,7 @@
 "Taxes" = "税";
 
 /* The placeholder text for the of the Aztec editor screen. */
-"Tell us more about %1$@..." = "Tell us more about %1$@...";
+"Tell us more about %1$@..." = "%1$@ についてもう少しお聞かせください...";
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "利用規約";
@@ -2606,7 +2606,7 @@
 "The URL is missing a valid host." = "この URL には有効なホストがありません。";
 
 /* Error title when trying to update or create an attribute remotely. */
-"The attribute couldn't be saved." = "The attribute couldn't be saved.";
+"The attribute couldn't be saved." = "属性を保存できませんでした。";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "このサーバーの証明書が無効です。「%@」を偽装しているサーバーに接続中の可能性があるため、機密情報が危険にさらされる恐れがあります。\n\nこの証明書をそのまま信頼しますか ?";
@@ -2654,7 +2654,7 @@
 "The stock quantity for this product. Editable." = "この商品の在庫数。編集可能。";
 
 /* Error title when failing to generate a variation. */
-"The variation couldn't be generated." = "The variation couldn't be generated.";
+"The variation couldn't be generated." = "バリエーションを生成できませんでした。";
 
 /* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
 "The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "このサイトは WordPress のサイトではありません。 接続するには、接続先のサイトに WordPress がインストールされている必要があります。";
@@ -2740,7 +2740,7 @@
 "To" = "送信先";
 
 /* Footer of text field section in Add Attribute screen */
-"To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first";
+"To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "バリエーションを作るには、最初にその属性 (「色」、「サイズ」など) を設定する必要があります";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "新しい WordPress.com アカウントを作成するには、メールアドレスを入力してください。";
@@ -2807,7 +2807,7 @@
 "Trust" = "信用する";
 
 /* Button to trigger connection to another account in store picker */
-"Try With Another Account" = "Try With Another Account";
+"Try With Another Account" = "別のアカウントで試行";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "別のメールで試す";
@@ -2957,7 +2957,7 @@
 "Upsells" = "アップセル";
 
 /* Action to use the address in Shipping Label Validation screen as entered */
-"Use Address as Entered" = "Use Address as Entered";
+"Use Address as Entered" = "入力した住所を使用";
 
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */

@@ -20,7 +20,7 @@ final class ProductVariationsViewController: UIViewController {
                            image: .emptyBoxImage,
                            details: "",
                            buttonTitle: Localization.emptyStateButtonTitle) { [weak self] in
-                            self?.navigateToAddAttributeViewController()
+                            self?.createVariationFromEmptyState()
                            }
     }()
 
@@ -450,6 +450,14 @@ extension ProductVariationsViewController: UITableViewDelegate {
 
 // MARK: Navigation
 private extension ProductVariationsViewController {
+    func createVariationFromEmptyState() {
+        if product.attributesForVariations.isNotEmpty {
+            createVariation()
+        } else {
+            navigateToAddAttributeViewController()
+        }
+    }
+
     func navigateToAddAttributeViewController() {
         let viewModel = AddAttributeViewModel(product: product)
         let addAttributeViewController = AddAttributeViewController(viewModel: viewModel) { [weak self] updatedProduct in

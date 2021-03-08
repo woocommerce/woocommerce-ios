@@ -20,7 +20,7 @@ final class ProductVariationsViewController: UIViewController {
                            image: .emptyBoxImage,
                            details: "",
                            buttonTitle: Localization.emptyStateButtonTitle) { [weak self] in
-                            self?.navigateToAddAttributeViewController()
+                            self?.createVariationFromEmptyState()
                            }
     }()
 
@@ -450,6 +450,14 @@ extension ProductVariationsViewController: UITableViewDelegate {
 
 // MARK: Navigation
 private extension ProductVariationsViewController {
+    func createVariationFromEmptyState() {
+        if product.attributesForVariations.isNotEmpty {
+            createVariation()
+        } else {
+            navigateToAddAttributeViewController()
+        }
+    }
+
     func navigateToAddAttributeViewController() {
         let viewModel = AddAttributeViewModel(product: product)
         let addAttributeViewController = AddAttributeViewController(viewModel: viewModel) { [weak self] updatedProduct in
@@ -619,14 +627,15 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
         let progressViewController = InProgressViewController(viewProperties: .init(title: Localization.generatingVariation,
                                                                                     message: Localization.waitInstructions))
         present(progressViewController, animated: true)
-        viewModel.generateVariation(for: product) { [onProductUpdate, noticePresenter] result in
+        viewModel.generateVariation(for: product) { [weak self] result in
             progressViewController.dismiss(animated: true)
 
-            guard let variation = try? result.get() else {
-                return noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
+            guard let self = self else { return }
+            guard let updatedProduct = try? result.get() else {
+                return self.noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
             }
 
-            onProductUpdate?(variation)
+            self.product = updatedProduct
         }
     }
 }

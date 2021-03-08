@@ -627,14 +627,15 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
         let progressViewController = InProgressViewController(viewProperties: .init(title: Localization.generatingVariation,
                                                                                     message: Localization.waitInstructions))
         present(progressViewController, animated: true)
-        viewModel.generateVariation(for: product) { [onProductUpdate, noticePresenter] result in
+        viewModel.generateVariation(for: product) { [weak self] result in
             progressViewController.dismiss(animated: true)
 
-            guard let variation = try? result.get() else {
-                return noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
+            guard let self = self else { return }
+            guard let updatedProduct = try? result.get() else {
+                return self.noticePresenter.enqueue(notice: .init(title: Localization.generateVariationError, feedbackType: .error))
             }
 
-            onProductUpdate?(variation)
+            self.product = updatedProduct
         }
     }
 }

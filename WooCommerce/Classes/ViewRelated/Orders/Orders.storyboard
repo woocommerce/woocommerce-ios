@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -29,9 +29,9 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="hBh-xf-Cby" firstAttribute="top" secondItem="wvX-aq-v2S" secondAttribute="top" id="336-TT-5Dd"/>
-                            <constraint firstItem="wvX-aq-v2S" firstAttribute="trailing" secondItem="hBh-xf-Cby" secondAttribute="trailing" id="FQp-iN-6oS"/>
+                            <constraint firstAttribute="trailing" secondItem="hBh-xf-Cby" secondAttribute="trailing" id="FQp-iN-6oS"/>
                             <constraint firstItem="wvX-aq-v2S" firstAttribute="bottom" secondItem="hBh-xf-Cby" secondAttribute="bottom" id="MGb-D6-I2u"/>
-                            <constraint firstItem="hBh-xf-Cby" firstAttribute="leading" secondItem="wvX-aq-v2S" secondAttribute="leading" id="zxy-1j-4Gg"/>
+                            <constraint firstItem="hBh-xf-Cby" firstAttribute="leading" secondItem="BSM-Pn-wcY" secondAttribute="leading" id="zxy-1j-4Gg"/>
                         </constraints>
                     </view>
                     <connections>
@@ -78,9 +78,6 @@
         </scene>
     </scenes>
     <resources>
-        <systemColor name="groupTableViewBackgroundColor">
-            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
         <systemColor name="groupTableViewBackgroundColor">
             <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

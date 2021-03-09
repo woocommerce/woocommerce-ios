@@ -2,7 +2,7 @@
 
 6.3
 -----
-
+- [*] Enhancement/fix: image & text footnote info link rows are now center aligned in order details reprint shipping label info row and reprint screen. [https://github.com/woocommerce/woocommerce-ios/pull/3805]
 
 6.2
 -----

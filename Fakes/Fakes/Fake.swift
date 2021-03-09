@@ -19,6 +19,30 @@ extension Int {
     }
 }
 
+extension Double {
+    /// Returns `0.0`
+    ///
+    static func fake() -> Self {
+        0.0
+    }
+}
+
+extension Decimal {
+    /// Returns `.zero`
+    ///
+    static func fake() -> Self {
+        .zero
+    }
+}
+
+extension NSDecimalNumber {
+    /// Returns `.zero`
+    ///
+    static func fake() -> NSDecimalNumber {
+        .zero
+    }
+}
+
 extension String {
     /// Returns an empty `string`
     ///

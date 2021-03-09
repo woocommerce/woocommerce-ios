@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-02-24 11:32:06+0000 */
+/* Translation-Revision-Date: 2021-03-05 12:03:09+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -182,7 +182,7 @@
 "Add File" = "Añadir archivo";
 
 /* Action to add new attribute on the Product Attributes screen */
-"Add New Attribute" = "Add New Attribute";
+"Add New Attribute" = "Añadir nuevo atributo";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Añadir foto";
@@ -256,7 +256,7 @@
 "Address" = "Dirección";
 
 /* Text field address 2 in Shipping Label Address Validation */
-"Address 2" = "Address 2";
+"Address 2" = "Dirección 2";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Añade el seguimiento a un pedido.";
@@ -315,7 +315,7 @@
 
 /* Format of a product variation attribute description where the attribute is set to any value.
    Product variation attribute description where the attribute is set to any value. */
-"Any %1$@" = "Any %1$@";
+"Any %1$@" = "Cualquier %1$@";
 
 /* Message shown when Apple authentication fails. */
 "Apple authentication failed.\nPlease make sure you are signed in to iCloud with an Apple ID that uses two-factor authentication." = "Identificación de Apple fallida.\nAsegúrate de acceder a iCloud con un ID de Apple que use la autenticación de dos factores.";
@@ -447,7 +447,7 @@
 "Cannot upload image" = "No es posible cargar la imagen";
 
 /* Card reader settings screen title */
-"Card Readers" = "Card Readers";
+"Card Readers" = "Lectores de tarjetas";
 
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "Nombre de la empresa de transporte";
@@ -473,7 +473,7 @@
 "Changing the product type will modify some of the product data" = "Si cambias el tipo de producto, se modificarán algunos de los datos de producto";
 
 /* Body of the alert when a user is changing the product type */
-"Changing the product type will modify some of the product data and delete all your attributes and variations" = "Changing the product type will modify some of the product data and delete all your attributes and variations";
+"Changing the product type will modify some of the product data and delete all your attributes and variations" = "Si cambias el tipo de producto, se modificarán algunos de los datos del producto y se eliminarán todos los atributos y variaciones";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Comprueba que la URL introducida es válida";
@@ -503,7 +503,7 @@
 "Collect Information" = "Recopilar información";
 
 /* Text field company in Shipping Label Address Validation */
-"Company" = "Company";
+"Company" = "Empresa";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "Redacta un nuevo mensaje de correo electrónico para el cliente de la facturación.";
@@ -610,7 +610,7 @@
 
 /* Create Shipping Label form navigation title
    Text on the button that starts shipping label creation */
-"Create Shipping Label" = "Create Shipping Label";
+"Create Shipping Label" = "Crear etiqueta de envío";
 
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "Creación de productos";
@@ -661,7 +661,7 @@
 "Describe your product" = "Describe tu producto";
 
 /* The default placeholder text for the of the Aztec editor screen. */
-"Describe your product to your future customers..." = "Describe your product to your future customers...";
+"Describe your product to your future customers..." = "Describe el producto a tus futuros clientes...";
 
 /* The navigation bar title of the Aztec editor screen.
    Title in the Product description row on Product form screen when the description is non-empty. */
@@ -771,7 +771,7 @@
 "Download limit" = "Download limit";
 
 /* Display label for simple downloadable product type. */
-"Downloadable" = "Downloadable";
+"Downloadable" = "Descargable";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "Archivos descargables";
@@ -799,7 +799,7 @@
 
 /* Action to edit the attributes and options used for variations
    Navigation title for the Product Attributes screen */
-"Edit Attributes" = "Edit Attributes";
+"Edit Attributes" = "Editar atributos";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Editar productos";
@@ -995,7 +995,7 @@
 "Gain insights into how products are performing on your store" = "Obtén detalles sobre el rendimiento de los productos en tu tienda";
 
 /* Title for the progress screen while generating a variation */
-"Generating Variation" = "Generating Variation";
+"Generating Variation" = "Creando la variación";
 
 /* View title for initial auth views. */
 "Get Started" = "Primeros pasos";
@@ -1340,7 +1340,7 @@
 "Make your products easier to find with tags" = "Utiliza las etiquetas para que tus productos sean más fáciles de encontrar";
 
 /* Navigates to Card Reader management screen */
-"Manage card readers" = "Manage card readers";
+"Manage card readers" = "Administrar lectores de tarjetas";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Gestiona pedidos, controla las ventas y supervisa la actividad de la tienda con alertas en tiempo real.";
@@ -1358,7 +1358,7 @@
 "Manual Refund via %1$@" = "Reembolso manual a través de %1$@";
 
 /* In Refund Confirmation, The title shown to the user to inform them that they have to issue the refund manually. The %1$@ is the payment method like “Stripe”. */
-"Manual Refund via %1$@" = "Manual Refund via %1$@";
+"Manual Refund via %1$@" = "Reembolso manual a través de %1$@";
 
 /* No comment provided by engineer. */
 "Manual Refund via Stripe" = "Reembolso manual a través de Stripe";
@@ -1448,7 +1448,7 @@
 "Net Payment" = "Pago neto";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
-"New Attribute Name" = "New Attribute Name";
+"New Attribute Name" = "Nombre del nuevo atributo";
 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "¡Hay nuevas funciones disponibles!";
@@ -1690,7 +1690,7 @@
 "Pending review" = "Pendiente de revisión";
 
 /* Text field phone in Shipping Label Address Validation */
-"Phone" = "Phone";
+"Phone" = "Teléfono";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Número de teléfono: %@";
@@ -1757,7 +1757,7 @@
 "Please wait" = "Espera";
 
 /* Instructions for the progress screen while generating a variation */
-"Please wait while we create the new variation" = "Please wait while we create the new variation";
+"Please wait while we create the new variation" = "Espera un momento mientras creamos la nueva variación";
 
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Espera mientras publicamos este producto en tu tienda";
@@ -1775,7 +1775,7 @@
 "Please wait..." = "Por favor, espera";
 
 /* Text field postcode in Shipping Label Address Validation */
-"Postcode" = "Postcode";
+"Postcode" = "Código postal";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Ofrecido por Automattic";
@@ -1784,7 +1784,7 @@
 "Previously Refunded" = "Reembolsado anteriormente";
 
 /* A label representing the amount that was previously refunded for the order. */
-"Previously Refunded" = "Previously Refunded";
+"Previously Refunded" = "Reembolsado anteriormente";
 
 /* Product Price Settings navigation title
    Section header title for product price - Title for editing the price settings row on Product main screen - Title of the cell in Product Price Settings > Price */
@@ -1915,7 +1915,7 @@
 "Quantity to refund" = "Cantidad por reembolsar";
 
 /* Navigation title on the quantity item selector screen */
-"Quantity to refund" = "Quantity to refund";
+"Quantity to refund" = "Cantidad por reembolsar";
 
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %ld" = "Cantidad: %ld";
@@ -1930,7 +1930,7 @@
 "Reason for Refund" = "Motivo del reembolso";
 
 /* A label for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for Refund (Optional)" = "Reason for Refund (Optional)";
+"Reason for Refund (Optional)" = "Motivo del reembolso (opcional)";
 
 /* A label for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for Refund (Optional)" = "Motivo del reembolso (opcional)";
@@ -1939,13 +1939,13 @@
 "Reason for refunding order" = "Motivo del pedido de reembolso";
 
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
-"Reason for refunding order" = "Reason for refunding order";
+"Reason for refunding order" = "Motivo del pedido de reembolso";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "Reembolso";
 
 /* The title of the button to confirm the refund. */
-"Refund" = "Refund";
+"Refund" = "Reembolsar";
 
 /* It reads: Refund #<refund ID> */
 "Refund #%@" = "Reembolsar #%@";
@@ -1961,7 +1961,7 @@
 "Refund Label (%1$@)" = "Etiqueta de reembolso (%1$@)";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
-"Refund Shipping" = "Refund Shipping";
+"Refund Shipping" = "Reembolsar envío";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
 "Refund Shipping" = "Reembolsar envío";
@@ -1970,7 +1970,7 @@
 "Refund Via" = "Reembolso a través de";
 
 /* The title of the section containing information about how the refund will be processed. */
-"Refund Via" = "Refund Via";
+"Refund Via" = "Reembolso a través de";
 
 /* The title for the refunded amount cell */
 "Refunded" = "Reembolsado";
@@ -2024,7 +2024,7 @@
 "Request a Refund" = "Solicitar un reembolso";
 
 /* Text field placeholder in Shipping Label Address Validation */
-"Required" = "Required";
+"Required" = "Obligatorio";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Restablecer registros de actividad";
@@ -2145,7 +2145,7 @@
 "See layout and paper sizes options" = "Consulta las opciones de tamaño de papel y diseño";
 
 /* Select all button title in the issue refund screen */
-"Select All" = "Select All";
+"Select All" = "Seleccionar todo";
 
 /* Select all button title in the issue refund screen */
 "Select All" = "Elegir todo";
@@ -2560,7 +2560,7 @@
 "Taxes" = "Impuestos";
 
 /* The placeholder text for the of the Aztec editor screen. */
-"Tell us more about %1$@..." = "Tell us more about %1$@...";
+"Tell us more about %1$@..." = "Cuéntanos más sobre %1$@...";
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Condiciones del servicio";
@@ -2606,7 +2606,7 @@
 "The URL is missing a valid host." = "La URL no contiene un host válido.";
 
 /* Error title when trying to update or create an attribute remotely. */
-"The attribute couldn't be saved." = "The attribute couldn't be saved.";
+"The attribute couldn't be saved." = "No se ha podido guardar el atributo.";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "El certificado para este servidor no es válido. Puede que estés intentando conectar con un servidor que aparenta ser \"%@\", lo que podría poner en peligro tu información confidencial.\n\n¿Deseas confiar en el certificado de todos modos?";
@@ -2654,7 +2654,7 @@
 "The stock quantity for this product. Editable." = "La cantidad en inventario de este producto. Editable.";
 
 /* Error title when failing to generate a variation. */
-"The variation couldn't be generated." = "The variation couldn't be generated.";
+"The variation couldn't be generated." = "No se ha podido crear la variación.";
 
 /* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
 "The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "Esta dirección no pertenece a un sitio de WordPress. El sitio debe tener instalado WordPress para que podamos conectarnos a él.";
@@ -2740,7 +2740,7 @@
 "To" = "Hasta";
 
 /* Footer of text field section in Add Attribute screen */
-"To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first";
+"To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "Para crear una variación, primero deberás especificar los atributos (p. ej., \"Color\" y \"Talla\")";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Para crear tu nueva cuenta de WordPress.com, por favor, introduce tu dirección de correo electrónico.";
@@ -2807,7 +2807,7 @@
 "Trust" = "Confiar";
 
 /* Button to trigger connection to another account in store picker */
-"Try With Another Account" = "Try With Another Account";
+"Try With Another Account" = "Probar con otra cuenta";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Prueba con otro correo electrónico";
@@ -2957,7 +2957,7 @@
 "Upsells" = "Ventas dirigidas";
 
 /* Action to use the address in Shipping Label Validation screen as entered */
-"Use Address as Entered" = "Use Address as Entered";
+"Use Address as Entered" = "Usar la dirección especificada";
 
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */

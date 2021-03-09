@@ -13,6 +13,9 @@
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (To Customer)";
 
+/* Label about product's inventory stock status shown on Products tab */
+"%1$@ in stock" = "%1$@ in stock";
+
 /* Review title. Reads as {Review author} left a review */
 "%1$@ left a review" = "%1$@ left a review";
 
@@ -72,9 +75,6 @@
 
 /* Format of the number of Downloadable Files row in the plural form. Reads, `5 files` */
 "%ld files" = "%ld files";
-
-/* Label about product's inventory stock status shown on Products tab */
-"%ld in stock" = "%ld in stock";
 
 /* Format for number of products added for upsell and cross sell numbers in linked products. Reads, `1 product`
    Format of the number of grouped products in singular form */
@@ -147,8 +147,8 @@
 /* About this app (information page title) */
 "About" = "About";
 
-/* My Store > Settings > About app section */
-"About the app" = "About the app";
+/* My Store > Settings > About the App (Application) section title */
+"About the App" = "About the App";
 
 /* Application's Active State */
 "Active" = "Active";
@@ -253,6 +253,12 @@
 /* Text field address 2 in Shipping Label Address Validation */
 "Address 2" = "Address 2";
 
+/* Shipping Label Suggested Address entered placeholder */
+"Address Entered" = "Address Entered";
+
+/* Shipping Label Suggested address entered placeholder */
+"Address Suggested" = "Address Suggested";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Adds tracking to an order.";
 
@@ -312,6 +318,9 @@
    Product variation attribute description where the attribute is set to any value. */
 "Any %1$@" = "Any %1$@";
 
+/* My Store > Settings > App (Application) settings section title */
+"App Settings" = "App Settings";
+
 /* Message shown when Apple authentication fails. */
 "Apple authentication failed.\nPlease make sure you are signed in to iCloud with an Apple ID that uses two-factor authentication." = "Apple authentication failed.\nPlease make sure you are signed in to iCloud with an Apple ID that uses two-factor authentication.";
 
@@ -346,8 +355,17 @@
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Are you sure you want to log out of the account %@?";
 
+/* Confirmation text before removing an attribute from a variation. */
+"Are you sure you want to remove this attribute?" = "Are you sure you want to remove this attribute?";
+
 /* Message on the alert when the user taps to delete a Product image */
 "Are you sure you want to remove this image?" = "Are you sure you want to remove this image?";
+
+/* Body of the alert when a user is deleting a variation */
+"Are you sure you want to remove this variation?" = "Are you sure you want to remove this variation?";
+
+/* Placeholder in the Attribute Name row on Rename Attributes screen. */
+"Attribute name" = "Attribute name";
 
 /* Edit Product Attributes screen navigation title
    Title of the attributes row on Product Variation main screen */
@@ -424,7 +442,7 @@
 "Can Not Request Link" = "Can Not Request Link";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
-   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. */
+   Add Product Category. Cancel button title in navbar. - Button title Cancel in Discard Changes Action Sheet - Button title Cancel in Downloadable File More Options Action Sheet - Button title Cancel in Downloadable Files More Options Action Sheet - Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button in the More Options action sheet - Cancel button label - Cancel button on the alert when the user is cancelling the action on changing product type - Cancel button on the alert when the user is cancelling the action on deleting a variation - Cancel button on the alert when the user is cancelling the action on moving a product to the trash - Cancel button title in the issue refund screen - Cancel prompt for user information. - Cancel the shipping label more menu action sheet - Cancel the shipping label tracking more menu action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image - Option to cancel the email app selection when logging in with magic links - The title for a button that dismisses the crash debug menu - The title of the button to cancel issuing a refund. - Title for canceling the edit attribute action sheet. */
 "Cancel" = "Cancel";
 
 /* Title of the alert when there is an error creating a new product category */
@@ -773,6 +791,9 @@
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Easily identify your products with unique codes";
 
+/* Action to edit the address in Shipping Label Suggested screen */
+"Edit Address" = "Edit Address";
+
 /* Action to edit the attributes and options used for variations
    Navigation title for the Product Attributes screen */
 "Edit Attributes" = "Edit Attributes";
@@ -1044,14 +1065,14 @@
    Help button - Help button on store picker screen. */
 "Help" = "Help";
 
+/* My Store > Settings > Help and Feedback settings section title */
+"Help & Feedback" = "Help & Feedback";
+
 /* Contact Support Action */
 "Help & Support" = "Help & Support";
 
 /* Browse our help documentation website title */
 "Help Center" = "Help Center";
-
-/* My Store > Settings > Privacy settings section */
-"Help Improve The App" = "Help Improve The App";
 
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
@@ -1199,7 +1220,7 @@
 "later today" = "later today";
 
 /* Opens an internal library called Wormholy. Not visible to users. */
-"Launch Wormholy debug" = "Launch Wormholy debug";
+"Launch Wormholy Debug" = "Launch Wormholy Debug";
 
 /* Settings > Privacy Settings. A text link to the cookie policy.
    Title of button shown in the Orders → All Orders tab if the list is empty. */
@@ -1309,7 +1330,7 @@
 "Make your products easier to find with tags" = "Make your products easier to find with tags";
 
 /* Navigates to Card Reader management screen */
-"Manage card readers" = "Manage card readers";
+"Manage Card Reader" = "Manage Card Reader";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Manage orders, track sales and monitor store activity with real-time alerts.";
@@ -1478,9 +1499,6 @@
 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
 "No tax classes yet" = "No tax classes yet";
-
-/* Placeholder of the Product Variations row on Product main screen for a variable product */
-"No variations yet" = "No variations yet";
 
 /* Display label for the order fee's tax status setting option
    Display label for the product's tax status setting option */
@@ -1725,7 +1743,8 @@
 /* Message of the in-progress UI while saving a Product as draft remotely */
 "Please wait while we save this product to your store" = "Please wait while we save this product to your store";
 
-/* Message of the in-progress UI while deleting the Product remotely */
+/* Message of the in-progress UI while deleting the Product remotely
+   Message of the in-progress UI while deleting the Variation remotely */
 "Please wait while we update your store details" = "Please wait while we update your store details";
 
 /* Text on the loading view of the product downloadable file screen indicating the user to wait */
@@ -1872,7 +1891,7 @@
 "Quantity to refund" = "Quantity to refund";
 
 /* Format of the stock quantity on the Inventory Settings row */
-"Quantity: %ld" = "Quantity: %ld";
+"Quantity: %@" = "Quantity: %@";
 
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "rated %ld times";
@@ -1939,8 +1958,12 @@
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Regular price: %@";
 
-/* Confirm button on the alert when the user taps to delete a Product image */
+/* Confirm button on the alert when the user taps to delete a Product image
+   Confirmation button on the alert when the user is deleting a variation - Title for removing an attribute in the edit attribute action sheet. */
 "Remove" = "Remove";
+
+/* Confirmation title before removing an attribute from a variation. */
+"Remove Attribute" = "Remove Attribute";
 
 /* Label action for removing a link from the editor */
 "Remove end date" = "Remove end date";
@@ -1953,6 +1976,18 @@
 
 /* Title of the alert when a user is moving a product to the trash */
 "Remove product" = "Remove product";
+
+/* Title of the alert when a user is deleting a variation */
+"Remove variation" = "Remove variation";
+
+/* Title of the in-progress UI while deleting the Variation remotely */
+"Removing your variation..." = "Removing your variation...";
+
+/* Title for renaming an attribute in the edit attribute action sheet. */
+"Rename" = "Rename";
+
+/* Navigation title for the Rename Attributes screen */
+"Rename Attribute" = "Rename Attribute";
 
 /* Action to replace one photo on the Product images screen */
 "Replace Photo" = "Replace Photo";
@@ -2126,11 +2161,11 @@
 "Share your Store" = "Share your Store";
 
 /* Shipping Label Address Validation navigation title
-   Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
+   Shipping Label Suggested Address navigation title - Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
 "Ship from" = "Ship from";
 
 /* Shipping Label Address Validation navigation title
-   Title of destination address in shipping label details - Title of the cell Ship From inside Create Shipping Label form */
+   Shipping Label Suggested Address navigation title - Title of destination address in shipping label details - Title of the cell Ship From inside Create Shipping Label form */
 "Ship to" = "Ship to";
 
 /* A unit test string for order tracking. Reads as: 'Shipment Company HK Post'
@@ -2371,6 +2406,9 @@
 /* VoiceOver accessibility label for the store revenue chart's Y-axis. */
 "Store revenue chart: Y Axis" = "Store revenue chart: Y Axis";
 
+/* My Store > Settings > Store Settings section title */
+"Store Settings" = "Store Settings";
+
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Strike Through";
 
@@ -2535,6 +2573,9 @@
 /* No comment provided by engineer. */
 "That username is not allowed." = "That username is not allowed.";
 
+/* Error title when trying to remove an attribute remotely. */
+"The attribute couldn't be removed." = "The attribute couldn't be removed.";
+
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "The attribute couldn't be saved.";
 
@@ -2618,6 +2659,9 @@
 
 /* Footer text for Downloadable File Name */
 "This is the name of the file shown to the customer." = "This is the name of the file shown to the customer.";
+
+/* Footer text in Rename Attributes screen */
+"This is the type of variation like size or color" = "This is the type of variation like size or color";
 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "This is the url of the file which customers will get accessed to. URLs entered should already be encoded.";
@@ -2769,6 +2813,9 @@
 /* Content of error presented when Mark Order Completed failed. It reads: Unable to fulfill order #{order number}. Parameters: %1$d - order number */
 "Unable to fulfill order #%1$d" = "Unable to fulfill order #%1$d";
 
+/* Load Attribute Options Action Failed */
+"Unable to load attribute options" = "Unable to load attribute options";
+
 /* Load Product Categories Action Failed */
 "Unable to load categories" = "Unable to load categories";
 
@@ -2895,6 +2942,12 @@
 /* Action to use the address in Shipping Label Validation screen as entered */
 "Use Address as Entered" = "Use Address as Entered";
 
+/* Action to use the address in Shipping Label Suggested screen as entered placeholder */
+"Use Address Entered" = "Use Address Entered";
+
+/* Action to use the address in Shipping Label Suggested screen as suggested */
+"Use Suggested Address" = "Use Suggested Address";
+
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */
 "Username" = "Username";
@@ -2990,11 +3043,17 @@
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "We can’t display your store’s analytics";
 
+/* Banner caption in Shipping Label Address when there is a suggested address. */
+"We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery.";
+
 /* message to ask a user to check their email for a WordPress.com email */
 "We just emailed a link to %@. Please check your mail app and tap the link to log in." = "We just emailed a link to %@. Please check your mail app and tap the link to log in.";
 
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "We use other tracking tools, including some from third parties. Read about these and how to control them.";
+
+/* Banner caption in Shipping Label Address Validation when the address can't be verified. */
+"We were unable to automatically verify the shipping address. View on Apple Maps or try contacting the customer to make sure the address is correct." = "We were unable to automatically verify the shipping address. View on Apple Maps or try contacting the customer to make sure the address is correct.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "We were unable to send you an email at this time. Please try again later.";

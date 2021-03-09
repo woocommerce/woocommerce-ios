@@ -23,7 +23,8 @@ final class EditAttributesViewModelTests: XCTestCase {
     func test_product_attributes_are_correctly_converted_into_view_models() {
         // Given
         let attribute = sampleAttribute(name: "attr", options: ["Option 1", "Option 2"])
-        let product = Product().copy(attributes: [attribute])
+        let attribute2 = sampleNonVariationAttribute(name: "attr-extra", options: ["Option X", "Option Y"])
+        let product = Product().copy(attributes: [attribute, attribute2])
 
         // When
         let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: false)
@@ -40,8 +41,9 @@ final class EditAttributesViewModelTests: XCTestCase {
         // Given
         let attribute = sampleAttribute(name: "attr", options: ["Option 1", "Option 2"])
         let attribute2 = sampleAttribute(name: "attr-2", options: ["Option 3", "Option 4"])
+        let attribute3 = sampleNonVariationAttribute(name: "attr-extra", options: ["Option X", "Option Y"])
         let product = Product().copy(attributes: [attribute])
-        let product2 = product.copy(attributes: [attribute, attribute2])
+        let product2 = product.copy(attributes: [attribute, attribute2, attribute3])
 
         // When
         let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: false)
@@ -63,7 +65,8 @@ final class EditAttributesViewModelTests: XCTestCase {
         // Given
         let attribute = sampleAttribute(name: "attr", options: ["Option 1", "Option 2"])
         let attribute2 = sampleAttribute(name: "attr-2", options: ["Option 3", "Option 4"])
-        let product = Product().copy(attributes: [attribute, attribute2])
+        let attribute3 = sampleNonVariationAttribute(name: "attr-extra", options: ["Option X", "Option Y"])
+        let product = Product().copy(attributes: [attribute, attribute2, attribute3])
 
         // When
         let viewModel = EditAttributesViewModel(product: product, allowVariationCreation: false)
@@ -80,10 +83,20 @@ private extension EditAttributesViewModelTests {
     func sampleAttribute(attributeID: Int64 = 1234, name: String, options: [String] = []) -> ProductAttribute {
         ProductAttribute(siteID: 123,
                          attributeID: attributeID,
-                         name: name ,
+                         name: name,
                          position: 0,
                          visible: true,
                          variation: true,
+                         options: options)
+    }
+
+    func sampleNonVariationAttribute(attributeID: Int64 = 9999, name: String, options: [String] = []) -> ProductAttribute {
+        ProductAttribute(siteID: 123,
+                         attributeID: attributeID,
+                         name: name,
+                         position: 0,
+                         visible: true,
+                         variation: false,
                          options: options)
     }
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-02-24 11:32:06+0000 */
+/* Translation-Revision-Date: 2021-03-04 15:55:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -182,7 +182,7 @@
 "Add File" = "להוסיף קובץ";
 
 /* Action to add new attribute on the Product Attributes screen */
-"Add New Attribute" = "Add New Attribute";
+"Add New Attribute" = "להוסיף מאפיין חדש";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "להוסיף תמונה";
@@ -256,7 +256,7 @@
 "Address" = "כתובת";
 
 /* Text field address 2 in Shipping Label Address Validation */
-"Address 2" = "Address 2";
+"Address 2" = "שורת כתובת שנייה";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "להוספת מעקב אחר הזמנה.";
@@ -315,7 +315,7 @@
 
 /* Format of a product variation attribute description where the attribute is set to any value.
    Product variation attribute description where the attribute is set to any value. */
-"Any %1$@" = "Any %1$@";
+"Any %1$@" = "כל %1$@";
 
 /* Message shown when Apple authentication fails. */
 "Apple authentication failed.\nPlease make sure you are signed in to iCloud with an Apple ID that uses two-factor authentication." = "האימות של Apple נכשל.\nעליך לוודא שהתחברת ל-iCloud עם Apple ID שמאפשר אימות דו-שלבי.";
@@ -447,7 +447,7 @@
 "Cannot upload image" = "לא ניתן להעלות את התמונה";
 
 /* Card reader settings screen title */
-"Card Readers" = "Card Readers";
+"Card Readers" = "קוראי כרטיסים";
 
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "שם הספק";
@@ -473,7 +473,7 @@
 "Changing the product type will modify some of the product data" = "שינוי של סוג המוצר ישנה בהתאם חלק מהנתונים של המוצר";
 
 /* Body of the alert when a user is changing the product type */
-"Changing the product type will modify some of the product data and delete all your attributes and variations" = "Changing the product type will modify some of the product data and delete all your attributes and variations";
+"Changing the product type will modify some of the product data and delete all your attributes and variations" = "שינוי של סוג המוצר יחליף חלק מהנתונים של המוצר וימחק את כל המאפיינים והסוגים";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "יש לוודא שכתובת ה-URL של האתר שהוזנה תקפה";
@@ -503,7 +503,7 @@
 "Collect Information" = "איסוף מידע";
 
 /* Text field company in Shipping Label Address Validation */
-"Company" = "Company";
+"Company" = "חברה";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "יצירת הודעת אימייל חדשה ללקוח המשלם.";
@@ -610,7 +610,7 @@
 
 /* Create Shipping Label form navigation title
    Text on the button that starts shipping label creation */
-"Create Shipping Label" = "Create Shipping Label";
+"Create Shipping Label" = "ליצור תווית משלוח";
 
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "יצירת מוצרים";
@@ -661,7 +661,7 @@
 "Describe your product" = "יש לתאר את המוצר שלך";
 
 /* The default placeholder text for the of the Aztec editor screen. */
-"Describe your product to your future customers..." = "Describe your product to your future customers...";
+"Describe your product to your future customers..." = "לתאר את המוצר שלך ללקוחות עתידיים...";
 
 /* The navigation bar title of the Aztec editor screen.
    Title in the Product description row on Product form screen when the description is non-empty. */
@@ -771,7 +771,7 @@
 "Download limit" = "Download limit";
 
 /* Display label for simple downloadable product type. */
-"Downloadable" = "Downloadable";
+"Downloadable" = "להורדה";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "קבצים שניתנים להורדה";
@@ -799,7 +799,7 @@
 
 /* Action to edit the attributes and options used for variations
    Navigation title for the Product Attributes screen */
-"Edit Attributes" = "Edit Attributes";
+"Edit Attributes" = "לערוך מאפיינים";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "לערוך מוצרים";
@@ -995,7 +995,7 @@
 "Gain insights into how products are performing on your store" = "קבלת תובנות על ביצועי המוצרים בחנות שלך";
 
 /* Title for the progress screen while generating a variation */
-"Generating Variation" = "Generating Variation";
+"Generating Variation" = "יוצר סוג";
 
 /* View title for initial auth views. */
 "Get Started" = "מתחילים כאן";
@@ -1340,7 +1340,7 @@
 "Make your products easier to find with tags" = "תגיות יכולות לעזור לאנשים למצוא את המוצרים שלך";
 
 /* Navigates to Card Reader management screen */
-"Manage card readers" = "Manage card readers";
+"Manage card readers" = "לנהל את קוראי הכרטיסים";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "ניהול הזמנות, מעקב אחר מכירות ואחר פעילות החנות באמצעות התראות בזמן אמת.";
@@ -1448,7 +1448,7 @@
 "Net Payment" = "תשלום נטו";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
-"New Attribute Name" = "New Attribute Name";
+"New Attribute Name" = "שם המאפיין החדש";
 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "אפשרויות חדשות זמינות!";
@@ -1690,7 +1690,7 @@
 "Pending review" = "תצוגה מקדימה בהמתנה";
 
 /* Text field phone in Shipping Label Address Validation */
-"Phone" = "Phone";
+"Phone" = "טלפון";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "מספר טלפון: ‎%@";
@@ -1757,7 +1757,7 @@
 "Please wait" = "רק רגע";
 
 /* Instructions for the progress screen while generating a variation */
-"Please wait while we create the new variation" = "Please wait while we create the new variation";
+"Please wait while we create the new variation" = "יש להמתין כמה רגעים בזמן שאנחנו יוצרים את הסוג החדש";
 
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "יש להמתין מעט לפרסום המוצר הזה בחנות שלך";
@@ -1775,7 +1775,7 @@
 "Please wait..." = "רק רגע...";
 
 /* Text field postcode in Shipping Label Address Validation */
-"Postcode" = "Postcode";
+"Postcode" = "מיקוד";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "מופעל על ידי Automattic";
@@ -2024,7 +2024,7 @@
 "Request a Refund" = "לבקש החזר כספי";
 
 /* Text field placeholder in Shipping Label Address Validation */
-"Required" = "Required";
+"Required" = "חובה";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "איפוס יומן הפעילות";
@@ -2560,7 +2560,7 @@
 "Taxes" = "מיסים";
 
 /* The placeholder text for the of the Aztec editor screen. */
-"Tell us more about %1$@..." = "Tell us more about %1$@...";
+"Tell us more about %1$@..." = "יש להוסיף פרטים על %1$@...";
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "תנאי השירות";
@@ -2606,7 +2606,7 @@
 "The URL is missing a valid host." = "בכתובת האינטרנט חסר מארח חוקי.";
 
 /* Error title when trying to update or create an attribute remotely. */
-"The attribute couldn't be saved." = "The attribute couldn't be saved.";
+"The attribute couldn't be saved." = "לא ניתן היה לשמור את הסוג.";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "האישור עבור שרת זה אינו חוקי. ייתכן שאתה מתחבר לשרת שמתחזה ל-&quot;%@&quot;, מה שעלול לסכן את המידע הסודי שלך.\n\nלבטוח באישור בכל מקרה?";
@@ -2654,7 +2654,7 @@
 "The stock quantity for this product. Editable." = "כמות המלאי של המוצר. ניתן לעריכה.";
 
 /* Error title when failing to generate a variation. */
-"The variation couldn't be generated." = "The variation couldn't be generated.";
+"The variation couldn't be generated." = "לא ניתן היה ליצור את הסוג.";
 
 /* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
 "The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "זה לא אתר של WordPress. כדי שנוכל להתחבר לאתר, השירות של WordPress חייב להיות מותקן באתר.";
@@ -2740,7 +2740,7 @@
 "To" = "עד";
 
 /* Footer of text field section in Add Attribute screen */
-"To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first";
+"To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "כדי ליצור סוג, עליך קודם כל להגדיר את המאפיינים שלו (למשל, 'צבע', 'מידה')";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "כדי ליצור חשבון WordPress.com חדש, יש להזין את כתובת האימייל שלך.";
@@ -2807,7 +2807,7 @@
 "Trust" = "אמון";
 
 /* Button to trigger connection to another account in store picker */
-"Try With Another Account" = "Try With Another Account";
+"Try With Another Account" = "לנסות עם חשבון אחר";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "ניתן לנסות באמצעות כתובת אימייל שונה";
@@ -2957,7 +2957,7 @@
 "Upsells" = "שדרוגי מכירות";
 
 /* Action to use the address in Shipping Label Validation screen as entered */
-"Use Address as Entered" = "Use Address as Entered";
+"Use Address as Entered" = "להשתמש בכתובת כפי שהוזנה";
 
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */

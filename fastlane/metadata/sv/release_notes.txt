@@ -1,0 +1,5 @@
+Vi är glada att meddela uppdateringar av WooCommerce iOS-appen.
+
+Det är nu enklare än någonsin att redigera attributen för olika produkter, till exempel färg och storlek på kläder.
+Vi korrigerade fel som påverkade knappen "Tillbaka" och visningen av produktminiatyrer.
+För artiklar som passar beskrivningen inkluderar nu informationen om produkttypen dessutom "Nedladdningsbar".

@@ -9,8 +9,8 @@ final class SettingsScreen: BaseScreen {
         static let logOutButton = "settings-log-out-button"
     }
 
-    private let selectedSiteUrl = XCUIApplication().cells.staticTexts[ElementStringIDs.headlineLabel]
-    private let selectedDisplayName = XCUIApplication().cells.staticTexts[ElementStringIDs.bodyLabel]
+    private let selectedStoreName = XCUIApplication().cells.staticTexts[ElementStringIDs.headlineLabel]
+    private let selectedSiteUrl = XCUIApplication().cells.staticTexts[ElementStringIDs.bodyLabel]
     private let logOutButton = XCUIApplication().cells[ElementStringIDs.logOutButton]
     private let logOutAlert = XCUIApplication().alerts.element(boundBy: 0)
 
@@ -46,16 +46,15 @@ final class SettingsScreen: BaseScreen {
 /// Assertions
 extension SettingsScreen {
 
-    func verifySelectedStoreDisplays(siteUrl expectedSiteUrl: String, displayName expectedDisplayName: String) -> SettingsScreen {
+    func verifySelectedStoreDisplays(storeName expectedStoreName: String, siteUrl expectedSiteUrl: String) -> SettingsScreen {
+        let actualStoreName = selectedStoreName.label
         let expectedSiteUrl = expectedSiteUrl.replacingOccurrences(of: "http://", with: "")
         let actualSiteUrl = selectedSiteUrl.label
-        let actualDisplayName = selectedDisplayName.label
 
+        XCTAssertEqual(expectedStoreName, actualStoreName,
+                       "Expected display name '\(expectedStoreName)' but '\(actualStoreName)' was displayed instead.")
         XCTAssertEqual(expectedSiteUrl, actualSiteUrl,
                        "Expected site URL \(expectedSiteUrl) but \(actualSiteUrl) was displayed instead.")
-        XCTAssertEqual(expectedDisplayName, actualDisplayName,
-                       "Expected display name '\(expectedDisplayName)' but '\(actualDisplayName)' was displayed instead.")
-
         return self
     }
 }

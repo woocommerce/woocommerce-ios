@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-02-24 11:32:06+0000 */
+/* Translation-Revision-Date: 2021-03-04 15:54:54+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -182,7 +182,7 @@
 "Add File" = "Bestand toevoegen";
 
 /* Action to add new attribute on the Product Attributes screen */
-"Add New Attribute" = "Add New Attribute";
+"Add New Attribute" = "Nieuwe eigenschap toevoegen";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Foto toevoegen";
@@ -256,7 +256,7 @@
 "Address" = "Adres";
 
 /* Text field address 2 in Shipping Label Address Validation */
-"Address 2" = "Address 2";
+"Address 2" = "Adres 2";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Voegt tracking toe aan een bestelling.";
@@ -315,7 +315,7 @@
 
 /* Format of a product variation attribute description where the attribute is set to any value.
    Product variation attribute description where the attribute is set to any value. */
-"Any %1$@" = "Any %1$@";
+"Any %1$@" = "Elke %1$@";
 
 /* Message shown when Apple authentication fails. */
 "Apple authentication failed.\nPlease make sure you are signed in to iCloud with an Apple ID that uses two-factor authentication." = "Apple-authenticatie mislukt.\nZorg dat je bent ingelogd op iCloud met een Apple-ID die gebruikmaakt van tweevoudige verificatie.";
@@ -447,7 +447,7 @@
 "Cannot upload image" = "De afbeelding kan niet geüpload worden";
 
 /* Card reader settings screen title */
-"Card Readers" = "Card Readers";
+"Card Readers" = "Kaartlezers";
 
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "Naam bezorgservice";
@@ -473,7 +473,7 @@
 "Changing the product type will modify some of the product data" = "Door het producttype te wijzigen, worden sommige productgegevens aangepast";
 
 /* Body of the alert when a user is changing the product type */
-"Changing the product type will modify some of the product data and delete all your attributes and variations" = "Changing the product type will modify some of the product data and delete all your attributes and variations";
+"Changing the product type will modify some of the product data and delete all your attributes and variations" = "Door het producttype te wijzigen, worden sommige productgegevens aangepast en worden alle eigenschappen en variaties verwijderd";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Controleer of de ingevoerde URL geldig is";
@@ -503,7 +503,7 @@
 "Collect Information" = "Verzamel informatie";
 
 /* Text field company in Shipping Label Address Validation */
-"Company" = "Company";
+"Company" = "Bedrijf";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "Hiermee wordt een nieuw e-mailbericht aan de gefactureerde klant opgesteld.";
@@ -610,7 +610,7 @@
 
 /* Create Shipping Label form navigation title
    Text on the button that starts shipping label creation */
-"Create Shipping Label" = "Create Shipping Label";
+"Create Shipping Label" = "Verzendlabel aanmaken";
 
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "Producten aanmaken";
@@ -661,7 +661,7 @@
 "Describe your product" = "Beschrijf je product";
 
 /* The default placeholder text for the of the Aztec editor screen. */
-"Describe your product to your future customers..." = "Describe your product to your future customers...";
+"Describe your product to your future customers..." = "Beschrijf je product voor je toekomstige klanten...";
 
 /* The navigation bar title of the Aztec editor screen.
    Title in the Product description row on Product form screen when the description is non-empty. */
@@ -771,7 +771,7 @@
 "Download limit" = "Download limit";
 
 /* Display label for simple downloadable product type. */
-"Downloadable" = "Downloadable";
+"Downloadable" = "Downloadbaar";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "Downloadbare bestanden";
@@ -799,7 +799,7 @@
 
 /* Action to edit the attributes and options used for variations
    Navigation title for the Product Attributes screen */
-"Edit Attributes" = "Edit Attributes";
+"Edit Attributes" = "Wijzig eigenschappen";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Producten bewerken";
@@ -995,7 +995,7 @@
 "Gain insights into how products are performing on your store" = "Krijg inzicht in hoe goed producten op je site presteren";
 
 /* Title for the progress screen while generating a variation */
-"Generating Variation" = "Generating Variation";
+"Generating Variation" = "Variatie aan het genereren";
 
 /* View title for initial auth views. */
 "Get Started" = "Aan de slag";
@@ -1340,7 +1340,7 @@
 "Make your products easier to find with tags" = "Maak je producten eenvoudiger te vinden met tags";
 
 /* Navigates to Card Reader management screen */
-"Manage card readers" = "Manage card readers";
+"Manage card readers" = "Kaartlezers beheren";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Beheer bestellingen, houd de verkoop bij en bewaak de winkelactiviteit met waarschuwingen in real time.";
@@ -1448,7 +1448,7 @@
 "Net Payment" = "Netto betaling";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
-"New Attribute Name" = "New Attribute Name";
+"New Attribute Name" = "Nieuwe naam van eigenschap";
 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "Nieuwe functies beschikbaar!";
@@ -1690,7 +1690,7 @@
 "Pending review" = "Beoordeling in behandeling";
 
 /* Text field phone in Shipping Label Address Validation */
-"Phone" = "Phone";
+"Phone" = "Telefoonnummer";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Telefoonnummer: %@";
@@ -1757,7 +1757,7 @@
 "Please wait" = "Een moment geduld";
 
 /* Instructions for the progress screen while generating a variation */
-"Please wait while we create the new variation" = "Please wait while we create the new variation";
+"Please wait while we create the new variation" = "Een moment geduld alsjeblieft. De nieuwe variatie wordt gemaakt.";
 
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Een moment geduld terwijl we dit product in je winkel publiceren";
@@ -2024,7 +2024,7 @@
 "Request a Refund" = "Een terugbetaling aanvragen";
 
 /* Text field placeholder in Shipping Label Address Validation */
-"Required" = "Required";
+"Required" = "Verplicht";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Activiteitenlog herstellen";
@@ -2560,7 +2560,7 @@
 "Taxes" = "Belastingen";
 
 /* The placeholder text for the of the Aztec editor screen. */
-"Tell us more about %1$@..." = "Tell us more about %1$@...";
+"Tell us more about %1$@..." = "Vertel ons meer over %1$@...";
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Servicevoorwaarden";
@@ -2606,7 +2606,7 @@
 "The URL is missing a valid host." = "De URL heeft geen geldige host.";
 
 /* Error title when trying to update or create an attribute remotely. */
-"The attribute couldn't be saved." = "The attribute couldn't be saved.";
+"The attribute couldn't be saved." = "De eigenschap kon niet worden opgeslagen.";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Het certificaat voor deze server is ongeldig. Je maakt mogelijk verbinding met een server die zich voordoet als “%@”, wat je vertrouwelijke informatie in gevaar kan brengen.\n\nWil je het certificaat toch vertrouwen?";
@@ -2654,7 +2654,7 @@
 "The stock quantity for this product. Editable." = "De voorraad van dit product. Bewerkbaar.";
 
 /* Error title when failing to generate a variation. */
-"The variation couldn't be generated." = "The variation couldn't be generated.";
+"The variation couldn't be generated." = "De variatie kon niet worden gegenereerd .";
 
 /* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
 "The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "De website is geen WordPress-website. Om er verbinding mee te kunnen maken, moet WordPress geïnstalleerd zijn.";
@@ -2740,7 +2740,7 @@
 "To" = "Aan";
 
 /* Footer of text field section in Add Attribute screen */
-"To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first";
+"To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "Om een variatie te maken moet je de eigenschappen (bv. 'kleur', 'maat') eerst instellen.";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Om een nieuw WordPress.com account te maken, vul jouw e-mailadres in.";
@@ -2807,7 +2807,7 @@
 "Trust" = "Vertrouw";
 
 /* Button to trigger connection to another account in store picker */
-"Try With Another Account" = "Try With Another Account";
+"Try With Another Account" = "Een ander account proberen";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Probeer met ander e-mailadres";
@@ -2957,7 +2957,7 @@
 "Upsells" = "Upsells";
 
 /* Action to use the address in Shipping Label Validation screen as entered */
-"Use Address as Entered" = "Use Address as Entered";
+"Use Address as Entered" = "Gebruik het adres zoals het is ingevoerd";
 
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-02-25 13:44:03+0000 */
+/* Translation-Revision-Date: 2021-03-03 15:54:06+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -315,7 +315,7 @@
 
 /* Format of a product variation attribute description where the attribute is set to any value.
    Product variation attribute description where the attribute is set to any value. */
-"Any %1$@" = "Any %1$@";
+"Any %1$@" = "Alla %1$@";
 
 /* Message shown when Apple authentication fails. */
 "Apple authentication failed.\nPlease make sure you are signed in to iCloud with an Apple ID that uses two-factor authentication." = "Autentiseringen via Apple misslyckades.\nSe till att du är inloggad på iCloud med ett Apple-ID som använder tvåfaktorautentisering.";
@@ -447,7 +447,7 @@
 "Cannot upload image" = "Det går inte att ladda upp bilden";
 
 /* Card reader settings screen title */
-"Card Readers" = "Card Readers";
+"Card Readers" = "Kortläsare";
 
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "Transportföretagsnamn";
@@ -473,7 +473,7 @@
 "Changing the product type will modify some of the product data" = "Om du ändrar produkttypen ändras en del av produktinformationen";
 
 /* Body of the alert when a user is changing the product type */
-"Changing the product type will modify some of the product data and delete all your attributes and variations" = "Changing the product type will modify some of the product data and delete all your attributes and variations";
+"Changing the product type will modify some of the product data and delete all your attributes and variations" = "Om du ändrar produkttypen ändras en del av produktinformationen och alla dina attribut och varianter tas bort";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Kontrollera att angiven URL är giltig";
@@ -1340,7 +1340,7 @@
 "Make your products easier to find with tags" = "Gör dina produkter lättare att hitta med etiketter";
 
 /* Navigates to Card Reader management screen */
-"Manage card readers" = "Manage card readers";
+"Manage card readers" = "Hantera kortläsare";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Hantera ordrar, spåra försäljning och övervaka butiksaktivitet med varningar i realtid.";
@@ -2560,7 +2560,7 @@
 "Taxes" = "Momser";
 
 /* The placeholder text for the of the Aztec editor screen. */
-"Tell us more about %1$@..." = "Tell us more about %1$@...";
+"Tell us more about %1$@..." = "Berätta mer om %1$@...";
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Användarvillkor";
@@ -2740,7 +2740,7 @@
 "To" = "Till";
 
 /* Footer of text field section in Add Attribute screen */
-"To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first";
+"To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "För att skapa en variant måste du först ställa in dess attribut (d.v.s. \"Färg\", \"Storlek\")";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Fyll i din e-postadress för att skapa ditt nya WordPress.com-konto.";

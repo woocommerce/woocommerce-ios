@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-02-24 11:32:06+0000 */
+/* Translation-Revision-Date: 2021-03-04 11:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -182,7 +182,7 @@
 "Add File" = "Aggiungi file";
 
 /* Action to add new attribute on the Product Attributes screen */
-"Add New Attribute" = "Add New Attribute";
+"Add New Attribute" = "Aggiungi nuovo attributo";
 
 /* Action to add one photo on the Product images screen */
 "Add Photo" = "Aggiungi foto";
@@ -256,7 +256,7 @@
 "Address" = "Indirizzo";
 
 /* Text field address 2 in Shipping Label Address Validation */
-"Address 2" = "Address 2";
+"Address 2" = "Indirizzo 2";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Aggiungi tracciabilità a un ordine.";
@@ -315,7 +315,7 @@
 
 /* Format of a product variation attribute description where the attribute is set to any value.
    Product variation attribute description where the attribute is set to any value. */
-"Any %1$@" = "Any %1$@";
+"Any %1$@" = "Qualsiasi %1$@";
 
 /* Message shown when Apple authentication fails. */
 "Apple authentication failed.\nPlease make sure you are signed in to iCloud with an Apple ID that uses two-factor authentication." = "Autenticazione Apple non riuscita.\nAssicurati di essere iscritto a iCloud con un ID Apple che utilizzi l'autenticazione a due fattori.";
@@ -447,7 +447,7 @@
 "Cannot upload image" = "Impossibile caricare l'immagine";
 
 /* Card reader settings screen title */
-"Card Readers" = "Card Readers";
+"Card Readers" = "Lettori di schede";
 
 /* Add Custom shipping carrier. Title of cell presenting the carrier name */
 "Carrier name" = "Nome del corriere";
@@ -473,7 +473,7 @@
 "Changing the product type will modify some of the product data" = "Cambiando il tipo di prodotto, alcuni dati del prodotto saranno modificati";
 
 /* Body of the alert when a user is changing the product type */
-"Changing the product type will modify some of the product data and delete all your attributes and variations" = "Changing the product type will modify some of the product data and delete all your attributes and variations";
+"Changing the product type will modify some of the product data and delete all your attributes and variations" = "Cambiando il tipo di prodotto, alcuni dati del prodotto saranno modificati e tutti gli attributi e le varianti verranno modificati";
 
 /* The message of the alert when there is an error in the URL of an external product */
 "Check that the URL entered is valid" = "Verifica che l'URL inserito sia valido";
@@ -503,7 +503,7 @@
 "Collect Information" = "Raccogli informazioni";
 
 /* Text field company in Shipping Label Address Validation */
-"Company" = "Company";
+"Company" = "Società";
 
 /* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "Scrive un nuovo messaggio e-mail per il cliente della fatturazione.";
@@ -610,7 +610,7 @@
 
 /* Create Shipping Label form navigation title
    Text on the button that starts shipping label creation */
-"Create Shipping Label" = "Create Shipping Label";
+"Create Shipping Label" = "Crea etichetta di spedizione";
 
 /* My Store > Settings > Experimental features > Products */
 "Creating products" = "Creazione di prodotti";
@@ -661,7 +661,7 @@
 "Describe your product" = "Descrivi il tuo prodotto";
 
 /* The default placeholder text for the of the Aztec editor screen. */
-"Describe your product to your future customers..." = "Describe your product to your future customers...";
+"Describe your product to your future customers..." = "Descrivi il prodotto ai futuri clienti...";
 
 /* The navigation bar title of the Aztec editor screen.
    Title in the Product description row on Product form screen when the description is non-empty. */
@@ -771,7 +771,7 @@
 "Download limit" = "Download limit";
 
 /* Display label for simple downloadable product type. */
-"Downloadable" = "Downloadable";
+"Downloadable" = "Scaricabile";
 
 /* Edit product downloadable files screen - Screen title */
 "Downloadable Files" = "File scaricabili";
@@ -799,7 +799,7 @@
 
 /* Action to edit the attributes and options used for variations
    Navigation title for the Product Attributes screen */
-"Edit Attributes" = "Edit Attributes";
+"Edit Attributes" = "Modifica attributi";
 
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Modifica prodotti";
@@ -995,7 +995,7 @@
 "Gain insights into how products are performing on your store" = "Ottieni informazioni su come i prodotti vengono tracciati nel negozio";
 
 /* Title for the progress screen while generating a variation */
-"Generating Variation" = "Generating Variation";
+"Generating Variation" = "Generazione della variante";
 
 /* View title for initial auth views. */
 "Get Started" = "Inizia ora";
@@ -1340,7 +1340,7 @@
 "Make your products easier to find with tags" = "Rendi i tuoi prodotti più semplici da trovare con i tag";
 
 /* Navigates to Card Reader management screen */
-"Manage card readers" = "Manage card readers";
+"Manage card readers" = "Gestisci lettori di carte";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Gestisci gli ordini, traccia le vendite e monitora le attività del negozio con avvisi in tempo reale.";
@@ -1448,7 +1448,7 @@
 "Net Payment" = "Pagamento netto";
 
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
-"New Attribute Name" = "New Attribute Name";
+"New Attribute Name" = "Nuovo nome attributo";
 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "Nuove funzionalità disponibili.";
@@ -1690,7 +1690,7 @@
 "Pending review" = "In attesa di revisione";
 
 /* Text field phone in Shipping Label Address Validation */
-"Phone" = "Phone";
+"Phone" = "Telefono";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Numero di telefono: %@";
@@ -1757,7 +1757,7 @@
 "Please wait" = "Attendi";
 
 /* Instructions for the progress screen while generating a variation */
-"Please wait while we create the new variation" = "Please wait while we create the new variation";
+"Please wait while we create the new variation" = "Attendi mentre creiamo la nuova variante";
 
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Attendi mentre pubblichiamo questo prodotto nel tuo negozio";
@@ -1775,7 +1775,7 @@
 "Please wait..." = "Attendi…";
 
 /* Text field postcode in Shipping Label Address Validation */
-"Postcode" = "Postcode";
+"Postcode" = "C.A.P.";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Utilizza Automattic";
@@ -2024,7 +2024,7 @@
 "Request a Refund" = "Richiedi un rimborso";
 
 /* Text field placeholder in Shipping Label Address Validation */
-"Required" = "Required";
+"Required" = "Richiesto";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Azzera log attività";
@@ -2560,7 +2560,7 @@
 "Taxes" = "Tasse";
 
 /* The placeholder text for the of the Aztec editor screen. */
-"Tell us more about %1$@..." = "Tell us more about %1$@...";
+"Tell us more about %1$@..." = "Raccontaci di più su %1$@...";
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Termini di Servizio";
@@ -2606,7 +2606,7 @@
 "The URL is missing a valid host." = "L'host dell'URL non è valido.";
 
 /* Error title when trying to update or create an attribute remotely. */
-"The attribute couldn't be saved." = "The attribute couldn't be saved.";
+"The attribute couldn't be saved." = "Impossibile salvare l'attributo.";
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Il certificato per questo server non è valido. Continuando, corri il rischio di connetterti ad un server che finge di essere  “%@”, il che potrebbe compromettere la sicurezza di informazioni riservate che ti appartengono.\n\nVuoi accettare comunque il certificato?";
@@ -2654,7 +2654,7 @@
 "The stock quantity for this product. Editable." = "Quantità in magazzino per questo prodotto. Modificabile.";
 
 /* Error title when failing to generate a variation. */
-"The variation couldn't be generated." = "The variation couldn't be generated.";
+"The variation couldn't be generated." = "Impossibile generare la variante.";
 
 /* Message explaining that a site is not a WordPress site. Reads like 'The website awebsite.com you'll is not a WordPress site... */
 "The website is not a WordPress site. For us to connect to it, the site must have WordPress installed." = "Questo non è un sito WordPress. Per permettere la connessione, il sito deve avere WordPress installato.";
@@ -2740,7 +2740,7 @@
 "To" = "A";
 
 /* Footer of text field section in Add Attribute screen */
-"To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first";
+"To create a variation, you'll need to set its attributes (i.e. \"Color,\" \"Size\") first" = "Per creare una variante, devi prima impostare i suoi attributi (ad esempio \"Colore\", \"Taglia\")";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Per creare il tuo nuovo account WordPress.com, inserisci il tuo indirizzo e-mail.";
@@ -2807,7 +2807,7 @@
 "Trust" = "Procedi ugualmente";
 
 /* Button to trigger connection to another account in store picker */
-"Try With Another Account" = "Try With Another Account";
+"Try With Another Account" = "Prova con un altro account";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Prova con un'altra e-mail";
@@ -2957,7 +2957,7 @@
 "Upsells" = "Upsell";
 
 /* Action to use the address in Shipping Label Validation screen as entered */
-"Use Address as Entered" = "Use Address as Entered";
+"Use Address as Entered" = "Usa l'indirizzo inserito";
 
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder - Placeholder for the username textfield. - Username placeholder */

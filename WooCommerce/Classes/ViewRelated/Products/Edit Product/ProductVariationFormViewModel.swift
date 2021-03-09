@@ -65,7 +65,6 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     private let parentProductSKU: String?
     private let productImageActionHandler: ProductImageActionHandler
     private let storesManager: StoresManager
-    private let isAddProductVariationsEnabled: Bool
     private var cancellable: ObservationToken?
 
     init(productVariation: EditableProductVariationModel,
@@ -73,13 +72,11 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
          parentProductSKU: String?,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
-         storesManager: StoresManager = ServiceLocator.stores,
-         isAddProductVariationsEnabled: Bool) {
+         storesManager: StoresManager = ServiceLocator.stores) {
         self.allAttributes = allAttributes
         self.parentProductSKU = parentProductSKU
         self.productImageActionHandler = productImageActionHandler
         self.storesManager = storesManager
-        self.isAddProductVariationsEnabled = isAddProductVariationsEnabled
         self.originalProductVariation = productVariation
         self.productVariation = productVariation
         self.formType = formType
@@ -122,7 +119,7 @@ extension ProductVariationFormViewModel {
     }
 
     func canDeleteProduct() -> Bool {
-        isAddProductVariationsEnabled && formType == .edit
+        formType == .edit
     }
 }
 

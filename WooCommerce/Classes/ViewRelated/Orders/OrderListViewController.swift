@@ -15,6 +15,10 @@ protocol OrderListViewControllerDelegate: class {
     /// Called when `OrderListViewController` (or `OrdersViewController`) is about to fetch Orders from the API.
     ///
     func orderListViewControllerWillSynchronizeOrders(_ viewController: UIViewController)
+
+    /// Called when an order list `UIScrollView`'s `scrollViewDidScroll` event is triggered from the user.
+    ///
+    func orderListScrollViewDidScroll(_ scrollView: UIScrollView)
 }
 
 /// OrderListViewController: Displays the list of Orders associated to the active Store / Account.
@@ -454,6 +458,10 @@ extension OrderListViewController: UITableViewDelegate {
         header.rightText = nil
 
         return header
+    }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        delegate?.orderListScrollViewDidScroll(scrollView)
     }
 }
 

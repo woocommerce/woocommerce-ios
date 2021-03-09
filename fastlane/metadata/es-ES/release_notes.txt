@@ -1,0 +1,5 @@
+Nos llena de emoción presentar las novedades de la aplicación de WooCommerce para iOS.
+
+Ahora, editar los atributos de los productos variables es más fácil que nunca (por ejemplo, el color y la talla de artículos de ropa).
+Hemos corregido errores que afectaban al botón "Atrás" y a cómo se mostraban las miniaturas de producto.
+Además, en los artículos que cumplan los requisitos, los detalles del tipo de producto ahora incluyen la opción "Descargable".

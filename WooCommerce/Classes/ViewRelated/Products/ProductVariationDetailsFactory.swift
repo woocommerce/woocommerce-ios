@@ -20,8 +20,7 @@ struct ProductVariationDetailsFactory {
                                          parentProduct: parentProduct,
                                          presentationStyle: presentationStyle,
                                          currencySettings: currencySettings,
-                                         isEditProductsEnabled: forceReadOnly ? false: true,
-                                         isAddProductVariationsEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.addProductVariations))
+                                         isEditProductsEnabled: forceReadOnly ? false: true)
         onCompletion(vc)
     }
 }
@@ -31,8 +30,7 @@ private extension ProductVariationDetailsFactory {
                                         parentProduct: Product,
                                         presentationStyle: ProductFormPresentationStyle,
                                         currencySettings: CurrencySettings,
-                                        isEditProductsEnabled: Bool,
-                                        isAddProductVariationsEnabled: Bool) -> UIViewController {
+                                        isEditProductsEnabled: Bool) -> UIViewController {
         let vc: UIViewController
         let productVariationModel = EditableProductVariationModel(productVariation: productVariation,
                                                                   allAttributes: parentProduct.attributes,
@@ -44,13 +42,11 @@ private extension ProductVariationDetailsFactory {
                                                       allAttributes: parentProduct.attributes,
                                                       parentProductSKU: parentProduct.sku,
                                                       formType: formType,
-                                                      productImageActionHandler: productImageActionHandler,
-                                                      isAddProductVariationsEnabled: isAddProductVariationsEnabled)
+                                                      productImageActionHandler: productImageActionHandler)
         vc = ProductFormViewController(viewModel: viewModel,
                                        eventLogger: ProductFormEventLogger(),
                                        productImageActionHandler: productImageActionHandler,
-                                       presentationStyle: presentationStyle,
-                                       isAddProductVariationsEnabled: isAddProductVariationsEnabled)
+                                       presentationStyle: presentationStyle)
         // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         vc.hidesBottomBarWhenPushed = true
         return vc

@@ -87,7 +87,7 @@ private extension AddAttributeViewModel {
     func updateSections(attributes: [ProductAttribute]) {
 
         /// Sum fetched attributes + attributes inside the product (global + local), and remove duplicated product attributes, then sort it
-        localAndGlobalAttributes = attributes + product.attributes.filter { element in
+        localAndGlobalAttributes = attributes + product.attributesForVariations.filter { element in
             return !attributes.contains { $0.attributeID == element.attributeID }
         }.sorted(by: > )
 

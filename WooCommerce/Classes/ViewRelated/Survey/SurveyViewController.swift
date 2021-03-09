@@ -79,11 +79,13 @@ extension SurveyViewController {
                     .asURL()
                     .tagPlatform("ios")
                     .tagProductMilestone("5")
+                    .tagAppVersion(Bundle.main.bundleVersion())
             case .shippingLabelsRelease1Feedback:
                 return WooConstants.URLs.shippingLabelsRelease1Feedback
                     .asURL()
                     .tagPlatform("ios")
                     .tagShippingLabelsMilestone("1")
+                    .tagAppVersion(Bundle.main.bundleVersion())
             }
         }
 

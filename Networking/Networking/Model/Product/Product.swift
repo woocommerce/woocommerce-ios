@@ -109,6 +109,13 @@ public struct Product: Codable, GeneratedCopiable, Equatable {
         return ProductTaxStatus(rawValue: taxStatusKey)
     }
 
+    /// Filtered product attributes available for variations
+    /// (attributes with `variation == true`)
+    ///
+    public var attributesForVariations: [ProductAttribute] {
+        attributes.filter { $0.variation }
+    }
+
     /// Whether the product has an integer (or nil) stock quantity.
     /// Decimal (non-integer) stock quantities currently aren't accepted by the Core API.
     /// Related issue: https://github.com/woocommerce/woocommerce-ios/issues/3494

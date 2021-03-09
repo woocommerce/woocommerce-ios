@@ -6,6 +6,8 @@ import Yosemite
 /// Each time range tab is managed by a `StoreStatsAndTopPerformersPeriodViewController`.
 ///
 final class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewController {
+    /// For navigation bar large title workaround.
+    weak var scrollDelegate: DashboardUIScrollDelegate?
 
     // MARK: - DashboardUI protocol
 
@@ -285,6 +287,7 @@ private extension StoreStatsAndTopPerformersViewController {
         periodVCs.append(yearVC)
 
         periodVCs.forEach { (vc) in
+            vc.scrollDelegate = scrollDelegate
             vc.onPullToRefresh = { [weak self] in
                 self?.onPullToRefresh()
             }

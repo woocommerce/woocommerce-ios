@@ -3,7 +3,7 @@
 // Helpers
 // --------------------------------------------------------------------------------
 
-/// A representation of the struct/class to generate. This defines the
+/// A representation of the struct/class/enum to generate. This defines the
 /// properties that the template will need to generate the fake method.
 ///
 /// We create our own data structure to clarify what we need in the template code.
@@ -11,6 +11,14 @@
 /// by this struct.
 ///
 struct FakeableSpec {
+
+    /// A representation of how the spec will be built. 
+    /// Either by a value(eg: Enums) or by an initializer(eg: Struct, Classes)
+    ///
+    enum Content {
+        case value(String)
+        case initializer([Property])
+    }
 
     /// A representation of a property for the fake() method.
     ///
@@ -29,17 +37,24 @@ struct FakeableSpec {
     /// string if the true accessLevel is "internal".
     let accessLevelWithSpacePostfix: String
 
-    /// The properties that we're going to generate as part of the fake() method.
-    let properties: [Property]
+    /// The content that will be used as the return content of the fake() method.
+    let content: Content
 }
 
 // The matching types that we're going to generate code for.
 let matchingTypes = types.based["GeneratedFakeable"].filter {
-    $0.kind == "struct" || $0.kind == "class"
+    $0.kind == "struct" || $0.kind == "class" || $0.kind == "enum"
 }
 
 // The collection of FakeableSpecs that the template below will use.
 let specsToGenerate: [FakeableSpec] = matchingTypes.map { type in
+
+    let accessLevel = type.accessLevel == "internal" ? "" : "\(type.accessLevel) "
+
+    /// If we are generating for an `Enum`, return with `.single()` for content 
+    if let enumType = type as? Enum, let firstEnumCase = enumType.cases.first {
+        return FakeableSpec(name: enumType.name, accessLevelWithSpacePostfix: accessLevel, content: .value(firstEnumCase.name))
+    }
 
     // Grab the properties that should be part of the type `init` arguments. A possible future enhancement would be
     // to actually match this with the class/struct's constructor arguments.
@@ -62,7 +77,7 @@ let specsToGenerate: [FakeableSpec] = matchingTypes.map { type in
     return FakeableSpec(
         name: type.name,
         accessLevelWithSpacePostfix: type.accessLevel == "internal" ? "" : "\(type.accessLevel) ",
-        properties: propSpecs
+        content: .initializer(propSpecs)
     )
 }
 -%>
@@ -78,12 +93,15 @@ extension <%= spec.name -%> {
     /// Returns a "ready to use" type filled with fake values.
     ///
     <%= spec.accessLevelWithSpacePostfix -%> <%_ _%> static func fake() -> <%= spec.name -%> {
-        <%= spec.name -%>(
-<% for property in spec.properties { -%>
-            <%= property.name -%>: .fake() <%_ _%> <%= property.commaOrNothing %>
-<% } -%>
-        )
-    }
+    <% if case .initializer(let properties) = spec.content { -%>
+    <%= spec.name -%>(
+    <% for property in properties { -%>
+        <%= property.name -%>: .fake() <%_ _%> <%= property.commaOrNothing %>
+    <% } -%>
+    )
+    <% } else if case .value(let caseName) = spec.content { -%>
+    .<%= caseName -%>
+    <% } -%>
+}
 }
 <% } -%>
-

@@ -46,7 +46,9 @@ let specsToGenerate: [FakeableSpec] = matchingTypes.map { type in
     let validVariables = type.variables.filter {
         // Exclude properties that do not have the same access level as the class/struct. For example,
         // properties that are internal or private should not be included.
-        $0.readAccess == type.accessLevel && !$0.isComputed && !$0.isStatic
+        let validAccess = $0.readAccess == type.accessLevel && !$0.isComputed && !$0.isStatic
+        let noDefaultValue = $0.defaultValue == nil
+        return validAccess && noDefaultValue
     }
 
     // Convert validVariables to FakeableSpec.Property instances that the template will be able to use.

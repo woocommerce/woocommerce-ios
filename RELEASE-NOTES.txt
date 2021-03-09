@@ -4,7 +4,6 @@
 -----
 - [*] Fix: In landscape orientation, all backgrounds on detail screens and their subsections now extend edge-to-edge.
 
-
 6.2
 -----
 

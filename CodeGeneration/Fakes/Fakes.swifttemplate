@@ -30,14 +30,14 @@ struct FakeableSpec {
         let commaOrNothing: String
     }
 
-    /// The name of the struct/class that conforms to GeneratedFakeable.
+    /// The name of the struct/class/enum that conforms to GeneratedFakeable.
     let name: String
 
     /// The access level "public", "private", etc with a space at the end. This is just an empty
     /// string if the true accessLevel is "internal".
     let accessLevelWithSpacePostfix: String
 
-    /// The content that will be used as the return content of the fake() method.
+    /// The content that will be used as the return text of the fake() method.
     let content: Content
 }
 
@@ -51,34 +51,25 @@ let specsToGenerate: [FakeableSpec] = matchingTypes.map { type in
 
     let accessLevel = type.accessLevel == "internal" ? "" : "\(type.accessLevel) "
 
-    /// If we are generating for an `Enum`, return with `.single()` for content 
+    /// If we are generating for an `Enum`, return with `.value` for content 
     if let enumType = type as? Enum, let firstEnumCase = enumType.cases.first {
         return FakeableSpec(name: enumType.name, accessLevelWithSpacePostfix: accessLevel, content: .value(firstEnumCase.name))
     }
 
-    // Grab the properties that should be part of the type `init` arguments. A possible future enhancement would be
-    // to actually match this with the class/struct's constructor arguments.
-    let validVariables = type.variables.filter {
-        // Exclude properties that do not have the same access level as the class/struct. For example,
-        // properties that are internal or private should not be included.
-        let validAccess = $0.readAccess == type.accessLevel && !$0.isComputed && !$0.isStatic
-        let noDefaultValue = $0.defaultValue == nil
-        return validAccess && noDefaultValue
+    /// Make sure we have at least one non throwable-initializer to work with.
+    guard let initializer = type.initializers.first(where: { !$0.throws }) else {
+        fatalError("Couldn't find initializer for type: \(type.name)")
     }
-
-    // Convert validVariables to FakeableSpec.Property instances that the template will be able to use.
-    let propSpecs: [FakeableSpec.Property] = validVariables.map { variable in
+    
+    // Convert initializer's parameters to FakeableSpec.Property instances that the template will be able to use.
+    let propSpecs: [FakeableSpec.Property] = initializer.parameters.map { parameter in
         FakeableSpec.Property(
-            name: variable.name,
-            commaOrNothing: variable == validVariables.last  ? "" : ","
+            name: parameter.argumentLabel ?? "" , // TODO: Add support to un-named parameters
+            commaOrNothing: parameter == initializer.parameters.last  ? "" : ","
         )
     }
 
-    return FakeableSpec(
-        name: type.name,
-        accessLevelWithSpacePostfix: type.accessLevel == "internal" ? "" : "\(type.accessLevel) ",
-        content: .initializer(propSpecs)
-    )
+    return FakeableSpec(name: type.name, accessLevelWithSpacePostfix: accessLevel, content: .initializer(propSpecs))
 }
 -%>
 <%#
@@ -93,15 +84,15 @@ extension <%= spec.name -%> {
     /// Returns a "ready to use" type filled with fake values.
     ///
     <%= spec.accessLevelWithSpacePostfix -%> <%_ _%> static func fake() -> <%= spec.name -%> {
-    <% if case .initializer(let properties) = spec.content { -%>
-    <%= spec.name -%>(
-    <% for property in properties { -%>
-        <%= property.name -%>: .fake() <%_ _%> <%= property.commaOrNothing %>
-    <% } -%>
-    )
-    <% } else if case .value(let caseName) = spec.content { -%>
-    .<%= caseName -%>
-    <% } -%>
-}
+<% if case .initializer(let properties) = spec.content { -%>
+        .init(
+<% for property in properties { -%>
+            <%= property.name -%>: .fake() <%_ _%> <%= property.commaOrNothing %>
+<% } -%>
+        )
+<% } else if case .value(let caseName) = spec.content { -%>
+        .<%= caseName %>
+<% } -%>
+    }
 }
 <% } -%>

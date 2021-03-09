@@ -97,3 +97,10 @@ extension Dictionary {
         [:]
     }
 }
+
+extension Data {
+    /// Returns an empty `Data` type
+    static func fake() -> Self {
+        .init()
+    }
+}

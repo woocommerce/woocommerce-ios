@@ -121,10 +121,10 @@ extension UIImage {
         return UIImage.gridicon(.cross)
     }
 
-    /// Cog Icon
+    /// Gear Icon - used in `UIBarButtonItem`
     ///
-    static var cogImage: UIImage {
-        return UIImage.gridicon(.cog)
+    static var gearBarButtonItemImage: UIImage {
+        return UIImage(systemName: "gear", withConfiguration: Configurations.barButtonItemSymbol)!
     }
 
     /// Comment Icon
@@ -439,10 +439,16 @@ extension UIImage {
         return UIImage.gridicon(.plus)
     }
 
-    /// Search Icon
+    /// Plus Icon - used in `UIBarButtonItem`
     ///
-    static var searchImage: UIImage {
-        return UIImage.gridicon(.search)
+    static var plusBarButtonItemImage: UIImage {
+        return UIImage(systemName: "plus", withConfiguration: Configurations.barButtonItemSymbol)!
+    }
+
+    /// Search Icon - used in `UIBarButtonItem`
+    ///
+    static var searchBarButtonItemImage: UIImage {
+        return UIImage(systemName: "magnifyingglass", withConfiguration: Configurations.barButtonItemSymbol)!
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
@@ -605,5 +611,9 @@ private extension UIImage {
 
     enum Metrics {
         static let defaultWooLogoSize = CGSize(width: 30, height: 18)
+    }
+
+    enum Configurations {
+        static let barButtonItemSymbol = UIImage.SymbolConfiguration(pointSize: 22, weight: .regular, scale: .medium)
     }
 }

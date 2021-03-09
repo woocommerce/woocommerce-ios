@@ -12,7 +12,7 @@ extension UINavigationBar {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
             let appearance = UINavigationBarAppearance()
             appearance.configureWithOpaqueBackground()
-            appearance.backgroundColor = .appBar
+            appearance.backgroundColor = .listForeground
             appearance.titleTextAttributes = [.foregroundColor: UIColor.text]
             appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.text]
 

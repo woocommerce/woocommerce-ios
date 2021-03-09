@@ -13,6 +13,8 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
     /// Use cases where an image, title, and text could be displayed.
     /// TODO-3419: add support for other use cases that are currently configured with individual `*ViewModel`.
     enum Style {
+        /// Default style with image, tile, and text shown.
+        case `default`
         /// Only the image and title label are displayed with a given font style for the title.
         case imageAndTitleOnly(fontStyle: FontStyle)
         /// The cell's title, image, and background color are set to warning style.
@@ -188,16 +190,19 @@ extension ImageAndTitleAndTextTableViewCell {
             applyImageAndTitleOnlyStyle(fontStyle: fontStyle, data: data)
         case .warning:
             applyWarningStyle(data: data)
+        case .default:
+            // TODO-3419: replace `ViewModel` with `Style` and `DataConfiguration` here
+            break
         }
-        applyAccessibilityChanges(contentSizeCategory: traitCollection.preferredContentSizeCategory)
-        observeContentSizeCategoryChanges()
+        applyAccessibilityChanges(contentSizeCategory: traitCollection.preferredContentSizeCategory, style: style)
+        observeContentSizeCategoryChanges(style: style)
     }
 }
 
 // MARK: Private update helpers
 //
 private extension ImageAndTitleAndTextTableViewCell {
-    func observeContentSizeCategoryChanges() {
+    func observeContentSizeCategoryChanges(style: Style) {
         cancellable = NotificationCenter.default
                 .publisher(for: UIContentSizeCategory.didChangeNotification)
                 .sink { [weak self] notification in
@@ -205,7 +210,7 @@ private extension ImageAndTitleAndTextTableViewCell {
                           let contentSizeCategory = notification.userInfo?[UIContentSizeCategory.newValueUserInfoKey] as? UIContentSizeCategory else {
                         return
                     }
-                    self.applyAccessibilityChanges(contentSizeCategory: contentSizeCategory)
+                    self.applyAccessibilityChanges(contentSizeCategory: contentSizeCategory, style: style)
                 }
     }
 
@@ -271,15 +276,27 @@ private extension ImageAndTitleAndTextTableViewCell {
 // MARK: Accessibility
 //
 private extension ImageAndTitleAndTextTableViewCell {
-    func applyAccessibilityChanges(contentSizeCategory: UIContentSizeCategory) {
-        adjustContentStackViewAxis(contentSizeCategory: contentSizeCategory)
+    func applyAccessibilityChanges(contentSizeCategory: UIContentSizeCategory, style: Style) {
+        adjustContentStackViewAxis(contentSizeCategory: contentSizeCategory, style: style)
     }
 
     /// Changes the image view width according to the base image dimension.
-    func adjustContentStackViewAxis(contentSizeCategory: UIContentSizeCategory) {
+    func adjustContentStackViewAxis(contentSizeCategory: UIContentSizeCategory, style: Style) {
         let isVerticalStack = contentSizeCategory >= .accessibilityMedium
         contentStackView.axis = isVerticalStack ? .vertical: .horizontal
-        contentStackView.alignment = isVerticalStack ? .leading: .firstBaseline
+        contentStackView.alignment = isVerticalStack ? .leading: style.contentStackViewAlignment
         contentStackView.spacing = isVerticalStack ? 5: 16
+    }
+}
+
+private extension ImageAndTitleAndTextTableViewCell.Style {
+    var contentStackViewAlignment: UIStackView.Alignment {
+        switch self {
+        case .imageAndTitleOnly(let fontStyle) where fontStyle == .footnote:
+            // Image and title footnote style is generally used for short notice, and thus the image and title are center aligned vertically.
+            return .center
+        default:
+            return .firstBaseline
+        }
     }
 }

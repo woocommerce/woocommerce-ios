@@ -176,13 +176,12 @@ struct TopBannerSwifty_Previews: PreviewProvider {
     }
 
     private static func makeTitleAndInfoTextWithoutIcon() -> some View {
-        let icon: UIImage = .megaphoneIcon
         let title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
         let infoText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit." +
             " Cras leo quam, auctor sit amet lectus nec, vehicula lobortis nunc."
         let viewModel = TopBannerSwiftyViewModel(title: title,
                                                  infoText: infoText,
-                                                 icon: icon,
+                                                 icon: nil,
                                                  expandable: false,
                                                  topButton: .chevron(handler: {
 

@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a ProductShippingClass entity.
 ///
-public struct ProductShippingClass: Decodable {
+public struct ProductShippingClass: Decodable, GeneratedFakeable {
     // Entities.
     public let count: Int64
     public let descriptionHTML: String?

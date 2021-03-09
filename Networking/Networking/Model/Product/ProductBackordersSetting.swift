@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a ProductBackordersSetting Entity.
 ///
-public enum ProductBackordersSetting: Decodable, Hashable {
+public enum ProductBackordersSetting: Decodable, Hashable, GeneratedFakeable {
     case allowed
     case allowedAndNotifyCustomer
     case notAllowed

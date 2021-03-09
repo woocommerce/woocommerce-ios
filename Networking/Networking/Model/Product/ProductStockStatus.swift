@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a ProductStockStatus Entity.
 ///
-public enum ProductStockStatus: Codable, Hashable {
+public enum ProductStockStatus: Codable, Hashable, GeneratedFakeable {
     case inStock
     case outOfStock
     case onBackOrder

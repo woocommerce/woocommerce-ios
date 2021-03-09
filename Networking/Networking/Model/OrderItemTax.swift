@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents the Taxes for a specific Order Item.
 ///
-public struct OrderItemTax: Codable, Hashable, GeneratedFakeable {
+public struct OrderItemTax: Codable, Hashable {
 
     /// Tax ID for line item
     ///

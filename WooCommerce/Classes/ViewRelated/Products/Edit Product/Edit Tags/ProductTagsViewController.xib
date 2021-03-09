@@ -26,7 +26,7 @@
                     <rect key="frame" x="0.0" y="68" width="414" height="45"/>
                     <subviews>
                         <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="6Wz-Zl-b7p">
-                            <rect key="frame" x="24" y="0.0" width="374" height="44"/>
+                            <rect key="frame" x="16" y="0.0" width="382" height="44"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
                                 <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="OhC-fQ-2OT"/>
@@ -51,7 +51,7 @@
                         <constraint firstAttribute="bottom" secondItem="Yju-A0-WgT" secondAttribute="bottom" id="P5I-WF-UVJ"/>
                         <constraint firstItem="6Wz-Zl-b7p" firstAttribute="top" secondItem="Ip2-5h-wvk" secondAttribute="top" id="WVv-UX-Zxg"/>
                         <constraint firstAttribute="height" priority="250" constant="44" id="cff-Qk-3wb"/>
-                        <constraint firstItem="6Wz-Zl-b7p" firstAttribute="leading" secondItem="Ip2-5h-wvk" secondAttribute="leadingMargin" constant="16" id="csr-W2-Fgm"/>
+                        <constraint firstItem="6Wz-Zl-b7p" firstAttribute="leading" secondItem="Ip2-5h-wvk" secondAttribute="leadingMargin" constant="8" id="csr-W2-Fgm"/>
                         <constraint firstAttribute="trailing" secondItem="Yju-A0-WgT" secondAttribute="trailing" id="pxK-am-qDD"/>
                     </constraints>
                 </view>

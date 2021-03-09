@@ -31,7 +31,7 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V0q-d9-nEJ">
-                                    <rect key="frame" x="24" y="16" width="366" height="786"/>
+                                    <rect key="frame" x="16" y="16" width="382" height="786"/>
                                     <constraints>
                                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="u7J-wB-kuj"/>
                                     </constraints>
@@ -49,10 +49,10 @@
                             <constraints>
                                 <constraint firstItem="V0q-d9-nEJ" firstAttribute="top" secondItem="e8L-Dl-u8g" secondAttribute="top" constant="16" id="Equ-9A-min"/>
                                 <constraint firstItem="km4-PZ-rGi" firstAttribute="leading" secondItem="e8L-Dl-u8g" secondAttribute="leading" id="LMj-Kk-evu"/>
-                                <constraint firstItem="V0q-d9-nEJ" firstAttribute="leading" secondItem="e8L-Dl-u8g" secondAttribute="leadingMargin" constant="16" id="NBG-Mk-26K"/>
+                                <constraint firstItem="V0q-d9-nEJ" firstAttribute="leading" secondItem="e8L-Dl-u8g" secondAttribute="leadingMargin" constant="8" id="NBG-Mk-26K"/>
                                 <constraint firstAttribute="bottom" secondItem="km4-PZ-rGi" secondAttribute="bottom" id="RGB-dQ-d11"/>
                                 <constraint firstAttribute="bottom" secondItem="V0q-d9-nEJ" secondAttribute="bottom" constant="16" id="Vnr-mH-n6u"/>
-                                <constraint firstAttribute="trailingMargin" secondItem="V0q-d9-nEJ" secondAttribute="trailing" constant="16" id="rmK-mm-Gkx"/>
+                                <constraint firstAttribute="trailingMargin" secondItem="V0q-d9-nEJ" secondAttribute="trailing" constant="8" id="rmK-mm-Gkx"/>
                                 <constraint firstAttribute="trailing" secondItem="km4-PZ-rGi" secondAttribute="trailing" id="zIT-26-Ue0"/>
                             </constraints>
                         </view>

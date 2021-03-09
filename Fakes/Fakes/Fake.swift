@@ -104,3 +104,10 @@ extension Data {
         .init()
     }
 }
+
+extension NSRange {
+    /// Returns an empty `NSRange` type
+    static func fake() -> Self {
+        .init()
+    }
+}

@@ -43,6 +43,14 @@ extension Bool {
     }
 }
 
+extension URL {
+    /// Returns an empty `URL`
+    ///
+    static func fake() -> Self {
+        NSURL() as URL
+    }
+}
+
 extension Optional {
     /// Returns `nil`
     ///

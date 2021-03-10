@@ -180,7 +180,7 @@ private extension ProductLoaderViewController {
             message: .init(string: NSLocalizedString("This product couldn't be loaded", comment: "Message displayed when loading a specific product fails")),
             image: .productErrorImage,
             details: "",
-            buttonTitle: NSLocalizedString("Retry", comment: "Retry the last action")) { [weak self] in
+            buttonTitle: NSLocalizedString("Retry", comment: "Retry the last action")) { [weak self] _ in
             self?.loadModel()
         }
         displayEmptyStateViewController(emptyStateViewController)

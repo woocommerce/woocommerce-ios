@@ -19,7 +19,7 @@ final class ProductVariationsViewController: UIViewController {
         return .withButton(message: message,
                            image: .emptyBoxImage,
                            details: "",
-                           buttonTitle: Localization.emptyStateButtonTitle) { [weak self] in
+                           buttonTitle: Localization.emptyStateButtonTitle) { [weak self] _ in
                             self?.createVariationFromEmptyState()
                            }
     }()

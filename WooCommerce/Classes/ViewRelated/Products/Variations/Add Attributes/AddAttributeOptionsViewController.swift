@@ -31,7 +31,7 @@ final class AddAttributeOptionsViewController: UIViewController {
     ///
     private lazy var errorStateConfig: EmptyStateViewController.Config = {
         let message = NSAttributedString(string: Localization.syncErrorMessage, attributes: [.font: EmptyStateViewController.Config.messageFont])
-        return .withButton(message: message, image: .errorImage, details: "", buttonTitle: Localization.retryAction) { [weak self] in
+        return .withButton(message: message, image: .errorImage, details: "", buttonTitle: Localization.retryAction) { [weak self] _ in
             self?.viewModel.synchronizeOptions()
         }
     }()

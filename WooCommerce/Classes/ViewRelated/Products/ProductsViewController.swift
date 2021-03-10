@@ -333,6 +333,9 @@ private extension ProductsViewController {
             bottomBorderView.constrainToSuperview(attribute: .bottom)
         ])
         tableView.tableHeaderView = headerContainer
+
+        // Updates products tab state after table view is configured, otherwise the initial state is always showing results.
+        stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
     }
 
     func createToolbar() -> ToolbarView {

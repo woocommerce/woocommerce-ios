@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -28,9 +28,9 @@
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="1Vz-Zp-cOV" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="AEN-E8-lbK"/>
+                <constraint firstItem="1Vz-Zp-cOV" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="AEN-E8-lbK"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="1Vz-Zp-cOV" secondAttribute="bottom" id="FV2-2X-CKj"/>
-                <constraint firstItem="1Vz-Zp-cOV" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="bn3-Aa-tPz"/>
+                <constraint firstItem="1Vz-Zp-cOV" firstAttribute="trailing" secondItem="i5M-Pr-FkT" secondAttribute="trailing" id="bn3-Aa-tPz"/>
                 <constraint firstItem="1Vz-Zp-cOV" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="vKY-NI-vXt"/>
             </constraints>
             <point key="canvasLocation" x="137.68115942028987" y="120.53571428571428"/>

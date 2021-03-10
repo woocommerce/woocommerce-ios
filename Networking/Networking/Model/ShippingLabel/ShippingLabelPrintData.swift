@@ -2,7 +2,7 @@ import Foundation
 
 /// Shipping label data for printing
 ///
-public struct ShippingLabelPrintData: Decodable, Equatable {
+public struct ShippingLabelPrintData: Decodable, Equatable, GeneratedFakeable {
     /// The media type of shipping label document.
     public let mimeType: String
 

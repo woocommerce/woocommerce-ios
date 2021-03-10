@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a Post Entity.
 ///
-public struct Post: Codable {
+public struct Post: Codable, GeneratedFakeable {
 
     /// WordPress.com Site Identifier.
     ///

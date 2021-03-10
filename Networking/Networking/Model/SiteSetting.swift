@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a specific setting entity for a specific site.
 ///
-public struct SiteSetting: Decodable {
+public struct SiteSetting: Decodable, GeneratedFakeable {
     public let siteID: Int64
     public let settingID: String
     public let label: String

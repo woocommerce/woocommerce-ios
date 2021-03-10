@@ -3,7 +3,7 @@ import Foundation
 /// Represents a OrderFeeTaxStatus Entity.
 ///
 
-public enum OrderFeeTaxStatus: Decodable, Hashable {
+public enum OrderFeeTaxStatus: Decodable, Hashable, GeneratedFakeable {
     case taxable
     case none
 }

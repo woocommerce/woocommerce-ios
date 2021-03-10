@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents order stats over a specific period.
 /// v4 API
-public struct OrderStatsV4: Decodable {
+public struct OrderStatsV4: Decodable, GeneratedFakeable {
     public let siteID: Int64
     public let granularity: StatsGranularityV4
     public let totals: OrderStatsV4Totals

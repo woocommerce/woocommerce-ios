@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a single top earner stat for a specific period.
 ///
-public struct TopEarnerStatsItem: Decodable {
+public struct TopEarnerStatsItem: Decodable, GeneratedFakeable {
 
     /// Product ID
     ///

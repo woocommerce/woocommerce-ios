@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a SiteSettingGroup Entity.
 ///
-public enum SiteSettingGroup: Decodable, Hashable {
+public enum SiteSettingGroup: Decodable, Hashable, GeneratedFakeable {
     case general
     case product
     case custom(String) // catch-all

@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents the store leaderboad - Top Products
 ///
-public struct Leaderboard: Decodable {
+public struct Leaderboard: Decodable, GeneratedFakeable {
 
     private enum CodingKeys: String, CodingKey {
         case id

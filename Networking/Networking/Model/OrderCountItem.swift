@@ -3,7 +3,7 @@ import Foundation
 /// Represents an OrderCountItem Entity.
 /// OrderCountItem represents the number of Orders for a given status
 ///
-public struct OrderCountItem: Decodable {
+public struct OrderCountItem: Decodable, GeneratedFakeable {
     public let slug: String
     public let name: String
     public let total: Int

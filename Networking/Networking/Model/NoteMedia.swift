@@ -3,7 +3,7 @@ import Foundation
 
 // MARK: - NoteMedia
 //
-public struct NoteMedia: Equatable {
+public struct NoteMedia: Equatable, GeneratedFakeable {
 
     /// NoteMedia.Type expressed as a Swift Native Enum.
     ///

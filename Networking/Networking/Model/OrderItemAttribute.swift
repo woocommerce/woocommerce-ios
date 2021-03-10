@@ -1,6 +1,6 @@
 /// Represents an attribute of an `OrderItem` in its `attributes` property.
 /// Currently, the use case is when an order item is a variation and the attributes are its variation attributes.
-public struct OrderItemAttribute: Decodable, Hashable, Equatable {
+public struct OrderItemAttribute: Decodable, Hashable, Equatable, GeneratedFakeable {
     public let metaID: Int64
     public let name: String
     public let value: String

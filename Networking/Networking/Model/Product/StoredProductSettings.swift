@@ -3,7 +3,7 @@ import Foundation
 /// Models a pair of `siteID` and Product Settings
 /// These entities will be serialised to a plist file using `ProductsModuleSettings`
 ///
-public struct StoredProductSettings: Codable, Equatable {
+public struct StoredProductSettings: Codable, Equatable, GeneratedFakeable {
 
     public struct Setting: Codable, Equatable {
         public let siteID: Int64

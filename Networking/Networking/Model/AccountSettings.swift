@@ -2,7 +2,7 @@ import Foundation
 
 /// WordPress.com Account Settings
 ///
-public struct AccountSettings: Decodable, Equatable {
+public struct AccountSettings: Decodable, Equatable, GeneratedFakeable {
 
     /// Dotcom UserID
     ///

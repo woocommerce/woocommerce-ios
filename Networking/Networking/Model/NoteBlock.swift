@@ -3,7 +3,7 @@ import Foundation
 
 // MARK: - NotificationBlock Implementation
 //
-public struct NoteBlock: Equatable {
+public struct NoteBlock: Equatable, GeneratedFakeable {
 
     /// Parsed Media Entities.
     ///
@@ -33,7 +33,7 @@ public struct NoteBlock: Equatable {
 
     /// Designated Initializer.
     ///
-    init(media: [NoteMedia], ranges: [NoteRange], text: String?, actions: [String: Bool], meta: [String: AnyCodable], type: String?) {
+    public init(media: [NoteMedia], ranges: [NoteRange], text: String?, actions: [String: Bool], meta: [String: AnyCodable], type: String?) {
         self.media = media
         self.ranges = ranges
         self.text = text

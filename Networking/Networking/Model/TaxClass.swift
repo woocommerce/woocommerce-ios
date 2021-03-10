@@ -2,7 +2,7 @@ import Foundation
 
 /// Represent a Tax Class Entity.
 ///
-public struct TaxClass: Decodable {
+public struct TaxClass: Decodable, GeneratedFakeable {
 
     /// WordPress.com Site Identifier.
     ///

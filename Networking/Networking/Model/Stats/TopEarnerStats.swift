@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents Top Earner (aka top performer) stats over a specific period.
 ///
-public struct TopEarnerStats: Decodable {
+public struct TopEarnerStats: Decodable, GeneratedFakeable {
     public let siteID: Int64
     public let date: String
     public let granularity: StatGranularity

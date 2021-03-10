@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a Shipment Tracking Entity (from the WC Shipment Tracking extension).
 ///
-public struct ShipmentTracking: Decodable {
+public struct ShipmentTracking: Decodable, GeneratedFakeable {
 
     /// Site Identifier.
     ///

@@ -157,7 +157,7 @@ private extension ProductListSelectorViewController {
         view.addSubview(paginatedListSelector.view)
         paginatedListSelector.didMove(toParent: self)
 
-        view.pinSubviewToSafeArea(paginatedListSelector.view)
+        view.pinSubviewToAllEdges(paginatedListSelector.view)
     }
 
     func observeSelectedProductIDs(observableProductIDs: Observable<[Int64]>) {

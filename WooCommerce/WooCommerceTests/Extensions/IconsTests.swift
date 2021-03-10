@@ -230,6 +230,14 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.priceImage)
     }
 
+    func test_productDeletedImage_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.productDeletedImage)
+    }
+
+    func test_productErrorImage_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.productErrorImage)
+    }
+
     func testProductReviewsImageIsNotNil() {
         XCTAssertNotNil(UIImage.productReviewsImage)
     }

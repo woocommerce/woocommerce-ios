@@ -369,6 +369,18 @@ extension UIImage {
         return UIImage.gridicon(.money, size: CGSize(width: 24, height: 24))
     }
 
+    /// Product Deleted Icon
+    ///
+    static var productDeletedImage: UIImage {
+        UIImage(named: "woo-product-deleted")!
+    }
+
+    /// Product Error Icon
+    ///
+    static var productErrorImage: UIImage {
+        UIImage(named: "woo-product-error")!
+    }
+
     /// Product Reviews Icon
     ///
     static var productReviewsImage: UIImage {

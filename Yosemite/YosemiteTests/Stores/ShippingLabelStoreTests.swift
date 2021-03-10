@@ -396,6 +396,27 @@ final class ShippingLabelStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
+
+    // MARK: `checkCreationEligibility`
+
+    func test_checkCreationEligibility_returns_feature_flag_value() throws {
+        // Given
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let isFeatureFlagEnabled = false
+        let isEligibleForCreation: Bool = waitFor { promise in
+            let action = ShippingLabelAction.checkCreationEligibility(siteID: self.sampleSiteID,
+                                                                      orderID: 134,
+                                                                      isFeatureFlagEnabled: isFeatureFlagEnabled) { isEligible in
+                promise(isEligible)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(isEligibleForCreation, isFeatureFlagEnabled)
+    }
 }
 
 private extension ShippingLabelStoreTests {

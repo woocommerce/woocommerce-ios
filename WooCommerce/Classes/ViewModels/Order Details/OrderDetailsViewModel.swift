@@ -384,6 +384,17 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
+    func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {
+        let isFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease2)
+        let action = ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,
+                                                                  orderID: order.orderID,
+                                                                  isFeatureFlagEnabled: isFeatureFlagEnabled) { [weak self] isEligible in
+            self?.dataSource.isEligibleForShippingLabelCreation = isEligible
+            onCompletion?()
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
     func deleteTracking(_ tracking: ShipmentTracking, onCompletion: @escaping (Error?) -> Void) {
         let siteID = order.siteID
         let orderID = order.orderID

@@ -40,7 +40,7 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Whether the order is eligible for shipping label creation.
     ///
-    var isEligibleForShippingLabelCreation: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease2)
+    var isEligibleForShippingLabelCreation: Bool = false
 
     /// Closure to be executed when the cell was tapped.
     ///

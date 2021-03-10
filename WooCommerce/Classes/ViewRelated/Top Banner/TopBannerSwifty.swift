@@ -13,35 +13,34 @@ struct TopBannerSwifty: View {
 
     var body: some View {
         VStack {
-            VStack {
-                HStack(alignment: .top, spacing: 20) {
+            HStack(alignment: .top, spacing: 20) {
 
-                    // Top Left Icon
-                    if let icon = viewModel.icon {
-                        Image(uiImage: icon)
-                            .frame(width: 24.0, height: 24.0)
-                            .scaledToFit()
-                            .foregroundColor(topLeftIconColor)
+                // Top Left Icon
+                if let icon = viewModel.icon {
+                    Image(uiImage: icon)
+                        .frame(width: 24.0, height: 24.0)
+                        .scaledToFit()
+                        .foregroundColor(topLeftIconColor)
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    //Title
+                    if let title = viewModel.title {
+                        Text(title)
+                            .font(.headline)
+                            .accentColor(Color(.text))
                     }
-
-                    VStack(alignment: .leading, spacing: 8) {
-                        //Title
-                        if let title = viewModel.title {
-                            Text(title)
-                                .font(.headline)
-                                .accentColor(Color(.text))
-                        }
-                        // Info Text
-                        if let info = viewModel.infoText, (isExpanded || viewModel.title == nil) {
-                            Text(info)
-                                .font(.body)
-                                .accentColor(Color(.text))
-                        }
+                    // Info Text
+                    if let info = viewModel.infoText, (isExpanded || viewModel.title == nil) {
+                        Text(info)
+                            .font(.body)
+                            .accentColor(Color(.text))
                     }
+                }.frame(maxWidth: .infinity)
 
 
-                    // Top Right Icon
-                    if viewModel.expandable {
+                // Top Right Icon
+                if viewModel.expandable {
                     switch viewModel.topButton {
                     case .chevron:
                         let image = isExpanded ? UIImage.chevronUpImage: UIImage.chevronDownImage
@@ -58,18 +57,16 @@ struct TopBannerSwifty: View {
                     default:
                         EmptyView()
                     }
-                    }
-                }.padding(16)
-
-
-
-            }.onTapGesture {
+                }
+            }
+            .onTapGesture {
                 guard viewModel.expandable else {
                     return
                 }
                 onTopButtonTapped?()
                 isExpanded.toggle()
             }
+            .padding(16)
 
             // Action Buttons
             if isExpanded && viewModel.actionButtons.isNotEmpty {
@@ -93,15 +90,8 @@ struct TopBannerSwifty: View {
                 .overlay(Rectangle().frame(width: nil, height: 1, alignment: .top).foregroundColor((separatorColor)), alignment: .bottom)
             }
         }.background(backgroundColor)
+        .edgesIgnoringSafeArea(.all)
     }
-
-    //    backgroundColor = .clear
-    //    contentEdgeInsets = Style.defaultEdgeInsets
-    //    tintColor = .accent
-    //    titleLabel?.applyBodyStyle()
-    //    titleLabel?.textAlignment = .natural
-    //    setTitleColor(.accent, for: .normal)
-    //    setTitleColor(.accentDark, for: .highlighted)
 
     private var backgroundColor: Color {
         switch viewModel.type {

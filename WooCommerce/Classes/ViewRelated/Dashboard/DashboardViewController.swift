@@ -82,7 +82,7 @@ private extension DashboardViewController {
     }
 
     private func configureNavigationItem() {
-        let rightBarButton = UIBarButtonItem(image: .cogImage,
+        let rightBarButton = UIBarButtonItem(image: .gearBarButtonItemImage,
                                              style: .plain,
                                              target: self,
                                              action: #selector(settingsTapped))

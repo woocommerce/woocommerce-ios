@@ -40,7 +40,7 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Whether the order is eligible for shipping label creation.
     ///
-    var isEligibleForShippingLabelCreation: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.shippingLabelsRelease2)
+    var isEligibleForShippingLabelCreation: Bool = false
 
     /// Closure to be executed when the cell was tapped.
     ///
@@ -266,6 +266,11 @@ private extension OrderDetailsDataSource {
             configureShippingLabelDetail(cell: cell)
         case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingNotice:
             configureShippingNotice(cell: cell)
+        case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelCreationInfo(showsSeparator: true),
+             let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelCreationInfo(showsSeparator: false):
+            if case .shippingLabelCreationInfo(let showsSeparator) = row {
+                configureShippingLabelCreationInfo(cell: cell, showsSeparator: showsSeparator)
+            }
         case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelPrintingInfo:
             configureShippingLabelPrintingInfo(cell: cell)
         case let cell as LeftImageTableViewCell where row == .addOrderNote:
@@ -288,10 +293,13 @@ private extension OrderDetailsDataSource {
             configureAggregateOrderItem(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .shippingLabelCreateButton:
             configureCreateShippingLabelButton(cell: cell, at: indexPath)
-        case let cell as ButtonTableViewCell where row == .markCompleteButton(style: .primary):
-            configureMarkCompleteButton(cell: cell, buttonStyle: .primary)
-        case let cell as ButtonTableViewCell where row == .markCompleteButton(style: .secondary):
-            configureMarkCompleteButton(cell: cell, buttonStyle: .secondary)
+        case let cell as ButtonTableViewCell where row == .markCompleteButton(style: .primary, showsBottomSpacing: true),
+             let cell as ButtonTableViewCell where row == .markCompleteButton(style: .primary, showsBottomSpacing: false),
+             let cell as ButtonTableViewCell where row == .markCompleteButton(style: .secondary, showsBottomSpacing: true),
+             let cell as ButtonTableViewCell where row == .markCompleteButton(style: .secondary, showsBottomSpacing: false):
+            if case .markCompleteButton(let style, let showsBottomSpacing) = row {
+                configureMarkCompleteButton(cell: cell, buttonStyle: style, showsBottomSpacing: showsBottomSpacing)
+            }
         case let cell as ButtonTableViewCell where row == .shippingLabelReprintButton:
             configureReprintShippingLabelButton(cell: cell, at: indexPath)
         case let cell as OrderTrackingTableViewCell where row == .tracking:
@@ -461,6 +469,24 @@ private extension OrderDetailsDataSource {
         cell.hideSeparator()
     }
 
+    private func configureShippingLabelCreationInfo(cell: ImageAndTitleAndTextTableViewCell, showsSeparator: Bool) {
+        cell.update(with: .imageAndTitleOnly(fontStyle: .footnote),
+                    data: .init(title: Title.shippingLabelCreationInfoAction,
+                                image: .infoOutlineFootnoteImage,
+                                imageTintColor: .systemColor(.secondaryLabel),
+                                numberOfLinesForTitle: 0,
+                                isActionable: false,
+                                showsSeparator: showsSeparator))
+
+        cell.selectionStyle = .default
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = Title.shippingLabelCreationInfoAction
+        cell.accessibilityHint =
+            NSLocalizedString("Tap to show information about creating a shipping label",
+                              comment: "VoiceOver accessibility hint for the row that shows information about creating a shipping label")
+    }
+
     private func configureShippingLabelDetail(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Footer.showShippingLabelDetails
         cell.applyPlainTextStyle()
@@ -609,11 +635,14 @@ private extension OrderDetailsDataSource {
         )
     }
 
-    private func configureMarkCompleteButton(cell: ButtonTableViewCell, buttonStyle: ButtonTableViewCell.Style) {
-        cell.configure(style: buttonStyle, title: Titles.markComplete) { [weak self] in
+    private func configureMarkCompleteButton(cell: ButtonTableViewCell,
+                                             buttonStyle: ButtonTableViewCell.Style,
+                                             showsBottomSpacing: Bool) {
+        let bottomSpacing: CGFloat = showsBottomSpacing ? ButtonTableViewCell.Constants.defaultBottomSpacing : 0
+        cell.configure(style: buttonStyle, title: Titles.markComplete, bottomSpacing: bottomSpacing) { [weak self] in
             self?.onCellAction?(.markComplete, nil)
         }
-        cell.showSeparator()
+        cell.hideSeparator()
     }
 
     private func configureIssueRefundButton(cell: IssueRefundTableViewCell) {
@@ -769,9 +798,17 @@ extension OrderDetailsDataSource {
             }
 
             if isProcessingPayment {
-                let buttonStyle: ButtonTableViewCell.Style = rows.contains(.shippingLabelCreateButton) ? .secondary : .primary
-                rows.append(.markCompleteButton(style: buttonStyle))
+                if isEligibleForShippingLabelCreation {
+                    rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
+                    rows.append(.shippingLabelCreationInfo(showsSeparator: false))
+                } else {
+                    rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
+                }
             } else if isRefundedStatus == false {
+                if isEligibleForShippingLabelCreation {
+                    rows.append(.shippingLabelCreationInfo(showsSeparator: true))
+                }
+
                 rows.append(.details)
             }
 
@@ -1085,6 +1122,9 @@ extension OrderDetailsDataSource {
         static let information = NSLocalizedString("Customer", comment: "Customer info section title")
         static let payment = NSLocalizedString("Payment", comment: "Payment section title")
         static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
+        static let shippingLabelCreationInfoAction =
+            NSLocalizedString("Learn more about creating labels with your phone",
+                              comment: "Title of button in order details > info link for creating a shipping label on the mobile device.")
         static let shippingLabelPackageFormat =
             NSLocalizedString("Package %d",
                               comment: "Order shipping label package section title format. The number indicates the index of the shipping label package.")
@@ -1193,7 +1233,7 @@ extension OrderDetailsDataSource {
     enum Row: Equatable {
         case summary
         case aggregateOrderItem
-        case markCompleteButton(style: ButtonTableViewCell.Style)
+        case markCompleteButton(style: ButtonTableViewCell.Style, showsBottomSpacing: Bool)
         case details
         case refundedProducts
         case issueRefundButton
@@ -1208,6 +1248,7 @@ extension OrderDetailsDataSource {
         case tracking
         case trackingAdd
         case shippingLabelCreateButton
+        case shippingLabelCreationInfo(showsSeparator: Bool)
         case shippingLabelDetail
         case shippingLabelPrintingInfo
         case shippingLabelProduct
@@ -1255,6 +1296,8 @@ extension OrderDetailsDataSource {
                 return LeftImageTableViewCell.reuseIdentifier
             case .shippingLabelCreateButton:
                 return ButtonTableViewCell.reuseIdentifier
+            case .shippingLabelCreationInfo:
+                return ImageAndTitleAndTextTableViewCell.reuseIdentifier
             case .shippingLabelDetail:
                 return WooBasicTableViewCell.reuseIdentifier
             case .shippingLabelPrintingInfo:

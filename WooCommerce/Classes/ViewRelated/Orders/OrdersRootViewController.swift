@@ -89,7 +89,7 @@ private extension OrdersRootViewController {
     /// For `viewDidLoad` only, set up `navigationItem` buttons.
     ///
     func configureNavigationButtons() {
-        navigationItem.leftBarButtonItem = ordersViewController.createSearchBarButtonItem()
+        navigationItem.rightBarButtonItem = ordersViewController.createSearchBarButtonItem()
 
         removeNavigationBackBarButtonText()
     }

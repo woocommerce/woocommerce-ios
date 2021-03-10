@@ -67,8 +67,8 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.closeButton)
     }
 
-    func testCogImageIconIsNotNil() {
-        XCTAssertNotNil(UIImage.cogImage)
+    func testGearBarButtonItemImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.gearBarButtonItemImage)
     }
 
     func testCommentImageIconIsNotNil() {
@@ -222,6 +222,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.plusImage)
     }
 
+    func testPlusBarButtonItemImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.plusBarButtonItemImage)
+    }
+
     func testPriceImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.priceImage)
     }
@@ -268,8 +272,8 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.scanImage)
     }
 
-    func testSearchImageIconIsNotNil() {
-        XCTAssertNotNil(UIImage.searchImage)
+    func testSearchBarButtonItemImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.searchBarButtonItemImage)
     }
 
     func testShippingImageIconIsNotNil() {
@@ -278,6 +282,10 @@ final class IconsTests: XCTestCase {
 
     func testShippingClassListSelectorEmptyImageIsNotNil() {
         XCTAssertNotNil(UIImage.shippingClassListSelectorEmptyImage)
+    }
+
+    func test_shippingLabelCreationInfoImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.shippingLabelCreationInfoImage)
     }
 
     func testSpamImageIconIsNotNil() {

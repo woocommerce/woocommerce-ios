@@ -72,6 +72,7 @@ final class OrderDetailsViewController: UIViewController {
         syncRefunds()
         syncShippingLabels()
         syncTrackingsHidingAddButtonIfNecessary()
+        checkShippingLabelCreationEligibility()
     }
 
     override func viewDidLayoutSubviews() {
@@ -303,6 +304,11 @@ extension OrderDetailsViewController {
             group.leave()
         }
 
+        group.enter()
+        checkShippingLabelCreationEligibility {
+            group.leave()
+        }
+
         group.notify(queue: .main) { [weak self] in
             NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
             self?.refreshControl.endRefreshing()
@@ -349,6 +355,13 @@ private extension OrderDetailsViewController {
 
     func syncShippingLabels(onCompletion: ((Error?) -> ())? = nil) {
         viewModel.syncShippingLabels(onCompletion: onCompletion)
+    }
+
+    func checkShippingLabelCreationEligibility(onCompletion: (() -> Void)? = nil) {
+        viewModel.checkShippingLabelCreationEligibility { [weak self] in
+            self?.reloadTableViewSectionsAndData()
+            onCompletion?()
+        }
     }
 
     func deleteTracking(_ tracking: ShipmentTracking) {

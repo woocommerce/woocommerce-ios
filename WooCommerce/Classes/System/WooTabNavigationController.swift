@@ -19,6 +19,20 @@ final class WooTabNavigationController: UINavigationController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) ? .default : StyleManager.statusBarLight
     }
+
+    private func updateNavigationBarAppearance(largeTitleDisplayMode: UINavigationItem.LargeTitleDisplayMode) {
+        let appearance = UINavigationBar.appearance().standardAppearance.copy()
+        switch largeTitleDisplayMode {
+        case .always:
+            appearance.shadowColor = .clear // Hides the navigation bar bottom border
+        default:
+            break
+        }
+
+        navigationBar.standardAppearance = appearance
+        navigationBar.compactAppearance = appearance
+        navigationBar.scrollEdgeAppearance = appearance
+    }
 }
 
 extension WooTabNavigationController: UINavigationControllerDelegate {
@@ -29,6 +43,7 @@ extension WooTabNavigationController: UINavigationControllerDelegate {
         } else {
             viewController.navigationItem.largeTitleDisplayMode = viewController.preferredLargeTitleDisplayMode()
         }
+        updateNavigationBarAppearance(largeTitleDisplayMode: viewController.navigationItem.largeTitleDisplayMode)
     }
 }
 

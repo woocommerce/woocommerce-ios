@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 import Yosemite
 
 final class ShippingLabelAddressFormViewController: UIViewController {
@@ -17,9 +18,8 @@ final class ShippingLabelAddressFormViewController: UIViewController {
 
     /// Top banner that shows a warning in case there is an error in the address validation.
     ///
-    private lazy var topBannerView: TopBannerView = {
+    private lazy var topBannerView: TopBannerSwifty = {
         let topBanner = ShippingLabelAddressTopBannerFactory.addressErrorTopBannerView()
-        topBanner.translatesAutoresizingMaskIntoConstraints = false
         return topBanner
     }()
 
@@ -56,6 +56,11 @@ final class ShippingLabelAddressFormViewController: UIViewController {
         observeViewModel()
         configureConfirmButton()
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateHeaderHeight()
     }
 }
 
@@ -99,11 +104,15 @@ private extension ShippingLabelAddressFormViewController {
         tableView.dataSource = self
 
         // Configure header container view
-        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
+        let childView = UIHostingController(rootView: topBannerView)
+        addChild(childView)
+        childView.didMove(toParent: self)
+
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.bounds.width), height: 0))
         headerContainer.addSubview(topStackView)
         headerContainer.pinSubviewToSafeArea(topStackView)
-        topStackView.addArrangedSubview(topBannerView)
 
+        topStackView.addArrangedSubview(childView.view)
         tableView.tableHeaderView = headerContainer
     }
 
@@ -123,7 +132,7 @@ private extension ShippingLabelAddressFormViewController {
     }
 
     func updateTopBannerView() {
-        topBannerView.isHidden = !viewModel.shouldShowTopBannerView
+        topStackView.arrangedSubviews.forEach { $0.isHidden = !viewModel.shouldShowTopBannerView }
         tableView.updateHeaderHeight()
     }
 

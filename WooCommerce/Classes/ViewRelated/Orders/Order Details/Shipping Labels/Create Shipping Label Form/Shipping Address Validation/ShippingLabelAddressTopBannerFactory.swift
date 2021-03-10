@@ -3,14 +3,15 @@ import UIKit
 /// Generates top banner view that is shown at the top of variation list screen when at least one variation is missing a price.
 ///
 final class ShippingLabelAddressTopBannerFactory {
-    static func addressErrorTopBannerView() -> TopBannerView {
-        let viewModel = TopBannerViewModel(title: nil,
-                                           infoText: Localization.info,
-                                           icon: Constants.icon,
-                                           isExpanded: true,
-                                           topButton: .none,
-                                           type: .warning)
-        return TopBannerView(viewModel: viewModel)
+    static func addressErrorTopBannerView() -> TopBannerSwifty {
+        let viewModel =  TopBannerSwiftyViewModel(title: nil,
+                                                  infoText: Localization.info,
+                                                  icon: Constants.icon,
+                                                  expandable: true,
+                                                  topButton: .none,
+                                                  actionButtons: [],
+                                                  type: .warning)
+        return TopBannerSwifty(viewModel: viewModel)
     }
 }
 

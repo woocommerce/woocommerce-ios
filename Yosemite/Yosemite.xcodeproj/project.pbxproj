@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		020220E42396969E00290165 /* MockProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020220E32396969E00290165 /* MockProduct.swift */; };
 		0202B690238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B68F238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift */; };
 		0202B6972387AFBF00F3EBE0 /* MockInMemoryStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6962387AFBF00F3EBE0 /* MockInMemoryStorage.swift */; };
 		0202B6992387B01500F3EBE0 /* AppSettingsStoreTests+ProductsFeatureSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6982387B01500F3EBE0 /* AppSettingsStoreTests+ProductsFeatureSwitch.swift */; };
@@ -303,7 +302,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		020220E32396969E00290165 /* MockProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProduct.swift; sourceTree = "<group>"; };
 		0202B68F238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsFeatureSwitchPListWrapper.swift; sourceTree = "<group>"; };
 		0202B6962387AFBF00F3EBE0 /* MockInMemoryStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInMemoryStorage.swift; sourceTree = "<group>"; };
 		0202B6982387B01500F3EBE0 /* AppSettingsStoreTests+ProductsFeatureSwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettingsStoreTests+ProductsFeatureSwitch.swift"; sourceTree = "<group>"; };
@@ -1272,7 +1270,6 @@
 				B5A01CA020D19C4700E3207E /* MockStorageManager.swift */,
 				B53A569F211245E0000776C9 /* MockStorageManager+Sample.swift */,
 				0202B6962387AFBF00F3EBE0 /* MockInMemoryStorage.swift */,
-				020220E32396969E00290165 /* MockProduct.swift */,
 				020C907C24C729D6001E2BEB /* MockProductVariation.swift */,
 				0248B36A2459127200A271A4 /* MockNetwork+Path.swift */,
 				02A098232480D0D8002F8C7A /* MockCrashLogger.swift */,
@@ -1752,7 +1749,6 @@
 				02E7FFD92562234F00C53030 /* MockShippingLabelRemote.swift in Sources */,
 				B53A56A0211245E0000776C9 /* MockStorageManager+Sample.swift in Sources */,
 				453305FB245AEDCB00264E50 /* SitePostStoreTests.swift in Sources */,
-				020220E42396969E00290165 /* MockProduct.swift in Sources */,
 				572F2B8D247312E4005A5F74 /* StorageManagerConcurrencyTests.swift in Sources */,
 				744914F7224AD2AF00546DE4 /* ProductStoreTests.swift in Sources */,
 				0218B4F2242E09E80083A847 /* MediaTypeTests.swift in Sources */,

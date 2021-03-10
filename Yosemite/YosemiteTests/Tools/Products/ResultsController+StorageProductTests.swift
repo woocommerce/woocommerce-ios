@@ -1,6 +1,7 @@
 import XCTest
 import Storage
 import CoreData
+import Fakes
 @testable import Yosemite
 
 final class ResultsController_StorageProductTests: XCTestCase {
@@ -23,10 +24,10 @@ final class ResultsController_StorageProductTests: XCTestCase {
 
     func testProductResultsControllerInitWithAscendingNameSortOrder() {
         // Arrange
-        let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, name: "Zap")
+        let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Zap")
         storageManager.insertSampleProduct(readOnlyProduct: product1)
 
-        let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, name: "fun house")
+        let product2 = Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "fun house")
         storageManager.insertSampleProduct(readOnlyProduct: product2)
 
         // Act
@@ -42,10 +43,10 @@ final class ResultsController_StorageProductTests: XCTestCase {
 
     func testProductResultsControllerInitWithDescendingNameSortOrder() {
         // Arrange
-        let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, name: "fun house")
+        let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "fun house")
         storageManager.insertSampleProduct(readOnlyProduct: product1)
 
-        let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, name: "zap!")
+        let product2 = Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "Zap")
         storageManager.insertSampleProduct(readOnlyProduct: product2)
 
         // Act
@@ -66,10 +67,10 @@ final class ResultsController_StorageProductTests: XCTestCase {
         // Saturday, June 27, 2020 9:47:09 AM GMT
         let laterDate = Date(timeIntervalSince1970: 1593251229)
 
-        let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, dateCreated: laterDate, name: "fun house")
+        let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "fun house", date: laterDate)
         storageManager.insertSampleProduct(readOnlyProduct: product1)
 
-        let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, dateCreated: earlierDate, name: "zap!")
+        let product2 = Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "zap!", date: earlierDate)
         storageManager.insertSampleProduct(readOnlyProduct: product2)
 
         // Act
@@ -90,10 +91,10 @@ final class ResultsController_StorageProductTests: XCTestCase {
         // Saturday, June 27, 2020 9:47:09 AM GMT
         let laterDate = Date(timeIntervalSince1970: 1593251229)
 
-        let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, dateCreated: earlierDate, name: "fun house")
+        let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "fun house", dateCreated: earlierDate)
         storageManager.insertSampleProduct(readOnlyProduct: product1)
 
-        let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, dateCreated: laterDate, name: "zap!")
+        let product2 = Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "zap!", dateCreated: laterDate)
         storageManager.insertSampleProduct(readOnlyProduct: product2)
 
         // Act
@@ -111,10 +112,10 @@ final class ResultsController_StorageProductTests: XCTestCase {
 
     func testProductResultsControllerUpdateWithAscendingNameSortOrder() {
         // Arrange
-        let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, name: "fun house")
+        let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "fun house")
         storageManager.insertSampleProduct(readOnlyProduct: product1)
 
-        let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, name: "woo")
+        let product2 = Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "woo")
         storageManager.insertSampleProduct(readOnlyProduct: product2)
 
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
@@ -133,10 +134,10 @@ final class ResultsController_StorageProductTests: XCTestCase {
 
     func testProductResultsControllerUpdateWithDescendingNameSortOrder() {
         // Arrange
-        let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, name: "Zap")
+        let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Zap")
         storageManager.insertSampleProduct(readOnlyProduct: product1)
 
-        let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, name: "fun house")
+        let product2 = Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "fun house")
         storageManager.insertSampleProduct(readOnlyProduct: product2)
 
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
@@ -160,11 +161,10 @@ final class ResultsController_StorageProductTests: XCTestCase {
         // Saturday, June 27, 2020 9:47:09 AM GMT
         let laterDate = Date(timeIntervalSince1970: 1593251229)
 
-        let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, dateCreated: laterDate, name: "fun house")
+        let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "fun house", date: laterDate)
         storageManager.insertSampleProduct(readOnlyProduct: product1)
 
-
-        let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, dateCreated: earlierDate, name: "woo")
+        let product2 = Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "woo", date: earlierDate)
         storageManager.insertSampleProduct(readOnlyProduct: product2)
 
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
@@ -188,10 +188,10 @@ final class ResultsController_StorageProductTests: XCTestCase {
         // Saturday, June 27, 2020 9:47:09 AM GMT
         let laterDate = Date(timeIntervalSince1970: 1593251229)
 
-        let product1 = MockProduct().product(siteID: sampleSiteID, productID: 1, dateCreated: earlierDate, name: "Zap")
+        let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Zap", dateCreated: earlierDate)
         storageManager.insertSampleProduct(readOnlyProduct: product1)
 
-        let product2 = MockProduct().product(siteID: sampleSiteID, productID: 2, dateCreated: laterDate, name: "fun house")
+        let product2 = Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "fun house", dateCreated: laterDate)
         storageManager.insertSampleProduct(readOnlyProduct: product2)
 
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,
@@ -215,12 +215,19 @@ final class ResultsController_StorageProductTests: XCTestCase {
         // Saturday, June 27, 2020 9:47:09 AM GMT
         let laterDate = Date(timeIntervalSince1970: 1593251229)
 
-        let draftProduct = MockProduct().product(siteID: sampleSiteID, productID: 1, name: "Zap")
-            .copy(dateCreated: Date(), dateModified: earlierDate, statusKey: ProductStatus.draft.rawValue)
+        let draftProduct = Product.fake().copy(siteID: sampleSiteID,
+                                               productID: 1,
+                                               name: "Zap",
+                                               dateCreated: Date(),
+                                               dateModified: earlierDate,
+                                               statusKey: ProductStatus.draft.rawValue)
         storageManager.insertSampleProduct(readOnlyProduct: draftProduct)
 
-        let publishedProduct = MockProduct().product(siteID: sampleSiteID, productID: 2, name: "fun house")
-            .copy(dateCreated: laterDate, dateModified: nil, statusKey: ProductStatus.publish.rawValue)
+        let publishedProduct = Product.fake().copy(siteID: sampleSiteID,
+                                               productID: 2,
+                                               name: "fun house",
+                                               dateCreated: laterDate,
+                                               statusKey: ProductStatus.publish.rawValue)
         storageManager.insertSampleProduct(readOnlyProduct: publishedProduct)
 
         let resultsController = ResultsController<StorageProduct>(storageManager: storageManager,

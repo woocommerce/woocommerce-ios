@@ -91,6 +91,10 @@ extension WooConstants {
         case shippingLabelsRelease1Feedback = "https://automattic.survey.fm/woo-app-feature-feedback-shipping-labels"
 #endif
 
+        /// URL for shipping label creation information
+        ///
+        case shippingLabelCreationInfo = "https://woocommerce.com/products/shipping"
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

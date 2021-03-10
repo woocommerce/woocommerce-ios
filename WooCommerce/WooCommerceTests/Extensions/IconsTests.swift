@@ -284,6 +284,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.shippingClassListSelectorEmptyImage)
     }
 
+    func test_shippingLabelCreationInfoImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.shippingLabelCreationInfoImage)
+    }
+
     func testSpamImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.spamImage)
     }

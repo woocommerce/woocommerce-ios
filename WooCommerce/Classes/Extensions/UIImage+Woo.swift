@@ -482,6 +482,10 @@ extension UIImage {
         return UIImage.gridicon(.mySites)
     }
 
+    static var shippingLabelCreationInfoImage: UIImage {
+        UIImage(named: "woo-shipping-label-creation")!
+    }
+
     /// Returns a star icon with the given size
     ///
     /// - Parameters:

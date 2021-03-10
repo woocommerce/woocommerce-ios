@@ -13,6 +13,8 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
     /// Use cases where an image, title, and text could be displayed.
     /// TODO-3419: add support for other use cases that are currently configured with individual `*ViewModel`.
     enum Style {
+        /// Default style with image, tile, and text shown.
+        case `default`
         /// Only the image and title label are displayed with a given font style for the title.
         case imageAndTitleOnly(fontStyle: FontStyle)
         /// The cell's title, image, and background color are set to warning style.
@@ -22,6 +24,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
     /// Contains configurable properties for the cell.
     struct DataConfiguration {
         let title: String?
+        let titleFontStyle: FontStyle
         let text: String?
         let textTintColor: UIColor?
         let image: UIImage?
@@ -32,6 +35,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         let showsSeparator: Bool
 
         init(title: String?,
+             titleFontStyle: FontStyle = .body,
              text: String? = nil,
              textTintColor: UIColor? = nil,
              image: UIImage? = nil,
@@ -41,6 +45,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
              isActionable: Bool = true,
              showsSeparator: Bool = true) {
             self.title = title
+            self.titleFontStyle = titleFontStyle
             self.text = text
             self.textTintColor = textTintColor
             self.image = image
@@ -54,6 +59,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
 
     struct ViewModel: Equatable {
         let title: String?
+        let titleFontStyle: FontStyle
         let text: String?
         let textTintColor: UIColor?
         let image: UIImage?
@@ -64,6 +70,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         let showsSeparator: Bool
 
         init(title: String?,
+             titleFontStyle: FontStyle = .body,
              text: String?,
              textTintColor: UIColor? = nil,
              image: UIImage? = nil,
@@ -73,6 +80,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
              isActionable: Bool = true,
              showsSeparator: Bool = true) {
             self.title = title
+            self.titleFontStyle = titleFontStyle
             self.text = text
             self.textTintColor = textTintColor
             self.image = image
@@ -132,7 +140,12 @@ extension ImageAndTitleAndTextTableViewCell {
     func updateUI(viewModel: ViewModel) {
         titleLabel.text = viewModel.title
         titleLabel.isHidden = viewModel.title == nil || viewModel.title?.isEmpty == true
-        titleLabel.applyBodyStyle()
+        switch viewModel.titleFontStyle {
+        case .body:
+            titleLabel.applyBodyStyle()
+        case .footnote:
+            titleLabel.applyFootnoteStyle()
+        }
         titleLabel.textColor = viewModel.text?.isEmpty == false ? .text: .textSubtle
         titleLabel.numberOfLines = viewModel.numberOfLinesForTitle
         descriptionLabel.text = viewModel.text
@@ -185,19 +198,32 @@ extension ImageAndTitleAndTextTableViewCell {
     func update(with style: Style, data: DataConfiguration) {
         switch style {
         case .imageAndTitleOnly(let fontStyle):
-            applyImageAndTitleOnlyStyle(fontStyle: fontStyle, data: data)
+            let data = DataConfiguration(title: data.title,
+                                         titleFontStyle: fontStyle,
+                                         text: data.text,
+                                         textTintColor: data.textTintColor,
+                                         image: data.image,
+                                         imageTintColor: data.imageTintColor,
+                                         numberOfLinesForTitle: data.numberOfLinesForTitle,
+                                         numberOfLinesForText: data.numberOfLinesForText,
+                                         isActionable: data.isActionable,
+                                         showsSeparator: data.showsSeparator)
+            applyImageAndTitleOnlyStyle(data: data)
         case .warning:
             applyWarningStyle(data: data)
+        case .default:
+            // TODO-3419: replace `ViewModel` with `Style` and `DataConfiguration` here
+            break
         }
-        applyAccessibilityChanges(contentSizeCategory: traitCollection.preferredContentSizeCategory)
-        observeContentSizeCategoryChanges()
+        applyAccessibilityChanges(contentSizeCategory: traitCollection.preferredContentSizeCategory, style: style)
+        observeContentSizeCategoryChanges(style: style)
     }
 }
 
 // MARK: Private update helpers
 //
 private extension ImageAndTitleAndTextTableViewCell {
-    func observeContentSizeCategoryChanges() {
+    func observeContentSizeCategoryChanges(style: Style) {
         cancellable = NotificationCenter.default
                 .publisher(for: UIContentSizeCategory.didChangeNotification)
                 .sink { [weak self] notification in
@@ -205,17 +231,11 @@ private extension ImageAndTitleAndTextTableViewCell {
                           let contentSizeCategory = notification.userInfo?[UIContentSizeCategory.newValueUserInfoKey] as? UIContentSizeCategory else {
                         return
                     }
-                    self.applyAccessibilityChanges(contentSizeCategory: contentSizeCategory)
+                    self.applyAccessibilityChanges(contentSizeCategory: contentSizeCategory, style: style)
                 }
     }
 
-    func applyImageAndTitleOnlyStyle(fontStyle: FontStyle, data: DataConfiguration) {
-        switch fontStyle {
-        case .body:
-            titleLabel.applyBodyStyle()
-        case .footnote:
-            titleLabel.applyFootnoteStyle()
-        }
+    func applyImageAndTitleOnlyStyle(data: DataConfiguration) {
         applyDefaultStyle(data: data)
         contentImageViewWidthConstraint.isActive = true
     }
@@ -230,6 +250,7 @@ private extension ImageAndTitleAndTextTableViewCell {
 
     func applyDefaultStyle(data: DataConfiguration) {
         let viewModel = ViewModel(title: data.title,
+                                  titleFontStyle: data.titleFontStyle,
                                   text: data.text,
                                   textTintColor: data.textTintColor,
                                   image: data.image,
@@ -271,15 +292,27 @@ private extension ImageAndTitleAndTextTableViewCell {
 // MARK: Accessibility
 //
 private extension ImageAndTitleAndTextTableViewCell {
-    func applyAccessibilityChanges(contentSizeCategory: UIContentSizeCategory) {
-        adjustContentStackViewAxis(contentSizeCategory: contentSizeCategory)
+    func applyAccessibilityChanges(contentSizeCategory: UIContentSizeCategory, style: Style) {
+        adjustContentStackViewAxis(contentSizeCategory: contentSizeCategory, style: style)
     }
 
     /// Changes the image view width according to the base image dimension.
-    func adjustContentStackViewAxis(contentSizeCategory: UIContentSizeCategory) {
+    func adjustContentStackViewAxis(contentSizeCategory: UIContentSizeCategory, style: Style) {
         let isVerticalStack = contentSizeCategory >= .accessibilityMedium
         contentStackView.axis = isVerticalStack ? .vertical: .horizontal
-        contentStackView.alignment = isVerticalStack ? .leading: .firstBaseline
+        contentStackView.alignment = isVerticalStack ? .leading: style.contentStackViewAlignment
         contentStackView.spacing = isVerticalStack ? 5: 16
+    }
+}
+
+private extension ImageAndTitleAndTextTableViewCell.Style {
+    var contentStackViewAlignment: UIStackView.Alignment {
+        switch self {
+        case .imageAndTitleOnly(let fontStyle) where fontStyle == .footnote:
+            // Image and title footnote style is generally used for short notice, and thus the image and title are center aligned vertically.
+            return .center
+        default:
+            return .firstBaseline
+        }
     }
 }

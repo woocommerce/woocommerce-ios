@@ -161,7 +161,7 @@ extension OrdersTabbedViewController {
     /// Create a `UIBarButtonItem` to be used as the search button on the top-left.
     ///
     func createSearchBarButtonItem() -> UIBarButtonItem {
-        let button = UIBarButtonItem(image: .searchImage,
+        let button = UIBarButtonItem(image: .searchBarButtonItemImage,
                                      style: .plain,
                                      target: self,
                                      action: #selector(displaySearchOrders))

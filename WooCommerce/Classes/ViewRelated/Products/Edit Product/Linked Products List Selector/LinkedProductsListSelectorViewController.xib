@@ -49,10 +49,10 @@
                             <constraints>
                                 <constraint firstItem="V0q-d9-nEJ" firstAttribute="top" secondItem="e8L-Dl-u8g" secondAttribute="top" constant="16" id="Equ-9A-min"/>
                                 <constraint firstItem="km4-PZ-rGi" firstAttribute="leading" secondItem="e8L-Dl-u8g" secondAttribute="leading" id="LMj-Kk-evu"/>
-                                <constraint firstItem="V0q-d9-nEJ" firstAttribute="leading" secondItem="e8L-Dl-u8g" secondAttribute="leading" constant="16" id="NBG-Mk-26K"/>
+                                <constraint firstItem="V0q-d9-nEJ" firstAttribute="leading" secondItem="e8L-Dl-u8g" secondAttribute="leadingMargin" constant="8" id="NBG-Mk-26K"/>
                                 <constraint firstAttribute="bottom" secondItem="km4-PZ-rGi" secondAttribute="bottom" id="RGB-dQ-d11"/>
                                 <constraint firstAttribute="bottom" secondItem="V0q-d9-nEJ" secondAttribute="bottom" constant="16" id="Vnr-mH-n6u"/>
-                                <constraint firstAttribute="trailing" secondItem="V0q-d9-nEJ" secondAttribute="trailing" constant="16" id="rmK-mm-Gkx"/>
+                                <constraint firstAttribute="trailingMargin" secondItem="V0q-d9-nEJ" secondAttribute="trailing" constant="8" id="rmK-mm-Gkx"/>
                                 <constraint firstAttribute="trailing" secondItem="km4-PZ-rGi" secondAttribute="trailing" id="zIT-26-Ue0"/>
                             </constraints>
                         </view>
@@ -67,8 +67,8 @@
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="TkB-a6-KpO" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="B4z-ah-7Cu"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="TkB-a6-KpO" secondAttribute="trailing" id="Dbp-pD-lgO"/>
-                <constraint firstItem="TkB-a6-KpO" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="NMC-yh-pAE"/>
+                <constraint firstAttribute="trailing" secondItem="TkB-a6-KpO" secondAttribute="trailing" id="Dbp-pD-lgO"/>
+                <constraint firstItem="TkB-a6-KpO" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="NMC-yh-pAE"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="TkB-a6-KpO" secondAttribute="bottom" id="RRa-t1-YWP"/>
             </constraints>
             <point key="canvasLocation" x="132" y="98"/>

@@ -47,6 +47,8 @@ public final class ShippingLabelStore: Store {
             loadShippingLabelSettings(shippingLabel: shippingLabel, completion: completion)
         case .validateAddress(let siteID, let address, let completion):
             validateAddress(siteID: siteID, address: address, completion: completion)
+        case .checkCreationEligibility(let siteID, let orderID, let isFeatureFlagEnabled, let onCompletion):
+            checkCreationEligibility(siteID: siteID, orderID: orderID, isFeatureFlagEnabled: isFeatureFlagEnabled, onCompletion: onCompletion)
         }
     }
 }
@@ -103,6 +105,11 @@ private extension ShippingLabelStore {
                          address: ShippingLabelAddressVerification,
                          completion: @escaping (Result<ShippingLabelAddressValidationResponse, Error>) -> Void) {
         remote.addressValidation(siteID: siteID, address: address, completion: completion)
+    }
+
+    func checkCreationEligibility(siteID: Int64, orderID: Int64, isFeatureFlagEnabled: Bool, onCompletion: @escaping (_ isEligible: Bool) -> Void) {
+        // TODO-2971: implement shipping label creation eligibility check, hopefully with the new `/creation_eligibility` endpoint.
+        onCompletion(isFeatureFlagEnabled)
     }
 }
 

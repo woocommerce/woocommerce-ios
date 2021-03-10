@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -26,23 +27,23 @@
                     <subviews>
                         <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="6Wz-Zl-b7p">
                             <rect key="frame" x="16" y="0.0" width="382" height="44"/>
-                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
                                 <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="44" id="OhC-fQ-2OT"/>
                             </constraints>
-                            <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <color key="textColor" systemColor="labelColor"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                         </textView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yju-A0-WgT" userLabel="separator">
                             <rect key="frame" x="0.0" y="44" width="414" height="1"/>
-                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="1" id="Y4E-p7-MyE"/>
                             </constraints>
                         </view>
                     </subviews>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstItem="Yju-A0-WgT" firstAttribute="leading" secondItem="Ip2-5h-wvk" secondAttribute="leading" id="2U8-wp-jts"/>
                         <constraint firstItem="Yju-A0-WgT" firstAttribute="top" secondItem="6Wz-Zl-b7p" secondAttribute="bottom" id="3fK-Px-HWL"/>
@@ -50,7 +51,7 @@
                         <constraint firstAttribute="bottom" secondItem="Yju-A0-WgT" secondAttribute="bottom" id="P5I-WF-UVJ"/>
                         <constraint firstItem="6Wz-Zl-b7p" firstAttribute="top" secondItem="Ip2-5h-wvk" secondAttribute="top" id="WVv-UX-Zxg"/>
                         <constraint firstAttribute="height" priority="250" constant="44" id="cff-Qk-3wb"/>
-                        <constraint firstItem="6Wz-Zl-b7p" firstAttribute="leading" secondItem="Ip2-5h-wvk" secondAttribute="leading" constant="16" id="csr-W2-Fgm"/>
+                        <constraint firstItem="6Wz-Zl-b7p" firstAttribute="leading" secondItem="Ip2-5h-wvk" secondAttribute="leadingMargin" constant="8" id="csr-W2-Fgm"/>
                         <constraint firstAttribute="trailing" secondItem="Yju-A0-WgT" secondAttribute="trailing" id="pxK-am-qDD"/>
                     </constraints>
                 </view>
@@ -58,18 +59,26 @@
                     <rect key="frame" x="0.0" y="113" width="414" height="749"/>
                 </tableView>
             </subviews>
-            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="zVJ-8z-2vs" firstAttribute="top" secondItem="Ip2-5h-wvk" secondAttribute="bottom" id="51P-yI-3FR"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="Ip2-5h-wvk" secondAttribute="trailing" id="5AZ-8i-UZP"/>
-                <constraint firstItem="zVJ-8z-2vs" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="Chb-li-7pc"/>
+                <constraint firstAttribute="trailing" secondItem="Ip2-5h-wvk" secondAttribute="trailing" id="5AZ-8i-UZP"/>
+                <constraint firstItem="zVJ-8z-2vs" firstAttribute="trailing" secondItem="i5M-Pr-FkT" secondAttribute="trailing" id="Chb-li-7pc"/>
                 <constraint firstItem="zVJ-8z-2vs" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="ECp-36-O08"/>
                 <constraint firstItem="Ip2-5h-wvk" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="24" id="REa-GU-ALk"/>
-                <constraint firstItem="zVJ-8z-2vs" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="eeY-QK-my7"/>
-                <constraint firstItem="Ip2-5h-wvk" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="oUV-Mg-GkZ"/>
+                <constraint firstItem="zVJ-8z-2vs" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="eeY-QK-my7"/>
+                <constraint firstItem="Ip2-5h-wvk" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="oUV-Mg-GkZ"/>
             </constraints>
-            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <point key="canvasLocation" x="131.8840579710145" y="135.9375"/>
         </view>
     </objects>
+    <resources>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>

@@ -62,7 +62,7 @@ private extension ButtonTableViewCell {
     }
 }
 
-private extension ButtonTableViewCell {
+extension ButtonTableViewCell {
     enum Constants {
         static let defaultBottomSpacing = CGFloat(20)
     }

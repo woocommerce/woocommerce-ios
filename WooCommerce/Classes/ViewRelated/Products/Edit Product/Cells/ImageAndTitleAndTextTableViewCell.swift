@@ -24,6 +24,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
     /// Contains configurable properties for the cell.
     struct DataConfiguration {
         let title: String?
+        let titleFontStyle: FontStyle
         let text: String?
         let textTintColor: UIColor?
         let image: UIImage?
@@ -34,6 +35,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         let showsSeparator: Bool
 
         init(title: String?,
+             titleFontStyle: FontStyle = .body,
              text: String? = nil,
              textTintColor: UIColor? = nil,
              image: UIImage? = nil,
@@ -43,6 +45,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
              isActionable: Bool = true,
              showsSeparator: Bool = true) {
             self.title = title
+            self.titleFontStyle = titleFontStyle
             self.text = text
             self.textTintColor = textTintColor
             self.image = image
@@ -56,6 +59,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
 
     struct ViewModel: Equatable {
         let title: String?
+        let titleFontStyle: FontStyle
         let text: String?
         let textTintColor: UIColor?
         let image: UIImage?
@@ -66,6 +70,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         let showsSeparator: Bool
 
         init(title: String?,
+             titleFontStyle: FontStyle = .body,
              text: String?,
              textTintColor: UIColor? = nil,
              image: UIImage? = nil,
@@ -75,6 +80,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
              isActionable: Bool = true,
              showsSeparator: Bool = true) {
             self.title = title
+            self.titleFontStyle = titleFontStyle
             self.text = text
             self.textTintColor = textTintColor
             self.image = image
@@ -134,7 +140,12 @@ extension ImageAndTitleAndTextTableViewCell {
     func updateUI(viewModel: ViewModel) {
         titleLabel.text = viewModel.title
         titleLabel.isHidden = viewModel.title == nil || viewModel.title?.isEmpty == true
-        titleLabel.applyBodyStyle()
+        switch viewModel.titleFontStyle {
+        case .body:
+            titleLabel.applyBodyStyle()
+        case .footnote:
+            titleLabel.applyFootnoteStyle()
+        }
         titleLabel.textColor = viewModel.text?.isEmpty == false ? .text: .textSubtle
         titleLabel.numberOfLines = viewModel.numberOfLinesForTitle
         descriptionLabel.text = viewModel.text
@@ -187,7 +198,17 @@ extension ImageAndTitleAndTextTableViewCell {
     func update(with style: Style, data: DataConfiguration) {
         switch style {
         case .imageAndTitleOnly(let fontStyle):
-            applyImageAndTitleOnlyStyle(fontStyle: fontStyle, data: data)
+            let data = DataConfiguration(title: data.title,
+                                         titleFontStyle: fontStyle,
+                                         text: data.text,
+                                         textTintColor: data.textTintColor,
+                                         image: data.image,
+                                         imageTintColor: data.imageTintColor,
+                                         numberOfLinesForTitle: data.numberOfLinesForTitle,
+                                         numberOfLinesForText: data.numberOfLinesForText,
+                                         isActionable: data.isActionable,
+                                         showsSeparator: data.showsSeparator)
+            applyImageAndTitleOnlyStyle(data: data)
         case .warning:
             applyWarningStyle(data: data)
         case .default:
@@ -214,13 +235,7 @@ private extension ImageAndTitleAndTextTableViewCell {
                 }
     }
 
-    func applyImageAndTitleOnlyStyle(fontStyle: FontStyle, data: DataConfiguration) {
-        switch fontStyle {
-        case .body:
-            titleLabel.applyBodyStyle()
-        case .footnote:
-            titleLabel.applyFootnoteStyle()
-        }
+    func applyImageAndTitleOnlyStyle(data: DataConfiguration) {
         applyDefaultStyle(data: data)
         contentImageViewWidthConstraint.isActive = true
     }
@@ -235,6 +250,7 @@ private extension ImageAndTitleAndTextTableViewCell {
 
     func applyDefaultStyle(data: DataConfiguration) {
         let viewModel = ViewModel(title: data.title,
+                                  titleFontStyle: data.titleFontStyle,
                                   text: data.text,
                                   textTintColor: data.textTintColor,
                                   image: data.image,

@@ -95,8 +95,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let productsSection = try section(withTitle: Title.products, from: dataSource)
-        XCTAssertNotNil(row(row: .markCompleteButton(style: .primary), in: productsSection))
-        XCTAssertNil(row(row: .markCompleteButton(style: .secondary), in: productsSection))
+        XCTAssertNotNil(row(row: .markCompleteButton(style: .primary, showsBottomSpacing: true), in: productsSection))
     }
 
     func test_markOrderComplete_button_is_visible_and_secondary_style_if_order_is_processing_and_eligible_for_shipping_label_creation() throws {
@@ -110,8 +109,8 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let productsSection = try section(withTitle: Title.products, from: dataSource)
-        XCTAssertNotNil(row(row: .markCompleteButton(style: .secondary), in: productsSection))
-        XCTAssertNil(row(row: .markCompleteButton(style: .primary), in: productsSection))
+        XCTAssertNotNil(row(row: .markCompleteButton(style: .secondary, showsBottomSpacing: false), in: productsSection))
+        XCTAssertNotNil(row(row: .shippingLabelCreationInfo(showsSeparator: false), in: productsSection))
     }
 
     func test_markOrderComplete_button_is_hidden_if_order_is_not_processing() throws {
@@ -124,8 +123,8 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let productsSection = try section(withTitle: Title.products, from: dataSource)
-        XCTAssertNil(row(row: .markCompleteButton(style: .primary), in: productsSection))
-        XCTAssertNil(row(row: .markCompleteButton(style: .secondary), in: productsSection))
+        XCTAssertNil(row(row: .markCompleteButton(style: .primary, showsBottomSpacing: true), in: productsSection))
+        XCTAssertNil(row(row: .markCompleteButton(style: .secondary, showsBottomSpacing: false), in: productsSection))
     }
 }
 

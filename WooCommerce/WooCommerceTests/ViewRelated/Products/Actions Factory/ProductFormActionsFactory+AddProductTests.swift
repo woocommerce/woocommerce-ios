@@ -1,7 +1,8 @@
 import XCTest
+import Fakes
+import Yosemite
 
 @testable import WooCommerce
-import Yosemite
 
 final class ProductFormActionsFactory_AddProductTests: XCTestCase {
 
@@ -78,32 +79,27 @@ final class ProductFormActionsFactory_AddProductTests: XCTestCase {
 
 private extension ProductFormActionsFactory_AddProductTests {
     enum Fixtures {
-        static let category = ProductCategory(categoryID: 1, siteID: 2, parentID: 6, name: "", slug: "")
         static let image = ProductImage(imageID: 19,
                                         dateCreated: Date(),
                                         dateModified: Date(),
                                         src: "https://photo.jpg",
                                         name: "Tshirt",
                                         alt: "")
-        static let tag = ProductTag(siteID: 123, tagID: 1, name: "", slug: "")
         // downloadable: false, virtual: false, with inventory/shipping/categories/tags/short description
-        static let physicalSimpleProductWithoutImages = MockProduct().product(downloadable: false, shortDescription: "desc", productType: .simple,
-                                                                              manageStock: true, sku: "uks", stockQuantity: nil,
-                                                                              dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "2",
-                                                                              virtual: false,
-                                                                              categories: [category],
-                                                                              tags: [tag],
-                                                                              images: [])
+        static let physicalSimpleProductWithoutImages = Fakes.ProductFactory.simpleProductWithNoImages()
+
         // Affiliate product, missing external URL/sku/inventory/short description/categories/tags
-        static let affiliateProduct = MockProduct().product(shortDescription: "",
-                                                            externalURL: "",
-                                                            productType: .affiliate,
-                                                            sku: "",
-                                                            categories: [],
-                                                            tags: [])
+        static let affiliateProduct = physicalSimpleProductWithoutImages.copy(productTypeKey: ProductType.affiliate.rawValue,
+                                                                              shortDescription: "",
+                                                                              sku: "",
+                                                                              externalURL: "",
+                                                                              categories: [],
+                                                                              tags: [])
         // Grouped product, missing grouped products/sku/short description/categories/tags
-        static let groupedProduct = MockProduct().product(shortDescription: "",
-                                                          productType: .grouped,
-                                                          sku: "")
+        static let groupedProduct = physicalSimpleProductWithoutImages.copy(productTypeKey: ProductType.grouped.rawValue,
+                                                                            shortDescription: "",
+                                                                            sku: "",
+                                                                            categories: [],
+                                                                            tags: [])
     }
 }

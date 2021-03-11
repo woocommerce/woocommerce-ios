@@ -21,7 +21,7 @@ final class ProductVariationLoadUseCaseTests: XCTestCase {
     func test_loadProductVariation_successfully_returns_both_variation_and_product() throws {
         // Arrange
         let variation = MockProductVariation().productVariation()
-        let product = MockProduct().product()
+        let product = Product.fake()
         let useCase = ProductVariationLoadUseCase(siteID: siteID, stores: stores)
         mockRetrieveProductVariation(result: .success(variation))
         mockRetrieveProduct(result: .success(product))
@@ -42,7 +42,7 @@ final class ProductVariationLoadUseCaseTests: XCTestCase {
 
     func test_loadProductVariation_with_variation_error_returns_the_error() throws {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let useCase = ProductVariationLoadUseCase(siteID: siteID, stores: stores)
         mockRetrieveProductVariation(result: .failure(ProductVariationLoadError.unexpected))
         mockRetrieveProduct(result: .success(product))

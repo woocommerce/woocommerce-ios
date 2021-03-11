@@ -18,7 +18,7 @@ final class LinkedProductListSelectorDataSourceTests: XCTestCase {
     func test_adding_preselected_products_should_result_in_no_changes() {
         // Arrange
         let preselectedProductIDs: [Int64] = [17, 671]
-        let product = MockProduct().product()
+        let product = Product.fake()
         let dataSource = LinkedProductListSelectorDataSource(product: product,
                                                              linkedProductIDs: preselectedProductIDs,
                                                              trackingContext: "test_context")
@@ -39,7 +39,7 @@ final class LinkedProductListSelectorDataSourceTests: XCTestCase {
     func test_adding_a_mix_of_preselected_and_new_products_should_append_new_products_to_linked_products() {
         // Arrange
         let preselectedProductIDs: [Int64] = [17, 671]
-        let product = MockProduct().product()
+        let product = Product.fake()
         let dataSource = LinkedProductListSelectorDataSource(product: product,
                                                              linkedProductIDs: preselectedProductIDs,
                                                              trackingContext: "test_context")
@@ -64,7 +64,7 @@ final class LinkedProductListSelectorDataSourceTests: XCTestCase {
     func test_deleting_a_preselected_product_removes_it_from_linked_products() {
         // Arrange
         let preselectedProductIDs: [Int64] = [17, 671]
-        let product = MockProduct().product()
+        let product = Product.fake()
         let dataSource = LinkedProductListSelectorDataSource(product: product,
                                                              linkedProductIDs: preselectedProductIDs,
                                                              trackingContext: "test_context")
@@ -74,7 +74,7 @@ final class LinkedProductListSelectorDataSourceTests: XCTestCase {
         }
 
         // Action
-        let linkedProducts = preselectedProductIDs.map { MockProduct().product().copy(productID: $0) }
+        let linkedProducts = preselectedProductIDs.map { Product.fake().copy(productID: $0) }
         dataSource.deleteProduct(linkedProducts[1])
 
         // Assert
@@ -87,7 +87,7 @@ final class LinkedProductListSelectorDataSourceTests: XCTestCase {
     func test_deleting_a_non_preselected_product_results_in_an_error() {
         // Arrange
         let preselectedProductIDs: [Int64] = [17, 671]
-        let product = MockProduct().product()
+        let product = Product.fake()
         let dataSource = LinkedProductListSelectorDataSource(product: product,
                                                              linkedProductIDs: preselectedProductIDs,
                                                              trackingContext: "test_context")
@@ -97,7 +97,7 @@ final class LinkedProductListSelectorDataSourceTests: XCTestCase {
         }
 
         // Action
-        let newProduct = MockProduct().product().copy(productID: 62)
+        let newProduct = Product.fake().copy(productID: 62)
         dataSource.deleteProduct(newProduct)
 
         // Assert
@@ -111,7 +111,7 @@ final class LinkedProductListSelectorDataSourceTests: XCTestCase {
     func test_sorting_products_should_save_updated_order() {
         // Arrange
         let preselectedProductIDs: [Int64] = [17, 671, 750]
-        let product = MockProduct().product()
+        let product = Product.fake()
         let dataSource = LinkedProductListSelectorDataSource(product: product,
                                                              linkedProductIDs: preselectedProductIDs,
                                                              trackingContext: "test_context")
@@ -133,7 +133,7 @@ final class LinkedProductListSelectorDataSourceTests: XCTestCase {
     func test_sorting_products_should_ignore_missing_index() {
         // Arrange
         let preselectedProductIDs: [Int64] = [17, 671, 750]
-        let product = MockProduct().product()
+        let product = Product.fake()
         let dataSource = LinkedProductListSelectorDataSource(product: product,
                                                              linkedProductIDs: preselectedProductIDs,
                                                              trackingContext: "test_context")

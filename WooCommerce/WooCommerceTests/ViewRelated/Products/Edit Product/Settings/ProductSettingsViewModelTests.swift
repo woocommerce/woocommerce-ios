@@ -6,14 +6,14 @@ final class ProductSettingsViewModelTests: XCTestCase {
 
     func testOnReloadClosure() {
 
-        let product = MockProduct().product(downloadable: false,
-                                            virtual: true,
-                                            status: .publish,
-                                            featured: true,
-                                            catalogVisibility: .search,
-                                            reviewsAllowed: false,
-                                            slug: "this-is-a-slug",
-                                            menuOrder: 1)
+        let product = Product.fake().copy(slug: "this-is-a-slug",
+                                          statusKey: ProductStatus.publish.rawValue,
+                                          featured: true,
+                                          catalogVisibilityKey: ProductCatalogVisibility.search.rawValue,
+                                          virtual: true,
+                                          downloadable: false,
+                                          reviewsAllowed: false,
+                                          menuOrder: 1)
         let viewModel = ProductSettingsViewModel(product: product, password: "1234")
 
         // Act
@@ -39,7 +39,9 @@ final class ProductSettingsViewModelTests: XCTestCase {
     }
 
     func testHasUnsavedChanges() {
-        let product = MockProduct().product(status: .publish, featured: false, catalogVisibility: .visible)
+        let product = Product.fake().copy(statusKey: ProductStatus.publish.rawValue,
+                                          featured: false,
+                                          catalogVisibilityKey: ProductCatalogVisibility.search.rawValue)
         let viewModel = ProductSettingsViewModel(product: product, password: "12345")
 
         XCTAssertFalse(viewModel.hasUnsavedChanges())
@@ -52,7 +54,9 @@ final class ProductSettingsViewModelTests: XCTestCase {
     }
 
     func testHasUnsavedChangesWithOnlyThePasswordChanged() {
-        let product = MockProduct().product(status: .publish, featured: false, catalogVisibility: .visible)
+        let product = Product.fake().copy(statusKey: ProductStatus.publish.rawValue,
+                                          featured: false,
+                                          catalogVisibilityKey: ProductCatalogVisibility.search.rawValue)
         let viewModel = ProductSettingsViewModel(product: product, password: nil)
 
         XCTAssertFalse(viewModel.hasUnsavedChanges())

@@ -9,7 +9,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_edit_product_form_with_published_status_can_view_product_in_store() {
         // Arrange
-        let product = MockProduct().product(name: "Test", status: .publish)
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.publish.rawValue)
         let viewModel = createViewModel(product: product, formType: .edit)
 
         // Action
@@ -21,7 +21,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_add_product_form_with_published_status_cannot_view_product_in_store() {
         // Arrange
-        let product = MockProduct().product(name: "Test", status: .publish)
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.publish.rawValue)
         let viewModel = createViewModel(product: product, formType: .add)
 
         // Action
@@ -33,7 +33,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_edit_product_form_with_non_published_status_cannot_view_product_in_store() {
         // Arrange
-        let product = MockProduct().product(name: "Test", status: .pending)
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.pending.rawValue)
         let viewModel = createViewModel(product: product, formType: .edit)
 
         // Action
@@ -45,7 +45,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_add_product_form_with_non_published_status_cannot_view_product_in_store() {
         // Arrange
-        let product = MockProduct().product(name: "Test", status: .pending)
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.pending.rawValue)
         let viewModel = createViewModel(product: product, formType: .add)
 
         // Action
@@ -59,7 +59,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_edit_product_form_with_published_status_can_share_product() {
         // Arrange
-        let product = MockProduct().product(name: "Test", status: .publish)
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.publish.rawValue)
         let viewModel = createViewModel(product: product, formType: .edit)
 
         // Action
@@ -71,7 +71,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_add_product_form_with_published_status_cannot_share_product() {
         // Arrange
-        let product = MockProduct().product(name: "Test", status: .publish)
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.publish.rawValue)
         let viewModel = createViewModel(product: product, formType: .add)
 
         // Action
@@ -83,7 +83,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_edit_product_form_with_non_published_status_can_share_product() {
         // Arrange
-        let product = MockProduct().product(name: "Test", status: .pending)
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.pending.rawValue)
         let viewModel = createViewModel(product: product, formType: .edit)
 
         // Action
@@ -95,7 +95,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_add_product_form_with_non_published_status_cannot_share_product() {
         // Arrange
-        let product = MockProduct().product(name: "Test", status: .pending)
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.pending.rawValue)
         let viewModel = createViewModel(product: product, formType: .add)
 
         // Action
@@ -109,7 +109,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_edit_product_form_with_published_status_can_delete_product() {
         // Arrange
-        let product = MockProduct().product(name: "Test", status: .publish)
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.publish.rawValue)
         let viewModel = createViewModel(product: product, formType: .edit)
 
         // Action
@@ -121,7 +121,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_add_product_form_with_published_status_cannot_delete_product() {
         // Arrange
-        let product = MockProduct().product(name: "Test", status: .publish)
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.publish.rawValue)
         let viewModel = createViewModel(product: product, formType: .add)
 
         // Action
@@ -133,7 +133,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_edit_product_form_with_non_published_status_can_delete_product() {
         // Arrange
-        let product = MockProduct().product(name: "Test", status: .pending)
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.pending.rawValue)
         let viewModel = createViewModel(product: product, formType: .edit)
 
         // Action
@@ -145,7 +145,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_add_product_form_with_non_published_status_cannot_delete_product() {
         // Arrange
-        let product = MockProduct().product(name: "Test", status: .pending)
+        let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.pending.rawValue)
         let viewModel = createViewModel(product: product, formType: .add)
 
         // Action

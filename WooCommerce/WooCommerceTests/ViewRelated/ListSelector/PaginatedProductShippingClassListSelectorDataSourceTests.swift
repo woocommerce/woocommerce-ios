@@ -9,7 +9,7 @@ final class PaginatedProductShippingClassListSelectorDataSourceTests: XCTestCase
     func test_selected_shippingClass() {
         let shippingClassID = Int64(134)
         let shippingClass = sampleProductShippingClass(remoteID: shippingClassID)
-        let product = MockProduct().product(productShippingClass: shippingClass)
+        let product = Product.fake().copy(productShippingClass: shippingClass)
         let model = EditableProductModel(product: product)
         var dataSource = PaginatedProductShippingClassListSelectorDataSource(product: model, selected: product.productShippingClass)
         XCTAssertEqual(dataSource.selected, shippingClass)
@@ -24,7 +24,7 @@ final class PaginatedProductShippingClassListSelectorDataSourceTests: XCTestCase
     }
 
     func test_cell_configuration() {
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let dataSource = PaginatedProductShippingClassListSelectorDataSource(product: model, selected: product.productShippingClass)
         let nib = Bundle.main.loadNibNamed(WooBasicTableViewCell.classNameWithoutNamespaces, owner: self, options: nil)

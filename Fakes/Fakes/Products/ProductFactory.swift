@@ -47,4 +47,21 @@ public enum ProductFactory {
                             categories: [.fake()],
                             tags: [.fake()])
     }
+
+    /// Returns a simple product that is ready to test the product form actions
+    ///
+    public static func simpleProductWithNoImages() -> Product {
+        Product.fake().copy(productTypeKey: ProductType.simple.rawValue,
+                            shortDescription: "desc",
+                            sku: "uks",
+                            downloadable: false,
+                            manageStock: true,
+                            weight: "2",
+                            dimensions: ProductDimensions.fake(),
+                            reviewsAllowed: true,
+                            upsellIDs: [1, 2],
+                            crossSellIDs: [3, 4],
+                            categories: [ProductCategory(categoryID: 1, siteID: 2, parentID: 6, name: "", slug: "")],
+                            tags: [ProductTag(siteID: 123, tagID: 1, name: "", slug: "")])
+    }
 }

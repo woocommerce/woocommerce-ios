@@ -9,7 +9,6 @@ final class ShippingLabelAddressTopBannerFactory {
                                                   icon: Constants.icon,
                                                   expandable: true,
                                                   topButton: .none,
-                                                  actionButtons: [],
                                                   type: .warning)
         return TopBannerSwifty(viewModel: viewModel)
     }

@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 import Yosemite
 
 final class ShippingLabelSuggestedAddressViewController: UIViewController {
@@ -18,9 +19,8 @@ final class ShippingLabelSuggestedAddressViewController: UIViewController {
 
     /// Top banner that shows a warning in case there is an error in the address validation.
     ///
-    private lazy var topBannerView: TopBannerView = {
+    private lazy var topBannerView: TopBannerSwifty = {
         let topBanner = ShippingLabelSuggestedAddressTopBannerFactory.topBannerView()
-        topBanner.translatesAutoresizingMaskIntoConstraints = false
         return topBanner
     }()
 
@@ -66,6 +66,10 @@ final class ShippingLabelSuggestedAddressViewController: UIViewController {
         configureEditAddressButton()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateHeaderHeight()
+    }
 }
 
 // MARK: - View Configuration
@@ -93,13 +97,16 @@ private extension ShippingLabelSuggestedAddressViewController {
         tableView.delegate = self
 
         // Configure header container view
-        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
+        let childView = UIHostingController(rootView: topBannerView)
+        addChild(childView)
+        childView.didMove(toParent: self)
+
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.bounds.width), height: 0))
         headerContainer.addSubview(topStackView)
         headerContainer.pinSubviewToSafeArea(topStackView)
-        topStackView.addArrangedSubview(topBannerView)
 
+        topStackView.addArrangedSubview(childView.view)
         tableView.tableHeaderView = headerContainer
-        tableView.updateHeaderHeight()
     }
 
     func registerTableViewCells() {

@@ -2,13 +2,13 @@ import SwiftUI
 
 struct TopBannerSwifty: View {
     @State var viewModel: TopBannerSwiftyViewModel
-    @State private var isExpanded: Bool = true
+    @State private var isExpanded: Bool
     private var onTopButtonTapped: (() -> Void)?
 
     init(viewModel: TopBannerSwiftyViewModel) {
         _viewModel = State(initialValue: viewModel)
-        onTopButtonTapped = viewModel.topButton.handler
         _isExpanded = State(initialValue: !viewModel.expandable)
+        onTopButtonTapped = viewModel.topButton.handler
     }
 
     var body: some View {

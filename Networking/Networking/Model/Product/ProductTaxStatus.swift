@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a ProductTaxStatus Entity.
 ///
-public enum ProductTaxStatus: Decodable, Hashable {
+public enum ProductTaxStatus: Decodable, Hashable, GeneratedFakeable {
     case taxable
     case shipping
     case none

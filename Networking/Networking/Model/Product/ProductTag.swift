@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a ProductTag entity.
 ///
-public struct ProductTag: Codable {
+public struct ProductTag: Codable, GeneratedFakeable {
     public let siteID: Int64
     public let tagID: Int64
     public let name: String

@@ -14,13 +14,13 @@
       location = "group:Networking/Networking.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:Fakes/Fakes.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Observables">
    </FileRef>
    <FileRef
       location = "group:TestKit">
-   </FileRef>
-   <FileRef
-      location = "group:Hardware">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

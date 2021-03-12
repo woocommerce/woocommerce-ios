@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="337" id="DeV-j5-Hay" customClass="HistogramTableViewCell" customModule="WooCommerce" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="416" height="337"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="DeV-j5-Hay" id="hVN-Hh-0Qf">
+                <rect key="frame" x="0.0" y="0.0" width="416" height="337"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Fc4-tc-hlz">
+                        <rect key="frame" x="0.0" y="0.0" width="416" height="337"/>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="Fc4-tc-hlz" firstAttribute="leading" secondItem="hVN-Hh-0Qf" secondAttribute="leading" id="YyA-NB-gHy"/>
+                    <constraint firstAttribute="trailing" secondItem="Fc4-tc-hlz" secondAttribute="trailing" id="kP7-7d-Htt"/>
+                    <constraint firstItem="Fc4-tc-hlz" firstAttribute="top" secondItem="hVN-Hh-0Qf" secondAttribute="top" id="nwH-ox-n7L"/>
+                    <constraint firstAttribute="bottom" secondItem="Fc4-tc-hlz" secondAttribute="bottom" id="ouu-9v-MRb"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="view" destination="Fc4-tc-hlz" id="XhY-7m-6f7"/>
+            </connections>
+            <point key="canvasLocation" x="-505.79710144927537" y="9.0401785714285712"/>
+        </tableViewCell>
+    </objects>
+</document>

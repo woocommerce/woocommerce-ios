@@ -443,7 +443,12 @@
 		26FF455F24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FF455E24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift */; };
 		31316F9C25CB20FD00D9F129 /* OrderStatusListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31316F9B25CB20FD00D9F129 /* OrderStatusListViewModel.swift */; };
 		316837DA25CCA90C00E36B2F /* OrderStatusListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 316837D925CCA90C00E36B2F /* OrderStatusListDataSource.swift */; };
+		317908C325FBFB7300E0327D /* HistogramView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317908C225FBFB7300E0327D /* HistogramView.swift */; };
+		317CAC5525F99CD1009B6591 /* PerformanceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 317CAC5425F99CD1009B6591 /* PerformanceViewController.swift */; };
 		318A9E9125D302370032C245 /* CardReaderSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318A9E9025D302370032C245 /* CardReaderSettingsViewController.swift */; };
+		31C6CECF25FACBE700929C9F /* PerformanceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C6CECE25FACBE700929C9F /* PerformanceViewModel.swift */; };
+		31C6CF5B25FADC8400929C9F /* HistogramTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31C6CF5A25FADC8400929C9F /* HistogramTableViewCell.swift */; };
+		31C6CF6125FADC9B00929C9F /* HistogramTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31C6CF6025FADC9B00929C9F /* HistogramTableViewCell.xib */; };
 		4506BD712461965300FE6377 /* ProductVisibilityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */; };
 		4506BD722461965300FE6377 /* ProductVisibilityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */; };
 		450C2CB024CF006A00D570DD /* ProductTagsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450C2CAF24CF006A00D570DD /* ProductTagsDataSource.swift */; };
@@ -1588,7 +1593,12 @@
 		2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		31316F9B25CB20FD00D9F129 /* OrderStatusListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusListViewModel.swift; sourceTree = "<group>"; };
 		316837D925CCA90C00E36B2F /* OrderStatusListDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusListDataSource.swift; sourceTree = "<group>"; };
+		317908C225FBFB7300E0327D /* HistogramView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistogramView.swift; sourceTree = "<group>"; };
+		317CAC5425F99CD1009B6591 /* PerformanceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceViewController.swift; sourceTree = "<group>"; };
 		318A9E9025D302370032C245 /* CardReaderSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsViewController.swift; sourceTree = "<group>"; };
+		31C6CECE25FACBE700929C9F /* PerformanceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceViewModel.swift; sourceTree = "<group>"; };
+		31C6CF5A25FADC8400929C9F /* HistogramTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistogramTableViewCell.swift; sourceTree = "<group>"; };
+		31C6CF6025FADC9B00929C9F /* HistogramTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HistogramTableViewCell.xib; sourceTree = "<group>"; };
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
 		4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVisibilityViewController.swift; sourceTree = "<group>"; };
 		4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductVisibilityViewController.xib; sourceTree = "<group>"; };
@@ -3344,6 +3354,15 @@
 			path = inAppFeedback;
 			sourceTree = "<group>";
 		};
+		317CAC5325F99C90009B6591 /* Performance */ = {
+			isa = PBXGroup;
+			children = (
+				317CAC5425F99CD1009B6591 /* PerformanceViewController.swift */,
+				31C6CECE25FACBE700929C9F /* PerformanceViewModel.swift */,
+			);
+			path = Performance;
+			sourceTree = "<group>";
+		};
 		318A9E8F25D301C60032C245 /* CardReaders */ = {
 			isa = PBXGroup;
 			children = (
@@ -5055,6 +5074,7 @@
 				02D4564A231D059E008CF0A9 /* Beta features */,
 				318A9E8F25D301C60032C245 /* CardReaders */,
 				CE27257A219249B5002B22EB /* Help */,
+				317CAC5325F99C90009B6591 /* Performance */,
 				CE22E3F821714639005A6BEF /* Privacy */,
 				027D4A8B2526FD1700108626 /* SettingsViewController.swift */,
 				027D4A8C2526FD1700108626 /* SettingsViewController.xib */,
@@ -5178,6 +5198,9 @@
 				CE227098228F180B00C0626C /* WooBasicTableViewCell.xib */,
 				02A410F32583A84C005E2925 /* SpacerTableViewCell.swift */,
 				02A410F42583A84C005E2925 /* SpacerTableViewCell.xib */,
+				31C6CF5A25FADC8400929C9F /* HistogramTableViewCell.swift */,
+				317908C225FBFB7300E0327D /* HistogramView.swift */,
+				31C6CF6025FADC9B00929C9F /* HistogramTableViewCell.xib */,
 			);
 			path = ReusableViews;
 			sourceTree = "<group>";
@@ -5700,6 +5723,7 @@
 				0286B27C23C7051F003D784B /* ProductImagesViewController.xib in Resources */,
 				02F49ADE23BF3A4100FA0BFA /* ErrorSectionHeaderView.xib in Resources */,
 				B554016B2170D6010067DC90 /* ChartPlaceholderView.xib in Resources */,
+				31C6CF6125FADC9B00929C9F /* HistogramTableViewCell.xib in Resources */,
 				26CCBE0D2523C2560073F94D /* RefundProductsTotalTableViewCell.xib in Resources */,
 				CE32B11620BF8779006FBCF4 /* ButtonTableViewCell.xib in Resources */,
 				45C8B2672316AB460002FA77 /* BillingAddressTableViewCell.xib in Resources */,
@@ -6301,6 +6325,7 @@
 				57C503E023E8D4D600EC0790 /* OrdersTabbedViewModel.swift in Sources */,
 				028BAC3D22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift in Sources */,
 				B59D1EDF219072CC009D1978 /* ProductReviewTableViewCell.swift in Sources */,
+				31C6CECF25FACBE700929C9F /* PerformanceViewModel.swift in Sources */,
 				AEE1D4F525D14F88006A490B /* AttributeOptionListSelectorCommand.swift in Sources */,
 				020DD48A23229495005822B1 /* ProductsTabProductTableViewCell.swift in Sources */,
 				74AAF6A5212A04A900C612B0 /* ChartMarker.swift in Sources */,
@@ -6411,6 +6436,7 @@
 				B56C721221B5B44000E5E85B /* PushNotificationsConfiguration.swift in Sources */,
 				26FE09DF24DB871100B9BDF5 /* SurveyViewControllersFactory.swift in Sources */,
 				02279587237A50C900787C63 /* AztecHeaderFormatBarCommand.swift in Sources */,
+				31C6CF5B25FADC8400929C9F /* HistogramTableViewCell.swift in Sources */,
 				025C006B2550DE4700FAC222 /* BarcodeScannerViewController.swift in Sources */,
 				A6557218258B7510008AE7CA /* OrderListCellViewModel.swift in Sources */,
 				D8915DC12372C8AC00F63762 /* ColorStudio.swift in Sources */,
@@ -6446,6 +6472,7 @@
 				CEEC9B5E21E79C330055EEF0 /* BuildConfiguration.swift in Sources */,
 				D843D5D722485B19001BFA55 /* ShippingProvidersViewModel.swift in Sources */,
 				02ADC7CC239762E0008D4BED /* PaginatedListSelectorViewProperties.swift in Sources */,
+				317908C325FBFB7300E0327D /* HistogramView.swift in Sources */,
 				26CCBE0B2523B3650073F94D /* RefundProductsTotalTableViewCell.swift in Sources */,
 				0229ED00258767BC00C336F8 /* ShippingLabelPrintingStepContentView.swift in Sources */,
 				CE1CCB4B20570B1F000EE3AC /* OrderTableViewCell.swift in Sources */,
@@ -6490,6 +6517,7 @@
 				2687165A24D350C20042F6AE /* SurveyCoordinatingController.swift in Sources */,
 				02C88775245036D400E4470F /* FilterProductListViewModel.swift in Sources */,
 				02A65301246AA63600755A01 /* ProductDetailsFactory.swift in Sources */,
+				317CAC5525F99CD1009B6591 /* PerformanceViewController.swift in Sources */,
 				456396B625C82691001F1A26 /* ShippingLabelFormStepTableViewCell.swift in Sources */,
 				02C8876D24501FAC00E4470F /* FilterListViewController.swift in Sources */,
 				021FB44C24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift in Sources */,

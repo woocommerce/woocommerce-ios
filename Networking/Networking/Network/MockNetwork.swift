@@ -116,6 +116,13 @@ extension MockNetwork {
         responseMap.removeAll()
         errorMap.removeAll()
     }
+
+    public func responseTimes() -> [Int] {
+        return []
+    }
+
+    public func clearResponseTimes() {
+    }
 }
 
 

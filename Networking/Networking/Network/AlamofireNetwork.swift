@@ -1,7 +1,6 @@
 import Foundation
 import Alamofire
 
-
 extension Alamofire.MultipartFormData: MultipartFormData {}
 
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
@@ -14,6 +13,9 @@ public class AlamofireNetwork: Network {
     ///
     private let credentials: Credentials
 
+    /// In-memory network metrics. To be replaced with CoreData.
+    private var responseTimeBins = [Int]()
+    private let maxResponseTimeBin = 30
 
     /// Public Initializer
     ///
@@ -25,6 +27,24 @@ public class AlamofireNetwork: Network {
         let uniqueID = UUID().uuidString
         let configuration = URLSessionConfiguration.background(withIdentifier: "com.automattic.woocommerce.backgroundsession.\(uniqueID)")
         self.backgroundSessionManager = Alamofire.SessionManager(configuration: configuration)
+        clearResponseTimes()
+    }
+
+    public func clearResponseTimes() {
+        responseTimeBins = Array(repeating: 0, count: maxResponseTimeBin + 1)
+    }
+
+    private func bumpResponseTime(responseTime: TimeInterval) {
+        let bin = Int(responseTime)
+        if bin > maxResponseTimeBin {
+            responseTimeBins[maxResponseTimeBin] += 1
+            return
+        }
+        responseTimeBins[bin] += 1
+    }
+
+    public func responseTimes() -> [Int] {
+        return responseTimeBins
     }
 
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
@@ -45,10 +65,10 @@ public class AlamofireNetwork: Network {
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
 
-        Alamofire.request(authenticated)
-            .responseData { response in
-                completion(response.value, response.networkingError)
-            }
+        Alamofire.request(authenticated).responseData { [self] response in
+            bumpResponseTime(responseTime: response.timeline.totalDuration)
+            completion(response.value, response.networkingError)
+        }
     }
 
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
@@ -63,7 +83,8 @@ public class AlamofireNetwork: Network {
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
 
-        Alamofire.request(authenticated).responseData { response in
+        Alamofire.request(authenticated).responseData { [self] response in
+            bumpResponseTime(responseTime: response.timeline.totalDuration)
             completion(response.result.toSwiftResult())
         }
     }

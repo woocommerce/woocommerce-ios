@@ -175,7 +175,7 @@ private extension SettingsViewController {
         }
 
         // App Settings
-        sections.append(Section(title: appSettingsTitle, rows: [.privacy], footerHeight: UITableView.automaticDimension))
+        sections.append(Section(title: appSettingsTitle, rows: [.performance, .privacy], footerHeight: UITableView.automaticDimension))
 
         // About the App
         sections.append(Section(title: aboutTheAppTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension))
@@ -208,6 +208,8 @@ private extension SettingsViewController {
             configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .cardReaders:
             configureCardReaders(cell: cell)
+        case let cell as BasicTableViewCell where row == .performance:
+            configurePerformance(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
             configurePrivacy(cell: cell)
         case let cell as BasicTableViewCell where row == .betaFeatures:
@@ -252,6 +254,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Manage Card Reader", comment: "Navigates to Card Reader management screen")
+    }
+
+    func configurePerformance(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Performance", comment: "")
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {
@@ -368,6 +376,14 @@ private extension SettingsViewController {
         ServiceLocator.analytics.track(.settingsContactSupportTapped)
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: HelpAndSupportViewController.self) else {
             fatalError("Cannot instantiate `HelpAndSupportViewController` from Dashboard storyboard")
+        }
+        show(viewController, sender: self)
+    }
+
+    func performanceWasPressed() {
+        // ServiceLocator.analytics.track(.settingsCardReadersTapped)
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: PerformanceViewController.self) else {
+            fatalError("Cannot instantiate `PerformanceViewController` from Dashboard storyboard")
         }
         show(viewController, sender: self)
     }
@@ -514,6 +530,8 @@ extension SettingsViewController: UITableViewDelegate {
             supportWasPressed()
         case .cardReaders:
             cardReadersWasPressed()
+        case .performance:
+            performanceWasPressed()
         case .privacy:
             privacyWasPressed()
         case .betaFeatures:
@@ -555,6 +573,7 @@ private enum Row: CaseIterable {
     case switchStore
     case support
     case cardReaders
+    case performance
     case logout
     case privacy
     case betaFeatures
@@ -573,6 +592,8 @@ private enum Row: CaseIterable {
         case .support:
             return BasicTableViewCell.self
         case .cardReaders:
+            return BasicTableViewCell.self
+        case .performance:
             return BasicTableViewCell.self
         case .logout:
             return BasicTableViewCell.self

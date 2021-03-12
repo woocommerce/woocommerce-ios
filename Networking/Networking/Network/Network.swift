@@ -52,4 +52,8 @@ public protocol Network {
     func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
                                  to request: URLRequestConvertible,
                                  completion: @escaping (Data?, Error?) -> Void)
+
+    func responseTimes() -> [Int]
+
+    func clearResponseTimes()
 }

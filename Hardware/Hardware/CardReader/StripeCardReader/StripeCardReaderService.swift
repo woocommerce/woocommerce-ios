@@ -64,8 +64,8 @@ extension StripeCardReaderService: CardReaderService {
 
         // Attack the test terminal, provided by the SDK
         let config = DiscoveryConfiguration(
-            discoveryMethod: .internet,
-            simulated: true
+            discoveryMethod: .bluetoothScan,
+            simulated: false
         )
 
         switchStatusToDiscovering()
@@ -215,6 +215,12 @@ extension StripeCardReaderService: DiscoveryDelegate {
         let wooReaders = readers.map {
             CardReader(reader: $0)
         }
+
+        print("==== did updated discovered")
+        print(wooReaders)
+        print("count ", wooReaders.count)
+        print("//// did updated discovered")
+
 
         discoveredReadersSubject.send(wooReaders)
     }

@@ -18,6 +18,9 @@
     - [Copiable](copiable.md)
         - [Generating Copiable Methods](copiable.md#generating-copiable-methods)
         - [Modifying The Copiable Code Generation](copiable.md#modifying-the-copiable-code-generation)
+    - [Fakeable](fakeable.md)
+        - [Generating Fake Methods](fakeable.md#generating-fake-methods)
+        - [Modifying Fakes Code Generation](fakeable.md#modifying-the-fakeable-code-generation)
     - [Tracking Events](tracking-events.md)
         - [Custom Properties](tracking-events.md#custom-properties)
 - Testing

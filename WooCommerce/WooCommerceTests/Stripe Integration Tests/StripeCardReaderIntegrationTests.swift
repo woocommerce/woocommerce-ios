@@ -109,31 +109,63 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
         wait(for: [discoveredReaders, connectedToReader, connectedreaderIsPublished], timeout: Constants.expectationTimeout)
     }
 
-    func test_creating_intent_returns_valid_intent() {
+    func test_creating_intent_fails_while_discovery_is_in_progress() {
         let intentCreation = expectation(description: "Creating a Payment Intent")
 
         let readerService = ServiceLocator.cardReaderService
-        //readerService.start(MockTokenProvider())
+        readerService.start(MockTokenProvider())
 
         let parameters = PaymentIntentParameters(amount: 100, currency: "usd", receiptDescription: "receipt", statementDescription: "statement")
 
+        /// Payment intent creation completes with an error:
+        /// Could not execute createPaymentIntent because the SDK is busy with another command: discoverReaders
         readerService.createPaymentIntent(parameters).sink { completion in
-            print("==== completion ")
-        } receiveValue: { intent in
-            print("== new intent")
-            XCTAssertFalse(intent.id.isEmpty)
-            XCTAssertEqual(intent.amount, parameters.amount)
-            XCTAssertEqual(intent.currency, parameters.currency)
+            intentCreation.fulfill()
+        } receiveValue: { _ in
         }.store(in: &cancellables)
 
 
         wait(for: [intentCreation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_creating_intent_succeedes_after_discovery_is_completed() {
+        let discoveredReaders = expectation(description: "Discovered readers")
+        let intentCreation = expectation(description: "Creating a Payment Intent")
+
+        let readerService = ServiceLocator.cardReaderService
+
+        let parameters = PaymentIntentParameters(amount: 100, currency: "usd", receiptDescription: "receipt", statementDescription: "statement")
+
+        readerService.discoveredReaders.dropFirst(1).sink { completion in
+            readerService.cancelDiscovery()
+            discoveredReaders.fulfill()
+        } receiveValue: { readers in
+            // There should be at least one non nil reader
+            readerService.cancelDiscovery()
+            guard let _ = readers.first else {
+                return
+            }
+            discoveredReaders.fulfill()
+            readerService.createPaymentIntent(parameters).sink { completion in
+                //
+                print("== = completion")
+            } receiveValue: { intent in
+                XCTAssertFalse(intent.id.isEmpty)
+                XCTAssertEqual(intent.amount, parameters.amount)
+                XCTAssertEqual(intent.currency, parameters.currency)
+                intentCreation.fulfill()
+            }.store(in: &self.cancellables)
+
+        }.store(in: &cancellables)
+
+        readerService.start(MockTokenProvider())
+        wait(for: [discoveredReaders, intentCreation], timeout: Constants.expectationTimeout)
     }
 }
 
 
 private final class MockTokenProvider: CardReaderConfigProvider {
     func fetchToken(completion: @escaping(String?, Error?) -> Void) {
-        completion("a token", nil)
+        completion("pst_test_YWNjdF8xSU84MnIySERPb0MxYlRjLEg1VkVXMHBlY2FuUlFybzc0YXNKcHA3cG93MUxLUFA_00HPM91Gau", nil)
     }
 }

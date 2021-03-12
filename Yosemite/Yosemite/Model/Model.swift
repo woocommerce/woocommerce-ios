@@ -96,6 +96,7 @@ public typealias WooAPIVersion = Networking.WooAPIVersion
 public typealias StoredProductSettings = Networking.StoredProductSettings
 public typealias CardReader = Hardware.CardReader
 public typealias CardReaderServiceDiscoveryStatus = Hardware.CardReaderServiceDiscoveryStatus
+public typealias PaymentParameters = Hardware.PaymentIntentParameters
 
 
 // MARK: - Exported Storage Symbols

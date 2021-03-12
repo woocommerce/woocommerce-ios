@@ -64,7 +64,7 @@ extension StripeCardReaderService: CardReaderService {
 
         // Attack the test terminal, provided by the SDK
         let config = DiscoveryConfiguration(
-            discoveryMethod: .bluetoothScan,
+            discoveryMethod: .bluetoothProximity,
             simulated: false
         )
 

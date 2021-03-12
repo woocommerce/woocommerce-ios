@@ -113,6 +113,7 @@ final class CardReaderSettingsViewModel: ObservableObject {
     /// Called when a reader has been discovered (with an array of discovered readers).
     private func didDiscoverReaders(cardReaders: [CardReader]) -> Void {
         // TODO - more than one reader? sort in the manner in which we'd like the rows presented
+        print("=== is main thread ", Thread.isMainThread)
         guard activeAlert != .foundReader else {
             return
         }
@@ -123,7 +124,7 @@ final class CardReaderSettingsViewModel: ObservableObject {
 
         // TODO - show the multiple-readers-found UITableView when more than one reader is found
         // For now, just show the tail (last) of the array
-        guard let cardReader = cardReaders.last else {
+        guard let cardReader = cardReaders.first else {
             return
         }
         foundReaders = [cardReader]

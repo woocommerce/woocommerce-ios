@@ -431,4 +431,18 @@ extension OrderDetailsViewModel {
 
         stores.dispatch(deleteTrackingAction)
     }
+
+    func collectPayment() {
+        let paymentParameters = PaymentParameters(amount: 100,
+                                                  currency: "usd",
+                                                  receiptDescription: "Receipt",
+                                                  statementDescription: "Statement")
+
+        let action = CardPresentPaymentAction.collectPayment(siteID: order.siteID,
+                                                             orderID: order.orderID, parameters: paymentParameters) { (result) in
+            print("===== result ", result)
+        }
+
+        ServiceLocator.stores.dispatch(action)
+    }
 }

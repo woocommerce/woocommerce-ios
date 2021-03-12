@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a ProductType Entity.
 ///
-public enum ProductType: Codable, Hashable {
+public enum ProductType: Codable, Hashable, GeneratedFakeable {
     case simple
     case grouped
     case affiliate

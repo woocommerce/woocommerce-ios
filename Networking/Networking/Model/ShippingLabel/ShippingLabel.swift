@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a Shipping Label.
 ///
-public struct ShippingLabel: Equatable, GeneratedCopiable {
+public struct ShippingLabel: Equatable, GeneratedCopiable, GeneratedFakeable {
     /// The remote ID of the site that owns this shipping label.
     public let siteID: Int64
 

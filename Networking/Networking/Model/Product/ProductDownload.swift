@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a ProductDownload entity.
 ///
-public struct ProductDownload: Codable {
+public struct ProductDownload: Codable, GeneratedFakeable {
     public let downloadID: String
     public let name: String?
     public let fileURL: String?

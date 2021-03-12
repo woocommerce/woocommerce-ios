@@ -1,5 +1,5 @@
 import XCTest
-
+import Fakes
 import Storage
 import enum Networking.NetworkError
 
@@ -313,7 +313,7 @@ private extension RetrieveProductReviewFromNoteUseCaseTests {
 private extension RetrieveProductReviewFromNoteUseCaseTests {
     enum TestData {
         static let siteID: Int64 = 398
-        static let product = MockProduct().product(siteID: siteID, productID: 756_611)
+        static let product = Product.fake().copy(siteID: siteID, productID: 756_611)
         static let productReview = MockProductReview().make(siteID: siteID, reviewID: 1_981_157, productID: product.productID)
         static let note = MockNote().make(noteID: 9_981, metaSiteID: siteID, metaReviewID: productReview.reviewID)
     }

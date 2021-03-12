@@ -1,5 +1,6 @@
 import Photos
 import XCTest
+import Fakes
 
 @testable import WooCommerce
 import Yosemite
@@ -10,7 +11,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
     func testProductHasNoChangesFromEditActionsOfTheSameData() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Fakes.ProductFactory.productWithEditableDataFilled()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -48,7 +49,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
     func testProductHasUnsavedChangesFromEditingProductName() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -64,7 +65,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
     func testProductHasUnsavedChangesFromEditingPassword() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -81,7 +82,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
     func testProductHasUnsavedChangesFromUploadingAnImage() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -104,7 +105,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
     func testProductHasUnsavedChangesFromEditingImages() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -126,7 +127,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
     func testProductHasUnsavedChangesFromEditingProductDescription() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -142,7 +143,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
     func testProductHasUnsavedChangesFromEditingProductCategories() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -163,7 +164,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
     func testProductHasUnsavedChangesFromEditingProductTags() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -183,7 +184,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
     func testProductHasUnsavedChangesFromEditingProductShortDescription() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -199,7 +200,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
     func testProductHasUnsavedChangesFromEditingPriceSettings() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -215,7 +216,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
     func testProductHasUnsavedChangesFromEditingInventorySettings() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -231,7 +232,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
     func testProductHasUnsavedChangesFromEditingShippingSettings() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -250,7 +251,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
     func test_product_has_unsaved_changes_from_editing_downloadableFiles() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -258,7 +259,8 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
                                              productImageActionHandler: productImageActionHandler)
 
         // Action
-        viewModel.updateDownloadableFiles(downloadableFiles: MockProduct().sampleDownloadsMutated(), downloadLimit: 1, downloadExpiry: 1)
+        let downloads = Fakes.ProductFactory.productWithDownloadableFiles().downloads
+        viewModel.updateDownloadableFiles(downloadableFiles: downloads, downloadLimit: 1, downloadExpiry: 1)
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
@@ -266,7 +268,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
     func test_product_has_unsaved_changes_from_editing_downloadLimit() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -274,7 +276,8 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
                                              productImageActionHandler: productImageActionHandler)
 
         // Action
-        viewModel.updateDownloadableFiles(downloadableFiles: MockProduct().sampleDownloads(), downloadLimit: 5, downloadExpiry: 1)
+        let downloads = Fakes.ProductFactory.productWithDownloadableFiles().downloads
+        viewModel.updateDownloadableFiles(downloadableFiles: downloads, downloadLimit: 5, downloadExpiry: 1)
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
@@ -282,7 +285,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
     func test_product_has_unsaved_changes_from_editing_downloadExpiry() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -290,7 +293,8 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
                                              productImageActionHandler: productImageActionHandler)
 
         // Action
-        viewModel.updateDownloadableFiles(downloadableFiles: MockProduct().sampleDownloads(), downloadLimit: 1, downloadExpiry: 5)
+        let downloads = Fakes.ProductFactory.productWithDownloadableFiles().downloads
+        viewModel.updateDownloadableFiles(downloadableFiles: downloads, downloadLimit: 1, downloadExpiry: 5)
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())

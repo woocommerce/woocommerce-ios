@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents Shipping Label Address that has been validated or that generated an error.
 ///
-public struct ShippingLabelAddressValidationResponse: Equatable {
+public struct ShippingLabelAddressValidationResponse: Equatable, GeneratedFakeable {
     public let address: ShippingLabelAddress?
     public let errors: ShippingLabelAddressValidationError?
 

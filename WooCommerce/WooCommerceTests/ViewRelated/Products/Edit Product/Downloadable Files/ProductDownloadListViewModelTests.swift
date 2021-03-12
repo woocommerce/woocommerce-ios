@@ -1,4 +1,5 @@
 import XCTest
+import Fakes
 @testable import WooCommerce
 @testable import Yosemite
 
@@ -8,7 +9,7 @@ final class ProductDownloadListViewModelTests: XCTestCase {
 
     func test_readonly_values_are_as_expected_after_initializing_a_product_with_non_empty_downloadable_files() throws {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Fakes.ProductFactory.productWithDownloadableFiles()
         let model = EditableProductModel(product: product)
 
         // Act
@@ -30,7 +31,7 @@ final class ProductDownloadListViewModelTests: XCTestCase {
 
     func test_readonly_values_are_as_expected_after_initializing_a_product_with_empty_downloadable_files() {
         // Arrange
-        let product = MockProduct().product(downloadable: false)
+        let product = Product.fake().copy(downloadable: false, downloadLimit: -1, downloadExpiry: -1)
         let model = EditableProductModel(product: product)
 
         // Act
@@ -52,7 +53,7 @@ final class ProductDownloadListViewModelTests: XCTestCase {
 
     func test_handling_a_valid_downloadLimit_updates_with_success() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
 
         // Act
@@ -67,7 +68,7 @@ final class ProductDownloadListViewModelTests: XCTestCase {
 
     func test_handling_a_valid_downloadExpiry_updates_with_success() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
 
         // Act
@@ -82,7 +83,7 @@ final class ProductDownloadListViewModelTests: XCTestCase {
 
     func test_viewModel_has_unsaved_changes_after_updating_downloadLimit() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
 
         // Act
@@ -96,7 +97,7 @@ final class ProductDownloadListViewModelTests: XCTestCase {
 
     func test_viewModel_has_unsaved_changes_after_updating_downloadExpiry() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
 
         // Act
@@ -109,7 +110,7 @@ final class ProductDownloadListViewModelTests: XCTestCase {
 
     func test_viewModel_has_unsaved_changes_after_updating_downloadableFiles_order() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Fakes.ProductFactory.productWithDownloadableFiles()
         let model = EditableProductModel(product: product)
 
         // Act
@@ -126,12 +127,12 @@ final class ProductDownloadListViewModelTests: XCTestCase {
 
     func test_viewModel_has_unsaved_changes_after_updating_with_the_original_values() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Fakes.ProductFactory.productWithDownloadableFiles()
         let model = EditableProductModel(product: product)
 
         // Act
         let viewModel = ProductDownloadListViewModel(product: model)
-        viewModel.handleDownloadableFilesChange(MockProduct().sampleDownloads())
+        viewModel.handleDownloadableFilesChange(product.downloads)
 
         // Assert
         XCTAssertFalse(viewModel.hasUnsavedChanges())

@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a ProductCatalogVisibility Entity.
 ///
-public enum ProductCatalogVisibility: Decodable, Hashable {
+public enum ProductCatalogVisibility: Decodable, Hashable, GeneratedFakeable {
     case visible
     case catalog
     case search

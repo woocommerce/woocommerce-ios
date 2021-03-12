@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents an single site visit stat for a specific period.
 ///
-public struct SiteVisitStatsItem {
+public struct SiteVisitStatsItem: GeneratedFakeable {
     public let period: String
     public let visitors: Int
 

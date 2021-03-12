@@ -436,6 +436,7 @@
 		26E1BECE251CD9F80096D0A1 /* RefundItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E1BECD251CD9F80096D0A1 /* RefundItemViewModel.swift */; };
 		26F65C9825DEDAF0008FAE29 /* GenerateVariationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F65C9725DEDAF0008FAE29 /* GenerateVariationUseCase.swift */; };
 		26F65C9E25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F65C9D25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift */; };
+		26FB056825F6CB6000A40B26 /* Fakes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26FB056725F6CB6000A40B26 /* Fakes.framework */; };
 		26FE09DD24D9F3F600B9BDF5 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09DC24D9F3F600B9BDF5 /* LoadingView.swift */; };
 		26FE09DF24DB871100B9BDF5 /* SurveyViewControllersFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09DE24DB871100B9BDF5 /* SurveyViewControllersFactory.swift */; };
 		26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */; };
@@ -584,7 +585,6 @@
 		45F627B9253603AE00894B86 /* ProductDownloadSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F627B5253603AE00894B86 /* ProductDownloadSettingsViewModel.swift */; };
 		45FBDF2B238BF8A300127F77 /* ProductImageCollectionViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBDF2A238BF8A300127F77 /* ProductImageCollectionViewCellTests.swift */; };
 		45FBDF2D238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBDF2C238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift */; };
-		45FBDF34238D33F100127F77 /* MockProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBDF33238D33F100127F77 /* MockProduct.swift */; };
 		45FBDF39238D3F8800127F77 /* ExtendedAddProductImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45FBDF36238D3C7500127F77 /* ExtendedAddProductImageCollectionViewCell.xib */; };
 		45FBDF3A238D3F8B00127F77 /* ExtendedAddProductImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBDF35238D3C7500127F77 /* ExtendedAddProductImageCollectionViewCell.swift */; };
 		45FBDF3C238D4EA800127F77 /* ExtendedAddProductImageCollectionViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBDF3B238D4EA800127F77 /* ExtendedAddProductImageCollectionViewCellTests.swift */; };
@@ -1597,6 +1597,7 @@
 		26E1BECD251CD9F80096D0A1 /* RefundItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundItemViewModel.swift; sourceTree = "<group>"; };
 		26F65C9725DEDAF0008FAE29 /* GenerateVariationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateVariationUseCase.swift; sourceTree = "<group>"; };
 		26F65C9D25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateVariationUseCaseTests.swift; sourceTree = "<group>"; };
+		26FB056725F6CB6000A40B26 /* Fakes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Fakes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		26FE09DC24D9F3F600B9BDF5 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		26FE09DE24DB871100B9BDF5 /* SurveyViewControllersFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyViewControllersFactory.swift; sourceTree = "<group>"; };
 		26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyCoordinatorControllerTests.swift; sourceTree = "<group>"; };
@@ -1747,7 +1748,6 @@
 		45F627B5253603AE00894B86 /* ProductDownloadSettingsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDownloadSettingsViewModel.swift; sourceTree = "<group>"; };
 		45FBDF2A238BF8A300127F77 /* ProductImageCollectionViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageCollectionViewCellTests.swift; sourceTree = "<group>"; };
 		45FBDF2C238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductImageCollectionViewCellTests.swift; sourceTree = "<group>"; };
-		45FBDF33238D33F100127F77 /* MockProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProduct.swift; sourceTree = "<group>"; };
 		45FBDF35238D3C7500127F77 /* ExtendedAddProductImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedAddProductImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		45FBDF36238D3C7500127F77 /* ExtendedAddProductImageCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ExtendedAddProductImageCollectionViewCell.xib; sourceTree = "<group>"; };
 		45FBDF3B238D4EA800127F77 /* ExtendedAddProductImageCollectionViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedAddProductImageCollectionViewCellTests.swift; sourceTree = "<group>"; };
@@ -2321,6 +2321,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26FB056825F6CB6000A40B26 /* Fakes.framework in Frameworks */,
 				B873E8F8E103966D2182EE67 /* Pods_WooCommerceTests.framework in Frameworks */,
 				57150E0F24F462C200E81611 /* TestKit in Frameworks */,
 			);
@@ -3934,7 +3935,6 @@
 			isa = PBXGroup;
 			children = (
 				D85136CC231E15B700DD0539 /* MockReviews.swift */,
-				45FBDF33238D33F100127F77 /* MockProduct.swift */,
 				02BAB01E24D0232800F8B06E /* MockProductVariation.swift */,
 				746791652108D87B007CF1DC /* MockAnalyticsProvider.swift */,
 				B555531021B57E6F00449E71 /* MockApplicationAdapter.swift */,
@@ -4068,6 +4068,7 @@
 			isa = PBXGroup;
 			children = (
 				D88FDB4425DD223B00CB0DBD /* Hardware.framework */,
+				26FB056725F6CB6000A40B26 /* Fakes.framework */,
 				5744BEB0248FE44C000A6FE2 /* SwiftUI.framework */,
 				B5C3B5E620D189ED0072CB9D /* Yosemite.framework */,
 				B5C3B5E420D189EA0072CB9D /* Storage.framework */,
@@ -6829,7 +6830,6 @@
 				D8736B5122EB69E300A14A29 /* OrderDetailsViewModelTests.swift in Sources */,
 				02C0CD2E23B5E3AE00F880B1 /* DefaultImageServiceTests.swift in Sources */,
 				02E4FD812306AA890049610C /* StatsTimeRangeBarViewModelTests.swift in Sources */,
-				45FBDF34238D33F100127F77 /* MockProduct.swift in Sources */,
 				6856D2A5C2076F5BF14F2C11 /* KeyboardStateProviderTests.swift in Sources */,
 				6856D806DE7DB61522D54044 /* NSMutableAttributedStringHelperTests.swift in Sources */,
 				023D69442588C6BD00F7DA72 /* ShippingLabelPaperSizeListSelectorCommandTests.swift in Sources */,

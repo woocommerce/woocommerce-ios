@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents site visit stats over a specific period.
 ///
-public struct SiteVisitStats: Decodable {
+public struct SiteVisitStats: Decodable, GeneratedFakeable {
     public let siteID: Int64
     public let date: String
     public let granularity: StatGranularity

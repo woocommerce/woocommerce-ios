@@ -102,7 +102,10 @@ extension ProductsTabProductViewModelTests {
                      variations: [Int64] = [],
                      images: [ProductImage] = []) -> Product {
 
-        let mock = MockProduct()
-        return mock.product(name: name, stockQuantity: stockQuantity, stockStatus: stockStatus, variations: variations, images: images)
+        return Product.fake().copy(name: name,
+                                   stockQuantity: stockQuantity,
+                                   stockStatusKey: stockStatus.rawValue,
+                                   images: images,
+                                   variations: variations)
     }
 }

@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents an Order Refund Entity.
 ///
-public struct OrderRefundCondensed: Decodable {
+public struct OrderRefundCondensed: Decodable, GeneratedFakeable {
     public let refundID: Int64
     public let reason: String?
     public let total: String

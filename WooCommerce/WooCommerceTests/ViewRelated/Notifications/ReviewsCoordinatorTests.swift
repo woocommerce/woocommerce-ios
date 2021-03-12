@@ -217,7 +217,7 @@ private extension ReviewsCoordinatorTests {
                         header: Data(),
                         body: Data(),
                         meta: metaAsData)
-        let product = MockProduct().product()
+        let product = Product.fake()
         let review = MockReviews().anonymousReview()
 
         return ProductReviewFromNoteParcel(note: note, review: review, product: product)

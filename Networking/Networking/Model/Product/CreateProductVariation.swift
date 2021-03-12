@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents the entity sent for creating a new Product Variation entity.
 ///
-public struct CreateProductVariation: Codable, Equatable {
+public struct CreateProductVariation: Codable, Equatable, GeneratedFakeable {
     public let regularPrice: String
     public let attributes: [ProductVariationAttribute]
 

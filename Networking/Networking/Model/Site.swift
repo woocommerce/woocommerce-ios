@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a WordPress.com Site.
 ///
-public struct Site: Decodable {
+public struct Site: Decodable, GeneratedFakeable {
 
     /// WordPress.com Site Identifier.
     ///

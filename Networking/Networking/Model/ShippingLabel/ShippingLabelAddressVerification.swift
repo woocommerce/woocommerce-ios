@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents Shipping Label Address that should be verified.
 ///
-public struct ShippingLabelAddressVerification: Equatable {
+public struct ShippingLabelAddressVerification: Equatable, GeneratedFakeable {
     public let address: ShippingLabelAddress?
     public let type: ShipType
 
@@ -14,7 +14,7 @@ public struct ShippingLabelAddressVerification: Equatable {
     /// Represents all of the possible Type Statuses in enum form.
     /// It can be either be destination for the `Ship TO` address OR `origin` for the `Ship FROM` address.
     ///
-    public enum ShipType: String, Encodable, Hashable {
+    public enum ShipType: String, Encodable, Hashable, GeneratedFakeable {
         case origin
         case destination
     }

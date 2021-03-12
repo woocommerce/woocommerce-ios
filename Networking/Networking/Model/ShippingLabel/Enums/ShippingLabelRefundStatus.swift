@@ -1,7 +1,7 @@
 import Foundation
 
 /// The status of shipping label refund.
-public enum ShippingLabelRefundStatus {
+public enum ShippingLabelRefundStatus: GeneratedFakeable {
     case pending
 }
 

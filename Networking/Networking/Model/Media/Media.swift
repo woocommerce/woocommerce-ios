@@ -1,6 +1,6 @@
 /// WordPress Site Media
 ///
-public struct Media {
+public struct Media: GeneratedFakeable {
     public let mediaID: Int64
     public let date: Date    // gmt iso8601
     public let fileExtension: String

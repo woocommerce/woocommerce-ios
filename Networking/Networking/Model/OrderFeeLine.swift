@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a FeeLine Entity within an Order.
 ///
-public struct OrderFeeLine: Equatable, Decodable {
+public struct OrderFeeLine: Equatable, Decodable, GeneratedFakeable {
     public let feeID: Int64
     public let name: String
     public let taxClass: String

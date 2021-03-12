@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "img_light_error_JP.png",
+      "filename" : "woo-no-jetpack-error-light.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,12 +11,15 @@
           "value" : "dark"
         }
       ],
-      "filename" : "img_dark_error_JP.png",
+      "filename" : "woo-no-jetpack-error-dark.pdf",
       "idiom" : "universal"
     }
   ],
   "info" : {
     "author" : "xcode",
     "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
   }
 }

@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents an OrderStatus Entity.
 ///
-public struct OrderStatus: Decodable {
+public struct OrderStatus: Decodable, GeneratedFakeable {
     public let name: String?
     public let siteID: Int64
     public let slug: String

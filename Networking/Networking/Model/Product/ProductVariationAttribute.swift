@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a Product Variation Attribute Entity.
 ///
-public struct ProductVariationAttribute: Codable {
+public struct ProductVariationAttribute: Codable, GeneratedFakeable {
     public let id: Int64
     public let name: String
     public let option: String

@@ -1,5 +1,6 @@
 import XCTest
 import Yosemite
+import Fakes
 
 @testable import WooCommerce
 
@@ -29,7 +30,7 @@ final class RefundItemViewModelTests: XCTestCase {
 private extension RefundItemViewModelTests {
 
     func sampleProduct() -> Product {
-        MockProduct().product(images: [sampleProductImage()])
+        Product.fake().copy(images: [sampleProductImage()])
     }
 
     func sampleItem() -> OrderItem {

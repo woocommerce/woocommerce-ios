@@ -237,63 +237,42 @@ private extension ProductFormActionsFactory_ReadonlyProductTests {
                                         alt: "")
         static let tag = ProductTag(siteID: 123, tagID: 1, name: "", slug: "")
         // Simple product without an image and description
-        static let simpleProductWithoutImagesAndDescription = MockProduct().product()
+        static let simpleProductWithoutImagesAndDescription = Product.fake()
             .copy(productTypeKey: ProductType.simple.rawValue, fullDescription: "", images: [])
         // Simple product with data so that all rows are shown
-        static let simpleProduct = MockProduct().product().copy(name: "Affiliate",
-                                                                productTypeKey: ProductType.simple.rawValue,
-                                                                fullDescription: "Woooooo0o",
-                                                                shortDescription: "Woo",
-                                                                sku: "woo",
-                                                                price: "",
-                                                                regularPrice: "12.6",
-                                                                manageStock: false,
-                                                                reviewsAllowed: true,
-                                                                categories: [category],
-                                                                tags: [tag],
-                                                                images: [image])
+        static let simpleProduct = Product.fake().copy(name: "Affiliate",
+                                                       productTypeKey: ProductType.simple.rawValue,
+                                                       fullDescription: "Woooooo0o",
+                                                       shortDescription: "Woo",
+                                                       sku: "woo",
+                                                       price: "",
+                                                       regularPrice: "12.6",
+                                                       virtual: false,
+                                                       downloadable: false,
+                                                       manageStock: false,
+                                                       dimensions: ProductDimensions(length: "0", width: "0", height: "0"),
+                                                       reviewsAllowed: true,
+                                                       upsellIDs: [1, 2, 3],
+                                                       crossSellIDs: [3, 4, 5],
+                                                       categories: [category],
+                                                       tags: [tag],
+                                                       images: [image])
         // Affiliate product with data so that all rows are shown
-        static let affiliateProduct = MockProduct().product().copy(name: "Affiliate",
-                                                                   productTypeKey: ProductType.affiliate.rawValue,
-                                                                   fullDescription: "Woooooo0o",
-                                                                   shortDescription: "Woo",
-                                                                   sku: "woo",
-                                                                   price: "",
-                                                                   regularPrice: "12.6",
-                                                                   externalURL: "woo.com",
-                                                                   reviewsAllowed: true,
-                                                                   categories: [category],
-                                                                   tags: [tag],
-                                                                   images: [image])
+        static let affiliateProduct = simpleProduct.copy(name: "Affiliate",
+                                                         productTypeKey: ProductType.affiliate.rawValue,
+                                                         externalURL: "woo.com")
         // Affiliate product without external URL and SKU
         static let affiliateProductWithoutExternalURLAndSKU = affiliateProduct.copy(sku: "",
                                                                                     externalURL: "")
         // Grouped product with data so that all rows are shown
-        static let groupedProduct = MockProduct().product().copy(name: "Grouped",
-                                                                 productTypeKey: ProductType.grouped.rawValue,
-                                                                 fullDescription: "Woooooo0o",
-                                                                 shortDescription: "Woo",
-                                                                 sku: "woo",
-                                                                 price: "",
-                                                                 regularPrice: "12.6",
-                                                                 reviewsAllowed: true,
-                                                                 categories: [category],
-                                                                 tags: [tag],
-                                                                 images: [image],
-                                                                 groupedProducts: [12])
+        static let groupedProduct = simpleProduct.copy(name: "Grouped",
+                                                       productTypeKey: ProductType.grouped.rawValue,
+                                                       groupedProducts: [12])
         // Grouped product without a SKU
         static let groupedProductWithoutSKU = groupedProduct.copy(sku: "")
         // Variable product with data so that all rows are shown
-        static let variableProduct = MockProduct().product().copy(name: "Grouped",
-                                                                  productTypeKey: ProductType.variable.rawValue,
-                                                                  fullDescription: "Woooooo0o",
-                                                                  shortDescription: "Woo",
-                                                                  price: "",
-                                                                  regularPrice: "12.6",
-                                                                  reviewsAllowed: true,
-                                                                  categories: [category],
-                                                                  tags: [tag],
-                                                                  images: [image],
-                                                                  variations: [12])
+        static let variableProduct = simpleProduct.copy(name: "Grouped",
+                                                        productTypeKey: ProductType.variable.rawValue,
+                                                        variations: [12])
     }
 }

@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a CouponLine Entity within an Order.
 ///
-public struct OrderCouponLine: Decodable {
+public struct OrderCouponLine: Decodable, GeneratedFakeable {
     public let couponID: Int64
     public let code: String
     public let discount: String

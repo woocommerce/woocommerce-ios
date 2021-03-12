@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a ProductStatus Entity.
 ///
-public enum ProductStatus: Codable, Hashable {
+public enum ProductStatus: Codable, Hashable, GeneratedFakeable {
     case publish
     case draft
     case pending

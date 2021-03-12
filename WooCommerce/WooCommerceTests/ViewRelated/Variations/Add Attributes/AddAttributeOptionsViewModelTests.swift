@@ -581,7 +581,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
 private extension AddAttributeOptionsViewModelTests {
 
     func sampleProduct() -> Product {
-        Product().copy(siteID: .some(123), productID: .some(12345))
+        Product.fake().copy(siteID: 123, productID: 12345)
     }
 
     func sampleAttribute(attributeID: Int64 = 1234, name: String? = nil, options: [String] = []) -> ProductAttribute {

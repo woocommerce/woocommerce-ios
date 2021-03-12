@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "img_light_what is JP.png",
+      "filename" : "woo-what-is-jetpack-light.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,12 +11,15 @@
           "value" : "dark"
         }
       ],
-      "filename" : "img_dark_what is JP.png",
+      "filename" : "woo-what-is-jetpack-dark.pdf",
       "idiom" : "universal"
     }
   ],
   "info" : {
     "author" : "xcode",
     "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
   }
 }

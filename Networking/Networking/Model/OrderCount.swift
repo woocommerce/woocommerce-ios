@@ -4,7 +4,7 @@ import Foundation
 /// An OrderCount contains an array of OrderCountItem.
 /// Each OrderCountItem represents the number of Orders for a given status
 ///
-public struct OrderCount {
+public struct OrderCount: GeneratedFakeable {
     public let siteID: Int64
     public let items: [OrderCountItem]
 

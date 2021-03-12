@@ -17,6 +17,9 @@
       location = "group:Hardware/Hardware.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:Fakes/Fakes.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Observables">
    </FileRef>
    <FileRef

@@ -1,7 +1,7 @@
 import Foundation
 
 /// The status of shipping label.
-public enum ShippingLabelStatus {
+public enum ShippingLabelStatus: GeneratedFakeable {
     case purchased
 }
 

@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents Shipping Label Settings.
 ///
-public struct ShippingLabelSettings: Equatable {
+public struct ShippingLabelSettings: Equatable, GeneratedFakeable {
     public let siteID: Int64
     public let orderID: Int64
 

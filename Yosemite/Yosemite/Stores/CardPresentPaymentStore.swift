@@ -113,6 +113,7 @@ private extension CardPresentPaymentStore {
                 onCompletion(result)
             }
         }) { (intent) in
+            // TODO. Initiate step 2. Collect payment method
             let result: Result<Bool, Error> = .success(true)
             onCompletion(result)
         }.store(in: &cancellables)

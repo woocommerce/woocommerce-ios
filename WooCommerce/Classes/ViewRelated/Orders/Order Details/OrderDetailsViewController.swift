@@ -115,6 +115,17 @@ private extension OrderDetailsViewController {
         let titleFormat = NSLocalizedString("Order #%1$@", comment: "Order number title. Parameters: %1$@ - order number")
         title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
         removeNavigationBackBarButtonText()
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "$",
+                                                               style: .plain,
+                                                               target: self,
+                                                               action: #selector(collectPayment))
+        }
+    }
+
+    @objc private func collectPayment() {
+        viewModel.collectPayment()
     }
 
     /// Setup: EntityListener

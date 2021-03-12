@@ -126,6 +126,8 @@ extension StripeCardReaderService: CardReaderService {
     public func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<PaymentIntent, Error> {
         return Future() { [weak self] promise in
             Terminal.shared.createPaymentIntent(parameters.toStripe()) { (intent, error) in
+                print("==== intent ", intent)
+                print("==== error ", error)
                 guard let _ = self else {
                     promise(Result.failure(CardReaderServiceError.intentCreation))
                     return

@@ -109,6 +109,26 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
         wait(for: [discoveredReaders, connectedToReader, connectedreaderIsPublished], timeout: Constants.expectationTimeout)
     }
 
+    func test_creating_intent_returns_valid_intent() {
+        let intentCreation = expectation(description: "Creating a Payment Intent")
+
+        let readerService = ServiceLocator.cardReaderService
+        //readerService.start(MockTokenProvider())
+
+        let parameters = PaymentIntentParameters(amount: 100, currency: "usd", receiptDescription: "receipt", statementDescription: "statement")
+
+        readerService.createPaymentIntent(parameters).sink { completion in
+            print("==== completion ")
+        } receiveValue: { intent in
+            print("== new intent")
+            XCTAssertFalse(intent.id.isEmpty)
+            XCTAssertEqual(intent.amount, parameters.amount)
+            XCTAssertEqual(intent.currency, parameters.currency)
+        }.store(in: &cancellables)
+
+
+        wait(for: [intentCreation], timeout: Constants.expectationTimeout)
+    }
 }
 
 

@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents an Order Item that was refunded or will be refunded.
 ///
-public struct OrderItemRefund: Codable {
+public struct OrderItemRefund: Codable, GeneratedFakeable {
     public let itemID: Int64
     public let name: String
     public let productID: Int64

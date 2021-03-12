@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a Shipment Tracking Provider Grouping Entity (from the WC Shipment Tracking extension).
 ///
-public struct ShipmentTrackingProviderGroup {
+public struct ShipmentTrackingProviderGroup: GeneratedFakeable {
     /// Tracking provider group name
     ///
     public let name: String

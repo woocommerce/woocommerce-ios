@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a Tax Refund for a specific Order Item.
 ///
-public struct OrderItemTaxRefund: Codable {
+public struct OrderItemTaxRefund: Codable, GeneratedFakeable {
 
     /// Tax ID for line item
     ///

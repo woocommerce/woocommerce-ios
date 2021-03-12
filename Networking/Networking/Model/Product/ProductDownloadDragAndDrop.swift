@@ -8,7 +8,7 @@ import CoreServices
 /// So the top layer object needs to be a subclass of `NSObject`
 /// And since the original `ProductDownload` is a struct, we need a new class for this purpose.
 ///
-public final class ProductDownloadDragAndDrop: NSObject, Codable {
+public final class ProductDownloadDragAndDrop: NSObject, Codable, GeneratedFakeable {
     public let downloadableFile: ProductDownload
 
     /// initializer.

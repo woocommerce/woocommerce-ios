@@ -3,7 +3,7 @@ import Foundation
 
 /// WordPress.com Account
 ///
-public struct Account: Decodable {
+public struct Account: Decodable, GeneratedFakeable {
 
     /// Dotcom UserID
     ///

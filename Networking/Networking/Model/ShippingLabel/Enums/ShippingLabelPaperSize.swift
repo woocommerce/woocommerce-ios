@@ -1,7 +1,7 @@
 import Foundation
 
 /// Paper size options for printing a shipping label.
-public enum ShippingLabelPaperSize {
+public enum ShippingLabelPaperSize: GeneratedFakeable {
     case a4
     case label
     case legal

@@ -1,6 +1,6 @@
 /// Represents a single order stat for a specific period.
 /// v4 API
-public struct OrderStatsV4Interval: Decodable {
+public struct OrderStatsV4Interval: Decodable, GeneratedFakeable {
     public let interval: String
     /// Interval start date string in the site time zone.
     public let dateStart: String

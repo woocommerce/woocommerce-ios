@@ -3,7 +3,7 @@ import Foundation
 
 /// Encapsulates API Information for a given site
 ///
-public struct SiteAPI: Decodable {
+public struct SiteAPI: Decodable, GeneratedFakeable {
 
     /// Site Identifier.
     ///

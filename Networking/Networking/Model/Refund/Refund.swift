@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a decoded Refund entity.
 ///
-public struct Refund: Codable {
+public struct Refund: Codable, GeneratedFakeable {
     public let refundID: Int64
     public let orderID: Int64
     public let siteID: Int64

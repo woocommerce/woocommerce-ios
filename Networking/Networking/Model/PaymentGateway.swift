@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a Payment Gateway.
 ///
-public struct PaymentGateway: Equatable {
+public struct PaymentGateway: Equatable, GeneratedFakeable {
 
     /// Features for payment gateway.
     ///

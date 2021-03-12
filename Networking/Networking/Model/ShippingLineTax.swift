@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents the taxes for a specific shipping item.
 ///
-public struct ShippingLineTax: Decodable, Hashable {
+public struct ShippingLineTax: Decodable, Hashable, GeneratedFakeable {
 
     /// Tax ID for shipping item
     ///

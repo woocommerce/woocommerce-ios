@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents an Apple Push Notifications Service Device.
 ///
-public struct APNSDevice {
+public struct APNSDevice: GeneratedFakeable {
 
     /// Push Notifications Token.
     ///

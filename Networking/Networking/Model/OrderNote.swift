@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents an Order's Note Entity.
 ///
-public struct OrderNote: Decodable {
+public struct OrderNote: Decodable, GeneratedFakeable {
     public let noteID: Int64
     public let dateCreated: Date
     public let note: String

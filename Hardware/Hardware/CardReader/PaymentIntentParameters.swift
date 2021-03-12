@@ -5,13 +5,13 @@
 public struct PaymentIntentParameters {
     /// The amount of the payment, provided in the currency’s smallest unit.
     /// Note: in testmode, only amounts ending in “00” will be approved. All other amounts will be declined by the Stripe API
-    let amount: UInt
+    public let amount: UInt
 
     /// Three-letter ISO currency code, in lowercase. Must be a supported currency.
-    let currency: String
+    public let currency: String
 
     ///An arbitrary string attached to the object. If you send a receipt email for this payment, the email will include the description.
-    let receiptDescription: String?
+    public let receiptDescription: String?
 
     /**
      * A string to be displayed on your customer’s credit card statement.
@@ -21,5 +21,15 @@ public struct PaymentIntentParameters {
      * Non-ASCII characters are automatically stripped.
      * While most banks and card issuers display this information consistently, some may display it incorrectly or not at all.
      */
-    let statementDescription: String?
+    public let statementDescription: String?
+
+    public init(amount: UInt,
+                currency: String,
+                receiptDescription: String? = nil,
+                statementDescription: String? = nil) {
+        self.amount = amount
+        self.currency = currency
+        self.receiptDescription = receiptDescription
+        self.statementDescription = statementDescription
+    }
 }

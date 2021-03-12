@@ -68,7 +68,6 @@ extension StripeCardReaderService: CardReaderService {
             simulated: true
         )
 
-        print("|||| Service. calling start in service ", self)
         switchStatusToDiscovering()
 
         /**
@@ -100,7 +99,7 @@ extension StripeCardReaderService: CardReaderService {
         guard discoveryStatusSubject.value == .discovering else {
             return
         }
-        print("||||||| Service calling cancel in service", self)
+
         discoveryCancellable?.cancel { [weak self] error in
             guard let error = error else {
                 self?.switchStatusToIdle()
@@ -125,9 +124,21 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<PaymentIntent, Error> {
-        return Future() { promise in
-            // Attack the Stripe SDK and create a PaymentIntent.
-            // To be implemented
+        return Future() { [weak self] promise in
+            Terminal.shared.createPaymentIntent(parameters.toStripe()) { (intent, error) in
+                guard let _ = self else {
+                    promise(Result.failure(CardReaderServiceError.intentCreation))
+                    return
+                }
+
+                if let _ = error {
+                    promise(Result.failure(CardReaderServiceError.intentCreation))
+                }
+
+                if let intent = intent {
+                    promise(Result.success(PaymentIntent(intent: intent)))
+                }
+            }
         }
     }
 

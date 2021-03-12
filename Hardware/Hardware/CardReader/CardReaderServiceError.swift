@@ -5,4 +5,5 @@
 public enum CardReaderServiceError: Error {
     case discovery
     case connection
+    case intentCreation
 }

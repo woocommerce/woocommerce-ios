@@ -284,24 +284,6 @@ extension Product {
     }
 }
 
-extension ProductDownload {
-    public func copy(
-        downloadID: CopiableProp<String> = .copy,
-        name: NullableCopiableProp<String> = .copy,
-        fileURL: NullableCopiableProp<String> = .copy
-    ) -> ProductDownload {
-        let downloadID = downloadID ?? self.downloadID
-        let name = name ?? self.name
-        let fileURL = fileURL ?? self.fileURL
-
-        return ProductDownload(
-            downloadID: downloadID,
-            name: name,
-            fileURL: fileURL
-        )
-    }
-}
-
 extension ProductImage {
     public func copy(
         imageID: CopiableProp<Int64> = .copy,

@@ -1,5 +1,6 @@
 import Photos
 import XCTest
+import Fakes
 import Observables
 
 @testable import WooCommerce
@@ -25,7 +26,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
 
     func testObservablesFromEditActionsOfTheSameData() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Fakes.ProductFactory.productWithEditableDataFilled()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -76,7 +77,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
     /// When only product name is updated, the product name observable should be triggered but no the product observable.
     func testObservablesFromEditingProductName() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -117,7 +118,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
     /// When only product password is updated, only the update enabled boolean should be triggered.
     func testObservablesFromEditingProductPassword() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -154,7 +155,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
 
     func testObservablesFromUpdatingProductPasswordRemotely() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -198,7 +199,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
 
     func testObservablesFromUploadingAnImage() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let viewModel = ProductFormViewModel(product: model,

@@ -1,4 +1,5 @@
 import XCTest
+import Fakes
 
 @testable import WooCommerce
 @testable import Yosemite
@@ -358,84 +359,44 @@ private extension ProductFormActionsFactoryTests {
                                         alt: "")
         static let tag = ProductTag(siteID: 123, tagID: 1, name: "", slug: "")
         // downloadable: false, virtual: false, with inventory/shipping/categories/tags/short description
-        static let physicalSimpleProductWithoutImages = MockProduct().product(downloadable: false, shortDescription: "desc", productType: .simple,
-                                                                              manageStock: true, sku: "uks", stockQuantity: nil,
-                                                                              dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "2",
-                                                                              virtual: false,
-                                                                              categories: [category],
-                                                                              tags: [tag],
-                                                                              images: [])
+        static let physicalSimpleProductWithoutImages = Fakes.ProductFactory.simpleProductWithNoImages()
+
         // downloadable: false, virtual: true, with inventory/shipping/categories/tags/short description
-        static let physicalSimpleProductWithImages = MockProduct().product(downloadable: false, shortDescription: "desc", productType: .simple,
-                                                                           manageStock: true, sku: "uks", stockQuantity: nil,
-                                                                           dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "2",
-                                                                           virtual: false,
-                                                                           categories: [category],
-                                                                           tags: [tag],
-                                                                           images: [image])
+        static let physicalSimpleProductWithImages = physicalSimpleProductWithoutImages.copy(images: [image])
+
         // downloadable: false, virtual: true, reviews: false, with inventory/shipping/categories/tags/short description
-        static let physicalSimpleProductWithReviewsDisabled = MockProduct().product(downloadable: false,
-                                                                                    shortDescription: "desc", productType: .simple,
-                                                                                    manageStock: true, sku: "uks", stockQuantity: nil,
-                                                                                    dimensions: ProductDimensions(length: "", width: "", height: ""),
-                                                                                    weight: "2",
-                                                                                    virtual: false,
-                                                                                    reviewsAllowed: false,
-                                                                                    categories: [category],
-                                                                                    tags: [tag],
-                                                                                    images: [image])
+        static let physicalSimpleProductWithReviewsDisabled = physicalSimpleProductWithImages.copy(reviewsAllowed: false)
+
         // downloadable: false, virtual: true, reviews: false, with inventory/shipping/categories/tags/short description
-        static let physicalSimpleProductWithoutLinkedProducts = MockProduct().product(downloadable: false,
-                                                                                    shortDescription: "desc", productType: .simple,
-                                                                                    manageStock: true, sku: "uks", stockQuantity: nil,
-                                                                                    dimensions: ProductDimensions(length: "", width: "", height: ""),
-                                                                                    weight: "2",
-                                                                                    virtual: false,
-                                                                                    reviewsAllowed: false,
-                                                                                    categories: [category],
-                                                                                    tags: [tag],
-                                                                                    images: [image],
-                                                                                    upsellIDs: [],
-                                                                                    crossSellIDs: [])
+        static let physicalSimpleProductWithoutLinkedProducts = physicalSimpleProductWithReviewsDisabled.copy(upsellIDs: [], crossSellIDs: [])
+
         // downloadable: false, virtual: true, with inventory/shipping/categories/tags/short description
-        static let virtualSimpleProduct = MockProduct().product(downloadable: false, shortDescription: "desc", productType: .simple,
-                                                                manageStock: true, sku: "uks", stockQuantity: nil,
-                                                                dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "2",
-                                                                virtual: true,
-                                                                categories: [category],
-                                                                tags: [tag])
+        static let virtualSimpleProduct = physicalSimpleProductWithoutImages.copy(virtual: true)
+
         // downloadable: true, virtual: true, missing inventory/shipping/categories/short description
-        static let downloadableSimpleProduct = MockProduct().product(downloadable: true, shortDescription: "desc", productType: .simple,
-                                                                     manageStock: true, sku: "uks", stockQuantity: nil,
-                                                                     dimensions: ProductDimensions(length: "", width: "", height: ""), weight: "3",
-                                                                     virtual: true,
-                                                                     categories: [category],
-                                                                     tags: [tag])
+        static let downloadableSimpleProduct = virtualSimpleProduct.copy(downloadable: true)
+
         // Affiliate product, missing external URL/sku/inventory/short description/categories/tags
-        static let affiliateProduct = MockProduct().product(shortDescription: "",
-                                                            externalURL: "",
-                                                            productType: .affiliate,
-                                                            sku: "",
-                                                            categories: [],
-                                                            tags: [])
+        static let affiliateProduct = physicalSimpleProductWithoutImages.copy(productTypeKey: ProductType.affiliate.rawValue,
+                                                                              shortDescription: "",
+                                                                              sku: "",
+                                                                              externalURL: "",
+                                                                              categories: [],
+                                                                              tags: [])
+
         // Grouped product, missing grouped products/sku/short description/categories/tags
-        static let groupedProduct = MockProduct().product(shortDescription: "",
-                                                          productType: .grouped,
-                                                          sku: "")
+        static let groupedProduct = affiliateProduct.copy(productTypeKey: ProductType.grouped.rawValue)
+
         // Variable product, missing variations/short description/categories/tags
-        static let variableProductWithoutVariations = MockProduct().product(shortDescription: "",
-                                                                            productType: .variable,
-                                                                            sku: "").copy(variations: [])
+        static let variableProductWithoutVariations = affiliateProduct.copy(productTypeKey: ProductType.variable.rawValue, variations: [])
+
         // Variable product with one variation, missing short description/categories/tags
-        static let variableProductWithVariations = MockProduct().product(shortDescription: "",
-                                                                         productType: .variable,
-                                                                         sku: "").copy(variations: [123])
+        static let variableProductWithVariations = variableProductWithoutVariations.copy(variations: [123])
+
         // Non-core product, missing price/short description/categories/tags
-        static let nonCoreProductWithoutPrice = MockProduct().product(shortDescription: "",
-                                                                      productType: .custom("other")).copy(regularPrice: "")
+        static let nonCoreProductWithoutPrice = affiliateProduct.copy(productTypeKey: "other", regularPrice: "")
 
         // Non-core product, missing short description/categories/tags
-        static let nonCoreProductWithPrice = MockProduct().product(shortDescription: "",
-                                                                   productType: .custom("other")).copy(regularPrice: "2")
+        static let nonCoreProductWithPrice = nonCoreProductWithoutPrice.copy(regularPrice: "2")
     }
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		26106B3D25FA4F6C0000DF30 /* ProductFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26106B3C25FA4F6C0000DF30 /* ProductFactory.swift */; };
 		26CA6D2625F6C87800B01F48 /* Fakes.h in Headers */ = {isa = PBXBuildFile; fileRef = 26CA6D2425F6C87800B01F48 /* Fakes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		26CA6D2F25F6C8FC00B01F48 /* Fake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CA6D2D25F6C8FB00B01F48 /* Fake.swift */; };
 		26CA6D3025F6C8FC00B01F48 /* Fakes.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CA6D2E25F6C8FC00B01F48 /* Fakes.generated.swift */; };
@@ -14,6 +15,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		26106B3C25FA4F6C0000DF30 /* ProductFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFactory.swift; sourceTree = "<group>"; };
 		26CA6D2125F6C87800B01F48 /* Fakes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Fakes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		26CA6D2425F6C87800B01F48 /* Fakes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Fakes.h; sourceTree = "<group>"; };
 		26CA6D2525F6C87800B01F48 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -35,6 +37,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		26106B3B25FA4F5F0000DF30 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				26106B3C25FA4F6C0000DF30 /* ProductFactory.swift */,
+			);
+			path = Products;
+			sourceTree = "<group>";
+		};
 		26CA6D1725F6C87800B01F48 = {
 			isa = PBXGroup;
 			children = (
@@ -57,6 +67,7 @@
 			children = (
 				26CA6D2D25F6C8FB00B01F48 /* Fake.swift */,
 				26CA6D2E25F6C8FC00B01F48 /* Fakes.generated.swift */,
+				26106B3B25FA4F5F0000DF30 /* Products */,
 				26CA6D2425F6C87800B01F48 /* Fakes.h */,
 				26CA6D2525F6C87800B01F48 /* Info.plist */,
 			);
@@ -152,6 +163,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				26CA6D2F25F6C8FC00B01F48 /* Fake.swift in Sources */,
+				26106B3D25FA4F6C0000DF30 /* ProductFactory.swift in Sources */,
 				26CA6D3025F6C8FC00B01F48 /* Fakes.generated.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

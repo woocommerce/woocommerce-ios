@@ -1,6 +1,7 @@
 import XCTest
 import Storage
 import CoreData
+import Fakes
 @testable import Yosemite
 
 final class ResultsController_FilterProductTests: XCTestCase {
@@ -26,10 +27,25 @@ final class ResultsController_FilterProductTests: XCTestCase {
         // Arrange
         // Creates different combinations of products.
         let expectedProducts = [
-            MockProduct().product(siteID: sampleSiteID, productID: 62, name: "A", productStatus: .draft, productType: .affiliate, stockStatus: .onBackOrder),
-            MockProduct().product(siteID: sampleSiteID, productID: 2, name: "B", productStatus: .publish, productType: .simple, stockStatus: .inStock),
-            MockProduct().product(siteID: sampleSiteID, productID: 25, name: "C", productStatus: .pending, productType: .variable, stockStatus: .outOfStock),
-            ]
+            Product.fake().copy(siteID: sampleSiteID,
+                                productID: 62,
+                                name: "A",
+                                productTypeKey: ProductType.affiliate.rawValue,
+                                statusKey: ProductStatus.draft.rawValue,
+                                stockStatusKey: ProductStockStatus.onBackOrder.rawValue),
+            Product.fake().copy(siteID: sampleSiteID,
+                                productID: 2,
+                                name: "B",
+                                productTypeKey: ProductType.simple.rawValue,
+                                statusKey: ProductStatus.publish.rawValue,
+                                stockStatusKey: ProductStockStatus.inStock.rawValue),
+            Product.fake().copy(siteID: sampleSiteID,
+                                productID: 25,
+                                name: "C",
+                                productTypeKey: ProductType.variable.rawValue,
+                                statusKey: ProductStatus.pending.rawValue,
+                                stockStatusKey: ProductStockStatus.outOfStock.rawValue)
+        ]
 
         expectedProducts.forEach { product in
             storageManager.insertSampleProduct(readOnlyProduct: product)
@@ -48,12 +64,12 @@ final class ResultsController_FilterProductTests: XCTestCase {
 
     func testPredicateWithNonNilStockStatusFilter() {
         // Arrange
-        let otherProduct = MockProduct().product(siteID: sampleSiteID, productID: 1, stockStatus: .inStock)
+        let otherProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, stockStatusKey: ProductStockStatus.inStock.rawValue)
 
         let expectedProducts = [
-            MockProduct().product(siteID: sampleSiteID, productID: 62, name: "A", stockStatus: .onBackOrder),
-            MockProduct().product(siteID: sampleSiteID, productID: 2, name: "B", stockStatus: .onBackOrder)
-            ]
+            Product.fake().copy(siteID: sampleSiteID, productID: 62, name: "A", stockStatusKey: ProductStockStatus.onBackOrder.rawValue),
+            Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "B", stockStatusKey: ProductStockStatus.onBackOrder.rawValue),
+        ]
 
         ([otherProduct] + expectedProducts).forEach { product in
             storageManager.insertSampleProduct(readOnlyProduct: product)
@@ -73,12 +89,12 @@ final class ResultsController_FilterProductTests: XCTestCase {
 
     func testPredicateWithNonNilProductStatus() {
         // Arrange
-        let otherProduct = MockProduct().product(siteID: sampleSiteID, productID: 1, productStatus: .publish)
+        let otherProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, statusKey: ProductStatus.publish.rawValue)
 
         let expectedProducts = [
-            MockProduct().product(siteID: sampleSiteID, productID: 62, name: "A", productStatus: .draft),
-            MockProduct().product(siteID: sampleSiteID, productID: 2, name: "B", productStatus: .draft)
-            ]
+            Product.fake().copy(siteID: sampleSiteID, productID: 62, name: "A", statusKey: ProductStatus.draft.rawValue),
+            Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "B", statusKey: ProductStatus.draft.rawValue),
+        ]
 
         ([otherProduct] + expectedProducts).forEach { product in
             storageManager.insertSampleProduct(readOnlyProduct: product)
@@ -98,12 +114,12 @@ final class ResultsController_FilterProductTests: XCTestCase {
 
     func testPredicateWithNonNilProductType() {
         // Arrange
-        let otherProduct = MockProduct().product(siteID: sampleSiteID, productID: 1, productType: .affiliate)
+        let otherProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.affiliate.rawValue)
 
         let expectedProducts = [
-            MockProduct().product(siteID: sampleSiteID, productID: 62, name: "A", productType: .variable),
-            MockProduct().product(siteID: sampleSiteID, productID: 2, name: "B", productType: .variable)
-            ]
+            Product.fake().copy(siteID: sampleSiteID, productID: 62, name: "A", productTypeKey: ProductType.variable.rawValue),
+            Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "B", productTypeKey: ProductType.variable.rawValue),
+        ]
 
         ([otherProduct] + expectedProducts).forEach { product in
             storageManager.insertSampleProduct(readOnlyProduct: product)

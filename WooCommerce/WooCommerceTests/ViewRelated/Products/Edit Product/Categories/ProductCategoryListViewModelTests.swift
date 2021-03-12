@@ -24,7 +24,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
     func testItTransitionsToSyncedStateAfterSynchronizingCategories() {
         // Given
         let exp = expectation(description: #function)
-        let product = MockProduct().product()
+        let product = Product.fake()
         let viewModel = ProductCategoryListViewModel(storesManager: storesManager, product: product)
         storesManager.productCategoryResponse = nil
 
@@ -44,7 +44,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
     func testItTransitionsToFailedStateAfterSynchronizingCategoriesErrors() {
         // Given
         let exp = expectation(description: #function)
-        let product = MockProduct().product()
+        let product = Product.fake()
         let viewModel = ProductCategoryListViewModel(storesManager: storesManager, product: product)
         let rawError = NSError(domain: "Category Error", code: 1, userInfo: nil)
         let error = ProductCategoryActionError.categoriesSynchronization(pageNumber: 1, rawError: rawError)
@@ -65,7 +65,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
 
     func testAddAndSelectNewCategory() {
         // Given
-        let product = MockProduct().product()
+        let product = Product.fake()
         let viewModel = ProductCategoryListViewModel(storesManager: storesManager, product: product)
         let newCategory = sampleCategory(categoryID: 1234, name: "Test")
 

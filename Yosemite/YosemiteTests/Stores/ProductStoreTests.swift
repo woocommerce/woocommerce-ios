@@ -77,22 +77,22 @@ final class ProductStoreTests: XCTestCase {
                                              variation: true,
                                              options: ["Unknown", "House"])
         let mockCategory = ProductCategory(categoryID: 36, siteID: 2, parentID: 1, name: "Events", slug: "events")
-        let expectedProduct = MockProduct().product().copy(siteID: sampleSiteID,
-                                                           productID: sampleProductID,
-                                                           downloads: sampleDownloads(),
-                                                           dimensions: ProductDimensions(length: "12", width: "26", height: "16"),
-                                                           shippingClass: "2-day",
-                                                           shippingClassID: 1,
-                                                           categories: [mockCategory],
-                                                           tags: [mockTag],
-                                                           images: [mockImage],
-                                                           attributes: [mockAttribute],
-                                                           defaultAttributes: [mockDefaultAttribute])
+        let expectedProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                  productID: sampleProductID,
+                                                  downloads: sampleDownloads(),
+                                                  dimensions: ProductDimensions(length: "12", width: "26", height: "16"),
+                                                  shippingClass: "2-day",
+                                                  shippingClassID: 1,
+                                                  categories: [mockCategory],
+                                                  tags: [mockTag],
+                                                  images: [mockImage],
+                                                  attributes: [mockAttribute],
+                                                  defaultAttributes: [mockDefaultAttribute])
         remote.whenAddingProduct(siteID: sampleSiteID, thenReturn: .success(expectedProduct))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // Action
-        let product = MockProduct().product(siteID: sampleSiteID, productID: 0)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 0)
 
         var result: Result<Yosemite.Product, ProductUpdateError>?
         waitForExpectation { expectation in
@@ -124,7 +124,7 @@ final class ProductStoreTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // Action
-        let product = MockProduct().product(siteID: sampleSiteID, productID: 0)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 0)
 
         var result: Result<Yosemite.Product, ProductUpdateError>?
         waitForExpectation { expectation in
@@ -155,16 +155,16 @@ final class ProductStoreTests: XCTestCase {
                                              variation: true,
                                              options: ["Unknown", "House"])
         let mockCategory = ProductCategory(categoryID: 36, siteID: 2, parentID: 1, name: "Events", slug: "events")
-        let expectedProduct = MockProduct().product().copy(siteID: sampleSiteID,
-                                                           productID: sampleProductID,
-                                                           dimensions: ProductDimensions(length: "12", width: "26", height: "16"),
-                                                           shippingClass: "2-day",
-                                                           shippingClassID: 1,
-                                                           categories: [mockCategory],
-                                                           tags: [mockTag],
-                                                           images: [mockImage],
-                                                           attributes: [mockAttribute],
-                                                           defaultAttributes: [mockDefaultAttribute])
+        let expectedProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                  productID: sampleProductID,
+                                                  dimensions: ProductDimensions(length: "12", width: "26", height: "16"),
+                                                  shippingClass: "2-day",
+                                                  shippingClassID: 1,
+                                                  categories: [mockCategory],
+                                                  tags: [mockTag],
+                                                  images: [mockImage],
+                                                  attributes: [mockAttribute],
+                                                  defaultAttributes: [mockDefaultAttribute])
         remote.whenDeletingProduct(siteID: sampleSiteID, thenReturn: .success(expectedProduct))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -555,7 +555,7 @@ final class ProductStoreTests: XCTestCase {
     func testRetrieveSingleExternalProductReturnsExpectedFields() throws {
         // Arrange
         let remote = MockProductsRemote()
-        let expectedProduct = MockProduct().product(siteID: sampleSiteID, productID: sampleProductID, buttonText: "Deal", externalURL: "https://example.com")
+        let expectedProduct = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, buttonText: "Deal", externalURL: "https://example.com")
         remote.whenLoadingProduct(siteID: sampleSiteID, productID: sampleProductID, thenReturn: .success(expectedProduct))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -1282,7 +1282,7 @@ final class ProductStoreTests: XCTestCase {
     func testRetrievingProductsEffectivelyPersistsRetrievedProducts() {
         // Arrange
         let remote = MockProductsRemote()
-        let expectedProduct = MockProduct().product(siteID: sampleSiteID, productID: sampleProductID, buttonText: "Deal", externalURL: "https://example.com")
+        let expectedProduct = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, buttonText: "Deal", externalURL: "https://example.com")
         remote.whenLoadingProducts(siteID: sampleSiteID, productIDs: [sampleProductID], thenReturn: .success([expectedProduct]))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -1312,7 +1312,7 @@ final class ProductStoreTests: XCTestCase {
     func test_retrieving_products_of_the_same_page_size_has_next_page() {
         // Arrange
         let remote = MockProductsRemote()
-        let expectedProducts: [Yosemite.Product] = .init(repeating: MockProduct().product(), count: 25)
+        let expectedProducts: [Yosemite.Product] = .init(repeating: Product.fake(), count: 25)
         remote.whenLoadingProducts(siteID: sampleSiteID, productIDs: [sampleProductID], thenReturn: .success(expectedProducts))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -1338,7 +1338,7 @@ final class ProductStoreTests: XCTestCase {
     func test_retrieving_products_of_smaller_size_than_page_size_has_no_next_page() {
         // Arrange
         let remote = MockProductsRemote()
-        let expectedProducts: [Yosemite.Product] = .init(repeating: MockProduct().product(), count: 24)
+        let expectedProducts: [Yosemite.Product] = .init(repeating: Product.fake(), count: 24)
         remote.whenLoadingProducts(siteID: sampleSiteID, productIDs: [sampleProductID], thenReturn: .success(expectedProducts))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -1391,7 +1391,7 @@ final class ProductStoreTests: XCTestCase {
     func testRetrievingProductsWithEmptyIDsReturnsAnEmptyResult() {
         // Arrange
         let remote = MockProductsRemote()
-        let expectedProduct = MockProduct().product(siteID: sampleSiteID, productID: sampleProductID, buttonText: "Deal", externalURL: "https://example.com")
+        let expectedProduct = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, buttonText: "Deal", externalURL: "https://example.com")
         // The mock remote returns a non-empty result for an empty array of product IDs.
         remote.whenLoadingProducts(siteID: sampleSiteID, productIDs: [], thenReturn: .success([expectedProduct]))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)

@@ -33,7 +33,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
         ]
         let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
-        let mockProduct = MockProduct().product(images: mockProductImages)
+        let mockProduct = Product.fake().copy(images: mockProductImages)
 
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: 123,
@@ -84,7 +84,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
         ]
         let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
-        let mockProduct = MockProduct().product(images: mockProductImages)
+        let mockProduct = Product.fake().copy(images: mockProductImages)
 
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: 123,
@@ -124,7 +124,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
         ]
         let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
-        let mockProduct = MockProduct().product(images: mockProductImages)
+        let mockProduct = Product.fake().copy(images: mockProductImages)
 
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: 123,
@@ -165,7 +165,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
         ]
         let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
-        let mockProduct = MockProduct().product(images: mockProductImages)
+        let mockProduct = Product.fake().copy(images: mockProductImages)
 
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: 123,
@@ -214,7 +214,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
     func testResettingProductImagesToAProduct() {
         // Arrange
-        let mockProduct = MockProduct().product(images: [])
+        let mockProduct = Product.fake().copy(images: [])
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: 123,
                                                                   product: model)
@@ -224,7 +224,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
             ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
         ]
-        let anotherMockProduct = MockProduct().product(images: mockProductImages)
+        let anotherMockProduct = Product.fake().copy(images: mockProductImages)
         let anotherModel = EditableProductModel(product: anotherMockProduct)
         productImageActionHandler.resetProductImages(to: anotherModel)
 

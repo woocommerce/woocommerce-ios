@@ -1,4 +1,5 @@
 import XCTest
+import Fakes
 @testable import Yosemite
 @testable import Networking
 @testable import Storage
@@ -160,7 +161,7 @@ final class TaxClassStoreTests: XCTestCase {
     func testRequestMissingTaxClassesEffectivelyReturnMissingTaxClass() {
         let expectation = self.expectation(description: "Return missing tax class")
 
-        let product = MockProduct().product()
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: 2020, taxClass: "standard")
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "taxes-classes")
         let action = TaxClassAction.requestMissingTaxClasses(for: product) { (taxClass, error) in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TaxClass.self), 3)

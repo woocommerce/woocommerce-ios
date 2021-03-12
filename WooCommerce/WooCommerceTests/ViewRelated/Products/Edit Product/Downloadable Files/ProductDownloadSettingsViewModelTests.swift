@@ -8,7 +8,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
     func test_readonly_values_are_as_expected_after_initializing_download_settings() {
         // Arrange
-        let product = MockProduct().product(downloadable: true).copy(downloadLimit: 1, downloadExpiry: 1)
+        let product = Product.fake().copy(downloadable: true, downloadLimit: 1, downloadExpiry: 1)
         let model = EditableProductModel(product: product)
 
         // Act
@@ -21,7 +21,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
     func test_section_and_row_values_are_as_expected_after_initializing_download_settings() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductDownloadSettingsViewModel(product: model)
 
@@ -39,7 +39,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
     func test_handling_empty_downloadLimit_updates_with_default_value() throws {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductDownloadSettingsViewModel(product: model)
         let defaultLimit: Int64 = -1
@@ -58,7 +58,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
     func test_handling_non_empty_downloadLimit_updates_with_success() throws {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductDownloadSettingsViewModel(product: model)
         let expectedLimit: Int64 = 100
@@ -77,7 +77,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
     func test_handling_invalid_downloadLimit_updates_with_default_value() throws {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductDownloadSettingsViewModel(product: model)
         let defaultLimit: Int64 = -2
@@ -98,7 +98,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
     func test_handling_empty_downloadExpiry_updates_with_default_value() throws {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductDownloadSettingsViewModel(product: model)
         let defaultExpiry: Int64 = -1
@@ -117,7 +117,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
     func test_handling_non_empty_downloadExpiry_updates_with_success() throws {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductDownloadSettingsViewModel(product: model)
         let expectedExpiry: Int64 = 100
@@ -136,7 +136,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
     func test_handling_invalid_downloadExpiry_updates_with_default_value() throws {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductDownloadSettingsViewModel(product: model)
         let defaultExpiry: Int64 = -2
@@ -157,7 +157,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
     func test_viewModel_has_unsaved_changes_after_updating_validD_downloadLimit() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductDownloadSettingsViewModel(product: model)
 
@@ -172,7 +172,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
     func test_viewModel_has_unsaved_changes_with_default_value_after_updating_invalid_downloadLimit() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductDownloadSettingsViewModel(product: model)
 
@@ -186,7 +186,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
     func test_viewModel_has_unsaved_changes_after_updating_valid_downloadExpiry() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductDownloadSettingsViewModel(product: model)
 
@@ -201,7 +201,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
     func test_viewModel_has_unsaved_changes_with_default_value_after_updating_invalid_downloadExpiry() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true)
         let model = EditableProductModel(product: product)
         let viewModel = ProductDownloadSettingsViewModel(product: model)
 
@@ -215,7 +215,7 @@ final class ProductDownloadSettingsViewModelTests: XCTestCase {
 
     func test_viewModel_has_no_unsaved_changes_after_updating_with_the_original_values() {
         // Arrange
-        let product = MockProduct().product(downloadable: true)
+        let product = Product.fake().copy(downloadable: true, downloadLimit: 1, downloadExpiry: 1)
         let model = EditableProductModel(product: product)
         let viewModel = ProductDownloadSettingsViewModel(product: model)
 

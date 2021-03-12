@@ -21,7 +21,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
 
     func test_adding_product_with_a_password_successfully_returns_success_result() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let password = "wo0oo!"
         let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
@@ -43,7 +43,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
 
     func test_adding_product_with_a_password_unsuccessfully_returns_failure_result_with_password_error() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let password = "wo0oo!"
         let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
@@ -65,7 +65,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
 
     func test_adding_product_without_a_password_successfully_does_not_trigger_password_action_and_returns_success_result() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
         mockAddProduct(result: .success(product))
@@ -84,7 +84,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
 
     func test_adding_product_unsuccessfully_does_not_trigger_password_action_and_returns_failure_result_with_product_error() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         mockAddProduct(result: .failure(.invalidSKU))
         let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
@@ -105,7 +105,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
 
     func test_editing_product_and_password_without_edits_does_not_trigger_actions_and_returns_success_result() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let password = "wo0oo!"
         let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
@@ -129,7 +129,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
 
     func test_editing_product_with_a_password_successfully_returns_success_result() {
         // Arrange
-        let originalProduct = MockProduct().product()
+        let originalProduct = Product.fake()
         let product = originalProduct.copy(name: "PRODUCT")
         let originalModel = EditableProductModel(product: originalProduct)
         let model = EditableProductModel(product: product)
@@ -160,7 +160,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
 
     func test_editing_product_successfully_with_a_password_unsuccessfully_returns_failure_result_with_password_error() {
         // Arrange
-        let originalProduct = MockProduct().product()
+        let originalProduct = Product.fake()
         let product = originalProduct.copy(name: "PRODUCT")
         let originalModel = EditableProductModel(product: originalProduct)
         let model = EditableProductModel(product: product)
@@ -191,7 +191,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
 
     func test_editing_product_unsuccessfully_with_a_password_successfully_returns_failure_result_with_product_error() {
         // Arrange
-        let originalProduct = MockProduct().product()
+        let originalProduct = Product.fake()
         let product = originalProduct.copy(name: "PRODUCT")
         let originalModel = EditableProductModel(product: originalProduct)
         let model = EditableProductModel(product: product)
@@ -222,7 +222,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
 
     func test_editing_product_unsuccessfully_with_a_password_unsuccessfully_returns_failure_result_with_product_error() {
         // Arrange
-        let originalProduct = MockProduct().product()
+        let originalProduct = Product.fake()
         let product = originalProduct.copy(name: "PRODUCT")
         let originalModel = EditableProductModel(product: originalProduct)
         let model = EditableProductModel(product: product)
@@ -255,7 +255,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
 
     func test_deleting_product_successfully_returns_success_result() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
         mockDeleteProduct(result: .success(product))
@@ -274,7 +274,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
 
     func test_deleting_product_returns_failure_result_with_product_error() {
         // Arrange
-        let product = MockProduct().product()
+        let product = Product.fake()
         let model = EditableProductModel(product: product)
         mockDeleteProduct(result: .failure(.unexpected))
         let useCase = ProductFormRemoteActionUseCase(stores: storesManager)

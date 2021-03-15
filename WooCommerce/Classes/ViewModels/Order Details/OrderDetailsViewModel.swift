@@ -446,8 +446,8 @@ extension OrderDetailsViewModel {
         // the proper amount, currency and readable descripitions later.
         let paymentParameters = PaymentParameters(amount: 100,
                                                   currency: "usd",
-                                                  receiptDescription: "Receipt",
-                                                  statementDescription: "Statement")
+                                                  receiptDescription: "Receipt description. No need to localize for now",
+                                                  statementDescription: "Statement description. No need to localize for now")
 
         let action = CardPresentPaymentAction.collectPayment(siteID: order.siteID,
                                                              orderID: order.orderID, parameters: paymentParameters) { (result) in

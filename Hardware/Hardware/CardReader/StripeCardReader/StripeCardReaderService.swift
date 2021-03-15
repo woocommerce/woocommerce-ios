@@ -218,12 +218,6 @@ extension StripeCardReaderService: DiscoveryDelegate {
             CardReader(reader: $0)
         }
 
-        print("==== did updated discovered")
-        print(wooReaders)
-        print("count ", wooReaders.count)
-        print("//// did updated discovered")
-
-
         discoveredReadersSubject.send(wooReaders)
     }
 }

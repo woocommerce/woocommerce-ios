@@ -449,7 +449,7 @@ extension OrderDetailsViewModel {
 
         let action = CardPresentPaymentAction.collectPayment(siteID: order.siteID,
                                                              orderID: order.orderID, parameters: paymentParameters) { (result) in
-            print("===== proof that collectPayment completes with success ", result)
+            // TODO. Show success
         }
 
         ServiceLocator.stores.dispatch(action)

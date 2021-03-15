@@ -114,6 +114,9 @@ private extension CardPresentPaymentStore {
                 onCompletion(result)
             }
         }) { (intent) in
+            print("==== Log for testing purposes. payment intent collected ")
+            print(intent)
+            print("//// payment intent collected ")
             // TODO. Initiate step 2. Collect payment method.
             // Deferred to https://github.com/woocommerce/woocommerce-ios/issues/3825
             let result: Result<Bool, Error> = .success(true)

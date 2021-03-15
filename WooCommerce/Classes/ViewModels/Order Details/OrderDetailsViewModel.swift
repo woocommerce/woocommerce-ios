@@ -108,6 +108,15 @@ final class OrderDetailsViewModel {
         }
     }
 
+    /// Indicates if payment for the order can be collected using an external card reader
+    ///
+    var canCollectPayment: Bool {
+        // For now, this defaults to the feature flag, but here we should take into
+        // account wheter the store is enrolled into WCPay and the order is elegible
+        // for collecting card present payments
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments)
+    }
+
     /// Helpers
     ///
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {

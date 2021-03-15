@@ -116,16 +116,17 @@ private extension OrderDetailsViewController {
         title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
         removeNavigationBackBarButtonText()
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) {
+        /// To be removed
+        /// To keep the PR short, and to avoid going down the rabbit hole of
+        /// updating the UI to look final, we add a toolbar button item
+        /// to trigger payment collection.
+        /// Will be made obsolete by https://github.com/woocommerce/woocommerce-ios/issues/3826
+        if viewModel.canCollectPayment {
             navigationItem.rightBarButtonItem = UIBarButtonItem(title: "$",
                                                                style: .plain,
                                                                target: self,
                                                                action: #selector(collectPayment))
         }
-    }
-
-    @objc private func collectPayment() {
-        viewModel.collectPayment()
     }
 
     /// Setup: EntityListener
@@ -505,6 +506,10 @@ private extension OrderDetailsViewController {
         popoverController?.sourceView = sourceView
 
         present(actionSheet, animated: true)
+    }
+
+    @objc private func collectPayment() {
+        viewModel.collectPayment()
     }
 }
 

@@ -442,6 +442,8 @@ extension OrderDetailsViewModel {
     }
 
     func collectPayment() {
+        // Mock Payment. We will have to instantiate these parameters with
+        // the proper amount, currency and readable descripitions later.
         let paymentParameters = PaymentParameters(amount: 100,
                                                   currency: "usd",
                                                   receiptDescription: "Receipt",

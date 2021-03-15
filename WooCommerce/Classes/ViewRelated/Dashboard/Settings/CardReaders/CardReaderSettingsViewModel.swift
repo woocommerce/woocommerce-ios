@@ -113,7 +113,6 @@ final class CardReaderSettingsViewModel: ObservableObject {
     /// Called when a reader has been discovered (with an array of discovered readers).
     private func didDiscoverReaders(cardReaders: [CardReader]) -> Void {
         // TODO - more than one reader? sort in the manner in which we'd like the rows presented
-        print("=== is main thread ", Thread.isMainThread)
         guard activeAlert != .foundReader else {
             return
         }

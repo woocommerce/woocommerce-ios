@@ -14,7 +14,7 @@ public enum CardPresentPaymentAction: Action {
     ///
     case connect(reader: CardReader, onCompletion: (Result<[CardReader], Error>) -> Void)
 
-    /// Collected a payment for a given order.
+    /// Collected payment for an order.
     ///
     case collectPayment(siteID: Int64, orderID: Int64, parameters: PaymentParameters, onCompletion: (Result<Bool, Error>) -> Void )
 }

@@ -166,6 +166,6 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
 
 private final class MockTokenProvider: CardReaderConfigProvider {
     func fetchToken(completion: @escaping(String?, Error?) -> Void) {
-        completion("pst_test_YWNjdF8xSU84MnIySERPb0MxYlRjLEg1VkVXMHBlY2FuUlFybzc0YXNKcHA3cG93MUxLUFA_00HPM91Gau", nil)
+        completion("a token", nil)
     }
 }

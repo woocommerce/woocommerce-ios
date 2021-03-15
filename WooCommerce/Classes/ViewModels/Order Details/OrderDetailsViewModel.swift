@@ -114,6 +114,7 @@ final class OrderDetailsViewModel {
         // For now, this defaults to the feature flag, but here we should take into
         // account wheter the store is enrolled into WCPay and the order is elegible
         // for collecting card present payments
+        // https://github.com/woocommerce/woocommerce-ios/issues/3828
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments)
     }
 

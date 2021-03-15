@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct TopBannerSwifty: View {
-    @State var viewModel: TopBannerSwiftyViewModel
+    @State private var viewModel: TopBannerSwiftyViewModel
     @State private var isExpanded: Bool
     private var onTopButtonTapped: (() -> Void)?
 

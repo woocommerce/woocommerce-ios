@@ -103,6 +103,7 @@ private extension CardPresentPaymentStore {
 
         // For now, we will only implement step 1.
         // Create an intent.
+        // And for now, we are not doing any error handling.
         cardReaderService.createPaymentIntent(parameters).sink(receiveCompletion: {error in
             switch error {
             case .failure(let error):
@@ -113,7 +114,8 @@ private extension CardPresentPaymentStore {
                 onCompletion(result)
             }
         }) { (intent) in
-            // TODO. Initiate step 2. Collect payment method
+            // TODO. Initiate step 2. Collect payment method.
+            // Deferred to https://github.com/woocommerce/woocommerce-ios/issues/3825
             let result: Result<Bool, Error> = .success(true)
             onCompletion(result)
         }.store(in: &cancellables)

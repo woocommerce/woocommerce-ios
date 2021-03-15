@@ -10,7 +10,7 @@ public struct PaymentIntentParameters {
     /// Three-letter ISO currency code, in lowercase. Must be a supported currency.
     public let currency: String
 
-    ///An arbitrary string attached to the object. If you send a receipt email for this payment, the email will include the description.
+    /// An arbitrary string attached to the object. If you send a receipt email for this payment, the email will include the description.
     public let receiptDescription: String?
 
     /**

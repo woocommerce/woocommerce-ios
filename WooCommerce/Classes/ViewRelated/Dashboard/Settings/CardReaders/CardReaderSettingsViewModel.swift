@@ -123,7 +123,7 @@ final class CardReaderSettingsViewModel: ObservableObject {
 
         // TODO - show the multiple-readers-found UITableView when more than one reader is found
         // For now, just show the tail (last) of the array
-        guard let cardReader = cardReaders.last else {
+        guard let cardReader = cardReaders.first else {
             return
         }
         foundReaders = [cardReader]

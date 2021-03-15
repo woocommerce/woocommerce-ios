@@ -108,6 +108,16 @@ final class OrderDetailsViewModel {
         }
     }
 
+    /// Indicates if payment for the order can be collected using an external card reader
+    ///
+    var canCollectPayment: Bool {
+        // For now, this defaults to the feature flag, but here we should take into
+        // account wheter the store is enrolled into WCPay and the order is elegible
+        // for collecting card present payments
+        // https://github.com/woocommerce/woocommerce-ios/issues/3828
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments)
+    }
+
     /// Helpers
     ///
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
@@ -430,5 +440,21 @@ extension OrderDetailsViewModel {
         }
 
         stores.dispatch(deleteTrackingAction)
+    }
+
+    func collectPayment() {
+        // Mock Payment. We will have to instantiate these parameters with
+        // the proper amount, currency and readable descripitions later.
+        let paymentParameters = PaymentParameters(amount: 100,
+                                                  currency: "usd",
+                                                  receiptDescription: "Receipt description.",
+                                                  statementDescription: "Statement description.")
+
+        let action = CardPresentPaymentAction.collectPayment(siteID: order.siteID,
+                                                             orderID: order.orderID, parameters: paymentParameters) { (result) in
+            // TODO. Show success
+        }
+
+        ServiceLocator.stores.dispatch(action)
     }
 }

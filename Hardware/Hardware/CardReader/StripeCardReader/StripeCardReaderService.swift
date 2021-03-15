@@ -64,11 +64,10 @@ extension StripeCardReaderService: CardReaderService {
 
         // Attack the test terminal, provided by the SDK
         let config = DiscoveryConfiguration(
-            discoveryMethod: .internet,
-            simulated: true
+            discoveryMethod: .bluetoothProximity,
+            simulated: false
         )
 
-        print("|||| Service. calling start in service ", self)
         switchStatusToDiscovering()
 
         /**
@@ -100,7 +99,7 @@ extension StripeCardReaderService: CardReaderService {
         guard discoveryStatusSubject.value == .discovering else {
             return
         }
-        print("||||||| Service calling cancel in service", self)
+
         discoveryCancellable?.cancel { [weak self] error in
             guard let error = error else {
                 self?.switchStatusToIdle()
@@ -125,9 +124,24 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<PaymentIntent, Error> {
-        return Future() { promise in
-            // Attack the Stripe SDK and create a PaymentIntent.
-            // To be implemented
+        return Future() { [weak self] promise in
+            // Contains enough implementation just to pass a test on the happy path.
+            // We are not doing any proper error handling yet, but for now we
+            // will propagate an error specific to this operation (.intentCreation)
+            Terminal.shared.createPaymentIntent(parameters.toStripe()) { (intent, error) in
+                guard let _ = self else {
+                    promise(Result.failure(CardReaderServiceError.intentCreation))
+                    return
+                }
+
+                if let _ = error {
+                    promise(Result.failure(CardReaderServiceError.intentCreation))
+                }
+
+                if let intent = intent {
+                    promise(Result.success(PaymentIntent(intent: intent)))
+                }
+            }
         }
     }
 

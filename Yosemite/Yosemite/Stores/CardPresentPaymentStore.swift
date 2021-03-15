@@ -42,6 +42,11 @@ public final class CardPresentPaymentStore: Store {
             cancelCardReaderDiscovery(completion: completion)
         case .connect(let reader, let completion):
             connect(reader: reader, onCompletion: completion)
+        case .collectPayment(let siteID, let orderID, let parameters, let completion):
+            collectPayment(siteID: siteID,
+                           orderID: orderID,
+                           parameters: parameters,
+                           onCompletion: completion)
         }
     }
 }
@@ -85,6 +90,37 @@ private extension CardPresentPaymentStore {
         // collection of connected readers
         cardReaderService.connectedReaders.sink { connectedHardwareReaders in
             onCompletion(.success(connectedHardwareReaders))
+        }.store(in: &cancellables)
+    }
+
+    func collectPayment(siteID: Int64, orderID: Int64, parameters: PaymentParameters, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        // The high-level logic of this method would be:
+        // 1. Attack the CardReaderService to create a payment intent.
+        // When that is completed...
+        // 2. Attack the CardReaderService to collect payment methods for that intent
+        // When that is completed...
+        // 3. Attack the CardReaderService to process the payment
+
+        // For now, we will only implement step 1.
+        // Create an intent.
+        // And for now, we are not doing any error handling.
+        cardReaderService.createPaymentIntent(parameters).sink(receiveCompletion: {error in
+            switch error {
+            case .failure(let error):
+                let result: Result<Bool, Error> = .failure(error)
+                onCompletion(result)
+            case .finished:
+                let result: Result<Bool, Error> = .success(true)
+                onCompletion(result)
+            }
+        }) { (intent) in
+            print("==== Log for testing purposes. payment intent collected ")
+            print(intent)
+            print("//// payment intent collected ")
+            // TODO. Initiate step 2. Collect payment method.
+            // Deferred to https://github.com/woocommerce/woocommerce-ios/issues/3825
+            let result: Result<Bool, Error> = .success(true)
+            onCompletion(result)
         }.store(in: &cancellables)
     }
 }

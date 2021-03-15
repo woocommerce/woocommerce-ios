@@ -5,6 +5,7 @@
     - [Networking](NETWORKING.md)
     - [Storage](STORAGE.md)
     - [Yosemite](YOSEMITE.md)
+    - [Hardware](HARDWARE.md)
 - Coding Guidelines
     - [Coding Style](coding-style-guide.md)
     - [Naming Conventions](naming-conventions.md)

@@ -96,6 +96,9 @@ Please, remember to not add this information on your commits and PRs.
     - [Copiable](docs/copiable.md)
         - [Generating Copiable Methods](docs/copiable.md#generating-copiable-methods)
         - [Modifying The Copiable Code Generation](docs/copiable.md#modifying-the-copiable-code-generation)
+    - [Fakeable](docs/fakeable.md)
+        - [Generating Fake Methods](docs/fakeable.md#generating-fake-methods)
+        - [Modifying Fakes Code Generation](docs/fakeable.md#modifying-the-fakeable-code-generation)
     - [Tracking Events](docs/tracking-events.md)
         - [Custom Properties](docs/tracking-events.md#custom-properties)
 - Testing

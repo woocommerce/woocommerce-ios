@@ -171,7 +171,6 @@
 		025678C125773236009D7E6C /* Collection+ShippingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025678C025773236009D7E6C /* Collection+ShippingLabel.swift */; };
 		025678C725773399009D7E6C /* Collection+ShippingLabelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025678C625773399009D7E6C /* Collection+ShippingLabelTests.swift */; };
 		0257285C230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0257285B230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift */; };
-		0258B66B2518754D00EB5CF2 /* ProductFormActionsFactory+AddProductTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0258B66A2518754C00EB5CF2 /* ProductFormActionsFactory+AddProductTests.swift */; };
 		0258B66D2518778300EB5CF2 /* ProductFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0258B66C2518778300EB5CF2 /* ProductFormViewModelTests.swift */; };
 		0259D5F92581F0E6003B1CD6 /* ShippingLabelPaperSizeOptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0259D5F82581F0E6003B1CD6 /* ShippingLabelPaperSizeOptionView.swift */; };
 		0259D5FF2581F3FA003B1CD6 /* ShippingLabelPaperSizeOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0259D5FE2581F3FA003B1CD6 /* ShippingLabelPaperSizeOptionsViewController.swift */; };
@@ -1318,7 +1317,6 @@
 		025678C025773236009D7E6C /* Collection+ShippingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+ShippingLabel.swift"; sourceTree = "<group>"; };
 		025678C625773399009D7E6C /* Collection+ShippingLabelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+ShippingLabelTests.swift"; sourceTree = "<group>"; };
 		0257285B230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsV4ChartAxisHelperTests.swift; sourceTree = "<group>"; };
-		0258B66A2518754C00EB5CF2 /* ProductFormActionsFactory+AddProductTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormActionsFactory+AddProductTests.swift"; sourceTree = "<group>"; };
 		0258B66C2518778300EB5CF2 /* ProductFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormViewModelTests.swift; sourceTree = "<group>"; };
 		0259D5F82581F0E6003B1CD6 /* ShippingLabelPaperSizeOptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaperSizeOptionView.swift; sourceTree = "<group>"; };
 		0259D5FE2581F3FA003B1CD6 /* ShippingLabelPaperSizeOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPaperSizeOptionsViewController.swift; sourceTree = "<group>"; };
@@ -2326,7 +2324,6 @@
 			isa = PBXGroup;
 			children = (
 				263EB408242C58EA00F3A15F /* ProductFormActionsFactoryTests.swift */,
-				0258B66A2518754C00EB5CF2 /* ProductFormActionsFactory+AddProductTests.swift */,
 				02BA128A24616B48008D8325 /* ProductFormActionsFactory+VisibilityTests.swift */,
 				02077F71253816FF005A78EF /* ProductFormActionsFactory+ReadonlyProductTests.swift */,
 				02BAB02824D13AA500F8B06E /* ProductVariationFormActionsFactoryTests.swift */,
@@ -6718,7 +6715,6 @@
 				D8A8C4F32268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift in Sources */,
 				02C2756F24F5F5EE00286C04 /* ProductShippingSettingsViewModel+ProductVariationTests.swift in Sources */,
 				571FDDAE24C768DC00D486A5 /* MockZendeskManager.swift in Sources */,
-				0258B66B2518754D00EB5CF2 /* ProductFormActionsFactory+AddProductTests.swift in Sources */,
 				45FBDF3C238D4EA800127F77 /* ExtendedAddProductImageCollectionViewCellTests.swift in Sources */,
 				02279590237A5DC900787C63 /* AztecUnorderedListFormatBarCommandTests.swift in Sources */,
 				B5F571AB21BEECB60010D1B8 /* NoteWooTests.swift in Sources */,

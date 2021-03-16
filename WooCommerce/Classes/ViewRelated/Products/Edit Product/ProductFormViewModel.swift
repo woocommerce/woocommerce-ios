@@ -63,6 +63,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
                 return
             }
 
+            updateFormTypeIfNeeded(oldProduct: oldValue.product)
             actionsFactory = ProductFormActionsFactory(product: product,
                                                        formType: formType)
             productSubject.send(product)
@@ -319,7 +320,6 @@ extension ProductFormViewModel {
                     guard let self = self else {
                         return
                     }
-                    self.formType = .edit
                     self.resetProduct(data.product)
                     self.resetPassword(data.password)
                     onCompletion(.success(data.product))
@@ -357,6 +357,17 @@ extension ProductFormViewModel {
                 onCompletion(.failure(error))
             }
         }
+    }
+
+    /// Updates the internal `formType` when a product changes from to to a saved status.
+    /// Currently needed when a new product was just created as a draft to allow creating attributes and variations.
+    ///
+    func updateFormTypeIfNeeded(oldProduct: Product) {
+        guard !oldProduct.existsRemotely, product.product.existsRemotely else {
+            return
+        }
+
+        formType = .edit
     }
 }
 

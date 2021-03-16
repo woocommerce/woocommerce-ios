@@ -265,7 +265,10 @@ extension ProductFormViewModel {
     /// This is needed because variations and attributes, remote updates, happen outside this view model and wee need a way to sync our original product.
     ///
     func updateProductVariations(from newProduct: Product) {
-        let newOriginalProduct = EditableProductModel(product: originalProduct.product.copy(attributes: newProduct.attributes,
+        // ProductID and statusKey could have changed, in case we had to create the product as a draft to create attributes or variations
+        let newOriginalProduct = EditableProductModel(product: originalProduct.product.copy(productID: newProduct.productID,
+                                                                                            statusKey: newProduct.statusKey,
+                                                                                            attributes: newProduct.attributes,
                                                                                             variations: newProduct.variations))
 
         // Make sure the product is updated locally. Useful for screens that are observing the product or a list of products.
@@ -278,7 +281,9 @@ extension ProductFormViewModel {
 
         // If the product has pending changes, we need to override the `originalProduct` first and the `living product` later with a saved copy.
         // This is because, overriding `originalProduct` also overrides the `living product`.
-        let productWithChanges = EditableProductModel(product: product.product.copy(attributes: newProduct.attributes,
+        let productWithChanges = EditableProductModel(product: product.product.copy(productID: newProduct.productID,
+                                                                                    statusKey: newProduct.statusKey,
+                                                                                    attributes: newProduct.attributes,
                                                                                     variations: newProduct.variations))
         resetProduct(newOriginalProduct)
         product = productWithChanges

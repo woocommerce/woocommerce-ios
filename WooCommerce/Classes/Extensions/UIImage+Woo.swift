@@ -260,6 +260,12 @@ extension UIImage {
         return UIImage(named: "prologue-slanted-rectangle")!
     }
 
+    /// Login prologue curved rectangle
+    ///
+    static var curvedRectangle: UIImage {
+        return UIImage(named: "prologue-curved-rectangle")!
+    }
+
     /// Inventory Icon
     ///
     static var inventoryImage: UIImage {

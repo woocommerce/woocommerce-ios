@@ -16,18 +16,9 @@ final class LoginPrologueViewController: UIViewController {
     ///
     @IBOutlet var containerView: UIView!
 
-    /// Label to be displayed at the top of the Prologue.
+    /// Curved Rectangle: Background shape with curved top edge
     ///
-    @IBOutlet var upperLabel: UILabel!
-
-    /// Disclaimer Label
-    ///
-    @IBOutlet var disclaimerTextView: UITextView!
-
-    @IBOutlet private var slantedRectangle: UIImageView!
-    /// Jetpack Logo ImageVIew
-    ///
-    @IBOutlet var jetpackImageView: UIImageView!
+    @IBOutlet weak var curvedRectangle: UIImageView!
 
 
     // MARK: - Overridden Properties
@@ -45,9 +36,7 @@ final class LoginPrologueViewController: UIViewController {
         setupMainView()
         setupBackgroundView()
         setupContainerView()
-        setupSlantedRectangle()
-
-        setupUpperLabel()
+        setupCurvedRectangle()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -66,23 +55,16 @@ private extension LoginPrologueViewController {
     }
 
     func setupBackgroundView() {
-        backgroundView.backgroundColor = .init(light: .brand, dark: .withColorStudio(.brand, shade: .shade80))
+        backgroundView.backgroundColor = .authPrologueBottomBackgroundColor
     }
 
     func setupContainerView() {
         containerView.backgroundColor = .authPrologueBottomBackgroundColor
     }
 
-    func setupUpperLabel() {
-        upperLabel.text = NSLocalizedString("Manage orders, track sales and monitor store activity with real-time alerts.", comment: "Login Prologue Legend")
-        upperLabel.adjustsFontForContentSizeCategory = true
-        upperLabel.font = StyleManager.headlineSemiBold
-        upperLabel.textColor = .primary
-    }
-
-    func setupSlantedRectangle() {
-        slantedRectangle.image = UIImage.slantedRectangle.withRenderingMode(.alwaysTemplate)
-        slantedRectangle.tintColor = .authPrologueBottomBackgroundColor
+    func setupCurvedRectangle() {
+        curvedRectangle.image = UIImage.curvedRectangle.withRenderingMode(.alwaysTemplate)
+        curvedRectangle.tintColor = .authPrologueBottomBackgroundColor
     }
 }
 

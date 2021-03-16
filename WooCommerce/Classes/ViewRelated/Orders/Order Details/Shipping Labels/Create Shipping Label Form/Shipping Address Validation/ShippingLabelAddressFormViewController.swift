@@ -57,6 +57,11 @@ final class ShippingLabelAddressFormViewController: UIViewController {
         configureConfirmButton()
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
     }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateHeaderHeight()
+    }
 }
 
 // MARK: - View Configuration

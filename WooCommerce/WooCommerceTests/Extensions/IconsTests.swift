@@ -104,6 +104,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.emptyProductsImage)
     }
 
+    func test_emptyProductsTabImage_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.emptyProductsTabImage)
+    }
+
     func testEmptyReviewsImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.emptyReviewsImage)
     }
@@ -228,6 +232,14 @@ final class IconsTests: XCTestCase {
 
     func testPriceImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.priceImage)
+    }
+
+    func test_productDeletedImage_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.productDeletedImage)
+    }
+
+    func test_productErrorImage_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.productErrorImage)
     }
 
     func testProductReviewsImageIsNotNil() {

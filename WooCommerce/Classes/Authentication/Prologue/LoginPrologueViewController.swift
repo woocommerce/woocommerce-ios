@@ -67,30 +67,3 @@ private extension LoginPrologueViewController {
         curvedRectangle.tintColor = .authPrologueBottomBackgroundColor
     }
 }
-
-
-// MARK: - UITextViewDeletgate Conformance
-//
-extension LoginPrologueViewController: UITextViewDelegate {
-
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        displaySafariViewController(at: URL)
-        return false
-    }
-}
-
-
-// MARK: - Action Handlers
-//
-extension LoginPrologueViewController {
-
-    /// Opens SafariViewController at the specified URL.
-    ///
-    func displaySafariViewController(at url: URL) {
-        ServiceLocator.analytics.track(.loginPrologueJetpackInstructions)
-        let safariViewController = SFSafariViewController(url: url)
-
-        safariViewController.modalPresentationStyle = .pageSheet
-        present(safariViewController, animated: true, completion: nil)
-    }
-}

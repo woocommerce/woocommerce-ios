@@ -93,6 +93,7 @@ final class ProductVariationsViewController: UIViewController {
     private var product: Product {
         didSet {
             configureRightButtonItem()
+            resetResultsController(oldProduct: oldValue)
             updateEmptyState()
             onProductUpdate?(product)
         }
@@ -319,6 +320,18 @@ private extension ProductVariationsViewController {
 // MARK: - ResultsController
 //
 private extension ProductVariationsViewController {
+    /// Resets and configures the `resultsController` if the `Product.productID` changes.
+    /// Needed when the product changes from new  to draft, due to attributes or variations creation.
+    ///
+    func resetResultsController(oldProduct: Product) {
+        guard product.productID != oldProduct.productID else {
+            return
+        }
+
+        resultsController = createResultsController()
+        configureResultsController(resultsController)
+    }
+
     func createResultsController() -> ResultsController<StorageProductVariation> {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "product.siteID == %lld AND product.productID == %lld", siteID, productID)

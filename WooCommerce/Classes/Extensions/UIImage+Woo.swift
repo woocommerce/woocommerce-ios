@@ -174,6 +174,12 @@ extension UIImage {
         return UIImage(named: "woo-empty-products")!
     }
 
+    /// Empty Products Tab Icon
+    ///
+    static var emptyProductsTabImage: UIImage {
+        return UIImage(named: "woo-empty-products-tab")!
+    }
+
     /// Empty Reviews Icon
     ///
     static var emptyReviewsImage: UIImage {
@@ -367,6 +373,18 @@ extension UIImage {
     ///
     static var priceImage: UIImage {
         return UIImage.gridicon(.money, size: CGSize(width: 24, height: 24))
+    }
+
+    /// Product Deleted Icon
+    ///
+    static var productDeletedImage: UIImage {
+        UIImage(named: "woo-product-deleted")!
+    }
+
+    /// Product Error Icon
+    ///
+    static var productErrorImage: UIImage {
+        UIImage(named: "woo-product-error")!
     }
 
     /// Product Reviews Icon

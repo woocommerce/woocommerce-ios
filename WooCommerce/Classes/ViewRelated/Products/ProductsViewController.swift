@@ -130,6 +130,10 @@ final class ProductsViewController: UIViewController {
         }
     }
 
+    /// Set when an empty state view controller is displayed.
+    ///
+    private var emptyStateViewController: UIViewController?
+
     private let siteID: Int64
 
     deinit {
@@ -206,13 +210,28 @@ private extension ProductsViewController {
     }
 
     @objc func addProduct(_ sender: UIBarButtonItem) {
-        guard let navigationController = navigationController else {
+        addProduct(sourceBarButtonItem: sender)
+    }
+
+    func addProduct(sourceBarButtonItem: UIBarButtonItem? = nil, sourceView: UIView? = nil) {
+        guard let navigationController = navigationController, sourceBarButtonItem != nil || sourceView != nil else {
             return
         }
 
         ServiceLocator.analytics.track(.productListAddProductTapped)
 
-        let coordinatingController = AddProductCoordinator(siteID: siteID, sourceView: sender, sourceNavigationController: navigationController)
+        let coordinatingController: AddProductCoordinator
+        if let sourceBarButtonItem = sourceBarButtonItem {
+            coordinatingController = AddProductCoordinator(siteID: siteID,
+                                                           sourceBarButtonItem: sourceBarButtonItem,
+                                                           sourceNavigationController: navigationController)
+        } else if let sourceView = sourceView {
+            coordinatingController = AddProductCoordinator(siteID: siteID,
+                                                           sourceView: sourceView,
+                                                           sourceNavigationController: navigationController)
+        } else {
+            fatalError("No source view for adding a product")
+        }
         coordinatingController.start()
     }
 }
@@ -333,6 +352,9 @@ private extension ProductsViewController {
             bottomBorderView.constrainToSuperview(attribute: .bottom)
         ])
         tableView.tableHeaderView = headerContainer
+
+        // Updates products tab state after table view is configured, otherwise the initial state is always showing results.
+        stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
     }
 
     func createToolbar() -> ToolbarView {
@@ -625,29 +647,53 @@ private extension ProductsViewController {
     /// Displays the overlay when there are no results.
     ///
     func displayNoResultsOverlay() {
-        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = .emptyProductsImage
-        overlayView.messageText = NSLocalizedString("No products yet",
-                                                    comment: "The text on the placeholder overlay when there are no products on the Products tab")
-        overlayView.actionVisible = false
-
-        // Pins the overlay view to the bottom of the top banner view.
-        overlayView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(overlayView)
-        NSLayoutConstraint.activate([
-            overlayView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            overlayView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            overlayView.topAnchor.constraint(equalTo: topStackView.bottomAnchor),
-            overlayView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
+        let emptyStateViewController = EmptyStateViewController(style: .list)
+        let message = NSLocalizedString("No products yet",
+                                        comment: "The text on the placeholder overlay when there are no products on the Products tab")
+        let details = NSLocalizedString("Start selling today by adding your first product to the store.",
+                                        comment: "The details on the placeholder overlay when there are no products on the Products tab")
+        let buttonTitle = NSLocalizedString("Add Product",
+                                            comment: "Action to add product on the placeholder overlay when there are no products on the Products tab")
+        let config = EmptyStateViewController.Config.withButton(
+            message: .init(string: message),
+            image: .emptyProductsTabImage,
+            details: details,
+            buttonTitle: buttonTitle) { [weak self] button in
+            self?.addProduct(sourceView: button)
+        }
+        displayEmptyStateViewController(emptyStateViewController)
+        emptyStateViewController.configure(config)
     }
 
-    /// Removes all of the the OverlayMessageView instances in the view hierarchy.
+    /// Shows the EmptyStateViewController as a child view controller.
+    ///
+    func displayEmptyStateViewController(_ emptyStateViewController: UIViewController) {
+        self.emptyStateViewController = emptyStateViewController
+        addChild(emptyStateViewController)
+
+        emptyStateViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(emptyStateViewController.view)
+
+        NSLayoutConstraint.activate([
+            emptyStateViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            emptyStateViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            emptyStateViewController.view.topAnchor.constraint(equalTo: topStackView.bottomAnchor),
+            emptyStateViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+        emptyStateViewController.didMove(toParent: self)
+    }
+
+    /// Removes EmptyStateViewController child view controller if applicable.
     ///
     func removeAllOverlays() {
-        for subview in view.subviews where subview is OverlayMessageView {
-            subview.removeFromSuperview()
+        guard let emptyStateViewController = emptyStateViewController, emptyStateViewController.parent == self else {
+            return
         }
+
+        emptyStateViewController.willMove(toParent: nil)
+        emptyStateViewController.view.removeFromSuperview()
+        emptyStateViewController.removeFromParent()
+        self.emptyStateViewController = nil
     }
 }
 

@@ -18,16 +18,16 @@ final class ShippingLabelsTopBannerFactory {
 
     /// Creates a top banner asynchronously based on the shipping labels and app settings.
     /// - Parameters:
-    ///   - isExpanded: whether the top banner is expanded by default.
+    ///   - expandable: whether the top banner is expanded by default.
     ///   - expandedStateChangeHandler: called when the top banner expanded state changes.
     ///   - onGiveFeedbackButtonPressed: called when the give feedback button is pressed.
     ///   - onDismissButtonPressed: called when the dismiss button is pressed.
     ///   - onCompletion: called when it finishes determining whether the top banner is being shown, and an optional top banner is returned.
-    func createTopBannerIfNeeded(isExpanded: Bool,
+    func createTopBannerIfNeeded(expandable: Bool,
                                  expandedStateChangeHandler: @escaping () -> Void,
                                  onGiveFeedbackButtonPressed: @escaping () -> Void,
                                  onDismissButtonPressed: @escaping () -> Void,
-                                 onCompletion: @escaping (TopBannerView?) -> Void) {
+                                 onCompletion: @escaping (TopBannerSwifty?) -> Void) {
         determineIfTopBannerShouldBeShown { [weak self] shouldShow in
             guard let self = self else { return }
 
@@ -36,7 +36,7 @@ final class ShippingLabelsTopBannerFactory {
                 return
             }
 
-            onCompletion(self.createTopBanner(isExpanded: isExpanded,
+            onCompletion(self.createTopBanner(expandable: expandable,
                                               expandedStateChangeHandler: expandedStateChangeHandler,
                                               onGiveFeedbackButtonPressed: onGiveFeedbackButtonPressed,
                                               onDismissButtonPressed: onDismissButtonPressed))
@@ -62,18 +62,18 @@ private extension ShippingLabelsTopBannerFactory {
         stores.dispatch(action)
     }
 
-    func createTopBanner(isExpanded: Bool,
+    func createTopBanner(expandable: Bool,
                          expandedStateChangeHandler: @escaping () -> Void,
                          onGiveFeedbackButtonPressed: @escaping () -> Void,
-                         onDismissButtonPressed: @escaping () -> Void) -> TopBannerView {
+                         onDismissButtonPressed: @escaping () -> Void) -> TopBannerSwifty {
         let title = Localization.title
         let icon: UIImage = .megaphoneIcon
         let infoText = Localization.info
-        let giveFeedbackAction = TopBannerViewModel.ActionButton(title: Localization.giveFeedback) {
+        let giveFeedbackAction = TopBannerSwiftyViewModel.ActionButton(title: Localization.giveFeedback) {
             self.analytics.track(event: .featureFeedbackBanner(context: .shippingLabelsRelease1, action: .gaveFeedback))
             onGiveFeedbackButtonPressed()
         }
-        let dismissAction = TopBannerViewModel.ActionButton(title: Localization.dismiss) {
+        let dismissAction = TopBannerSwiftyViewModel.ActionButton(title: Localization.dismiss) {
             self.analytics.track(event: .featureFeedbackBanner(context: .shippingLabelsRelease1, action: .dismissed))
             let action = AppSettingsAction.updateFeedbackStatus(type: .shippingLabelsRelease1, status: .dismissed) { result in
                 onDismissButtonPressed()
@@ -81,14 +81,14 @@ private extension ShippingLabelsTopBannerFactory {
             self.stores.dispatch(action)
         }
         let actions = [giveFeedbackAction, dismissAction]
-        let viewModel = TopBannerViewModel(title: title,
+        let viewModel = TopBannerSwiftyViewModel(title: title,
                                            infoText: infoText,
                                            icon: icon,
-                                           isExpanded: isExpanded,
+                                           expandable: expandable,
                                            topButton: .chevron(handler: expandedStateChangeHandler),
-                                           actionButtons: actions)
-        let topBannerView = TopBannerView(viewModel: viewModel)
-        topBannerView.translatesAutoresizingMaskIntoConstraints = false
+                                           actionButtons: actions,
+                                           type: .warning)
+        let topBannerView = TopBannerSwifty(viewModel: viewModel)
 
         return topBannerView
     }

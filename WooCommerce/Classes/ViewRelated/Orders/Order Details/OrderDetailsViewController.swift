@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 import Gridicons
 import Contacts
 import Yosemite
@@ -22,7 +23,7 @@ final class OrderDetailsViewController: UIViewController {
 
     /// Top banner that announces shipping labels features.
     ///
-    private var topBannerView: TopBannerView?
+    private var topBannerView: TopBannerSwifty?
 
     /// EntityListener: Update / Deletion Notifications.
     ///
@@ -207,8 +208,7 @@ private extension OrderDetailsViewController {
 private extension OrderDetailsViewController {
     func updateTopBannerView() {
         let factory = ShippingLabelsTopBannerFactory(shippingLabels: viewModel.dataSource.shippingLabels)
-        let isExpanded = topBannerView?.isExpanded ?? false
-        factory.createTopBannerIfNeeded(isExpanded: isExpanded,
+        factory.createTopBannerIfNeeded(expandable: true,
                                         expandedStateChangeHandler: { [weak self] in
                                             self?.tableView.updateHeaderHeight()
                                         }, onGiveFeedbackButtonPressed: { [weak self] in
@@ -224,7 +224,7 @@ private extension OrderDetailsViewController {
                                         })
     }
 
-    func showTopBannerView(_ topBannerView: TopBannerView) {
+    func showTopBannerView(_ topBannerView: TopBannerSwifty) {
         guard tableView.tableHeaderView == nil else {
             return
         }
@@ -232,9 +232,19 @@ private extension OrderDetailsViewController {
         self.topBannerView = topBannerView
         // A frame-based container view is needed for table view's `tableHeaderView` and its height is recalculated in `viewDidLayoutSubviews`, so that the
         // top banner view can be Auto Layout based with dynamic height.
-        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
-        headerContainer.addSubview(topBannerView)
-        headerContainer.pinSubviewToSafeArea(topBannerView, insets: Constants.headerContainerInsets)
+
+        // Configure header container view
+        let topBannerHostingController = UIHostingController(rootView: topBannerView)
+
+        addChild(topBannerHostingController)
+        topBannerHostingController.didMove(toParent: self)
+
+
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.bounds.width), height: Int(Constants.headerDefaultHeight)))
+        headerContainer.addSubview(topBannerHostingController.view)
+        headerContainer.pinSubviewToSafeArea(topBannerHostingController.view, insets: Constants.headerContainerInsets)
+        topBannerHostingController.view.translatesAutoresizingMaskIntoConstraints = false
+
         tableView.tableHeaderView = headerContainer
         tableView.updateHeaderHeight()
     }
@@ -243,8 +253,6 @@ private extension OrderDetailsViewController {
         guard tableView.tableHeaderView != nil else {
             return
         }
-
-        topBannerView?.removeFromSuperview()
         topBannerView = nil
         tableView.tableHeaderView = nil
         tableView.updateHeaderHeight()
@@ -416,7 +424,7 @@ private extension OrderDetailsViewController {
 
     func openTrackingDetails(_ tracking: ShipmentTracking) {
         guard let trackingURL = tracking.trackingURL?.addHTTPSSchemeIfNecessary(),
-            let url = URL(string: trackingURL) else {
+              let url = URL(string: trackingURL) else {
             return
         }
 
@@ -673,8 +681,8 @@ private extension OrderDetailsViewController {
         let titleFormat = NSLocalizedString(
             "Unable to change status of order #%1$d",
             comment: "Content of error presented when updating the status of an Order fails. "
-            + "It reads: Unable to change status of order #{order number}. "
-            + "Parameters: %1$d - order number"
+                + "It reads: Unable to change status of order #{order number}. "
+                + "Parameters: %1$d - order number"
         )
         let title = String.localizedStringWithFormat(titleFormat, orderID)
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")

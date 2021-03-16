@@ -661,12 +661,10 @@ private extension ProductVariationsViewController {
 
     func didLeave(state: PaginatedListViewControllerState) {
         switch state {
-        case .noResultsPlaceholder:
-            removeEmptyViewController()
         case .syncing:
             ensureFooterSpinnerIsStopped()
             removePlaceholderProducts()
-        case .results:
+        case .noResultsPlaceholder, .results:
             break
         }
     }

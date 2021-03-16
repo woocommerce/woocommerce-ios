@@ -25,6 +25,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         product
     }
 
+    /// The original product value.
+    var originalProductModel: EditableProductModel {
+        originalProduct
+    }
+
     /// The form type could change from .add to .edit after creation.
     private(set) var formType: ProductFormType
 

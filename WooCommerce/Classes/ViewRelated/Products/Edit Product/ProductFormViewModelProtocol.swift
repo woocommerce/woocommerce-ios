@@ -31,6 +31,9 @@ protocol ProductFormViewModelProtocol {
     /// The latest product value.
     var productModel: ProductModel { get }
 
+    /// The original product value.
+    var originalProductModel: ProductModel { get }
+
     /// The latest product password, if the product is password protected.
     var password: String? { get }
 

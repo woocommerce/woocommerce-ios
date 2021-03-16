@@ -341,12 +341,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 break
             case .variations(let row):
                 ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
-                guard let product = product as? EditableProductModel, row.isActionable else {
+                guard let originalProduct = viewModel.originalProductModel as? EditableProductModel, row.isActionable else {
                     return
                 }
                 let variationsViewModel = ProductVariationsViewModel()
                 let variationsViewController = ProductVariationsViewController(viewModel: variationsViewModel,
-                                                                               product: product.product,
+                                                                               product: originalProduct.product,
                                                                                formType: viewModel.formType)
                 variationsViewController.onProductUpdate = { [viewModel] updatedProduct in
                     viewModel.updateProductVariations(from: updatedProduct)

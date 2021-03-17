@@ -105,6 +105,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         handleSwipeBackGesture()
 
         observeProduct()
+        observeProductName()
         observeUpdateCTAVisibility()
 
         productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
@@ -341,13 +342,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 break
             case .variations(let row):
                 ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
-                guard let product = product as? EditableProductModel, row.isActionable else {
+                guard let originalProduct = viewModel.originalProductModel as? EditableProductModel, row.isActionable else {
                     return
                 }
-                let variationsViewModel = ProductVariationsViewModel()
+                let variationsViewModel = ProductVariationsViewModel(formType: viewModel.formType)
                 let variationsViewController = ProductVariationsViewController(viewModel: variationsViewModel,
-                                                                               product: product.product,
-                                                                               formType: viewModel.formType)
+                                                                               product: originalProduct.product)
                 variationsViewController.onProductUpdate = { [viewModel] updatedProduct in
                     viewModel.updateProductVariations(from: updatedProduct)
                 }
@@ -468,6 +468,18 @@ private extension ProductFormViewController {
     func observeProduct() {
         cancellableProduct = viewModel.observableProduct.subscribe { [weak self] product in
             self?.onProductUpdated(product: product)
+        }
+    }
+
+    /// Observe product name changes and re-render the product if the change happened outside this screen.
+    /// The "happened outside" condition is needed to not reload the view while the user is typing a new name.
+    ///
+    func observeProductName() {
+        cancellableProductName = viewModel.productName?.subscribe { [weak self] _ in
+            guard let self = self else { return }
+            if self.view.window == nil { // If window is nil, this screen isn't the active screen.
+                self.onProductUpdated(product: self.product)
+            }
         }
     }
 

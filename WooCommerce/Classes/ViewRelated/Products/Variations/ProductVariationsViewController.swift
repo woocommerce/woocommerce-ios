@@ -92,6 +92,8 @@ final class ProductVariationsViewController: UIViewController {
 
     private var product: Product {
         didSet {
+            viewModel.updatedFormTypeIfNeeded(newProduct: product)
+
             configureRightButtonItem()
             resetResultsController(oldProduct: oldValue)
             updateEmptyState()
@@ -115,7 +117,6 @@ final class ProductVariationsViewController: UIViewController {
         product.sku
     }
 
-    private let formType: ProductFormType
     private let imageService: ImageService = ServiceLocator.imageService
 
     private let viewModel: ProductVariationsViewModel
@@ -128,11 +129,9 @@ final class ProductVariationsViewController: UIViewController {
 
     init(viewModel: ProductVariationsViewModel,
          product: Product,
-         formType: ProductFormType,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
          analytics: Analytics = ServiceLocator.analytics) {
         self.product = product
-        self.formType = formType
         self.viewModel = viewModel
         self.noticePresenter = noticePresenter
         self.analytics = analytics
@@ -430,7 +429,7 @@ extension ProductVariationsViewController: UITableViewDelegate {
         let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                       allAttributes: allAttributes,
                                                       parentProductSKU: parentProductSKU,
-                                                      formType: formType,
+                                                      formType: self.viewModel.formType,
                                                       productImageActionHandler: productImageActionHandler)
         viewModel.onVariationDeletion = { [weak self] variation in
             guard let self = self else { return }

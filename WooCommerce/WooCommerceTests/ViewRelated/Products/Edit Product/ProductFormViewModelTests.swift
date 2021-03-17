@@ -213,6 +213,135 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.originalProductModel.status, newProduct.productStatus)
         XCTAssertEqual(viewModel.formType, .edit)
     }
+
+    func test_action_buttons_for_new_product_with_published_status_and_pending_changes() {
+        // Given
+        let product = Product.fake().copy(statusKey: ProductStatus.publish.rawValue)
+        let viewModel = createViewModel(product: product, formType: .add)
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.publish])
+    }
+
+    func test_action_buttons_for_new_product_with_published_status_and_no_pending_changes() {
+        // Given
+        let product = Product.fake().copy(statusKey: ProductStatus.publish.rawValue)
+        let viewModel = createViewModel(product: product, formType: .add)
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.publish])
+    }
+
+    func test_action_buttons_for_new_product_with_different_status() {
+        // Given
+        let product = Product.fake().copy(statusKey: ProductStatus.publish.rawValue)
+        let viewModel = createViewModel(product: product, formType: .add)
+
+        let updatedProduct = product.copy(statusKey: ProductStatus.draft.rawValue)
+        let settings = ProductSettings(from: updatedProduct, password: nil)
+        viewModel.updateProductSettings(settings)
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.publish, .update])
+    }
+
+    func test_action_buttons_for_existing_published_product_and_pending_changes() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.publish.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit)
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.update])
+    }
+
+    func test_action_buttons_for_existing_published_product_and_no_pending_changes() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.publish.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit)
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [])
+    }
+
+    func test_action_buttons_for_existing_draft_product_and_pending_changes() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit)
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.publish, .update])
+    }
+
+    func test_action_buttons_for_existing_draft_product_and_no_pending_changes() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit)
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.publish])
+    }
+
+    func test_action_buttons_for_existing_product_with_other_status_and_peding_changes() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: "other")
+        let viewModel = createViewModel(product: product, formType: .edit)
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.publish, .update])
+    }
+
+    func test_action_buttons_for_existing_product_with_other_status_and_no_peding_changes() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: "other")
+        let viewModel = createViewModel(product: product, formType: .edit)
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.publish])
+    }
+
+    func test_action_buttons_for_any_product_in_read_only_mode() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.publish.rawValue)
+        let viewModel = createViewModel(product: product, formType: .readonly)
+        viewModel.updateName("new name")
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [])
+    }
 }
 
 private extension ProductFormViewModelTests {

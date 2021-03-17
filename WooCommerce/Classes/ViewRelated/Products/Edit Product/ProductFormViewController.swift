@@ -167,7 +167,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         if viewModel.formType == .add {
             ServiceLocator.analytics.track(.addProductPublishTapped, withProperties: ["product_type": product.productType.rawValue])
         }
-        saveProduct()
+        saveProduct(status: .publish)
     }
 
     func saveProductAsDraft() {
@@ -761,17 +761,14 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
 
     func updateNavigationBar(isUpdateEnabled: Bool) {
-        var rightBarButtonItems = [UIBarButtonItem]()
-
-        switch viewModel.formType {
-        case .add:
-            rightBarButtonItems.append(createPublishBarButtonItem())
-        case .edit:
-            if isUpdateEnabled {
-                rightBarButtonItems.append(createUpdateBarButtonItem())
+        // Create action buttons based on view model
+        var rightBarButtonItems: [UIBarButtonItem] = viewModel.actionButtons.reversed().compactMap { buttonType in
+            switch buttonType {
+            case .publish:
+                return createPublishBarButtonItem()
+            case .update:
+                return createUpdateBarButtonItem()
             }
-        case .readonly:
-            break
         }
 
         if viewModel.shouldShowMoreOptionsMenu() {

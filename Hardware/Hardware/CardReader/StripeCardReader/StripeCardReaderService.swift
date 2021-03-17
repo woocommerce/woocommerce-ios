@@ -141,6 +141,9 @@ extension StripeCardReaderService: CardReaderService {
                 }
 
                 if let intent = intent {
+                    print("==== creating payment intent is completed")
+                    print(intent)
+                    print("//// creating payment intent is completed")
                     self.activePaymentIntent = intent
                     promise(Result.success(PaymentIntent(intent: intent)))
                 }
@@ -166,6 +169,9 @@ extension StripeCardReaderService: CardReaderService {
                 }
 
                 if let intent = intent {
+                    print("==== collecting payment method is completed")
+                    print(intent)
+                    print("//// collecting payment method is completed")
                     self?.activePaymentIntent = intent
                     promise(Result.success(PaymentIntent(intent: intent)))
                 }
@@ -174,9 +180,27 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func processPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
-        return Future() { promise in
-            // Attack the Stripe SDK and process a PaymentIntent.
-            // To be implemented
+        return Future() { [weak self] promise in
+            guard let activeIntent = self?.activePaymentIntent else {
+                // There is no active payment intent.
+                // Shortcircuit with an error
+                promise(Result.failure(CardReaderServiceError.capturePayment))
+                return
+            }
+
+            Terminal.shared.processPayment(activeIntent) { (intent, error) in
+                if let _ = error {
+                    promise(Result.failure(CardReaderServiceError.paymentMethod))
+                }
+
+                if let intent = intent {
+                    print("==== intent processing is completed")
+                    print(intent)
+                    print("//// intent processing is completed")
+                    self?.activePaymentIntent = intent
+                    promise(Result.success(PaymentIntent(intent: intent)))
+                }
+            }
         }
     }
 
@@ -250,12 +274,13 @@ extension StripeCardReaderService: ReaderDisplayDelegate {
     public func terminal(_ terminal: Terminal, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
         print("==== did request reader input")
         print(inputOptions)
+        print(inputOptions.rawValue)
         print("//// did request reader input")
     }
 
     public func terminal(_ terminal: Terminal, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
         print("==== did request display message")
-        print(displayMessage)
+        print(displayMessage.rawValue)
         print("//// did request display message")
     }
 }

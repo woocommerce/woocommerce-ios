@@ -136,21 +136,26 @@ private extension CardPresentPaymentStore {
         // stream is completed. We will have to deal with this later on,
         // if we finally decide to move forward with the Combine-based API in the
         // card reader service
-        cardReaderService.createPaymentIntent(parameters).flatMap { intent in
-            self.cardReaderService.collectPaymentMethod(intent)
-        }.sink { error in
+        cardReaderService.createPaymentIntent(parameters)
+            .flatMap { intent in
+                self.cardReaderService.collectPaymentMethod(intent)
+            }.flatMap { intent in
+                self.cardReaderService.processPaymentIntent(intent)
+            }.sink { error in
             switch error {
             case .failure(let error):
                 let result: Result<Bool, Error> = .failure(error)
                 onCompletion(result)
             case .finished:
+                print("===== finished ")
+                print("===== error ", error)
                 let result: Result<Bool, Error> = .success(true)
                 onCompletion(result)
             }
         } receiveValue: { intent in
-            print("==== Log for testing purposes. payment intent collected ")
+            print("==== Yosemite log for testing. Payment intent processed ")
             print(intent)
-            print("//// payment intent collected ")
+            print("//// payment intent processed ")
             // TODO. Initiate step 3. Process Payment intent.
             // Deferred to https://github.com/woocommerce/woocommerce-ios/issues/3825
             let result: Result<Bool, Error> = .success(true)

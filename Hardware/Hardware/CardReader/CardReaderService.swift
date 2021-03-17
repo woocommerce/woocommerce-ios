@@ -50,7 +50,7 @@ public protocol CardReaderService {
     /// Collects a payment method for the given intent.
     func collectPaymentMethod(_ intent: PaymentIntent) -> Future<PaymentIntent, Error>
 
-    /// Processes a payment after collecting a payment method succeeds.
+    /// Captures a payment after collecting a payment method succeeds.
     /// - Parameter intent: the payment intent
     func processPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error>
 

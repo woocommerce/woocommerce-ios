@@ -14,4 +14,7 @@ public enum CardReaderServiceError: Error {
 
     /// Error thrown while collecting payment methods
     case paymentMethod
+
+    /// Error thrown while capturing a payment
+    case capturePayment
 }

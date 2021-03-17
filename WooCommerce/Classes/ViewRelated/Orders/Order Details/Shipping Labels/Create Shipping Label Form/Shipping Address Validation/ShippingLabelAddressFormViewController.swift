@@ -282,17 +282,17 @@ private extension ShippingLabelAddressFormViewController {
         var errorMessage = viewModel.addressValidationError?.addressError
         switch error {
         case .name:
-            errorMessage = Localization.invalidName
+            errorMessage = Localization.missingName
         case .address:
-            errorMessage = viewModel.addressValidationError?.addressError ?? Localization.invalidAddress
+            errorMessage = viewModel.addressValidationError?.addressError ?? Localization.missingAddress
         case .city:
-            errorMessage = Localization.invalidCity
+            errorMessage = Localization.missingCity
         case .postcode:
-            errorMessage = Localization.invalidPostcode
+            errorMessage = Localization.missingPostcode
         case .state:
-            errorMessage = Localization.invalidState
+            errorMessage = Localization.missingState
         case .country:
-            errorMessage = Localization.invalidCountry
+            errorMessage = Localization.missingCountry
         }
 
         cell.textLabel?.text = errorMessage
@@ -416,18 +416,18 @@ private extension ShippingLabelAddressFormViewController {
 
         static let confirmButtonTitle = NSLocalizedString("Use Address as Entered",
                                                           comment: "Action to use the address in Shipping Label Validation screen as entered")
-        static let invalidName = NSLocalizedString("Name invalid",
+        static let missingName = NSLocalizedString("Name missing",
                                                    comment: "Error showed in Shipping Label Address Validation for the name field")
-        static let invalidAddress = NSLocalizedString("Address invalid",
+        static let missingAddress = NSLocalizedString("Address missing",
                                                       comment: "Error showed in Shipping Label Address Validation for the address field")
-        static let invalidCity = NSLocalizedString("City invalid",
+        static let missingCity = NSLocalizedString("City missing",
                                                    comment: "Error showed in Shipping Label Address Validation for the city field")
-        static let invalidPostcode = NSLocalizedString("Postcode invalid",
+        static let missingPostcode = NSLocalizedString("Postcode invalid",
                                                        comment: "Error showed in Shipping Label Address Validation for the postcode field")
-        static let invalidState = NSLocalizedString("State invalid",
+        static let missingState = NSLocalizedString("State missing",
                                                     comment: "Error showed in Shipping Label Address Validation for the state field")
-        static let invalidCountry = NSLocalizedString("Country invalid",
-                                                      comment: "Error showed in Shipping Label Address Validation for the cointry field")
+        static let missingCountry = NSLocalizedString("Country missing",
+                                                      comment: "Error showed in Shipping Label Address Validation for the country field")
     }
 
     enum Constants {

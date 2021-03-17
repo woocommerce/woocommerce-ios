@@ -1,6 +1,5 @@
 import Foundation
 import UIKit
-import SafariServices
 import WordPressAuthenticator
 
 
@@ -37,6 +36,7 @@ final class LoginPrologueViewController: UIViewController {
         setupBackgroundView()
         setupContainerView()
         setupCurvedRectangle()
+        setupCarousel()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -65,5 +65,17 @@ private extension LoginPrologueViewController {
     func setupCurvedRectangle() {
         curvedRectangle.image = UIImage.curvedRectangle.withRenderingMode(.alwaysTemplate)
         curvedRectangle.tintColor = .authPrologueBottomBackgroundColor
+    }
+
+    /// Adds a carousel (slider) of screens to promote the main features of the app.
+    /// This is contained in a child view so that this view's background doesn't scroll.
+    ///
+    func setupCarousel() {
+        let carousel = LoginProloguePageViewController()
+        carousel.view.translatesAutoresizingMaskIntoConstraints = false
+
+        addChild(carousel)
+        view.addSubview(carousel.view)
+        view.pinSubviewToAllEdges(carousel.view)
     }
 }

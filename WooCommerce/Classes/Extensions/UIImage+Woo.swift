@@ -254,16 +254,34 @@ extension UIImage {
         UIImage(imageLiteralResourceName: "icon-house-outlined")
     }
 
-    /// Login prologue slanted rectangle
-    ///
-    static var slantedRectangle: UIImage {
-        return UIImage(named: "prologue-slanted-rectangle")!
-    }
-
     /// Login prologue curved rectangle
     ///
     static var curvedRectangle: UIImage {
         return UIImage(named: "prologue-curved-rectangle")!
+    }
+
+    /// Login prologue analytics image
+    ///
+    static var prologueAnalyticsImage: UIImage {
+        return UIImage(named: "login-prologue-analytics")!
+    }
+
+    /// Login prologue orders image
+    ///
+    static var prologueOrdersImage: UIImage {
+        return UIImage(named: "login-prologue-orders")!
+    }
+
+    /// Login prologue products image
+    ///
+    static var prologueProductsImage: UIImage {
+        return UIImage(named: "login-prologue-products")!
+    }
+
+    /// Login prologue reviews image
+    ///
+    static var prologueReviewsImage: UIImage {
+        return UIImage(named: "login-prologue-reviews")!
     }
 
     /// Inventory Icon

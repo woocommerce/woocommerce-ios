@@ -92,16 +92,16 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
             return [.publish]
 
         case (.add, .publish, _, false, _): // New product with a different status
-            return [.publish, .update]
+            return [.publish, .save]
 
         case (.edit, .publish, _, true, true): // Existing published product with changes
-            return [.update]
+            return [.save]
 
         case (.edit, .publish, _, true, false): // Existing published product with no changes
             return []
 
         case (.edit, _, _, true, true): // Any other existing product with changes
-            return [.publish, .update]
+            return [.publish, .save]
 
         case (.edit, _, _, true, false): // Any other existing product with no changes
             return [.publish]

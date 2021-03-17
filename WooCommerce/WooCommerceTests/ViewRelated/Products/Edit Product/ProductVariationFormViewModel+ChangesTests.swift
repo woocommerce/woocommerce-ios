@@ -162,7 +162,7 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.update])
+        XCTAssertEqual(actionButtons, [.save])
     }
 
     func test_action_buttons_for_existing_product_and_no_pending_changes() {

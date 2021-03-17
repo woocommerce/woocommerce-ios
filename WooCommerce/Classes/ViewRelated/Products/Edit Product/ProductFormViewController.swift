@@ -158,7 +158,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         }
     }
 
-    @objc func updateProduct() {
+    @objc func saveProductAndLogEvent() {
         eventLogger.logUpdateButtonTapped()
         saveProduct()
     }
@@ -766,8 +766,8 @@ private extension ProductFormViewController {
             switch buttonType {
             case .publish:
                 return createPublishBarButtonItem()
-            case .update:
-                return createUpdateBarButtonItem()
+            case .save:
+                return createSaveBarButtonItem()
             }
         }
 
@@ -789,9 +789,9 @@ private extension ProductFormViewController {
         return UIBarButtonItem(title: publishTitle, style: .done, target: self, action: #selector(publishProduct))
     }
 
-    func createUpdateBarButtonItem() -> UIBarButtonItem {
-        let updateTitle = NSLocalizedString("Update", comment: "Action for updating a Product remotely")
-        return UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))
+    func createSaveBarButtonItem() -> UIBarButtonItem {
+        let saveTitle = NSLocalizedString("Save", comment: "Action for saving a Product remotely")
+        return UIBarButtonItem(title: saveTitle, style: .done, target: self, action: #selector(saveProductAndLogEvent))
     }
 
     func createMoreOptionsBarButtonItem() -> UIBarButtonItem {

@@ -166,7 +166,7 @@ extension StripeCardReaderService: CardReaderService {
                 }
 
                 if let intent = intent {
-                    self.activePaymentIntent = intent
+                    self?.activePaymentIntent = intent
                     promise(Result.success(PaymentIntent(intent: intent)))
                 }
             }

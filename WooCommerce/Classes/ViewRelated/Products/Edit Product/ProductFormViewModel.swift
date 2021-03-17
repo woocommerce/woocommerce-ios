@@ -85,6 +85,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         }
     }
 
+    /// The action buttons that should be rendered in the navigation bar.
+    var actionButtons: [ActionButtonType] {
+        []
+    }
+
     private let productImageActionHandler: ProductImageActionHandler
 
     private var cancellable: ObservationToken?

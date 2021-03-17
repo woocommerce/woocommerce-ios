@@ -62,6 +62,11 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
         }
     }
 
+    /// The action buttons that should be rendered in the navigation bar.
+    var actionButtons: [ActionButtonType] {
+        []
+    }
+
     /// Assign this closure to get notified when the variation is deleted.
     ///
     var onVariationDeletion: ((ProductVariation) -> Void)?

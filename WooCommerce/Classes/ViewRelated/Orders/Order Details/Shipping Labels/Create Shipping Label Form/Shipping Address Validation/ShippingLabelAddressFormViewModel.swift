@@ -19,8 +19,7 @@ final class ShippingLabelAddressFormViewModel {
     let type: ShipType
     private(set) var address: ShippingLabelAddress?
     private(set) var addressValidationError: ShippingLabelAddressValidationError?
-    private(set) var isAddressLocallyValidated: Bool = false
-    private(set) var isAddressFullyValidated: Bool = false
+    private(set) var addressValidated: Validation = .none
 
     private let stores: StoresManager
 
@@ -122,6 +121,13 @@ final class ShippingLabelAddressFormViewModel {
 // MARK: - Local Validation
 extension ShippingLabelAddressFormViewModel {
 
+    // Defines if the address was not validated, or validated locally/remotely.
+    enum Validation {
+        case none
+        case local
+        case remote
+    }
+
     enum ValidationError {
         case name
         case address
@@ -168,12 +174,12 @@ extension ShippingLabelAddressFormViewModel {
 
         addressValidationError = nil
         if validateAddressLocally().isNotEmpty {
-            isAddressLocallyValidated = false
+            addressValidated = .local
             state.isLoading = false
             onSuccess?(false, nil)
             return
         }
-        isAddressLocallyValidated = true
+        addressValidated = .local
 
         if onlyLocally {
             onSuccess?(true, nil)
@@ -186,20 +192,20 @@ extension ShippingLabelAddressFormViewModel {
             switch result {
             case .success:
                 if (try? result.get().errors) == nil {
-                    self?.isAddressFullyValidated = true
+                    self?.addressValidated = .remote
                     self?.addressValidationError = nil
                     self?.state.isLoading = false
                     onSuccess?(true, nil)
                 }
                 else {
-                    self?.isAddressFullyValidated = false
+                    self?.addressValidated = .none
                     self?.addressValidationError = try? result.get().errors
                     self?.state.isLoading = false
                     onSuccess?(false, try? result.get().errors)
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
-                self?.isAddressFullyValidated = false
+                self?.addressValidated = .none
                 self?.addressValidationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
                 self?.state.isLoading = false
                 onSuccess?(false, nil)

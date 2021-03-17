@@ -15,6 +15,11 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
         productVariation
     }
 
+    /// The original product variation.
+    var originalProductModel: EditableProductVariationModel {
+        originalProductVariation
+    }
+
     /// Emits a boolean of whether the product variation has unsaved changes for remote update.
     var isUpdateEnabled: Observable<Bool> {
         isUpdateEnabledSubject

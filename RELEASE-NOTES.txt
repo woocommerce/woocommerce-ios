@@ -3,6 +3,7 @@
 6.3
 -----
 - [*] Fix: In landscape orientation, all backgrounds on detail screens and their subsections now extend edge-to-edge. [https://github.com/woocommerce/woocommerce-ios/pull/3808]
+- [*] Fix: Creating an attribute or a variation no longer saves your product pending changes. [https://github.com/woocommerce/woocommerce-ios/pull/3832]
 - [*] Enhancement/fix: image & text footnote info link rows are now center aligned in order details reprint shipping label info row and reprint screen. [https://github.com/woocommerce/woocommerce-ios/pull/3805]
 
 6.2

@@ -119,8 +119,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         viewModel.validateAddress(onlyLocally: false)
 
         // Then
-        XCTAssertEqual(viewModel.isAddressLocallyValidated, true)
-        XCTAssertEqual(viewModel.isAddressFullyValidated, true)
+        XCTAssertEqual(viewModel.addressValidated, .remote)
         XCTAssertEqual(viewModel.addressValidationError, nil)
     }
 
@@ -155,8 +154,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         viewModel.validateAddress(onlyLocally: false)
 
         // Then
-        XCTAssertEqual(viewModel.isAddressLocallyValidated, true)
-        XCTAssertEqual(viewModel.isAddressFullyValidated, false)
+        XCTAssertEqual(viewModel.addressValidated, .local)
         XCTAssertEqual(viewModel.addressValidationError, validationError)
     }
 
@@ -189,8 +187,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
 
         // Then
         let validationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
-        XCTAssertEqual(viewModel.isAddressLocallyValidated, true)
-        XCTAssertEqual(viewModel.isAddressFullyValidated, false)
+        XCTAssertEqual(viewModel.addressValidated, .local)
         XCTAssertEqual(viewModel.addressValidationError, validationError)
     }
 

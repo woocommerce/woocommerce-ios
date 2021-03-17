@@ -173,9 +173,9 @@ extension ShippingLabelAddressFormViewModel {
             onSuccess?(false, nil)
             return
         }
+        isAddressLocallyValidated = true
 
         if onlyLocally {
-            isAddressLocallyValidated = true
             onSuccess?(true, nil)
             return
         }

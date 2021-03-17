@@ -73,14 +73,14 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         }
 
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, stores: stores)
-        viewModel.validateAddress()
+        viewModel.validateAddress(onlyLocally: false)
 
         // Then
         let expectedRows: [ShippingLabelAddressFormViewModel.Row] = [.name,
+                                                                     .fieldError(.name),
                                                                      .company,
                                                                      .phone,
                                                                      .address,
-                                                                     .fieldError,
                                                                      .address2,
                                                                      .city,
                                                                      .postcode,
@@ -91,7 +91,15 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
 
     func test_address_validation_returns_correct_values_if_succeeded() {
         // Given
-        let shippingAddress = MockShippingLabelAddress.sampleAddress()
+        let shippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
+                                                   name: "Skylar Ferry",
+                                                   phone: "12345",
+                                                   country: "United States",
+                                                   state: "CA",
+                                                   address1: "60 29th",
+                                                   address2: "Street #343",
+                                                   city: "San Francisco",
+                                                   postcode: "94121-2303")
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let expectedValidationResponse = ShippingLabelAddressValidationResponse(address: shippingAddress,
                                                                                 errors: nil,
@@ -108,16 +116,25 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         }
 
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, stores: stores)
-        viewModel.validateAddress()
+        viewModel.validateAddress(onlyLocally: false)
 
         // Then
-        XCTAssertEqual(viewModel.isAddressValidated, true)
+        XCTAssertEqual(viewModel.isAddressLocallyValidated, true)
+        XCTAssertEqual(viewModel.isAddressFullyValidated, true)
         XCTAssertEqual(viewModel.addressValidationError, nil)
     }
 
     func test_address_validation_returns_correct_values_if_the_validation_fails() {
         // Given
-        let shippingAddress = MockShippingLabelAddress.sampleAddress()
+        let shippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
+                                                                         name: "Skylar Ferry",
+                                                                         phone: "12345",
+                                                                         country: "United States",
+                                                                         state: "CA",
+                                                                         address1: "60 29th",
+                                                                         address2: "Street #343",
+                                                                         city: "San Francisco",
+                                                                         postcode: "94121-2303")
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let validationError = ShippingLabelAddressValidationError(addressError: "Error", generalError: nil)
         let expectedValidationResponse = ShippingLabelAddressValidationResponse(address: nil,
@@ -135,16 +152,25 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         }
 
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, stores: stores)
-        viewModel.validateAddress()
+        viewModel.validateAddress(onlyLocally: false)
 
         // Then
-        XCTAssertEqual(viewModel.isAddressValidated, false)
+        XCTAssertEqual(viewModel.isAddressLocallyValidated, true)
+        XCTAssertEqual(viewModel.isAddressFullyValidated, false)
         XCTAssertEqual(viewModel.addressValidationError, validationError)
     }
 
     func test_address_validation_returns_correct_values_if_the_validation_returns_an_error() {
         // Given
-        let shippingAddress = MockShippingLabelAddress.sampleAddress()
+        let shippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
+                                                   name: "Skylar Ferry",
+                                                   phone: "12345",
+                                                   country: "United States",
+                                                   state: "CA",
+                                                   address1: "60 29th",
+                                                   address2: "Street #343",
+                                                   city: "San Francisco",
+                                                   postcode: "94121-2303")
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let error = SampleError.first
 
@@ -159,17 +185,26 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         }
 
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, stores: stores)
-        viewModel.validateAddress()
+        viewModel.validateAddress(onlyLocally: false)
 
         // Then
         let validationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
-        XCTAssertEqual(viewModel.isAddressValidated, false)
+        XCTAssertEqual(viewModel.isAddressLocallyValidated, true)
+        XCTAssertEqual(viewModel.isAddressFullyValidated, false)
         XCTAssertEqual(viewModel.addressValidationError, validationError)
     }
 
     func test_address_validation_toggle_shouldShowTopBannerView() {
         // Given
-        let shippingAddress = MockShippingLabelAddress.sampleAddress()
+        let shippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
+                                                   name: "Skylar Ferry",
+                                                   phone: "12345",
+                                                   country: "United States",
+                                                   state: "CA",
+                                                   address1: "60 29th",
+                                                   address2: "Street #343",
+                                                   city: "San Francisco",
+                                                   postcode: "94121-2303")
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let expectedValidationResponse = ShippingLabelAddressValidationResponse(address: shippingAddress,
                                                                                 errors: nil,
@@ -188,7 +223,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         }
 
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, stores: stores)
-        viewModel.validateAddress()
+        viewModel.validateAddress(onlyLocally: false)
 
         // Then
         XCTAssertTrue(viewModel.showLoadingIndicator)

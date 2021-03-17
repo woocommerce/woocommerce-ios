@@ -245,11 +245,16 @@ extension AddAttributeOptionsViewModel {
         state.currentAttributeName
     }
 
-    /// Gathers selected options and update the product's attributes
+    /// Gathers selected options and update the product's attributes.
+    /// Note: if the product doesn't exists remotely, then the product is also created as a draft
     ///
     func updateProductAttributes(onCompletion: @escaping ((Result<Product, ProductUpdateError>) -> Void)) {
         let newProduct = createUpdatedProduct()
-        performProductUpdate(newProduct, onCompletion: onCompletion)
+        if newProduct.existsRemotely {
+            performProductUpdate(newProduct, onCompletion: onCompletion)
+        } else {
+            performProductDraftCreation(newProduct, onCompletion: onCompletion)
+        }
     }
 
     /// Updates the product remotely by removing the current attribute
@@ -270,22 +275,49 @@ extension AddAttributeOptionsViewModel {
         state.isUpdating = true
         let action = ProductAction.updateProduct(product: newProduct) { [weak self] result in
             guard let self = self else { return }
-            self.state.isUpdating = false
-            onCompletion(result)
-
-            // Track operation result
-            let elapsedTime = Date().timeIntervalSince(startDate)
-            switch result {
-            case .success:
-                self.analytics.track(event: WooAnalyticsEvent.Variations.updateAttributeSuccess(productID: self.product.productID, time: elapsedTime))
-            case let .failure(error):
-                self.analytics.track(event: WooAnalyticsEvent.Variations.updateAttributeFail(productID: self.product.productID,
-                                                                                             time: elapsedTime,
-                                                                                             error: error))
-            }
+            self.handleProductUpdate(requestStartDate: startDate, result: result, onCompletion: onCompletion)
         }
         stores.dispatch(action)
     }
+
+    /// Creates the given product remotely as a draft.
+    ///
+    private func performProductDraftCreation(_ newProduct: Product, onCompletion: @escaping ((Result<Product, ProductUpdateError>) -> Void)) {
+        // Track operation trigger
+        let startDate = Date()
+        analytics.track(event: WooAnalyticsEvent.Variations.updateAttribute(productID: product.productID))
+
+        let productViewModel = EditableProductModel(product: newProduct.copy(statusKey: ProductStatus.draft.rawValue))
+        let useCase = ProductFormRemoteActionUseCase(stores: stores)
+
+        state.isUpdating = true
+        useCase.addProduct(product: productViewModel, password: nil) { [weak self] result in
+            guard let self = self else { return }
+            let productResult = result.map { $0.product.product }
+            self.handleProductUpdate(requestStartDate: startDate, result: productResult, onCompletion: onCompletion)
+        }
+    }
+
+    /// Dispatch `onCompletion` back and add necessary tracking to the create/update product remote action.
+    ///
+    private func handleProductUpdate(requestStartDate: Date,
+                                     result: Result<Product, ProductUpdateError>,
+                                     onCompletion: @escaping ((Result<Product, ProductUpdateError>) -> Void)) {
+        state.isUpdating = false
+        onCompletion(result)
+
+        // Track operation result
+        let elapsedTime = Date().timeIntervalSince(requestStartDate)
+        switch result {
+        case .success:
+            self.analytics.track(event: WooAnalyticsEvent.Variations.updateAttributeSuccess(productID: product.productID, time: elapsedTime))
+        case let .failure(error):
+            self.analytics.track(event: WooAnalyticsEvent.Variations.updateAttributeFail(productID: product.productID,
+                                                                                         time: elapsedTime,
+                                                                                         error: error))
+        }
+    }
+
 
     /// Returns a product with its name and options updated with the new attribute to create.
     ///

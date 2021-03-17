@@ -575,6 +575,39 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.isNextButtonEnabled)
     }
+
+    func test_creating_attributes_for_a_new_product_saves_the_product_as_draft() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .addProduct(product, onCompletion):
+                    onCompletion(.success(product))
+            default:
+                break
+            }
+        }
+
+        let attribute = sampleAttribute(attributeID: 0, name: "attr-1", options: ["opt-1", "opt-2"])
+        let product = sampleProduct().copy(productID: 0, attributes: [attribute])
+        let viewModel = AddAttributeOptionsViewModel(product: product, attribute: .new(name: "attr-1"), stores: stores)
+
+        // When
+        let updatedProduct: Product = waitFor { promise in
+            viewModel.updateProductAttributes { result in
+                switch result {
+                case .success(let product):
+                    promise(product)
+                case .failure:
+                    break
+                }
+            }
+        }
+
+        // Then
+        XCTAssertFalse(product.existsRemotely)
+        XCTAssertEqual(updatedProduct.productStatus, .draft)
+    }
 }
 
 // MARK: Helpers

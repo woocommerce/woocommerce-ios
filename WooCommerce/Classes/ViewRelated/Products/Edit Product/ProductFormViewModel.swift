@@ -359,7 +359,7 @@ extension ProductFormViewModel {
         }
     }
 
-    /// Updates the internal `formType` when a product changes from to to a saved status.
+    /// Updates the internal `formType` when a product changes from new to a saved status.
     /// Currently needed when a new product was just created as a draft to allow creating attributes and variations.
     ///
     func updateFormTypeIfNeeded(oldProduct: Product) {

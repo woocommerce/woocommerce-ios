@@ -11,4 +11,7 @@ public enum CardReaderServiceError: Error {
 
     /// Error thrown while creating a payment intent
     case intentCreation
+
+    /// Error thrown while collecting payment methods
+    case paymentMethod
 }

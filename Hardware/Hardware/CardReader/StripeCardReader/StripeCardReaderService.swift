@@ -17,6 +17,8 @@ public final class StripeCardReaderService: NSObject {
     /// see
     ///  https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPDiscoveryDelegate.html#/c:objc(pl)SCPDiscoveryDelegate(im)terminal:didUpdateDiscoveredReaders:
     private let discoveredStripeReadersCache = StripeCardReaderDiscoveryCache()
+
+    private var activePaymentIntent: StripeTerminal.PaymentIntent?
 }
 
 
@@ -124,12 +126,12 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<PaymentIntent, Error> {
-        return Future() { [weak self] promise in
+        return Future() { promise in
             // Contains enough implementation just to pass a test on the happy path.
             // We are not doing any proper error handling yet, but for now we
             // will propagate an error specific to this operation (.intentCreation)
-            Terminal.shared.createPaymentIntent(parameters.toStripe()) { (intent, error) in
-                guard let _ = self else {
+            Terminal.shared.createPaymentIntent(parameters.toStripe()) { [weak self] (intent, error) in
+                guard let self = self else {
                     promise(Result.failure(CardReaderServiceError.intentCreation))
                     return
                 }
@@ -139,6 +141,7 @@ extension StripeCardReaderService: CardReaderService {
                 }
 
                 if let intent = intent {
+                    self.activePaymentIntent = intent
                     promise(Result.success(PaymentIntent(intent: intent)))
                 }
             }
@@ -146,9 +149,27 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func collectPaymentMethod(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
-        return Future() { promise in
-            // Attack the Stripe SDK to collect a payment method.
-            // To be implemented
+        return Future() { [weak self] promise in
+            // Contains enough implementation just to pass a test on the happy path.
+            // We are not doing any proper error handling yet, but for now we
+            // will propagate an error specific to this operation (.paymentMethod)
+            guard let activeIntent = self?.activePaymentIntent else {
+                // There is no active payment intent.
+                // Shortcircuit with an error
+                promise(Result.failure(CardReaderServiceError.paymentMethod))
+                return
+            }
+
+            Terminal.shared.collectPaymentMethod(activeIntent, delegate: self) { (intent, error) in
+                if let _ = error {
+                    promise(Result.failure(CardReaderServiceError.paymentMethod))
+                }
+
+                if let intent = intent {
+                    self.activePaymentIntent = intent
+                    promise(Result.success(PaymentIntent(intent: intent)))
+                }
+            }
         }
     }
 
@@ -223,6 +244,21 @@ extension StripeCardReaderService: DiscoveryDelegate {
     }
 }
 
+
+// MARK: - ReaderDisplayDelegate.
+extension StripeCardReaderService: ReaderDisplayDelegate {
+    public func terminal(_ terminal: Terminal, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
+        print("==== did request reader input")
+        print(inputOptions)
+        print("//// did request reader input")
+    }
+
+    public func terminal(_ terminal: Terminal, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
+        print("==== did request display message")
+        print(displayMessage)
+        print("//// did request display message")
+    }
+}
 
 private extension StripeCardReaderService {
     private func setConfigProvider(_ configProvider: CardReaderConfigProvider) {

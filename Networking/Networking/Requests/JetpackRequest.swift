@@ -91,8 +91,12 @@ private extension JetpackRequest {
     var dotcomParams: [String: String] {
         var output = [
             "json": "true",
-            "path": jetpackPath + "&_method=" + method.rawValue.lowercased() + jetpackQueryParams
+            "path": jetpackPath + "&_method=" + method.rawValue.lowercased()
         ]
+
+        if let jetpackQueryParams = jetpackQueryParams {
+            output["query"] = jetpackQueryParams
+        }
 
         if let jetpackBodyParams = jetpackBodyParams {
             output["body"] = jetpackBodyParams
@@ -121,14 +125,12 @@ private extension JetpackRequest {
 
     /// Returns the Jetpack-Tunneled-Request's Parameters
     ///
-    var jetpackQueryParams: String {
-        guard jetpackEncodesParametersInQuery else {
-            return String()
+    var jetpackQueryParams: String? {
+        guard jetpackEncodesParametersInQuery, parameters.isEmpty == false else {
+            return nil
         }
 
-        return parameters.reduce("") { (output, parameter) in
-            output + "&" + parameter.key + "=" + String(describing: parameter.value)
-        }
+        return parameters.toJSONEncoded()
     }
 
     /// Returns the Jetpack-Tunneled-Request's Body parameters

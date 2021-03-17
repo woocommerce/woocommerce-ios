@@ -31,13 +31,13 @@
                     <color key="backgroundColor" red="0.96470588235294119" green="0.96862745098039216" blue="0.96862745098039216" alpha="1" colorSpace="calibratedRGB"/>
                 </view>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1" image="prologue-curved-rectangle" translatesAutoresizingMaskIntoConstraints="NO" id="Rhn-8s-tRs" userLabel="Curved ImageView">
-                    <rect key="frame" x="0.0" y="124" width="390" height="686"/>
+                    <rect key="frame" x="0.0" y="96" width="390" height="714"/>
                 </imageView>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="1" verticalHuggingPriority="1" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" image="prologue-logo" translatesAutoresizingMaskIntoConstraints="NO" id="bNB-4i-gz9" userLabel="Top Logo">
-                    <rect key="frame" x="64" y="94" width="262" height="54"/>
+                    <rect key="frame" x="107" y="72" width="176" height="36"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="262" id="di7-9A-rnI"/>
-                        <constraint firstAttribute="height" constant="54" id="gWf-lm-a4c"/>
+                        <constraint firstAttribute="width" constant="176" id="di7-9A-rnI"/>
+                        <constraint firstAttribute="height" constant="36" id="gWf-lm-a4c"/>
                     </constraints>
                 </imageView>
             </subviews>
@@ -48,8 +48,8 @@
                 <constraint firstItem="3oc-0l-uZX" firstAttribute="trailing" secondItem="o29-Vv-KDs" secondAttribute="trailing" id="LER-Vg-1a4"/>
                 <constraint firstItem="bNB-4i-gz9" firstAttribute="centerX" secondItem="V2X-Xj-JeZ" secondAttribute="centerX" id="TZH-Bm-5FK"/>
                 <constraint firstItem="o29-Vv-KDs" firstAttribute="top" secondItem="Rhn-8s-tRs" secondAttribute="bottom" id="W3A-aP-sbP"/>
-                <constraint firstItem="bNB-4i-gz9" firstAttribute="top" secondItem="3oc-0l-uZX" secondAttribute="top" constant="50" id="ZQ9-CO-BVL"/>
-                <constraint firstItem="Rhn-8s-tRs" firstAttribute="top" secondItem="3oc-0l-uZX" secondAttribute="top" constant="80" id="aYe-g8-UhA"/>
+                <constraint firstItem="bNB-4i-gz9" firstAttribute="top" secondItem="3oc-0l-uZX" secondAttribute="top" constant="28" id="ZQ9-CO-BVL"/>
+                <constraint firstItem="Rhn-8s-tRs" firstAttribute="top" secondItem="3oc-0l-uZX" secondAttribute="top" constant="52" id="aYe-g8-UhA"/>
                 <constraint firstItem="3vu-Xh-Yk9" firstAttribute="top" secondItem="o29-Vv-KDs" secondAttribute="bottom" id="fcK-hC-jRy"/>
                 <constraint firstItem="3vu-Xh-Yk9" firstAttribute="leading" secondItem="V2X-Xj-JeZ" secondAttribute="leading" id="osl-zf-VHk"/>
                 <constraint firstItem="Rhn-8s-tRs" firstAttribute="trailing" secondItem="3oc-0l-uZX" secondAttribute="trailing" id="sli-mX-npW"/>
@@ -57,7 +57,7 @@
                 <constraint firstItem="o29-Vv-KDs" firstAttribute="bottom" secondItem="3oc-0l-uZX" secondAttribute="bottom" id="yj6-tl-g4o"/>
                 <constraint firstItem="3vu-Xh-Yk9" firstAttribute="trailing" secondItem="V2X-Xj-JeZ" secondAttribute="trailing" id="zQC-U3-vhG"/>
             </constraints>
-            <point key="canvasLocation" x="-476.81159420289856" y="19.419642857142858"/>
+            <point key="canvasLocation" x="-476.92307692307691" y="19.194312796208528"/>
         </view>
     </objects>
     <resources>

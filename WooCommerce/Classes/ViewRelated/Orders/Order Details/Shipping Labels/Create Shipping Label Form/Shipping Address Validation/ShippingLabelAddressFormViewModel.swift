@@ -10,8 +10,6 @@ final class ShippingLabelAddressFormViewModel {
         /// Indicates if the view model is validating an address
         ///
         var isLoading: Bool = false
-
-        var isValidatingAddressLocally: Bool = false
     }
 
     typealias Section = ShippingLabelAddressFormViewController.Section
@@ -21,6 +19,8 @@ final class ShippingLabelAddressFormViewModel {
     let type: ShipType
     private(set) var address: ShippingLabelAddress?
     private(set) var addressValidationError: ShippingLabelAddressValidationError?
+    private(set) var isAddressLocallyValidated: Bool = false
+    private(set) var isAddressFullyValidated: Bool = false
 
     private let stores: StoresManager
 
@@ -168,12 +168,14 @@ extension ShippingLabelAddressFormViewModel {
 
         addressValidationError = nil
         if validateAddressLocally().isNotEmpty {
+            isAddressLocallyValidated = false
             state.isLoading = false
             onSuccess?(false, nil)
             return
         }
 
         if onlyLocally {
+            isAddressLocallyValidated = true
             onSuccess?(true, nil)
             return
         }
@@ -184,17 +186,20 @@ extension ShippingLabelAddressFormViewModel {
             switch result {
             case .success:
                 if (try? result.get().errors) == nil {
+                    self?.isAddressFullyValidated = true
                     self?.addressValidationError = nil
                     self?.state.isLoading = false
                     onSuccess?(true, nil)
                 }
                 else {
+                    self?.isAddressFullyValidated = false
                     self?.addressValidationError = try? result.get().errors
                     self?.state.isLoading = false
                     onSuccess?(false, try? result.get().errors)
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
+                self?.isAddressFullyValidated = false
                 self?.addressValidationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
                 self?.state.isLoading = false
                 onSuccess?(false, nil)

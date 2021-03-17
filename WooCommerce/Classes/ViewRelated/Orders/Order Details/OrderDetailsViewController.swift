@@ -508,8 +508,18 @@ private extension OrderDetailsViewController {
         present(actionSheet, animated: true)
     }
 
-    @objc private func collectPayment() {
-        viewModel.collectPayment()
+    @objc private func collectPayment(sender: UIBarButtonItem) {
+        viewModel.collectPayment { [weak self] in
+            let actionSheet = UIAlertController(title: "🎉🥳🍾🎊 success", message: " The payment has been processed. 💸💸💸💸💸", preferredStyle: .alert)
+            actionSheet.view.tintColor = .text
+
+            actionSheet.addCancelActionWithTitle("😎")
+
+            let popoverController = actionSheet.popoverPresentationController
+            popoverController?.sourceView = sender.customView
+
+            self?.present(actionSheet, animated: true)
+        }
     }
 }
 

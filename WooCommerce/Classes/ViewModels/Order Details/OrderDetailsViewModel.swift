@@ -442,7 +442,7 @@ extension OrderDetailsViewModel {
         stores.dispatch(deleteTrackingAction)
     }
 
-    func collectPayment() {
+    func collectPayment(onCompletion: @escaping () -> Void) {
         // Mock Payment. We will have to instantiate these parameters with
         // the proper amount, currency and readable descripitions later.
         let paymentParameters = PaymentParameters(amount: 100,
@@ -453,6 +453,9 @@ extension OrderDetailsViewModel {
         let action = CardPresentPaymentAction.collectPayment(siteID: order.siteID,
                                                              orderID: order.orderID, parameters: paymentParameters) { (result) in
             // TODO. Show success
+
+            print("🎉🥳🍾🎊 success. The payment has been processed. 💸")
+            onCompletion()
         }
 
         ServiceLocator.stores.dispatch(action)

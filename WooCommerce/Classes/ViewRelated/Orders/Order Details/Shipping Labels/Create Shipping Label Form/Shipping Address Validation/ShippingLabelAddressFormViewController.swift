@@ -422,7 +422,7 @@ private extension ShippingLabelAddressFormViewController {
                                                       comment: "Error showed in Shipping Label Address Validation for the address field")
         static let missingCity = NSLocalizedString("City missing",
                                                    comment: "Error showed in Shipping Label Address Validation for the city field")
-        static let missingPostcode = NSLocalizedString("Postcode invalid",
+        static let missingPostcode = NSLocalizedString("Postcode missing",
                                                        comment: "Error showed in Shipping Label Address Validation for the postcode field")
         static let missingState = NSLocalizedString("State missing",
                                                     comment: "Error showed in Shipping Label Address Validation for the state field")

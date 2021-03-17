@@ -345,10 +345,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard let originalProduct = viewModel.originalProductModel as? EditableProductModel, row.isActionable else {
                     return
                 }
-                let variationsViewModel = ProductVariationsViewModel()
+                let variationsViewModel = ProductVariationsViewModel(formType: viewModel.formType)
                 let variationsViewController = ProductVariationsViewController(viewModel: variationsViewModel,
-                                                                               product: originalProduct.product,
-                                                                               formType: viewModel.formType)
+                                                                               product: originalProduct.product)
                 variationsViewController.onProductUpdate = { [viewModel] updatedProduct in
                     viewModel.updateProductVariations(from: updatedProduct)
                 }

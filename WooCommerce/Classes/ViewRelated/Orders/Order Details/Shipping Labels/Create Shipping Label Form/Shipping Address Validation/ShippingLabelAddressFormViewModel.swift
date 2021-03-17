@@ -90,27 +90,27 @@ final class ShippingLabelAddressFormViewModel {
                 rows.insert(.fieldError(.name), at: rows.index(after: index))
             }
         }
-        else if addressValidationError?.addressError != nil || localErrors.contains(.address) {
+        if addressValidationError?.addressError != nil || localErrors.contains(.address) {
             if let index = rows.firstIndex(where: { $0 == .address }) {
                 rows.insert(.fieldError(.address), at: rows.index(after: index))
             }
         }
-        else if localErrors.contains(.city) {
+        if localErrors.contains(.city) {
             if let index = rows.firstIndex(where: { $0 == .city }) {
                 rows.insert(.fieldError(.city), at: rows.index(after: index))
             }
         }
-        else if localErrors.contains(.postcode) {
+        if localErrors.contains(.postcode) {
             if let index = rows.firstIndex(where: { $0 == .postcode }) {
                 rows.insert(.fieldError(.postcode), at: rows.index(after: index))
             }
         }
-        else if localErrors.contains(.state) {
+        if localErrors.contains(.state) {
             if let index = rows.firstIndex(where: { $0 == .state }) {
                 rows.insert(.fieldError(.state), at: rows.index(after: index))
             }
         }
-        else if localErrors.contains(.country) {
+        if localErrors.contains(.country) {
             if let index = rows.firstIndex(where: { $0 == .country }) {
                 rows.insert(.fieldError(.country), at: rows.index(after: index))
             }

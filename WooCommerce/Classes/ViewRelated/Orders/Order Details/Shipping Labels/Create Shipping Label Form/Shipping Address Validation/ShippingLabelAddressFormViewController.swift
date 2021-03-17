@@ -84,7 +84,7 @@ private extension ShippingLabelAddressFormViewController {
 
     func configureRightButtonItemAsLoader() {
         let indicator = UIActivityIndicatorView(style: .medium)
-        indicator.color = .primaryButtonTitle
+        indicator.color = .navigationBarLoadingIndicator
         indicator.startAnimating()
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: indicator)
     }

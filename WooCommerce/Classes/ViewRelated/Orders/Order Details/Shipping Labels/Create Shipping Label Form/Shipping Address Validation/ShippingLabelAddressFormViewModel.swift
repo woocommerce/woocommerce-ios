@@ -174,7 +174,7 @@ extension ShippingLabelAddressFormViewModel {
 
         addressValidationError = nil
         if validateAddressLocally().isNotEmpty {
-            addressValidated = .local
+            addressValidated = .none
             state.isLoading = false
             onSuccess?(false, nil)
             return

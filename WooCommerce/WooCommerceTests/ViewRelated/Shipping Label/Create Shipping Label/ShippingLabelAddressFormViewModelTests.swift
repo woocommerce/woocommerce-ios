@@ -81,11 +81,16 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
                                                                      .company,
                                                                      .phone,
                                                                      .address,
+                                                                     .fieldError(.address),
                                                                      .address2,
                                                                      .city,
+                                                                     .fieldError(.city),
                                                                      .postcode,
+                                                                     .fieldError(.postcode),
                                                                      .state,
-                                                                     .country]
+                                                                     .fieldError(.state),
+                                                                     .country,
+                                                                     .fieldError(.country)]
         XCTAssertEqual(viewModel.sections, [ShippingLabelAddressFormViewModel.Section(rows: expectedRows)])
     }
 
@@ -154,7 +159,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         viewModel.validateAddress(onlyLocally: false)
 
         // Then
-        XCTAssertEqual(viewModel.addressValidated, .local)
+        XCTAssertEqual(viewModel.addressValidated, .none)
         XCTAssertEqual(viewModel.addressValidationError, validationError)
     }
 
@@ -187,7 +192,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
 
         // Then
         let validationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
-        XCTAssertEqual(viewModel.addressValidated, .local)
+        XCTAssertEqual(viewModel.addressValidated, .none)
         XCTAssertEqual(viewModel.addressValidationError, validationError)
     }
 

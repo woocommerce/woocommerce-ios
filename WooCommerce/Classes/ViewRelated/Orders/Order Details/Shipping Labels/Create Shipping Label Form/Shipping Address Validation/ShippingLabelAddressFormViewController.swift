@@ -143,21 +143,27 @@ private extension ShippingLabelAddressFormViewController {
 private extension ShippingLabelAddressFormViewController {
 
     @objc func doneButtonTapped() {
-        viewModel.validateAddress(onlyLocally: false) { [weak self] (success, error) in
+        viewModel.validateAddress(onlyLocally: false) { [weak self] (result) in
             guard let self = self else { return }
-            if success {
+            switch result {
+            case .success:
                 self.onCompletion(self.viewModel.address)
                 self.navigationController?.popViewController(animated: true)
+            case .failure:
+                break
             }
         }
     }
 
     @objc func confirmButtonTapped() {
-        viewModel.validateAddress(onlyLocally: true) { [weak self] (success, error) in
+        viewModel.validateAddress(onlyLocally: true) { [weak self] (result) in
             guard let self = self else { return }
-            if success {
+            switch result {
+            case .success:
                 self.onCompletion(self.viewModel.address)
                 self.navigationController?.popViewController(animated: true)
+            case .failure:
+                break
             }
         }
     }

@@ -168,21 +168,26 @@ extension ShippingLabelAddressFormViewModel {
 // MARK: - Remote Validation API
 extension ShippingLabelAddressFormViewModel {
 
+    enum AddressValidationError: Error {
+        case none
+        case remote(ShippingLabelAddressValidationError?)
+    }
+
     /// Validate the address locally and remotely. If `onlyLocally` is equal `true`, the validation will happens just locally.
     ///
-    func validateAddress(onlyLocally: Bool, onSuccess: ((Bool, ShippingLabelAddressValidationError?) -> ())? = nil) {
+    func validateAddress(onlyLocally: Bool, completion: @escaping (Result<Void, AddressValidationError>) -> Void) {
 
         addressValidationError = nil
         if validateAddressLocally().isNotEmpty {
             addressValidated = .none
             state.isLoading = false
-            onSuccess?(false, nil)
+            completion(.failure(.none))
             return
         }
         addressValidated = .local
 
         if onlyLocally {
-            onSuccess?(true, nil)
+            completion(.success(()))
             return
         }
 
@@ -195,20 +200,20 @@ extension ShippingLabelAddressFormViewModel {
                     self?.addressValidated = .remote
                     self?.addressValidationError = nil
                     self?.state.isLoading = false
-                    onSuccess?(true, nil)
+                    completion(.success(()))
                 }
                 else {
                     self?.addressValidated = .none
                     self?.addressValidationError = try? result.get().errors
                     self?.state.isLoading = false
-                    onSuccess?(false, try? result.get().errors)
+                    completion(.failure(.remote(try? result.get().errors)))
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
                 self?.addressValidated = .none
                 self?.addressValidationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
                 self?.state.isLoading = false
-                onSuccess?(false, nil)
+                completion(.failure(.none))
             }
         }
         stores.dispatch(action)

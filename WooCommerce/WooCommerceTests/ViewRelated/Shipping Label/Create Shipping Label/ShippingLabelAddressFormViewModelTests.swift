@@ -73,7 +73,8 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         }
 
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, stores: stores)
-        viewModel.validateAddress(onlyLocally: false)
+        viewModel.validateAddress(onlyLocally: false) { (result) in
+        }
 
         // Then
         let expectedRows: [ShippingLabelAddressFormViewModel.Row] = [.name,
@@ -121,7 +122,8 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         }
 
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, stores: stores)
-        viewModel.validateAddress(onlyLocally: false)
+        viewModel.validateAddress(onlyLocally: false) { (result) in
+        }
 
         // Then
         XCTAssertEqual(viewModel.addressValidated, .remote)
@@ -156,7 +158,8 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         }
 
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, stores: stores)
-        viewModel.validateAddress(onlyLocally: false)
+        viewModel.validateAddress(onlyLocally: false) { (result) in
+        }
 
         // Then
         XCTAssertEqual(viewModel.addressValidated, .none)
@@ -188,7 +191,8 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         }
 
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, stores: stores)
-        viewModel.validateAddress(onlyLocally: false)
+        viewModel.validateAddress(onlyLocally: false) { (result) in
+        }
 
         // Then
         let validationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
@@ -225,7 +229,8 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         }
 
         let viewModel = ShippingLabelAddressFormViewModel(siteID: 10, type: .origin, address: shippingAddress, stores: stores)
-        viewModel.validateAddress(onlyLocally: false)
+        viewModel.validateAddress(onlyLocally: false) { (result) in
+        }
 
         // Then
         XCTAssertTrue(viewModel.showLoadingIndicator)

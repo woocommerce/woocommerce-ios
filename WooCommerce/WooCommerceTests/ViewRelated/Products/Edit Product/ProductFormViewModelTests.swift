@@ -342,6 +342,80 @@ final class ProductFormViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(actionButtons, [.more])
     }
+
+    func test_canPublishOption_is_true_when_creating_new_product_with_different_status() {
+        // Given
+        let product = Product.fake().copy(productID: 0, statusKey: ProductStatus.draft.rawValue)
+        let viewModel = createViewModel(product: product, formType: .add)
+
+        // When
+        let canShowPublishOption = viewModel.canShowPublishOption()
+
+        // Then
+        XCTAssertTrue(canShowPublishOption)
+    }
+
+    func test_canPublishOption_is_false_when_creating_new_product_with_publish_status() {
+        // Given
+        let product = Product.fake().copy(productID: 0, statusKey: ProductStatus.publish.rawValue)
+        let viewModel = createViewModel(product: product, formType: .add)
+
+        // When
+        let canShowPublishOption = viewModel.canShowPublishOption()
+
+        // Then
+        XCTAssertFalse(canShowPublishOption)
+    }
+
+    func test_canPublishOption_is_true_when_editing_existing_draft_product_with_changes() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit)
+        viewModel.updateName("new_name")
+
+        // When
+        let canShowPublishOption = viewModel.canShowPublishOption()
+
+        // Then
+        XCTAssertTrue(canShowPublishOption)
+    }
+
+    func test_canPublishOption_is_false_when_editing_existing_draft_product_without_changes() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.draft.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit)
+
+        // When
+        let canShowPublishOption = viewModel.canShowPublishOption()
+
+        // Then
+        XCTAssertFalse(canShowPublishOption)
+    }
+
+    func test_canPublishOption_is_false_when_editing_existing_published_product_without_changes() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.publish.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit)
+
+        // When
+        let canShowPublishOption = viewModel.canShowPublishOption()
+
+        // Then
+        XCTAssertFalse(canShowPublishOption)
+    }
+
+    func test_canPublishOption_is_false_when_editing_existing_published_product_with_changes() {
+        // Given
+        let product = Product.fake().copy(productID: 123, statusKey: ProductStatus.publish.rawValue)
+        let viewModel = createViewModel(product: product, formType: .edit)
+        viewModel.updateName("new_name")
+
+        // When
+        let canShowPublishOption = viewModel.canShowPublishOption()
+
+        // Then
+        XCTAssertFalse(canShowPublishOption)
+    }
 }
 
 private extension ProductFormViewModelTests {

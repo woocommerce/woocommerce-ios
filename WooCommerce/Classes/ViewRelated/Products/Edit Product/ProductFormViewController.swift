@@ -195,6 +195,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
+        if viewModel.canShowPublishOption() {
+            actionSheet.addDefaultActionWithTitle(Localization.publishTitle) { [weak self] _ in
+                self?.publishProduct()
+            }
+        }
+
         if viewModel.canSaveAsDraft() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.saveProductAsDraft) { [weak self] _ in
                 self?.saveProductAsDraft()
@@ -783,8 +789,7 @@ private extension ProductFormViewController {
     }
 
     func createPublishBarButtonItem() -> UIBarButtonItem {
-        let publishTitle = NSLocalizedString("Publish", comment: "Action for creating a new Product remotely")
-        return UIBarButtonItem(title: publishTitle, style: .done, target: self, action: #selector(publishProduct))
+        return UIBarButtonItem(title: Localization.publishTitle, style: .done, target: self, action: #selector(publishProduct))
     }
 
     func createSaveBarButtonItem() -> UIBarButtonItem {
@@ -1322,6 +1327,7 @@ private extension ProductFormViewController {
 // MARK: Constants
 //
 private enum Localization {
+    static let publishTitle = NSLocalizedString("Publish", comment: "Action for creating a new product remotely with a published status")
     static let groupedProductsViewTitle = NSLocalizedString("Grouped Products",
                                                             comment: "Navigation bar title for editing linked products for a grouped product")
 }

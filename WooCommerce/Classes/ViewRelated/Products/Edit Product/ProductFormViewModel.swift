@@ -162,8 +162,21 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 // MARK: - More menu
 //
 extension ProductFormViewModel {
+
+    /// Show publish button if the product can be published and the publish button is not already part of the action buttons.
+    ///
+    func canShowPublishOption() -> Bool {
+        let newProduct = formType == .add && !originalProduct.product.existsRemotely
+        let existingUnpublishedProduct = formType == .edit && originalProduct.product.existsRemotely && originalProduct.status != .publish
+
+        let productCanBePublished = newProduct || existingUnpublishedProduct
+        let publishIsNotAlreadyVisible = !actionButtons.contains(.publish)
+
+        return productCanBePublished && publishIsNotAlreadyVisible
+    }
+
     func canSaveAsDraft() -> Bool {
-        formType == .add
+        formType == .add && productModel.status != .draft
     }
 
     func canEditProductSettings() -> Bool {

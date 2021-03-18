@@ -3,6 +3,7 @@ import Observables
 
 /// Provides data for product form UI on a `ProductVariation`, and handles product editing actions.
 final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
+
     typealias ProductModel = EditableProductVariationModel
 
     /// Emits product variation on change.
@@ -117,6 +118,12 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
 // MARK: - More menu
 //
 extension ProductVariationFormViewModel {
+    /// Variations can't be published independently
+    ///
+    func canShowPublishOption() -> Bool {
+        false
+    }
+
     func canSaveAsDraft() -> Bool {
         false
     }

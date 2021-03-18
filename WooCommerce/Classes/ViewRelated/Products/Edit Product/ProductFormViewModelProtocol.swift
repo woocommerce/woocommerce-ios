@@ -55,6 +55,8 @@ protocol ProductFormViewModelProtocol {
 
     func canSaveAsDraft() -> Bool
 
+    func canShowPublishOption() -> Bool
+
     func canEditProductSettings() -> Bool
 
     func canViewProductInStore() -> Bool

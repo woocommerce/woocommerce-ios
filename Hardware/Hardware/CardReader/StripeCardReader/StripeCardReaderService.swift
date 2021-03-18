@@ -265,6 +265,11 @@ extension StripeCardReaderService: DiscoveryDelegate {
 
 // MARK: - ReaderDisplayDelegate.
 extension StripeCardReaderService: ReaderDisplayDelegate {
+    /// This method is called by the Stripe Terminal SDK when it wants client apps
+    /// to request users to tap / insert / swipe a card.
+    /// At this point we just acknowledge it is being called, but we will have
+    /// to propagate this to the UI:
+    /// https://github.com/woocommerce/woocommerce-ios/issues/3842
     public func terminal(_ terminal: Terminal, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
         print("==== did request reader input")
         print(inputOptions)
@@ -272,6 +277,9 @@ extension StripeCardReaderService: ReaderDisplayDelegate {
         print("//// did request reader input")
     }
 
+    /// In this case the Stripe Terminal SDK wants us to present a string on screen
+    /// We will implement this later:
+    /// https://github.com/woocommerce/woocommerce-ios/issues/3843
     public func terminal(_ terminal: Terminal, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
         print("==== did request display message")
         print(displayMessage.rawValue)

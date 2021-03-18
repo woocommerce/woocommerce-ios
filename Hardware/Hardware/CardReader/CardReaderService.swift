@@ -45,14 +45,13 @@ public protocol CardReaderService {
 
     /// Creates a PaymentIntent
     /// - Parameter parameters: the intent's parameters
-    func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future <PaymentIntent, Error>
+    func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future <Void, Error>
 
-    /// Collects a payment method for the given intent.
-    func collectPaymentMethod(_ intent: PaymentIntent) -> Future<PaymentIntent, Error>
+    /// Collects a payment method.
+    func collectPaymentMethod() -> Future<Void, Error>
 
     /// Captures a payment after collecting a payment method succeeds.
-    /// - Parameter intent: the payment intent
-    func processPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error>
+    func processPayment() -> Future<PaymentIntent, Error>
 
 
     /// Cancels a a PaymentIntent

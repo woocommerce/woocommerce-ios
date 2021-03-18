@@ -125,7 +125,7 @@ extension StripeCardReaderService: CardReaderService {
         Terminal.shared.clearCachedCredentials()
     }
 
-    public func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<PaymentIntent, Error> {
+    public func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<Void, Error> {
         return Future() { promise in
             // Contains enough implementation just to pass a test on the happy path.
             // We are not doing any proper error handling yet, but for now we
@@ -142,13 +142,13 @@ extension StripeCardReaderService: CardReaderService {
 
                 if let intent = intent {
                     self.activePaymentIntent = intent
-                    promise(Result.success(PaymentIntent(intent: intent)))
+                    promise(Result.success(()))
                 }
             }
         }
     }
 
-    public func collectPaymentMethod(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
+    public func collectPaymentMethod() -> Future<Void, Error> {
         return Future() { [weak self] promise in
             // Contains enough implementation just to pass a test on the happy path.
             // We are not doing any proper error handling yet, but for now we
@@ -167,13 +167,13 @@ extension StripeCardReaderService: CardReaderService {
 
                 if let intent = intent {
                     self?.activePaymentIntent = intent
-                    promise(Result.success(PaymentIntent(intent: intent)))
+                    promise(Result.success(()))
                 }
             }
         }
     }
 
-    public func processPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
+    public func processPayment() -> Future<PaymentIntent, Error> {
         return Future() { [weak self] promise in
             // Contains enough implementation just to pass a test on the happy path.
             // We are not doing any proper error handling yet, but for now we

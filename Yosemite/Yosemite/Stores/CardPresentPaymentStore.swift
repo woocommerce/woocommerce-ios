@@ -96,10 +96,10 @@ private extension CardPresentPaymentStore {
     func collectPayment(siteID: Int64, orderID: Int64, parameters: PaymentParameters, onCompletion: @escaping (Result<Void, Error>) -> Void) {
 
         cardReaderService.createPaymentIntent(parameters)
-            .flatMap { intent in
-                self.cardReaderService.collectPaymentMethod(intent)
-            }.flatMap { intent in
-                self.cardReaderService.processPaymentIntent(intent)
+            .flatMap {
+                self.cardReaderService.collectPaymentMethod()
+            }.flatMap {
+                self.cardReaderService.processPayment()
             }.sink { error in
             switch error {
             case .failure(let error):
@@ -108,10 +108,10 @@ private extension CardPresentPaymentStore {
                 onCompletion(.success(()))
             }
         } receiveValue: { intent in
-            print("==== Yosemite log for testing. Payment intent processed ")
+            print("==== Yosemite log for testing. Payment intent after processing payment")
             print(intent)
             print("//// payment intent processed ")
-            // TODO. Initiate final step. Process Payment intent.
+            // TODO. Initiate final step. Update order. Submit intent id to backend.
             // Deferred to https://github.com/woocommerce/woocommerce-ios/issues/3825
             onCompletion(.success(()))
         }.store(in: &cancellables)

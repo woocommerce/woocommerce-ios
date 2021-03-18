@@ -93,49 +93,8 @@ private extension CardPresentPaymentStore {
         }.store(in: &cancellables)
     }
 
-    func collectPayment(siteID: Int64, orderID: Int64, parameters: PaymentParameters, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        // The high-level logic of this method would be:
-        // 1. Attack the CardReaderService to create a payment intent.
-        // When that is completed...
-        // 2. Attack the CardReaderService to collect payment methods for that intent
-        // When that is completed...
-        // 3. Attack the CardReaderService to process the payment
+    func collectPayment(siteID: Int64, orderID: Int64, parameters: PaymentParameters, onCompletion: @escaping (Result<Void, Error>) -> Void) {
 
-        // For now, we will only implement step 1.
-        // Create an intent.
-        // And for now, we are not doing any error handling.
-//        cardReaderService.createPaymentIntent(parameters).sink(receiveCompletion: {error in
-//            switch error {
-//            case .failure(let error):
-//                let result: Result<Bool, Error> = .failure(error)
-//                onCompletion(result)
-//            case .finished:
-//                let result: Result<Bool, Error> = .success(true)
-//                onCompletion(result)
-//            }
-//        }) { (intent) in
-//            print("==== Log for testing purposes. payment intent collected ")
-//            print(intent)
-//            print("//// payment intent collected ")
-//            // TODO. Initiate step 2. Collect payment method.
-//            // Deferred to https://github.com/woocommerce/woocommerce-ios/issues/3825
-//            let result: Result<Bool, Error> = .success(true)
-//            onCompletion(result)
-//        }.store(in: &cancellables)
-
-//        let createPaymentIntent = Deferred {
-//            self.cardReaderService.createPaymentIntent(parameters)
-//        }
-//
-//        let collectPaymentMethod = Deferred {
-//            self.cardReaderService.collectPaymentMethod(<#T##intent: PaymentIntent##PaymentIntent#>)
-//        }
-
-        // The completion block is going to be called twice, as it is.
-        // First, when we receive a value for an intent, and second when the
-        // stream is completed. We will have to deal with this later on,
-        // if we finally decide to move forward with the Combine-based API in the
-        // card reader service
         cardReaderService.createPaymentIntent(parameters)
             .flatMap { intent in
                 self.cardReaderService.collectPaymentMethod(intent)
@@ -144,22 +103,17 @@ private extension CardPresentPaymentStore {
             }.sink { error in
             switch error {
             case .failure(let error):
-                let result: Result<Bool, Error> = .failure(error)
-                onCompletion(result)
+                onCompletion(.failure(error))
             case .finished:
-                print("===== finished ")
-                print("===== error ", error)
-                let result: Result<Bool, Error> = .success(true)
-                onCompletion(result)
+                onCompletion(.success(()))
             }
         } receiveValue: { intent in
             print("==== Yosemite log for testing. Payment intent processed ")
             print(intent)
             print("//// payment intent processed ")
-            // TODO. Initiate step 3. Process Payment intent.
+            // TODO. Initiate final step. Process Payment intent.
             // Deferred to https://github.com/woocommerce/woocommerce-ios/issues/3825
-            let result: Result<Bool, Error> = .success(true)
-            onCompletion(result)
+            onCompletion(.success(()))
         }.store(in: &cancellables)
     }
 }

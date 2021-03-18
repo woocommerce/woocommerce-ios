@@ -149,10 +149,7 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
             readerService.createPaymentIntent(parameters).sink { completion in
                 //
                 print("== = completion")
-            } receiveValue: { intent in
-                XCTAssertFalse(intent.id.isEmpty)
-                XCTAssertEqual(intent.amount, parameters.amount)
-                XCTAssertEqual(intent.currency, parameters.currency)
+            } receiveValue: {
                 intentCreation.fulfill()
             }.store(in: &self.cancellables)
 

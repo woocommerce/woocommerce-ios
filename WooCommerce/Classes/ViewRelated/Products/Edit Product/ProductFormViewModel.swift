@@ -87,31 +87,41 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     /// The action buttons that should be rendered in the navigation bar.
     var actionButtons: [ActionButtonType] {
-        switch (formType, originalProductModel.status, productModel.status, originalProduct.product.existsRemotely, hasUnsavedChanges()) {
-        case (.add, .publish, .publish, false, _): // New product with publish status
-            return [.publish]
+        // Figure out main action button first
+        var buttons: [ActionButtonType] = {
+            switch (formType, originalProductModel.status, productModel.status, originalProduct.product.existsRemotely, hasUnsavedChanges()) {
+            case (.add, .publish, .publish, false, _): // New product with publish status
+                return [.publish]
 
-        case (.add, .publish, _, false, _): // New product with a different status
-            return [.publish, .save]
+            case (.add, .publish, _, false, _): // New product with a different status
+                return [.save] // And publish in more
 
-        case (.edit, .publish, _, true, true): // Existing published product with changes
-            return [.save]
+            case (.edit, .publish, _, true, true): // Existing published product with changes
+                return [.save]
 
-        case (.edit, .publish, _, true, false): // Existing published product with no changes
-            return []
+            case (.edit, .publish, _, true, false): // Existing published product with no changes
+                return []
 
-        case (.edit, _, _, true, true): // Any other existing product with changes
-            return [.publish, .save]
+            case (.edit, _, _, true, true): // Any other existing product with changes
+                return [.save] // And publish in more
 
-        case (.edit, _, _, true, false): // Any other existing product with no changes
-            return [.publish]
+            case (.edit, _, _, true, false): // Any other existing product with no changes
+                return [.publish]
 
-        case (.readonly, _, _, _, _): // Any product on readonly mode
-             return []
+            case (.readonly, _, _, _, _): // Any product on readonly mode
+                 return []
 
-        default: // Impossible cases
-            return []
+            default: // Impossible cases
+                return []
+            }
+        }()
+
+        // Add more button if needed
+        if shouldShowMoreOptionsMenu() {
+            buttons.append(.more)
         }
+
+        return buttons
     }
 
     private let productImageActionHandler: ProductImageActionHandler

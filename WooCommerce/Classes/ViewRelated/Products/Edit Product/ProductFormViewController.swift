@@ -391,7 +391,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 //
 private extension ProductFormViewController {
     func configureNavigationBar() {
-        updateNavigationBar(isUpdateEnabled: false)
+        updateNavigationBar()
         removeNavigationBackBarButtonText()
     }
 
@@ -484,8 +484,8 @@ private extension ProductFormViewController {
     }
 
     func observeUpdateCTAVisibility() {
-        cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { [weak self] isUpdateEnabled in
-            self?.updateNavigationBar(isUpdateEnabled: isUpdateEnabled)
+        cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { [weak self] _ in
+            self?.updateNavigationBar()
         }
     }
 
@@ -760,19 +760,17 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
 
-    func updateNavigationBar(isUpdateEnabled: Bool) {
+    func updateNavigationBar() {
         // Create action buttons based on view model
-        var rightBarButtonItems: [UIBarButtonItem] = viewModel.actionButtons.reversed().compactMap { buttonType in
+        let rightBarButtonItems: [UIBarButtonItem] = viewModel.actionButtons.reversed().compactMap { buttonType in
             switch buttonType {
             case .publish:
                 return createPublishBarButtonItem()
             case .save:
                 return createSaveBarButtonItem()
+            case .more:
+                return createMoreOptionsBarButtonItem()
             }
-        }
-
-        if viewModel.shouldShowMoreOptionsMenu() {
-            rightBarButtonItems.insert(createMoreOptionsBarButtonItem(), at: 0)
         }
 
         navigationItem.rightBarButtonItems = rightBarButtonItems

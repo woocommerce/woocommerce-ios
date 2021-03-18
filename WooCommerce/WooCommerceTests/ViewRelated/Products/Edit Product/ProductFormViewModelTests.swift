@@ -224,7 +224,7 @@ final class ProductFormViewModelTests: XCTestCase {
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.publish])
+        XCTAssertEqual(actionButtons, [.publish, .more])
     }
 
     func test_action_buttons_for_new_product_with_published_status_and_no_pending_changes() {
@@ -236,7 +236,7 @@ final class ProductFormViewModelTests: XCTestCase {
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.publish])
+        XCTAssertEqual(actionButtons, [.publish, .more])
     }
 
     func test_action_buttons_for_new_product_with_different_status() {
@@ -252,7 +252,7 @@ final class ProductFormViewModelTests: XCTestCase {
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.publish, .save])
+        XCTAssertEqual(actionButtons, [.save, .more])
     }
 
     func test_action_buttons_for_existing_published_product_and_pending_changes() {
@@ -265,7 +265,7 @@ final class ProductFormViewModelTests: XCTestCase {
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.save])
+        XCTAssertEqual(actionButtons, [.save, .more])
     }
 
     func test_action_buttons_for_existing_published_product_and_no_pending_changes() {
@@ -277,7 +277,7 @@ final class ProductFormViewModelTests: XCTestCase {
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [])
+        XCTAssertEqual(actionButtons, [.more])
     }
 
     func test_action_buttons_for_existing_draft_product_and_pending_changes() {
@@ -290,7 +290,7 @@ final class ProductFormViewModelTests: XCTestCase {
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.publish, .save])
+        XCTAssertEqual(actionButtons, [.save, .more])
     }
 
     func test_action_buttons_for_existing_draft_product_and_no_pending_changes() {
@@ -302,7 +302,7 @@ final class ProductFormViewModelTests: XCTestCase {
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.publish])
+        XCTAssertEqual(actionButtons, [.publish, .more])
     }
 
     func test_action_buttons_for_existing_product_with_other_status_and_peding_changes() {
@@ -315,7 +315,7 @@ final class ProductFormViewModelTests: XCTestCase {
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.publish, .save])
+        XCTAssertEqual(actionButtons, [.save, .more])
     }
 
     func test_action_buttons_for_existing_product_with_other_status_and_no_peding_changes() {
@@ -327,7 +327,7 @@ final class ProductFormViewModelTests: XCTestCase {
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [.publish])
+        XCTAssertEqual(actionButtons, [.publish, .more])
     }
 
     func test_action_buttons_for_any_product_in_read_only_mode() {
@@ -340,7 +340,7 @@ final class ProductFormViewModelTests: XCTestCase {
         let actionButtons = viewModel.actionButtons
 
         // Then
-        XCTAssertEqual(actionButtons, [])
+        XCTAssertEqual(actionButtons, [.more])
     }
 }
 

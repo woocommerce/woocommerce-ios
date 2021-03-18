@@ -12,6 +12,7 @@ enum ProductFormType {
 enum ActionButtonType {
     case publish
     case save
+    case more
 }
 
 /// A view model for `ProductFormViewController` to add/edit a generic product model (e.g. `Product` or `ProductVariation`).

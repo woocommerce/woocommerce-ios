@@ -190,7 +190,7 @@ extension StripeCardReaderService: CardReaderService {
 
             Terminal.shared.processPayment(activeIntent) { (intent, error) in
                 if let _ = error {
-                    promise(Result.failure(CardReaderServiceError.paymentMethod))
+                    promise(Result.failure(CardReaderServiceError.capturePayment))
                 }
 
                 if let intent = intent {

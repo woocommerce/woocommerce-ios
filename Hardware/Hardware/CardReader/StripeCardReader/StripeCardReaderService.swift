@@ -173,7 +173,7 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    public func processPayment() -> Future<PaymentIntent, Error> {
+    public func processPayment() -> Future<String, Error> {
         return Future() { [weak self] promise in
             // Contains enough implementation just to pass a test on the happy path.
             // We are not doing any proper error handling yet, but for now we
@@ -192,13 +192,13 @@ extension StripeCardReaderService: CardReaderService {
 
                 if let intent = intent {
                     self?.activePaymentIntent = intent
-                    promise(Result.success(PaymentIntent(intent: intent)))
+                    promise(Result.success(intent.stripeId))
                 }
             }
         }
     }
 
-    public func cancelPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
+    public func cancelPaymentIntent() -> Future<Void, Error> {
         return Future() { promise in
             // Attack the Stripe SDK and cancel a PaymentIntent.
             // To be implemented

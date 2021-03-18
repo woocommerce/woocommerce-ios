@@ -508,12 +508,20 @@ private extension OrderDetailsViewController {
         present(actionSheet, animated: true)
     }
 
+
+    /// Temporary method to trigger the collect payment flow
+    /// This method will be removed later
     @objc private func collectPayment(sender: UIBarButtonItem) {
-        viewModel.collectPayment { [weak self] in
-            let actionSheet = UIAlertController(title: "🎉🥳🍾🎊 success", message: " The payment has been processed. 💸💸💸💸💸", preferredStyle: .alert)
+        viewModel.collectPayment { [weak self] result in
+
+            let title = result.isSuccess ? "🎉🥳🍾🎊 success" : "☢️ Error!"
+            let message = result.isSuccess ? "The payment has been processed. 💸💸💸💸💸" : "The payment has not been processed. 🙅‍♀️"
+            let buttonTitle = result.isSuccess ? "😎" : "🤷"
+
+            let actionSheet = UIAlertController(title: title, message: message, preferredStyle: .alert)
             actionSheet.view.tintColor = .text
 
-            actionSheet.addCancelActionWithTitle("😎")
+            actionSheet.addCancelActionWithTitle(buttonTitle)
 
             let popoverController = actionSheet.popoverPresentationController
             popoverController?.sourceView = sender.customView

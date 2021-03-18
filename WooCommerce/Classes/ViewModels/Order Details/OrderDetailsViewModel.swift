@@ -442,9 +442,10 @@ extension OrderDetailsViewModel {
         stores.dispatch(deleteTrackingAction)
     }
 
-    func collectPayment(onCompletion: @escaping () -> Void) {
+    func collectPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         // Mock Payment. We will have to instantiate these parameters with
         // the proper amount, currency and readable descripitions later.
+        // We could pull the amount from the order but in test mode the Stripe Terminal SDK fails to process amounts that do not end in 00
         let paymentParameters = PaymentParameters(amount: 100,
                                                   currency: "usd",
                                                   receiptDescription: "Receipt description.",
@@ -452,10 +453,8 @@ extension OrderDetailsViewModel {
 
         let action = CardPresentPaymentAction.collectPayment(siteID: order.siteID,
                                                              orderID: order.orderID, parameters: paymentParameters) { (result) in
-            if result.isSuccess {
-                print("Yosemite. 🎉🥳🍾🎊 success. The payment has been processed. 💸")
-            }
-            onCompletion()
+            // For now, just propagate the result to the UI.
+            onCompletion(result)
         }
 
         ServiceLocator.stores.dispatch(action)

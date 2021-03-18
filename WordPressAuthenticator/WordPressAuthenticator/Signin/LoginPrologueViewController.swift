@@ -275,7 +275,7 @@ class LoginPrologueViewController: LoginViewController {
         /// 2. Set the background color of the view controller to prologueViewBackgroundColor
         let prologueViewBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.prologueViewBackgroundColor ?? .clear
 
-        guard prologueViewBackgroundColor == buttonsBackgroundColor else {
+        guard prologueViewBackgroundColor.cgColor == buttonsBackgroundColor.cgColor else {
             buttonBlurEffectView.effect = UIBlurEffect(style: blurEffect)
             return
         }

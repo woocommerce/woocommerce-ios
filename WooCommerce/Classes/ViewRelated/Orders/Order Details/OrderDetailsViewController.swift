@@ -122,7 +122,7 @@ private extension OrderDetailsViewController {
         /// to trigger payment collection.
         /// Will be made obsolete by https://github.com/woocommerce/woocommerce-ios/issues/3826
         if viewModel.canCollectPayment {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "$",
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "💰💳🤑",
                                                                style: .plain,
                                                                target: self,
                                                                action: #selector(collectPayment))

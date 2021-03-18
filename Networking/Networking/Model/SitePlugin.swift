@@ -5,7 +5,7 @@ import Foundation
 public struct SitePlugin: Decodable, GeneratedFakeable {
     public let siteID: Int64
     public let plugin: String                   // e.g. woocommerce/woocommerce (i.e. [folder/]main php file)
-    public let status: String                   // e.g. active, inactive, ...
+    public let status: SitePluginStatusEnum     // i.e. .active | .networkActive | .inactive
     public let name: String                     // e.g. WooCommerce
     public let pluginUri: String                // e.g. https://woocommerce.com/
     public let author: String                   // e.g. Automattic
@@ -23,7 +23,7 @@ public struct SitePlugin: Decodable, GeneratedFakeable {
     public init(
         siteID: Int64,
         plugin: String,
-        status: String,
+        status: SitePluginStatusEnum,
         name: String,
         pluginUri: String,
         author: String,
@@ -61,7 +61,7 @@ public struct SitePlugin: Decodable, GeneratedFakeable {
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let plugin = try container.decode(String.self, forKey: .plugin)
-        let status = try container.decodeIfPresent(String.self, forKey: .status) ?? ""
+        let status = try container.decode(SitePluginStatusEnum.self, forKey: .status)
         let name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
         let pluginUri = try container.decodeIfPresent(String.self, forKey: .pluginUri) ?? ""
         let author = try container.decodeIfPresent(String.self, forKey: .author) ?? ""
@@ -120,9 +120,9 @@ private extension SitePlugin {
     }
 }
 
-// MARK: - Comparable Conformance
+// MARK: - Equatable Conformance
 //
-extension SitePlugin: Comparable {
+extension SitePlugin: Equatable {
     public static func == (lhs: SitePlugin, rhs: SitePlugin) -> Bool {
         return lhs.plugin == rhs.plugin &&
             lhs.status == rhs.status &&
@@ -137,14 +137,6 @@ extension SitePlugin: Comparable {
             lhs.requiresWPVersion == rhs.requiresWPVersion &&
             lhs.requiresPHPVersion == rhs.requiresPHPVersion &&
             lhs.textDomain == rhs.textDomain
-    }
-
-    public static func < (lhs: SitePlugin, rhs: SitePlugin) -> Bool {
-        return lhs.plugin < rhs.plugin
-    }
-
-    public static func > (lhs: SitePlugin, rhs: SitePlugin) -> Bool {
-        return lhs.plugin > rhs.plugin
     }
 }
 

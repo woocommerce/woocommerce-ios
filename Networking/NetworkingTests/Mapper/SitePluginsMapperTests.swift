@@ -18,7 +18,7 @@ class SitePluginsMapperTests: XCTestCase {
         let helloDollyPlugin = plugins[0]
         XCTAssertNotNil(helloDollyPlugin)
         XCTAssertEqual(helloDollyPlugin.siteID, dummySiteID)
-        XCTAssertEqual(helloDollyPlugin.status, "inactive")
+        XCTAssertEqual(helloDollyPlugin.status, .inactive)
         XCTAssertEqual(helloDollyPlugin.name, "Hello Dolly")
         XCTAssertEqual(helloDollyPlugin.pluginUri, "http://wordpress.org/plugins/hello-dolly/")
         XCTAssertEqual(helloDollyPlugin.authorUri, "http://ma.tt/")
@@ -30,7 +30,7 @@ class SitePluginsMapperTests: XCTestCase {
         let wooCommerceSubscriptionsPlugin = plugins[4]
         XCTAssertNotNil(wooCommerceSubscriptionsPlugin)
         XCTAssertEqual(wooCommerceSubscriptionsPlugin.siteID, dummySiteID)
-        XCTAssertEqual(wooCommerceSubscriptionsPlugin.status, "active")
+        XCTAssertEqual(wooCommerceSubscriptionsPlugin.status, .active)
         XCTAssertEqual(wooCommerceSubscriptionsPlugin.name, "WooCommerce Subscriptions")
         XCTAssertEqual(wooCommerceSubscriptionsPlugin.pluginUri, "https://www.woocommerce.com/products/woocommerce-subscriptions/")
         XCTAssertEqual(wooCommerceSubscriptionsPlugin.authorUri, "https://woocommerce.com/")

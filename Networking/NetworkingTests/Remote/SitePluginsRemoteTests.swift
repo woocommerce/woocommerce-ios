@@ -23,33 +23,45 @@ class SitePluginsRemoteTests: XCTestCase {
 
     /// Verifies that loadPlugins properly parses the sample response.
     ///
-    func testLoadPluginsProperlyReturnsPlugins() {
+    func test_loadPlugins_properly_returns_plugins() {
         let remote = SitePluginsRemote(network: network)
-        let expectation = self.expectation(description: "Load site plugins")
 
         network.simulateResponse(requestUrlSuffix: "plugins", filename: "plugins")
-        remote.loadPlugins(for: sampleSiteID) { (sitePlugins, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(sitePlugins)
-            XCTAssertEqual(sitePlugins?.count, 5)
-            expectation.fulfill()
+
+        // When
+        let result: Result<[SitePlugin], Error> = waitFor { promise in
+            remote.loadPlugins(for: self.sampleSiteID) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        switch result {
+        case .success(let plugins):
+            XCTAssertEqual(plugins.count, 5)
+        case .failure(let error):
+            XCTAssertNil(error)
+        }
     }
 
-    /// Verifies that loadGeneralSettings properly relays Networking Layer errors.
+    /// Verifies that loadPlugins properly relays Networking Layer errors.
     ///
-    func testLoadPluginsProperlyRelaysNetwokingErrors() {
+    func test_loadPlugins_properly_relays_netwoking_errors() {
         let remote = SitePluginsRemote(network: network)
-        let expectation = self.expectation(description: "Load site plugins handles error")
 
-        remote.loadPlugins(for: sampleSiteID) { (sitePlugins, error) in
-            XCTAssertNil(sitePlugins)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        // When
+        let result: Result<[SitePlugin], Error> = waitFor { promise in
+            remote.loadPlugins(for: self.sampleSiteID) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        switch result {
+        case .success(let plugins):
+            XCTAssertNil(plugins)
+        case .failure(let error):
+            XCTAssertNotNil(error)
+        }
     }
 }

@@ -13,7 +13,6 @@ struct SitePluginsMapper: Mapper {
     ///
     func map(response: Data) throws -> [SitePlugin] {
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [
             .siteID: siteID
         ]

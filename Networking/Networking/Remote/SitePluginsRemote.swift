@@ -1,5 +1,4 @@
 import Foundation
-import Alamofire
 
 /// SitePlugins: Remote Endpoints
 ///
@@ -11,7 +10,8 @@ public class SitePluginsRemote: Remote {
     ///   - siteID: Site for which we'll fetch the plugins.
     ///   - completion: Closure to be executed upon completion.
     ///
-    public func loadPlugins(for siteID: Int64, completion: @escaping ([SitePlugin]?, Error?) -> Void) {
+    public func loadPlugins(for siteID: Int64,
+                            completion: @escaping (Result<[SitePlugin], Error>) -> Void) {
         let path = Constants.sitePluginsPath
         let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: path, parameters: nil)
         let mapper = SitePluginsMapper(siteID: siteID)

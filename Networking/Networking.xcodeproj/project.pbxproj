@@ -108,6 +108,7 @@
 		26E83A022554683A00390DD9 /* GeneratedFakeable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E83A012554683A00390DD9 /* GeneratedFakeable.swift */; };
 		26FB056C25F6CB9100A40B26 /* Fakes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26FB056B25F6CB9100A40B26 /* Fakes.framework */; };
 		311976E02602BD4B006AC56C /* SitePluginsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311976DF2602BD4B006AC56C /* SitePluginsMapperTests.swift */; };
+		31884A3B2603F3C7003FE338 /* SitePluginStatusEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31884A3A2603F3C7003FE338 /* SitePluginStatusEnum.swift */; };
 		31D27C812602889C002EDB1D /* SitePluginsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D27C802602889C002EDB1D /* SitePluginsRemote.swift */; };
 		31D27C8726028CE9002EDB1D /* SitePluginsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D27C8626028CE9002EDB1D /* SitePluginsMapper.swift */; };
 		31D27C8B26028D96002EDB1D /* SitePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D27C8A26028D96002EDB1D /* SitePlugin.swift */; };
@@ -541,6 +542,7 @@
 		26E83A012554683A00390DD9 /* GeneratedFakeable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratedFakeable.swift; sourceTree = "<group>"; };
 		26FB056B25F6CB9100A40B26 /* Fakes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Fakes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		311976DF2602BD4B006AC56C /* SitePluginsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginsMapperTests.swift; sourceTree = "<group>"; };
+		31884A3A2603F3C7003FE338 /* SitePluginStatusEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginStatusEnum.swift; sourceTree = "<group>"; };
 		31D27C802602889C002EDB1D /* SitePluginsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginsRemote.swift; sourceTree = "<group>"; };
 		31D27C8626028CE9002EDB1D /* SitePluginsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginsMapper.swift; sourceTree = "<group>"; };
 		31D27C8A26028D96002EDB1D /* SitePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePlugin.swift; sourceTree = "<group>"; };
@@ -1259,6 +1261,7 @@
 				7426CA0E21AF2C90004E9FFC /* SiteAPI.swift */,
 				4568E2232459D3230007E478 /* Post.swift */,
 				31D27C8A26028D96002EDB1D /* SitePlugin.swift */,
+				31884A3A2603F3C7003FE338 /* SitePluginStatusEnum.swift */,
 				74046E1C217A6989007DD7BF /* SiteSetting.swift */,
 				74159624224D4045003C21CF /* SiteSettingGroup.swift */,
 				CE50345F21B5799F007573C6 /* SitePlan.swift */,
@@ -2014,6 +2017,7 @@
 				CE43066E2347CBA70073CBFF /* OrderItemTaxRefund.swift in Sources */,
 				26455E2125F66951008A1D32 /* ProductAttributeTerm.swift in Sources */,
 				B567AF2920A0FA1E00AB6C62 /* Mapper.swift in Sources */,
+				31884A3B2603F3C7003FE338 /* SitePluginStatusEnum.swift in Sources */,
 				CE50345E21B571A7007573C6 /* SitePlanMapper.swift in Sources */,
 				D8FBFF2022D52553006E3336 /* OrderStatsV4Totals.swift in Sources */,
 				02C254B925637BA000A04423 /* OrderShippingLabelListMapper.swift in Sources */,

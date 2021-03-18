@@ -266,9 +266,9 @@ final class ProductsRemoteTests: XCTestCase {
         }
 
         // Assert
-        let pathComponents = try XCTUnwrap(network.pathComponents)
+        let queryParameters = try XCTUnwrap(network.queryParameters)
         let expectedParam = "exclude=17,671"
-        XCTAssertTrue(pathComponents.contains(expectedParam), "Expected to have param: \(expectedParam)")
+        XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
     }
 
     /// Verifies that loadAllProducts properly relays Networking Layer errors.

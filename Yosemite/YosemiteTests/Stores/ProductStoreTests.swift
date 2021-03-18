@@ -1374,16 +1374,16 @@ final class ProductStoreTests: XCTestCase {
         productStore.onAction(action)
 
         // Assert
-        guard let pathComponents = network.pathComponents else {
-            XCTFail("Cannot parse path from the API request")
+        guard let queryParameters = network.queryParameters else {
+            XCTFail("Cannot parse query from the API request")
             return
         }
 
         let expectedPageNumberParam = "page=\(pageNumber)"
-        XCTAssertTrue(pathComponents.contains(expectedPageNumberParam), "Expected to have param: \(expectedPageNumberParam)")
+        XCTAssertTrue(queryParameters.contains(expectedPageNumberParam), "Expected to have param: \(expectedPageNumberParam)")
 
         let expectedPageSizeParam = "per_page=\(pageSize)"
-        XCTAssertTrue(pathComponents.contains(expectedPageSizeParam), "Expected to have param: \(expectedPageSizeParam)")
+        XCTAssertTrue(queryParameters.contains(expectedPageSizeParam), "Expected to have param: \(expectedPageSizeParam)")
     }
 
     /// Verifies that ProductAction.retrieveProducts always returns an empty result for an empty array of product IDs.

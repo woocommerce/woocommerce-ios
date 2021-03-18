@@ -142,15 +142,15 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
 
 private extension ProductStore_ProductsSortOrderTests {
     func assertSortOrderParamValues(orderByValue: String, orderValue: String) {
-        guard let pathComponents = network.pathComponents else {
-            XCTFail("Cannot parse path from the API request")
+        guard let queryParameters = network.queryParameters else {
+            XCTFail("Cannot parse query from the API request")
             return
         }
 
         let expectedOrderbyParam = "orderby=\(orderByValue)"
-        XCTAssertTrue(pathComponents.contains(expectedOrderbyParam), "Expected to have param: \(expectedOrderbyParam)")
+        XCTAssertTrue(queryParameters.contains(expectedOrderbyParam), "Expected to have param: \(expectedOrderbyParam)")
 
         let expectedOrderParam = "order=\(orderValue)"
-        XCTAssertTrue(pathComponents.contains(expectedOrderParam), "Expected to have param: \(expectedOrderParam)")
+        XCTAssertTrue(queryParameters.contains(expectedOrderParam), "Expected to have param: \(expectedOrderParam)")
     }
 }

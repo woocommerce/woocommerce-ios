@@ -452,9 +452,9 @@ extension OrderDetailsViewModel {
 
         let action = CardPresentPaymentAction.collectPayment(siteID: order.siteID,
                                                              orderID: order.orderID, parameters: paymentParameters) { (result) in
-            // TODO. Show success
-
-            print("🎉🥳🍾🎊 success. The payment has been processed. 💸")
+            if result.isSuccess {
+                print("Yosemite. 🎉🥳🍾🎊 success. The payment has been processed. 💸")
+            }
             onCompletion()
         }
 

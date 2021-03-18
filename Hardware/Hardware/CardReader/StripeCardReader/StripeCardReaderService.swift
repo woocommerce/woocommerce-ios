@@ -141,9 +141,6 @@ extension StripeCardReaderService: CardReaderService {
                 }
 
                 if let intent = intent {
-                    print("==== creating payment intent is completed")
-                    print(intent)
-                    print("//// creating payment intent is completed")
                     self.activePaymentIntent = intent
                     promise(Result.success(PaymentIntent(intent: intent)))
                 }
@@ -169,9 +166,6 @@ extension StripeCardReaderService: CardReaderService {
                 }
 
                 if let intent = intent {
-                    print("==== collecting payment method is completed")
-                    print(intent)
-                    print("//// collecting payment method is completed")
                     self?.activePaymentIntent = intent
                     promise(Result.success(PaymentIntent(intent: intent)))
                 }
@@ -181,6 +175,9 @@ extension StripeCardReaderService: CardReaderService {
 
     public func processPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
         return Future() { [weak self] promise in
+            // Contains enough implementation just to pass a test on the happy path.
+            // We are not doing any proper error handling yet, but for now we
+            // will propagate an error specific to this operation (.capturePayment)
             guard let activeIntent = self?.activePaymentIntent else {
                 // There is no active payment intent.
                 // Shortcircuit with an error
@@ -194,9 +191,6 @@ extension StripeCardReaderService: CardReaderService {
                 }
 
                 if let intent = intent {
-                    print("==== intent processing is completed")
-                    print(intent)
-                    print("//// intent processing is completed")
                     self?.activePaymentIntent = intent
                     promise(Result.success(PaymentIntent(intent: intent)))
                 }

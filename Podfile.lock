@@ -117,6 +117,11 @@ DEPENDENCIES:
   - ZendeskSupportSDK (~> 5.0)
 
 SPEC REPOS:
+  https://github.com/wordpress-mobile/cocoapods-specs.git:
+    - WordPressAuthenticator
+    - WordPressKit
+    - WordPressShared
+    - WordPressUI
   trunk:
     - 1PasswordExtension
     - Alamofire
@@ -142,10 +147,6 @@ SPEC REPOS:
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
-    - WordPressAuthenticator
-    - WordPressKit
-    - WordPressShared
-    - WordPressUI
     - Wormholy
     - WPMediaPicker
     - wpxmlrpc
@@ -183,10 +184,10 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: a79ccdfc940373835a7d8e9fc7541e6bf61b6319
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: 3679794d78adc989e1a4b4512f0b52f9623e713a
-  WordPressKit: 63932c352c4199179f15855f68543e4541ec9da0
-  WordPressShared: 2d2b45d8945221b716a0e2f23932dadb750d9a74
-  WordPressUI: cb5d0c58f92778b6dffcdcb8234ed8d7a930ce90
+  WordPressAuthenticator: f65b518f15c6786b44e6771a0a2bfffce8a1967a
+  WordPressKit: 085ae5368e94a552e485942c6cee7c2d8bf4749d
+  WordPressShared: e1915cf3b4ac33f41c47610693b9ca30c0cdab45
+  WordPressUI: a50ea1786cb75330c8cfafe0c97a88db8d796699
   Wormholy: 2e70f64227e010d363f8d33268369f77faf12471
   WPMediaPicker: 46ae5807c8f64d30a39c28812ad150837a424ed2
   wpxmlrpc: bf55a43a7e710bd2a4fb8c02dfe83b1246f14f13
@@ -199,6 +200,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: f41eee256d8d1f7123f706b2464071d86fcaa74f
+PODFILE CHECKSUM: 26825278dc7d4618787dfc7e4608ff6798281c10
 
 COCOAPODS: 1.10.0

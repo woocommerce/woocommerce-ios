@@ -162,7 +162,7 @@ final class ProductsViewController: UIViewController {
         configureSyncingCoordinator()
         registerTableViewCells()
 
-        updateTopBannerView()
+        showTopBannerView(for: .productsM4)
 
         /// We sync the local product settings for configuring local sorting and filtering.
         /// If there are some info stored when this screen is loaded, the data will be updated using the stored sort/filters.
@@ -397,14 +397,18 @@ private extension ProductsViewController {
 private extension ProductsViewController {
     /// Fetches products feedback visibility from AppSettingsStore and update products top banner accordingly
     ///
-    func updateTopBannerView() {
-        let action = AppSettingsAction.loadFeedbackVisibility(type: .productsM5) { [weak self] result in
+    func showTopBannerView(for bannerType: ProductsTopBannerFactory.BannerType) {
+        let action = AppSettingsAction.loadFeedbackVisibility(type: bannerType == .productsM4 ? .productsM5 : .productsVariations) { [weak self] result in
             switch result {
             case .success(let visible):
                 if visible {
-                    self?.requestAndShowNewTopBannerView()
+                    self?.requestAndShowNewTopBannerView(for: bannerType)
                 } else {
-                    self?.hideTopBannerView()
+                    if bannerType == .productsM4 {
+                        self?.showTopBannerView(for: .variations)
+                    } else {
+                        self?.hideTopBannerView()
+                    }
                 }
             case.failure(let error):
                 self?.hideTopBannerView()
@@ -416,16 +420,16 @@ private extension ProductsViewController {
 
     /// Request a new product banner from `ProductsTopBannerFactory` and wire actionButtons actions
     ///
-    func requestAndShowNewTopBannerView() {
+    func requestAndShowNewTopBannerView(for bannerType: ProductsTopBannerFactory.BannerType) {
         let isExpanded = topBannerView?.isExpanded ?? false
         ProductsTopBannerFactory.topBanner(isExpanded: isExpanded,
-                                           type: .productsM4,
+                                           type: bannerType,
                                            expandedStateChangeHandler: { [weak self] in
             self?.updateTableHeaderViewHeight()
         }, onGiveFeedbackButtonPressed: { [weak self] in
-            self?.presentProductsFeedback()
+            self?.presentProductsFeedback(for: bannerType)
         }, onDismissButtonPressed: { [weak self] in
-            self?.dismissProductsBanner()
+            self?.dismissProductsBanner(for: bannerType)
         }, onCompletion: { [weak self] topBannerView in
             self?.topBannerContainerView.updateSubview(topBannerView)
             self?.topBannerView = topBannerView
@@ -592,16 +596,17 @@ private extension ProductsViewController {
 
     /// Presents products survey
     ///
-    func presentProductsFeedback() {
+    func presentProductsFeedback(for bannerType: ProductsTopBannerFactory.BannerType) {
         // Present survey
-        let navigationController = SurveyCoordinatingController(survey: .productsM5Feedback)
+        let navigationController = SurveyCoordinatingController(survey: bannerType == .productsM4 ? .productsM5Feedback : .productsVariationsFeedback)
         present(navigationController, animated: true, completion: nil)
     }
 
     /// Mark feedback request as dismissed and update banner visibility
     ///
-    func dismissProductsBanner() {
-        let action = AppSettingsAction.updateFeedbackStatus(type: .productsM5, status: .dismissed) { [weak self] result in
+    func dismissProductsBanner(for bannerType: ProductsTopBannerFactory.BannerType) {
+        let action = AppSettingsAction.updateFeedbackStatus(type: bannerType == .productsM4 ? .productsM5 : .productsVariations,
+                                                            status: .dismissed) { [weak self] result in
             if let error = result.failure {
                 CrashLogging.logError(error)
             }

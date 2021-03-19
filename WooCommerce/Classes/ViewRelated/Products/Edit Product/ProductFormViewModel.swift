@@ -85,6 +85,45 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         }
     }
 
+    /// The action buttons that should be rendered in the navigation bar.
+    var actionButtons: [ActionButtonType] {
+        // Figure out main action button first
+        var buttons: [ActionButtonType] = {
+            switch (formType, originalProductModel.status, productModel.status, originalProduct.product.existsRemotely, hasUnsavedChanges()) {
+            case (.add, .publish, .publish, false, _): // New product with publish status
+                return [.publish]
+
+            case (.add, .publish, _, false, _): // New product with a different status
+                return [.save] // And publish in more
+
+            case (.edit, .publish, _, true, true): // Existing published product with changes
+                return [.save]
+
+            case (.edit, .publish, _, true, false): // Existing published product with no changes
+                return []
+
+            case (.edit, _, _, true, true): // Any other existing product with changes
+                return [.save] // And publish in more
+
+            case (.edit, _, _, true, false): // Any other existing product with no changes
+                return [.publish]
+
+            case (.readonly, _, _, _, _): // Any product on readonly mode
+                 return []
+
+            default: // Impossible cases
+                return []
+            }
+        }()
+
+        // Add more button if needed
+        if shouldShowMoreOptionsMenu() {
+            buttons.append(.more)
+        }
+
+        return buttons
+    }
+
     private let productImageActionHandler: ProductImageActionHandler
 
     private var cancellable: ObservationToken?
@@ -123,8 +162,21 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 // MARK: - More menu
 //
 extension ProductFormViewModel {
+
+    /// Show publish button if the product can be published and the publish button is not already part of the action buttons.
+    ///
+    func canShowPublishOption() -> Bool {
+        let newProduct = formType == .add && !originalProduct.product.existsRemotely
+        let existingUnpublishedProduct = formType == .edit && originalProduct.product.existsRemotely && originalProduct.status != .publish
+
+        let productCanBePublished = newProduct || existingUnpublishedProduct
+        let publishIsNotAlreadyVisible = !actionButtons.contains(.publish)
+
+        return productCanBePublished && publishIsNotAlreadyVisible
+    }
+
     func canSaveAsDraft() -> Bool {
-        formType == .add
+        formType == .add && productModel.status != .draft
     }
 
     func canEditProductSettings() -> Bool {

@@ -419,6 +419,7 @@ private extension ProductsViewController {
     func requestAndShowNewTopBannerView() {
         let isExpanded = topBannerView?.isExpanded ?? false
         ProductsTopBannerFactory.topBanner(isExpanded: isExpanded,
+                                           type: .productsM4,
                                            expandedStateChangeHandler: { [weak self] in
             self?.updateTableHeaderViewHeight()
         }, onGiveFeedbackButtonPressed: { [weak self] in

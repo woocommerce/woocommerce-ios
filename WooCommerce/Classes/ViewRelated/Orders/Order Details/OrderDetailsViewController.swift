@@ -515,14 +515,15 @@ private extension OrderDetailsViewController {
     }
 
 
-    /// Temporary method to trigger the collect payment flow
-    /// This method will be removed later
     @objc private func collectPayment(at: IndexPath) {
         guard let cell = tableView.cellForRow(at: at) as? ButtonTableViewCell else {
             return
         }
+        /// TODO. Initiate UI flow for collecting payments
         viewModel.collectPayment { [weak self] result in
-
+            /// This will be removed later, whenever we implement the proper UI flow
+            /// for collecting payments.
+            /// For now, we present an alert with a success/error message after completion
             let title = result.isSuccess ? "🎉🥳🍾🎊 success" : "☢️ Error!"
             let message = result.isSuccess ? "The payment has been processed. 💸💸💸💸💸" : "The payment has not been processed. 🙅‍♀️"
             let buttonTitle = result.isSuccess ? "😎" : "🤷"

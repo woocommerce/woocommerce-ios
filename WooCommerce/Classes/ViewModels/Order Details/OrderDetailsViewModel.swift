@@ -418,7 +418,7 @@ extension OrderDetailsViewModel {
            print("==== order payment ", order.paymentMethodTitle)
            print("==== order payment ", order.paymentMethodID)
         dataSource.isEligibleForCardPresentPayment = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) &&
-            order.paymentMethodID == "cod"
+            OrderPaymentMethod(rawValue: order.paymentMethodID) == .cod
 
         onCompletion?()
     }

@@ -73,6 +73,7 @@ final class OrderDetailsViewController: UIViewController {
         syncShippingLabels()
         syncTrackingsHidingAddButtonIfNecessary()
         checkShippingLabelCreationEligibility()
+        checkCardPresentPaymentEligibility()
     }
 
     override func viewDidLayoutSubviews() {
@@ -115,18 +116,6 @@ private extension OrderDetailsViewController {
         let titleFormat = NSLocalizedString("Order #%1$@", comment: "Order number title. Parameters: %1$@ - order number")
         title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
         removeNavigationBackBarButtonText()
-
-        /// To be removed
-        /// To keep the PR short, and to avoid going down the rabbit hole of
-        /// updating the UI to look final, we add a toolbar button item
-        /// to trigger payment collection.
-        /// Will be made obsolete by https://github.com/woocommerce/woocommerce-ios/issues/3826
-        if viewModel.canCollectPayment {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "💰💳🤑",
-                                                               style: .plain,
-                                                               target: self,
-                                                               action: #selector(collectPayment))
-        }
     }
 
     /// Setup: EntityListener
@@ -321,6 +310,11 @@ extension OrderDetailsViewController {
             group.leave()
         }
 
+        group.enter()
+        checkCardPresentPaymentEligibility {
+            group.leave()
+        }
+
         group.notify(queue: .main) { [weak self] in
             NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
             self?.refreshControl.endRefreshing()
@@ -376,6 +370,13 @@ private extension OrderDetailsViewController {
         }
     }
 
+    func checkCardPresentPaymentEligibility(onCompletion: (() -> Void)? = nil) {
+        viewModel.checkCardPaymentEligibility { [weak self] in
+            self?.reloadTableViewSectionsAndData()
+            onCompletion?()
+        }
+    }
+
     func deleteTracking(_ tracking: ShipmentTracking) {
         let order = viewModel.order
         viewModel.deleteTracking(tracking) { [weak self] error in
@@ -407,6 +408,11 @@ private extension OrderDetailsViewController {
             trackingWasPressed(at: indexPath)
         case .issueRefund:
             issueRefundWasPressed()
+        case .collectPayment:
+            guard let indexPath = indexPath else {
+                break
+            }
+            collectPayment(at: indexPath)
         case .reprintShippingLabel(let shippingLabel):
             guard let navigationController = navigationController else {
                 assertionFailure("Cannot reprint a shipping label because `navigationController` is nil")
@@ -511,7 +517,10 @@ private extension OrderDetailsViewController {
 
     /// Temporary method to trigger the collect payment flow
     /// This method will be removed later
-    @objc private func collectPayment(sender: UIBarButtonItem) {
+    @objc private func collectPayment(at: IndexPath) {
+        guard let cell = tableView.cellForRow(at: at) as? ButtonTableViewCell else {
+            return
+        }
         viewModel.collectPayment { [weak self] result in
 
             let title = result.isSuccess ? "🎉🥳🍾🎊 success" : "☢️ Error!"
@@ -524,7 +533,7 @@ private extension OrderDetailsViewController {
             actionSheet.addCancelActionWithTitle(buttonTitle)
 
             let popoverController = actionSheet.popoverPresentationController
-            popoverController?.sourceView = sender.customView
+            popoverController?.sourceView = cell.contentView
 
             self?.present(actionSheet, animated: true)
         }

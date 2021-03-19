@@ -173,6 +173,16 @@ final class OrderPaymentDetailsViewModel {
         return order.coupons
     }
 
+    var canCollectCardPresentPayment: Bool {
+        // For now, this defaults to the feature flag, but here we should take into
+        // account wheter the store is enrolled into WCPay and the order is elegible
+        // for collecting card present payments
+        // https://github.com/woocommerce/woocommerce-ios/issues/3828
+        print("==== order payment ", order.paymentMethodTitle)
+        print("==== order payment ", order.paymentMethodID)
+        return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments)
+    }
+
     init(order: Order, refund: Refund? = nil, currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.order = order
         self.refund = refund

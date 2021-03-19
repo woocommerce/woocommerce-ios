@@ -42,6 +42,10 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var isEligibleForShippingLabelCreation: Bool = false
 
+    /// Whether the order is eligible for card present payment.
+    ///
+    var isEligibleForCardPresentPayment: Bool = false
+
     /// Closure to be executed when the cell was tapped.
     ///
     var onCellAction: ((CellActionType, IndexPath?) -> Void)?
@@ -291,6 +295,8 @@ private extension OrderDetailsDataSource {
             configureShippingLabelProduct(cell: cell, at: indexPath)
         case let cell as ProductDetailsTableViewCell where row == .aggregateOrderItem:
             configureAggregateOrderItem(cell: cell, at: indexPath)
+        case let cell as ButtonTableViewCell where row == .collectCardPaymentButton:
+            configureCollectPaymentButton(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .shippingLabelCreateButton:
             configureCreateShippingLabelButton(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .markCompleteButton(style: .primary, showsBottomSpacing: true),
@@ -458,6 +464,15 @@ private extension OrderDetailsDataSource {
         cell.leftText = Titles.netAmount
         cell.rightText = paymentViewModel.netAmount
         cell.hideFootnote()
+    }
+
+    private func configureCollectPaymentButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
+        cell.configure(style: .primary,
+                       title: Titles.collectPayment,
+                       bottomSpacing: 0) {
+            self.onCellAction?(.collectPayment, nil)
+        }
+        cell.hideSeparator()
     }
 
     private func configureCreateShippingLabelButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
@@ -888,6 +903,10 @@ extension OrderDetailsDataSource {
                 rows.append(.netAmount)
             }
 
+            if isEligibleForCardPresentPayment {
+                rows.append(.collectCardPaymentButton)
+            }
+
             if !isRefundedStatus {
                 rows.append(.issueRefundButton)
             }
@@ -1104,6 +1123,7 @@ extension OrderDetailsDataSource {
         static let refunded = NSLocalizedString("Refunded",
                                                 comment: "The title for the refunded amount cell")
         static let netAmount = NSLocalizedString("Net Payment", comment: "The title for the net amount paid cell")
+        static let collectPayment = NSLocalizedString("Collect Payment", comment: "Text on the button that starts collecting a card present payment.")
         static let createShippingLabel = NSLocalizedString("Create Shipping Label", comment: "Text on the button that starts shipping label creation")
         static let reprintShippingLabel = NSLocalizedString("Reprint Shipping Label", comment: "Text on the button that reprints a shipping label")
     }
@@ -1247,6 +1267,7 @@ extension OrderDetailsDataSource {
         case netAmount
         case tracking
         case trackingAdd
+        case collectCardPaymentButton
         case shippingLabelCreateButton
         case shippingLabelCreationInfo(showsSeparator: Bool)
         case shippingLabelDetail
@@ -1294,6 +1315,8 @@ extension OrderDetailsDataSource {
                 return OrderTrackingTableViewCell.reuseIdentifier
             case .trackingAdd:
                 return LeftImageTableViewCell.reuseIdentifier
+            case .collectCardPaymentButton:
+                return ButtonTableViewCell.reuseIdentifier
             case .shippingLabelCreateButton:
                 return ButtonTableViewCell.reuseIdentifier
             case .shippingLabelCreationInfo:
@@ -1325,6 +1348,7 @@ extension OrderDetailsDataSource {
         case tracking
         case summary
         case issueRefund
+        case collectPayment
         case reprintShippingLabel(shippingLabel: ShippingLabel)
         case createShippingLabel
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)

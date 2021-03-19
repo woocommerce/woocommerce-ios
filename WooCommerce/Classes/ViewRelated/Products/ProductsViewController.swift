@@ -162,7 +162,7 @@ final class ProductsViewController: UIViewController {
         configureSyncingCoordinator()
         registerTableViewCells()
 
-        showTopBannerView(for: .productsM4)
+        showTopBannerViewIfNeeded(for: .productsM4)
 
         /// We sync the local product settings for configuring local sorting and filtering.
         /// If there are some info stored when this screen is loaded, the data will be updated using the stored sort/filters.
@@ -397,7 +397,7 @@ private extension ProductsViewController {
 private extension ProductsViewController {
     /// Fetches products feedback visibility from AppSettingsStore and update products top banner accordingly
     ///
-    func showTopBannerView(for bannerType: ProductsTopBannerFactory.BannerType) {
+    func showTopBannerViewIfNeeded(for bannerType: ProductsTopBannerFactory.BannerType) {
         let action = AppSettingsAction.loadFeedbackVisibility(type: bannerType == .productsM4 ? .productsM5 : .productsVariations) { [weak self] result in
             switch result {
             case .success(let visible):
@@ -405,7 +405,7 @@ private extension ProductsViewController {
                     self?.requestAndShowNewTopBannerView(for: bannerType)
                 } else {
                     if bannerType == .productsM4 {
-                        self?.showTopBannerView(for: .variations)
+                        self?.showTopBannerViewIfNeeded(for: .variations)
                     } else {
                         self?.hideTopBannerView()
                     }

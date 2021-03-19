@@ -470,7 +470,7 @@ private extension OrderDetailsDataSource {
         cell.configure(style: .primary,
                        title: Titles.collectPayment,
                        bottomSpacing: 0) {
-            self.onCellAction?(.collectPayment, nil)
+            self.onCellAction?(.collectPayment, indexPath)
         }
         cell.hideSeparator()
     }

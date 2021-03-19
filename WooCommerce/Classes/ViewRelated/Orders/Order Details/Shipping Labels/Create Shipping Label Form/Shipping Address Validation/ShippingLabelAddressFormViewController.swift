@@ -18,7 +18,19 @@ final class ShippingLabelAddressFormViewController: UIViewController {
     /// Top banner that shows a warning in case there is an error in the address validation.
     ///
     private lazy var topBannerView: TopBannerView = {
-        let topBanner = ShippingLabelAddressTopBannerFactory.addressErrorTopBannerView()
+        let topBanner = ShippingLabelAddressTopBannerFactory.addressErrorTopBannerView { [weak self] in
+            MapsHelper.openAppleMaps(address: self?.viewModel.address?.formattedPostalAddress) { [weak self] (result) in
+                switch result {
+                case .success:
+                    break
+                case .failure:
+                    self?.displayAppleMapsErrorNotice()
+                }
+            }
+        } contactCustomerPressed: {
+
+        }
+
         topBanner.translatesAutoresizingMaskIntoConstraints = false
         return topBanner
     }()
@@ -166,6 +178,16 @@ private extension ShippingLabelAddressFormViewController {
                 break
             }
         }
+    }
+}
+
+// MARK: - Utils
+private extension ShippingLabelAddressFormViewController {
+    /// Enqueues the `Apple Maps` Error Notice.
+    ///
+    private func displayAppleMapsErrorNotice() {
+        let notice = Notice(title: Localization.appleMapsErrorNotice, feedbackType: .error, actionTitle: nil, actionHandler: nil)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -434,6 +456,8 @@ private extension ShippingLabelAddressFormViewController {
                                                     comment: "Error showed in Shipping Label Address Validation for the state field")
         static let missingCountry = NSLocalizedString("Country missing",
                                                       comment: "Error showed in Shipping Label Address Validation for the country field")
+        static let appleMapsErrorNotice = NSLocalizedString("Error in finding the address in Apple Maps",
+                                                            comment: "Error in finding the address in the Shipping Label Address Validation in Apple Maps")
     }
 
     enum Constants {

@@ -8,6 +8,13 @@ enum ProductFormType {
     case readonly
 }
 
+/// The type of action that can be performed in the product.
+enum ActionButtonType {
+    case publish
+    case save
+    case more
+}
+
 /// A view model for `ProductFormViewController` to add/edit a generic product model (e.g. `Product` or `ProductVariation`).
 ///
 protocol ProductFormViewModelProtocol {
@@ -37,6 +44,9 @@ protocol ProductFormViewModelProtocol {
     /// The latest product password, if the product is password protected.
     var password: String? { get }
 
+    /// The action buttons that should be rendered in the navigation bar.
+    var actionButtons: [ActionButtonType] { get }
+
     // Unsaved changes
 
     func hasUnsavedChanges() -> Bool
@@ -44,6 +54,8 @@ protocol ProductFormViewModelProtocol {
     // More menu
 
     func canSaveAsDraft() -> Bool
+
+    func canShowPublishOption() -> Bool
 
     func canEditProductSettings() -> Bool
 

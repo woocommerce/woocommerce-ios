@@ -1,5 +1,3 @@
-Wir freuen uns, Updates für die WooCommerce iOS-App bekannt geben zu können.
-
-Es ist jetzt so einfach wie nie zuvor, Attribute verschiedener Produkte zu bearbeiten – z. B. Farbe oder Größe von Kleidungsstücken.
-Wir haben Fehler am „Zurück“-Button und an der Anzeige von Produktvorschaubildern behoben.
-Außerdem enthalten die Produkttypdetails für dementsprechende Artikel nun „herunterladbar“.
+- Beim Bearbeiten eines Produktes kannst du ab sofort Produktvariationen, Produktattribute und Produktattributsoptionen erstellen, löschen und aktualisieren.
+- Wir haben das Design überarbeitet und unter anderem Änderungen an den Tabs in deinem Dashboard vorgenommen. Gib uns gerne Feedback zur Benutzeroberfläche, damit wir uns weiterhin verbessern können. 
+ - Weitere verschiedene Fehlerbehebungen. 

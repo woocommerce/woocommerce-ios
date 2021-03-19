@@ -1,6 +1,5 @@
 import MapKit
 
-
 final class MapsHelper {
 
     /// The method accept a string of the address info you already have, and open Apple Maps on that address if found.

@@ -27,8 +27,10 @@ final class ShippingLabelAddressFormViewController: UIViewController {
                     self?.displayAppleMapsErrorNotice()
                 }
             }
-        } contactCustomerPressed: {
-
+        } contactCustomerPressed: { [weak self] in
+            if !PhoneHelper.callPhoneNumber(phone: self?.viewModel.address?.phone) {
+                self?.displayPhoneNumberErrorNotice()
+            }
         }
 
         topBanner.translatesAutoresizingMaskIntoConstraints = false
@@ -187,6 +189,13 @@ private extension ShippingLabelAddressFormViewController {
     ///
     private func displayAppleMapsErrorNotice() {
         let notice = Notice(title: Localization.appleMapsErrorNotice, feedbackType: .error, actionTitle: nil, actionHandler: nil)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Enqueues the `Phone Number`  Error Notice.
+    ///
+    private func displayPhoneNumberErrorNotice() {
+        let notice = Notice(title: Localization.phoneNumberErrorNotice, feedbackType: .error, actionTitle: nil, actionHandler: nil)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
@@ -458,6 +467,8 @@ private extension ShippingLabelAddressFormViewController {
                                                       comment: "Error showed in Shipping Label Address Validation for the country field")
         static let appleMapsErrorNotice = NSLocalizedString("Error in finding the address in Apple Maps",
                                                             comment: "Error in finding the address in the Shipping Label Address Validation in Apple Maps")
+        static let phoneNumberErrorNotice = NSLocalizedString("The phone number is not valid or you can't call the customer from this device.",
+            comment: "Error in calling the phone number of the customer in the Shipping Label Address Validation")
     }
 
     enum Constants {

@@ -120,27 +120,6 @@ private extension SitePlugin {
     }
 }
 
-// MARK: - Equatable Conformance
-//
-extension SitePlugin: Equatable {
-    public static func == (lhs: SitePlugin, rhs: SitePlugin) -> Bool {
-        return lhs.plugin == rhs.plugin &&
-            lhs.status == rhs.status &&
-            lhs.name == rhs.name &&
-            lhs.pluginUri == rhs.pluginUri &&
-            lhs.author == rhs.author &&
-            lhs.authorUri == rhs.authorUri &&
-            lhs.descriptionRaw == rhs.descriptionRaw &&
-            lhs.descriptionRendered == rhs.descriptionRendered &&
-            lhs.version == rhs.version &&
-            lhs.networkOnly == rhs.networkOnly &&
-            lhs.requiresWPVersion == rhs.requiresWPVersion &&
-            lhs.requiresPHPVersion == rhs.requiresPHPVersion &&
-            lhs.textDomain == rhs.textDomain
-    }
-}
-
-
 // MARK: - Decoding Errors
 //
 enum SitePluginError: Error {

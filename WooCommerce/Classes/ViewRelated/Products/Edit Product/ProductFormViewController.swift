@@ -768,7 +768,7 @@ private extension ProductFormViewController {
 
     func updateNavigationBar() {
         // Create action buttons based on view model
-        let rightBarButtonItems: [UIBarButtonItem] = viewModel.actionButtons.reversed().compactMap { buttonType in
+        let rightBarButtonItems: [UIBarButtonItem] = viewModel.actionButtons.reversed().map { buttonType in
             switch buttonType {
             case .publish:
                 return createPublishBarButtonItem()
@@ -793,8 +793,7 @@ private extension ProductFormViewController {
     }
 
     func createSaveBarButtonItem() -> UIBarButtonItem {
-        let saveTitle = NSLocalizedString("Save", comment: "Action for saving a Product remotely")
-        return UIBarButtonItem(title: saveTitle, style: .done, target: self, action: #selector(saveProductAndLogEvent))
+        return UIBarButtonItem(title: Localization.saveTitle, style: .done, target: self, action: #selector(saveProductAndLogEvent))
     }
 
     func createMoreOptionsBarButtonItem() -> UIBarButtonItem {
@@ -1328,6 +1327,7 @@ private extension ProductFormViewController {
 //
 private enum Localization {
     static let publishTitle = NSLocalizedString("Publish", comment: "Action for creating a new product remotely with a published status")
+    static let saveTitle = NSLocalizedString("Save", comment: "Action for saving a Product remotely")
     static let groupedProductsViewTitle = NSLocalizedString("Grouped Products",
                                                             comment: "Navigation bar title for editing linked products for a grouped product")
 }

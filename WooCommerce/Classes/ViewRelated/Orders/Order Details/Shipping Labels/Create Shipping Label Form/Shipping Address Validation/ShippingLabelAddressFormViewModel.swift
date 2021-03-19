@@ -1,7 +1,7 @@
 import UIKit
 import Yosemite
 
-final class ShippingLabelAddressFormViewModel: NSObject {
+final class ShippingLabelAddressFormViewModel {
 
     /// Defines the necessary state to produce the ViewModel's outputs.
     ///
@@ -19,7 +19,7 @@ final class ShippingLabelAddressFormViewModel: NSObject {
     let type: ShipType
     private(set) var address: ShippingLabelAddress?
     private(set) var addressValidationError: ShippingLabelAddressValidationError?
-    private(set) var isAddressValidated: Bool = false
+    private(set) var addressValidated: Validation = .none
 
     private let stores: StoresManager
 
@@ -31,6 +31,7 @@ final class ShippingLabelAddressFormViewModel: NSObject {
     ///
     private var state: State = State() {
         didSet {
+            updateSections()
             onChange?()
         }
     }
@@ -43,11 +44,14 @@ final class ShippingLabelAddressFormViewModel: NSObject {
         return state.isLoading
     }
 
+    var sections: [Section] = []
+
     init(siteID: Int64, type: ShipType, address: ShippingLabelAddress?, stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.type = type
         self.address = address
         self.stores = stores
+        updateSections()
     }
 
     func handleAddressValueChanges(row: Row, newValue: String?) {
@@ -75,48 +79,141 @@ final class ShippingLabelAddressFormViewModel: NSObject {
         }
     }
 
-    var sections: [Section] {
+    func updateSections() {
         var rows: [Row] = [.name, .company, .phone, .address, .address2, .city, .postcode, .state, .country]
-        if addressValidationError?.addressError != nil {
-            if let addressIndex = rows.firstIndex(where: { $0 == .address }) {
-                rows.insert(.fieldError, at: rows.index(after: addressIndex))
+
+        let localErrors = validateAddressLocally()
+
+        if localErrors.contains(.name) {
+            if let index = rows.firstIndex(where: { $0 == .name }) {
+                rows.insert(.fieldError(.name), at: rows.index(after: index))
             }
         }
-        else {
-            rows.removeAll(where: { $0 == .fieldError })
+        if addressValidationError?.addressError != nil || localErrors.contains(.address) {
+            if let index = rows.firstIndex(where: { $0 == .address }) {
+                rows.insert(.fieldError(.address), at: rows.index(after: index))
+            }
         }
-        return [Section(rows: rows)]
+        if localErrors.contains(.city) {
+            if let index = rows.firstIndex(where: { $0 == .city }) {
+                rows.insert(.fieldError(.city), at: rows.index(after: index))
+            }
+        }
+        if localErrors.contains(.postcode) {
+            if let index = rows.firstIndex(where: { $0 == .postcode }) {
+                rows.insert(.fieldError(.postcode), at: rows.index(after: index))
+            }
+        }
+        if localErrors.contains(.state) {
+            if let index = rows.firstIndex(where: { $0 == .state }) {
+                rows.insert(.fieldError(.state), at: rows.index(after: index))
+            }
+        }
+        if localErrors.contains(.country) {
+            if let index = rows.firstIndex(where: { $0 == .country }) {
+                rows.insert(.fieldError(.country), at: rows.index(after: index))
+            }
+        }
+        sections = [Section(rows: rows)]
     }
 }
 
-// MARK: - Remote API
+// MARK: - Local Validation
 extension ShippingLabelAddressFormViewModel {
-    func validateAddress(onSuccess: ((Bool, ShippingLabelAddressValidationError?) -> ())? = nil) {
+
+    // Defines if the address was not validated, or validated locally/remotely.
+    enum Validation {
+        case none
+        case local
+        case remote
+    }
+
+    enum ValidationError {
+        case name
+        case address
+        case city
+        case postcode
+        case state
+        case country
+    }
+
+    private func validateAddressLocally() -> [ValidationError] {
+        var errors: [ValidationError] = []
+
+        if let addressToBeValidated = address {
+            if addressToBeValidated.name.isEmpty {
+                errors.append(.name)
+            }
+            if addressToBeValidated.address1.isEmpty {
+                errors.append(.address)
+            }
+            if addressToBeValidated.city.isEmpty {
+                errors.append(.city)
+            }
+            if addressToBeValidated.postcode.isEmpty {
+                errors.append(.postcode)
+            }
+            if addressToBeValidated.state.isEmpty {
+                errors.append(.state)
+            }
+            if addressToBeValidated.country.isEmpty {
+                errors.append(.country)
+            }
+        }
+
+        return errors
+    }
+}
+
+// MARK: - Remote Validation API
+extension ShippingLabelAddressFormViewModel {
+
+    enum AddressValidationError: Error {
+        case none
+        case remote(ShippingLabelAddressValidationError?)
+    }
+
+    /// Validate the address locally and remotely. If `onlyLocally` is equal `true`, the validation will happens just locally.
+    ///
+    func validateAddress(onlyLocally: Bool, completion: @escaping (Result<Void, AddressValidationError>) -> Void) {
+
+        addressValidationError = nil
+        if validateAddressLocally().isNotEmpty {
+            addressValidated = .none
+            state.isLoading = false
+            completion(.failure(.none))
+            return
+        }
+        addressValidated = .local
+
+        if onlyLocally {
+            completion(.success(()))
+            return
+        }
 
         state.isLoading = true
         let addressToBeVerified = ShippingLabelAddressVerification(address: address, type: type)
-
         let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] (result) in
             switch result {
             case .success:
                 if (try? result.get().errors) == nil {
-                    self?.isAddressValidated = true
+                    self?.addressValidated = .remote
                     self?.addressValidationError = nil
                     self?.state.isLoading = false
-                    onSuccess?(true, nil)
+                    completion(.success(()))
                 }
                 else {
-                    self?.isAddressValidated = false
+                    self?.addressValidated = .none
                     self?.addressValidationError = try? result.get().errors
                     self?.state.isLoading = false
-                    onSuccess?(false, try? result.get().errors)
+                    completion(.failure(.remote(try? result.get().errors)))
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
-                self?.isAddressValidated = false
+                self?.addressValidated = .none
                 self?.addressValidationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
                 self?.state.isLoading = false
-                onSuccess?(false, nil)
+                completion(.failure(.none))
             }
         }
         stores.dispatch(action)

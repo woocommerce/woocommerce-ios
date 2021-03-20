@@ -17,6 +17,8 @@ public final class StripeCardReaderService: NSObject {
     /// see
     ///  https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPDiscoveryDelegate.html#/c:objc(pl)SCPDiscoveryDelegate(im)terminal:didUpdateDiscoveredReaders:
     private let discoveredStripeReadersCache = StripeCardReaderDiscoveryCache()
+
+    private var activePaymentIntent: StripeTerminal.PaymentIntent?
 }
 
 
@@ -123,13 +125,13 @@ extension StripeCardReaderService: CardReaderService {
         Terminal.shared.clearCachedCredentials()
     }
 
-    public func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<PaymentIntent, Error> {
-        return Future() { [weak self] promise in
+    public func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<Void, Error> {
+        return Future() { promise in
             // Contains enough implementation just to pass a test on the happy path.
             // We are not doing any proper error handling yet, but for now we
             // will propagate an error specific to this operation (.intentCreation)
-            Terminal.shared.createPaymentIntent(parameters.toStripe()) { (intent, error) in
-                guard let _ = self else {
+            Terminal.shared.createPaymentIntent(parameters.toStripe()) { [weak self] (intent, error) in
+                guard let self = self else {
                     promise(Result.failure(CardReaderServiceError.intentCreation))
                     return
                 }
@@ -139,27 +141,64 @@ extension StripeCardReaderService: CardReaderService {
                 }
 
                 if let intent = intent {
-                    promise(Result.success(PaymentIntent(intent: intent)))
+                    self.activePaymentIntent = intent
+                    promise(Result.success(()))
                 }
             }
         }
     }
 
-    public func collectPaymentMethod(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
-        return Future() { promise in
-            // Attack the Stripe SDK to collect a payment method.
-            // To be implemented
+    public func collectPaymentMethod() -> Future<Void, Error> {
+        return Future() { [weak self] promise in
+            // Contains enough implementation just to pass a test on the happy path.
+            // We are not doing any proper error handling yet, but for now we
+            // will propagate an error specific to this operation (.paymentMethod)
+            guard let activeIntent = self?.activePaymentIntent else {
+                // There is no active payment intent.
+                // Shortcircuit with an error
+                promise(Result.failure(CardReaderServiceError.paymentMethod))
+                return
+            }
+
+            Terminal.shared.collectPaymentMethod(activeIntent, delegate: self) { (intent, error) in
+                if let _ = error {
+                    promise(Result.failure(CardReaderServiceError.paymentMethod))
+                }
+
+                if let intent = intent {
+                    self?.activePaymentIntent = intent
+                    promise(Result.success(()))
+                }
+            }
         }
     }
 
-    public func processPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
-        return Future() { promise in
-            // Attack the Stripe SDK and process a PaymentIntent.
-            // To be implemented
+    public func processPayment() -> Future<String, Error> {
+        return Future() { [weak self] promise in
+            // Contains enough implementation just to pass a test on the happy path.
+            // We are not doing any proper error handling yet, but for now we
+            // will propagate an error specific to this operation (.capturePayment)
+            guard let activeIntent = self?.activePaymentIntent else {
+                // There is no active payment intent.
+                // Shortcircuit with an error
+                promise(Result.failure(CardReaderServiceError.capturePayment))
+                return
+            }
+
+            Terminal.shared.processPayment(activeIntent) { (intent, error) in
+                if let _ = error {
+                    promise(Result.failure(CardReaderServiceError.capturePayment))
+                }
+
+                if let intent = intent {
+                    self?.activePaymentIntent = intent
+                    promise(Result.success(intent.stripeId))
+                }
+            }
         }
     }
 
-    public func cancelPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
+    public func cancelPaymentIntent() -> Future<Void, Error> {
         return Future() { promise in
             // Attack the Stripe SDK and cancel a PaymentIntent.
             // To be implemented
@@ -223,6 +262,30 @@ extension StripeCardReaderService: DiscoveryDelegate {
     }
 }
 
+
+// MARK: - ReaderDisplayDelegate.
+extension StripeCardReaderService: ReaderDisplayDelegate {
+    /// This method is called by the Stripe Terminal SDK when it wants client apps
+    /// to request users to tap / insert / swipe a card.
+    /// At this point we just acknowledge it is being called, but we will have
+    /// to propagate this to the UI:
+    /// https://github.com/woocommerce/woocommerce-ios/issues/3842
+    public func terminal(_ terminal: Terminal, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
+        print("==== did request reader input")
+        print(inputOptions)
+        print(inputOptions.rawValue)
+        print("//// did request reader input")
+    }
+
+    /// In this case the Stripe Terminal SDK wants us to present a string on screen
+    /// We will implement this later:
+    /// https://github.com/woocommerce/woocommerce-ios/issues/3843
+    public func terminal(_ terminal: Terminal, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
+        print("==== did request display message")
+        print(displayMessage.rawValue)
+        print("//// did request display message")
+    }
+}
 
 private extension StripeCardReaderService {
     private func setConfigProvider(_ configProvider: CardReaderConfigProvider) {

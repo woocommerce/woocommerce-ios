@@ -93,34 +93,27 @@ private extension CardPresentPaymentStore {
         }.store(in: &cancellables)
     }
 
-    func collectPayment(siteID: Int64, orderID: Int64, parameters: PaymentParameters, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        // The high-level logic of this method would be:
-        // 1. Attack the CardReaderService to create a payment intent.
-        // When that is completed...
-        // 2. Attack the CardReaderService to collect payment methods for that intent
-        // When that is completed...
-        // 3. Attack the CardReaderService to process the payment
+    func collectPayment(siteID: Int64, orderID: Int64, parameters: PaymentParameters, onCompletion: @escaping (Result<Void, Error>) -> Void) {
 
-        // For now, we will only implement step 1.
-        // Create an intent.
-        // And for now, we are not doing any error handling.
-        cardReaderService.createPaymentIntent(parameters).sink(receiveCompletion: {error in
+        cardReaderService.createPaymentIntent(parameters)
+            .flatMap {
+                self.cardReaderService.collectPaymentMethod()
+            }.flatMap {
+                self.cardReaderService.processPayment()
+            }.sink { error in
             switch error {
             case .failure(let error):
-                let result: Result<Bool, Error> = .failure(error)
-                onCompletion(result)
+                onCompletion(.failure(error))
             case .finished:
-                let result: Result<Bool, Error> = .success(true)
-                onCompletion(result)
+                onCompletion(.success(()))
             }
-        }) { (intent) in
-            print("==== Log for testing purposes. payment intent collected ")
+        } receiveValue: { intent in
+            print("==== Yosemite log for testing. Payment intent after processing payment")
             print(intent)
-            print("//// payment intent collected ")
-            // TODO. Initiate step 2. Collect payment method.
+            print("//// payment intent processed ")
+            // TODO. Initiate final step. Update order. Submit intent id to backend.
             // Deferred to https://github.com/woocommerce/woocommerce-ios/issues/3825
-            let result: Result<Bool, Error> = .success(true)
-            onCompletion(result)
+            onCompletion(.success(()))
         }.store(in: &cancellables)
     }
 }

@@ -410,13 +410,11 @@ extension OrderDetailsViewModel {
     }
 
     func checkCardPaymentEligibility(onCompletion: (() -> Void)? = nil) {
-        // For now, this defaults to the feature flag, but here we should take into
-        // account wheter the store is enrolled into WCPay and the order is elegible
-        // for collecting card present payments.
+        // For now, this defaults to the feature flag,
+        // combined with the order payment method being cash on delivery
+        // We also need to take into account wheter the store is enrolled into WCPay.
         // This is synchronous for now, but it will be async in the nearly future:
         // https://github.com/woocommerce/woocommerce-ios/issues/3828
-           print("==== order payment ", order.paymentMethodTitle)
-           print("==== order payment ", order.paymentMethodID)
         dataSource.isEligibleForCardPresentPayment = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) &&
             OrderPaymentMethod(rawValue: order.paymentMethodID) == .cod
 

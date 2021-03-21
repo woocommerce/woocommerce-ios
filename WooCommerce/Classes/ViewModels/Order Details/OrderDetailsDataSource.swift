@@ -469,7 +469,7 @@ private extension OrderDetailsDataSource {
     private func configureCollectPaymentButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
         cell.configure(style: .primary,
                        title: Titles.collectPayment,
-                       bottomSpacing: 0) {
+                       bottomSpacing: ButtonTableViewCell.Constants.defaultBottomSpacing) {
             self.onCellAction?(.collectPayment, indexPath)
         }
         cell.hideSeparator()
@@ -907,7 +907,7 @@ extension OrderDetailsDataSource {
                 rows.append(.collectCardPaymentButton)
             }
 
-            if !isRefundedStatus {
+            if !isRefundedStatus && !isEligibleForCardPresentPayment {
                 rows.append(.issueRefundButton)
             }
 

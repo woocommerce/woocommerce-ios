@@ -415,6 +415,7 @@ extension OrderDetailsViewModel {
         // We also need to take into account wheter the store is enrolled into WCPay.
         // This is synchronous for now, but it will be async in the nearly future:
         // https://github.com/woocommerce/woocommerce-ios/issues/3828
+        // We need to add a unit test for this, after the logic is settled
         dataSource.isEligibleForCardPresentPayment = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) &&
             OrderPaymentMethod(rawValue: order.paymentMethodID) == .cod
 

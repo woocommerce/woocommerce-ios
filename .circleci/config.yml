@@ -6,6 +6,9 @@ orbs:
   git: wordpress-mobile/git@1.0
   slack: circleci/slack@3.4.2
 
+xcode_version: &xcode_version
+  xcode-version: "12.0.0"
+
 commands:
   fix-image:
     steps:
@@ -29,7 +32,7 @@ jobs:
   Build Tests:
     executor:
       name: ios/default
-      xcode-version: "12.0.0"
+      <<: *xcode_version
     steps:
       - git/shallow-checkout
       - fix-image
@@ -51,12 +54,12 @@ jobs:
   Unit Tests:
     executor:
       name: ios/default
-      xcode-version: "12.0.0"
+      <<: *xcode_version
     steps:
       - git/shallow-checkout
       - fix-image
       - ios/boot-simulator:
-          xcode-version: "12.0.0"
+          <<: *xcode_version
           device: iPhone 11
       - attach_workspace:
           at: ./
@@ -79,12 +82,12 @@ jobs:
         default: false
     executor:
       name: ios/default
-      xcode-version: "12.0.0"
+      <<: *xcode_version
     steps:
       - git/shallow-checkout
       - fix-image
       - ios/boot-simulator:
-          xcode-version: "12.0.0"
+          <<: *xcode_version
           device: << parameters.device >>
       - attach_workspace:
           at: ./
@@ -119,7 +122,7 @@ jobs:
   Installable Build:
     executor:
       name: ios/default
-      xcode-version: "12.0.0"
+      <<: *xcode_version
     steps:
       - git/shallow-checkout
       - fix-image
@@ -143,7 +146,7 @@ jobs:
   Release Build:
     executor: 
       name: ios/default
-      xcode-version: "12.0.0"
+      <<: *xcode_version
     environment:
       HOMEBREW_NO_AUTO_UPDATE: 1
     steps:

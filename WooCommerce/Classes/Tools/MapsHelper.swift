@@ -10,24 +10,24 @@ final class MapsHelper {
             return
         }
         CLGeocoder().geocodeAddressString(address) { (placemarksOptional, error) -> Void in
-              if let placemarks = placemarksOptional {
-                DDLogInfo("First address found in Apple Maps: \(String(describing: placemarks.first))")
-                if let location = placemarks.first?.location {
-                  let query = "?ll=\(location.coordinate.latitude),\(location.coordinate.longitude)"
-                  let path = "http://maps.apple.com/" + query
-                  if let url = URL(string: path) {
+            guard let placemarks = placemarksOptional else {
+                completion(.failure(.locationNotFound))
+                return
+            }
+            DDLogInfo("First address found in Apple Maps: \(String(describing: placemarks.first))")
+            if let location = placemarks.first?.location {
+                let query = "?ll=\(location.coordinate.latitude),\(location.coordinate.longitude)"
+                let path = "http://maps.apple.com/" + query
+                if let url = URL(string: path) {
                     UIApplication.shared.open(url, options: [:], completionHandler: nil)
                     completion(.success(()))
-                  } else {
-                    completion(.failure(.constructURL))
-                  }
                 } else {
-                    completion(.failure(.locationNotFound))
+                    completion(.failure(.constructURL))
                 }
-              } else {
+            } else {
                 completion(.failure(.locationNotFound))
-              }
             }
+        }
     }
 
     enum MapsHelperError: Error {

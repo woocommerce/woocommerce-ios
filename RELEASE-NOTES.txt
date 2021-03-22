@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+6.4
+-----
+
+
 6.3
 -----
 - [**] Products: Now you can add variable products from the create product action sheet. [https://github.com/woocommerce/woocommerce-ios/pull/3836]

@@ -28,7 +28,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
                 }
             }
         } contactCustomerPressed: { [weak self] in
-            if !PhoneHelper.callPhoneNumber(phone: self?.viewModel.address?.phone) {
+            if PhoneHelper.callPhoneNumber(phone: self?.viewModel.address?.phone) == false {
                 self?.displayPhoneNumberErrorNotice()
             }
         }

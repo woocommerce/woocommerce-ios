@@ -1,32 +1,31 @@
-import StripeTerminal
-
 /// Models errors thrown by the CardReaderService.
-/// This is doing the bare minimum for now.
-/// Proper error handling is coming in
-/// https://github.com/woocommerce/woocommerce-ios/issues/3734
+/// It identifies the interaction with the card reader
+/// where the error was thrown.
+/// It is important to mark the specific interaction
+/// because some operations (like, for example, procesing a payment)
+/// require of three interactions with the SDK in sequence, and any error
+/// in any of the steps in that sequence would make the whole operation fail
 public enum CardReaderServiceError: Error {
     /// Error thrown during reader discovery
-    case discovery
+    case discovery(underlyingError: UnderlyingError? = nil)
 
     /// Error thrown while connecting to a reader
-    case connection
+    case connection(underlyingError: UnderlyingError? = nil)
 
     /// Error thrown while creating a payment intent
-    case intentCreation
+    case intentCreation(underlyingError: UnderlyingError? = nil)
 
     /// Error thrown while collecting payment methods
-    case paymentMethod
+    case paymentMethod(underlyingError: UnderlyingError? = nil)
 
     /// Error thrown while capturing a payment
-    case capturePayment
+    case capturePayment(underlyingError: UnderlyingError? = nil)
 }
 
 
-// Associated value of type ServiceUnderlyingError
-// ServiceUnerlyingError.initWith(StripeTerminal.SCPError)
-
-/// Mapped from StripeTerminal.SCPError https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html
-public enum FailureReason: Error {
+/// Underlying error. Models the specific error that made a given
+/// interaction with the SDK fail.
+public enum UnderlyingError: Error {
     /// The service is busy executing another command. The service can only execute a single command at a time.
     case busy
 
@@ -146,84 +145,8 @@ public enum FailureReason: Error {
     /// The current session has expired and the reader must be disconnected and reconnected.
     /// The SDK will attempt to auto-disconnect for you and you should instruct your user to reconnect it.
     case readerSessionExpired
-}
 
-
-extension FailureReason {
-    static func make(with stripeError: NSError) -> Self {
-        switch stripeError.code {
-        case ErrorCode.Code.busy.rawValue:
-            return .busy
-        case ErrorCode.Code.notConnectedToReader.rawValue:
-            return .notConnectedToReader
-        case ErrorCode.Code.alreadyConnectedToReader.rawValue:
-            return .alreadyConnectedToReader
-        case ErrorCode.Code.cannotConnectToUndiscoveredReader.rawValue:
-            return .connectingToUndiscoveredReader
-        case ErrorCode.Code.unsupportedSDK.rawValue:
-            return .unsupportedSDK
-        case ErrorCode.Code.featureNotAvailableWithConnectedReader.rawValue:
-            return .featureNotAvailableWithConnectedReader
-        case ErrorCode.Code.canceled.rawValue:
-            return .commandCancelled
-        case ErrorCode.Code.locationServicesDisabled.rawValue:
-            return .locationServicesDisabled
-        case ErrorCode.Code.bluetoothDisabled.rawValue:
-            return .bluetoothDisabled
-        case ErrorCode.Code.bluetoothError.rawValue:
-            return .bluetoothError
-        case ErrorCode.Code.bluetoothScanTimedOut.rawValue:
-            return .bluetoothScanTimedOut
-        case ErrorCode.Code.bluetoothLowEnergyUnsupported.rawValue:
-            return .bluetoothLowEnergyUnsupported
-        case ErrorCode.Code.readerSoftwareUpdateFailedBatteryLow.rawValue:
-            return .readerSoftwareUpdateFailedBatteryLow
-        case ErrorCode.Code.readerSoftwareUpdateFailedInterrupted.rawValue:
-            return .readerSoftwareUpdateFailedInterrupted
-        case ErrorCode.Code.readerSoftwareUpdateFailed.rawValue:
-            return .readerSoftwareUpdateFailed
-        case ErrorCode.Code.readerSoftwareUpdateFailedReaderError.rawValue:
-            return .readerSoftwareUpdateFailedReader
-        case ErrorCode.Code.readerSoftwareUpdateFailedServerError.rawValue:
-            return .readerSoftwareUpdateFailedServer
-        case ErrorCode.Code.cardInsertNotRead.rawValue:
-            return .cardInsertNotRead
-        case ErrorCode.Code.cardSwipeNotRead.rawValue:
-            return .cardSwipeNotRead
-        case ErrorCode.Code.cardReadTimedOut.rawValue:
-            return .cardReadTimeOut
-        case ErrorCode.Code.cardRemoved.rawValue:
-            return .cardRemoved
-        case ErrorCode.Code.cardLeftInReader.rawValue:
-            return .cardLeftInReader
-        case ErrorCode.Code.readerBusy.rawValue:
-            return .readerBusy
-        case ErrorCode.Code.incompatibleReader.rawValue:
-            return .readerIncompatible
-        case ErrorCode.Code.readerCommunicationError.rawValue:
-            return .readerCommunicationError
-        case ErrorCode.Code.bluetoothConnectTimedOut.rawValue:
-            return .bluetoothConnectTimedOut
-        case ErrorCode.Code.bluetoothDisconnected.rawValue:
-            return .bluetoothDisconnected
-        case ErrorCode.Code.unsupportedReaderVersion.rawValue:
-            return .unsupportedReaderVersion
-        case ErrorCode.Code.connectFailedReaderIsInUse.rawValue:
-            return .connectFailedReaderIsInUse
-        case ErrorCode.Code.unexpectedSdkError.rawValue:
-            return .unexpectedSDKError
-        case ErrorCode.Code.paymentDeclinedByStripeAPI.rawValue:
-            return .paymentDeclinedByPaymentProcessorAPI
-        case ErrorCode.Code.paymentDeclinedByReader.rawValue:
-            return .paymentDeclinedByCardReader
-        case ErrorCode.Code.notConnectedToInternet.rawValue:
-            return .notConnectedToInternet
-        case ErrorCode.Code.requestTimedOut.rawValue:
-            return .requestTimedOut
-        case ErrorCode.Code.sessionExpired.rawValue:
-            return .readerSessionExpired
-        default:
-            return .unexpectedSDKError
-        }
-    }
+    /// Catch-all error case. Indicates there is something wrong with the
+    /// internal state of the CardReaderService.
+    case internalServiceError
 }

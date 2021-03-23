@@ -66,7 +66,7 @@ extension StripeCardReaderService: CardReaderService {
 
         // Attack the test terminal, provided by the SDK
         let config = DiscoveryConfiguration(
-            discoveryMethod: .internet,
+            discoveryMethod: .bluetoothProximity,
             simulated: true
         )
 
@@ -127,21 +127,15 @@ extension StripeCardReaderService: CardReaderService {
 
     public func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<Void, Error> {
         return Future() { promise in
-            // Contains enough implementation just to pass a test on the happy path.
-            // We are not doing any proper error handling yet, but for now we
-            // will propagate an error specific to this operation (.intentCreation)
             Terminal.shared.createPaymentIntent(parameters.toStripe()) { [weak self] (intent, error) in
                 guard let self = self else {
-                    promise(Result.failure(CardReaderServiceError.intentCreation))
+                    promise(Result.failure(CardReaderServiceError.intentCreation(underlyingError: .internalServiceError)))
                     return
                 }
 
                 if let error = error {
-                    print("///// error ")
-                    print(FailureReason.make(with: error as NSError))
-                    print("----- error ")
-
-                    promise(Result.failure(CardReaderServiceError.intentCreation))
+                    let underlyingError = UnderlyingError.make(with: error as NSError)
+                    promise(Result.failure(CardReaderServiceError.intentCreation(underlyingError: underlyingError)))
                 }
 
                 if let intent = intent {
@@ -154,19 +148,17 @@ extension StripeCardReaderService: CardReaderService {
 
     public func collectPaymentMethod() -> Future<Void, Error> {
         return Future() { [weak self] promise in
-            // Contains enough implementation just to pass a test on the happy path.
-            // We are not doing any proper error handling yet, but for now we
-            // will propagate an error specific to this operation (.paymentMethod)
             guard let activeIntent = self?.activePaymentIntent else {
                 // There is no active payment intent.
-                // Shortcircuit with an error
-                promise(Result.failure(CardReaderServiceError.paymentMethod))
+                // Shortcircuit with an internal error
+                promise(Result.failure(CardReaderServiceError.paymentMethod(underlyingError: .internalServiceError)))
                 return
             }
 
             Terminal.shared.collectPaymentMethod(activeIntent, delegate: self) { (intent, error) in
-                if let _ = error {
-                    promise(Result.failure(CardReaderServiceError.paymentMethod))
+                if let error = error {
+                    let underlyingError = UnderlyingError.make(with: error as NSError)
+                    promise(Result.failure(CardReaderServiceError.paymentMethod(underlyingError: underlyingError)))
                 }
 
                 if let intent = intent {
@@ -179,19 +171,17 @@ extension StripeCardReaderService: CardReaderService {
 
     public func processPayment() -> Future<String, Error> {
         return Future() { [weak self] promise in
-            // Contains enough implementation just to pass a test on the happy path.
-            // We are not doing any proper error handling yet, but for now we
-            // will propagate an error specific to this operation (.capturePayment)
             guard let activeIntent = self?.activePaymentIntent else {
                 // There is no active payment intent.
                 // Shortcircuit with an error
-                promise(Result.failure(CardReaderServiceError.capturePayment))
+                promise(Result.failure(CardReaderServiceError.capturePayment(underlyingError: .internalServiceError)))
                 return
             }
 
             Terminal.shared.processPayment(activeIntent) { (intent, error) in
-                if let _ = error {
-                    promise(Result.failure(CardReaderServiceError.capturePayment))
+                if let error = error {
+                    let underlyingError = UnderlyingError.make(with: error as NSError)
+                    promise(Result.failure(CardReaderServiceError.capturePayment(underlyingError: underlyingError)))
                 }
 
                 if let intent = intent {
@@ -213,30 +203,29 @@ extension StripeCardReaderService: CardReaderService {
         return Future() { [weak self] promise in
 
             guard let self = self else {
-                promise(Result.failure(CardReaderServiceError.connection))
+                promise(Result.failure(CardReaderServiceError.connection(underlyingError: .internalServiceError)))
                 return
             }
 
             // Find a cached reader that matches.
             // If this fails, that means that we are in an internal state that we do not expect.
-            // Therefore it is better to let the user know that something went wrong.
-            // Proper error handling is coming in https://github.com/woocommerce/woocommerce-ios/issues/3734
             guard let stripeReader = self.discoveredStripeReadersCache.reader(matching: reader) as? Reader else {
-                promise(Result.failure(CardReaderServiceError.connection))
+                promise(Result.failure(CardReaderServiceError.connection(underlyingError: .internalServiceError)))
                 return
             }
 
             Terminal.shared.connectReader(stripeReader) { [weak self] (reader, error) in
                 guard let self = self else {
-                    promise(Result.failure(CardReaderServiceError.connection))
+                    promise(Result.failure(CardReaderServiceError.connection(underlyingError: .internalServiceError)))
                     return
                 }
 
                 // Clear cached readers, as per Stripe's documentation.
                 self.discoveredStripeReadersCache.clear()
 
-                if let _ = error {
-                    promise(Result.failure(CardReaderServiceError.connection))
+                if let error = error {
+                    let underlyingError = UnderlyingError.make(with: error as NSError)
+                    promise(Result.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                 }
 
                 if let reader = reader {

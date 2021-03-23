@@ -107,7 +107,7 @@ DEPENDENCIES:
   - Kingfisher (~> 5.11.0)
   - Sourcery (~> 1.0.3)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `fix/prologue-bgcolor`)
+  - WordPressAuthenticator (~> 1.36.0-beta)
   - WordPressKit (~> 4.26.0)
   - WordPressShared (~> 1.15)
   - WordPressUI (~> 1.7.2)
@@ -142,6 +142,7 @@ SPEC REPOS:
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
+    - WordPressAuthenticator
     - WordPressKit
     - WordPressShared
     - WordPressUI
@@ -156,16 +157,6 @@ SPEC REPOS:
     - ZendeskSDKConfigurationsSDK
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
-
-EXTERNAL SOURCES:
-  WordPressAuthenticator:
-    :branch: fix/prologue-bgcolor
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
-
-CHECKOUT OPTIONS:
-  WordPressAuthenticator:
-    :commit: 654349f5bb5ef48d3b19388840c183e33d9faf4a
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
@@ -208,6 +199,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: c01c998ba52c6ba5f4ea20c425f31fd58ad84f45
+PODFILE CHECKSUM: f3ef4d85369bd0a64100372a657a4ff8da09f464
 
 COCOAPODS: 1.10.0

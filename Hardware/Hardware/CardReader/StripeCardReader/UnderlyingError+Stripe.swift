@@ -11,6 +11,8 @@ extension UnderlyingError {
             return .notConnectedToReader
         case ErrorCode.Code.alreadyConnectedToReader.rawValue:
             return .alreadyConnectedToReader
+        case ErrorCode.Code.processInvalidPaymentIntent.rawValue:
+            return .processInvalidPaymentIntent
         case ErrorCode.Code.cannotConnectToUndiscoveredReader.rawValue:
             return .connectingToUndiscoveredReader
         case ErrorCode.Code.unsupportedSDK.rawValue:

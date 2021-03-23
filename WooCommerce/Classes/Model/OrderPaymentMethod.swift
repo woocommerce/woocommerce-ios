@@ -2,6 +2,10 @@
 enum OrderPaymentMethod: RawRepresentable {
     /// Cash on Delivery
     case cod
+
+    /// No payment method assigned.
+    case none
+
     /// Other
     case unknown
 
@@ -11,6 +15,8 @@ enum OrderPaymentMethod: RawRepresentable {
         switch rawValue {
         case Keys.cod:
             self = .cod
+        case Keys.none:
+            self = .none
         default:
             self = .unknown
         }
@@ -20,6 +26,8 @@ enum OrderPaymentMethod: RawRepresentable {
         switch self {
         case .cod:
             return Keys.cod
+        case .none:
+            return Keys.none
         default:
             return Keys.unknown
         }
@@ -29,5 +37,6 @@ enum OrderPaymentMethod: RawRepresentable {
 
 private enum Keys {
     static let cod = "cod"
+    static let none = ""
     static let unknown = "unknown"
 }

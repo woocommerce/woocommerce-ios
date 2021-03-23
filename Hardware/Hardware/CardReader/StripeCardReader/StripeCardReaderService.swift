@@ -66,8 +66,8 @@ extension StripeCardReaderService: CardReaderService {
 
         // Attack the test terminal, provided by the SDK
         let config = DiscoveryConfiguration(
-            discoveryMethod: .bluetoothProximity,
-            simulated: false
+            discoveryMethod: .internet,
+            simulated: true
         )
 
         switchStatusToDiscovering()
@@ -136,7 +136,11 @@ extension StripeCardReaderService: CardReaderService {
                     return
                 }
 
-                if let _ = error {
+                if let error = error {
+                    print("///// error ")
+                    print(FailureReason.make(with: error as NSError))
+                    print("----- error ")
+
                     promise(Result.failure(CardReaderServiceError.intentCreation))
                 }
 

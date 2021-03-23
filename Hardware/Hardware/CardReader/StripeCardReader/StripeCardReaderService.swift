@@ -173,7 +173,7 @@ extension StripeCardReaderService: CardReaderService {
         return Future() { [weak self] promise in
             guard let activeIntent = self?.activePaymentIntent else {
                 // There is no active payment intent.
-                // Shortcircuit with an error
+                // Shortcircuit with an internal error
                 promise(Result.failure(CardReaderServiceError.capturePayment(underlyingError: .internalServiceError)))
                 return
             }

@@ -486,7 +486,7 @@ private extension OrderDetailsViewModel {
     }
 
     func isOrderStatusEligibleForCardPayment() -> Bool {
-        (order.status == .pending || order.status == .onHold)
+        (order.status == .pending || order.status == .onHold || order.status == .processing)
     }
 
     func isOrderPaymentMethodEligibleForCardPayment() -> Bool {

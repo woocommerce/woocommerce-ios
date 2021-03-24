@@ -92,8 +92,6 @@ private extension ProductVisibilityViewController {
 
     func configureNavigationBar() {
         title = NSLocalizedString("Visibility", comment: "Product Visibility navigation title")
-
-        removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {

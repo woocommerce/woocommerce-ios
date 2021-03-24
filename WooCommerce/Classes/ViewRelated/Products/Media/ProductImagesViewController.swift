@@ -111,8 +111,6 @@ private extension ProductImagesViewController {
         title = NSLocalizedString("Photos", comment: "Product images (Product images page title)")
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
-
-        removeNavigationBackBarButtonText()
     }
 
     func configureAddButton() {

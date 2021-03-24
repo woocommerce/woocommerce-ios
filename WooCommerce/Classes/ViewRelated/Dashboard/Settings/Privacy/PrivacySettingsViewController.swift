@@ -97,8 +97,6 @@ private extension PrivacySettingsViewController {
 
     func configureNavigation() {
         title = NSLocalizedString("Privacy Settings", comment: "Privacy settings screen title")
-
-        removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {

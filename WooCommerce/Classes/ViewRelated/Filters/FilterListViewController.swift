@@ -194,8 +194,6 @@ private extension FilterListViewController {
 
         // Disables interactive dismiss action so that we can prompt the discard changes alert.
         isModalInPresentation = true
-
-        listSelector.removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {

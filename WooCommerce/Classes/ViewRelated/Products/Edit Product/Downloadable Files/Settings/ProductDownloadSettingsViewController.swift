@@ -182,7 +182,6 @@ private extension ProductDownloadSettingsViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
                                                             target: self,
                                                             action: #selector(completeUpdating))
-        removeNavigationBackBarButtonText()
         enableDoneButton(false)
     }
 

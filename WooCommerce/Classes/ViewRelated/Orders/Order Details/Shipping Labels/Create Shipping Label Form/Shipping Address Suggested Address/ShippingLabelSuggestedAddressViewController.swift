@@ -78,7 +78,6 @@ private extension ShippingLabelSuggestedAddressViewController {
 
     func configureNavigationBar() {
         title = type == .origin ? Localization.titleViewShipFrom : Localization.titleViewShipTo
-        removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {

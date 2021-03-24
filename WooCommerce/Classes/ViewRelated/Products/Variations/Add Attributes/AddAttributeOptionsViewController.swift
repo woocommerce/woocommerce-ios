@@ -57,7 +57,6 @@ final class AddAttributeOptionsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureNavigationBar()
         configureMainView()
         configureTableView()
         configureGhostTableView()
@@ -72,10 +71,6 @@ final class AddAttributeOptionsViewController: UIViewController {
 // MARK: - View Configuration
 //
 private extension AddAttributeOptionsViewController {
-
-    func configureNavigationBar() {
-        removeNavigationBackBarButtonText()
-    }
 
     func configureRightButtonItem() {
         // The update indicator has precedence over the next button

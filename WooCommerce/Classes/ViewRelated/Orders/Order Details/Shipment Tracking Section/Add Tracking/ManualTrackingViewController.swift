@@ -66,7 +66,6 @@ private extension ManualTrackingViewController {
     func configureNavigation() {
         configureTitle()
         configureDismissButton()
-        configureBackButton()
         configureAddButton()
     }
 
@@ -82,10 +81,6 @@ private extension ManualTrackingViewController {
                                             target: self,
                                             action: #selector(dismissButtonTapped))
         navigationItem.setLeftBarButton(leftBarButton, animated: false)
-    }
-
-    func configureBackButton() {
-        removeNavigationBackBarButtonText()
     }
 
     func removeProgressIndicator() {

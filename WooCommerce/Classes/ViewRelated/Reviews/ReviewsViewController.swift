@@ -110,7 +110,6 @@ final class ReviewsViewController: UIViewController {
         refreshTitle()
 
         configureSyncingCoordinator()
-        configureNavigationItem()
         configureNavigationBarButtons()
         configureTableView()
         configureTableViewCells()
@@ -152,12 +151,6 @@ private extension ReviewsViewController {
         tabBarItem.title = NSLocalizedString("Reviews", comment: "Title of the Reviews tab — plural form of Review")
         tabBarItem.image = .starOutlineImage()
         tabBarItem.accessibilityIdentifier = "tab-bar-reviews-item"
-    }
-
-    /// Setup: Navigation
-    ///
-    func configureNavigationItem() {
-        removeNavigationBackBarButtonText()
     }
 
     /// Setup: NavigationBar Buttons

@@ -398,7 +398,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 private extension ProductFormViewController {
     func configureNavigationBar() {
         updateNavigationBar()
-        removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {

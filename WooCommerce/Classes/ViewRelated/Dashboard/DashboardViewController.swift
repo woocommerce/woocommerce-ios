@@ -94,8 +94,6 @@ private extension DashboardViewController {
         )
         rightBarButton.accessibilityIdentifier = "dashboard-settings-button"
         navigationItem.setRightBarButton(rightBarButton, animated: false)
-
-        removeNavigationBackBarButtonText()
     }
 
     func configureDashboardUIContainer() {

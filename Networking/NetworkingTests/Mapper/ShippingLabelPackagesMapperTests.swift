@@ -1,104 +1,54 @@
-//import Foundation
-//
-//import XCTest
-//@testable import Networking
-//
-///// Unit Tests for `ShippingLabelPackagesMapper`
-/////
-//final class ShippingLabelPackagesMapperTests: XCTestCase {
-//    /// Dummy Site ID.
-//    ///
-//    private let dummySiteID: Int64 = 33334444
-//
-//    /// Verifies that all of the ProductVariation Fields are parsed correctly.
-//    ///
-//    func test_ShippingLabelPackages_fields_are_properly_parsed() throws {
-//        let productVariation = try XCTUnwrap(mapLoadProductVariationResponse())
-//
-//        XCTAssertEqual(productVariation, sampleProductVariation(siteID: dummySiteID, productID: dummyProductID, id: 2783))
-//    }
-//}
-//
-///// Private Helpers
-/////
-//private extension ShippingLabelPackagesMapperTests {
-//    /// Returns the ProductVariationMapper output upon receiving `filename` (Data Encoded)
-//    ///
-//    func mapProductVariation(from filename: String) -> ProductVariation? {
-//        guard let response = Loader.contentsOf(filename) else {
-//            return nil
-//        }
-//
-//        return try? ProductVariationMapper(siteID: dummySiteID, productID: dummyProductID).map(response: response)
-//    }
-//
-//    /// Returns the ProductVariationMapper output upon receiving `ProductVariation`
-//    ///
-//    func mapLoadProductVariationResponse() -> ProductVariation? {
-//        return mapProductVariation(from: "product-variation-update")
-//    }
-//}
-//
-//private extension ShippingLabelPackagesMapperTests {
-//    func sampleProductVariation(siteID: Int64,
-//                                productID: Int64,
-//                                id: Int64) -> ProductVariation {
-//        let imageSource = "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1"
-//        return ProductVariation(siteID: siteID,
-//                                productID: productID,
-//                                productVariationID: id,
-//                                attributes: sampleProductVariationAttributes(),
-//                                image: ProductImage(imageID: 2432,
-//                                                    dateCreated: dateFromGMT("2020-03-13T03:13:57"),
-//                                                    dateModified: dateFromGMT("2020-07-21T08:29:16"),
-//                                                    src: imageSource,
-//                                                    name: "DSC_0010",
-//                                                    alt: ""),
-//                                permalink: "https://chocolate.com/marble",
-//                                dateCreated: dateFromGMT("2020-06-12T14:36:02"),
-//                                dateModified: dateFromGMT("2020-07-21T08:35:47"),
-//                                dateOnSaleStart: nil,
-//                                dateOnSaleEnd: nil,
-//                                status: .publish,
-//                                description: "<p>Nutty chocolate marble, 99% and organic.</p>\n",
-//                                sku: "87%-strawberry-marble",
-//                                price: "14.99",
-//                                regularPrice: "14.99",
-//                                salePrice: "",
-//                                onSale: false,
-//                                purchasable: true,
-//                                virtual: false,
-//                                downloadable: true,
-//                                downloads: [],
-//                                downloadLimit: -1,
-//                                downloadExpiry: 0,
-//                                taxStatusKey: "taxable",
-//                                taxClass: "",
-//                                manageStock: false,
-//                                stockQuantity: 16,
-//                                stockStatus: .inStock,
-//                                backordersKey: "notify",
-//                                backordersAllowed: true,
-//                                backordered: false,
-//                                weight: "2.5",
-//                                dimensions: ProductDimensions(length: "10",
-//                                                              width: "2.5",
-//                                                              height: ""),
-//                                shippingClass: "",
-//                                shippingClassID: 0,
-//                                menuOrder: 1)
-//    }
-//
-//    func sampleProductVariationAttributes() -> [ProductVariationAttribute] {
-//        return [
-//            ProductVariationAttribute(id: 0, name: "Darkness", option: "87%"),
-//            ProductVariationAttribute(id: 0, name: "Flavor", option: "strawberry"),
-//            ProductVariationAttribute(id: 0, name: "Shape", option: "marble")
-//        ]
-//    }
-//
-//    func dateFromGMT(_ dateStringInGMT: String) -> Date {
-//        let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-//        return dateFormatter.date(from: dateStringInGMT)!
-//    }
-//}
+import Foundation
+import XCTest
+@testable import Networking
+
+/// Unit Tests for `ShippingLabelPackagesMapper`
+///
+final class ShippingLabelPackagesMapperTests: XCTestCase {
+
+    /// Verifies that all of the ShippingLabelPackagesResponse Fields are parsed correctly.
+    ///
+    func test_ShippingLabelPackages_fields_are_properly_parsed() throws {
+        let shippingLabelPackages = try XCTUnwrap(mapLoadShippingLabelPackagesResponse())
+
+        XCTAssertEqual(shippingLabelPackages.storeOptions, sampleShippingLabelStoreOptions())
+        XCTAssertEqual(shippingLabelPackages.customPackages, sampleShippingLabelCustomPackages())
+    }
+}
+
+/// Private Helpers
+///
+private extension ShippingLabelPackagesMapperTests {
+    /// Returns the ProductVariationMapper output upon receiving `filename` (Data Encoded)
+    ///
+    func mapShippingLabelPackages(from filename: String) -> ShippingLabelPackagesResponse? {
+        guard let response = Loader.contentsOf(filename) else {
+            return nil
+        }
+
+        return try? ShippingLabelPackagesMapper().map(response: response)
+    }
+
+    /// Returns the ShippingLabelPackagesMapper output upon receiving `filename`
+    ///
+    func mapLoadShippingLabelPackagesResponse() -> ShippingLabelPackagesResponse? {
+        return mapShippingLabelPackages(from: "shipping-label-packages-success")
+    }
+}
+
+private extension ShippingLabelPackagesMapperTests {
+    func sampleShippingLabelStoreOptions() -> ShippingLabelStoreOptions {
+        return ShippingLabelStoreOptions(currencySymbol: "$", dimensionUnit: "cm", weightUnit: "kg", originCountry: "US")
+    }
+
+    func sampleShippingLabelCustomPackages() -> [ShippingLabelCustomPackage] {
+        let customPackage1 = ShippingLabelCustomPackage(isUserDefined: true, title: "Krabica", isLetter: false, dimensions: "1 x 2 x 3", boxWeight: 1, maxWeight: 0)
+        let customPackage2 = ShippingLabelCustomPackage(isUserDefined: true, title: "Obalka", isLetter: true, dimensions: "2 x 3 x 4", boxWeight: 5, maxWeight: 0)
+        
+        return [customPackage1, customPackage2]
+    }
+    
+    func sampleShippingLabelPredefinedOptions() -> [ShippingLabelPredefinedOption] {
+        return []
+    }
+}

@@ -19,7 +19,7 @@ public enum CardReaderServiceError: Error {
     case paymentMethodCollection(underlyingError: UnderlyingError = .internalServiceError)
 
     /// Error thrown while capturing a payment
-    case capturePayment(underlyingError: UnderlyingError = .internalServiceError)
+    case paymentCapture(underlyingError: UnderlyingError = .internalServiceError)
 }
 
 

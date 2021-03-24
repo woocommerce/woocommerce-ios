@@ -115,7 +115,7 @@ extension StripeCardReaderService: CardReaderService {
         return Future() { promise in
             // This will be removed. We just want to pretend we are doing a roundtrip to the SDK for now.
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                promise(Result.success(()))
+                promise(.success(()))
             }
         }
     }
@@ -129,18 +129,18 @@ extension StripeCardReaderService: CardReaderService {
         return Future() { promise in
             Terminal.shared.createPaymentIntent(parameters.toStripe()) { [weak self] (intent, error) in
                 guard let self = self else {
-                    promise(Result.failure(CardReaderServiceError.intentCreation()))
+                    promise(.failure(CardReaderServiceError.intentCreation()))
                     return
                 }
 
                 if let error = error {
                     let underlyingError = UnderlyingError.make(with: error as NSError)
-                    promise(Result.failure(CardReaderServiceError.intentCreation(underlyingError: underlyingError)))
+                    promise(.failure(CardReaderServiceError.intentCreation(underlyingError: underlyingError)))
                 }
 
                 if let intent = intent {
                     self.activePaymentIntent = intent
-                    promise(Result.success(()))
+                    promise(.success(()))
                 }
             }
         }
@@ -151,19 +151,19 @@ extension StripeCardReaderService: CardReaderService {
             guard let activeIntent = self?.activePaymentIntent else {
                 // There is no active payment intent.
                 // Shortcircuit with an internal error
-                promise(Result.failure(CardReaderServiceError.paymentMethod()))
+                promise(.failure(CardReaderServiceError.paymentMethod()))
                 return
             }
 
             Terminal.shared.collectPaymentMethod(activeIntent, delegate: self) { (intent, error) in
                 if let error = error {
                     let underlyingError = UnderlyingError.make(with: error as NSError)
-                    promise(Result.failure(CardReaderServiceError.paymentMethod(underlyingError: underlyingError)))
+                    promise(.failure(CardReaderServiceError.paymentMethod(underlyingError: underlyingError)))
                 }
 
                 if let intent = intent {
                     self?.activePaymentIntent = intent
-                    promise(Result.success(()))
+                    promise(.success(()))
                 }
             }
         }
@@ -174,19 +174,19 @@ extension StripeCardReaderService: CardReaderService {
             guard let activeIntent = self?.activePaymentIntent else {
                 // There is no active payment intent.
                 // Shortcircuit with an internal error
-                promise(Result.failure(CardReaderServiceError.capturePayment()))
+                promise(.failure(CardReaderServiceError.capturePayment()))
                 return
             }
 
             Terminal.shared.processPayment(activeIntent) { (intent, error) in
                 if let error = error {
                     let underlyingError = UnderlyingError.make(with: error as NSError)
-                    promise(Result.failure(CardReaderServiceError.capturePayment(underlyingError: underlyingError)))
+                    promise(.failure(CardReaderServiceError.capturePayment(underlyingError: underlyingError)))
                 }
 
                 if let intent = intent {
                     self?.activePaymentIntent = intent
-                    promise(Result.success(intent.stripeId))
+                    promise(.success(intent.stripeId))
                 }
             }
         }
@@ -203,20 +203,20 @@ extension StripeCardReaderService: CardReaderService {
         return Future() { [weak self] promise in
 
             guard let self = self else {
-                promise(Result.failure(CardReaderServiceError.connection()))
+                promise(.failure(CardReaderServiceError.connection()))
                 return
             }
 
             // Find a cached reader that matches.
             // If this fails, that means that we are in an internal state that we do not expect.
             guard let stripeReader = self.discoveredStripeReadersCache.reader(matching: reader) as? Reader else {
-                promise(Result.failure(CardReaderServiceError.connection()))
+                promise(.failure(CardReaderServiceError.connection()))
                 return
             }
 
             Terminal.shared.connectReader(stripeReader) { [weak self] (reader, error) in
                 guard let self = self else {
-                    promise(Result.failure(CardReaderServiceError.connection()))
+                    promise(.failure(CardReaderServiceError.connection()))
                     return
                 }
 
@@ -225,12 +225,12 @@ extension StripeCardReaderService: CardReaderService {
 
                 if let error = error {
                     let underlyingError = UnderlyingError.make(with: error as NSError)
-                    promise(Result.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
+                    promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                 }
 
                 if let reader = reader {
                     self.connectedReadersSubject.send([CardReader(reader: reader)])
-                    promise(Result.success(()))
+                    promise(.success(()))
                 }
             }
         }

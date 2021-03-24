@@ -39,19 +39,19 @@ That information is packaged in a single entity, an enumeration named `CardReade
 ```
 public enum CardReaderServiceError: Error {
     /// Error thrown during reader discovery
-    case discovery(underlyingError: UnderlyingError? = nil)
+    case discovery(underlyingError: UnderlyingError = .internalServiceError)
 
     /// Error thrown while connecting to a reader
-    case connection(underlyingError: UnderlyingError? = nil)
+    case connection(underlyingError: UnderlyingError = .internalServiceError)
 
     /// Error thrown while creating a payment intent
-    case intentCreation(underlyingError: UnderlyingError? = nil)
+    case intentCreation(underlyingError: UnderlyingError = .internalServiceError)
 
     /// Error thrown while collecting payment methods
-    case paymentMethod(underlyingError: UnderlyingError? = nil)
+    case paymentMethod(underlyingError: UnderlyingError = .internalServiceError)
 
     /// Error thrown while capturing a payment
-    case capturePayment(underlyingError: UnderlyingError? = nil)
+    case capturePayment(underlyingError: UnderlyingError = .internalServiceError)
 }
 ```
 

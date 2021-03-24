@@ -129,7 +129,7 @@ extension StripeCardReaderService: CardReaderService {
         return Future() { promise in
             Terminal.shared.createPaymentIntent(parameters.toStripe()) { [weak self] (intent, error) in
                 guard let self = self else {
-                    promise(Result.failure(CardReaderServiceError.intentCreation(underlyingError: .internalServiceError)))
+                    promise(Result.failure(CardReaderServiceError.intentCreation()))
                     return
                 }
 
@@ -151,7 +151,7 @@ extension StripeCardReaderService: CardReaderService {
             guard let activeIntent = self?.activePaymentIntent else {
                 // There is no active payment intent.
                 // Shortcircuit with an internal error
-                promise(Result.failure(CardReaderServiceError.paymentMethod(underlyingError: .internalServiceError)))
+                promise(Result.failure(CardReaderServiceError.paymentMethod()))
                 return
             }
 
@@ -174,7 +174,7 @@ extension StripeCardReaderService: CardReaderService {
             guard let activeIntent = self?.activePaymentIntent else {
                 // There is no active payment intent.
                 // Shortcircuit with an internal error
-                promise(Result.failure(CardReaderServiceError.capturePayment(underlyingError: .internalServiceError)))
+                promise(Result.failure(CardReaderServiceError.capturePayment()))
                 return
             }
 
@@ -203,20 +203,20 @@ extension StripeCardReaderService: CardReaderService {
         return Future() { [weak self] promise in
 
             guard let self = self else {
-                promise(Result.failure(CardReaderServiceError.connection(underlyingError: .internalServiceError)))
+                promise(Result.failure(CardReaderServiceError.connection()))
                 return
             }
 
             // Find a cached reader that matches.
             // If this fails, that means that we are in an internal state that we do not expect.
             guard let stripeReader = self.discoveredStripeReadersCache.reader(matching: reader) as? Reader else {
-                promise(Result.failure(CardReaderServiceError.connection(underlyingError: .internalServiceError)))
+                promise(Result.failure(CardReaderServiceError.connection()))
                 return
             }
 
             Terminal.shared.connectReader(stripeReader) { [weak self] (reader, error) in
                 guard let self = self else {
-                    promise(Result.failure(CardReaderServiceError.connection(underlyingError: .internalServiceError)))
+                    promise(Result.failure(CardReaderServiceError.connection()))
                     return
                 }
 

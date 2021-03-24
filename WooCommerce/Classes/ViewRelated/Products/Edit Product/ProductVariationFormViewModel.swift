@@ -65,12 +65,20 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
 
     /// The action buttons that should be rendered in the navigation bar.
     var actionButtons: [ActionButtonType] {
-        switch (formType, hasUnsavedChanges()) {
-        case (.edit, true):
-            return [.save, .more]
-        default:
-            return [.more]
+        var buttons: [ActionButtonType] = {
+            switch (formType, hasUnsavedChanges()) {
+            case (.edit, true):
+                return [.save]
+            default:
+                return []
+            }
+        }()
+
+        if shouldShowMoreOptionsMenu() {
+            buttons.append(.more)
         }
+
+        return buttons
     }
 
     /// Assign this closure to get notified when the variation is deleted.

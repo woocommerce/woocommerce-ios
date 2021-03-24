@@ -151,14 +151,14 @@ extension StripeCardReaderService: CardReaderService {
             guard let activeIntent = self?.activePaymentIntent else {
                 // There is no active payment intent.
                 // Shortcircuit with an internal error
-                promise(.failure(CardReaderServiceError.paymentMethod()))
+                promise(.failure(CardReaderServiceError.paymentMethodCollection()))
                 return
             }
 
             Terminal.shared.collectPaymentMethod(activeIntent, delegate: self) { (intent, error) in
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.paymentMethod(underlyingError: underlyingError)))
+                    promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: underlyingError)))
                 }
 
                 if let intent = intent {

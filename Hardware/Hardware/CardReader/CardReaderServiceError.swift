@@ -2,8 +2,8 @@
 /// It identifies the interaction with the card reader
 /// where the error was thrown.
 /// It is important to mark the specific interaction
-/// because some operations (like, for example, procesing a payment)
-/// require of three interactions with the SDK in sequence, and any error
+/// because some operations (like, for example, processing a payment)
+/// require three interactions with the SDK in sequence, and any error
 /// in any of the steps in that sequence would make the whole operation fail
 public enum CardReaderServiceError: Error {
     /// Error thrown during reader discovery
@@ -16,7 +16,7 @@ public enum CardReaderServiceError: Error {
     case intentCreation(underlyingError: UnderlyingError = .internalServiceError)
 
     /// Error thrown while collecting payment methods
-    case paymentMethod(underlyingError: UnderlyingError = .internalServiceError)
+    case paymentMethodCollection(underlyingError: UnderlyingError = .internalServiceError)
 
     /// Error thrown while capturing a payment
     case capturePayment(underlyingError: UnderlyingError = .internalServiceError)

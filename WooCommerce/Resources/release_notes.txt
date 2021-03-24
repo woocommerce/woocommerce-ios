@@ -1,3 +1,4 @@
-- When editing a product, you can now create, delete, and update product variations, product attributes, and product attribute options.
-- We’ve refreshed the design, including changes to your dashboard tabs. Feel free to share UI feedback with us so we can make improvements.
-- Other various fixes.
+WooCommerce iOS has updates that are sure to make running your business easier.
+
+You can now create variable products from scratch and publish a product draft/pending product from the navigation bar.
+We fixed glitches affecting the addition of product attributes or variations, and we improved the display of text and images in landscape orientation.

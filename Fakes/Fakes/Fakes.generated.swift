@@ -895,6 +895,17 @@ extension ShippingLabelAddressVerification.ShipType {
         .origin
     }
 }
+extension ShippingLabelPackagesResponse {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelPackagesResponse {
+        .init(
+            storeOptions: .fake(),
+            customPackages: .fake(),
+            predefinedOptions: .fake()
+        )
+    }
+}
 extension ShippingLabelPaperSize {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1007,6 +1018,35 @@ extension SitePlan {
             siteID: .fake(),
             shortName: .fake()
         )
+    }
+}
+extension SitePlugin {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> SitePlugin {
+        .init(
+            siteID: .fake(),
+            plugin: .fake(),
+            status: .fake(),
+            name: .fake(),
+            pluginUri: .fake(),
+            author: .fake(),
+            authorUri: .fake(),
+            descriptionRaw: .fake(),
+            descriptionRendered: .fake(),
+            version: .fake(),
+            networkOnly: .fake(),
+            requiresWPVersion: .fake(),
+            requiresPHPVersion: .fake(),
+            textDomain: .fake()
+        )
+    }
+}
+extension SitePluginStatusEnum {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> SitePluginStatusEnum {
+        .active
     }
 }
 extension SiteSetting {

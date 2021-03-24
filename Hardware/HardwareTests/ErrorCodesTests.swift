@@ -173,7 +173,7 @@ private extension CardReaderServiceErrorTests {
     }
 
     func underlyingError(error: NSError) -> UnderlyingError {
-        return UnderlyingError.make(with: error)
+        return UnderlyingError(with: error)
     }
 
     func stripeError(code: Int) -> NSError {

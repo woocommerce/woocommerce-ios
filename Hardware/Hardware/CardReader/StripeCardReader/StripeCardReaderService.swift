@@ -134,7 +134,7 @@ extension StripeCardReaderService: CardReaderService {
                 }
 
                 if let error = error {
-                    let underlyingError = UnderlyingError.make(with: error as NSError)
+                    let underlyingError = UnderlyingError(with: error)
                     promise(.failure(CardReaderServiceError.intentCreation(underlyingError: underlyingError)))
                 }
 
@@ -157,7 +157,7 @@ extension StripeCardReaderService: CardReaderService {
 
             Terminal.shared.collectPaymentMethod(activeIntent, delegate: self) { (intent, error) in
                 if let error = error {
-                    let underlyingError = UnderlyingError.make(with: error as NSError)
+                    let underlyingError = UnderlyingError(with: error)
                     promise(.failure(CardReaderServiceError.paymentMethod(underlyingError: underlyingError)))
                 }
 
@@ -180,7 +180,7 @@ extension StripeCardReaderService: CardReaderService {
 
             Terminal.shared.processPayment(activeIntent) { (intent, error) in
                 if let error = error {
-                    let underlyingError = UnderlyingError.make(with: error as NSError)
+                    let underlyingError = UnderlyingError(with: error)
                     promise(.failure(CardReaderServiceError.capturePayment(underlyingError: underlyingError)))
                 }
 
@@ -224,7 +224,7 @@ extension StripeCardReaderService: CardReaderService {
                 self.discoveredStripeReadersCache.clear()
 
                 if let error = error {
-                    let underlyingError = UnderlyingError.make(with: error as NSError)
+                    let underlyingError = UnderlyingError(with: error)
                     promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
                 }
 

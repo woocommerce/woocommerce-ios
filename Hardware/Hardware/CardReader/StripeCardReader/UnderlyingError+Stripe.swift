@@ -3,82 +3,84 @@ import StripeTerminal
 /// the mapping is done according to the error codes documented here:
 /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html
 extension UnderlyingError {
-    static func make(with stripeError: NSError) -> Self {
-        switch stripeError.code {
+    init(with stripeError: Error) {
+        let error = stripeError as NSError
+
+        switch error.code {
         case ErrorCode.Code.busy.rawValue:
-            return .busy
+            self = .busy
         case ErrorCode.Code.notConnectedToReader.rawValue:
-            return .notConnectedToReader
+            self = .notConnectedToReader
         case ErrorCode.Code.alreadyConnectedToReader.rawValue:
-            return .alreadyConnectedToReader
+            self = .alreadyConnectedToReader
         case ErrorCode.Code.processInvalidPaymentIntent.rawValue:
-            return .processInvalidPaymentIntent
+            self = .processInvalidPaymentIntent
         case ErrorCode.Code.cannotConnectToUndiscoveredReader.rawValue:
-            return .connectingToUndiscoveredReader
+            self = .connectingToUndiscoveredReader
         case ErrorCode.Code.unsupportedSDK.rawValue:
-            return .unsupportedSDK
+            self = .unsupportedSDK
         case ErrorCode.Code.featureNotAvailableWithConnectedReader.rawValue:
-            return .featureNotAvailableWithConnectedReader
+            self = .featureNotAvailableWithConnectedReader
         case ErrorCode.Code.canceled.rawValue:
-            return .commandCancelled
+            self = .commandCancelled
         case ErrorCode.Code.locationServicesDisabled.rawValue:
-            return .locationServicesDisabled
+            self = .locationServicesDisabled
         case ErrorCode.Code.bluetoothDisabled.rawValue:
-            return .bluetoothDisabled
+            self = .bluetoothDisabled
         case ErrorCode.Code.bluetoothError.rawValue:
-            return .bluetoothError
+            self = .bluetoothError
         case ErrorCode.Code.bluetoothScanTimedOut.rawValue:
-            return .bluetoothScanTimedOut
+            self = .bluetoothScanTimedOut
         case ErrorCode.Code.bluetoothLowEnergyUnsupported.rawValue:
-            return .bluetoothLowEnergyUnsupported
+            self = .bluetoothLowEnergyUnsupported
         case ErrorCode.Code.readerSoftwareUpdateFailedBatteryLow.rawValue:
-            return .readerSoftwareUpdateFailedBatteryLow
+            self = .readerSoftwareUpdateFailedBatteryLow
         case ErrorCode.Code.readerSoftwareUpdateFailedInterrupted.rawValue:
-            return .readerSoftwareUpdateFailedInterrupted
+            self = .readerSoftwareUpdateFailedInterrupted
         case ErrorCode.Code.readerSoftwareUpdateFailed.rawValue:
-            return .readerSoftwareUpdateFailed
+            self = .readerSoftwareUpdateFailed
         case ErrorCode.Code.readerSoftwareUpdateFailedReaderError.rawValue:
-            return .readerSoftwareUpdateFailedReader
+            self = .readerSoftwareUpdateFailedReader
         case ErrorCode.Code.readerSoftwareUpdateFailedServerError.rawValue:
-            return .readerSoftwareUpdateFailedServer
+            self = .readerSoftwareUpdateFailedServer
         case ErrorCode.Code.cardInsertNotRead.rawValue:
-            return .cardInsertNotRead
+            self = .cardInsertNotRead
         case ErrorCode.Code.cardSwipeNotRead.rawValue:
-            return .cardSwipeNotRead
+            self = .cardSwipeNotRead
         case ErrorCode.Code.cardReadTimedOut.rawValue:
-            return .cardReadTimeOut
+            self = .cardReadTimeOut
         case ErrorCode.Code.cardRemoved.rawValue:
-            return .cardRemoved
+            self = .cardRemoved
         case ErrorCode.Code.cardLeftInReader.rawValue:
-            return .cardLeftInReader
+            self = .cardLeftInReader
         case ErrorCode.Code.readerBusy.rawValue:
-            return .readerBusy
+            self = .readerBusy
         case ErrorCode.Code.incompatibleReader.rawValue:
-            return .readerIncompatible
+            self = .readerIncompatible
         case ErrorCode.Code.readerCommunicationError.rawValue:
-            return .readerCommunicationError
+            self = .readerCommunicationError
         case ErrorCode.Code.bluetoothConnectTimedOut.rawValue:
-            return .bluetoothConnectTimedOut
+            self = .bluetoothConnectTimedOut
         case ErrorCode.Code.bluetoothDisconnected.rawValue:
-            return .bluetoothDisconnected
+            self = .bluetoothDisconnected
         case ErrorCode.Code.unsupportedReaderVersion.rawValue:
-            return .unsupportedReaderVersion
+            self = .unsupportedReaderVersion
         case ErrorCode.Code.connectFailedReaderIsInUse.rawValue:
-            return .connectFailedReaderIsInUse
+            self = .connectFailedReaderIsInUse
         case ErrorCode.Code.unexpectedSdkError.rawValue:
-            return .unexpectedSDKError
+            self = .unexpectedSDKError
         case ErrorCode.Code.paymentDeclinedByStripeAPI.rawValue:
-            return .paymentDeclinedByPaymentProcessorAPI
+            self = .paymentDeclinedByPaymentProcessorAPI
         case ErrorCode.Code.paymentDeclinedByReader.rawValue:
-            return .paymentDeclinedByCardReader
+            self = .paymentDeclinedByCardReader
         case ErrorCode.Code.notConnectedToInternet.rawValue:
-            return .notConnectedToInternet
+            self = .notConnectedToInternet
         case ErrorCode.Code.requestTimedOut.rawValue:
-            return .requestTimedOut
+            self = .requestTimedOut
         case ErrorCode.Code.sessionExpired.rawValue:
-            return .readerSessionExpired
+            self = .readerSessionExpired
         default:
-            return .internalServiceError
+            self = .internalServiceError
         }
     }
 }

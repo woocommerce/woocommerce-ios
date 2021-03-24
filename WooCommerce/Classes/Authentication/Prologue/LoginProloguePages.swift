@@ -72,22 +72,36 @@ class LoginProloguePageTypeViewController: UIViewController {
     }
 
     private func configureStackView() {
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(stackView)
 
-        // Stack view style
+        // Stack view layout
         stackView.axis = .vertical
-        stackView.distribution = .fillProportionally
+        stackView.alignment = .center
         stackView.spacing = 40
-        view.pinSubviewToSafeArea(stackView, insets: UIEdgeInsets(top: 190, left: 70, bottom: 110, right: 70))
+
+        // Reduce centerYAnchor constraint priority to ensure the bottom margin has
+        // higher priority, so stack view is fully visible on shorter devices
+        let verticalCentering = stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 103)
+        verticalCentering.priority = UILayoutPriority(999)
+
+        // Set constraints
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            verticalCentering,
+            stackView.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -57),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
     }
 
     private func configureImage() {
         stackView.addArrangedSubview(imageView)
 
-        // Image style
+        // Image style & layout
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.setContentHuggingPriority(.required, for: .vertical)
+        imageView.setContentCompressionResistancePriority(.required, for: .vertical)
 
         // Image contents
         imageView.image = pageType.image
@@ -96,15 +110,16 @@ class LoginProloguePageTypeViewController: UIViewController {
     private func configureTitle() {
         stackView.addArrangedSubview(titleLabel)
 
-        // Label style
+        // Label style & layout
         titleLabel.font = .body
         titleLabel.textColor = .text
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 0
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.setContentHuggingPriority(.required, for: .vertical)
+        titleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: stackView.leadingAnchor, constant: 10),
-            titleLabel.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: -10)
+            titleLabel.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 0.55),
         ])
 
         // Label contents

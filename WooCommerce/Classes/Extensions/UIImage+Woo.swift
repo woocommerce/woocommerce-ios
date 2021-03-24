@@ -264,24 +264,28 @@ extension UIImage {
     ///
     static var prologueAnalyticsImage: UIImage {
         return UIImage(named: "login-prologue-analytics")!
+            .imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Login prologue orders image
     ///
     static var prologueOrdersImage: UIImage {
         return UIImage(named: "login-prologue-orders")!
+            .imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Login prologue products image
     ///
     static var prologueProductsImage: UIImage {
         return UIImage(named: "login-prologue-products")!
+            .imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Login prologue reviews image
     ///
     static var prologueReviewsImage: UIImage {
         return UIImage(named: "login-prologue-reviews")!
+            .imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Inventory Icon

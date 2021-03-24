@@ -36,13 +36,14 @@ final class LoginProloguePageViewController: UIPageViewController {
         let newPageControl = UIPageControl()
         newPageControl.currentPageIndicatorTintColor = .gray(.shade5)
         newPageControl.pageIndicatorTintColor = .wooCommercePurple(.shade50)
+        newPageControl.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
 
         newPageControl.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(newPageControl)
 
         NSLayoutConstraint.activate([
             newPageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            newPageControl.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20)
+            newPageControl.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10)
         ])
 
         newPageControl.numberOfPages = pages.count

@@ -67,9 +67,9 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     var actionButtons: [ActionButtonType] {
         switch (formType, hasUnsavedChanges()) {
         case (.edit, true):
-            return [.save]
+            return [.save, .more]
         default:
-            return []
+            return [.more]
         }
     }
 

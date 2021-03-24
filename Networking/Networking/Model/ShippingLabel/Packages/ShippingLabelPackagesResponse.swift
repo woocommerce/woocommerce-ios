@@ -49,8 +49,7 @@ extension ShippingLabelPackagesResponse: Decodable {
             let provider: [String: Any]? = try? value.toDictionary()
             provider?.forEach({ (providerKey, providerValue) in
 
-                let packageIDs: [String] = rawPredefinedFormData[key]?.value as? [String] ?? []
-
+                let packageIDs: [Any?] = rawPredefinedFormData[key]?.value as? [Any?] ?? []
                 let providerValueDict = providerValue as? [String: Any]
                 let predefinedPackages = ShippingLabelPackagesResponse.getPredefinedPackages(packageIDs: packageIDs,
                                                                                              packageDefinitions: providerValueDict)
@@ -82,16 +81,16 @@ extension ShippingLabelPackagesResponse: Decodable {
 }
 
 private extension ShippingLabelPackagesResponse {
-    static func getPredefinedPackages(packageIDs: [String], packageDefinitions: [String: Any]?) -> [ShippingLabelPredefinedPackage] {
+    static func getPredefinedPackages(packageIDs: [Any?], packageDefinitions: [String: Any]?) -> [ShippingLabelPredefinedPackage] {
         var predefinedPackages: [ShippingLabelPredefinedPackage] = []
         guard let definitions = packageDefinitions?["definitions"], let jsonData = try? JSONSerialization.data(withJSONObject: definitions, options: []) else {
             return []
         }
         let packages = (try? JSONDecoder().decode([ShippingLabelPredefinedPackage].self, from: jsonData)) ?? []
 
-        packageIDs.forEach { (packageID) in
+        packageIDs.compactMap { $0 }.forEach { (packageID) in
             packages.forEach { (package) in
-                if packageID == package.id {
+                if packageID as? String == package.id {
                     predefinedPackages.append(package)
                 }
             }

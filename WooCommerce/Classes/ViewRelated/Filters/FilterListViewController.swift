@@ -234,7 +234,7 @@ private extension FilterListViewController {
     }
 
     func configureChildNavigationController() {
-        let navigationController = UINavigationController(rootViewController: listSelector)
+        let navigationController = WooNavigationController(rootViewController: listSelector)
         addChild(navigationController)
         navigationControllerContainerView.addSubview(navigationController.view)
         navigationController.didMove(toParent: self)

@@ -467,7 +467,7 @@ private extension ZendeskManager {
 
         // If the controller is a UIViewController, set the modal display for iPad.
         if !controller.isKind(of: UINavigationController.self) && UIDevice.current.userInterfaceIdiom == .pad {
-            let navController = UINavigationController(rootViewController: zendeskView)
+            let navController = WooNavigationController(rootViewController: zendeskView)
             navController.modalPresentationStyle = .fullScreen
             navController.modalTransitionStyle = .crossDissolve
             controller.present(navController, animated: true)

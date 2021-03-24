@@ -622,7 +622,7 @@ private extension OrderDetailsViewController {
             }
         }
 
-        let navigationController = UINavigationController(rootViewController: statusList)
+        let navigationController = WooNavigationController(rootViewController: statusList)
 
         present(navigationController, animated: true)
     }

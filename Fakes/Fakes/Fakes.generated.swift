@@ -895,6 +895,20 @@ extension ShippingLabelAddressVerification.ShipType {
         .origin
     }
 }
+extension ShippingLabelCustomPackage {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelCustomPackage {
+        .init(
+            isUserDefined: .fake(),
+            title: .fake(),
+            isLetter: .fake(),
+            dimensions: .fake(),
+            boxWeight: .fake(),
+            maxWeight: .fake()
+        )
+    }
+}
 extension ShippingLabelPackagesResponse {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -911,6 +925,28 @@ extension ShippingLabelPaperSize {
     ///
     public static func fake() -> ShippingLabelPaperSize {
         .a4
+    }
+}
+extension ShippingLabelPredefinedOption {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelPredefinedOption {
+        .init(
+            title: .fake(),
+            predefinedPackages: .fake()
+        )
+    }
+}
+extension ShippingLabelPredefinedPackage {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelPredefinedPackage {
+        .init(
+            id: .fake(),
+            title: .fake(),
+            isLetter: .fake(),
+            dimensions: .fake()
+        )
     }
 }
 extension ShippingLabelPrintData {
@@ -956,6 +992,18 @@ extension ShippingLabelStatus {
     ///
     public static func fake() -> ShippingLabelStatus {
         .purchased
+    }
+}
+extension ShippingLabelStoreOptions {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelStoreOptions {
+        .init(
+            currencySymbol: .fake(),
+            dimensionUnit: .fake(),
+            weightUnit: .fake(),
+            originCountry: .fake()
+        )
     }
 }
 extension ShippingLine {

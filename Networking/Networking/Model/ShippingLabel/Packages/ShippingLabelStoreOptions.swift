@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents the store options returned in the packages details.
 ///
-public struct ShippingLabelStoreOptions: Equatable {
+public struct ShippingLabelStoreOptions: Equatable, GeneratedFakeable {
 
     public let currencySymbol: String // eg. `$`
     public let dimensionUnit: String // eg. `in`

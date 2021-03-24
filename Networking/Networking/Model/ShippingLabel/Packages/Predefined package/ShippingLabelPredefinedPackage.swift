@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a predefined package in Shipping Labels.
 ///
-public struct ShippingLabelPredefinedPackage: Equatable {
+public struct ShippingLabelPredefinedPackage: Equatable, GeneratedFakeable {
 
     /// The id of the predefined package
     public let id: String

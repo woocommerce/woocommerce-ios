@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a custom package in Shipping Labels.
 ///
-public struct ShippingLabelCustomPackage: Equatable {
+public struct ShippingLabelCustomPackage: Equatable, GeneratedFakeable {
 
     /// Usually is always `true` for custom packages
     public let isUserDefined: Bool

@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents a predefined option in Shipping Labels.
 ///
-public struct ShippingLabelPredefinedOption: Equatable {
+public struct ShippingLabelPredefinedOption: Equatable, GeneratedFakeable {
 
     /// The title of the predefined option
     public let title: String

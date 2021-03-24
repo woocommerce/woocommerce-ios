@@ -217,6 +217,9 @@
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "Add Price";
 
+/* Action to add product on the placeholder overlay when there are no products on the Products tab */
+"Add Product" = "Add Product";
+
 /* Title for adding an external URL row on Product main screen for an external/affiliate product */
 "Add product link" = "Add product link";
 
@@ -255,6 +258,9 @@
 
 /* Shipping Label Suggested Address entered placeholder */
 "Address Entered" = "Address Entered";
+
+/* Error showed in Shipping Label Address Validation for the address field */
+"Address missing" = "Address missing";
 
 /* Shipping Label Suggested address entered placeholder */
 "Address Suggested" = "Address Suggested";
@@ -509,6 +515,9 @@
 /* Text field city in Shipping Label Address Validation */
 "City" = "City";
 
+/* Error showed in Shipping Label Address Validation for the city field */
+"City missing" = "City missing";
+
 /* Button title for clearing all filters for the list. */
 "Clear all" = "Clear all";
 
@@ -612,6 +621,9 @@
 /* Text field country in Shipping Label Address Validation */
 "Country" = "Country";
 
+/* Error showed in Shipping Label Address Validation for the country field */
+"Country missing" = "Country missing";
+
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "Crash Debug Menu";
 
@@ -650,6 +662,9 @@
 
 /* Customer note section title */
 "Customer Provided Note" = "Customer Provided Note";
+
+/* Details text in the shipping label creation info screen */
+"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Cut the post office line by printing shipping labels at home with your phone at discounted rates!";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Date shipped";
@@ -1222,9 +1237,12 @@
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Launch Wormholy Debug";
 
-/* Settings > Privacy Settings. A text link to the cookie policy.
-   Title of button shown in the Orders → All Orders tab if the list is empty. */
+/* Button title in the shipping label creation info screen
+   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Orders → All Orders tab if the list is empty. */
 "Learn more" = "Learn more";
+
+/* Title of button in order details > info link for creating a shipping label on the mobile device. */
+"Learn more about creating labels with your phone" = "Learn more about creating labels with your phone";
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "Learn more about Jetpack";
@@ -1414,6 +1432,9 @@
 /* Name text field placeholder
    Text field name in Shipping Label Address Validation */
 "Name" = "Name";
+
+/* Error showed in Shipping Label Address Validation for the name field */
+"Name missing" = "Name missing";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
 "Navigates to Settings." = "Navigates to Settings.";
@@ -1753,6 +1774,9 @@
 /* Text field postcode in Shipping Label Address Validation */
 "Postcode" = "Postcode";
 
+/* Error showed in Shipping Label Address Validation for the postcode field */
+"Postcode missing" = "Postcode missing";
+
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Powered by Automattic";
 
@@ -1852,7 +1876,7 @@
 /* One of the possible options in Product Visibility */
 "Public" = "Public";
 
-/* Action for creating a new Product remotely */
+/* Action for creating a new product remotely with a published status */
 "Publish" = "Publish";
 
 /* shown in promotional screens during first launch */
@@ -2050,8 +2074,8 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Sale price: %@";
 
-/* Add Product Category. Save button title in navbar.
-   Add Product Tags. Save button title in navbar. */
+/* Action for saving a Product remotely
+   Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. */
 "Save" = "Save";
 
 /* Button title to save a product as draft in Product More Options Action Sheet */
@@ -2059,6 +2083,9 @@
 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
 "Save as Draft" = "Save as Draft";
+
+/* Message text in the shipping label creation info screen */
+"Save time and money by fulfilling with WooCommerce Shipping" = "Save time and money by fulfilling with WooCommerce Shipping";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Saving your product...";
@@ -2374,11 +2401,17 @@
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Standard rate";
 
+/* The details on the placeholder overlay when there are no products on the Products tab */
+"Start selling today by adding your first product to the store." = "Start selling today by adding your first product to the store.";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "Starting period %1$@, ending period %2$@";
 
 /* Text field state in Shipping Label Address Validation */
 "State" = "State";
+
+/* Error showed in Shipping Label Address Validation for the state field */
+"State missing" = "State missing";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -2461,6 +2494,9 @@
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
 "Tap to modify the item refund quantity" = "Tap to modify the item refund quantity";
+
+/* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
+"Tap to show information about creating a shipping label" = "Tap to show information about creating a shipping label";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "Tap to show instructions on how to print a shipping label on the mobile device";
@@ -2886,8 +2922,8 @@
 /* Upcoming Section Header */
 "Upcoming" = "Upcoming";
 
-/* Action for updating a Product remotely
-   Action for updating a Products' downloadable files' info remotely - Label action for updating a link on the editor */
+/* Action for updating a Products' downloadable files' info remotely
+   Label action for updating a link on the editor */
 "Update" = "Update";
 
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
@@ -3122,6 +3158,9 @@
 
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "WooCommerce for iOS Support";
+
+/* Navigation bar title in the shipping label creation info screen */
+"WooCommerce Shipping" = "WooCommerce Shipping";
 
 /* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */

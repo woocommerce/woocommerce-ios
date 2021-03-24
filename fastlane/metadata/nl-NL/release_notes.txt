@@ -1,5 +1,3 @@
-We zijn heel enthousiast over de updates voor de WooCommerce-app voor iOS.
-
-Nu is het eenvoudiger dan ooit om de eigenschappen van variabele producten te bewerken – de kleur en maat van kleding, bijvoorbeeld.
-We hebben bugs verholpen die invloed hadden op de 'terug’-knop en de weergave van miniatuurafbeeldingen van producten.
-Daarbij bevatten de details van het producttype nu de term 'downloadbaar’ indien dit van toepassing is op het betreffende artikel.
+- Tijdens het bewerken van een product kun je productvariaties, -eigenschappen en opties van producteigenschappen maken, verwijderen en bijwerken.
+- Het ontwerp is vernieuwd en je dashboardtabbladen zijn aangepast. We ontvangen graag je feedback over de gebruikersinterface zodat we deze kunnen verbeteren. 
+ - Andere verbeteringen. 

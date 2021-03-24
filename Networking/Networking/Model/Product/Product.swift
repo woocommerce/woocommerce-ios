@@ -127,6 +127,12 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         return stockQuantity.isInteger
     }
 
+    /// Returns `true` if the product has a remote representation; `false` otherwise.
+    ///
+    public var existsRemotely: Bool {
+        productID != 0
+    }
+
     /// Product struct initializer.
     ///
     public init(siteID: Int64,

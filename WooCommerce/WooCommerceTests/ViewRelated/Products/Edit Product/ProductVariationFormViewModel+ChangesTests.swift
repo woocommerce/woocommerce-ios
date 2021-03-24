@@ -147,6 +147,37 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
+
+    func test_action_buttons_for_existing_product_and_pending_changes() {
+        // Given
+        let productVariation = MockProductVariation().productVariation()
+        let variationModel = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: variationModel)
+        let viewModel = ProductVariationFormViewModel(productVariation: variationModel, formType: .edit, productImageActionHandler: productImageActionHandler)
+
+        let attributes = [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")]
+        viewModel.updateVariationAttributes(attributes)
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [.save])
+    }
+
+    func test_action_buttons_for_existing_product_and_no_pending_changes() {
+        // Given
+        let productVariation = MockProductVariation().productVariation()
+        let variationModel = EditableProductVariationModel(productVariation: productVariation)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: variationModel)
+        let viewModel = ProductVariationFormViewModel(productVariation: variationModel, formType: .edit, productImageActionHandler: productImageActionHandler)
+
+        // When
+        let actionButtons = viewModel.actionButtons
+
+        // Then
+        XCTAssertEqual(actionButtons, [])
+    }
 }
 
 // Helper in unit tests

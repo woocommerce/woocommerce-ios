@@ -19,15 +19,15 @@ extension ShippingLabelAddress {
 
         return output.joined(separator: "\n")
     }
-}
-
-private extension ShippingLabelAddress {
 
     /// Returns the Postal Address, formated and ready for display.
     ///
     var formattedPostalAddress: String? {
         return postalAddress.formatted(as: .mailingAddress)
     }
+}
+
+private extension ShippingLabelAddress {
 
     /// Returns the `name` and `company` (on a new line). If either the `name` or `company` is empty,
     /// then a single line is returned containing the other value.

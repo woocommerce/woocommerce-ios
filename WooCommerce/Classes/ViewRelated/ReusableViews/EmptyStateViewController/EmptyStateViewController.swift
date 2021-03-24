@@ -139,7 +139,11 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
                     }
                 }
             case .withButton(_, _, _, _, let tapClosure):
-                return { tapClosure() }
+                return { [weak self] in
+                    if let self = self {
+                        tapClosure(self.actionButton)
+                    }
+                }
             case .withSupportRequest:
                 return { [weak self] in
                     if let self = self {
@@ -281,7 +285,7 @@ extension EmptyStateViewController {
         ///     - buttonTitle: The content shown on the `actionButton`.
         ///     - onTap: Closure to be executed when the button is tapped.
         ///
-        case withButton(message: NSAttributedString, image: UIImage, details: String, buttonTitle: String, onTap: () -> Void)
+        case withButton(message: NSAttributedString, image: UIImage, details: String, buttonTitle: String, onTap: (UIButton) -> Void)
 
         /// Shows all the elements and a text-style button which shows the Contact Us dialog when activated.
         ///

@@ -1,5 +1,3 @@
-Estamos ansiosos para anunciar atualizações no aplicativo iOS do WooCommerce.
-
-Agora é mais fácil do que nunca editar os atributos dos produtos variáveis, por exemplo, a cor e o tamanho das roupas.
-Corrigimos bugs que afetavam o botão "Voltar" e a exibição das miniaturas dos produtos. 
-Além disso, os detalhes do tipo de produto agora incluem "Disponível para download" para itens que se encaixam na descrição.
+- Ao editar um produto, agora você pode criar, excluir e atualizar variações, atributos e opções de atributo.
+- Atualizamos o design, incluindo alterações nas guias do painel. Fique à vontade para compartilhar seu feedback sobre a IU conosco para podermos fazer melhorias. 
+ - Fizemos também várias outras correções. 

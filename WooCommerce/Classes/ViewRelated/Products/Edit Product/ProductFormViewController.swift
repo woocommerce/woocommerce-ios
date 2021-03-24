@@ -105,6 +105,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         handleSwipeBackGesture()
 
         observeProduct()
+        observeProductName()
         observeUpdateCTAVisibility()
 
         productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
@@ -157,7 +158,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         }
     }
 
-    @objc func updateProduct() {
+    @objc func saveProductAndLogEvent() {
         eventLogger.logUpdateButtonTapped()
         saveProduct()
     }
@@ -166,7 +167,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         if viewModel.formType == .add {
             ServiceLocator.analytics.track(.addProductPublishTapped, withProperties: ["product_type": product.productType.rawValue])
         }
-        saveProduct()
+        saveProduct(status: .publish)
     }
 
     func saveProductAsDraft() {
@@ -193,6 +194,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     @objc func presentMoreOptionsActionSheet(_ sender: UIBarButtonItem) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
+
+        if viewModel.canShowPublishOption() {
+            actionSheet.addDefaultActionWithTitle(Localization.publishTitle) { [weak self] _ in
+                self?.publishProduct()
+            }
+        }
 
         if viewModel.canSaveAsDraft() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.saveProductAsDraft) { [weak self] _ in
@@ -341,13 +348,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 break
             case .variations(let row):
                 ServiceLocator.analytics.track(.productDetailViewVariationsTapped)
-                guard let product = product as? EditableProductModel, row.isActionable else {
+                guard let originalProduct = viewModel.originalProductModel as? EditableProductModel, row.isActionable else {
                     return
                 }
-                let variationsViewModel = ProductVariationsViewModel()
+                let variationsViewModel = ProductVariationsViewModel(formType: viewModel.formType)
                 let variationsViewController = ProductVariationsViewController(viewModel: variationsViewModel,
-                                                                               product: product.product,
-                                                                               formType: viewModel.formType)
+                                                                               product: originalProduct.product)
                 variationsViewController.onProductUpdate = { [viewModel] updatedProduct in
                     viewModel.updateProductVariations(from: updatedProduct)
                 }
@@ -391,7 +397,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 //
 private extension ProductFormViewController {
     func configureNavigationBar() {
-        updateNavigationBar(isUpdateEnabled: false)
+        updateNavigationBar()
         removeNavigationBackBarButtonText()
     }
 
@@ -471,9 +477,21 @@ private extension ProductFormViewController {
         }
     }
 
+    /// Observe product name changes and re-render the product if the change happened outside this screen.
+    /// The "happened outside" condition is needed to not reload the view while the user is typing a new name.
+    ///
+    func observeProductName() {
+        cancellableProductName = viewModel.productName?.subscribe { [weak self] _ in
+            guard let self = self else { return }
+            if self.view.window == nil { // If window is nil, this screen isn't the active screen.
+                self.onProductUpdated(product: self.product)
+            }
+        }
+    }
+
     func observeUpdateCTAVisibility() {
-        cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { [weak self] isUpdateEnabled in
-            self?.updateNavigationBar(isUpdateEnabled: isUpdateEnabled)
+        cancellableUpdateEnabled = viewModel.isUpdateEnabled.subscribe { [weak self] _ in
+            self?.updateNavigationBar()
         }
     }
 
@@ -748,22 +766,17 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
 
-    func updateNavigationBar(isUpdateEnabled: Bool) {
-        var rightBarButtonItems = [UIBarButtonItem]()
-
-        switch viewModel.formType {
-        case .add:
-            rightBarButtonItems.append(createPublishBarButtonItem())
-        case .edit:
-            if isUpdateEnabled {
-                rightBarButtonItems.append(createUpdateBarButtonItem())
+    func updateNavigationBar() {
+        // Create action buttons based on view model
+        let rightBarButtonItems: [UIBarButtonItem] = viewModel.actionButtons.reversed().map { buttonType in
+            switch buttonType {
+            case .publish:
+                return createPublishBarButtonItem()
+            case .save:
+                return createSaveBarButtonItem()
+            case .more:
+                return createMoreOptionsBarButtonItem()
             }
-        case .readonly:
-            break
-        }
-
-        if viewModel.shouldShowMoreOptionsMenu() {
-            rightBarButtonItems.insert(createMoreOptionsBarButtonItem(), at: 0)
         }
 
         navigationItem.rightBarButtonItems = rightBarButtonItems
@@ -776,13 +789,11 @@ private extension ProductFormViewController {
     }
 
     func createPublishBarButtonItem() -> UIBarButtonItem {
-        let publishTitle = NSLocalizedString("Publish", comment: "Action for creating a new Product remotely")
-        return UIBarButtonItem(title: publishTitle, style: .done, target: self, action: #selector(publishProduct))
+        return UIBarButtonItem(title: Localization.publishTitle, style: .done, target: self, action: #selector(publishProduct))
     }
 
-    func createUpdateBarButtonItem() -> UIBarButtonItem {
-        let updateTitle = NSLocalizedString("Update", comment: "Action for updating a Product remotely")
-        return UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))
+    func createSaveBarButtonItem() -> UIBarButtonItem {
+        return UIBarButtonItem(title: Localization.saveTitle, style: .done, target: self, action: #selector(saveProductAndLogEvent))
     }
 
     func createMoreOptionsBarButtonItem() -> UIBarButtonItem {
@@ -1315,6 +1326,8 @@ private extension ProductFormViewController {
 // MARK: Constants
 //
 private enum Localization {
+    static let publishTitle = NSLocalizedString("Publish", comment: "Action for creating a new product remotely with a published status")
+    static let saveTitle = NSLocalizedString("Save", comment: "Action for saving a Product remotely")
     static let groupedProductsViewTitle = NSLocalizedString("Grouped Products",
                                                             comment: "Navigation bar title for editing linked products for a grouped product")
 }

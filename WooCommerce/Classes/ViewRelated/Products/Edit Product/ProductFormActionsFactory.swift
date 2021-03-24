@@ -88,7 +88,7 @@ private extension ProductFormActionsFactory {
 
     func allSettingsSectionActionsForSimpleProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = product.reviewsAllowed
-        let shouldShowProductTypeRow = formType != .add
+        let canEditProductType = formType != .add && editable
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
         let shouldShowDownloadableProduct = product.downloadable
         let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
@@ -103,7 +103,7 @@ private extension ProductFormActionsFactory {
             shouldShowDownloadableProduct ? .downloadableFiles(editable: editable): nil,
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            shouldShowProductTypeRow ? .productType(editable: editable): nil
+            .productType(editable: canEditProductType)
         ]
         return actions.compactMap { $0 }
     }
@@ -112,7 +112,7 @@ private extension ProductFormActionsFactory {
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowExternalURLRow = editable || product.product.externalURL?.isNotEmpty == true
         let shouldShowSKURow = editable || product.sku?.isNotEmpty == true
-        let shouldShowProductTypeRow = formType != .add
+        let canEditProductType = formType != .add && editable
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings(editable: editable),
@@ -123,7 +123,7 @@ private extension ProductFormActionsFactory {
             .tags(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            shouldShowProductTypeRow ? .productType(editable: editable): nil
+            .productType(editable: canEditProductType)
         ]
         return actions.compactMap { $0 }
     }
@@ -131,7 +131,7 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForGroupedProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowSKURow = editable || product.sku?.isNotEmpty == true
-        let shouldShowProductTypeRow = formType != .add
+        let canEditProductType = formType != .add && editable
 
         let actions: [ProductFormEditAction?] = [
             .groupedProducts(editable: editable),
@@ -141,14 +141,14 @@ private extension ProductFormActionsFactory {
             .tags(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            shouldShowProductTypeRow ? .productType(editable: editable): nil
+            .productType(editable: canEditProductType)
         ]
         return actions.compactMap { $0 }
     }
 
     func allSettingsSectionActionsForVariableProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = product.reviewsAllowed
-        let shouldShowProductTypeRow = formType != .add
+        let canEditProductType = formType != .add && editable
         let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
 
         let actions: [ProductFormEditAction?] = [
@@ -160,7 +160,7 @@ private extension ProductFormActionsFactory {
             .tags(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            shouldShowProductTypeRow ? .productType(editable: editable): nil
+            .productType(editable: canEditProductType)
         ]
         return actions.compactMap { $0 }
     }

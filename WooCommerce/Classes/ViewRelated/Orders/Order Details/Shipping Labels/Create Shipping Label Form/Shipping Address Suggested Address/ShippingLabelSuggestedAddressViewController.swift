@@ -66,6 +66,10 @@ final class ShippingLabelSuggestedAddressViewController: UIViewController {
         configureEditAddressButton()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateHeaderHeight()
+    }
 }
 
 // MARK: - View Configuration

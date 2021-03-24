@@ -11,10 +11,19 @@ final class AddProductCoordinator: Coordinator {
     var navigationController: UINavigationController
 
     private let siteID: Int64
-    private let sourceView: UIBarButtonItem
+    private let sourceBarButtonItem: UIBarButtonItem?
+    private let sourceView: UIView?
 
-    init(siteID: Int64, sourceView: UIBarButtonItem, sourceNavigationController: UINavigationController) {
+    init(siteID: Int64, sourceBarButtonItem: UIBarButtonItem, sourceNavigationController: UINavigationController) {
         self.siteID = siteID
+        self.sourceBarButtonItem = sourceBarButtonItem
+        self.sourceView = nil
+        self.navigationController = sourceNavigationController
+    }
+
+    init(siteID: Int64, sourceView: UIView, sourceNavigationController: UINavigationController) {
+        self.siteID = siteID
+        self.sourceBarButtonItem = nil
         self.sourceView = sourceView
         self.navigationController = sourceNavigationController
     }
@@ -40,9 +49,9 @@ private extension AddProductCoordinator {
             self.presentProductForm(productType: selectedProductType)
         }
         // Until we support adding a variation, adding a variable product is disabled.
-        command.data = [.simple, .grouped, .affiliate]
+        command.data = [.simple, .variable, .grouped, .affiliate]
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
-        productTypesListPresenter.show(from: navigationController, sourceBarButtonItem: sourceView, arrowDirections: .up)
+        productTypesListPresenter.show(from: navigationController, sourceView: sourceView, sourceBarButtonItem: sourceBarButtonItem, arrowDirections: .any)
     }
 
     func presentProductForm(productType: ProductType) {

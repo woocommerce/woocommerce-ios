@@ -1,5 +1,3 @@
-We’re excited to announce updates to the WooCommerce iOS app.
-
-It’s now easier than ever to edit the attributes of variable products — for instance, the color and size of clothing.
-We fixed bugs affecting the “Back” button and the display of product thumbnails.
-Plus, for items that fit the description, product type details now include “Downloadable.”
+- When editing a product, you can now create, delete, and update product variations, product attributes, and product attribute options.
+- We’ve refreshed the design, including changes to your dashboard tabs. Feel free to share UI feedback with us so we can make improvements.
+- Other various fixes.

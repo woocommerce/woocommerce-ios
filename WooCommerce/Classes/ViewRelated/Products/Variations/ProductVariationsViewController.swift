@@ -19,7 +19,7 @@ final class ProductVariationsViewController: UIViewController {
         return .withButton(message: message,
                            image: .emptyBoxImage,
                            details: "",
-                           buttonTitle: Localization.emptyStateButtonTitle) { [weak self] in
+                           buttonTitle: Localization.emptyStateButtonTitle) { [weak self] _ in
                             self?.createVariationFromEmptyState()
                            }
     }()
@@ -92,7 +92,10 @@ final class ProductVariationsViewController: UIViewController {
 
     private var product: Product {
         didSet {
+            viewModel.updatedFormTypeIfNeeded(newProduct: product)
+
             configureRightButtonItem()
+            resetResultsController(oldProduct: oldValue)
             updateEmptyState()
             onProductUpdate?(product)
         }
@@ -114,7 +117,6 @@ final class ProductVariationsViewController: UIViewController {
         product.sku
     }
 
-    private let formType: ProductFormType
     private let imageService: ImageService = ServiceLocator.imageService
 
     private let viewModel: ProductVariationsViewModel
@@ -127,11 +129,9 @@ final class ProductVariationsViewController: UIViewController {
 
     init(viewModel: ProductVariationsViewModel,
          product: Product,
-         formType: ProductFormType,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
          analytics: Analytics = ServiceLocator.analytics) {
         self.product = product
-        self.formType = formType
         self.viewModel = viewModel
         self.noticePresenter = noticePresenter
         self.analytics = analytics
@@ -319,6 +319,18 @@ private extension ProductVariationsViewController {
 // MARK: - ResultsController
 //
 private extension ProductVariationsViewController {
+    /// Resets and configures the `resultsController` if the `Product.productID` changes.
+    /// Needed when the product changes from new  to draft, due to attributes or variations creation.
+    ///
+    func resetResultsController(oldProduct: Product) {
+        guard product.productID != oldProduct.productID else {
+            return
+        }
+
+        resultsController = createResultsController()
+        configureResultsController(resultsController)
+    }
+
     func createResultsController() -> ResultsController<StorageProductVariation> {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "product.siteID == %lld AND product.productID == %lld", siteID, productID)
@@ -417,7 +429,7 @@ extension ProductVariationsViewController: UITableViewDelegate {
         let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                       allAttributes: allAttributes,
                                                       parentProductSKU: parentProductSKU,
-                                                      formType: formType,
+                                                      formType: self.viewModel.formType,
                                                       productImageActionHandler: productImageActionHandler)
         viewModel.onVariationDeletion = { [weak self] variation in
             guard let self = self else { return }
@@ -661,12 +673,10 @@ private extension ProductVariationsViewController {
 
     func didLeave(state: PaginatedListViewControllerState) {
         switch state {
-        case .noResultsPlaceholder:
-            removeEmptyViewController()
         case .syncing:
             ensureFooterSpinnerIsStopped()
             removePlaceholderProducts()
-        case .results:
+        case .noResultsPlaceholder, .results:
             break
         }
     }

@@ -9,8 +9,13 @@ final class ProductVariationsViewModel {
     ///
     private let stores: StoresManager
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    /// Stores the form type to use in the subsequent screens. EG: ProductVariationForm
+    ///
+    private(set) var formType: ProductFormType
+
+    init(stores: StoresManager = ServiceLocator.stores, formType: ProductFormType) {
         self.stores = stores
+        self.formType = formType
     }
 
     /// Generates a variation in the host site using the product attributes
@@ -18,6 +23,15 @@ final class ProductVariationsViewModel {
     func generateVariation(for product: Product, onCompletion: @escaping (Result<Product, Error>) -> Void) {
         let useCase = GenerateVariationUseCase(product: product, stores: stores)
         useCase.generateVariation(onCompletion: onCompletion)
+    }
+
+    /// Updates the internal `formType` to `edit` if  the given product exists remotely and previous formType was `.add`
+    ///
+    func updatedFormTypeIfNeeded(newProduct: Product) {
+        guard formType == .add, newProduct.existsRemotely else {
+            return
+        }
+        formType = .edit
     }
 }
 

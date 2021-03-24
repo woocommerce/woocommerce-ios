@@ -25,6 +25,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         product
     }
 
+    /// The original product value.
+    var originalProductModel: EditableProductModel {
+        originalProduct
+    }
+
     /// The form type could change from .add to .edit after creation.
     private(set) var formType: ProductFormType
 
@@ -58,6 +63,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
                 return
             }
 
+            updateFormTypeIfNeeded(oldProduct: oldValue.product)
             actionsFactory = ProductFormActionsFactory(product: product,
                                                        formType: formType)
             productSubject.send(product)
@@ -77,6 +83,45 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
                 isUpdateEnabledSubject.send(hasUnsavedChanges())
             }
         }
+    }
+
+    /// The action buttons that should be rendered in the navigation bar.
+    var actionButtons: [ActionButtonType] {
+        // Figure out main action button first
+        var buttons: [ActionButtonType] = {
+            switch (formType, originalProductModel.status, productModel.status, originalProduct.product.existsRemotely, hasUnsavedChanges()) {
+            case (.add, .publish, .publish, false, _): // New product with publish status
+                return [.publish]
+
+            case (.add, .publish, _, false, _): // New product with a different status
+                return [.save] // And publish in more
+
+            case (.edit, .publish, _, true, true): // Existing published product with changes
+                return [.save]
+
+            case (.edit, .publish, _, true, false): // Existing published product with no changes
+                return []
+
+            case (.edit, _, _, true, true): // Any other existing product with changes
+                return [.save] // And publish in more
+
+            case (.edit, _, _, true, false): // Any other existing product with no changes
+                return [.publish]
+
+            case (.readonly, _, _, _, _): // Any product on readonly mode
+                 return []
+
+            default: // Impossible cases
+                return []
+            }
+        }()
+
+        // Add more button if needed
+        if shouldShowMoreOptionsMenu() {
+            buttons.append(.more)
+        }
+
+        return buttons
     }
 
     private let productImageActionHandler: ProductImageActionHandler
@@ -117,8 +162,21 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 // MARK: - More menu
 //
 extension ProductFormViewModel {
+
+    /// Show publish button if the product can be published and the publish button is not already part of the action buttons.
+    ///
+    func canShowPublishOption() -> Bool {
+        let newProduct = formType == .add && !originalProduct.product.existsRemotely
+        let existingUnpublishedProduct = formType == .edit && originalProduct.product.existsRemotely && originalProduct.status != .publish
+
+        let productCanBePublished = newProduct || existingUnpublishedProduct
+        let publishIsNotAlreadyVisible = !actionButtons.contains(.publish)
+
+        return productCanBePublished && publishIsNotAlreadyVisible
+    }
+
     func canSaveAsDraft() -> Bool {
-        formType == .add
+        formType == .add && productModel.status != .draft
     }
 
     func canEditProductSettings() -> Bool {
@@ -260,7 +318,10 @@ extension ProductFormViewModel {
     /// This is needed because variations and attributes, remote updates, happen outside this view model and wee need a way to sync our original product.
     ///
     func updateProductVariations(from newProduct: Product) {
-        let newOriginalProduct = EditableProductModel(product: originalProduct.product.copy(attributes: newProduct.attributes,
+        // ProductID and statusKey could have changed, in case we had to create the product as a draft to create attributes or variations
+        let newOriginalProduct = EditableProductModel(product: originalProduct.product.copy(productID: newProduct.productID,
+                                                                                            statusKey: newProduct.statusKey,
+                                                                                            attributes: newProduct.attributes,
                                                                                             variations: newProduct.variations))
 
         // Make sure the product is updated locally. Useful for screens that are observing the product or a list of products.
@@ -273,7 +334,9 @@ extension ProductFormViewModel {
 
         // If the product has pending changes, we need to override the `originalProduct` first and the `living product` later with a saved copy.
         // This is because, overriding `originalProduct` also overrides the `living product`.
-        let productWithChanges = EditableProductModel(product: product.product.copy(attributes: newProduct.attributes,
+        let productWithChanges = EditableProductModel(product: product.product.copy(productID: newProduct.productID,
+                                                                                    statusKey: newProduct.statusKey,
+                                                                                    attributes: newProduct.attributes,
                                                                                     variations: newProduct.variations))
         resetProduct(newOriginalProduct)
         product = productWithChanges
@@ -309,7 +372,6 @@ extension ProductFormViewModel {
                     guard let self = self else {
                         return
                     }
-                    self.formType = .edit
                     self.resetProduct(data.product)
                     self.resetPassword(data.password)
                     onCompletion(.success(data.product))
@@ -347,6 +409,17 @@ extension ProductFormViewModel {
                 onCompletion(.failure(error))
             }
         }
+    }
+
+    /// Updates the internal `formType` when a product changes from new to a saved status.
+    /// Currently needed when a new product was just created as a draft to allow creating attributes and variations.
+    ///
+    func updateFormTypeIfNeeded(oldProduct: Product) {
+        guard !oldProduct.existsRemotely, product.product.existsRemotely else {
+            return
+        }
+
+        formType = .edit
     }
 }
 

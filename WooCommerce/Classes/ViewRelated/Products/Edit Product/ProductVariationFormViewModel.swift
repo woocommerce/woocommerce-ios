@@ -3,6 +3,7 @@ import Observables
 
 /// Provides data for product form UI on a `ProductVariation`, and handles product editing actions.
 final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
+
     typealias ProductModel = EditableProductVariationModel
 
     /// Emits product variation on change.
@@ -13,6 +14,11 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     /// The latest product variation including potential edits.
     var productModel: EditableProductVariationModel {
         productVariation
+    }
+
+    /// The original product variation.
+    var originalProductModel: EditableProductVariationModel {
+        originalProductVariation
     }
 
     /// Emits a boolean of whether the product variation has unsaved changes for remote update.
@@ -54,6 +60,16 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
             actionsFactory = ProductVariationFormActionsFactory(productVariation: productVariation, editable: editable)
             productVariationSubject.send(productVariation)
             isUpdateEnabledSubject.send(hasUnsavedChanges())
+        }
+    }
+
+    /// The action buttons that should be rendered in the navigation bar.
+    var actionButtons: [ActionButtonType] {
+        switch (formType, hasUnsavedChanges()) {
+        case (.edit, true):
+            return [.save]
+        default:
+            return []
         }
     }
 
@@ -102,6 +118,12 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
 // MARK: - More menu
 //
 extension ProductVariationFormViewModel {
+    /// Variations can't be published independently
+    ///
+    func canShowPublishOption() -> Bool {
+        false
+    }
+
     func canSaveAsDraft() -> Bool {
         false
     }

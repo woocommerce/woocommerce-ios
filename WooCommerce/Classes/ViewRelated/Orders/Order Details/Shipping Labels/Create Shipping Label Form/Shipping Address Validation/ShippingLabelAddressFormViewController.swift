@@ -18,7 +18,21 @@ final class ShippingLabelAddressFormViewController: UIViewController {
     /// Top banner that shows a warning in case there is an error in the address validation.
     ///
     private lazy var topBannerView: TopBannerView = {
-        let topBanner = ShippingLabelAddressTopBannerFactory.addressErrorTopBannerView()
+        let topBanner = ShippingLabelAddressTopBannerFactory.addressErrorTopBannerView { [weak self] in
+            MapsHelper.openAppleMaps(address: self?.viewModel.address?.formattedPostalAddress) { [weak self] (result) in
+                switch result {
+                case .success:
+                    break
+                case .failure:
+                    self?.displayAppleMapsErrorNotice()
+                }
+            }
+        } contactCustomerPressed: { [weak self] in
+            if PhoneHelper.callPhoneNumber(phone: self?.viewModel.address?.phone) == false {
+                self?.displayPhoneNumberErrorNotice()
+            }
+        }
+
         topBanner.translatesAutoresizingMaskIntoConstraints = false
         return topBanner
     }()
@@ -57,6 +71,11 @@ final class ShippingLabelAddressFormViewController: UIViewController {
         configureConfirmButton()
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
     }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateHeaderHeight()
+    }
 }
 
 // MARK: - View Configuration
@@ -79,7 +98,7 @@ private extension ShippingLabelAddressFormViewController {
 
     func configureRightButtonItemAsLoader() {
         let indicator = UIActivityIndicatorView(style: .medium)
-        indicator.color = .primaryButtonTitle
+        indicator.color = .navigationBarLoadingIndicator
         indicator.startAnimating()
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: indicator)
     }
@@ -108,9 +127,8 @@ private extension ShippingLabelAddressFormViewController {
     }
 
     func registerTableViewCells() {
-        for row in Row.allCases {
-            tableView.registerNib(for: row.type)
-        }
+            tableView.registerNib(for: TitleAndTextFieldTableViewCell.self)
+            tableView.registerNib(for: BasicTableViewCell.self)
     }
 
     func observeViewModel() {
@@ -139,18 +157,46 @@ private extension ShippingLabelAddressFormViewController {
 private extension ShippingLabelAddressFormViewController {
 
     @objc func doneButtonTapped() {
-        viewModel.validateAddress { [weak self] (success, error) in
+        viewModel.validateAddress(onlyLocally: false) { [weak self] (result) in
             guard let self = self else { return }
-            if success {
+            switch result {
+            case .success:
                 self.onCompletion(self.viewModel.address)
                 self.navigationController?.popViewController(animated: true)
+            case .failure:
+                break
             }
         }
     }
 
     @objc func confirmButtonTapped() {
-        onCompletion(viewModel.address)
-        navigationController?.popViewController(animated: true)
+        viewModel.validateAddress(onlyLocally: true) { [weak self] (result) in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                self.onCompletion(self.viewModel.address)
+                self.navigationController?.popViewController(animated: true)
+            case .failure:
+                break
+            }
+        }
+    }
+}
+
+// MARK: - Utils
+private extension ShippingLabelAddressFormViewController {
+    /// Enqueues the `Apple Maps` Error Notice.
+    ///
+    private func displayAppleMapsErrorNotice() {
+        let notice = Notice(title: Localization.appleMapsErrorNotice, feedbackType: .error, actionTitle: nil, actionHandler: nil)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+
+    /// Enqueues the `Phone Number`  Error Notice.
+    ///
+    private func displayPhoneNumberErrorNotice() {
+        let notice = Notice(title: Localization.phoneNumberErrorNotice, feedbackType: .error, actionTitle: nil, actionHandler: nil)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -181,26 +227,26 @@ private extension ShippingLabelAddressFormViewController {
     /// Cells currently configured in the order they appear on screen
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
-        switch cell {
-        case let cell as TitleAndTextFieldTableViewCell where row == .name:
+        switch (row, cell) {
+        case (.name, let cell as TitleAndTextFieldTableViewCell):
             configureName(cell: cell, row: row)
-        case let cell as TitleAndTextFieldTableViewCell where row == .company:
+        case (.company, let cell as TitleAndTextFieldTableViewCell):
             configureCompany(cell: cell, row: row)
-        case let cell as TitleAndTextFieldTableViewCell where row == .phone:
+        case (.phone, let cell as TitleAndTextFieldTableViewCell):
             configurePhone(cell: cell, row: row)
-        case let cell as TitleAndTextFieldTableViewCell where row == .address:
+        case (.address, let cell as TitleAndTextFieldTableViewCell):
             configureAddress(cell: cell, row: row)
-        case let cell as TitleAndTextFieldTableViewCell where row == .address2:
+        case (.address2, let cell as TitleAndTextFieldTableViewCell):
             configureAddress2(cell: cell, row: row)
-        case let cell as BasicTableViewCell where row == .fieldError:
-            configureFieldError(cell: cell, row: row)
-        case let cell as TitleAndTextFieldTableViewCell where row == .city:
+        case (let .fieldError(error), let cell as BasicTableViewCell):
+            configureFieldError(cell: cell, row: row, error: error)
+        case (.city, let cell as TitleAndTextFieldTableViewCell):
             configureCity(cell: cell, row: row)
-        case let cell as TitleAndTextFieldTableViewCell where row == .postcode:
+        case (.postcode, let cell as TitleAndTextFieldTableViewCell):
             configurePostcode(cell: cell, row: row)
-        case let cell as TitleAndTextFieldTableViewCell where row == .state:
+        case (.state, let cell as TitleAndTextFieldTableViewCell):
             configureState(cell: cell, row: row)
-        case let cell as TitleAndTextFieldTableViewCell where row == .country:
+        case (.country, let cell as TitleAndTextFieldTableViewCell):
             configureCountry(cell: cell, row: row)
         default:
             fatalError("Cannot instantiate \(cell) with row \(row.type)")
@@ -269,8 +315,24 @@ private extension ShippingLabelAddressFormViewController {
         cell.configure(viewModel: cellViewModel)
     }
 
-    func configureFieldError(cell: BasicTableViewCell, row: Row) {
-        cell.textLabel?.text = viewModel.addressValidationError?.addressError
+    func configureFieldError(cell: BasicTableViewCell, row: Row, error: ShippingLabelAddressFormViewModel.ValidationError) {
+        var errorMessage = viewModel.addressValidationError?.addressError
+        switch error {
+        case .name:
+            errorMessage = Localization.missingName
+        case .address:
+            errorMessage = viewModel.addressValidationError?.addressError ?? Localization.missingAddress
+        case .city:
+            errorMessage = Localization.missingCity
+        case .postcode:
+            errorMessage = Localization.missingPostcode
+        case .state:
+            errorMessage = Localization.missingState
+        case .country:
+            errorMessage = Localization.missingCountry
+        }
+
+        cell.textLabel?.text = errorMessage
         cell.textLabel?.textColor = .error
         cell.backgroundColor = .listBackground
     }
@@ -337,7 +399,7 @@ extension ShippingLabelAddressFormViewController {
         let rows: [Row]
     }
 
-    enum Row: CaseIterable {
+    enum Row: Equatable {
         case name
         case company
         case phone
@@ -348,7 +410,7 @@ extension ShippingLabelAddressFormViewController {
         case state
         case country
 
-        case fieldError
+        case fieldError(_ validationError: ShippingLabelAddressFormViewModel.ValidationError)
 
         fileprivate var type: UITableViewCell.Type {
             switch self {
@@ -391,6 +453,22 @@ private extension ShippingLabelAddressFormViewController {
 
         static let confirmButtonTitle = NSLocalizedString("Use Address as Entered",
                                                           comment: "Action to use the address in Shipping Label Validation screen as entered")
+        static let missingName = NSLocalizedString("Name missing",
+                                                   comment: "Error showed in Shipping Label Address Validation for the name field")
+        static let missingAddress = NSLocalizedString("Address missing",
+                                                      comment: "Error showed in Shipping Label Address Validation for the address field")
+        static let missingCity = NSLocalizedString("City missing",
+                                                   comment: "Error showed in Shipping Label Address Validation for the city field")
+        static let missingPostcode = NSLocalizedString("Postcode missing",
+                                                       comment: "Error showed in Shipping Label Address Validation for the postcode field")
+        static let missingState = NSLocalizedString("State missing",
+                                                    comment: "Error showed in Shipping Label Address Validation for the state field")
+        static let missingCountry = NSLocalizedString("Country missing",
+                                                      comment: "Error showed in Shipping Label Address Validation for the country field")
+        static let appleMapsErrorNotice = NSLocalizedString("Error in finding the address in Apple Maps",
+                                                            comment: "Error in finding the address in the Shipping Label Address Validation in Apple Maps")
+        static let phoneNumberErrorNotice = NSLocalizedString("The phone number is not valid or you can't call the customer from this device.",
+            comment: "Error in calling the phone number of the customer in the Shipping Label Address Validation")
     }
 
     enum Constants {

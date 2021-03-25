@@ -5,7 +5,7 @@ import UIKit
 ///
 class WooNavigationController: UINavigationController {
 
-    weak open override var delegate: UINavigationControllerDelegate? {
+    weak override var delegate: UINavigationControllerDelegate? {
         get {
             return navigationDelegate.forwardDelegate
         }

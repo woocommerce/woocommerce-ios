@@ -1,3 +1,0 @@
-- Lorsque vous modifiez un produit, vous pouvez désormais créer, supprimer et mettre à jour des variantes de produit, des attributs de produit et des options d’attribut de produit.
-- Nous avons actualisé le design, notamment par des modifications apportées aux onglets de votre tableau de bord. N’hésitez pas à partager vos commentaires sur l’interface utilisateur afin que nous puissions apporter des améliorations. 
- - Autres résolutions diverses. 

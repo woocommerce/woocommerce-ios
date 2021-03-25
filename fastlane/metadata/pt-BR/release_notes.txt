@@ -1,3 +1,0 @@
-- Ao editar um produto, agora você pode criar, excluir e atualizar variações, atributos e opções de atributo.
-- Atualizamos o design, incluindo alterações nas guias do painel. Fique à vontade para compartilhar seu feedback sobre a IU conosco para podermos fazer melhorias. 
- - Fizemos também várias outras correções. 

@@ -78,6 +78,13 @@ final class MockShippingLabelRemote {
         let key = AddressValidationResultKey(siteID: siteID)
         addressValidationResults[key] = result
     }
+
+    /// Set the value passed to the `completion` block if `packagesDetails` is called.
+    func whenPackagesDetails(siteID: Int64,
+                             thenReturn result: Result<ShippingLabelPackagesResponse, Error>) {
+        let key = PackagesDetailsResultKey(siteID: siteID)
+        packagesDetailsResults[key] = result
+    }
 }
 
 // MARK: - ShippingLabelRemoteProtocol

@@ -1,3 +1,0 @@
-- Bir ürünü düzenlerken artık ürün varyasyonlarını, ürün özelliklerini ve ürün özelliği seçeneklerini oluşturabilir, silebilir ve güncelleyebilirsiniz.
-- Yönetim paneli sekmelerinizdeki değişiklikler de dahil olmak üzere tasarımı yeniledik.  İyileştirmeler yapabilmemiz için kullanıcı arayüzü ile ilgili geri bildirimlerinizi bizimle paylaşmaktan çekinmeyin. 
- - Diğer çeşitli düzeltmeler. 

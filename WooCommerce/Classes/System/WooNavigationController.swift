@@ -61,7 +61,7 @@ private class WooNavigationControllerDelegate: NSObject, UINavigationControllerD
     /// Forwards the event to the children delegate.
     ///
     func navigationControllerPreferredInterfaceOrientationForPresentation(_ navigationController: UINavigationController) -> UIInterfaceOrientation {
-        forwardDelegate?.navigationControllerPreferredInterfaceOrientationForPresentation?(navigationController) ?? .unknown
+        forwardDelegate?.navigationControllerPreferredInterfaceOrientationForPresentation?(navigationController) ?? .portrait
     }
 
     /// Forwards the event to the children delegate.

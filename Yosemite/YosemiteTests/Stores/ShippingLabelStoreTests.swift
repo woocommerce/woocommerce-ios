@@ -397,6 +397,50 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
+    // MARK: `packagesDetails`
+
+    func test_packagesDetails_returns_ShippingLabelPackagesResponse_on_success() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        let expectedResult = sampleShippingLabelPackagesResponse()
+        remote.whenPackagesDetails(siteID: sampleSiteID,
+                                   thenReturn: .success(expectedResult))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<ShippingLabelPackagesResponse, Error> = waitFor { promise in
+            let action = ShippingLabelAction.packagesDetails(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let printData = try XCTUnwrap(result.get())
+        XCTAssertEqual(printData, expectedResult)
+    }
+
+    func test_packagesDetails_returns_error_on_failure() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        let expectedError = NetworkError.notFound
+        remote.whenPackagesDetails(siteID: sampleSiteID,
+                                   thenReturn: .failure(expectedError))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<ShippingLabelPackagesResponse, Error> = waitFor { promise in
+            let action = ShippingLabelAction.packagesDetails(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
     // MARK: `checkCreationEligibility`
 
     func test_checkCreationEligibility_returns_feature_flag_value() throws {
@@ -454,5 +498,55 @@ private extension ShippingLabelStoreTests {
                                     address2: "",
                                     city: "SAN FRANCISCO",
                                     postcode: "94110-4929")
+    }
+
+    func sampleShippingLabelPackagesResponse() -> Yosemite.ShippingLabelPackagesResponse {
+        return ShippingLabelPackagesResponse(storeOptions: sampleShippingLabelStoreOptions(),
+                                             customPackages: sampleShippingLabelCustomPackages(),
+                                             predefinedOptions: sampleShippingLabelPredefinedOptions())
+
+    }
+
+    func sampleShippingLabelStoreOptions() -> ShippingLabelStoreOptions {
+        return ShippingLabelStoreOptions(currencySymbol: "$", dimensionUnit: "cm", weightUnit: "kg", originCountry: "US")
+    }
+
+    func sampleShippingLabelCustomPackages() -> [ShippingLabelCustomPackage] {
+        let customPackage1 = ShippingLabelCustomPackage(isUserDefined: true,
+                                                        title: "Krabica",
+                                                        isLetter: false,
+                                                        dimensions: "1 x 2 x 3",
+                                                        boxWeight: 1,
+                                                        maxWeight: 0)
+        let customPackage2 = ShippingLabelCustomPackage(isUserDefined: true,
+                                                        title: "Obalka",
+                                                        isLetter: true,
+                                                        dimensions: "2 x 3 x 4",
+                                                        boxWeight: 5,
+                                                        maxWeight: 0)
+
+        return [customPackage1, customPackage2]
+    }
+
+    func sampleShippingLabelPredefinedOptions() -> [ShippingLabelPredefinedOption] {
+        let predefinedPackages1 = [ShippingLabelPredefinedPackage(id: "small_flat_box",
+                                                                  title: "Small Flat Rate Box",
+                                                                  isLetter: false,
+                                                                  dimensions: "21.91 x 13.65 x 4.13"),
+                                  ShippingLabelPredefinedPackage(id: "medium_flat_box_top",
+                                                                 title: "Medium Flat Rate Box 1, Top Loading",
+                                                                 isLetter: false,
+                                                                 dimensions: "28.57 x 22.22 x 15.24")]
+        let predefinedOption1 = ShippingLabelPredefinedOption(title: "USPS Priority Mail Flat Rate Boxes",
+                                                              predefinedPackages: predefinedPackages1)
+
+        let predefinedPackages2 = [ShippingLabelPredefinedPackage(id: "LargePaddedPouch",
+                                                                  title: "Large Padded Pouch",
+                                                                  isLetter: true,
+                                                                  dimensions: "30.22 x 35.56 x 2.54")]
+        let predefinedOption2 = ShippingLabelPredefinedOption(title: "DHL Express",
+                                                              predefinedPackages: predefinedPackages2)
+
+        return [predefinedOption1, predefinedOption2]
     }
 }

@@ -139,6 +139,38 @@ final class ShippingLabelRemoteTests: XCTestCase {
         XCTAssertEqual(errors.addressError, "House number is missing")
         XCTAssertEqual(errors.generalError, "Address not found")
     }
+
+    func test_packagesDetails_returns_packages_on_success() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "packages", filename: "shipping-label-packages-success")
+
+        // When
+        let result: Result<ShippingLabelPackagesResponse, Error> = waitFor { promise in
+            remote.packagesDetails(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(try result.get())
+    }
+
+    func test_packagesDetails_returns_errors_on_failure() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "packages", filename: "generic_error")
+
+        // When
+        let result: Result<ShippingLabelPackagesResponse, Error> = waitFor { promise in
+            remote.packagesDetails(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
 }
 
 private extension ShippingLabelRemoteTests {

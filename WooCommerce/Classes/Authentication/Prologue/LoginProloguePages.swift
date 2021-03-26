@@ -50,7 +50,7 @@ class LoginProloguePageTypeViewController: UIViewController {
     private let titleLabel = UILabel()
     private let imageView = UIImageView()
 
-    private var pageType: LoginProloguePageType!
+    private var pageType: LoginProloguePageType
 
     init(pageType: LoginProloguePageType) {
         self.pageType = pageType

@@ -6,7 +6,7 @@ final class LoginProloguePageViewController: UIPageViewController {
 
     private var pages: [UIViewController] = []
 
-    private var pageControl: UIPageControl!
+    private lazy var pageControl = UIPageControl()
 
     init() {
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal)
@@ -98,7 +98,7 @@ extension LoginProloguePageViewController: UIPageViewControllerDelegate {
             return
         }
         if !completed {
-            pageControl?.currentPage = index
+            pageControl.currentPage = index
         }
     }
 
@@ -107,7 +107,7 @@ extension LoginProloguePageViewController: UIPageViewControllerDelegate {
         guard let index = pages.firstIndex(of: toVC) else {
             return
         }
-        pageControl?.currentPage = index
+        pageControl.currentPage = index
     }
 }
 

@@ -62,7 +62,7 @@ class LoginProloguePageTypeViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func loadView() {
+    override func viewDidLoad() {
         view = UIView()
         view.backgroundColor = .clear
 
@@ -79,8 +79,7 @@ class LoginProloguePageTypeViewController: UIViewController {
         stackView.alignment = .center
         stackView.spacing = 40
 
-        // Reduce centerYAnchor constraint priority to ensure the bottom margin has
-        // higher priority, so stack view is fully visible on shorter devices
+        // Reduce centerYAnchor constraint priority to ensure the bottom margin has higher priority, so stack view is fully visible on shorter devices
         let verticalCentering = stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 103)
         verticalCentering.priority = UILayoutPriority(999)
 
@@ -100,8 +99,10 @@ class LoginProloguePageTypeViewController: UIViewController {
         // Image style & layout
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.setContentHuggingPriority(.required, for: .vertical)
-        imageView.setContentCompressionResistancePriority(.required, for: .vertical)
+        NSLayoutConstraint.activate([
+            imageView.widthAnchor.constraint(equalTo: stackView.widthAnchor),
+            imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.35)
+        ])
 
         // Image contents
         imageView.image = pageType.image
@@ -112,6 +113,7 @@ class LoginProloguePageTypeViewController: UIViewController {
 
         // Label style & layout
         titleLabel.font = .body
+        titleLabel.adjustsFontForContentSizeCategory = true
         titleLabel.textColor = .text
         titleLabel.textAlignment = .center
         titleLabel.numberOfLines = 0
@@ -119,7 +121,7 @@ class LoginProloguePageTypeViewController: UIViewController {
         titleLabel.setContentHuggingPriority(.required, for: .vertical)
         titleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         NSLayoutConstraint.activate([
-            titleLabel.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 0.55),
+            titleLabel.widthAnchor.constraint(equalToConstant: 216)
         ])
 
         // Label contents

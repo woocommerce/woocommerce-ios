@@ -44,6 +44,8 @@ extension ShippingLabelPackagesResponse: Decodable {
 
         var predefinedOptions: [ShippingLabelPredefinedOption] = []
 
+        // Iterate around keys of `formSchema` and `formData` for creating the predefined options available for this website.
+        //
         rawPredefinedFormSchema.forEach { (key, value) in
 
             let provider: [String: Any]? = try? value.toDictionary()

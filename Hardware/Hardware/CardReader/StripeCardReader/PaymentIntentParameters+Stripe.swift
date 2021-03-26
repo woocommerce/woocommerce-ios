@@ -7,6 +7,7 @@ extension Hardware.PaymentIntentParameters {
         let returnValue = StripeTerminal.PaymentIntentParameters(amount: self.amount, currency: self.currency)
         returnValue.stripeDescription = self.receiptDescription
         returnValue.statementDescriptor = self.statementDescription
+        returnValue.receiptEmail = self.receiptEmail
 
         return returnValue
     }

@@ -9,9 +9,20 @@ struct ShippingLabelPackageDetails: View {
     }
 
     var body: some View {
-        List {
-            ShippingLabelPackageNumberRow(packageNumber: 1, numberOfItems: 10)
-            ShippingLabelPackageNumberRow(packageNumber: 3, numberOfItems: 1)
+        ScrollView {
+            VStack() {
+                ShippingLabelPackageNumberRow(packageNumber: 1, numberOfItems: viewModel.order.items.count)
+
+                // Header
+                Section() {
+                    HStack() {
+                        Text("Header")
+                        Spacer()
+                    }.frame(width: UIScreen.main.bounds.width, height: 42)
+                }
+                .background(Color(.listBackground))
+
+            }
         }
     }
 }
@@ -72,11 +83,11 @@ private extension ShippingLabelPackageDetails_Previews {
 
     static func sampleShippingLines() -> [ShippingLine] {
         return [ShippingLine(shippingID: 123,
-        methodTitle: "International Priority Mail Express Flat Rate",
-        methodID: "usps",
-        total: "133.00",
-        totalTax: "0.00",
-        taxes: [.init(taxID: 1, subtotal: "", total: "0.62125")])]
+                             methodTitle: "International Priority Mail Express Flat Rate",
+                             methodID: "usps",
+                             total: "133.00",
+                             totalTax: "0.00",
+                             taxes: [.init(taxID: 1, subtotal: "", total: "0.62125")])]
     }
 
     static func sampleCoupons() -> [OrderCouponLine] {

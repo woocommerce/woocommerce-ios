@@ -93,7 +93,7 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
     ///   - completion: Closure to be executed upon completion.
     public func packagesDetails(siteID: Int64,
                                 completion: @escaping (Result<ShippingLabelPackagesResponse, Error>) -> Void) {
-        let path = "\(Path.packages)"
+        let path = Path.packages
         let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .get, siteID: siteID, path: path, parameters: nil)
         let mapper = ShippingLabelPackagesMapper()
         enqueue(request, mapper: mapper, completion: completion)

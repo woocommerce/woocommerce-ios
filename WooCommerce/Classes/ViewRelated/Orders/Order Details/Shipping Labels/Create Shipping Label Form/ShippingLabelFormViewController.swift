@@ -36,7 +36,6 @@ private extension ShippingLabelFormViewController {
 
     func configureNavigationBar() {
         title = Localization.titleView
-        removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {

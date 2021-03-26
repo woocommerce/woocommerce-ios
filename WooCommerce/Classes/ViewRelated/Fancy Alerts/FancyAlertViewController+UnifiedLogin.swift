@@ -116,7 +116,7 @@ private extension FancyAlertViewController {
 
             supportViewController.displaysDismissAction = true
 
-            let navController = UINavigationController(rootViewController: supportViewController)
+            let navController = WooNavigationController(rootViewController: supportViewController)
             navController.modalPresentationStyle = .formSheet
 
             controller.present(navController, animated: true, completion: nil)

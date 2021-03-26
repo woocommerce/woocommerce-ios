@@ -54,7 +54,6 @@ private extension AddAttributeViewController {
 
     func configureNavigationBar() {
         title = Localization.titleView
-        removeNavigationBackBarButtonText()
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: Localization.nextNavBarButton,
                                                            style: .plain,
                                                            target: self,

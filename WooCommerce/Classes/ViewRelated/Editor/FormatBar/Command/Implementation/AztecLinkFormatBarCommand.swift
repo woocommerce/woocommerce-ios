@@ -66,7 +66,7 @@ private extension AztecLinkFormatBarCommand {
             }
         })
 
-        let navigationController = UINavigationController(rootViewController: linkController)
+        let navigationController = WooNavigationController(rootViewController: linkController)
         navigationController.modalPresentationStyle = .popover
         navigationController.popoverPresentationController?.sourceView = richTextView
         if richTextView.selectedRange.length > 0,

@@ -54,8 +54,6 @@ class ApplicationLogViewController: UIViewController {
             "Application Logs",
             comment: "Application Logs navigation bar title - this screen is where users view the list of application logs available to them."
         )
-
-        removeNavigationBackBarButtonText()
     }
 
     /// Apply Woo styles.

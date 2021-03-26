@@ -94,7 +94,6 @@ private extension ProductTagsViewController {
     func configureNavigationBar() {
         title = Strings.title
 
-        removeNavigationBackBarButtonText()
         configureRightBarButtonItemAsSave()
     }
 

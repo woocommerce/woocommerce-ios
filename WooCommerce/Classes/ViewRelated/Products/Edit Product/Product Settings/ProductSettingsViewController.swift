@@ -62,7 +62,6 @@ private extension ProductSettingsViewController {
         title = NSLocalizedString("Product Settings", comment: "Product Settings navigation title")
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(completeUpdating))
-        removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {

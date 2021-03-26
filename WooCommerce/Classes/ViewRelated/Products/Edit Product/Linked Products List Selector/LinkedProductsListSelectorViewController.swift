@@ -146,7 +146,6 @@ private extension LinkedProductsListSelectorViewController {
     func configureNavigation() {
         title = viewConfiguration.title
         updateNavigationRightBarButtonItem()
-        removeNavigationBackBarButtonText()
     }
 
     func configureAddButton() {

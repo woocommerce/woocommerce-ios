@@ -38,8 +38,6 @@ private extension ProductListViewController {
         let titleFormat = NSLocalizedString("Details Order #%1$@", comment: "Screen title: Details Order number. Parameters: %1$@ - order number")
         title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
         view.backgroundColor = .listBackground
-
-        removeNavigationBackBarButtonText()
     }
 
     /// Setup: TableView

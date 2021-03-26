@@ -220,7 +220,6 @@ private extension ProductDownloadFileViewController {
 
         navigationItem.rightBarButtonItems = rightBarButtonItems
 
-        removeNavigationBackBarButtonText()
         enableDoneButton(viewModel.hasUnsavedChanges())
     }
 

@@ -64,7 +64,6 @@ private extension AboutViewController {
     ///
     func configureNavigation() {
         title = NSLocalizedString("About", comment: "About this app (information page title)")
-        removeNavigationBackBarButtonText()
     }
 
     /// Apply Woo styles.

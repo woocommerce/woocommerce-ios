@@ -2,7 +2,7 @@
 
 6.4
 -----
-
+- [*] Enhancement/fix: Unify back button style across the app. [https://github.com/woocommerce/woocommerce-ios/pull/3872]
 
 6.3
 -----

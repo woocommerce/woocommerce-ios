@@ -44,7 +44,6 @@ final class RenameAttributesViewController: UIViewController {
 private extension RenameAttributesViewController {
 
     func configureNavigationBar() {
-        removeNavigationBackBarButtonText()
         title = Localization.title
 
         let rightBarButton = UIBarButtonItem(barButtonSystemItem: .done,

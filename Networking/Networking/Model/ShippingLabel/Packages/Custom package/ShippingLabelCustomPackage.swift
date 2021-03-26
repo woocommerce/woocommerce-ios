@@ -16,11 +16,11 @@ public struct ShippingLabelCustomPackage: Equatable, GeneratedFakeable {
     /// Will be a string formatted like this: `2 x 3 x 4`
     public let dimensions: String
 
-    public let boxWeight: Int
+    public let boxWeight: Double
 
-    public let maxWeight: Int
+    public let maxWeight: Double
 
-    public init(isUserDefined: Bool, title: String, isLetter: Bool, dimensions: String, boxWeight: Int, maxWeight: Int) {
+    public init(isUserDefined: Bool, title: String, isLetter: Bool, dimensions: String, boxWeight: Double, maxWeight: Double) {
         self.isUserDefined = isUserDefined
         self.title = title
         self.isLetter = isLetter
@@ -39,8 +39,8 @@ extension ShippingLabelCustomPackage: Decodable {
         let title = try container.decode(String.self, forKey: .title)
         let isLetter = try container.decodeIfPresent(Bool.self, forKey: .isLetter) ?? false
         let dimensions = try container.decode(String.self, forKey: .innerDimensions)
-        let boxWeight = try container.decode(Int.self, forKey: .boxWeight)
-        let maxWeight = try container.decode(Int.self, forKey: .maxWeight)
+        let boxWeight = try container.decode(Double.self, forKey: .boxWeight)
+        let maxWeight = try container.decode(Double.self, forKey: .maxWeight)
 
         self.init(isUserDefined: isUserDefined, title: title, isLetter: isLetter, dimensions: dimensions, boxWeight: boxWeight, maxWeight: maxWeight)
     }

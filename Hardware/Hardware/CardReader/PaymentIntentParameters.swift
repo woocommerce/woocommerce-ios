@@ -22,8 +22,10 @@ public struct PaymentIntentParameters {
      * Non-ASCII characters are automatically stripped.
      * While most banks and card issuers display this information consistently, some may display it incorrectly or not at all.
      */
-    public let statementDescription: String?
+    @StatementDescriptor
+    public private(set) var statementDescription: String?
 
+    /// Email address that the receipt for the resulting payment will be sent to.
     @Email
     public private(set) var receiptEmail: String?
 

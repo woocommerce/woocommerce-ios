@@ -83,7 +83,6 @@ private extension SettingsViewController {
 
     func configureNavigation() {
         title = NSLocalizedString("Settings", comment: "Settings navigation title")
-        removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {

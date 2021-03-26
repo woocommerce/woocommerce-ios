@@ -114,7 +114,6 @@ private extension OrderDetailsViewController {
     func configureNavigation() {
         let titleFormat = NSLocalizedString("Order #%1$@", comment: "Order number title. Parameters: %1$@ - order number")
         title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
-        removeNavigationBackBarButtonText()
     }
 
     /// Setup: EntityListener
@@ -622,7 +621,7 @@ private extension OrderDetailsViewController {
             }
         }
 
-        let navigationController = UINavigationController(rootViewController: statusList)
+        let navigationController = WooNavigationController(rootViewController: statusList)
 
         present(navigationController, animated: true)
     }

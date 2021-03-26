@@ -64,7 +64,6 @@ final class ReviewDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureNavigationItem()
         configureMainView()
         configureTableView()
         configureEntityListener()
@@ -84,12 +83,6 @@ final class ReviewDetailsViewController: UIViewController {
 // MARK: - User Interface Initialization
 //
 private extension ReviewDetailsViewController {
-
-    /// Setup: Navigation
-    ///
-    func configureNavigationItem() {
-        removeNavigationBackBarButtonText()
-    }
 
     /// Setup: Main View
     ///

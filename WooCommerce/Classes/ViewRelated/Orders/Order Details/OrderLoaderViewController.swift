@@ -120,7 +120,6 @@ private extension OrderLoaderViewController {
     ///
     func configureNavigationItem() {
         title = NSLocalizedString("Loading Order", comment: "Displayed when an Order is being retrieved")
-        removeNavigationBackBarButtonText()
     }
 
     /// Setup: Main View

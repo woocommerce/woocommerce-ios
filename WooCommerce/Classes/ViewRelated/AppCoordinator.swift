@@ -79,7 +79,7 @@ private extension AppCoordinator {
         }
 
         DDLogInfo("💬 Authenticated user does not have a Woo store selected — launching store picker.")
-        let navigationController = UINavigationController()
+        let navigationController = WooNavigationController()
         setWindowRootViewControllerAndAnimateIfNeeded(navigationController)
         storePickerCoordinator = StorePickerCoordinator(navigationController, config: .standard)
         storePickerCoordinator?.start()

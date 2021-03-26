@@ -53,8 +53,6 @@ private extension ProductSlugViewController {
 
     func configureNavigationBar() {
         title = NSLocalizedString("Slug", comment: "Product Slug navigation title")
-
-        removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {

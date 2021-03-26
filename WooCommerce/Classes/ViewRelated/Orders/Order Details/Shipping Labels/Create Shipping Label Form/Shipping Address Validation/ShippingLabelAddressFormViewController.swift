@@ -84,7 +84,6 @@ private extension ShippingLabelAddressFormViewController {
 
     func configureNavigationBar() {
         title = viewModel.type == .origin ? Localization.titleViewShipFrom : Localization.titleViewShipTo
-        removeNavigationBackBarButtonText()
         if viewModel.showLoadingIndicator {
             configureRightButtonItemAsLoader()
         } else {

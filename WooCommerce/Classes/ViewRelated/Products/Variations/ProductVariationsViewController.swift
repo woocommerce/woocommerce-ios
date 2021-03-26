@@ -175,7 +175,6 @@ private extension ProductVariationsViewController {
     /// Set the title and navigation buttons.
     ///
     func configureNavigationBar() {
-        removeNavigationBackBarButtonText()
         title = NSLocalizedString(
             "Variations",
             comment: "Title that appears on top of the Product Variation List screen."

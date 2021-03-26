@@ -46,8 +46,6 @@ class ApplicationLogDetailViewController: UIViewController {
     func configureNavigation() {
         title = logDate
 
-        removeNavigationBackBarButtonText()
-
         let shareButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(showShareActivity))
         navigationItem.rightBarButtonItem = shareButton
     }

@@ -146,7 +146,6 @@ private extension ProductListSelectorViewController {
     func configureNavigation() {
         updateNavigationTitle(productIDs: productIDs)
         updateNavigationRightBarButtonItem(productIDs: productIDs)
-        removeNavigationBackBarButtonText()
     }
 
     func configurePaginatedProductListSelectorChildViewController() {

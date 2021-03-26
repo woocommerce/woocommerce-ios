@@ -398,7 +398,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 private extension ProductFormViewController {
     func configureNavigationBar() {
         updateNavigationBar()
-        removeNavigationBackBarButtonText()
+        updateBackButtonTitle()
     }
 
     func configureMainView() {
@@ -483,6 +483,7 @@ private extension ProductFormViewController {
     func observeProductName() {
         cancellableProductName = viewModel.productName?.subscribe { [weak self] _ in
             guard let self = self else { return }
+            self.updateBackButtonTitle()
             if self.view.window == nil { // If window is nil, this screen isn't the active screen.
                 self.onProductUpdated(product: self.product)
             }
@@ -765,6 +766,12 @@ private extension ProductFormViewController {
 // MARK: Navigation Bar Items
 //
 private extension ProductFormViewController {
+
+    /// Even if the back button don't show any text, we still need a back button title for the menu that is presented by long pressing the back button.
+    ///
+    func updateBackButtonTitle() {
+        navigationItem.backButtonTitle = viewModel.productModel.name.isNotEmpty ? viewModel.productModel.name : Localization.unnamedProduct
+    }
 
     func updateNavigationBar() {
         // Create action buttons based on view model
@@ -1330,6 +1337,8 @@ private enum Localization {
     static let saveTitle = NSLocalizedString("Save", comment: "Action for saving a Product remotely")
     static let groupedProductsViewTitle = NSLocalizedString("Grouped Products",
                                                             comment: "Navigation bar title for editing linked products for a grouped product")
+    static let unnamedProduct = NSLocalizedString("Unnamed product",
+                                                  comment: "Back button title when the product doesn't have a name")
 }
 
 private enum ActionSheetStrings {

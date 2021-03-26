@@ -1,3 +1,0 @@
-- Ahora, mientras editas productos, puedes crear, eliminar y modificar variaciones, así como sus atributos y opciones de atributos.
-- Hemos renovado el diseño, lo que incluye cambios en las pestañas de tu escritorio. No dudes en dejarnos tus comentarios sobre la interfaz de usuario para que podamos mejorarla. 
- - Se han llevado a cabo otras correcciones. 

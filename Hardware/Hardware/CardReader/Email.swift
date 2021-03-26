@@ -1,3 +1,10 @@
+/// A property wrapper to validate that a property is a valid email
+/// Property Wrappers can not throw, as far as I understand, so
+/// what this wrapper does is return a nil when trying to set an invalid
+/// email address as a value of a property of type String.
+/// The reason to do this is add an extra layer of validation before passing
+/// an instance of PaymentIntentParameters to the Stripe Terminal SDK
+
 @propertyWrapper
 public struct Email<Value: StringProtocol> {
     var value: Value?

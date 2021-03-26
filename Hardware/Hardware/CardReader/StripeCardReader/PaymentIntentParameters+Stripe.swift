@@ -8,6 +8,7 @@ extension Hardware.PaymentIntentParameters {
         returnValue.stripeDescription = self.receiptDescription
         returnValue.statementDescriptor = self.statementDescription
         returnValue.receiptEmail = self.receiptEmail
+        returnValue.metadata = self.metadata
 
         return returnValue
     }

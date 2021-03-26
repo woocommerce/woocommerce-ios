@@ -13,6 +13,7 @@
 		D80B464E260E18930092EDC0 /* Email.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80B464D260E18930092EDC0 /* Email.swift */; };
 		D80B4652260E19590092EDC0 /* PaymentIntentParametersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80B4651260E19590092EDC0 /* PaymentIntentParametersTests.swift */; };
 		D80B4656260E1B290092EDC0 /* Lowercase.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80B4655260E1B290092EDC0 /* Lowercase.swift */; };
+		D80B465A260E1E160092EDC0 /* StatementDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80B4659260E1E160092EDC0 /* StatementDescriptor.swift */; };
 		D81AE85A25E6A62800D9CFD3 /* StripeCardReaderDiscoveryCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81AE85925E6A62800D9CFD3 /* StripeCardReaderDiscoveryCache.swift */; };
 		D81AE85E25E6A89F00D9CFD3 /* StripeCardReaderCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81AE85D25E6A89F00D9CFD3 /* StripeCardReaderCacheTests.swift */; };
 		D81AE86425E6B77F00D9CFD3 /* CardReaderServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81AE86325E6B77F00D9CFD3 /* CardReaderServiceError.swift */; };
@@ -65,6 +66,7 @@
 		D80B464D260E18930092EDC0 /* Email.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Email.swift; sourceTree = "<group>"; };
 		D80B4651260E19590092EDC0 /* PaymentIntentParametersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentIntentParametersTests.swift; sourceTree = "<group>"; };
 		D80B4655260E1B290092EDC0 /* Lowercase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lowercase.swift; sourceTree = "<group>"; };
+		D80B4659260E1E160092EDC0 /* StatementDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatementDescriptor.swift; sourceTree = "<group>"; };
 		D81AE85925E6A62800D9CFD3 /* StripeCardReaderDiscoveryCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeCardReaderDiscoveryCache.swift; sourceTree = "<group>"; };
 		D81AE85D25E6A89F00D9CFD3 /* StripeCardReaderCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeCardReaderCacheTests.swift; sourceTree = "<group>"; };
 		D81AE86325E6B77F00D9CFD3 /* CardReaderServiceError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderServiceError.swift; sourceTree = "<group>"; };
@@ -200,6 +202,7 @@
 				D8EDFE2925EED21D003D2213 /* CardReaderConfigProvider.swift */,
 				D80B464D260E18930092EDC0 /* Email.swift */,
 				D80B4655260E1B290092EDC0 /* Lowercase.swift */,
+				D80B4659260E1E160092EDC0 /* StatementDescriptor.swift */,
 			);
 			path = CardReader;
 			sourceTree = "<group>";
@@ -416,6 +419,7 @@
 				D81AE86425E6B77F00D9CFD3 /* CardReaderServiceError.swift in Sources */,
 				D8DF5F4E25DD9F91008AFE25 /* CardReaderType+Stripe.swift in Sources */,
 				D89B8F1225DDCBCD0001C726 /* Charge+Stripe.swift in Sources */,
+				D80B465A260E1E160092EDC0 /* StatementDescriptor.swift in Sources */,
 				D8DF5F4A25DD9F7A008AFE25 /* CardReader+Stripe.swift in Sources */,
 				D88FDB2A25DD21B000CB0DBD /* PaymentStatus.swift in Sources */,
 				D854FC22260A34B000A219CD /* UnderlyingError+Stripe.swift in Sources */,

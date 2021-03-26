@@ -36,14 +36,14 @@ final class LoginProloguePageViewController: UIPageViewController {
         let newPageControl = UIPageControl()
         newPageControl.currentPageIndicatorTintColor = .gray(.shade5)
         newPageControl.pageIndicatorTintColor = .wooCommercePurple(.shade50)
-        newPageControl.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+        newPageControl.transform = CGAffineTransform(scaleX: Constants.pageControlScale, y: Constants.pageControlScale)
 
         newPageControl.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(newPageControl)
 
         NSLayoutConstraint.activate([
             newPageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            newPageControl.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10)
+            newPageControl.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: Constants.pageControlBottomMargin)
         ])
 
         newPageControl.numberOfPages = pages.count
@@ -108,5 +108,13 @@ extension LoginProloguePageViewController: UIPageViewControllerDelegate {
             return
         }
         pageControl?.currentPage = index
+    }
+}
+
+// MARK: - Constants
+private extension LoginProloguePageViewController {
+    enum Constants {
+        static let pageControlBottomMargin: CGFloat = -10
+        static let pageControlScale: CGFloat = 0.8
     }
 }

@@ -77,17 +77,17 @@ class LoginProloguePageTypeViewController: UIViewController {
         // Stack view layout
         stackView.axis = .vertical
         stackView.alignment = .center
-        stackView.spacing = 40
+        stackView.spacing = Constants.stackSpacing
 
         // Reduce centerYAnchor constraint priority to ensure the bottom margin has higher priority, so stack view is fully visible on shorter devices
-        let verticalCentering = stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 103)
+        let verticalCentering = stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: Constants.stackVerticalOffset)
         verticalCentering.priority = UILayoutPriority(999)
 
         // Set constraints
         stackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             verticalCentering,
-            stackView.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -57),
+            stackView.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: Constants.stackBottomMargin),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
@@ -101,7 +101,7 @@ class LoginProloguePageTypeViewController: UIViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageView.widthAnchor.constraint(equalTo: stackView.widthAnchor),
-            imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.35)
+            imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: Constants.imageHeightMultiplier)
         ])
 
         // Image contents
@@ -121,10 +121,18 @@ class LoginProloguePageTypeViewController: UIViewController {
         titleLabel.setContentHuggingPriority(.required, for: .vertical)
         titleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         NSLayoutConstraint.activate([
-            titleLabel.widthAnchor.constraint(equalToConstant: 216)
+            titleLabel.widthAnchor.constraint(equalToConstant: Constants.labelWidth)
         ])
 
         // Label contents
         titleLabel.text = pageType.title
+    }
+
+    private enum Constants {
+        static let stackSpacing: CGFloat = 40
+        static let stackVerticalOffset: CGFloat = 103
+        static let stackBottomMargin: CGFloat = -57
+        static let imageHeightMultiplier: CGFloat = 0.35
+        static let labelWidth: CGFloat = 216
     }
 }

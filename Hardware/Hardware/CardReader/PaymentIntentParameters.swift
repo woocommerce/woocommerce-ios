@@ -8,7 +8,8 @@ public struct PaymentIntentParameters {
     public let amount: UInt
 
     /// Three-letter ISO currency code, in lowercase. Must be a supported currency.
-    public let currency: String
+    @CurrencyCode
+    public private(set) var currency: String
 
     /// An arbitrary string attached to the object. If you send a receipt email for this payment, the email will include the description.
     public let receiptDescription: String?
@@ -23,13 +24,18 @@ public struct PaymentIntentParameters {
      */
     public let statementDescription: String?
 
+    @Email
+    public private(set) var receiptEmail: String?
+
     public init(amount: UInt,
                 currency: String,
                 receiptDescription: String? = nil,
-                statementDescription: String? = nil) {
+                statementDescription: String? = nil,
+                receiptEmail: String? = nil) {
         self.amount = amount
         self.currency = currency
         self.receiptDescription = receiptDescription
         self.statementDescription = statementDescription
+        self.receiptEmail = receiptEmail
     }
 }

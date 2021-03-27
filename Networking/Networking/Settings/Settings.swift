@@ -11,7 +11,6 @@ public struct Settings {
         if ProcessInfo.processInfo.arguments.contains("mocked-wpcom-api") {
             return "http://localhost:8282/"
         }
-
         return "https://public-api.wordpress.com/"
     }()
 }

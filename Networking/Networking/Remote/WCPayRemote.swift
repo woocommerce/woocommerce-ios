@@ -19,4 +19,12 @@ public class WCPayRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    public func loadAccount(for siteID: Int64,
+                            completion: @escaping(WCPayAccount?, Error?) -> Void) {
+        let path = "payments/accounts"
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path)
+        let mapper = WCPayAccountMapper()
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }

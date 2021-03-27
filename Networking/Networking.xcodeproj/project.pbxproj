@@ -109,6 +109,9 @@
 		26FB056C25F6CB9100A40B26 /* Fakes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26FB056B25F6CB9100A40B26 /* Fakes.framework */; };
 		311976E02602BD4B006AC56C /* SitePluginsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311976DF2602BD4B006AC56C /* SitePluginsMapperTests.swift */; };
 		31884A3B2603F3C7003FE338 /* SitePluginStatusEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31884A3A2603F3C7003FE338 /* SitePluginStatusEnum.swift */; };
+		3192F21C260D32550067FEF9 /* WCPayAccountMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3192F21B260D32550067FEF9 /* WCPayAccountMapper.swift */; };
+		3192F220260D33BB0067FEF9 /* WCPayAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3192F21F260D33BB0067FEF9 /* WCPayAccount.swift */; };
+		3192F224260D34C40067FEF9 /* WCPayAccountStatusEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3192F223260D34C40067FEF9 /* WCPayAccountStatusEnum.swift */; };
 		31D27C812602889C002EDB1D /* SitePluginsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D27C802602889C002EDB1D /* SitePluginsRemote.swift */; };
 		31D27C8726028CE9002EDB1D /* SitePluginsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D27C8626028CE9002EDB1D /* SitePluginsMapper.swift */; };
 		31D27C8B26028D96002EDB1D /* SitePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D27C8A26028D96002EDB1D /* SitePlugin.swift */; };
@@ -549,6 +552,9 @@
 		26FB056B25F6CB9100A40B26 /* Fakes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Fakes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		311976DF2602BD4B006AC56C /* SitePluginsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginsMapperTests.swift; sourceTree = "<group>"; };
 		31884A3A2603F3C7003FE338 /* SitePluginStatusEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginStatusEnum.swift; sourceTree = "<group>"; };
+		3192F21B260D32550067FEF9 /* WCPayAccountMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayAccountMapper.swift; sourceTree = "<group>"; };
+		3192F21F260D33BB0067FEF9 /* WCPayAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayAccount.swift; sourceTree = "<group>"; };
+		3192F223260D34C40067FEF9 /* WCPayAccountStatusEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayAccountStatusEnum.swift; sourceTree = "<group>"; };
 		31D27C802602889C002EDB1D /* SitePluginsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginsRemote.swift; sourceTree = "<group>"; };
 		31D27C8626028CE9002EDB1D /* SitePluginsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginsMapper.swift; sourceTree = "<group>"; };
 		31D27C8A26028D96002EDB1D /* SitePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePlugin.swift; sourceTree = "<group>"; };
@@ -1280,6 +1286,8 @@
 				74159624224D4045003C21CF /* SiteSettingGroup.swift */,
 				CE50345F21B5799F007573C6 /* SitePlan.swift */,
 				450106842399A7CB00E24722 /* TaxClass.swift */,
+				3192F21F260D33BB0067FEF9 /* WCPayAccount.swift */,
+				3192F223260D34C40067FEF9 /* WCPayAccountStatusEnum.swift */,
 				D8EDFE2125EE88C9003D2213 /* WCPayConnectionToken.swift */,
 			);
 			path = Model;
@@ -1475,6 +1483,7 @@
 				029BA53A255DFABD006171FD /* ShippingLabelPrintDataMapper.swift */,
 				021A84D9257DF92800BC71D1 /* ShippingLabelRefundMapper.swift */,
 				45A4B84D25D2E11300776FB4 /* ShippingLabelAddressValidationResponseMapper.swift */,
+				3192F21B260D32550067FEF9 /* WCPayAccountMapper.swift */,
 				D8EDFE2525EE8A60003D2213 /* WCPayConnectionTokenMapper.swift */,
 			);
 			path = Mapper;
@@ -2039,7 +2048,9 @@
 				26455E2125F66951008A1D32 /* ProductAttributeTerm.swift in Sources */,
 				B567AF2920A0FA1E00AB6C62 /* Mapper.swift in Sources */,
 				31884A3B2603F3C7003FE338 /* SitePluginStatusEnum.swift in Sources */,
+				3192F21C260D32550067FEF9 /* WCPayAccountMapper.swift in Sources */,
 				CE50345E21B571A7007573C6 /* SitePlanMapper.swift in Sources */,
+				3192F224260D34C40067FEF9 /* WCPayAccountStatusEnum.swift in Sources */,
 				D8FBFF2022D52553006E3336 /* OrderStatsV4Totals.swift in Sources */,
 				02C254B925637BA000A04423 /* OrderShippingLabelListMapper.swift in Sources */,
 				261CF1B8255AE62D0090D8D3 /* PaymentGatewayRemote.swift in Sources */,
@@ -2062,6 +2073,7 @@
 				02C2549A25636E1500A04423 /* ShippingLabelAddress.swift in Sources */,
 				B518662220A097C200037A38 /* Network.swift in Sources */,
 				B572F69A21AC475C003EEFF0 /* DevicesRemote.swift in Sources */,
+				3192F220260D33BB0067FEF9 /* WCPayAccount.swift in Sources */,
 				B518662420A099BF00037A38 /* AlamofireNetwork.swift in Sources */,
 				CE430676234BA7920073CBFF /* RefundListMapper.swift in Sources */,
 				45551F122523E7F1007EF104 /* UserAgent.swift in Sources */,

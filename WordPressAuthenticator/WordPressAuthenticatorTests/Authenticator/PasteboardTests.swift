@@ -18,11 +18,11 @@ class PasteboardTests: XCTestCase {
         let pasteboard = UIPasteboard.general
         pasteboard.string = "123456"
 
-        UIPasteboard.general.detectAuthenticatorCode() { result in
+        UIPasteboard.general.detectAuthenticatorCode { result in
             switch result {
                 case .success(let authenticationCode):
                     XCTAssertEqual(authenticationCode, "123456")
-                case .failure(_):
+                case .failure:
                     XCTAssert(false)
             }
             expect.fulfill()
@@ -40,11 +40,11 @@ class PasteboardTests: XCTestCase {
         let pasteboard = UIPasteboard.general
         pasteboard.string = "012345"
 
-        UIPasteboard.general.detectAuthenticatorCode() { result in
+        UIPasteboard.general.detectAuthenticatorCode { result in
             switch result {
                 case .success(let authenticationCode):
                     XCTAssertEqual(authenticationCode, "012345")
-                case .failure(_):
+                case .failure:
                     XCTAssert(false)
             }
             expect.fulfill()

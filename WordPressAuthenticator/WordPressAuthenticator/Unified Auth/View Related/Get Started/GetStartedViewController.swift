@@ -5,7 +5,7 @@ import WordPressKit
 class GetStartedViewController: LoginViewController {
 
     // MARK: - Properties
-    
+
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var leadingDividerLine: UIView!
     @IBOutlet private weak var leadingDividerLineWidth: NSLayoutConstraint!
@@ -17,10 +17,10 @@ class GetStartedViewController: LoginViewController {
     // This is to contain the password selected by password auto-fill.
     // When it is populated, login is attempted.
     @IBOutlet private weak var hiddenPasswordField: UITextField?
-    
+
     // This is public so it can be set from StoredCredentialsAuthenticator.
     var errorMessage: String?
-    
+
     private var rows = [Row]()
     private var buttonViewController: NUXButtonViewController?
     private let configuration = WordPressAuthenticator.shared.configuration
@@ -30,25 +30,25 @@ class GetStartedViewController: LoginViewController {
     private let continueButton: NUXButton = {
         let button = NUXButton()
         button.isPrimary = true
-        
+
         let title = WordPressAuthenticator.shared.displayStrings.continueButtonTitle
         button.setTitle(title, for: .normal)
         button.setTitle(title, for: .highlighted)
-        
+
         return button
     }()
-    
+
     override open var sourceTag: WordPressSupportSourceTag {
         get {
             return .loginEmail
         }
     }
-    
+
     // MARK: - View
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         configureNavBar()
         setupTable()
         registerTableViewCells()
@@ -61,52 +61,52 @@ class GetStartedViewController: LoginViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configureSubmitButton(animating: false)
-        
+
         if errorMessage != nil {
             shouldChangeVoiceOverFocus = true
         }
     }
-    
+
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         tracker.set(flow: .wpCom)
-        
+
         if isMovingToParent {
             tracker.track(step: .start)
         } else {
             tracker.set(step: .start)
         }
-        
+
         errorMessage = nil
         hiddenPasswordField?.text = nil
         hiddenPasswordField?.isAccessibilityElement = false
     }
 
     // MARK: - Overrides
-    
+
     override func styleBackground() {
         guard let unifiedBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor else {
             super.styleBackground()
             return
         }
-        
+
         view.backgroundColor = unifiedBackgroundColor
     }
-    
+
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ??
             WordPressAuthenticator.shared.style.statusBarStyle
     }
-    
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
-        
+
         if let vc = segue.destination as? NUXButtonViewController {
             buttonViewController = vc
         }
     }
-    
+
     override func configureViewLoading(_ loading: Bool) {
         configureContinueButton(animating: loading)
         navigationItem.hidesBackButton = loading
@@ -121,18 +121,18 @@ class GetStartedViewController: LoginViewController {
 // MARK: - UITableViewDataSource
 
 extension GetStartedViewController: UITableViewDataSource {
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return rows.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
         configure(cell, for: row, at: indexPath)
         return cell
     }
-    
+
 }
 
 // MARK: - Private methods
@@ -140,12 +140,12 @@ extension GetStartedViewController: UITableViewDataSource {
 private extension GetStartedViewController {
 
     // MARK: - Configuration
-    
+
     func configureNavBar() {
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.getStartedTitle
         styleNavigationBar(forUnified: true)
     }
-    
+
     func setupTable() {
         defaultTableViewMargin = tableViewLeadingConstraint?.constant ?? 0
         setTableViewMargins(forWidth: view.frame.width)
@@ -173,22 +173,22 @@ private extension GetStartedViewController {
         dividerLabel.textColor = color
         dividerLabel.text = NSLocalizedString("Or", comment: "Divider on initial auth view separating auth options.").localizedUppercase
     }
-    
+
     // MARK: - Continue Button Action
-    
+
     @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
         tracker.track(click: .submit)
         validateForm()
     }
-    
+
     // MARK: - Hidden Password Field Action
-    
+
     @IBAction func handlePasswordFieldDidChange(_ sender: UITextField) {
         attemptAutofillLogin()
     }
-    
+
     // MARK: - Table Management
-    
+
     /// Registers all of the available TableViewCells.
     ///
     func registerTableViewCells() {
@@ -198,12 +198,12 @@ private extension GetStartedViewController {
             TextWithLinkTableViewCell.reuseIdentifier: TextWithLinkTableViewCell.loadNib(),
             SpacerTableViewCell.reuseIdentifier: SpacerTableViewCell.loadNib()
         ]
-        
+
         for (reuseIdentifier, nib) in cells {
             tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
         }
     }
-    
+
     /// Describes how the tableView rows should be rendered.
     ///
     func loadRows() {
@@ -219,7 +219,7 @@ private extension GetStartedViewController {
             rows.append(.errorMessage)
         }
     }
-    
+
     /// Configure cells.
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
@@ -238,13 +238,13 @@ private extension GetStartedViewController {
             DDLogError("Error: Unidentified tableViewCell type found.")
         }
     }
-    
+
     /// Configure the instruction cell.
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.getStartedInstructions)
     }
-    
+
     /// Configure the email cell.
     ///
     func configureEmailField(_ cell: TextFieldTableViewCell) {
@@ -253,12 +253,12 @@ private extension GetStartedViewController {
                        text: loginFields.username)
         cell.textField.delegate = self
         emailField = cell.textField
-        
+
         cell.onChangeSelectionHandler = { [weak self] textfield in
             self?.loginFields.username = textfield.nonNilTrimmedText()
             self?.configureContinueButton(animating: false)
         }
-        
+
         cell.onePasswordHandler = { [weak self] in
             guard let self = self,
             let sourceView = self.emailField else {
@@ -272,18 +272,18 @@ private extension GetStartedViewController {
                 self?.validateFormAndLogin()
             }
         }
-        
+
         if UIAccessibility.isVoiceOverRunning {
             // Quiet repetitive elements in VoiceOver.
             emailField?.placeholder = nil
         }
     }
-    
+
     /// Configure the link cell.
     ///
     func configureTextWithLink(_ cell: TextWithLinkTableViewCell) {
         cell.configureButton(markedText: WordPressAuthenticator.shared.displayStrings.loginTermsOfService)
-        
+
         cell.actionHandler = { [weak self] in
             self?.termsTapped()
         }
@@ -293,12 +293,12 @@ private extension GetStartedViewController {
     ///
     func configureErrorLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: errorMessage, style: .error)
-        
+
         if shouldChangeVoiceOverFocus {
             UIAccessibility.post(notification: .layoutChanged, argument: cell)
         }
     }
-    
+
     /// Rows listed in the order they were created.
     ///
     enum Row {
@@ -307,7 +307,7 @@ private extension GetStartedViewController {
         case tos
         case spacer
         case errorMessage
-        
+
         var reuseIdentifier: String {
             switch self {
             case .instructions, .errorMessage:
@@ -321,18 +321,18 @@ private extension GetStartedViewController {
             }
         }
     }
-    
+
     enum Constants {
         static let footerFrame = CGRect(x: 0, y: 0, width: 0, height: 44)
         static let footerButtonInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
     }
-    
+
 }
 
 // MARK: - Validation
 
 private extension GetStartedViewController {
-    
+
     /// Configures appearance of the submit button.
     ///
     func configureContinueButton(animating: Bool) {
@@ -351,7 +351,7 @@ private extension GetStartedViewController {
     /// social signin does not require form validation.
     ///
     func validateForm() {
-        
+
         loginFields.meta.socialService = nil
         displayError(message: "")
 
@@ -379,7 +379,7 @@ private extension GetStartedViewController {
                                         self.handleLoginError(error)
         })
     }
-    
+
     /// Show the Password entry view.
     ///
     func showPasswordView() {
@@ -387,10 +387,10 @@ private extension GetStartedViewController {
             DDLogError("Failed to navigate to PasswordViewController from GetStartedViewController")
             return
         }
-        
+
         vc.loginFields = loginFields
         vc.trackAsPasswordChallenge = false
-        
+
         navigationController?.pushViewController(vc, animated: true)
     }
 
@@ -411,7 +411,7 @@ private extension GetStartedViewController {
             self.displayError(error as NSError, sourceTag: self.sourceTag)
         }
     }
-    
+
     // MARK: - Send email
 
     /// Makes the call to request a magic signup link be emailed to the user.
@@ -430,11 +430,11 @@ private extension GetStartedViewController {
 
             }, failure: { [weak self] (error: Error) in
                 DDLogError("Request for signup link email failed.")
-                
+
                 guard let self = self else {
                     return
                 }
-                
+
                 self.tracker.track(failure: error.localizedDescription)
                 self.displayError(error as NSError, sourceTag: self.sourceTag)
                 self.configureSubmitButton(animating: false)
@@ -452,7 +452,7 @@ private extension GetStartedViewController {
 
         navigationController?.pushViewController(vc, animated: true)
     }
-    
+
     /// Makes the call to request a magic authentication link be emailed to the user.
     ///
     func requestAuthenticationLink() {
@@ -476,7 +476,7 @@ private extension GetStartedViewController {
                 guard let self = self else {
                     return
                 }
-                
+
                 self.tracker.track(failure: error.localizedDescription)
 
                 self.displayError(error as NSError, sourceTag: self.sourceTag)
@@ -496,7 +496,7 @@ private extension GetStartedViewController {
         vc.loginFields.restrictToWPCom = true
         navigationController?.pushViewController(vc, animated: true)
     }
-    
+
     /// Build the alert message when the email address is invalid.
     ///
     func buildInvalidEmailAlert() -> UIAlertController {
@@ -520,27 +520,27 @@ private extension GetStartedViewController {
 
         return alert
     }
-    
+
     /// When password autofill has entered a password on this screen, attempt to login immediately
     ///
     func attemptAutofillLogin() {
         // Even though there was no explicit submit action by the user, we'll interpret
         // the credentials selection as such.
         tracker.track(click: .submit)
-        
+
         loginFields.password = hiddenPasswordField?.text ?? ""
         loginFields.meta.socialService = nil
         displayError(message: "")
         validateFormAndLogin()
     }
-    
+
     /// Configures loginFields to log into wordpress.com and navigates to the selfhosted username/password form.
     /// Displays the specified error message when the new view controller appears.
     ///
     func showSelfHostedWithError(_ error: Error) {
         loginFields.siteAddress = "https://wordpress.com"
         errorToPresent = error
-        
+
         tracker.track(failure: error.localizedDescription)
 
         guard let vc = SiteCredentialsViewController.instantiate(from: .siteAddress) else {
@@ -554,51 +554,51 @@ private extension GetStartedViewController {
 
         navigationController?.pushViewController(vc, animated: true)
     }
-    
+
 }
 
 // MARK: - Social Button Management
 
 private extension GetStartedViewController {
-    
+
     func configureSocialButtons() {
         guard let buttonViewController = buttonViewController else {
             return
         }
-        
+
         buttonViewController.hideShadowView()
-        
+
         if WordPressAuthenticator.shared.configuration.enableSignInWithApple {
             if #available(iOS 13.0, *) {
                 buttonViewController.setupTopButtonFor(socialService: .apple, onTap: appleTapped)
             }
         }
-        
+
         buttonViewController.setupButtomButtonFor(socialService: .google, onTap: googleTapped)
-        
+
         let termsButton = WPStyleGuide.signupTermsButton()
         buttonViewController.stackView?.addArrangedSubview(termsButton)
         termsButton.addTarget(self, action: #selector(termsTapped), for: .touchUpInside)
     }
-    
+
     @objc func appleTapped() {
         tracker.track(click: .loginWithApple)
-        
+
         AppleAuthenticator.sharedInstance.delegate = self
         AppleAuthenticator.sharedInstance.showFrom(viewController: self)
     }
-    
+
     @objc func googleTapped() {
         tracker.track(click: .loginWithGoogle)
-        
+
         guard let toVC = GoogleAuthViewController.instantiate(from: .googleAuth) else {
             DDLogError("Failed to navigate to GoogleAuthViewController from GetStartedViewController")
             return
         }
-        
+
         navigationController?.pushViewController(toVC, animated: true)
     }
-    
+
     @objc func termsTapped() {
         tracker.track(click: .termsOfService)
 
@@ -606,7 +606,7 @@ private extension GetStartedViewController {
             DDLogError("GetStartedViewController: wpcomTermsOfServiceURL unavailable.")
             return
         }
-        
+
         let safariViewController = SFSafariViewController(url: url)
         safariViewController.modalPresentationStyle = .pageSheet
         safariViewController.delegate = self
@@ -629,35 +629,35 @@ extension GetStartedViewController: SFSafariViewControllerDelegate {
 // MARK: - AppleAuthenticatorDelegate
 
 extension GetStartedViewController: AppleAuthenticatorDelegate {
-    
+
     func showWPComLogin(loginFields: LoginFields) {
         self.loginFields = loginFields
         showPasswordView()
     }
-    
+
     func showApple2FA(loginFields: LoginFields) {
         self.loginFields = loginFields
         signInAppleAccount()
     }
-    
+
     func authFailedWithError(message: String) {
         displayErrorAlert(message, sourceTag: .loginApple)
         tracker.set(flow: .wpCom)
     }
-    
+
 }
 
 // MARK: - LoginFacadeDelegate
 
 extension GetStartedViewController {
-    
+
     // Used by SIWA when logging with with a passwordless, 2FA account.
     //
     func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
         configureViewLoading(false)
         socialNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)
     }
-    
+
 }
 
 // MARK: - UITextFieldDelegate
@@ -667,7 +667,7 @@ extension GetStartedViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         tracker.track(click: .selectEmailField)
     }
-    
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if canSubmit() {
             validateForm()

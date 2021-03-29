@@ -1,6 +1,5 @@
 import Foundation
 
-
 // MARK: - WordPress.com Site Info
 //
 public class WordPressComSiteInfo {
@@ -32,7 +31,7 @@ public class WordPressComSiteInfo {
     /// URL of the Site's Blavatar.
     ///
     public let icon: String
-    
+
     /// Indicates whether the site is WordPressDotCom, or not.
     ///
     public let isWPCom: Bool
@@ -44,8 +43,6 @@ public class WordPressComSiteInfo {
     /// Inidcates whether the site exists, or not.
     ///
     public let exists: Bool
-
-
 
     /// Initializes the current SiteInfo instance with a raw dictionary.
     ///

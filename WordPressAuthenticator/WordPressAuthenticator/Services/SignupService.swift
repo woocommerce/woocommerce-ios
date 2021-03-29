@@ -3,7 +3,6 @@ import CocoaLumberjack
 import WordPressShared
 import WordPressKit
 
-
 /// SignupService: Responsible for creating a new WPCom user and blog.
 ///
 class SignupService {
@@ -38,7 +37,7 @@ class SignupService {
             failure(error ?? SignupError.unknown)
         })
     }
-    
+
     /// Create a new WPcom account using Apple ID
     ///
     /// - Parameters:
@@ -58,7 +57,7 @@ class SignupService {
                                                     _ wpcomToken: String) -> Void,
                                   failure: @escaping (_ error: Error) -> Void) {
         let remote = WordPressComServiceRemote(wordPressComRestApi: anonymousAPI)
-        
+
         remote.createWPComAccount(withApple: token,
                                   andEmail: email,
                                   andFullName: fullName,
@@ -70,7 +69,7 @@ class SignupService {
                                             failure(SignupError.unknown)
                                             return
                                     }
-                                    
+
                                     let createdAccount = (response?[ResponseKeys.createdAccount] as? Int ?? 0) == 1
                                     success(createdAccount, false, false, username, bearer_token)
         }, failure: { error in
@@ -82,7 +81,7 @@ class SignupService {
                 }
 
                 if (error.userInfo[ErrorKeys.errorCode] as? String ?? "") == ErrorKeys.existingNonSocialUser {
-                    
+
                     // If an account already exists, the account email should be returned in the Error response.
                     // Extract it and return it.
                     var existingEmail = ""
@@ -91,7 +90,7 @@ class SignupService {
                         let email = emailDict?.value ?? ""
                         existingEmail = email
                     }
-                    
+
                     success(false, true, false, existingEmail, "")
                     return
                 }
@@ -100,9 +99,8 @@ class SignupService {
             failure(error ?? SignupError.unknown)
         })
     }
-    
-}
 
+}
 
 // MARK: - Private
 //
@@ -130,7 +128,6 @@ private extension SignupService {
         static let twoFactorEnabled = "2FA_enabled"
     }
 }
-
 
 // MARK: - Errors
 //

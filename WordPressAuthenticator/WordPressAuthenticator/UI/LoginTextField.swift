@@ -38,7 +38,7 @@ open class LoginTextField: WPWalkthroughTextField {
                 return
             }
 
-            let attributes: [NSAttributedString.Key : Any] = [
+            let attributes: [NSAttributedString.Key: Any] = [
                 .foregroundColor: WordPressAuthenticator.shared.style.placeholderColor,
                 .font: font
             ]

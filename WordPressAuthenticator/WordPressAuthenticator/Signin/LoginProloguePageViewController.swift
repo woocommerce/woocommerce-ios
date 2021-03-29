@@ -1,7 +1,6 @@
 import UIKit
 import WordPressShared
 
-
 class LoginProloguePageViewController: UIPageViewController {
     @objc var pages: [UIViewController] = []
     fileprivate var pageControl: UIPageControl?
@@ -46,7 +45,6 @@ class LoginProloguePageViewController: UIPageViewController {
         newControl.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         newControl.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         newControl.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: Constants.pagerHeight).isActive = true
-
 
         newControl.numberOfPages = pages.count
         newControl.addTarget(self, action: #selector(handlePageControlValueChanged(sender:)), for: .valueChanged)

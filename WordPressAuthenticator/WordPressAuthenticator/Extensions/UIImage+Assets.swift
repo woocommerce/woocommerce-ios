@@ -1,6 +1,5 @@
 import Foundation
 
-
 // MARK: - Named Assets
 //
 extension UIImage {

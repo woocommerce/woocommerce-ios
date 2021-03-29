@@ -2,12 +2,11 @@ import WordPressShared
 import WordPressKit
 import GoogleSignIn
 
-
 /// View Controller for login-specific screens
 open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     @IBOutlet var instructionLabel: UILabel?
     @objc var errorToPresent: Error?
-    
+
     let tracker = AuthenticatorAnalyticsTracker.shared
 
     /// Constraints on the table view container.
@@ -15,7 +14,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     @IBOutlet var tableViewLeadingConstraint: NSLayoutConstraint?
     @IBOutlet var tableViewTrailingConstraint: NSLayoutConstraint?
     var defaultTableViewMargin: CGFloat = 0
-    
+
     lazy var loginFacade: LoginFacade = {
         let configuration = WordPressAuthenticator.shared.configuration
         let facade = LoginFacade(dotcomClientID: configuration.wpcomClientId,
@@ -106,9 +105,9 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
             errorLabel?.isHidden = true
             return
         }
-        
+
         tracker.track(failure: message)
-        
+
         errorLabel?.isHidden = false
         errorLabel?.text = message
         errorToPresent = nil
@@ -125,7 +124,6 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     private func mustShowSignupEpilogue() -> Bool {
         return isSignUp && authenticationDelegate.shouldPresentSignupEpilogue()
     }
-
 
     // MARK: - Epilogue
 
@@ -171,7 +169,6 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         loginFacade.signIn(with: loginFields)
     }
 
-
     // MARK: SigninWPComSyncHandler methods
     dynamic open func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
         let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: requiredMultifactorCode, siteURL: loginFields.siteAddress)
@@ -206,21 +203,21 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         if tracker.shouldUseLegacyTracker() {
             WordPressAuthenticator.track(.twoFactorCodeRequested)
         }
-        
+
         let unifiedAuthEnabled = WordPressAuthenticator.shared.configuration.enableUnifiedAuth
         let unifiedGoogle = unifiedAuthEnabled && loginFields.meta.socialService == .google
         let unifiedApple = unifiedAuthEnabled && loginFields.meta.socialService == .apple
         let unifiedSiteAddress = unifiedAuthEnabled && !loginFields.siteAddress.isEmpty
         let unifiedWordPress = unifiedAuthEnabled && loginFields.meta.userIsDotCom
-        
-        guard (unifiedGoogle || unifiedApple || unifiedSiteAddress || unifiedWordPress) else {
+
+        guard unifiedGoogle || unifiedApple || unifiedSiteAddress || unifiedWordPress else {
             presentLogin2FA()
             return
         }
-        
+
         presentUnified2FA()
     }
-    
+
     private enum LocalizedText {
         static let loginError = NSLocalizedString("Whoops, something went wrong and we couldn't log you in. Please try again!", comment: "An error message shown when a wpcom user provides the wrong password.")
         static let missingInfoError = NSLocalizedString("Please fill out all the fields", comment: "A short prompt asking the user to properly fill out all login fields.")
@@ -250,17 +247,17 @@ extension LoginViewController {
     ///
     func syncWPComAndPresentEpilogue(
         credentials: AuthenticatorCredentials,
-        completion: (() -> ())? = nil) {
-        
+        completion: (() -> Void)? = nil) {
+
         configureStatusLabel(LocalizedText.gettingAccountInfo)
-        
+
         syncWPCom(credentials: credentials) { [weak self] in
             guard let self = self else {
                 return
             }
-            
+
             completion?()
-            
+
             self.presentEpilogue(credentials: credentials)
             self.configureStatusLabel("")
             self.configureViewLoading(false)
@@ -270,7 +267,7 @@ extension LoginViewController {
 
     /// Signals the Main App to synchronize the specified WordPress.com account.
     ///
-    func syncWPCom(credentials: AuthenticatorCredentials, completion: (() -> ())? = nil) {
+    func syncWPCom(credentials: AuthenticatorCredentials, completion: (() -> Void)? = nil) {
         authenticationDelegate.sync(credentials: credentials) {
             completion?()
         }
@@ -300,14 +297,14 @@ extension LoginViewController {
         guard let serviceName = loginFields.meta.socialService, let serviceToken = loginFields.meta.socialServiceIDToken else {
             return
         }
-        
-        let appleConnectParameters:[String:AnyObject]? = {
+
+        let appleConnectParameters: [String: AnyObject]? = {
             if let appleUser = loginFields.meta.appleUser {
                 return AccountServiceRemoteREST.appleSignInParameters(email: appleUser.email, fullName: appleUser.fullName)
             }
             return nil
         }()
-        
+
         linkSocialService(serviceName: serviceName,
                           serviceToken: serviceToken,
                           wpcomAuthToken: wpcomAuthToken,
@@ -319,7 +316,7 @@ extension LoginViewController {
     func linkSocialService(serviceName: SocialServiceName,
                            serviceToken: String,
                            wpcomAuthToken: String,
-                           appleConnectParameters: [String:AnyObject]? = nil) {
+                           appleConnectParameters: [String: AnyObject]? = nil) {
         let service = WordPressComAccountService()
         service.connect(wpcomAuthToken: wpcomAuthToken,
                         serviceName: serviceName,
@@ -330,7 +327,7 @@ extension LoginViewController {
                             // consult with your lead before removing this event.
                             let source = appleConnectParameters != nil ? "apple" : "google"
                             WordPressAuthenticator.track(.signedIn, properties: ["source": source])
-                            
+
                             if AuthenticatorAnalyticsTracker.shared.shouldUseLegacyTracker() {
                                 WordPressAuthenticator.track(.loginSocialConnectSuccess)
                                 WordPressAuthenticator.track(.loginSocialSuccess)
@@ -350,11 +347,10 @@ extension LoginViewController {
     }
 }
 
-
 // MARK: - Handle View Changes
 //
 extension LoginViewController {
-    
+
     open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
@@ -362,11 +358,11 @@ extension LoginViewController {
         if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
             didChangePreferredContentSize()
         }
-        
+
         // Update Table View size
         setTableViewMargins(forWidth: view.frame.width)
     }
-    
+
     open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         setTableViewMargins(forWidth: size.width)
@@ -397,12 +393,12 @@ extension LoginViewController {
         tableViewLeadingConstraint.constant = margin
         tableViewTrailingConstraint.constant = margin
     }
-    
+
     private enum TableViewMarginMultipliers {
         static let ipadPortrait: CGFloat = 0.1667
         static let ipadLandscape: CGFloat = 0.25
     }
-    
+
 }
 
 // MARK: - Social Sign In Handling
@@ -413,7 +409,7 @@ extension LoginViewController {
         // Remove the Waiting for Google view so it doesn't reappear when backing through the navigation stack.
         navigationController?.viewControllers.removeAll(where: { $0 is GoogleAuthViewController })
     }
-    
+
     func signInAppleAccount() {
         guard let token = loginFields.meta.socialServiceIDToken else {
             WordPressAuthenticator.track(.loginSocialButtonFailure, properties: ["source": SocialServiceName.apple.rawValue])
@@ -423,7 +419,7 @@ extension LoginViewController {
 
         loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.apple.rawValue)
     }
-    
+
     /// Updates the LoginFields structure, with the specified Google User + Token + Email.
     ///
     func updateLoginFields(googleUser: GIDGoogleUser, googleToken: String, googleEmail: String) {
@@ -432,7 +428,7 @@ extension LoginViewController {
         loginFields.meta.socialServiceIDToken = googleToken
         loginFields.meta.googleUser = googleUser
     }
-    
+
     // Used by SIWA when logging with with a passwordless, 2FA account.
     //
     func socialNeedsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
@@ -446,36 +442,36 @@ extension LoginViewController {
 
         presentUnified2FA()
     }
-    
+
     private func presentLogin2FA() {
-        var properties = [AnyHashable:Any]()
+        var properties = [AnyHashable: Any]()
         if let service = loginFields.meta.socialService?.rawValue {
             properties["source"] = service
         }
-        
+
         if tracker.shouldUseLegacyTracker() {
             WordPressAuthenticator.track(.loginSocial2faNeeded, properties: properties)
         }
-        
+
         guard let vc = Login2FAViewController.instantiate(from: .login) else {
             DDLogError("Failed to navigate from LoginViewController to Login2FAViewController")
             return
         }
-        
+
         vc.loginFields = loginFields
         vc.dismissBlock = dismissBlock
         vc.errorToPresent = errorToPresent
-        
+
         navigationController?.pushViewController(vc, animated: true)
     }
-    
+
     private func presentUnified2FA() {
-        
+
         guard let vc = TwoFAViewController.instantiate(from: .twoFA) else {
             DDLogError("Failed to navigate from LoginViewController to TwoFAViewController")
             return
         }
-        
+
         vc.loginFields = loginFields
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -485,36 +481,36 @@ extension LoginViewController {
 // MARK: - LoginSocialError delegate methods
 
 extension LoginViewController: LoginSocialErrorViewControllerDelegate {
-    
+
     func retryWithEmail() {
         loginFields.username = ""
         cleanupAfterSocialErrors()
         navigationController?.popToRootViewController(animated: true)
     }
-    
+
     func retryWithAddress() {
         cleanupAfterSocialErrors()
         loginToSelfHostedSite()
     }
-    
+
     func retryAsSignup() {
         cleanupAfterSocialErrors()
-        
+
         if let controller = SignupEmailViewController.instantiate(from: .signup) {
             controller.loginFields = loginFields
             navigationController?.pushViewController(controller, animated: true)
         }
     }
-    
+
     func errorDismissed() {
         loginFields.username = ""
         navigationController?.popToRootViewController(animated: true)
     }
-    
+
     private func cleanupAfterSocialErrors() {
         dismiss(animated: true) {}
     }
-    
+
     /// Displays the self-hosted login form.
     ///
     @objc func loginToSelfHostedSite() {
@@ -522,10 +518,10 @@ extension LoginViewController: LoginSocialErrorViewControllerDelegate {
             presentSelfHostedView()
             return
         }
-        
+
         presentUnifiedSiteAddressView()
     }
-    
+
     /// Navigates to the unified site address login flow.
     ///
     func presentUnifiedSiteAddressView() {
@@ -551,5 +547,5 @@ extension LoginViewController: LoginSocialErrorViewControllerDelegate {
 
         navigationController?.pushViewController(vc, animated: true)
     }
-    
+
 }

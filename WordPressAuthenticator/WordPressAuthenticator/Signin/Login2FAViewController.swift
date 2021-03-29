@@ -27,7 +27,6 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
 
     // MARK: - Lifecycle Methods
 
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -43,7 +42,6 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         styleSendCodeButton()
     }
 
-
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
@@ -57,7 +55,6 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         WordPressAuthenticator.track(.loginTwoFactorFormViewed)
     }
 
-
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unregisterForKeyboardEvents()
@@ -69,8 +66,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         verificationCodeField.text = ""
     }
 
-
-    /// MARK: Dynamic Type
+    // MARK: Dynamic Type
     override func didChangePreferredContentSize() {
         super.didChangePreferredContentSize()
         styleSendCodeButton()
@@ -83,7 +79,6 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
     }
 
     // MARK: Configuration Methods
-
 
     /// Assigns localized strings to various UIControl defined in the storyboard.
     ///
@@ -128,7 +123,6 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         )
     }
 
-
     /// Configure the view's loading state.
     ///
     /// - Parameter loading: True if the form should be configured to a "loading" state.
@@ -139,7 +133,6 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         configureSubmitButton(animating: loading)
         navigationItem.hidesBackButton = loading
     }
-
 
     /// Configure the view for an editing state. Should only be called from viewWillAppear
     /// as this method skips animating any change in height.
@@ -152,9 +145,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         }
     }
 
-
     // MARK: - Instance Methods
-
 
     /// Validates what is entered in the various form fields and, if valid,
     /// proceeds with the submit action.
@@ -185,7 +176,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         // consult with your lead before removing this event.
         WordPressAuthenticator.track(.signedIn)
 
-        var properties = [AnyHashable:Any]()
+        var properties = [AnyHashable: Any]()
         if let service = loginFields.meta.socialService?.rawValue {
             properties["source"] = service
         }
@@ -255,17 +246,15 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         validateForm()
     }
 
-
     @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
         tracker.track(click: .submit)
-        
+
         validateForm()
     }
 
-
     @IBAction func handleSendVerificationButtonTapped(_ sender: UIButton) {
         self.tracker.track(click: .sendCodeWithText)
-        
+
         let message = NSLocalizedString("SMS Sent", comment: "One Time Code has been sent via SMS")
         SVProgressHUD.showSuccess(withStatus: message)
         SVProgressHUD.dismiss(withDelay: Constants.headsUpDismissDelay)
@@ -278,15 +267,11 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         }
     }
 
-
-
     // MARK: - Handle application state changes.
-
 
     @objc func applicationBecameInactive() {
         pasteboardChangeCountBeforeBackground = UIPasteboard.general.changeCount
     }
-
 
     @objc func applicationBecameActive() {
         let emptyField = verificationCodeField.text?.isEmpty ?? true
@@ -296,7 +281,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         }
 
         if #available(iOS 14.0, *) {
-            UIPasteboard.general.detectAuthenticatorCode() { [weak self] result in
+            UIPasteboard.general.detectAuthenticatorCode { [weak self] result in
                 switch result {
                     case .success(let authenticatorCode):
                         self?.handle(code: authenticatorCode)
@@ -322,20 +307,16 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         }
     }
 
-
     // MARK: - Keyboard Notifications
-
 
     @objc func handleKeyboardWillShow(_ notification: Foundation.Notification) {
         keyboardWillShow(notification)
     }
 
-
     @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
         keyboardWillHide(notification)
     }
 }
-
 
 extension Login2FAViewController {
 

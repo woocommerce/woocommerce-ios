@@ -1,6 +1,5 @@
 import UIKit
 
-
 /// TextFieldTableViewCell: a textfield with a custom border line in a UITableViewCell.
 ///
 final class TextFieldTableViewCell: UITableViewCell {
@@ -59,7 +58,6 @@ final class TextFieldTableViewCell: UITableViewCell {
         textField.text = text
     }
 }
-
 
 // MARK: - Private methods
 private extension TextFieldTableViewCell {
@@ -145,7 +143,6 @@ private extension TextFieldTableViewCell {
     }
 }
 
-
 // MARK: - Secure Text Entry
 /// Methods ported from WPWalkthroughTextField.h/.m
 ///
@@ -209,7 +206,6 @@ private extension TextFieldTableViewCell {
     }
 }
 
-
 // MARK: - Constants
 extension TextFieldTableViewCell {
 
@@ -231,7 +227,7 @@ extension TextFieldTableViewCell {
         static let passwordShown = NSLocalizedString("Shown",
                                                      comment: "Accessibility value if login page's password field is displaying the password.")
         static let showPassword = NSLocalizedString("Show password",
-                                                    comment:"Accessibility label for the 'Show password' button in the login page's password field.")
+                                                    comment: "Accessibility label for the 'Show password' button in the login page's password field.")
         static let siteAddress = NSLocalizedString("Site address",
                                                    comment: "Accessibility label of the site address field shown when adding a self-hosted site.")
         static let username = NSLocalizedString("Username",

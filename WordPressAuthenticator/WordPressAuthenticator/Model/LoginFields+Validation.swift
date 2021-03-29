@@ -17,7 +17,7 @@ extension LoginFields {
         guard let url = URL(string: NSURL.idnEncodedURL(siteAddress)) else {
             return false
         }
-        
+
         return !url.absoluteString.isEmpty
     }
 

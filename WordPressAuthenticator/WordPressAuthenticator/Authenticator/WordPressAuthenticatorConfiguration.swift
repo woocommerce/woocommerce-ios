@@ -20,11 +20,11 @@ public struct WordPressAuthenticatorConfiguration {
     /// WordPress.com Terms of Service URL
     ///
     let wpcomTermsOfServiceURL: String
-    
+
     /// WordPress.com Base URL for OAuth
     ///
     let wpcomBaseURL: String
-    
+
     /// WordPress.com API Base URL
     ///
     let wpcomAPIBaseURL: String
@@ -59,7 +59,7 @@ public struct WordPressAuthenticatorConfiguration {
     /// If enabled, "Find your site address", "Reset your password", and others will be displayed.
     /// If disabled, none of the hint buttons will appear on the unified auth flows.
     let displayHintButtons: Bool
-    
+
     /// Flag indicating if the Sign In With Apple option should be displayed.
     ///
     let enableSignInWithApple: Bool
@@ -71,7 +71,7 @@ public struct WordPressAuthenticatorConfiguration {
     ///     If disabled, a view is displayed providing the user with other options.
     ///
     let enableSignupWithGoogle: Bool
-    
+
     /// Flag for the unified login/signup flows.
     /// If disabled, none of the unified flows will display.
     /// If enabled, all unified flows will display.
@@ -82,7 +82,7 @@ public struct WordPressAuthenticatorConfiguration {
     /// If disabled, displays the old carousel.
     /// If enabled, displays the new carousel.
     let enableUnifiedCarousel: Bool
-    
+
     /// Flag for the unified login/signup flows.
     /// If disabled, the "Continue With WordPress" button in the login prologue is shown first.
     /// If enabled, the "Enter your existing site address" button in the login prologue is shown first.

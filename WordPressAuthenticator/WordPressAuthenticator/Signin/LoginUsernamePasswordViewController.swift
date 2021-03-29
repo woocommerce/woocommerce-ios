@@ -26,7 +26,6 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
         }
     }
 
-
     // MARK: - Lifecycle Methods
 
     override func viewDidLoad() {
@@ -37,7 +36,6 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
         setupOnePasswordButtonIfNeeded()
         displayLoginMessage("")
     }
-
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -52,7 +50,6 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
         setupNavBarIcon()
     }
 
-
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
@@ -62,16 +59,12 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
         WordPressAuthenticator.track(.loginUsernamePasswordFormViewed)
     }
 
-
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unregisterForKeyboardEvents()
     }
 
-
-
     // MARK: - Setup and Configuration
-
 
     /// Assigns localized strings to various UIControl defined in the storyboard.
     ///
@@ -91,7 +84,6 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
         forgotPasswordButton.titleLabel?.numberOfLines = 0
     }
 
-
     /// Sets up a 1Password button if 1Password is available.
     ///
     @objc func setupOnePasswordButtonIfNeeded() {
@@ -99,7 +91,6 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
                                                             target: self,
                                                             selector: #selector(handleOnePasswordButtonTapped(_:)))
     }
-
 
     /// Configures the content of the text fields based on what is saved in `loginFields`.
     ///
@@ -110,14 +101,12 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
         usernameField.contentInsets = WPStyleGuide.edgeInsetForLoginTextFields()
     }
 
-
     /// Configures the appearance and state of the forgot password button.
     ///
     @objc func configureForgotPasswordButton() {
         forgotPasswordButton.isEnabled = enableSubmit(animating: false)
         WPStyleGuide.configureTextButton(forgotPasswordButton)
     }
-
 
     /// Configures the appearance and state of the submit button.
     ///
@@ -130,7 +119,6 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
                 !loginFields.password.isEmpty
         )
     }
-
 
     /// Sets the view's state to loading or not loading.
     ///
@@ -145,7 +133,6 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
         navigationItem.hidesBackButton = loading
     }
 
-
     /// Configure the view for an editing state. Should only be called from viewWillAppear
     /// as this method skips animating any change in height.
     ///
@@ -157,7 +144,6 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
         }
     }
 
-
     /// Configure the site header.
     ///
     @objc func configureHeader() {
@@ -167,7 +153,6 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
             configureSiteAddressHeader()
         }
     }
-
 
     /// Configure the site header to show the BlogDetailsHeaderView
     ///
@@ -181,7 +166,6 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
         siteHeaderView.downloadBlavatar(at: siteInfo.icon)
     }
 
-
     /// Configure the site header to show the site address label.
     ///
     @objc func configureSiteAddressHeader() {
@@ -191,7 +175,6 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
         siteHeaderView.blavatarBorderIsHidden = true
         siteHeaderView.blavatarImage = .linkFieldImage
     }
-
 
     /// Sanitize and format the site address we show to users.
     ///
@@ -203,7 +186,6 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
         return siteAddress
     }
 
-
     // MARK: - Instance Methods
 
     /// Validates what is entered in the various form fields and, if valid,
@@ -212,7 +194,6 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
     @objc func validateForm() {
         validateFormAndLogin()
     }
-
 
     // MARK: - Actions
 
@@ -224,11 +205,9 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
         configureSubmitButton(animating: false)
     }
 
-
     @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
         validateForm()
     }
-
 
     @objc func handleOnePasswordButtonTapped(_ sender: UIButton) {
         view.endEditing(true)
@@ -247,24 +226,20 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
 
     // MARK: - Keyboard Notifications
 
-
     @objc func handleKeyboardWillShow(_ notification: Foundation.Notification) {
         keyboardWillShow(notification)
     }
-
 
     @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
         keyboardWillHide(notification)
     }
 }
 
-
 extension LoginUsernamePasswordViewController {
 
     func displayLoginMessage(_ message: String) {
         configureForgotPasswordButton()
     }
-
 
     override func displayRemoteError(_ error: Error) {
         displayLoginMessage("")
@@ -278,7 +253,6 @@ extension LoginUsernamePasswordViewController {
     }
 }
 
-
 extension LoginUsernamePasswordViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == usernameField {
@@ -289,4 +263,3 @@ extension LoginUsernamePasswordViewController: UITextFieldDelegate {
         return true
     }
 }
-

@@ -3,7 +3,7 @@ import WordPressUI
 
 private enum Constants {
     static let helpButtonInsets = UIEdgeInsets(top: 0.0, left: 5.0, bottom: 0.0, right: 5.0)
-    //Button Item: Custom view wrapping the Help UIbutton
+    // Button Item: Custom view wrapping the Help UIbutton
     static let helpButtonItemMarginSpace = CGFloat(-8)
     static let helpButtonItemMinimumSize = CGSize(width: 44.0, height: 44.0)
 
@@ -54,7 +54,7 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
         }
 
         let cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
-        cancelButton.on() { [weak self] (control: UIBarButtonItem) in
+        cancelButton.on { [weak self] (_: UIBarButtonItem) in
             self?.handleCancelButtonTapped()
         }
         navigationItem.leftBarButtonItem = cancelButton
@@ -120,7 +120,7 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
 
     func setupBackgroundTapGestureRecognizer() {
         let tgr = UITapGestureRecognizer()
-        tgr.on() { [weak self] gestureRecognizer in
+        tgr.on { [weak self] _ in
             self?.handleBackgroundTapGesture()
         }
         view.addGestureRecognizer(tgr)
@@ -135,10 +135,9 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
     //
     func handleHelpButtonTapped(_ sender: AnyObject) {
         AuthenticatorAnalyticsTracker.shared.track(click: .showHelp)
-        
+
         displaySupportViewController(from: sourceTag)
     }
-
 
     // MARK: - Navbar Help and App Logo methods
 
@@ -147,7 +146,7 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
         var buttonTextColor: UIColor
         var titleTextColor: UIColor
         var hideBottomBorder: Bool
-        
+
         if forUnified {
             // Unified nav bar style
             backgroundColor = WordPressAuthenticator.shared.unifiedStyle?.navBarBackgroundColor ??
@@ -167,17 +166,17 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
 
         setupNavBarIcon(showIcon: !forUnified)
         setHelpButtonTextColor(forUnified: forUnified)
-        
+
         let buttonItemAppearance = UIBarButtonItem.appearance(whenContainedInInstancesOf: [LoginNavigationController.self])
         buttonItemAppearance.tintColor = buttonTextColor
         buttonItemAppearance.setTitleTextAttributes([.foregroundColor: buttonTextColor], for: .normal)
-        
+
         if #available(iOS 13.0, *) {
             let appearance = UINavigationBarAppearance()
             appearance.shadowColor = hideBottomBorder ? .clear : .separator
             appearance.backgroundColor = backgroundColor
             appearance.titleTextAttributes = [.foregroundColor: titleTextColor]
-            
+
             UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).standardAppearance = appearance
             UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).compactAppearance = appearance
             UINavigationBar.appearance(whenContainedInInstancesOf: [LoginNavigationController.self]).scrollEdgeAppearance = appearance
@@ -187,13 +186,13 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
             appearance.titleTextAttributes = [.foregroundColor: titleTextColor]
         }
     }
-    
+
     /// Add/remove the nav bar app logo.
     ///
     func setupNavBarIcon(showIcon: Bool = true) {
         showIcon ? addAppLogoToNavController() : removeAppLogoFromNavController()
     }
-    
+
     /// Adds the app logo to the nav controller
     ///
     public func addAppLogoToNavController() {
@@ -207,7 +206,7 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
     public func removeAppLogoFromNavController() {
         navigationItem.titleView = nil
     }
-    
+
     /// Whenever the WordPressAuthenticator Delegate returns true, when `shouldDisplayHelpButton` is queried, we'll proceed
     /// and attach the Help Button to the navigationController.
     ///
@@ -232,7 +231,7 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
             }
             return WordPressAuthenticator.shared.style.navButtonTextColor
         }()
-        
+
         helpButton.setTitleColor(navButtonTextColor, for: .normal)
         helpButton.setTitleColor(navButtonTextColor.withAlphaComponent(0.4), for: .highlighted)
     }
@@ -268,7 +267,7 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
     private func addHelpButton(to superView: UIView) {
         helpButton.setTitle(NSLocalizedString("Help", comment: "Help button"), for: .normal)
         setHelpButtonTextColor(forUnified: false)
-        
+
         helpButton.on(.touchUpInside) { [weak self] control in
             self?.handleHelpButtonTapped(control)
         }
@@ -315,7 +314,6 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
             view.heightAnchor.constraint(equalToConstant: Constants.notificationIndicatorSize.height)
             ])
     }
-
 
     // MARK: - UIViewControllerTransitioningDelegate
 

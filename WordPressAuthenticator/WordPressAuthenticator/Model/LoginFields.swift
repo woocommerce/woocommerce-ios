@@ -2,7 +2,6 @@ import Foundation
 import GoogleSignIn
 import WordPressKit
 
-
 /// LoginFields is a state container for user textfield input on the login screens
 /// as well as other meta data regarding the nature of a login attempt.
 ///
@@ -48,13 +47,13 @@ public class LoginFields: NSObject {
         storedCredentials?.storedUserameHash = usernameHash
         storedCredentials?.storedPasswordHash = passwordHash
     }
-    
+
     class func makeForWPCom(username: String, password: String) -> LoginFields {
         let loginFields = LoginFields()
-        
+
         loginFields.username = username
         loginFields.password = password
-        
+
         return loginFields
     }
 }

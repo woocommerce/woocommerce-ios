@@ -28,7 +28,7 @@ class AppSelector {
                 guard let url = URL(string: urlString), urlHandler.canOpenURL(url) else {
                     continue
                 }
-                actions.append(UIAlertAction(title: AppSelectorTitles(rawValue: name)?.localized ?? name, style: .default) { action in
+                actions.append(UIAlertAction(title: AppSelectorTitles(rawValue: name)?.localized ?? name, style: .default) { _ in
                     urlHandler.open(url, options: [:], completionHandler: nil)
                 })
             }
@@ -36,7 +36,7 @@ class AppSelector {
             guard !actions.isEmpty else {
                 return nil
             }
-            //sort the apps alphabetically
+            // sort the apps alphabetically
             actions = actions.sorted { $0.title ?? "" < $1.title ?? "" }
             actions.append(UIAlertAction(title: AppSelectorTitles.cancel.localized, style: .cancel, handler: nil))
 
@@ -58,7 +58,6 @@ class AppSelector {
         }
     }
 }
-
 
 /// Initializers for Email Picker
 extension AppSelector {
@@ -90,7 +89,7 @@ extension AppSelector {
 
         // if available, prepend apple mail
         if MFMailComposeViewController.canSendMail(), let url = URL(string: "message://") {
-            defaultAction = UIAlertAction(title: AppSelectorTitles.appleMail.localized, style: .default) { action in
+            defaultAction = UIAlertAction(title: AppSelectorTitles.appleMail.localized, style: .default) { _ in
                 UIApplication.shared.open(url)
             }
         }
@@ -100,7 +99,6 @@ extension AppSelector {
                   sourceView: sourceView)
     }
 }
-
 
 /// Localizable app selector titles
 enum AppSelectorTitles: String {

@@ -4,18 +4,18 @@ import WordPressKit
 /// PasswordViewController: view to enter WP account password.
 ///
 class PasswordViewController: LoginViewController {
-    
+
     // MARK: - Properties
-    
+
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
-    
+
     private weak var passwordField: UITextField?
     private var rows = [Row]()
     private var errorMessage: String?
     private var shouldChangeVoiceOverFocus: Bool = false
     private var loginLinkCell: TextLinkButtonTableViewCell?
-    
+
     /// Depending on where we're coming from, this screen needs to track a password challenge
     /// (if logging on with a Social account) or not (if logging in through WP.com).
     ///
@@ -26,26 +26,26 @@ class PasswordViewController: LoginViewController {
             loginFields.password = ""
         }
     }
-    
+
     override var sourceTag: WordPressSupportSourceTag {
         get {
             return .loginWPComPassword
         }
     }
-    
+
     // Required for `NUXKeyboardResponder` but unused here.
     var verticalCenterConstraint: NSLayoutConstraint?
-    
+
     // MARK: - View
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         removeGoogleWaitingView()
-        
+
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
         styleNavigationBar(forUnified: true)
-        
+
         defaultTableViewMargin = tableViewLeadingConstraint?.constant ?? 0
         setTableViewMargins(forWidth: view.frame.width)
 
@@ -54,18 +54,18 @@ class PasswordViewController: LoginViewController {
         loadRows()
         configureForAccessibility()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         loginFields.meta.userIsDotCom = true
         configureSubmitButton(animating: false)
         loginLinkCell?.enableButton(true)
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         if trackAsPasswordChallenge {
             if isMovingToParent {
                 tracker.track(step: .passwordChallenge)
@@ -74,41 +74,41 @@ class PasswordViewController: LoginViewController {
             }
         } else {
             tracker.set(flow: .loginWithPassword)
-            
+
             if isMovingToParent {
                 tracker.track(step: .start)
             } else {
                 tracker.set(step: .start)
             }
         }
-        
+
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
 
         configureViewForEditingIfNeeded()
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unregisterForKeyboardEvents()
     }
-    
+
     // MARK: - Overrides
-    
+
     override func styleBackground() {
         guard let unifiedBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor else {
             super.styleBackground()
             return
         }
-        
+
         view.backgroundColor = unifiedBackgroundColor
     }
-    
+
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ??
             WordPressAuthenticator.shared.style.statusBarStyle
     }
-    
+
     override func configureViewLoading(_ loading: Bool) {
         super.configureViewLoading(loading)
         passwordField?.isEnabled = !loading
@@ -116,14 +116,14 @@ class PasswordViewController: LoginViewController {
 
     override func displayRemoteError(_ error: Error) {
         configureViewLoading(false)
-        
+
         let nsError = error as NSError
         let errorCode = nsError.code
         let errorDomain = nsError.domain
-        
+
         if errorDomain == WordPressComOAuthClient.WordPressComOAuthErrorDomain,
             errorCode == WordPressComOAuthError.invalidRequest.rawValue {
-            
+
             // The only difference between an incorrect password error and exceeded login limit error
             // is the actual error string. So check for "password" in the error string, and show the custom
             // error message. Otherwise, show the actual response error.
@@ -146,7 +146,7 @@ class PasswordViewController: LoginViewController {
         if !message.isEmpty {
             tracker.track(failure: message)
         }
-        
+
         configureViewLoading(false)
 
         if errorMessage != message {
@@ -178,12 +178,12 @@ class PasswordViewController: LoginViewController {
 // MARK: - Validation and Continue
 
 private extension PasswordViewController {
-    
+
     // MARK: - Button Actions
-    
+
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
         tracker.track(click: .submit)
-        
+
         configureViewLoading(true)
         validateForm()
     }
@@ -209,24 +209,24 @@ extension PasswordViewController: UITextFieldDelegate {
 // MARK: - UITableViewDataSource
 
 extension PasswordViewController: UITableViewDataSource {
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return rows.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
         configure(cell, for: row, at: indexPath)
         return cell
     }
-    
+
 }
 
 // MARK: - Keyboard Notifications
 
 extension PasswordViewController: NUXKeyboardResponder {
-    
+
     @objc func handleKeyboardWillShow(_ notification: Foundation.Notification) {
         keyboardWillShow(notification)
     }
@@ -240,7 +240,7 @@ extension PasswordViewController: NUXKeyboardResponder {
 // MARK: - Table Management
 
 private extension PasswordViewController {
-    
+
     /// Registers all of the available TableViewCells.
     ///
     func registerTableViewCells() {
@@ -250,32 +250,32 @@ private extension PasswordViewController {
             TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib(),
             TextLinkButtonTableViewCell.reuseIdentifier: TextLinkButtonTableViewCell.loadNib()
         ]
-        
+
         for (reuseIdentifier, nib) in cells {
             tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
         }
     }
-    
+
     /// Describes how the tableView rows should be rendered.
     ///
     func loadRows() {
         rows = [.gravatarEmail]
-        
+
         // Instructions only for social accounts
         if loginFields.meta.socialService != nil {
             rows.append(.instructions)
         }
-        
+
         rows.append(.password)
-        
+
         if let errorText = errorMessage, !errorText.isEmpty {
             rows.append(.errorMessage)
         }
-        
+
         rows.append(.forgotPassword)
         rows.append(.sendMagicLink)
     }
-    
+
     /// Configure cells.
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
@@ -301,7 +301,7 @@ private extension PasswordViewController {
     ///
     func configureGravatarEmail(_ cell: GravatarEmailTableViewCell) {
         cell.configure(withEmail: loginFields.username)
-        
+
         cell.onChangeSelectionHandler = { [weak self] textfield in
             // The email can only be changed via a password manager.
             // In this case, don't update username for social accounts.
@@ -312,21 +312,21 @@ private extension PasswordViewController {
                 self?.loginFields.username = textfield.nonNilTrimmedText()
                 self?.loginFields.emailAddress = textfield.nonNilTrimmedText()
             }
-            
+
             self?.configureSubmitButton(animating: false)
         }
-        
+
         cell.onePasswordHandler = { [weak self] sourceView in
             guard let self = self else {
                 return
             }
-            
+
             self.view.endEditing(true)
-            
+
             // Don't update username for social accounts.
             // This prevents inadvertent account linking.
             let allowUsernameChange = (self.loginFields.meta.socialService == nil)
-            
+
             WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sourceView, loginFields: self.loginFields, allowUsernameChange: allowUsernameChange) { [weak self] (loginFields) in
                 cell.updateEmailAddress(loginFields.username)
                 self?.passwordField?.text = loginFields.password
@@ -334,7 +334,7 @@ private extension PasswordViewController {
             }
         }
     }
-    
+
     /// Configure the instruction cell.
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
@@ -349,7 +349,7 @@ private extension PasswordViewController {
 
         cell.configureLabel(text: instructions)
     }
-    
+
     /// Configure the password textfield cell.
     ///
     func configurePasswordTextField(_ cell: TextFieldTableViewCell) {
@@ -359,20 +359,20 @@ private extension PasswordViewController {
         // Save a reference to the first textField so it can becomeFirstResponder.
         passwordField = cell.textField
         cell.textField.delegate = self
-        
+
         cell.onChangeSelectionHandler = { [weak self] textfield in
             self?.loginFields.password = textfield.nonNilTrimmedText()
             self?.configureSubmitButton(animating: false)
         }
-        
+
         SigninEditingState.signinEditingStateActive = true
-        
+
         if UIAccessibility.isVoiceOverRunning {
             // Quiet repetitive VoiceOver elements.
             passwordField?.placeholder = nil
         }
     }
-    
+
     /// Configure the forgot password link cell.
     ///
     func configureForgotPasswordButton(_ cell: TextLinkButtonTableViewCell) {
@@ -383,7 +383,7 @@ private extension PasswordViewController {
             guard let self = self else {
                 return
             }
-            
+
             self.tracker.track(click: .forgottenPassword)
 
             // If information is currently processing, ignore button tap.
@@ -402,22 +402,22 @@ private extension PasswordViewController {
                              accessibilityTrait: .link,
                              showBorder: true)
         cell.accessibilityIdentifier = "Get Login Link Button"
-        
+
         // Save reference to the login link cell so it can be enabled/disabled.
         loginLinkCell = cell
-        
+
         cell.actionHandler = { [weak self] in
             guard let self = self else {
                 return
             }
-            
+
             cell.enableButton(false)
-            
+
             self.tracker.track(click: .requestMagicLink)
             self.requestAuthenticationLink()
         }
     }
-    
+
     /// Configure the error message cell.
     ///
     func configureErrorLabel(_ cell: TextLabelTableViewCell) {
@@ -427,7 +427,7 @@ private extension PasswordViewController {
             UIAccessibility.post(notification: .layoutChanged, argument: cell)
         }
     }
-    
+
     /// Configure the view for an editing state.
     ///
     func configureViewForEditingIfNeeded() {
@@ -437,7 +437,7 @@ private extension PasswordViewController {
             passwordField?.becomeFirstResponder()
         }
     }
-    
+
     /// Sets up accessibility elements in the order which they should be read aloud
     /// and chooses which element to focus on at the beginning.
     ///
@@ -476,7 +476,7 @@ private extension PasswordViewController {
                 guard let self = self else {
                     return
                 }
-                
+
                 self.tracker.track(failure: error.localizedDescription)
 
                 self.displayError(error as NSError, sourceTag: self.sourceTag)
@@ -520,7 +520,7 @@ private extension PasswordViewController {
 
         return alert
     }
-    
+
     /// Rows listed in the order they were created.
     ///
     enum Row {
@@ -530,7 +530,7 @@ private extension PasswordViewController {
         case forgotPassword
         case sendMagicLink
         case errorMessage
-        
+
         var reuseIdentifier: String {
             switch self {
             case .gravatarEmail:

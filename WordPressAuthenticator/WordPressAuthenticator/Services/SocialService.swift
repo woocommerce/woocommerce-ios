@@ -7,7 +7,7 @@ public enum SocialService {
     /// Google's Signup Linked Account
     ///
     case google(user: GIDGoogleUser)
-    
+
     /// Apple's Signup Linked Account
     ///
     case apple(user: AppleUser)

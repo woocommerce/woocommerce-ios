@@ -1,6 +1,5 @@
 import UIKit
 
-
 /// GravatarEmailTableViewCell: Gravatar image + Email address in a UITableViewCell.
 ///
 class GravatarEmailTableViewCell: UITableViewCell {
@@ -16,15 +15,15 @@ class GravatarEmailTableViewCell: UITableViewCell {
     // When iOS12 support is removed, the emailStackView can be removed as it only facilitates 1Password.
     @IBOutlet private weak var emailLabel: UITextField?
     @IBOutlet private weak var emailStackView: UIStackView?
-    
+
     private let gridiconSize = CGSize(width: 48, height: 48)
-    
+
     /// Public properties
     ///
     public static let reuseIdentifier = "GravatarEmailTableViewCell"
     public var onePasswordHandler: ((_ sourceView: UITextField) -> Void)?
     public var onChangeSelectionHandler: ((_ sender: UITextField) -> Void)?
-    
+
     /// Public Methods
     ///
     public func configure(withEmail email: String?, andPlaceholder placeholderImage: UIImage? = nil) {
@@ -34,9 +33,9 @@ class GravatarEmailTableViewCell: UITableViewCell {
         emailLabel?.text = email
 
         setupOnePasswordButtonIfNeeded()
-        
+
         let gridicon = UIImage.gridicon(.userCircle, size: gridiconSize)
-        
+
         guard let email = email,
             email.isValidEmail() else {
                 gravatarImageView?.image = gridicon
@@ -55,13 +54,13 @@ class GravatarEmailTableViewCell: UITableViewCell {
 // MARK: - Password Manager Handling
 
 private extension GravatarEmailTableViewCell {
-    
+
     // MARK: - 1Password
 
     /// Sets up a 1Password button if 1Password is available and user is on iOS 12.
     ///
     func setupOnePasswordButtonIfNeeded() {
-        
+
         if #available(iOS 13, *) {
             // no-op, we rely on the key icon in the keyboard to initiate a password manager.
         } else {
@@ -69,13 +68,13 @@ private extension GravatarEmailTableViewCell {
                 !(emailStackView.arrangedSubviews.last is UIButton) else {
                 return
             }
-            
+
             WPStyleGuide.configureOnePasswordButtonForStackView(emailStackView,
                                                                 target: self,
                                                                 selector: #selector(onePasswordTapped(_:)))
         }
     }
-    
+
     @objc func onePasswordTapped(_ sender: UIButton) {
         guard let emailTextField = emailLabel else {
             return
@@ -83,9 +82,9 @@ private extension GravatarEmailTableViewCell {
 
         onePasswordHandler?(emailTextField)
     }
-    
+
     // MARK: - All Password Managers
-    
+
     /// Call the handler when the text field changes.
     ///
     /// - Note: we have to manually add an action to the textfield

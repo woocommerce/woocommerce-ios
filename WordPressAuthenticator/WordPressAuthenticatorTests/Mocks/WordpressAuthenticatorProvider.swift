@@ -12,13 +12,13 @@ public class WordpressAuthenticatorProvider: NSObject {
                                                    googleLoginScheme: "com.googleuserconsent.apps",
                                                    userAgent: "")
     }
-    
+
     static func wordPressAuthenticatorStyle(_ style: AuthenticatorStyeType) -> WordPressAuthenticatorStyle {
         var wpAuthStyle: WordPressAuthenticatorStyle!
-        
+
         switch style {
         case .random:
-            wpAuthStyle = WordPressAuthenticatorStyle (
+            wpAuthStyle = WordPressAuthenticatorStyle(
                 primaryNormalBackgroundColor: UIColor.random(),
                 primaryNormalBorderColor: UIColor.random(),
                 primaryHighlightBackgroundColor: UIColor.random(),
@@ -47,13 +47,13 @@ public class WordpressAuthenticatorProvider: NSObject {
             return wpAuthStyle
         }
     }
-    
+
     static func wordPressAuthenticatorUnifiedStyle(_ style: AuthenticatorStyeType) -> WordPressAuthenticatorUnifiedStyle {
         var wpUnifiedAuthStyle: WordPressAuthenticatorUnifiedStyle!
-        
+
         switch style {
         case .random:
-            wpUnifiedAuthStyle = WordPressAuthenticatorUnifiedStyle (
+            wpUnifiedAuthStyle = WordPressAuthenticatorUnifiedStyle(
                 borderColor: UIColor.random(),
                 errorColor: UIColor.random(),
                 textColor: UIColor.random(),
@@ -71,29 +71,27 @@ public class WordpressAuthenticatorProvider: NSObject {
 
     static func getWordpressAuthenticator() -> WordPressAuthenticator {
         return WordPressAuthenticator(
-            configuration:wordPressAuthenticatorConfiguration(),
+            configuration: wordPressAuthenticatorConfiguration(),
             style: wordPressAuthenticatorStyle(.random),
             unifiedStyle: wordPressAuthenticatorUnifiedStyle(.random),
             displayImages: WordPressAuthenticatorDisplayImages.defaultImages,
             displayStrings: WordPressAuthenticatorDisplayStrings.defaultStrings)
     }
-    
+
     @objc
     static func initializeWordPressAuthenticator() {
         WordPressAuthenticator.initialize(
-            configuration:wordPressAuthenticatorConfiguration(),
+            configuration: wordPressAuthenticatorConfiguration(),
             style: wordPressAuthenticatorStyle(.random),
             unifiedStyle: wordPressAuthenticatorUnifiedStyle(.random),
             displayImages: WordPressAuthenticatorDisplayImages.defaultImages,
             displayStrings: WordPressAuthenticatorDisplayStrings.defaultStrings)
     }
 }
-
 
 enum AuthenticatorStyeType {
     case random
 }
-
 
 extension CGFloat {
     static func random() -> CGFloat {
@@ -104,9 +102,9 @@ extension CGFloat {
 extension UIColor {
     static func random() -> UIColor {
         return UIColor(
-            red:   .random(),
+            red: .random(),
             green: .random(),
-            blue:  .random(),
+            blue: .random(),
             alpha: 1.0
         )
     }

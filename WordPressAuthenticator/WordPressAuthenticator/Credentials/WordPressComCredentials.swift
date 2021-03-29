@@ -19,9 +19,9 @@ public struct WordPressComCredentials: Equatable {
     /// The site address used during login
     ///
     public var siteURL: String
-    
+
     private let wpComURL = "https://wordpress.com"
-    
+
     /// Legacy  initializer, for backwards compatibility
     ///
     public init(authToken: String,
@@ -34,7 +34,6 @@ public struct WordPressComCredentials: Equatable {
         self.siteURL = !siteURL.isEmpty ? siteURL : wpComURL
     }
 }
-
 
 // MARK: - Equatable Conformance
 //

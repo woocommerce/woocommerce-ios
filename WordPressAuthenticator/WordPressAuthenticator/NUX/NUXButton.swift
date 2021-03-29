@@ -30,7 +30,7 @@ import WordPressKit
     }()
 
     var titleFont = WPStyleGuide.mediumWeightFont(forStyle: .title3)
-    
+
     override open func layoutSubviews() {
         super.layoutSubviews()
 
@@ -49,15 +49,13 @@ import WordPressKit
         super.tintColorDidChange()
         configureBackgrounds()
         configureTitleColors()
-        
+
         if socialService == .apple {
             setAttributedTitle(WPStyleGuide.formattedAppleString(), for: .normal)
         }
     }
 
-
     // MARK: - Instance Methods
-
 
     /// Toggles the visibility of the activity indicator.  When visible the button
     /// title is hidden.
@@ -76,7 +74,7 @@ import WordPressKit
     func didChangePreferredContentSize() {
         titleLabel?.adjustsFontForContentSizeCategory = true
     }
-    
+
     func customizeFont(_ font: UIFont) {
         titleFont = font
     }

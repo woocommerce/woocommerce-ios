@@ -2,7 +2,6 @@ import UIKit
 import WordPressShared
 import WordPressKit
 
-
 class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
 
     // MARK: - NUXKeyboardResponder Properties
@@ -121,7 +120,7 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
             return
         }
 
-        checkEmailAvailability() { available in
+        checkEmailAvailability { available in
             if available {
                 self.loginFields.username = self.loginFields.emailAddress
                 self.loginFields.meta.emailMagicLinkSource = .signup
@@ -137,7 +136,7 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
 
     // MARK: - Email Availability
 
-    private func checkEmailAvailability(completion:@escaping (Bool) -> ()) {
+    private func checkEmailAvailability(completion:@escaping (Bool) -> Void) {
 
         let remote = AccountServiceRemoteREST(
             wordPressComRestApi: WordPressComRestApi(baseUrlString: WordPressAuthenticator.shared.configuration.wpcomAPIBaseURL))
@@ -169,9 +168,9 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
                 completion(false)
                 return
             }
-            
+
             DDLogError("Error checking email availability: \(error.localizedDescription)")
-            
+
             switch error {
             case AccountServiceRemoteError.emailAddressInvalid:
                 self.displayError(message: error.localizedDescription)
@@ -197,7 +196,7 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
                                     self?.didRequestSignupLink()
                                     self?.configureSubmitButton(animating: false)
 
-            }, failure: { [weak self] (error: Error) in
+            }, failure: { [weak self] (_: Error) in
                 DDLogError("Request for signup link email failed.")
                 WordPressAuthenticator.track(.signupMagicLinkFailed)
                 self?.displayError(message: ErrorMessage.magicLinkRequestFail.description())

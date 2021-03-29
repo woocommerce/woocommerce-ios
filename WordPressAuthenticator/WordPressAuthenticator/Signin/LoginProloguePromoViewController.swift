@@ -2,7 +2,6 @@ import UIKit
 import Lottie
 import WordPressShared
 
-
 class LoginProloguePromoViewController: UIViewController {
     fileprivate let type: PromoType
     fileprivate let stackView: UIStackView
@@ -134,7 +133,6 @@ class LoginProloguePromoViewController: UIViewController {
             headingLabel.sizeToFit()
         }
     }
-
 
     // MARK: layout
 

@@ -3,7 +3,6 @@ import WordPressShared
 import WordPressKit
 import WordPressUI
 
-
 class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder {
     @IBOutlet weak var siteURLField: WPWalkthroughTextField!
     @IBOutlet var siteAddressHelpButton: UIButton!
@@ -15,7 +14,6 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         }
     }
 
-
     override var loginFields: LoginFields {
         didSet {
             // Clear the site url and site info (if any) from LoginFields
@@ -23,12 +21,12 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
             loginFields.meta.siteInfo = nil
         }
     }
-    
+
     // MARK: - URL Validation
-    
+
     private lazy var urlErrorDebouncer = Debouncer(delay: 2) { [weak self] in
         let errorMessage = NSLocalizedString("Please enter a complete website address, like example.com.", comment: "Error message shown when a URL is invalid.")
-        
+
         self?.displayError(message: errorMessage)
     }
 
@@ -39,7 +37,6 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         localizeControls()
         configureForAccessibility()
     }
-
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -55,7 +52,6 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         navigationController?.setNavigationBarHidden(false, animated: false)
     }
 
-
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
@@ -64,14 +60,12 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         WordPressAuthenticator.track(.loginURLFormViewed)
     }
 
-
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unregisterForKeyboardEvents()
     }
 
     // MARK: Setup and Configuration
-
 
     /// Assigns localized strings to various UIControl defined in the storyboard.
     ///
@@ -105,7 +99,6 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         siteURLField.text = loginFields.siteAddress
     }
 
-
     /// Configures the appearance and state of the submit button.
     ///
     override func configureSubmitButton(animating: Bool) {
@@ -115,7 +108,6 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
             !animating && canSubmit()
         )
     }
-
 
     /// Sets the view's state to loading or not loading.
     ///
@@ -127,7 +119,6 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         configureSubmitButton(animating: loading)
         navigationItem.hidesBackButton = loading
     }
-
 
     /// Configure the view for an editing state. Should only be called from viewWillAppear
     /// as this method skips animating any change in height.
@@ -144,9 +135,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         WPStyleGuide.configureTextButton(siteAddressHelpButton)
     }
 
-
     // MARK: - Instance Methods
-
 
     /// Validates what is entered in the various form fields and, if valid,
     /// proceeds with the submit action.
@@ -154,7 +143,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     @objc func validateForm() {
         view.endEditing(true)
         displayError(message: "")
-        
+
         // We need to to this here because before this point we need the URL to be pre-validated
         // exactly as the user inputs it, and after this point we need the URL to be the base site URL.
         // This isn't really great, but it's the only sane solution I could come up with given the current
@@ -200,7 +189,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
             }
         })
     }
-    
+
     @objc func fetchSiteInfo() {
         let baseSiteUrl = WordPressAuthenticator.baseSiteURL(string: loginFields.siteAddress)
         let service = WordPressComBlogService()
@@ -216,7 +205,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
             }
             self.presentNextControllerIfPossible(siteInfo: siteInfo)
         }
-        service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { [weak self] error in
+        service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { [weak self] _ in
             self?.configureViewLoading(false)
             guard let self = self else {
                 return
@@ -235,11 +224,11 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
                     self.showSelfHostedUsernamePassword()
                 }
 
-                self.showWPUsernamePassword()                
+                self.showWPUsernamePassword()
             case .presentEmailController:
                 // This case is only used for UL&S
                 break
-            case .injectViewController(_):
+            case .injectViewController:
                 // This case is only used for UL&S
                 break
             }
@@ -252,7 +241,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         }
         return err
     }
-    
+
     /// Here we will continue with the self-hosted flow.
     ///
     @objc func showSelfHostedUsernamePassword() {
@@ -300,9 +289,9 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         alertController.addDefaultActionWithTitle(acceptActionTitle)
         present(alertController, animated: true)
     }
-    
+
     // MARK: - URL Validation
-    
+
     /// Does a local / quick Site Address validation and refreshes the UI with an error
     /// if necessary.
     ///
@@ -310,7 +299,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     ///
     private func refreshSiteAddressError(immediate: Bool) {
         let showError = !loginFields.siteAddress.isEmpty && !loginFields.validateSiteForSignin()
-        
+
         if showError {
             urlErrorDebouncer.call(immediate: immediate)
         } else {
@@ -349,14 +338,12 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     @IBAction func handleEditingDidEnd(_ sender: UITextField) {
         refreshSiteAddressError(immediate: true)
     }
-    
-    // MARK: - Keyboard Notifications
 
+    // MARK: - Keyboard Notifications
 
     @objc func handleKeyboardWillShow(_ notification: Foundation.Notification) {
         keyboardWillShow(notification)
     }
-
 
     @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
         keyboardWillHide(notification)

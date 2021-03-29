@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Provides options for clients of WordPressAuthenticator
 /// to signal what they expect WPAuthenticator to do in response to
 /// `shouldPresentUsernamePasswordController`

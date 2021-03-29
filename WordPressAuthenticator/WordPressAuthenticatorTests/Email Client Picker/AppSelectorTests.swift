@@ -1,7 +1,6 @@
 import XCTest
 @testable import WordPressAuthenticator
 
-
 struct URLMocks {
 
     static let mockAppList = ["gmail": "googlemail://", "airmail": "airmail://"]
@@ -20,7 +19,7 @@ class MockUrlHandler: URLHandler {
         return shouldOpenUrls
     }
 
-    func open(_ url: URL, options: [UIApplication.OpenExternalURLOptionsKey : Any], completionHandler completion: ((Bool) -> Void)?) {
+    func open(_ url: URL, options: [UIApplication.OpenExternalURLOptionsKey: Any], completionHandler completion: ((Bool) -> Void)?) {
         openUrlExpectation?.fulfill()
     }
 }

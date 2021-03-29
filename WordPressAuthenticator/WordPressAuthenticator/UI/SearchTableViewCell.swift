@@ -1,13 +1,11 @@
 import UIKit
 import WordPressShared
 
-
 // MARK: - SearchTableViewCellDelegate
 //
 public protocol SearchTableViewCellDelegate: class {
     func startSearch(for: String)
 }
-
 
 // MARK: - SearchTableViewCell
 //
@@ -36,7 +34,6 @@ open class SearchTableViewCell: UITableViewCell {
         }
     }
 
-
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -53,7 +50,6 @@ open class SearchTableViewCell: UITableViewCell {
     }
 }
 
-
 // MARK: - Settings
 //
 private extension SearchTableViewCell {
@@ -61,7 +57,6 @@ private extension SearchTableViewCell {
         static let textInsetsWithIcon = WPStyleGuide.edgeInsetForLoginTextFields()
     }
 }
-
 
 // MARK: - UITextFieldDelegate
 //

@@ -41,7 +41,7 @@ open class NUXButtonViewController: UIViewController {
     @IBOutlet var tertiaryButton: NUXButton?
     @IBOutlet var buttonHolder: UIView?
 
-    open var delegate: NUXButtonViewControllerDelegate?
+    open weak var delegate: NUXButtonViewControllerDelegate?
     open var backgroundColor: UIColor?
 
     private var topButtonConfig: NUXButtonConfig?
@@ -65,13 +65,13 @@ open class NUXButtonViewController: UIViewController {
         configure(button: bottomButton, withConfig: bottomButtonConfig)
         configure(button: topButton, withConfig: topButtonConfig)
         configure(button: tertiaryButton, withConfig: tertiaryButtonConfig)
-        
+
         buttonHolder?.backgroundColor = backgroundColor
     }
 
     private func configure(button: NUXButton?, withConfig buttonConfig: NUXButtonConfig?) {
         if let buttonConfig = buttonConfig, let button = button {
-            
+
             if let attributedTitle = buttonConfig.attributedTitle {
                 button.setAttributedTitle(attributedTitle, for: .normal)
                 button.socialService = buttonConfig.socialService
@@ -120,7 +120,7 @@ open class NUXButtonViewController: UIViewController {
     func setupTopButtonFor(socialService: SocialServiceName, onTap callback: @escaping CallBackType) {
         topButtonConfig = buttonConfigFor(socialService: socialService, onTap: callback)
     }
-    
+
     func setupBottomButton(title: String, isPrimary: Bool = false, configureBodyFontForTitle: Bool = false, accessibilityIdentifier: String? = nil, onTap callback: @escaping CallBackType) {
         bottomButtonConfig = NUXButtonConfig(title: title, isPrimary: isPrimary, configureBodyFontForTitle: configureBodyFontForTitle, accessibilityIdentifier: accessibilityIdentifier, callback: callback)
     }

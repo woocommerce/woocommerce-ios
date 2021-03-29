@@ -1,6 +1,5 @@
 import WordPressShared
 
-
 open class LoginSocialErrorCell: UITableViewCell {
     private let errorTitle: String
     private let errorDescription: String
@@ -10,7 +9,7 @@ open class LoginSocialErrorCell: UITableViewCell {
     private let labelStack: UIStackView
 
     private var forUnified: Bool = false
-    
+
     private struct Constants {
         static let labelSpacing: CGFloat = 15.0
         static let labelVerticalMargin: CGFloat = 20.0
@@ -84,12 +83,12 @@ open class LoginSocialErrorCell: UITableViewCell {
         } else {
             descriptionLabel.text = errorDescription
         }
-        
+
         guard let unifiedBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor else {
             backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
             return
         }
-        
+
         backgroundColor = forUnified ? unifiedBackgroundColor : WordPressAuthenticator.shared.style.viewControllerBackgroundColor
     }
 }

@@ -2,7 +2,6 @@ import Foundation
 import Gridicons
 import WordPressShared
 
-
 @objc
 protocol LoginSocialErrorViewControllerDelegate {
     func retryWithEmail()
@@ -15,12 +14,12 @@ protocol LoginSocialErrorViewControllerDelegate {
 class LoginSocialErrorViewController: NUXTableViewController {
     fileprivate var errorTitle: String
     fileprivate var errorDescription: String
-    @objc var delegate: LoginSocialErrorViewControllerDelegate?
-    
+    @objc weak var delegate: LoginSocialErrorViewControllerDelegate?
+
     private var forUnified: Bool = false
     private var actionButtonTapped: Bool = false
     private let unifiedAuthEnabled = WordPressAuthenticator.shared.configuration.enableUnifiedAuth
-    
+
     fileprivate enum Sections: Int {
         case titleAndDescription = 0
         case buttons = 1
@@ -77,7 +76,7 @@ class LoginSocialErrorViewController: NUXTableViewController {
             delegate?.errorDismissed()
         }
     }
-    
+
     private func styleBackground() {
         guard let unifiedBackgroundColor = WordPressAuthenticator.shared.unifiedStyle?.viewControllerBackgroundColor else {
             view.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
@@ -86,7 +85,7 @@ class LoginSocialErrorViewController: NUXTableViewController {
 
         view.backgroundColor = forUnified ? unifiedBackgroundColor : WordPressAuthenticator.shared.style.viewControllerBackgroundColor
     }
-    
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.section == Sections.buttons.rawValue,
             let delegate = delegate else {
@@ -94,7 +93,7 @@ class LoginSocialErrorViewController: NUXTableViewController {
         }
 
         actionButtonTapped = true
-        
+
         switch indexPath.row {
         case Buttons.tryEmail.rawValue:
             delegate.retryWithEmail()
@@ -111,7 +110,6 @@ class LoginSocialErrorViewController: NUXTableViewController {
         }
     }
 }
-
 
 // MARK: UITableViewDelegate methods
 
@@ -130,14 +128,13 @@ extension LoginSocialErrorViewController {
     }
 }
 
-
 // MARK: UITableViewDataSource methods
 
 extension LoginSocialErrorViewController {
     private func numberOfButtonsToShow() -> Int {
-        
+
         var buttonCount = loginFields.restrictToWPCom ? Buttons.count - 1 : Buttons.count
-        
+
         // Don't show the Signup Retry if showing unified social flows.
         // At this point, we've already tried signup and are past it.
         let unifiedGoogle = unifiedAuthEnabled && loginFields.meta.socialService == .google
@@ -146,7 +143,7 @@ extension LoginSocialErrorViewController {
         if unifiedGoogle || unifiedApple {
             buttonCount -= 1
         }
-        
+
         return buttonCount
     }
 

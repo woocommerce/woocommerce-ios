@@ -1,10 +1,9 @@
 import UIKit
 
-
 /// TextLinkButtonTableViewCell: a plain button made to look like a text link.
 ///
 class TextLinkButtonTableViewCell: UITableViewCell {
-    
+
     /// Private properties
     ///
     @IBOutlet private weak var button: UIButton!
@@ -13,32 +12,32 @@ class TextLinkButtonTableViewCell: UITableViewCell {
     @IBAction private func textLinkButtonTapped(_ sender: UIButton) {
         actionHandler?()
     }
-    
+
     /// Public properties
     ///
     public static let reuseIdentifier = "TextLinkButtonTableViewCell"
-    
+
     public var actionHandler: (() -> Void)?
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
 
         button.titleLabel?.adjustsFontForContentSizeCategory = true
         styleBorder()
     }
-    
+
     public func configureButton(text: String?, accessibilityTrait: UIAccessibilityTraits = .button, showBorder: Bool = false) {
         button.setTitle(text, for: .normal)
-        
+
         let buttonTitleColor = WordPressAuthenticator.shared.unifiedStyle?.textButtonColor ?? WordPressAuthenticator.shared.style.textButtonColor
         let buttonHighlightColor = WordPressAuthenticator.shared.unifiedStyle?.textButtonHighlightColor ?? WordPressAuthenticator.shared.style.textButtonHighlightColor
         button.setTitleColor(buttonTitleColor, for: .normal)
         button.setTitleColor(buttonHighlightColor, for: .highlighted)
         button.accessibilityTraits = accessibilityTrait
-        
+
         borderView.isHidden = !showBorder
     }
-    
+
     /// Toggle button enabled / disabled
     ///
     public func enableButton(_ isEnabled: Bool) {
@@ -46,7 +45,6 @@ class TextLinkButtonTableViewCell: UITableViewCell {
     }
 
 }
-
 
 // MARK: - Private methods
 private extension TextLinkButtonTableViewCell {

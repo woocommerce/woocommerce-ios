@@ -7,14 +7,14 @@ import SVProgressHUD
 final class TwoFAViewController: LoginViewController {
 
     // MARK: - Properties
-    
+
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
     private weak var codeField: UITextField?
-    
+
     private var rows = [Row]()
     private var errorMessage: String?
-    private var pasteboardChangeCountBeforeBackground: Int? = nil
+    private var pasteboardChangeCountBeforeBackground: Int?
     private var shouldChangeVoiceOverFocus: Bool = false
 
     override var sourceTag: WordPressSupportSourceTag {
@@ -27,49 +27,49 @@ final class TwoFAViewController: LoginViewController {
     var verticalCenterConstraint: NSLayoutConstraint?
 
     // MARK: - View
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         removeGoogleWaitingView()
-        
+
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
         styleNavigationBar(forUnified: true)
 
         defaultTableViewMargin = tableViewLeadingConstraint?.constant ?? 0
         setTableViewMargins(forWidth: view.frame.width)
-        
+
         localizePrimaryButton()
         registerTableViewCells()
         loadRows()
         configureForAccessibility()
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
-        
+
         super.viewDidAppear(animated)
-        
+
         if isMovingToParent {
             tracker.track(step: .twoFactorAuthentication)
         } else {
             tracker.set(step: .twoFactorAuthentication)
         }
-        
+
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
-        
+
         configureSubmitButton(animating: false)
         configureViewForEditingIfNeeded()
-        
+
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(applicationBecameInactive), name: UIApplication.willResignActiveNotification, object: nil)
         nc.addObserver(self, selector: #selector(applicationBecameActive), name: UIApplication.didBecomeActiveNotification, object: nil)
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unregisterForKeyboardEvents()
-        
+
         // Multifactor codes are time sensitive, so clear the stored code if the
         // user dismisses the view. They'll need to reenter it upon return.
         loginFields.multifactorCode = ""
@@ -86,7 +86,7 @@ final class TwoFAViewController: LoginViewController {
 
         view.backgroundColor = unifiedBackgroundColor
     }
-    
+
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ??
                WordPressAuthenticator.shared.style.statusBarStyle
@@ -111,7 +111,7 @@ final class TwoFAViewController: LoginViewController {
         super.configureViewLoading(loading)
         codeField?.isEnabled = !loading
     }
-    
+
     override func displayRemoteError(_ error: Error) {
         displayError(message: "")
 
@@ -130,20 +130,20 @@ final class TwoFAViewController: LoginViewController {
             displayError(error as NSError, sourceTag: sourceTag)
         }
     }
-    
+
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
         if errorMessage != message {
             if !message.isEmpty {
                 tracker.track(failure: message)
             }
-            
+
             errorMessage = message
             shouldChangeVoiceOverFocus = moveVoiceOverFocus
             loadRows()
             tableView.reloadData()
         }
     }
-    
+
 }
 
 // MARK: - Validation and Login
@@ -168,7 +168,7 @@ private extension TwoFAViewController {
             loginFacade.requestOneTimeCode(with: loginFields)
         }
     }
-    
+
     // MARK: - Login
 
     /// Validates what is entered in the various form fields and, if valid,
@@ -188,15 +188,15 @@ private extension TwoFAViewController {
         let (authType, nonce) = nonceInfo.authTypeAndNonce(for: code)
         loginFacade.loginToWordPressDotCom(withUser: loginFields.nonceUserID, authType: authType, twoStepCode: code, twoStepNonce: nonce)
     }
-    
+
     func finishedLogin(withNonceAuthToken authToken: String) {
         let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: true, siteURL: loginFields.siteAddress)
         let credentials = AuthenticatorCredentials(wpcom: wpcom)
         syncWPComAndPresentEpilogue(credentials: credentials)
     }
-    
+
     // MARK: - Code Validation
-    
+
     enum CodeValidation {
         case invalid(nonNumbers: Bool)
         case valid(String)
@@ -216,17 +216,17 @@ private extension TwoFAViewController {
         if isOnlyNumbers {
             return .invalid(nonNumbers: false)
         }
-        
+
         return .invalid(nonNumbers: true)
     }
-    
+
     // MARK: - Text Field Handling
-    
+
     func handleTextFieldDidChange(_ sender: UITextField) {
         loginFields.multifactorCode = codeField?.nonNilTrimmedText() ?? ""
         configureSubmitButton(animating: false)
     }
-    
+
 }
 
 // MARK: - UITextFieldDelegate
@@ -239,7 +239,7 @@ extension TwoFAViewController: UITextFieldDelegate {
         guard let fieldText = textField.text as NSString? else {
             return true
         }
-        
+
         let resultString = fieldText.replacingCharacters(in: range, with: replacementString)
 
         switch isValidCode(code: resultString) {
@@ -259,7 +259,7 @@ extension TwoFAViewController: UITextFieldDelegate {
 
         return false
     }
-    
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         validateForm()
         return true
@@ -287,7 +287,7 @@ extension TwoFAViewController: UITableViewDataSource {
 // MARK: - Keyboard Notifications
 
 extension TwoFAViewController: NUXKeyboardResponder {
-    
+
     @objc func handleKeyboardWillShow(_ notification: Foundation.Notification) {
         keyboardWillShow(notification)
     }
@@ -305,12 +305,12 @@ private extension TwoFAViewController {
     @objc func applicationBecameInactive() {
         pasteboardChangeCountBeforeBackground = UIPasteboard.general.changeCount
     }
-    
+
     @objc func applicationBecameActive() {
         guard let codeField = codeField else {
             return
         }
-        
+
         let emptyField = codeField.text?.isEmpty ?? true
         guard emptyField,
             pasteboardChangeCountBeforeBackground != UIPasteboard.general.changeCount else {
@@ -318,7 +318,7 @@ private extension TwoFAViewController {
         }
 
         if #available(iOS 14.0, *) {
-            UIPasteboard.general.detectAuthenticatorCode() { [weak self] result in
+            UIPasteboard.general.detectAuthenticatorCode { [weak self] result in
                 switch result {
                     case .success(let authenticatorCode):
                         self?.handle(code: authenticatorCode, textField: codeField)
@@ -358,7 +358,7 @@ private extension TwoFAViewController {
             TextFieldTableViewCell.reuseIdentifier: TextFieldTableViewCell.loadNib(),
             TextLinkButtonTableViewCell.reuseIdentifier: TextLinkButtonTableViewCell.loadNib()
         ]
-        
+
         for (reuseIdentifier, nib) in cells {
             tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
         }
@@ -392,7 +392,7 @@ private extension TwoFAViewController {
             DDLogError("Error: Unidentified tableViewCell type found.")
         }
     }
-    
+
     /// Configure the instruction cell.
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
@@ -423,7 +423,7 @@ private extension TwoFAViewController {
 
         cell.actionHandler = { [weak self] in
             guard let self = self else { return }
-            
+
             self.tracker.track(click: .sendCodeWithText)
             self.requestCode()
         }
@@ -460,7 +460,7 @@ private extension TwoFAViewController {
 
         UIAccessibility.post(notification: .screenChanged, argument: codeField)
     }
-    
+
     /// Rows listed in the order they were created.
     ///
     enum Row {

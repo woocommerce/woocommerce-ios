@@ -33,12 +33,12 @@ class UnifiedSignupViewController: LoginViewController {
         registerTableViewCells()
         loadRows()
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         tracker.set(flow: .signup)
-        
+
         if isMovingToParent {
             tracker.track(step: .start)
         } else {
@@ -83,7 +83,6 @@ class UnifiedSignupViewController: LoginViewController {
     }
 }
 
-
 // MARK: - UITableViewDataSource
 extension UnifiedSignupViewController: UITableViewDataSource {
 
@@ -104,10 +103,8 @@ extension UnifiedSignupViewController: UITableViewDataSource {
     }
 }
 
-
 // MARK: - UITableViewDelegate conformance
 extension UnifiedSignupViewController: UITableViewDelegate { }
-
 
 // MARK: - Private methods
 private extension UnifiedSignupViewController {
@@ -208,8 +205,7 @@ private extension UnifiedSignupViewController {
 
 }
 
-
-// Mark: - Instance Methods
+// MARK: - Instance Methods
 /// Implementation methods imported from SignupEmailViewController.
 ///
 extension UnifiedSignupViewController {
@@ -230,11 +226,11 @@ extension UnifiedSignupViewController {
 
             }, failure: { [weak self] (error: Error) in
                 DDLogError("Request for signup link email failed.")
-                
+
                 guard let self = self else {
                     return
                 }
-                
+
                 self.tracker.track(failure: error.localizedDescription)
                 self.displayError(message: ErrorMessage.magicLinkRequestFail.description())
                 self.configureSubmitButton(animating: false)

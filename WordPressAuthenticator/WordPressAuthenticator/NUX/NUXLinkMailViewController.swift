@@ -1,7 +1,6 @@
 import UIKit
 import WordPressShared
 
-
 /// Step two in the auth link flow. This VC prompts the user to open their email
 /// app to look for the emailed authentication link.
 ///
@@ -20,8 +19,6 @@ class NUXLinkMailViewController: LoginViewController {
             return .loginMagicLink
         }
     }
-
-
 
     // MARK: - Lifecycle Methods
 

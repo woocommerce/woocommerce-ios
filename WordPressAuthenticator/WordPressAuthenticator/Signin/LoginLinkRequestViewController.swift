@@ -2,7 +2,6 @@ import UIKit
 import CocoaLumberjack
 import WordPressShared
 
-
 /// Step one in the auth link flow. This VC displays a form to request a "magic"
 /// authentication link be emailed to the user.  Allows the user to signin via
 /// email instead of their password.
@@ -17,7 +16,6 @@ class LoginLinkRequestViewController: LoginViewController {
             return .loginMagicLink
         }
     }
-
 
     // MARK: - Lifecycle Methods
 
@@ -86,7 +84,6 @@ class LoginLinkRequestViewController: LoginViewController {
         WPStyleGuide.configureTextButton(usePasswordButton)
     }
 
-
     // MARK: - Instance Methods
 
     /// Makes the call to request a magic authentication link be emailed to the user.
@@ -132,7 +129,6 @@ class LoginLinkRequestViewController: LoginViewController {
     }
 
     // MARK: - Actions
-
 
     @IBAction func handleUsePasswordTapped(_ sender: UIButton) {
         guard let vc = LoginWPComViewController.instantiate(from: .login) else {

@@ -1,4 +1,3 @@
-
 import Foundation
 
 /// NavigationCommand abstracts logic necessary provide clients of this library

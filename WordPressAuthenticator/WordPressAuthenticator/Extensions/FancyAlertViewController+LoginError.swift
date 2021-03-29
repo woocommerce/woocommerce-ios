@@ -3,7 +3,6 @@ import wpxmlrpc
 import SafariServices
 import WordPressUI
 
-
 extension FancyAlertViewController {
     private struct Strings {
         static let titleText = NSLocalizedString("What's my site address?", comment: "Title of alert helping users understand their site address")
@@ -25,7 +24,7 @@ extension FancyAlertViewController {
         sourceTag: WordPressSupportSourceTag,
         moreHelpTapped: (() -> Void)? = nil,
         onDismiss: (() -> Void)? = nil) -> FancyAlertViewController {
-        
+
         let moreHelpButton = ButtonConfig(Strings.moreHelp) { controller, _ in
             controller.dismiss(animated: true) {
                 // Find the topmost view controller that we can present from
@@ -46,7 +45,7 @@ extension FancyAlertViewController {
             onDismiss?()
             controller.dismiss(animated: true, completion: nil)
         }
-        
+
         let config = FancyAlertViewController.Config(titleText: Strings.titleText,
                                                      bodyText: Strings.bodyText,
                                                      headerImage: image,
@@ -61,9 +60,7 @@ extension FancyAlertViewController {
         return controller
     }
 
-
     // MARK: - Error Handling
-
 
     /// Get an alert for the specified error.
     /// The view is configured differently depending on the kind of error.
@@ -111,7 +108,6 @@ extension FancyAlertViewController {
         return alertForGenericErrorMessage(message, loginFields: loginFields, sourceTag: sourceTag)
     }
 
-
     /// Shows a generic error message.
     ///
     /// - Parameter message: The error message to show.
@@ -141,7 +137,6 @@ extension FancyAlertViewController {
         return FancyAlertViewController.controllerWithConfiguration(configuration: config)
     }
 
-
     /// Shows a generic error message.
     /// If Support is enabled, the view is configured so the user can open Support for assistance.
     ///
@@ -151,7 +146,7 @@ extension FancyAlertViewController {
     static func alertForGenericErrorMessageWithHelpButton(_ message: String, loginFields: LoginFields, sourceTag: WordPressSupportSourceTag) -> FancyAlertViewController {
 
         // If support is not enabled, don't add a Help Button since it won't do anything.
-        var moreHelpButton: ButtonConfig? = nil
+        var moreHelpButton: ButtonConfig?
 
         if WordPressAuthenticator.shared.delegate?.supportEnabled == false {
             DDLogInfo("Error Alert: Support not enabled. Hiding Help button.")
@@ -166,7 +161,7 @@ extension FancyAlertViewController {
                         else {
                             return
                     }
-                    
+
                     WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: viewController, sourceTag: sourceTag)
                 }
             }
@@ -184,7 +179,6 @@ extension FancyAlertViewController {
 
         return FancyAlertViewController.controllerWithConfiguration(configuration: config)
     }
-
 
     /// Shows a WPWalkthroughOverlayView for a bad url error message.
     ///

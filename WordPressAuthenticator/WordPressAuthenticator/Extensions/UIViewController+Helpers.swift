@@ -1,7 +1,6 @@
 import Foundation
 
-
-// MARK - UIViewController Helpers
+// MARK: - UIViewController Helpers
 extension UIViewController {
 
     /// Convenience method to instantiate a view controller from a storyboard.

@@ -2,7 +2,6 @@ import SafariServices
 import WordPressUI
 import WordPressShared
 
-
 class LoginPrologueSignupMethodViewController: NUXViewController {
     /// Buttons at bottom of screen
     private var buttonViewController: NUXButtonViewController?
@@ -13,7 +12,7 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
     open var emailTapped: (() -> Void)?
     open var googleTapped: (() -> Void)?
     open var appleTapped: (() -> Void)?
-    
+
     private var tracker: AuthenticatorAnalyticsTracker {
         AuthenticatorAnalyticsTracker.shared
     }
@@ -47,9 +46,9 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
 
         let loginTitle = NSLocalizedString("Sign up with Email", comment: "Button title. Tapping begins our normal sign up process.")
         buttonViewController.setupTopButton(title: loginTitle, isPrimary: false, accessibilityIdentifier: "Sign up with Email Button") { [weak self] in
-            
+
             self?.tracker.set(flow: .wpCom)
-            
+
             defer {
                 WordPressAuthenticator.track(.signupEmailButtonTapped)
             }
@@ -60,7 +59,7 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
         buttonViewController.setupButtomButtonFor(socialService: .google, onTap: handleGoogleButtonTapped)
 
         let termsButton = WPStyleGuide.termsButton()
-        termsButton.on(.touchUpInside) { [weak self] button in
+        termsButton.on(.touchUpInside) { [weak self] _ in
             defer {
                 self?.tracker.track(click: .termsOfService, ifTrackingNotEnabled: {
                     WordPressAuthenticator.track(.signupTermsButtonTapped)
@@ -94,7 +93,7 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
         tracker.track(click: .signupWithApple, ifTrackingNotEnabled: {
             WordPressAuthenticator.track(.signupSocialButtonTapped, properties: ["source": "apple"])
         })
-        
+
         dismiss(animated: true)
         appleTapped?()
     }
@@ -108,7 +107,7 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
         dismiss(animated: true)
         googleTapped?()
     }
-    
+
     private func trackCancellationAndThenDismiss() {
         WordPressAuthenticator.track(.signupCancelled)
         dismiss(animated: true)

@@ -2,8 +2,6 @@ import Foundation
 import UIKit
 import OnePasswordExtension
 
-
-
 // MARK: - This protocol is a Facade that hides some of the implementation details for interacting with 1Password.
 //
 class OnePasswordFacade {
@@ -124,7 +122,6 @@ enum OnePasswordDefaults {
     ///
     static let passwordTitle = "WordPress"
 }
-
 
 // MARK: - OnePasswordError
 //

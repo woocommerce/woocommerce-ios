@@ -52,7 +52,7 @@ class WordPressAuthenticatorTests: XCTestCase {
     // MARK: WordPressAuthenticator Notification Tests
     func testDispatchesSupportPushNotificationReceived() {
         let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
-        let _ = expectation(forNotification: .wordpressSupportNotificationReceived, object: nil, handler: nil)
+        _ = expectation(forNotification: .wordpressSupportNotificationReceived, object: nil, handler: nil)
 
         authenticator.supportPushNotificationReceived()
 
@@ -61,7 +61,7 @@ class WordPressAuthenticatorTests: XCTestCase {
 
     func testDispatchesSupportPushNotificationCleared() {
         let authenticator = WordpressAuthenticatorProvider.getWordpressAuthenticator()
-        let _ = expectation(forNotification: .wordpressSupportNotificationCleared, object: nil, handler: nil)
+        _ = expectation(forNotification: .wordpressSupportNotificationCleared, object: nil, handler: nil)
 
         authenticator.supportPushNotificationCleared()
 
@@ -74,7 +74,6 @@ class WordPressAuthenticatorTests: XCTestCase {
         let nuxViewController = NUXViewController()
         let nuxTableViewController = NUXTableViewController()
         let basicViewController = UIViewController()
-
 
         XCTAssertTrue(WordPressAuthenticator.isAuthenticationViewController(loginViewcontroller))
         XCTAssertTrue(WordPressAuthenticator.isAuthenticationViewController(nuxViewController))

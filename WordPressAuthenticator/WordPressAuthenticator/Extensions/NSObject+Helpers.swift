@@ -1,8 +1,6 @@
-
 import Foundation
 
-
-// MARK - NSObject Helper Methods
+// MARK: - NSObject Helper Methods
 //
 extension NSObject {
 

@@ -23,6 +23,13 @@ struct ShippingLabelPackageDetails: View {
 
                 ListHeaderView(text: Localization.packageDetailsHeader, alignment: .left)
                     .background(Color(.listBackground))
+
+                TitleAndValueRow(title: Localization.packageSelected, value: "To be implemented", selectable: true) {
+                    // TODO: open package selection screen
+                    print("Tapped")
+                }
+
+                Divider()
             }
         }
     }
@@ -32,7 +39,8 @@ private extension ShippingLabelPackageDetails {
     enum Localization {
         static let itemsToFulfillHeader = NSLocalizedString("ITEMS TO FULFILL", comment: "Header section items to fulfill in Shipping Label Package Detail")
         static let packageDetailsHeader = NSLocalizedString("PACKAGE DETAILS", comment: "Header section package details in Shipping Label Package Detail")
-
+        static let packageSelected = NSLocalizedString("Package Selected",
+                                                       comment: "Title of the row for selecting a package in Shipping Label Package Detail screen")
     }
 }
 

@@ -13,9 +13,17 @@ struct ShippingLabelPackageDetails: View {
             VStack() {
                 ShippingLabelPackageNumberRow(packageNumber: 1, numberOfItems: viewModel.order.items.count)
 
-
+                ListHeaderView(text: Localization.header, alignment: .left)
+                    .background(Color(.listBackground))
             }
         }
+    }
+}
+
+private extension ShippingLabelPackageDetails {
+    enum Localization {
+        static let header = NSLocalizedString("Items to fulfill", comment: "Header section in Shipping Label Package Detail")
+
     }
 }
 

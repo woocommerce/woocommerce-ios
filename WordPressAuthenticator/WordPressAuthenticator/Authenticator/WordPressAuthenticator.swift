@@ -418,32 +418,32 @@ import WordPressKit
     /// - Returns: The base URL or an empty string.
     ///
     class func baseSiteURL(string: String) -> String {
-        guard let siteURL = NSURL(string: NSURL.idnEncodedURL(string)), string.count > 0 else {
+
+        guard !string.isEmpty,
+              let siteURL = NSURL(string: NSURL.idnEncodedURL(string)),
+              var path = siteURL.absoluteString else {
             return ""
         }
 
-        var path = siteURL.absoluteString!
         let isSiteURLSchemeEmpty = siteURL.scheme == nil || siteURL.scheme!.isEmpty
 
-        if path.isWordPressComPath() {
-            if isSiteURLSchemeEmpty {
-                path = "https://\(path)"
-            } else if path.range(of: "http://") != nil {
-                path = path.replacingOccurrences(of: "http://", with: "https://")
-            }
-        } else if isSiteURLSchemeEmpty {
+        if isSiteURLSchemeEmpty {
             path = "https://\(path)"
+        } else if path.isWordPressComPath() && path.range(of: "http://") != nil {
+            path = path.replacingOccurrences(of: "http://", with: "https://")
         }
 
         path.removeSuffix("/wp-login.php")
-        try? path.removeSuffix(pattern: "/wp-admin/?")
+
+        // Remove wp-admin and everything after it.
+        try? path.removeSuffix(pattern: "/wp-admin(.*)")
+
         path.removeSuffix("/")
 
         return path
     }
 
     // MARK: - Other Helpers
-
 
     /// Opens Safari to display the forgot password page for a wpcom or self-hosted
     /// based on the passed LoginFields instance.

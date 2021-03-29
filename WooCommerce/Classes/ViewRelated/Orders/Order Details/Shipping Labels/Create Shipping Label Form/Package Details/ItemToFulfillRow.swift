@@ -2,7 +2,8 @@ import SwiftUI
 
 /// Represent a row of a Product Item that should be fulfilled
 ///
-struct ItemToFulfillRow: View {
+struct ItemToFulfillRow: View, Identifiable {
+    let id = UUID()
     let title: String
     let subtitle: String
 

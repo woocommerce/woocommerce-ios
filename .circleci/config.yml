@@ -210,7 +210,7 @@ workflows:
           requires: [ "Build Tests" ]
       # Always run UI tests on develop and release branches
       - UI Tests:
-          name: UI Tests (iPhone 11)
+          name: UI Tests (iPhone)
           <<: *iphone_test_device
           post-to-slack: true
           requires: [ "Build Tests" ]
@@ -220,7 +220,7 @@ workflows:
                 - develop
                 - /^release.*/
       - UI Tests:
-          name: UI Tests (iPad Air 4th generation)
+          name: UI Tests (iPad)
           <<: *ipad_test_device
           post-to-slack: true
           requires: [ "Build Tests" ]
@@ -243,11 +243,11 @@ workflows:
           <<: *iphone_test_device
           requires: [ "Hold" ]
       - UI Tests:
-          name: Optional UI Tests (iPhone 11)
+          name: Optional UI Tests (iPhone)
           <<: *iphone_test_device
           requires: [ "Build Tests" ]
       - UI Tests:
-          name: Optional UI Tests (iPad Air 4th generation)
+          name: Optional UI Tests (iPad)
           <<: *ipad_test_device
           requires: [ "Build Tests" ]
   Installable Build:

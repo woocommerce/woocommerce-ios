@@ -14,7 +14,7 @@ struct ListHeaderView: View {
                 }
                 Text("Header")
                     .font(.footnote)
-                    .accentColor(Color(.listIcon))
+                    .foregroundColor(Color(.listIcon))
                 if alignment == .left {
                     Spacer()
                 }

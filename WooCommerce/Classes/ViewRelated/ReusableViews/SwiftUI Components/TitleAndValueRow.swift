@@ -10,7 +10,7 @@ struct TitleAndValueRow: View {
         HStack {
             Text(title).font(.body)
             Spacer()
-            Text(value).font(.footnote).foregroundColor(Color(.textSubtle))
+            Text(value).font(.body).foregroundColor(Color(.textSubtle))
 
             if selectable {
                 Image(uiImage: .chevronImage)

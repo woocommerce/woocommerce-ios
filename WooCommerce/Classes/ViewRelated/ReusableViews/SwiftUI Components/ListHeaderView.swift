@@ -12,7 +12,7 @@ struct ListHeaderView: View {
                 if alignment == .right {
                     Spacer()
                 }
-                Text("Header")
+                Text(text)
                     .font(.footnote)
                     .foregroundColor(Color(.listIcon))
                 if alignment == .left {

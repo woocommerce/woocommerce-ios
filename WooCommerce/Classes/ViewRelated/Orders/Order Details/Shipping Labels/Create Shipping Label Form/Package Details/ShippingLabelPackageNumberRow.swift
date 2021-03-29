@@ -16,6 +16,7 @@ struct ShippingLabelPackageNumberRow: View {
             Text(String(format: Localization.numberOfItems, numberOfItems)).font(.body)
             Spacer()
         }.frame(height: 44)
+        .padding([.leading, .trailing], 16)
     }
 }
 

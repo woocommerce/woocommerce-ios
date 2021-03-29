@@ -103,7 +103,7 @@ class GoogleAuthenticator: NSObject {
         return facade
     }()
 
-    private lazy weak var authenticationDelegate: WordPressAuthenticatorDelegate = {
+    private weak var authenticationDelegate: WordPressAuthenticatorDelegate? = {
         guard let delegate = WordPressAuthenticator.shared.delegate else {
             fatalError()
         }
@@ -359,7 +359,7 @@ private extension GoogleAuthenticator {
             if accountCreated {
                 SVProgressHUD.dismiss()
                 // Notify the host app
-                self?.authenticationDelegate.createdWordPressComAccount(username: wpcomUsername, authToken: wpcomToken)
+                self?.authenticationDelegate?.createdWordPressComAccount(username: wpcomUsername, authToken: wpcomToken)
                 // Notify the delegate
                 self?.accountCreated(credentials: credentials)
 
@@ -368,7 +368,7 @@ private extension GoogleAuthenticator {
 
             // Existing Account
             // Sync host app
-            self?.authenticationDelegate.sync(credentials: credentials) {
+            self?.authenticationDelegate?.sync(credentials: credentials) {
                 SVProgressHUD.dismiss()
                 // Notify delegate
                 self?.logInInstead(credentials: credentials)

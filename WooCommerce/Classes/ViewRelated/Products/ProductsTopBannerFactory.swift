@@ -4,7 +4,6 @@ import Yosemite
 struct ProductsTopBannerFactory {
 
     enum BannerType {
-        case productsM4
         case variations
 
         var title: String {
@@ -13,8 +12,6 @@ struct ProductsTopBannerFactory {
 
         var info: String {
             switch self {
-            case .productsM4:
-                return Localization.infoFilesAndLinkedProducts
             case .variations:
                 return Localization.infoVariations
             }
@@ -22,8 +19,6 @@ struct ProductsTopBannerFactory {
 
         var feedbackContext: WooAnalyticsEvent.FeedbackContext {
             switch self {
-            case .productsM4:
-                return .productsM4
             case .variations:
                 return .productsVariations
             }
@@ -75,10 +70,6 @@ private extension ProductsTopBannerFactory {
         static let title = NSLocalizedString("New features available!",
                                              comment: "The title of the top banner on the Products tab.")
 
-        static let infoFilesAndLinkedProducts =
-            NSLocalizedString(
-                "You can now add downloadable files to a product and link upsell & cross-sell products. No longer want a product? Trash it!",
-                comment: "The info of the top banner on the Products tab.")
         static let infoVariations = NSLocalizedString("You can now create and manage product variations!",
                                                       comment: "The info of the top banner on the Products tab.")
 

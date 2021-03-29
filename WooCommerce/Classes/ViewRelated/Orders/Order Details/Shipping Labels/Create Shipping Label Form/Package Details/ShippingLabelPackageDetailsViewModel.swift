@@ -5,24 +5,25 @@ import Yosemite
 ///
 struct ShippingLabelPackageDetailsViewModel {
 
-    let order: Order
-
+    let orderItems: [OrderItem]
+    let currency: String
     let currencyFormatter: CurrencyFormatter
 
     var itemsRows: [ItemToFulfillRow] {
-        order.items.map { (item) -> ItemToFulfillRow in
+        orderItems.map { (item) -> ItemToFulfillRow in
             let positivePrice = item.price.abs()
             let positiveQuantity = abs(item.quantity)
             let quantity = NumberFormatter.localizedString(from: positiveQuantity as NSDecimalNumber, number: .decimal)
-            let itemPrice = currencyFormatter.formatAmount(positivePrice, with: order.currency) ?? String()
+            let itemPrice = currencyFormatter.formatAmount(positivePrice, with: currency) ?? String()
             let attributes = item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) }
             let subtitle = Localization.subtitle(quantity: quantity, price: itemPrice, attributes: attributes)
             return ItemToFulfillRow(title: item.name, subtitle: subtitle)
         }
     }
 
-    init(order: Order, formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
-        self.order = order
+    init(items: [OrderItem], currency: String, formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+        self.orderItems = items
+        self.currency = currency
         self.currencyFormatter = formatter
     }
 }

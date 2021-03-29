@@ -21,6 +21,7 @@ struct ListHeaderView: View {
             }.frame(minWidth: 0, maxWidth: .infinity)
         }
         .padding([.leading, .trailing], 16)
+        .padding(.top, 8)
         .frame(height: 42)
     }
 

@@ -1,4 +1,3 @@
-Text
 import SwiftUI
 
 struct TitleAndValueRow: View {

@@ -10,10 +10,18 @@ struct ShippingLabelPackageDetails: View {
 
     var body: some View {
         ScrollView {
-            VStack() {
+            VStack(spacing: 0) {
                 ShippingLabelPackageNumberRow(packageNumber: 1, numberOfItems: viewModel.order.items.count)
 
-                ListHeaderView(text: Localization.header, alignment: .left)
+                ListHeaderView(text: Localization.itemsToFulfillHeader, alignment: .left)
+                    .background(Color(.listBackground))
+
+                ForEach(viewModel.itemsRows) { productItemRow in
+                    Divider()
+                    productItemRow
+                }
+
+                ListHeaderView(text: Localization.packageDetailsHeader, alignment: .left)
                     .background(Color(.listBackground))
             }
         }
@@ -22,7 +30,8 @@ struct ShippingLabelPackageDetails: View {
 
 private extension ShippingLabelPackageDetails {
     enum Localization {
-        static let header = NSLocalizedString("Items to fulfill", comment: "Header section in Shipping Label Package Detail")
+        static let itemsToFulfillHeader = NSLocalizedString("ITEMS TO FULFILL", comment: "Header section items to fulfill in Shipping Label Package Detail")
+        static let packageDetailsHeader = NSLocalizedString("PACKAGE DETAILS", comment: "Header section package details in Shipping Label Package Detail")
 
     }
 }

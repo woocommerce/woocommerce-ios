@@ -3432,7 +3432,6 @@
 				451A997C260E393B0059D135 /* ShippingLabelPackageDetails.swift */,
 				451A9962260E31480059D135 /* ShippingLabelPackageDetailsViewModel.swift */,
 				451A9972260E39270059D135 /* ShippingLabelPackageNumberRow.swift */,
-				45DB703F261209B10064A6CF /* ItemToFulfillRow.swift */,
 			);
 			path = "Package Details";
 			sourceTree = "<group>";
@@ -3659,6 +3658,7 @@
 			isa = PBXGroup;
 			children = (
 				45D875D12611EA2100226C3F /* ListHeaderView.swift */,
+				45DB703F261209B10064A6CF /* ItemToFulfillRow.swift */,
 			);
 			path = "SwiftUI Components";
 			sourceTree = "<group>";

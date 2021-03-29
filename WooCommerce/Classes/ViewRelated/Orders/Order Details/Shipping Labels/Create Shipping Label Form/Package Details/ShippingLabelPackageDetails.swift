@@ -13,14 +13,6 @@ struct ShippingLabelPackageDetails: View {
             VStack() {
                 ShippingLabelPackageNumberRow(packageNumber: 1, numberOfItems: viewModel.order.items.count)
 
-                // Header
-                Section() {
-                    HStack() {
-                        Text("Header")
-                        Spacer()
-                    }.frame(width: UIScreen.main.bounds.width, height: 42)
-                }
-                .background(Color(.listBackground))
 
             }
         }

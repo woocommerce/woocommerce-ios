@@ -560,6 +560,7 @@
 		45D1CF4523BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D1CF4423BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift */; };
 		45D1CF4723BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D1CF4623BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift */; };
 		45D685FE23D0FB25005F87D0 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D685FD23D0FB25005F87D0 /* Throttler.swift */; };
+		45D875D22611EA2100226C3F /* ListHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D875D12611EA2100226C3F /* ListHeaderView.swift */; };
 		45E3C8F325E7D30300102E84 /* ShippingLabelAddress+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E3C8F225E7D30300102E84 /* ShippingLabelAddress+Woo.swift */; };
 		45E9A6E424DAE1EA00A600E8 /* ProductReviewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E9A6E224DAE1EA00A600E8 /* ProductReviewsViewController.swift */; };
 		45E9A6E524DAE1EA00A600E8 /* ProductReviewsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45E9A6E324DAE1EA00A600E8 /* ProductReviewsViewController.xib */; };
@@ -1710,6 +1711,7 @@
 		45D1CF4423BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxClassListSelectorDataSource.swift; sourceTree = "<group>"; };
 		45D1CF4623BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxStatusListSelectorCommand.swift; sourceTree = "<group>"; };
 		45D685FD23D0FB25005F87D0 /* Throttler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
+		45D875D12611EA2100226C3F /* ListHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListHeaderView.swift; sourceTree = "<group>"; };
 		45E3C8F225E7D30300102E84 /* ShippingLabelAddress+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelAddress+Woo.swift"; sourceTree = "<group>"; };
 		45E9A6E224DAE1EA00A600E8 /* ProductReviewsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewsViewController.swift; sourceTree = "<group>"; };
 		45E9A6E324DAE1EA00A600E8 /* ProductReviewsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductReviewsViewController.xib; sourceTree = "<group>"; };
@@ -3650,6 +3652,14 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
+		45D875D72611EA3D00226C3F /* SwiftUI Components */ = {
+			isa = PBXGroup;
+			children = (
+				45D875D12611EA2100226C3F /* ListHeaderView.swift */,
+			);
+			path = "SwiftUI Components";
+			sourceTree = "<group>";
+		};
 		45E9A6E124DAE18E00A600E8 /* Reviews */ = {
 			isa = PBXGroup;
 			children = (
@@ -5130,6 +5140,7 @@
 		CED6021A20B35FBF0032C639 /* ReusableViews */ = {
 			isa = PBXGroup;
 			children = (
+				45D875D72611EA3D00226C3F /* SwiftUI Components */,
 				57CFCD26248844A0003F51EC /* Section Headers */,
 				57448D26242E772300A56A74 /* EmptyStateViewController */,
 				57896D6425362AC2000E8C4D /* TitleAndEditableValueTableViewCell */,
@@ -6393,6 +6404,7 @@
 				57CDABB9252E9BEB00BED88C /* ButtonTableFooterView.swift in Sources */,
 				02E4FD7E2306A8180049610C /* StatsTimeRangeBarViewModel.swift in Sources */,
 				021FAFCF23556D2B00B99241 /* UIView+SubviewsAxis.swift in Sources */,
+				45D875D22611EA2100226C3F /* ListHeaderView.swift in Sources */,
 				026B3C57249A046E00F7823C /* TextFieldTextAlignment.swift in Sources */,
 				B5290ED9219B3FA900A6AF7F /* Date+Woo.swift in Sources */,
 				CECC758C23D2227000486676 /* ProductDetailsCellViewModel.swift in Sources */,

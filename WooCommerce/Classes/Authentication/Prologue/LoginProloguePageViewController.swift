@@ -4,7 +4,9 @@ import UIKit
 ///
 final class LoginProloguePageViewController: UIPageViewController {
 
-    private var pages: [UIViewController] = []
+    private let pages: [UIViewController] = {
+        LoginProloguePageType.allCases.map { LoginProloguePageTypeViewController(pageType: $0) }
+    }()
 
     private lazy var pageControl = UIPageControl()
 
@@ -21,11 +23,9 @@ final class LoginProloguePageViewController: UIPageViewController {
         dataSource = self
         delegate = self
 
-        LoginProloguePageType.allCases.forEach({ type in
-            pages.append(LoginProloguePageTypeViewController(pageType: type))
-        })
-
-        setViewControllers([pages[0]], direction: .forward, animated: false)
+        if let firstPage = pages.first {
+            setViewControllers([firstPage], direction: .forward, animated: false)
+        }
 
         addPageControl()
     }
@@ -93,8 +93,8 @@ extension LoginProloguePageViewController: UIPageViewControllerDelegate {
                             didFinishAnimating finished: Bool,
                             previousViewControllers: [UIViewController],
                             transitionCompleted completed: Bool) {
-        let toVC = previousViewControllers[0]
-        guard let index = pages.firstIndex(of: toVC) else {
+        guard let toVC = previousViewControllers.first,
+              let index = pages.firstIndex(of: toVC) else {
             return
         }
         if !completed {
@@ -103,8 +103,8 @@ extension LoginProloguePageViewController: UIPageViewControllerDelegate {
     }
 
     func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
-        let toVC = pendingViewControllers[0]
-        guard let index = pages.firstIndex(of: toVC) else {
+        guard let toVC = pendingViewControllers.first,
+              let index = pages.firstIndex(of: toVC) else {
             return
         }
         pageControl.currentPage = index
@@ -115,6 +115,6 @@ extension LoginProloguePageViewController: UIPageViewControllerDelegate {
 private extension LoginProloguePageViewController {
     enum Constants {
         static let pageControlBottomMargin: CGFloat = -10
-        static let pageControlScale: CGFloat = 0.8
+        static let pageControlScale: CGFloat = 0.8 // Scales page control according to design
     }
 }

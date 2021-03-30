@@ -81,7 +81,7 @@ class LoginProloguePageTypeViewController: UIViewController {
 
         // Reduce centerYAnchor constraint priority to ensure the bottom margin has higher priority, so stack view is fully visible on shorter devices
         let verticalCentering = stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: Constants.stackVerticalOffset)
-        verticalCentering.priority = UILayoutPriority(999)
+        verticalCentering.priority = .required - 1
 
         // Set constraints
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -129,9 +129,9 @@ class LoginProloguePageTypeViewController: UIViewController {
     }
 
     private enum Constants {
-        static let stackSpacing: CGFloat = 40
+        static let stackSpacing: CGFloat = 40 // Space between image and text
         static let stackVerticalOffset: CGFloat = 103
-        static let stackBottomMargin: CGFloat = -57
+        static let stackBottomMargin: CGFloat = -57 // Minimum margin between stack view and login buttons, including space required for UIPageControl
         static let imageHeightMultiplier: CGFloat = 0.35
         static let labelWidth: CGFloat = 216
     }

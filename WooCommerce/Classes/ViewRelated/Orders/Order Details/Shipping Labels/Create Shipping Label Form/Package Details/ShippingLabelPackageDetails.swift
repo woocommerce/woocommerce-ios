@@ -63,9 +63,11 @@ struct ShippingLabelPackageDetails_Previews: PreviewProvider {
     static var previews: some View {
         ShippingLabelPackageDetails(items: ShippingLabelPackageDetails_Previews.sampleItems(), currency: ShippingLabelPackageDetails_Previews.sampleCurrency())
             .environment(\.colorScheme, .light)
+            .previewDisplayName("Light")
 
         ShippingLabelPackageDetails(items: ShippingLabelPackageDetails_Previews.sampleItems(), currency: ShippingLabelPackageDetails_Previews.sampleCurrency())
             .environment(\.colorScheme, .dark)
+            .previewDisplayName("Dark")
     }
 }
 

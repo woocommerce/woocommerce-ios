@@ -30,8 +30,18 @@ struct ShippingLabelPackageDetails: View {
                 }
 
                 Divider()
-            }
-        }
+
+                TitleAndTextFieldRow(title: Localization.totalPackageWeight,
+                                     placeholder: "0",
+                                     text: "",
+                                     symbol: "oz",
+                                     keyboardType: .decimalPad)
+                Divider()
+
+                ListHeaderView(text: Localization.footer, alignment: .left)
+                    .background(Color(.listBackground))
+            }.background(Color(.white))
+        }.background(Color(.listBackground))
     }
 }
 
@@ -41,6 +51,10 @@ private extension ShippingLabelPackageDetails {
         static let packageDetailsHeader = NSLocalizedString("PACKAGE DETAILS", comment: "Header section package details in Shipping Label Package Detail")
         static let packageSelected = NSLocalizedString("Package Selected",
                                                        comment: "Title of the row for selecting a package in Shipping Label Package Detail screen")
+        static let totalPackageWeight = NSLocalizedString("Total package weight",
+                                                          comment: "Title of the row for adding the package weight in Shipping Label Package Detail screen")
+        static let footer = NSLocalizedString("Sum of products and package weight",
+                                              comment: "Title of the footer in Shipping Label Package Detail screen")
     }
 }
 

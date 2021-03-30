@@ -5,6 +5,7 @@ struct TitleAndTextFieldRow: View {
     let placeholder: String
     @State var text: String = ""
     let symbol: String?
+    let keyboardType: UIKeyboardType
 
     var body: some View {
         HStack {
@@ -14,6 +15,7 @@ struct TitleAndTextFieldRow: View {
             TextField(placeholder, text: $text)
                 .multilineTextAlignment(.trailing)
                 .font(.body)
+                .keyboardType(keyboardType)
             if let symbol = symbol {
                 Text(symbol).font(.body)
             }
@@ -25,15 +27,27 @@ struct TitleAndTextFieldRow: View {
 
 struct TitleAndTextFieldRow_Previews: PreviewProvider {
     static var previews: some View {
-        TitleAndTextFieldRow(title: "Add your text", placeholder: "Start typing", text: "", symbol: nil)
+        TitleAndTextFieldRow(title: "Add your text",
+                             placeholder: "Start typing",
+                             text: "",
+                             symbol: nil,
+                             keyboardType: .default)
             .previewLayout(.fixed(width: 375, height: 100))
             .previewDisplayName("No text")
 
-        TitleAndTextFieldRow(title: "Add your text", placeholder: "Start typing", text: "Hello", symbol: nil)
+        TitleAndTextFieldRow(title: "Add your text",
+                             placeholder: "Start typing",
+                             text: "Hello",
+                             symbol: nil,
+                             keyboardType: .default)
             .previewLayout(.fixed(width: 375, height: 100))
             .previewDisplayName("With text")
 
-        TitleAndTextFieldRow(title: "Add your text", placeholder: "Value", text: "", symbol: "$")
+        TitleAndTextFieldRow(title: "Add your text",
+                             placeholder: "Value",
+                             text: "",
+                             symbol: "$",
+                             keyboardType: .default)
             .previewLayout(.fixed(width: 375, height: 100))
             .previewDisplayName("With symbol")
     }

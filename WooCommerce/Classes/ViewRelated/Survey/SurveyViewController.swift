@@ -151,10 +151,6 @@ extension URL {
         appendingQueryItem(URLQueryItem(name: Tags.surveyRequestAppVersionTag, value: version))
     }
 
-    func tagProductMilestone(_ milestone: String) -> URL {
-        appendingQueryItem(URLQueryItem(name: Tags.surveyRequestProductMilestoneTag, value: milestone))
-    }
-
     func tagShippingLabelsMilestone(_ milestone: String) -> URL {
         appendingQueryItem(URLQueryItem(name: Tags.surveyRequestShippingLabelsMilestoneTag, value: milestone))
     }

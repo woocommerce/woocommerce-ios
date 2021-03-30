@@ -9,8 +9,10 @@ struct TitleAndTextFieldRow: View {
 
     var body: some View {
         HStack {
-            Text(title).font(.body)
-            Spacer()
+            Text(title)
+                .font(.body)
+                .lineLimit(1)
+                .fixedSize()
             Spacer()
             TextField(placeholder, text: $text)
                 .multilineTextAlignment(.trailing)
@@ -43,10 +45,10 @@ struct TitleAndTextFieldRow_Previews: PreviewProvider {
             .previewLayout(.fixed(width: 375, height: 100))
             .previewDisplayName("With text")
 
-        TitleAndTextFieldRow(title: "Add your text",
+        TitleAndTextFieldRow(title: "Total package weight",
                              placeholder: "Value",
                              text: "",
-                             symbol: "$",
+                             symbol: "oz",
                              keyboardType: .default)
             .previewLayout(.fixed(width: 375, height: 100))
             .previewDisplayName("With symbol")

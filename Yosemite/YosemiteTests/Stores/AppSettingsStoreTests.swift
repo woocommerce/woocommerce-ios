@@ -355,12 +355,12 @@ final class AppSettingsStoreTests: XCTestCase {
     func test_loadFeedbackVisibility_for_productsM5_returns_true_after_marking_it_as_pending() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsM5, status: .pending) { _ in }
+        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsVariations, status: .pending) { _ in }
         subject?.onAction(updateAction)
 
         // When
         var visibilityResult: Result<Bool, Error>?
-        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .productsM5) { result in
+        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .productsVariations) { result in
             visibilityResult = result
         }
         subject?.onAction(queryAction)
@@ -375,12 +375,12 @@ final class AppSettingsStoreTests: XCTestCase {
     func test_loadFeedbackVisibility_for_productsM5_returns_false_after_marking_it_as_dismissed() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsM5, status: .dismissed) { _ in }
+        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsVariations, status: .dismissed) { _ in }
         subject?.onAction(updateAction)
 
         // When
         var visibilityResult: Result<Bool, Error>?
-        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .productsM5) { result in
+        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .productsVariations) { result in
             visibilityResult = result
         }
         subject?.onAction(queryAction)
@@ -395,12 +395,12 @@ final class AppSettingsStoreTests: XCTestCase {
     func test_loadFeedbackVisibility_for_productsM5_returns_false_after_marking_it_as_given() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
-        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsM5, status: .given(Date())) { _ in }
+        let updateAction = AppSettingsAction.updateFeedbackStatus(type: .productsVariations, status: .given(Date())) { _ in }
         subject?.onAction(updateAction)
 
         // When
         var visibilityResult: Result<Bool, Error>?
-        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .productsM5) { result in
+        let queryAction = AppSettingsAction.loadFeedbackVisibility(type: .productsVariations) { result in
             visibilityResult = result
         }
         subject?.onAction(queryAction)

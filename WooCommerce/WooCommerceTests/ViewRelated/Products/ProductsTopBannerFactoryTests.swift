@@ -28,7 +28,7 @@ final class ProductsTopBannerFactoryTests: XCTestCase {
 
     func test_it_tracks_featureFeedbackBanner_gaveFeedback_event_when_giveFeedback_button_is_pressed() throws {
         // Given
-        let bannerMirror = try makeBannerViewMirror()
+        let bannerMirror = try makeBannerViewMirror(for: .variations)
         let giveFeedbackButton = try XCTUnwrap(bannerMirror.actionButtons.first)
 
         assertEmpty(analyticsProvider.receivedEvents)
@@ -41,13 +41,13 @@ final class ProductsTopBannerFactoryTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents.first, "feature_feedback_banner")
 
         let properties = try XCTUnwrap(analyticsProvider.receivedProperties.first)
-        XCTAssertEqual(properties["context"] as? String, "products_m4")
+        XCTAssertEqual(properties["context"] as? String, "products_variations")
         XCTAssertEqual(properties["action"] as? String, "gave_feedback")
     }
 
     func test_it_tracks_featureFeedbackBanner_dismissed_event_when_dismiss_button_is_pressed() throws {
         // Given
-        let bannerMirror = try makeBannerViewMirror()
+        let bannerMirror = try makeBannerViewMirror(for: .variations)
         let dismissButton = try XCTUnwrap(bannerMirror.actionButtons.last)
 
         assertEmpty(analyticsProvider.receivedEvents)
@@ -60,13 +60,13 @@ final class ProductsTopBannerFactoryTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents.first, "feature_feedback_banner")
 
         let properties = try XCTUnwrap(analyticsProvider.receivedProperties.first)
-        XCTAssertEqual(properties["context"] as? String, "products_m4")
+        XCTAssertEqual(properties["context"] as? String, "products_variations")
         XCTAssertEqual(properties["action"] as? String, "dismissed")
     }
 }
 
 private extension ProductsTopBannerFactoryTests {
-    func makeBannerViewMirror() throws -> TopBannerViewMirror {
+    func makeBannerViewMirror(for bannerType: ProductsTopBannerFactory.BannerType) throws -> TopBannerViewMirror {
         storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             if case let .loadProductsFeatureSwitch(onCompletion) = action {
                 onCompletion(true)
@@ -78,6 +78,7 @@ private extension ProductsTopBannerFactoryTests {
             ProductsTopBannerFactory.topBanner(isExpanded: false,
                                                stores: storesManager,
                                                analytics: analytics,
+                                               type: bannerType,
                                                expandedStateChangeHandler: {
 
             }, onGiveFeedbackButtonPressed: {

@@ -24,7 +24,7 @@ final class SurveyViewControllerTests: XCTestCase {
 
     func test_it_loads_the_correct_product_feedback_survey() throws {
         // Given
-        let viewController = SurveyViewController(survey: .productsM5Feedback, onCompletion: {})
+        let viewController = SurveyViewController(survey: .productsVariationsFeedback, onCompletion: {})
 
         // When
         _ = try XCTUnwrap(viewController.view)
@@ -32,9 +32,8 @@ final class SurveyViewControllerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(mirror.webView.isLoading)
-        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.productsM4Feedback
+        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.productsFeedback
                         .asURL().tagPlatform("ios")
-                        .tagProductMilestone("5")
                         .tagAppVersion(Bundle.main.bundleVersion()))
     }
 

@@ -69,7 +69,6 @@ private extension AddProductCategoryViewController {
 
         addCloseNavigationBarButton(title: Strings.cancelButton)
         configureRightBarButtomitemAsSave()
-        removeNavigationBackBarButtonText()
     }
 
     func configureRightBarButtomitemAsSave() {

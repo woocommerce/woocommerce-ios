@@ -73,7 +73,6 @@ private extension EditAttributesViewController {
     func configureNavigationBar() {
         configureTitle()
         configureRightButton()
-        removeNavigationBackBarButtonText()
     }
 
     func configureTitle() {

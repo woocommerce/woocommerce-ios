@@ -58,7 +58,6 @@ private extension HelpAndSupportViewController {
     ///
     func configureNavigation() {
         title = NSLocalizedString("Help", comment: "Help and Support navigation title")
-        removeNavigationBackBarButtonText()
 
         // Dismiss
         navigationItem.leftBarButtonItem = {

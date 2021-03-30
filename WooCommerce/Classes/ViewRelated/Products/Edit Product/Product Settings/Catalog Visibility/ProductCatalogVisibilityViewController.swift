@@ -51,8 +51,6 @@ private extension ProductCatalogVisibilityViewController {
 
     func configureNavigationBar() {
         title = NSLocalizedString("Catalog Visibility", comment: "Product Catalog Visibility navigation title")
-
-        removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {

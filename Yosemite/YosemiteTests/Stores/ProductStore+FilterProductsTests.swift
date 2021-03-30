@@ -156,33 +156,33 @@ final class ProductStore_FilterProductsTests: XCTestCase {
 
 private extension ProductStore_FilterProductsTests {
     func assertParamValues(stockStatusValue: String?, productStatusValue: String?, productTypeValue: String?) {
-        guard let pathComponents = network.pathComponents else {
-            XCTFail("Cannot parse path from the API request")
+        guard let queryParameters = network.queryParameters else {
+            XCTFail("Cannot parse query from the API request")
             return
         }
 
         let stockStatusParameter = "stock_status"
         if let stockStatusValue = stockStatusValue {
             let expectedParam = "\(stockStatusParameter)=\(stockStatusValue)"
-            XCTAssertTrue(pathComponents.contains(expectedParam), "Expected to have param: \(expectedParam)")
+            XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
         } else {
-            XCTAssertFalse(pathComponents.contains(where: { $0.starts(with: stockStatusParameter) }))
+            XCTAssertFalse(queryParameters.contains(where: { $0.starts(with: stockStatusParameter) }))
         }
 
         let productStatusParameter = "status"
         if let productStatusValue = productStatusValue {
             let expectedParam = "\(productStatusParameter)=\(productStatusValue)"
-            XCTAssertTrue(pathComponents.contains(expectedParam), "Expected to have param: \(expectedParam)")
+            XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
         } else {
-            XCTAssertFalse(pathComponents.contains(where: { $0.starts(with: productStatusParameter) }))
+            XCTAssertFalse(queryParameters.contains(where: { $0.starts(with: productStatusParameter) }))
         }
 
         let productTypeParameter = "type"
         if let productTypeValue = productTypeValue {
             let expectedParam = "\(productTypeParameter)=\(productTypeValue)"
-            XCTAssertTrue(pathComponents.contains(expectedParam), "Expected to have param: \(expectedParam)")
+            XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
         } else {
-            XCTAssertFalse(pathComponents.contains(where: { $0.starts(with: productTypeParameter) }))
+            XCTAssertFalse(queryParameters.contains(where: { $0.starts(with: productTypeParameter) }))
         }
     }
 }

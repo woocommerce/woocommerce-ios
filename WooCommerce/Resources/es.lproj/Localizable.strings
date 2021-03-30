@@ -190,6 +190,9 @@
 /* Title for adding the price settings row on Product main screen */
 "Add Price" = "Añadir precio";
 
+/* Action to add product on the placeholder overlay when there are no products on the Products tab */
+"Add Product" = "Add Product";
+
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
 "Add Products" = "Añadir productos";
@@ -260,6 +263,9 @@
 
 /* Shipping Label Suggested address entered placeholder */
 "Address Suggested" = "Dirección sugerida";
+
+/* Error showed in Shipping Label Address Validation for the address field */
+"Address missing" = "Address missing";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Añade el seguimiento a un pedido.";
@@ -511,6 +517,9 @@
 /* Text field city in Shipping Label Address Validation */
 "City" = "Ciudad";
 
+/* Error showed in Shipping Label Address Validation for the city field */
+"City missing" = "City missing";
+
 /* Button title for clearing all filters for the list. */
 "Clear all" = "Borrar todo";
 
@@ -614,6 +623,9 @@
 /* Text field country in Shipping Label Address Validation */
 "Country" = "País";
 
+/* Error showed in Shipping Label Address Validation for the country field */
+"Country missing" = "Country missing";
+
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "Menú de depuración de fallos";
 
@@ -652,6 +664,9 @@
 
 /* Customer note section title */
 "Customer Provided Note" = "Nota proporcionada por el cliente";
+
+/* Details text in the shipping label creation info screen */
+"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Cut the post office line by printing shipping labels at home with your phone at discounted rates!";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Fecha de envío";
@@ -1217,12 +1232,15 @@
 /* Opens an internal library called Wormholy. Not visible to users. */
 "Launch Wormholy Debug" = "Iniciar la depuración con Wormholy";
 
-/* Settings > Privacy Settings. A text link to the cookie policy.
-   Title of button shown in the Orders → All Orders tab if the list is empty. */
+/* Button title in the shipping label creation info screen
+   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Orders → All Orders tab if the list is empty. */
 "Learn more" = "Saber más";
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "Más información acerca de Jetpack";
+
+/* Title of button in order details > info link for creating a shipping label on the mobile device. */
+"Learn more about creating labels with your phone" = "Learn more about creating labels with your phone";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (8,5\" x 14\")";
@@ -1406,6 +1424,9 @@
 /* Name text field placeholder
    Text field name in Shipping Label Address Validation */
 "Name" = "Nombre";
+
+/* Error showed in Shipping Label Address Validation for the name field */
+"Name missing" = "Name missing";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
 "Navigates to Settings." = "Accede a Configuración.";
@@ -1745,6 +1766,9 @@
 /* Text field postcode in Shipping Label Address Validation */
 "Postcode" = "Código postal";
 
+/* Error showed in Shipping Label Address Validation for the postcode field */
+"Postcode missing" = "Postcode missing";
+
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Ofrecido por Automattic";
 
@@ -1841,7 +1865,7 @@
 /* One of the possible options in Product Visibility */
 "Public" = "Público";
 
-/* Action for creating a new Product remotely */
+/* Action for creating a new product remotely with a published status */
 "Publish" = "Publicar";
 
 /* Title of the Publish Settings section on Product Settings screen */
@@ -2049,8 +2073,8 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Precio rebajado: %@";
 
-/* Add Product Category. Save button title in navbar.
-   Add Product Tags. Save button title in navbar. */
+/* Action for saving a Product remotely
+   Add Product Category. Save button title in navbar. - Add Product Tags. Save button title in navbar. */
 "Save" = "Guardar";
 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
@@ -2058,6 +2082,9 @@
 
 /* Button title to save a product as draft in Product More Options Action Sheet */
 "Save as draft" = "Guardar como borrador";
+
+/* Message text in the shipping label creation info screen */
+"Save time and money by fulfilling with WooCommerce Shipping" = "Save time and money by fulfilling with WooCommerce Shipping";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Guardando tu producto…";
@@ -2357,11 +2384,17 @@
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Tarifa estándar";
 
+/* The details on the placeholder overlay when there are no products on the Products tab */
+"Start selling today by adding your first product to the store." = "Start selling today by adding your first product to the store.";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "Periodo de inicio: %1$@. Periodo de finalización: %2$@.";
 
 /* Text field state in Shipping Label Address Validation */
 "State" = "Provincia";
+
+/* Error showed in Shipping Label Address Validation for the state field */
+"State missing" = "State missing";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -2444,6 +2477,9 @@
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
 "Tap to modify the item refund quantity" = "Toca para cambiar la cantidad del rembolso por el artículo";
+
+/* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
+"Tap to show information about creating a shipping label" = "Tap to show information about creating a shipping label";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "Toca para mostrar las instrucciones sobre cómo imprimir una etiqueta de envío desde un dispositivo móvil";
@@ -2867,8 +2903,8 @@
 /* Upcoming Section Header */
 "Upcoming" = "Próximo";
 
-/* Action for updating a Product remotely
-   Action for updating a Products' downloadable files' info remotely - Label action for updating a link on the editor */
+/* Action for updating a Products' downloadable files' info remotely
+   Label action for updating a link on the editor */
 "Update" = "Actualizar";
 
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
@@ -3099,6 +3135,9 @@
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
+
+/* Navigation bar title in the shipping label creation info screen */
+"WooCommerce Shipping" = "WooCommerce Shipping";
 
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "Servicio de soporte de WooCommerce para iOS";

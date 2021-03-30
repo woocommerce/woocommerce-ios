@@ -47,7 +47,6 @@ private extension LinkedProductsViewController {
         title = Localization.titleView
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(completeUpdating))
-        removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {

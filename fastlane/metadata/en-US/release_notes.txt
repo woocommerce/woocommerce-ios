@@ -1,3 +1,0 @@
-- When editing a product, you can now create, delete, and update product variations, product attributes, and product attribute options.
-- We’ve refreshed the design, including changes to your dashboard tabs. Feel free to share UI feedback with us so we can make improvements.
-- Other various fixes.

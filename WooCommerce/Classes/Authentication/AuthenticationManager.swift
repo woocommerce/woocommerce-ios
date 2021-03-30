@@ -306,7 +306,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         supportViewController.displaysDismissAction = true
 
-        let navController = UINavigationController(rootViewController: supportViewController)
+        let navController = WooNavigationController(rootViewController: supportViewController)
         navController.modalPresentationStyle = .formSheet
 
         sourceViewController.present(navController, animated: true, completion: nil)

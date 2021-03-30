@@ -11,13 +11,15 @@ struct ItemToFulfillRow: View, Identifiable {
         HStack {
             VStack(alignment: .leading,
                    spacing: 8) {
-                Text(title).font(.body)
+                Text(title)
+                    .font(.body)
                 Text(subtitle)
                     .font(.footnote)
                     .foregroundColor(Color(.textSubtle))
             }.padding([.leading, .trailing], Constants.vStackPadding)
             Spacer()
-        }.padding([.top, .bottom], Constants.hStackPadding)
+        }
+        .padding([.top, .bottom], Constants.hStackPadding)
         .frame(minHeight: Constants.height)
     }
 }

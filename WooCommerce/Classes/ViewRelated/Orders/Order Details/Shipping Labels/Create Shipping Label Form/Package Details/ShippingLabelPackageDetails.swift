@@ -4,8 +4,8 @@ import Yosemite
 struct ShippingLabelPackageDetails: View {
     @State private var viewModel: ShippingLabelPackageDetailsViewModel
 
-    init(items: [OrderItem], currency: String) {
-        _viewModel = State(initialValue: ShippingLabelPackageDetailsViewModel(items: items, currency: currency))
+    init(viewModel: ShippingLabelPackageDetailsViewModel) {
+        _viewModel = State(initialValue: viewModel)
     }
 
     var body: some View {
@@ -40,8 +40,10 @@ struct ShippingLabelPackageDetails: View {
 
                 ListHeaderView(text: Localization.footer, alignment: .left)
                     .background(Color(.listBackground))
-            }.background(Color(.systemBackground))
-        }.background(Color(.listBackground))
+            }
+            .background(Color(.systemBackground))
+        }
+        .background(Color(.listBackground))
     }
 }
 
@@ -61,11 +63,15 @@ private extension ShippingLabelPackageDetails {
 struct ShippingLabelPackageDetails_Previews: PreviewProvider {
 
     static var previews: some View {
-        ShippingLabelPackageDetails(items: ShippingLabelPackageDetails_Previews.sampleItems(), currency: ShippingLabelPackageDetails_Previews.sampleCurrency())
+
+        let viewModel = ShippingLabelPackageDetailsViewModel(items: ShippingLabelPackageDetails_Previews.sampleItems(),
+                                                             currency: ShippingLabelPackageDetails_Previews.sampleCurrency())
+
+        ShippingLabelPackageDetails(viewModel: viewModel)
             .environment(\.colorScheme, .light)
             .previewDisplayName("Light")
 
-        ShippingLabelPackageDetails(items: ShippingLabelPackageDetails_Previews.sampleItems(), currency: ShippingLabelPackageDetails_Previews.sampleCurrency())
+        ShippingLabelPackageDetails(viewModel: viewModel)
             .environment(\.colorScheme, .dark)
             .previewDisplayName("Dark")
     }

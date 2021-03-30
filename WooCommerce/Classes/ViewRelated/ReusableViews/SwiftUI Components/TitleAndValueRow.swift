@@ -10,9 +10,12 @@ struct TitleAndValueRow: View {
 
     var body: some View {
         HStack {
-            Text(title).font(.body)
+            Text(title)
+                .font(.body)
             Spacer()
-            Text(value).font(.body).foregroundColor(Color(.textSubtle))
+            Text(value)
+                .font(.body)
+                .foregroundColor(Color(.textSubtle))
 
             if selectable {
                 Image(uiImage: .chevronImage)
@@ -33,7 +36,7 @@ struct TitleAndValueRow: View {
 
 private extension TitleAndValueRow {
     enum Constants {
-        static let imageSize = 22
+        static let imageSize: CGFloat = 22
         static let height: CGFloat = 44
         static let padding: CGFloat = 16
     }
@@ -41,13 +44,11 @@ private extension TitleAndValueRow {
 
 struct TitleAndValueRow_Previews: PreviewProvider {
     static var previews: some View {
-        TitleAndValueRow(title: "Package selected", value: "Small package 1", selectable: true, action: {
-        })
+        TitleAndValueRow(title: "Package selected", value: "Small package 1", selectable: true, action: { })
             .previewLayout(.fixed(width: 375, height: 100))
             .previewDisplayName("Row Selectable")
 
-        TitleAndValueRow(title: "Package selected", value: "Small package 2", selectable: false, action: {
-        })
+        TitleAndValueRow(title: "Package selected", value: "Small package 2", selectable: false, action: { })
             .previewLayout(.fixed(width: 375, height: 100))
             .previewDisplayName("Row Not Selectable")
     }

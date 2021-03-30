@@ -5,7 +5,7 @@ import SwiftUI
 struct TitleAndTextFieldRow: View {
     let title: String
     let placeholder: String
-    @State var text: String = ""
+    @State var text: String
     let symbol: String?
     let keyboardType: UIKeyboardType
 

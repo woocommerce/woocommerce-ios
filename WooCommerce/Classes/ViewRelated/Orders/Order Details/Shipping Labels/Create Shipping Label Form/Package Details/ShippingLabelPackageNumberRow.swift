@@ -12,10 +12,13 @@ struct ShippingLabelPackageNumberRow: View {
 
     var body: some View {
         HStack {
-            Text(String(format: Localization.package, packageNumber)).font(.headline)
-            Text(String(format: Localization.numberOfItems, numberOfItems)).font(.body)
+            Text(String(format: Localization.package, packageNumber))
+                .font(.headline)
+            Text(String(format: Localization.numberOfItems, numberOfItems))
+                .font(.body)
             Spacer()
-        }.frame(height: Constants.height)
+        }
+        .frame(height: Constants.height)
         .padding([.leading, .trailing], Constants.padding)
     }
 }
@@ -24,7 +27,6 @@ private extension ShippingLabelPackageNumberRow {
     enum Localization {
         static let package = NSLocalizedString("Package %1$d", comment: "Package term in Shipping Labels. Reads like Package 1")
         static let numberOfItems = NSLocalizedString("- %1$d items", comment: "Number of items in packages in Shipping Labels. Reads like - 10 items")
-
     }
 
     enum Constants {

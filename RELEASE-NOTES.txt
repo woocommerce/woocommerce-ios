@@ -2,6 +2,7 @@
 
 6.4
 -----
+- [*] Login: New design and illustrations for the initial login screen, promoting the app's main features. [https://github.com/woocommerce/woocommerce-ios/pull/3867]
 - [*] Enhancement/fix: Unify back button style across the app. [https://github.com/woocommerce/woocommerce-ios/pull/3872]
 
 6.3

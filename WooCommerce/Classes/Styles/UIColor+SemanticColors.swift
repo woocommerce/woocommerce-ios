@@ -337,7 +337,8 @@ extension UIColor {
     /// The background color of the authentication prologue bottom area & button container.
     ///
     static var authPrologueBottomBackgroundColor: UIColor {
-        return .withColorStudio(.brand, shade: .shade80)
+        return UIColor(light: .gray(.shade0),
+                       dark: .gray(.shade90))
     }
 }
 

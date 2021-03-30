@@ -1,6 +1,5 @@
 import Foundation
 import UIKit
-import SafariServices
 import WordPressAuthenticator
 
 
@@ -16,18 +15,9 @@ final class LoginPrologueViewController: UIViewController {
     ///
     @IBOutlet var containerView: UIView!
 
-    /// Label to be displayed at the top of the Prologue.
+    /// Curved Rectangle: Background shape with curved top edge
     ///
-    @IBOutlet var upperLabel: UILabel!
-
-    /// Disclaimer Label
-    ///
-    @IBOutlet var disclaimerTextView: UITextView!
-
-    @IBOutlet private var slantedRectangle: UIImageView!
-    /// Jetpack Logo ImageVIew
-    ///
-    @IBOutlet var jetpackImageView: UIImageView!
+    @IBOutlet weak var curvedRectangle: UIImageView!
 
 
     // MARK: - Overridden Properties
@@ -45,9 +35,8 @@ final class LoginPrologueViewController: UIViewController {
         setupMainView()
         setupBackgroundView()
         setupContainerView()
-        setupSlantedRectangle()
-
-        setupUpperLabel()
+        setupCurvedRectangle()
+        setupCarousel()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -66,49 +55,27 @@ private extension LoginPrologueViewController {
     }
 
     func setupBackgroundView() {
-        backgroundView.backgroundColor = .init(light: .brand, dark: .withColorStudio(.brand, shade: .shade80))
+        backgroundView.backgroundColor = .authPrologueBottomBackgroundColor
     }
 
     func setupContainerView() {
         containerView.backgroundColor = .authPrologueBottomBackgroundColor
     }
 
-    func setupUpperLabel() {
-        upperLabel.text = NSLocalizedString("Manage orders, track sales and monitor store activity with real-time alerts.", comment: "Login Prologue Legend")
-        upperLabel.adjustsFontForContentSizeCategory = true
-        upperLabel.font = StyleManager.headlineSemiBold
-        upperLabel.textColor = .primary
+    func setupCurvedRectangle() {
+        curvedRectangle.image = UIImage.curvedRectangle.withRenderingMode(.alwaysTemplate)
+        curvedRectangle.tintColor = .authPrologueBottomBackgroundColor
     }
 
-    func setupSlantedRectangle() {
-        slantedRectangle.image = UIImage.slantedRectangle.withRenderingMode(.alwaysTemplate)
-        slantedRectangle.tintColor = .authPrologueBottomBackgroundColor
-    }
-}
-
-
-// MARK: - UITextViewDeletgate Conformance
-//
-extension LoginPrologueViewController: UITextViewDelegate {
-
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        displaySafariViewController(at: URL)
-        return false
-    }
-}
-
-
-// MARK: - Action Handlers
-//
-extension LoginPrologueViewController {
-
-    /// Opens SafariViewController at the specified URL.
+    /// Adds a carousel (slider) of screens to promote the main features of the app.
+    /// This is contained in a child view so that this view's background doesn't scroll.
     ///
-    func displaySafariViewController(at url: URL) {
-        ServiceLocator.analytics.track(.loginPrologueJetpackInstructions)
-        let safariViewController = SFSafariViewController(url: url)
+    func setupCarousel() {
+        let carousel = LoginProloguePageViewController()
+        carousel.view.translatesAutoresizingMaskIntoConstraints = false
 
-        safariViewController.modalPresentationStyle = .pageSheet
-        present(safariViewController, animated: true, completion: nil)
+        addChild(carousel)
+        view.addSubview(carousel.view)
+        view.pinSubviewToAllEdges(carousel.view)
     }
 }

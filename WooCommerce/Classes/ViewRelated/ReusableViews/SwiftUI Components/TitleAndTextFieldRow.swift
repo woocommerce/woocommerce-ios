@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// Renders a row with a label on the left side, and a text field on the right side, with eventually a symbol (like $)
+///
 struct TitleAndTextFieldRow: View {
     let title: String
     let placeholder: String
@@ -22,8 +24,15 @@ struct TitleAndTextFieldRow: View {
                 Text(symbol).font(.body)
             }
         }
-        .frame(height: 44)
-        .padding([.leading, .trailing], 16)
+        .frame(height: Constants.height)
+        .padding([.leading, .trailing], Constants.padding)
+    }
+}
+
+private extension TitleAndTextFieldRow {
+    enum Constants {
+        static let height: CGFloat = 44
+        static let padding: CGFloat = 16
     }
 }
 

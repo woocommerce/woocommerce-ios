@@ -15,8 +15,8 @@ struct ShippingLabelPackageNumberRow: View {
             Text(String(format: Localization.package, packageNumber)).font(.headline)
             Text(String(format: Localization.numberOfItems, numberOfItems)).font(.body)
             Spacer()
-        }.frame(height: 44)
-        .padding([.leading, .trailing], 16)
+        }.frame(height: Constants.height)
+        .padding([.leading, .trailing], Constants.padding)
     }
 }
 
@@ -25,6 +25,11 @@ private extension ShippingLabelPackageNumberRow {
         static let package = NSLocalizedString("Package %1$d", comment: "Package term in Shipping Labels. Reads like Package 1")
         static let numberOfItems = NSLocalizedString("- %1$d items", comment: "Number of items in packages in Shipping Labels. Reads like - 10 items")
 
+    }
+
+    enum Constants {
+        static let height: CGFloat = 44
+        static let padding: CGFloat = 44
     }
 }
 

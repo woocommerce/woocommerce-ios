@@ -254,7 +254,7 @@ private extension ShippingLabelFormViewController {
 
     func displayPackageDetailsVC() {
         let vc = ShippingLabelPackageDetailsViewController(items: viewModel.orderItems, currency: viewModel.currency)
-        navigationController?.pushViewController(vc, animated: true)
+        navigationController?.show(vc, sender: nil)
     }
 }
 

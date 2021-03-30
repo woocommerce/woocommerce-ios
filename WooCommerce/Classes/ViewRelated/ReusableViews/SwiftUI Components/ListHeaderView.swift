@@ -20,9 +20,9 @@ struct ListHeaderView: View {
                 }
             }.frame(minWidth: 0, maxWidth: .infinity)
         }
-        .padding([.leading, .trailing], 16)
-        .padding(.top, 8)
-        .frame(height: 42)
+        .padding([.leading, .trailing], Constants.lateralPadding)
+        .padding(.top, Constants.topPadding)
+        .frame(height: Constants.height)
     }
 
     init(text: String, alignment: TextAlignment) {
@@ -34,6 +34,14 @@ struct ListHeaderView: View {
         case left
         case center
         case right
+    }
+}
+
+private extension ListHeaderView {
+    enum Constants {
+        static let lateralPadding: CGFloat = 16
+        static let topPadding: CGFloat = 16
+        static let height: CGFloat = 42
     }
 }
 

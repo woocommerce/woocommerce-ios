@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// Renders a row with a label on the left side, a value on the right side and a disclosure indicator if selectable
+///
 struct TitleAndValueRow: View {
     let title: String
     let value: String
@@ -14,7 +16,7 @@ struct TitleAndValueRow: View {
 
             if selectable {
                 Image(uiImage: .chevronImage)
-                    .frame(width: 22.0, height: 22.0)
+                    .frame(width: Constants.imageSize, height: Constants.imageSize)
                     .foregroundColor(Color(UIColor.gray(.shade30)))
             }
         }
@@ -24,8 +26,16 @@ struct TitleAndValueRow: View {
             }
             action()
          }
-        .frame(height: 44)
-        .padding([.leading, .trailing], 16)
+        .frame(height: Constants.height)
+        .padding([.leading, .trailing], Constants.padding)
+    }
+}
+
+private extension TitleAndValueRow {
+    enum Constants {
+        static let imageSize = 22
+        static let height: CGFloat = 44
+        static let padding: CGFloat = 16
     }
 }
 

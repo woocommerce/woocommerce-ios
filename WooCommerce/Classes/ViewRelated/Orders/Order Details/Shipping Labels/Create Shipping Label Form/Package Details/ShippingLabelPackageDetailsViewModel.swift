@@ -6,8 +6,8 @@ import Yosemite
 struct ShippingLabelPackageDetailsViewModel {
 
     let orderItems: [OrderItem]
-    let currency: String
-    let currencyFormatter: CurrencyFormatter
+    private let currency: String
+    private let currencyFormatter: CurrencyFormatter
 
     var itemsRows: [ItemToFulfillRow] {
         orderItems.map { (item) -> ItemToFulfillRow in

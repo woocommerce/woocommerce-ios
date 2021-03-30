@@ -8,7 +8,7 @@ final class LoginProloguePageViewController: UIPageViewController {
         LoginProloguePageType.allCases.map { LoginProloguePageTypeViewController(pageType: $0) }
     }()
 
-    private lazy var pageControl = UIPageControl()
+    private let pageControl = UIPageControl()
 
     init() {
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal)
@@ -33,23 +33,20 @@ final class LoginProloguePageViewController: UIPageViewController {
     // MARK: Page Control Setup
     //
     private func addPageControl() {
-        let newPageControl = UIPageControl()
-        newPageControl.currentPageIndicatorTintColor = .gray(.shade5)
-        newPageControl.pageIndicatorTintColor = .wooCommercePurple(.shade50)
-        newPageControl.transform = CGAffineTransform(scaleX: Constants.pageControlScale, y: Constants.pageControlScale)
+        pageControl.currentPageIndicatorTintColor = .gray(.shade5)
+        pageControl.pageIndicatorTintColor = .wooCommercePurple(.shade50)
+        pageControl.transform = CGAffineTransform(scaleX: Constants.pageControlScale, y: Constants.pageControlScale)
 
-        newPageControl.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(newPageControl)
+        pageControl.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(pageControl)
 
         NSLayoutConstraint.activate([
-            newPageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            newPageControl.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: Constants.pageControlBottomMargin)
+            pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            pageControl.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: Constants.pageControlBottomMargin)
         ])
 
-        newPageControl.numberOfPages = pages.count
-        newPageControl.addTarget(self, action: #selector(handlePageControlValueChanged(sender:)), for: .valueChanged)
-
-        pageControl = newPageControl
+        pageControl.numberOfPages = pages.count
+        pageControl.addTarget(self, action: #selector(handlePageControlValueChanged(sender:)), for: .valueChanged)
     }
 
     @objc func handlePageControlValueChanged(sender: UIPageControl) {

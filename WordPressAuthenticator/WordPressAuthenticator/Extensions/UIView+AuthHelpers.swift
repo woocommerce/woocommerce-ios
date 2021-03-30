@@ -1,6 +1,5 @@
 import UIKit
 
-
 /// UIView class methods
 ///
 extension UIView {

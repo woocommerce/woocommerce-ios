@@ -61,13 +61,13 @@ private extension AppleAuthenticator {
             let provider = ASAuthorizationAppleIDProvider()
             let request = provider.createRequest()
             request.requestedScopes = [.fullName, .email]
-            
+
             let controller = ASAuthorizationController(authorizationRequests: [request])
             controller.delegate = self
 
             controller.presentationContextProvider = self
             controller.performRequests()
-            
+
         }
     }
 
@@ -80,19 +80,19 @@ private extension AppleAuthenticator {
                 DDLogError("Apple Authenticator: invalid Apple credentials.")
                 return
         }
-        
+
         tracker.set(flow: .signupWithApple)
         tracker.track(step: .start) {
             track(.createAccountInitiated)
         }
-        
+
         SVProgressHUD.show(withStatus: NSLocalizedString("Continuing with Apple", comment: "Shown while logging in with Apple and the app waits for the site creation process to complete."))
-        
+
         let email = appleCredentials.email ?? ""
         let name = fullName(from: appleCredentials.fullName)
 
         updateLoginFields(email: email, fullName: name, token: token)
-        
+
         let service = SignupService()
         service.createWPComUserWithApple(token: token, email: email, fullName: name,
                                          success: { [weak self] accountCreated,
@@ -104,10 +104,10 @@ private extension AppleAuthenticator {
 
                                             // Notify host app of successful Apple authentication
                                             self?.authenticationDelegate.userAuthenticatedWithAppleUserID(appleCredentials.user)
-                                            
+
                                             guard !existingNonSocialAccount else {
                                                 self?.tracker.set(flow: .loginWithApple)
-                                                
+
                                                 if existing2faAccount {
                                                     self?.show2FA()
                                                     return
@@ -140,26 +140,26 @@ private extension AppleAuthenticator {
         // This stat is part of a funnel that provides critical information.  Before
         // making ANY modification to this stat please refer to: p4qSXL-35X-p2
         track(.createdAccount)
-        
+
         tracker.track(step: .success) {
             track(.signupSocialSuccess)
         }
-        
+
         showSignupEpilogue(for: credentials)
     }
-    
+
     func loginSuccessful(with credentials: AuthenticatorCredentials) {
         // This stat is part of a funnel that provides critical information.  Please
         // consult with your lead before removing this event.
         track(.signedIn)
-        
+
         tracker.track(step: .success) {
             track(.loginSocialSuccess)
         }
-        
+
         showLoginEpilogue(for: credentials)
     }
-    
+
     func showSignupEpilogue(for credentials: AuthenticatorCredentials) {
         guard let navigationController = showFromViewController?.navigationController else {
             fatalError()
@@ -171,7 +171,7 @@ private extension AppleAuthenticator {
 
         authenticationDelegate.presentSignupEpilogue(in: navigationController, for: credentials, service: service)
     }
-    
+
     func showLoginEpilogue(for credentials: AuthenticatorCredentials) {
         guard let navigationController = showFromViewController?.navigationController else {
             fatalError()
@@ -179,7 +179,7 @@ private extension AppleAuthenticator {
 
         authenticationDelegate.presentLoginEpilogue(in: navigationController, for: credentials) {}
     }
-    
+
     func signupFailed(with error: Error) {
         DDLogError("Apple Authenticator: Signup failed. error: \(error.localizedDescription)")
 
@@ -189,37 +189,37 @@ private extension AppleAuthenticator {
             let properties = ["error": errorMessage]
             track(.signupSocialFailure, properties: properties)
         }
-        
+
         delegate?.authFailedWithError(message: error.localizedDescription)
     }
-    
+
     func logInInstead() {
         tracker.set(flow: .loginWithApple)
         tracker.track(step: .start) {
             track(.signupSocialToLogin)
             track(.loginSocialSuccess)
         }
-        
+
         delegate?.showWPComLogin(loginFields: loginFields)
     }
-    
+
     func show2FA() {
         if tracker.shouldUseLegacyTracker() {
             track(.signupSocialToLogin)
         }
-        
+
         delegate?.showApple2FA(loginFields: loginFields)
     }
-    
+
     // MARK: - Helpers
-    
+
     func fullName(from components: PersonNameComponents?) -> String {
         guard let name = components else {
             return ""
         }
         return PersonNameComponentsFormatter().string(from: name)
     }
-    
+
     func updateLoginFields(email: String, fullName: String, token: String) {
         updateLoginEmail(email)
         loginFields.meta.socialServiceIDToken = token
@@ -246,13 +246,13 @@ extension AppleAuthenticator: ASAuthorizationControllerDelegate {
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-        
+
         // Don't show error if user cancelled authentication.
         if let authorizationError = error as? ASAuthorizationError,
             authorizationError.code == .canceled {
             return
         }
-        
+
         DDLogError("Apple Authenticator: didCompleteWithError: \(error.localizedDescription)")
         let message = NSLocalizedString("Apple authentication failed.\nPlease make sure you are signed in to iCloud with an Apple ID that uses two-factor authentication.", comment: "Message shown when Apple authentication fails.")
         delegate?.authFailedWithError(message: message)

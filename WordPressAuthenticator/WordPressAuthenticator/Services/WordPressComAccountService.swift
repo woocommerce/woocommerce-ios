@@ -1,7 +1,6 @@
 import Foundation
 import WordPressKit
 
-
 // MARK: - WordPressComAccountService
 //
 class WordPressComAccountService {
@@ -24,7 +23,7 @@ class WordPressComAccountService {
     func connect(wpcomAuthToken: String,
                  serviceName: SocialServiceName,
                  serviceToken: String,
-                 connectParameters: [String:AnyObject]? = nil,
+                 connectParameters: [String: AnyObject]? = nil,
                  success: @escaping () -> Void,
                  failure: @escaping (Error) -> Void) {
         let loggedAPI  = WordPressComRestApi(oAuthToken: wpcomAuthToken,
@@ -47,7 +46,7 @@ class WordPressComAccountService {
     ///
     func requestAuthenticationLink(for email: String, jetpackLogin: Bool, success: @escaping () -> Void, failure: @escaping (Error) -> Void) {
         let remote = AccountServiceRemoteREST(wordPressComRestApi: anonymousAPI)
-        
+
         remote.requestWPComAuthLink(forEmail: email,
                                     clientID: configuration.wpcomClientId,
                                     clientSecret: configuration.wpcomSecret,
@@ -90,7 +89,6 @@ class WordPressComAccountService {
         return WordPressAuthenticator.shared.configuration
     }
 }
-
 
 // MARK: - Nested Types
 //

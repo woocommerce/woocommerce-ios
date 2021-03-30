@@ -44,7 +44,7 @@ import WordPressKit
     /// Authenticator's Styles for unified flows.
     ///
     public let unifiedStyle: WordPressAuthenticatorUnifiedStyle?
-    
+
     /// Authenticator's Display Images.
     ///
     public let displayImages: WordPressAuthenticatorDisplayImages
@@ -52,7 +52,7 @@ import WordPressKit
     /// Authenticator's Display Texts.
     ///
     public let displayStrings: WordPressAuthenticatorDisplayStrings
-    
+
     /// Notification to be posted whenever the signing flow completes.
     ///
     @objc public static let WPSigninDidFinishNotification = "WPSigninDidFinishNotification"
@@ -90,15 +90,15 @@ import WordPressKit
                                                  displayImages: displayImages,
                                                  displayStrings: displayStrings)
     }
-    
+
     // MARK: - Testing Support
-    
+
     class func isInitialized() -> Bool {
         return privateInstance != nil
     }
 
     // MARK: - Public Methods
-    
+
     public func supportPushNotificationReceived() {
         NotificationCenter.default.post(name: .wordpressSupportNotificationReceived, object: nil)
     }
@@ -106,10 +106,10 @@ import WordPressKit
     public func supportPushNotificationCleared() {
         NotificationCenter.default.post(name: .wordpressSupportNotificationCleared, object: nil)
     }
-    
+
     /// Indicates if the specified ViewController belongs to the Authentication Flow, or not.
     ///
-    public class func isAuthenticationViewController(_ viewController: UIViewController) ->  Bool {
+    public class func isAuthenticationViewController(_ viewController: UIViewController) -> Bool {
         return viewController is LoginPrologueViewController || viewController is NUXViewControllerBase
     }
 
@@ -137,7 +137,6 @@ import WordPressKit
     @objc public func handleWordPressAuthUrl(_ url: URL, rootViewController: UIViewController, automatedTesting: Bool = false) -> Bool {
         return WordPressAuthenticator.openAuthenticationURL(url, fromRootViewController: rootViewController, automatedTesting: automatedTesting)
     }
-
 
     // MARK: - Helpers for presenting the login flow
 
@@ -196,7 +195,7 @@ import WordPressKit
             showEmailLogin(from: presenter, jetpackLogin: jetpackLogin, connectedEmail: connectedEmail)
             return
         }
-        
+
         showGetStarted(from: presenter, jetpackLogin: jetpackLogin, connectedEmail: connectedEmail)
     }
 
@@ -207,16 +206,16 @@ import WordPressKit
             DDLogError("Failed to navigate from LoginPrologueViewController to GetStartedViewController")
             return
         }
-        
+
         controller.loginFields.restrictToWPCom = true
         controller.loginFields.username = connectedEmail ?? String()
         controller.loginFields.meta.jetpackLogin = jetpackLogin
-        
+
         let navController = LoginNavigationController(rootViewController: controller)
         navController.modalPresentationStyle = .fullScreen
         presenter.present(navController, animated: true, completion: nil)
     }
-    
+
     /// Shows the Email Login view with Signup option.
     ///
     private class func showEmailLogin(from presenter: UIViewController, jetpackLogin: Bool, connectedEmail: String? = nil) {
@@ -243,29 +242,29 @@ import WordPressKit
         defer {
             trackOpenedLogin()
         }
-        
+
         AuthenticatorAnalyticsTracker.shared.set(source: .selfHosted)
-        
+
         guard let controller = signinForWPOrg() else {
             DDLogError("WordPressAuthenticator: Failed to instantiate Site Address view controller.")
             return
         }
-        
+
         let navController = LoginNavigationController(rootViewController: controller)
         navController.modalPresentationStyle = .fullScreen
         presenter.present(navController, animated: true, completion: nil)
     }
-    
+
     /// Returns a Site Address view controller: allows the user to log into a WordPress.org website.
     ///
     @objc public class func signinForWPOrg() -> UIViewController? {
         guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
             return LoginSiteAddressViewController.instantiate(from: .login)
         }
-        
+
         return SiteAddressViewController.instantiate(from: .siteAddress)
     }
-    
+
     // Helper used by WPAuthTokenIssueSolver
     @objc
     public class func signinForWPCom(dotcomEmailAddress: String?, dotcomUsername: String?, onDismissed: ((_ cancelled: Bool) -> Void)? = nil) -> UIViewController {
@@ -278,25 +277,25 @@ import WordPressKit
                 DDLogError("WordPressAuthenticator: Failed to instantiate LoginWPComViewController")
                 return UIViewController()
             }
-            
+
             controller.loginFields = loginFields
             controller.dismissBlock = onDismissed
-            
+
             return NUXNavigationController(rootViewController: controller)
         }
-        
+
         AuthenticatorAnalyticsTracker.shared.set(source: .reauthentication)
         AuthenticatorAnalyticsTracker.shared.set(flow: .loginWithPassword)
-        
+
         guard let controller = PasswordViewController.instantiate(from: .password) else {
             DDLogError("WordPressAuthenticator: Failed to instantiate PasswordViewController")
             return UIViewController()
         }
-        
+
         controller.loginFields = loginFields
         controller.dismissBlock = onDismissed
         controller.trackAsPasswordChallenge = false
-        
+
         return NUXNavigationController(rootViewController: controller)
     }
 
@@ -311,11 +310,9 @@ import WordPressKit
         return controller
     }
 
-
     private class func trackOpenedLogin() {
         WordPressAuthenticator.track(.openedLogin)
     }
-
 
     // MARK: - Authentication Link Helpers
 
@@ -335,27 +332,27 @@ import WordPressKit
             DDLogError("Magic link error: we couldn't retrieve the query dictionary from the sign-in URL.")
             return false
         }
-        
+
         guard let authToken = queryDictionary.string(forKey: "token") else {
             DDLogError("Magic link error: we couldn't retrieve the authentication token from the sign-in URL.")
             return false
         }
-        
+
         guard let flowRawValue = queryDictionary.string(forKey: "flow") else {
             DDLogError("Magic link error: we couldn't retrieve the flow from the sign-in URL.")
             return false
         }
-        
+
         let loginFields = LoginFields()
-        
+
         if url.isJetpackConnect {
             loginFields.meta.jetpackLogin = true
         }
-        
+
         // We could just use the flow, but since `MagicLinkFlow` is an ObjC enum, it always
         // allows a `default` value.  By mapping the ObjC enum to a Swift enum we can avoid that afterwards.
         let flow: NUXLinkAuthViewController.Flow
-        
+
         switch MagicLinkFlow(rawValue: flowRawValue) {
         case .signup:
             flow = .signup
@@ -369,7 +366,7 @@ import WordPressKit
             DDLogError("Magic link error: the flow should be either `signup` or `login`. We can't handle an unsupported flow.")
             return false
         }
-        
+
         if !automatedTesting {
             let storyboard = Storyboard.emailMagicLink.instance
             guard let loginVC = storyboard.instantiateViewController(withIdentifier: "LinkAuthView") as? NUXLinkAuthViewController else {
@@ -377,10 +374,10 @@ import WordPressKit
                 return false
             }
             loginVC.loginFields = loginFields
-            
+
             let navController = LoginNavigationController(rootViewController: loginVC)
             navController.modalPresentationStyle = .fullScreen
-            
+
             // The way the magic link flow works some view controller might
             // still be presented when the app is resumed by tapping on the auth link.
             // We need to do a little work to present the SigninLinkAuth controller
@@ -400,16 +397,14 @@ import WordPressKit
             } else {
                 presenter.present(navController, animated: false, completion: nil)
             }
-            
+
             loginVC.syncAndContinue(authToken: authToken, flow: flow, isJetpackConnect: url.isJetpackConnect)
         }
-        
+
         return true
     }
 
-
     // MARK: - Site URL helper
-
 
     /// The base site URL path derived from `loginFields.siteUrl`
     ///
@@ -418,32 +413,32 @@ import WordPressKit
     /// - Returns: The base URL or an empty string.
     ///
     class func baseSiteURL(string: String) -> String {
-        guard let siteURL = NSURL(string: NSURL.idnEncodedURL(string)), string.count > 0 else {
+
+        guard !string.isEmpty,
+              let siteURL = NSURL(string: NSURL.idnEncodedURL(string)),
+              var path = siteURL.absoluteString else {
             return ""
         }
 
-        var path = siteURL.absoluteString!
         let isSiteURLSchemeEmpty = siteURL.scheme == nil || siteURL.scheme!.isEmpty
 
-        if path.isWordPressComPath() {
-            if isSiteURLSchemeEmpty {
-                path = "https://\(path)"
-            } else if path.range(of: "http://") != nil {
-                path = path.replacingOccurrences(of: "http://", with: "https://")
-            }
-        } else if isSiteURLSchemeEmpty {
+        if isSiteURLSchemeEmpty {
             path = "https://\(path)"
+        } else if path.isWordPressComPath() && path.range(of: "http://") != nil {
+            path = path.replacingOccurrences(of: "http://", with: "https://")
         }
 
         path.removeSuffix("/wp-login.php")
-        try? path.removeSuffix(pattern: "/wp-admin/?")
+
+        // Remove wp-admin and everything after it.
+        try? path.removeSuffix(pattern: "/wp-admin(.*)")
+
         path.removeSuffix("/")
 
         return path
     }
 
     // MARK: - Other Helpers
-
 
     /// Opens Safari to display the forgot password page for a wpcom or self-hosted
     /// based on the passed LoginFields instance.
@@ -473,7 +468,6 @@ import WordPressKit
 
     // MARK: - 1Password Helper
 
-
     /// Request credentails from 1Password (if supported)
     ///
     /// - Parameter sender: A UIView. Typically the button the user tapped on.
@@ -491,7 +485,7 @@ import WordPressKit
             if allowUsernameChange {
                 loginFields.username = username
             }
-            
+
             loginFields.password = password
             loginFields.multifactorCode = otp ?? String()
 
@@ -520,11 +514,11 @@ public extension WordPressAuthenticator {
     }
 
     func startObservingAppleIDCredentialRevoked(completion:  @escaping () -> Void) {
-        appleIDCredentialObserver = NotificationCenter.default.addObserver(forName: AppleAuthenticator.credentialRevokedNotification, object: nil, queue: nil) { (notification) in
+        appleIDCredentialObserver = NotificationCenter.default.addObserver(forName: AppleAuthenticator.credentialRevokedNotification, object: nil, queue: nil) { (_) in
             completion()
         }
     }
-    
+
     func stopObservingAppleIDCredentialRevoked() {
         if let observer = appleIDCredentialObserver {
             NotificationCenter.default.removeObserver(observer)

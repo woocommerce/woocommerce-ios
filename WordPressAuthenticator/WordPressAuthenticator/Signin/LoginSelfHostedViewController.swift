@@ -26,7 +26,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         }
     }
 
-
     // MARK: - Lifecycle Methods
 
     override func viewDidLoad() {
@@ -38,7 +37,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         displayLoginMessage("")
         configureForAcessibility()
     }
-
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -53,7 +51,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         setupNavBarIcon()
     }
 
-
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
@@ -63,16 +60,12 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         WordPressAuthenticator.track(.loginUsernamePasswordFormViewed)
     }
 
-
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unregisterForKeyboardEvents()
     }
 
-
-
     // MARK: - Setup and Configuration
-
 
     /// Assigns localized strings to various UIControl defined in the storyboard.
     ///
@@ -89,7 +82,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         forgotPasswordButton.setTitle(forgotPasswordTitle, for: .highlighted)
         forgotPasswordButton.titleLabel?.numberOfLines = 0
     }
-
 
     /// Sets up necessary accessibility labels and attributes for the all the UI elements in self.
     ///
@@ -110,7 +102,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         forgotPasswordButton.accessibilityTraits = .link
     }
 
-
     /// Sets up a 1Password button if 1Password is available.
     ///
     @objc func setupOnePasswordButtonIfNeeded() {
@@ -118,7 +109,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
                                                             target: self,
                                                             selector: #selector(handleOnePasswordButtonTapped(_:)))
     }
-
 
     /// Configures the content of the text fields based on what is saved in `loginFields`.
     ///
@@ -129,14 +119,12 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         usernameField.contentInsets = WPStyleGuide.edgeInsetForLoginTextFields()
     }
 
-
     /// Configures the appearance and state of the forgot password button.
     ///
     @objc func configureForgotPasswordButton() {
         forgotPasswordButton.isEnabled = enableSubmit(animating: false)
         WPStyleGuide.configureTextButton(forgotPasswordButton)
     }
-
 
     /// Configures the appearance and state of the submit button.
     ///
@@ -149,7 +137,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
                 !loginFields.password.isEmpty
         )
     }
-
 
     /// Sets the view's state to loading or not loading.
     ///
@@ -164,7 +151,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         navigationItem.hidesBackButton = loading
     }
 
-
     /// Configure the view for an editing state. Should only be called from viewWillAppear
     /// as this method skips animating any change in height.
     ///
@@ -176,7 +162,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         }
     }
 
-
     /// Configure the site header.
     ///
     @objc func configureHeader() {
@@ -186,7 +171,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
             configureSiteAddressHeader()
         }
     }
-
 
     /// Configure the site header to show the BlogDetailsHeaderView
     ///
@@ -200,7 +184,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         siteHeaderView.downloadBlavatar(at: siteInfo.icon)
     }
 
-
     /// Configure the site header to show the site address label.
     ///
     @objc func configureSiteAddressHeader() {
@@ -210,7 +193,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         siteHeaderView.blavatarBorderIsHidden = true
         siteHeaderView.blavatarImage = .linkFieldImage
     }
-
 
     /// Sanitize and format the site address we show to users.
     ///
@@ -222,9 +204,7 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         return siteAddress
     }
 
-
     // MARK: - Instance Methods
-
 
     /// Validates what is entered in the various form fields and, if valid,
     /// proceeds with the submit action.
@@ -232,7 +212,6 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
     @objc func validateForm() {
         validateFormAndLogin()
     }
-
 
     // MARK: - Actions
 
@@ -244,11 +223,9 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         configureSubmitButton(animating: false)
     }
 
-
     @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
         validateForm()
     }
-
 
     @objc func handleOnePasswordButtonTapped(_ sender: UIButton) {
         view.endEditing(true)
@@ -267,17 +244,14 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
 
     // MARK: - Keyboard Notifications
 
-
     @objc func handleKeyboardWillShow(_ notification: Foundation.Notification) {
         keyboardWillShow(notification)
     }
-
 
     @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
         keyboardWillHide(notification)
     }
 }
-
 
 extension LoginSelfHostedViewController {
 
@@ -297,11 +271,9 @@ extension LoginSelfHostedViewController {
         }
     }
 
-
     func displayLoginMessage(_ message: String) {
         configureForgotPasswordButton()
     }
-
 
     override func displayRemoteError(_ error: Error) {
         displayLoginMessage("")
@@ -316,7 +288,6 @@ extension LoginSelfHostedViewController {
         }
     }
 }
-
 
 extension LoginSelfHostedViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

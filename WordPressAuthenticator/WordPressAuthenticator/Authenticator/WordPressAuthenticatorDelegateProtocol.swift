@@ -1,5 +1,3 @@
-
-
 // MARK: - WordPressAuthenticator Delegate Protocol
 //
 public protocol WordPressAuthenticatorDelegate: class {

@@ -1,6 +1,5 @@
 import UIKit
 
-
 /// Unified LoginMagicLinkViewController: login to .com with a magic link
 ///
 final class LoginMagicLinkViewController: LoginViewController {
@@ -11,7 +10,7 @@ final class LoginMagicLinkViewController: LoginViewController {
     private var rows = [Row]()
     private var errorMessage: String?
     private var shouldChangeVoiceOverFocus: Bool = false
-    
+
     override var sourceTag: WordPressSupportSourceTag {
         get {
             return .loginMagicLink
@@ -22,7 +21,7 @@ final class LoginMagicLinkViewController: LoginViewController {
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
         tracker.track(click: .openEmailClient)
         tracker.track(step: .emailOpened)
-        
+
         let linkMailPresenter = LinkMailPresenter(emailAddress: loginFields.username)
         let appSelector = AppSelector(sourceView: sender)
         linkMailPresenter.presentEmailClients(on: self, appSelector: appSelector)
@@ -43,19 +42,19 @@ final class LoginMagicLinkViewController: LoginViewController {
         registerTableViewCells()
         loadRows()
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         tracker.set(flow: .loginWithMagicLink)
-        
+
         if isMovingToParent {
             tracker.track(step: .magicLinkRequested)
         } else {
             tracker.set(step: .magicLinkRequested)
         }
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
     }
@@ -87,7 +86,6 @@ final class LoginMagicLinkViewController: LoginViewController {
     }
 }
 
-
 // MARK: - UITableViewDataSource
 extension LoginMagicLinkViewController: UITableViewDataSource {
     /// Returns the number of rows in a section.
@@ -106,7 +104,6 @@ extension LoginMagicLinkViewController: UITableViewDataSource {
         return cell
     }
 }
-
 
 // MARK: - Private Methods
 private extension LoginMagicLinkViewController {

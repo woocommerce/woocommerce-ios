@@ -9,7 +9,7 @@ import WordPressShared
 ///
 class NUXLinkAuthViewController: LoginViewController {
     @IBOutlet weak var statusLabel: UILabel?
-    
+
     enum Flow {
         case signup
         case login
@@ -22,14 +22,14 @@ class NUXLinkAuthViewController: LoginViewController {
     override func configureStatusLabel(_ message: String) {
         statusLabel?.text = message
     }
-    
+
     func syncAndContinue(authToken: String, flow: Flow, isJetpackConnect: Bool) {
         let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackConnect, multifactor: false, siteURL: "https://wordpress.com")
         let credentials = AuthenticatorCredentials(wpcom: wpcom)
-        
+
         syncWPComAndPresentEpilogue(credentials: credentials) {
             self.tracker.track(step: .success)
-            
+
             switch flow {
             case .signup:
                 // This stat is part of a funnel that provides critical information.  Before

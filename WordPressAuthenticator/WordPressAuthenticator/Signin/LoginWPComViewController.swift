@@ -26,9 +26,7 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
         }
     }
 
-
     // MARK: - Lifecycle Methods
-
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,7 +48,6 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
         configureViewForEditingIfNeeded()
     }
 
-
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
@@ -61,11 +58,10 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
         WordPressAuthenticator.track(.loginPasswordFormViewed)
     }
 
-
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unregisterForKeyboardEvents()
-        
+
         if isMovingFromParent {
             // There was a bug that was causing iOS's update password prompt to come up
             // when this VC was being dismissed pressing the "< Back" button.  The following
@@ -77,7 +73,6 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
             passwordField?.text = ""
         }
     }
-
 
     // MARK: Setup and Configuration
 
@@ -112,7 +107,6 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
         configureSubmitButton(animating: loading)
         navigationItem.hidesBackButton = loading
     }
-
 
     /// Configure the view for an editing state. Should only be called from viewWillAppear
     /// as this method skips animating any change in height.
@@ -153,11 +147,11 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
             guard let service = loginFields.meta.socialService else {
                 return NSLocalizedString("Enter the password for your WordPress.com account.", comment: "Instructional text shown when requesting the user's password for login.")
             }
-            
+
             if service == SocialServiceName.google {
                 return NSLocalizedString("To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once.", comment: "")
             }
-            
+
             return NSLocalizedString("Please enter the password for your WordPress.com account to log in with your Apple ID.", comment: "")
         }()
 
@@ -174,7 +168,6 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
         forgotPasswordButton?.setTitle(forgotPasswordTitle, for: .highlighted)
         forgotPasswordButton?.titleLabel?.numberOfLines = 0
     }
-
 
     // MARK: - Instance Methods
 
@@ -226,7 +219,7 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
         let allowUsernameChange = (loginFields.meta.socialService == nil)
 
         WordPressAuthenticator.fetchOnePasswordCredentials(self, sourceView: sender, loginFields: loginFields, allowUsernameChange: allowUsernameChange) { [weak self] (loginFields) in
-            
+
             self?.emailLabel?.text = loginFields.username
             self?.passwordField?.text = loginFields.password
             self?.validateForm()
@@ -262,7 +255,6 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
     @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
         keyboardWillHide(notification)
     }
-
 
     // MARK: Keyboard Events
 

@@ -3,7 +3,6 @@ import GoogleSignIn
 import WordPressKit
 import SVProgressHUD
 
-
 /// Contains delegate methods for Google authentication unified auth flow.
 /// Both Login and Signup are handled via this delegate.
 ///
@@ -16,7 +15,7 @@ protocol GoogleAuthenticatorDelegate: class {
 
     // Google account login was successful, but a WP password is required.
     func googleExistingUserNeedsConnection(loginFields: LoginFields)
-    
+
     // Google account login failed.
     func googleLoginFailed(errorTitle: String, errorDescription: String, loginFields: LoginFields, unknownUser: Bool)
 
@@ -57,7 +56,7 @@ protocol GoogleAuthenticatorLoginDelegate: class {
 
     // Google account login was successful, but a WP password is required.
     func googleExistingUserNeedsConnection(loginFields: LoginFields)
-    
+
     // Google account login failed.
     func googleLoginFailed(errorTitle: String, errorDescription: String, loginFields: LoginFields)
 }
@@ -91,11 +90,11 @@ class GoogleAuthenticator: NSObject {
     private var loginFields = LoginFields()
     private let authConfig = WordPressAuthenticator.shared.configuration
     private var authType: GoogleAuthType = .login
-    
+
     private var tracker: AuthenticatorAnalyticsTracker {
         AuthenticatorAnalyticsTracker.shared
     }
-    
+
     private lazy var loginFacade: LoginFacade = {
         let facade = LoginFacade(dotcomClientID: authConfig.wpcomClientId,
                                  dotcomSecret: authConfig.wpcomSecret,
@@ -104,7 +103,7 @@ class GoogleAuthenticator: NSObject {
         return facade
     }()
 
-    private lazy var authenticationDelegate: WordPressAuthenticatorDelegate = {
+    private weak var authenticationDelegate: WordPressAuthenticatorDelegate? = {
         guard let delegate = WordPressAuthenticator.shared.delegate else {
             fatalError()
         }
@@ -112,7 +111,7 @@ class GoogleAuthenticator: NSObject {
     }()
 
     // MARK: - Start Authentication
-    
+
     /// Public method to initiate the Google auth process.
     /// - Parameters:
     ///   - viewController: The UIViewController that Google is being presented from.
@@ -127,7 +126,7 @@ class GoogleAuthenticator: NSObject {
         self.authType = authType
         requestAuthorization(from: viewController)
     }
-    
+
     /// Public method to create a WP account with a Google account.
     /// - Parameters:
     ///   - loginFields: LoginFields from the calling view controller.
@@ -174,7 +173,7 @@ private extension GoogleAuthenticator {
 
         // This has no effect since we don't use Google UI, but presentingViewController is required, so here we are.
         googleInstance.presentingViewController = viewController
-        
+
         googleInstance.delegate = self
         googleInstance.clientID = authConfig.googleLoginClientId
         googleInstance.serverClientID = authConfig.googleLoginServerClientId
@@ -188,7 +187,7 @@ private extension GoogleAuthenticator {
         trackProperties["source"] = "google"
         WordPressAuthenticator.track(event, properties: trackProperties)
     }
-    
+
     enum LocalizedText {
         static let googleConnected = NSLocalizedString("Connected But…", comment: "Title shown when a user logs in with Google but no matching WordPress.com account is found")
         static let googleConnectedError = NSLocalizedString("The Google account \"%@\" doesn't match any account on WordPress.com", comment: "Description shown when a user logs in with Google but no matching WordPress.com account is found")
@@ -207,10 +206,10 @@ extension GoogleAuthenticator: GIDSignInDelegate {
         guard let user = user,
             let token = user.authentication.idToken,
             let email = user.profile.email else {
-                
+
                 // The Google SignIn may have been cancelled.
                 let failure = error?.localizedDescription ?? "Unknown error"
-                
+
                 tracker.track(failure: failure, ifTrackingNotEnabled: {
                     let properties = ["error": failure]
 
@@ -225,10 +224,10 @@ extension GoogleAuthenticator: GIDSignInDelegate {
                 // Notify the delegates so the Google Auth view can be dismissed.
                 signupDelegate?.googleSignupCancelled()
                 delegate?.googleAuthCancelled()
-                
+
                 return
         }
-        
+
         // Save account information to pass back to delegate later.
         loginFields.emailAddress = email
         loginFields.username = email
@@ -252,7 +251,7 @@ extension GoogleAuthenticator: GIDSignInDelegate {
         SVProgressHUD.show()
         loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
     }
-    
+
 }
 
 // MARK: - LoginFacadeDelegate
@@ -263,15 +262,15 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
     func finishedLogin(withGoogleIDToken googleIDToken: String, authToken: String) {
         SVProgressHUD.dismiss()
         GIDSignIn.sharedInstance().disconnect()
-        
+
         // This stat is part of a funnel that provides critical information.  Please
         // consult with your lead before removing this event.
         track(.signedIn)
-        
+
         if tracker.shouldUseLegacyTracker() {
             track(.loginSocialSuccess)
         }
-        
+
         let wpcom = WordPressComCredentials(authToken: authToken,
                                             isJetpackLogin: loginFields.meta.jetpackLogin,
                                             multifactor: false,
@@ -293,7 +292,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
         if tracker.shouldUseLegacyTracker() {
             track(.loginSocial2faNeeded)
         }
-        
+
         loginDelegate?.googleNeedsMultifactorCode(loginFields: loginFields)
         delegate?.googleNeedsMultifactorCode(loginFields: loginFields)
     }
@@ -305,11 +304,11 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
 
         loginFields.username = email
         loginFields.emailAddress = email
-        
+
         if tracker.shouldUseLegacyTracker() {
             track(.loginSocialAccountsNeedConnecting)
         }
-        
+
         loginDelegate?.googleExistingUserNeedsConnection(loginFields: loginFields)
         delegate?.googleExistingUserNeedsConnection(loginFields: loginFields)
     }
@@ -326,7 +325,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
         if unknownUser {
             errorTitle = LocalizedText.googleConnected
             errorDescription = String(format: LocalizedText.googleConnectedError, loginFields.username)
-            
+
             if tracker.shouldUseLegacyTracker() {
                 track(.loginSocialErrorUnknownUser)
             }
@@ -338,7 +337,7 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
         loginDelegate?.googleLoginFailed(errorTitle: errorTitle, errorDescription: errorDescription, loginFields: loginFields)
         delegate?.googleLoginFailed(errorTitle: errorTitle, errorDescription: errorDescription, loginFields: loginFields, unknownUser: unknownUser)
     }
-    
+
 }
 
 // MARK: - Sign Up Methods
@@ -360,7 +359,7 @@ private extension GoogleAuthenticator {
             if accountCreated {
                 SVProgressHUD.dismiss()
                 // Notify the host app
-                self?.authenticationDelegate.createdWordPressComAccount(username: wpcomUsername, authToken: wpcomToken)
+                self?.authenticationDelegate?.createdWordPressComAccount(username: wpcomUsername, authToken: wpcomToken)
                 // Notify the delegate
                 self?.accountCreated(credentials: credentials)
 
@@ -369,7 +368,7 @@ private extension GoogleAuthenticator {
 
             // Existing Account
             // Sync host app
-            self?.authenticationDelegate.sync(credentials: credentials) {
+            self?.authenticationDelegate?.sync(credentials: credentials) {
                 SVProgressHUD.dismiss()
                 // Notify delegate
                 self?.logInInstead(credentials: credentials)
@@ -381,16 +380,16 @@ private extension GoogleAuthenticator {
                 self?.signupFailed(error: error)
         })
     }
-    
+
     func accountCreated(credentials: AuthenticatorCredentials) {
         // This stat is part of a funnel that provides critical information.  Before
         // making ANY modification to this stat please refer to: p4qSXL-35X-p2
         track(.createdAccount)
-        
+
         // This stat is part of a funnel that provides critical information.  Please
         // consult with your lead before removing this event.
         track(.signedIn)
-        
+
         tracker.track(step: .success, ifTrackingNotEnabled: {
             track(.signupSocialSuccess)
         })
@@ -398,14 +397,14 @@ private extension GoogleAuthenticator {
         signupDelegate?.googleFinishedSignup(credentials: credentials, loginFields: loginFields)
         delegate?.googleFinishedSignup(credentials: credentials, loginFields: loginFields)
     }
-    
+
     func logInInstead(credentials: AuthenticatorCredentials) {
         tracker.set(flow: .loginWithGoogle)
-        
+
         // This stat is part of a funnel that provides critical information.  Please
         // consult with your lead before removing this event.
         track(.signedIn)
-        
+
         tracker.track(step: .start) {
             track(.signupSocialToLogin)
             track(.loginSocialSuccess)
@@ -414,7 +413,7 @@ private extension GoogleAuthenticator {
         signupDelegate?.googleLoggedInInstead(credentials: credentials, loginFields: loginFields)
         delegate?.googleLoggedInInstead(credentials: credentials, loginFields: loginFields)
     }
-    
+
     func signupFailed(error: Error) {
         tracker.track(failure: error.localizedDescription, ifTrackingNotEnabled: {
             track(.signupSocialFailure, properties: ["error": error.localizedDescription])

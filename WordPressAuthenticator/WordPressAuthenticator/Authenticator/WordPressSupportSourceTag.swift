@@ -1,12 +1,11 @@
 import Foundation
 
-
 // MARK: - Authentication Flow Event. Useful to relay internal Auth events over to activity trackers.
 //
 public struct WordPressSupportSourceTag {
     public let name: String
     public let origin: String?
-    
+
     public init(name: String, origin: String? = nil) {
         self.name = name
         self.origin = origin

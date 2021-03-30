@@ -2,7 +2,6 @@ import UIKit
 import WordPressShared
 import WordPressKit
 
-
 /// This is the first screen following the log in prologue screen if the user chooses to log in.
 ///
 open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
@@ -35,9 +34,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         static let keyboardThreshold: CGFloat = 100.0
     }
 
-
     // MARK: Lifecycle Methods
-
 
     override open func viewDidLoad() {
         super.viewDidLoad()
@@ -88,7 +85,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         errorToPresent = nil
     }
 
-
     override open func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unregisterForKeyboardEvents()
@@ -108,9 +104,8 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
         navigationController?.pushViewController(vc, animated: true)
     }
-    
-    // MARK: - Setup and Configuration
 
+    // MARK: - Setup and Configuration
 
     /// Hides the self-hosted login option.
     ///
@@ -118,7 +113,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         wpcomSignupButton?.isHidden = !offerSignupOption
         selfHostedLoginButton?.isHidden = loginFields.restrictToWPCom
     }
-
 
     /// Assigns localized strings to various UIControl defined in the storyboard.
     ///
@@ -138,7 +132,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         submitButton?.setTitle(submitButtonTitle, for: .highlighted)
         submitButton?.accessibilityIdentifier = "Login Email Next Button"
     }
-
 
     /// Sets up a 1Password button if 1Password is available.
     ///
@@ -162,7 +155,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
         stackView.addConstraints([
             button.leadingAnchor.constraint(equalTo: instructionLabel.leadingAnchor),
-            button.trailingAnchor.constraint(equalTo: instructionLabel.trailingAnchor),
+            button.trailingAnchor.constraint(equalTo: instructionLabel.trailingAnchor)
             ])
 
         googleLoginButton = button
@@ -182,7 +175,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
         stackView.addConstraints([
             button.leadingAnchor.constraint(equalTo: instructionLabel.leadingAnchor),
-            button.trailingAnchor.constraint(equalTo: instructionLabel.trailingAnchor),
+            button.trailingAnchor.constraint(equalTo: instructionLabel.trailingAnchor)
             ])
 
         selfHostedLoginButton = button
@@ -203,7 +196,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
         // Tapping the Sign up text link in "Don't have an account? _Sign up_"
         // will present the 3 button view for signing up.
-        button.on(.touchUpInside) { [weak self] (button) in
+        button.on(.touchUpInside) { [weak self] (_) in
             guard let vc = LoginPrologueSignupMethodViewController.instantiate(from: .login) else {
                 DDLogError("Failed to navigate to LoginPrologueSignupMethodViewController")
                 return
@@ -230,9 +223,9 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
                 guard let self = self else {
                     return
                 }
-                
+
                 self.tracker.track(click: .signupWithGoogle)
-                
+
                 guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
                     self.presentGoogleSignupView()
                     return
@@ -250,7 +243,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
         stackView.addConstraints([
             button.leadingAnchor.constraint(equalTo: instructionLabel.leadingAnchor),
-            button.trailingAnchor.constraint(equalTo: instructionLabel.trailingAnchor),
+            button.trailingAnchor.constraint(equalTo: instructionLabel.trailingAnchor)
             ])
 
         wpcomSignupButton = button
@@ -277,7 +270,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         submitButton?.isEnabled = canSubmit()
     }
 
-
     /// Sets the view's state to loading or not loading.
     ///
     /// - Parameter loading: True if the form should be configured to a "loading" state.
@@ -290,7 +282,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         submitButton?.showActivityIndicator(loading)
     }
 
-
     /// Configure the view for an editing state. Should only be called from viewWillAppear
     /// as this method skips animating any change in height.
     ///
@@ -302,9 +293,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         }
     }
 
-
     // MARK: - Instance Methods
-
 
     /// Makes the call to retrieve Safari shared credentials if they exist.
     ///
@@ -314,7 +303,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
             self?.handleFetchedWebCredentials(found, username: username, password: password)
         }
     }
-
 
     /// Handles Safari shared credentials if any where found.
     ///
@@ -341,7 +329,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
         WordPressAuthenticator.track(.loginAutoFillCredentialsFilled)
     }
-
 
     /// Displays the wpcom sign in form, optionally telling it to immedately make
     /// the call to authenticate with the available credentials.
@@ -382,7 +369,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
         navigationController?.pushViewController(vc, animated: true)
     }
-
 
     /// Validates what is entered in the various form fields and, if valid,
     /// proceeds with the submit action. Empties loginFields.meta.socialService as
@@ -468,18 +454,15 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
     // MARK: - Actions
 
-
     @IBAction func handleSubmitForm() {
         if canSubmit() {
             validateForm()
         }
     }
 
-
     @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
         validateForm()
     }
-
 
     @objc func handleOnePasswordButtonTapped(_ sender: UIButton) {
         view.endEditing(true)
@@ -501,7 +484,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
     @objc func googleTapped() {
         self.tracker.track(click: .loginWithGoogle)
-        
+
         guard WordPressAuthenticator.shared.configuration.enableUnifiedAuth else {
             GoogleAuthenticator.sharedInstance.loginDelegate = self
             GoogleAuthenticator.sharedInstance.showFrom(viewController: self, loginFields: loginFields, for: .login)
@@ -517,7 +500,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
             DDLogError("Failed to navigate to GoogleAuthViewController from LoginPrologueVC")
             return
         }
-        
+
         navigationController?.pushViewController(toVC, animated: true)
     }
 
@@ -543,23 +526,19 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         }
     }
 
-
     @IBAction func handleTextFieldEditingDidBegin(_ sender: UITextField) {
         if !didRequestSafariSharedCredentials {
             fetchSharedWebCredentialsIfAvailable()
         }
     }
 
-
     // MARK: - Keyboard Notifications
-
 
     @objc func handleKeyboardWillShow(_ notification: Foundation.Notification) {
         keyboardWillShow(notification)
 
         adjustAlternativeLogInElementsVisibility(true)
     }
-
 
     @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
         keyboardWillHide(notification)
@@ -629,7 +608,7 @@ extension LoginEmailViewController: GoogleAuthenticatorLoginDelegate {
     func googleNeedsMultifactorCode(loginFields: LoginFields) {
         self.loginFields = loginFields
         configureViewLoading(false)
-        
+
         guard let vc = Login2FAViewController.instantiate(from: .login) else {
             DDLogError("Failed to navigate from LoginViewController to Login2FAViewController")
             return
@@ -645,7 +624,7 @@ extension LoginEmailViewController: GoogleAuthenticatorLoginDelegate {
     func googleExistingUserNeedsConnection(loginFields: LoginFields) {
         self.loginFields = loginFields
         configureViewLoading(false)
-        
+
         guard let vc = LoginWPComViewController.instantiate(from: .login) else {
             DDLogError("Failed to navigate from Google Login to LoginWPComViewController (password VC)")
             return

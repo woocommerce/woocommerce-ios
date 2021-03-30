@@ -3,8 +3,7 @@
 class SafariCredentialsService {
 
     @objc static let LoginSharedWebCredentialFQDN: CFString = "wordpress.com" as CFString
-    typealias SharedWebCredentialsCallback = (_ credentialsFound: Bool, _ username: String?, _ password: String?) -> ()
-
+    typealias SharedWebCredentialsCallback = (_ credentialsFound: Bool, _ username: String?, _ password: String?) -> Void
 
     /// Update safari stored credentials.
     ///

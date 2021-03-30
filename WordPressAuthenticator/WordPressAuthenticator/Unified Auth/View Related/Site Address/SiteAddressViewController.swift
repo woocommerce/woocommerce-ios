@@ -2,7 +2,6 @@ import UIKit
 import WordPressUI
 import WordPressKit
 
-
 /// SiteAddressViewController: log in by Site Address.
 ///
 final class SiteAddressViewController: LoginViewController {
@@ -23,15 +22,14 @@ final class SiteAddressViewController: LoginViewController {
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
         tracker.track(click: .submit)
-        
+
         validateForm()
     }
-
 
     // MARK: - View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         removeGoogleWaitingView()
         configureNavBar()
         setupTable()
@@ -41,7 +39,7 @@ final class SiteAddressViewController: LoginViewController {
         configureSubmitButton(animating: false)
         configureForAccessibility()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -51,20 +49,19 @@ final class SiteAddressViewController: LoginViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         tracker.set(flow: .loginWithSiteAddress)
-        
+
         if isMovingToParent {
             tracker.track(step: .start)
         } else {
             tracker.set(step: .start)
         }
-        
+
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
                                   keyboardWillHideAction: #selector(handleKeyboardWillHide(_:)))
         configureViewForEditingIfNeeded()
     }
-
 
     // MARK: - Overrides
 
@@ -90,7 +87,7 @@ final class SiteAddressViewController: LoginViewController {
     override func configureSubmitButton(animating: Bool) {
         // This matches the string in WPiOS UI tests.
         submitButton?.accessibilityIdentifier = "Site Address Next Button"
-        
+
         submitButton?.showActivityIndicator(animating)
 
         submitButton?.isEnabled = (
@@ -154,11 +151,11 @@ final class SiteAddressViewController: LoginViewController {
     /// Reload the tableview and show errors, if any.
     ///
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
-        if errorMessage != message {            
+        if errorMessage != message {
             if !message.isEmpty {
                 tracker.track(failure: message)
             }
-            
+
             errorMessage = message
             shouldChangeVoiceOverFocus = moveVoiceOverFocus
             loadRows()
@@ -166,7 +163,6 @@ final class SiteAddressViewController: LoginViewController {
         }
     }
 }
-
 
 // MARK: - UITableViewDataSource
 extension SiteAddressViewController: UITableViewDataSource {
@@ -187,7 +183,6 @@ extension SiteAddressViewController: UITableViewDataSource {
     }
 }
 
-
 // MARK: - UITableViewDelegate conformance
 extension SiteAddressViewController: UITableViewDelegate {
     /// After the site address textfield cell is done displaying, remove the textfield reference.
@@ -203,7 +198,6 @@ extension SiteAddressViewController: UITableViewDelegate {
     }
 }
 
-
 // MARK: - Keyboard Notifications
 extension SiteAddressViewController: NUXKeyboardResponder {
     @objc func handleKeyboardWillShow(_ notification: Foundation.Notification) {
@@ -214,7 +208,6 @@ extension SiteAddressViewController: NUXKeyboardResponder {
         keyboardWillHide(notification)
     }
 }
-
 
 // MARK: - TextField Delegate conformance
 extension SiteAddressViewController: UITextFieldDelegate {
@@ -231,27 +224,26 @@ extension SiteAddressViewController: UITextFieldDelegate {
     }
 }
 
-
 // MARK: - Private methods
 private extension SiteAddressViewController {
 
     // MARK: - Configuration
-    
+
     func configureNavBar() {
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.logInTitle
         styleNavigationBar(forUnified: true)
-        
+
         // Nav bar could be hidden from the host app, so reshow it.
         navigationController?.setNavigationBarHidden(false, animated: false)
     }
-    
+
     func setupTable() {
         defaultTableViewMargin = tableViewLeadingConstraint?.constant ?? 0
         setTableViewMargins(forWidth: view.frame.width)
     }
-    
+
     // MARK: - Table Management
-    
+
     /// Registers all of the available TableViewCells.
     ///
     func registerTableViewCells() {
@@ -308,7 +300,7 @@ private extension SiteAddressViewController {
     func configureTextField(_ cell: TextFieldTableViewCell) {
         cell.configure(withStyle: .url,
                        placeholder: WordPressAuthenticator.shared.displayStrings.siteAddressPlaceholder)
-        
+
         // Save a reference to the first textField so it can becomeFirstResponder.
         siteURLField = cell.textField
         cell.textField.delegate = self
@@ -328,7 +320,7 @@ private extension SiteAddressViewController {
             guard let self = self else {
                 return
             }
-            
+
             self.tracker.track(click: .showHelp)
 
             let alert = FancyAlertViewController.siteAddressHelpController(
@@ -339,7 +331,7 @@ private extension SiteAddressViewController {
             },
                 onDismiss: {
                     self.tracker.track(click: .dismiss)
-                    
+
                     // Since we're showing an alert on top of this VC, `viewDidAppear` will not be called
                     // once the alert is dismissed (which is where the step would be reset automagically),
                     // so we need to manually reset the step here.
@@ -399,7 +391,6 @@ private extension SiteAddressViewController {
         }
     }
 }
-
 
 // MARK: - Instance Methods
 
@@ -471,6 +462,7 @@ private extension SiteAddressViewController {
     }
 
     func fetchSiteInfo() {
+        print("🔴 SAVC > fetchSiteInfo")
         let baseSiteUrl = WordPressAuthenticator.baseSiteURL(string: loginFields.siteAddress)
         let service = WordPressComBlogService()
 
@@ -486,8 +478,8 @@ private extension SiteAddressViewController {
             }
             self.presentNextControllerIfPossible(siteInfo: siteInfo)
         }
-        
-        service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { [weak self] error in
+
+        service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { [weak self] _ in
             self?.configureViewLoading(false)
             guard let self = self else {
                 return
@@ -501,7 +493,7 @@ private extension SiteAddressViewController {
             showGetStarted()
             return
         }
-        
+
         WordPressAuthenticator.shared.delegate?.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { (result) in
             switch result {
             case let .error(error):
@@ -511,7 +503,7 @@ private extension SiteAddressViewController {
                     self.showSelfHostedUsernamePassword()
                     return
                 }
-                
+
                 self.showWPUsernamePassword()
             case .presentEmailController:
                 self.showGetStarted()
@@ -562,7 +554,7 @@ private extension SiteAddressViewController {
 
         navigationController?.pushViewController(vc, animated: true)
     }
-    
+
     /// If the site is WordPressDotCom, redirect to WP login.
     ///
     func showGetStarted() {
@@ -570,14 +562,14 @@ private extension SiteAddressViewController {
             DDLogError("Failed to navigate from SiteAddressViewController to GetStartedViewController")
             return
         }
-        
+
         vc.loginFields = loginFields
         vc.dismissBlock = dismissBlock
         vc.errorToPresent = errorToPresent
 
         navigationController?.pushViewController(vc, animated: true)
     }
-    
+
     /// Whether the form can be submitted.
     ///
     func canSubmit() -> Bool {

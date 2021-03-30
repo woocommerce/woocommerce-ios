@@ -77,7 +77,7 @@ public struct WordPressAuthenticatorStyle {
     public let navBarBadgeColor: UIColor
 
     public let navBarBackgroundColor: UIColor
-    
+
     public let navButtonTextColor: UIColor
 
     /// Style: prologue background colors
@@ -96,7 +96,7 @@ public struct WordPressAuthenticatorStyle {
     /// Style: status bar style
     ///
     public let statusBarStyle: UIStatusBarStyle
-    
+
     /// Designated initializer
     ///
     public init(primaryNormalBackgroundColor: UIColor,
@@ -197,7 +197,7 @@ public struct WordPressAuthenticatorUnifiedStyle {
     /// Style: Auth view background colors
     ///
     public let viewControllerBackgroundColor: UIColor
-    
+
     /// Style: Auth Prologue buttons background color
     public let prologueButtonsBackgroundColor: UIColor
 
@@ -207,13 +207,13 @@ public struct WordPressAuthenticatorUnifiedStyle {
     /// Style: Status bar style. Defaults to `default`.
     ///
     public let statusBarStyle: UIStatusBarStyle
-    
+
     /// Style: Navigation bar.
     ///
     public let navBarBackgroundColor: UIColor
     public let navButtonTextColor: UIColor
     public let navTitleTextColor: UIColor
-    
+
     /// Designated initializer
     ///
     public init(borderColor: UIColor,

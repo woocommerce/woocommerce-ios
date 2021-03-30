@@ -1,6 +1,5 @@
 import MessageUI
 
-
 /// Email picker presenter
 class LinkMailPresenter {
 

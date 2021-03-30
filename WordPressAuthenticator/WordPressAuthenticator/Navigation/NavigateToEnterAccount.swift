@@ -9,7 +9,6 @@ public struct NavigateToEnterAccount: NavigationCommand {
     }
 }
 
-
 private extension NavigateToEnterAccount {
     private func continueWithDotCom(navigationController: UINavigationController?) {
         guard let vc = GetStartedViewController.instantiate(from: .getStarted) else {

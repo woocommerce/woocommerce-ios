@@ -1,4 +1,3 @@
-
 /// View controller that handles the google signup flow
 ///
 class SignupGoogleViewController: LoginViewController {
@@ -61,12 +60,12 @@ extension SignupGoogleViewController: GoogleAuthenticatorSignupDelegate {
         self.loginFields = loginFields
         showSignupEpilogue(for: credentials)
     }
-    
+
     func googleLoggedInInstead(credentials: AuthenticatorCredentials, loginFields: LoginFields) {
         self.loginFields = loginFields
         showLoginEpilogue(for: credentials)
     }
-    
+
     func googleSignupFailed(error: Error, loginFields: LoginFields) {
         self.loginFields = loginFields
         titleLabel?.textColor = WPStyleGuide.errorRed()

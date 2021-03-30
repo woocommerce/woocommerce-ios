@@ -1,6 +1,5 @@
 import UIKit
 
-
 /// TextWithLinkTableViewCell: a button with the title regular text and an underlined link.
 ///
 class TextWithLinkTableViewCell: UITableViewCell {
@@ -21,7 +20,7 @@ class TextWithLinkTableViewCell: UITableViewCell {
         super.awakeFromNib()
         button.titleLabel?.adjustsFontForContentSizeCategory = true
     }
-    
+
     /// Creates an attributed string from the provided marked text and assigns it to the button title.
     ///
     /// - Parameters:
@@ -36,7 +35,7 @@ class TextWithLinkTableViewCell: UITableViewCell {
 
         let attributedString = text.underlined(color: textColor, underlineColor: linkColor)
         let highlightAttributedString = text.underlined(color: textColor, underlineColor: linkHighlightColor)
-        
+
         button.setAttributedTitle(attributedString, for: .normal)
         button.setAttributedTitle(highlightAttributedString, for: .highlighted)
         button.accessibilityTraits = accessibilityTrait

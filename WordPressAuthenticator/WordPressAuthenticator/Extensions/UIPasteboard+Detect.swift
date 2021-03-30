@@ -11,7 +11,7 @@ extension UIPasteboard {
             case .success(let detections):
                 guard detections.isEmpty == false else {
                     DispatchQueue.main.async {
-                        completion(.success([UIPasteboard.DetectionPattern : Any]()))
+                        completion(.success([UIPasteboard.DetectionPattern: Any]()))
                     }
                     return
                 }

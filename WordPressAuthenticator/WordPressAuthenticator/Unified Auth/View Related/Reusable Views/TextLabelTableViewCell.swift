@@ -1,6 +1,5 @@
 import UIKit
 
-
 /// TextLabelTableViewCell: a text label in a UITableViewCell.
 ///
 public final class TextLabelTableViewCell: UITableViewCell {

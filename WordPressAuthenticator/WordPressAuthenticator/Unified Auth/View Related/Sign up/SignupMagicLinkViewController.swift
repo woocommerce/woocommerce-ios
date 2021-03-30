@@ -1,6 +1,5 @@
 import UIKit
 
-
 /// SignupMagicLinkViewController: step two in the signup flow.
 /// This VC prompts the user to open their email app to look for the magic link we sent.
 ///
@@ -23,14 +22,14 @@ final class SignupMagicLinkViewController: LoginViewController {
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
         tracker.track(click: .openEmailClient)
         tracker.track(step: .emailOpened)
-        
+
         let linkMailPresenter = LinkMailPresenter(emailAddress: loginFields.username)
         let appSelector = AppSelector(sourceView: sender)
         linkMailPresenter.presentEmailClients(on: self, appSelector: appSelector)
     }
 
     // MARK: - View lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -47,10 +46,10 @@ final class SignupMagicLinkViewController: LoginViewController {
         registerTableViewCells()
         loadRows()
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         if isMovingToParent {
             tracker.track(step: .magicLinkRequested)
         } else {
@@ -93,7 +92,6 @@ final class SignupMagicLinkViewController: LoginViewController {
     }
 }
 
-
 // MARK: - UITableViewDataSource
 extension SignupMagicLinkViewController: UITableViewDataSource {
     /// Returns the number of rows in a section.
@@ -112,7 +110,6 @@ extension SignupMagicLinkViewController: UITableViewDataSource {
         return cell
     }
 }
-
 
 // MARK: - Private Methods
 private extension SignupMagicLinkViewController {
@@ -169,7 +166,7 @@ private extension SignupMagicLinkViewController {
     func configureCheckSpamLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.checkSpamInstructions, style: .body)
     }
-    
+
     /// Configure the "Check spam" cell.
     ///
     func configureoopsLabel(_ cell: TextLabelTableViewCell) {

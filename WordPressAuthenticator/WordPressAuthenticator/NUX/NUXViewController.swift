@@ -1,6 +1,5 @@
 import WordPressUI
 
-
 // MARK: - NUXViewController
 /// Base class to use for NUX view controllers that aren't a table view
 /// Note: shares most of its code with NUXTableViewController. Look to make
@@ -46,7 +45,7 @@ open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewCon
         submitButton?.setTitle(primaryTitle, for: .highlighted)
         submitButton?.accessibilityIdentifier = "Continue Button"
     }
-    
+
     open func enableSubmit(animating: Bool) -> Bool {
         return !animating
     }

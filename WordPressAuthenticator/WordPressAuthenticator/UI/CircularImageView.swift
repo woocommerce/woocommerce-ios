@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// UIImageView with a circular shape.
 ///
 class CircularImageView: UIImageView {

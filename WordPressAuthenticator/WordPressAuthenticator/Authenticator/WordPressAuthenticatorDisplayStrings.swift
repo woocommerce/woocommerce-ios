@@ -1,6 +1,5 @@
 import Foundation
 
-
 // MARK: - WordPress Authenticator Display Strings
 //
 public struct WordPressAuthenticatorDisplayStrings {
@@ -30,7 +29,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let createAccountButtonTitle: String
     public let continueWithWPButtonTitle: String
     public let enterYourSiteAddressButtonTitle: String
-    
+
     /// Large titles displayed in unified auth flows.
     ///
     public let getStartedTitle: String
@@ -182,7 +181,7 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                        comment: "The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password."),
             textCodeButtonTitle: NSLocalizedString("Text me a code instead",
                                                    comment: "The button's title text to send a 2FA code via SMS text message."),
-            loginTermsOfService:NSLocalizedString("By continuing, you agree to our _Terms of Service_.", comment: "Legal disclaimer for logging in. The underscores _..._ denote underline."),
+            loginTermsOfService: NSLocalizedString("By continuing, you agree to our _Terms of Service_.", comment: "Legal disclaimer for logging in. The underscores _..._ denote underline."),
             signupTermsOfService: NSLocalizedString("If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.", comment: "Legal disclaimer for signing up. The underscores _..._ denote underline."),
             getStartedTitle: NSLocalizedString("Get Started",
                                                comment: "View title for initial auth views."),

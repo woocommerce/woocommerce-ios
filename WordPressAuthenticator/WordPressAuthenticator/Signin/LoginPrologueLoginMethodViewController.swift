@@ -1,7 +1,6 @@
 import WordPressUI
 import WordPressShared
 
-
 /// This class houses the "3 button view":
 /// Continue with WordPress.com, Continue with Google, Continue with Apple
 /// and a text link - Or log in by entering your site address.
@@ -21,7 +20,7 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
     private var tracker: AuthenticatorAnalyticsTracker {
         AuthenticatorAnalyticsTracker.shared
     }
-    
+
     /// The big transparent (dismiss) button behind the buttons
     @IBOutlet private weak var dismissButton: UIButton!
 
@@ -48,14 +47,14 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
         guard let buttonViewController = buttonViewController else {
             return
         }
-        
+
         let wordpressTitle = NSLocalizedString("Log in or sign up with WordPress.com", comment: "Button title. Tapping begins our normal log in process.")
         buttonViewController.setupTopButton(title: wordpressTitle, isPrimary: false, accessibilityIdentifier: "Log in with Email Button") { [weak self] in
-            
+
             guard let self = self else {
                 return
             }
-            
+
             self.tracker.set(flow: .wpCom)
             self.dismiss(animated: true)
             self.emailTapped?()
@@ -84,10 +83,10 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
 
     @IBAction func handleSelfHostedButtonTapped(_ sender: UIButton) {
         dismiss(animated: true)
-        
+
         tracker.set(flow: .loginWithSiteAddress)
         tracker.track(click: .loginWithSiteAddress)
-        
+
         selfHostedTapped?()
     }
 
@@ -96,7 +95,7 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
         tracker.track(click: .loginWithApple, ifTrackingNotEnabled: {
             WordPressAuthenticator.track(.loginSocialButtonClick, properties: ["source": "apple"])
         })
-        
+
         dismiss(animated: true)
         appleTapped?()
     }
@@ -104,11 +103,11 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
     @objc func handleGoogleButtonTapped() {
         tracker.set(flow: .loginWithGoogle)
         tracker.track(click: .loginWithGoogle)
-        
+
         dismiss(animated: true)
         googleTapped?()
     }
-    
+
     // MARK: - Accessibility
 
     private func configureForAccessibility() {

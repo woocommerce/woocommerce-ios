@@ -1,7 +1,6 @@
 import UIKit
 import WordPressShared
 
-
 // MARK: - SiteInfoHeaderView
 //
 class SiteInfoHeaderView: UIView {
@@ -62,7 +61,6 @@ class SiteInfoHeaderView: UIView {
         }
     }
 
-
     /// Downloads the Blavatar Image at the specified URL.
     ///
     func downloadBlavatar(at path: String) {
@@ -73,14 +71,12 @@ class SiteInfoHeaderView: UIView {
         }
     }
 
-
     // MARK: - Overriden Methods
 
     override func awakeFromNib() {
         super.awakeFromNib()
         refreshLabelStyles()
     }
-
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
@@ -92,7 +88,6 @@ class SiteInfoHeaderView: UIView {
         refreshLabelStyles()
     }
 }
-
 
 // MARK: - Private
 //

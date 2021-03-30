@@ -1,7 +1,6 @@
 import Foundation
 import WordPressKit
 
-
 // MARK: - WordPress.com BlogService
 //
 class WordPressComBlogService {
@@ -13,7 +12,6 @@ class WordPressComBlogService {
         let baseUrl = WordPressAuthenticator.shared.configuration.wpcomAPIBaseURL
         return WordPressComRestApi(oAuthToken: nil, userAgent: userAgent, baseUrlString: baseUrl)
     }
-
 
     /// Retrieves the WordPressComSiteInfo instance associated to a WordPress.com Site Address.
     ///
@@ -34,7 +32,7 @@ class WordPressComBlogService {
             failure(result)
         })
     }
-    
+
      func fetchUnauthenticatedSiteInfoForAddress(for address: String, success: @escaping (WordPressComSiteInfo) -> Void, failure: @escaping (Error) -> Void) {
         let remote = BlogServiceRemoteREST(wordPressComRestApi: anonymousAPI, siteID: 0)
         remote.fetchUnauthenticatedSiteInfo(forAddress: address, success: { response in
@@ -42,16 +40,15 @@ class WordPressComBlogService {
                 failure(ServiceError.unknown)
                 return
             }
-            
+
             let site = WordPressComSiteInfo(remote: response)
             success(site)
         }, failure: { error in
             let result = error ?? ServiceError.unknown
             failure(result)
-        }) 
+        })
     }
 }
-
 
 // MARK: - Nested Types
 //

@@ -3,7 +3,7 @@ import UIKit
 class GoogleSignupConfirmationViewController: LoginViewController {
 
     // MARK: - Properties
-    
+
     @IBOutlet private weak var tableView: UITableView!
     private var rows = [Row]()
     private var errorMessage: String?
@@ -14,14 +14,14 @@ class GoogleSignupConfirmationViewController: LoginViewController {
             return .wpComAuthGoogleSignupConfirmation
         }
     }
-    
+
     // MARK: - View
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         removeGoogleWaitingView()
-        
+
         navigationItem.title = WordPressAuthenticator.shared.displayStrings.signUpTitle
         styleNavigationBar(forUnified: true)
 
@@ -33,12 +33,12 @@ class GoogleSignupConfirmationViewController: LoginViewController {
         loadRows()
         configureForAccessibility()
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         tracker.set(flow: .signupWithGoogle)
-        
+
         if isBeingPresentedInAnyWay {
             tracker.track(step: .start)
         } else {
@@ -79,7 +79,7 @@ class GoogleSignupConfirmationViewController: LoginViewController {
             tableView.reloadData()
         }
     }
-    
+
 }
 
 // MARK: - UITableViewDataSource
@@ -106,20 +106,20 @@ extension GoogleSignupConfirmationViewController: UITableViewDataSource {
 // MARK: - Private Extension
 
 private extension GoogleSignupConfirmationViewController {
-    
+
     // MARK: - Button Handling
 
     @IBAction func handleSubmit() {
         tracker.track(click: .submit)
         tracker.track(click: .createAccount)
-        
+
         configureSubmitButton(animating: true)
         GoogleAuthenticator.sharedInstance.delegate = self
         GoogleAuthenticator.sharedInstance.createGoogleAccount(loginFields: loginFields)
     }
 
     // MARK: - Table Management
-    
+
     /// Registers all of the available TableViewCells.
     ///
     func registerTableViewCells() {
@@ -190,7 +190,7 @@ private extension GoogleSignupConfirmationViewController {
 
         UIAccessibility.post(notification: .screenChanged, argument: tableView)
     }
-    
+
     // MARK: - Private Constants
 
     /// Rows listed in the order they were created.
@@ -215,9 +215,9 @@ private extension GoogleSignupConfirmationViewController {
 // MARK: - GoogleAuthenticatorDelegate
 
 extension GoogleSignupConfirmationViewController: GoogleAuthenticatorDelegate {
-    
+
     // MARK: - Signup
-    
+
     func googleFinishedSignup(credentials: AuthenticatorCredentials, loginFields: LoginFields) {
         self.loginFields = loginFields
         showSignupEpilogue(for: credentials)
@@ -227,27 +227,27 @@ extension GoogleSignupConfirmationViewController: GoogleAuthenticatorDelegate {
         self.loginFields = loginFields
         showLoginEpilogue(for: credentials)
     }
-    
+
     func googleSignupFailed(error: Error, loginFields: LoginFields) {
         configureSubmitButton(animating: false)
         self.loginFields = loginFields
         displayError(message: error.localizedDescription, moveVoiceOverFocus: true)
     }
-    
+
     // MARK: - Login
 
     func googleFinishedLogin(credentials: AuthenticatorCredentials, loginFields: LoginFields) {
         // Here for protocol compliance.
     }
-    
+
     func googleNeedsMultifactorCode(loginFields: LoginFields) {
         // Here for protocol compliance.
     }
-    
+
     func googleExistingUserNeedsConnection(loginFields: LoginFields) {
         // Here for protocol compliance.
     }
-    
+
     func googleLoginFailed(errorTitle: String, errorDescription: String, loginFields: LoginFields, unknownUser: Bool) {
         // Here for protocol compliance.
     }

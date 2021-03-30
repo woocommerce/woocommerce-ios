@@ -1,6 +1,5 @@
 import UIKit
 
-
 /// Part two of the self-hosted sign in flow: username + password. Used by WPiOS and NiOS.
 /// A valid site address should be acquired before presenting this view controller.
 ///
@@ -36,7 +35,7 @@ final class SiteCredentialsViewController: LoginViewController {
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
         tracker.track(click: .submit)
-        
+
         validateForm()
     }
 
@@ -67,7 +66,7 @@ final class SiteCredentialsViewController: LoginViewController {
         } else {
             tracker.set(step: .usernamePassword)
         }
-        
+
         configureSubmitButton(animating: false)
 
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
@@ -79,7 +78,6 @@ final class SiteCredentialsViewController: LoginViewController {
         super.viewWillDisappear(animated)
         unregisterForKeyboardEvents()
     }
-
 
     // MARK: - Overrides
 
@@ -93,7 +91,7 @@ final class SiteCredentialsViewController: LoginViewController {
 
         view.backgroundColor = unifiedBackgroundColor
     }
-    
+
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return WordPressAuthenticator.shared.unifiedStyle?.statusBarStyle ?? WordPressAuthenticator.shared.style.statusBarStyle
     }
@@ -142,7 +140,7 @@ final class SiteCredentialsViewController: LoginViewController {
             if !message.isEmpty {
                 tracker.track(failure: message)
             }
-            
+
             errorMessage = message
             shouldChangeVoiceOverFocus = moveVoiceOverFocus
             loadRows()
@@ -153,7 +151,6 @@ final class SiteCredentialsViewController: LoginViewController {
     /// No-op. Required by LoginFacade.
     func displayLoginMessage(_ message: String) {}
 }
-
 
 // MARK: - UITableViewDataSource
 extension SiteCredentialsViewController: UITableViewDataSource {
@@ -174,7 +171,6 @@ extension SiteCredentialsViewController: UITableViewDataSource {
     }
 }
 
-
 // MARK: - UITableViewDelegate conformance
 extension SiteCredentialsViewController: UITableViewDelegate {
     /// After a textfield cell is done displaying, remove the textfield reference.
@@ -192,7 +188,6 @@ extension SiteCredentialsViewController: UITableViewDelegate {
     }
 }
 
-
 // MARK: - Keyboard Notifications
 extension SiteCredentialsViewController: NUXKeyboardResponder {
     @objc func handleKeyboardWillShow(_ notification: Foundation.Notification) {
@@ -203,7 +198,6 @@ extension SiteCredentialsViewController: NUXKeyboardResponder {
         keyboardWillHide(notification)
     }
 }
-
 
 // MARK: - TextField Delegate conformance
 extension SiteCredentialsViewController: UITextFieldDelegate {
@@ -222,7 +216,6 @@ extension SiteCredentialsViewController: UITextFieldDelegate {
         return true
     }
 }
-
 
 // MARK: - Private Methods
 private extension SiteCredentialsViewController {
@@ -347,7 +340,7 @@ private extension SiteCredentialsViewController {
             guard let self = self else {
                 return
             }
-            
+
             self.tracker.track(click: .forgottenPassword)
 
             // If information is currently processing, ignore button tap.
@@ -377,7 +370,7 @@ private extension SiteCredentialsViewController {
             usernameField?.becomeFirstResponder()
         }
     }
-    
+
     // MARK: - Private Constants
 
     /// Rows listed in the order they were created.
@@ -405,7 +398,6 @@ private extension SiteCredentialsViewController {
         }
     }
 }
-
 
 // MARK: - Instance Methods
 /// Implementation methods copied from LoginSelfHostedViewController.

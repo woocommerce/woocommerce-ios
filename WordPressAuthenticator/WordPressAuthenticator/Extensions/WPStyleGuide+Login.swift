@@ -30,7 +30,7 @@ extension WPStyleGuide {
     class var hairlineBorderWidth: CGFloat {
         return 1.0 / UIScreen.main.scale
     }
-    
+
     /// Common view style for signin view controllers.
     ///
     /// - Parameters:
@@ -76,7 +76,7 @@ extension WPStyleGuide {
         onePasswordButton.sizeToFit()
         onePasswordButton.setContentHuggingPriority(.required, for: .horizontal)
         onePasswordButton.setContentCompressionResistancePriority(.required, for: .horizontal)
-        
+
         onePasswordButton.accessibilityTraits = .button
         onePasswordButton.accessibilityLabel = NSLocalizedString("One Password button", comment: "Accessibility label for 1 password button")
         onePasswordButton.accessibilityHint = NSLocalizedString("Opens One Password manager", comment: "Accessibility hint for 1 password button")
@@ -168,11 +168,11 @@ extension WPStyleGuide {
     /// - Returns: A properly styled NSAttributedString
     ///
     class func formattedGoogleString(forHyperlink: Bool = false) -> NSAttributedString {
-        
+
         let googleAttachment = NSTextAttachment()
         let googleIcon = UIImage.googleIcon
         googleAttachment.image = googleIcon
-        
+
         if forHyperlink {
             // Create an attributed string that contains the Google icon.
             let font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
@@ -196,7 +196,7 @@ extension WPStyleGuide {
             return buttonString
         }
     }
-    
+
     /// Creates an attributed string that includes the Apple logo.
     ///
     /// - Returns: A properly styled NSAttributedString to be displayed on a NUXButton.
@@ -219,37 +219,37 @@ extension WPStyleGuide {
 
         return NSAttributedString(attributedString: attributedString)
     }
-    
+
     /// Creates a button for Self-hosted Login
     ///
     /// - Returns: A properly styled UIButton
     ///
     class func selfHostedLoginButton(alignment: UIControl.NaturalContentHorizontalAlignment = .leading) -> UIButton {
-        
+
         let style = WordPressAuthenticator.shared.style
-        
+
         let button: UIButton
 
         if WordPressAuthenticator.shared.configuration.showLoginOptions {
             let baseString =  NSLocalizedString("Or log in by _entering your site address_.", comment: "Label for button to log in using site address. Underscores _..._ denote underline.")
-            
+
             let attrStrNormal = baseString.underlined(color: style.subheadlineColor, underlineColor: style.textButtonColor)
             let attrStrHighlight = baseString.underlined(color: style.subheadlineColor, underlineColor: style.textButtonHighlightColor)
             let font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
-            
+
             button = textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font, alignment: alignment)
         } else {
             let baseString = NSLocalizedString("Enter the address of the WordPress site you'd like to connect.", comment: "Label for button to log in using your site address.")
-            
-            let attrStrNormal = selfHostedButtonString(baseString, linkColor:  style.textButtonColor)
+
+            let attrStrNormal = selfHostedButtonString(baseString, linkColor: style.textButtonColor)
             let attrStrHighlight = selfHostedButtonString(baseString, linkColor: style.textButtonHighlightColor)
             let font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
-            
+
             button = textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font)
         }
-        
+
         button.accessibilityIdentifier = "Self Hosted Login Button"
-        
+
         return button
     }
 
@@ -294,7 +294,7 @@ extension WPStyleGuide {
         let baseString = WordPressAuthenticator.shared.displayStrings.signupTermsOfService
         let textColor = unifiedStyle?.textSubtleColor ?? originalStyle.subheadlineColor
         let linkColor = unifiedStyle?.textButtonColor ?? originalStyle.textButtonColor
-        
+
         let attrStrNormal = baseString.underlined(color: textColor, underlineColor: linkColor)
         let attrStrHighlight = baseString.underlined(color: textColor, underlineColor: linkColor)
         let font = WPStyleGuide.mediumWeightFont(forStyle: .footnote)
@@ -303,7 +303,7 @@ extension WPStyleGuide {
         button.titleLabel?.textAlignment = .center
         return button
     }
-    
+
     private class func textButton(normal normalString: NSAttributedString, highlighted highlightString: NSAttributedString, font: UIFont, alignment: UIControl.NaturalContentHorizontalAlignment = .leading, forUnified: Bool = false) -> UIButton {
         let button = SubheadlineButton()
         button.clipsToBounds = true
@@ -318,7 +318,7 @@ extension WPStyleGuide {
         // These constraints work around some issues with multiline buttons and
         // vertical layout.  Without them the button's height may not account
         // for the titleLabel's height.
-        
+
         let verticalLabelSpacing = forUnified ? 0 : Constants.verticalLabelSpacing
         button.titleLabel?.topAnchor.constraint(equalTo: button.topAnchor, constant: verticalLabelSpacing).isActive = true
         button.titleLabel?.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -verticalLabelSpacing).isActive = true

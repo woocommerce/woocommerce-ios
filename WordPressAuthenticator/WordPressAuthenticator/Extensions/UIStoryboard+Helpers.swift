@@ -1,13 +1,12 @@
 import Foundation
 
-
-// MARK - Storyboard enum
+// MARK: - Storyboard enum
 enum Storyboard: String {
     case login = "Login"
     case signup = "Signup"
     case getStarted = "GetStarted"
     case unifiedSignup = "UnifiedSignup"
-    case unifiedLoginMagicLink = "LoginMagicLink" 
+    case unifiedLoginMagicLink = "LoginMagicLink"
     case emailMagicLink = "EmailMagicLink"
     case siteAddress = "SiteAddress"
     case googleAuth = "GoogleAuth"

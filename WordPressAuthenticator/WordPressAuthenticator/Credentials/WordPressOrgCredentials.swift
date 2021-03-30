@@ -32,7 +32,6 @@ public struct WordPressOrgCredentials: Equatable {
     }
 }
 
-
 // MARK: - Equatable Conformance
 //
 public func ==(lhs: WordPressOrgCredentials, rhs: WordPressOrgCredentials) -> Bool {

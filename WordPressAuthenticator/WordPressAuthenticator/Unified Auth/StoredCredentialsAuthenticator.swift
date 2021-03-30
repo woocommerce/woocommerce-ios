@@ -11,14 +11,14 @@ import SVProgressHUD
 class StoredCredentialsAuthenticator: NSObject {
 
     // MARK: - Delegates
-    
+
     private var authenticationDelegate: WordPressAuthenticatorDelegate {
         guard let delegate = WordPressAuthenticator.shared.delegate else {
             fatalError()
         }
         return delegate
     }
-    
+
     // MARK: - Configuration
 
     private var authConfig: WordPressAuthenticatorConfiguration {
@@ -26,7 +26,7 @@ class StoredCredentialsAuthenticator: NSObject {
     }
 
     // MARK: - Login Support
-    
+
     private lazy var loginFacade: LoginFacade = {
         let facade = LoginFacade(dotcomClientID: authConfig.wpcomClientId,
                                  dotcomSecret: authConfig.wpcomSecret,
@@ -34,49 +34,49 @@ class StoredCredentialsAuthenticator: NSObject {
         facade.delegate = self
         return facade
     }()
-    
+
     // MARK: - Cancellation
-    
+
     private let onCancel: (() -> Void)?
-    
+
     // MARK: - UI
-    
+
     private let picker = StoredCredentialsPicker()
     private var navigationController: UINavigationController?
-    
+
     // MARK: - Tracking Support
 
     private var tracker: AuthenticatorAnalyticsTracker {
         AuthenticatorAnalyticsTracker.shared
     }
-    
+
     // MARK: - Login Fields
-    
+
     private var loginFields: LoginFields?
-    
+
     // MARK: - Initialization
-    
+
     init(onCancel: (() -> Void)? = nil) {
         self.onCancel = onCancel
     }
-    
+
     // MARK: - Picker
-    
+
     /// Shows the UI for picking stored credentials for the user to log into their account.
     ///
     func showPicker(from navigationController: UINavigationController) {
         self.navigationController = navigationController
-        
+
         guard let window = navigationController.view.window else {
             DDLogError("Can't obtain window for navigation controller")
             return
         }
-        
+
         picker.show(in: window) { [weak self] result in
             guard let self = self else {
                 return
             }
-            
+
             switch result {
             case .success(let authorization):
                 self.pickerSuccess(authorization)
@@ -85,7 +85,7 @@ class StoredCredentialsAuthenticator: NSObject {
             }
         }
     }
-    
+
     /// The selection of credentials and subsequent authorization by the OS succeeded.  This method processes the credentials
     /// and proceeds with the login operation.
     ///
@@ -96,7 +96,7 @@ class StoredCredentialsAuthenticator: NSObject {
         tracker.track(step: .start)
         tracker.set(flow: .loginWithiCloudKeychain)
         SVProgressHUD.show()
-        
+
         switch authorization.credential {
         case _ as ASAuthorizationAppleIDCredential:
             // No-op for now, but we can decide to implement AppleID login through this authenticator
@@ -112,7 +112,7 @@ class StoredCredentialsAuthenticator: NSObject {
             break
         }
     }
-    
+
     /// The selection of credentials or the subsequent authorization by the OS failed.  This method processes the failure.
     ///
     /// - Parameters:
@@ -143,15 +143,15 @@ extension StoredCredentialsAuthenticator: LoginFacadeDelegate {
     func displayRemoteError(_ error: Error) {
         tracker.track(failure: error.localizedDescription)
         SVProgressHUD.dismiss()
-        
+
         guard authConfig.enableUnifiedAuth else {
             presentLoginEmailView(error: error)
             return
         }
-        
+
         presentGetStartedView(error: error)
     }
-    
+
     func needsMultifactorCode() {
         SVProgressHUD.dismiss()
         presentTwoFactorAuthenticationView()
@@ -164,7 +164,7 @@ extension StoredCredentialsAuthenticator: LoginFacadeDelegate {
             multifactor: requiredMultifactorCode,
             siteURL: "")
         let credentials = AuthenticatorCredentials(wpcom: wpcom)
-        
+
         authenticationDelegate.sync(credentials: credentials) { [weak self] in
             SVProgressHUD.dismiss()
             self?.presentLoginEpilogue(credentials: credentials)
@@ -181,10 +181,10 @@ extension StoredCredentialsAuthenticator {
             DDLogError("No navigation controller to present the login epilogue from")
             return
         }
-        
+
         authenticationDelegate.presentLoginEpilogue(in: navigationController, for: credentials, onDismiss: {})
     }
-    
+
     /// Presents the login email screen, displaying the specified error.  This is useful
     /// for example for iCloud Keychain in the case where there's an error logging the user
     /// in with the stored credentials for whatever reason.
@@ -194,7 +194,7 @@ extension StoredCredentialsAuthenticator {
             DDLogError("Failed to navigate to LoginEmailVC from LoginPrologueVC")
             return
         }
-        
+
         if let loginFields = loginFields {
             toVC.loginFields = loginFields
         }
@@ -212,7 +212,7 @@ extension StoredCredentialsAuthenticator {
             DDLogError("Failed to navigate to GetStartedViewController")
             return
         }
-        
+
         if let loginFields = loginFields {
             toVC.loginFields = loginFields
         }
@@ -220,12 +220,12 @@ extension StoredCredentialsAuthenticator {
         toVC.errorMessage = error.localizedDescription
         navigationController?.pushViewController(toVC, animated: true)
     }
-    
+
     private func presentTwoFactorAuthenticationView() {
         guard let loginFields = loginFields else {
             return
         }
-        
+
         guard let vc = TwoFAViewController.instantiate(from: .twoFA) else {
             DDLogError("Failed to navigate from LoginViewController to TwoFAViewController")
             return

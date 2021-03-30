@@ -34,14 +34,12 @@ public extension NUXKeyboardResponder where Self: NUXViewController {
         NotificationCenter.default.addObserver(self, selector: keyboardWillHideAction, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
-
     /// Unregisters the receiver from keyboard events.
     ///
     func unregisterForKeyboardEvents() {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
-
 
     /// Returns the vertical offset to apply to the sign in form.
     ///
@@ -50,7 +48,6 @@ public extension NUXKeyboardResponder where Self: NUXViewController {
     func signinFormVerticalOffset() -> CGFloat {
         return NUXKeyboardDefaultFormVerticalOffset
     }
-
 
     /// Adjusts constraint constants to adapt the view for a visible keyboard.
     ///
@@ -65,7 +62,6 @@ public extension NUXKeyboardResponder where Self: NUXViewController {
             verticalCenterConstraint?.constant = signinFormVerticalOffset()
         }
     }
-
 
     /// Process the passed NSNotification from a UIKeyboardWillShowNotification.
     ///
@@ -93,7 +89,6 @@ public extension NUXKeyboardResponder where Self: NUXViewController {
                        completion: nil)
     }
 
-
     /// Process the passed NSNotification from a UIKeyboardWillHideNotification.
     ///
     /// - Parameter notification: the NSNotification object from a UIKeyboardWillHideNotification.
@@ -119,7 +114,6 @@ public extension NUXKeyboardResponder where Self: NUXViewController {
                        completion: nil)
     }
 
-
     /// Retrieves the keyboard frame and the animation duration from a keyboard
     /// notificaiton.
     ///
@@ -137,7 +131,6 @@ public extension NUXKeyboardResponder where Self: NUXViewController {
         }
         return (keyboardFrame: frame, animationDuration: duration)
     }
-
 
     func heightDeltaFromKeyboardFrame(_ keyboardFrame: CGRect) -> CGFloat {
         // If an external keyboard is connected, the ending keyboard frame's maxY

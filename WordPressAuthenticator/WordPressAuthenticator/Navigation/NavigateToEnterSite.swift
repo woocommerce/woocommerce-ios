@@ -1,6 +1,4 @@
-
 import Foundation
-
 
 /// Navigates to the unified site address login flow.
 ///

@@ -9,26 +9,26 @@ import AuthenticationServices
 ///
 @available(iOS 13, *)
 class StoredCredentialsPicker: NSObject {
-    
-    typealias CompletionClosure = (Result<ASAuthorization, Error>) -> ()
-    
+
+    typealias CompletionClosure = (Result<ASAuthorization, Error>) -> Void
+
     /// The closure that will be executed once the credentials are picked and returned by the OS,
     /// or once there's an Error.
     ///
     private var onComplete: CompletionClosure!
-    
+
     /// The window where the quick authentication flow will be shown.
     ///
     private var window: UIWindow!
 
     func show(in window: UIWindow, onComplete: @escaping CompletionClosure) {
-        
+
         self.onComplete = onComplete
         self.window = window
-        
+
         let requests = [ASAuthorizationPasswordProvider().createRequest()]
         let controller = ASAuthorizationController(authorizationRequests: requests)
-        
+
         controller.delegate = self
         controller.presentationContextProvider = self
         controller.performRequests()

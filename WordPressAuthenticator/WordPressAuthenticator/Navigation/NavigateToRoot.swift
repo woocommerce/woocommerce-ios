@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Navigates to the root of the unified login flow.
 ///
 public struct NavigateToRoot: NavigationCommand {

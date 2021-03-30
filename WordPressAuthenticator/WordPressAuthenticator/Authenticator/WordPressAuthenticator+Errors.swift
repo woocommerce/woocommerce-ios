@@ -1,6 +1,5 @@
 import Foundation
 
-
 // MARK: - WordPressAuthenticator Error Constants. Once the entire code is Swifted, let's *PLEASE* have a
 //          beautiful Error `Swift Enum`.
 //

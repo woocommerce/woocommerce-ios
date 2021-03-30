@@ -40,7 +40,7 @@ struct ShippingLabelPackageDetails: View {
 
                 ListHeaderView(text: Localization.footer, alignment: .left)
                     .background(Color(.listBackground))
-            }.background(Color(.white))
+            }.background(Color(.systemBackground))
         }.background(Color(.listBackground))
     }
 }
@@ -62,6 +62,10 @@ struct ShippingLabelPackageDetails_Previews: PreviewProvider {
 
     static var previews: some View {
         ShippingLabelPackageDetails(items: ShippingLabelPackageDetails_Previews.sampleItems(), currency: ShippingLabelPackageDetails_Previews.sampleCurrency())
+            .environment(\.colorScheme, .light)
+
+        ShippingLabelPackageDetails(items: ShippingLabelPackageDetails_Previews.sampleItems(), currency: ShippingLabelPackageDetails_Previews.sampleCurrency())
+            .environment(\.colorScheme, .dark)
     }
 }
 

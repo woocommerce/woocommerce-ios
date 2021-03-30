@@ -1,9 +1,5 @@
 {
     "data": {
-        "account_id": "acct_1234567812345678",
-        "live_publishable_key": "pk_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-        "test_publishable_key": "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-        "is_live": false,
         "has_pending_requirements": true,
         "has_overdue_requirements": false,
         "current_deadline": 1897351200,

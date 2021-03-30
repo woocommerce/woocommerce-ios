@@ -1,7 +1,5 @@
 {
     "data": {
-        "live_publishable_key": "pk_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-        "test_publishable_key": "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
         "has_pending_requirements": false,
         "has_overdue_requirements": true,
         "current_deadline": null,

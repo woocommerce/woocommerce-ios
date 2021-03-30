@@ -266,7 +266,7 @@ extension UIColor {
     ///
     static var navigationBarLoadingIndicator: UIColor {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {
-            return .accent
+            return .gray(.shade60)
         } else {
             return .white
         }

@@ -13,7 +13,8 @@ final class ShippingLabelPackagesMapperTests: XCTestCase {
 
         XCTAssertEqual(shippingLabelPackages.storeOptions, sampleShippingLabelStoreOptions())
         XCTAssertEqual(shippingLabelPackages.customPackages, sampleShippingLabelCustomPackages())
-        XCTAssertEqual(shippingLabelPackages.predefinedOptions, sampleShippingLabelPredefinedOptions())
+        XCTAssertTrue(shippingLabelPackages.predefinedOptions.contains(sampleShippingLabelPredefinedOptions().first!))
+        XCTAssertTrue(shippingLabelPackages.predefinedOptions.contains(sampleShippingLabelPredefinedOptions()[1]))
     }
 }
 

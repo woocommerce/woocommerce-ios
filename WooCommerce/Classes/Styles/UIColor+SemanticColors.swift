@@ -316,7 +316,7 @@ extension UIColor {
     /// List BackGround.
     ///
     static var listBackground: UIColor {
-        return .systemGroupedBackground
+        return UIColor(light: .gray(.shade0), dark: .black)
     }
 
     /// List ForeGround.

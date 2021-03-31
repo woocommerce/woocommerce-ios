@@ -95,6 +95,10 @@ extension WooConstants {
         ///
         case shippingLabelCreationInfo = "https://woocommerce.com/products/shipping"
 
+        /// URL for product review information
+        ///
+        case productReviewInfo = "https://woocommerce.com/posts/reviews-woocommerce-best-practices/"
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

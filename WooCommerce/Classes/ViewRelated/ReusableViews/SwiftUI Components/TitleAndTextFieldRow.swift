@@ -5,7 +5,7 @@ import SwiftUI
 struct TitleAndTextFieldRow: View {
     let title: String
     let placeholder: String
-    @State var text: String
+    @Binding var text: String
     let symbol: String?
     let keyboardType: UIKeyboardType
 
@@ -40,7 +40,7 @@ struct TitleAndTextFieldRow_Previews: PreviewProvider {
     static var previews: some View {
         TitleAndTextFieldRow(title: "Add your text",
                              placeholder: "Start typing",
-                             text: "",
+                             text: .constant(""),
                              symbol: nil,
                              keyboardType: .default)
             .previewLayout(.fixed(width: 375, height: 100))
@@ -48,7 +48,7 @@ struct TitleAndTextFieldRow_Previews: PreviewProvider {
 
         TitleAndTextFieldRow(title: "Add your text",
                              placeholder: "Start typing",
-                             text: "Hello",
+                             text: .constant("Hello"),
                              symbol: nil,
                              keyboardType: .default)
             .previewLayout(.fixed(width: 375, height: 100))
@@ -56,7 +56,7 @@ struct TitleAndTextFieldRow_Previews: PreviewProvider {
 
         TitleAndTextFieldRow(title: "Total package weight",
                              placeholder: "Value",
-                             text: "",
+                             text: .constant(""),
                              symbol: "oz",
                              keyboardType: .default)
             .previewLayout(.fixed(width: 375, height: 100))

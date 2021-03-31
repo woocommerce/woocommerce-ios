@@ -33,7 +33,7 @@ struct ShippingLabelPackageDetails: View {
 
                 TitleAndTextFieldRow(title: Localization.totalPackageWeight,
                                      placeholder: "0",
-                                     text: "",
+                                     text: .constant(""),
                                      symbol: "oz",
                                      keyboardType: .decimalPad)
                 Divider()

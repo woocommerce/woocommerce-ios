@@ -33,7 +33,7 @@ final class EmptyListMessageWithActionTests: XCTestCase {
     }
 
     func testBackgroundStyle() {
-        XCTAssertEqual(subject?.backgroundColor, UIColor.listBackground)
+        XCTAssertEqual(subject?.backgroundColor?.cgColor, UIColor.listBackground.cgColor)
     }
 
     func testMessageLabelStyle() {

@@ -191,7 +191,7 @@ private extension AppDelegate {
         appearance.topDividerColor = appearance.bodyBackgroundColor
 
         appearance.titleTextColor = .text
-        appearance.titleFont = UIFont.title2
+        appearance.titleFont = UIFont.title2SemiBold
 
         appearance.bodyTextColor = .text
         appearance.bodyFont = UIFont.body

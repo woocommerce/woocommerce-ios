@@ -105,7 +105,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
         view.backgroundColor = style.backgroundColor
         contentView.backgroundColor = style.backgroundColor
 
-        messageLabel.applyBodyStyle()
+        messageLabel.applySecondaryTitleStyle()
         detailsLabel.applySecondaryBodyStyle()
 
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
@@ -298,9 +298,9 @@ extension EmptyStateViewController {
         /// This is exposed so that consumers can build `NSAttributedString` instances using the same
         /// font. The `NSAttributedString` instance can then be used in `configure(message:`).
         ///
-        /// This must match the `applyBodyStyle()` call in `viewDidLoad`.
+        /// This must match the `messageLabel` style applied in `viewDidLoad`.
         ///
-        static let messageFont: UIFont = .body
+        static let messageFont: UIFont = .title2
 
         fileprivate var message: NSAttributedString {
             switch self {

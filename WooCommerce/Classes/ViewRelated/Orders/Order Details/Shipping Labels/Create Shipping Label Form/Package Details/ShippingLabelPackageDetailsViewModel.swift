@@ -43,12 +43,12 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         weightUnit = shippingSettingsService.weightUnit
-        instantiateResultsControllers()
+        configureResultsControllers()
         syncProducts()
         syncProductVariations()
     }
 
-    private func instantiateResultsControllers() {
+    private func configureResultsControllers() {
         resultsControllers = ShippingLabelPackageDetailsResultsControllers(siteID: order.siteID,
                                                                            orderItems: order.items,
            onProductReload: { [weak self] (products) in

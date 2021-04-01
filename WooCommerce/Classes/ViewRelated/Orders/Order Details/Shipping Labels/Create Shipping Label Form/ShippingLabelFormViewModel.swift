@@ -23,6 +23,8 @@ final class ShippingLabelFormViewModel {
     let siteID: Int64
     private(set) var originAddress: ShippingLabelAddress?
     private(set) var destinationAddress: ShippingLabelAddress?
+    let orderItems: [OrderItem]
+    let currency: String
 
     private let stores: StoresManager
 
@@ -38,9 +40,16 @@ final class ShippingLabelFormViewModel {
         }
     }
 
-    init(siteID: Int64, originAddress: Address?, destinationAddress: Address?, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64,
+         originAddress: Address?,
+         destinationAddress: Address?,
+         items: [OrderItem],
+         currency: String,
+         stores: StoresManager = ServiceLocator.stores) {
 
         self.siteID = siteID
+        self.orderItems = items
+        self.currency = currency
 
         let accountSettings = ShippingLabelFormViewModel.getStoredAccountSettings()
         let company = ServiceLocator.stores.sessionManager.defaultSite?.name

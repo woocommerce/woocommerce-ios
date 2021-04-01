@@ -27,6 +27,11 @@ public enum ShippingLabelAction: Action {
                          address: ShippingLabelAddressVerification,
                          completion: (Result<ShippingLabelAddressValidationResponse, Error>) -> Void)
 
+    /// Requests all the details for the packages (custom and predefined).
+    ///
+    case packagesDetails(siteID: Int64,
+                         completion: (Result<ShippingLabelPackagesResponse, Error>) -> Void)
+
     /// Checks whether an order is eligible for shipping label creation.
     ///
     case checkCreationEligibility(siteID: Int64, orderID: Int64, isFeatureFlagEnabled: Bool, onCompletion: (_ isEligible: Bool) -> Void)

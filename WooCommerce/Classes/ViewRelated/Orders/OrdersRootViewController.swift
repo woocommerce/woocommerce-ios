@@ -90,8 +90,6 @@ private extension OrdersRootViewController {
     ///
     func configureNavigationButtons() {
         navigationItem.rightBarButtonItem = ordersViewController.createSearchBarButtonItem()
-
-        removeNavigationBackBarButtonText()
     }
 
     func configureContainerView() {

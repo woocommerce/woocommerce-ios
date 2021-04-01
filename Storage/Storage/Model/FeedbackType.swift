@@ -5,9 +5,9 @@ public enum FeedbackType: String, Codable {
     ///
     case general
 
-    /// Identifier for the Products M5: Linked Products, Downloadable Files, Trashing.
+    /// Identifier for the Products Variations.
     ///
-    case productsM5
+    case productsVariations
 
     /// identifier for the shipping labels m1 feedback survey
     ///

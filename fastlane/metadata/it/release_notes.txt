@@ -1,3 +1,0 @@
-- Quando viene modificato un prodotto, ora puoi creare, eliminare e aggiornare le varianti, gli attributi e le opzioni degli attributi del prodotto.
-- Abbiamo aggiornato il design, includendo modifiche alle schede della bacheca. Non esitare a condividere con noi feedback sulla UI, in modo da poter apportare dei miglioramenti. 
- - Altre correzioni varie. 

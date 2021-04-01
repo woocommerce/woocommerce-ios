@@ -56,7 +56,6 @@ private extension ProductMenuOrderViewController {
 
     func configureNavigationBar() {
         title = NSLocalizedString("Menu Order", comment: "Product Menu Order navigation title")
-        removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {

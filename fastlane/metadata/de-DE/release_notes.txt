@@ -1,3 +1,0 @@
-- Beim Bearbeiten eines Produktes kannst du ab sofort Produktvariationen, Produktattribute und Produktattributsoptionen erstellen, löschen und aktualisieren.
-- Wir haben das Design überarbeitet und unter anderem Änderungen an den Tabs in deinem Dashboard vorgenommen. Gib uns gerne Feedback zur Benutzeroberfläche, damit wir uns weiterhin verbessern können. 
- - Weitere verschiedene Fehlerbehebungen. 

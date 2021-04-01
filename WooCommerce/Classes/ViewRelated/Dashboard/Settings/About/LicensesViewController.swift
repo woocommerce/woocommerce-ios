@@ -35,7 +35,6 @@ private extension LicensesViewController {
     ///
     func configureNavigation() {
         title = NSLocalizedString("Licenses", comment: "Licenses (information page title)")
-        removeNavigationBackBarButtonText()
     }
 
     /// Setup the main view

@@ -72,6 +72,7 @@ public typealias ShipmentTrackingProviderGroup = Networking.ShipmentTrackingProv
 public typealias ShippingLabel = Networking.ShippingLabel
 public typealias ShippingLabelAddress = Networking.ShippingLabelAddress
 public typealias ShippingLabelAddressVerification = Networking.ShippingLabelAddressVerification
+public typealias ShippingLabelPackagesResponse = Networking.ShippingLabelPackagesResponse
 public typealias ShipType = Networking.ShippingLabelAddressVerification.ShipType
 public typealias ShippingLabelAddressValidationResponse = Networking.ShippingLabelAddressValidationResponse
 public typealias ShippingLabelAddressValidationError = Networking.ShippingLabelAddressValidationError

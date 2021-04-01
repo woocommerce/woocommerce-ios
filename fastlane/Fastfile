@@ -432,6 +432,8 @@ REPOSITORY_NAME="woocommerce-ios"
       scheme: "WooCommerce",
       derived_data_path: "DerivedData",
       build_for_testing: true,
+      device: options[:device],
+      deployment_target_version: options[:ios_version],
     )
   end
 
@@ -799,6 +801,8 @@ end
     multi_scan(
       workspace: "WooCommerce.xcworkspace",
       scheme: "WooCommerce",
+      device: options[:device],
+      deployment_target_version: options[:ios_version],
       test_without_building: true,
       xctestrun: testPlanPath,
       try_count: options[:try_count],

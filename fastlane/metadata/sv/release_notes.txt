@@ -1,3 +1,0 @@
-- När du redigerar en produkt kan du nu skapa, ta bort och uppdatera produktvariationer, produktattribut och produktattributalternativ.
-- Vi har uppdaterat designen, inklusive ändringar i adminpanelens flikar. Kom gärna med feedback angående gränssnittet, så att vi kan göra förbättringar. 
- - Diverse andra korrigeringar. 

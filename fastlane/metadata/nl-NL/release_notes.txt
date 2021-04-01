@@ -1,3 +1,0 @@
-- Tijdens het bewerken van een product kun je productvariaties, -eigenschappen en opties van producteigenschappen maken, verwijderen en bijwerken.
-- Het ontwerp is vernieuwd en je dashboardtabbladen zijn aangepast. We ontvangen graag je feedback over de gebruikersinterface zodat we deze kunnen verbeteren. 
- - Andere verbeteringen. 

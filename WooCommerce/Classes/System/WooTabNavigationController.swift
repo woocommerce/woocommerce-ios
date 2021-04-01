@@ -3,7 +3,7 @@ import UIKit
 /// Navigation controller for a Woo tab, shown as the root view controller of one of the tab bar.
 /// The first view controller always has large title, while the following view controllers in the navigation stack do not have large title by default.
 /// The following view controllers can override `preferredLargeTitleDisplayMode` function to change the large title display mode.
-final class WooTabNavigationController: UINavigationController {
+final class WooTabNavigationController: WooNavigationController {
     init() {
         super.init(nibName: nil, bundle: nil)
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.largeTitles) {

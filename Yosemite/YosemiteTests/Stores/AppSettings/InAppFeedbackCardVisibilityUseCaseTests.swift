@@ -158,7 +158,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
     func test_shouldBeVisible_for_productM5_is_true_if_no_settings_are_found() throws {
         // Given
         let settings = GeneralAppSettings(installationDate: nil, feedbacks: [:])
-        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .productsM5)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .productsVariations)
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible()
@@ -169,8 +169,8 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
     func test_shouldBeVisible_for_productM5_is_true_if_feedback_has_pending_status() throws {
         // Given
-        let settings = createAppSetting(instalationDate: nil, feedbackType: .productsM5, feedbackSatus: .pending)
-        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .productsM5)
+        let settings = createAppSetting(instalationDate: nil, feedbackType: .productsVariations, feedbackSatus: .pending)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .productsVariations)
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible()
@@ -181,8 +181,8 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
     func test_shouldBeVisible_for_productM5_is_false_if_feedback_has_dismissed_status() throws {
         // Given
-        let settings = createAppSetting(instalationDate: nil, feedbackType: .productsM5, feedbackSatus: .dismissed)
-        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .productsM5)
+        let settings = createAppSetting(instalationDate: nil, feedbackType: .productsVariations, feedbackSatus: .dismissed)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .productsVariations)
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible()
@@ -193,8 +193,8 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 
     func test_shouldBeVisible_for_productM5_is_false_if_feedback_has_given_status() throws {
         // Given
-        let settings = createAppSetting(instalationDate: nil, feedbackType: .productsM5, feedbackSatus: .given(Date()))
-        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .productsM5)
+        let settings = createAppSetting(instalationDate: nil, feedbackType: .productsVariations, feedbackSatus: .given(Date()))
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .productsVariations)
 
         // When
         let shouldBeVisible = try useCase.shouldBeVisible()

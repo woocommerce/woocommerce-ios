@@ -12,7 +12,9 @@ final class ShippingLabelFormViewController: UIViewController {
     init(order: Order) {
         viewModel = ShippingLabelFormViewModel(siteID: order.siteID,
                                                originAddress: nil,
-                                               destinationAddress: order.shippingAddress)
+                                               destinationAddress: order.shippingAddress,
+                                               items: order.items,
+                                               currency: order.currency)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -36,7 +38,6 @@ private extension ShippingLabelFormViewController {
 
     func configureNavigationBar() {
         title = Localization.titleView
-        removeNavigationBackBarButtonText()
     }
 
     func configureMainView() {
@@ -186,8 +187,8 @@ private extension ShippingLabelFormViewController {
                        icon: .productPlaceholderImage,
                        title: Localization.packageDetailsCellTitle,
                        body: "To be implemented",
-                       buttonTitle: Localization.continueButtonInCells) {
-
+                       buttonTitle: Localization.continueButtonInCells) { [weak self] in
+            self?.displayPackageDetailsVC()
         }
     }
 
@@ -249,6 +250,11 @@ private extension ShippingLabelFormViewController {
             }
         }
         navigationController?.pushViewController(vc, animated: true)
+    }
+
+    func displayPackageDetailsVC() {
+        let vc = ShippingLabelPackageDetailsViewController(items: viewModel.orderItems, currency: viewModel.currency)
+        navigationController?.show(vc, sender: nil)
     }
 }
 

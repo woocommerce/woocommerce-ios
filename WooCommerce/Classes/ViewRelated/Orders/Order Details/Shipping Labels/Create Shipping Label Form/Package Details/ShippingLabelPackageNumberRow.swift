@@ -31,7 +31,7 @@ private extension ShippingLabelPackageNumberRow {
 
     enum Constants {
         static let height: CGFloat = 44
-        static let padding: CGFloat = 44
+        static let padding: CGFloat = 16
     }
 }
 

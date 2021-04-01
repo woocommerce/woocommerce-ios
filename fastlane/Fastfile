@@ -49,7 +49,7 @@ ENV["PROJECT_ROOT_FOLDER"]="./"
 ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
 
 # Other defines used across multiple lanes
-REPOSITORY_NAME="WordPress-Android"
+REPOSITORY_NAME="woocommerce-ios"
 
 ########################################################################
 # Release Lanes
@@ -265,6 +265,7 @@ REPOSITORY_NAME="WordPress-Android"
     circleci_trigger_job(
       circle_ci_token: ENV["CIRCLE_CI_AUTH_TOKEN"], 
       repository: REPOSITORY_NAME, 
+      organization: "woocommerce",
       branch: options[:branch_to_build],
       job_params: {"beta_build" => true}
     )
@@ -283,6 +284,7 @@ REPOSITORY_NAME="WordPress-Android"
     circleci_trigger_job(
       circle_ci_token: ENV["CIRCLE_CI_AUTH_TOKEN"], 
       repository: REPOSITORY_NAME, 
+      organization: "woocommerce",
       branch: options[:branch_to_build],
       job_params: {"release_build" => true}
     )

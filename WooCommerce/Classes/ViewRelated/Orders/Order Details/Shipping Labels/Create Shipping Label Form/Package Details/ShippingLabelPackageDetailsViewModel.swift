@@ -8,7 +8,7 @@ import protocol Storage.StorageManagerType
 final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
     private let order: Order
-    let orderItems: [OrderItem]
+    private let orderItems: [OrderItem]
     private let currency: String
     private let currencyFormatter: CurrencyFormatter
     private let stores: StoresManager

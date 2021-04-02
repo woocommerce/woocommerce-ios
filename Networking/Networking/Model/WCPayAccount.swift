@@ -5,9 +5,15 @@ public struct WCPayAccount: Decodable {
     public let hasPendingRequirements: Bool
     public let hasOverdueRequirements: Bool
     public let currentDeadline: Date?
+    /// An alphanumeric string set by the merchant, e.g. `MYSTORE.COM`
+    /// See https://stripe.com/docs/statement-descriptors
     public let statementDescriptor: String
+    /// A three character lowercase currency code, e.g. `usd`
+    /// See https://stripe.com/docs/api/accounts/object#account_object-default_currency
     public let defaultCurrency: String
     public let supportedCurrencies: [String]
+    /// A two character country code, e.g. `US`
+    /// See https://stripe.com/docs/api/accounts/object#account_object-country
     public let country: String
 
     public init(

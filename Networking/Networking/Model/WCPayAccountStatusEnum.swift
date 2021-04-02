@@ -89,12 +89,21 @@ extension WCPayAccountStatusEnum: RawRepresentable {
 /// Enum containing all possible account status keys
 ///
 private enum Keys {
+    /// The WCPay account is fully set up without restriction and ready for card present payments.
     static let complete               = "complete"
+    /// The WCPay account is restricted - it is under review or has pending or overdue requirements.
     static let restricted             = "restricted"
+    /// The WCPay account has been rejected due to fradulent activity.
     static let rejectedFraud          = "rejected.fraud"
+    /// The WCPay account has been rejected due to violating the terms of service.
     static let rejectedTermsOfService = "rejected.terms_of_service"
+    /// The WCPay account has been rejected due to a watch list or sanctions.
     static let rejectedListed         = "rejected.listed"
+    /// The WCPay account has been rejected due to other reasons.
     static let rejectedOther          = "rejected.other"
-    static let noAccount              = "NOACCOUNT" /// The status field will be not present in the API response when no account has been set up.
-    static let unknown                = "UNKNOWN" /// This value does NOT appear in the API response. It is a default case for unrecognized responses.
+    /// The WCPay account onboarding has not been completed.
+    /// Note that NO fields are present in the API response in this situation. The response is simplay an empty array.
+    static let noAccount              = "NOACCOUNT"
+    /// An unrecognized response was returned for the account status field.
+    static let unknown                = "UNKNOWN"
 }

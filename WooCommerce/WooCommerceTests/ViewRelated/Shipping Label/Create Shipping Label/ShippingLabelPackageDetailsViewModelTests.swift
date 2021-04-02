@@ -58,7 +58,8 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
                                                              formatter: currencyFormatter,
-                                                             storageManager: storageManager)
+                                                             storageManager: storageManager,
+                                                             weightUnit: "kg")
         XCTAssertEqual(viewModel.itemsRows.count, 0)
 
         // When

@@ -35,14 +35,14 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService) {
+         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
         self.order = order
         self.orderItems = order.items
         self.currency = order.currency
         self.currencyFormatter = formatter
         self.stores = stores
         self.storageManager = storageManager
-        weightUnit = shippingSettingsService.weightUnit
+        self.weightUnit = weightUnit
         configureResultsControllers()
         syncProducts()
         syncProductVariations()

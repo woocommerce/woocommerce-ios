@@ -61,22 +61,19 @@ public struct WCPayAccount: Decodable {
             country: country
         )
     }
+}
 
-    /// Convenience initializer for the exceptional case where the self-hosted
-    /// site has WCPay active, but the merchant has not on-boarded
-    ///
-    public init(status: WCPayAccountStatusEnum) {
-        self.init(
-            status: status,
-            hasPendingRequirements: false,
-            hasOverdueRequirements: false,
-            currentDeadline: nil,
-            statementDescriptor: "",
-            defaultCurrency: "",
-            supportedCurrencies: [],
-            country: ""
-        )
-    }
+public extension WCPayAccount {
+    static let noAccount = WCPayAccount(
+        status: .noAccount,
+        hasPendingRequirements: false,
+        hasOverdueRequirements: false,
+        currentDeadline: nil,
+        statementDescriptor: "",
+        defaultCurrency: "",
+        supportedCurrencies: [],
+        country: ""
+    )
 }
 
 private extension WCPayAccount {

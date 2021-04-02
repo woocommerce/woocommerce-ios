@@ -67,7 +67,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         itemsRows = generateItemsRows()
     }
 
-    /// Generate the items rows, creating an element in the array for every item (eg. if there are an item with quantity 3,
+    /// Generate the items rows, creating an element in the array for every item (eg. if there is an item with quantity 3,
     /// we will generate 3 different items), and we will remove virtual products. 
     ///
     private func generateItemsRows() -> [ItemToFulfillRow] {
@@ -138,10 +138,11 @@ private extension ShippingLabelPackageDetailsViewModel {
                                 + " The %2$@ is the weight.")
         static func subtitle(weight: String?, attributes: [VariationAttributeViewModel]) -> String {
             let attributesText = attributes.map { $0.nameOrValue }.joined(separator: ", ")
+            let weight = weight?.isNotEmpty == true ? (weight ?? "0") : "0"
             if attributes.isEmpty {
-                return String.localizedStringWithFormat(subtitleFormat, weight ?? "0")
+                return String.localizedStringWithFormat(subtitleFormat, weight)
             } else {
-                return String.localizedStringWithFormat(subtitleWithAttributesFormat, attributesText, weight ?? "0")
+                return String.localizedStringWithFormat(subtitleWithAttributesFormat, attributesText, weight)
             }
         }
     }

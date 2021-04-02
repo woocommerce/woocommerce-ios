@@ -3,41 +3,41 @@ import Foundation
 /// Represents all of the possible Site Plugin Statuses in enum form
 ///
 public enum WCPayAccountStatusEnum: Decodable, Hashable, GeneratedFakeable {
-    /// Complete: This is the normal state for a fully functioning WCPay account. The merchant should be able to collect
+    /// This is the normal state for a fully functioning WCPay account. The merchant should be able to collect
     /// card present payments.
     case complete
 
-    /// restricted: This state occurs when there is required business information missing from the account.
-    /// If hasOverdueRequirements is also true, then the deadline for providing that information HAS PASSED.
-    /// The merchant will probably NOT be able to collect card present payments.
-    /// Otherwise, if hasPendingRequirements is true, then the deadline for providing that information has not yet passed.
-    /// The deadline is available in currentDeadline. The merchant will probably be able to collect card present payments
+    /// This state occurs when there is required business information missing from the account.
+    /// If `hasOverdueRequirements` is also true, then the deadline for providing that information HAS PASSED and
+    /// the merchant will probably NOT be able to collect card present payments.
+    /// Otherwise, if `hasPendingRequirements` is true, then the deadline for providing that information has not yet passed.
+    /// The deadline is available in `currentDeadline` and the merchant will probably be able to collect card present payments
     /// until the deadline.
-    /// Otherwise, if neither hasOverdueRequirements nor hasPendingRequirements is true, then the account is under
-    /// review by Stripe. The merchant will probably not be able to collect card present payments.
+    /// Otherwise, if neither `hasOverdueRequirements` nor `hasPendingRequirements` is true, then the account is under
+    /// review by Stripe and the merchant will probably not be able to collect card present payments.
     case restricted
 
-    /// rejectedFraud: This state occurs when our payment processor rejects the merchant account due to suspected fraudulent
+    /// This state occurs when our payment processor rejects the merchant account due to suspected fraudulent
     /// activity. The merchant will NOT be able to collect card present payments.
     case rejectedFraud
 
-    /// rejectedTermsOfService: This state occurs when our payment processor rejects the merchant account due to terms of
+    /// This state occurs when our payment processor rejects the merchant account due to terms of
     /// service violation(s). The merchant will NOT be able to collect card present payments.
     case rejectedTermsOfService
 
-    /// rejectedListed: This state occurs when our payment processor rejects the merchant account due to sanctions/being
+    /// This state occurs when our payment processor rejects the merchant account due to sanctions/being
     /// on a watch list. The merchant will NOT be able to collect card present payments.
     case rejectedListed
 
-    /// rejectedListed: This state occurs when our payment processor rejects the merchant account due to any other reason.
+    /// This state occurs when our payment processor rejects the merchant account due to any other reason.
     /// The merchant will NOT be able to collect card present payments.
     case rejectedOther
 
-    /// noAccount: This state occurs when the merchant hasn't started on-boarding yet. The merchant will NOT be able to
+    /// This state occurs when the merchant hasn't  on-boarded yet. The merchant will NOT be able to
     /// collect card present payments.
     case noAccount
 
-    /// unknown: This state occurs when the self-hosted site responded in a way we don't recognize.
+    /// This state occurs when the self-hosted site responded in a way we don't recognize.
     case unknown
 }
 

@@ -6,7 +6,7 @@ public struct WCPayAccount: Decodable {
     public let status: WCPayAccountStatusEnum
     public let hasPendingRequirements: Bool
     public let hasOverdueRequirements: Bool
-    public let currentDeadline: Date
+    public let currentDeadline: Date?
     public let statementDescriptor: String
     public let defaultCurrency: String
     public let supportedCurrencies: [String]
@@ -16,7 +16,7 @@ public struct WCPayAccount: Decodable {
         status: WCPayAccountStatusEnum,
         hasPendingRequirements: Bool,
         hasOverdueRequirements: Bool,
-        currentDeadline: Date,
+        currentDeadline: Date?,
         statementDescriptor: String,
         defaultCurrency: String,
         supportedCurrencies: [String],
@@ -39,8 +39,7 @@ public struct WCPayAccount: Decodable {
         let status = try container.decode(WCPayAccountStatusEnum.self, forKey: .status)
         let hasPendingRequirements = try container.decode(Bool.self, forKey: .hasPendingRequirements)
         let hasOverdueRequirements = try container.decode(Bool.self, forKey: .hasOverdueRequirements)
-        /// current_deadline may contain "null" instead of a unix timestamp integer value, so we use decodeIfPresent to handle that properly
-        let currentDeadline = try container.decodeIfPresent(Date.self, forKey: .currentDeadline) ?? WCPayAccount.nullDeadline
+        let currentDeadline = try container.decodeIfPresent(Date.self, forKey: .currentDeadline)
         let statementDescriptor = try container.decode(String.self, forKey: .statementDescriptor)
         let currencyContainer = try container.nestedContainer(keyedBy: CurrencyCodingKeys.self, forKey: .storeCurrencies)
         let defaultCurrency = try currencyContainer.decode(String.self, forKey: .defaultCurrency)
@@ -67,7 +66,7 @@ public struct WCPayAccount: Decodable {
             status: status,
             hasPendingRequirements: false,
             hasOverdueRequirements: false,
-            currentDeadline: WCPayAccount.nullDeadline,
+            currentDeadline: nil,
             statementDescriptor: "",
             defaultCurrency: "",
             supportedCurrencies: [],

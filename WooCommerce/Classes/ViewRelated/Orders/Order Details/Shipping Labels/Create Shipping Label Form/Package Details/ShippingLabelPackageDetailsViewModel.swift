@@ -51,6 +51,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     private func configureResultsControllers() {
         resultsControllers = ShippingLabelPackageDetailsResultsControllers(siteID: order.siteID,
                                                                            orderItems: order.items,
+                                                                           storageManager: storageManager,
            onProductReload: { [weak self] (products) in
             guard let self = self else { return }
             self.products = products
@@ -82,15 +83,13 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
             else {
                 product = products.first { $0.productID == item.productID }
             }
-            guard product?.virtual == false || productVariation?.virtual == false else {
-                break
-            }
-
-            for _ in 0..<item.quantity.intValue {
-                let attributes = item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) }
-                let weightUnitA: String = weightUnit ?? ""
-                let subtitle = Localization.subtitle(weight: isVariation ? productVariation?.weight : product?.weight, attributes: attributes) + weightUnitA
-                itemsToFulfill.append(ItemToFulfillRow(title: item.name, subtitle: subtitle))
+            if product?.virtual == false || productVariation?.virtual == false {
+                for _ in 0..<item.quantity.intValue {
+                    let attributes = item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) }
+                    let weightUnitA: String = weightUnit ?? ""
+                    let subtitle = Localization.subtitle(weight: isVariation ? productVariation?.weight : product?.weight, attributes: attributes) + weightUnitA
+                    itemsToFulfill.append(ItemToFulfillRow(title: item.name, subtitle: subtitle))
+                }
             }
         }
         return itemsToFulfill

@@ -1,8 +1,6 @@
 /// Represent a WCPay accont Entity.
 ///
 public struct WCPayAccount: Decodable {
-    public static let nullDeadline = Date(timeIntervalSince1970: 0)
-
     public let status: WCPayAccountStatusEnum
     public let hasPendingRequirements: Bool
     public let hasOverdueRequirements: Bool

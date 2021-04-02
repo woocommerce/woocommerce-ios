@@ -34,12 +34,22 @@ open class NUXButtonViewController: UIViewController {
 
     // MARK: - Properties
 
-    @IBOutlet private var shadowView: UIImageView?
     @IBOutlet var stackView: UIStackView?
     @IBOutlet var bottomButton: NUXButton?
     @IBOutlet var topButton: NUXButton?
     @IBOutlet var tertiaryButton: NUXButton?
     @IBOutlet var buttonHolder: UIView?
+
+    @IBOutlet private var shadowView: UIImageView?
+    @IBOutlet private var shadowViewEdgeConstraints: [NSLayoutConstraint]!
+
+    /// Used to constrain the shadow view outside of the
+    /// bounds of this view controller.
+    weak var shadowLayoutGuide: UILayoutGuide? {
+        didSet {
+            updateShadowViewEdgeConstraints()
+        }
+    }
 
     open weak var delegate: NUXButtonViewControllerDelegate?
     open var backgroundColor: UIColor?
@@ -89,6 +99,23 @@ open class NUXButtonViewController: UIViewController {
         } else {
             button?.isHidden = true
         }
+    }
+
+    private func updateShadowViewEdgeConstraints() {
+        guard let layoutGuide = shadowLayoutGuide,
+              let shadowView = shadowView else {
+            return
+        }
+
+        NSLayoutConstraint.deactivate(shadowViewEdgeConstraints)
+        shadowView.translatesAutoresizingMaskIntoConstraints = false
+
+        shadowViewEdgeConstraints = [
+            layoutGuide.leadingAnchor.constraint(equalTo: shadowView.leadingAnchor),
+            layoutGuide.trailingAnchor.constraint(equalTo: shadowView.trailingAnchor),
+        ]
+
+        NSLayoutConstraint.activate(shadowViewEdgeConstraints)
     }
 
     // MARK: public API

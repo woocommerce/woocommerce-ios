@@ -1,0 +1,16 @@
+{
+    "data": {
+        "has_pending_requirements": true,
+        "has_overdue_requirements": false,
+        "current_deadline": 1897351200,
+        "status": "restricted",
+        "statement_descriptor": "RESTRICTED.PENDING.STORE",
+        "store_currencies": {
+            "default": "usd",
+            "supported": [
+                "usd"
+            ]
+        },
+        "country": "US"
+    }
+}

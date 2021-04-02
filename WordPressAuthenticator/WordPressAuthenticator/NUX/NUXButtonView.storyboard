@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -47,7 +47,7 @@
                                         </constraints>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <state key="normal" title="Primary Button">
-                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleColor" systemColor="darkTextColor"/>
                                         </state>
                                         <state key="highlighted">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -64,7 +64,7 @@
                                         </constraints>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                         <state key="normal" title="Cancel Button">
-                                            <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="titleColor" systemColor="darkTextColor"/>
                                         </state>
                                         <state key="highlighted">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -76,6 +76,7 @@
                                 </subviews>
                             </stackView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="vC0-ge-46d"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="RrB-Aa-ADd" firstAttribute="leading" secondItem="vC0-ge-46d" secondAttribute="leading" id="29Q-jd-hiu"/>
@@ -86,7 +87,6 @@
                             <constraint firstItem="vC0-ge-46d" firstAttribute="trailing" secondItem="xzf-f5-7zQ" secondAttribute="trailing" constant="16" id="pdk-yI-G0O"/>
                             <constraint firstItem="RrB-Aa-ADd" firstAttribute="top" secondItem="vC0-ge-46d" secondAttribute="top" constant="-10" id="qZc-jk-YRs"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="vC0-ge-46d"/>
                     </view>
                     <size key="freeformSize" width="375" height="136"/>
                     <connections>
@@ -96,6 +96,8 @@
                         <outlet property="stackView" destination="xzf-f5-7zQ" id="frG-Oo-nB4"/>
                         <outlet property="tertiaryButton" destination="uAF-kU-f7P" id="B6D-lx-GhC"/>
                         <outlet property="topButton" destination="knN-O6-M86" id="3fN-Bh-Z8O"/>
+                        <outletCollection property="shadowViewEdgeConstraints" destination="29Q-jd-hiu" collectionClass="NSMutableArray" id="Um7-mZ-AvI"/>
+                        <outletCollection property="shadowViewEdgeConstraints" destination="APL-hI-Fg5" collectionClass="NSMutableArray" id="K7W-dN-UTb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7sJ-Ej-Lr7" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -105,5 +107,8 @@
     </scenes>
     <resources>
         <image name="darkgrey-shadow" width="10" height="10"/>
+        <systemColor name="darkTextColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

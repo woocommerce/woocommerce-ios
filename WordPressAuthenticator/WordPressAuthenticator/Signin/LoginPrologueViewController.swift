@@ -163,6 +163,8 @@ class LoginPrologueViewController: LoginViewController {
         }
 
         buildUnifiedPrologueButtons(buttonViewController)
+
+        buttonViewController.shadowLayoutGuide = view.safeAreaLayoutGuide
     }
 
     /// Displays the old UI prologue buttons.

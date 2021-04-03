@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-03-16 14:54:15+0000 */
+/* Translation-Revision-Date: 2021-04-01 11:55:02+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -191,7 +191,7 @@
 "Add Price" = "Добавление цены";
 
 /* Action to add product on the placeholder overlay when there are no products on the Products tab */
-"Add Product" = "Add Product";
+"Add Product" = "Добавить товар";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
@@ -265,7 +265,7 @@
 "Address Suggested" = "Предлагаемый адрес";
 
 /* Error showed in Shipping Label Address Validation for the address field */
-"Address missing" = "Address missing";
+"Address missing" = "Не указан адрес";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Добавляет отслеживание для заказа.";
@@ -518,7 +518,7 @@
 "City" = "Город";
 
 /* Error showed in Shipping Label Address Validation for the city field */
-"City missing" = "City missing";
+"City missing" = "Не указан город";
 
 /* Button title for clearing all filters for the list. */
 "Clear all" = "Очистить все";
@@ -624,7 +624,7 @@
 "Country" = "Страна";
 
 /* Error showed in Shipping Label Address Validation for the country field */
-"Country missing" = "Country missing";
+"Country missing" = "Не указана страна";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "Меню исправления ошибок";
@@ -666,7 +666,7 @@
 "Customer Provided Note" = "Примечание клиента";
 
 /* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Cut the post office line by printing shipping labels at home with your phone at discounted rates!";
+"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Сократите очередь на почте, распечатывая транспортные этикетки дома с телефона со скидкой!";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Дата отправки";
@@ -1240,7 +1240,7 @@
 "Learn more about Jetpack" = "Дополнительные сведения о Jetpack";
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your phone" = "Learn more about creating labels with your phone";
+"Learn more about creating labels with your phone" = "Подробнее о распечатке этикеток с телефона";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (8,5 x 14 in)";
@@ -1426,7 +1426,7 @@
 "Name" = "Имя";
 
 /* Error showed in Shipping Label Address Validation for the name field */
-"Name missing" = "Name missing";
+"Name missing" = "Не указано имя";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
 "Navigates to Settings." = "Переход к настройкам.";
@@ -1767,7 +1767,7 @@
 "Postcode" = "Почтовый индекс";
 
 /* Error showed in Shipping Label Address Validation for the postcode field */
-"Postcode missing" = "Postcode missing";
+"Postcode missing" = "Не указан почтовый индекс";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "При поддержке Automattic";
@@ -2084,7 +2084,7 @@
 "Save as draft" = "Сохранить как черновик";
 
 /* Message text in the shipping label creation info screen */
-"Save time and money by fulfilling with WooCommerce Shipping" = "Save time and money by fulfilling with WooCommerce Shipping";
+"Save time and money by fulfilling with WooCommerce Shipping" = "Экономьте время и деньги, выполняя заказы с помощью WooCommerce Shipping";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Сохранение продукта...";
@@ -2385,7 +2385,7 @@
 "Standard rate" = "Стандартный тариф";
 
 /* The details on the placeholder overlay when there are no products on the Products tab */
-"Start selling today by adding your first product to the store." = "Start selling today by adding your first product to the store.";
+"Start selling today by adding your first product to the store." = "Добавьте в магазин первый продукт, чтобы уже сегодня приступить к продаже товаров.";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "Период начала — %1$@, период окончания — %2$@";
@@ -2394,7 +2394,7 @@
 "State" = "Округ\/Область";
 
 /* Error showed in Shipping Label Address Validation for the state field */
-"State missing" = "State missing";
+"State missing" = "Не указан регион";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -2479,7 +2479,7 @@
 "Tap to modify the item refund quantity" = "Нажмите, чтобы изменить сумму к возврату за позицию";
 
 /* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
-"Tap to show information about creating a shipping label" = "Tap to show information about creating a shipping label";
+"Tap to show information about creating a shipping label" = "Коснитесь для просмотра сведений о создании транспортной этикетки";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "Нажмите, чтобы показать инструкции, как распечатать транспортную этикетку на мобильном устройстве";

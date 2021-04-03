@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-03-16 18:54:04+0000 */
+/* Translation-Revision-Date: 2021-04-01 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -191,7 +191,7 @@
 "Add Price" = "添加价格";
 
 /* Action to add product on the placeholder overlay when there are no products on the Products tab */
-"Add Product" = "Add Product";
+"Add Product" = "添加产品";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
@@ -265,7 +265,7 @@
 "Address Suggested" = "推荐的地址";
 
 /* Error showed in Shipping Label Address Validation for the address field */
-"Address missing" = "Address missing";
+"Address missing" = "缺少地址";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "为订单添加跟踪信息。";
@@ -518,7 +518,7 @@
 "City" = "城市";
 
 /* Error showed in Shipping Label Address Validation for the city field */
-"City missing" = "City missing";
+"City missing" = "缺少城市";
 
 /* Button title for clearing all filters for the list. */
 "Clear all" = "全部清除";
@@ -624,7 +624,7 @@
 "Country" = "国家\/地区";
 
 /* Error showed in Shipping Label Address Validation for the country field */
-"Country missing" = "Country missing";
+"Country missing" = "缺少国家\/地区";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "崩溃调试菜单";
@@ -666,7 +666,7 @@
 "Customer Provided Note" = "客户提供的备注";
 
 /* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Cut the post office line by printing shipping labels at home with your phone at discounted rates!";
+"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "在家中使用手机以折扣价打印配送标签，节省在邮局处理的时间！";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "配送日期";
@@ -1240,7 +1240,7 @@
 "Learn more about Jetpack" = "详细了解 Jetpack";
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your phone" = "Learn more about creating labels with your phone";
+"Learn more about creating labels with your phone" = "详细了解如何使用手机创建配送标签";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal（8.5 x 14 英寸）";
@@ -1426,7 +1426,7 @@
 "Name" = "名称";
 
 /* Error showed in Shipping Label Address Validation for the name field */
-"Name missing" = "Name missing";
+"Name missing" = "缺少名称";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
 "Navigates to Settings." = "导航至“设置”。";
@@ -1767,7 +1767,7 @@
 "Postcode" = "邮编";
 
 /* Error showed in Shipping Label Address Validation for the postcode field */
-"Postcode missing" = "Postcode missing";
+"Postcode missing" = "缺少邮编";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "由 Automattic 提供支持";
@@ -2084,7 +2084,7 @@
 "Save as draft" = "保存为草稿";
 
 /* Message text in the shipping label creation info screen */
-"Save time and money by fulfilling with WooCommerce Shipping" = "Save time and money by fulfilling with WooCommerce Shipping";
+"Save time and money by fulfilling with WooCommerce Shipping" = "利用 WooCommerce Shipping 节省时间和资金";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "正在保存您的产品...";
@@ -2385,7 +2385,7 @@
 "Standard rate" = "标准税率";
 
 /* The details on the placeholder overlay when there are no products on the Products tab */
-"Start selling today by adding your first product to the store." = "Start selling today by adding your first product to the store.";
+"Start selling today by adding your first product to the store." = "通过在您的商店中添加第一款商品，立即开始销售。";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "起始日期：%1$@；结束日期：%2$@";
@@ -2394,7 +2394,7 @@
 "State" = "州\/省\/自治区\/直辖市";
 
 /* Error showed in Shipping Label Address Validation for the state field */
-"State missing" = "State missing";
+"State missing" = "缺少州\/省\/自治区\/直辖市";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -2479,7 +2479,7 @@
 "Tap to modify the item refund quantity" = "轻按可调整商品退款数量";
 
 /* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
-"Tap to show information about creating a shipping label" = "Tap to show information about creating a shipping label";
+"Tap to show information about creating a shipping label" = "轻点以显示有关创建配送标签的信息";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "轻按可显示有关如何在移动设备上打印配送标签的说明";

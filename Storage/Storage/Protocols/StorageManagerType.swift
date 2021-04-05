@@ -16,17 +16,15 @@ public protocol StorageManagerType {
     ///
     var viewStorage: StorageType { get }
 
+    /// Returns the `Storage` associated to the main thread.
+    ///
+    var writerDerivedStorage: StorageType { get }
+
     /// Performs a task in Background: a special `Storage` instance will be provided (which is expected to be used within the closure!).
     /// Note that you must NEVER use the viewStorage within the backgroundClosure.
     ///
-    func performBackgroundTask(_ closure: @escaping (StorageType) -> Void)
 
-    /// Returns a shared derived StorageType instance which is a child of `viewStorage`. Useful for performing background
-    /// operations within the same write context.
-    ///
-    func writerDerivedStorage() -> StorageType
-
-    /// Save a derived context created with `newDerivedStorage()` via this convenience method
+    /// Save a derived context created with `writerDerivedStorage` via this convenience method
     ///
     /// - Parameters:
     ///   - derivedStorageType: a derived StorageType constructed with `newDerivedStorage`

@@ -15,11 +15,11 @@ import Networking
 ///
 /// ```
 /// private lazy var sharedDerivedStorage: StorageType = {
-///     return storageManager.newDerivedStorage()
+///     return storageManager.writerDerivedStorage
 /// }()
 /// ```
 ///
-/// The `newDerivedStorage()` method typically creates a child `StorageType`
+/// The `writerDerivedStorage` method typically creates a child `StorageType`
 /// (`NSManagedObjectContext`). These children:
 ///
 /// - Have no idea they have siblings (derived `StorageType` in other `Stores`)
@@ -78,8 +78,8 @@ final class StorageManagerConcurrencyTests: XCTestCase {
     ///
     func testWhenSequentiallySavingItCanAllowSavingOfDuplicates() {
         // Given
-        let firstDerivedStorage = storageManager.newDerivedStorage()
-        let secondDerivedStorage = storageManager.newDerivedStorage()
+        let firstDerivedStorage = storageManager.writerDerivedStorage
+        let secondDerivedStorage = storageManager.writerDerivedStorage
 
         let orderStatus = Networking.OrderStatus(name: "In Space", siteID: 1_998, slug: "in-space", total: 9)
 
@@ -109,8 +109,8 @@ final class StorageManagerConcurrencyTests: XCTestCase {
     ///
     func testWhenConcurrentlySavingItCanAllowSavingOfDuplicates() {
         // Given
-        let firstDerivedStorage = storageManager.newDerivedStorage()
-        let secondDerivedStorage = storageManager.newDerivedStorage()
+        let firstDerivedStorage = storageManager.writerDerivedStorage
+        let secondDerivedStorage = storageManager.writerDerivedStorage
 
         let orderStatus = Networking.OrderStatus(name: "In Space", siteID: 1_998, slug: "in-space", total: 9)
 
@@ -142,8 +142,8 @@ final class StorageManagerConcurrencyTests: XCTestCase {
     ///
     func testWhenConcurrentlySavingUsingASinglePerformBlockItCanAllowSavingOfDuplicates() {
         // Given
-        let firstDerivedStorage = storageManager.newDerivedStorage()
-        let secondDerivedStorage = storageManager.newDerivedStorage()
+        let firstDerivedStorage = storageManager.writerDerivedStorage
+        let secondDerivedStorage = storageManager.writerDerivedStorage
 
         let orderStatus = Networking.OrderStatus(name: "In Space", siteID: 1_998, slug: "in-space", total: 9)
 
@@ -175,8 +175,8 @@ final class StorageManagerConcurrencyTests: XCTestCase {
     ///
     func testWhenSequentiallySavingAndWaitingThenNoDuplicatesAreSaved() {
         // Given
-        let firstDerivedStorage = storageManager.newDerivedStorage()
-        let secondDerivedStorage = storageManager.newDerivedStorage()
+        let firstDerivedStorage = storageManager.writerDerivedStorage
+        let secondDerivedStorage = storageManager.writerDerivedStorage
 
         let orderStatus = Networking.OrderStatus(name: "In Space", siteID: 1_998, slug: "in-space", total: 9)
 
@@ -204,8 +204,8 @@ final class StorageManagerConcurrencyTests: XCTestCase {
     ///
     func testWhenNotSavingThenADerivedStorageWillNotShareDataToItsSiblings() {
         // Given
-        let firstDerivedStorage = storageManager.newDerivedStorage()
-        let secondDerivedStorage = storageManager.newDerivedStorage()
+        let firstDerivedStorage = storageManager.writerDerivedStorage
+        let secondDerivedStorage = storageManager.writerDerivedStorage
 
         let orderStatus = Networking.OrderStatus(name: "In Space", siteID: 1_998, slug: "in-space", total: 9)
 
@@ -233,8 +233,8 @@ final class StorageManagerConcurrencyTests: XCTestCase {
     ///
     func testWhenSavedThenADerivedStorageWillShareDataToItsSiblings() {
         // Given
-        let firstDerivedStorage = storageManager.newDerivedStorage()
-        let secondDerivedStorage = storageManager.newDerivedStorage()
+        let firstDerivedStorage = storageManager.writerDerivedStorage
+        let secondDerivedStorage = storageManager.writerDerivedStorage
 
         let orderStatus = Networking.OrderStatus(name: "In Space", siteID: 1_998, slug: "in-space", total: 9)
 

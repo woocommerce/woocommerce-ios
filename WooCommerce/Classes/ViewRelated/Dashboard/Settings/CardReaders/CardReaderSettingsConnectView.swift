@@ -195,6 +195,10 @@ extension CardReaderSettingsConnectView: UITableViewDelegate {
         return row.height
     }
 
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
+    }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let row = rowAtIndexPath(indexPath)
         if row == .connectLearnMore {

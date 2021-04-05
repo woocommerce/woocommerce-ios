@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="aQT-Gx-U3x">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="aQT-Gx-U3x">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -11,7 +11,7 @@
         <!--Get Started View Controller-->
         <scene sceneID="7Rf-Qz-qsw">
             <objects>
-                <viewController storyboardIdentifier="GetStartedViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="aQT-Gx-U3x" customClass="GetStartedViewController" customModule="WordPressAuthenticatorResources" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GetStartedViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="aQT-Gx-U3x" customClass="GetStartedViewController" customModule="WordPressAuthenticator" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ljV-kF-TaY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -67,28 +67,42 @@
                                             <constraint firstItem="QDu-95-gF8" firstAttribute="centerX" secondItem="f1j-fj-w73" secondAttribute="centerX" id="dze-LI-gGD"/>
                                         </constraints>
                                     </stackView>
-                                    <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c0A-wK-EYS" userLabel="Button Container View">
+                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cn0-53-fHS">
                                         <rect key="frame" x="0.0" y="467" width="375" height="200"/>
+                                        <subviews>
+                                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c0A-wK-EYS" userLabel="Button Container View">
+                                                <rect key="frame" x="0.0" y="0.0" width="375" height="200"/>
+                                                <connections>
+                                                    <segue destination="X2o-oZ-7LG" kind="embed" id="FOr-lU-Bf2"/>
+                                                </connections>
+                                            </containerView>
+                                        </subviews>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="200" placeholder="YES" id="yDo-SO-kax"/>
+                                            <constraint firstItem="c0A-wK-EYS" firstAttribute="top" secondItem="Cn0-53-fHS" secondAttribute="top" id="KGY-Ol-Fv0"/>
+                                            <constraint firstAttribute="trailing" secondItem="c0A-wK-EYS" secondAttribute="trailing" id="Mih-IE-tDp"/>
+                                            <constraint firstAttribute="bottom" secondItem="c0A-wK-EYS" secondAttribute="bottom" id="fBY-mz-gIs"/>
+                                            <constraint firstItem="c0A-wK-EYS" firstAttribute="width" secondItem="Cn0-53-fHS" secondAttribute="width" id="fzv-K8-wr1"/>
+                                            <constraint firstItem="c0A-wK-EYS" firstAttribute="height" secondItem="Cn0-53-fHS" secondAttribute="height" priority="250" id="juC-C0-Nkd"/>
+                                            <constraint firstItem="c0A-wK-EYS" firstAttribute="leading" secondItem="Cn0-53-fHS" secondAttribute="leading" id="xci-Ye-W7z"/>
                                         </constraints>
-                                        <connections>
-                                            <segue destination="X2o-oZ-7LG" kind="embed" id="FOr-lU-Bf2"/>
-                                        </connections>
-                                    </containerView>
+                                    </scrollView>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
+                                    <constraint firstItem="Cn0-53-fHS" firstAttribute="top" secondItem="f1j-fj-w73" secondAttribute="bottom" id="840-2J-2hS"/>
+                                    <constraint firstItem="Cn0-53-fHS" firstAttribute="height" secondItem="dFS-Ic-byk" secondAttribute="height" multiplier="0.29985" id="Ffj-Ox-t77"/>
                                     <constraint firstItem="cym-N3-RXL" firstAttribute="centerX" secondItem="dFS-Ic-byk" secondAttribute="centerX" id="N6H-Mc-YuY"/>
-                                    <constraint firstItem="c0A-wK-EYS" firstAttribute="top" secondItem="f1j-fj-w73" secondAttribute="bottom" id="OYW-cs-zFh"/>
                                     <constraint firstItem="f1j-fj-w73" firstAttribute="top" secondItem="KLl-Uz-wEP" secondAttribute="bottom" id="RGk-wN-Zgt"/>
+                                    <constraint firstItem="KLl-Uz-wEP" firstAttribute="height" relation="lessThanOrEqual" secondItem="dFS-Ic-byk" secondAttribute="height" multiplier="0.676162" id="UHX-ff-unr"/>
                                     <constraint firstItem="cym-N3-RXL" firstAttribute="centerY" secondItem="dFS-Ic-byk" secondAttribute="centerY" id="VNM-Yh-kiW"/>
+                                    <constraint firstAttribute="bottom" secondItem="Cn0-53-fHS" secondAttribute="bottom" id="aYz-Gd-qyC"/>
+                                    <constraint firstItem="Cn0-53-fHS" firstAttribute="leading" secondItem="dFS-Ic-byk" secondAttribute="leading" id="lg0-jE-8Iw"/>
+                                    <constraint firstAttribute="trailing" secondItem="Cn0-53-fHS" secondAttribute="trailing" id="pgS-wZ-oFg"/>
                                 </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="ihD-pY-rg9" firstAttribute="bottom" secondItem="c0A-wK-EYS" secondAttribute="bottom" id="73l-a1-EZl"/>
                             <constraint firstItem="KLl-Uz-wEP" firstAttribute="leading" secondItem="ihD-pY-rg9" secondAttribute="leading" id="7Fn-Eh-Xx9"/>
                             <constraint firstItem="ihD-pY-rg9" firstAttribute="trailing" secondItem="KLl-Uz-wEP" secondAttribute="trailing" id="7MD-ux-8i0"/>
                             <constraint firstItem="f1j-fj-w73" firstAttribute="leading" secondItem="ihD-pY-rg9" secondAttribute="leading" id="DU0-wo-2QI"/>
@@ -96,8 +110,6 @@
                             <constraint firstItem="KLl-Uz-wEP" firstAttribute="top" secondItem="ihD-pY-rg9" secondAttribute="top" id="R3r-wt-ya5"/>
                             <constraint firstItem="dFS-Ic-byk" firstAttribute="top" secondItem="ihD-pY-rg9" secondAttribute="top" id="YEy-EW-XmD"/>
                             <constraint firstItem="ihD-pY-rg9" firstAttribute="trailing" secondItem="f1j-fj-w73" secondAttribute="trailing" id="ir4-hA-zeL"/>
-                            <constraint firstItem="c0A-wK-EYS" firstAttribute="leading" secondItem="KLl-Uz-wEP" secondAttribute="leading" id="k1g-Ot-UbY"/>
-                            <constraint firstItem="KLl-Uz-wEP" firstAttribute="trailing" secondItem="c0A-wK-EYS" secondAttribute="trailing" id="m0w-6D-5q6"/>
                             <constraint firstItem="dFS-Ic-byk" firstAttribute="leading" secondItem="ljV-kF-TaY" secondAttribute="leading" id="msS-7X-Za9"/>
                             <constraint firstItem="dFS-Ic-byk" firstAttribute="trailing" secondItem="ljV-kF-TaY" secondAttribute="trailing" id="zY1-Yz-kTf"/>
                         </constraints>

@@ -148,11 +148,7 @@ private extension ProductAttributeStore {
                 return storage.insertNewObject(ofType: Storage.ProductAttribute.self)
             }()
 
-            // Workaround: API does not return options when fetching global product attributes.
-            // Here, we persist them manually from previous sessions, in order to keep the product data up to date.
-            let storedOptions = readOnlyProductAttribute.options.isEmpty ? storageProductAttribute.options : readOnlyProductAttribute.options
             storageProductAttribute.update(with: readOnlyProductAttribute)
-            storageProductAttribute.options = storedOptions ?? []
         }
     }
 

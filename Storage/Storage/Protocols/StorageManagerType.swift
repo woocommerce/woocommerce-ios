@@ -21,11 +21,10 @@ public protocol StorageManagerType {
     ///
     func performBackgroundTask(_ closure: @escaping (StorageType) -> Void)
 
-
-    /// Returns a new derived StorageType instance which is a child of `viewStorage`. Useful for performing multiple
-    /// operations within the same context.
+    /// Returns a shared derived StorageType instance which is a child of `viewStorage`. Useful for performing background
+    /// operations within the same write context.
     ///
-    func newDerivedStorage() -> StorageType
+    func writerDerivedStorage() -> StorageType
 
     /// Save a derived context created with `newDerivedStorage()` via this convenience method
     ///

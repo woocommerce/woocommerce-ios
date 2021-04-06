@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-03-23 12:34:58+0000 */
+/* Translation-Revision-Date: 2021-03-30 11:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -666,7 +666,7 @@
 "Customer Provided Note" = "Kundnotering";
 
 /* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Cut the post office line by printing shipping labels at home with your phone at discounted rates!";
+"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Skippa kön på postkontoret genom att skriva ut fraktetiketter till rabatterade priser hemma med din telefon!";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Datum skickat";
@@ -2084,7 +2084,7 @@
 "Save as draft" = "Spara som utkast";
 
 /* Message text in the shipping label creation info screen */
-"Save time and money by fulfilling with WooCommerce Shipping" = "Save time and money by fulfilling with WooCommerce Shipping";
+"Save time and money by fulfilling with WooCommerce Shipping" = "Spara tid och pengar genom att fullfölja med WooCommerce Shipping";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Sparar din produkt …";
@@ -2385,7 +2385,7 @@
 "Standard rate" = "Standardmoms";
 
 /* The details on the placeholder overlay when there are no products on the Products tab */
-"Start selling today by adding your first product to the store." = "Start selling today by adding your first product to the store.";
+"Start selling today by adding your first product to the store." = "Börja sälja idag genom att lägga till din första produkt i butiken.";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "Startperiod %1$@, slutperiod %2$@";
@@ -2479,7 +2479,7 @@
 "Tap to modify the item refund quantity" = "Tryck för att ändra kvantiteten för varuåterbetalning";
 
 /* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
-"Tap to show information about creating a shipping label" = "Tap to show information about creating a shipping label";
+"Tap to show information about creating a shipping label" = "Tryck för att visa information om att skapa en fraktetikett";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "Tryck för att visa instruktioner om hur man skriver ut en fraktetikett på en mobilenhet.";

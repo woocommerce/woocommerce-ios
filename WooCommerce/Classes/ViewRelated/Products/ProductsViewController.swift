@@ -162,7 +162,7 @@ final class ProductsViewController: UIViewController {
         configureSyncingCoordinator()
         registerTableViewCells()
 
-        updateTopBannerView()
+        showTopBannerViewIfNeeded()
 
         /// We sync the local product settings for configuring local sorting and filtering.
         /// If there are some info stored when this screen is loaded, the data will be updated using the stored sort/filters.
@@ -397,12 +397,12 @@ private extension ProductsViewController {
 private extension ProductsViewController {
     /// Fetches products feedback visibility from AppSettingsStore and update products top banner accordingly
     ///
-    func updateTopBannerView() {
-        let action = AppSettingsAction.loadFeedbackVisibility(type: .productsM5) { [weak self] result in
+    func showTopBannerViewIfNeeded() {
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .productsVariations) { [weak self] result in
             switch result {
             case .success(let visible):
                 if visible {
-                    self?.requestAndShowNewTopBannerView()
+                    self?.requestAndShowNewTopBannerView(for: .variations)
                 } else {
                     self?.hideTopBannerView()
                 }
@@ -416,9 +416,10 @@ private extension ProductsViewController {
 
     /// Request a new product banner from `ProductsTopBannerFactory` and wire actionButtons actions
     ///
-    func requestAndShowNewTopBannerView() {
+    func requestAndShowNewTopBannerView(for bannerType: ProductsTopBannerFactory.BannerType) {
         let isExpanded = topBannerView?.isExpanded ?? false
         ProductsTopBannerFactory.topBanner(isExpanded: isExpanded,
+                                           type: bannerType,
                                            expandedStateChangeHandler: { [weak self] in
             self?.updateTableHeaderViewHeight()
         }, onGiveFeedbackButtonPressed: { [weak self] in
@@ -593,14 +594,15 @@ private extension ProductsViewController {
     ///
     func presentProductsFeedback() {
         // Present survey
-        let navigationController = SurveyCoordinatingController(survey: .productsM5Feedback)
+        let navigationController = SurveyCoordinatingController(survey: .productsVariationsFeedback)
         present(navigationController, animated: true, completion: nil)
     }
 
     /// Mark feedback request as dismissed and update banner visibility
     ///
     func dismissProductsBanner() {
-        let action = AppSettingsAction.updateFeedbackStatus(type: .productsM5, status: .dismissed) { [weak self] result in
+        let action = AppSettingsAction.updateFeedbackStatus(type: .productsVariations,
+                                                            status: .dismissed) { [weak self] result in
             if let error = result.failure {
                 CrashLogging.logError(error)
             }

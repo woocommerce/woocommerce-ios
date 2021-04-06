@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-03-16 09:54:15+0000 */
+/* Translation-Revision-Date: 2021-03-31 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -191,7 +191,7 @@
 "Add Price" = "Tambahkan Harga";
 
 /* Action to add product on the placeholder overlay when there are no products on the Products tab */
-"Add Product" = "Add Product";
+"Add Product" = "Tambahkan Produk";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
@@ -265,7 +265,7 @@
 "Address Suggested" = "Alamat Disarankan";
 
 /* Error showed in Shipping Label Address Validation for the address field */
-"Address missing" = "Address missing";
+"Address missing" = "Alamat belum diisi";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Menambahkan pelacakan ke pesanan.";
@@ -518,7 +518,7 @@
 "City" = "Kota";
 
 /* Error showed in Shipping Label Address Validation for the city field */
-"City missing" = "City missing";
+"City missing" = "Kota belum diisi";
 
 /* Button title for clearing all filters for the list. */
 "Clear all" = "Hapus semua";
@@ -624,7 +624,7 @@
 "Country" = "Negara";
 
 /* Error showed in Shipping Label Address Validation for the country field */
-"Country missing" = "Country missing";
+"Country missing" = "Negara belum diisi";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "Crash Menu Debug";
@@ -666,7 +666,7 @@
 "Customer Provided Note" = "Catatan yang Diberikan Pelanggan";
 
 /* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Cut the post office line by printing shipping labels at home with your phone at discounted rates!";
+"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Tak perlu antre saat di kantor pos dengan mencetak label pengiriman di rumah dari ponsel dengan harga diskon!";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Tanggal pengiriman";
@@ -1240,7 +1240,7 @@
 "Learn more about Jetpack" = "Pelajari selengkapnya tentang Jetpack";
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your phone" = "Learn more about creating labels with your phone";
+"Learn more about creating labels with your phone" = "Pelajari selengkapnya tentang membuat label menggunakan ponsel";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (8,5 x 14 inci)";
@@ -1426,7 +1426,7 @@
 "Name" = "Nama";
 
 /* Error showed in Shipping Label Address Validation for the name field */
-"Name missing" = "Name missing";
+"Name missing" = "Nama belum diisi";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
 "Navigates to Settings." = "Buka Pengaturan.";
@@ -1767,7 +1767,7 @@
 "Postcode" = "Kode pos";
 
 /* Error showed in Shipping Label Address Validation for the postcode field */
-"Postcode missing" = "Postcode missing";
+"Postcode missing" = "Kode pos belum diisi";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Didukung oleh Automattic";
@@ -2084,7 +2084,7 @@
 "Save as draft" = "Simpan sebagai draf";
 
 /* Message text in the shipping label creation info screen */
-"Save time and money by fulfilling with WooCommerce Shipping" = "Save time and money by fulfilling with WooCommerce Shipping";
+"Save time and money by fulfilling with WooCommerce Shipping" = "Hemat waktu dan biaya dengan memproses pesanan menggunakan WooCommerce Shipping";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Menyimpan produk Anda...";
@@ -2385,7 +2385,7 @@
 "Standard rate" = "Tarif standar";
 
 /* The details on the placeholder overlay when there are no products on the Products tab */
-"Start selling today by adding your first product to the store." = "Start selling today by adding your first product to the store.";
+"Start selling today by adding your first product to the store." = "Mulai berjualan hari ini dengan menambahkan produk pertama ke toko Anda.";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "Periode awal %1$@, periode akhir %2$@";
@@ -2394,7 +2394,7 @@
 "State" = "Status";
 
 /* Error showed in Shipping Label Address Validation for the state field */
-"State missing" = "State missing";
+"State missing" = "Provinsi belum diisi";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -2479,7 +2479,7 @@
 "Tap to modify the item refund quantity" = "Ketuk untuk mengubah jumlah pengembalian item";
 
 /* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
-"Tap to show information about creating a shipping label" = "Tap to show information about creating a shipping label";
+"Tap to show information about creating a shipping label" = "Ketuk untuk menampilkan informasi tentang membuat label pengiriman";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "Ketuk untuk menampilkan instruksi cara mencetak label pengiriman di perangkat seluler";
@@ -3137,7 +3137,7 @@
 "WooCommerce" = "WooCommerce";
 
 /* Navigation bar title in the shipping label creation info screen */
-"WooCommerce Shipping" = "WooCommerce Shipping";
+"WooCommerce Shipping" = "Pengiriman WooCommerce";
 
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "Dukungan WooCommerce untuk iOS";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-03-17 11:54:04+0000 */
+/* Translation-Revision-Date: 2021-03-30 11:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -191,7 +191,7 @@
 "Add Price" = "Fiyat Ekle";
 
 /* Action to add product on the placeholder overlay when there are no products on the Products tab */
-"Add Product" = "Add Product";
+"Add Product" = "Ürün Ekle";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
@@ -265,7 +265,7 @@
 "Address Suggested" = "Önerilen Adres";
 
 /* Error showed in Shipping Label Address Validation for the address field */
-"Address missing" = "Address missing";
+"Address missing" = "Adres eksik";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Bir siparişe takip ekler.";
@@ -518,7 +518,7 @@
 "City" = "Şehir";
 
 /* Error showed in Shipping Label Address Validation for the city field */
-"City missing" = "City missing";
+"City missing" = "Şehir eksik";
 
 /* Button title for clearing all filters for the list. */
 "Clear all" = "Tümünü temizle";
@@ -624,7 +624,7 @@
 "Country" = "Ülke";
 
 /* Error showed in Shipping Label Address Validation for the country field */
-"Country missing" = "Country missing";
+"Country missing" = "Ülke eksik";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "Kilitlenme Hata Ayıklama Menüsü";
@@ -666,7 +666,7 @@
 "Customer Provided Note" = "Müşterinin Verdiği Not";
 
 /* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Cut the post office line by printing shipping labels at home with your phone at discounted rates!";
+"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Telefonunuzla evde indirimli fiyatlara gönderim etiketleri yazdırarak postane ile olan bağınızı koparın.";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Gönderim tarihi";
@@ -1240,7 +1240,7 @@
 "Learn more about Jetpack" = "Jetpack hakkında daha fazlasını öğrenin";
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your phone" = "Learn more about creating labels with your phone";
+"Learn more about creating labels with your phone" = "Telefonunuzla etiket oluşturma hakkında daha fazla bilgi edinin";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (8,5 x 14 inç)";
@@ -1426,7 +1426,7 @@
 "Name" = "Ad";
 
 /* Error showed in Shipping Label Address Validation for the name field */
-"Name missing" = "Name missing";
+"Name missing" = "Ad eksik";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
 "Navigates to Settings." = "Ayarlar'a gider.";
@@ -1767,7 +1767,7 @@
 "Postcode" = "Posta Kodu";
 
 /* Error showed in Shipping Label Address Validation for the postcode field */
-"Postcode missing" = "Postcode missing";
+"Postcode missing" = "Posta kodu eksik";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Automattic tarafından desteklenmektedir";
@@ -2084,7 +2084,7 @@
 "Save as draft" = "Taslak olarak kaydet";
 
 /* Message text in the shipping label creation info screen */
-"Save time and money by fulfilling with WooCommerce Shipping" = "Save time and money by fulfilling with WooCommerce Shipping";
+"Save time and money by fulfilling with WooCommerce Shipping" = "İşinizi WooCommerce Shipping ile yaparak zamandan ve paradan tasarruf edin";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Ürününüz kaydediliyor...";
@@ -2385,7 +2385,7 @@
 "Standard rate" = "Standart oran";
 
 /* The details on the placeholder overlay when there are no products on the Products tab */
-"Start selling today by adding your first product to the store." = "Start selling today by adding your first product to the store.";
+"Start selling today by adding your first product to the store." = "Mağazanıza ilk ürünü ekleyerek hemen bugün satışa başlayın.";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "%1$@ başlangıç süreci, %2$@ bitiş süreci";
@@ -2394,7 +2394,7 @@
 "State" = "Eyalet";
 
 /* Error showed in Shipping Label Address Validation for the state field */
-"State missing" = "State missing";
+"State missing" = "Eyalet eksik";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -2479,7 +2479,7 @@
 "Tap to modify the item refund quantity" = "Öğe iade miktarını değiştirmek için dokunun";
 
 /* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
-"Tap to show information about creating a shipping label" = "Tap to show information about creating a shipping label";
+"Tap to show information about creating a shipping label" = "Gönderim etiketi oluşturmayla ilgili bilgileri görüntülemek için dokunun";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "Mobil cihazda gönderim etiketinin nasıl yazdırılacağına ilişkin talimatları görüntülemek için dokunun";

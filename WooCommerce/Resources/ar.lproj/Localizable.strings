@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-03-16 14:54:03+0000 */
+/* Translation-Revision-Date: 2021-03-30 14:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -191,7 +191,7 @@
 "Add Price" = "إضافة سعر";
 
 /* Action to add product on the placeholder overlay when there are no products on the Products tab */
-"Add Product" = "Add Product";
+"Add Product" = "إضافة منتج";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
@@ -265,7 +265,7 @@
 "Address Suggested" = "العنوان المقترح";
 
 /* Error showed in Shipping Label Address Validation for the address field */
-"Address missing" = "Address missing";
+"Address missing" = "العنوان مفقود";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "يُضيف التعقب إلى الطلب.";
@@ -518,7 +518,7 @@
 "City" = "المدينة";
 
 /* Error showed in Shipping Label Address Validation for the city field */
-"City missing" = "City missing";
+"City missing" = "المدينة مفقودة";
 
 /* Button title for clearing all filters for the list. */
 "Clear all" = "مسح الكل";
@@ -624,7 +624,7 @@
 "Country" = "البلد";
 
 /* Error showed in Shipping Label Address Validation for the country field */
-"Country missing" = "Country missing";
+"Country missing" = "البلد مفقود";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "قائمة تصحيح الأعطال";
@@ -666,7 +666,7 @@
 "Customer Provided Note" = "الملاحظة المقدمة إلى العميل";
 
 /* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Cut the post office line by printing shipping labels at home with your phone at discounted rates!";
+"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "توقف عن الذهاب إلى مكتب البريد عن طريق طباعة ملصقات الشحن في المنزل باستخدام هاتفك بأسعار مخفضة!";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "تاريخ الشحن";
@@ -1240,7 +1240,7 @@
 "Learn more about Jetpack" = "معرفة المزيد عن Jetpack";
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your phone" = "Learn more about creating labels with your phone";
+"Learn more about creating labels with your phone" = "معرفة المزيد عن إنشاء ملصقات باستخدام هاتفك";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "قانوني (8.5 × 14 بوصة)";
@@ -1426,7 +1426,7 @@
 "Name" = "الاسم";
 
 /* Error showed in Shipping Label Address Validation for the name field */
-"Name missing" = "Name missing";
+"Name missing" = "الاسم مفقود";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
 "Navigates to Settings." = "الانتقال إلى الإعدادات.";
@@ -1767,7 +1767,7 @@
 "Postcode" = "الرمز البريدي";
 
 /* Error showed in Shipping Label Address Validation for the postcode field */
-"Postcode missing" = "Postcode missing";
+"Postcode missing" = "الرمز البريدي مفقود";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "مدعوم من Automattic";
@@ -2084,7 +2084,7 @@
 "Save as draft" = "حفظ كمسودة";
 
 /* Message text in the shipping label creation info screen */
-"Save time and money by fulfilling with WooCommerce Shipping" = "Save time and money by fulfilling with WooCommerce Shipping";
+"Save time and money by fulfilling with WooCommerce Shipping" = "ادخر الوقت والمال عن طريق الالتزام بالشحن عبر WooCommerce";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "جارٍ حفظ منتجك...";
@@ -2385,7 +2385,7 @@
 "Standard rate" = "سعر قياسي";
 
 /* The details on the placeholder overlay when there are no products on the Products tab */
-"Start selling today by adding your first product to the store." = "Start selling today by adding your first product to the store.";
+"Start selling today by adding your first product to the store." = "ابدأ بالبيع اليوم عن طريق إضافة منتجك الأول إلى المخزن.";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "فترة البدء %1$@، فترة الانتهاء %2$@";
@@ -2394,7 +2394,7 @@
 "State" = "الحالة";
 
 /* Error showed in Shipping Label Address Validation for the state field */
-"State missing" = "State missing";
+"State missing" = "الولاية مفقودة";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -2479,7 +2479,7 @@
 "Tap to modify the item refund quantity" = "اضغط لتعديل كمية استرداد العنصر";
 
 /* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
-"Tap to show information about creating a shipping label" = "Tap to show information about creating a shipping label";
+"Tap to show information about creating a shipping label" = "اضغط لعرض معلومات حول إنشاء ملصق الشحن";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "اضغط لعرض الإرشادات حول كيفية طباعة تسمية الشحن على جهازك المحمول";
@@ -3137,7 +3137,7 @@
 "WooCommerce" = "WooCommerce";
 
 /* Navigation bar title in the shipping label creation info screen */
-"WooCommerce Shipping" = "WooCommerce Shipping";
+"WooCommerce Shipping" = "الشحن عبر WooCommerce";
 
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "WooCommerce لدعم نظام التشغيل iOS";

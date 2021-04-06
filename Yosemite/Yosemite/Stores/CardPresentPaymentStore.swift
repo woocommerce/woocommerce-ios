@@ -42,10 +42,11 @@ public final class CardPresentPaymentStore: Store {
             cancelCardReaderDiscovery(completion: completion)
         case .connect(let reader, let completion):
             connect(reader: reader, onCompletion: completion)
-        case .collectPayment(let siteID, let orderID, let parameters, let completion):
+        case .collectPayment(let siteID, let orderID, let parameters, let event, let completion):
             collectPayment(siteID: siteID,
                            orderID: orderID,
                            parameters: parameters,
+                           onCardReaderMessage: event,
                            onCompletion: completion)
         }
     }
@@ -62,16 +63,13 @@ private extension CardPresentPaymentStore {
         // new data via the CardReaderService's stream of discovered readers
         // In here, we should redirect that data to Storage and also up to the UI.
         // For now we are sending the data up to the UI directly
-        print("**** Store. starting discovery*")
         cardReaderService.discoveredReaders.sink { readers in
             completion(readers)
         }.store(in: &cancellables)
     }
 
     func cancelCardReaderDiscovery(completion: @escaping (CardReaderServiceDiscoveryStatus) -> Void) {
-        print("**** Store. cancelling discovery*")
         cardReaderService.discoveryStatus.sink { status in
-            print("///// status received ", status)
             completion(status)
         }.store(in: &cancellables)
 
@@ -93,7 +91,9 @@ private extension CardPresentPaymentStore {
         }.store(in: &cancellables)
     }
 
-    func collectPayment(siteID: Int64, orderID: Int64, parameters: PaymentParameters, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func collectPayment(siteID: Int64, orderID: Int64, parameters: PaymentParameters,
+                        onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
+                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
 
         cardReaderService.createPaymentIntent(parameters)
             .flatMap {
@@ -114,6 +114,11 @@ private extension CardPresentPaymentStore {
             // TODO. Initiate final step. Update order. Submit intent id to backend.
             // Deferred to https://github.com/woocommerce/woocommerce-ios/issues/3825
             onCompletion(.success(()))
+        }.store(in: &cancellables)
+
+        // Observe status events fired by the card reader
+        cardReaderService.readerEvents.sink { event in
+            onCardReaderMessage(event)
         }.store(in: &cancellables)
     }
 }

@@ -460,7 +460,9 @@ extension OrderDetailsViewModel {
         stores.dispatch(deleteTrackingAction)
     }
 
-    func collectPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func collectPayment(onPresentCard: @escaping (String)->Void,
+                        onPresentMessage: @escaping (String) -> Void,
+                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
         // Mock Payment. We will have to instantiate these parameters with
         // the proper amount, currency and readable descripitions later.
         // We could pull the amount from the order but in test mode the Stripe Terminal SDK fails to process amounts that do not end in 00
@@ -470,10 +472,24 @@ extension OrderDetailsViewModel {
                                                   statementDescription: "Statement description.")
 
         let action = CardPresentPaymentAction.collectPayment(siteID: order.siteID,
-                                                             orderID: order.orderID, parameters: paymentParameters) { (result) in
+                                                             orderID: order.orderID, parameters: paymentParameters,
+                                                             onCardReaderMessage: { (event) in
+                                                                switch event.type {
+                                                                case .displayMessage:
+                                                                    onPresentMessage(event.message ?? "")
+                                                                case .waitingForInput:
+                                                                    onPresentCard(event.message ?? "")
+                                                                default:
+                                                                    break
+                                                                }
+                                                                print("==== received card reader event")
+                                                                print(event.message)
+                                                                print("//// received card reader event")
+
+                                                             }, onCompletion: { (result) in
             // For now, just propagate the result to the UI.
             onCompletion(result)
-        }
+        })
 
         ServiceLocator.stores.dispatch(action)
     }

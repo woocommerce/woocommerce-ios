@@ -1,6 +1,6 @@
 public struct CardReaderEvent {
-    let type: CardReaderEventType
-    let message: String?
+    public let type: CardReaderEventType
+    public let message: String?
 }
 
 /// The possible events from a connected reader.

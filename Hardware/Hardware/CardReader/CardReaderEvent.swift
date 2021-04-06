@@ -1,5 +1,19 @@
+public struct CardReaderEvent {
+    let type: CardReaderEventType
+    let message: String?
+}
+
 /// The possible events from a connected reader.
-public enum CardReaderEvent {
+public enum CardReaderEventType {
+    /// The reader begins waiting for input.
+    /// The app should prompt the customer to present a payment method
+    case waitingForInput
+
+    /// Request that a prompt be displayed in the app.
+    /// For example, if the prompt is SwipeCard,
+    /// the app should instruct the user to present the card again by swiping it.
+    case displayMessage
+
     // A card was inserted.
     case cardInserted
 

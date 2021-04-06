@@ -268,6 +268,8 @@ extension StripeCardReaderService: ReaderDisplayDelegate {
         print(inputOptions)
         print(inputOptions.rawValue)
         print("//// did request reader input")
+        let cardReaderEvent = CardReaderEvent(readerInputOptions: inputOptions)
+        readerEventsSubject.send(cardReaderEvent)
     }
 
     /// In this case the Stripe Terminal SDK wants us to present a string on screen
@@ -277,6 +279,8 @@ extension StripeCardReaderService: ReaderDisplayDelegate {
         print("==== did request display message")
         print(displayMessage.rawValue)
         print("//// did request display message")
+        let cardReaderEvent = CardReaderEvent(displayMessage: displayMessage)
+        readerEventsSubject.send(cardReaderEvent)
     }
 }
 

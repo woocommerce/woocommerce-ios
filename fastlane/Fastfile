@@ -50,6 +50,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
 
 # Other defines used across multiple lanes
 REPOSITORY_NAME="woocommerce-ios"
+GH_ORG_NAME="woocommerce"
 
 ########################################################################
 # Release Lanes
@@ -266,7 +267,7 @@ REPOSITORY_NAME="woocommerce-ios"
     circleci_trigger_job(
       circle_ci_token: ENV["CIRCLE_CI_AUTH_TOKEN"], 
       repository: REPOSITORY_NAME, 
-      organization: "woocommerce",
+      organization: GH_ORG_NAME,
       branch: options[:branch_to_build],
       job_params: {"beta_build" => true}
     )
@@ -285,7 +286,7 @@ REPOSITORY_NAME="woocommerce-ios"
     circleci_trigger_job(
       circle_ci_token: ENV["CIRCLE_CI_AUTH_TOKEN"], 
       repository: REPOSITORY_NAME, 
-      organization: "woocommerce",
+      organization: GH_ORG_NAME,
       branch: options[:branch_to_build],
       job_params: {"release_build" => true}
     )

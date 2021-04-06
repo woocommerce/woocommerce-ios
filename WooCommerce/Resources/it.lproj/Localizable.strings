@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-03-17 13:54:14+0000 */
+/* Translation-Revision-Date: 2021-03-31 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -191,7 +191,7 @@
 "Add Price" = "Aggiungi il prezzo";
 
 /* Action to add product on the placeholder overlay when there are no products on the Products tab */
-"Add Product" = "Add Product";
+"Add Product" = "Aggiungi prodotto";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
@@ -265,7 +265,7 @@
 "Address Suggested" = "Indirizzo suggerito";
 
 /* Error showed in Shipping Label Address Validation for the address field */
-"Address missing" = "Address missing";
+"Address missing" = "Indirizzo mancante";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Aggiungi tracciabilità a un ordine.";
@@ -518,7 +518,7 @@
 "City" = "Città";
 
 /* Error showed in Shipping Label Address Validation for the city field */
-"City missing" = "City missing";
+"City missing" = "Città mancante";
 
 /* Button title for clearing all filters for the list. */
 "Clear all" = "Cancella tutto";
@@ -624,7 +624,7 @@
 "Country" = "Nazione";
 
 /* Error showed in Shipping Label Address Validation for the country field */
-"Country missing" = "Country missing";
+"Country missing" = "Paese mancante";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "Menu di debug dell'arresto anomalo";
@@ -666,7 +666,7 @@
 "Customer Provided Note" = "Nota fornita dai clienti";
 
 /* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Cut the post office line by printing shipping labels at home with your phone at discounted rates!";
+"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Evita la fila all'ufficio postale stampando le etichette di spedizione a casa dal tuo telefono a prezzi scontati.";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Data di spedizione";
@@ -1240,7 +1240,7 @@
 "Learn more about Jetpack" = "Scopri di più su Jetpack";
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your phone" = "Learn more about creating labels with your phone";
+"Learn more about creating labels with your phone" = "Scopri di più su come creare etichette dal telefono";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legale (8,5 x 14 mm)";
@@ -1426,7 +1426,7 @@
 "Name" = "Nome";
 
 /* Error showed in Shipping Label Address Validation for the name field */
-"Name missing" = "Name missing";
+"Name missing" = "Nome mancante";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
 "Navigates to Settings." = "Naviga fino a Impostazioni.";
@@ -1767,7 +1767,7 @@
 "Postcode" = "C.A.P.";
 
 /* Error showed in Shipping Label Address Validation for the postcode field */
-"Postcode missing" = "Postcode missing";
+"Postcode missing" = "Codice postale mancante";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Utilizza Automattic";
@@ -2084,7 +2084,7 @@
 "Save as draft" = "Salva come bozza";
 
 /* Message text in the shipping label creation info screen */
-"Save time and money by fulfilling with WooCommerce Shipping" = "Save time and money by fulfilling with WooCommerce Shipping";
+"Save time and money by fulfilling with WooCommerce Shipping" = "Risparmia tempo e denaro con WooCommerce Shipping";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Salvataggio del tuo prodotto...";
@@ -2132,7 +2132,7 @@
 "See layout and paper sizes options" = "Visualizza le opzioni di layout e delle dimensioni del foglio";
 
 /* Select all button title in the issue refund screen */
-"Select All" = "Select All";
+"Select All" = "Seleziona tutto";
 
 /* Select parent category screen - Screen title */
 "Select Parent Category" = "Seleziona categoria genitore";
@@ -2385,7 +2385,7 @@
 "Standard rate" = "Tariffa standard";
 
 /* The details on the placeholder overlay when there are no products on the Products tab */
-"Start selling today by adding your first product to the store." = "Start selling today by adding your first product to the store.";
+"Start selling today by adding your first product to the store." = "Inizia a vendere oggi aggiungendo il tuo primo prodotto al negozio.";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "Periodo di inizio %1$@, periodo di fine %2$@";
@@ -2394,7 +2394,7 @@
 "State" = "Stato";
 
 /* Error showed in Shipping Label Address Validation for the state field */
-"State missing" = "State missing";
+"State missing" = "Stato mancante";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -2479,7 +2479,7 @@
 "Tap to modify the item refund quantity" = "Tocca per modificare la quantità di articoli da rimborsare";
 
 /* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
-"Tap to show information about creating a shipping label" = "Tap to show information about creating a shipping label";
+"Tap to show information about creating a shipping label" = "Tocca per visualizzare le informazioni relative alla creazione di un'etichetta di spedizione";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "Tocca per visualizzare le istruzioni su come stampare un'etichetta di spedizione dal dispositivo mobile";

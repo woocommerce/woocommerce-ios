@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-03-17 13:54:04+0000 */
+/* Translation-Revision-Date: 2021-04-01 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -191,7 +191,7 @@
 "Add Price" = "להוסיף מחיר";
 
 /* Action to add product on the placeholder overlay when there are no products on the Products tab */
-"Add Product" = "Add Product";
+"Add Product" = "הוספת מוצר";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
@@ -265,7 +265,7 @@
 "Address Suggested" = "הכתובת שהומלצה";
 
 /* Error showed in Shipping Label Address Validation for the address field */
-"Address missing" = "Address missing";
+"Address missing" = "הכתובת חסרה";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "להוספת מעקב אחר הזמנה.";
@@ -518,7 +518,7 @@
 "City" = "עיר";
 
 /* Error showed in Shipping Label Address Validation for the city field */
-"City missing" = "City missing";
+"City missing" = "העיר חסרה";
 
 /* Button title for clearing all filters for the list. */
 "Clear all" = "למחוק הכול";
@@ -624,7 +624,7 @@
 "Country" = "מדינה";
 
 /* Error showed in Shipping Label Address Validation for the country field */
-"Country missing" = "Country missing";
+"Country missing" = "הארץ חסרה";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "תפריט לאיתור באגים של קריסה";
@@ -666,7 +666,7 @@
 "Customer Provided Note" = "הערה שסופקה על-ידי הלקוח";
 
 /* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Cut the post office line by printing shipping labels at home with your phone at discounted rates!";
+"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "אפשר לדלג על התורים בדואר על ידי הדפסה של תוויות משלוח בבית באמצעות הטלפון בתעריף מופחת!";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "תאריך משלוח";
@@ -1240,7 +1240,7 @@
 "Learn more about Jetpack" = "מידע נוסף על Jetpack";
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your phone" = "Learn more about creating labels with your phone";
+"Learn more about creating labels with your phone" = "למידע נוסף על יצירת תוויות באמצעות הטלפון";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "משפטי (8.5 x‏ 14 אינץ')";
@@ -1426,7 +1426,7 @@
 "Name" = "שם";
 
 /* Error showed in Shipping Label Address Validation for the name field */
-"Name missing" = "Name missing";
+"Name missing" = "השם חסר";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
 "Navigates to Settings." = "העברה לעמוד 'הגדרות'.";
@@ -1767,7 +1767,7 @@
 "Postcode" = "מיקוד";
 
 /* Error showed in Shipping Label Address Validation for the postcode field */
-"Postcode missing" = "Postcode missing";
+"Postcode missing" = "המיקוד חסר";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "מופעל על ידי Automattic";
@@ -2084,7 +2084,7 @@
 "Save as draft" = "לשמור כטיוטה";
 
 /* Message text in the shipping label creation info screen */
-"Save time and money by fulfilling with WooCommerce Shipping" = "Save time and money by fulfilling with WooCommerce Shipping";
+"Save time and money by fulfilling with WooCommerce Shipping" = "כדאי לחסוך זמן וכסף על ידי השלמת ההזמנה עם WooCommerce Shipping";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "שומר את המוצר שלך...";
@@ -2385,7 +2385,7 @@
 "Standard rate" = "תעריף סטנדרטי";
 
 /* The details on the placeholder overlay when there are no products on the Products tab */
-"Start selling today by adding your first product to the store." = "Start selling today by adding your first product to the store.";
+"Start selling today by adding your first product to the store." = "אפשר להתחיל למכור היום על ידי הוספה של המוצר הראשון לחנות שלך.";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "תקופת התחלה: %1$@, תקופת סיום: %2$@";
@@ -2394,7 +2394,7 @@
 "State" = "מדינה";
 
 /* Error showed in Shipping Label Address Validation for the state field */
-"State missing" = "State missing";
+"State missing" = "המדינה חסרה";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -2479,7 +2479,7 @@
 "Tap to modify the item refund quantity" = "יש להקיש כדי לשנות את סכום ההחזר הכספי עבור הפריט";
 
 /* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
-"Tap to show information about creating a shipping label" = "Tap to show information about creating a shipping label";
+"Tap to show information about creating a shipping label" = "יש להקיש כדי להציג מידע על יצירה של תווית המשלוח";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "יש להקיש להוראות כיצד להדפיס את תווית משלוח באמצעות המכשיר הנייד";

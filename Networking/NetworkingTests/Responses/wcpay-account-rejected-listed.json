@@ -1,0 +1,16 @@
+{
+    "data": {
+        "has_pending_requirements": false,
+        "has_overdue_requirements": false,
+        "current_deadline": null,
+        "status": "rejected.listed",
+        "statement_descriptor": "SANCTIONS.STORE",
+        "store_currencies": {
+            "default": "usd",
+            "supported": [
+                "usd"
+            ]
+        },
+        "country": "US"
+    }
+}

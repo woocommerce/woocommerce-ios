@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-03-18 10:54:04+0000 */
+/* Translation-Revision-Date: 2021-03-31 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -191,7 +191,7 @@
 "Add Price" = "価格を追加";
 
 /* Action to add product on the placeholder overlay when there are no products on the Products tab */
-"Add Product" = "Add Product";
+"Add Product" = "商品を追加";
 
 /* Action to add linked products to a product in the Linked Products List Selector screen
    Add Products button inside the Linked Products screen. - Navigation bar title for selecting multiple products. */
@@ -265,7 +265,7 @@
 "Address Suggested" = "おすすめのアドレス";
 
 /* Error showed in Shipping Label Address Validation for the address field */
-"Address missing" = "Address missing";
+"Address missing" = "住所がありません";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "注文に追跡を追加";
@@ -518,7 +518,7 @@
 "City" = "市区町村";
 
 /* Error showed in Shipping Label Address Validation for the city field */
-"City missing" = "City missing";
+"City missing" = "市区町村がありません";
 
 /* Button title for clearing all filters for the list. */
 "Clear all" = "すべてクリア";
@@ -624,7 +624,7 @@
 "Country" = "国";
 
 /* Error showed in Shipping Label Address Validation for the country field */
-"Country missing" = "Country missing";
+"Country missing" = "国がありません";
 
 /* The title for a menu that helps debug crashes in production builds */
 "Crash Debug Menu" = "クラッシュのデバッグメニュー";
@@ -666,7 +666,7 @@
 "Customer Provided Note" = "顧客提供メモ";
 
 /* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "Cut the post office line by printing shipping labels at home with your phone at discounted rates!";
+"Cut the post office line by printing shipping labels at home with your phone at discounted rates!" = "自宅でスマートフォンを使い、割引料金で配送ラベルを印刷して、郵便局での待ち時間をカット !";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "出荷日";
@@ -1240,7 +1240,7 @@
 "Learn more about Jetpack" = "Jetpack についてさらに詳しく";
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your phone" = "Learn more about creating labels with your phone";
+"Learn more about creating labels with your phone" = "スマートフォンでのラベル作成に関する詳細はこちら";
 
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "リーガル (8.5 x 14インチ)";
@@ -1426,7 +1426,7 @@
 "Name" = "名前";
 
 /* Error showed in Shipping Label Address Validation for the name field */
-"Name missing" = "Name missing";
+"Name missing" = "氏名がありません";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen. */
 "Navigates to Settings." = "「設定」に移動します。";
@@ -1767,7 +1767,7 @@
 "Postcode" = "郵便番号";
 
 /* Error showed in Shipping Label Address Validation for the postcode field */
-"Postcode missing" = "Postcode missing";
+"Postcode missing" = "郵便番号がありません";
 
 /* Info text saying that crowdsignal in an Automattic product */
 "Powered by Automattic" = "Powered by Automattic";
@@ -2084,7 +2084,7 @@
 "Save as draft" = "下書きとして保存";
 
 /* Message text in the shipping label creation info screen */
-"Save time and money by fulfilling with WooCommerce Shipping" = "Save time and money by fulfilling with WooCommerce Shipping";
+"Save time and money by fulfilling with WooCommerce Shipping" = "WooCommerce Shipping を利用して、時間とお金を節約";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "商品を保存しています...";
@@ -2385,7 +2385,7 @@
 "Standard rate" = "標準税率";
 
 /* The details on the placeholder overlay when there are no products on the Products tab */
-"Start selling today by adding your first product to the store." = "Start selling today by adding your first product to the store.";
+"Start selling today by adding your first product to the store." = "今すぐ販売を開始するには、最初の商品をストアに追加してください。";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "開始期間%1$@、終了期間%2$@";
@@ -2394,7 +2394,7 @@
 "State" = "州";
 
 /* Error showed in Shipping Label Address Validation for the state field */
-"State missing" = "State missing";
+"State missing" = "都道府県がありません";
 
 /* Product status setting list selector navigation title
    Status label in Product Settings */
@@ -2479,7 +2479,7 @@
 "Tap to modify the item refund quantity" = "タップしてアイテムの返金数量を変更";
 
 /* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
-"Tap to show information about creating a shipping label" = "Tap to show information about creating a shipping label";
+"Tap to show information about creating a shipping label" = "タップして配送ラベルの作成に関する情報を表示";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "タップして、モバイル端末で配送ラベルを印刷する方法の説明を表示";
@@ -3137,7 +3137,7 @@
 "WooCommerce" = "WooCommerce";
 
 /* Navigation bar title in the shipping label creation info screen */
-"WooCommerce Shipping" = "WooCommerce Shipping";
+"WooCommerce Shipping" = "WooCommerce の送料";
 
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "iOS 対応 WooCommerce サポート";

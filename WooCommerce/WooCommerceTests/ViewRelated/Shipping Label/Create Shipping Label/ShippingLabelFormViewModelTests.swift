@@ -21,7 +21,11 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
 
 
         // When
-        let shippingLabelFormViewModel = ShippingLabelFormViewModel(siteID: 10, originAddress: address, destinationAddress: nil)
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(siteID: 10,
+                                                                    originAddress: address,
+                                                                    destinationAddress: nil,
+                                                                    items: [],
+                                                                    currency: "USD")
 
         // Then
         let originAddress = shippingLabelFormViewModel.originAddress
@@ -39,7 +43,11 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
 
     func test_handleOriginAddressValueChanges_returns_updated_ShippingLabelAddress() {
         // Given
-        let shippingLabelFormViewModel = ShippingLabelFormViewModel(siteID: 10, originAddress: nil, destinationAddress: nil)
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(siteID: 10,
+                                                                    originAddress: nil,
+                                                                    destinationAddress: nil,
+                                                                    items: [],
+                                                                    currency: "USD")
         let expectedShippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
                                                            name: "Skylar Ferry",
                                                            phone: "12345",
@@ -59,7 +67,11 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
 
     func test_handleDestinationAddressValueChanges_returns_updated_ShippingLabelAddress() {
         // Given
-        let shippingLabelFormViewModel = ShippingLabelFormViewModel(siteID: 10, originAddress: nil, destinationAddress: nil)
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(siteID: 10,
+                                                                    originAddress: nil,
+                                                                    destinationAddress: nil,
+                                                                    items: [],
+                                                                    currency: "USD")
         let expectedShippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
                                                            name: "Skylar Ferry",
                                                            phone: "12345",
@@ -79,7 +91,11 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
 
     func test_sections_returns_updated_rows_after_validating_origin_address() {
         // Given
-        let shippingLabelFormViewModel = ShippingLabelFormViewModel(siteID: 10, originAddress: nil, destinationAddress: nil)
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(siteID: 10,
+                                                                    originAddress: nil,
+                                                                    destinationAddress: nil,
+                                                                    items: [],
+                                                                    currency: "USD")
         let expectedShippingAddress = MockShippingLabelAddress.sampleAddress()
         let currentRows = shippingLabelFormViewModel.state.sections.first?.rows
         XCTAssertEqual(currentRows?[0].type, .shipFrom)
@@ -111,7 +127,11 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
 
     func test_sections_returns_updated_rows_after_validating_destination_address() {
         // Given
-        let shippingLabelFormViewModel = ShippingLabelFormViewModel(siteID: 10, originAddress: nil, destinationAddress: nil)
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(siteID: 10,
+                                                                    originAddress: nil,
+                                                                    destinationAddress: nil,
+                                                                    items: [],
+                                                                    currency: "USD")
         let expectedShippingAddress = MockShippingLabelAddress.sampleAddress()
 
         // When

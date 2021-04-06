@@ -2,7 +2,7 @@ import Foundation
 
 extension Decimal {
 
-    /// Returns the int value of a decimal.
+    /// Returns the int value of a decimal. We ensure we round down our Decimal before converting it to an Int, using NSDecimalRound.
     ///
     var intValue: Int {
         NSDecimalNumber(decimal: whole).intValue

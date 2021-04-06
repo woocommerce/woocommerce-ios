@@ -20,6 +20,12 @@ final class PaymentIntentParametersTests: XCTestCase {
         XCTAssertEqual(params.currency, "usd")
     }
 
+    func test_parameters_do_not_validate_if_currency_code_is_not_supported() {
+        let params = PaymentIntentParameters(amount: 100, currency: "cesar")
+
+        XCTAssertNil(params.toStripe())
+    }
+
     func test_statementDescription_replaces_expected_characters() throws {
         let params = PaymentIntentParameters(amount: 100, currency: "usd", statementDescription: "A < DESCRIPTION' longer THAN 22 Characters")
 

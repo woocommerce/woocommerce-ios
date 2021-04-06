@@ -98,7 +98,7 @@ final class CardReaderSettingsConnectView: NSObject {
 
     private func configureButton(cell: ButtonTableViewCell) {
         let buttonTitle = NSLocalizedString(
-            "Connect card reader",
+            "Connect Card Reader",
             comment: "Settings > Manage Card Reader > Connect > A button to begin a search for a reader"
         )
         cell.configure(title: buttonTitle) { [weak self] in
@@ -147,10 +147,9 @@ private enum Row: CaseIterable {
     var height: CGFloat {
         switch self {
         case .connectHeader,
-             .connectButton:
+             .connectButton,
+             .connectImage:
             return UITableView.automaticDimension
-        case .connectImage:
-            return 250
         case .connectHelpHintChargeReader,
              .connectHelpHintTurnOnReader,
              .connectHelpHintEnableBluetooth,

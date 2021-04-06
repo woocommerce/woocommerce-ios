@@ -171,6 +171,6 @@ final class CardReaderSettingsViewController: UIViewController {
 private extension CardReaderSettingsViewController {
 
     func configureNavigation() {
-        title = NSLocalizedString("Card Readers", comment: "Card reader settings screen title")
+        title = NSLocalizedString("Manage Card Reader", comment: "Card reader settings screen title")
     }
 }

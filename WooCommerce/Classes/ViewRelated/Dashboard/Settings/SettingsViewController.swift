@@ -376,6 +376,7 @@ private extension SettingsViewController {
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsViewController.self) else {
             fatalError("Cannot instantiate `CardReaderSettingsViewController` from Dashboard storyboard")
         }
+        viewController.hidesBottomBarWhenPushed = true
         show(viewController, sender: self)
     }
 

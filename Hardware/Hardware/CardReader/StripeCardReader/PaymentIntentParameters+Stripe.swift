@@ -8,7 +8,7 @@ extension Hardware.PaymentIntentParameters {
         guard !self.currency.isEmpty else {
             return nil
         }
-        
+
         let returnValue = StripeTerminal.PaymentIntentParameters(amount: self.amount, currency: self.currency)
         returnValue.stripeDescription = self.receiptDescription
         returnValue.statementDescriptor = self.statementDescription

@@ -84,6 +84,10 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
                 product = products.first { $0.productID == item.productID }
             }
             if product?.virtual == false || productVariation?.virtual == false {
+                
+                /// We do not consider fractional quantities because the backend will return always int values for the quantity.
+                /// We are also showing items only when the quantity is > 1, because in that case we are not considering it a valid value.
+                ///
                 for _ in 0..<item.quantity.intValue {
                     let attributes = item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) }
                     let weightUnitA: String = weightUnit ?? ""

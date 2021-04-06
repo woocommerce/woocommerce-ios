@@ -84,14 +84,16 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
                 product = products.first { $0.productID == item.productID }
             }
             if product?.virtual == false || productVariation?.virtual == false {
-                
+
                 /// We do not consider fractional quantities because the backend will return always int values for the quantity.
                 /// We are also showing items only when the quantity is > 1, because in that case we are not considering it a valid value.
                 ///
                 for _ in 0..<item.quantity.intValue {
                     let attributes = item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) }
-                    let weightUnitA: String = weightUnit ?? ""
-                    let subtitle = Localization.subtitle(weight: isVariation ? productVariation?.weight : product?.weight, attributes: attributes) + weightUnitA
+                    let unit: String = weightUnit ?? ""
+                    let subtitle = Localization.subtitle(weight: isVariation ? productVariation?.weight : product?.weight,
+                                                         weightUnit: unit,
+                                                         attributes: attributes)
                     itemsToFulfill.append(ItemToFulfillRow(title: item.name, subtitle: subtitle))
                 }
             }
@@ -139,12 +141,13 @@ private extension ShippingLabelPackageDetailsViewModel {
             NSLocalizedString("%1$@・%2$@", comment: "In Shipping Labels Package Details if the product has attributes,"
                                 + " the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”."
                                 + " The %1$@ is the list of attributes (e.g. from variation)."
-                                + " The %2$@ is the weight.")
-        static func subtitle(weight: String?, attributes: [VariationAttributeViewModel]) -> String {
+                                + " The %2$@ is the weight with the unit.")
+        static func subtitle(weight: String?, weightUnit: String, attributes: [VariationAttributeViewModel]) -> String {
             let attributesText = attributes.map { $0.nameOrValue }.joined(separator: ", ")
-            let weight = weight?.isNotEmpty == true ? (weight ?? "0") : "0"
+            let formatter = WeightFormatter(weightUnit: weightUnit, withSpace: true)
+            let weight = formatter.formatWeight(weight: weight)
             if attributes.isEmpty {
-                return String.localizedStringWithFormat(subtitleFormat, weight)
+                return String.localizedStringWithFormat(subtitleFormat, weight, weightUnit)
             } else {
                 return String.localizedStringWithFormat(subtitleWithAttributesFormat, attributesText, weight)
             }

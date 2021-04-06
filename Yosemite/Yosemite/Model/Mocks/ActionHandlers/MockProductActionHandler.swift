@@ -59,7 +59,7 @@ struct MockProductActionHandler: MockActionHandler {
     }
 
     func upsert(products: [Product], onCompletion: @escaping () -> ()) {
-        let storage = storageManager.newDerivedStorage()
+        let storage = storageManager.writerDerivedStorage
 
         storage.perform {
             productStore.upsertStoredProducts(readOnlyProducts: products, in: storage)

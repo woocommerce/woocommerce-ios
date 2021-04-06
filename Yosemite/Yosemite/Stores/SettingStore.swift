@@ -10,7 +10,7 @@ public class SettingStore: Store {
     private let siteAPIRemote: SiteAPIRemote
 
     private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.newDerivedStorage()
+        return storageManager.writerDerivedStorage
     }()
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {

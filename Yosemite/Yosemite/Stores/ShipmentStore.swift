@@ -15,7 +15,7 @@ public class ShipmentStore: Store {
     /// Shared private StorageType for use during then entire ShipmentStore sync process
     ///
     private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.newDerivedStorage()
+        return storageManager.writerDerivedStorage
     }()
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {

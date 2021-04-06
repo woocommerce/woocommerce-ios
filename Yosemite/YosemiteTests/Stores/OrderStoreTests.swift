@@ -610,7 +610,7 @@ final class OrderStoreTests: XCTestCase {
 
         // Initial save: This should trigger *ONE* Upsert event
         let backgroundSaveExpectation = expectation(description: "Retrieve order notes empty response")
-        let derivedContext = storageManager.newDerivedStorage()
+        let derivedContext = storageManager.writerDerivedStorage
 
         derivedContext.perform {
             orderStore.upsertStoredOrder(readOnlyOrder: self.sampleOrder(), in: derivedContext)

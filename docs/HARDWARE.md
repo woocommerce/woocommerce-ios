@@ -14,7 +14,8 @@ In the context of the three-tier architecture of the WooCommerce iOS app, Hardwa
 ## Model objects
 
 * CardReader: Models a Card Reader. This is the public struct that clients of Hardware are expected to consume. CardReader is meant to be inmutable. 
-* CardReaderEvent: The possible events emitted by a connected reader.
+* CardReaderEvent: An event emitted by a connected reader.
+* CardReaderEventType: The types of events emitted by a connected reader.
 * CardReaderServiceDiscoveryStatus: Models the discovery status of a Card Reader Service.
 * CardReaderServiceStatus: Models the status of a Card Reader Service.
 * CardReaderType: Indicates if a reader is meant to be used handheld or as a countertop device.
@@ -75,6 +76,8 @@ Collecting a payment is a three step process that needs to be performed in this 
 3. [Process the Payment](https://stripe.com/docs/terminal/payments#process-payment). After successfully collecting a payment method from the customer, the next step is to process the payment with the SDK. We can either process automatically or display a confirmation screen, where the customer can choose to proceed with the payment or cancel (e.g., to pay with cash, or use a different payment method).
 
 For more details, see [Stripe's documentation](https://stripe.com/docs/terminal/payments)
+
+The status of the payment collection procress is notified to the UI via a `CardReaderEvent`. This model object wraps a `CardReaderEventType`, which will allow a view model or view controller to decide how it needs to react to said event, and a user facing message. This message is, in the integraton with the Stripe SDK, most likely being generated [by the Stripe SDK itself](https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPReaderDisplayDelegate.html#/c:objc(pl)SCPReaderDisplayDelegate(im)terminal:didRequestReaderDisplayMessage:) so it might be wise to ignore it, as it can be a tad vague. But it is there anyway.
 
 ### Error handling
 

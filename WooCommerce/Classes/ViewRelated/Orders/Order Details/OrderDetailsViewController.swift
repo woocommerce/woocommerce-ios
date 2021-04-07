@@ -541,6 +541,7 @@ private extension OrderDetailsViewController {
         } onClearMessage: { [weak self] in
             self?.dismiss(animated: false, completion: nil)
         } onCompletion: { [weak self] result in
+            self?.dismiss(animated: false, completion: nil)
             let title = result.isSuccess ? "🎉🥳🍾🎊 success" : "☢️ Error!"
             let message = result.isSuccess ? "The payment has been processed. 💸💸💸💸💸" : "The payment has not been processed. 🙅‍♀️"
             let buttonTitle = result.isSuccess ? "😎" : "🤷"

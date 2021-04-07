@@ -10,7 +10,7 @@ public final class ShippingLabelStore: Store {
     /// Shared private StorageType for use during then entire Orders sync process
     ///
     private lazy var sharedDerivedStorage: StorageType = {
-        storageManager.newDerivedStorage()
+        storageManager.writerDerivedStorage
     }()
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {

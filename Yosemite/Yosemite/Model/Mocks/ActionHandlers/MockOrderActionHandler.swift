@@ -34,7 +34,7 @@ struct MockOrderActionHandler: MockActionHandler {
     }
 
     private func saveOrders(orders: [Order], onCompletion: @escaping () -> ()) {
-        let storage = storageManager.newDerivedStorage()
+        let storage = storageManager.writerDerivedStorage
 
         storage.perform {
             let updater = OrdersUpsertUseCase(storage: storage)

@@ -895,7 +895,7 @@ final class ProductStoreTests: XCTestCase {
         // Initial save: This should trigger two Upsert events:
         // first one for the first Product upsert, and the second one for the Product image upsert.
         let backgroundSaveExpectation = expectation(description: "Retrieve product empty response")
-        let derivedContext = storageManager.newDerivedStorage()
+        let derivedContext = storageManager.writerDerivedStorage
 
         derivedContext.perform {
             productStore.upsertStoredProduct(readOnlyProduct: self.sampleProduct(), in: derivedContext)

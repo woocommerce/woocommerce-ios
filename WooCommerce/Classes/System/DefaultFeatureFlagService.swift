@@ -11,6 +11,8 @@ struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .shippingLabelsRelease2:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .addOnsI1:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

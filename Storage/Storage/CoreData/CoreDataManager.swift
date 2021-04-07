@@ -63,6 +63,15 @@ public final class CoreDataManager: StorageManagerType {
         return persistentContainer.viewContext
     }
 
+    /// Returns a shared derived storage instance dedicated for write operations.
+    ///
+    public lazy var writerDerivedStorage: StorageType = {
+        let childManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        childManagedObjectContext.parent = persistentContainer.viewContext
+        childManagedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        return childManagedObjectContext
+    }()
+
     /// Persistent Container: Holds the full CoreData Stack
     ///
     public lazy var persistentContainer: NSPersistentContainer = {
@@ -127,15 +136,6 @@ public final class CoreDataManager: StorageManagerType {
         persistentContainer.performBackgroundTask { context in
             closure(context as StorageType)
         }
-    }
-
-    /// Creates a new child MOC (with a private dispatch queue) whose parent is `viewStorage`.
-    ///
-    public func newDerivedStorage() -> StorageType {
-        let childManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        childManagedObjectContext.parent = persistentContainer.viewContext
-        childManagedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        return childManagedObjectContext
     }
 
     /// Saves the derived storage. Note: the closure may be called on a different thread

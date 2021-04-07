@@ -4,8 +4,8 @@ import Yosemite
 
 /// Displays the Shipping Label Package Details
 final class ShippingLabelPackageDetailsViewController: UIHostingController<ShippingLabelPackageDetails> {
-    init(items: [OrderItem], currency: String) {
-        let viewModel = ShippingLabelPackageDetailsViewModel(items: items, currency: currency)
+    init(order: Order) {
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: order)
         super.init(rootView: ShippingLabelPackageDetails(viewModel: viewModel))
         configureNavigationBar()
     }

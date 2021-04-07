@@ -156,7 +156,7 @@ extension StripeCardReaderService: CardReaderService {
             }
 
             Terminal.shared.collectPaymentMethod(activeIntent, delegate: self) { (intent, error) in
-                self?.sendReaderEvent(CardReaderEvent(type: .cardRemoved))
+                self?.sendReaderEvent(.cardRemoved)
 
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
@@ -263,12 +263,12 @@ extension StripeCardReaderService: ReaderDisplayDelegate {
     /// This method is called by the Stripe Terminal SDK when it wants client apps
     /// to request users to tap / insert / swipe a card.
     public func terminal(_ terminal: Terminal, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
-        sendReaderEvent(CardReaderEvent(readerInputOptions: inputOptions))
+        sendReaderEvent(CardReaderEvent.make(readerInputOptions: inputOptions))
     }
 
     /// In this case the Stripe Terminal SDK wants us to present a string on screen
     public func terminal(_ terminal: Terminal, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
-        sendReaderEvent(CardReaderEvent(displayMessage: displayMessage))
+        sendReaderEvent(CardReaderEvent.make(displayMessage: displayMessage))
     }
 }
 

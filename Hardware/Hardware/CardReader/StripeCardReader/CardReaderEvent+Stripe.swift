@@ -1,17 +1,15 @@
 import StripeTerminal
 
 extension CardReaderEvent {
-    /// Convenience initializer
+    /// Factory method
     /// - Parameter readerInputOptions: An instance of a StripeTerminal.ReaderInputOptions
-    init(readerInputOptions: ReaderInputOptions) {
-        self.type = .waitingForInput
-        self.message = Terminal.stringFromReaderInputOptions(readerInputOptions)
+    static func make(readerInputOptions: ReaderInputOptions) -> Self {
+        .waitingForInput(Terminal.stringFromReaderInputOptions(readerInputOptions))
     }
 
-    /// Convenience initializer
+    /// Factory method
     /// - Parameter readerInputOptions: An instance of a StripeTerminal.ReaderDisplayMessage
-    init(displayMessage: ReaderDisplayMessage) {
-        self.type = .displayMessage
-        self.message = Terminal.stringFromReaderDisplayMessage(displayMessage)
+    static func make(displayMessage: ReaderDisplayMessage) -> Self {
+         .displayMessage(Terminal.stringFromReaderDisplayMessage(displayMessage))
     }
 }

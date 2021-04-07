@@ -476,11 +476,11 @@ extension OrderDetailsViewModel {
         let action = CardPresentPaymentAction.collectPayment(siteID: order.siteID,
                                                              orderID: order.orderID, parameters: paymentParameters,
                                                              onCardReaderMessage: { (event) in
-                                                                switch event.type {
-                                                                case .displayMessage:
-                                                                    onPresentMessage(event.message ?? "")
-                                                                case .waitingForInput:
-                                                                    onPresentMessage(event.message ?? "")
+                                                                switch event {
+                                                                case .displayMessage (let message):
+                                                                    onPresentMessage(message)
+                                                                case .waitingForInput (let message):
+                                                                    onPresentMessage(message)
                                                                 case .cardRemoved:
                                                                     onClearMessage()
                                                                 default:

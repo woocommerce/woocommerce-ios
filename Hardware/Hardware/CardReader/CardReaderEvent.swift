@@ -9,24 +9,24 @@ public enum CardReaderEvent {
     /// the app should instruct the user to present the card again by swiping it.
     case displayMessage(String)
 
-    // A card was inserted.
+    /// A card was inserted.
     case cardInserted
 
-    // A card was removed.
+    /// A card was removed.
     case cardRemoved
 
-    // Low battery warning.
+    /// Low battery warning.
     case lowBattery
 
-    // Low battery warning resolved.
+    /// Low battery warning resolved.
     case lowBatteryResolved
 
-    // A software update is available.
+    /// A software update is available.
     case softwareUpdateNeeded
 
-    // Software is up to dat.
+    /// Software is up to date.
     case softwareUpToDate
 
-    // The card reader disconnected.
+    /// The card reader disconnected.
     case disconnected
 }

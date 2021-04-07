@@ -460,8 +460,10 @@ extension OrderDetailsViewModel {
         stores.dispatch(deleteTrackingAction)
     }
 
-    func collectPayment(onPresentCard: @escaping (String)->Void,
-                        onPresentMessage: @escaping (String) -> Void,
+    /// This does not have to be the final API. For now, it is good enough to show
+    /// a sequence of alerts in the UI that provide some feedback over what is happening
+    func collectPayment(onPresentMessage: @escaping (String) -> Void,
+                        onClearMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<Void, Error>) -> Void) {
         // Mock Payment. We will have to instantiate these parameters with
         // the proper amount, currency and readable descripitions later.
@@ -478,14 +480,12 @@ extension OrderDetailsViewModel {
                                                                 case .displayMessage:
                                                                     onPresentMessage(event.message ?? "")
                                                                 case .waitingForInput:
-                                                                    onPresentCard(event.message ?? "")
+                                                                    onPresentMessage(event.message ?? "")
+                                                                case .cardRemoved:
+                                                                    onClearMessage()
                                                                 default:
                                                                     break
                                                                 }
-                                                                print("==== received card reader event")
-                                                                print(event.message)
-                                                                print("//// received card reader event")
-
                                                              }, onCompletion: { (result) in
             // For now, just propagate the result to the UI.
             onCompletion(result)

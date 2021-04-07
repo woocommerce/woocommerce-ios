@@ -1,6 +1,13 @@
+/// An event dispatched by  a connected reader.
+/// It wraps an event type and an optional user-facing message
 public struct CardReaderEvent {
     public let type: CardReaderEventType
     public let message: String?
+
+    init(type: CardReaderEventType, message: String? = nil) {
+        self.type = type
+        self.message = message
+    }
 }
 
 /// The possible events from a connected reader.

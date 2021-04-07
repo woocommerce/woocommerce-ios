@@ -108,9 +108,6 @@ private extension CardPresentPaymentStore {
                 onCompletion(.success(()))
             }
         } receiveValue: { intent in
-            print("==== Yosemite log for testing. Payment intent after processing payment")
-            print(intent)
-            print("//// payment intent processed ")
             // TODO. Initiate final step. Update order. Submit intent id to backend.
             // Deferred to https://github.com/woocommerce/woocommerce-ios/issues/3825
             onCompletion(.success(()))

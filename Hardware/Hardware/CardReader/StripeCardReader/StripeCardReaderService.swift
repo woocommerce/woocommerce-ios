@@ -156,6 +156,7 @@ extension StripeCardReaderService: CardReaderService {
             }
 
             Terminal.shared.collectPaymentMethod(activeIntent, delegate: self) { (intent, error) in
+                // Notify clients that the card, no matter it tapped or inserted, is not needed anymore.
                 self?.sendReaderEvent(.cardRemoved)
 
                 if let error = error {

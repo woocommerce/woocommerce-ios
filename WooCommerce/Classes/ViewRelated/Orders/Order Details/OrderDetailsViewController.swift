@@ -555,25 +555,6 @@ private extension OrderDetailsViewController {
 
             self?.present(actionSheet, animated: true)
         }
-
-//        viewModel.collectPayment { [weak self] result in
-//            /// This will be removed later, whenever we implement the proper UI flow
-//            /// for collecting payments.
-//            /// For now, we present an alert with a success/error message after completion
-//            let title = result.isSuccess ? "🎉🥳🍾🎊 success" : "☢️ Error!"
-//            let message = result.isSuccess ? "The payment has been processed. 💸💸💸💸💸" : "The payment has not been processed. 🙅‍♀️"
-//            let buttonTitle = result.isSuccess ? "😎" : "🤷"
-//
-//            let actionSheet = UIAlertController(title: title, message: message, preferredStyle: .alert)
-//            actionSheet.view.tintColor = .text
-//
-//            actionSheet.addCancelActionWithTitle(buttonTitle)
-//
-//            let popoverController = actionSheet.popoverPresentationController
-//            popoverController?.sourceView = cell.contentView
-//
-//            self?.present(actionSheet, animated: true)
-//        }
     }
 }
 

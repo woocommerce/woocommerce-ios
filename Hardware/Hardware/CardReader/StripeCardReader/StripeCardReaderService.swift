@@ -127,7 +127,13 @@ extension StripeCardReaderService: CardReaderService {
 
     public func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<Void, Error> {
         return Future() { promise in
-            Terminal.shared.createPaymentIntent(parameters.toStripe()) { [weak self] (intent, error) in
+            // Shortcircuit if we have an inconsistent set of parameters
+            guard let parameters = parameters.toStripe() else {
+                promise(.failure(CardReaderServiceError.intentCreation()))
+                return
+            }
+
+            Terminal.shared.createPaymentIntent(parameters) { [weak self] (intent, error) in
                 guard let self = self else {
                     promise(.failure(CardReaderServiceError.intentCreation()))
                     return

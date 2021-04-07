@@ -460,7 +460,7 @@ extension OrderDetailsViewModel {
         stores.dispatch(deleteTrackingAction)
     }
 
-    /// This does not have to be the final API. For now, it is good enough to show
+    /// TODO. This does not have to be the final API. For now, it is good enough to show
     /// a sequence of alerts in the UI that provide some feedback over what is happening
     func collectPayment(onPresentMessage: @escaping (String) -> Void,
                         onClearMessage: @escaping () -> Void,

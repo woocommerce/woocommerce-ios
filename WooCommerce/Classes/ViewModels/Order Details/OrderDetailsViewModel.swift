@@ -460,7 +460,11 @@ extension OrderDetailsViewModel {
         stores.dispatch(deleteTrackingAction)
     }
 
-    func collectPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    /// TODO. This does not have to be the final API. For now, it is good enough to show
+    /// a sequence of alerts in the UI that provide some feedback over what is happening
+    func collectPayment(onPresentMessage: @escaping (String) -> Void,
+                        onClearMessage: @escaping () -> Void,
+                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
         // Mock Payment. We will have to instantiate these parameters with
         // the proper amount, currency and readable descripitions later.
         // We could pull the amount from the order but in test mode the Stripe Terminal SDK fails to process amounts that do not end in 00
@@ -470,10 +474,22 @@ extension OrderDetailsViewModel {
                                                   statementDescription: "Statement description.")
 
         let action = CardPresentPaymentAction.collectPayment(siteID: order.siteID,
-                                                             orderID: order.orderID, parameters: paymentParameters) { (result) in
+                                                             orderID: order.orderID, parameters: paymentParameters,
+                                                             onCardReaderMessage: { (event) in
+                                                                switch event {
+                                                                case .displayMessage (let message):
+                                                                    onPresentMessage(message)
+                                                                case .waitingForInput (let message):
+                                                                    onPresentMessage(message)
+                                                                case .cardRemoved:
+                                                                    onClearMessage()
+                                                                default:
+                                                                    break
+                                                                }
+                                                             }, onCompletion: { (result) in
             // For now, just propagate the result to the UI.
             onCompletion(result)
-        }
+        })
 
         ServiceLocator.stores.dispatch(action)
     }

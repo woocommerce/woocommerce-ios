@@ -162,6 +162,9 @@ extension StripeCardReaderService: CardReaderService {
             }
 
             Terminal.shared.collectPaymentMethod(activeIntent, delegate: self) { (intent, error) in
+                // Notify clients that the card, no matter it tapped or inserted, is not needed anymore.
+                self?.sendReaderEvent(.cardRemoved)
+
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
                     promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: underlyingError)))
@@ -266,23 +269,21 @@ extension StripeCardReaderService: DiscoveryDelegate {
 extension StripeCardReaderService: ReaderDisplayDelegate {
     /// This method is called by the Stripe Terminal SDK when it wants client apps
     /// to request users to tap / insert / swipe a card.
-    /// At this point we just acknowledge it is being called, but we will have
-    /// to propagate this to the UI:
-    /// https://github.com/woocommerce/woocommerce-ios/issues/3842
     public func terminal(_ terminal: Terminal, didRequestReaderInput inputOptions: ReaderInputOptions = []) {
-        print("==== did request reader input")
-        print(inputOptions)
-        print(inputOptions.rawValue)
-        print("//// did request reader input")
+        sendReaderEvent(CardReaderEvent.make(readerInputOptions: inputOptions))
     }
 
     /// In this case the Stripe Terminal SDK wants us to present a string on screen
-    /// We will implement this later:
-    /// https://github.com/woocommerce/woocommerce-ios/issues/3843
     public func terminal(_ terminal: Terminal, didRequestReaderDisplayMessage displayMessage: ReaderDisplayMessage) {
-        print("==== did request display message")
-        print(displayMessage.rawValue)
-        print("//// did request display message")
+        sendReaderEvent(CardReaderEvent.make(displayMessage: displayMessage))
+    }
+}
+
+
+// MARK: - Reader events
+private extension StripeCardReaderService {
+    func sendReaderEvent(_ event: CardReaderEvent) {
+        readerEventsSubject.send(event)
     }
 }
 

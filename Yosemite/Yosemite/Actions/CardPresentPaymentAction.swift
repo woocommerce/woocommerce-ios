@@ -16,5 +16,9 @@ public enum CardPresentPaymentAction: Action {
 
     /// Collected payment for an order.
     ///
-    case collectPayment(siteID: Int64, orderID: Int64, parameters: PaymentParameters, onCompletion: (Result<Void, Error>) -> Void )
+    case collectPayment(siteID: Int64,
+                        orderID: Int64,
+                        parameters: PaymentParameters,
+                        onCardReaderMessage: (CardReaderEvent) -> Void,
+                        onCompletion: (Result<Void, Error>) -> Void )
 }

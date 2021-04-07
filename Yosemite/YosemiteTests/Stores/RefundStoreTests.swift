@@ -396,7 +396,7 @@ class RefundStoreTests: XCTestCase {
 
         // Initial save: This should trigger *ONE* Upsert event
         let backgroundSaveExpectation = expectation(description: "Retrieve empty response for a refund")
-        let derivedContext = storageManager.newDerivedStorage()
+        let derivedContext = storageManager.writerDerivedStorage
 
         derivedContext.perform {
             refundStore.upsertStoredRefund(readOnlyRefund: self.sampleRefund(), in: derivedContext)

@@ -10,11 +10,9 @@ final class ShippingLabelFormViewController: UIViewController {
     /// Init
     ///
     init(order: Order) {
-        viewModel = ShippingLabelFormViewModel(siteID: order.siteID,
+        viewModel = ShippingLabelFormViewModel(order: order,
                                                originAddress: nil,
-                                               destinationAddress: order.shippingAddress,
-                                               items: order.items,
-                                               currency: order.currency)
+                                               destinationAddress: order.shippingAddress)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -253,7 +251,7 @@ private extension ShippingLabelFormViewController {
     }
 
     func displayPackageDetailsVC() {
-        let vc = ShippingLabelPackageDetailsViewController(items: viewModel.orderItems, currency: viewModel.currency)
+        let vc = ShippingLabelPackageDetailsViewController(order: viewModel.order)
         navigationController?.show(vc, sender: nil)
     }
 }

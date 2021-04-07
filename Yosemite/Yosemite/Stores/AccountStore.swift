@@ -11,7 +11,7 @@ public class AccountStore: Store {
     /// Shared private StorageType for use during synchronizeSites and synchronizeSitePlan processes
     ///
     private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.newDerivedStorage()
+        return storageManager.writerDerivedStorage
     }()
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {

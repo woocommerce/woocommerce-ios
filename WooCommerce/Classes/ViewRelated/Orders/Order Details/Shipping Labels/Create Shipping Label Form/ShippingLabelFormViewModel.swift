@@ -21,10 +21,9 @@ final class ShippingLabelFormViewModel {
     typealias Row = ShippingLabelFormViewController.Row
 
     let siteID: Int64
+    private(set) var order: Order
     private(set) var originAddress: ShippingLabelAddress?
     private(set) var destinationAddress: ShippingLabelAddress?
-    let orderItems: [OrderItem]
-    let currency: String
 
     private let stores: StoresManager
 
@@ -40,16 +39,13 @@ final class ShippingLabelFormViewModel {
         }
     }
 
-    init(siteID: Int64,
+    init(order: Order,
          originAddress: Address?,
          destinationAddress: Address?,
-         items: [OrderItem],
-         currency: String,
          stores: StoresManager = ServiceLocator.stores) {
 
-        self.siteID = siteID
-        self.orderItems = items
-        self.currency = currency
+        self.siteID = order.siteID
+        self.order = order
 
         let accountSettings = ShippingLabelFormViewModel.getStoredAccountSettings()
         let company = ServiceLocator.stores.sessionManager.defaultSite?.name

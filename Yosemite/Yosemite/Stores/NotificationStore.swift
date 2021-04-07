@@ -371,7 +371,7 @@ extension NotificationStore {
     static func sharedDerivedStorage(with manager: StorageManagerType) -> StorageType {
         lock.lock()
         if privateStorage == nil {
-            privateStorage = manager.newDerivedStorage()
+            privateStorage = manager.writerDerivedStorage
         }
         lock.unlock()
 

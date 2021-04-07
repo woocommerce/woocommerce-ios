@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+6.5
+-----
+
+
 6.4
 -----
 - [*] Login: New design and illustrations for the initial login screen, promoting the app's main features. [https://github.com/woocommerce/woocommerce-ios/pull/3867]

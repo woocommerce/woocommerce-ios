@@ -14,7 +14,7 @@ public class MockStoresManager: StoresManager {
 
     /// A derived stack we use for inserting data
     ///
-    private lazy var derivedStorage = storageManager.newDerivedStorage()
+    private lazy var derivedStorage = storageManager.writerDerivedStorage
 
     /// All of our action handlers
     private let appSettingsActionHandler: MockAppSettingsActionHandler

@@ -28,7 +28,8 @@
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ via %2$@";
 
-/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
+/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00).
+   In Shipping Labels Package Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@ x %2$@" = "%1$@ x %2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
@@ -40,7 +41,8 @@
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
-/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
+/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00).
+   In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
 
 /* 1 Item */
@@ -104,6 +106,9 @@
 
 /* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details.";
+
+/* Number of items in packages in Shipping Labels. Reads like - 10 items */
+"- %1$d items" = "- %1$d items";
 
 /* Title of the label indicating that there is 1 item to refund. */
 "1 item selected" = "1 item selected";
@@ -548,6 +553,9 @@
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Connecting to WordPress.com";
 
+/* Contact Customer action in Shipping Label Address Validation. */
+"Contact Customer" = "Contact Customer";
+
 /* Section header title for contact details in billing information */
 "Contact Details" = "Contact Details";
 
@@ -704,6 +712,9 @@
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values";
 
+/* Instructions after a Magic Link was sent, but email is incorrect. */
+"Didn't mean to create a new account? Go back to re-enter your email address." = "Didn't mean to create a new account? Go back to re-enter your email address.";
+
 /* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
 "Dimensions: %1$@ x %2$@ %3$@" = "Dimensions: %1$@ x %2$@ %3$@";
 
@@ -809,6 +820,9 @@
 /* Action to edit the address in Shipping Label Suggested screen */
 "Edit Address" = "Edit Address";
 
+/* Caption displayed in promotional screens shown during the login flow. */
+"Edit and add new products from anywhere" = "Edit and add new products from anywhere";
+
 /* Action to edit the attributes and options used for variations
    Navigation title for the Product Attributes screen */
 "Edit Attributes" = "Edit Attributes";
@@ -907,6 +921,9 @@
    Button title. Takes the user to the login by store address flow. */
 "Enter Your Store Address" = "Enter Your Store Address";
 
+/* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
+"Error in finding the address in Apple Maps" = "Error in finding the address in Apple Maps";
+
 /* Alert title when there is an error requesting shipping label document for reprinting */
 "Error previewing shipping label" = "Error previewing shipping label";
 
@@ -979,7 +996,7 @@
 "Find your store address" = "Find your store address";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
-"Follow your favorite sites and discover new reads." = "Follow your favorite sites and discover new reads.";
+"Follow your favorite sites and discover new blogs." = "Follow your favorite sites and discover new blogs.";
 
 /* User role badge */
 "Follower" = "Follower";
@@ -1210,6 +1227,9 @@
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "Italic";
 
+/* Header section items to fulfill in Shipping Label Package Detail */
+"ITEMS TO FULFILL" = "ITEMS TO FULFILL";
+
 /* Long description of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats." = "Jetpack is a free WordPress plugin that connects your store with tools needed to give you the best mobile experience, including push notifications and stats.";
 
@@ -1350,14 +1370,14 @@
 /* Navigates to Card Reader management screen */
 "Manage Card Reader" = "Manage Card Reader";
 
-/* Login Prologue Legend */
-"Manage orders, track sales and monitor store activity with real-time alerts." = "Manage orders, track sales and monitor store activity with real-time alerts.";
-
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Manage stock";
 
 /* shown in promotional screens during first launch */
 "Manage your Jetpack-powered site on the go — you've got WordPress in your pocket." = "Manage your Jetpack-powered site on the go — you've got WordPress in your pocket.";
+
+/* Caption displayed in promotional screens shown during the login flow. */
+"Manage your store orders on the go " = "Manage your store orders on the go ";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "Manual Offsets";
@@ -1401,6 +1421,9 @@
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %@, maximum value %@" = "Minimum value %1$@, maximum value %2$@";
+
+/* Caption displayed in promotional screens shown during the login flow. */
+"Monitor and approve your product reviews" = "Monitor and approve your product reviews";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -1572,6 +1595,9 @@
    Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "Open Mail";
 
+/* Open Map action in Shipping Label Address Validation. */
+"Open Map" = "Open Map";
+
 /* Navigates to screen about open source licenses */
 "Open Source Licenses" = "Open Source Licenses";
 
@@ -1642,12 +1668,21 @@
 /* Display label for the product's inventory stock status */
 "Out of stock" = "Out of stock";
 
+/* Package term in Shipping Labels. Reads like Package 1 */
+"Package %1$d" = "Package %1$d";
+
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
 "Package %d" = "Package %d";
 
-/* Title of package details in shipping label details
-   Title of the cell Package Details inside Create Shipping Label form */
+/* Navigation bar title of shipping label package details screen
+   Title of package details in shipping label details - Title of the cell Package Details inside Create Shipping Label form */
 "Package Details" = "Package Details";
+
+/* Header section package details in Shipping Label Package Detail */
+"PACKAGE DETAILS" = "PACKAGE DETAILS";
+
+/* Title of the row for selecting a package in Shipping Label Package Detail screen */
+"Package Selected" = "Package Selected";
 
 /* The title for the customer payment cell */
 "Paid" = "Paid";
@@ -2449,6 +2484,9 @@
    Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost */
 "Subtotal" = "Subtotal";
 
+/* Title of the footer in Shipping Label Package Detail screen */
+"Sum of products and package weight" = "Sum of products and package weight";
+
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Switch Store";
 
@@ -2624,6 +2662,9 @@
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "The Order couldn't be loaded!";
 
+/* Error in calling the phone number of the customer in the Shipping Label Address Validation */
+"The phone number is not valid or you can't call the customer from this device." = "The phone number is not valid or you can't call the customer from this device.";
+
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "The price for this product. Editable.";
 
@@ -2792,8 +2833,14 @@
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "Total orders: %ld";
 
+/* Title of the row for adding the package weight in Shipping Label Package Detail screen */
+"Total package weight" = "Total package weight";
+
 /* Description for Top Performers right column header */
 "Total Spend" = "Total Spend";
+
+/* Caption displayed in promotional screens shown during the login flow. */
+"Track sales and high performing products" = "Track sales and high performing products";
 
 /* Track shipment button title */
 "Track Shipment" = "Track Shipment";
@@ -2906,6 +2953,9 @@
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "unknown url";
+
+/* Back button title when the product doesn't have a name */
+"Unnamed product" = "Unnamed product";
 
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "Unordered List";
@@ -3185,7 +3235,7 @@
 "Yesterday" = "Yesterday";
 
 /* The info of the top banner on the Products tab. */
-"You can now add downloadable files to a product and link upsell & cross-sell products. No longer want a product? Trash it!" = "You can now add downloadable files to a product and link upsell & cross-sell products. No longer want a product? Trash it!";
+"You can now create and manage product variations!" = "You can now create and manage product variations!";
 
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process.";

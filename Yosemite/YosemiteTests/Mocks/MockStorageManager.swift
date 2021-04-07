@@ -17,6 +17,15 @@ public class MockStorageManager: StorageManagerType {
         return persistentContainer.viewContext
     }
 
+    /// Returns a shared derived storage instance dedicated for write operations.
+    ///
+    public lazy var writerDerivedStorage: StorageType = {
+        let childManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        childManagedObjectContext.parent = persistentContainer.viewContext
+        childManagedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        return childManagedObjectContext
+    }()
+
     /// Persistent Container: Holds the full CoreData Stack
     ///
     /// TODO This should be private. It is not part of the `StorageManagerType` spec.
@@ -33,15 +42,6 @@ public class MockStorageManager: StorageManagerType {
 
         return container
     }()
-
-    /// Returns a new Derived Storage instance.
-    ///
-    public func newDerivedStorage() -> StorageType {
-        let childManagedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        childManagedObjectContext.parent = persistentContainer.viewContext
-        childManagedObjectContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        return childManagedObjectContext
-    }
 
     /// Persists the Derived Storage's Changes.
     ///

@@ -10,7 +10,7 @@ public final class ProductAttributeTermStore: Store {
     var pageSizeRequest = Constants.defaultMaxPageSize
 
     private lazy var sharedDerivedStorage: StorageType = {
-        return storageManager.newDerivedStorage()
+        return storageManager.writerDerivedStorage
     }()
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {

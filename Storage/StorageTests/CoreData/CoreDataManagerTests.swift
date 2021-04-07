@@ -59,7 +59,7 @@ final class CoreDataManagerTests: XCTestCase {
     func test_derived_storage_is_instantiated_correctly() {
         let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
         let viewContext = (manager.viewStorage as? NSManagedObjectContext)
-        let derivedContext = (manager.newDerivedStorage() as? NSManagedObjectContext)
+        let derivedContext = (manager.writerDerivedStorage as? NSManagedObjectContext)
 
         XCTAssertNotNil(viewContext)
         XCTAssertNotNil(derivedContext)
@@ -88,7 +88,7 @@ final class CoreDataManagerTests: XCTestCase {
         let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
         manager.reset()
         let viewContext = try XCTUnwrap(manager.viewStorage as? NSManagedObjectContext)
-        let derivedContext = try XCTUnwrap(manager.newDerivedStorage() as? NSManagedObjectContext)
+        let derivedContext = try XCTUnwrap(manager.writerDerivedStorage as? NSManagedObjectContext)
 
         // Action
         waitForExpectation(count: 2) { expectation in

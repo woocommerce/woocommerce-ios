@@ -2,7 +2,7 @@
 
 6.5
 -----
-
+- [*] Fix: Product images with non-latin characters in filenames now will load correctly and won't break Media Library. [https://github.com/woocommerce/woocommerce-ios/pull/3935]
 
 6.4
 -----

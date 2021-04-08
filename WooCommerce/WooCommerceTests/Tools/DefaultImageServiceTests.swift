@@ -134,14 +134,14 @@ final class DefaultImageServiceTests: XCTestCase {
                                                with: urlStringWithSpecialChars,
                                                placeholder: mockPlaceholder,
                                                progressBlock: nil) { (image, error) in
-                                                XCTAssertNotNil(image)
-                                                waitForDownloadingAndCachingAnImage.fulfill()
+                XCTAssertNotNil(image)
+                waitForDownloadingAndCachingAnImage.fulfill()
 
-                                                self.imageService.retrieveImageFromCache(with: encodedURL) { image in
-                                                    XCTAssertNotNil(image)
-                                                    waitForRetrievingImageAfterDownload.fulfill()
-                                                }
-        }
+                self.imageService.retrieveImageFromCache(with: encodedURL) { image in
+                    XCTAssertNotNil(image)
+                    waitForRetrievingImageAfterDownload.fulfill()
+                }
+            }
         XCTAssertNotNil(mockImageView.image)
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)

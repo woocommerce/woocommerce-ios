@@ -180,14 +180,3 @@ private extension AggregatedShippingLabelOrderItems {
         case productVariation(productVariation: ProductVariation, orderItem: OrderItem?, name: String)
     }
 }
-
-private extension Product {
-    /// Returns the URL of the first image, if available. Otherwise, nil is returned.
-    var imageURL: URL? {
-        guard let productImageURLString = images.first?.src,
-              let encodedProductImageURLString = productImageURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
-            return nil
-        }
-        return URL(string: encodedProductImageURLString)
-    }
-}

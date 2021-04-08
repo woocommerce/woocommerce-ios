@@ -71,6 +71,41 @@ final class MediaStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `MediaAction.retrieveMediaLibrary` returns the expected response for cases where URLs contain special chars.
+    ///
+    func testRetrieveMediaLibraryUponSuccessfulResponseWhereURLsContainSpecialChars() {
+        let expectation = self.expectation(description: "Retrieve media library")
+
+        network.simulateResponse(requestUrlSuffix: "media", filename: "media-library")
+
+        let expectedMedia = Media(mediaID: 2348,
+                                  date: date(with: "2020-02-21T11:58:24+08:00"),
+                                  fileExtension: "jpeg",
+                                  mimeType: "image/jpeg",
+                                  src: "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-тест.jpeg",
+                                  thumbnailURL: "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-тест-150x150.jpeg",
+                                  name: "img_0111-1",
+                                  alt: "",
+                                  height: nil,
+                                  width: nil)
+
+        let action = MediaAction.retrieveMediaLibrary(siteID: sampleSiteID,
+                                                      pageNumber: 1,
+                                                      pageSize: 20) { mediaItems, error in
+            XCTAssertNil(error)
+            XCTAssertEqual(mediaItems.count, 5)
+            XCTAssertTrue(mediaItems.contains(expectedMedia))
+
+            expectation.fulfill()
+        }
+
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network)
+        mediaStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     /// Verifies that `MediaAction.retrieveMediaLibrary` returns an error whenever there is an error response from the backend.
     ///
     func testRetrieveMediaLibraryReturnsErrorUponReponseError() {

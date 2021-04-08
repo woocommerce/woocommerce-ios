@@ -708,17 +708,25 @@ enum ProductDecodingError: Error {
 ///
 private struct ProductAddOnEnvelope: Decodable {
 
-    private typealias UntypedDictionary = [String: AnyDecodable]
+    private typealias DecodableDictionary = [String: AnyDecodable]
+    private typealias AnyDictionary = [String: Any]
 
     /// Internal metadata representation
     ///
-    private let metadata: [UntypedDictionary]
+    private let metadata: [DecodableDictionary]
+
+    /// Decode main metadata array as an untyped dictionary.
+    ///
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        self.metadata = try container.decode([DecodableDictionary].self)
+    }
 
     /// Searches product metadata for add-ons information.
     ///
     func revolve() -> [ProductAddOn] {
 
-        let rawAddOns = metadata.first { object in
+        let rawAddOnsDictionary = metadata.first { object in
 
             guard let key = object["key"]?.value as? String, key == "_product_addons" else {
                 return false
@@ -727,6 +735,9 @@ private struct ProductAddOnEnvelope: Decodable {
             return true
         } ?? [:]
 
+        guard let rawAddOns = rawAddOnsDictionary["value"]?.value as? [AnyDictionary] else {
+            return []
+        }
 
         let addOns = rawAddOns.compactMap { rawAddOn -> ProductAddOn? in
             let data = (try? JSONSerialization.data(withJSONObject: rawAddOn, options: .fragmentsAllowed)) ?? Data()

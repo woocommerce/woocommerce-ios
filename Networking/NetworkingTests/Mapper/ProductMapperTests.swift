@@ -257,6 +257,13 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(attribute2?.name, "Size")
         XCTAssertEqual(attribute2?.option, "Medium")
     }
+
+    /// Test that product add-ons are properly parsed.
+    ///
+    func test_product_add_ons_are_properly_parsed() {
+        let addOns = mapLoadProductResponse()?.addOns ?? []
+        XCTAssertEqual(addOns.count, 3)
+    }
 }
 
 

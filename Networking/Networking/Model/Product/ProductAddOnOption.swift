@@ -25,6 +25,15 @@ public struct ProductAddOnOption: Codable, Equatable, GeneratedCopiable, Generat
         self.priceType = priceType
         self.imageID = imageID
     }
+}
 
-    // TODO: Make sure this is being parsed conditionally since fields can not be present
+// MARK: Coding Keys
+//
+private extension ProductAddOnOption {
+    enum CodingKeys: String, CodingKey {
+        case label
+        case price
+        case priceType = "price_type"
+        case imageID
+    }
 }

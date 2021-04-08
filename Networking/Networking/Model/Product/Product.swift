@@ -724,7 +724,7 @@ private struct ProductAddOnEnvelope: Decodable {
 
     /// Searches product metadata for add-ons information.
     ///
-    func revolve() -> [ProductAddOn] {
+    func revolve() throws -> [ProductAddOn] {
 
         let rawAddOnsDictionary = metadata.first { object in
 
@@ -739,9 +739,9 @@ private struct ProductAddOnEnvelope: Decodable {
             return []
         }
 
-        let addOns = rawAddOns.compactMap { rawAddOn -> ProductAddOn? in
-            let data = (try? JSONSerialization.data(withJSONObject: rawAddOn, options: .fragmentsAllowed)) ?? Data()
-            return try? JSONDecoder().decode(ProductAddOn.self, from: data)
+        let addOns = try rawAddOns.compactMap { rawAddOn throws -> ProductAddOn? in
+            let data = try JSONSerialization.data(withJSONObject: rawAddOn, options: .fragmentsAllowed)
+            return try JSONDecoder().decode(ProductAddOn.self, from: data)
         }
 
         return addOns

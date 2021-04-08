@@ -19,33 +19,33 @@ public struct ProductAddOn: Codable, Equatable, GeneratedCopiable, GeneratedFake
     ///
     public let titleFormat: AddOnTitleFormat
 
-    /// Whether or not the description is displayed.
+    /// Whether or not the description is displayed. (0 false, 1 true)
     ///
-    public let descriptionEnabled: Bool
+    public let descriptionEnabled: Int
 
     /// Add-on description.
     ///
     public let description: String
 
-    /// Whether or not the customer must choose/complete at least one option from the add-on.
+    /// Whether or not the customer must choose/complete at least one option from the add-on. (0 false, 1 true)
     ///
-    public let required: Bool
+    public let required: Int
 
     /// Display position of the add-on in the group
     ///
     public let position: Int
 
-    /// Whether or not input text is restricted.
+    /// Whether or not input text is restricted. (0 false, 1 true)
     ///
-    public let restrictions: Bool
+    public let restrictions: Int
 
     /// Restrictions on input text.
     ///
     public let restrictionsType: AddOnRestrictionsType
 
-    /// Whether or not price is adjusted
+    /// Whether or not price is adjusted (0 false, 1 true)
     ///
-    public let adjustPrice: Bool
+    public let adjustPrice: Int
 
     /// Add-on pricing type.
     ///
@@ -71,13 +71,13 @@ public struct ProductAddOn: Codable, Equatable, GeneratedCopiable, GeneratedFake
                 display: AddOnDisplay,
                 name: String,
                 titleFormat: AddOnTitleFormat,
-                descriptionEnabled: Bool,
+                descriptionEnabled: Int,
                 description: String,
-                required: Bool,
+                required: Int,
                 position: Int,
-                restrictions: Bool,
+                restrictions: Int,
                 restrictionsType: AddOnRestrictionsType,
-                adjustPrice: Bool,
+                adjustPrice: Int,
                 priceType: AddOnPriceType,
                 price: String,
                 min: Int,
@@ -102,6 +102,28 @@ public struct ProductAddOn: Codable, Equatable, GeneratedCopiable, GeneratedFake
     }
 }
 
+// MARK: Coding Keys
+//
+private extension ProductAddOn {
+    enum CodingKeys: String, CodingKey {
+        case type
+        case display
+        case name
+        case titleFormat = "title_format"
+        case descriptionEnabled = "description_enable"
+        case description
+        case required
+        case position
+        case restrictions
+        case restrictionsType = "restrictions_type"
+        case adjustPrice = "adjust_price"
+        case priceType = "price_type"
+        case price
+        case min
+        case max
+        case options
+    }
+}
 
 /// Represents all possible Add-On types.
 ///

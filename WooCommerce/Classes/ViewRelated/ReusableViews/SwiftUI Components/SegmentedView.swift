@@ -22,7 +22,7 @@ struct SegmentedView<Content: View>: View {
                 VStack(spacing: 0) {
                     views[index]
                         .frame(maxHeight: .infinity)
-                        .foregroundColor(index == selection ? Color(.brand) : Color(.text))
+                        .foregroundColor(index == selection ? Color(.brand) : Color(.textSubtle))
                         .onTapGesture(perform: {
                             selection = index
                         })

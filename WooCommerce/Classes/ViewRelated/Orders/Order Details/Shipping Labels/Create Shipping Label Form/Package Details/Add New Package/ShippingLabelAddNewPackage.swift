@@ -1,13 +1,29 @@
 import SwiftUI
 
 struct ShippingLabelAddNewPackage: View {
-    @State private var selectedIndex = 0
+    @Binding private var selectedIndex: Int
 
     var body: some View {
-        Picker("Hello", selection: $selectedIndex) {
-            Text("Custom Package")
-            Text("Service Package")
-        }.pickerStyle(SegmentedPickerStyle())
+        VStack(spacing: 0) {
+            SegmentedView(selection: $selectedIndex, views: [Text(Localization.customPackage), Text(Localization.servicePackage)])
+                .frame(height: 44)
+            Divider()
+            ScrollView {
+
+            }
+        }
+
+    }
+
+    init() {
+        _selectedIndex = .constant(0)
+    }
+}
+
+private extension ShippingLabelAddNewPackage {
+    enum Localization {
+        static let customPackage = NSLocalizedString("Custom Package", comment: "Custom Package menu in Shipping Label Add New Package flow")
+        static let servicePackage = NSLocalizedString("Service Package", comment: "Service Package menu in Shipping Label Add New Package flow")
     }
 }
 

@@ -14,7 +14,7 @@ public struct CurrencyCode {
 
     public var wrappedValue: String {
         get {
-            guard Locale.isoCurrencyCodes.contains(value) else {
+            guard Locale.isoCurrencyCodes.map({ $0.uppercased() }).contains(value.uppercased()) else {
                 return ""
             }
 

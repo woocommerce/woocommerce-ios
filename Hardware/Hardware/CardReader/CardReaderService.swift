@@ -43,18 +43,10 @@ public protocol CardReaderService {
     /// We need to call this method when switching accounts or stores
     func clear()
 
-    /// Creates a PaymentIntent
-    /// - Parameter parameters: the intent's parameters
-    func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future <Void, Error>
-
-    /// Collects a payment method.
-    func collectPaymentMethod() -> Future<Void, Error>
-
     /// Captures a payment after collecting a payment method succeeds.
-    /// In the success case, it returns the PaymentIntent id
-    func processPayment() -> Future<String, Error>
-
+    func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error>
 
     /// Cancels a a PaymentIntent
-    func cancelPaymentIntent() -> Future<Void, Error>
+    /// If the cancel request succeeds, the promise will be called with the updated PaymentIntent object with status Canceled
+    func cancelPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error>
 }

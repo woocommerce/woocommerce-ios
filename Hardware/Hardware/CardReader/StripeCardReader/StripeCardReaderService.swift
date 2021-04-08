@@ -17,8 +17,6 @@ public final class StripeCardReaderService: NSObject {
     /// see
     ///  https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPDiscoveryDelegate.html#/c:objc(pl)SCPDiscoveryDelegate(im)terminal:didUpdateDiscoveredReaders:
     private let discoveredStripeReadersCache = StripeCardReaderDiscoveryCache()
-
-    private var activePaymentIntent: StripeTerminal.PaymentIntent?
 }
 
 
@@ -125,83 +123,16 @@ extension StripeCardReaderService: CardReaderService {
         Terminal.shared.clearCachedCredentials()
     }
 
-    public func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<Void, Error> {
-        return Future() { promise in
-            // Shortcircuit if we have an inconsistent set of parameters
-            guard let parameters = parameters.toStripe() else {
-                promise(.failure(CardReaderServiceError.intentCreation()))
-                return
-            }
-
-            Terminal.shared.createPaymentIntent(parameters) { [weak self] (intent, error) in
-                guard let self = self else {
-                    promise(.failure(CardReaderServiceError.intentCreation()))
-                    return
-                }
-
-                if let error = error {
-                    let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.intentCreation(underlyingError: underlyingError)))
-                }
-
-                if let intent = intent {
-                    self.activePaymentIntent = intent
-                    promise(.success(()))
-                }
-            }
-        }
+    public func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error> {
+        return createPaymentIntent(parameters)
+            .flatMap { intent in
+                self.collectPaymentMethod(intent: intent)
+            }.flatMap { intent in
+                self.processPayment(intent: intent)
+            }.eraseToAnyPublisher()
     }
 
-    public func collectPaymentMethod() -> Future<Void, Error> {
-        return Future() { [weak self] promise in
-            guard let activeIntent = self?.activePaymentIntent else {
-                // There is no active payment intent.
-                // Shortcircuit with an internal error
-                promise(.failure(CardReaderServiceError.paymentMethodCollection()))
-                return
-            }
-
-            Terminal.shared.collectPaymentMethod(activeIntent, delegate: self) { (intent, error) in
-                // Notify clients that the card, no matter it tapped or inserted, is not needed anymore.
-                self?.sendReaderEvent(.cardRemoved)
-
-                if let error = error {
-                    let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: underlyingError)))
-                }
-
-                if let intent = intent {
-                    self?.activePaymentIntent = intent
-                    promise(.success(()))
-                }
-            }
-        }
-    }
-
-    public func processPayment() -> Future<String, Error> {
-        return Future() { [weak self] promise in
-            guard let activeIntent = self?.activePaymentIntent else {
-                // There is no active payment intent.
-                // Shortcircuit with an internal error
-                promise(.failure(CardReaderServiceError.paymentCapture()))
-                return
-            }
-
-            Terminal.shared.processPayment(activeIntent) { (intent, error) in
-                if let error = error {
-                    let underlyingError = UnderlyingError(with: error)
-                    promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
-                }
-
-                if let intent = intent {
-                    self?.activePaymentIntent = intent
-                    promise(.success(intent.stripeId))
-                }
-            }
-        }
-    }
-
-    public func cancelPaymentIntent() -> Future<Void, Error> {
+    public func cancelPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
         return Future() { promise in
             // Attack the Stripe SDK and cancel a PaymentIntent.
             // To be implemented
@@ -247,6 +178,62 @@ extension StripeCardReaderService: CardReaderService {
 }
 
 
+// MARK: - Payment collection
+private extension StripeCardReaderService {
+    func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<StripeTerminal.PaymentIntent, Error> {
+        return Future() { promise in
+            // Shortcircuit if we have an inconsistent set of parameters
+            guard let parameters = parameters.toStripe() else {
+                promise(.failure(CardReaderServiceError.intentCreation()))
+                return
+            }
+
+            Terminal.shared.createPaymentIntent(parameters) { (intent, error) in
+                if let error = error {
+                    let underlyingError = UnderlyingError(with: error)
+                    promise(.failure(CardReaderServiceError.intentCreation(underlyingError: underlyingError)))
+                }
+
+                if let intent = intent {
+                    promise(.success(intent))
+                }
+            }
+        }
+    }
+
+    func collectPaymentMethod(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
+        return Future() { [weak self] promise in
+            Terminal.shared.collectPaymentMethod(intent, delegate: self) { (intent, error) in
+                // Notify clients that the card, no matter it tapped or inserted, is not needed anymore.
+                self?.sendReaderEvent(.cardRemoved)
+
+                if let error = error {
+                    let underlyingError = UnderlyingError(with: error)
+                    promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: underlyingError)))
+                }
+
+                if let intent = intent {
+                    promise(.success(intent))
+                }
+            }
+        }
+    }
+
+    func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<PaymentIntent, Error> {
+        return Future() { promise in
+            Terminal.shared.processPayment(intent) { (intent, error) in
+                if let error = error {
+                    let underlyingError = UnderlyingError(with: error)
+                    promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
+                }
+
+                if let intent = intent {
+                    promise(.success(PaymentIntent(intent: intent)))
+                }
+            }
+        }
+    }
+}
 
 // MARK: - DiscoveryDelegate.
 extension StripeCardReaderService: DiscoveryDelegate {

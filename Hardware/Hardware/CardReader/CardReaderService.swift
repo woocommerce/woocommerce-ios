@@ -51,10 +51,10 @@ public protocol CardReaderService {
     func collectPaymentMethod() -> Future<Void, Error>
 
     /// Captures a payment after collecting a payment method succeeds.
-    /// In the success case, it returns the PaymentIntent id
-    func processPayment() -> Future<String, Error>
+    func processPayment() -> Future<PaymentIntent, Error>
 
 
     /// Cancels a a PaymentIntent
-    func cancelPaymentIntent() -> Future<Void, Error>
+    /// If the cancel request succeeds, the promise will be called with the updated PaymentIntent object with status Canceled
+    func cancelPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error>
 }

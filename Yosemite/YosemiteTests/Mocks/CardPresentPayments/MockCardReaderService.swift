@@ -98,13 +98,13 @@ final class MockCardReaderService: CardReaderService {
         }
     }
 
-    func processPayment() -> Future<String, Error> {
+    func processPayment() -> Future<PaymentIntent, Error> {
         Future() { promise in
             // To be implemented
         }
     }
 
-    func cancelPaymentIntent() -> Future<Void, Error> {
+    func cancelPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
         Future() { promise in
             // To be implemented
         }

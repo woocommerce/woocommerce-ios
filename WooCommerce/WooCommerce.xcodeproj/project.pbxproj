@@ -480,6 +480,7 @@
 		451C77732404534000413F73 /* ProductSettingsSections.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451C77722404534000413F73 /* ProductSettingsSections.swift */; };
 		4524CD9E242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4524CD9D242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift */; };
 		4524CDA1242D045C00B2F20A /* ProductStatusSettingListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4524CDA0242D045C00B2F20A /* ProductStatusSettingListSelectorCommandTests.swift */; };
+		452B0F21261F6FCC0084B280 /* ShippingLabelAddNewPackageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452B0F20261F6FCC0084B280 /* ShippingLabelAddNewPackageViewController.swift */; };
 		452FE64B25657EC100EB54A0 /* LinkedProductsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452FE64925657EC100EB54A0 /* LinkedProductsViewController.swift */; };
 		452FE64C25657EC100EB54A0 /* LinkedProductsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 452FE64A25657EC100EB54A0 /* LinkedProductsViewController.xib */; };
 		452FE6522565849B00EB54A0 /* LinkedProductsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 452FE6512565849B00EB54A0 /* LinkedProductsViewModel.swift */; };
@@ -1645,6 +1646,7 @@
 		451C77722404534000413F73 /* ProductSettingsSections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsSections.swift; sourceTree = "<group>"; };
 		4524CD9D242D01FD00B2F20A /* ProductStatusSettingListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStatusSettingListSelectorCommand.swift; sourceTree = "<group>"; };
 		4524CDA0242D045C00B2F20A /* ProductStatusSettingListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStatusSettingListSelectorCommandTests.swift; sourceTree = "<group>"; };
+		452B0F20261F6FCC0084B280 /* ShippingLabelAddNewPackageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddNewPackageViewController.swift; sourceTree = "<group>"; };
 		452FE64925657EC100EB54A0 /* LinkedProductsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedProductsViewController.swift; sourceTree = "<group>"; };
 		452FE64A25657EC100EB54A0 /* LinkedProductsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LinkedProductsViewController.xib; sourceTree = "<group>"; };
 		452FE6512565849B00EB54A0 /* LinkedProductsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedProductsViewModel.swift; sourceTree = "<group>"; };
@@ -3593,6 +3595,7 @@
 		4590B6A0261F097200A6FCE0 /* Add New Package */ = {
 			isa = PBXGroup;
 			children = (
+				452B0F20261F6FCC0084B280 /* ShippingLabelAddNewPackageViewController.swift */,
 				4590B6A1261F099E00A6FCE0 /* ShippingLabelAddNewPackage.swift */,
 			);
 			path = "Add New Package";
@@ -6292,6 +6295,7 @@
 				31316F9C25CB20FD00D9F129 /* OrderStatusListViewModel.swift in Sources */,
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
 				451750B224470CD5004FDA65 /* EnhancedTextView.swift in Sources */,
+				452B0F21261F6FCC0084B280 /* ShippingLabelAddNewPackageViewController.swift in Sources */,
 				02279586237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift in Sources */,
 				B5A82EE7210263460053ADC8 /* UIViewController+Helpers.swift in Sources */,
 				4506BD712461965300FE6377 /* ProductVisibilityViewController.swift in Sources */,

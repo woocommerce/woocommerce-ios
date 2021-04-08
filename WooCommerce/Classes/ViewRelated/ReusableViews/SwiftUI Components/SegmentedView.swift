@@ -19,7 +19,7 @@ struct SegmentedView<Content: View>: View {
     var body: some View {
         HStack(spacing: 0) {
             ForEach(0..<views.count) { (index) in
-                VStack {
+                VStack(spacing: 0) {
                     views[index]
                         .frame(maxHeight: .infinity)
                         .foregroundColor(index == selection ? Color(.brand) : Color(.text))

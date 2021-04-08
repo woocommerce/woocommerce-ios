@@ -171,6 +171,42 @@ final class ShippingLabelRemoteTests: XCTestCase {
         // Then
         XCTAssertNotNil(result.failure)
     }
+
+    func test_createPackage_parses_success_response() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "packages", filename: "generic_success_data")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            remote.createPackage(siteID: self.sampleSiteID, customPackage: self.sampleShippingLabelCustomPackageCreation()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let successResponse = try XCTUnwrap(result.get())
+        XCTAssertTrue(successResponse)
+    }
+
+    func test_createPackage_returns_error_on_failure() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "packages", filename: "shipping-label-create-package-error")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            remote.createPackage(siteID: self.sampleSiteID, customPackage: self.sampleShippingLabelCustomPackageCreation()) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let expectedError = DotcomError
+            .unknown(code: "duplicate_custom_package_names_of_existing_packages",
+                     message: "At least one of the new custom packages has the same name as existing packages.")
+        XCTAssertEqual(result.failure as? DotcomError, expectedError)
+    }
 }
 
 private extension ShippingLabelRemoteTests {
@@ -189,5 +225,15 @@ private extension ShippingLabelRemoteTests {
                                     address2: "",
                                     city: "SAN FRANCISCO",
                                     postcode: "94110-4929")
+    }
+
+    func sampleShippingLabelCustomPackageCreation() -> ShippingLabelCustomPackageCreation {
+        let customPackage = ShippingLabelCustomPackage(isUserDefined: true,
+                                                       title: "Test Package",
+                                                       isLetter: false,
+                                                       dimensions: "10 x 10 x 10",
+                                                       boxWeight: 5,
+                                                       maxWeight: 1)
+        return ShippingLabelCustomPackageCreation(customPackage: [customPackage])
     }
 }

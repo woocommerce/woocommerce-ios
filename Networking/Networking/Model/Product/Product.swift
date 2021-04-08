@@ -83,6 +83,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
     public let menuOrder: Int
 
+    public let addOns: [ProductAddOn]
+
     /// Computed Properties
     ///
     public var productStatus: ProductStatus {
@@ -196,7 +198,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 defaultAttributes: [ProductDefaultAttribute],
                 variations: [Int64],
                 groupedProducts: [Int64],
-                menuOrder: Int) {
+                menuOrder: Int,
+                addOns: [ProductAddOn]) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -259,6 +262,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.variations = variations
         self.groupedProducts = groupedProducts
         self.menuOrder = menuOrder
+        self.addOns = addOns
     }
 
     /// The public initializer for Product.
@@ -381,6 +385,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         let menuOrder = try container.decode(Int.self, forKey: .menuOrder)
 
+        let addOns = try container.decode(ProductAddOnEnvelope.self, forKey: .metadata).revolve()
+
         self.init(siteID: siteID,
                   productID: productID,
                   name: name,
@@ -442,7 +448,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   defaultAttributes: defaultAttributes,
                   variations: variations,
                   groupedProducts: groupedProducts,
-                  menuOrder: menuOrder)
+                  menuOrder: menuOrder,
+                  addOns: addOns)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -625,6 +632,7 @@ private extension Product {
         case variations         = "variations"
         case groupedProducts    = "grouped_products"
         case menuOrder          = "menu_order"
+        case metadata           = "meta_data"
     }
 }
 
@@ -693,4 +701,38 @@ private extension Product {
 //
 enum ProductDecodingError: Error {
     case missingSiteID
+}
+
+
+/// Helper to unwrap the product add-ons envelope inside the product metadata.
+///
+private struct ProductAddOnEnvelope: Decodable {
+
+    private typealias UntypedDictionary = [String: AnyDecodable]
+
+    /// Internal metadata representation
+    ///
+    private let metadata: [UntypedDictionary]
+
+    /// Searches product metadata for add-ons information.
+    ///
+    func revolve() -> [ProductAddOn] {
+
+        let rawAddOns = metadata.first { object in
+
+            guard let key = object["key"]?.value as? String, key == "_product_addons" else {
+                return false
+            }
+
+            return true
+        } ?? [:]
+
+
+        let addOns = rawAddOns.compactMap { rawAddOn -> ProductAddOn? in
+            let data = (try? JSONSerialization.data(withJSONObject: rawAddOn, options: .fragmentsAllowed)) ?? Data()
+            return try? JSONDecoder().decode(ProductAddOn.self, from: data)
+        }
+
+        return addOns
+    }
 }

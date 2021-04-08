@@ -544,7 +544,8 @@ extension Product {
             defaultAttributes: .fake(),
             variations: .fake(),
             groupedProducts: .fake(),
-            menuOrder: .fake()
+            menuOrder: .fake(),
+            addOns: .fake()
         )
     }
 }

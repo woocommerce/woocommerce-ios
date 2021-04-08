@@ -152,7 +152,8 @@ extension Product {
         defaultAttributes: CopiableProp<[ProductDefaultAttribute]> = .copy,
         variations: CopiableProp<[Int64]> = .copy,
         groupedProducts: CopiableProp<[Int64]> = .copy,
-        menuOrder: CopiableProp<Int> = .copy
+        menuOrder: CopiableProp<Int> = .copy,
+        addOns: CopiableProp<[ProductAddOn]> = .copy
     ) -> Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -216,6 +217,7 @@ extension Product {
         let variations = variations ?? self.variations
         let groupedProducts = groupedProducts ?? self.groupedProducts
         let menuOrder = menuOrder ?? self.menuOrder
+        let addOns = addOns ?? self.addOns
 
         return Product(
             siteID: siteID,
@@ -279,7 +281,8 @@ extension Product {
             defaultAttributes: defaultAttributes,
             variations: variations,
             groupedProducts: groupedProducts,
-            menuOrder: menuOrder
+            menuOrder: menuOrder,
+            addOns: addOns
         )
     }
 }

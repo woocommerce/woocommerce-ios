@@ -86,22 +86,8 @@ final class MockCardReaderService: CardReaderService {
 
     func clear() { }
 
-    func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<Void, Error> {
-        Future() { promise in
-            // To be implemented
-        }
-    }
-
-    func collectPaymentMethod() -> Future<Void, Error> {
-        Future() { promise in
-            // To be implemented
-        }
-    }
-
-    func processPayment() -> Future<PaymentIntent, Error> {
-        Future() { promise in
-            // To be implemented
-        }
+    func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error> {
+        return Empty(completeImmediately: true).eraseToAnyPublisher()
     }
 
     func cancelPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {

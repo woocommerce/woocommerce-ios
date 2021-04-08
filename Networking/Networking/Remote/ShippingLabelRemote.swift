@@ -98,6 +98,25 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
         let mapper = ShippingLabelPackagesMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Creates a new custom package.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site that owns the shipping label.
+    ///   - customPackage: The custom package that should be created.
+    ///   - completion: Closure to be executed upon completion.
+    public func createPackage(siteID: Int64,
+                              customPackage: ShippingLabelCustomPackageCreation,
+                              completion: @escaping (Result<Bool, Error>) -> Void) {
+        do {
+            let parameters = try customPackage.toDictionary()
+            let path = Path.packages
+            let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let mapper = SuccessResultMapper()
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(.failure(error))
+        }
+    }
 }
 
 // MARK: Constant

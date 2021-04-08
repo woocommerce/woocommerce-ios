@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SegmentedView<Content: View>: View {
     @Binding private var selection: Int
-    let content: Content
+    private let views: [Content]
 
 
     /// Creates a picker that displays a custom label.
@@ -10,28 +10,47 @@ struct SegmentedView<Content: View>: View {
     /// - Parameters:
     ///     - selection: A binding to a property that determines the
     ///       currently-selected option.
-    ///     - content: A view that contains the set of options.
-    public init(selection: Binding<Int>, @ViewBuilder content: () -> Content) {
+    ///     - views: A list of view that contains the set of options.
+    public init(selection: Binding<Int>, views: [Content]) {
         _selection = selection
-        self.content = content()
+        self.views = views
     }
 
     var body: some View {
-        HStack(spacing: 8) {
-            ForEach(0..<content.subv.count) { (index) in
-                 
-              }
+        HStack(spacing: 0) {
+            ForEach(0..<views.count) { (index) in
+                VStack {
+                    views[index]
+                        .frame(maxHeight: .infinity)
+                        .foregroundColor(index == selection ? Color(.brand) : Color(.text))
+                        .onTapGesture(perform: {
+                            selection = index
+                        })
+                    if index == selection {
+                        Rectangle()
+                            .frame(height: 3)
+                            .foregroundColor(Color(.brand))
+                            .animation(.interactiveSpring())
+
+                    }
+                    else {
+                        Rectangle()
+                            .frame(height: 3)
+                            .foregroundColor(Color(.clear))
+                    }
+                }
+            }
         }
     }
+
+
 }
 
 struct SegmentedView_Previews: PreviewProvider {
 
     static var previews: some View {
-        SegmentedView(selection: Binding.constant(0)) {
-            Text("Ciao")
-            Text("Hello")
-        }
-        .previewLayout(.fixed(width: 275, height: 50))
+        SegmentedView(selection: Binding.constant(0),
+                      views: [Text("Ciao"), Text("Hello")])
+            .previewLayout(.fixed(width: 275, height: 50))
     }
 }

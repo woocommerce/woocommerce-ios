@@ -3,7 +3,7 @@ import StripeTerminal
 extension PaymentIntentStatus {
 
     /// Factory Method to initialize PaymentItemStatus with StripeTerminal's PaymentIntentStatus
-    /// - Parameter readerType: an instance of PaymentIntentStatus, declared in StripeTerminal
+    /// - Parameter status: an instance of PaymentIntentStatus, declared in StripeTerminal
     static func with(status: StripeTerminal.PaymentIntentStatus) -> PaymentIntentStatus {
         switch status {
         case .requiresPaymentMethod:

@@ -9,7 +9,9 @@ public struct PaymentIntent: Identifiable {
 
     /// When the PaymentIntent was created
     public let created: Date
+
     ///The amount to be collected by this PaymentIntent, provided in the currency’s smallest unit.
+    /// e.g. USD$5.00 should have amount = 500 and currency = 'usd'
     /// - see: https://stripe.com/docs/currencies#zero-decimal
     public let amount: UInt
 

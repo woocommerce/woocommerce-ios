@@ -21,7 +21,7 @@
                         <constraints>
                             <constraint firstAttribute="height" constant="90" id="H3J-Po-Bo0"/>
                         </constraints>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>

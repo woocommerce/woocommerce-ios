@@ -108,16 +108,6 @@ final class OrderDetailsViewModel {
         }
     }
 
-    /// Indicates if payment for the order can be collected using an external card reader
-    ///
-    var canCollectPayment: Bool {
-        // For now, this defaults to the feature flag, but here we should take into
-        // account wheter the store is enrolled into WCPay and the order is elegible
-        // for collecting card present payments
-        // https://github.com/woocommerce/woocommerce-ios/issues/3828
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments)
-    }
-
     /// Helpers
     ///
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
@@ -465,11 +455,14 @@ extension OrderDetailsViewModel {
     func collectPayment(onPresentMessage: @escaping (String) -> Void,
                         onClearMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        // Mock Payment. We will have to instantiate these parameters with
-        // the proper amount, currency and readable descripitions later.
-        // We could pull the amount from the order but in test mode the Stripe Terminal SDK fails to process amounts that do not end in 00
-        let paymentParameters = PaymentParameters(amount: 100,
-                                                  currency: "usd",
+        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
+            DDLogError("Error: attempted to collect payment for an order without valid total. ")
+            onCompletion(.failure(CardReaderServiceError.paymentCapture()))
+            return
+        }
+
+        let paymentParameters = PaymentParameters(amount: orderTotal as Decimal,
+                                                  currency: order.currency,
                                                   receiptDescription: "Receipt description.",
                                                   statementDescription: "Statement description.")
 

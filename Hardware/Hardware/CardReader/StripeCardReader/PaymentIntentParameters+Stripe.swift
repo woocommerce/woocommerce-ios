@@ -9,7 +9,13 @@ extension Hardware.PaymentIntentParameters {
             return nil
         }
 
-        let returnValue = StripeTerminal.PaymentIntentParameters(amount: self.amount, currency: self.currency)
+        /// The amount of the payment needs to be provided in the currency’s smallest unit.
+        ///https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPPaymentIntentParameters.html#/c:objc(cs)SCPPaymentIntentParameters(py)amount
+        let amountInSmallestUnit = amount * 100
+
+        let amountForStripe = NSDecimalNumber(decimal: amountInSmallestUnit).uintValue
+
+        let returnValue = StripeTerminal.PaymentIntentParameters(amount: amountForStripe, currency: self.currency)
         returnValue.stripeDescription = self.receiptDescription
         returnValue.statementDescriptor = self.statementDescription
         returnValue.receiptEmail = self.receiptEmail

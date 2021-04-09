@@ -26,6 +26,22 @@ final class PaymentIntentParametersTests: XCTestCase {
         XCTAssertNil(params.toStripe())
     }
 
+    func test_parameters_do_not_validate_if_currency_code_is_empty() {
+        let params = PaymentIntentParameters(amount: 100, currency: "")
+
+        XCTAssertNil(params.toStripe())
+    }
+
+    func test_amount_is_converted_to_smallest_unit_before_being_passed_to_stripe() throws {
+        let amount = Decimal(120.10)
+        let expectation = UInt(12010)
+
+        let params = PaymentIntentParameters(amount: amount, currency: "usd")
+        let stripeParams = try XCTUnwrap(params.toStripe())
+
+        XCTAssertEqual(expectation, stripeParams.amount)
+    }
+
     func test_statementDescription_replaces_expected_characters() throws {
         let params = PaymentIntentParameters(amount: 100, currency: "usd", statementDescription: "A < DESCRIPTION' longer THAN 22 Characters")
 

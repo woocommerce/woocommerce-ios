@@ -3,9 +3,8 @@
 /// i.e. metadata,onBehalfOf...
 /// We will start with supporting the basics
 public struct PaymentIntentParameters {
-    /// The amount of the payment, provided in the currency’s smallest unit.
-    /// Note: in testmode, only amounts ending in “00” will be approved. All other amounts will be declined by the Stripe API
-    public let amount: UInt
+    /// The amount of the payment.
+    public let amount: Decimal
 
     /// Three-letter ISO currency code, in lowercase. Must be a supported currency.
     @CurrencyCode
@@ -33,7 +32,7 @@ public struct PaymentIntentParameters {
     /// This can be useful for storing additional information about the object in a structured format.
     public let metadata: [AnyHashable: Any]?
 
-    public init(amount: UInt,
+    public init(amount: Decimal,
                 currency: String,
                 receiptDescription: String? = nil,
                 statementDescription: String? = nil,

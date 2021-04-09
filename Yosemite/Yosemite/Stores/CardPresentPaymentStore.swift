@@ -50,6 +50,8 @@ public final class CardPresentPaymentStore: Store {
                            onCompletion: completion)
         case .checkForUpdate(onData: let data, onCompletion: let completion):
             checkForUpdate(onData: data, onCompletion: completion)
+        case .update(onProgress: let progress, onCompletion: let completion):
+            update(onProgress: progress, onCompletion: completion)
         }
     }
 }
@@ -129,6 +131,24 @@ private extension CardPresentPaymentStore {
         }, receiveValue: {softwareUpdate in
             onData(.success(softwareUpdate))
         }).store(in: &cancellables)
+    }
+
+    func update(onProgress: @escaping (Float) -> Void,
+                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        cardReaderService.installUpdate().sink(receiveCompletion: { value in
+            switch value {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .finished:
+                onCompletion(.success(()))
+            }
+        }, receiveValue: {
+            onCompletion(.success(()))
+        }).store(in: &cancellables)
+        // Observe update progress events fired by the card reader
+        cardReaderService.softwareUpdateEvents.sink { progress in
+            onProgress(progress)
+        }.store(in: &cancellables)
     }
 }
 

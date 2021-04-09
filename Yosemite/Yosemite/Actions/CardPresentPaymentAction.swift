@@ -24,4 +24,8 @@ public enum CardPresentPaymentAction: Action {
 
     case checkForUpdate(onData: (Result<CardReaderSoftwareUpdate, Error>) -> Void,
                         onCompletion: () -> Void)
+
+    case update(onProgress: (Float) -> Void,
+                        onCompletion: (Result<Void, Error>) -> Void)
+
 }

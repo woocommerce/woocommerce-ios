@@ -12,6 +12,7 @@ public final class StripeCardReaderService: NSObject {
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
     private let paymentStatusSubject = CurrentValueSubject<PaymentStatus, Never>(.notReady)
     private let readerEventsSubject = PassthroughSubject<CardReaderEvent, Never>()
+    private let softwareUpdateSubject = CurrentValueSubject<Float, Never>(0)
 
     /// Volatile, in-memory cache of discovered readers. It has to be cleared after we connect to a reader
     /// see
@@ -52,6 +53,9 @@ extension StripeCardReaderService: CardReaderService {
         readerEventsSubject.eraseToAnyPublisher()
     }
 
+    public var softwareUpdateEvents: AnyPublisher<Float, Never> {
+        softwareUpdateSubject.eraseToAnyPublisher()
+    }
 
     // MARK: - CardReaderService conformance. Commands
 
@@ -199,6 +203,29 @@ extension StripeCardReaderService: CardReaderService {
             }
         }
     }
+
+    public func installUpdate() -> Future <Void, Error> {
+        return Future() { [weak self] promise in
+            guard let self = self,
+                  let pendingUpdate = self.pendingSoftwareUpdate else {
+                promise(.failure(CardReaderServiceError.softwareUpdate()))
+                return
+            }
+
+            // If the update succeeds the completion block is called with nil
+            // https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)installUpdate:delegate:completion:
+            Terminal.shared.installUpdate(pendingUpdate, delegate: self) { error in
+                if error == nil {
+                    promise(.success(()))
+                }
+
+                if let error = error {
+                    let underlyingError = UnderlyingError(with: error)
+                    promise(.failure(CardReaderServiceError.softwareUpdate(underlyingError: underlyingError)))
+                }
+            }
+        }
+    }
 }
 
 
@@ -259,6 +286,7 @@ private extension StripeCardReaderService {
     }
 }
 
+
 // MARK: - DiscoveryDelegate.
 extension StripeCardReaderService: DiscoveryDelegate {
     /// Enough code to pass the test
@@ -290,6 +318,13 @@ extension StripeCardReaderService: ReaderDisplayDelegate {
     }
 }
 
+
+// MARK: - Software update delegate.
+extension StripeCardReaderService: ReaderSoftwareUpdateDelegate {
+    public func terminal(_ terminal: Terminal, didReportReaderSoftwareUpdateProgress progress: Float) {
+        softwareUpdateSubject.send(progress)
+    }
+}
 
 // MARK: - Reader events
 private extension StripeCardReaderService {

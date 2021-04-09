@@ -199,6 +199,17 @@ final class CardReaderSettingsViewModel: ObservableObject {
     }
 
     func startUpdate() {
-        print("=== hitting start update in viewmodel")
+        let action = CardPresentPaymentAction.update { progress in
+            print("==== progress ", progress)
+        } onCompletion: { result in
+            switch result {
+            case .failure(let error):
+                print("===== error instaling updates ", error)
+            case .success:
+                print("=== the update has been completed. Moving on!")
+            }
+        }
+
+        ServiceLocator.stores.dispatch(action)
     }
 }

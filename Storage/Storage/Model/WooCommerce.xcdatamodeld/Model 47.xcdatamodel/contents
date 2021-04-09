@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="19H512" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="20D91" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -14,6 +14,8 @@
         <attribute name="userID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
     <entity name="GenericAttribute" representedClassName="GenericAttribute" syncable="YES">
+        <attribute name="attribute" optional="YES"/>
+        <attribute name="attribute1" optional="YES"/>
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="key" attributeType="String"/>
         <attribute name="value" attributeType="String"/>
@@ -297,6 +299,12 @@
         <relationship name="searchResults" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductSearchResults" inverseName="products" inverseEntity="ProductSearchResults"/>
         <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ProductTag" inverseName="products" inverseEntity="ProductTag"/>
     </entity>
+    <entity name="ProductAddOnOption" representedClassName="ProductAddOnOption" syncable="YES" codeGenerationType="class">
+        <attribute name="imageID" optional="YES" attributeType="Integer 64" usesScalarValueType="YES"/>
+        <attribute name="label" optional="YES" attributeType="String"/>
+        <attribute name="price" optional="YES" attributeType="String"/>
+        <attribute name="priceType" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="ProductAttribute" representedClassName="ProductAttribute" syncable="YES">
         <attribute name="attributeID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
@@ -576,7 +584,7 @@
     <elements>
         <element name="Account" positionX="-200.9765625" positionY="63.5625" width="128" height="120"/>
         <element name="AccountSettings" positionX="-846" positionY="270" width="128" height="89"/>
-        <element name="GenericAttribute" positionX="-684" positionY="45" width="128" height="103"/>
+        <element name="GenericAttribute" positionX="-684" positionY="45" width="128" height="14"/>
         <element name="Note" positionX="-369.61328125" positionY="-95.85546875" width="128" height="283"/>
         <element name="Order" positionX="-41.5859375" positionY="23.53125" width="128" height="794"/>
         <element name="OrderCount" positionX="-693" positionY="36" width="128" height="75"/>
@@ -626,5 +634,6 @@
         <element name="TaxClass" positionX="-529.7734375" positionY="-56.109375" width="128" height="88"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="118"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
+        <element name="ProductAddOnOption" positionX="-684" positionY="54" width="128" height="14"/>
     </elements>
 </model>

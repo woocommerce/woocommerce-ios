@@ -51,10 +51,7 @@ final class CardReaderSettingsConnectView: NSObject {
     }
 
     private func configureHeader(cell: TitleTableViewCell) {
-        cell.titleLabel?.text = NSLocalizedString(
-            "Connect your card reader",
-            comment: "Settings > Manage Card Reader > Prompt user to connect their first reader"
-        )
+        cell.titleLabel?.text = Localization.connectYourCardReaderTitle
         cell.selectionStyle = .none
     }
 
@@ -64,43 +61,25 @@ final class CardReaderSettingsConnectView: NSObject {
     }
 
     private func configureHelpHintChargeReader(cell: NumberedListItemTableViewCell) {
-        cell.numberLabel?.text = NSLocalizedString(
-            "1",
-            comment: "Settings > Manage Card Reader > Connect > Help hint number 1"
-        )
-        cell.itemTextLabel?.text = NSLocalizedString(
-            "Make sure card reader is charged",
-            comment: "Settings > Manage Card Reader > Connect > Hint to charge card reader")
+        cell.numberLabel?.text = Localization.hintOneTitle
+        cell.itemTextLabel?.text = Localization.hintOne
         cell.selectionStyle = .none
     }
 
     private func configureHelpHintTurnOnReader(cell: NumberedListItemTableViewCell) {
-        cell.numberLabel?.text = NSLocalizedString(
-            "2",
-            comment: "Settings > Manage Card Reader > Connect > Help hint number 2"
-        )
-        cell.itemTextLabel?.text = NSLocalizedString(
-            "Turn card reader on and place it next to mobile device",
-            comment: "Settings > Manage Card Reader > Connect > Hint to power on reader")
+        cell.numberLabel?.text = Localization.hintTwoTitle
+        cell.itemTextLabel?.text = Localization.hintTwo
         cell.selectionStyle = .none
     }
 
     private func configureHelpHintEnableBluetooth(cell: NumberedListItemTableViewCell) {
-        cell.numberLabel?.text = NSLocalizedString(
-            "3",
-            comment: "Settings > Manage Card Reader > Connect > Help hint number 3"
-        )
-        cell.itemTextLabel?.text = NSLocalizedString(
-            "Turn mobile device Bluetooth on",
-            comment: "Settings > Manage Card Reader > Connect > Hint to enable Bluetooth")
+        cell.numberLabel?.text = Localization.hintThreeTitle
+        cell.itemTextLabel?.text = Localization.hintThree
         cell.selectionStyle = .none
    }
 
     private func configureButton(cell: ButtonTableViewCell) {
-        let buttonTitle = NSLocalizedString(
-            "Connect Card Reader",
-            comment: "Settings > Manage Card Reader > Connect > A button to begin a search for a reader"
-        )
+        let buttonTitle = Localization.connectButton
         cell.configure(title: buttonTitle) { [weak self] in
             self?.onPressedConnect?()
         }
@@ -108,10 +87,7 @@ final class CardReaderSettingsConnectView: NSObject {
     }
 
     private func configureLearnMore(cell: LearnMoreTableViewCell) {
-        cell.learnMoreLabel.text = NSLocalizedString(
-            "Learn more about accepting payments with your mobile device and ordering card readers",
-            comment: "Settings > Manage Card Reader > Connect > A prompt for new users to start accepting mobile payments"
-        )
+        cell.learnMoreLabel.text = Localization.learnMore
         cell.selectionStyle = .none
     }
 }
@@ -207,4 +183,51 @@ extension CardReaderSettingsConnectView: UITableViewDelegate {
             UIApplication.shared.open(url)
         }
     }
+}
+
+private enum Localization {
+    static let connectYourCardReaderTitle = NSLocalizedString(
+        "Connect your card reader",
+        comment: "Settings > Manage Card Reader > Prompt user to connect their first reader"
+    )
+
+    static let hintOneTitle = NSLocalizedString(
+        "1",
+        comment: "Settings > Manage Card Reader > Connect > Help hint number 1"
+    )
+
+    static let hintOne = NSLocalizedString(
+        "Make sure card reader is charged",
+        comment: "Settings > Manage Card Reader > Connect > Hint to charge card reader"
+    )
+
+    static let hintTwoTitle = NSLocalizedString(
+        "2",
+        comment: "Settings > Manage Card Reader > Connect > Help hint number 2"
+    )
+
+    static let hintTwo = NSLocalizedString(
+        "Turn card reader on and place it next to mobile device",
+        comment: "Settings > Manage Card Reader > Connect > Hint to power on reader"
+    )
+
+    static let hintThreeTitle = NSLocalizedString(
+        "3",
+        comment: "Settings > Manage Card Reader > Connect > Help hint number 3"
+    )
+
+    static let hintThree = NSLocalizedString(
+        "Turn mobile device Bluetooth on",
+        comment: "Settings > Manage Card Reader > Connect > Hint to enable Bluetooth"
+    )
+
+    static let connectButton = NSLocalizedString(
+        "Connect Card Reader",
+        comment: "Settings > Manage Card Reader > Connect > A button to begin a search for a reader"
+    )
+
+    static let learnMore = NSLocalizedString(
+        "Learn more about accepting payments with your mobile device and ordering card readers",
+        comment: "Settings > Manage Card Reader > Connect > A prompt for new users to start accepting mobile payments"
+    )
 }

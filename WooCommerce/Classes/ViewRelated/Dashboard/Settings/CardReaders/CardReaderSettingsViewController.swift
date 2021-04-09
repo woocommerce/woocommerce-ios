@@ -21,8 +21,7 @@ final class CardReaderSettingsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        /// Needed to avoid incorrect background appearing near bottom of view, especially on dark mode
-        view.backgroundColor = .systemBackground
+        configureView()
         configureNavigation()
         setTableSource()
         setTableFooter()
@@ -47,6 +46,11 @@ final class CardReaderSettingsViewController: UIViewController {
                 self?.tableView.reloadData()
             }
             .store(in: &subscriptions)
+    }
+
+    private func configureView() {
+        /// Needed to avoid incorrect background appearing near bottom of view, especially on dark mode
+        view.backgroundColor = .systemBackground
     }
 
     private func setTableSource() {
@@ -179,6 +183,13 @@ final class CardReaderSettingsViewController: UIViewController {
 private extension CardReaderSettingsViewController {
 
     func configureNavigation() {
-        title = NSLocalizedString("Manage Card Reader", comment: "Card reader settings screen title")
+        title = Localization.screenTitle
     }
+}
+
+private enum Localization {
+    static let screenTitle = NSLocalizedString(
+        "Manage Card Reader",
+        comment: "Card reader settings screen title"
+    )
 }

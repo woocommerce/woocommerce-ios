@@ -299,11 +299,30 @@
         <relationship name="searchResults" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductSearchResults" inverseName="products" inverseEntity="ProductSearchResults"/>
         <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ProductTag" inverseName="products" inverseEntity="ProductTag"/>
     </entity>
+    <entity name="ProductAddOn" representedClassName="ProductAddOn" syncable="YES" codeGenerationType="class">
+        <attribute name="adjustPrice" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="descriptionEnabled" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="descriptions" attributeType="String" defaultValueString=""/>
+        <attribute name="display" attributeType="String" defaultValueString=""/>
+        <attribute name="max" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="min" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <attribute name="position" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="price" attributeType="String" defaultValueString=""/>
+        <attribute name="priceType" attributeType="String" defaultValueString=""/>
+        <attribute name="required" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="restrictions" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="restrictionsType" attributeType="String" defaultValueString=""/>
+        <attribute name="titleFormat" attributeType="String" defaultValueString=""/>
+        <attribute name="type" attributeType="String" defaultValueString=""/>
+        <relationship name="options" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductAddOnOption" inverseName="addOn" inverseEntity="ProductAddOnOption"/>
+    </entity>
     <entity name="ProductAddOnOption" representedClassName="ProductAddOnOption" syncable="YES" codeGenerationType="class">
         <attribute name="imageID" optional="YES" attributeType="Integer 64" usesScalarValueType="YES"/>
         <attribute name="label" optional="YES" attributeType="String"/>
         <attribute name="price" optional="YES" attributeType="String"/>
         <attribute name="priceType" optional="YES" attributeType="String"/>
+        <relationship name="addOn" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductAddOn" inverseName="options" inverseEntity="ProductAddOn"/>
     </entity>
     <entity name="ProductAttribute" representedClassName="ProductAttribute" syncable="YES">
         <attribute name="attributeID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -635,5 +654,6 @@
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="118"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
         <element name="ProductAddOnOption" positionX="-684" positionY="54" width="128" height="14"/>
+        <element name="ProductAddOn" positionX="-675" positionY="63" width="128" height="14"/>
     </elements>
 </model>

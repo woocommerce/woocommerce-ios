@@ -14,6 +14,6 @@ extension Storage.ProductAddOnOption: ReadOnlyConvertible {
         ProductAddOnOption(label: label,
                            price: price,
                            priceType: AddOnPriceType(rawValue: priceType ?? ""),
-                           imageID: imageID)
+                           imageID: imageID == 0 ? nil : imageID)
     }
 }

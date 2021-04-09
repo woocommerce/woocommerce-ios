@@ -76,6 +76,7 @@ final class ProductStoreTests: XCTestCase {
                                              visible: true,
                                              variation: true,
                                              options: ["Unknown", "House"])
+        let addOn = ProductAddOn.fake().copy(name: "Topping", options: [ProductAddOnOption.fake().copy(label: "Peperoni")])
         let mockCategory = ProductCategory(categoryID: 36, siteID: 2, parentID: 1, name: "Events", slug: "events")
         let expectedProduct = Product.fake().copy(siteID: sampleSiteID,
                                                   productID: sampleProductID,
@@ -87,7 +88,8 @@ final class ProductStoreTests: XCTestCase {
                                                   tags: [mockTag],
                                                   images: [mockImage],
                                                   attributes: [mockAttribute],
-                                                  defaultAttributes: [mockDefaultAttribute])
+                                                  defaultAttributes: [mockDefaultAttribute],
+                                                  addOns: [addOn])
         remote.whenAddingProduct(siteID: sampleSiteID, thenReturn: .success(expectedProduct))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -115,6 +117,8 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 1)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDownload.self), 3)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAddOn.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAddOnOption.self), 1)
     }
 
     func test_addProduct_returns_error_upon_network_error() {
@@ -155,6 +159,7 @@ final class ProductStoreTests: XCTestCase {
                                              variation: true,
                                              options: ["Unknown", "House"])
         let mockCategory = ProductCategory(categoryID: 36, siteID: 2, parentID: 1, name: "Events", slug: "events")
+        let addOn = ProductAddOn.fake().copy(name: "Topping", options: [ProductAddOnOption.fake().copy(label: "Peperoni")])
         let expectedProduct = Product.fake().copy(siteID: sampleSiteID,
                                                   productID: sampleProductID,
                                                   dimensions: ProductDimensions(length: "12", width: "26", height: "16"),
@@ -164,7 +169,8 @@ final class ProductStoreTests: XCTestCase {
                                                   tags: [mockTag],
                                                   images: [mockImage],
                                                   attributes: [mockAttribute],
-                                                  defaultAttributes: [mockDefaultAttribute])
+                                                  defaultAttributes: [mockDefaultAttribute],
+                                                  addOns: [addOn])
         remote.whenDeletingProduct(siteID: sampleSiteID, thenReturn: .success(expectedProduct))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -178,6 +184,8 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAddOn.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAddOnOption.self), 1)
 
         var result: Result<Yosemite.Product, ProductUpdateError>?
         waitForExpectation { expectation in
@@ -199,6 +207,8 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 1)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAddOn.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAddOnOption.self), 0)
     }
 
     func test_deleteProduct_returns_error_upon_network_error() {

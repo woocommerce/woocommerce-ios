@@ -17,7 +17,7 @@ public protocol ShippingLabelRemoteProtocol {
     func packagesDetails(siteID: Int64,
                          completion: @escaping (Result<ShippingLabelPackagesResponse, Error>) -> Void)
     func createPackage(siteID: Int64,
-                       customPackage: ShippingLabelCustomPackageCreation,
+                       customPackage: ShippingLabelCustomPackage,
                        completion: @escaping (Result<Bool, Error>) -> Void)
 }
 
@@ -108,10 +108,13 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
     ///   - customPackage: The custom package that should be created.
     ///   - completion: Closure to be executed upon completion.
     public func createPackage(siteID: Int64,
-                              customPackage: ShippingLabelCustomPackageCreation,
+                              customPackage: ShippingLabelCustomPackage,
                               completion: @escaping (Result<Bool, Error>) -> Void) {
         do {
-            let parameters = try customPackage.toDictionary()
+            let customPackageDictionary = try customPackage.toDictionary()
+            let parameters = [
+                ParameterKey.custom: [customPackageDictionary]
+            ]
             let path = Path.packages
             let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .post, siteID: siteID, path: path, parameters: parameters)
             let mapper = SuccessDataResultMapper()
@@ -135,5 +138,6 @@ private extension ShippingLabelRemote {
         static let labelIDCSV = "label_id_csv"
         static let captionCSV = "caption_csv"
         static let json = "json"
+        static let custom = "custom"
     }
 }

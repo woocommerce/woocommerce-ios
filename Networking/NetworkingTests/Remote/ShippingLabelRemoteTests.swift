@@ -179,7 +179,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            remote.createPackage(siteID: self.sampleSiteID, customPackage: self.sampleShippingLabelCustomPackageCreation()) { result in
+            remote.createPackage(siteID: self.sampleSiteID, customPackage: self.sampleShippingLabelCustomPackage()) { result in
                 promise(result)
             }
         }
@@ -196,7 +196,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = waitFor { promise in
-            remote.createPackage(siteID: self.sampleSiteID, customPackage: self.sampleShippingLabelCustomPackageCreation()) { result in
+            remote.createPackage(siteID: self.sampleSiteID, customPackage: self.sampleShippingLabelCustomPackage()) { result in
                 promise(result)
             }
         }
@@ -227,13 +227,12 @@ private extension ShippingLabelRemoteTests {
                                     postcode: "94110-4929")
     }
 
-    func sampleShippingLabelCustomPackageCreation() -> ShippingLabelCustomPackageCreation {
-        let customPackage = ShippingLabelCustomPackage(isUserDefined: true,
+    func sampleShippingLabelCustomPackage() -> ShippingLabelCustomPackage {
+        return ShippingLabelCustomPackage(isUserDefined: true,
                                                        title: "Test Package",
                                                        isLetter: false,
                                                        dimensions: "10 x 10 x 10",
                                                        boxWeight: 5,
                                                        maxWeight: 1)
-        return ShippingLabelCustomPackageCreation(customPackage: [customPackage])
     }
 }

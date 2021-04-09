@@ -13,8 +13,16 @@ final class CardReaderSettingsViewController: UIViewController {
     private lazy var connectView = CardReaderSettingsConnectView()
     private lazy var connectedView = CardReaderSettingsConnectedReaderView()
 
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        /// We do not want to show the tabs on card reader settings screens
+        hidesBottomBarWhenPushed = true
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        /// Needed to avoid incorrect background appearing near bottom of view, especially on dark mode
+        view.backgroundColor = .systemBackground
         configureNavigation()
         setTableSource()
         setTableFooter()

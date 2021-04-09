@@ -21,4 +21,6 @@ public enum CardPresentPaymentAction: Action {
                         parameters: PaymentParameters,
                         onCardReaderMessage: (CardReaderEvent) -> Void,
                         onCompletion: (Result<Void, Error>) -> Void )
+
+    case checkForUpdate(onCompletion: (Result<CardReaderSoftwareUpdate?, Error>) -> Void)
 }

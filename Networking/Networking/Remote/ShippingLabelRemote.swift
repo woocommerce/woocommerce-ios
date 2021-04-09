@@ -16,6 +16,9 @@ public protocol ShippingLabelRemoteProtocol {
                            completion: @escaping (Result<ShippingLabelAddressValidationResponse, Error>) -> Void)
     func packagesDetails(siteID: Int64,
                          completion: @escaping (Result<ShippingLabelPackagesResponse, Error>) -> Void)
+    func createPackage(siteID: Int64,
+                       customPackage: ShippingLabelCustomPackageCreation,
+                       completion: @escaping (Result<Bool, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints.
@@ -111,7 +114,7 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
             let parameters = try customPackage.toDictionary()
             let path = Path.packages
             let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .post, siteID: siteID, path: path, parameters: parameters)
-            let mapper = SuccessResultMapper()
+            let mapper = SuccessDataResultMapper()
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))

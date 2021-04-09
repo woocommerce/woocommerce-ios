@@ -172,5 +172,12 @@ private extension CardReaderSettingsViewController {
 
     func configureNavigation() {
         title = NSLocalizedString("Card Readers", comment: "Card reader settings screen title")
+        // Adding this button just for testing
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "🌀", style: .plain, target: self, action: #selector(checkForUpdate))
+
+    }
+
+    @objc func checkForUpdate() {
+        viewModel.checkForUpdate()
     }
 }

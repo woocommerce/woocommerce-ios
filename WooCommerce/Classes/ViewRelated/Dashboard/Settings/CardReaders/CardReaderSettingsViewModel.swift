@@ -181,7 +181,20 @@ final class CardReaderSettingsViewModel: ObservableObject {
     }
 
     /// Views can call this method to initiate a software update on the connected reader.
-    func updateSoftware() {
-        // TODO dispatch an action to update software on the connected reader
+    func checkForUpdate() {
+        let action = CardPresentPaymentAction.checkForUpdate { result in
+            switch result {
+            case .failure(let error):
+                print("===== error checking for updates ", error)
+            case .success(let update):
+                print("=== there is an update available")
+                print("=== version ", update.deviceSoftwareVersion)
+                print("=== estimated time ", update.estimatedUpdateTime)
+            }
+        } onCompletion: {
+            print("=== check for updates completed")
+        }
+
+        ServiceLocator.stores.dispatch(action)
     }
 }

@@ -51,6 +51,8 @@ public final class ShippingLabelStore: Store {
             packagesDetails(siteID: siteID, completion: completion)
         case .checkCreationEligibility(let siteID, let orderID, let isFeatureFlagEnabled, let onCompletion):
             checkCreationEligibility(siteID: siteID, orderID: orderID, isFeatureFlagEnabled: isFeatureFlagEnabled, onCompletion: onCompletion)
+        case .createPackage(let siteID, let customPackage, let completion):
+            createPackage(siteID: siteID, customPackage: customPackage, completion: completion)
         }
     }
 }
@@ -117,6 +119,12 @@ private extension ShippingLabelStore {
     func checkCreationEligibility(siteID: Int64, orderID: Int64, isFeatureFlagEnabled: Bool, onCompletion: @escaping (_ isEligible: Bool) -> Void) {
         // TODO-2971: implement shipping label creation eligibility check, hopefully with the new `/creation_eligibility` endpoint.
         onCompletion(isFeatureFlagEnabled)
+    }
+
+    func createPackage(siteID: Int64,
+                       customPackage: ShippingLabelCustomPackage,
+                       completion: @escaping (Result<Bool, Error>) -> Void) {
+        remote.createPackage(siteID: siteID, customPackage: customPackage, completion: completion)
     }
 }
 

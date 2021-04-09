@@ -98,6 +98,7 @@ public typealias StoredProductSettings = Networking.StoredProductSettings
 public typealias CardReader = Hardware.CardReader
 public typealias CardReaderEvent = Hardware.CardReaderEvent
 public typealias CardReaderServiceDiscoveryStatus = Hardware.CardReaderServiceDiscoveryStatus
+public typealias CardReaderServiceError = Hardware.CardReaderServiceError
 public typealias PaymentParameters = Hardware.PaymentIntentParameters
 
 

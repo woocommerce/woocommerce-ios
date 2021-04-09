@@ -104,7 +104,6 @@ private extension CardPresentPaymentStore {
         } receiveValue: { intent in
             // A this point, the status of the PaymentIntent should be `requiresCapture`:
             // https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPPaymentIntentStatus.html#/c:@E@SCPPaymentIntentStatus@SCPPaymentIntentStatusRequiresCapture
-            // TODO. Initiate final step. Update order. Submit intent id to backend.
             // TODO. Persist PaymentIntent, so that we can use it later to print a receipt
             // Deferred to https://github.com/woocommerce/woocommerce-ios/issues/3825
             onCompletion(.success(()))

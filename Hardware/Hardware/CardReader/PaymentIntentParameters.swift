@@ -5,7 +5,8 @@
 public struct PaymentIntentParameters {
     /// The amount of the payment, provided in the currency’s smallest unit.
     /// Note: in testmode, only amounts ending in “00” will be approved. All other amounts will be declined by the Stripe API
-    public let amount: UInt
+    @Amount
+    public private(set) var amount: UInt
 
     /// Three-letter ISO currency code, in lowercase. Must be a supported currency.
     @CurrencyCode

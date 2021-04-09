@@ -24,6 +24,7 @@
 		D88303D525E44CD200C877F9 /* MockStripeCharge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303D425E44CD200C877F9 /* MockStripeCharge.swift */; };
 		D88303DB25E450E700C877F9 /* PaymentIntentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303DA25E450E700C877F9 /* PaymentIntentTests.swift */; };
 		D88303DF25E4512400C877F9 /* MockStripePaymentIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303DE25E4512400C877F9 /* MockStripePaymentIntent.swift */; };
+		D88ECCD1261FBEBB0094398A /* Amount.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88ECCD0261FBEBB0094398A /* Amount.swift */; };
 		D88FDB0925DD216B00CB0DBD /* Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88FDAFF25DD216B00CB0DBD /* Hardware.framework */; };
 		D88FDB1025DD216B00CB0DBD /* Hardware.h in Headers */ = {isa = PBXBuildFile; fileRef = D88FDB0225DD216B00CB0DBD /* Hardware.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D88FDB2925DD21B000CB0DBD /* CardReaderServiceDiscoveryStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88FDB1F25DD21AF00CB0DBD /* CardReaderServiceDiscoveryStatus.swift */; };
@@ -84,6 +85,7 @@
 		D88303D425E44CD200C877F9 /* MockStripeCharge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStripeCharge.swift; sourceTree = "<group>"; };
 		D88303DA25E450E700C877F9 /* PaymentIntentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentIntentTests.swift; sourceTree = "<group>"; };
 		D88303DE25E4512400C877F9 /* MockStripePaymentIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStripePaymentIntent.swift; sourceTree = "<group>"; };
+		D88ECCD0261FBEBB0094398A /* Amount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Amount.swift; sourceTree = "<group>"; };
 		D88FDAFF25DD216B00CB0DBD /* Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D88FDB0225DD216B00CB0DBD /* Hardware.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Hardware.h; sourceTree = "<group>"; };
 		D88FDB0325DD216B00CB0DBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 				D88FDB2025DD21AF00CB0DBD /* PaymentStatus.swift */,
 				D81AE86325E6B77F00D9CFD3 /* CardReaderServiceError.swift */,
 				D8EDFE2925EED21D003D2213 /* CardReaderConfigProvider.swift */,
+				D88ECCD0261FBEBB0094398A /* Amount.swift */,
 				D80B464D260E18930092EDC0 /* Email.swift */,
 				D80B4655260E1B290092EDC0 /* CurrencyCode.swift */,
 				D80B4659260E1E160092EDC0 /* StatementDescriptor.swift */,
@@ -431,6 +434,7 @@
 			files = (
 				D88FDB2D25DD21B000CB0DBD /* PaymentIntentParameters.swift in Sources */,
 				D89B8F0825DDC8F60001C726 /* Charge.swift in Sources */,
+				D88ECCD1261FBEBB0094398A /* Amount.swift in Sources */,
 				D88FDB2E25DD21B000CB0DBD /* CardReaderEvent.swift in Sources */,
 				D80409A625FBE42B006F9BDA /* PaymentIntentParameters+Stripe.swift in Sources */,
 				D89B8F0C25DDC9D30001C726 /* ChargeStatus.swift in Sources */,

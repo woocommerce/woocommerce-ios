@@ -29,7 +29,7 @@ final class MockCardReaderService: CardReaderService {
     }
 
     var softwareUpdateEvents: AnyPublisher<Float, Never> {
-        CurrentValueSubject<Float, Never>(.notReady).eraseToAnyPublisher()
+        CurrentValueSubject<Float, Never>(0).eraseToAnyPublisher()
     }
 
     /// Boolean flag Indicates that clients have called the start method
@@ -101,10 +101,14 @@ final class MockCardReaderService: CardReaderService {
     }
 
     func checkForUpdate() -> Future<CardReaderSoftwareUpdate, Error> {
-        <#code#>
+        Future() { promise in
+            // To be implemented
+        }
     }
 
     func installUpdate() -> Future<Void, Error> {
-        <#code#>
+        Future() { promise in
+            // To be implemented
+        }
     }
 }

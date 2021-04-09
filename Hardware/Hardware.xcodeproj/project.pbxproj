@@ -24,6 +24,8 @@
 		D88303D525E44CD200C877F9 /* MockStripeCharge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303D425E44CD200C877F9 /* MockStripeCharge.swift */; };
 		D88303DB25E450E700C877F9 /* PaymentIntentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303DA25E450E700C877F9 /* PaymentIntentTests.swift */; };
 		D88303DF25E4512400C877F9 /* MockStripePaymentIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303DE25E4512400C877F9 /* MockStripePaymentIntent.swift */; };
+		D88ECCD9262091CF0094398A /* CardReaderSoftwareUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88ECCD8262091CF0094398A /* CardReaderSoftwareUpdate.swift */; };
+		D88ECCDF2620933D0094398A /* CardReaderSofware+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88ECCDE2620933D0094398A /* CardReaderSofware+Stripe.swift */; };
 		D88FDB0925DD216B00CB0DBD /* Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88FDAFF25DD216B00CB0DBD /* Hardware.framework */; };
 		D88FDB1025DD216B00CB0DBD /* Hardware.h in Headers */ = {isa = PBXBuildFile; fileRef = D88FDB0225DD216B00CB0DBD /* Hardware.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D88FDB2925DD21B000CB0DBD /* CardReaderServiceDiscoveryStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88FDB1F25DD21AF00CB0DBD /* CardReaderServiceDiscoveryStatus.swift */; };
@@ -84,6 +86,8 @@
 		D88303D425E44CD200C877F9 /* MockStripeCharge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStripeCharge.swift; sourceTree = "<group>"; };
 		D88303DA25E450E700C877F9 /* PaymentIntentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentIntentTests.swift; sourceTree = "<group>"; };
 		D88303DE25E4512400C877F9 /* MockStripePaymentIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStripePaymentIntent.swift; sourceTree = "<group>"; };
+		D88ECCD8262091CF0094398A /* CardReaderSoftwareUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSoftwareUpdate.swift; sourceTree = "<group>"; };
+		D88ECCDE2620933D0094398A /* CardReaderSofware+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardReaderSofware+Stripe.swift"; sourceTree = "<group>"; };
 		D88FDAFF25DD216B00CB0DBD /* Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D88FDB0225DD216B00CB0DBD /* Hardware.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Hardware.h; sourceTree = "<group>"; };
 		D88FDB0325DD216B00CB0DBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -221,6 +225,7 @@
 				D80B464D260E18930092EDC0 /* Email.swift */,
 				D80B4655260E1B290092EDC0 /* CurrencyCode.swift */,
 				D80B4659260E1E160092EDC0 /* StatementDescriptor.swift */,
+				D88ECCD8262091CF0094398A /* CardReaderSoftwareUpdate.swift */,
 			);
 			path = CardReader;
 			sourceTree = "<group>";
@@ -240,6 +245,7 @@
 				D88FDB3825DD21D300CB0DBD /* DefaultConnectionTokenProvider.swift */,
 				D81AE85925E6A62800D9CFD3 /* StripeCardReaderDiscoveryCache.swift */,
 				D854FC21260A34B000A219CD /* UnderlyingError+Stripe.swift */,
+				D88ECCDE2620933D0094398A /* CardReaderSofware+Stripe.swift */,
 			);
 			path = StripeCardReader;
 			sourceTree = "<group>";
@@ -448,6 +454,7 @@
 				D88FDB2B25DD21B000CB0DBD /* CardReaderServiceStatus.swift in Sources */,
 				D80B464E260E18930092EDC0 /* Email.swift in Sources */,
 				D89B8F0225DDC7500001C726 /* PaymentIntentStatus.swift in Sources */,
+				D88ECCD9262091CF0094398A /* CardReaderSoftwareUpdate.swift in Sources */,
 				D89B8F1E25DDCD3D0001C726 /* PaymentIntent+Stripe.swift in Sources */,
 				D89B8F1625DDCC810001C726 /* ChargeStatus+Stripe.swift in Sources */,
 				D8DF5F4425DD9F36008AFE25 /* CardReaderType.swift in Sources */,
@@ -459,6 +466,7 @@
 				D88FDB2C25DD21B000CB0DBD /* CardReaderStatus.swift in Sources */,
 				D89B8F2425DDCD800001C726 /* PaymentIntentStatus+Stripe.swift in Sources */,
 				D88FDB3A25DD21D300CB0DBD /* DefaultConnectionTokenProvider.swift in Sources */,
+				D88ECCDF2620933D0094398A /* CardReaderSofware+Stripe.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

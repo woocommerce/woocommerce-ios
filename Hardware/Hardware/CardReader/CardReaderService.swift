@@ -49,4 +49,7 @@ public protocol CardReaderService {
     /// Cancels a a PaymentIntent
     /// If the cancel request succeeds, the promise will be called with the updated PaymentIntent object with status Canceled
     func cancelPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error>
+
+    /// Checks for firmware updates.
+    func checkForUpdate() -> Future<CardReaderSoftwareUpdate, Error>
 }

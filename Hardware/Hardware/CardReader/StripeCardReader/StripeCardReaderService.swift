@@ -17,6 +17,8 @@ public final class StripeCardReaderService: NSObject {
     /// see
     ///  https://stripe.dev/stripe-terminal-ios/docs/Protocols/SCPDiscoveryDelegate.html#/c:objc(pl)SCPDiscoveryDelegate(im)terminal:didUpdateDiscoveredReaders:
     private let discoveredStripeReadersCache = StripeCardReaderDiscoveryCache()
+
+    private var pendingSoftwareUpdate: ReaderSoftwareUpdate?
 }
 
 
@@ -171,6 +173,28 @@ extension StripeCardReaderService: CardReaderService {
                 if let reader = reader {
                     self.connectedReadersSubject.send([CardReader(reader: reader)])
                     promise(.success(()))
+                }
+            }
+        }
+    }
+
+    public func checkForUpdate() -> Future<CardReaderSoftwareUpdate, Error> {
+        return Future() { promise in
+            Terminal.shared.checkForUpdate { [weak self] (softwareUpdate, error) in
+                guard let self = self else {
+                    promise(.failure(CardReaderServiceError.softwareUpdate()))
+                    return
+                }
+
+                if let error = error {
+                    let underlyingError = UnderlyingError(with: error)
+                    promise(.failure(CardReaderServiceError.softwareUpdate(underlyingError: underlyingError)))
+                }
+
+                if let softwareUpdate = softwareUpdate {
+                    self.pendingSoftwareUpdate = softwareUpdate
+                    let update = CardReaderSoftwareUpdate(update: softwareUpdate)
+                    promise(.success(update))
                 }
             }
         }

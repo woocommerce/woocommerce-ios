@@ -385,7 +385,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         let menuOrder = try container.decode(Int.self, forKey: .menuOrder)
 
-        let addOns = try container.decode(ProductAddOnEnvelope.self, forKey: .metadata).revolve()
+        let addOns = try container.decodeIfPresent(ProductAddOnEnvelope.self, forKey: .metadata)?.revolve() ?? []
 
         self.init(siteID: siteID,
                   productID: productID,

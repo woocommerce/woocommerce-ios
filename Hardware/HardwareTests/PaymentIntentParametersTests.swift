@@ -33,7 +33,7 @@ final class PaymentIntentParametersTests: XCTestCase {
     }
 
     func test_amount_is_converted_to_smallest_unit_before_being_passed_to_stripe() throws {
-        let amount = NSDecimalNumber(floatLiteral: 120.10)
+        let amount = Decimal(120.10)
         let expectation = UInt(12010)
 
         let params = PaymentIntentParameters(amount: amount, currency: "usd")

@@ -461,7 +461,7 @@ extension OrderDetailsViewModel {
             return
         }
 
-        let paymentParameters = PaymentParameters(amount: orderTotal,
+        let paymentParameters = PaymentParameters(amount: orderTotal as Decimal,
                                                   currency: order.currency,
                                                   receiptDescription: "Receipt description.",
                                                   statementDescription: "Statement description.")

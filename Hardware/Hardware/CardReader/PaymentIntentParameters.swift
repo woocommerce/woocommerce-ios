@@ -4,7 +4,7 @@
 /// We will start with supporting the basics
 public struct PaymentIntentParameters {
     /// The amount of the payment.
-    public let amount: NSDecimalNumber
+    public let amount: Decimal
 
     /// Three-letter ISO currency code, in lowercase. Must be a supported currency.
     @CurrencyCode
@@ -32,7 +32,7 @@ public struct PaymentIntentParameters {
     /// This can be useful for storing additional information about the object in a structured format.
     public let metadata: [AnyHashable: Any]?
 
-    public init(amount: NSDecimalNumber,
+    public init(amount: Decimal,
                 currency: String,
                 receiptDescription: String? = nil,
                 statementDescription: String? = nil,

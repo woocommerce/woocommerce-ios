@@ -456,13 +456,12 @@ extension OrderDetailsViewModel {
                         onClearMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<Void, Error>) -> Void) {
 
-        guard let total = currencyFormatter.convertToDecimal(from: order.total) else {
+        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
             DDLogError("Error: attempted to collect payment for an order without valid total. ")
             onCompletion(.failure(CardReaderServiceError.paymentCapture()))
             return
         }
 
-        let orderTotal = UInt(truncating: total)
         let paymentParameters = PaymentParameters(amount: orderTotal,
                                                   currency: order.currency,
                                                   receiptDescription: "Receipt description.",

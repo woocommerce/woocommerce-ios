@@ -1,6 +1,10 @@
 import StripeTerminal
 
 extension Hardware.UpdateTimeEstimate {
+
+    /// Convenience initializer
+    /// https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPUpdateTimeEstimate.html
+    /// - Parameter estimate: StripeTerminal.UpdateTimeEstimate
     init(_ estimate: StripeTerminal.UpdateTimeEstimate) {
         switch estimate {
         case .estimateLessThan1Minute:

@@ -26,6 +26,12 @@ final class PaymentIntentParametersTests: XCTestCase {
         XCTAssertNil(params.toStripe())
     }
 
+    func test_parameters_do_not_validate_if_currency_code_is_empty() {
+        let params = PaymentIntentParameters(amount: 100, currency: "")
+
+        XCTAssertNil(params.toStripe())
+    }
+
     func test_amount_is_converted_to_smallest_unit_before_being_passed_to_stripe() throws {
         let amount = NSDecimalNumber(floatLiteral: 120.10)
         let expectation = UInt(12010)

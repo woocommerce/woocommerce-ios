@@ -5,7 +5,8 @@ import Yosemite
 extension CancellableMedia: WPMediaAsset {
     public func image(with size: CGSize, completionHandler: @escaping WPMediaImageBlock) -> WPMediaRequestID {
         let imageURL = media.thumbnailURL ?? media.src
-        guard let url = URL(string: imageURL) else {
+        guard let encodedString = imageURL.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: encodedString) else {
             return 0
         }
 

@@ -94,25 +94,25 @@
         },
         {
             "ID": 2348,
-            "URL": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12.jpeg",
+            "URL": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-тест.jpeg",
             "date": "2020-02-21T11:58:24+08:00",
             "mime_type": "image/jpeg",
             "extension": "jpeg",
             "title": "img_0111-1",
             "alt": "",
             "thumbnails": {
-                "medium": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-300x225.jpeg",
-                "large": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-1024x768.jpeg",
-                "thumbnail": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-150x150.jpeg",
-                "medium_large": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-768x576.jpeg",
-                "1536x1536": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-1536x1152.jpeg",
-                "2048x2048": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-2048x1536.jpeg",
-                "woocommerce_thumbnail": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-350x350.jpeg",
-                "woocommerce_single": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-685x514.jpeg",
-                "woocommerce_gallery_thumbnail": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-100x100.jpeg",
-                "shop_catalog": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-350x350.jpeg",
-                "shop_single": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-685x514.jpeg",
-                "shop_thumbnail": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-100x100.jpeg"
+                "medium": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-тест-300x225.jpeg",
+                "large": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-тест-1024x768.jpeg",
+                "thumbnail": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-тест-150x150.jpeg",
+                "medium_large": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-тест-768x576.jpeg",
+                "1536x1536": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-тест-1536x1152.jpeg",
+                "2048x2048": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-тест-2048x1536.jpeg",
+                "woocommerce_thumbnail": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-тест-350x350.jpeg",
+                "woocommerce_single": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-тест-685x514.jpeg",
+                "woocommerce_gallery_thumbnail": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-тест-100x100.jpeg",
+                "shop_catalog": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-тест-350x350.jpeg",
+                "shop_single": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-тест-685x514.jpeg",
+                "shop_thumbnail": "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-тест-100x100.jpeg"
             }
         }
     ],

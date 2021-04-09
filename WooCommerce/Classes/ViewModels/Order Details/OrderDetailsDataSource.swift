@@ -600,10 +600,11 @@ private extension OrderDetailsDataSource {
         let imageURL: URL? = {
             guard let imageURLString = aggregateItem.variationID != 0 ?
                     lookUpProductVariation(productID: aggregateItem.productID, variationID: aggregateItem.variationID)?.image?.src:
-                    lookUpProduct(by: aggregateItem.productID)?.images.first?.src else {
+                    lookUpProduct(by: aggregateItem.productID)?.images.first?.src,
+                  let encodedImageURLString = imageURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
                 return nil
             }
-            return URL(string: imageURLString)
+            return URL(string: encodedImageURLString)
         }()
         let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem.copy(imageURL: imageURL),
                                                         currency: order.currency)

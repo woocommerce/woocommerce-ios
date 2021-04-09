@@ -10,7 +10,7 @@ extension Storage.ProductAddOnOption: ReadOnlyConvertible {
         priceType = entity.priceType?.rawValue
     }
 
-    public func toReadOnly() -> ProductAddOnOption {
+    public func toReadOnly() -> Yosemite.ProductAddOnOption {
         ProductAddOnOption(label: label,
                            price: price,
                            priceType: AddOnPriceType(rawValue: priceType ?? ""),

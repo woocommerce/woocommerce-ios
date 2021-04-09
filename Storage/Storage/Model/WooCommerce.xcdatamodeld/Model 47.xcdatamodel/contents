@@ -288,6 +288,7 @@
         <attribute name="variations" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
         <attribute name="virtual" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="weight" optional="YES" attributeType="String"/>
+        <relationship name="addOns" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductAddOn" inverseName="product" inverseEntity="ProductAddOn"/>
         <relationship name="attributes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductAttribute" inverseName="product" inverseEntity="ProductAttribute"/>
         <relationship name="categories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductCategory" inverseName="products" inverseEntity="ProductCategory"/>
         <relationship name="defaultAttributes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductDefaultAttribute" inverseName="product" inverseEntity="ProductDefaultAttribute"/>
@@ -316,6 +317,7 @@
         <attribute name="titleFormat" attributeType="String" defaultValueString=""/>
         <attribute name="type" attributeType="String" defaultValueString=""/>
         <relationship name="options" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductAddOnOption" inverseName="addOn" inverseEntity="ProductAddOnOption"/>
+        <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="addOns" inverseEntity="Product"/>
     </entity>
     <entity name="ProductAddOnOption" representedClassName="ProductAddOnOption" syncable="YES" codeGenerationType="class">
         <attribute name="imageID" optional="YES" attributeType="Integer 64" usesScalarValueType="YES"/>
@@ -623,7 +625,7 @@
         <element name="OrderStatsV4Totals" positionX="-519.01171875" positionY="96.5546875" width="128" height="225"/>
         <element name="OrderStatus" positionX="-675" positionY="27" width="128" height="103"/>
         <element name="PaymentGateway" positionX="-693" positionY="36" width="128" height="133"/>
-        <element name="Product" positionX="-692.92578125" positionY="1193.70703125" width="128" height="1003"/>
+        <element name="Product" positionX="-692.92578125" positionY="1193.70703125" width="128" height="14"/>
         <element name="ProductAttribute" positionX="-733.52734375" positionY="-73.046875" width="128" height="164"/>
         <element name="ProductAttributeTerm" positionX="-693" positionY="45" width="128" height="119"/>
         <element name="ProductCategory" positionX="-885.69921875" positionY="65.46484375" width="128" height="133"/>

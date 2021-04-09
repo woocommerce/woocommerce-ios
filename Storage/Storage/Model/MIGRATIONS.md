@@ -6,6 +6,7 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 - @ecarrion 2021-04-09
 - Added `ProductAddOnOption` entity.
 - Added `ProductAddOn` entity.
+- Added to-many relationship between `Product` and  `ProductAddOn`.
 
 ## Model 46 (Release 6.2.0.0)
 - @rachelmcr 2021-02-18

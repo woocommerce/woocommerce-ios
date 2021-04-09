@@ -197,4 +197,8 @@ final class CardReaderSettingsViewModel: ObservableObject {
 
         ServiceLocator.stores.dispatch(action)
     }
+
+    func startUpdate() {
+        print("=== hitting start update in viewmodel")
+    }
 }

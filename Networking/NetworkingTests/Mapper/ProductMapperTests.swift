@@ -263,6 +263,14 @@ final class ProductMapperTests: XCTestCase {
     func test_product_add_ons_are_properly_parsed() {
         let addOns = mapLoadProductResponse()?.addOns ?? []
         XCTAssertEqual(addOns.count, 3)
+
+        let firstAddOn = addOns[0]
+        XCTAssertEqual(firstAddOn.name, "Topping")
+        XCTAssertEqual(firstAddOn.options.count, 4)
+
+        let firstOption = firstAddOn.options[0]
+        XCTAssertEqual(firstOption.label, "Peperoni")
+        XCTAssertEqual(firstOption.price, "3")
     }
 }
 

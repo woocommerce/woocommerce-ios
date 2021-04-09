@@ -47,6 +47,7 @@ extension Media: Decodable {
         let date = try container.decodeIfPresent(Date.self, forKey: .date) ?? Date()
         let fileExtension = try container.decodeIfPresent(String.self, forKey: .fileExtension) ?? ""
         let mimeType = try container.decodeIfPresent(String.self, forKey: .mimeType) ?? ""
+        // Decoding String instead of URL for `src`, since it may have non-Latin chars and URL init can fail without prior percent encoding
         let src = try container.decodeIfPresent(String.self, forKey: .src) ?? ""
         let name = try container.decode(String.self, forKey: .name)
         let alt = try container.decodeIfPresent(String.self, forKey: .alt)

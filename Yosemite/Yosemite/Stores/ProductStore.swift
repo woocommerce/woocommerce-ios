@@ -383,6 +383,7 @@ extension ProductStore {
             handleProductCategories(readOnlyProduct, storageProduct, storage)
             handleProductTags(readOnlyProduct, storageProduct, storage)
             handleProductDownloadableFiles(readOnlyProduct, storageProduct, storage)
+            handleProductAddOns(readOnlyProduct, storageProduct, storage)
         }
     }
 
@@ -534,6 +535,37 @@ extension ProductStore {
             }
         }
         storageProduct.addToTags(NSOrderedSet(array: storageTags))
+    }
+
+    /// Replaces the `storageProduct.addOns` with the new `readOnlyProduct.addOns`
+    ///
+    func handleProductAddOns(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+        // Remove all previous addOns, they will be deleted as they have the `cascade` delete rule
+        storageProduct.addOns?.removeAll()
+
+        // Create and add `storageAddOns` from `readOnlyProduct.addOns`
+        let storageAddOns = readOnlyProduct.addOns.map { readOnlyAddOn -> StorageProductAddOn in
+            let storageAddOn = storage.insertNewObject(ofType: StorageProductAddOn.self)
+            storageAddOn.update(with: readOnlyAddOn)
+            handleProductAddOnsOptions(readOnlyAddOn, storageAddOn, storage)
+            return storageAddOn
+        }
+        storageProduct.addToAddOns(NSSet(array: storageAddOns))
+    }
+
+    /// Replaces the `storageProductAddOn.options` with the new `readOnlyProductAddOn.options`
+    ///
+    func handleProductAddOnsOptions(_ readOnlyProductAddOn: Networking.ProductAddOn, _ storageProductAddOn: Storage.ProductAddOn, _ storage: StorageType) {
+        // Remove all previous options, they will be deleted as they have the `cascade` delete rule
+        storageProductAddOn.options?.removeAll()
+
+        // Create and add `storageAddOnsOptions` from `readOnlyProductAddOn.options`
+        let storageAddOnsOptions = readOnlyProductAddOn.options.map { readOnlyAddOnOption -> StorageProductAddOnOption in
+            let storageAddOnOption = storage.insertNewObject(ofType: StorageProductAddOnOption.self)
+            storageAddOnOption.update(with: readOnlyAddOnOption)
+            return storageAddOnOption
+        }
+        storageProductAddOn.addToOptions(NSSet(array: storageAddOnsOptions))
     }
 }
 

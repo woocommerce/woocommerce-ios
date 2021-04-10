@@ -1895,7 +1895,6 @@ private extension ProductStoreTests {
                                                             Networking.ProductAddOnOption.fake().copy(label: "No", price: "", priceType: .flatFee)
                                                            ])
         return [topping, soda, delivery]
-
     }
 
     func date(with dateString: String) -> Date {

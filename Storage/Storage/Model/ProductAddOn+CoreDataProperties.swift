@@ -22,7 +22,7 @@ extension ProductAddOn {
     @NSManaged public var price: String
     @NSManaged public var min: Int
     @NSManaged public var max: Int
-    @NSManaged public var options: Set<ProductAddOnOption>?
+    @NSManaged public var options: NSOrderedSet?
     @NSManaged public var product: Product?
 
 }
@@ -37,9 +37,9 @@ extension ProductAddOn {
     @NSManaged public func removeFromOptions(_ value: ProductAddOnOption)
 
     @objc(addOptions:)
-    @NSManaged public func addToOptions(_ values: NSSet)
+    @NSManaged public func addToOptions(_ values: NSOrderedSet)
 
     @objc(removeOptions:)
-    @NSManaged public func removeFromOptions(_ values: NSSet)
+    @NSManaged public func removeFromOptions(_ values: NSOrderedSet)
 
 }

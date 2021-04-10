@@ -22,21 +22,22 @@ extension Storage.ProductAddOn: ReadOnlyConvertible {
     }
 
     public func toReadOnly() -> Yosemite.ProductAddOn {
-        ProductAddOn(type: AddOnType(rawValue: type) ?? .checkbox,
-                     display: AddOnDisplay(rawValue: display) ?? .dropdown,
-                     name: name,
-                     titleFormat: AddOnTitleFormat(rawValue: titleFormat) ?? .label,
-                     descriptionEnabled: descriptionEnabled,
-                     description: descriptions,
-                     required: required,
-                     position: position,
-                     restrictions: restrictions,
-                     restrictionsType: AddOnRestrictionsType(rawValue: restrictionsType) ?? .any_text,
-                     adjustPrice: adjustPrice,
-                     priceType: AddOnPriceType(rawValue: priceType) ?? .flatFee,
-                     price: price,
-                     min: min,
-                     max: max,
-                     options: options?.map { $0.toReadOnly() } ?? [] )
+        let optionsArray: [StorageProductAddOnOption] = options?.toArray() ?? []
+        return ProductAddOn(type: AddOnType(rawValue: type) ?? .checkbox,
+                            display: AddOnDisplay(rawValue: display) ?? .dropdown,
+                            name: name,
+                            titleFormat: AddOnTitleFormat(rawValue: titleFormat) ?? .label,
+                            descriptionEnabled: descriptionEnabled,
+                            description: descriptions,
+                            required: required,
+                            position: position,
+                            restrictions: restrictions,
+                            restrictionsType: AddOnRestrictionsType(rawValue: restrictionsType) ?? .any_text,
+                            adjustPrice: adjustPrice,
+                            priceType: AddOnPriceType(rawValue: priceType) ?? .flatFee,
+                            price: price,
+                            min: min,
+                            max: max,
+                            options: optionsArray.map { $0.toReadOnly() } )
     }
 }

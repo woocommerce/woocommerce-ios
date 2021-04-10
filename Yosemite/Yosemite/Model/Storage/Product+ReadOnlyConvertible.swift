@@ -93,8 +93,7 @@ extension Storage.Product: ReadOnlyConvertible {
         let productAttributes = attributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductAttribute]()
         let productDefaultAttributes = defaultAttributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductDefaultAttribute]()
         let productShippingClassModel = productShippingClass?.toReadOnly()
-        let productAddOns = addOns?.compactMap { $0.toReadOnly() } ?? []
-
+        let addOnsArray: [StorageProductAddOn] = addOns?.toArray() ?? []
 
         var quantity: Decimal?
         if let stockQuantity = stockQuantity {
@@ -163,7 +162,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        variations: variations ?? [],
                        groupedProducts: groupedProducts ?? [],
                        menuOrder: Int(menuOrder),
-                       addOns: productAddOns)
+                       addOns: addOnsArray.map { $0.toReadOnly() })
     }
 
     // MARK: - Private Helpers

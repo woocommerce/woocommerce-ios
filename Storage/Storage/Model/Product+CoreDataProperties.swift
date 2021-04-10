@@ -73,7 +73,7 @@ extension Product {
     @NSManaged public var searchResults: Set<ProductSearchResults>?
     @NSManaged public var productVariations: Set<ProductVariation>?
     @NSManaged public var productShippingClass: ProductShippingClass?
-    @NSManaged public var addOns: Set<ProductAddOn>?
+    @NSManaged public var addOns: NSOrderedSet?
 
 }
 
@@ -277,9 +277,9 @@ extension Product {
     @NSManaged public func removeFromAddOns(_ value: ProductAddOn)
 
     @objc(addAddOns:)
-    @NSManaged public func addToAddOns(_ values: NSSet)
+    @NSManaged public func addToAddOns(_ values: NSOrderedSet)
 
     @objc(removeAddOns:)
-    @NSManaged public func removeFromAddOns(_ values: NSSet)
+    @NSManaged public func removeFromAddOns(_ values: NSOrderedSet)
 
 }

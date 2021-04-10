@@ -6,7 +6,7 @@ extension Storage.ProductAddOnOption: ReadOnlyConvertible {
     public func update(with entity: Yosemite.ProductAddOnOption) {
         label = entity.label
         price = entity.price
-        imageID = entity.imageID ?? 0
+        imageID = entity.imageID
         priceType = entity.priceType?.rawValue
     }
 
@@ -14,6 +14,6 @@ extension Storage.ProductAddOnOption: ReadOnlyConvertible {
         ProductAddOnOption(label: label,
                            price: price,
                            priceType: AddOnPriceType(rawValue: priceType ?? ""),
-                           imageID: imageID == 0 ? nil : imageID)
+                           imageID: imageID)
     }
 }

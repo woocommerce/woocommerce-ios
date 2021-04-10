@@ -13,15 +13,15 @@ extension ProductAddOn {
     @NSManaged public var titleFormat: String
     @NSManaged public var descriptionEnabled: Int
     @NSManaged public var descriptions: String
-    @NSManaged public var required: Int
-    @NSManaged public var position: Int
-    @NSManaged public var restrictions: Int
+    @NSManaged public var required: Int64
+    @NSManaged public var position: Int64
+    @NSManaged public var restrictions: Int64
     @NSManaged public var restrictionsType: String
-    @NSManaged public var adjustPrice: Int
+    @NSManaged public var adjustPrice: Int64
     @NSManaged public var priceType: String
     @NSManaged public var price: String
-    @NSManaged public var min: Int
-    @NSManaged public var max: Int
+    @NSManaged public var min: Int64
+    @NSManaged public var max: Int64
     @NSManaged public var options: NSOrderedSet?
     @NSManaged public var product: Product?
 

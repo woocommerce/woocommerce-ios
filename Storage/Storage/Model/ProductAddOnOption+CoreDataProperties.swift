@@ -9,7 +9,7 @@ extension ProductAddOnOption {
 
     @NSManaged public var label: String?
     @NSManaged public var price: String?
-    @NSManaged public var imageID: Int64
+    @NSManaged public var imageID: String?
     @NSManaged public var priceType: String?
     @NSManaged public var addOn: ProductAddOn?
 

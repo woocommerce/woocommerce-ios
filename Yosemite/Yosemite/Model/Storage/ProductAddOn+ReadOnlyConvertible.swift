@@ -10,15 +10,15 @@ extension Storage.ProductAddOn: ReadOnlyConvertible {
         titleFormat = entity.titleFormat.rawValue
         descriptionEnabled = entity.descriptionEnabled
         descriptions = entity.description
-        required = entity.required
-        position = entity.position
-        restrictions = entity.restrictions
+        required = Int64(entity.required)
+        position = Int64(entity.position)
+        restrictions = Int64(entity.restrictions)
         restrictionsType = entity.restrictionsType.rawValue
-        adjustPrice = entity.adjustPrice
+        adjustPrice = Int64(entity.adjustPrice)
         priceType = entity.priceType.rawValue
         price = entity.price
-        min = entity.min
-        max = entity.max
+        min = Int64(entity.min)
+        max = Int64(entity.max)
     }
 
     public func toReadOnly() -> Yosemite.ProductAddOn {
@@ -29,15 +29,15 @@ extension Storage.ProductAddOn: ReadOnlyConvertible {
                             titleFormat: AddOnTitleFormat(rawValue: titleFormat) ?? .label,
                             descriptionEnabled: descriptionEnabled,
                             description: descriptions,
-                            required: required,
-                            position: position,
-                            restrictions: restrictions,
+                            required: Int(required),
+                            position: Int(position),
+                            restrictions: Int(restrictions),
                             restrictionsType: AddOnRestrictionsType(rawValue: restrictionsType) ?? .any_text,
-                            adjustPrice: adjustPrice,
+                            adjustPrice: Int(adjustPrice),
                             priceType: AddOnPriceType(rawValue: priceType) ?? .flatFee,
                             price: price,
-                            min: min,
-                            max: max,
+                            min: Int(min),
+                            max: Int(max),
                             options: optionsArray.map { $0.toReadOnly() } )
     }
 }

@@ -1,6 +1,11 @@
 import SwiftUI
 
 struct SegmentedView<Content: View>: View {
+    @State private var selectionState: Int {
+        didSet {
+            selection = $selectionState.wrappedValue
+        }
+    }
     @Binding private var selection: Int
     private let views: [Content]
 
@@ -12,6 +17,7 @@ struct SegmentedView<Content: View>: View {
     ///       currently-selected option.
     ///     - views: A list of view that contains the set of options.
     public init(selection: Binding<Int>, views: [Content]) {
+        _selectionState = State(initialValue: selection.wrappedValue)
         _selection = selection
         self.views = views
     }
@@ -20,18 +26,11 @@ struct SegmentedView<Content: View>: View {
         HStack(spacing: 0) {
             ForEach(0..<views.count) { (index) in
                 VStack(spacing: 0) {
-                    views[index]
-                        .frame(maxHeight: .infinity)
-                        .foregroundColor(index == selection ? Color(.brand) : Color(.textSubtle))
-                        .onTapGesture(perform: {
-                            selection = index
-                        })
-                    if index == selection {
+                    getContentView(index)
+                    if index == selectionState {
                         Rectangle()
                             .frame(height: 3)
                             .foregroundColor(Color(.brand))
-                            .animation(.interactiveSpring())
-
                     }
                     else {
                         Rectangle()
@@ -43,6 +42,14 @@ struct SegmentedView<Content: View>: View {
         }
     }
 
+    func getContentView(_ index: Int) -> some View {
+        return views[index]
+            .frame(maxHeight: .infinity)
+            .foregroundColor(index == selectionState ? Color(.brand) : Color(.textSubtle))
+            .onTapGesture {
+                selectionState = index
+            }
+    }
 
 }
 
@@ -50,7 +57,7 @@ struct SegmentedView_Previews: PreviewProvider {
 
     static var previews: some View {
         SegmentedView(selection: Binding.constant(0),
-                      views: [Text("Ciao"), Text("Hello")])
+                      views: [Text("Menu 1"), Text("Menu 2")])
             .previewLayout(.fixed(width: 275, height: 50))
     }
 }

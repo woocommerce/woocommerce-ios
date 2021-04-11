@@ -1,22 +1,23 @@
 import SwiftUI
 
 struct ShippingLabelAddNewPackage: View {
-    @Binding private var selectedIndex: Int
+    @State private var selectedIndex: Int
 
     var body: some View {
-        VStack(spacing: 0) {
-            SegmentedView(selection: $selectedIndex, views: [Text(Localization.customPackage), Text(Localization.servicePackage)])
-                .frame(height: 44)
-            Divider()
-            ScrollView {
+        NavigationView {
+            VStack(spacing: 0) {
+                SegmentedView(selection: $selectedIndex, views: [Text(Localization.customPackage), Text(Localization.servicePackage)])
+                    .frame(height: 44)
+                Divider()
+                ScrollView {
 
+                }
             }
         }
-
     }
 
     init() {
-        _selectedIndex = .constant(0)
+        _selectedIndex = State(initialValue: 0)
     }
 }
 

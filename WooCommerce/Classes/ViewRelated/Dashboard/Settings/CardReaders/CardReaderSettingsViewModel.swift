@@ -182,7 +182,7 @@ final class CardReaderSettingsViewModel: ObservableObject {
 
     /// Views can call this method to initiate a software update on the connected reader.
     func checkForUpdate() {
-        let action = CardPresentPaymentAction.checkForUpdate { result in
+        let action = CardPresentPaymentAction.checkForCardReaderUpdate { result in
             switch result {
             case .failure(let error):
                 print("===== error checking for updates ", error)
@@ -199,7 +199,7 @@ final class CardReaderSettingsViewModel: ObservableObject {
     }
 
     func startUpdate() {
-        let action = CardPresentPaymentAction.update { progress in
+        let action = CardPresentPaymentAction.startCardReaderUpdate { progress in
             print("==== progress ", progress)
         } onCompletion: { result in
             switch result {

@@ -22,10 +22,10 @@ public enum CardPresentPaymentAction: Action {
                         onCardReaderMessage: (CardReaderEvent) -> Void,
                         onCompletion: (Result<Void, Error>) -> Void )
 
-    case checkForUpdate(onData: (Result<CardReaderSoftwareUpdate, Error>) -> Void,
+    case checkForCardReaderUpdate(onData: (Result<CardReaderSoftwareUpdate, Error>) -> Void,
                         onCompletion: () -> Void)
 
-    case update(onProgress: (Float) -> Void,
+    case startCardReaderUpdate(onProgress: (Float) -> Void,
                         onCompletion: (Result<Void, Error>) -> Void)
 
 }

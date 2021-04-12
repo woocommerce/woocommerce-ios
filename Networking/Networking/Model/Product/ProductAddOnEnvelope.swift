@@ -7,8 +7,8 @@ import Foundation
 ///  "id": 6469,
 ///  "key": "_last_editor_used_jetpack",
 ///  "value": "classic-editor"
-///},
-///{
+/// },
+/// {
 ///  "id": 6471,
 ///  "key": "_product_addons",
 ///  "value": [
@@ -18,8 +18,8 @@ import Foundation
 ///      "required": 0,
 ///    }
 ///  ]
-///}
-///]
+/// }
+/// ]
 ///
 internal struct ProductAddOnEnvelope: Decodable {
 
@@ -53,7 +53,7 @@ internal struct ProductAddOnEnvelope: Decodable {
     ///
     private func getAddOnsJsonObjects() -> [AnyDictionary]? {
         guard let envelopeDictionary = getAddOnsEnvelopeDictionary() else {
-            return []
+            return nil
         }
         return envelopeDictionary["value"]?.value as? [AnyDictionary]
     }

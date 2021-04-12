@@ -204,7 +204,7 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    public func installUpdate() -> Future <Void, Error> {
+    public func installUpdate() -> Future<Void, Error> {
         return Future() { [weak self] promise in
             guard let self = self,
                   let pendingUpdate = self.pendingSoftwareUpdate else {

@@ -1,1 +1,36 @@
 import Foundation
+import Yosemite
+
+/// Use case to cross-reference an order's items's attributes with a product's addOns list, to figure out which attributes of the order are real add ons.
+///
+struct AddOnCrossreferenceUseCase {
+
+    /// Order item with unknown attributes
+    ///
+    private let orderItem: AggregateOrderItem
+
+    /// Product entity with known addOns that matches the order item.
+    ///
+    private let product: Product
+
+    init(orderItem: AggregateOrderItem, product: Product) {
+        self.orderItem = orderItem
+        self.product = product
+    }
+
+    /// Returns the attributes of an `orderItem` that are `addOns` by cross-referencing the attribute name with the addOn name.
+    ///
+    func addOnsAttributes() -> [OrderItemAttribute] {
+        let addOnsAttributes = orderItem.attributes.filter { attribute in
+            product.addOns.contains { $0.name == extractAddOnName(from: attribute) }
+        }
+        return addOnsAttributes
+    }
+
+    /// Tries to extract the `addOn` name from an attribute where it's format it's `"add-on-title (add-on-price)"`
+    /// Returns `nil` if the attribute does not have that format.
+    ///
+    private func extractAddOnName(from attribute: OrderItemAttribute) -> String? {
+        attribute.name.components(separatedBy: " (").first
+    }
+}

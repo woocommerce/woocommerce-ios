@@ -58,5 +58,5 @@ public protocol CardReaderService {
 
     /// Triggers a software update. This method requires that checkForUpdates
     /// has been completed successfully
-    func installUpdate() -> Future <Void, Error>
+    func installUpdate() -> Future<Void, Error>
 }

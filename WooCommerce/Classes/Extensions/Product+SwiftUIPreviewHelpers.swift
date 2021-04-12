@@ -66,7 +66,8 @@ extension Product {
                   defaultAttributes: [],
                   variations: [],
                   groupedProducts: [],
-                  menuOrder: 0)
+                  menuOrder: 0,
+                  addOns: [])
     }
 }
 

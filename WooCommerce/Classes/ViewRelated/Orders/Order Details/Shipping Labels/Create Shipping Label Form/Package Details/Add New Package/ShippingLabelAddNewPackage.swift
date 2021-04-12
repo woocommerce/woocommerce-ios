@@ -11,15 +11,9 @@ struct ShippingLabelAddNewPackage: View {
                         .frame(height: 44)
                     Divider()
                 }.hidden()
-                ScrollView {
-
-                }
             }
             .navigationBarTitle(Text(Localization.title), displayMode: .inline)
         }
-    }
-
-    init() {
     }
 }
 

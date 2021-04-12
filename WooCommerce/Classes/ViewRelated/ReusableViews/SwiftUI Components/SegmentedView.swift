@@ -3,7 +3,7 @@ import SwiftUI
 struct SegmentedView<Content: View>: View {
     @State private var selectionState: Int {
         didSet {
-            selection = $selectionState.wrappedValue
+            selection = selectionState
         }
     }
     @Binding private var selection: Int
@@ -27,7 +27,7 @@ struct SegmentedView<Content: View>: View {
             ForEach(0..<views.count) { (index) in
                 VStack(spacing: 0) {
                     getContentView(index)
-                    if index == selectionState {
+                    if index == selection {
                         Rectangle()
                             .frame(height: 3)
                             .foregroundColor(Color(.brand))

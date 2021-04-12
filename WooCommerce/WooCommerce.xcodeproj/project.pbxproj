@@ -580,6 +580,7 @@
 		45E9A6E724DAE23300A600E8 /* ProductReviewsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E9A6E624DAE23300A600E8 /* ProductReviewsViewModel.swift */; };
 		45E9A6E924DAE3B800A600E8 /* ProductReviewsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E9A6E824DAE3B800A600E8 /* ProductReviewsDataSource.swift */; };
 		45E9A6EB24DAFC3E00A600E8 /* ProductReviewsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E9A6EA24DAFC3E00A600E8 /* ProductReviewsViewModelTests.swift */; };
+		45EB361C262475AA00D25200 /* ShippingLabelAddNewPackageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EB361B262475AA00D25200 /* ShippingLabelAddNewPackageViewModel.swift */; };
 		45EF7984244F26BB00B22BA2 /* Array+IndexPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EF7983244F26BB00B22BA2 /* Array+IndexPath.swift */; };
 		45EF798624509B4C00B22BA2 /* ArrayIndexPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45EF798524509B4C00B22BA2 /* ArrayIndexPathTests.swift */; };
 		45F5A3C123DF206B007D40E5 /* ShippingInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F5A3C023DF206B007D40E5 /* ShippingInputFormatter.swift */; };
@@ -1746,6 +1747,7 @@
 		45E9A6E624DAE23300A600E8 /* ProductReviewsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewsViewModel.swift; sourceTree = "<group>"; };
 		45E9A6E824DAE3B800A600E8 /* ProductReviewsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewsDataSource.swift; sourceTree = "<group>"; };
 		45E9A6EA24DAFC3E00A600E8 /* ProductReviewsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewsViewModelTests.swift; sourceTree = "<group>"; };
+		45EB361B262475AA00D25200 /* ShippingLabelAddNewPackageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAddNewPackageViewModel.swift; sourceTree = "<group>"; };
 		45EF7983244F26BB00B22BA2 /* Array+IndexPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+IndexPath.swift"; sourceTree = "<group>"; };
 		45EF798524509B4C00B22BA2 /* ArrayIndexPathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayIndexPathTests.swift; sourceTree = "<group>"; };
 		45F5A3C023DF206B007D40E5 /* ShippingInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingInputFormatter.swift; sourceTree = "<group>"; };
@@ -3597,6 +3599,7 @@
 			children = (
 				452B0F20261F6FCC0084B280 /* ShippingLabelAddNewPackageViewController.swift */,
 				4590B6A1261F099E00A6FCE0 /* ShippingLabelAddNewPackage.swift */,
+				45EB361B262475AA00D25200 /* ShippingLabelAddNewPackageViewModel.swift */,
 			);
 			path = "Add New Package";
 			sourceTree = "<group>";
@@ -6350,6 +6353,7 @@
 				2688641B25D3202B00821BA5 /* EditAttributesViewController.swift in Sources */,
 				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,
 				933A27372222354600C2143A /* Logging.swift in Sources */,
+				45EB361C262475AA00D25200 /* ShippingLabelAddNewPackageViewModel.swift in Sources */,
 				0290E26F238E3CE400B5C466 /* ListSelectorViewController.swift in Sources */,
 				B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */,
 				B5980A6121AC878900EBF596 /* UIDevice+Woo.swift in Sources */,

@@ -3,7 +3,7 @@ import Yosemite
 
 struct ShippingLabelPackageDetails: View {
     @ObservedObject private var viewModel: ShippingLabelPackageDetailsViewModel
-    @State private var pushed = false
+    @State private var showingAddPackage = false
 
     init(viewModel: ShippingLabelPackageDetailsViewModel) {
         _viewModel = ObservedObject(initialValue: viewModel)
@@ -26,12 +26,12 @@ struct ShippingLabelPackageDetails: View {
                     .background(Color(.listBackground))
 
                 TitleAndValueRow(title: Localization.packageSelected, value: "To be implemented", selectable: true) {
-                    pushed.toggle()
+                    showingAddPackage.toggle()
                 }
 
                 NavigationLink(
                     destination: ShippingLabelAddNewPackage(),
-                    isActive: $pushed) { EmptyView()
+                    isActive: $showingAddPackage) { EmptyView()
                 }
                 Divider()
 

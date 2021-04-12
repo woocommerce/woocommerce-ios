@@ -35,4 +35,10 @@ public enum ShippingLabelAction: Action {
     /// Checks whether an order is eligible for shipping label creation.
     ///
     case checkCreationEligibility(siteID: Int64, orderID: Int64, isFeatureFlagEnabled: Bool, onCompletion: (_ isEligible: Bool) -> Void)
+
+    /// Creates a custom package with provided package details.
+    ///
+    case createPackage(siteID: Int64,
+                       customPackage: ShippingLabelCustomPackage,
+                       completion: (Result<Bool, Error>) -> Void)
 }

@@ -119,6 +119,12 @@ private extension AggregatedShippingLabelOrderItems {
             let price = orderItem?.price ??
                 currencyFormatter.convertToDecimal(from: product.price) ?? 0
             let totalPrice = price.multiplying(by: .init(decimal: Decimal(quantity)))
+            let imageURL: URL?
+            if let encodedImageURLString = product.images.first?.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+                imageURL = URL(string: encodedImageURLString)
+            } else {
+                imageURL = nil
+            }
             return .init(productID: product.productID,
                          variationID: 0,
                          name: productName,
@@ -126,13 +132,19 @@ private extension AggregatedShippingLabelOrderItems {
                          quantity: Decimal(quantity),
                          sku: orderItem?.sku ?? product.sku,
                          total: totalPrice,
-                         imageURL: URL(string: product.images.first?.src ?? ""),
+                         imageURL: imageURL,
                          attributes: orderItem?.attributes ?? [])
         case .productVariation(let variation, let orderItem, let name):
             let productName = orderItem?.name ?? name
             let price = orderItem?.price ??
                 currencyFormatter.convertToDecimal(from: variation.price) ?? 0
             let totalPrice = price.multiplying(by: .init(decimal: Decimal(quantity)))
+            let imageURL: URL?
+            if let encodedImageURLString = variation.image?.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+                imageURL = URL(string: encodedImageURLString)
+            } else {
+                imageURL = nil
+            }
             return .init(productID: variation.productID,
                          variationID: variation.productVariationID,
                          name: productName,
@@ -140,7 +152,7 @@ private extension AggregatedShippingLabelOrderItems {
                          quantity: Decimal(quantity),
                          sku: orderItem?.sku ?? variation.sku,
                          total: totalPrice,
-                         imageURL: URL(string: variation.image?.src ?? ""),
+                         imageURL: imageURL,
                          attributes: orderItem?.attributes ?? [])
         }
     }

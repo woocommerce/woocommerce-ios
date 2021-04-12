@@ -40,6 +40,41 @@ extension AccountSettings {
         )
     }
 }
+extension AddOnDisplay {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> AddOnDisplay {
+        .dropdown
+    }
+}
+extension AddOnPriceType {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> AddOnPriceType {
+        .flatFee
+    }
+}
+extension AddOnRestrictionsType {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> AddOnRestrictionsType {
+        .any_text
+    }
+}
+extension AddOnTitleFormat {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> AddOnTitleFormat {
+        .label
+    }
+}
+extension AddOnType {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> AddOnType {
+        .multipleChoice
+    }
+}
 extension Address {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -509,7 +544,44 @@ extension Product {
             defaultAttributes: .fake(),
             variations: .fake(),
             groupedProducts: .fake(),
-            menuOrder: .fake()
+            menuOrder: .fake(),
+            addOns: .fake()
+        )
+    }
+}
+extension ProductAddOn {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ProductAddOn {
+        .init(
+            type: .fake(),
+            display: .fake(),
+            name: .fake(),
+            titleFormat: .fake(),
+            descriptionEnabled: .fake(),
+            description: .fake(),
+            required: .fake(),
+            position: .fake(),
+            restrictions: .fake(),
+            restrictionsType: .fake(),
+            adjustPrice: .fake(),
+            priceType: .fake(),
+            price: .fake(),
+            min: .fake(),
+            max: .fake(),
+            options: .fake()
+        )
+    }
+}
+extension ProductAddOnOption {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ProductAddOnOption {
+        .init(
+            label: .fake(),
+            price: .fake(),
+            priceType: .fake(),
+            imageID: .fake()
         )
     }
 }

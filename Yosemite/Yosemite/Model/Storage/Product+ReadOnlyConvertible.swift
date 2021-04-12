@@ -160,7 +160,8 @@ extension Storage.Product: ReadOnlyConvertible {
                        defaultAttributes: productDefaultAttributes.sorted(),
                        variations: variations ?? [],
                        groupedProducts: groupedProducts ?? [],
-                       menuOrder: Int(menuOrder))
+                       menuOrder: Int(menuOrder),
+                       addOns: []) // TODO: To be converted later
     }
 
     // MARK: - Private Helpers

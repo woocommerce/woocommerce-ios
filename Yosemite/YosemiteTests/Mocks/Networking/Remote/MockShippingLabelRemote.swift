@@ -31,6 +31,10 @@ final class MockShippingLabelRemote {
         let siteID: Int64
     }
 
+    private struct CreatePackageResultKey: Hashable {
+        let siteID: Int64
+    }
+
     /// The results to return based on the given arguments in `loadShippingLabels`
     private var loadAllResults = [LoadAllResultKey: Result<OrderShippingLabelListResponse, Error>]()
 
@@ -45,6 +49,9 @@ final class MockShippingLabelRemote {
 
     /// The results to return based on the given arguments in `packagesDetails`
     private var packagesDetailsResults = [PackagesDetailsResultKey: Result<ShippingLabelPackagesResponse, Error>]()
+
+    /// The results to return based on the given arguments in `createPackage`
+    private var createPackageResults = [CreatePackageResultKey: Result<Bool, Error>]()
 
     /// Set the value passed to the `completion` block if `loadShippingLabels` is called.
     func whenLoadingShippingLabels(siteID: Int64,
@@ -84,6 +91,13 @@ final class MockShippingLabelRemote {
                              thenReturn result: Result<ShippingLabelPackagesResponse, Error>) {
         let key = PackagesDetailsResultKey(siteID: siteID)
         packagesDetailsResults[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `createPackage` is called.
+    func whenCreatePackage(siteID: Int64,
+                           thenReturn result: Result<Bool, Error>) {
+        let key = CreatePackageResultKey(siteID: siteID)
+        createPackageResults[key] = result
     }
 }
 
@@ -151,6 +165,19 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
 
             let key = PackagesDetailsResultKey(siteID: siteID)
             if let result = self.packagesDetailsResults[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func createPackage(siteID: Int64, customPackage: ShippingLabelCustomPackage, completion: @escaping (Result<Bool, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = CreatePackageResultKey(siteID: siteID)
+            if let result = self.createPackageResults[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

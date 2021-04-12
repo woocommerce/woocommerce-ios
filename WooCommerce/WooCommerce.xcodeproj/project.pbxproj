@@ -390,6 +390,7 @@
 		262A2C2B2537A3330086C1BE /* MockRefunds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A2C2A2537A3330086C1BE /* MockRefunds.swift */; };
 		263EB409242C58EA00F3A15F /* ProductFormActionsFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263EB408242C58EA00F3A15F /* ProductFormActionsFactoryTests.swift */; };
 		265284022624937600F91BA1 /* AddOnCrossreferenceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265284012624937600F91BA1 /* AddOnCrossreferenceUseCase.swift */; };
+		265284092624ACE900F91BA1 /* AddOnCrossreferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265284082624ACE900F91BA1 /* AddOnCrossreferenceTests.swift */; };
 		265BCA052430E611004E53EE /* ProductCategoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265BCA042430E611004E53EE /* ProductCategoryListViewController.swift */; };
 		265BCA072430E62E004E53EE /* ProductCategoryListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 265BCA062430E62E004E53EE /* ProductCategoryListViewController.xib */; };
 		265BCA092430E6E0004E53EE /* ProductCategoryListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265BCA082430E6E0004E53EE /* ProductCategoryListViewModel.swift */; };
@@ -1552,6 +1553,7 @@
 		262A2C2A2537A3330086C1BE /* MockRefunds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRefunds.swift; sourceTree = "<group>"; };
 		263EB408242C58EA00F3A15F /* ProductFormActionsFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormActionsFactoryTests.swift; sourceTree = "<group>"; };
 		265284012624937600F91BA1 /* AddOnCrossreferenceUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOnCrossreferenceUseCase.swift; sourceTree = "<group>"; };
+		265284082624ACE900F91BA1 /* AddOnCrossreferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOnCrossreferenceTests.swift; sourceTree = "<group>"; };
 		265BCA042430E611004E53EE /* ProductCategoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryListViewController.swift; sourceTree = "<group>"; };
 		265BCA062430E62E004E53EE /* ProductCategoryListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductCategoryListViewController.xib; sourceTree = "<group>"; };
 		265BCA082430E6E0004E53EE /* ProductCategoryListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryListViewModel.swift; sourceTree = "<group>"; };
@@ -3273,6 +3275,15 @@
 			path = AddOns;
 			sourceTree = "<group>";
 		};
+		265284072624ACAF00F91BA1 /* AddOns */ = {
+			isa = PBXGroup;
+			children = (
+				265284082624ACE900F91BA1 /* AddOnCrossreferenceTests.swift */,
+			);
+			name = AddOns;
+			path = "Order Details/AddOns";
+			sourceTree = "<group>";
+		};
 		265BCA032430E5EA004E53EE /* Edit Categories */ = {
 			isa = PBXGroup;
 			children = (
@@ -3882,6 +3893,7 @@
 		57F34A9F2423D44000E38AFB /* Orders */ = {
 			isa = PBXGroup;
 			children = (
+				265284072624ACAF00F91BA1 /* AddOns */,
 				2667BFD5252E5D4C008099D4 /* Issue Refund */,
 				57F2C6C9246DEBB10074063B /* Order Details */,
 				570AAB042472FACB00516C0C /* OrderDetailsDataSourceTests.swift */,
@@ -6627,6 +6639,7 @@
 				450C2CB324D0803000D570DD /* ProductSettingsRowsTests.swift in Sources */,
 				455A2FDB246B1349000CA72C /* ProductVisibilityTests.swift in Sources */,
 				0215C6FC2518A3CD005240CD /* ProductFormViewModel+SaveTests.swift in Sources */,
+				265284092624ACE900F91BA1 /* AddOnCrossreferenceTests.swift in Sources */,
 				265D909D2446688C00D66F0F /* ProductCategoryViewModelBuilderTests.swift in Sources */,
 				B555531321B57E8800449E71 /* MockUserNotificationsCenterAdapter.swift in Sources */,
 				4590B652261C8D1E00A6FCE0 /* WeightFormatterTests.swift in Sources */,

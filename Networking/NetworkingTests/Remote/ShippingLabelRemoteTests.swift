@@ -229,10 +229,10 @@ private extension ShippingLabelRemoteTests {
 
     func sampleShippingLabelCustomPackage() -> ShippingLabelCustomPackage {
         return ShippingLabelCustomPackage(isUserDefined: true,
-                                                       title: "Test Package",
-                                                       isLetter: false,
-                                                       dimensions: "10 x 10 x 10",
-                                                       boxWeight: 5,
-                                                       maxWeight: 1)
+                                          title: "Test Package",
+                                          isLetter: false,
+                                          dimensions: "10 x 10 x 10",
+                                          boxWeight: 5,
+                                          maxWeight: 1)
     }
 }

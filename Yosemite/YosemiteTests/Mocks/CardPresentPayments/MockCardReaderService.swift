@@ -28,6 +28,10 @@ final class MockCardReaderService: CardReaderService {
         PassthroughSubject<CardReaderEvent, Never>().eraseToAnyPublisher()
     }
 
+    var softwareUpdateEvents: AnyPublisher<Float, Never> {
+        CurrentValueSubject<Float, Never>(0).eraseToAnyPublisher()
+    }
+
     /// Boolean flag Indicates that clients have called the start method
     var didHitStart = false
 
@@ -91,6 +95,18 @@ final class MockCardReaderService: CardReaderService {
     }
 
     func cancelPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
+        Future() { promise in
+            // To be implemented
+        }
+    }
+
+    func checkForUpdate() -> Future<CardReaderSoftwareUpdate, Error> {
+        Future() { promise in
+            // To be implemented
+        }
+    }
+
+    func installUpdate() -> Future<Void, Error> {
         Future() { promise in
             // To be implemented
         }

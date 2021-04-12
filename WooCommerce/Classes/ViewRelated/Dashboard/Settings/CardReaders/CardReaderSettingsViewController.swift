@@ -184,6 +184,19 @@ private extension CardReaderSettingsViewController {
 
     func configureNavigation() {
         title = Localization.screenTitle
+        // Adding these button just for testing
+        let checkForUpdates = UIBarButtonItem(title: "🕵️‍♀️", style: .plain, target: self, action: #selector(checkForUpdate))
+        let updateReader = UIBarButtonItem(title: "🚀", style: .plain, target: self, action: #selector(startUpdate))
+        navigationItem.rightBarButtonItems = [checkForUpdates, updateReader]
+
+    }
+
+    @objc func checkForUpdate() {
+        viewModel.checkForUpdate()
+    }
+
+    @objc func startUpdate() {
+        viewModel.startUpdate()
     }
 }
 

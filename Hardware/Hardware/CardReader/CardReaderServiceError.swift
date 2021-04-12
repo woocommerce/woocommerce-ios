@@ -20,6 +20,9 @@ public enum CardReaderServiceError: Error {
 
     /// Error thrown while capturing a payment
     case paymentCapture(underlyingError: UnderlyingError = .internalServiceError)
+
+    /// Error thrown while updating the reader firmware
+    case softwareUpdate(underlyingError: UnderlyingError = .internalServiceError)
 }
 
 

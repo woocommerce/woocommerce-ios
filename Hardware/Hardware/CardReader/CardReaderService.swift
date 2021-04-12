@@ -22,6 +22,9 @@ public protocol CardReaderService {
     /// The Publisher that emits reader events
     var readerEvents: AnyPublisher<CardReaderEvent, Never> { get }
 
+    /// The Publisher that emits software update progress. Values are in the range [0, 1]
+    var softwareUpdateEvents: AnyPublisher<Float, Never> { get }
+
     // MARK: - Commands
 
     /// Starts the service.
@@ -49,4 +52,11 @@ public protocol CardReaderService {
     /// Cancels a a PaymentIntent
     /// If the cancel request succeeds, the promise will be called with the updated PaymentIntent object with status Canceled
     func cancelPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error>
+
+    /// Checks for firmware updates.
+    func checkForUpdate() -> Future<CardReaderSoftwareUpdate, Error>
+
+    /// Triggers a software update. This method requires that checkForUpdates
+    /// has been completed successfully
+    func installUpdate() -> Future<Void, Error>
 }

@@ -52,7 +52,7 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
 private extension WrongAccountErrorViewModelTests {
     private enum Expectations {
         static let url = "https://woocommerce.com"
-        static let image = UIImage.errorImage
+        static let image = UIImage.productErrorImage
 
         static let primaryButtonTitle = NSLocalizedString("See Connected Stores",
                                                           comment: "Action button linking to a list of connected stores."

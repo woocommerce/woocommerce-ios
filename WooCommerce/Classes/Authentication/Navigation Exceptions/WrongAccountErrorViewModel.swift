@@ -54,7 +54,7 @@ struct WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     let logOutButtonTitle: String = Localization.logOutButtonTitle
 
-    let image: UIImage = .errorImage
+    let image: UIImage = .productErrorImage
 
     var text: NSAttributedString {
         let font: UIFont = .body

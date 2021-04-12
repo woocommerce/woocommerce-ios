@@ -30,8 +30,8 @@ public struct ShippingLabelCustomPackage: Equatable, GeneratedFakeable {
     }
 }
 
-// MARK: Decodable
-extension ShippingLabelCustomPackage: Decodable {
+// MARK: Codable
+extension ShippingLabelCustomPackage: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
@@ -43,6 +43,16 @@ extension ShippingLabelCustomPackage: Decodable {
         let maxWeight = try container.decode(Double.self, forKey: .maxWeight)
 
         self.init(isUserDefined: isUserDefined, title: title, isLetter: isLetter, dimensions: dimensions, boxWeight: boxWeight, maxWeight: maxWeight)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(isUserDefined, forKey: .isUserDefined)
+        try container.encode(title, forKey: .title)
+        try container.encode(dimensions, forKey: .innerDimensions)
+        try container.encode(boxWeight, forKey: .boxWeight)
+        try container.encode(maxWeight, forKey: .maxWeight)
     }
 
     private enum CodingKeys: String, CodingKey {

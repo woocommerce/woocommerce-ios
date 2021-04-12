@@ -31,6 +31,11 @@ struct AddOnCrossreferenceUseCase {
     /// Returns `nil` if the attribute does not have that format.
     ///
     private func extractAddOnName(from attribute: OrderItemAttribute) -> String? {
-        attribute.name.components(separatedBy: " (").first
+        let splitToken = " ("
+        let components = attribute.name.components(separatedBy: splitToken)
+
+        // In case there are more `" ("` occurrences in the string, drop the last one assuming its the add-on price,
+        // and join the remaining components to keep the original name integrity
+        return components.dropLast().joined(separator: splitToken)
     }
 }

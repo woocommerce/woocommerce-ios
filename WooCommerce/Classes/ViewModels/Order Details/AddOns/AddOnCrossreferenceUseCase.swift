@@ -27,9 +27,8 @@ struct AddOnCrossreferenceUseCase {
     }
 
     /// Tries to extract the `addOn` name from an attribute where it's format it's `"add-on-title (add-on-price)"`
-    /// Returns `nil` if the attribute does not have that format.
     ///
-    private func extractAddOnName(from attribute: OrderItemAttribute) -> String? {
+    private func extractAddOnName(from attribute: OrderItemAttribute) -> String {
         let splitToken = " ("
         let components = attribute.name.components(separatedBy: splitToken)
 

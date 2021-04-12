@@ -21,10 +21,9 @@ struct AddOnCrossreferenceUseCase {
     /// Returns the attributes of an `orderItem` that are `addOns` by cross-referencing the attribute name with the addOn name.
     ///
     func addOnsAttributes() -> [OrderItemAttribute] {
-        let addOnsAttributes = orderItem.attributes.filter { attribute in
+        orderItem.attributes.filter { attribute in
             product.addOns.contains { $0.name == extractAddOnName(from: attribute) }
         }
-        return addOnsAttributes
     }
 
     /// Tries to extract the `addOn` name from an attribute where it's format it's `"add-on-title (add-on-price)"`

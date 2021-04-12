@@ -214,8 +214,9 @@ extension StripeCardReaderService: CardReaderService {
 
             // If the update succeeds the completion block is called with nil
             // https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)installUpdate:delegate:completion:
-            Terminal.shared.installUpdate(pendingUpdate, delegate: self) { error in
+            Terminal.shared.installUpdate(pendingUpdate, delegate: self) { [weak self] error in
                 if error == nil {
+                    self?.pendingSoftwareUpdate = nil
                     promise(.success(()))
                 }
 

@@ -41,6 +41,10 @@
 		2619F78625B5D29B0006DAFF /* TypedPredicateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2619F78525B5D29B0006DAFF /* TypedPredicateTests.swift */; };
 		261CF1C4255B291F0090D8D3 /* PaymentGateway+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261CF1C2255B291F0090D8D3 /* PaymentGateway+CoreDataClass.swift */; };
 		261CF1C5255B291F0090D8D3 /* PaymentGateway+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261CF1C3255B291F0090D8D3 /* PaymentGateway+CoreDataProperties.swift */; };
+		262B27092621411C00A421CF /* ProductAddOn+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B26782621401A00A421CF /* ProductAddOn+CoreDataClass.swift */; };
+		262B270E2621412000A421CF /* ProductAddOn+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B26752621401A00A421CF /* ProductAddOn+CoreDataProperties.swift */; };
+		262B27132621412700A421CF /* ProductAddOnOption+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B26762621401A00A421CF /* ProductAddOnOption+CoreDataClass.swift */; };
+		262B27182621412D00A421CF /* ProductAddOnOption+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B26772621401A00A421CF /* ProductAddOnOption+CoreDataProperties.swift */; };
 		26577519243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 26577518243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel */; };
 		267439D624E5D45A0090696C /* FeedbackSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267439D524E5D45A0090696C /* FeedbackSettings.swift */; };
 		26B64556259CE7A900EF3FB3 /* ProductAttributeTerm+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B64554259CE7A800EF3FB3 /* ProductAttributeTerm+CoreDataProperties.swift */; };
@@ -239,8 +243,13 @@
 		261CF1C2255B291F0090D8D3 /* PaymentGateway+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PaymentGateway+CoreDataClass.swift"; sourceTree = "<group>"; };
 		261CF1C3255B291F0090D8D3 /* PaymentGateway+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PaymentGateway+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		261CF32E255D988F0090D8D3 /* Model 37.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 37.xcdatamodel"; sourceTree = "<group>"; };
+		262B26752621401A00A421CF /* ProductAddOn+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductAddOn+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		262B26762621401A00A421CF /* ProductAddOnOption+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductAddOnOption+CoreDataClass.swift"; sourceTree = "<group>"; };
+		262B26772621401A00A421CF /* ProductAddOnOption+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductAddOnOption+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		262B26782621401A00A421CF /* ProductAddOn+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductAddOn+CoreDataClass.swift"; sourceTree = "<group>"; };
 		262CD20224317C2F00932241 /* Model 27.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 27.xcdatamodel"; sourceTree = "<group>"; };
 		26577518243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV26toV27.xcmappingmodel; sourceTree = "<group>"; };
+		266503372620D44C0079A159 /* Model 47.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 47.xcdatamodel"; sourceTree = "<group>"; };
 		267439D524E5D45A0090696C /* FeedbackSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackSettings.swift; sourceTree = "<group>"; };
 		26B64551259CDF8B00EF3FB3 /* Model 41.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 41.xcdatamodel"; sourceTree = "<group>"; };
 		26B64554259CE7A800EF3FB3 /* ProductAttributeTerm+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductAttributeTerm+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -737,6 +746,10 @@
 				261CF1C3255B291F0090D8D3 /* PaymentGateway+CoreDataProperties.swift */,
 				747453952242C85E00E0B5EE /* Product+CoreDataClass.swift */,
 				023FA29223316A4D008C1769 /* Product+CoreDataProperties.swift */,
+				262B26782621401A00A421CF /* ProductAddOn+CoreDataClass.swift */,
+				262B26752621401A00A421CF /* ProductAddOn+CoreDataProperties.swift */,
+				262B26762621401A00A421CF /* ProductAddOnOption+CoreDataClass.swift */,
+				262B26772621401A00A421CF /* ProductAddOnOption+CoreDataProperties.swift */,
 				7474538F2242C85E00E0B5EE /* ProductAttribute+CoreDataClass.swift */,
 				747453902242C85E00E0B5EE /* ProductAttribute+CoreDataProperties.swift */,
 				26B64555259CE7A800EF3FB3 /* ProductAttributeTerm+CoreDataClass.swift */,
@@ -1005,6 +1018,7 @@
 				7474539C2242C85E00E0B5EE /* ProductDimensions+CoreDataProperties.swift in Sources */,
 				7426A05120F69D00002A4E07 /* OrderCoupon+CoreDataProperties.swift in Sources */,
 				021EAA4825493A1600AA8CCD /* OrderItemAttribute+CoreDataProperties.swift in Sources */,
+				262B27182621412D00A421CF /* ProductAddOnOption+CoreDataProperties.swift in Sources */,
 				267439D624E5D45A0090696C /* FeedbackSettings.swift in Sources */,
 				CE4FD4472350EB7600A16B31 /* OrderItemRefund+CoreDataClass.swift in Sources */,
 				747453A12242C85E00E0B5EE /* ProductCategory+CoreDataClass.swift in Sources */,
@@ -1041,7 +1055,9 @@
 				5772841F25BF45B90092FB2C /* PersistentStoreCoordinatorProtocol.swift in Sources */,
 				02EAB6D72480A86D00FD873C /* CrashLogger.swift in Sources */,
 				746A9D21214078080013F6FF /* TopEarnerStats+CoreDataClass.swift in Sources */,
+				262B27092621411C00A421CF /* ProductAddOn+CoreDataClass.swift in Sources */,
 				5707FBC425B5FE2200B7C1A6 /* CoreDataIterativeMigrator+MigrationStep.swift in Sources */,
+				262B27132621412700A421CF /* ProductAddOnOption+CoreDataClass.swift in Sources */,
 				74B7D6AD20F90CBB002667AC /* OrderNote+CoreDataClass.swift in Sources */,
 				B52B0F7920AA287C00477698 /* StorageManagerType.swift in Sources */,
 				028296F5237D404F00E84012 /* GenericAttribute+CoreDataProperties.swift in Sources */,
@@ -1050,6 +1066,7 @@
 				26EA01D124EC3AEA00176A57 /* FeedbackType.swift in Sources */,
 				7426A05420F69DA4002A4E07 /* OrderItem+CoreDataClass.swift in Sources */,
 				028296F4237D404F00E84012 /* GenericAttribute+CoreDataClass.swift in Sources */,
+				262B270E2621412000A421CF /* ProductAddOn+CoreDataProperties.swift in Sources */,
 				7492FAD6217FA9C100ED2C69 /* SiteSetting+CoreDataClass.swift in Sources */,
 				B505F6E020BEEA8100BB1B69 /* StorageType.swift in Sources */,
 				747453A82242C85E00E0B5EE /* ProductTag+CoreDataProperties.swift in Sources */,
@@ -1560,6 +1577,7 @@
 		B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				266503372620D44C0079A159 /* Model 47.xcdatamodel */,
 				CCD2E70525DE995900BD975D /* Model 46.xcdatamodel */,
 				455C0C8325DD6C2B007B6F38 /* Model 45.xcdatamodel */,
 				029DE8AD25C115860046EFF5 /* Model 44.xcdatamodel */,
@@ -1607,7 +1625,7 @@
 				746A9D14214071F90013F6FF /* Model 2.xcdatamodel */,
 				B59E11D920A9D00C004121A4 /* Model.xcdatamodel */,
 			);
-			currentVersion = CCD2E70525DE995900BD975D /* Model 46.xcdatamodel */;
+			currentVersion = 266503372620D44C0079A159 /* Model 47.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

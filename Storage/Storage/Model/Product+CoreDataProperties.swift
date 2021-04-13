@@ -73,6 +73,7 @@ extension Product {
     @NSManaged public var searchResults: Set<ProductSearchResults>?
     @NSManaged public var productVariations: Set<ProductVariation>?
     @NSManaged public var productShippingClass: ProductShippingClass?
+    @NSManaged public var addOns: NSOrderedSet?
 
 }
 
@@ -263,5 +264,22 @@ extension Product {
 
     @objc(removeProductVariations:)
     @NSManaged public func removeFromProductVariations(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for addOns
+extension Product {
+
+    @objc(addAddOnsObject:)
+    @NSManaged public func addToAddOns(_ value: ProductAddOn)
+
+    @objc(removeAddOnsObject:)
+    @NSManaged public func removeFromAddOns(_ value: ProductAddOn)
+
+    @objc(addAddOns:)
+    @NSManaged public func addToAddOns(_ values: NSOrderedSet)
+
+    @objc(removeAddOns:)
+    @NSManaged public func removeFromAddOns(_ values: NSOrderedSet)
 
 }

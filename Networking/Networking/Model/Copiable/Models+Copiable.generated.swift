@@ -349,7 +349,7 @@ extension ProductAddOnOption {
         label: NullableCopiableProp<String> = .copy,
         price: NullableCopiableProp<String> = .copy,
         priceType: NullableCopiableProp<AddOnPriceType> = .copy,
-        imageID: NullableCopiableProp<Int64> = .copy
+        imageID: NullableCopiableProp<String> = .copy
     ) -> ProductAddOnOption {
         let label = label ?? self.label
         let price = price ?? self.price

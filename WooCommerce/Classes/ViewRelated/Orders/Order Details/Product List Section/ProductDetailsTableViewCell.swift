@@ -40,6 +40,10 @@ final class ProductDetailsTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var viewAddOnsIndicator: UIImageView!
 
+    /// Assign this closure to be notified when the "viewAddOns" button us tapped
+    ///
+    var onViewAddOnsTouchUp: (() -> Void)?
+
     // MARK: - Overridden Methods
 
     required init?(coder aDecoder: NSCoder) {
@@ -107,6 +111,12 @@ private extension ProductDetailsTableViewCell {
 
         viewAddOnsIndicator.image = .chevronImage
         viewAddOnsIndicator.tintColor = .systemGray
+
+        let tapRecognizer = UITapGestureRecognizer()
+        tapRecognizer.on { [weak self] _ in
+            self?.onViewAddOnsTouchUp?()
+        }
+        viewAddOnsStackView.addGestureRecognizer(tapRecognizer)
     }
 
     func configureSelectionStyle() {

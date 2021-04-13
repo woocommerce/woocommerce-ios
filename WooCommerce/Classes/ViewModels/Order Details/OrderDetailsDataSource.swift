@@ -537,6 +537,9 @@ private extension OrderDetailsDataSource {
                                                         currency: order.currency,
                                                         hasAddOns: checkAddOnsExistence(on: orderItem))
         cell.configure(item: itemViewModel, imageService: imageService)
+        cell.onViewAddOnsTouchUp = {
+            print("TODO: Navigate to add ons")
+        }
     }
 
     private func configureShippingLabelTrackingNumber(cell: ImageAndTitleAndTextTableViewCell, at indexPath: IndexPath) {
@@ -613,6 +616,9 @@ private extension OrderDetailsDataSource {
                                                         hasAddOns: checkAddOnsExistence(on: aggregateItem))
 
         cell.configure(item: itemViewModel, imageService: imageService)
+        cell.onViewAddOnsTouchUp = {
+            print("TODO: Navigate to add ons")
+        }
     }
 
     private func configureRefundedProducts(_ cell: WooBasicTableViewCell) {

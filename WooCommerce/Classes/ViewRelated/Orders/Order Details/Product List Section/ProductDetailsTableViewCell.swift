@@ -28,6 +28,18 @@ final class ProductDetailsTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var skuLabel: UILabel!
 
+    /// The stack view grouping add on information.
+    ///
+    @IBOutlet private var viewAddOnsStackView: UIStackView!
+
+    /// The label indicating that there are add-ons available.
+    ///
+    @IBOutlet private var viewAddOnsLabel: UILabel!
+
+    /// The chevron indicator next to the viewAddOns label.
+    ///
+    @IBOutlet private var viewAddOnsIndicator: UIImageView!
+
     // MARK: - Overridden Methods
 
     required init?(coder aDecoder: NSCoder) {

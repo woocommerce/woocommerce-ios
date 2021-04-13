@@ -61,6 +61,36 @@ class CouponListMapperTests: XCTestCase {
         XCTAssertEqual(coupon.usedBy, ["someone.else@example.com", "person@a8c.com"])
     }
 
+    func test_CouponsList_map_accepts_nulls_in_expected_optional_fields() throws {
+        let coupons = try mapLoadMinimalCouponsResponse()
+        let coupon = coupons[0]
+
+        let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
+
+        XCTAssertEqual(coupon.couponId, 10714)
+        XCTAssertEqual(coupon.code, "test")
+        XCTAssertEqual(coupon.amount, "0.00")
+        XCTAssertEqual(coupon.dateCreated, dateFormatter.date(from: "2021-04-13T08:26:25"))
+        XCTAssertEqual(coupon.dateModified, dateFormatter.date(from: "2021-04-13T08:26:25"))
+        XCTAssertEqual(coupon.discountType, .fixedCart)
+        XCTAssertEqual(coupon.description, "")
+        XCTAssertEqual(coupon.dateExpires, nil)
+        XCTAssertEqual(coupon.usageCount, 0)
+        XCTAssertEqual(coupon.individualUse, false)
+        XCTAssertEqual(coupon.productIds, [])
+        XCTAssertEqual(coupon.excludedProductIds, [])
+        XCTAssertEqual(coupon.usageLimit, nil)
+        XCTAssertEqual(coupon.usageLimitPerUser, nil)
+        XCTAssertEqual(coupon.limitUsageToXItems, nil)
+        XCTAssertEqual(coupon.freeShipping, false)
+        XCTAssertEqual(coupon.productCategories, [])
+        XCTAssertEqual(coupon.excludedProductCategories, [])
+        XCTAssertEqual(coupon.excludeSaleItems, false)
+        XCTAssertEqual(coupon.minimumAmount, "0.00")
+        XCTAssertEqual(coupon.maximumAmount, "0.00")
+        XCTAssertEqual(coupon.emailRestrictions, [])
+        XCTAssertEqual(coupon.usedBy, [])
+    }
 }
 
 
@@ -82,5 +112,11 @@ private extension CouponListMapperTests {
     ///
     func mapLoadAllCouponsResponse() throws -> [Coupon] {
         return try mapCoupons(from: "coupons-all")
+    }
+
+    /// Returns the CouponsMapper output from `coupons-minimal.json`
+    ///
+    func mapLoadMinimalCouponsResponse() throws -> [Coupon] {
+        return try mapCoupons(from: "coupons-minimal")
     }
 }

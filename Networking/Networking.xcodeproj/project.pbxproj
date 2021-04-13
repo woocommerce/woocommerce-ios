@@ -72,6 +72,7 @@
 		03DCB7402624AD7D00C8953D /* CouponListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB73F2624AD7D00C8953D /* CouponListMapper.swift */; };
 		03DCB7442624AD9B00C8953D /* CouponListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB7432624AD9A00C8953D /* CouponListMapperTests.swift */; };
 		03DCB7522624B3BE00C8953D /* coupons-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 03DCB7512624B3BE00C8953D /* coupons-all.json */; };
+		03DCB76426258CA200C8953D /* coupons-minimal.json in Resources */ = {isa = PBXBuildFile; fileRef = 03DCB76326258CA200C8953D /* coupons-minimal.json */; };
 		21DB5B99C4107CF69C0A57EC /* Pods_NetworkingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */; };
 		24F98C522502E79800F49B68 /* FeatureFlagsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C512502E79800F49B68 /* FeatureFlagsRemote.swift */; };
 		24F98C542502E8DD00F49B68 /* Bundle+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C532502E8DD00F49B68 /* Bundle+Woo.swift */; };
@@ -516,6 +517,7 @@
 		03DCB73F2624AD7D00C8953D /* CouponListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponListMapper.swift; sourceTree = "<group>"; };
 		03DCB7432624AD9A00C8953D /* CouponListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponListMapperTests.swift; sourceTree = "<group>"; };
 		03DCB7512624B3BE00C8953D /* coupons-all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "coupons-all.json"; sourceTree = "<group>"; };
+		03DCB76326258CA200C8953D /* coupons-minimal.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "coupons-minimal.json"; sourceTree = "<group>"; };
 		24F98C512502E79800F49B68 /* FeatureFlagsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagsRemote.swift; sourceTree = "<group>"; };
 		24F98C532502E8DD00F49B68 /* Bundle+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Woo.swift"; sourceTree = "<group>"; };
 		24F98C552502EA4800F49B68 /* FeatureFlag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlag.swift; sourceTree = "<group>"; };
@@ -1335,6 +1337,7 @@
 				B5147875211B9227007562E5 /* broken-orders-mark-2.json */,
 				74A7B4BD217A841400E85A8B /* broken-settings-general.json */,
 				03DCB7512624B3BE00C8953D /* coupons-all.json */,
+				03DCB76326258CA200C8953D /* coupons-minimal.json */,
 				B58D10C72114D21C00107ED4 /* generic_error.json */,
 				B53EF53521813681003E146F /* generic_success.json */,
 				B57B1E6B21C94C9F0046E764 /* timeout_error.json */,
@@ -1845,6 +1848,7 @@
 				D8C11A5C22DFCF8100D4A88D /* order-stats-v4-year-alt.json in Resources */,
 				B56C1EBA20EA7D2C00D749F9 /* sites.json in Resources */,
 				74A1D263211898F000931DFA /* site-visits-day.json in Resources */,
+				03DCB76426258CA200C8953D /* coupons-minimal.json in Resources */,
 				02C54CC624D3E938007D658F /* product-variations-load-all-manage-stock-two-states.json in Resources */,
 				D823D90722376B4800C90817 /* shipment_tracking_new_custom_provider.json in Resources */,
 				268B68FD24C87E37007EBF1D /* leaderboards-year-alt.json in Resources */,

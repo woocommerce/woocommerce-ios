@@ -17,9 +17,9 @@ public struct ProductAddOnOption: Codable, Equatable, GeneratedCopiable, Generat
 
     /// Option image id.
     ///
-    public let imageID: Int64?
+    public let imageID: String?
 
-    public init(label: String?, price: String?, priceType: AddOnPriceType?, imageID: Int64?) {
+    public init(label: String?, price: String?, priceType: AddOnPriceType?, imageID: String?) {
         self.label = label
         self.price = price
         self.priceType = priceType

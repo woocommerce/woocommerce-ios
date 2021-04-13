@@ -22,7 +22,8 @@ struct ListHeaderView: View {
         }
         .padding([.leading, .trailing], Constants.lateralPadding)
         .padding(.top, Constants.topPadding)
-        .frame(height: Constants.height)
+        .padding(.bottom, Constants.bottomPadding)
+        .frame(minHeight: Constants.height)
     }
 
     init(text: String, alignment: TextAlignment) {
@@ -41,6 +42,7 @@ private extension ListHeaderView {
     enum Constants {
         static let lateralPadding: CGFloat = 16
         static let topPadding: CGFloat = 16
+        static let bottomPadding: CGFloat = 8
         static let height: CGFloat = 42
     }
 }
@@ -57,6 +59,10 @@ struct ListHeaderView_Previews: PreviewProvider {
 
         ListHeaderView(text: "Section", alignment: .right)
             .previewLayout(.fixed(width: 275, height: 50))
+            .previewDisplayName("Header right alignment")
+
+        ListHeaderView(text: "Section with a super long text that needs to go on two or more lines.", alignment: .right)
+            .previewLayout(.fixed(width: 275, height: 80))
             .previewDisplayName("Header right alignment")
     }
 }

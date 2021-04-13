@@ -57,6 +57,7 @@ final class ProductDetailsTableViewCell: UITableViewCell {
         configureSKULabel()
         configureSubtitleLabel()
         configureSelectionStyle()
+        configureAddOnViews()
     }
 }
 
@@ -98,6 +99,16 @@ private extension ProductDetailsTableViewCell {
         skuLabel?.text = ""
     }
 
+    func configureAddOnViews() {
+        viewAddOnsStackView.spacing = 2
+
+        viewAddOnsLabel.applySubheadlineStyle()
+        viewAddOnsLabel.text = Localization.viewAddOns
+
+        viewAddOnsIndicator.image = .chevronImage
+        viewAddOnsIndicator.tintColor = .systemGray
+    }
+
     func configureSelectionStyle() {
         selectionStyle = .none
     }
@@ -120,5 +131,12 @@ extension ProductDetailsTableViewCell {
         priceLabel.text = item.total
         subtitleLabel.text = item.subtitle
         skuLabel.text = item.sku
+    }
+}
+
+// MARK: Localization
+private extension ProductDetailsTableViewCell {
+    enum Localization {
+        static let viewAddOns = NSLocalizedString("View Add-Ons", comment: "Title of the button on the order detail item to navigate to add-ons")
     }
 }

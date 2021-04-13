@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ShippingLabelAddNewPackage: View {
-    @ObservedObject private var viewModel = ShippingLabelAddNewPackageViewModel()
+    @ObservedObject private var viewModel: ShippingLabelAddNewPackageViewModel
 
     var body: some View {
         VStack(spacing: 0) {
@@ -15,6 +15,10 @@ struct ShippingLabelAddNewPackage: View {
         }
         .navigationBarTitle(Text(Localization.title), displayMode: .inline)
     }
+
+    init(siteID: Int64) {
+        viewModel = ShippingLabelAddNewPackageViewModel(siteID: siteID)
+    }
 }
 
 private extension ShippingLabelAddNewPackage {
@@ -27,6 +31,6 @@ private extension ShippingLabelAddNewPackage {
 
 struct ShippingLabelAddNewPackage_Previews: PreviewProvider {
     static var previews: some View {
-        ShippingLabelAddNewPackage()
+        ShippingLabelAddNewPackage(siteID: 1234)
     }
 }

@@ -533,7 +533,9 @@ private extension OrderDetailsDataSource {
             return
         }
 
-        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: orderItem, currency: order.currency)
+        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: orderItem,
+                                                        currency: order.currency,
+                                                        hasAddOns: checkAddOnsExistence(on: orderItem))
         cell.configure(item: itemViewModel, imageService: imageService)
     }
 
@@ -607,7 +609,8 @@ private extension OrderDetailsDataSource {
             return URL(string: encodedImageURLString)
         }()
         let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem.copy(imageURL: imageURL),
-                                                        currency: order.currency)
+                                                        currency: order.currency,
+                                                        hasAddOns: checkAddOnsExistence(on: aggregateItem))
 
         cell.configure(item: itemViewModel, imageService: imageService)
     }
@@ -726,6 +729,16 @@ private extension OrderDetailsDataSource {
         cell.onEditTouchUp = { [weak self] in
             self?.onCellAction?(.summary, nil)
         }
+    }
+
+    /// Returns `true` if an aggregate item has add-ons.
+    /// Returns `false` otherwise or if we can't find an associated product with the order.
+    ///
+    private func checkAddOnsExistence(on item: AggregateOrderItem) -> Bool {
+        guard let product = products.first(where: { $0.productID == item.productOrVariationID }) else {
+            return false
+        }
+        return AddOnCrossreferenceUseCase(orderItem: item, product: product).addOnsAttributes().isNotEmpty
     }
 }
 

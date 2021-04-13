@@ -131,6 +131,7 @@ extension ProductDetailsTableViewCell {
         priceLabel.text = item.total
         subtitleLabel.text = item.subtitle
         skuLabel.text = item.sku
+        viewAddOnsStackView.isHidden = !item.hasAddOns
     }
 }
 

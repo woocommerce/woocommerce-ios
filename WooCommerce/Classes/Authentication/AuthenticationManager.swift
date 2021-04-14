@@ -417,8 +417,7 @@ private extension AuthenticationManager {
     }
 
     func isSupportedError(_ error: Error) -> Bool {
-        let wooAuthError = AuthenticationError.make(with: error)
-        return wooAuthError != .unknown
+        return true
     }
 
     func viewModel(_ error: Error) -> ULErrorViewModel? {

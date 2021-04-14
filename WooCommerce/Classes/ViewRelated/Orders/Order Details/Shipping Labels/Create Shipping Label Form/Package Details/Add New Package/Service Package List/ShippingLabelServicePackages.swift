@@ -2,11 +2,7 @@ import SwiftUI
 import Yosemite
 
 struct ShippingLabelServicePackages: View {
-    private let viewModel = ShippingLabelServicePackagesViewModel()
-
-    private let state: ShippingLabelAddNewPackageViewModel.State
-    private let customPackages: [ShippingLabelCustomPackage]
-    private let predefinedOptions: [ShippingLabelPredefinedOption]
+    @ObservedObject private var viewModel: ShippingLabelServicePackagesViewModel
 
     var body: some View {
         ScrollView {
@@ -14,23 +10,27 @@ struct ShippingLabelServicePackages: View {
 
                 /// Custom Packages
                 ///
-                if customPackages.count > 0 {
+                if viewModel.customPackages.count > 0 {
                     ListHeaderView(text: Localization.customPackageHeader, alignment: .left)
                         .background(Color(.listBackground))
                 }
-                ForEach(customPackages, id: \.title) { package in
-                    SelectableItemRow(title: package.title, subtitle: package.dimensions, selected: false)
-                    Divider().padding(.leading, 48)
+                ForEach(viewModel.customPackages, id: \.title) { package in
+                    SelectableItemRow(title: package.title, subtitle: package.dimensions, selected: false).onTapGesture {
+                        viewModel.didSelectCustomPackage(package)
+                     }
+                    Divider().padding(.leading, Constants.dividerPadding)
                 }
 
                 /// Predefined Packages
                 ///
-                ForEach(predefinedOptions, id: \.title) { option in
+                ForEach(viewModel.predefinedOptions, id: \.title) { option in
 
                     ListHeaderView(text: option.title.uppercased(), alignment: .left)
                         .background(Color(.listBackground))
                     ForEach(option.predefinedPackages, id: \.id) { package in
-                        SelectableItemRow(title: package.title, subtitle: package.dimensions, selected: false)
+                        SelectableItemRow(title: package.title, subtitle: package.dimensions, selected: false).onTapGesture {
+                            viewModel.didSelectPredefinedPackage(package)
+                         }
                         Divider().padding(.leading, Constants.dividerPadding)
                     }
                 }
@@ -38,12 +38,8 @@ struct ShippingLabelServicePackages: View {
         }
     }
 
-    init(state: ShippingLabelAddNewPackageViewModel.State,
-         customPackages: [ShippingLabelCustomPackage],
-         predefinedOptions: [ShippingLabelPredefinedOption]) {
-        self.state = state
-        self.customPackages = customPackages
-        self.predefinedOptions = predefinedOptions
+    init(viewModel: ShippingLabelServicePackagesViewModel) {
+        self.viewModel = viewModel
     }
 }
 
@@ -60,6 +56,8 @@ private extension ShippingLabelServicePackages {
 
 struct ShippingLabelServicePackages_Previews: PreviewProvider {
     static var previews: some View {
+        let storeOptions = ShippingLabelStoreOptions(currencySymbol: "$", dimensionUnit: "in", weightUnit: "oz", originCountry: "US")
+
         let customPackages = [
             ShippingLabelCustomPackage(isUserDefined: true, title: "Box", isLetter: true, dimensions: "3 x 10 x 4", boxWeight: 10, maxWeight: 11),
                               ShippingLabelCustomPackage(isUserDefined: true,
@@ -76,17 +74,19 @@ struct ShippingLabelServicePackages_Previews: PreviewProvider {
                                                          maxWeight: 10)]
 
 
-        let predefinedOptions = ShippingLabelPredefinedOption(title: "USPS", predefinedPackages: [ShippingLabelPredefinedPackage(id: "package-1",
+        let predefinedOptions = [ShippingLabelPredefinedOption(title: "USPS", predefinedPackages: [ShippingLabelPredefinedPackage(id: "package-1",
                                                                                                                                 title: "Small",
                                                                                                                                 isLetter: true,
                                                                                                                                 dimensions: "3 x 4 x 5"),
                                                                                                  ShippingLabelPredefinedPackage(id: "package-2",
                                                                                                                                 title: "Big",
                                                                                                                                 isLetter: true,
-                                                                                                                                dimensions: "5 x 7 x 9")])
+                                                                                                                                dimensions: "5 x 7 x 9")])]
 
-        ShippingLabelServicePackages(state: .results,
-                                     customPackages: customPackages,
-                                     predefinedOptions: [predefinedOptions])
+        let packagesResponse = ShippingLabelPackagesResponse(storeOptions: storeOptions, customPackages: customPackages, predefinedOptions: predefinedOptions)
+
+        let viewModel = ShippingLabelServicePackagesViewModel(state: .results, packagesResponse: packagesResponse)
+
+        ShippingLabelServicePackages(viewModel: viewModel)
     }
 }

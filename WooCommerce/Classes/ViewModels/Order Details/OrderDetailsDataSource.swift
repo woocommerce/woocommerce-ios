@@ -540,12 +540,13 @@ private extension OrderDetailsDataSource {
             return
         }
 
+        let addOns = filterAddOns(of: orderItem)
         let itemViewModel = ProductDetailsCellViewModel(aggregateItem: orderItem,
                                                         currency: order.currency,
-                                                        hasAddOns: checkAddOnsExistence(on: orderItem))
+                                                        hasAddOns: addOns.isNotEmpty)
         cell.configure(item: itemViewModel, imageService: imageService)
         cell.onViewAddOnsTouchUp = { [weak self] in
-            self?.onCellAction?(.viewAddOns(item: orderItem), nil)
+            self?.onCellAction?(.viewAddOns(addOns: addOns), nil)
         }
     }
 
@@ -618,13 +619,15 @@ private extension OrderDetailsDataSource {
             }
             return URL(string: encodedImageURLString)
         }()
+
+        let addOns = filterAddOns(of: aggregateItem)
         let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem.copy(imageURL: imageURL),
                                                         currency: order.currency,
-                                                        hasAddOns: checkAddOnsExistence(on: aggregateItem))
+                                                        hasAddOns: addOns.isNotEmpty)
 
         cell.configure(item: itemViewModel, imageService: imageService)
         cell.onViewAddOnsTouchUp = { [weak self] in
-            self?.onCellAction?(.viewAddOns(item: aggregateItem), nil)
+            self?.onCellAction?(.viewAddOns(addOns: addOns), nil)
         }
     }
 
@@ -744,14 +747,14 @@ private extension OrderDetailsDataSource {
         }
     }
 
-    /// Returns `true` if an aggregate item has add-ons and the receiver is enabled to show add-ons information.
-    /// Returns `false` otherwise or if we can't find an associated product with the order.
+    /// Returns attributes that can be categorized as `Add-ons`.
+    /// Returns an `empty` array if we can't find the product associated with order item or if the `addOns` feature is disabled.
     ///
-    private func checkAddOnsExistence(on item: AggregateOrderItem) -> Bool {
+    private func filterAddOns(of item: AggregateOrderItem) -> [OrderItemAttribute] {
         guard let product = products.first(where: { $0.productID == item.productOrVariationID }), showAddOns else {
-            return false
+            return []
         }
-        return AddOnCrossreferenceUseCase(orderItem: item, product: product).addOnsAttributes().isNotEmpty
+        return AddOnCrossreferenceUseCase(orderItem: item, product: product).addOnsAttributes()
     }
 }
 
@@ -1355,7 +1358,7 @@ extension OrderDetailsDataSource {
         case reprintShippingLabel(shippingLabel: ShippingLabel)
         case createShippingLabel
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
-        case viewAddOns(item: AggregateOrderItem)
+        case viewAddOns(addOns: [OrderItemAttribute])
     }
 
     struct Constants {

@@ -1,10 +1,11 @@
 import UIKit
 import SwiftUI
+import Yosemite
 
 /// Hosting controller that wraps an `AddOnsListView`
 ///
 class AddOnsListViewController: UIHostingController<AddOnsListI1View> {
-    init() {
+    init(addOns: [OrderItemAttribute]) {
         super.init(rootView: AddOnsListI1View())
         self.title = "Product Add-ons"
         addCloseNavigationBarButton()
@@ -19,6 +20,6 @@ class AddOnsListViewController: UIHostingController<AddOnsListI1View> {
 ///
 struct AddOnsListI1View: View {
     var body: some View {
-        Text("Hooooli")
+        Text("Hoooli")
     }
 }

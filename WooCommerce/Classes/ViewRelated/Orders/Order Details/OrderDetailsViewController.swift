@@ -406,8 +406,8 @@ private extension OrderDetailsViewController {
             navigationController?.show(shippingLabelFormVC, sender: self)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
-        case let .viewAddOns(item):
-            itemAddOnsButtonTapped(item: item)
+        case let .viewAddOns(addOns):
+            itemAddOnsButtonTapped(addOns: addOns)
         }
     }
 
@@ -497,8 +497,8 @@ private extension OrderDetailsViewController {
         present(actionSheet, animated: true)
     }
 
-    private func itemAddOnsButtonTapped(item: AggregateOrderItem) {
-        let addOnsController = AddOnsListViewController()
+    private func itemAddOnsButtonTapped(addOns: [OrderItemAttribute]) {
+        let addOnsController = AddOnsListViewController(addOns: addOns)
         let navigationController = WooNavigationController(rootViewController: addOnsController)
         present(navigationController, animated: true, completion: nil)
     }

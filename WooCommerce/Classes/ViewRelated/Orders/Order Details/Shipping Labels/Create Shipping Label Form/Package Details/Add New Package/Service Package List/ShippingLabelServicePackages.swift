@@ -11,18 +11,16 @@ struct ShippingLabelServicePackages: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                ListHeaderView(text: "Set up the package you'll be using to ship your products. We'll save it for future orders.", alignment: .left)
-                    .background(Color(.listBackground))
 
                 /// Custom Packages
                 ///
                 if customPackages.count > 0 {
-                    ListHeaderView(text: "CUSTOM PACKAGES", alignment: .left)
+                    ListHeaderView(text: Localization.customPackageHeader, alignment: .left)
                         .background(Color(.listBackground))
                 }
                 ForEach(customPackages, id: \.title) { package in
                     SelectableItemRow(title: package.title, subtitle: package.dimensions, selected: false)
-                    Divider()
+                    Divider().padding(.leading, 48)
                 }
 
                 /// Predefined Packages
@@ -33,7 +31,7 @@ struct ShippingLabelServicePackages: View {
                         .background(Color(.listBackground))
                     ForEach(option.predefinedPackages, id: \.id) { package in
                         SelectableItemRow(title: package.title, subtitle: package.dimensions, selected: false)
-                        Divider()
+                        Divider().padding(.leading, Constants.dividerPadding)
                     }
                 }
             }
@@ -46,6 +44,17 @@ struct ShippingLabelServicePackages: View {
         self.state = state
         self.customPackages = customPackages
         self.predefinedOptions = predefinedOptions
+    }
+}
+
+private extension ShippingLabelServicePackages {
+    enum Localization {
+        static let customPackageHeader = NSLocalizedString("CUSTOM PACKAGES",
+                                                           comment: "Header for the Custom Packages section in Shipping Label Package listing")
+    }
+    
+    enum Constants {
+        static let dividerPadding: CGFloat = 48
     }
 }
 

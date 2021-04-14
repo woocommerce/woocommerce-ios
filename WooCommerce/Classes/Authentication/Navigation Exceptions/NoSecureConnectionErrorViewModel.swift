@@ -1,6 +1,8 @@
 import UIKit
 import WordPressAuthenticator
 
+/// Configuration and actions for a `ULErrorViewController`, modelling an error when the merchant
+/// attempts to log in with a site that has an invalid SSL certificate.
 struct NoSecureConnectionErrorViewModel: ULErrorViewModel {
     // MARK: - Data and configuration
     let image: UIImage = .loginNoWordPressError

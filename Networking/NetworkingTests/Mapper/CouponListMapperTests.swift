@@ -60,6 +60,8 @@ class CouponListMapperTests: XCTestCase {
         XCTAssertEqual(coupon, expectedCoupon)
     }
 
+    /// Verifies that nulls in optional fields are parsed correctly
+    ///
     func test_CouponsList_map_accepts_nulls_in_expected_optional_fields() throws {
         let coupons = try mapLoadAllCouponsResponse()
         let coupon = coupons[2]

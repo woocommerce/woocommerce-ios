@@ -15,7 +15,8 @@ struct ShippingLabelServicePackages: View {
                         .background(Color(.listBackground))
                 }
                 ForEach(viewModel.customPackages, id: \.title) { package in
-                    SelectableItemRow(title: package.title, subtitle: package.dimensions, selected: false).onTapGesture {
+                    let selected = package == viewModel.selectedCustomPackage
+                    SelectableItemRow(title: package.title, subtitle: package.dimensions, selected: selected).onTapGesture {
                         viewModel.didSelectCustomPackage(package)
                      }
                     Divider().padding(.leading, Constants.dividerPadding)
@@ -28,7 +29,8 @@ struct ShippingLabelServicePackages: View {
                     ListHeaderView(text: option.title.uppercased(), alignment: .left)
                         .background(Color(.listBackground))
                     ForEach(option.predefinedPackages, id: \.id) { package in
-                        SelectableItemRow(title: package.title, subtitle: package.dimensions, selected: false).onTapGesture {
+                        let selected = package == viewModel.selectedPredefinedPackage
+                        SelectableItemRow(title: package.title, subtitle: package.dimensions, selected: selected).onTapGesture {
                             viewModel.didSelectPredefinedPackage(package)
                          }
                         Divider().padding(.leading, Constants.dividerPadding)

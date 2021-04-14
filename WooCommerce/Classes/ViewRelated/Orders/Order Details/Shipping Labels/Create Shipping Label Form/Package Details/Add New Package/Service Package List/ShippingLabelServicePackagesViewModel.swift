@@ -2,8 +2,7 @@ import Foundation
 
 /// View model for `ShippingLabelServicePackages`.
 ///
-struct ShippingLabelServicePackagesViewModel {
-
+final class ShippingLabelServicePackagesViewModel: ObservableObject {
 
 
 }

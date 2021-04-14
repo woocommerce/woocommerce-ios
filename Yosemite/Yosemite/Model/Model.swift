@@ -78,6 +78,7 @@ public typealias ShippingLabelAddressValidationResponse = Networking.ShippingLab
 public typealias ShippingLabelAddressValidationError = Networking.ShippingLabelAddressValidationError
 public typealias ShippingLabelCustomPackage = Networking.ShippingLabelCustomPackage
 public typealias ShippingLabelPredefinedOption = Networking.ShippingLabelPredefinedOption
+public typealias ShippingLabelPredefinedPackage = Networking.ShippingLabelPredefinedPackage
 public typealias ShippingLabelPaperSize = Networking.ShippingLabelPaperSize
 public typealias ShippingLabelPrintData = Networking.ShippingLabelPrintData
 public typealias ShippingLabelRefund = Networking.ShippingLabelRefund

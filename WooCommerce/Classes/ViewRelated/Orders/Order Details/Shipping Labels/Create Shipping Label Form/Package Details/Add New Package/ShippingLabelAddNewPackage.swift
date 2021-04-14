@@ -5,12 +5,17 @@ struct ShippingLabelAddNewPackage: View {
 
     var body: some View {
         VStack(spacing: 0) {
+
+            /// This section is hidden until we will unlock the creation of custom packages
+            ///
             VStack(spacing: 0) {
                 SegmentedView(selection: $viewModel.selectedIndex, views: [Text(Localization.customPackage), Text(Localization.servicePackage)])
                     .frame(height: 44)
                 Divider()
             }.hidden()
+
             ScrollView {
+
             }
         }
         .navigationBarTitle(Text(Localization.title), displayMode: .inline)

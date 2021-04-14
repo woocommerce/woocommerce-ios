@@ -399,7 +399,7 @@ private extension AuthenticationManager {
         case emailDoesNotMatchWPAccount = 7
         /// This is the same value as `WordPressOrgXMLRPCValidatorError.invalid`.
         case notWPSite = 406
-        case notValidAddress = -1022
+        case notValidAddress
         case noSecureConnection
         case unknown
 
@@ -411,8 +411,7 @@ private extension AuthenticationManager {
                 return .emailDoesNotMatchWPAccount
             case WordPressOrgXMLRPCValidatorError.invalid.rawValue:
                 return .notWPSite
-            case NSURLErrorCannotFindHost,
-                 notValidAddress.rawValue:
+            case NSURLErrorCannotFindHost:
                 return .notValidAddress
             case NSURLErrorSecureConnectionFailed:
                 return .noSecureConnection

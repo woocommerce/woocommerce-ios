@@ -430,8 +430,8 @@ private extension AuthenticationManager {
         case .notWPSite,
              .notValidAddress:
             return NotWPErrorViewModel()
-        default:
-            return nil
+        case .unknown:
+            return UnknownSiteErrorViewModel()
         }
     }
 }

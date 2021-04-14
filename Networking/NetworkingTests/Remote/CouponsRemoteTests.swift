@@ -132,4 +132,32 @@ final class CouponsRemoteTests: XCTestCase {
         }
         XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 403))
     }
+
+    // MARK: - Delete Coupon tests
+
+    /// Verifies that deleteCoupon properly parses the `coupon` sample response.
+    ///
+    func test_deleteCoupon_properly_returns_parsed_Coupon() throws {
+        // Given
+        let remote = CouponsRemote(network: network)
+        let sampleCouponID: Int64 = 720
+        let expectation = self.expectation(description: "Delete Coupon")
+
+        network.simulateResponse(requestUrlSuffix: "coupons/\(sampleCouponID)", filename: "coupon")
+
+        // When
+        var result: Swift.Result<Coupon, Error>?
+        remote.deleteCoupon(for: sampleSiteID, couponID: sampleCouponID) { response in
+            result = response
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertTrue(try XCTUnwrap(result).isSuccess)
+
+        let coupon = try XCTUnwrap(result).get()
+        XCTAssertEqual(coupon.couponId, sampleCouponID)
+    }
 }

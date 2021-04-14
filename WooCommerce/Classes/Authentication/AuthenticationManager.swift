@@ -400,6 +400,7 @@ private extension AuthenticationManager {
         /// This is the same value as `WordPressOrgXMLRPCValidatorError.invalid`.
         case notWPSite = 406
         case notValidAddress = -1022
+        case noSecureConnection
         case unknown
 
         static func make(with error: Error) -> AuthenticationError {
@@ -413,6 +414,8 @@ private extension AuthenticationManager {
             case NSURLErrorCannotFindHost,
                  notValidAddress.rawValue:
                 return .notValidAddress
+            case NSURLErrorSecureConnectionFailed:
+                return .noSecureConnection
             default:
                 return .unknown
             }
@@ -433,6 +436,8 @@ private extension AuthenticationManager {
         case .notWPSite,
              .notValidAddress:
             return NotWPErrorViewModel()
+        case .noSecureConnection:
+            return NoSecureConnectionErrorViewModel()
         case .unknown:
             return nil
         }

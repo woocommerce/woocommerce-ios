@@ -563,6 +563,7 @@
 		45CDAFAF2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45CDAFAD2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.xib */; };
 		45CE2D322625AA9A00E3CA00 /* ShippingLabelServicePackages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CE2D312625AA9A00E3CA00 /* ShippingLabelServicePackages.swift */; };
 		45CE2D7B2625BBB100E3CA00 /* ShippingLabelServicePackagesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CE2D7A2625BBB100E3CA00 /* ShippingLabelServicePackagesViewModel.swift */; };
+		45CE2D852625D7ED00E3CA00 /* SelectableItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45CE2D842625D7ED00E3CA00 /* SelectableItemRow.swift */; };
 		45D1CF4523BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D1CF4423BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift */; };
 		45D1CF4723BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D1CF4623BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift */; };
 		45D685FE23D0FB25005F87D0 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D685FD23D0FB25005F87D0 /* Throttler.swift */; };
@@ -1731,6 +1732,7 @@
 		45CDAFAD2434CFCA00F83C22 /* ProductCatalogVisibilityViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductCatalogVisibilityViewController.xib; sourceTree = "<group>"; };
 		45CE2D312625AA9A00E3CA00 /* ShippingLabelServicePackages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelServicePackages.swift; sourceTree = "<group>"; };
 		45CE2D7A2625BBB100E3CA00 /* ShippingLabelServicePackagesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelServicePackagesViewModel.swift; sourceTree = "<group>"; };
+		45CE2D842625D7ED00E3CA00 /* SelectableItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableItemRow.swift; sourceTree = "<group>"; };
 		45D1CF4423BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxClassListSelectorDataSource.swift; sourceTree = "<group>"; };
 		45D1CF4623BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxStatusListSelectorCommand.swift; sourceTree = "<group>"; };
 		45D685FD23D0FB25005F87D0 /* Throttler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
@@ -3716,6 +3718,7 @@
 				45DB703F261209B10064A6CF /* ItemToFulfillRow.swift */,
 				45DB704926121F3C0064A6CF /* TitleAndValueRow.swift */,
 				45DB705926124C710064A6CF /* TitleAndTextFieldRow.swift */,
+				45CE2D842625D7ED00E3CA00 /* SelectableItemRow.swift */,
 				4590B6A7261F0F8300A6FCE0 /* SegmentedView.swift */,
 			);
 			path = "SwiftUI Components";
@@ -6488,6 +6491,7 @@
 				453227B723C4D6EC00D816B3 /* TimeZone+Woo.swift in Sources */,
 				B57C744520F55BA600EEFC87 /* NSObject+Helpers.swift in Sources */,
 				0269576A23726304001BA0BF /* KeyboardFrameObserver.swift in Sources */,
+				45CE2D852625D7ED00E3CA00 /* SelectableItemRow.swift in Sources */,
 				CEEC9B6421E7AB850055EEF0 /* AppRatingManager.swift in Sources */,
 				020F41E623163C0100776C4D /* TopBannerView.swift in Sources */,
 				02EEB5C42424AFAA00B8A701 /* TextFieldTableViewCell.swift in Sources */,

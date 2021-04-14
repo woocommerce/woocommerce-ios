@@ -417,7 +417,8 @@ private extension AuthenticationManager {
     }
 
     func isSupportedError(_ error: Error) -> Bool {
-        return true
+        let wooAuthError = AuthenticationError.make(with: error)
+        return wooAuthError != .unknown
     }
 
     func viewModel(_ error: Error) -> ULErrorViewModel? {
@@ -430,7 +431,7 @@ private extension AuthenticationManager {
              .notValidAddress:
             return NotWPErrorViewModel()
         case .unknown:
-            return UnknownSiteErrorViewModel()
+            return nil
         }
     }
 }

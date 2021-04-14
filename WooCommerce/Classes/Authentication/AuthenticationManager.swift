@@ -410,7 +410,8 @@ private extension AuthenticationManager {
                 return .emailDoesNotMatchWPAccount
             case WordPressOrgXMLRPCValidatorError.invalid.rawValue:
                 return .notWPSite
-            case notValidAddress.rawValue:
+            case NSURLErrorCannotFindHost,
+                 notValidAddress.rawValue:
                 return .notValidAddress
             default:
                 return .unknown

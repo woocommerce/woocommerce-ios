@@ -104,6 +104,8 @@ private extension ProductDetailsTableViewCell {
     }
 
     func configureAddOnViews() {
+        viewAddOnsStackView.layoutMargins = .init(top: 4, left: 0, bottom: 4, right: 0) // Increase touch area
+        viewAddOnsStackView.isLayoutMarginsRelativeArrangement = true
         viewAddOnsStackView.spacing = 2
 
         viewAddOnsLabel.applySubheadlineStyle()

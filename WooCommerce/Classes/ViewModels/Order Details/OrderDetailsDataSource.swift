@@ -544,8 +544,8 @@ private extension OrderDetailsDataSource {
                                                         currency: order.currency,
                                                         hasAddOns: checkAddOnsExistence(on: orderItem))
         cell.configure(item: itemViewModel, imageService: imageService)
-        cell.onViewAddOnsTouchUp = {
-            print("TODO: Navigate to add ons")
+        cell.onViewAddOnsTouchUp = { [weak self] in
+            self?.onCellAction?(.viewAddOns(item: orderItem), nil)
         }
     }
 
@@ -623,8 +623,8 @@ private extension OrderDetailsDataSource {
                                                         hasAddOns: checkAddOnsExistence(on: aggregateItem))
 
         cell.configure(item: itemViewModel, imageService: imageService)
-        cell.onViewAddOnsTouchUp = {
-            print("TODO: Navigate to add ons")
+        cell.onViewAddOnsTouchUp = { [weak self] in
+            self?.onCellAction?(.viewAddOns(item: aggregateItem), nil)
         }
     }
 
@@ -1355,6 +1355,7 @@ extension OrderDetailsDataSource {
         case reprintShippingLabel(shippingLabel: ShippingLabel)
         case createShippingLabel
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
+        case viewAddOns(item: AggregateOrderItem)
     }
 
     struct Constants {

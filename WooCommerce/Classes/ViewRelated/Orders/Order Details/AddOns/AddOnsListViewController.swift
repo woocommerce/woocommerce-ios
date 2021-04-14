@@ -1,9 +1,11 @@
 import UIKit
 import SwiftUI
 
-class AddOnsListViewController: UIHostingController<DummyView> {
+/// Hosting controller that wraps an `AddOnsListView`
+///
+class AddOnsListViewController: UIHostingController<AddOnsListI1View> {
     init() {
-        super.init(rootView: DummyView())
+        super.init(rootView: AddOnsListI1View())
         self.title = "Product Add-ons"
         addCloseNavigationBarButton()
     }
@@ -13,8 +15,9 @@ class AddOnsListViewController: UIHostingController<DummyView> {
     }
 }
 
-
-struct DummyView: View {
+/// Renders a list of add ons
+///
+struct AddOnsListI1View: View {
     var body: some View {
         Text("Hooooli")
     }

@@ -8,19 +8,10 @@ struct CouponMapper: Mapper {
     ///
     let siteID: Int64
 
-    /// JSON decoder appropriate for `Coupon` responses.
-    ///
-    private static let decoder: JSONDecoder = {
-        let couponDecoder = JSONDecoder()
-        couponDecoder.keyDecodingStrategy = .convertFromSnakeCase
-        couponDecoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
-        return couponDecoder
-    }()
-
     /// (Attempts) to convert a dictionary into `Coupon`.
     ///
     func map(response: Data) throws -> Coupon {
-        let coupon = try Self.decoder.decode(CouponEnvelope.self, from: response).coupon
+        let coupon = try Coupon.decoder.decode(CouponEnvelope.self, from: response).coupon
         return coupon.copy(siteId: siteID)
     }
 }

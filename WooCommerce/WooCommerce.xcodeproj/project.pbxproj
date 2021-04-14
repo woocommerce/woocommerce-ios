@@ -5335,8 +5335,8 @@
 				D8610BD1256F291000A5DF27 /* JetpackErrorViewModel.swift */,
 				D8610D752570AE1F00A5DF27 /* NotWPErrorViewModel.swift */,
 				D881FE052579DC78008DE6F2 /* NotWPAccountViewModel.swift */,
-				D89CFF3925B43BBB000E4683 /* WrongAccountErrorViewModel.swift */,
 				5739D2D326274D580020E737 /* NoSecureConnectionErrorViewModel.swift */,
+				D89CFF3925B43BBB000E4683 /* WrongAccountErrorViewModel.swift */,
 			);
 			path = "Navigation Exceptions";
 			sourceTree = "<group>";

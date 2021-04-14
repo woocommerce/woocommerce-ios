@@ -397,8 +397,7 @@ private extension AuthenticationManager {
     /// Maps error codes emitted by WPAuthenticator to a domain error object
     enum AuthenticationError: Int, Error {
         case emailDoesNotMatchWPAccount = 7
-        /// This is the same value as `WordPressOrgXMLRPCValidatorError.invalid`.
-        case notWPSite = 406
+        case notWPSite
         case notValidAddress
         case noSecureConnection
         case unknown

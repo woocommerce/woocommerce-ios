@@ -13,13 +13,9 @@ final class ShippingLabelAddNewPackageViewModel: ObservableObject {
 
     private let stores: StoresManager
 
-    /// The custom packages fetched from API
+    /// The packages  response fetched from API
     ///
-    private(set) var customPackages: [ShippingLabelCustomPackage] = []
-
-    /// The predefined packages fetched from API
-    ///
-    private(set) var predefinedOptions: [ShippingLabelPredefinedOption] = []
+    private(set) var packagesResponse: ShippingLabelPackagesResponse?
 
     /// The syncing state of the view
     ///
@@ -42,9 +38,7 @@ final class ShippingLabelAddNewPackageViewModel: ObservableObject {
         let action = ShippingLabelAction.packagesDetails(siteID: siteID) { [weak self] result in
             switch result {
             case .success:
-                let packages = try? result.get()
-                self?.customPackages = packages?.customPackages ?? []
-                self?.predefinedOptions = packages?.predefinedOptions ?? []
+                self?.packagesResponse = try? result.get()
                 self?.state = .results
             case .failure:
                 self?.state = .error

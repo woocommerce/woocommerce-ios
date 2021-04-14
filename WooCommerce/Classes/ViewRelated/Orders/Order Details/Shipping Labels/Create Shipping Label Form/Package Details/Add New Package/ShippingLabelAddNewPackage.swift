@@ -4,20 +4,12 @@ struct ShippingLabelAddNewPackage: View {
     @ObservedObject private var viewModel: ShippingLabelAddNewPackageViewModel
 
     var body: some View {
-        VStack(spacing: 0) {
-
-            /// This section is hidden until we will unlock the creation of custom packages
-            ///
-            VStack(spacing: 0) {
-                SegmentedView(selection: $viewModel.selectedIndex, views: [Text(Localization.customPackage), Text(Localization.servicePackage)])
-                    .frame(height: 44)
-                Divider()
-            }.hidden()
-
-            ScrollView {
-
-            }
+        ScrollView {
+            let servicePackagesViewModel = ShippingLabelServicePackagesViewModel(state: viewModel.state, packagesResponse: viewModel.packagesResponse)
+            ShippingLabelServicePackages(viewModel: servicePackagesViewModel)
+                .background(Color(.systemBackground))
         }
+        .background(Color(.listBackground))
         .navigationBarTitle(Text(Localization.title), displayMode: .inline)
     }
 
@@ -29,8 +21,6 @@ struct ShippingLabelAddNewPackage: View {
 private extension ShippingLabelAddNewPackage {
     enum Localization {
         static let title = NSLocalizedString("Add New Package", comment: "Add New Package screen title in Shipping Label flow")
-        static let customPackage = NSLocalizedString("Custom Package", comment: "Custom Package menu in Shipping Label Add New Package flow")
-        static let servicePackage = NSLocalizedString("Service Package", comment: "Service Package menu in Shipping Label Add New Package flow")
     }
 }
 

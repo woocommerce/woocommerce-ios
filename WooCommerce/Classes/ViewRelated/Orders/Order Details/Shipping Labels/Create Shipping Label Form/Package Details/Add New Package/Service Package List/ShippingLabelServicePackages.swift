@@ -52,7 +52,7 @@ private extension ShippingLabelServicePackages {
         static let customPackageHeader = NSLocalizedString("CUSTOM PACKAGES",
                                                            comment: "Header for the Custom Packages section in Shipping Label Package listing")
     }
-    
+
     enum Constants {
         static let dividerPadding: CGFloat = 48
     }
@@ -76,7 +76,7 @@ struct ShippingLabelServicePackages_Previews: PreviewProvider {
                                                          maxWeight: 10)]
 
 
-        let predefinedOptions = ShippingLabelPredefinedOption(title: "UPS", predefinedPackages: [ShippingLabelPredefinedPackage(id: "package-1",
+        let predefinedOptions = ShippingLabelPredefinedOption(title: "USPS", predefinedPackages: [ShippingLabelPredefinedPackage(id: "package-1",
                                                                                                                                 title: "Small",
                                                                                                                                 isLetter: true,
                                                                                                                                 dimensions: "3 x 4 x 5"),

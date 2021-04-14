@@ -1,7 +1,7 @@
 import UIKit
 import WordPressAuthenticator
 
-struct UnknownSiteErrorViewModel: ULErrorViewModel {
+struct NoSecureConnectionErrorViewModel: ULErrorViewModel {
     // MARK: - Data and configuration
     let image: UIImage = .loginNoWordPressError
 
@@ -32,12 +32,12 @@ struct UnknownSiteErrorViewModel: ULErrorViewModel {
 
 }
 
-private extension UnknownSiteErrorViewModel {
+private extension NoSecureConnectionErrorViewModel {
     enum Localization {
         static let errorMessage =
-            NSLocalizedString("We were not able to detect a WordPress site at the address you entered. " +
-                                "Please make sure WordPress is installed and that you are running the latest available version.",
-                              comment: "Message explaining that the site was not detected. It might be invalid.")
+            NSLocalizedString("A secure connection to the site could not be made. " +
+                                "Please make sure that your site has a valid SSL certificate..",
+                              comment: "Message explaining that the site may have an invalid SSL certificate.")
 
         static let primaryButtonTitle =
             NSLocalizedString("Enter Another Store",

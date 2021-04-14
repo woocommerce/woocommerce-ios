@@ -1,6 +1,7 @@
 import Foundation
 import KeychainAccess
 import WordPressAuthenticator
+import WordPressKit
 import Yosemite
 import class Networking.UserAgent
 import struct Networking.Settings
@@ -396,6 +397,7 @@ private extension AuthenticationManager {
     /// Maps error codes emitted by WPAuthenticator to a domain error object
     enum AuthenticationError: Int, Error {
         case emailDoesNotMatchWPAccount = 7
+        /// This is the same value as `WordPressOrgXMLRPCValidatorError.invalid`.
         case notWPSite = 406
         case notValidAddress = -1022
         case unknown
@@ -406,7 +408,7 @@ private extension AuthenticationManager {
             switch error.code {
             case emailDoesNotMatchWPAccount.rawValue:
                 return .emailDoesNotMatchWPAccount
-            case notWPSite.rawValue:
+            case WordPressOrgXMLRPCValidatorError.invalid.rawValue:
                 return .notWPSite
             case notValidAddress.rawValue:
                 return .notValidAddress

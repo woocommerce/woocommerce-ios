@@ -28,6 +28,22 @@ final class ProductDetailsTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var skuLabel: UILabel!
 
+    /// The stack view grouping add on information.
+    ///
+    @IBOutlet private var viewAddOnsStackView: UIStackView!
+
+    /// The label indicating that there are add-ons available.
+    ///
+    @IBOutlet private var viewAddOnsLabel: UILabel!
+
+    /// The chevron indicator next to the viewAddOns label.
+    ///
+    @IBOutlet private var viewAddOnsIndicator: UIImageView!
+
+    /// Assign this closure to be notified when the "viewAddOns" button us tapped
+    ///
+    var onViewAddOnsTouchUp: (() -> Void)?
+
     // MARK: - Overridden Methods
 
     required init?(coder aDecoder: NSCoder) {
@@ -45,6 +61,7 @@ final class ProductDetailsTableViewCell: UITableViewCell {
         configureSKULabel()
         configureSubtitleLabel()
         configureSelectionStyle()
+        configureAddOnViews()
     }
 }
 
@@ -86,6 +103,24 @@ private extension ProductDetailsTableViewCell {
         skuLabel?.text = ""
     }
 
+    func configureAddOnViews() {
+        viewAddOnsStackView.layoutMargins = .init(top: 4, left: 0, bottom: 4, right: 0) // Increase touch area
+        viewAddOnsStackView.isLayoutMarginsRelativeArrangement = true
+        viewAddOnsStackView.spacing = 2
+
+        viewAddOnsLabel.applySubheadlineStyle()
+        viewAddOnsLabel.text = Localization.viewAddOns
+
+        viewAddOnsIndicator.image = .chevronImage
+        viewAddOnsIndicator.tintColor = .systemGray
+
+        let tapRecognizer = UITapGestureRecognizer()
+        tapRecognizer.on { [weak self] _ in
+            self?.onViewAddOnsTouchUp?()
+        }
+        viewAddOnsStackView.addGestureRecognizer(tapRecognizer)
+    }
+
     func configureSelectionStyle() {
         selectionStyle = .none
     }
@@ -108,5 +143,13 @@ extension ProductDetailsTableViewCell {
         priceLabel.text = item.total
         subtitleLabel.text = item.subtitle
         skuLabel.text = item.sku
+        viewAddOnsStackView.isHidden = !item.hasAddOns
+    }
+}
+
+// MARK: Localization
+private extension ProductDetailsTableViewCell {
+    enum Localization {
+        static let viewAddOns = NSLocalizedString("View Add-Ons", comment: "Title of the button on the order detail item to navigate to add-ons")
     }
 }

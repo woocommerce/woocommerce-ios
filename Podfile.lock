@@ -104,7 +104,7 @@ DEPENDENCIES:
   - Sourcery (~> 1.0.3)
   - WordPress-Editor-iOS (~> 1.11.0)
   - WordPressAuthenticator (~> 1.36.0)
-  - WordPressKit (from `https://github.com/wordpress-mobile/WordPressKit-iOS.git`, branch `issue/woo/3891-check-for-secure-access`)
+  - WordPressKit (~> 4.31.0-beta.2)
   - WordPressShared (~> 1.15)
   - WordPressUI (~> 1.7.2)
   - Wormholy (~> 1.6.4)
@@ -142,6 +142,7 @@ SPEC REPOS:
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
+    - WordPressKit
     - Wormholy
     - WPMediaPicker
     - wpxmlrpc
@@ -153,16 +154,6 @@ SPEC REPOS:
     - ZendeskSDKConfigurationsSDK
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
-
-EXTERNAL SOURCES:
-  WordPressKit:
-    :branch: issue/woo/3891-check-for-secure-access
-    :git: https://github.com/wordpress-mobile/WordPressKit-iOS.git
-
-CHECKOUT OPTIONS:
-  WordPressKit:
-    :commit: 5be521223a0bae9832edc01e3e84b210770e5d73
-    :git: https://github.com/wordpress-mobile/WordPressKit-iOS.git
 
 SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
@@ -205,6 +196,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: 708620bc0cc02c3ab1fd53f11888fcee3c9f1d2e
+PODFILE CHECKSUM: 63dcae8aa01c503201f2cfa55b4229ff05bf3265
 
 COCOAPODS: 1.10.0

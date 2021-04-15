@@ -8,6 +8,10 @@ class OrderAddOnListI1ViewModel {
     ///
     let addOns: [OrderAddOnI1ViewModel]
 
+    /// Navigation title
+    ///
+    let title = Localization.title
+
     /// Member-wise initializer, useful for `SwiftUI` previews
     ///
     init(addOns: [OrderAddOnI1ViewModel]) {
@@ -20,6 +24,14 @@ class OrderAddOnListI1ViewModel {
         self.addOns = []
     }
 }
+
+// MARK: Constants
+private extension OrderAddOnListI1ViewModel {
+    enum Localization {
+        static let title = NSLocalizedString("Product Add-ons", comment: "The title on the navigation bar when viewing an order item add-ons")
+    }
+}
+
 
 /// ViewModel for `OrderAddOnI1View`
 ///

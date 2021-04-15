@@ -7,19 +7,12 @@ import Yosemite
 class OrderAddOnsListViewController: UIHostingController<OrderAddOnListI1View> {
     init(viewModel: OrderAddOnListI1ViewModel) {
         super.init(rootView: OrderAddOnListI1View(viewModel: viewModel))
-        self.title = Localization.title
+        self.title = viewModel.title
         addCloseNavigationBarButton()
     }
 
     @objc required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-}
-
-// MARK: Constants
-private extension OrderAddOnsListViewController {
-    enum Localization {
-        static let title = NSLocalizedString("Product Add-ons", comment: "The title on the navigation bar when viewing an order item add-ons")
     }
 }
 

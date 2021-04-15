@@ -19,7 +19,7 @@ public protocol ShippingLabelRemoteProtocol {
     func createPackage(siteID: Int64,
                        customPackage: ShippingLabelCustomPackage,
                        completion: @escaping (Result<Bool, Error>) -> Void)
-    func loadShippingLabelSettings(siteID: Int64, completion: @escaping (Result<ShippingLabelAccountSettings, Error>) -> Void)
+    func loadShippingLabelAccountSettings(siteID: Int64, completion: @escaping (Result<ShippingLabelAccountSettings, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints.
@@ -129,7 +129,7 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
     /// - Parameters:
     ///   - siteID: Remote ID of the site.
     ///   - completion: Closure to be executed upon completion.
-    public func loadShippingLabelSettings(siteID: Int64, completion: @escaping (Result<ShippingLabelAccountSettings, Error>) -> Void) {
+    public func loadShippingLabelAccountSettings(siteID: Int64, completion: @escaping (Result<ShippingLabelAccountSettings, Error>) -> Void) {
         let path = Path.accountSettings
         let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .get, siteID: siteID, path: path)
         let mapper = ShippingLabelAccountSettingsMapper()

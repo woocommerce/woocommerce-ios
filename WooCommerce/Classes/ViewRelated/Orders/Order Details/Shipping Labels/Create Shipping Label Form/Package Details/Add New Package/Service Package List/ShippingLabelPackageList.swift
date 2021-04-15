@@ -1,8 +1,8 @@
 import SwiftUI
 import Yosemite
 
-struct ShippingLabelServicePackages: View {
-    @ObservedObject private var viewModel: ShippingLabelServicePackagesViewModel
+struct ShippingLabelPackageList: View {
+    @ObservedObject private var viewModel: ShippingLabelPackageListViewModel
 
     var body: some View {
         ScrollView {
@@ -40,12 +40,12 @@ struct ShippingLabelServicePackages: View {
         }
     }
 
-    init(viewModel: ShippingLabelServicePackagesViewModel) {
+    init(viewModel: ShippingLabelPackageListViewModel) {
         self.viewModel = viewModel
     }
 }
 
-private extension ShippingLabelServicePackages {
+private extension ShippingLabelPackageList {
     enum Localization {
         static let customPackageHeader = NSLocalizedString("CUSTOM PACKAGES",
                                                            comment: "Header for the Custom Packages section in Shipping Label Package listing")
@@ -56,7 +56,7 @@ private extension ShippingLabelServicePackages {
     }
 }
 
-struct ShippingLabelServicePackages_Previews: PreviewProvider {
+struct ShippingLabelPackageList_Previews: PreviewProvider {
     static var previews: some View {
         let storeOptions = ShippingLabelStoreOptions(currencySymbol: "$", dimensionUnit: "in", weightUnit: "oz", originCountry: "US")
 
@@ -87,8 +87,8 @@ struct ShippingLabelServicePackages_Previews: PreviewProvider {
 
         let packagesResponse = ShippingLabelPackagesResponse(storeOptions: storeOptions, customPackages: customPackages, predefinedOptions: predefinedOptions)
 
-        let viewModel = ShippingLabelServicePackagesViewModel(state: .results, packagesResponse: packagesResponse)
+        let viewModel = ShippingLabelPackageListViewModel(state: .results, packagesResponse: packagesResponse)
 
-        ShippingLabelServicePackages(viewModel: viewModel)
+        ShippingLabelPackageList(viewModel: viewModel)
     }
 }

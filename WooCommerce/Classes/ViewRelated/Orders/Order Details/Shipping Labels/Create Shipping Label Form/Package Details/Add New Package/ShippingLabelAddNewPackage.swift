@@ -5,8 +5,8 @@ struct ShippingLabelAddNewPackage: View {
 
     var body: some View {
         ScrollView {
-            let servicePackagesViewModel = ShippingLabelServicePackagesViewModel(state: viewModel.state, packagesResponse: viewModel.packagesResponse)
-            ShippingLabelServicePackages(viewModel: servicePackagesViewModel)
+            let servicePackagesViewModel = ShippingLabelPackageListViewModel(state: viewModel.state, packagesResponse: viewModel.packagesResponse)
+            ShippingLabelPackageList(viewModel: servicePackagesViewModel)
                 .background(Color(.systemBackground))
         }
         .background(Color(.listBackground))

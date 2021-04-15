@@ -1,9 +1,9 @@
 import Foundation
 import Yosemite
 
-/// View model for `ShippingLabelServicePackages`.
+/// View model for `ShippingLabelPackageList`.
 ///
-final class ShippingLabelServicePackagesViewModel: ObservableObject {
+final class ShippingLabelPackageListViewModel: ObservableObject {
 
     private(set) var state: ShippingLabelAddNewPackageViewModel.State
     private(set) var dimensionUnit: String

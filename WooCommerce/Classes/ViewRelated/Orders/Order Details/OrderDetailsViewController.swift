@@ -498,7 +498,8 @@ private extension OrderDetailsViewController {
     }
 
     private func itemAddOnsButtonTapped(addOns: [OrderItemAttribute]) {
-        let addOnsController = AddOnsListViewController(addOns: addOns)
+        let addOnsViewModel = OrderAddOnListI1ViewModel(attributes: addOns)
+        let addOnsController = OrderAddOnsListViewController(viewModel: addOnsViewModel)
         let navigationController = WooNavigationController(rootViewController: addOnsController)
         present(navigationController, animated: true, completion: nil)
     }

@@ -16,7 +16,7 @@ struct ShippingLabelPackageList: View {
                 }
                 ForEach(viewModel.customPackages, id: \.title) { package in
                     let selected = package == viewModel.selectedCustomPackage
-                    SelectableItemRow(title: package.title, subtitle: package.dimensions, selected: selected).onTapGesture {
+                    SelectableItemRow(title: package.title, subtitle: package.dimensions + " \(viewModel.dimensionUnit)", selected: selected).onTapGesture {
                         viewModel.didSelectCustomPackage(package)
                      }
                     Divider().padding(.leading, Constants.dividerPadding)
@@ -30,7 +30,7 @@ struct ShippingLabelPackageList: View {
                         .background(Color(.listBackground))
                     ForEach(option.predefinedPackages, id: \.id) { package in
                         let selected = package == viewModel.selectedPredefinedPackage
-                        SelectableItemRow(title: package.title, subtitle: package.dimensions, selected: selected).onTapGesture {
+                        SelectableItemRow(title: package.title, subtitle: package.dimensions + " \(viewModel.dimensionUnit)", selected: selected).onTapGesture {
                             viewModel.didSelectPredefinedPackage(package)
                          }
                         Divider().padding(.leading, Constants.dividerPadding)

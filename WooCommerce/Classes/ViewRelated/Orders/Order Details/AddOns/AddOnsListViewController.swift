@@ -27,6 +27,62 @@ private extension AddOnsListViewController {
 ///
 struct AddOnsListI1View: View {
     var body: some View {
-        Text("Hoooli")
+        ScrollView {
+            VStack {
+                ForEach(1..<5) { _ in
+                    OrderAddOnView()
+                }
+            }
+        }
+        .background(Color(.listBackground))
     }
 }
+
+struct OrderAddOnView: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Divider()
+
+            Text("Instructions")
+                .font(.body)
+                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                .foregroundColor(Color(.text))
+                .padding(.leading)
+
+            HStack(alignment: .bottom) {
+                Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard")
+                    .font(.body)
+                    .foregroundColor(Color(.text))
+                Text("$300.00")
+                    .font(.body)
+                    .foregroundColor(Color(.textSubtle))
+            }
+            .padding([.leading, .trailing])
+
+            Divider()
+        }
+        .background(Color(.basicBackground))
+    }
+}
+
+
+#if DEBUG
+
+struct OrderAddOnView_Previews: PreviewProvider {
+    static var previews: some View {
+
+        AddOnsListI1View()
+            .environment(\.colorScheme, .light)
+
+//        AddOnsListI1View()
+//            .environment(\.colorScheme, .dark)
+//
+//        AddOnsListI1View()
+//            .environment(\.layoutDirection, .rightToLeft)
+//
+//        AddOnsListI1View()
+//            .environment(\.sizeCategory, .accessibilityLarge)
+    }
+}
+
+#endif

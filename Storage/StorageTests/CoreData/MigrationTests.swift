@@ -580,6 +580,46 @@ final class MigrationTests: XCTestCase {
         let migratedVariation = try XCTUnwrap(targetContext.first(entityName: "ProductVariation"))
         XCTAssertEqual(migratedVariation.entity.attributesByName["stockQuantity"]?.attributeType, .decimalAttributeType)
     }
+
+    func test_migrating_from_46_to_47_enables_creating_new_Coupon_and_adding_to_new_Category_and_Product_included_or_excluded_coupons_relationships() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 46")
+        let sourceContext = sourceContainer.viewContext
+
+        _ = insertProduct(to: sourceContext, forModel: 46)
+        _ = insertProductCategory(to: sourceContext)
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "ProductCategory"), 1)
+        XCTAssertEqual(try sourceContext.count(entityName: "Product"), 1)
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 47")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "ProductCategory"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "Coupon"), 0)
+
+        let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
+        let migratedProductCategory = try XCTUnwrap(targetContext.first(entityName: "ProductCategory"))
+
+        // Creates an `Coupon` and adds products and categories to the arrays.
+        let coupon = insertCoupon(to: targetContext)
+
+        coupon.mutableSetValue(forKey: "products").add(migratedProduct)
+        coupon.mutableSetValue(forKey: "productCategories").add(migratedProductCategory)
+        try targetContext.save()
+
+        XCTAssertEqual(try targetContext.count(entityName: "Coupon"), 1)
+        let storedCoupon = try XCTUnwrap(targetContext.firstObject(ofType: Coupon.self))
+
+        XCTAssertEqual(storedCoupon.value(forKey: "products") as? Set<NSManagedObject>, [migratedProduct])
+        XCTAssertEqual(storedCoupon.value(forKey: "productCategories") as? Set<NSManagedObject>, [migratedProductCategory])
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -685,6 +725,32 @@ private extension MigrationTests {
         context.insert(entityName: "Account", properties: [
             "userID": 0,
             "username": ""
+        ])
+    }
+
+    @discardableResult
+    func insertCoupon(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "Coupon", properties: [
+            "couponID": 123123,
+            "maximumAmount": "12.00",
+            "minimumAmount": "1.00",
+            "excludeSaleItems": true,
+            "freeShipping": false,
+            "limitUsageToXItems": 3,
+            "usageLimitPerUser": 1,
+            "usageLimit": 1000,
+            "individualUse": true,
+            "usageCount": 200,
+            "dateExpires": Date(),
+            "fullDescription": "Coupon for getting discounts",
+            "discountType": "fixed_cart",
+            "dateModified": Date(),
+            "dateCreated": Date(),
+            "amount": "2.00",
+            "code": "2off2021",
+            "usedBy": ["me@example.com"],
+            "emailRestrictions": ["*@woocommerce.com"],
+            "siteID": 1212
         ])
     }
 

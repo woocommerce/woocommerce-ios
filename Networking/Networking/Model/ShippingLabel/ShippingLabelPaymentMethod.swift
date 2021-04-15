@@ -13,16 +13,16 @@ public struct ShippingLabelPaymentMethod: Equatable, GeneratedFakeable {
     public let cardType: ShippingLabelPaymentCardType
 
     /// The last card digits for the payment method.
-    public let cardDigits: Int64
+    public let cardDigits: String
 
     /// The expiry date for the payment method.
-    public let expiry: Date
+    public let expiry: String
 
     public init(paymentMethodID: Int64,
                 name: String,
                 cardType: ShippingLabelPaymentCardType,
-                cardDigits: Int64,
-                expiry: Date) {
+                cardDigits: String,
+                expiry: String) {
         self.paymentMethodID = paymentMethodID
         self.name = name
         self.cardType = cardType
@@ -39,8 +39,8 @@ extension ShippingLabelPaymentMethod: Decodable {
         let name = try container.decode(String.self, forKey: .name)
         let cardTypeRawValue = try container.decode(String.self, forKey: .cardType)
         let cardType = ShippingLabelPaymentCardType(rawValue: cardTypeRawValue)
-        let cardDigits = try container.decode(Int64.self, forKey: .cardDigits)
-        let expiry = try container.decode(Date.self, forKey: .expiry)
+        let cardDigits = try container.decode(String.self, forKey: .cardDigits)
+        let expiry = try container.decode(String.self, forKey: .expiry)
 
         self.init(paymentMethodID: paymentMethodID, name: name, cardType: cardType, cardDigits: cardDigits, expiry: expiry)
     }

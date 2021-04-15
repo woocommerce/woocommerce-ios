@@ -44,18 +44,14 @@ struct OrderAddOnView: View {
             Divider()
 
             Text("Instructions")
-                .font(.body)
-                .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                .foregroundColor(Color(.text))
+                .headlineStyle()
                 .padding(.leading)
 
             HStack(alignment: .bottom) {
                 Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard")
-                    .font(.body)
-                    .foregroundColor(Color(.text))
+                    .bodyStyle()
                 Text("$300.00")
-                    .font(.body)
-                    .foregroundColor(Color(.textSubtle))
+                    .secondaryBodyStyle()
             }
             .padding([.leading, .trailing])
 

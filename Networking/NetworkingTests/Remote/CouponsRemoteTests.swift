@@ -141,23 +141,22 @@ final class CouponsRemoteTests: XCTestCase {
         // Given
         let remote = CouponsRemote(network: network)
         let sampleCouponID: Int64 = 720
-        let expectation = self.expectation(description: "Delete Coupon")
 
         network.simulateResponse(requestUrlSuffix: "coupons/\(sampleCouponID)", filename: "coupon")
 
         // When
-        var result: Swift.Result<Coupon, Error>?
-        remote.deleteCoupon(for: sampleSiteID, couponID: sampleCouponID) { response in
-            result = response
-            expectation.fulfill()
+        let result = waitFor { promise in
+            remote.deleteCoupon(for: self.sampleSiteID, couponID: sampleCouponID) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-
         // Then
-        XCTAssertTrue(try XCTUnwrap(result).isSuccess)
-
-        let coupon = try XCTUnwrap(result).get()
+        XCTAssert(result.isSuccess)
+        guard let coupon = try? result.get() else {
+            XCTFail("Expected parsed Coupon not found in response")
+            return
+        }
         XCTAssertEqual(coupon.couponId, sampleCouponID)
     }
 

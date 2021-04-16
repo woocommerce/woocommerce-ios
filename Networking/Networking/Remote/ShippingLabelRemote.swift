@@ -19,6 +19,7 @@ public protocol ShippingLabelRemoteProtocol {
     func createPackage(siteID: Int64,
                        customPackage: ShippingLabelCustomPackage,
                        completion: @escaping (Result<Bool, Error>) -> Void)
+    func loadShippingLabelAccountSettings(siteID: Int64, completion: @escaping (Result<ShippingLabelAccountSettings, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints.
@@ -123,6 +124,17 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
             completion(.failure(error))
         }
     }
+
+    /// Loads account-level shipping label settings for a store.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site.
+    ///   - completion: Closure to be executed upon completion.
+    public func loadShippingLabelAccountSettings(siteID: Int64, completion: @escaping (Result<ShippingLabelAccountSettings, Error>) -> Void) {
+        let path = Path.accountSettings
+        let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .get, siteID: siteID, path: path)
+        let mapper = ShippingLabelAccountSettingsMapper(siteID: siteID)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 // MARK: Constant
@@ -131,6 +143,7 @@ private extension ShippingLabelRemote {
         static let shippingLabels = "label"
         static let normalizeAddress = "normalize-address"
         static let packages = "packages"
+        static let accountSettings = "account/settings"
     }
 
     enum ParameterKey {

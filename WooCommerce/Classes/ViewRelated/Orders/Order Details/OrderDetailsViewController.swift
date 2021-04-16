@@ -424,6 +424,8 @@ private extension OrderDetailsViewController {
             navigationController?.show(shippingLabelFormVC, sender: self)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
+        case let .viewAddOns(addOns):
+            itemAddOnsButtonTapped(addOns: addOns)
         }
     }
 
@@ -513,7 +515,6 @@ private extension OrderDetailsViewController {
         present(actionSheet, animated: true)
     }
 
-
     @objc private func collectPayment(at: IndexPath) {
         guard let cell = tableView.cellForRow(at: at) as? ButtonTableViewCell else {
             return
@@ -556,6 +557,13 @@ private extension OrderDetailsViewController {
 
             self?.present(actionSheet, animated: true)
         }
+    }
+
+    private func itemAddOnsButtonTapped(addOns: [OrderItemAttribute]) {
+        let addOnsViewModel = OrderAddOnListI1ViewModel(attributes: addOns)
+        let addOnsController = OrderAddOnsListViewController(viewModel: addOnsViewModel)
+        let navigationController = WooNavigationController(rootViewController: addOnsController)
+        present(navigationController, animated: true, completion: nil)
     }
 }
 

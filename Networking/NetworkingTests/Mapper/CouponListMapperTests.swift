@@ -24,7 +24,7 @@ class CouponListMapperTests: XCTestCase {
         }
 
         for coupon in coupons {
-            XCTAssertEqual(coupon.siteId, dummySiteID)
+            XCTAssertEqual(coupon.siteID, dummySiteID)
         }
     }
 
@@ -36,7 +36,7 @@ class CouponListMapperTests: XCTestCase {
 
         let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
 
-        XCTAssertEqual(coupon.couponId, 720)
+        XCTAssertEqual(coupon.couponID, 720)
         XCTAssertEqual(coupon.code, "free shipping")
         XCTAssertEqual(coupon.amount, "10.00")
         XCTAssertEqual(coupon.dateCreated, dateFormatter.date(from: "2017-03-21T18:25:02"))
@@ -67,7 +67,7 @@ class CouponListMapperTests: XCTestCase {
 
         let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
 
-        XCTAssertEqual(coupon.couponId, 10714)
+        XCTAssertEqual(coupon.couponID, 10714)
         XCTAssertEqual(coupon.code, "test")
         XCTAssertEqual(coupon.amount, "0.00")
         XCTAssertEqual(coupon.dateCreated, dateFormatter.date(from: "2021-04-13T08:26:25"))

@@ -7,7 +7,7 @@ struct CouponListMapper: Mapper {
     /// We're injecting this field by copying it in after parsing responses, because `siteID` is not returned in any of the Coupon endpoints.
     ///
     let siteID: Int64
-    
+
     /// JSON decoder appropriate for `Coupon` responses.
     ///
     private static let decoder: JSONDecoder = {
@@ -21,7 +21,7 @@ struct CouponListMapper: Mapper {
     ///
     func map(response: Data) throws -> [Coupon] {
         let coupons = try Self.decoder.decode(CouponListEnvelope.self, from: response).coupons
-        return coupons.map { $0.copy(siteId: siteID) }
+        return coupons.map { $0.copy(siteID: siteID) }
     }
 }
 

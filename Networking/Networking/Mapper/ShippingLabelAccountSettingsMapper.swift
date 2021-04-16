@@ -7,6 +7,8 @@ struct ShippingLabelAccountSettingsMapper: Mapper {
     ///
     func map(response: Data) throws -> ShippingLabelAccountSettings {
         let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.yearMonthDayDateFormatter)
+
         return try decoder.decode(ShippingLabelAccountSettingsMapperEnvelope.self, from: response).data
     }
 }

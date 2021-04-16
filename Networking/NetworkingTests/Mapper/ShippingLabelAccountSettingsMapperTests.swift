@@ -83,6 +83,6 @@ private extension ShippingLabelAccountSettingsMapperTests {
                                           name: "Example User",
                                           cardType: .visa,
                                           cardDigits: "4242",
-                                          expiry: "2030-12-31")
+                                          expiry: DateFormatter.Defaults.yearMonthDayDateFormatter.date(from: "2030-12-31"))
     }
 }

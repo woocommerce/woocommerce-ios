@@ -111,4 +111,30 @@ class CouponsRemoteTests: XCTestCase {
         let coupons = try XCTUnwrap(result).get()
         XCTAssertEqual(coupons.first?.siteId, sampleSiteID)
     }
+
+    /// Verifies that loadAllCoupons properly relays Networking Layer errors.
+    ///
+    func test_loadAllCoupons_properly_relays_networking_errors() throws {
+        // Given
+        let remote = CouponsRemote(network: network)
+
+        let error = NetworkError.unacceptableStatusCode(statusCode: 403)
+        network.simulateError(requestUrlSuffix: "coupons", error: error)
+
+        // When
+        let result = waitFor { promise in
+            remote.loadAllCoupons(for: self.sampleSiteID,
+                                  completion: { (result) in
+                                    promise(result)
+                                })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        guard let resultError = result.failure as? NetworkError else {
+            XCTFail("Expected NetworkError not found")
+            return
+        }
+        XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 403))
+    }
 }

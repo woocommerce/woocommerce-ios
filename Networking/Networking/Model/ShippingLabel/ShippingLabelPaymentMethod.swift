@@ -37,8 +37,7 @@ extension ShippingLabelPaymentMethod: Decodable {
 
         let paymentMethodID = try container.decode(Int64.self, forKey: .paymentMethodID)
         let name = try container.decode(String.self, forKey: .name)
-        let cardTypeRawValue = try container.decode(String.self, forKey: .cardType)
-        let cardType = ShippingLabelPaymentCardType(rawValue: cardTypeRawValue)
+        let cardType = try container.decode(ShippingLabelPaymentCardType.self, forKey: .cardType)
         let cardDigits = try container.decode(String.self, forKey: .cardDigits)
         let expiry = try container.decode(Date.self, forKey: .expiry)
 

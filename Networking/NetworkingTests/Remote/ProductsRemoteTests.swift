@@ -104,7 +104,8 @@ final class ProductsRemoteTests: XCTestCase {
                                       defaultAttributes: [],
                                       variations: [],
                                       groupedProducts: [],
-                                      menuOrder: 0)
+                                      menuOrder: 0,
+                                      addOns: [])
         XCTAssertEqual(addedProduct, expectedProduct)
     }
 
@@ -206,7 +207,8 @@ final class ProductsRemoteTests: XCTestCase {
                                       defaultAttributes: [],
                                       variations: [],
                                       groupedProducts: [],
-                                      menuOrder: 0)
+                                      menuOrder: 0,
+                                      addOns: [])
         XCTAssertEqual(deletedProduct, expectedProduct)
     }
 
@@ -568,7 +570,8 @@ private extension ProductsRemoteTests {
                        defaultAttributes: sampleDefaultAttributes(),
                        variations: [192, 194, 193],
                        groupedProducts: [],
-                       menuOrder: 0)
+                       menuOrder: 0,
+                       addOns: [])
     }
 
     func sampleDimensions() -> Networking.ProductDimensions {

@@ -54,7 +54,8 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
             completion(image)
             return nil
         }
-        guard let url = URL(string: productImage.src) else {
+        guard let encodedString = productImage.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: encodedString) else {
             return nil
         }
         let task = imageService.downloadImage(with: url, shouldCacheImage: true) { [weak self] (image, error) in

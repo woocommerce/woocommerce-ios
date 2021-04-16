@@ -19,7 +19,8 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
         // When
         let viewModel = ProductDetailsCellViewModel(item: item,
                                                     currency: "$",
-                                                    formatter: currencyFormatter)
+                                                    formatter: currencyFormatter,
+                                                    hasAddOns: false)
 
         // Then
         XCTAssertEqual(viewModel.imageURL, nil)
@@ -51,7 +52,8 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
         // When
         let viewModel = ProductDetailsCellViewModel(aggregateItem: item,
                                                     currency: "$",
-                                                    formatter: currencyFormatter)
+                                                    formatter: currencyFormatter,
+                                                    hasAddOns: false)
 
         // Then
         XCTAssertEqual(viewModel.imageURL, item.imageURL)
@@ -69,7 +71,8 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
         let item = makeAggregateOrderItem(quantity: 2.5, price: nil, total: nil)
 
         // When
-        let viewModel = ProductDetailsCellViewModel(aggregateItem: item, currency: "$")
+        let viewModel = ProductDetailsCellViewModel(aggregateItem: item, currency: "$",
+                                                    hasAddOns: false)
         let total = viewModel.total
         let subtitle = viewModel.subtitle
 
@@ -83,7 +86,8 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
         let item = makeAggregateOrderItem(quantity: 2.5, price: 0.0, total: 0.0)
 
         // When
-        let viewModel = ProductDetailsCellViewModel(aggregateItem: item, currency: "$")
+        let viewModel = ProductDetailsCellViewModel(aggregateItem: item, currency: "$",
+                                                    hasAddOns: false)
         let total = viewModel.total
         let subtitle = viewModel.subtitle
 

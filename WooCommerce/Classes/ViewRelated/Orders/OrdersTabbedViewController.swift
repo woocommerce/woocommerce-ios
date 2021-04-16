@@ -230,7 +230,7 @@ private extension OrdersTabbedViewController {
             NSLocalizedString("Waiting for your first order",
                               comment: "The message shown in the Orders → All Orders tab if the list is empty.")
         static let allOrdersEmptyStateDetail =
-            NSLocalizedString("We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales.",
+            NSLocalizedString("Explore how you can increase your store sales",
                               comment: "The detailed message shown in the Orders → All Orders tab if the list is empty.")
         static let learnMore = NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty.")
     }

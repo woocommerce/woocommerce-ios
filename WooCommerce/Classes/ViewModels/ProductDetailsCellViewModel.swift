@@ -74,6 +74,10 @@ struct ProductDetailsCellViewModel {
     ///
     let sku: String?
 
+    /// Wether the item has add-ons associated to it.
+    ///
+    let hasAddOns: Bool
+
     // MARK: - Initializers
 
     private init(currency: String,
@@ -84,11 +88,13 @@ struct ProductDetailsCellViewModel {
                  positiveTotal: NSDecimalNumber?,
                  positivePrice: NSDecimalNumber?,
                  skuText: String?,
-                 attributes: [VariationAttributeViewModel]) {
+                 attributes: [VariationAttributeViewModel],
+                 hasAddOns: Bool) {
         self.imageURL = imageURL
         self.name = name
         let quantity = NumberFormatter.localizedString(from: positiveQuantity as NSDecimalNumber, number: .decimal)
         self.quantity = quantity
+        self.hasAddOns = hasAddOns
         self.sku = {
             guard let sku = skuText, sku.isEmpty == false else {
                 return nil
@@ -117,7 +123,8 @@ struct ProductDetailsCellViewModel {
     init(item: OrderItem,
          currency: String,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         product: Product? = nil) {
+         product: Product? = nil,
+         hasAddOns: Bool) {
         self.init(currency: currency,
                   currencyFormatter: formatter,
                   imageURL: product?.imageURL,
@@ -126,7 +133,8 @@ struct ProductDetailsCellViewModel {
                   positiveTotal: formatter.convertToDecimal(from: item.total)?.abs() ?? NSDecimalNumber.zero,
                   positivePrice: item.price.abs(),
                   skuText: item.sku,
-                  attributes: item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) })
+                  attributes: item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) },
+                  hasAddOns: hasAddOns)
     }
 
     /// Aggregate Order Item initializer
@@ -134,7 +142,8 @@ struct ProductDetailsCellViewModel {
     init(aggregateItem: AggregateOrderItem,
          currency: String,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         product: Product? = nil) {
+         product: Product? = nil,
+         hasAddOns: Bool) {
         self.init(currency: currency,
                   currencyFormatter: formatter,
                   imageURL: aggregateItem.imageURL ?? product?.imageURL,
@@ -143,7 +152,8 @@ struct ProductDetailsCellViewModel {
                   positiveTotal: aggregateItem.total?.abs(),
                   positivePrice: aggregateItem.price?.abs(),
                   skuText: aggregateItem.sku,
-                  attributes: aggregateItem.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) })
+                  attributes: aggregateItem.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) },
+                  hasAddOns: hasAddOns)
     }
 
     /// Refunded Order Item initializer
@@ -160,7 +170,8 @@ struct ProductDetailsCellViewModel {
                   positiveTotal: formatter.convertToDecimal(from: refundedItem.total)?.abs() ?? NSDecimalNumber.zero,
                   positivePrice: refundedItem.price.abs(),
                   skuText: refundedItem.sku,
-                  attributes: []) // Attributes are not supported for a refund item yet.
+                  attributes: [], // Attributes are not supported for a refund item yet.
+                  hasAddOns: false) // AddOns are not supported for a refund item yet.
     }
 }
 
@@ -192,9 +203,10 @@ private extension ProductDetailsCellViewModel {
 private extension Product {
     /// Returns the URL of the first image, if available. Otherwise, nil is returned.
     var imageURL: URL? {
-        guard let productImageURLString = images.first?.src else {
+        guard let productImageURLString = images.first?.src,
+              let encodedProductImageURLString = productImageURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
             return nil
         }
-        return URL(string: productImageURLString)
+        return URL(string: encodedProductImageURLString)
     }
 }

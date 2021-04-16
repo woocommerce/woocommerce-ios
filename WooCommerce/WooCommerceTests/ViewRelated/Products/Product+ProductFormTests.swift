@@ -156,7 +156,8 @@ private extension Product_ProductFormTests {
                        defaultAttributes: [],
                        variations: [192, 194, 193],
                        groupedProducts: [],
-                       menuOrder: 0)
+                       menuOrder: 0,
+                       addOns: [])
     }
 
     private func date(with dateString: String) -> Date {

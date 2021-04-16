@@ -36,6 +36,10 @@ final class ProductReviewsViewController: UIViewController {
         return viewModel.isEmpty
     }
 
+    /// The view shown if the list is empty.
+    ///
+    private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
+
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
     private let syncingCoordinator = SyncingCoordinator()
@@ -84,10 +88,7 @@ private extension ProductReviewsViewController {
     /// Setup: View properties
     ///
     func configureView() {
-        navigationItem.title = NSLocalizedString(
-            "Reviews",
-            comment: "Title that appears on top of the Product Reviews screen."
-        )
+        navigationItem.title = Localization.reviewsTitle
         view.backgroundColor = .listBackground
     }
 
@@ -178,37 +179,43 @@ private extension ProductReviewsViewController {
         viewModel.removePlaceholderReviews(tableView: tableView)
     }
 
-    /// Displays the Empty State Overlay.
+    /// Displays the EmptyStateViewController.
     ///
-    func displayEmptyOverlay() {
-        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = .emptyReviewsImage
-        overlayView.messageText = NSLocalizedString("No Reviews Yet for this Product!", comment: "Empty Product Reviews List Message")
-        overlayView.actionText = NSLocalizedString("Share your Store", comment: "Action: Opens the Store in a browser")
-        overlayView.onAction = { [weak self] in
-            guard let self = self else {
-                return
-            }
-            guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-                return
-            }
-            guard let url = URL(string: site.url) else {
-                return
-            }
+    func displayEmptyViewController() {
+        let childController = emptyStateViewController
+        let emptyStateConfig = EmptyStateViewController.Config.withLink(message: NSAttributedString(string: Localization.emptyStateMessage),
+                                                              image: .emptyReviewsImage,
+                                                              details: Localization.emptyStateDetail,
+                                                              linkTitle: Localization.emptyStateAction,
+                                                              linkURL: WooConstants.URLs.productReviewInfo.asURL())
 
-            ServiceLocator.analytics.track(.reviewsShareStoreButtonTapped)
-            SharingHelper.shareURL(url: url, title: site.name, from: overlayView.actionButtonView, in: self)
+        // Abort if we are already displaying this childController
+        guard childController.parent == nil,
+              let childView = childController.view else {
+            return
         }
 
-        overlayView.attach(to: view)
+        childController.configure(emptyStateConfig)
+
+        childView.translatesAutoresizingMaskIntoConstraints = false
+
+        addChild(childController)
+        view.addSubview(childView)
+        tableView.pinSubviewToAllEdges(childView)
+        childController.didMove(toParent: self)
     }
 
-    /// Removes all of the the OverlayMessageView instances in the view hierarchy.
-    ///
-    func removeAllOverlays() {
-        for subview in view.subviews where subview is OverlayMessageView {
-            subview.removeFromSuperview()
+    func removeEmptyViewController() {
+        let childController = emptyStateViewController
+
+        guard childController.parent == self,
+            let childView = childController.view else {
+            return
         }
+
+        childController.willMove(toParent: nil)
+        childView.removeFromSuperview()
+        childController.removeFromParent()
     }
 }
 
@@ -230,7 +237,7 @@ private extension ProductReviewsViewController {
         switch state {
         case .empty:
             if isEmpty == true {
-                displayEmptyOverlay()
+                displayEmptyViewController()
             }
         case .results:
             break
@@ -246,7 +253,7 @@ private extension ProductReviewsViewController {
     func didLeave(state: State) {
         switch state {
         case .empty:
-            removeAllOverlays()
+            removeEmptyViewController()
         case .results:
             break
         case .placeholder:
@@ -330,5 +337,17 @@ private extension ProductReviewsViewController {
         case empty
         case results
         case syncing
+    }
+}
+
+// MARK: - Localization
+//
+private extension ProductReviewsViewController {
+    enum Localization {
+        static let reviewsTitle = NSLocalizedString("Reviews", comment: "Title that appears on top of the Product Reviews screen.")
+        static let emptyStateMessage = NSLocalizedString("Get your first reviews", comment: "Message shown on the Product Reviews screen if the list is empty")
+        static let emptyStateDetail = NSLocalizedString("Capture high-quality product reviews for your store.",
+                                                         comment: "Detailed message shown on the Product Reviews screen if the list is empty")
+        static let emptyStateAction = NSLocalizedString("Learn more", comment: "Title of button shown on the Product Reviews screen if the list is empty")
     }
 }

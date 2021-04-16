@@ -1,0 +1,4 @@
+{
+	"error": "duplicate_custom_package_names_of_existing_packages",
+	"message": "At least one of the new custom packages has the same name as existing packages."
+}

@@ -34,7 +34,7 @@ final class MediaRemoteTests: XCTestCase {
         remote.loadMediaLibrary(for: sampleSiteID) { mediaItems, error in
             XCTAssertNil(error)
             XCTAssertNotNil(mediaItems)
-            XCTAssertEqual(mediaItems!.count, 5)
+            XCTAssertEqual(mediaItems?.count, 5)
             expectation.fulfill()
         }
 

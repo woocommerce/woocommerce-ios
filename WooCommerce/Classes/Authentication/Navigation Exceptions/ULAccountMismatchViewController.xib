@@ -62,7 +62,7 @@
                     </constraints>
                 </view>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="jIt-xb-rrN">
-                    <rect key="frame" x="34" y="166.5" width="346" height="533"/>
+                    <rect key="frame" x="34" y="190" width="346" height="486"/>
                     <subviews>
                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Np4-PU-IRZ" customClass="CircularImageView" customModule="WooCommerce" customModuleProvider="target">
                             <rect key="frame" x="143" y="0.0" width="60" height="60"/>
@@ -104,17 +104,21 @@
                             </subviews>
                         </stackView>
                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="woo-no-jetpack-error" translatesAutoresizingMaskIntoConstraints="NO" id="Osv-Wo-lxW">
-                            <rect key="frame" x="32.5" y="202.5" width="281" height="150"/>
+                            <rect key="frame" x="114" y="202.5" width="118" height="103"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="118" id="HJ8-h9-jF9"/>
+                                <constraint firstAttribute="height" constant="103" id="t8b-QG-26e"/>
+                            </constraints>
                         </imageView>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a2d-le-aKc">
-                            <rect key="frame" x="0.0" y="384.5" width="346" height="86.5"/>
+                            <rect key="frame" x="0.0" y="337.5" width="346" height="86.5"/>
                             <string key="text">Qui eum est quo et recusandae ut. Hic cupiditate nobis et pariatur quidem dolorum. Doloribus est tempora ipsam eius. Quos ab et aspernatur velit corporis aut rem.</string>
                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                             <color key="textColor" systemColor="secondaryLabelColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GOR-hg-dbC" userLabel="Action Button">
-                            <rect key="frame" x="59" y="503" width="228" height="30"/>
+                            <rect key="frame" x="59" y="456" width="228" height="30"/>
                             <constraints>
                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="228" id="Dh0-gH-21U"/>
                             </constraints>
@@ -138,7 +142,7 @@
         </view>
     </objects>
     <resources>
-        <image name="woo-no-jetpack-error" width="281" height="150"/>
+        <image name="woo-no-jetpack-error" width="236" height="206"/>
         <systemColor name="secondaryLabelColor">
             <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

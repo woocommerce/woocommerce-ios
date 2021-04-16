@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -28,16 +28,16 @@
                         <rect key="frame" x="76" y="19" width="228" height="85"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HX7-V5-bhX">
-                                <rect key="frame" x="0.0" y="0.0" width="228" height="45"/>
+                                <rect key="frame" x="0.0" y="0.0" width="228" height="20.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Title Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="14R-zK-tgC">
-                                        <rect key="frame" x="0.0" y="0.0" width="188.5" height="45"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="188.5" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" horizontalCompressionResistancePriority="1000" text="893" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pPE-SE-pY7">
-                                        <rect key="frame" x="196.5" y="0.0" width="31.5" height="45"/>
+                                        <rect key="frame" x="196.5" y="0.0" width="31.5" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -55,17 +55,41 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total price (item price x qty)" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IBM-H2-zE2">
-                                <rect key="frame" x="0.0" y="69" width="228" height="16"/>
+                                <rect key="frame" x="0.0" y="24.5" width="228" height="16"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SKU" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7JH-rt-n9v">
-                                <rect key="frame" x="0.0" y="49" width="230" height="16"/>
+                                <rect key="frame" x="0.0" y="44.5" width="228" height="16"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="50h-DU-Wha">
+                                <rect key="frame" x="0.0" y="64.5" width="228" height="20.5"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" verticalHuggingPriority="251" text="View Add-ons" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3g5-SN-cyH">
+                                        <rect key="frame" x="0.0" y="2.5" width="85" height="16"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ssd-av-9o4">
+                                        <rect key="frame" x="89" y="0.5" width="20" height="20"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="20" id="1ho-uA-Uos"/>
+                                            <constraint firstAttribute="width" secondItem="ssd-av-9o4" secondAttribute="height" multiplier="1:1" id="mPn-cL-C9v"/>
+                                        </constraints>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QjZ-fq-mfJ" userLabel="spacer">
+                                        <rect key="frame" x="113" y="0.0" width="115" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
                         </subviews>
                     </stackView>
                 </subviews>
@@ -84,8 +108,11 @@
                 <outlet property="nameLabel" destination="14R-zK-tgC" id="LmK-XT-zbU"/>
                 <outlet property="priceLabel" destination="pPE-SE-pY7" id="ir4-Ou-SuU"/>
                 <outlet property="productImageView" destination="p6h-Fq-FjW" id="bIw-1F-5GW"/>
-                <outlet property="subtitleLabel" destination="IBM-H2-zE2" id="acc-K8-vmg"/>
                 <outlet property="skuLabel" destination="7JH-rt-n9v" id="U07-2n-W3b"/>
+                <outlet property="subtitleLabel" destination="IBM-H2-zE2" id="acc-K8-vmg"/>
+                <outlet property="viewAddOnsIndicator" destination="ssd-av-9o4" id="Dtu-Ea-6nk"/>
+                <outlet property="viewAddOnsLabel" destination="3g5-SN-cyH" id="kNv-3B-00A"/>
+                <outlet property="viewAddOnsStackView" destination="50h-DU-Wha" id="hqo-2x-cOy"/>
             </connections>
             <point key="canvasLocation" x="62" y="96.5"/>
         </tableViewCell>

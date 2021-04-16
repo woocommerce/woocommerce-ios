@@ -117,7 +117,8 @@ extension MockReviews {
                        defaultAttributes: sampleDefaultAttributes(),
                        variations: [192, 194, 193],
                        groupedProducts: [],
-                       menuOrder: 0)
+                       menuOrder: 0,
+                       addOns: [])
     }
 
     func sampleDimensions() -> Networking.ProductDimensions {
@@ -262,7 +263,8 @@ extension MockReviews {
                        defaultAttributes: sampleDefaultAttributesMutated(),
                        variations: [],
                        groupedProducts: [111, 222, 333],
-                       menuOrder: 0)
+                       menuOrder: 0,
+                       addOns: [])
     }
 
     func sampleDimensionsMutated() -> Networking.ProductDimensions {
@@ -382,7 +384,8 @@ extension MockReviews {
                        defaultAttributes: [],
                        variations: [],
                        groupedProducts: [],
-                       menuOrder: 2)
+                       menuOrder: 2,
+                       addOns: [])
     }
 
     func sampleVariationTypeDimensions() -> Networking.ProductDimensions {

@@ -157,15 +157,22 @@ final class OrderDetailsDataSource: NSObject {
         return AsyncDictionary()
     }()
 
+    /// Indicates if the product cell will be configured with add on information or not.
+    /// Set to the the value of the `addOnsI1` feature flag in it's default parameter.
+    ///
+    private let showAddOns: Bool
+
     private lazy var currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     private let imageService: ImageService = ServiceLocator.imageService
 
     init(order: Order,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         showAddOns: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.addOnsI1)) {
         self.storageManager = storageManager
         self.order = order
         self.couponLines = order.coupons
+        self.showAddOns = showAddOns
 
         super.init()
     }
@@ -533,8 +540,13 @@ private extension OrderDetailsDataSource {
             return
         }
 
-        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: orderItem, currency: order.currency)
+        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: orderItem,
+                                                        currency: order.currency,
+                                                        hasAddOns: checkAddOnsExistence(on: orderItem))
         cell.configure(item: itemViewModel, imageService: imageService)
+        cell.onViewAddOnsTouchUp = {
+            print("TODO: Navigate to add ons")
+        }
     }
 
     private func configureShippingLabelTrackingNumber(cell: ImageAndTitleAndTextTableViewCell, at indexPath: IndexPath) {
@@ -600,15 +612,20 @@ private extension OrderDetailsDataSource {
         let imageURL: URL? = {
             guard let imageURLString = aggregateItem.variationID != 0 ?
                     lookUpProductVariation(productID: aggregateItem.productID, variationID: aggregateItem.variationID)?.image?.src:
-                    lookUpProduct(by: aggregateItem.productID)?.images.first?.src else {
+                    lookUpProduct(by: aggregateItem.productID)?.images.first?.src,
+                  let encodedImageURLString = imageURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
                 return nil
             }
-            return URL(string: imageURLString)
+            return URL(string: encodedImageURLString)
         }()
         let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem.copy(imageURL: imageURL),
-                                                        currency: order.currency)
+                                                        currency: order.currency,
+                                                        hasAddOns: checkAddOnsExistence(on: aggregateItem))
 
         cell.configure(item: itemViewModel, imageService: imageService)
+        cell.onViewAddOnsTouchUp = {
+            print("TODO: Navigate to add ons")
+        }
     }
 
     private func configureRefundedProducts(_ cell: WooBasicTableViewCell) {
@@ -725,6 +742,16 @@ private extension OrderDetailsDataSource {
         cell.onEditTouchUp = { [weak self] in
             self?.onCellAction?(.summary, nil)
         }
+    }
+
+    /// Returns `true` if an aggregate item has add-ons and the receiver is enabled to show add-ons information.
+    /// Returns `false` otherwise or if we can't find an associated product with the order.
+    ///
+    private func checkAddOnsExistence(on item: AggregateOrderItem) -> Bool {
+        guard let product = products.first(where: { $0.productID == item.productOrVariationID }), showAddOns else {
+            return false
+        }
+        return AddOnCrossreferenceUseCase(orderItem: item, product: product).addOnsAttributes().isNotEmpty
     }
 }
 

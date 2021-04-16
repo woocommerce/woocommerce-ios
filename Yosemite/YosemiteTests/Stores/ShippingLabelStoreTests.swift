@@ -461,6 +461,48 @@ final class ShippingLabelStoreTests: XCTestCase {
         // Then
         XCTAssertEqual(isEligibleForCreation, isFeatureFlagEnabled)
     }
+
+    // MARK: `createPackage`
+
+    func test_createPackage_returns_success_response() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        remote.whenCreatePackage(siteID: sampleSiteID,
+                                 thenReturn: .success(true))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = ShippingLabelAction.createPackage(siteID: self.sampleSiteID, customPackage: self.sampleShippingLabelCustomPackage()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_createPackage_returns_error_on_failure() throws {
+        // Given
+        let remote = MockShippingLabelRemote()
+        let expectedError = NetworkError.notFound
+        remote.whenCreatePackage(siteID: sampleSiteID,
+                                 thenReturn: .failure(expectedError))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = ShippingLabelAction.createPackage(siteID: self.sampleSiteID, customPackage: self.sampleShippingLabelCustomPackage()) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
 }
 
 private extension ShippingLabelStoreTests {
@@ -509,6 +551,15 @@ private extension ShippingLabelStoreTests {
 
     func sampleShippingLabelStoreOptions() -> ShippingLabelStoreOptions {
         return ShippingLabelStoreOptions(currencySymbol: "$", dimensionUnit: "cm", weightUnit: "kg", originCountry: "US")
+    }
+
+    func sampleShippingLabelCustomPackage() -> ShippingLabelCustomPackage {
+        return ShippingLabelCustomPackage(isUserDefined: true,
+                                                        title: "Caja",
+                                                        isLetter: false,
+                                                        dimensions: "1 x 2 x 3",
+                                                        boxWeight: 1,
+                                                        maxWeight: 0)
     }
 
     func sampleShippingLabelCustomPackages() -> [ShippingLabelCustomPackage] {

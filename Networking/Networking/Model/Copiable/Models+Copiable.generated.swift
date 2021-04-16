@@ -233,7 +233,8 @@ extension Product {
         defaultAttributes: CopiableProp<[ProductDefaultAttribute]> = .copy,
         variations: CopiableProp<[Int64]> = .copy,
         groupedProducts: CopiableProp<[Int64]> = .copy,
-        menuOrder: CopiableProp<Int> = .copy
+        menuOrder: CopiableProp<Int> = .copy,
+        addOns: CopiableProp<[ProductAddOn]> = .copy
     ) -> Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -297,6 +298,7 @@ extension Product {
         let variations = variations ?? self.variations
         let groupedProducts = groupedProducts ?? self.groupedProducts
         let menuOrder = menuOrder ?? self.menuOrder
+        let addOns = addOns ?? self.addOns
 
         return Product(
             siteID: siteID,
@@ -360,7 +362,86 @@ extension Product {
             defaultAttributes: defaultAttributes,
             variations: variations,
             groupedProducts: groupedProducts,
-            menuOrder: menuOrder
+            menuOrder: menuOrder,
+            addOns: addOns
+        )
+    }
+}
+
+extension ProductAddOn {
+    public func copy(
+        type: CopiableProp<AddOnType> = .copy,
+        display: CopiableProp<AddOnDisplay> = .copy,
+        name: CopiableProp<String> = .copy,
+        titleFormat: CopiableProp<AddOnTitleFormat> = .copy,
+        descriptionEnabled: CopiableProp<Int> = .copy,
+        description: CopiableProp<String> = .copy,
+        required: CopiableProp<Int> = .copy,
+        position: CopiableProp<Int> = .copy,
+        restrictions: CopiableProp<Int> = .copy,
+        restrictionsType: CopiableProp<AddOnRestrictionsType> = .copy,
+        adjustPrice: CopiableProp<Int> = .copy,
+        priceType: CopiableProp<AddOnPriceType> = .copy,
+        price: CopiableProp<String> = .copy,
+        min: CopiableProp<Int> = .copy,
+        max: CopiableProp<Int> = .copy,
+        options: CopiableProp<[ProductAddOnOption]> = .copy
+    ) -> ProductAddOn {
+        let type = type ?? self.type
+        let display = display ?? self.display
+        let name = name ?? self.name
+        let titleFormat = titleFormat ?? self.titleFormat
+        let descriptionEnabled = descriptionEnabled ?? self.descriptionEnabled
+        let description = description ?? self.description
+        let required = required ?? self.required
+        let position = position ?? self.position
+        let restrictions = restrictions ?? self.restrictions
+        let restrictionsType = restrictionsType ?? self.restrictionsType
+        let adjustPrice = adjustPrice ?? self.adjustPrice
+        let priceType = priceType ?? self.priceType
+        let price = price ?? self.price
+        let min = min ?? self.min
+        let max = max ?? self.max
+        let options = options ?? self.options
+
+        return ProductAddOn(
+            type: type,
+            display: display,
+            name: name,
+            titleFormat: titleFormat,
+            descriptionEnabled: descriptionEnabled,
+            description: description,
+            required: required,
+            position: position,
+            restrictions: restrictions,
+            restrictionsType: restrictionsType,
+            adjustPrice: adjustPrice,
+            priceType: priceType,
+            price: price,
+            min: min,
+            max: max,
+            options: options
+        )
+    }
+}
+
+extension ProductAddOnOption {
+    public func copy(
+        label: NullableCopiableProp<String> = .copy,
+        price: NullableCopiableProp<String> = .copy,
+        priceType: NullableCopiableProp<AddOnPriceType> = .copy,
+        imageID: NullableCopiableProp<String> = .copy
+    ) -> ProductAddOnOption {
+        let label = label ?? self.label
+        let price = price ?? self.price
+        let priceType = priceType ?? self.priceType
+        let imageID = imageID ?? self.imageID
+
+        return ProductAddOnOption(
+            label: label,
+            price: price,
+            priceType: priceType,
+            imageID: imageID
         )
     }
 }

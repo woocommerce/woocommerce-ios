@@ -1,5 +1,6 @@
 import XCTest
 import TestKit
+import Fakes
 @testable import Yosemite
 @testable import Networking
 @testable import Storage
@@ -87,7 +88,8 @@ final class ProductStoreTests: XCTestCase {
                                                   tags: [mockTag],
                                                   images: [mockImage],
                                                   attributes: [mockAttribute],
-                                                  defaultAttributes: [mockDefaultAttribute])
+                                                  defaultAttributes: [mockDefaultAttribute],
+                                                  addOns: sampleAddOns())
         remote.whenAddingProduct(siteID: sampleSiteID, thenReturn: .success(expectedProduct))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -115,6 +117,8 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 1)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDownload.self), 3)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAddOn.self), 3)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAddOnOption.self), 7)
     }
 
     func test_addProduct_returns_error_upon_network_error() {
@@ -164,7 +168,8 @@ final class ProductStoreTests: XCTestCase {
                                                   tags: [mockTag],
                                                   images: [mockImage],
                                                   attributes: [mockAttribute],
-                                                  defaultAttributes: [mockDefaultAttribute])
+                                                  defaultAttributes: [mockDefaultAttribute],
+                                                  addOns: sampleAddOns())
         remote.whenDeletingProduct(siteID: sampleSiteID, thenReturn: .success(expectedProduct))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -178,6 +183,8 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAddOn.self), 3)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAddOnOption.self), 7)
 
         var result: Result<Yosemite.Product, ProductUpdateError>?
         waitForExpectation { expectation in
@@ -199,6 +206,8 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 1)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAddOn.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAddOnOption.self), 0)
     }
 
     func test_deleteProduct_returns_error_upon_network_error() {
@@ -254,7 +263,7 @@ final class ProductStoreTests: XCTestCase {
     func testRetrieveProductsEffectivelyPersistsProductFieldsAndRelatedObjects() {
         let expectation = self.expectation(description: "Persist product list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let remoteProduct = sampleProduct()
+        let remoteProduct = sampleProduct(addOns: [])
 
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
@@ -1451,7 +1460,8 @@ private extension ProductStoreTests {
                        productID: Int64? = nil,
                        productShippingClass: Networking.ProductShippingClass? = nil,
                        tags: [Networking.ProductTag]? = nil,
-                       downloadable: Bool = false) -> Networking.Product {
+                       downloadable: Bool = false,
+                       addOns: [Networking.ProductAddOn]? = nil) -> Networking.Product {
         let testSiteID = siteID ?? sampleSiteID
         let testProductID = productID ?? sampleProductID
         return Product(siteID: testSiteID,
@@ -1520,7 +1530,8 @@ private extension ProductStoreTests {
                        defaultAttributes: sampleDefaultAttributes(),
                        variations: [192, 194, 193],
                        groupedProducts: [],
-                       menuOrder: 0)
+                       menuOrder: 0,
+                       addOns: addOns ?? sampleAddOns())
     }
 
     func sampleDimensions() -> Networking.ProductDimensions {
@@ -1675,7 +1686,8 @@ private extension ProductStoreTests {
                        defaultAttributes: sampleDefaultAttributesMutated(),
                        variations: [],
                        groupedProducts: [111, 222, 333],
-                       menuOrder: 0)
+                       menuOrder: 0,
+                       addOns: [])
     }
 
     func sampleDimensionsMutated() -> Networking.ProductDimensions {
@@ -1804,7 +1816,8 @@ private extension ProductStoreTests {
                        defaultAttributes: [],
                        variations: [],
                        groupedProducts: [],
-                       menuOrder: 2)
+                       menuOrder: 2,
+                       addOns: [])
     }
 
     func sampleVariationTypeDimensions() -> Networking.ProductDimensions {
@@ -1839,6 +1852,49 @@ private extension ProductStoreTests {
                                           options: ["Long"])
 
         return [attribute1, attribute2]
+    }
+
+    func sampleAddOns() -> [Networking.ProductAddOn] {
+        let topping = Networking.ProductAddOn.fake().copy(type: .checkbox,
+                                                          display: .radioButton,
+                                                          name: "Topping",
+                                                          titleFormat: .label,
+                                                          descriptionEnabled: 1,
+                                                          description: "Pizza topping",
+                                                          restrictionsType: .any_text,
+                                                          priceType: .flatFee,
+                                                          options: [
+                                                            Networking.ProductAddOnOption.fake().copy(label: "Peperoni", price: "3", priceType: .flatFee),
+                                                            Networking.ProductAddOnOption.fake().copy(label: "Extra cheese", price: "4", priceType: .flatFee),
+                                                            Networking.ProductAddOnOption.fake().copy(label: "Salami", price: "3", priceType: .flatFee),
+                                                            Networking.ProductAddOnOption.fake().copy(label: "Ham", price: "3", priceType: .flatFee)
+                                                          ])
+        let soda = Networking.ProductAddOn.fake().copy(type: .inputMultiplier,
+                                                       display: .dropdown,
+                                                       name: "Soda",
+                                                       titleFormat: .label,
+                                                       position: 1,
+                                                       restrictions: 1,
+                                                       restrictionsType: .any_text,
+                                                       adjustPrice: 1,
+                                                       priceType: .quantityBased,
+                                                       price: "2",
+                                                       max: 3,
+                                                       options: [
+                                                        Networking.ProductAddOnOption.fake().copy(label: "", price: "", priceType: .flatFee)
+                                                       ])
+        let delivery = Networking.ProductAddOn.fake().copy(type: .multipleChoice,
+                                                           display: .radioButton,
+                                                           name: "Delivery",
+                                                           titleFormat: .label,
+                                                           required: 1,
+                                                           position: 2,
+                                                           restrictionsType: .any_text,
+                                                           options: [
+                                                            Networking.ProductAddOnOption.fake().copy(label: "Yes", price: "5", priceType: .flatFee),
+                                                            Networking.ProductAddOnOption.fake().copy(label: "No", price: "", priceType: .flatFee)
+                                                           ])
+        return [topping, soda, delivery]
     }
 
     func date(with dateString: String) -> Date {

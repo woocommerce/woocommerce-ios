@@ -3,9 +3,9 @@
 
 
 extension Coupon {
-    func copy(
-        siteId: CopiableProp<Int64> = .copy,
-        couponId: CopiableProp<Int64> = .copy,
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        couponID: CopiableProp<Int64> = .copy,
         code: CopiableProp<String> = .copy,
         amount: CopiableProp<String> = .copy,
         dateCreated: CopiableProp<Date> = .copy,
@@ -29,8 +29,8 @@ extension Coupon {
         emailRestrictions: CopiableProp<[String]> = .copy,
         usedBy: CopiableProp<[String]> = .copy
     ) -> Coupon {
-        let siteId = siteId ?? self.siteId
-        let couponId = couponId ?? self.couponId
+        let siteID = siteID ?? self.siteID
+        let couponID = couponID ?? self.couponID
         let code = code ?? self.code
         let amount = amount ?? self.amount
         let dateCreated = dateCreated ?? self.dateCreated
@@ -55,8 +55,8 @@ extension Coupon {
         let usedBy = usedBy ?? self.usedBy
 
         return Coupon(
-            siteId: siteId,
-            couponId: couponId,
+            siteID: siteID,
+            couponID: couponID,
             code: code,
             amount: amount,
             dateCreated: dateCreated,

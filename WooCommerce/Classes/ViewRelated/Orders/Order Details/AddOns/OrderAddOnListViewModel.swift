@@ -24,7 +24,7 @@ class OrderAddOnListI1ViewModel {
         self.addOns = attributes.map { attribute in
             let name = Self.addOnName(from: attribute)
             let price = Self.addOnPrice(from: attribute, withDecodedName: name)
-            return OrderAddOnI1ViewModel(title: name, content: attribute.value, price: price)
+            return OrderAddOnI1ViewModel(id: attribute.metaID, title: name, content: attribute.value, price: price)
         }
     }
 
@@ -56,10 +56,11 @@ private extension OrderAddOnListI1ViewModel {
 
 /// ViewModel for `OrderAddOnI1View`
 ///
-struct OrderAddOnI1ViewModel: Identifiable {
+struct OrderAddOnI1ViewModel: Identifiable, Equatable {
     /// Unique identifier, required by `SwiftUI`
+    /// Discussion: Not using `UUID()` to not having to write a custom equality function.
     ///
-    let id = UUID()
+    let id: Int64
 
     /// Add-on title
     ///

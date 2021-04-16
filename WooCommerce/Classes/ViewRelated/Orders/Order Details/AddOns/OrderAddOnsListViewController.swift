@@ -76,10 +76,10 @@ struct OrderAddOnI1View: View {
 struct OrderAddOnView_Previews: PreviewProvider {
     static var previews: some View {
         OrderAddOnListI1View(viewModel: .init(addOns: [
-            OrderAddOnI1ViewModel(title: "Topping", content: "Pepperoni", price: "$3.00"),
-            OrderAddOnI1ViewModel(title: "Topping", content: "Salami", price: "$2.00"),
-            OrderAddOnI1ViewModel(title: "Soda", content: "3", price: "$6.00"),
-            OrderAddOnI1ViewModel(title: "Instructions", content: "Leave it in the front door", price: "")
+            OrderAddOnI1ViewModel(id: 1, title: "Topping", content: "Pepperoni", price: "$3.00"),
+            OrderAddOnI1ViewModel(id: 2, title: "Topping", content: "Salami", price: "$2.00"),
+            OrderAddOnI1ViewModel(id: 3, title: "Soda", content: "3", price: "$6.00"),
+            OrderAddOnI1ViewModel(id: 4, title: "Instructions", content: "Leave it in the front door", price: "")
         ]))
         .environment(\.colorScheme, .light)
     }

@@ -4,7 +4,7 @@ import Yosemite
 
 /// Hosting controller that wraps an `AddOnsListView`
 ///
-class OrderAddOnsListViewController: UIHostingController<OrderAddOnListI1View> {
+final class OrderAddOnsListViewController: UIHostingController<OrderAddOnListI1View> {
     init(viewModel: OrderAddOnListI1ViewModel) {
         super.init(rootView: OrderAddOnListI1View(viewModel: viewModel))
         self.title = viewModel.title

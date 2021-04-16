@@ -11,7 +11,7 @@ class OrderAddOnsListViewController: UIHostingController<OrderAddOnListI1View> {
         addCloseNavigationBarButton()
     }
 
-    @objc required dynamic init?(coder aDecoder: NSCoder) {
+    required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

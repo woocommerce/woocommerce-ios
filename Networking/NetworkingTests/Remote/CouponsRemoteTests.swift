@@ -157,7 +157,7 @@ final class CouponsRemoteTests: XCTestCase {
             XCTFail("Expected parsed Coupon not found in response")
             return
         }
-        XCTAssertEqual(coupon.couponId, sampleCouponID)
+        XCTAssertEqual(coupon.couponID, sampleCouponID)
     }
 
     /// Verifies that deleteCoupon properly relays Networking Layer errors.

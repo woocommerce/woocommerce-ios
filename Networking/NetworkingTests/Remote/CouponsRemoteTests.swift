@@ -105,7 +105,7 @@ class CouponsRemoteTests: XCTestCase {
 
         // Then
         let coupons = try result.get()
-        XCTAssertEqual(coupons.first?.siteId, sampleSiteID)
+        XCTAssertEqual(coupons.first?.siteID, sampleSiteID)
     }
 
     /// Verifies that loadAllCoupons properly relays Networking Layer errors.

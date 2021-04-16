@@ -12,7 +12,7 @@ struct CouponMapper: Mapper {
     ///
     func map(response: Data) throws -> Coupon {
         let coupon = try Coupon.decoder.decode(CouponEnvelope.self, from: response).coupon
-        return coupon.copy(siteId: siteID)
+        return coupon.copy(siteID: siteID)
     }
 }
 

@@ -3,6 +3,9 @@ import Foundation
 /// Represents Account Settings for Shipping Labels.
 ///
 public struct ShippingLabelAccountSettings: Equatable, GeneratedFakeable {
+    /// Remote Site ID.
+    public let siteID: Int64
+
     /// Whether the current user can make changes to the payments section.
     public let canManagePayments: Bool
 
@@ -39,7 +42,8 @@ public struct ShippingLabelAccountSettings: Equatable, GeneratedFakeable {
     /// Uses the `id` for predefined packages or `name` for custom packages.
     public let lastSelectedPackageID: String
 
-    public init(canManagePayments: Bool,
+    public init(siteID: Int64,
+                canManagePayments: Bool,
                 canEditSettings: Bool,
                 storeOwnerDisplayName: String,
                 storeOwnerUsername: String,
@@ -50,6 +54,7 @@ public struct ShippingLabelAccountSettings: Equatable, GeneratedFakeable {
                 isEmailReceiptsEnabled: Bool,
                 paperSize: ShippingLabelPaperSize,
                 lastSelectedPackageID: String) {
+        self.siteID = siteID
         self.canManagePayments = canManagePayments
         self.canEditSettings = canEditSettings
         self.storeOwnerDisplayName = storeOwnerDisplayName
@@ -66,6 +71,10 @@ public struct ShippingLabelAccountSettings: Equatable, GeneratedFakeable {
 
 extension ShippingLabelAccountSettings: Decodable {
     public init(from decoder: Decoder) throws {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
+            throw ShippingLabelAccountSettingsDecodingError.missingSiteID
+        }
+
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let formMetaContainer = try container.nestedContainer(keyedBy: FormMetaKeys.self, forKey: .formMeta)
@@ -86,7 +95,8 @@ extension ShippingLabelAccountSettings: Decodable {
         let userMetaContainer = try container.nestedContainer(keyedBy: UserMetaKeys.self, forKey: .userMeta)
         let lastSelectedPackageID = try userMetaContainer.decode(String.self, forKey: .lastSelectedPackageID)
 
-        self.init(canManagePayments: canManagePayments,
+        self.init(siteID: siteID,
+                  canManagePayments: canManagePayments,
                   canEditSettings: canEditSettings,
                   storeOwnerDisplayName: storeOwnerDisplayName,
                   storeOwnerUsername: storeOwnerUsername,
@@ -128,4 +138,10 @@ private extension ShippingLabelAccountSettings {
     private enum UserMetaKeys: String, CodingKey {
         case lastSelectedPackageID = "last_box_id"
     }
+}
+
+// MARK: - Decoding Errors
+//
+enum ShippingLabelAccountSettingsDecodingError: Error {
+    case missingSiteID
 }

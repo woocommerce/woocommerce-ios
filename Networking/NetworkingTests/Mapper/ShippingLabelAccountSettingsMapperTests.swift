@@ -6,6 +6,9 @@ import XCTest
 ///
 class ShippingLabelAccountSettingsMapperTests: XCTestCase {
 
+    /// Sample Site ID
+    private let sampleSiteID: Int64 = 123456
+
     /// Verifies that the Shipping Label Account Settings are parsed correctly.
     ///
     func test_Account_Settings_are_properly_parsed() {
@@ -14,6 +17,7 @@ class ShippingLabelAccountSettingsMapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(settings.siteID, sampleSiteID)
         XCTAssertEqual(settings.canEditSettings, true)
         XCTAssertEqual(settings.canManagePayments, true)
         XCTAssertEqual(settings.isEmailReceiptsEnabled, true)
@@ -35,6 +39,7 @@ class ShippingLabelAccountSettingsMapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(settings.siteID, sampleSiteID)
         XCTAssertEqual(settings.canEditSettings, true)
         XCTAssertEqual(settings.canManagePayments, false)
         XCTAssertEqual(settings.isEmailReceiptsEnabled, true)
@@ -61,7 +66,7 @@ private extension ShippingLabelAccountSettingsMapperTests {
             return nil
         }
 
-        return try! ShippingLabelAccountSettingsMapper().map(response: response)
+        return try! ShippingLabelAccountSettingsMapper(siteID: sampleSiteID).map(response: response)
     }
 
     /// Returns the ShippingLabelAccountSettingsMapper output upon receiving `shipping-label-account-settings`

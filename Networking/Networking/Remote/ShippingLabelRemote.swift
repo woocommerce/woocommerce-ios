@@ -132,7 +132,7 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
     public func loadShippingLabelAccountSettings(siteID: Int64, completion: @escaping (Result<ShippingLabelAccountSettings, Error>) -> Void) {
         let path = Path.accountSettings
         let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .get, siteID: siteID, path: path)
-        let mapper = ShippingLabelAccountSettingsMapper()
+        let mapper = ShippingLabelAccountSettingsMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
 }

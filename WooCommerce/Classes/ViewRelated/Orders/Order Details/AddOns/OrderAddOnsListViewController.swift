@@ -53,7 +53,7 @@ struct OrderAddOnI1View: View {
 
             Text(viewModel.title)
                 .headlineStyle()
-                .padding(.leading)
+                .padding([.leading, .trailing])
 
             HStack(alignment: .bottom) {
                 Text(viewModel.content)

@@ -1,4 +1,5 @@
-Es gibt Updates für WooCommerce iOS, die dafür sorgen, dass sich dein Geschäft leichter führen lässt.
+Neuerungen in dieser Release
 
-Jetzt kannst du selbst variable Produkte erstellen und einen Produktentwurf für/ein ausstehendes Produkt über die Navigationsleiste veröffentlichen.
-Wir haben Störungen beim Hinzufügen von Produktattributen oder -varianten behoben und die Darstellung von Text und Bildern im Querformat verbessert.
+- Eine neu gestaltetes Anmeldeerlebnis mit Illustrationen zum Bewerben der Hauptfunktionen und Vorteile der App.
+- Weitere Fehlerbehebungen, darunter auch ein einheitlicheres Design des Zurück-Buttons in der Navigationsleiste.
+

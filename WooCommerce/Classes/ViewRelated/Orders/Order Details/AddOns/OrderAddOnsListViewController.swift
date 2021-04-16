@@ -24,8 +24,8 @@ struct OrderAddOnListI1View: View {
     let viewModel: OrderAddOnListI1ViewModel
 
     /// Discussion: Due to the inability of customizing the `List` separators. We have opted to simulate the list behaviour with a `ScrollView` + `VStack`.
-    ///          We expect performance to be acceptable as normally an order does not have too many add-ons.
-    ///          A future improvement can be to use a `LazyVStack` when iOS-14 becomes our minimum target.
+    /// We expect performance to be acceptable as normally an order does not have too many add-ons.
+    /// A future improvement can be to use a `LazyVStack` when iOS-14 becomes our minimum target.
     ///
     var body: some View {
         ScrollView {

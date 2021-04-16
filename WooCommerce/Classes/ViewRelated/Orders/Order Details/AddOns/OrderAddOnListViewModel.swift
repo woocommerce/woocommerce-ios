@@ -3,7 +3,7 @@ import Yosemite
 
 /// ViewModel for `OrderAddOnListI1View`
 ///
-class OrderAddOnListI1ViewModel {
+final class OrderAddOnListI1ViewModel {
     /// AddOns to render
     ///
     let addOns: [OrderAddOnI1ViewModel]

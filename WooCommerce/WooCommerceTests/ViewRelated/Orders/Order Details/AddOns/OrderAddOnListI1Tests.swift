@@ -3,7 +3,6 @@ import Fakes
 
 @testable import WooCommerce
 @testable import Yosemite
-@testable import Networking
 
 class OrderAddOnListI1Tests: XCTestCase {
 

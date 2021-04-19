@@ -11,7 +11,7 @@ extension Charge {
         self.status = ChargeStatus.with(status: charge.status)
         self.description = charge.stripeDescription
         self.metadata = charge.metadata
-        self.paymentMethodDetails = PaymentMethodDetails(details: charge.paymentMethodDetails)
+        self.paymentMethod = PaymentMethod(method: charge.paymentMethodDetails)
     }
 }
 

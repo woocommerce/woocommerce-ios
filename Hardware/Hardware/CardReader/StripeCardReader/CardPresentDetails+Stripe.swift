@@ -4,10 +4,7 @@ extension CardPresentDetails {
 
     /// Convenience initializer
     /// - Parameter reader: An instance of a StripeTerminal.CardPresentDetails
-    init?(cardPresentDetails: StripeCardPresentDetails?) {
-        guard let details = cardPresentDetails else {
-            return nil
-        }
+    init(details: StripeCardPresentDetails) {
         self.last4 = details.last4
         self.expMonth = details.expMonth
         self.expYear = details.expYear

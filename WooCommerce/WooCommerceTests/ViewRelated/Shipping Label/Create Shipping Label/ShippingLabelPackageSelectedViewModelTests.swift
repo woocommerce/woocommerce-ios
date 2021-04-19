@@ -2,15 +2,9 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 
-final class ShippingLabelAddNewPackageViewModelTests: XCTestCase {
+final class ShippingLabelPackageSelectedViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 1234
-
-    func test_selectedIndex_returns_the_expected_value() {
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = ShippingLabelAddNewPackageViewModel(siteID: sampleSiteID, selectedIndex: 1, stores: stores)
-        XCTAssertEqual(viewModel.selectedIndex, 1)
-    }
 
     func test_syncPackageDetails_returns_expected_values_if_succeeded() {
         // Given
@@ -27,7 +21,7 @@ final class ShippingLabelAddNewPackageViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = ShippingLabelAddNewPackageViewModel(siteID: sampleSiteID, selectedIndex: 1, stores: stores)
+        let viewModel = ShippingLabelPackageSelectedViewModel(siteID: sampleSiteID, stores: stores)
 
         // Then
         XCTAssertEqual(viewModel.packagesResponse, expectedResponse)
@@ -49,7 +43,7 @@ final class ShippingLabelAddNewPackageViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = ShippingLabelAddNewPackageViewModel(siteID: sampleSiteID, selectedIndex: 1, stores: stores)
+        let viewModel = ShippingLabelPackageSelectedViewModel(siteID: sampleSiteID, stores: stores)
 
         // Then
         XCTAssertNil(viewModel.packagesResponse)
@@ -57,7 +51,7 @@ final class ShippingLabelAddNewPackageViewModelTests: XCTestCase {
     }
 }
 
-private extension ShippingLabelAddNewPackageViewModelTests {
+private extension ShippingLabelPackageSelectedViewModelTests {
     func samplePackagesResponse() -> ShippingLabelPackagesResponse {
         let storeOptions = ShippingLabelStoreOptions(currencySymbol: "$", dimensionUnit: "in", weightUnit: "oz", originCountry: "US")
 

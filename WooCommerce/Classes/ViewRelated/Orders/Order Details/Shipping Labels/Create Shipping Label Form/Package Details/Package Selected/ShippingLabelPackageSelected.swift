@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct ShippingLabelAddNewPackage: View {
-    @ObservedObject private var viewModel: ShippingLabelAddNewPackageViewModel
+struct ShippingLabelPackageSelected: View {
+    @ObservedObject private var viewModel: ShippingLabelPackageSelectedViewModel
 
     var body: some View {
         ScrollView {
@@ -14,18 +14,18 @@ struct ShippingLabelAddNewPackage: View {
     }
 
     init(siteID: Int64) {
-        viewModel = ShippingLabelAddNewPackageViewModel(siteID: siteID)
+        viewModel = ShippingLabelPackageSelectedViewModel(siteID: siteID)
     }
 }
 
-private extension ShippingLabelAddNewPackage {
+private extension ShippingLabelPackageSelected {
     enum Localization {
-        static let title = NSLocalizedString("Add New Package", comment: "Add New Package screen title in Shipping Label flow")
+        static let title = NSLocalizedString("Package Selected", comment: "Package Selected screen title in Shipping Label flow")
     }
 }
 
 struct ShippingLabelAddNewPackage_Previews: PreviewProvider {
     static var previews: some View {
-        ShippingLabelAddNewPackage(siteID: 1234)
+        ShippingLabelPackageSelected(siteID: 1234)
     }
 }

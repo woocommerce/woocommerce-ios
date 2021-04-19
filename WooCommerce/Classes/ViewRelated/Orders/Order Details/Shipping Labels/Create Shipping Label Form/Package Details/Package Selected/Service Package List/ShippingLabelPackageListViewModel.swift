@@ -5,14 +5,14 @@ import Yosemite
 ///
 final class ShippingLabelPackageListViewModel: ObservableObject {
 
-    private(set) var state: ShippingLabelAddNewPackageViewModel.State
+    private(set) var state: ShippingLabelPackageSelectedViewModel.State
     private(set) var dimensionUnit: String
     private(set) var customPackages: [ShippingLabelCustomPackage]
     private(set) var predefinedOptions: [ShippingLabelPredefinedOption]
     @Published private(set) var selectedCustomPackage: ShippingLabelCustomPackage?
     @Published private(set) var selectedPredefinedPackage: ShippingLabelPredefinedPackage?
 
-    init(state: ShippingLabelAddNewPackageViewModel.State,
+    init(state: ShippingLabelPackageSelectedViewModel.State,
          packagesResponse: ShippingLabelPackagesResponse?,
          selectedCustomPackage: ShippingLabelCustomPackage? = nil,
          selectedPredefinedPackage: ShippingLabelPredefinedPackage? = nil) {

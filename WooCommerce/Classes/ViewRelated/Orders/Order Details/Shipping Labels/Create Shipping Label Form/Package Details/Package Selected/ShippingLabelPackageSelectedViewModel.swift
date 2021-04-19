@@ -2,14 +2,10 @@ import UIKit
 import SwiftUI
 import Yosemite
 
-/// View model for `ShippingLabelAddNewPackage`.
+/// View model for `ShippingLabelPackageSelected`.
 ///
-final class ShippingLabelAddNewPackageViewModel: ObservableObject {
+final class ShippingLabelPackageSelectedViewModel: ObservableObject {
     private let siteID: Int64
-
-    /// The selected index in the SegmentedView
-    ///
-    @Published var selectedIndex: Int
 
     private let stores: StoresManager
 
@@ -23,10 +19,8 @@ final class ShippingLabelAddNewPackageViewModel: ObservableObject {
 
 
     init(siteID: Int64,
-         selectedIndex: Int = SelectedIndex.servicePackage.rawValue,
          stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
-        self.selectedIndex = selectedIndex
         self.stores = stores
 
         syncPackageDetails()
@@ -51,10 +45,5 @@ final class ShippingLabelAddNewPackageViewModel: ObservableObject {
         case syncing
         case results
         case error
-    }
-
-    enum SelectedIndex: Int {
-        case customPackage = 0
-        case servicePackage = 1
     }
 }

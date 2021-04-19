@@ -19,6 +19,12 @@ extension ReceiptDetails {
     }
 }
 
+
+/// The initializers of StripeTerminal.ReceiptDetails are annotated as NS_UNAVAILABLE
+/// So we can not create instances of that class in our tests.
+/// A workaround is declaring this protocol, which matches the parts of
+/// StripeTerminal.ReceiptDetails that we are interested in, make ReceiptDetails implement it,
+/// and initialize Harware.ReceiptDetails with a type conforming to it.
 protocol StripeReceiptDetails {
     var applicationPreferredName: String { get }
     var dedicatedFileName: String { get }

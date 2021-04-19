@@ -1,6 +1,8 @@
 import StripeTerminal
 
 extension PaymentMethod {
+    /// Failable initializer.
+    /// Maps a SCPPaymentMethodDetails to PaymentMethod
     init?(method: SCPPaymentMethodDetails?) {
         guard let method = method else {
             return nil

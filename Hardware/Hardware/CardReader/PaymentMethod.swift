@@ -4,6 +4,7 @@ public enum PaymentMethod {
     case card
 
     /// A card present payment method.
+    /// If this is a card present payment method, this contains additional information.
     case presentCard(details: CardPresentDetails)
 
     /// An unknown type.

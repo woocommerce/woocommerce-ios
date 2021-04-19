@@ -4,16 +4,19 @@ extension CardPresentDetails {
 
     /// Convenience initializer
     /// - Parameter reader: An instance of a StripeTerminal.CardPresentDetails
-    init(cardPresentDetails: StripeCardPresentDetails) {
-        self.last4 = cardPresentDetails.last4
-        self.expMonth = cardPresentDetails.expMonth
-        self.expYear = cardPresentDetails.expYear
-        self.cardholderName = cardPresentDetails.cardholderName
-        self.brand = CardBrand(brand: cardPresentDetails.brand)
-        self.fingerprint = cardPresentDetails.fingerprint
-        self.generatedCard = cardPresentDetails.generatedCard
-        self.receipt = Hardware.ReceiptDetails(receiptDetails: cardPresentDetails.receipt)
-        self.emvAuthData = cardPresentDetails.emvAuthData
+    init?(cardPresentDetails: StripeCardPresentDetails?) {
+        guard let details = cardPresentDetails else {
+            return nil
+        }
+        self.last4 = details.last4
+        self.expMonth = details.expMonth
+        self.expYear = details.expYear
+        self.cardholderName = details.cardholderName
+        self.brand = CardBrand(brand: details.brand)
+        self.fingerprint = details.fingerprint
+        self.generatedCard = details.generatedCard
+        self.receipt = Hardware.ReceiptDetails(receiptDetails: details.receipt)
+        self.emvAuthData = details.emvAuthData
     }
 }
 

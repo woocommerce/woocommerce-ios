@@ -17,4 +17,7 @@ public struct Charge: Identifiable {
 
     /// Metadata associated with the charge.
     public let metadata: [AnyHashable: Any]?
+
+    /// The payment method details associated with the charge.
+    public let paymentMethodDetails: PaymentMethodDetails?
 }

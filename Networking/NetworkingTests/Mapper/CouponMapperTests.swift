@@ -18,7 +18,6 @@ final class CouponMapperTests: XCTestCase {
     ///
     func test_CouponsList_map_includes_siteID_in_parsed_results() throws {
         let coupon = try mapRetrieveCouponResponse()
-
         XCTAssertEqual(coupon.siteID, dummySiteID)
     }
 
@@ -29,29 +28,32 @@ final class CouponMapperTests: XCTestCase {
 
         let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
 
-        XCTAssertEqual(coupon.couponID, 720)
-        XCTAssertEqual(coupon.code, "free shipping")
-        XCTAssertEqual(coupon.amount, "10.00")
-        XCTAssertEqual(coupon.dateCreated, dateFormatter.date(from: "2017-03-21T18:25:02"))
-        XCTAssertEqual(coupon.dateModified, dateFormatter.date(from: "2017-03-21T18:25:02"))
-        XCTAssertEqual(coupon.discountType, .fixedCart)
-        XCTAssertEqual(coupon.description, "Coupon description")
-        XCTAssertEqual(coupon.dateExpires, dateFormatter.date(from: "2017-03-31T18:25:02"))
-        XCTAssertEqual(coupon.usageCount, 10)
-        XCTAssertEqual(coupon.individualUse, true)
-        XCTAssertEqual(coupon.productIds, [12893712, 12389])
-        XCTAssertEqual(coupon.excludedProductIds, [12213])
-        XCTAssertEqual(coupon.usageLimit, 1200)
-        XCTAssertEqual(coupon.usageLimitPerUser, 3)
-        XCTAssertEqual(coupon.limitUsageToXItems, 10)
-        XCTAssertEqual(coupon.freeShipping, true)
-        XCTAssertEqual(coupon.productCategories, [123, 435, 232])
-        XCTAssertEqual(coupon.excludedProductCategories, [908])
-        XCTAssertEqual(coupon.excludeSaleItems, false)
-        XCTAssertEqual(coupon.minimumAmount, "5.00")
-        XCTAssertEqual(coupon.maximumAmount, "500.00")
-        XCTAssertEqual(coupon.emailRestrictions, ["*@a8c.com", "someone.else@example.com"])
-        XCTAssertEqual(coupon.usedBy, ["someone.else@example.com", "person@a8c.com"])
+        let expectedCoupon = Coupon(
+            couponID: 720,
+            code: "free shipping",
+            amount: "10.00",
+            dateCreated: dateFormatter.date(from: "2017-03-21T18:25:02")!,
+            dateModified: dateFormatter.date(from: "2017-03-21T18:25:02")!,
+            discountType: .fixedCart,
+            description: "Coupon description",
+            dateExpires: dateFormatter.date(from: "2017-03-31T18:25:02"),
+            usageCount: 10,
+            individualUse: true,
+            productIds: [12893712, 12389],
+            excludedProductIds: [12213],
+            usageLimit: 1200,
+            usageLimitPerUser: 3,
+            limitUsageToXItems: 10,
+            freeShipping: true,
+            productCategories: [123, 435, 232],
+            excludedProductCategories: [908],
+            excludeSaleItems: false,
+            minimumAmount: "5.00",
+            maximumAmount: "500.00",
+            emailRestrictions: ["*@a8c.com", "someone.else@example.com"],
+            usedBy: ["someone.else@example.com", "person@a8c.com"]).copy(siteID: self.dummySiteID)
+
+        XCTAssertEqual(coupon, expectedCoupon)
     }
 
     /// Verifies that nulls in optional fields are parsed correctly
@@ -61,29 +63,32 @@ final class CouponMapperTests: XCTestCase {
 
         let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
 
-        XCTAssertEqual(coupon.couponID, 10714)
-        XCTAssertEqual(coupon.code, "test")
-        XCTAssertEqual(coupon.amount, "0.00")
-        XCTAssertEqual(coupon.dateCreated, dateFormatter.date(from: "2021-04-13T08:26:25"))
-        XCTAssertEqual(coupon.dateModified, dateFormatter.date(from: "2021-04-13T08:26:25"))
-        XCTAssertEqual(coupon.discountType, .fixedCart)
-        XCTAssertEqual(coupon.description, "")
-        XCTAssertEqual(coupon.dateExpires, nil)
-        XCTAssertEqual(coupon.usageCount, 0)
-        XCTAssertEqual(coupon.individualUse, false)
-        XCTAssertEqual(coupon.productIds, [])
-        XCTAssertEqual(coupon.excludedProductIds, [])
-        XCTAssertEqual(coupon.usageLimit, nil)
-        XCTAssertEqual(coupon.usageLimitPerUser, nil)
-        XCTAssertEqual(coupon.limitUsageToXItems, nil)
-        XCTAssertEqual(coupon.freeShipping, false)
-        XCTAssertEqual(coupon.productCategories, [])
-        XCTAssertEqual(coupon.excludedProductCategories, [])
-        XCTAssertEqual(coupon.excludeSaleItems, false)
-        XCTAssertEqual(coupon.minimumAmount, "0.00")
-        XCTAssertEqual(coupon.maximumAmount, "0.00")
-        XCTAssertEqual(coupon.emailRestrictions, [])
-        XCTAssertEqual(coupon.usedBy, [])
+        let expectedCoupon = Coupon(
+            couponID: 10714,
+            code: "test",
+            amount: "0.00",
+            dateCreated: dateFormatter.date(from: "2021-04-13T08:26:25")!,
+            dateModified: dateFormatter.date(from: "2021-04-13T08:26:25")!,
+            discountType: .fixedCart,
+            description: "",
+            dateExpires: nil,
+            usageCount: 0,
+            individualUse: false,
+            productIds: [],
+            excludedProductIds: [],
+            usageLimit: nil,
+            usageLimitPerUser: nil,
+            limitUsageToXItems: nil,
+            freeShipping: false,
+            productCategories: [],
+            excludedProductCategories: [],
+            excludeSaleItems: false,
+            minimumAmount: "0.00",
+            maximumAmount: "0.00",
+            emailRestrictions: [],
+            usedBy: []).copy(siteID: self.dummySiteID)
+
+        XCTAssertEqual(coupon, expectedCoupon)
     }
 }
 

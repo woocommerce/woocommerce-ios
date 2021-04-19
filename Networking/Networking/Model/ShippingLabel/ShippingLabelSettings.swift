@@ -1,6 +1,6 @@
 import Foundation
 
-/// Represents Shipping Label Settings.
+/// Represents Shipping Label Settings for an order.
 ///
 public struct ShippingLabelSettings: Equatable, GeneratedFakeable {
     public let siteID: Int64

@@ -1,0 +1,32 @@
+{
+    "data": {
+        "success": true,
+        "storeOptions": {
+            "currency_symbol": "$",
+            "dimension_unit": "in",
+            "weight_unit": "lbs",
+            "origin_country": "US"
+        },
+        "formData": {
+            "selected_payment_method_id": 0,
+            "enabled": true,
+            "email_receipts": true,
+            "paper_size": "label"
+        },
+        "formMeta": {
+            "can_manage_payments": false,
+            "can_edit_settings": true,
+            "master_user_name": "Example User",
+            "master_user_login": "admin",
+            "master_user_wpcom_login": "apiexamples",
+            "master_user_email": "example@example.com",
+            "payment_methods": [],
+            "warnings": {
+                "payment_methods": false
+            }
+        },
+        "userMeta": {
+            "last_box_id": ""
+        }
+    }
+}

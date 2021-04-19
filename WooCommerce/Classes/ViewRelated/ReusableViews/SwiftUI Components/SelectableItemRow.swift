@@ -25,6 +25,7 @@ struct SelectableItemRow: View {
         }
         .padding([.top, .bottom], Constants.hStackPadding)
         .frame(minHeight: Constants.height)
+        .contentShape(Rectangle())
     }
 }
 

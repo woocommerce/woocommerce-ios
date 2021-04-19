@@ -10,7 +10,7 @@ struct ShippingLabelPackageList: View {
             /// Custom Packages
             ///
             if viewModel.customPackages.count > 0 {
-                ListHeaderView(text: Localization.customPackageHeader, alignment: .left)
+                ListHeaderView(text: Localization.customPackageHeader.uppercased(), alignment: .left)
                     .background(Color(.listBackground))
             }
             ForEach(viewModel.customPackages, id: \.title) { package in
@@ -56,10 +56,18 @@ private extension ShippingLabelPackageList {
 
 struct ShippingLabelPackageList_Previews: PreviewProvider {
     static var previews: some View {
-        let storeOptions = ShippingLabelStoreOptions(currencySymbol: "$", dimensionUnit: "in", weightUnit: "oz", originCountry: "US")
+        let storeOptions = ShippingLabelStoreOptions(currencySymbol: "$",
+                                                     dimensionUnit: "in",
+                                                     weightUnit: "oz",
+                                                     originCountry: "US")
 
         let customPackages = [
-            ShippingLabelCustomPackage(isUserDefined: true, title: "Box", isLetter: true, dimensions: "3 x 10 x 4", boxWeight: 10, maxWeight: 11),
+            ShippingLabelCustomPackage(isUserDefined: true,
+                                       title: "Box",
+                                       isLetter: true,
+                                       dimensions: "3 x 10 x 4",
+                                       boxWeight: 10,
+                                       maxWeight: 11),
             ShippingLabelCustomPackage(isUserDefined: true,
                                        title: "Box n°2",
                                        isLetter: true,

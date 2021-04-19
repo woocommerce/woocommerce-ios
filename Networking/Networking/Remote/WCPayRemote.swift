@@ -35,6 +35,30 @@ public class WCPayRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Captures a payment for an order. See https://stripe.com/docs/terminal/payments#capture-payment
+    /// - Parameters:
+    ///   - siteID: Site for which we'll capture the payment.
+    ///   - orderID: Order for which we are capturing the payment.
+    ///   - paymentIntentID: Stripe Payment Intent ID created using the Terminal SDK.
+    ///   - completion: Closure to be run on completion.
+    public func captureOrderPayment(for siteID: Int64,
+                               orderID: Int64,
+                               paymentIntentID: String,
+                               completion: @escaping (Result<WCPayPaymentIntent, Error>) -> Void) {
+        let path = "payments/orders/" + String(orderID) + "/capture"
+
+        let parameters = [
+            CaptureOrderPaymentKeys.fields: CaptureOrderPaymentValues.fieldValues,
+            CaptureOrderPaymentKeys.paymentIntentID: paymentIntentID
+        ]
+
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+
+        let mapper = WCPayPaymentIntentMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 // MARK: - Constants!
@@ -50,5 +74,14 @@ private extension WCPayRemote {
             status,has_pending_requirements,has_overdue_requirements,current_deadline,\
             statement_descriptor,store_currencies,country
             """
+    }
+
+    enum CaptureOrderPaymentKeys {
+        static let fields: String = "_fields"
+        static let paymentIntentID: String = "payment_intent_id"
+    }
+
+    enum CaptureOrderPaymentValues {
+        static let fieldValues: String = "id,status"
     }
 }

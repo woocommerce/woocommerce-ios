@@ -22,6 +22,9 @@ In the context of the three-tier architecture of the WooCommerce iOS app, Hardwa
 * PaymentIntentParameters: Encapsulates the parameters needed to create a PaymentIntent, for example amount, currency, and readable descriptions for receipts
 * PaymentStatus. The possible payment statuses
 * CardReaderServiceError. Models errors thrown by the CardReaderService. See Error Handling for more info.
+* PaymentIntent. A PaymentIntent tracks the process of collecting a payment from your customer. There should be only one payment intent for each order. It aggregates a collection of Charges.
+* Charge. Represents a charge, including the PaymentMethod
+* Paymentmethod. The payment method associated with the charge. If it is of type card present, it will have an associated value of type CardPresentDetails
 
 ## Integration with Stripe Terminal
 
@@ -111,3 +114,7 @@ public enum CardReaderServiceError: Error {
 `UnderlyingError` is another enumeration that abstracts out the [error codes provided by the Stripe Terminal SDK](https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPError.html), mapping them to domain errors. 
 
 This way, clients of the service can switch on the CardReaderServiceError in order to understand what part of the process wehn wrong, and then extract the underlying error to understand why the operation failed.
+
+### Printing receipts.
+
+Receips can be customized, as long as we list some required information. When accepting in-person payments with EMV chip cards, card networks require us to include several fields on the receipts we provide to customers. Those fields are inluded as part of the PaymentIntent object (to be more specific, the CardReaderDetails object), once the payment is processed. For more information, see Stripe's documentation: [Custom receipts](https://stripe.com/docs/terminal/checkout/receipts#custom)

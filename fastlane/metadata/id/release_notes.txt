@@ -1,4 +1,5 @@
-WooCommerce iOS memberikan pembaruan yang akan mempermudah bisnis Anda.
+Apa yang baru dalam rilis ini?
 
-Anda sekarang dapat membuat produk variabel dari awal dan memublikasikan draf produk/produk tertunda dari bilah navigasi.
-Kami telah memperbaiki gangguan yang memengaruhi penambahan atribut atau variasi produk, serta meningkatkan tampilan teks dan gambar pada orientasi lanskap.
+- Pengalaman baru untuk login, dengan ilustrasi baru yang menonjolkan fitur utama dan manfaat aplikasi.
+- Perbaikan lain, termasuk gaya tombol kembali yang lebih konsisten pada bilah navigasi Anda.
+

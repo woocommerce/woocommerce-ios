@@ -74,8 +74,6 @@ extension Product {
     @NSManaged public var productVariations: Set<ProductVariation>?
     @NSManaged public var productShippingClass: ProductShippingClass?
     @NSManaged public var addOns: NSOrderedSet?
-    @NSManaged public var includedInCoupons: Set<Coupon>?
-    @NSManaged public var excludedFromCoupons: Set<Coupon>?
 
 }
 
@@ -266,40 +264,6 @@ extension Product {
 
     @objc(removeProductVariations:)
     @NSManaged public func removeFromProductVariations(_ values: NSSet)
-
-}
-
-// MARK: Generated accessors for includedInCoupons
-extension Product {
-
-    @objc(addIncludedInCouponsObject:)
-    @NSManaged public func addToIncludedInCoupons(_ value: Coupon)
-
-    @objc(removeIncludedInCouponsObject:)
-    @NSManaged public func removeFromIncludedInCoupons(_ value: Coupon)
-
-    @objc(addIncludedInCoupons:)
-    @NSManaged public func addToIncludedInCoupons(_ values: NSSet)
-
-    @objc(removeIncludedInCoupons:)
-    @NSManaged public func removeFromIncludedInCoupons(_ values: NSSet)
-
-}
-
-// MARK: Generated accessors for excludedFromCoupons
-extension Product {
-
-    @objc(addExcludedFromCouponsObject:)
-    @NSManaged public func addToExcludedFromCoupons(_ value: Coupon)
-
-    @objc(removeExcludedFromCouponsObject:)
-    @NSManaged public func removeFromExcludedFromCoupons(_ value: Coupon)
-
-    @objc(addExcludedFromCoupons:)
-    @NSManaged public func addToExcludedFromCoupons(_ values: NSSet)
-
-    @objc(removeExcludedFromCoupons:)
-    @NSManaged public func removeFromExcludedFromCoupons(_ values: NSSet)
 
 }
 

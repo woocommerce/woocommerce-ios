@@ -581,18 +581,12 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedVariation.entity.attributesByName["stockQuantity"]?.attributeType, .decimalAttributeType)
     }
 
-    func test_migrating_from_47_to_48_enables_creating_new_Coupon_and_adding_to_new_Category_and_Product_included_or_excluded_coupons_relationships() throws {
+    func test_migrating_from_47_to_48_enables_creating_new_Coupon() throws {
             // Given
             let sourceContainer = try startPersistentContainer("Model 47")
             let sourceContext = sourceContainer.viewContext
 
-            _ = insertProduct(to: sourceContext, forModel: 47)
-            _ = insertProductCategory(to: sourceContext)
-
             try sourceContext.save()
-
-            XCTAssertEqual(try sourceContext.count(entityName: "ProductCategory"), 1)
-            XCTAssertEqual(try sourceContext.count(entityName: "Product"), 1)
 
             // When
             let targetContainer = try migrate(sourceContainer, to: "Model 48")
@@ -600,25 +594,13 @@ final class MigrationTests: XCTestCase {
             // Then
             let targetContext = targetContainer.viewContext
 
-            XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
-            XCTAssertEqual(try targetContext.count(entityName: "ProductCategory"), 1)
             XCTAssertEqual(try targetContext.count(entityName: "Coupon"), 0)
 
-            let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
-            let migratedProductCategory = try XCTUnwrap(targetContext.first(entityName: "ProductCategory"))
-
-            // Creates an `Coupon` and adds products and categories to the arrays.
+            // Creates an `Coupon`
             let coupon = insertCoupon(to: targetContext)
 
-            coupon.mutableSetValue(forKey: "products").add(migratedProduct)
-            coupon.mutableSetValue(forKey: "productCategories").add(migratedProductCategory)
-            try targetContext.save()
-
             XCTAssertEqual(try targetContext.count(entityName: "Coupon"), 1)
-            let storedCoupon = try XCTUnwrap(targetContext.firstObject(ofType: Coupon.self))
-
-            XCTAssertEqual(storedCoupon.value(forKey: "products") as? Set<NSManagedObject>, [migratedProduct])
-            XCTAssertEqual(storedCoupon.value(forKey: "productCategories") as? Set<NSManagedObject>, [migratedProductCategory])
+            XCTAssertEqual(try XCTUnwrap(targetContext.firstObject(ofType: Coupon.self)), coupon)
         }
 }
 
@@ -750,7 +732,11 @@ private extension MigrationTests {
             "code": "2off2021",
             "usedBy": ["me@example.com"],
             "emailRestrictions": ["*@woocommerce.com"],
-            "siteID": 1212
+            "siteID": 1212,
+            "products": [1231, 111],
+            "excludedProducts": [19182, 192],
+            "productCategories": [1092281],
+            "excludedProductCategories": [128121212]
         ])
     }
 

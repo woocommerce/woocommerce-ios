@@ -141,6 +141,10 @@
 		B5DC3CAA20D1B2FE0063AC41 /* WooCommerce.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */; };
 		B5FD111E21D4046E00560344 /* OrderSearchResults+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FD111C21D4046E00560344 /* OrderSearchResults+CoreDataProperties.swift */; };
 		B5FD111F21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FD111D21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift */; };
+		CC2C0309262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C0305262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataProperties.swift */; };
+		CC2C030A262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C0306262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataClass.swift */; };
+		CC2C030B262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C0307262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataClass.swift */; };
+		CC2C030C262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C0308262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataProperties.swift */; };
 		CCD2E70725DE9AAA00BD975D /* WooCommerceModelV45toV46.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = CCD2E70625DE9AAA00BD975D /* WooCommerceModelV45toV46.xcmappingmodel */; };
 		CE12FBCE221F0E1A00C59248 /* Order+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBCC221F0E1A00C59248 /* Order+CoreDataClass.swift */; };
 		CE12FBCF221F0E1A00C59248 /* Order+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBCD221F0E1A00C59248 /* Order+CoreDataProperties.swift */; };
@@ -373,6 +377,10 @@
 		B5FD111D21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderSearchResults+CoreDataClass.swift"; sourceTree = "<group>"; };
 		BB0EDB0E92A719168B18DAFE /* Pods-StorageTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.release.xcconfig"; sourceTree = "<group>"; };
 		CC2C02F8262DA8FF00928C9C /* Model 48.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 48.xcdatamodel"; sourceTree = "<group>"; };
+		CC2C0305262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ShippingLabelAccountSettings+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		CC2C0306262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ShippingLabelPaymentMethod+CoreDataClass.swift"; sourceTree = "<group>"; };
+		CC2C0307262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ShippingLabelAccountSettings+CoreDataClass.swift"; sourceTree = "<group>"; };
+		CC2C0308262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ShippingLabelPaymentMethod+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		CCD2E70525DE995900BD975D /* Model 46.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 46.xcdatamodel"; sourceTree = "<group>"; };
 		CCD2E70625DE9AAA00BD975D /* WooCommerceModelV45toV46.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV45toV46.xcmappingmodel; sourceTree = "<group>"; };
 		CE12FBCC221F0E1A00C59248 /* Order+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -699,6 +707,10 @@
 				02C254E82563B12E00A04423 /* ShippingLabelRefund+CoreDataProperties.swift */,
 				02C254E92563B12E00A04423 /* ShippingLabelAddress+CoreDataClass.swift */,
 				02C254EA2563B12E00A04423 /* ShippingLabelAddress+CoreDataProperties.swift */,
+				CC2C0307262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataClass.swift */,
+				CC2C0305262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataProperties.swift */,
+				CC2C0306262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataClass.swift */,
+				CC2C0308262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataProperties.swift */,
 				57A8819E24CA395000AE0943 /* AppSettings */,
 				025CA2BB238EB86200B05C81 /* ProductShippingClass+CoreDataClass.swift */,
 				025CA2BC238EB86200B05C81 /* ProductShippingClass+CoreDataProperties.swift */,
@@ -1002,6 +1014,7 @@
 			files = (
 				02D200D8253FDEE500840173 /* WooCommerceModelV32toV33.xcmappingmodel in Sources */,
 				26B64557259CE7A900EF3FB3 /* ProductAttributeTerm+CoreDataClass.swift in Sources */,
+				CC2C030A262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataClass.swift in Sources */,
 				B5B914C520EFF03500F2F832 /* Site+CoreDataClass.swift in Sources */,
 				D8550D03230D3F8B00AAC4F8 /* ProductReview+CoreDataClass.swift in Sources */,
 				CE4FD44A2350EB7600A16B31 /* OrderItemTax+CoreDataProperties.swift in Sources */,
@@ -1079,6 +1092,7 @@
 				023FA29623316A4D008C1769 /* ProductSearchResults+CoreDataProperties.swift in Sources */,
 				746A9D22214078080013F6FF /* TopEarnerStats+CoreDataProperties.swift in Sources */,
 				023FA29523316A4D008C1769 /* Product+CoreDataProperties.swift in Sources */,
+				CC2C030C262DCC6900928C9C /* ShippingLabelPaymentMethod+CoreDataProperties.swift in Sources */,
 				261CF1C5255B291F0090D8D3 /* PaymentGateway+CoreDataProperties.swift in Sources */,
 				574CFDEC25A531C90044730C /* WooCommerceModelV39toV40.xcmappingmodel in Sources */,
 				74F009C12183B99B002B4566 /* Note+CoreDataProperties.swift in Sources */,
@@ -1090,6 +1104,7 @@
 				5772842325BF465A0092FB2C /* NSPersistentStoreCoordinator+PersistentStoreCoordinatorProtocol.swift in Sources */,
 				B54CA5C920A4C17800F38CD1 /* NSObject+Storage.swift in Sources */,
 				7471A516216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataClass.swift in Sources */,
+				CC2C0309262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataProperties.swift in Sources */,
 				B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */,
 				D8736B6A22F0AC9000A14A29 /* OrderCount+CoreDataClass.swift in Sources */,
 				CE4FD44D2350EB7600A16B31 /* Refund+CoreDataClass.swift in Sources */,
@@ -1124,6 +1139,7 @@
 				746A9D23214078080013F6FF /* TopEarnerStatsItem+CoreDataClass.swift in Sources */,
 				4501068B2399AC9B00E24722 /* TaxClass+CoreDataProperties.swift in Sources */,
 				74F009C02183B99B002B4566 /* Note+CoreDataClass.swift in Sources */,
+				CC2C030B262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataClass.swift in Sources */,
 				7499FA44221C7A60004EC0B4 /* ShipmentTracking+CoreDataClass.swift in Sources */,
 				D87F61532265AA230031A13B /* FileStorage.swift in Sources */,
 				CE4FD4482350EB7600A16B31 /* OrderItemRefund+CoreDataProperties.swift in Sources */,

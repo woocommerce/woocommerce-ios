@@ -35,7 +35,7 @@ private extension ShippingLabelAddressTopBannerFactory {
 
     enum Localization {
         static let infoShipFrom = NSLocalizedString("We were unable to automatically verify the origin address.",
-                                                        comment: "Banner caption in Shipping Label Address Validation when the origin address can't be verified.")
+                                                    comment: "Banner caption in Shipping Label Address Validation when the origin address can't be verified.")
         static let infoShipTo = NSLocalizedString("We were unable to automatically verify the shipping address. " +
                                                 "View on Apple Maps or try contacting the customer to make sure the address is correct.",
                                             comment: "Banner caption in Shipping Label Address Validation when the destination address can't be verified.")

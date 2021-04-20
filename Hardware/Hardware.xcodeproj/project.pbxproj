@@ -211,7 +211,6 @@
 			children = (
 				D845BE57262ED81D00A3E40F /* AirPrintReceipt */,
 				D845BE53262ED7CC00A3E40F /* ReceiptPrinterService.swift */,
-				D845BE5F262EDCFD00A3E40F /* ReceiptRenderer.swift */,
 				D845BE63262EDDEA00A3E40F /* PrintingSource.swift */,
 			);
 			path = Printer;
@@ -220,6 +219,7 @@
 		D845BE57262ED81D00A3E40F /* AirPrintReceipt */ = {
 			isa = PBXGroup;
 			children = (
+				D845BE5F262EDCFD00A3E40F /* ReceiptRenderer.swift */,
 				D845BE58262ED84000A3E40F /* AirPrintReceiptPrinterService.swift */,
 			);
 			path = AirPrintReceipt;

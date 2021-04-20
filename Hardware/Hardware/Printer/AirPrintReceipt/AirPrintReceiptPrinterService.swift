@@ -18,5 +18,8 @@ public final class AirPrintReceiptPrinterService: ReceiptPrinterService {
         printInfo.duplex = .longEdge
 
         printController.printInfo = printInfo
+
+        let renderer = ReceiptRenderer()
+        printController.printPageRenderer = renderer
     }
 }

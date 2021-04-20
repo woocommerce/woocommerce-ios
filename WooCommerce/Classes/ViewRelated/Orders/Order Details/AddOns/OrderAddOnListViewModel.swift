@@ -12,6 +12,10 @@ final class OrderAddOnListI1ViewModel {
     ///
     let title = Localization.title
 
+    /// Update add-ons notice
+    ///
+    let updateNotice = Localization.updateNotice
+
     /// Member-wise initializer, useful for `SwiftUI` previews
     ///
     init(addOns: [OrderAddOnI1ViewModel]) {
@@ -50,6 +54,8 @@ final class OrderAddOnListI1ViewModel {
 private extension OrderAddOnListI1ViewModel {
     enum Localization {
         static let title = NSLocalizedString("Product Add-ons", comment: "The title on the navigation bar when viewing an order item add-ons")
+        static let updateNotice = NSLocalizedString("You can edit product add-ons in the web dashboard.",
+                                                    comment: "The text below the order add-ons list indicating that edit can be done on the web.")
     }
 }
 

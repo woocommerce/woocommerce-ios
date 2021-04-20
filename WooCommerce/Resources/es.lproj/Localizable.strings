@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2021-03-30 14:54:04+0000 */
+/* Translation-Revision-Date: 2021-04-16 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -33,7 +33,8 @@
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ a través de %2$@";
 
-/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
+/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00).
+   In Shipping Labels Package Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@ x %2$@" = "%1$@ x %2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
@@ -45,7 +46,8 @@
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
-/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
+/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00).
+   In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
 
 /* 1 Item */
@@ -109,6 +111,9 @@
 
 /* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "**Comprueba que AirPrint está activado** en los ajustes de la impresora. Puede que tengas que configurar este ajuste en la misma impresora.\n\nConsulta la documentación de la impresora para obtener más información.";
+
+/* Number of items in packages in Shipping Labels. Reads like - 10 items */
+"- %1$d items" = "- %1$d elementos";
 
 /* Navigation bar title for selecting multiple products when one product has been selected. */
 "1 Product Selected" = "1 producto seleccionado";
@@ -550,6 +555,9 @@
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Conectando a WordPress.com";
 
+/* Contact Customer action in Shipping Label Address Validation. */
+"Contact Customer" = "Contactar con el cliente";
+
 /* Section header title for contact details in billing information */
 "Contact Details" = "Datos de contacto";
 
@@ -706,6 +714,9 @@
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "Determina la posición de los productos en el catálogo. Cuanto más bajo sea el valor del número, más alta será la posición del artículo en la lista de productos. También puedes usar valores negativos";
 
+/* Instructions after a Magic Link was sent, but email is incorrect. */
+"Didn't mean to create a new account? Go back to re-enter your email address." = "¿Has creado una cuenta nueva sin querer? Vuelve e introduce de nuevo tu dirección de correo electrónico.";
+
 /* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
 "Dimensions: %1$@ x %2$@ %3$@" = "Dimensiones: %1$@ x %2$@%3$@";
 
@@ -818,6 +829,9 @@
 /* Edit Products button inside the Linked Products screen. */
 "Edit Products" = "Editar productos";
 
+/* Caption displayed in promotional screens shown during the login flow. */
+"Edit and add new products from anywhere" = "Edita y añade nuevos productos desde cualquier lugar";
+
 /* Email address text field placeholder */
 "Email" = "Correo electrónico";
 
@@ -909,6 +923,9 @@
    Title of a button. */
 "Enter your password instead." = "Introduce tu contraseña.";
 
+/* Error in finding the address in the Shipping Label Address Validation in Apple Maps */
+"Error in finding the address in Apple Maps" = "Error al encontrar la dirección en los Mapas de Apple";
+
 /* Alert title when there is an error requesting shipping label document for reprinting */
 "Error previewing shipping label" = "Error al obtener la vista previa de la etiqueta de envío";
 
@@ -977,7 +994,7 @@
 "Find your store address" = "Encuentra la dirección de tu tienda";
 
 /* Shown in the prologue carousel (promotional screens) during first launch. */
-"Follow your favorite sites and discover new reads." = "Sigue a tus sitios preferidos y descubre nuevas lecturas.";
+"Follow your favorite sites and discover new blogs." = "Sigue tus sitios favoritos y descubre nuevos blogs.";
 
 /* User role badge */
 "Follower" = "Seguidor";
@@ -1106,6 +1123,9 @@
 
 /* The title of the button for giving a positive feedback for the app. */
 "I Like It" = "Me gusta";
+
+/* Header section items to fulfill in Shipping Label Package Detail */
+"ITEMS TO FULFILL" = "ARTÍCULOS PARA COMPLETAR EL PEDIDO";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Si se desactiva, la nota será privada";
@@ -1345,14 +1365,14 @@
 /* Navigates to Card Reader management screen */
 "Manage Card Reader" = "Gestionar el lector de tarjetas";
 
-/* Login Prologue Legend */
-"Manage orders, track sales and monitor store activity with real-time alerts." = "Gestiona pedidos, controla las ventas y supervisa la actividad de la tienda con alertas en tiempo real.";
-
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Gestionar inventario";
 
 /* shown in promotional screens during first launch */
 "Manage your Jetpack-powered site on the go — you've got WordPress in your pocket." = "Gestiona tu sitio con Jetpack instalado sobre la marcha - tienes WordPress en tu bolsillo.";
+
+/* Caption displayed in promotional screens shown during the login flow. */
+"Manage your store orders on the go " = "Gestiona tus pedidos de la tienda sobre la marcha ";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "Compensaciones manuales";
@@ -1393,6 +1413,9 @@
 
 /* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
 "Minimum value %@, maximum value %@" = "Valor mínimo: %1$@. Valor máximo: %2$@.";
+
+/* Caption displayed in promotional screens shown during the login flow. */
+"Monitor and approve your product reviews" = "Supervisa y aprueba los comentarios de tus productos";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -1564,6 +1587,9 @@
    Title of a button. The text should be capitalized.  Clicking opens the mail app in the user's iOS device. */
 "Open Mail" = "Abrir correo electrónico";
 
+/* Open Map action in Shipping Label Address Validation. */
+"Open Map" = "Abrir mapa";
+
 /* Navigates to screen about open source licenses */
 "Open Source Licenses" = "Licencias de código abierto";
 
@@ -1634,15 +1660,24 @@
 /* Display label for the product's inventory stock status */
 "Out of stock" = "Agotado";
 
+/* Header section package details in Shipping Label Package Detail */
+"PACKAGE DETAILS" = "DETALLES DEL PAQUETE";
+
 /* Product section title */
 "PRODUCT" = "PRODUCTO";
+
+/* Package term in Shipping Labels. Reads like Package 1 */
+"Package %1$d" = "Paquete %1$d";
 
 /* Order shipping label package section title format. The number indicates the index of the shipping label package. */
 "Package %d" = "Paquete %d";
 
-/* Title of package details in shipping label details
-   Title of the cell Package Details inside Create Shipping Label form */
+/* Navigation bar title of shipping label package details screen
+   Title of package details in shipping label details - Title of the cell Package Details inside Create Shipping Label form */
 "Package Details" = "Detalles del paquete";
+
+/* Title of the row for selecting a package in Shipping Label Package Detail screen */
+"Package Selected" = "Paquete seleccionado";
 
 /* The title for the customer payment cell */
 "Paid" = "Pagado";
@@ -2432,6 +2467,9 @@
    Title on the refund screen that lists the products refund subtotal cost - Title on the refund screen that lists the shipping subtotal cost */
 "Subtotal" = "Subtotal";
 
+/* Title of the footer in Shipping Label Package Detail screen */
+"Sum of products and package weight" = "Total de productos y peso del paquete";
+
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Cambiar de tienda";
 
@@ -2610,6 +2648,9 @@
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "El certificado para este servidor no es válido. Puede que estés intentando conectar con un servidor que aparenta ser \"%@\", lo que podría poner en peligro tu información confidencial.\n\n¿Deseas confiar en el certificado de todos modos?";
 
+/* Error in calling the phone number of the customer in the Shipping Label Address Validation */
+"The phone number is not valid or you can't call the customer from this device." = "El número de teléfono no es válido o no puedes llamar al cliente desde este dispositivo.";
+
 /* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
 "The price for this product. Editable." = "El precio de este producto. Editable.";
 
@@ -2775,8 +2816,14 @@
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "Total de pedidos: %ld";
 
+/* Title of the row for adding the package weight in Shipping Label Package Detail screen */
+"Total package weight" = "Peso total del paquete";
+
 /* Track shipment button title */
 "Track Shipment" = "Hacer un seguimiento del envío";
+
+/* Caption displayed in promotional screens shown during the login flow. */
+"Track sales and high performing products" = "Llevar un control de las ventas y los productos más vendidos";
 
 /* Track shipment of a shipping label from the shipping label tracking more menu action sheet */
 "Track shipment" = "Hacer un seguimiento del envío";
@@ -2887,6 +2934,9 @@
 
 /* Error message when capturing a unknown media type */
 "Unknown media type" = "Tipo de archivo multimedia desconocido";
+
+/* Back button title when the product doesn't have a name */
+"Unnamed product" = "Producto sin nombre";
 
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "Lista desordenada";
@@ -3162,7 +3212,7 @@
 "Yesterday" = "Ayer";
 
 /* The info of the top banner on the Products tab. */
-"You can now add downloadable files to a product and link upsell & cross-sell products. No longer want a product? Trash it!" = "Ahora puedes añadir archivos descargables a un producto y enlazar productos de ventas dirigidas y cruzadas ¿Ya no quieres un producto? ¡Envíalo a la papelera!";
+"You can now create and manage product variations!" = "¡Ahora puedes crear y gestionar variaciones de productos!";
 
 /* Header text in Refund Shipping Label screen */
 "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take a least 14 days to process." = "Puedes solicitar un reembolso para una etiqueta de envío que no se haya utilizado para enviar un paquete.\nTardará al menos 14 días en procesarse.";

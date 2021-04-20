@@ -111,6 +111,7 @@ private extension CardPresentPaymentStore {
             // TODO. Persist PaymentIntent, so that we can use it later to print a receipt
             // Deferred to https://github.com/woocommerce/woocommerce-ios/issues/3825
             onCompletion(.success(()))
+            AirPrintReceiptPrinterService().printReceipt(intent, from: nil)
         }.store(in: &cancellables)
 
         // Observe status events fired by the card reader

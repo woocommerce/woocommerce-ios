@@ -1,25 +1,24 @@
 import UIKit
 
 public final class AirPrintReceiptPrinterService: ReceiptPrinterService {
+    //private let printController = UIPrintInteractionController.shared
     public init() { }
 
     public var isPrintingAvilable: Bool {
         UIPrintInteractionController.isPrintingAvailable
     }
 
-    public func printReceipt(_ paymentIntent: PaymentIntent, from: PrintingSource) {
-        print("==== printing receipt for ", paymentIntent)
+    public func printReceipt(_ paymentIntent: PaymentIntent, from: PrintingSource?) {
         let printController = UIPrintInteractionController.shared
 
-        let printInfo = UIPrintInfo()
+        let printInfo = UIPrintInfo(dictionary: nil)
         printInfo.jobName = "Order Receipt"
-        // Set duplex so that it is available if the printer supports it. We are
-        // performing portrait printing so we want to duplex along the long edge.
+        printInfo.orientation = .portrait
         printInfo.duplex = .longEdge
 
         printController.printInfo = printInfo
 
-        let renderer = ReceiptRenderer()
+        let renderer = ReceiptRenderer(intent: paymentIntent)
         printController.printPageRenderer = renderer
 
         printController.present(animated: true, completionHandler: nil)

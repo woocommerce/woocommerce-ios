@@ -29,23 +29,22 @@ class CouponsRemoteTests: XCTestCase {
     func test_loadAllCoupons_returns_parsed_coupons() throws {
         // Given
         let remote = CouponsRemote(network: network)
-        let expectation = self.expectation(description: "Load All Coupons")
 
         network.simulateResponse(requestUrlSuffix: "coupons", filename: "coupons-all")
 
         // When
-        var result: Swift.Result<[Coupon], Error>?
-        remote.loadAllCoupons(for: sampleSiteID) { response in
-            result = response
-            expectation.fulfill()
+        let result = waitFor { promise in
+            remote.loadAllCoupons(for: self.sampleSiteID) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-
         // Then
-        XCTAssertFalse(try XCTUnwrap(result).isFailure)
-        let coupons = try XCTUnwrap(result).get()
-        XCTAssertNotNil(coupons)
+        XCTAssert(result.isSuccess)
+        guard let coupons = try? result.get() else {
+            XCTFail("Expected parsed Coupons not found in response")
+            return
+        }
         XCTAssertEqual(coupons.count, 3)
     }
 
@@ -94,21 +93,18 @@ class CouponsRemoteTests: XCTestCase {
     func test_loadAllCoupons_uses_passed_siteID_for_model_creation() throws {
         // Given
         let remote = CouponsRemote(network: network)
-        let expectation = self.expectation(description: "Load All Coupons")
 
         network.simulateResponse(requestUrlSuffix: "coupons", filename: "coupons-all")
 
         // When
-        var result: Swift.Result<[Coupon], Error>?
-        remote.loadAllCoupons(for: sampleSiteID) { response in
-            result = response
-            expectation.fulfill()
+        let result = waitFor { promise in
+            remote.loadAllCoupons(for: self.sampleSiteID) { result in
+                promise(result)
+            }
         }
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-
         // Then
-        let coupons = try XCTUnwrap(result).get()
+        let coupons = try result.get()
         XCTAssertEqual(coupons.first?.siteId, sampleSiteID)
     }
 

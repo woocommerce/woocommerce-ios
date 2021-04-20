@@ -72,7 +72,6 @@
 		03DCB7402624AD7D00C8953D /* CouponListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB73F2624AD7D00C8953D /* CouponListMapper.swift */; };
 		03DCB7442624AD9B00C8953D /* CouponListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB7432624AD9A00C8953D /* CouponListMapperTests.swift */; };
 		03DCB7522624B3BE00C8953D /* coupons-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 03DCB7512624B3BE00C8953D /* coupons-all.json */; };
-		03DCB76426258CA200C8953D /* coupons-minimal.json in Resources */ = {isa = PBXBuildFile; fileRef = 03DCB76326258CA200C8953D /* coupons-minimal.json */; };
 		03DCB76C262591C400C8953D /* CouponsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB76B262591C400C8953D /* CouponsRemoteTests.swift */; };
 		03DCB772262591D900C8953D /* CouponsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB771262591D900C8953D /* CouponsRemote.swift */; };
 		21DB5B99C4107CF69C0A57EC /* Pods_NetworkingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */; };

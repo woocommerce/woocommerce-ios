@@ -1,8 +1,7 @@
 import XCTest
 @testable import Networking
-import Alamofire
 
-class CouponsRemoteTests: XCTestCase {
+final class CouponsRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///

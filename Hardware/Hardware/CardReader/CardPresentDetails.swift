@@ -6,7 +6,7 @@ public struct CardPresentDetails {
     /// The card’s expiration month. 1-indexed (i.e. 1 == January)
     public let expMonth: Int
 
-    /// The card’s expiration year.
+    /// The card’s expiration year. Four digits.
     public let expYear: Int
 
     /// The cardholder name as read from the card, in ISO 7813 format.

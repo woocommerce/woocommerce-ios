@@ -1,11 +1,16 @@
 import UIKit
 
+/// Renders a receipt in an AirPrint enabled printer.
+/// To be implemented in https://github.com/woocommerce/woocommerce-ios/issues/3978
 final class ReceiptRenderer: UIPrintPageRenderer {
+    private let lines: [ReceiptLineItem]
     private let paymentIntent: PaymentIntent
+
     private let attributes: [NSAttributedString.Key: Any] = [.font: UIFont(name: "HelveticaNeue", size: 48) as Any]
 
-    init(intent: PaymentIntent) {
-        self.paymentIntent = intent
+    init(content: ReceiptContent) {
+        self.lines = content.lineItems
+        self.paymentIntent = content.paymentIntent
         super.init()
 
         self.headerHeight = 80

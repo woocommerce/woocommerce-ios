@@ -1,14 +1,14 @@
 import UIKit
 
+/// Implementation of the ReceiptPrinterService that integrates with AirPrint
 public final class AirPrintReceiptPrinterService: ReceiptPrinterService {
-    //private let printController = UIPrintInteractionController.shared
     public init() { }
 
     public var isPrintingAvilable: Bool {
         UIPrintInteractionController.isPrintingAvailable
     }
 
-    public func printReceipt(_ paymentIntent: PaymentIntent, from: PrintingSource?) {
+    public func printReceipt(content: ReceiptContent) {
         let printController = UIPrintInteractionController.shared
 
         let printInfo = UIPrintInfo(dictionary: nil)
@@ -18,7 +18,7 @@ public final class AirPrintReceiptPrinterService: ReceiptPrinterService {
 
         printController.printInfo = printInfo
 
-        let renderer = ReceiptRenderer(intent: paymentIntent)
+        let renderer = ReceiptRenderer(content: content)
         printController.printPageRenderer = renderer
 
         printController.present(animated: true, completionHandler: nil)

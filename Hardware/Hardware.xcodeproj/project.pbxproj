@@ -33,9 +33,10 @@
 		D845BE54262ED7CC00A3E40F /* ReceiptPrinterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D845BE53262ED7CC00A3E40F /* ReceiptPrinterService.swift */; };
 		D845BE59262ED84000A3E40F /* AirPrintReceiptPrinterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D845BE58262ED84000A3E40F /* AirPrintReceiptPrinterService.swift */; };
 		D845BE60262EDCFD00A3E40F /* ReceiptRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D845BE5F262EDCFD00A3E40F /* ReceiptRenderer.swift */; };
-		D845BE64262EDDEA00A3E40F /* PrintingSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D845BE63262EDDEA00A3E40F /* PrintingSource.swift */; };
 		D854FC22260A34B000A219CD /* UnderlyingError+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = D854FC21260A34B000A219CD /* UnderlyingError+Stripe.swift */; };
 		D854FC26260A6B5800A219CD /* ErrorCodesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D854FC25260A6B5800A219CD /* ErrorCodesTests.swift */; };
+		D8652CB7262F389800350F37 /* ReceiptLineItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8652CB6262F389800350F37 /* ReceiptLineItem.swift */; };
+		D8652CBB262F390F00350F37 /* ReceiptContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8652CBA262F390F00350F37 /* ReceiptContent.swift */; };
 		D865C61E261CE001006717B8 /* CardReaderEvent+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = D865C61D261CE001006717B8 /* CardReaderEvent+Stripe.swift */; };
 		D88303D125E44B2500C877F9 /* ChargeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303D025E44B2500C877F9 /* ChargeTests.swift */; };
 		D88303D525E44CD200C877F9 /* MockStripeCharge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303D425E44CD200C877F9 /* MockStripeCharge.swift */; };
@@ -114,9 +115,10 @@
 		D845BE53262ED7CC00A3E40F /* ReceiptPrinterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptPrinterService.swift; sourceTree = "<group>"; };
 		D845BE58262ED84000A3E40F /* AirPrintReceiptPrinterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirPrintReceiptPrinterService.swift; sourceTree = "<group>"; };
 		D845BE5F262EDCFD00A3E40F /* ReceiptRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptRenderer.swift; sourceTree = "<group>"; };
-		D845BE63262EDDEA00A3E40F /* PrintingSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrintingSource.swift; sourceTree = "<group>"; };
 		D854FC21260A34B000A219CD /* UnderlyingError+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UnderlyingError+Stripe.swift"; sourceTree = "<group>"; };
 		D854FC25260A6B5800A219CD /* ErrorCodesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorCodesTests.swift; sourceTree = "<group>"; };
+		D8652CB6262F389800350F37 /* ReceiptLineItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptLineItem.swift; sourceTree = "<group>"; };
+		D8652CBA262F390F00350F37 /* ReceiptContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptContent.swift; sourceTree = "<group>"; };
 		D865C61D261CE001006717B8 /* CardReaderEvent+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardReaderEvent+Stripe.swift"; sourceTree = "<group>"; };
 		D88303D025E44B2500C877F9 /* ChargeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChargeTests.swift; sourceTree = "<group>"; };
 		D88303D425E44CD200C877F9 /* MockStripeCharge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStripeCharge.swift; sourceTree = "<group>"; };
@@ -211,7 +213,8 @@
 			children = (
 				D845BE57262ED81D00A3E40F /* AirPrintReceipt */,
 				D845BE53262ED7CC00A3E40F /* ReceiptPrinterService.swift */,
-				D845BE63262EDDEA00A3E40F /* PrintingSource.swift */,
+				D8652CB6262F389800350F37 /* ReceiptLineItem.swift */,
+				D8652CBA262F390F00350F37 /* ReceiptContent.swift */,
 			);
 			path = Printer;
 			sourceTree = "<group>";
@@ -538,7 +541,9 @@
 				D80B465A260E1E160092EDC0 /* StatementDescriptor.swift in Sources */,
 				D8DF5F4A25DD9F7A008AFE25 /* CardReader+Stripe.swift in Sources */,
 				D88FDB2A25DD21B000CB0DBD /* PaymentStatus.swift in Sources */,
+				D8652CBB262F390F00350F37 /* ReceiptContent.swift in Sources */,
 				D854FC22260A34B000A219CD /* UnderlyingError+Stripe.swift in Sources */,
+				D8652CB7262F389800350F37 /* ReceiptLineItem.swift in Sources */,
 				D88FDB2B25DD21B000CB0DBD /* CardReaderServiceStatus.swift in Sources */,
 				D80B464E260E18930092EDC0 /* Email.swift in Sources */,
 				D89B8F0225DDC7500001C726 /* PaymentIntentStatus.swift in Sources */,
@@ -557,7 +562,6 @@
 				D88FDB2F25DD21B000CB0DBD /* PaymentIntent.swift in Sources */,
 				D845BDD0262D9C6C00A3E40F /* ReceiptDetails+Stripe.swift in Sources */,
 				D88FDB3025DD21B000CB0DBD /* CardReaderService.swift in Sources */,
-				D845BE64262EDDEA00A3E40F /* PrintingSource.swift in Sources */,
 				D88FDB2C25DD21B000CB0DBD /* CardReaderStatus.swift in Sources */,
 				D89B8F2425DDCD800001C726 /* PaymentIntentStatus+Stripe.swift in Sources */,
 				D88FDB3A25DD21D300CB0DBD /* DefaultConnectionTokenProvider.swift in Sources */,

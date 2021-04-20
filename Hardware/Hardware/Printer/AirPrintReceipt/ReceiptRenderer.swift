@@ -36,6 +36,7 @@ private extension ReceiptRenderer {
     enum Constants {
         static let headerHeight: CGFloat = 80
         static let footerHeight: CGFloat = 80
+        static let marging: CGFloat = 20
     }
 
     private func configureHeaderAndFooter() {
@@ -45,7 +46,7 @@ private extension ReceiptRenderer {
 
     private func configureFormatter() {
         let formatter = UISimpleTextPrintFormatter(text: "\(paymentIntent.amount / 100) \(paymentIntent.currency.uppercased())")
-        formatter.perPageContentInsets = .init(top: 80, left: 20, bottom: 80, right: 20)
+        formatter.perPageContentInsets = .init(top: Constants.headerHeight, left: Constants.marging, bottom: Constants.footerHeight, right: Constants.marging)
 
         addPrintFormatter(formatter, startingAtPageAt: 0)
     }

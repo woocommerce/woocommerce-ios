@@ -21,5 +21,7 @@ public final class AirPrintReceiptPrinterService: ReceiptPrinterService {
 
         let renderer = ReceiptRenderer()
         printController.printPageRenderer = renderer
+
+        printController.present(animated: true, completionHandler: nil)
     }
 }

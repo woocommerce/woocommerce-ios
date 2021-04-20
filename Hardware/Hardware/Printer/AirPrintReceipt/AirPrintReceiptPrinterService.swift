@@ -15,10 +15,6 @@ public final class AirPrintReceiptPrinterService: ReceiptPrinterService {
 
     public init() { }
 
-    public var isPrintingAvilable: Bool {
-        UIPrintInteractionController.isPrintingAvailable
-    }
-
     public func printReceipt(content: ReceiptContent) {
         let printController = UIPrintInteractionController.shared
 

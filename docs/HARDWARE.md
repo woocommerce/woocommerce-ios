@@ -118,3 +118,9 @@ This way, clients of the service can switch on the CardReaderServiceError in ord
 ### Printing receipts.
 
 Receipts can be customized, as long as we list some required information. When accepting in-person payments with EMV chip cards, card networks require us to include several fields on the receipts we provide to customers. Those fields are included as part of the PaymentIntent object (to be more specific, the CardReaderDetails object), once the payment is processed. For more information, see Stripe's documentation: [Custom receipts](https://stripe.com/docs/terminal/checkout/receipts#custom)
+
+Printing receipts is supported via a public interface called `ReceiptPrinterService`. This interfaace provides, at this moment, a single public method `printRecetip(content: ReceiptContent)`.
+
+`ReceiptContent` wraps the information that needs to be rendered in the receipt. This information is a mix of the contents of the Order and the fields we get from the Stripe Terminal SDK after the payment has been collected. Some of those fields obtained from Stripe are required, in order to meet the card network rules and local regulatory requirements. For more info, check [Stripe's documentation](https://stripe.com/docs/terminal/checkout/receipts#custom)
+
+ReceiptContent provides as well an array of items, modelled by `ReceiptLineItem`, in case we want to add itemized content to the receipt.

@@ -12,11 +12,12 @@ final class WeightFormatter {
         self.withSpace = withSpace
     }
 
-    // Returns the weight plus the unit. The weight can be zero in case the value is `nil`.
+    // Returns the weight plus the unit. The weight can be zero in case the value is `nil` or empty.
     func formatWeight(weight: String?) -> String {
+        let weight: String = (weight == nil || weight?.isEmpty == true) ? "0" : (weight ?? "0")
         guard withSpace else {
-            return (weight ?? "0") + weightUnit
+            return weight + weightUnit
         }
-        return (weight ?? "0") + " " + weightUnit
+        return weight + " " + weightUnit
     }
 }

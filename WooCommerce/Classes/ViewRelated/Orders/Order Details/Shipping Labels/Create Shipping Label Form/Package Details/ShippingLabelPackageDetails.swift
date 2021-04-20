@@ -30,7 +30,7 @@ struct ShippingLabelPackageDetails: View {
                 }
 
                 NavigationLink(
-                    destination: ShippingLabelAddNewPackage(),
+                    destination: ShippingLabelPackageSelected(siteID: viewModel.siteID),
                     isActive: $showingAddPackage) { EmptyView()
                 }
                 Divider()

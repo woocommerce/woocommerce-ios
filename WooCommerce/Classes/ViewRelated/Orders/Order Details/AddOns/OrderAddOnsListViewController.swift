@@ -35,7 +35,7 @@ struct OrderAddOnListI1View: View {
                         .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
                 }
 
-                OrderAddOnNotice(updateText: viewModel.updateNotice)
+                OrderAddOnNoticeView(updateText: viewModel.updateNotice)
                     .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
             }
         }
@@ -77,7 +77,7 @@ private struct OrderAddOnI1View: View {
 
 /// Renders a info notice with an icon
 ///
-private struct OrderAddOnNotice: View {
+private struct OrderAddOnNoticeView: View {
 
     /// Content to be rendered next to the info icon.
     ///

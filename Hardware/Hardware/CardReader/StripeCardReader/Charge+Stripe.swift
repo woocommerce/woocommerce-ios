@@ -11,6 +11,7 @@ extension Charge {
         self.status = ChargeStatus.with(status: charge.status)
         self.description = charge.stripeDescription
         self.metadata = charge.metadata
+        self.paymentMethod = PaymentMethod(method: charge.paymentMethodDetails)
     }
 }
 
@@ -26,6 +27,7 @@ protocol StripeCharge {
     var status: StripeTerminal.ChargeStatus { get }
     var stripeDescription: String? { get }
     var metadata: [AnyHashable: Any] { get }
+    var paymentMethodDetails: StripeTerminal.SCPPaymentMethodDetails? { get }
 }
 
 

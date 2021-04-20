@@ -30,6 +30,14 @@ struct HeadlineStyle: ViewModifier {
     }
 }
 
+struct FootnoteStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.footnote)
+            .foregroundColor(Color(.textSubtle))
+    }
+}
+
 // MARK: View extensions
 extension View {
     func bodyStyle() -> some View {
@@ -42,5 +50,9 @@ extension View {
 
     func headlineStyle() -> some View {
         self.modifier(HeadlineStyle())
+    }
+
+    func footnoteStyle() -> some View {
+        self.modifier(FootnoteStyle())
     }
 }

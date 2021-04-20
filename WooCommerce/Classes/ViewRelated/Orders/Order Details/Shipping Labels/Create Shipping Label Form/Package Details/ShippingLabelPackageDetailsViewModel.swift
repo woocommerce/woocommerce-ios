@@ -7,6 +7,7 @@ import protocol Storage.StorageManagerType
 ///
 final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
+    let siteID: Int64
     private let order: Order
     private let orderItems: [OrderItem]
     private let currency: String
@@ -36,6 +37,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
+        self.siteID = order.siteID
         self.order = order
         self.orderItems = order.items
         self.currency = order.currency

@@ -29,8 +29,9 @@ struct ShippingLabelPackageDetails: View {
                     showingAddPackage.toggle()
                 }
 
+                let packageListViewModel = ShippingLabelPackageListViewModel(packagesResponse: viewModel.packagesResponse)
                 NavigationLink(
-                    destination: ShippingLabelPackageSelected(siteID: viewModel.siteID),
+                    destination: ShippingLabelPackageList(viewModel: packageListViewModel),
                     isActive: $showingAddPackage) { EmptyView()
                 }
                 Divider()

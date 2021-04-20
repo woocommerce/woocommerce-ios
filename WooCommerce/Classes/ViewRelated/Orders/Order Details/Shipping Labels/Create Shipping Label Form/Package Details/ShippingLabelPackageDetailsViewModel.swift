@@ -7,7 +7,6 @@ import protocol Storage.StorageManagerType
 ///
 final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
-    let siteID: Int64
     private let order: Order
     private let orderItems: [OrderItem]
     private let currency: String
@@ -24,20 +23,23 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     ///
     private var productVariations: [ProductVariation] = []
 
+    /// The packages  response fetched from API
+    ///
+    @Published private(set) var packagesResponse: ShippingLabelPackagesResponse?
+
     /// The weight unit used in the Store
     ///
     let weightUnit: String?
 
     /// The items rows observed by the main view `ShippingLabelPackageDetails`
     ///
-    @Published var itemsRows: [ItemToFulfillRow] = []
+    @Published private(set) var itemsRows: [ItemToFulfillRow] = []
 
     init(order: Order,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
-        self.siteID = order.siteID
         self.order = order
         self.orderItems = order.items
         self.currency = order.currency
@@ -48,6 +50,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         configureResultsControllers()
         syncProducts()
         syncProductVariations()
+        syncPackageDetails()
     }
 
     private func configureResultsControllers() {
@@ -129,6 +132,19 @@ private extension ShippingLabelPackageDetailsViewModel {
                 return
             }
             onCompletion?(nil)
+        }
+        stores.dispatch(action)
+    }
+
+    func syncPackageDetails() {
+        let action = ShippingLabelAction.packagesDetails(siteID: order.siteID) { [weak self] result in
+            switch result {
+            case .success:
+                self?.packagesResponse = try? result.get()
+            case .failure:
+                DDLogError("⛔️ Error synchronizing package details")
+                return
+            }
         }
         stores.dispatch(action)
     }

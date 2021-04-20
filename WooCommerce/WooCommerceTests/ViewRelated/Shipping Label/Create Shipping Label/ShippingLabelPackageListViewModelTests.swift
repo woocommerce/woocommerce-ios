@@ -12,7 +12,7 @@ final class ShippingLabelPackageListViewModelTests: XCTestCase {
                                                        dimensions: "3 x 10 x 4",
                                                        boxWeight: 10,
                                                        maxWeight: 11)
-        let viewModel = ShippingLabelPackageListViewModel(state: .results, packagesResponse: nil)
+        let viewModel = ShippingLabelPackageListViewModel(packagesResponse: nil)
 
         XCTAssertNil(viewModel.selectedCustomPackage)
         XCTAssertNil(viewModel.selectedPredefinedPackage)
@@ -31,7 +31,7 @@ final class ShippingLabelPackageListViewModelTests: XCTestCase {
                                                                title: "Small",
                                                                isLetter: true,
                                                                dimensions: "3 x 4 x 5")
-        let viewModel = ShippingLabelPackageListViewModel(state: .results, packagesResponse: nil)
+        let viewModel = ShippingLabelPackageListViewModel(packagesResponse: nil)
 
         XCTAssertNil(viewModel.selectedPredefinedPackage)
         XCTAssertNil(viewModel.selectedCustomPackage)

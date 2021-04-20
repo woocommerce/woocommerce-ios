@@ -5,37 +5,47 @@ struct ShippingLabelPackageList: View {
     @ObservedObject private var viewModel: ShippingLabelPackageListViewModel
 
     var body: some View {
-        VStack(spacing: 0) {
+        ScrollView {
+            VStack(spacing: 0) {
 
-            /// Custom Packages
-            ///
-            if viewModel.customPackages.count > 0 {
-                ListHeaderView(text: Localization.customPackageHeader.uppercased(), alignment: .left)
-                    .background(Color(.listBackground))
-            }
-            ForEach(viewModel.customPackages, id: \.title) { package in
-                let selected = package == viewModel.selectedCustomPackage
-                SelectableItemRow(title: package.title, subtitle: package.dimensions + " \(viewModel.dimensionUnit)", selected: selected).onTapGesture {
-                    viewModel.didSelectCustomPackage(package)
+                /// Custom Packages
+                ///
+                if viewModel.customPackages.count > 0 {
+                    ListHeaderView(text: Localization.customPackageHeader.uppercased(), alignment: .left)
+                        .background(Color(.listBackground))
                 }
-                Divider().padding(.leading, Constants.dividerPadding)
-            }
-
-            /// Predefined Packages
-            ///
-            ForEach(viewModel.predefinedOptions, id: \.title) { option in
-
-                ListHeaderView(text: option.title.uppercased(), alignment: .left)
-                    .background(Color(.listBackground))
-                ForEach(option.predefinedPackages, id: \.id) { package in
-                    let selected = package == viewModel.selectedPredefinedPackage
+                ForEach(viewModel.customPackages, id: \.title) { package in
+                    let selected = package == viewModel.selectedCustomPackage
                     SelectableItemRow(title: package.title, subtitle: package.dimensions + " \(viewModel.dimensionUnit)", selected: selected).onTapGesture {
-                        viewModel.didSelectPredefinedPackage(package)
+                        viewModel.didSelectCustomPackage(package)
                     }
                     Divider().padding(.leading, Constants.dividerPadding)
                 }
+
+                /// Predefined Packages
+                ///
+                ForEach(viewModel.predefinedOptions, id: \.title) { option in
+
+                    ListHeaderView(text: option.title.uppercased(), alignment: .left)
+                        .background(Color(.listBackground))
+                    ForEach(option.predefinedPackages, id: \.id) { package in
+                        let selected = package == viewModel.selectedPredefinedPackage
+                        SelectableItemRow(title: package.title, subtitle: package.dimensions + " \(viewModel.dimensionUnit)", selected: selected).onTapGesture {
+                            viewModel.didSelectPredefinedPackage(package)
+                        }
+                        Divider().padding(.leading, Constants.dividerPadding)
+                    }
+                }
             }
+            .background(Color(.systemBackground))
         }
+        .background(Color(.listBackground))
+        .navigationBarTitle(Text(Localization.title), displayMode: .inline)
+        .navigationBarItems(trailing: Button(action: {
+
+        }, label: {
+            Text(Localization.doneButton)
+        }))
     }
 
     init(viewModel: ShippingLabelPackageListViewModel) {
@@ -45,6 +55,8 @@ struct ShippingLabelPackageList: View {
 
 private extension ShippingLabelPackageList {
     enum Localization {
+        static let title = NSLocalizedString("Package Selected", comment: "Package Selected screen title in Shipping Label flow")
+        static let doneButton = NSLocalizedString("Done", comment: "Done navigation button under the Package Selected screen in Shipping Label flow")
         static let customPackageHeader = NSLocalizedString("CUSTOM PACKAGES",
                                                            comment: "Header for the Custom Packages section in Shipping Label Package listing")
     }
@@ -93,7 +105,7 @@ struct ShippingLabelPackageList_Previews: PreviewProvider {
 
         let packagesResponse = ShippingLabelPackagesResponse(storeOptions: storeOptions, customPackages: customPackages, predefinedOptions: predefinedOptions)
 
-        let viewModel = ShippingLabelPackageListViewModel(state: .results, packagesResponse: packagesResponse)
+        let viewModel = ShippingLabelPackageListViewModel(packagesResponse: packagesResponse)
 
         ShippingLabelPackageList(viewModel: viewModel)
     }

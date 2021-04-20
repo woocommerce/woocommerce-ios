@@ -74,9 +74,9 @@ GH_ORG_NAME="woocommerce"
     ios_bump_version_release()
     new_version = ios_get_app_version()
     ios_update_release_notes(new_version: new_version)
+    get_prs_list(repository:GHHELPER_REPO, tag:"#{new_version}", report_path:"#{File.expand_path('~')}/wcios_prs_list_#{old_version}_#{new_version}.txt")
     setbranchprotection(repository:GHHELPER_REPO, branch: "release/#{new_version}")
     setfrozentag(repository:GHHELPER_REPO, milestone: new_version)
-    get_prs_list(repository:GHHELPER_REPO, start_tag:"#{old_version}", report_path:"#{File.expand_path('~')}/wcios_prs_list_#{old_version}_#{new_version}.txt")
     ios_check_beta_deps(podfile:"#{ENV["PROJECT_ROOT_FOLDER"]}Podfile")
   end
 

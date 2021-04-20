@@ -1,4 +1,5 @@
-WooCommerce iOS has updates that are sure to make running your business easier.
+What’s new in this release?
 
-You can now create variable products from scratch and publish a product draft/pending product from the navigation bar.
-We fixed glitches affecting the addition of product attributes or variations, and we improved the display of text and images in landscape orientation.
+- A redesigned login experience, with new illustrations to promote the app’s main features and benefits.
+- Other fixes, including making the back button style on your navigation bar more consistent.
+

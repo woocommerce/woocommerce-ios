@@ -32,7 +32,11 @@ struct OrderAddOnListI1View: View {
             VStack {
                 ForEach(viewModel.addOns) { addOn in
                     OrderAddOnI1View(viewModel: addOn)
+                        .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
                 }
+
+                OrderAddOnNoticeView(updateText: viewModel.updateNotice)
+                    .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
             }
         }
         .background(Color(.listBackground))
@@ -41,7 +45,7 @@ struct OrderAddOnListI1View: View {
 
 /// Renders a single order add-on
 ///
-struct OrderAddOnI1View: View {
+private struct OrderAddOnI1View: View {
 
     /// Static view model to populate the view content
     ///
@@ -68,6 +72,24 @@ struct OrderAddOnI1View: View {
             Divider()
         }
         .background(Color(.basicBackground))
+    }
+}
+
+/// Renders a info notice with an icon
+///
+private struct OrderAddOnNoticeView: View {
+
+    /// Content to be rendered next to the info icon.
+    ///
+    let updateText: String
+
+    var body: some View {
+        HStack {
+            Image(uiImage: .infoOutlineImage)
+            Text(updateText)
+        }
+        .footnoteStyle()
+        .padding([.leading, .trailing])
     }
 }
 

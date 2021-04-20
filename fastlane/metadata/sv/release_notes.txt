@@ -1,4 +1,5 @@
-WooCommerce iOS innehåller uppdateringar som kommer göra det enklare att driva din verksamhet.
+Vad är nytt i den här versionen?
 
-Nu kan du skapa variabla produkter från grunden och publicera ett produktutkast/en väntande produkt från navigeringsfältet.
-Vi åtgärdade ett glapp som påverkade när man lägger till produktattribut eller variationer och vi förbättrade visningen av text och bilder i liggande orientering.
+- En omdesignad inloggningsupplevelse med nya illustrationer som framhäver appens huvudsakliga funktioner och fördelar.
+- Andra korrigeringar, inklusive att göra bakåtknappsstilen i navigeringsfältet mer konsekvent.
+

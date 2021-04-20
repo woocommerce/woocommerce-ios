@@ -80,8 +80,8 @@ private extension ProductFormTableViewDataSource {
 private extension ProductFormTableViewDataSource {
     func configureCellInPrimaryFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.PrimaryFieldRow) {
         switch row {
-        case .images(let editable):
-            configureImages(cell: cell, isEditable: editable)
+        case .images(let editable, let allowsMultipleImages):
+            configureImages(cell: cell, isEditable: editable, allowsMultipleImages: allowsMultipleImages)
         case .name(let name, let editable):
             configureName(cell: cell, name: name, isEditable: editable)
         case .variationName(let name):
@@ -91,7 +91,7 @@ private extension ProductFormTableViewDataSource {
         }
     }
 
-    func configureImages(cell: UITableViewCell, isEditable: Bool) {
+    func configureImages(cell: UITableViewCell, isEditable: Bool, allowsMultipleImages: Bool) {
         guard let cell = cell as? ProductImagesHeaderTableViewCell else {
             fatalError()
         }
@@ -111,7 +111,11 @@ private extension ProductFormTableViewDataSource {
         }
 
         if productImageStatuses.count > 0 {
-            cell.configure(with: productImageStatuses, config: .addImages, productUIImageLoader: productUIImageLoader)
+            if allowsMultipleImages {
+                cell.configure(with: productImageStatuses, config: .addImages, productUIImageLoader: productUIImageLoader)
+            } else {
+                cell.configure(with: productImageStatuses, config: .images, productUIImageLoader: productUIImageLoader)
+            }
         }
         else {
             cell.configure(with: productImageStatuses, config: .extendedAddImages, productUIImageLoader: productUIImageLoader)

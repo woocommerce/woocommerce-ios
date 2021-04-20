@@ -1,4 +1,5 @@
-O WooCommerce para iOS tem atualizações que certamente facilitarão o gerenciamento dos seus negócios.
+Novidades desta versão:
 
-Agora você pode criar produtos variáveis do zero e publicar um rascunho/produto pendente usando a barra de navegação.
-Corrigimos erros que afetavam a inclusão de atributos ou variações de produtos e aprimoramos a exibição de texto e imagens no modo paisagem.
+- Experiência de login renovada, com novas ilustrações para promover as principais funcionalidades e benefícios do aplicativo.
+- Outras correções, incluindo tornar o estilo da botão Voltar mais consistente na barra de navegação.
+

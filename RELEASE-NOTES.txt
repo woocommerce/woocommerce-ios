@@ -2,7 +2,7 @@
 
 6.6
 -----
-
+- [*] Fix: Product variations only support at most one image, so we won't show an option to add a second one. [https://github.com/woocommerce/woocommerce-ios/pull/3994]
 
 6.5
 -----

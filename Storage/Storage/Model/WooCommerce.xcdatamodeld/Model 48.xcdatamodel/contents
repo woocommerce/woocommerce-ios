@@ -508,17 +508,17 @@
         <relationship name="refund" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ShippingLabelRefund" inverseName="shippingLabel" inverseEntity="ShippingLabelRefund"/>
     </entity>
     <entity name="ShippingLabelAccountSettings" representedClassName="ShippingLabelAccountSettings" syncable="YES">
-        <attribute name="canEditSettings" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="canManagePayments" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="isEmailReceiptsEnabled" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="lastSelectedPackageID" optional="YES" attributeType="String"/>
-        <attribute name="paperSize" optional="YES" attributeType="String"/>
-        <attribute name="selectedPaymentMethodID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="siteID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="storeOwnerDisplayName" optional="YES" attributeType="String"/>
-        <attribute name="storeOwnerUsername" optional="YES" attributeType="String"/>
-        <attribute name="storeOwnerWpcomEmail" optional="YES" attributeType="String"/>
-        <attribute name="storeOwnerWpcomUsername" optional="YES" attributeType="String"/>
+        <attribute name="canEditSettings" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="canManagePayments" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="isEmailReceiptsEnabled" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="lastSelectedPackageID" attributeType="String" defaultValueString=""/>
+        <attribute name="paperSize" attributeType="String"/>
+        <attribute name="selectedPaymentMethodID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="storeOwnerDisplayName" attributeType="String"/>
+        <attribute name="storeOwnerUsername" attributeType="String"/>
+        <attribute name="storeOwnerWpcomEmail" attributeType="String"/>
+        <attribute name="storeOwnerWpcomUsername" attributeType="String"/>
         <relationship name="paymentMethods" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ShippingLabelPaymentMethod" inverseName="accountSettings" inverseEntity="ShippingLabelPaymentMethod"/>
     </entity>
     <entity name="ShippingLabelAddress" representedClassName="ShippingLabelAddress" syncable="YES">
@@ -535,11 +535,11 @@
         <relationship name="originShippingLabel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ShippingLabel" inverseName="originAddress" inverseEntity="ShippingLabel"/>
     </entity>
     <entity name="ShippingLabelPaymentMethod" representedClassName="ShippingLabelPaymentMethod" syncable="YES">
-        <attribute name="cardDigits" optional="YES" attributeType="String"/>
-        <attribute name="cardType" optional="YES" attributeType="String"/>
+        <attribute name="cardDigits" attributeType="String"/>
+        <attribute name="cardType" attributeType="String"/>
         <attribute name="expiry" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="name" optional="YES" attributeType="String"/>
-        <attribute name="paymentMethodID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="paymentMethodID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="accountSettings" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ShippingLabelAccountSettings" inverseName="paymentMethods" inverseEntity="ShippingLabelAccountSettings"/>
     </entity>
     <entity name="ShippingLabelRefund" representedClassName="ShippingLabelRefund" syncable="YES">
@@ -665,7 +665,9 @@
         <element name="ShipmentTrackingProvider" positionX="248.25" positionY="-117.6640625" width="180.32421875" height="103"/>
         <element name="ShipmentTrackingProviderGroup" positionX="-8.2734375" positionY="-117.890625" width="187.5" height="88"/>
         <element name="ShippingLabel" positionX="-675" positionY="54" width="128" height="313"/>
+        <element name="ShippingLabelAccountSettings" positionX="-702" positionY="36" width="128" height="209"/>
         <element name="ShippingLabelAddress" positionX="-684" positionY="45" width="128" height="208"/>
+        <element name="ShippingLabelPaymentMethod" positionX="-693" positionY="45" width="128" height="119"/>
         <element name="ShippingLabelRefund" positionX="-693" positionY="36" width="128" height="88"/>
         <element name="ShippingLabelSettings" positionX="-666" positionY="63" width="128" height="103"/>
         <element name="ShippingLine" positionX="-247.203125" positionY="907.53125" width="128" height="149"/>
@@ -677,7 +679,5 @@
         <element name="TaxClass" positionX="-529.7734375" positionY="-56.109375" width="128" height="88"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="118"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
-        <element name="ShippingLabelAccountSettings" positionX="-702" positionY="36" width="128" height="223"/>
-        <element name="ShippingLabelPaymentMethod" positionX="-693" positionY="45" width="128" height="133"/>
     </elements>
 </model>

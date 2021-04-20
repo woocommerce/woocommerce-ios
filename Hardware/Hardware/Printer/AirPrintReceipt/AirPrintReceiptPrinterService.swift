@@ -1,6 +1,8 @@
 import UIKit
 
 public final class AirPrintReceiptPrinterService: ReceiptPrinterService {
+    public init() { }
+
     public var isPrintingAvilable: Bool {
         UIPrintInteractionController.isPrintingAvailable
     }

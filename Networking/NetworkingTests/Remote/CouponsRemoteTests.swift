@@ -22,11 +22,11 @@ class CouponsRemoteTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: - Load all coupons tests
+    // MARK: - Load all Coupons tests
 
     /// Verifies that loadAllCoupons properly parses the `coupons-all` sample response.
     /// 
-    func test_loadAllCoupons_returns_parsed_coupons() {
+    func test_loadAllCoupons_returns_parsed_coupons() throws {
         // Given
         let remote = CouponsRemote(network: network)
         let expectation = self.expectation(description: "Load All Coupons")
@@ -34,18 +34,19 @@ class CouponsRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "coupons", filename: "coupons-all")
 
         // When
-        var result: (coupons: [Coupon]?, error: Error?)
-        remote.loadAllCoupons(for: sampleSiteID) { coupons, error in
-            result = (coupons, error)
+        var result: Swift.Result<[Coupon], Error>?
+        remote.loadAllCoupons(for: sampleSiteID) { response in
+            result = response
             expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
 
         // Then
-        XCTAssertNil(result.error)
-        XCTAssertNotNil(result.coupons)
-        XCTAssertEqual(result.coupons?.count, 3)
+        XCTAssertFalse(try XCTUnwrap(result).isFailure)
+        let coupons = try XCTUnwrap(result).get()
+        XCTAssertNotNil(coupons)
+        XCTAssertEqual(coupons.count, 3)
     }
 
     /// Verifies that loadAllCoupons uses the passed in parameters to specify the page of results wanted.
@@ -55,7 +56,7 @@ class CouponsRemoteTests: XCTestCase {
         let remote = CouponsRemote(network: network)
 
         // When
-        remote.loadAllCoupons(for: sampleSiteID, pageNumber: 2, pageSize: 17) { _, _ in }
+        remote.loadAllCoupons(for: sampleSiteID, pageNumber: 2, pageSize: 17) { _ in }
 
         // Then
         guard let request = network.requestsForResponseData.first as? JetpackRequest else {
@@ -78,7 +79,7 @@ class CouponsRemoteTests: XCTestCase {
         let remote = CouponsRemote(network: network)
 
         // When
-        remote.loadAllCoupons(for: sampleSiteID) { _, _ in }
+        remote.loadAllCoupons(for: sampleSiteID) { _ in }
 
         // Then
         guard let request = network.requestsForResponseData.first as? JetpackRequest else {
@@ -90,7 +91,7 @@ class CouponsRemoteTests: XCTestCase {
 
     /// Verifies that loadAllCoupons uses the SiteID passed in to build the models.
     ///
-    func test_loadAllCoupons_uses_passed_siteID_for_model_creation() {
+    func test_loadAllCoupons_uses_passed_siteID_for_model_creation() throws {
         // Given
         let remote = CouponsRemote(network: network)
         let expectation = self.expectation(description: "Load All Coupons")
@@ -98,15 +99,16 @@ class CouponsRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "coupons", filename: "coupons-all")
 
         // When
-        var result: (coupons: [Coupon]?, error: Error?)
-        remote.loadAllCoupons(for: sampleSiteID) { coupons, error in
-            result = (coupons, error)
+        var result: Swift.Result<[Coupon], Error>?
+        remote.loadAllCoupons(for: sampleSiteID) { response in
+            result = response
             expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
 
         // Then
-        XCTAssertEqual(result.coupons?.first?.siteId, sampleSiteID)
+        let coupons = try XCTUnwrap(result).get()
+        XCTAssertEqual(coupons.first?.siteId, sampleSiteID)
     }
 }

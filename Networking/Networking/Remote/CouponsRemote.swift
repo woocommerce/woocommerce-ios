@@ -3,7 +3,7 @@ import Foundation
 /// Coupons: Remote endpoints
 ///
 public final class CouponsRemote: Remote {
-    // MARK: - Coupons
+    // MARK: - Get Coupons
 
     /// Retrieves all of the `Coupon`s from the API.
     ///
@@ -16,7 +16,7 @@ public final class CouponsRemote: Remote {
     public func loadAllCoupons(for siteID: Int64,
                                pageNumber: Int = Default.pageNumber,
                                pageSize: Int = Default.pageSize,
-                               completion: @escaping ([Coupon]?, Error?) -> ()) {
+                               completion: @escaping (Result<[Coupon], Error>) -> ()) {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize)
@@ -38,8 +38,8 @@ public final class CouponsRemote: Remote {
 //
 public extension CouponsRemote {
     enum Default {
-        public static let pageSize: Int = 25
-        public static let pageNumber: Int = 1
+        public static let pageSize = 25
+        public static let pageNumber = 1
     }
 
     private enum Path {
@@ -47,7 +47,7 @@ public extension CouponsRemote {
     }
 
     private enum ParameterKey {
-        static let page: String = "page"
-        static let perPage: String = "per_page"
+        static let page = "page"
+        static let perPage = "per_page"
     }
 }

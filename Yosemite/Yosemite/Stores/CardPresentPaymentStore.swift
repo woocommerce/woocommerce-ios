@@ -110,6 +110,25 @@ private extension CardPresentPaymentStore {
             // https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPPaymentIntentStatus.html#/c:@E@SCPPaymentIntentStatus@SCPPaymentIntentStatusRequiresCapture
             // TODO. Persist PaymentIntent, so that we can use it later to print a receipt
             // Deferred to https://github.com/woocommerce/woocommerce-ios/issues/3825
+
+            // Note: Here we transition from the Stripe Terminal Payment Intent
+            // to the WCPay backend managed Payment Intent, which we need
+            // to use to capture the payment.
+
+            self.remote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: intent.id) { result in
+                switch result {
+                case .success(let intent):
+                    if intent.status == .succeeded {
+                        onCompletion(.success(()))
+                    } else {
+                        DDLogDebug("Unexpected payment intent status \(intent.status) after attempting capture")
+                        onCompletion(.failure(CardReaderServiceError.paymentCapture()))
+                    }
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                }
+            }
+
             onCompletion(.success(()))
         }.store(in: &cancellables)
 

@@ -10,9 +10,7 @@ public class WCPayRemote: Remote {
     ///   - completion: Closure to be executed upon completion.
     public func loadConnectionToken(for siteID: Int64,
                                     completion: @escaping(WCPayConnectionToken?, Error?) -> Void) {
-        let path = "payments/connection_tokens"
-
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: Path.connectionTokens)
 
         let mapper = WCPayConnectionTokenMapper()
 
@@ -25,11 +23,9 @@ public class WCPayRemote: Remote {
     ///   - completion: Closure to be executed upon completion.
     public func loadAccount(for siteID: Int64,
                             completion: @escaping (Result<WCPayAccount, Error>) -> Void) {
-        let path = "payments/accounts"
-
         let parameters = [AccountParameterKeys.fields: AccountParameterValues.fieldValues]
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: Path.accounts, parameters: parameters)
 
         let mapper = WCPayAccountMapper()
 
@@ -46,7 +42,7 @@ public class WCPayRemote: Remote {
                                orderID: Int64,
                                paymentIntentID: String,
                                completion: @escaping (Result<WCPayPaymentIntent, Error>) -> Void) {
-        let path = "payments/orders/" + String(orderID) + "/capture"
+        let path = "\(Path.orders)/\(orderID)/\(Path.capture)"
 
         let parameters = [
             CaptureOrderPaymentKeys.fields: CaptureOrderPaymentValues.fieldValues,
@@ -64,6 +60,12 @@ public class WCPayRemote: Remote {
 // MARK: - Constants!
 //
 private extension WCPayRemote {
+    enum Path {
+        static let connectionTokens = "payments/connection_tokens"
+        static let accounts = "payments/accounts"
+        static let orders = "payments/orders"
+        static let capture = "capture"
+    }
 
     enum AccountParameterKeys {
         static let fields: String = "_fields"

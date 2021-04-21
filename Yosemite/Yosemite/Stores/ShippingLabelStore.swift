@@ -53,6 +53,8 @@ public final class ShippingLabelStore: Store {
             checkCreationEligibility(siteID: siteID, orderID: orderID, isFeatureFlagEnabled: isFeatureFlagEnabled, onCompletion: onCompletion)
         case .createPackage(let siteID, let customPackage, let completion):
             createPackage(siteID: siteID, customPackage: customPackage, completion: completion)
+        case .synchronizeShippingLabelAccountSettings(let siteID, let completion):
+            synchronizeShippingLabelAccountSettings(siteID: siteID, completion: completion)
         }
     }
 }
@@ -125,6 +127,22 @@ private extension ShippingLabelStore {
                        customPackage: ShippingLabelCustomPackage,
                        completion: @escaping (Result<Bool, Error>) -> Void) {
         remote.createPackage(siteID: siteID, customPackage: customPackage, completion: completion)
+    }
+
+    func synchronizeShippingLabelAccountSettings(siteID: Int64,
+                                                 completion: @escaping (Result<ShippingLabelAccountSettings, Error>) -> Void) {
+        remote.loadShippingLabelAccountSettings(siteID: siteID) { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let settings):
+                self.upsertShippingLabelAccountSettingsInBackground(siteID: siteID, accountSettings: settings) {
+                    completion(.success(settings))
+                }
+            }
+        }
     }
 }
 
@@ -226,5 +244,29 @@ private extension ShippingLabelStore {
             derivedStorage.insertNewObject(ofType: Storage.ShippingLabelSettings.self)
         storageSettings.update(with: settings)
         storageSettings.order = storageOrder
+    }
+
+    /// Updates/inserts the specified readonly shipping label account settings entity *in a background thread*.
+    /// `onCompletion` will be called on the main thread!
+    ///
+    func upsertShippingLabelAccountSettingsInBackground(siteID: Int64,
+                                                        accountSettings: ShippingLabelAccountSettings,
+                                                        onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            self.upsertShippingLabelAccountSettings(siteID: siteID, accountSettings: accountSettings)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Updates/inserts the specified readonly ShippingLabelAccountSettings entity in the current thread.
+    ///
+    func upsertShippingLabelAccountSettings(siteID: Int64, accountSettings: ShippingLabelAccountSettings) {
+        let derivedStorage = sharedDerivedStorage
+        let storageAccountSettings = derivedStorage.loadShippingLabelAccountSettings(siteID: siteID) ?? derivedStorage.insertNewObject(ofType: Storage.ShippingLabelAccountSettings.self)
+        storageAccountSettings.update(with: accountSettings)
     }
 }

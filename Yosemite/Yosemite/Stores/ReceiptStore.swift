@@ -32,16 +32,17 @@ public class ReceiptStore: Store {
         }
 
         switch action {
-//        case .createRefund(let siteID, let orderID, let refund, let onCompletion):
-//            createRefund(siteID: siteID, orderID: orderID, refund: refund, onCompletion: onCompletion)
-//        case .retrieveRefund(let siteID, let orderID, let refundID, let onCompletion):
-//            retrieveRefund(siteID: siteID, orderID: orderID, refundID: refundID, onCompletion: onCompletion)
-//        case .retrieveRefunds(let siteID, let orderID, let refundIDs, let deleteStaleRefunds, let onCompletion):
-//            retrieveRefunds(siteID: siteID, orderID: orderID, refundIDs: refundIDs, deleteStaleRefunds: deleteStaleRefunds, onCompletion: onCompletion)
-//        case .synchronizeRefunds(let siteID, let orderID, let pageNumber, let pageSize, let onCompletion):
-//            synchronizeRefunds(siteID: siteID, orderID: orderID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-//        case .resetStoredRefunds(let onCompletion):
-//            resetStoredRefunds(onCompletion: onCompletion)
+        case .print(let order, let info):
+            print(order: order, info: info)
         }
+    }
+}
+
+
+private extension ReceiptStore {
+    func print(order: Order, info: ReceiptRegulatoryInfo) {
+        let lineItems = order.items.map { ReceiptLineItem(title: $0.name)}
+        let content = ReceiptContent(paymentIntent: intent)
+        receiptPrinterService.printReceipt(content: content)
     }
 }

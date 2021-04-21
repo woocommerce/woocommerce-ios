@@ -400,7 +400,7 @@ private extension GetStartedViewController {
         let userInfo = (error as NSError).userInfo
         let errorCode = userInfo[WordPressComRestApi.ErrorKeyErrorCode] as? String
 
-        if errorCode == "unknown_user" {
+        if WordPressAuthenticator.shared.configuration.enableSignUp, errorCode == "unknown_user" {
             self.sendEmail()
         } else if errorCode == "email_login_not_allowed" {
                 // If we get this error, we know we have a WordPress.com user but their

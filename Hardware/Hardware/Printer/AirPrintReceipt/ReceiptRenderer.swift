@@ -4,7 +4,7 @@ import UIKit
 /// To be properly implemented in https://github.com/woocommerce/woocommerce-ios/issues/3978
 final class ReceiptRenderer: UIPrintPageRenderer {
     private let lines: [ReceiptLineItem]
-    private let regulatoryInfo: ReceiptRegulatoryInfo
+    private let regulatoryInfo: ReceiptParameters
 
     private let attributes: [NSAttributedString.Key: Any] = [.font: UIFont(name: "HelveticaNeue", size: 48) as Any]
 

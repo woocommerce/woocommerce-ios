@@ -1,5 +1,5 @@
 /// RefundAction: Defines all of the Actions supported by the ReceiptStore.
 ///
 public enum ReceiptAction: Action {
-    case print(order: Order, info: ReceiptRegulatoryInfo)
+    case print(order: Order, info: ReceiptParameters)
 }

@@ -1,13 +1,13 @@
 import Hardware
 
 extension PaymentIntent {
-    func regulatoryInfo() -> ReceiptRegulatoryInfo? {
+    func receiptParameters() -> ReceiptParameters? {
         guard let paymentMethod = self.charges.first?.paymentMethod,
               case .presentCard(details: let cardDetails) = paymentMethod else {
             return nil
         }
 
-        return ReceiptRegulatoryInfo(amount: amount,
+        return ReceiptParameters(amount: amount,
                                      currency: currency,
                                      cardDetails: cardDetails)
     }

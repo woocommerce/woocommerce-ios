@@ -1,4 +1,4 @@
-public struct ReceiptRegulatoryInfo {
+public struct ReceiptParameters {
     public let amount: UInt
     public let currency: String
     public let cardDetails: CardPresentDetails

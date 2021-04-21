@@ -2,9 +2,9 @@
 /// To be fully implemented in https://github.com/woocommerce/woocommerce-ios/issues/3978
 public struct ReceiptContent {
     public let lineItems: [ReceiptLineItem]
-    public let regulatoryinfo: ReceiptRegulatoryInfo
+    public let regulatoryinfo: ReceiptParameters
 
-    public init(info: ReceiptRegulatoryInfo, lineItems: [ReceiptLineItem] = []) {
+    public init(info: ReceiptParameters, lineItems: [ReceiptLineItem] = []) {
         self.lineItems = lineItems
         self.regulatoryinfo = info
     }

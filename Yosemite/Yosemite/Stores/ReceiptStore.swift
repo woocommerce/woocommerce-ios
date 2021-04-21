@@ -40,7 +40,7 @@ public class ReceiptStore: Store {
 
 
 private extension ReceiptStore {
-    func print(order: Order, info: ReceiptRegulatoryInfo) {
+    func print(order: Order, info: ReceiptParameters) {
         let lineItems = order.items.map { ReceiptLineItem(title: $0.name)}
 
         let content = ReceiptContent(info: info, lineItems: lineItems)

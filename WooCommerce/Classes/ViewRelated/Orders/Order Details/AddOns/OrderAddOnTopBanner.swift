@@ -3,24 +3,35 @@ import SwiftUI
 
 struct OrderAddOnTopBanner: UIViewRepresentable {
 
-    /// The `width` of the view. Needed to provide a correct view `height`.
+    /// Banner wrapper, needed as a instance variable in order to reference it from `TopBannerViewModel` closures
     ///
-    let width: CGFloat
+    private let bannerWrapper: TopBannerWrapperView
+
+    /// Initialize the wrapper with the desired `width` of the view. Needed to provide a correct view `height` later.
+    ///
+    init(width: CGFloat) {
+        self.bannerWrapper = TopBannerWrapperView(width: width)
+    }
 
     func makeUIView(context: Context) -> UIView {
-        let vm = TopBannerViewModel(title: Localization.title,
-                                    infoText: Localization.description,
-                                    icon: .workInProgressBanner,
-                                    topButton: .chevron(handler: nil),
-                                    actionButtons: [TopBannerViewModel.ActionButton(title: Localization.dismiss, action: {})])
-        let v = TopBannerView(viewModel: vm)
-        return TopBannerWrapperView(bannerView: v, width: width)
+        let viewModel = TopBannerViewModel(title: Localization.title,
+                                           infoText: Localization.description,
+                                           icon: .workInProgressBanner,
+                                           topButton: .chevron { [bannerWrapper] in
+                                            // Forces `SwiftUI` to recalculate it's size as the view collapses/expands
+                                            bannerWrapper.invalidateIntrinsicContentSize()
+                                           },
+                                           actionButtons: [TopBannerViewModel.ActionButton(title: Localization.dismiss, action: {})])
+
+        let mainBanner = TopBannerView(viewModel: viewModel)
+
+        bannerWrapper.setBanner(mainBanner)
+        return bannerWrapper
     }
 
     func updateUIView(_ uiView: UIView, context: Context) {
-        // TODO: Update view
+        // No-Op
     }
-
 }
 
 private extension OrderAddOnTopBanner {
@@ -40,25 +51,37 @@ private extension OrderAddOnTopBanner {
 final class TopBannerWrapperView: UIView {
     /// BannerView to wrap
     ///
-    let bannerView: TopBannerView
+    var bannerView: TopBannerView?
 
     /// Desired `width` of the view. Needed to calculate the view dynamic `height`.
     ///
     let width: CGFloat
 
-    init(bannerView: TopBannerView, width: CGFloat) {
-        self.bannerView = bannerView
+    init(width: CGFloat) {
         self.width = width
         super.init(frame: .zero)
+    }
+
+    /// Sets the main banner view and adds it as a subview.
+    /// Discussion: The banner view is intentionally received as a function parameter(rather than in `init`) to allow the consumer
+    /// references to `TopBannerWrapperView` in  view model closures.
+    ///
+    func setBanner(_ bannerView: TopBannerView) {
+        self.bannerView?.removeFromSuperview()
 
         bannerView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(bannerView)
         bannerView.pinSubviewToAllEdges(self)
+        self.bannerView = bannerView
     }
 
     /// Returns the preferred size of the view using on a fixed width.
     ///
     override var intrinsicContentSize: CGSize {
+        guard let bannerView = bannerView else {
+            return .zero
+        }
+
         let targetSize =  CGSize(width: width, height: 0)
         return bannerView.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .defaultLow)
     }

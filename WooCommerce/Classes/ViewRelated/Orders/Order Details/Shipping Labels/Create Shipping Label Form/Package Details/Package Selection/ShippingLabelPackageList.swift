@@ -4,6 +4,8 @@ import Yosemite
 struct ShippingLabelPackageList: View {
     @ObservedObject private var viewModel: ShippingLabelPackageListViewModel
 
+    private var onPackageSelected: ((ShippingLabelCustomPackage?, ShippingLabelPredefinedPackage?) -> Void)?
+
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
@@ -42,14 +44,15 @@ struct ShippingLabelPackageList: View {
         .background(Color(.listBackground))
         .navigationBarTitle(Text(Localization.title), displayMode: .inline)
         .navigationBarItems(trailing: Button(action: {
-
+            onPackageSelected?(viewModel.selectedCustomPackage, viewModel.selectedPredefinedPackage)
         }, label: {
             Text(Localization.doneButton)
         }))
     }
 
-    init(viewModel: ShippingLabelPackageListViewModel) {
+    init(viewModel: ShippingLabelPackageListViewModel, onPackageSelected: @escaping (ShippingLabelCustomPackage?, ShippingLabelPredefinedPackage?) -> Void) {
         self.viewModel = viewModel
+        self.onPackageSelected = onPackageSelected
     }
 }
 
@@ -107,6 +110,7 @@ struct ShippingLabelPackageList_Previews: PreviewProvider {
 
         let viewModel = ShippingLabelPackageListViewModel(packagesResponse: packagesResponse)
 
-        ShippingLabelPackageList(viewModel: viewModel)
+        ShippingLabelPackageList(viewModel: viewModel) { (customPackage, predefinedPackage) in
+        }
     }
 }

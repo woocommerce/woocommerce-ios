@@ -31,7 +31,11 @@ struct ShippingLabelPackageDetails: View {
 
                 let packageListViewModel = ShippingLabelPackageListViewModel(packagesResponse: viewModel.packagesResponse)
                 NavigationLink(
-                    destination: ShippingLabelPackageList(viewModel: packageListViewModel),
+                    destination:
+                        ShippingLabelPackageList(viewModel: viewModel.packagesResponse) { [weak self] (customPackage, predefinedPackage) in
+                            print("Pacco custom", customPackage)
+                            print("Pacco predefinito", predefinedPackage)
+                        },
                     isActive: $showingAddPackage) { EmptyView()
                 }
                 Divider()

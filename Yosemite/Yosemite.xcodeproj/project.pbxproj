@@ -277,6 +277,8 @@
 		D83B093525DECFCC00B21F45 /* CardPresentPaymentAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83B093425DECFCC00B21F45 /* CardPresentPaymentAction.swift */; };
 		D83B093925DECFD900B21F45 /* CardPresentPaymentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83B093825DECFD800B21F45 /* CardPresentPaymentStore.swift */; };
 		D849A1452320E565006CB84F /* ProductReview+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D849A1442320E565006CB84F /* ProductReview+ReadOnlyType.swift */; };
+		D8652E0D26303A8B00350F37 /* ReceiptAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8652E0C26303A8B00350F37 /* ReceiptAction.swift */; };
+		D8652E1126303A9900350F37 /* ReceiptStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8652E1026303A9900350F37 /* ReceiptStore.swift */; };
 		D8736B6D22F0CE0900A14A29 /* OrderCount+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B6C22F0CE0900A14A29 /* OrderCount+ReadOnlyConvertible.swift */; };
 		D8736B6F22F0CE5200A14A29 /* OrderCountItem+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B6E22F0CE5200A14A29 /* OrderCountItem+ReadOnlyConvertible.swift */; };
 		D8736B7322F1F41B00A14A29 /* OrderCount+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B7222F1F41B00A14A29 /* OrderCount+ReadOnlyType.swift */; };
@@ -586,6 +588,8 @@
 		D83B093425DECFCC00B21F45 /* CardPresentPaymentAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentAction.swift; sourceTree = "<group>"; };
 		D83B093825DECFD800B21F45 /* CardPresentPaymentStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentStore.swift; sourceTree = "<group>"; };
 		D849A1442320E565006CB84F /* ProductReview+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductReview+ReadOnlyType.swift"; sourceTree = "<group>"; };
+		D8652E0C26303A8B00350F37 /* ReceiptAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptAction.swift; sourceTree = "<group>"; };
+		D8652E1026303A9900350F37 /* ReceiptStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptStore.swift; sourceTree = "<group>"; };
 		D8736B6C22F0CE0900A14A29 /* OrderCount+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCount+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D8736B6E22F0CE5200A14A29 /* OrderCountItem+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCountItem+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D8736B7222F1F41B00A14A29 /* OrderCount+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCount+ReadOnlyType.swift"; sourceTree = "<group>"; };
@@ -1097,6 +1101,7 @@
 				261F94E5242EFF8700762B58 /* ProductCategoryStore.swift */,
 				26E5A08125A66868000DF8F6 /* ProductAttributeTermStore.swift */,
 				45AB8B1624AA4B3D00B5B36E /* ProductTagStore.swift */,
+				D8652E1026303A9900350F37 /* ReceiptStore.swift */,
 				CE179D56235F4E7500C24EB3 /* RefundStore.swift */,
 				453305F6245AE68C00264E50 /* SitePostStore.swift */,
 				7492FADC217FAF5C00ED2C69 /* SettingStore.swift */,
@@ -1312,6 +1317,7 @@
 				D831E2E3230E3524000037D0 /* ProductReviewAction.swift */,
 				261F94E3242EFA6D00762B58 /* ProductCategoryAction.swift */,
 				45AB8B1424AA4A1E00B5B36E /* ProductTagAction.swift */,
+				D8652E0C26303A8B00350F37 /* ReceiptAction.swift */,
 				CE179D54235F4E1700C24EB3 /* RefundAction.swift */,
 				453305F8245AE6B200264E50 /* SitePostAction.swift */,
 				7492FADE217FB11D00ED2C69 /* SettingAction.swift */,
@@ -1566,6 +1572,7 @@
 				D83B093525DECFCC00B21F45 /* CardPresentPaymentAction.swift in Sources */,
 				B52E0030211A439E00700FDE /* Account+ReadOnlyType.swift in Sources */,
 				744A3218216D55F80051439B /* SiteVisitStats+ReadOnlyConvertible.swift in Sources */,
+				D8652E1126303A9900350F37 /* ReceiptStore.swift in Sources */,
 				02C254FE2563C6E500A04423 /* ShippingLabelSettings+ReadOnlyConvertible.swift in Sources */,
 				247CE82E2582F1C800F9D9D1 /* MockStatsActionV4Handler.swift in Sources */,
 				45E18632237046CB009241F3 /* ShippingLine+ReadOnlyConvertible.swift in Sources */,
@@ -1733,6 +1740,7 @@
 				02C254F62563B47C00A04423 /* ShippingLabelAddress+ReadonlyConvertible.swift in Sources */,
 				247CE84A2583246800F9D9D1 /* MockOrderStatusActionHandler.swift in Sources */,
 				7492FADB217FAE4D00ED2C69 /* SiteSetting+ReadOnlyType.swift in Sources */,
+				D8652E0D26303A8B00350F37 /* ReceiptAction.swift in Sources */,
 				0212AC62242C68B600C51F6C /* ResultsController+SortProducts.swift in Sources */,
 				741F34802195EA62005F5BD9 /* CommentAction.swift in Sources */,
 				0218B4F0242E091C0083A847 /* Media+MediaType.swift in Sources */,

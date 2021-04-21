@@ -40,6 +40,10 @@ final class OrderDetailsViewController: UIViewController {
 
     private let notices = OrderDetailsNotices()
 
+    private lazy var paymentAlerts: OrderDetailsPaymentAlerts = {
+        OrderDetailsPaymentAlerts()
+    }()
+
     // MARK: - View Lifecycle
 
     /// Create an instance of `Self` from its corresponding storyboard.
@@ -519,6 +523,8 @@ private extension OrderDetailsViewController {
         guard let cell = tableView.cellForRow(at: at) as? ButtonTableViewCell else {
             return
         }
+
+        paymentAlerts.presentInitialAlert(from: self)
         /// TODO. Initiate UI flow for collecting payments
         /// This will be removed later on, whenever we implement the proper UI flow
         /// for collecting payments.

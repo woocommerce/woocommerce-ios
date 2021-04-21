@@ -330,6 +330,12 @@ extension UIImage {
         .gridicon(.infoOutline, size: CGSize(width: 20, height: 20))
     }
 
+    /// Credit card tapping on a card reader
+    ///
+    static var cardPresentImage: UIImage {
+        return UIImage(named: "woo-payments-card")!
+    }
+
     /// Files Download Icon
     ///
     static var cloudImage: UIImage {

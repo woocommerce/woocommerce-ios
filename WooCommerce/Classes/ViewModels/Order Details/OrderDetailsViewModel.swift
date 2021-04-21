@@ -500,7 +500,7 @@ extension OrderDetailsViewModel {
     }
 
     func printReceipt(params: ReceiptParameters) {
-        let action = ReceiptAction.print(order: self.order, info: params)
+        let action = ReceiptAction.print(order: self.order, parameters: params)
 
         ServiceLocator.stores.dispatch(action)
     }

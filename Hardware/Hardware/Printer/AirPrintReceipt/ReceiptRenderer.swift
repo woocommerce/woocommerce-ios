@@ -4,13 +4,13 @@ import UIKit
 /// To be properly implemented in https://github.com/woocommerce/woocommerce-ios/issues/3978
 final class ReceiptRenderer: UIPrintPageRenderer {
     private let lines: [ReceiptLineItem]
-    private let regulatoryInfo: ReceiptParameters
+    private let parameters: ReceiptParameters
 
     private let attributes: [NSAttributedString.Key: Any] = [.font: UIFont(name: "HelveticaNeue", size: 48) as Any]
 
     init(content: ReceiptContent) {
         self.lines = content.lineItems
-        self.regulatoryInfo = content.regulatoryinfo
+        self.parameters = content.parameters
 
         super.init()
 
@@ -25,7 +25,7 @@ final class ReceiptRenderer: UIPrintPageRenderer {
     }
 
     override func drawContentForPage(at pageIndex: Int, in contentRect: CGRect) {
-        let printOut = NSString(string: "Total charged: \(regulatoryInfo.amount / 100) \(regulatoryInfo.currency.uppercased())")
+        let printOut = NSString(string: "Total charged: \(parameters.amount / 100) \(parameters.currency.uppercased())")
 
         printOut.draw(in: contentRect, withAttributes: attributes)
     }
@@ -45,7 +45,7 @@ private extension ReceiptRenderer {
     }
 
     private func configureFormatter() {
-        let formatter = UISimpleTextPrintFormatter(text: "\(regulatoryInfo.amount / 100) \(regulatoryInfo.currency.uppercased())")
+        let formatter = UISimpleTextPrintFormatter(text: "\(parameters.amount / 100) \(parameters.currency.uppercased())")
         formatter.perPageContentInsets = .init(top: Constants.headerHeight, left: Constants.marging, bottom: Constants.footerHeight, right: Constants.marging)
 
         addPrintFormatter(formatter, startingAtPageAt: 0)

@@ -33,17 +33,17 @@ public class ReceiptStore: Store {
 
         switch action {
         case .print(let order, let info):
-            print(order: order, info: info)
+            print(order: order, parameters: info)
         }
     }
 }
 
 
 private extension ReceiptStore {
-    func print(order: Order, info: ReceiptParameters) {
+    func print(order: Order, parameters: ReceiptParameters) {
         let lineItems = order.items.map { ReceiptLineItem(title: $0.name)}
 
-        let content = ReceiptContent(info: info, lineItems: lineItems)
+        let content = ReceiptContent(parameters: parameters, lineItems: lineItems)
         receiptPrinterService.printReceipt(content: content)
     }
 }

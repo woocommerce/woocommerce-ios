@@ -2,4 +2,8 @@
 /// To be implemented in https://github.com/woocommerce/woocommerce-ios/issues/3978
 public struct ReceiptLineItem {
     public let title: String
+
+    public init(title: String) {
+        self.title = title
+    }
 }

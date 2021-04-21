@@ -1,6 +1,5 @@
 @testable import Hardware
 
-
 /// Supports tests for ReceiptStore
 final class MockReceiptPrinterService: ReceiptPrinterService {
     /// Boolean flag indicating metod printReceipt has been hit

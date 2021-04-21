@@ -28,18 +28,11 @@ struct OrderAddOnListI1View: View {
     /// A future improvement can be to use a `LazyVStack` when iOS-14 becomes our minimum target.
     ///
     var body: some View {
-        ScrollView {
-            VStack {
-                ForEach(viewModel.addOns) { addOn in
-                    OrderAddOnI1View(viewModel: addOn)
-                        .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
-                }
-
-                OrderAddOnNoticeView(updateText: viewModel.updateNotice)
-                    .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
-            }
+        StaticList(viewModel.addOns) { addOn in
+            OrderAddOnI1View(viewModel: addOn)
+        } footer: {
+            OrderAddOnNoticeView(updateText: viewModel.updateNotice)
         }
-        .background(Color(.listBackground))
     }
 }
 

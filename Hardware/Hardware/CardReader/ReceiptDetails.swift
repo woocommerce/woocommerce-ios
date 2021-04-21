@@ -21,3 +21,15 @@ public struct ReceiptDetails {
     /// The type of account being debited or credited
     public let accountType: String?
 }
+
+extension ReceiptDetails: Equatable {
+    public static func ==(lhs: ReceiptDetails, rhs: ReceiptDetails) -> Bool {
+        return lhs.applicationPreferredName == rhs.applicationPreferredName &&
+            rhs.dedicatedFileName == rhs.dedicatedFileName &&
+            lhs.authorizationResponseCode == rhs.authorizationResponseCode &&
+            lhs.applicationCryptogram == rhs.applicationCryptogram &&
+            lhs.terminalVerificationResults == rhs.terminalVerificationResults &&
+            lhs.transactionStatusInformation == rhs.transactionStatusInformation &&
+            lhs.accountType == rhs.accountType
+    }
+}

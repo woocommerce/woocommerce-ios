@@ -42,7 +42,8 @@ public class ReceiptStore: Store {
 private extension ReceiptStore {
     func print(order: Order, info: ReceiptRegulatoryInfo) {
         let lineItems = order.items.map { ReceiptLineItem(title: $0.name)}
-        let content = ReceiptContent(paymentIntent: intent)
+
+        let content = ReceiptContent(info: info, lineItems: lineItems)
         receiptPrinterService.printReceipt(content: content)
     }
 }

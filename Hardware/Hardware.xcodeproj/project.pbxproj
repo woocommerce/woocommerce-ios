@@ -37,6 +37,7 @@
 		D854FC26260A6B5800A219CD /* ErrorCodesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D854FC25260A6B5800A219CD /* ErrorCodesTests.swift */; };
 		D8652CB7262F389800350F37 /* ReceiptLineItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8652CB6262F389800350F37 /* ReceiptLineItem.swift */; };
 		D8652CBB262F390F00350F37 /* ReceiptContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8652CBA262F390F00350F37 /* ReceiptContent.swift */; };
+		D8652E2A2630520300350F37 /* ReceiptRegulatoryInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8652E292630520300350F37 /* ReceiptRegulatoryInfo.swift */; };
 		D865C61E261CE001006717B8 /* CardReaderEvent+Stripe.swift in Sources */ = {isa = PBXBuildFile; fileRef = D865C61D261CE001006717B8 /* CardReaderEvent+Stripe.swift */; };
 		D88303D125E44B2500C877F9 /* ChargeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303D025E44B2500C877F9 /* ChargeTests.swift */; };
 		D88303D525E44CD200C877F9 /* MockStripeCharge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303D425E44CD200C877F9 /* MockStripeCharge.swift */; };
@@ -119,6 +120,7 @@
 		D854FC25260A6B5800A219CD /* ErrorCodesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorCodesTests.swift; sourceTree = "<group>"; };
 		D8652CB6262F389800350F37 /* ReceiptLineItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptLineItem.swift; sourceTree = "<group>"; };
 		D8652CBA262F390F00350F37 /* ReceiptContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptContent.swift; sourceTree = "<group>"; };
+		D8652E292630520300350F37 /* ReceiptRegulatoryInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptRegulatoryInfo.swift; sourceTree = "<group>"; };
 		D865C61D261CE001006717B8 /* CardReaderEvent+Stripe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CardReaderEvent+Stripe.swift"; sourceTree = "<group>"; };
 		D88303D025E44B2500C877F9 /* ChargeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChargeTests.swift; sourceTree = "<group>"; };
 		D88303D425E44CD200C877F9 /* MockStripeCharge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStripeCharge.swift; sourceTree = "<group>"; };
@@ -215,6 +217,7 @@
 				D845BE53262ED7CC00A3E40F /* ReceiptPrinterService.swift */,
 				D8652CB6262F389800350F37 /* ReceiptLineItem.swift */,
 				D8652CBA262F390F00350F37 /* ReceiptContent.swift */,
+				D8652E292630520300350F37 /* ReceiptRegulatoryInfo.swift */,
 			);
 			path = Printer;
 			sourceTree = "<group>";
@@ -547,6 +550,7 @@
 				D88FDB2B25DD21B000CB0DBD /* CardReaderServiceStatus.swift in Sources */,
 				D80B464E260E18930092EDC0 /* Email.swift in Sources */,
 				D89B8F0225DDC7500001C726 /* PaymentIntentStatus.swift in Sources */,
+				D8652E2A2630520300350F37 /* ReceiptRegulatoryInfo.swift in Sources */,
 				D88ECCD9262091CF0094398A /* CardReaderSoftwareUpdate.swift in Sources */,
 				D89B8F1E25DDCD3D0001C726 /* PaymentIntent+Stripe.swift in Sources */,
 				D89B8F1625DDCC810001C726 /* ChargeStatus+Stripe.swift in Sources */,

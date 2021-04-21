@@ -279,7 +279,6 @@
 		D849A1452320E565006CB84F /* ProductReview+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D849A1442320E565006CB84F /* ProductReview+ReadOnlyType.swift */; };
 		D8652E0D26303A8B00350F37 /* ReceiptAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8652E0C26303A8B00350F37 /* ReceiptAction.swift */; };
 		D8652E1126303A9900350F37 /* ReceiptStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8652E1026303A9900350F37 /* ReceiptStore.swift */; };
-		D8652E1C26303D1F00350F37 /* ReceiptRegulatoryInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8652E1B26303D1F00350F37 /* ReceiptRegulatoryInfo.swift */; };
 		D8652E2026303D4800350F37 /* PaymentIntent+ReceiptRegulatoryInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8652E1F26303D4800350F37 /* PaymentIntent+ReceiptRegulatoryInfo.swift */; };
 		D8736B6D22F0CE0900A14A29 /* OrderCount+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B6C22F0CE0900A14A29 /* OrderCount+ReadOnlyConvertible.swift */; };
 		D8736B6F22F0CE5200A14A29 /* OrderCountItem+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B6E22F0CE5200A14A29 /* OrderCountItem+ReadOnlyConvertible.swift */; };
@@ -592,7 +591,6 @@
 		D849A1442320E565006CB84F /* ProductReview+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductReview+ReadOnlyType.swift"; sourceTree = "<group>"; };
 		D8652E0C26303A8B00350F37 /* ReceiptAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptAction.swift; sourceTree = "<group>"; };
 		D8652E1026303A9900350F37 /* ReceiptStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptStore.swift; sourceTree = "<group>"; };
-		D8652E1B26303D1F00350F37 /* ReceiptRegulatoryInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptRegulatoryInfo.swift; sourceTree = "<group>"; };
 		D8652E1F26303D4800350F37 /* PaymentIntent+ReceiptRegulatoryInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaymentIntent+ReceiptRegulatoryInfo.swift"; sourceTree = "<group>"; };
 		D8736B6C22F0CE0900A14A29 /* OrderCount+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCount+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D8736B6E22F0CE5200A14A29 /* OrderCountItem+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCountItem+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -1352,7 +1350,6 @@
 		D8652E1A26303D0600350F37 /* Payments */ = {
 			isa = PBXGroup;
 			children = (
-				D8652E1B26303D1F00350F37 /* ReceiptRegulatoryInfo.swift */,
 				D8652E1F26303D4800350F37 /* PaymentIntent+ReceiptRegulatoryInfo.swift */,
 			);
 			path = Payments;
@@ -1588,7 +1585,6 @@
 				7471401121877668009A11CC /* NotificationAction.swift in Sources */,
 				266503512620E2EB0079A159 /* ProductAddOn+ReadOnlyConvertible.swift in Sources */,
 				453305F9245AE6B200264E50 /* SitePostAction.swift in Sources */,
-				D8652E1C26303D1F00350F37 /* ReceiptRegulatoryInfo.swift in Sources */,
 				CE4FD4522350FB5400A16B31 /* OrderItemTaxRefund+ReadOnlyConvertible.swift in Sources */,
 				02FF055223D983F30058E6E7 /* MediaExportService.swift in Sources */,
 				45010695239A6CDE00E24722 /* TaxClassAction.swift in Sources */,

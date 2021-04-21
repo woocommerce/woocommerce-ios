@@ -107,6 +107,7 @@ public typealias CardReaderSoftwareUpdate = Hardware.CardReaderSoftwareUpdate
 public typealias CardReaderServiceDiscoveryStatus = Hardware.CardReaderServiceDiscoveryStatus
 public typealias CardReaderServiceError = Hardware.CardReaderServiceError
 public typealias PaymentParameters = Hardware.PaymentIntentParameters
+public typealias ReceiptRegulatoryInfo = Hardware.ReceiptRegulatoryInfo
 
 
 // MARK: - Exported Storage Symbols

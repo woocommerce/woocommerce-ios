@@ -2,10 +2,10 @@
 /// To be fully implemented in https://github.com/woocommerce/woocommerce-ios/issues/3978
 public struct ReceiptContent {
     public let lineItems: [ReceiptLineItem]
-    public let paymentIntent: PaymentIntent
+    public let regulatoryinfo: ReceiptRegulatoryInfo
 
-    public init(paymentIntent: PaymentIntent, lineItems: [ReceiptLineItem] = []) {
+    public init(info: ReceiptRegulatoryInfo, lineItems: [ReceiptLineItem] = []) {
         self.lineItems = lineItems
-        self.paymentIntent = paymentIntent
+        self.regulatoryinfo = info
     }
 }

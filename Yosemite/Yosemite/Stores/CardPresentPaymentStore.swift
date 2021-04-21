@@ -113,6 +113,9 @@ private extension CardPresentPaymentStore {
             // Deferred to https://github.com/woocommerce/woocommerce-ios/issues/3825
             guard let receiptParameters = intent.receiptParameters() else {
                 let error = CardReaderServiceError.paymentCapture()
+
+                DDLogError("⛔️ Payment completed without valid regulatory metadata: \(error)")
+
                 onCompletion(.failure(error))
                 return
             }

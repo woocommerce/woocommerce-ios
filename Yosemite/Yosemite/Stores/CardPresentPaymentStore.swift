@@ -97,20 +97,25 @@ private extension CardPresentPaymentStore {
 
     func collectPayment(siteID: Int64, orderID: Int64, parameters: PaymentParameters,
                         onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
-                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
+                        onCompletion: @escaping (Result<ReceiptParameters, Error>) -> Void) {
         cardReaderService.capturePayment(parameters).sink { error in
             switch error {
             case .failure(let error):
                 onCompletion(.failure(error))
-            case .finished:
-                onCompletion(.success(()))
+            default:
+                break
             }
         } receiveValue: { intent in
             // A this point, the status of the PaymentIntent should be `requiresCapture`:
             // https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPPaymentIntentStatus.html#/c:@E@SCPPaymentIntentStatus@SCPPaymentIntentStatusRequiresCapture
-            // TODO. Persist PaymentIntent, so that we can use it later to print a receipt
+            // TODO. Persist PaymentIntent, so that we can use it later to print a receipt. Persisting an instance of ReceiptParameters might be a better option.
             // Deferred to https://github.com/woocommerce/woocommerce-ios/issues/3825
-            onCompletion(.success(()))
+            guard let receiptParameters = intent.receiptParameters() else {
+                let error = CardReaderServiceError.paymentCapture()
+                onCompletion(.failure(error))
+                return
+            }
+            onCompletion(.success(receiptParameters))
         }.store(in: &cancellables)
 
         // Observe status events fired by the card reader

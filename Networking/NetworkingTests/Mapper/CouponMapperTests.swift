@@ -55,41 +55,6 @@ final class CouponMapperTests: XCTestCase {
 
         XCTAssertEqual(coupon, expectedCoupon)
     }
-
-    /// Verifies that nulls in optional fields are parsed correctly
-    ///
-    func test_CouponsList_map_accepts_nulls_in_expected_optional_fields() throws {
-        let coupon = try mapRetrieveMinimalCouponResponse()
-
-        let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-
-        let expectedCoupon = Coupon(
-            couponID: 10714,
-            code: "test",
-            amount: "0.00",
-            dateCreated: dateFormatter.date(from: "2021-04-13T08:26:25")!,
-            dateModified: dateFormatter.date(from: "2021-04-13T08:26:25")!,
-            discountType: .fixedCart,
-            description: "",
-            dateExpires: nil,
-            usageCount: 0,
-            individualUse: false,
-            productIds: [],
-            excludedProductIds: [],
-            usageLimit: nil,
-            usageLimitPerUser: nil,
-            limitUsageToXItems: nil,
-            freeShipping: false,
-            productCategories: [],
-            excludedProductCategories: [],
-            excludeSaleItems: false,
-            minimumAmount: "0.00",
-            maximumAmount: "0.00",
-            emailRestrictions: [],
-            usedBy: []).copy(siteID: self.dummySiteID)
-
-        XCTAssertEqual(coupon, expectedCoupon)
-    }
 }
 
 
@@ -111,12 +76,6 @@ private extension CouponMapperTests {
     ///
     func mapRetrieveCouponResponse() throws -> Coupon {
         return try mapCoupon(from: "coupon")
-    }
-
-    /// Returns the CouponMapper output from `coupon-minimal.json`
-    ///
-    func mapRetrieveMinimalCouponResponse() throws -> Coupon {
-        return try mapCoupon(from: "coupon-minimal")
     }
 
     struct FileNotFoundError: Error {}

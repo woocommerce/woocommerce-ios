@@ -83,6 +83,14 @@ final class OrderDetailsViewModel {
         }
     }
 
+    var collectPaymentFrom: String {
+        guard let name = order.billingAddress?.firstName else {
+            return "Collect payment"
+        }
+
+        return "Collect payment from \(name)"
+    }
+
     /// Closure to be executed when the UI needs to be reloaded.
     /// That could happen, for example, when new incoming data is detected
     ///

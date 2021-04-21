@@ -524,7 +524,9 @@ private extension OrderDetailsViewController {
             return
         }
 
-        paymentAlerts.presentInitialAlert(from: self)
+        paymentAlerts.presentInitialAlert(from: self,
+                                          name: viewModel.collectPaymentFrom,
+                                          amount: viewModel.order.total)
         /// TODO. Initiate UI flow for collecting payments
         /// This will be removed later on, whenever we implement the proper UI flow
         /// for collecting payments.
@@ -532,36 +534,41 @@ private extension OrderDetailsViewController {
         /// This API does not have to be final. It is the simplest thing that
         /// could possibly work at this point in time
         viewModel.collectPayment { [weak self] readerEventMessage in
-            let title = "💳💳"
-            let message = readerEventMessage
-            let buttonTitle = "😊"
-
-            let actionSheet = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            actionSheet.view.tintColor = .text
-
-            actionSheet.addCancelActionWithTitle(buttonTitle)
-
-            let popoverController = actionSheet.popoverPresentationController
-            popoverController?.sourceView = cell.contentView
-
-            self?.present(actionSheet, animated: true)
+            guard let self = self else {
+                return
+            }
+            self.paymentAlerts.updateAlertTitle(title: readerEventMessage)
+//            let title = "💳💳"
+//            let message = readerEventMessage
+//            let buttonTitle = "😊"
+//
+//            let actionSheet = UIAlertController(title: title, message: message, preferredStyle: .alert)
+//            actionSheet.view.tintColor = .text
+//
+//            actionSheet.addCancelActionWithTitle(buttonTitle)
+//
+//            let popoverController = actionSheet.popoverPresentationController
+//            popoverController?.sourceView = cell.contentView
+//
+//            self?.present(actionSheet, animated: true)
         } onClearMessage: { [weak self] in
-            self?.dismiss(animated: false, completion: nil)
+            self?.paymentAlerts.updateAlertTitle(title: "Please remove card")
         } onCompletion: { [weak self] result in
-            self?.dismiss(animated: false, completion: nil)
-            let title = result.isSuccess ? "🎉🥳🍾🎊 success" : "☢️ Error!"
-            let message = result.isSuccess ? "The payment has been processed. 💸💸💸💸💸" : "The payment has not been processed. 🙅‍♀️"
-            let buttonTitle = result.isSuccess ? "😎" : "🤷"
-
-            let actionSheet = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            actionSheet.view.tintColor = .text
-
-            actionSheet.addCancelActionWithTitle(buttonTitle)
-
-            let popoverController = actionSheet.popoverPresentationController
-            popoverController?.sourceView = cell.contentView
-
-            self?.present(actionSheet, animated: true)
+            self?.paymentAlerts.updateAlertTitle(title: "Payment succesful")
+//            self?.dismiss(animated: false, completion: nil)
+//            let title = result.isSuccess ? "🎉🥳🍾🎊 success" : "☢️ Error!"
+//            let message = result.isSuccess ? "The payment has been processed. 💸💸💸💸💸" : "The payment has not been processed. 🙅‍♀️"
+//            let buttonTitle = result.isSuccess ? "😎" : "🤷"
+//
+//            let actionSheet = UIAlertController(title: title, message: message, preferredStyle: .alert)
+//            actionSheet.view.tintColor = .text
+//
+//            actionSheet.addCancelActionWithTitle(buttonTitle)
+//
+//            let popoverController = actionSheet.popoverPresentationController
+//            popoverController?.sourceView = cell.contentView
+//
+//            self?.present(actionSheet, animated: true)
         }
     }
 

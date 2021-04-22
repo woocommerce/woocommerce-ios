@@ -537,9 +537,12 @@ private extension OrderDetailsViewController {
             case .failure(let error):
                 self.paymentAlerts.error(error: error)
             case .success(let receiptParameters):
-                self.paymentAlerts.success {
+                self.paymentAlerts.success(printReceipt: {
                     self.viewModel.printReceipt(params: receiptParameters)
+                }, emailReceipt: {
+                    self.viewModel.emailReceipt(params: receiptParameters)
                 }
+                )
             }
         }
     }

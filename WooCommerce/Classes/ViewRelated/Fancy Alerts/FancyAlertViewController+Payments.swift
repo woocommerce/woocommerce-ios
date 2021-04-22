@@ -28,20 +28,35 @@ public extension FancyAlertViewController {
                                         dismissAction: {})
     }
 
-    static func configurationForSuccess(title: String, bodyText: String, image: UIImage, printAction: @escaping () -> Void) -> FancyAlertViewController.Config {
+    static func configurationForSuccess(title: String, bodyText: String, image: UIImage,
+                                        printAction: @escaping () -> Void,
+                                        emailAction: @escaping () -> Void) -> FancyAlertViewController.Config {
         FancyAlertViewController.Config(titleText: title,
                                         bodyText: bodyText,
                                         headerImage: image,
                                         dividerPosition: .top,
                                         defaultButton: makePrintButon(printAction: printAction),
-                                        cancelButton: nil,
-                                        moreInfoButton: nil,
+                                        cancelButton: makeEmailButton(emailAction: emailAction),
+                                        moreInfoButton: makeNoThanksButton(),
                                         dismissAction: {})
     }
 
     private static func makePrintButon(printAction: @escaping () -> Void) -> FancyAlertViewController.Config.ButtonConfig {
-        return FancyAlertViewController.Config.ButtonConfig("Print") { controller, _ in
+        return FancyAlertViewController.Config.ButtonConfig("Print receipt") { controller, _ in
             printAction()
+            controller.dismiss(animated: true)
+        }
+    }
+
+    private static func makeEmailButton(emailAction: @escaping () -> Void) -> FancyAlertViewController.Config.ButtonConfig {
+        return FancyAlertViewController.Config.ButtonConfig("Email receipt") { controller, _ in
+            emailAction()
+            controller.dismiss(animated: true)
+        }
+    }
+
+    private static func makeNoThanksButton() -> FancyAlertViewController.Config.ButtonConfig {
+        return FancyAlertViewController.Config.ButtonConfig("No thanks") { controller, _ in
             controller.dismiss(animated: true)
         }
     }

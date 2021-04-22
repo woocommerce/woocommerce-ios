@@ -503,6 +503,11 @@ extension OrderDetailsViewModel {
 
         ServiceLocator.stores.dispatch(action)
     }
+
+    func emailReceipt(params: ReceiptParameters) {
+        // TO BE IMPLEMENTED
+        // https://github.com/woocommerce/woocommerce-ios/issues/4014
+    }
 }
 
 

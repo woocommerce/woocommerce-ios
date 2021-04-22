@@ -95,4 +95,14 @@ final class ServiceLocatorTests: XCTestCase {
 
         XCTAssertTrue(cardReader is StripeCardReaderService)
    }
+
+    func test_ServiceLocator_provides_receipt_printer() {
+       XCTAssertNotNil(ServiceLocator.receiptPrinterService)
+   }
+
+    func test_receipt_printer_service_defaults_to_airprint() {
+       let cardReader = ServiceLocator.receiptPrinterService
+
+        XCTAssertTrue(cardReader is AirPrintReceiptPrinterService)
+   }
 }

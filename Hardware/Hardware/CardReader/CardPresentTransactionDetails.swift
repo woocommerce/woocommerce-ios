@@ -1,5 +1,5 @@
 /// An object representing details from a transaction using a card_present payment method.
-public struct CardPresentDetails {
+public struct CardPresentTransactionDetails {
     /// The last 4 digits of the card.
     public let last4: String
 
@@ -30,8 +30,8 @@ public struct CardPresentDetails {
     public let emvAuthData: String?
 }
 
-extension CardPresentDetails: Equatable {
-    public static func ==(lhs: CardPresentDetails, rhs: CardPresentDetails) -> Bool {
+extension CardPresentTransactionDetails: Equatable {
+    public static func ==(lhs: CardPresentTransactionDetails, rhs: CardPresentTransactionDetails) -> Bool {
         return lhs.last4 == rhs.last4 &&
             lhs.expMonth == rhs.expMonth &&
             lhs.expYear == rhs.expYear &&

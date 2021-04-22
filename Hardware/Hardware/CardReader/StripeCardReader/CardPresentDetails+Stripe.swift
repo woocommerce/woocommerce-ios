@@ -1,6 +1,6 @@
 import StripeTerminal
 
-extension CardPresentDetails {
+extension CardPresentTransactionDetails {
 
     /// Convenience initializer
     /// - Parameter reader: An instance of a StripeTerminal.CardPresentDetails

@@ -16,7 +16,7 @@ extension PaymentMethod {
                 self = .unknown
                 return
             }
-            self = .presentCard(details: CardPresentDetails(details: details))
+            self = .presentCard(details: CardPresentTransactionDetails(details: details))
         case .unknown:
             self = .unknown
         default:

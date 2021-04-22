@@ -2,9 +2,9 @@
 /// To be fully implemented in https://github.com/woocommerce/woocommerce-ios/issues/3978
 public struct ReceiptContent {
     public let lineItems: [ReceiptLineItem]
-    public let parameters: ReceiptParameters
+    public let parameters: CardPresentReceiptParameters
 
-    public init(parameters: ReceiptParameters, lineItems: [ReceiptLineItem] = []) {
+    public init(parameters: CardPresentReceiptParameters, lineItems: [ReceiptLineItem] = []) {
         self.lineItems = lineItems
         self.parameters = parameters
     }

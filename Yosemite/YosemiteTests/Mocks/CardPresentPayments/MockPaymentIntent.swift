@@ -31,8 +31,8 @@ private extension MockPaymentIntent {
         .presentCard(details: mockCardDetails())
     }
 
-    static func mockCardDetails() -> CardPresentDetails {
-        CardPresentDetails(last4: "last4",
+    static func mockCardDetails() -> CardPresentTransactionDetails {
+        CardPresentTransactionDetails(last4: "last4",
                            expMonth: 1,
                            expYear: 2021,
                            cardholderName: "Cardholder",

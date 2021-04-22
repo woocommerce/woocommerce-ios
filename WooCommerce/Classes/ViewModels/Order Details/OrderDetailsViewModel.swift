@@ -504,7 +504,7 @@ extension OrderDetailsViewModel {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func emailReceipt(params: ReceiptParameters) {
+    func emailReceipt(params: CardPresentReceiptParameters) {
         // TO BE IMPLEMENTED
         // https://github.com/woocommerce/woocommerce-ios/issues/4014
     }

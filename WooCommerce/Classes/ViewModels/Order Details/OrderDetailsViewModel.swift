@@ -493,15 +493,6 @@ extension OrderDetailsViewModel {
                                                              }, onCompletion: { (result) in
             // Propagate the result to the UI
             onCompletion(result)
-
-            //Initiate a printout of a receipt (to be removed with https://github.com/woocommerce/woocommerce-ios/issues/3976)
-                                                                //This is here only for testing purposes
-                                                                switch result {
-                                                                case .success(let parameters):
-                                                                    self.printReceipt(params: parameters)
-                                                                default:
-                                                                    break
-                                                                }
         })
 
         ServiceLocator.stores.dispatch(action)

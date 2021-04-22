@@ -29,6 +29,10 @@ struct OrderAddOnListI1View: View {
     ///
     var body: some View {
         GeometryReader { geometry in
+
+            // Solid color as a background view to cover all non-safe area
+            Color(.listBackground).edgesIgnoringSafeArea(.all)
+
             ScrollView {
                 VStack {
                     OrderAddOnTopBanner(width: geometry.size.width)
@@ -50,7 +54,6 @@ struct OrderAddOnListI1View: View {
                         .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
                 }
             }
-            .background(Color(.listBackground))
         }
     }
 }

@@ -58,7 +58,11 @@ class AuthenticatedState: StoresManagerState {
             CardPresentPaymentStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
-                                    cardReaderService: ServiceLocator.cardReaderService)
+                                    cardReaderService: ServiceLocator.cardReaderService),
+            ReceiptStore(dispatcher: dispatcher,
+                         storageManager: storageManager,
+                         network: network,
+                         receiptPrinterService: ServiceLocator.receiptPrinterService)
         ]
 
         startListeningToNotifications()

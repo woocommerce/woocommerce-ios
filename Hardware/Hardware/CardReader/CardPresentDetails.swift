@@ -29,3 +29,17 @@ public struct CardPresentDetails {
     /// (Only applicable to EMV payments) The authorization data from the card issuer.
     public let emvAuthData: String?
 }
+
+extension CardPresentDetails: Equatable {
+    public static func ==(lhs: CardPresentDetails, rhs: CardPresentDetails) -> Bool {
+        return lhs.last4 == rhs.last4 &&
+            lhs.expMonth == rhs.expMonth &&
+            lhs.expYear == rhs.expYear &&
+            lhs.cardholderName == rhs.cardholderName &&
+            lhs.brand == rhs.brand &&
+            lhs.fingerprint == rhs.fingerprint &&
+            lhs.generatedCard == rhs.generatedCard &&
+            lhs.receipt == rhs.receipt &&
+            lhs.emvAuthData == rhs.emvAuthData
+    }
+}

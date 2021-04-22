@@ -97,27 +97,31 @@ private extension CardPresentPaymentStore {
 
     func collectPayment(siteID: Int64, orderID: Int64, parameters: PaymentParameters,
                         onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
-                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
+                        onCompletion: @escaping (Result<ReceiptParameters, Error>) -> Void) {
         cardReaderService.capturePayment(parameters).sink { error in
             switch error {
             case .failure(let error):
                 onCompletion(.failure(error))
-            case .finished:
-                onCompletion(.success(()))
+            default:
+                break
             }
         } receiveValue: { intent in
             // A this point, the status of the PaymentIntent should be `requiresCapture`:
             // https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPPaymentIntentStatus.html#/c:@E@SCPPaymentIntentStatus@SCPPaymentIntentStatusRequiresCapture
-            // TODO. Persist PaymentIntent, so that we can use it later to print a receipt
+            // TODO. Persist PaymentIntent, so that we can use it later to print a receipt.
+            // Persisting an instance of ReceiptParameters might be a better option.
             // Deferred to https://github.com/woocommerce/woocommerce-ios/issues/3825
-            onCompletion(.success(()))
+            guard let receiptParameters = intent.receiptParameters() else {
+                let error = CardReaderServiceError.paymentCapture()
 
-            // Added here just to simplify the PR review.
-            // This will be moved to its own method in https://github.com/woocommerce/woocommerce-ios/issues/3979
-            // The reference to the service will be injected in a similar fashion to
-            // the CardReaderService
-            let content = ReceiptContent(paymentIntent: intent)
-            AirPrintReceiptPrinterService().printReceipt(content: content)
+                DDLogError("⛔️ Payment completed without valid regulatory metadata: \(error)")
+
+                onCompletion(.failure(error))
+                return
+            }
+
+            // Once ReceiptParameters is persisted, we would not propagate it out
+            onCompletion(.success(receiptParameters))
 
             // Note: Here we transition from the Stripe Terminal Payment Intent
             // to the WCPay backend managed Payment Intent, which we need
@@ -131,7 +135,8 @@ private extension CardPresentPaymentStore {
                         onCompletion(.failure(CardReaderServiceError.paymentCapture()))
                         return
                     }
-                    onCompletion(.success(()))
+                    // This is always failing at this point. 
+                    //onCompletion(.success(receiptParameters))
                 case .failure(let error):
                     onCompletion(.failure(error))
                     return

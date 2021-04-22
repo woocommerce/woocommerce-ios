@@ -7,20 +7,20 @@ public extension FancyAlertViewController {
     ///
     /// - Returns: FancyAlertViewController of the alert
     ///
-    static func makeCollectPaymentAlert(name: String, amount: String) -> FancyAlertViewController {
+    static func makeCollectPaymentAlert(name: String, amount: String, image: UIImage) -> FancyAlertViewController {
 
         //let dismissButton = makeDismissButtonConfig()
         //let moreInfoButton = makeMoreInfoButtonConfig()
-        let config = configuration(title: name, bodyText: amount)
+        let config = configuration(title: name, bodyText: amount, image: image)
 
         let controller = FancyAlertViewController.controllerWithConfiguration(configuration: config)
         return controller
     }
 
-    static func configuration(title: String, bodyText: String) -> FancyAlertViewController.Config {
+    static func configuration(title: String, bodyText: String, image: UIImage) -> FancyAlertViewController.Config {
         FancyAlertViewController.Config(titleText: title,
                                         bodyText: bodyText,
-                                        headerImage: .cardPresentImage,
+                                        headerImage: image,
                                         dividerPosition: .top,
                                         defaultButton: nil,
                                         cancelButton: nil,

@@ -403,6 +403,12 @@ extension UIImage {
         return ellipsisImage.imageWithTintColor(tintColor)!
     }
 
+    /// Payment celebration
+    ///
+    static var paymentCelebrationImage: UIImage {
+        return UIImage(named: "woo-payments-celebration")!
+    }
+
     /// Price Icon
     ///
     static var priceImage: UIImage {

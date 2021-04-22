@@ -5,7 +5,7 @@ final class OrderDetailsPaymentAlerts {
     private var alertController: FancyAlertViewController?
 
     func presentInitialAlert(from: UIViewController, name: String, amount: String) {
-        let newAlert = FancyAlertViewController.makeCollectPaymentAlert(name: name, amount: amount)
+        let newAlert = FancyAlertViewController.makeCollectPaymentAlert(name: name, amount: amount, image: .cardPresentImage)
         alertController = newAlert
         alertController?.modalPresentationStyle = .custom
         alertController?.transitioningDelegate = AppDelegate.shared.tabBarController
@@ -13,7 +13,12 @@ final class OrderDetailsPaymentAlerts {
     }
 
     func updateAlertTitle(title: String) {
-        let newConfiguraton = FancyAlertViewController.configuration(title: title, bodyText: "")
+        let newConfiguraton = FancyAlertViewController.configuration(title: title, bodyText: "", image: .cardPresentImage)
+        alertController?.setViewConfiguration(newConfiguraton, animated: false)
+    }
+
+    func success() {
+        let newConfiguraton = FancyAlertViewController.configuration(title: "Payment successful", bodyText: "", image: .paymentCelebrationImage)
         alertController?.setViewConfiguration(newConfiguraton, animated: false)
     }
 

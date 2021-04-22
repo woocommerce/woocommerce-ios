@@ -266,7 +266,25 @@ private extension ShippingLabelStore {
     ///
     func upsertShippingLabelAccountSettings(siteID: Int64, accountSettings: ShippingLabelAccountSettings) {
         let derivedStorage = sharedDerivedStorage
-        let storageAccountSettings = derivedStorage.loadShippingLabelAccountSettings(siteID: siteID) ?? derivedStorage.insertNewObject(ofType: Storage.ShippingLabelAccountSettings.self)
+        let storageAccountSettings = derivedStorage.loadShippingLabelAccountSettings(siteID: siteID) ??
+            derivedStorage.insertNewObject(ofType: Storage.ShippingLabelAccountSettings.self)
         storageAccountSettings.update(with: accountSettings)
+        handleShippingLabelPaymentMethods(accountSettings, storageAccountSettings, derivedStorage)
+    }
+
+    /// Updates/inserts the ShippingLabelPaymentMethod items from the provided account settings.
+    ///
+    func handleShippingLabelPaymentMethods(_ readOnlyAccountSettings: Networking.ShippingLabelAccountSettings,
+                                           _ storageAccountSettings: Storage.ShippingLabelAccountSettings,
+                                           _ storage: StorageType) {
+        // Remove all previous payment methods
+        storageAccountSettings.paymentMethods?.removeAll()
+
+        // Insert the payment methods from the read-only account settings
+        for paymentMethod in readOnlyAccountSettings.paymentMethods {
+            let newStoragePaymentMethod = storage.insertNewObject(ofType: Storage.ShippingLabelPaymentMethod.self)
+            newStoragePaymentMethod.update(with: paymentMethod)
+            storageAccountSettings.addToPaymentMethods(newStoragePaymentMethod)
+        }
     }
 }

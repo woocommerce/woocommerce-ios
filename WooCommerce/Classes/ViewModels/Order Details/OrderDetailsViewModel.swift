@@ -457,7 +457,7 @@ extension OrderDetailsViewModel {
     /// that object outside of Yosemite.
     func collectPayment(onPresentMessage: @escaping (String) -> Void,
                         onClearMessage: @escaping () -> Void,
-                        onCompletion: @escaping (Result<ReceiptParameters, Error>) -> Void) {
+                        onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
             DDLogError("Error: attempted to collect payment for an order without valid total. ")
             onCompletion(.failure(CardReaderServiceError.paymentCapture()))
@@ -499,7 +499,7 @@ extension OrderDetailsViewModel {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func printReceipt(params: ReceiptParameters) {
+    func printReceipt(params: CardPresentReceiptParameters) {
         let action = ReceiptAction.print(order: self.order, parameters: params)
 
         ServiceLocator.stores.dispatch(action)

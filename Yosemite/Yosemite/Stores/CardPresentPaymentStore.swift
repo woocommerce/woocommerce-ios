@@ -97,7 +97,7 @@ private extension CardPresentPaymentStore {
 
     func collectPayment(siteID: Int64, orderID: Int64, parameters: PaymentParameters,
                         onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
-                        onCompletion: @escaping (Result<ReceiptParameters, Error>) -> Void) {
+                        onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         cardReaderService.capturePayment(parameters).sink { error in
             switch error {
             case .failure(let error):

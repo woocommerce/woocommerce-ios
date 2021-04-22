@@ -26,12 +26,33 @@ public extension FancyAlertViewController {
                                         dismissAction: {})
     }
 
-    static func configurationForSuccess(title: String, bodyText: String, image: UIImage,
-                                        printAction: @escaping () -> Void,
+    static func configurationForTappingCard(amount: String) -> FancyAlertViewController.Config {
+        FancyAlertViewController.Config(titleText: Localization.tapInsertOrSwipe,
+                                        bodyText: amount,
+                                        headerImage: .cardPresentImage,
+                                        dividerPosition: .top,
+                                        defaultButton: nil,
+                                        cancelButton: nil,
+                                        moreInfoButton: nil,
+                                        dismissAction: {})
+    }
+
+    static func configurationForRemovingCard() -> FancyAlertViewController.Config {
+        FancyAlertViewController.Config(titleText: Localization.removeCard,
+                                        bodyText: "",
+                                        headerImage: .cardPresentImage,
+                                        dividerPosition: .top,
+                                        defaultButton: nil,
+                                        cancelButton: nil,
+                                        moreInfoButton: nil,
+                                        dismissAction: {})
+    }
+
+    static func configurationForSuccess(printAction: @escaping () -> Void,
                                         emailAction: @escaping () -> Void) -> FancyAlertViewController.Config {
-        FancyAlertViewController.Config(titleText: title,
-                                        bodyText: bodyText,
-                                        headerImage: image,
+        FancyAlertViewController.Config(titleText: Localization.paymentSucessful,
+                                        bodyText: "",
+                                        headerImage: .paymentCelebrationImage,
                                         dividerPosition: .top,
                                         defaultButton: makePrintButon(printAction: printAction),
                                         cancelButton: makeEmailButton(emailAction: emailAction),
@@ -39,11 +60,10 @@ public extension FancyAlertViewController {
                                         dismissAction: {})
     }
 
-    static func configurationForError(image: UIImage,
-                                        tryAgainAction: @escaping () -> Void) -> FancyAlertViewController.Config {
+    static func configurationForError(tryAgainAction: @escaping () -> Void) -> FancyAlertViewController.Config {
         FancyAlertViewController.Config(titleText: Localization.tryAgain,
                                         bodyText: nil,
-                                        headerImage: image,
+                                        headerImage: .paymentCelebrationImage,
                                         dividerPosition: .top,
                                         defaultButton: makeTryAgain(tryAgainAction: tryAgainAction),
                                         cancelButton: nil,
@@ -105,6 +125,21 @@ private extension FancyAlertViewController {
         static let tryAgain = NSLocalizedString(
             "Try collecting payment again",
             comment: "Button to try to collect a payment again. Presented to users after a collecting a payment fails"
+        )
+
+        static let paymentSucessful = NSLocalizedString(
+            "Payment successful",
+            comment: "Label informing users that the payment sucedded. Presented to users when a payment is collected"
+        )
+
+        static let removeCard = NSLocalizedString(
+            "Please remove card",
+            comment: "Label asking users to remove present cards. Presented to users when a payment is in the process of being collected"
+        )
+
+        static let tapInsertOrSwipe = NSLocalizedString(
+            "Tap, insert or swipe to pay",
+            comment: "Label asking users to tap present cards. Presented to users when a payment is going to be collected"
         )
     }
 }

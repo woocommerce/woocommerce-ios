@@ -24,55 +24,29 @@ final class OrderDetailsPaymentAlerts {
     }
 
     func tapOrInsertCard() {
-        let newConfiguraton = FancyAlertViewController.configuration(title: Localization.tapInsertOrSwipe,
-                                                                     bodyText: amount ?? "",
-                                                                     image: .cardPresentImage)
+        let newConfiguraton = FancyAlertViewController.configurationForTappingCard(amount: amount ?? "")
         alertController?.setViewConfiguration(newConfiguraton, animated: false)
     }
 
     func removeCard() {
-        let newConfiguraton = FancyAlertViewController.configuration(title: Localization.removeCard, bodyText: "", image: .cardPresentImage)
+        let newConfiguraton = FancyAlertViewController.configurationForRemovingCard()
         alertController?.setViewConfiguration(newConfiguraton, animated: false)
     }
 
     func success(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void) {
         let newConfiguraton = FancyAlertViewController
-            .configurationForSuccess(title: Localization.paymentSucessful,
-                                     bodyText: "",
-                                     image: .paymentCelebrationImage,
-                                     printAction: printReceipt,
+            .configurationForSuccess(printAction: printReceipt,
                                      emailAction: emailReceipt)
         alertController?.setViewConfiguration(newConfiguraton, animated: false)
     }
 
     func error(error: Error, tryAgainAction: @escaping () -> Void) {
         let newConfiguraton = FancyAlertViewController
-            .configurationForError(image: .paymentCelebrationImage,
-                                     tryAgainAction: tryAgainAction)
+            .configurationForError(tryAgainAction: tryAgainAction)
         alertController?.setViewConfiguration(newConfiguraton, animated: false)
     }
 
     func dismiss() {
         alertController?.dismiss(animated: true, completion: nil)
-    }
-}
-
-
-private extension OrderDetailsPaymentAlerts {
-    enum Localization {
-        static let tapInsertOrSwipe = NSLocalizedString(
-            "Tap, insert or swipe to pay",
-            comment: "Label asking users to tap present cards. Presented to users when a payment is going to be collected"
-        )
-
-        static let removeCard = NSLocalizedString(
-            "Please remove card",
-            comment: "Label asking users to remove present cards. Presented to users when a payment is in the process of being collected"
-        )
-
-        static let paymentSucessful = NSLocalizedString(
-            "Payment successful",
-            comment: "Label informing users that the payment sucedded. Presented to users when a payment is collected"
-        )
     }
 }

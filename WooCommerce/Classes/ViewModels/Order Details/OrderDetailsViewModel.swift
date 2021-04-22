@@ -450,11 +450,14 @@ extension OrderDetailsViewModel {
         stores.dispatch(deleteTrackingAction)
     }
 
-    /// TODO. This does not have to be the final API. For now, it is good enough to show
-    /// a sequence of alerts in the UI that provide some feedback over what is happening
+    /// We are passing the ReceiptParameters as part of the completon block
+    /// We do so at this point for testing purposes.
+    /// When we implement persistance, the receipt metadata would be persisted
+    /// to Storage, associated to an order. We would not need to propagate
+    /// that object outside of Yosemite.
     func collectPayment(onPresentMessage: @escaping (String) -> Void,
                         onClearMessage: @escaping () -> Void,
-                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
+                        onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
             DDLogError("Error: attempted to collect payment for an order without valid total. ")
             onCompletion(.failure(CardReaderServiceError.paymentCapture()))
@@ -480,9 +483,24 @@ extension OrderDetailsViewModel {
                                                                     break
                                                                 }
                                                              }, onCompletion: { (result) in
-            // For now, just propagate the result to the UI.
+            // Propagate the result to the UI
             onCompletion(result)
+
+            //Initiate a printout of a receipt (to be removed with https://github.com/woocommerce/woocommerce-ios/issues/3976)
+                                                                //This is here only for testing purposes
+                                                                switch result {
+                                                                case .success(let parameters):
+                                                                    self.printReceipt(params: parameters)
+                                                                default:
+                                                                    break
+                                                                }
         })
+
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func printReceipt(params: CardPresentReceiptParameters) {
+        let action = ReceiptAction.print(order: self.order, parameters: params)
 
         ServiceLocator.stores.dispatch(action)
     }

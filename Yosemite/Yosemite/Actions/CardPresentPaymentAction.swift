@@ -20,7 +20,7 @@ public enum CardPresentPaymentAction: Action {
                         orderID: Int64,
                         parameters: PaymentParameters,
                         onCardReaderMessage: (CardReaderEvent) -> Void,
-                        onCompletion: (Result<Void, Error>) -> Void )
+                        onCompletion: (Result<CardPresentReceiptParameters, Error>) -> Void )
 
     case checkForCardReaderUpdate(onData: (Result<CardReaderSoftwareUpdate, Error>) -> Void,
                         onCompletion: () -> Void)

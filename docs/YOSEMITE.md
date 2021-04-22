@@ -43,6 +43,7 @@ At the moment, we provide the following subclasses of `Store`:
 * `OrderStore`. Registers `OrderAction` with the `Dispatcher` and responds to the actions declared in it.
 * `OrderNoteStore`. Business logic pertaining order notes. Registers and responds to operation declared in `OrderNoteAction`
 * `OrderStatusStore`. Business logic related to order payment statuses, implementing operations declared in `OrderStatusAction`
+* `ReceiptStore` registers and respond to operations declared in `ReceiptAction`, providing support for storing and printing card present payment receipts.
 * `SettingStore` registers and responds to operations declared in `SettingAction`
 * `StatsStore` responds to operations declared in `StatsAction`, providing support for the order stats.
 * `StatsStoreV4` responds to operations declared in `StatsActionV4`, providing support for the order stats based on the V4 API, yet to be integrated in the UI.

@@ -40,6 +40,8 @@ final class OrderDetailsViewController: UIViewController {
 
     private let notices = OrderDetailsNotices()
 
+    /// Orchestrates what needs to be presented in the modal views
+    /// that provide user-facing feedback about the card present payment process.
     private lazy var paymentAlerts: OrderDetailsPaymentAlerts = {
         OrderDetailsPaymentAlerts()
     }()

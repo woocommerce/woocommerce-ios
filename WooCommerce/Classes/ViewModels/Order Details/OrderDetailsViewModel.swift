@@ -83,6 +83,8 @@ final class OrderDetailsViewModel {
         }
     }
 
+    /// Name of the user we will be collecting car present payments from
+    ///
     var collectPaymentFrom: String {
         guard let name = order.billingAddress?.firstName else {
             return "Collect payment"

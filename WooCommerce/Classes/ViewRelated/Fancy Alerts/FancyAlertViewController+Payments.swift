@@ -27,4 +27,22 @@ public extension FancyAlertViewController {
                                         moreInfoButton: nil,
                                         dismissAction: {})
     }
+
+    static func configurationForSuccess(title: String, bodyText: String, image: UIImage, printAction: @escaping () -> Void) -> FancyAlertViewController.Config {
+        FancyAlertViewController.Config(titleText: title,
+                                        bodyText: bodyText,
+                                        headerImage: image,
+                                        dividerPosition: .top,
+                                        defaultButton: makePrintButon(printAction: printAction),
+                                        cancelButton: nil,
+                                        moreInfoButton: nil,
+                                        dismissAction: {})
+    }
+
+    private static func makePrintButon(printAction: @escaping () -> Void) -> FancyAlertViewController.Config.ButtonConfig {
+        return FancyAlertViewController.Config.ButtonConfig("Print") { controller, _ in
+            printAction()
+            controller.dismiss(animated: true)
+        }
+    }
 }

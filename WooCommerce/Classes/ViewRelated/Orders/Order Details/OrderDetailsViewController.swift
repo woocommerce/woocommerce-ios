@@ -520,10 +520,6 @@ private extension OrderDetailsViewController {
     }
 
     @objc private func collectPayment(at: IndexPath) {
-        guard let _ = tableView.cellForRow(at: at) as? ButtonTableViewCell else {
-            return
-        }
-
         paymentAlerts.readerIsReady(from: self,
                                     name: viewModel.collectPaymentFrom,
                                     amount: viewModel.order.total)
@@ -533,7 +529,18 @@ private extension OrderDetailsViewController {
         } onClearMessage: { [weak self] in
             self?.paymentAlerts.removeCard()
         } onCompletion: { [weak self] result in
-            self?.paymentAlerts.success()
+            guard let self = self else {
+                return
+            }
+
+            switch result {
+            case .failure(let error):
+                self.paymentAlerts.error(error: error)
+            case .success(let receiptParameters):
+                self.paymentAlerts.success {
+                    self.viewModel.printReceipt(params: receiptParameters)
+                }
+            }
         }
     }
 

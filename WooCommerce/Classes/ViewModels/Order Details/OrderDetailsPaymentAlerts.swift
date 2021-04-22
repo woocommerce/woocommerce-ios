@@ -27,9 +27,13 @@ final class OrderDetailsPaymentAlerts {
         alertController?.setViewConfiguration(newConfiguraton, animated: false)
     }
 
-    func success() {
-        let newConfiguraton = FancyAlertViewController.configuration(title: "Payment successful", bodyText: "", image: .paymentCelebrationImage)
+    func success(printReceipt: @escaping () -> Void) {
+        let newConfiguraton = FancyAlertViewController.configurationForSuccess(title: "Payment successful", bodyText: "", image: .paymentCelebrationImage, printAction: printReceipt)
         alertController?.setViewConfiguration(newConfiguraton, animated: false)
+    }
+
+    func error(error: Error) {
+
     }
 
     func dismiss() {

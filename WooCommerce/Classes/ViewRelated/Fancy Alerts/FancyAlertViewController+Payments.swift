@@ -3,7 +3,8 @@ import WordPressUI
 
 /// We are going to need to write a new modal view to present user facing messages related to payments.
 /// https://github.com/woocommerce/woocommerce-ios/issues/3980
-/// In the meantime, this, based on FancyAlertViewController, will have to do
+/// In the meantime, this, based on FancyAlertViewController, will have to do.
+/// This extension will probably be removed when 3980 is implemented
 public extension FancyAlertViewController {
 
     static func makeCollectPaymentAlert(name: String, amount: String, image: UIImage) -> FancyAlertViewController {
@@ -38,6 +39,18 @@ public extension FancyAlertViewController {
                                         dismissAction: {})
     }
 
+    static func configurationForError(image: UIImage,
+                                        tryAgainAction: @escaping () -> Void) -> FancyAlertViewController.Config {
+        FancyAlertViewController.Config(titleText: Localization.tryAgain,
+                                        bodyText: nil,
+                                        headerImage: image,
+                                        dividerPosition: .top,
+                                        defaultButton: makeTryAgain(tryAgainAction: tryAgainAction),
+                                        cancelButton: nil,
+                                        moreInfoButton: nil,
+                                        dismissAction: {})
+    }
+
     private static func makePrintButon(printAction: @escaping () -> Void) -> FancyAlertViewController.Config.ButtonConfig {
         return FancyAlertViewController.Config.ButtonConfig(Localization.printReceipt) { controller, _ in
             printAction()
@@ -54,6 +67,13 @@ public extension FancyAlertViewController {
 
     private static func makeNoThanksButton() -> FancyAlertViewController.Config.ButtonConfig {
         return FancyAlertViewController.Config.ButtonConfig(Localization.noThanks) { controller, _ in
+            controller.dismiss(animated: true)
+        }
+    }
+
+    private static func makeTryAgain(tryAgainAction: @escaping () -> Void) -> FancyAlertViewController.Config.ButtonConfig {
+        return FancyAlertViewController.Config.ButtonConfig(Localization.tryAgain) { controller, _ in
+            tryAgainAction()
             controller.dismiss(animated: true)
         }
     }
@@ -77,32 +97,14 @@ private extension FancyAlertViewController {
             comment: "Button to dismiss modal overlay. Presented to users after a payment has been successfully collected"
         )
 
-        static let dismissButton = NSLocalizedString(
-            "Continue",
-            comment: "Title of dismiss button presented when users attempt to log in without Jetpack installed or connected"
+        static let paymentFailed = NSLocalizedString(
+            "Payment failed",
+            comment: "Error message. Presented to users after a collecting a payment fails"
         )
 
-        static let whatEmailDoIUse = NSLocalizedString(
-            "What email do I use to sign in?",
-            comment: "Title of alert informing users of what email they can use to sign in."
-            + "Presented when users attempt to log in with an email that does not match a WP.com account"
+        static let tryAgain = NSLocalizedString(
+            "Try collecting payment again",
+            comment: "Button to try to collect a payment again. Presented to users after a collecting a payment fails"
         )
-
-        static let whatEmailDoIUseLongDescription = NSLocalizedString(
-            "In your site admin you can find the email you used to connect to WordPress.com from the Jetpack Dashboard under Connections > Account Connection",
-            comment: "Long descriptions of alert informing users of what email they can use to sign in."
-                + "Presented when users attempt to log in with an email that does not match a WP.com account"
-        )
-
-        static let needMoreHelp = NSLocalizedString(
-            "Need more help?",
-            comment: "Title of button to learn more presented when users attempt to log in with an email address that does not match a WP.com account"
-        )
-    }
-
-    enum Strings {
-        static let instructionsURLString = "https://docs.woocommerce.com/document/jetpack-setup-instructions-for-the-woocommerce-mobile-app/"
-
-        static let whatsJetpackURLString = "https://jetpack.com/about/"
     }
 }

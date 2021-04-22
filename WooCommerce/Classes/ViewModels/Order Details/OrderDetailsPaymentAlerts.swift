@@ -37,8 +37,11 @@ final class OrderDetailsPaymentAlerts {
         alertController?.setViewConfiguration(newConfiguraton, animated: false)
     }
 
-    func error(error: Error) {
-
+    func error(error: Error, tryAgainAction: @escaping () -> Void) {
+        let newConfiguraton = FancyAlertViewController
+            .configurationForError(image: .paymentCelebrationImage,
+                                     tryAgainAction: tryAgainAction)
+        alertController?.setViewConfiguration(newConfiguraton, animated: false)
     }
 
     func dismiss() {

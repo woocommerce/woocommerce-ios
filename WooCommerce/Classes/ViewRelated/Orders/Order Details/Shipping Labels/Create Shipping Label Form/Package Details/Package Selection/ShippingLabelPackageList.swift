@@ -2,9 +2,7 @@ import SwiftUI
 import Yosemite
 
 struct ShippingLabelPackageList: View {
-    @ObservedObject private var viewModel: ShippingLabelPackageListViewModel
-
-    private var onPackageSelected: ((ShippingLabelCustomPackage?, ShippingLabelPredefinedPackage?) -> Void)?
+    @EnvironmentObject private var viewModel: ShippingLabelPackageDetailsViewModel
 
     var body: some View {
         ScrollView {
@@ -19,7 +17,7 @@ struct ShippingLabelPackageList: View {
                 ForEach(viewModel.customPackages, id: \.title) { package in
                     let selected = package == viewModel.selectedCustomPackage
                     SelectableItemRow(title: package.title, subtitle: package.dimensions + " \(viewModel.dimensionUnit)", selected: selected).onTapGesture {
-                        viewModel.didSelectCustomPackage(package)
+                        viewModel.didSelectPackage(package.title)
                     }
                     Divider().padding(.leading, Constants.dividerPadding)
                 }
@@ -33,7 +31,7 @@ struct ShippingLabelPackageList: View {
                     ForEach(option.predefinedPackages, id: \.id) { package in
                         let selected = package == viewModel.selectedPredefinedPackage
                         SelectableItemRow(title: package.title, subtitle: package.dimensions + " \(viewModel.dimensionUnit)", selected: selected).onTapGesture {
-                            viewModel.didSelectPredefinedPackage(package)
+                            viewModel.didSelectPackage(package.id)
                         }
                         Divider().padding(.leading, Constants.dividerPadding)
                     }
@@ -44,15 +42,10 @@ struct ShippingLabelPackageList: View {
         .background(Color(.listBackground))
         .navigationBarTitle(Text(Localization.title), displayMode: .inline)
         .navigationBarItems(trailing: Button(action: {
-            onPackageSelected?(viewModel.selectedCustomPackage, viewModel.selectedPredefinedPackage)
+            viewModel.confirmPackageSelection()
         }, label: {
             Text(Localization.doneButton)
         }))
-    }
-
-    init(viewModel: ShippingLabelPackageListViewModel, onPackageSelected: @escaping (ShippingLabelCustomPackage?, ShippingLabelPredefinedPackage?) -> Void) {
-        self.viewModel = viewModel
-        self.onPackageSelected = onPackageSelected
     }
 }
 
@@ -71,46 +64,8 @@ private extension ShippingLabelPackageList {
 
 struct ShippingLabelPackageList_Previews: PreviewProvider {
     static var previews: some View {
-        let storeOptions = ShippingLabelStoreOptions(currencySymbol: "$",
-                                                     dimensionUnit: "in",
-                                                     weightUnit: "oz",
-                                                     originCountry: "US")
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder())
 
-        let customPackages = [
-            ShippingLabelCustomPackage(isUserDefined: true,
-                                       title: "Box",
-                                       isLetter: true,
-                                       dimensions: "3 x 10 x 4",
-                                       boxWeight: 10,
-                                       maxWeight: 11),
-            ShippingLabelCustomPackage(isUserDefined: true,
-                                       title: "Box n°2",
-                                       isLetter: true,
-                                       dimensions: "30 x 1 x 20",
-                                       boxWeight: 2,
-                                       maxWeight: 4),
-            ShippingLabelCustomPackage(isUserDefined: true,
-                                       title: "Box n°3",
-                                       isLetter: true,
-                                       dimensions: "10 x 40 x 3",
-                                       boxWeight: 7,
-                                       maxWeight: 10)]
-
-
-        let predefinedOptions = [ShippingLabelPredefinedOption(title: "USPS", predefinedPackages: [ShippingLabelPredefinedPackage(id: "package-1",
-                                                                                                                                  title: "Small",
-                                                                                                                                  isLetter: true,
-                                                                                                                                  dimensions: "3 x 4 x 5"),
-                                                                                                   ShippingLabelPredefinedPackage(id: "package-2",
-                                                                                                                                  title: "Big",
-                                                                                                                                  isLetter: true,
-                                                                                                                                  dimensions: "5 x 7 x 9")])]
-
-        let packagesResponse = ShippingLabelPackagesResponse(storeOptions: storeOptions, customPackages: customPackages, predefinedOptions: predefinedOptions)
-
-        let viewModel = ShippingLabelPackageListViewModel(packagesResponse: packagesResponse)
-
-        ShippingLabelPackageList(viewModel: viewModel) { (customPackage, predefinedPackage) in
-        }
+        ShippingLabelPackageList().environmentObject(viewModel)
     }
 }

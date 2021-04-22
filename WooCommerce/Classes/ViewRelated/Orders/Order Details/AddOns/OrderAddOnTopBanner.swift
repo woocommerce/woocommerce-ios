@@ -21,9 +21,13 @@ struct OrderAddOnTopBanner: UIViewRepresentable {
                                             // Forces `SwiftUI` to recalculate it's size as the view collapses/expands
                                             state.bannerWrapper.invalidateIntrinsicContentSize()
                                            },
-                                           actionButtons: [TopBannerViewModel.ActionButton(title: Localization.dismiss) {
+                                           actionButtons: [TopBannerViewModel.ActionButton(title: Localization.giveFeedback) {
+                                            state.onGiveFeedback()
+                                           },
+                                           TopBannerViewModel.ActionButton(title: Localization.dismiss) {
                                             state.onDismissHandler()
-                                           }])
+                                           }
+                                           ])
 
         let mainBanner = TopBannerView(viewModel: viewModel)
 
@@ -35,10 +39,17 @@ struct OrderAddOnTopBanner: UIViewRepresentable {
         // No-op
     }
 
-    /// Closure to be called when the dismiss button is pressed.
+    /// Updates the closure to be called when the "dismiss" button is pressed.
     ///
-    func onDismiss(_ handler: @escaping () -> Void) -> some View {
+    func onDismiss(_ handler: @escaping () -> Void) -> OrderAddOnTopBanner {
         state.onDismissHandler = handler
+        return self
+    }
+
+    /// Updates the closure to be called when the "Give Feedback" button is pressed.
+    ///
+    func onGiveFeedback(_ handler: @escaping () -> Void) -> OrderAddOnTopBanner {
+        state.onGiveFeedback = handler
         return self
     }
 }
@@ -55,6 +66,10 @@ private extension OrderAddOnTopBanner {
         ///
         var onDismissHandler = {}
 
+        /// Closure to be invoked when the "Give Feedback" button is pressed.
+        ///
+        var onGiveFeedback = {}
+
         init(bannerWrapper: TopBannerWrapperView) {
             self.bannerWrapper = bannerWrapper
         }
@@ -64,11 +79,12 @@ private extension OrderAddOnTopBanner {
 private extension OrderAddOnTopBanner {
     enum Localization {
         static let title = NSLocalizedString("Work in progress", comment: "Title of the banner notice in the add-ons view")
-        static let dismiss = NSLocalizedString("Dismiss", comment: "Title of the button to dismiss the banner notice in the add-ons view")
         static let description = NSLocalizedString("View product add-ons is in beta. " +
                                                     "You can edit these add-ons in the web dashboard. " +
                                                    "By renaming an add-on, any old orders won’t show that add-on in the app.",
                                                    comment: "Content of the banner notice in the add-ons view")
+        static let giveFeedback = NSLocalizedString("Give Feedback", comment: "Title of the button to give feedback about the add-ons feature")
+        static let dismiss = NSLocalizedString("Dismiss", comment: "Title of the button to dismiss the banner notice in the add-ons view")
     }
 }
 

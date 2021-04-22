@@ -35,6 +35,9 @@ struct OrderAddOnListI1View: View {
                         .onDismiss {
                             print("Dismiss")
                         }
+                        .onGiveFeedback {
+                            print("Give feedback")
+                        }
                         .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
 
 

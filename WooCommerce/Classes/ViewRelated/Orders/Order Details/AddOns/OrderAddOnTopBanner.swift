@@ -2,77 +2,67 @@ import Foundation
 import SwiftUI
 
 struct OrderAddOnTopBanner: UIViewRepresentable {
+    typealias Callback = () -> ()
 
-    /// `UIKit` view state.
+    /// Banner wrapper that will contain a `TopBannerView`.
     ///
-    private let state: State
+    private let bannerWrapper: TopBannerWrapperView
 
-    /// Initialize the wrapper with the desired `width` of the view. Needed to provide a correct view `height` later.
+    /// Closure to be invoked when the "Give Feedback" button is pressed.
+    ///
+    private var onGiveFeedback: Callback? = nil
+
+    /// Closure to be invoked when the "Dismiss" button is pressed.
+    ///
+    private var onDismiss: Callback? = nil
+
+    /// Create a view with the desired `width`. Needed to calculate a correct view `height` later.
     ///
     init(width: CGFloat) {
-        state = State(bannerWrapper: TopBannerWrapperView(width: width))
+        self.bannerWrapper = TopBannerWrapperView(width: width)
     }
 
     func makeUIView(context: Context) -> UIView {
+        let topButton = TopBannerViewModel.TopButtonType.chevron {
+            bannerWrapper.invalidateIntrinsicContentSize() // Forces the view to recalculate it's size as it collapses/expands
+        }
+        let giveFeedbackButton = TopBannerViewModel.ActionButton(title: Localization.giveFeedback) {
+            onGiveFeedback?()
+        }
+        let dismissButton = TopBannerViewModel.ActionButton(title: Localization.dismiss) {
+            onDismiss?()
+        }
+
         let viewModel = TopBannerViewModel(title: Localization.title,
                                            infoText: Localization.description,
                                            icon: .workInProgressBanner,
-                                           topButton: .chevron {
-                                            // Forces `SwiftUI` to recalculate it's size as the view collapses/expands
-                                            state.bannerWrapper.invalidateIntrinsicContentSize()
-                                           },
-                                           actionButtons: [TopBannerViewModel.ActionButton(title: Localization.giveFeedback) {
-                                            state.onGiveFeedback()
-                                           },
-                                           TopBannerViewModel.ActionButton(title: Localization.dismiss) {
-                                            state.onDismissHandler()
-                                           }
-                                           ])
-
+                                           topButton: topButton,
+                                           actionButtons: [giveFeedbackButton, dismissButton])
         let mainBanner = TopBannerView(viewModel: viewModel)
 
-        state.bannerWrapper.setBanner(mainBanner)
-        return state.bannerWrapper
+        // Set the real view to be displayed inside the wrapper.
+        bannerWrapper.setBanner(mainBanner)
+        return bannerWrapper
     }
 
     func updateUIView(_ uiView: UIView, context: Context) {
         // No-op
     }
 
-    /// Updates the closure to be called when the "dismiss" button is pressed.
+    /// Returns a copy of the view with `onDismiss` handling.
     ///
-    func onDismiss(_ handler: @escaping () -> Void) -> OrderAddOnTopBanner {
-        state.onDismissHandler = handler
-        return self
+    func onDismiss(_ handler: @escaping Callback) -> OrderAddOnTopBanner {
+        var copy = self
+        copy.onDismiss = handler
+        return copy
     }
 
-    /// Updates the closure to be called when the "Give Feedback" button is pressed.
+    /// Returns a copy of the view with `onGiveFeedback` handling.
     ///
-    func onGiveFeedback(_ handler: @escaping () -> Void) -> OrderAddOnTopBanner {
-        state.onGiveFeedback = handler
-        return self
-    }
-}
-
-private extension OrderAddOnTopBanner {
-    /// Hold necessary state that needs to be referenced from `TopBannerViewModel.init()`
-    ///
-    class State {
-        /// Banner wrapper that will contain a `TopBannerView`.
-        ///
-        let bannerWrapper: TopBannerWrapperView
-
-        /// Closure to be invoked when the "Dismiss" button is pressed.
-        ///
-        var onDismissHandler = {}
-
-        /// Closure to be invoked when the "Give Feedback" button is pressed.
-        ///
-        var onGiveFeedback = {}
-
-        init(bannerWrapper: TopBannerWrapperView) {
-            self.bannerWrapper = bannerWrapper
-        }
+    func onGiveFeedback(_ handler: @escaping Callback) -> OrderAddOnTopBanner {
+        var copy = self
+        copy.onGiveFeedback = handler
+        return copy
     }
 }
 

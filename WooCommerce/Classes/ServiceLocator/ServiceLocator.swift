@@ -64,7 +64,7 @@ final class ServiceLocator {
 
     /// Support for printing receipts
     ///
-    private static var _receiptPrinter: ReceiptPrinterService = AirPrintReceiptPrinterService()
+    private static var _receiptPrinter: PrinterService = AirPrintReceiptPrinterService()
 
     // MARK: - Getters
 
@@ -169,7 +169,7 @@ final class ServiceLocator {
 
     /// Provides the access point to the ReceiptPrinterService.
     /// - Returns: An implementation of the ReceiptPrinterService protocol.
-    static var receiptPrinterService: ReceiptPrinterService {
+    static var receiptPrinterService: PrinterService {
         _receiptPrinter
     }
 }
@@ -267,7 +267,7 @@ extension ServiceLocator {
         _cardReader = mock
     }
 
-    static func setReceiptPrinter(_ mock: ReceiptPrinterService) {
+    static func setReceiptPrinter(_ mock: PrinterService) {
         guard isRunningTests() else {
             return
         }

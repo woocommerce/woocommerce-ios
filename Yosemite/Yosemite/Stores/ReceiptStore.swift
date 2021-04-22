@@ -6,13 +6,13 @@ import Hardware
 // MARK: - ReceiptStore
 //
 public class ReceiptStore: Store {
-    private let receiptPrinterService: ReceiptPrinterService
+    private let receiptPrinterService: PrinterService
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.writerDerivedStorage
     }()
 
-    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, receiptPrinterService: ReceiptPrinterService) {
+    public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network, receiptPrinterService: PrinterService) {
         self.receiptPrinterService = receiptPrinterService
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }

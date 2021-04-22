@@ -101,7 +101,7 @@ private struct OrderAddOnNoticeView: View {
             Text(updateText)
         }
         .footnoteStyle()
-        .padding([.leading, .trailing])
+        .padding([.leading, .trailing]).padding(.top, 4)
     }
 }
 

@@ -1,6 +1,12 @@
 import UIKit
 import WordPressUI
 
+/// A layer of indirection between OrderDetailsViewController and the modal alerts
+/// presented to provide user-facing feedback about the progress
+/// of the payment collection process
+/// It is using a FancyAlertViewController at the moment, but this is the class
+/// to rewrite whenever we have the UI finalized.
+/// https://github.com/woocommerce/woocommerce-ios/issues/3980
 final class OrderDetailsPaymentAlerts {
     private var alertController: FancyAlertViewController?
     private var name: String?

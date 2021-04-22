@@ -62,6 +62,10 @@ final class ServiceLocator {
     ///
     private static var _cardReader: CardReaderService = StripeCardReaderService()
 
+    /// Support for printing receipts
+    ///
+    private static var _receiptPrinter: PrinterService = AirPrintReceiptPrinterService()
+
     // MARK: - Getters
 
     /// Provides the access point to the analytics.
@@ -162,6 +166,12 @@ final class ServiceLocator {
     static var cardReaderService: CardReaderService {
         _cardReader
     }
+
+    /// Provides the access point to the ReceiptPrinterService.
+    /// - Returns: An implementation of the ReceiptPrinterService protocol.
+    static var receiptPrinterService: PrinterService {
+        _receiptPrinter
+    }
 }
 
 
@@ -255,6 +265,14 @@ extension ServiceLocator {
         }
 
         _cardReader = mock
+    }
+
+    static func setReceiptPrinter(_ mock: PrinterService) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _receiptPrinter = mock
     }
 }
 

@@ -32,6 +32,9 @@ struct OrderAddOnListI1View: View {
             ScrollView {
                 VStack {
                     OrderAddOnTopBanner(width: geometry.size.width)
+                        .onDismiss {
+                            print("Dismiss")
+                        }
                         .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
 
 

@@ -3,34 +3,61 @@ import SwiftUI
 
 struct OrderAddOnTopBanner: UIViewRepresentable {
 
-    /// Banner wrapper, needed as a instance variable in order to reference it from `TopBannerViewModel` closures
+    /// `UIKit` view state.
     ///
-    private let bannerWrapper: TopBannerWrapperView
+    private let state: State
 
     /// Initialize the wrapper with the desired `width` of the view. Needed to provide a correct view `height` later.
     ///
     init(width: CGFloat) {
-        self.bannerWrapper = TopBannerWrapperView(width: width)
+        state = State(bannerWrapper: TopBannerWrapperView(width: width))
     }
 
     func makeUIView(context: Context) -> UIView {
         let viewModel = TopBannerViewModel(title: Localization.title,
                                            infoText: Localization.description,
                                            icon: .workInProgressBanner,
-                                           topButton: .chevron { [bannerWrapper] in
+                                           topButton: .chevron {
                                             // Forces `SwiftUI` to recalculate it's size as the view collapses/expands
-                                            bannerWrapper.invalidateIntrinsicContentSize()
+                                            state.bannerWrapper.invalidateIntrinsicContentSize()
                                            },
-                                           actionButtons: [TopBannerViewModel.ActionButton(title: Localization.dismiss, action: {})])
+                                           actionButtons: [TopBannerViewModel.ActionButton(title: Localization.dismiss) {
+                                            state.onDismissHandler()
+                                           }])
 
         let mainBanner = TopBannerView(viewModel: viewModel)
 
-        bannerWrapper.setBanner(mainBanner)
-        return bannerWrapper
+        state.bannerWrapper.setBanner(mainBanner)
+        return state.bannerWrapper
     }
 
     func updateUIView(_ uiView: UIView, context: Context) {
-        // No-Op
+        // No-op
+    }
+
+    /// Closure to be called when the dismiss button is pressed.
+    ///
+    func onDismiss(_ handler: @escaping () -> Void) -> some View {
+        state.onDismissHandler = handler
+        return self
+    }
+}
+
+private extension OrderAddOnTopBanner {
+    /// Hold necessary state that needs to be referenced from `TopBannerViewModel.init()`
+    ///
+    class State {
+        /// Banner wrapper that will contain a `TopBannerView`.
+        ///
+        let bannerWrapper: TopBannerWrapperView
+
+        /// Closure to be invoked when the "Dismiss" button is pressed.
+        ///
+        var onDismissHandler = {}
+
+        init(bannerWrapper: TopBannerWrapperView) {
+            self.bannerWrapper = bannerWrapper
+        }
     }
 }
 
@@ -63,7 +90,7 @@ final class TopBannerWrapperView: UIView {
     }
 
     /// Sets the main banner view and adds it as a subview.
-    /// Discussion: The banner view is intentionally received as a function parameter(rather than in `init`) to allow the consumer
+    /// Discussion: The banner view is intentionally received as a function parameter(rather than in `init`) to allow consumer
     /// references to `TopBannerWrapperView` in  view model closures.
     ///
     func setBanner(_ bannerView: TopBannerView) {

@@ -3,7 +3,7 @@ import Yosemite
 
 /// ViewModel for `OrderAddOnListI1View`
 ///
-final class OrderAddOnListI1ViewModel {
+final class OrderAddOnListI1ViewModel: ObservableObject {
     /// AddOns to render
     ///
     let addOns: [OrderAddOnI1ViewModel]
@@ -15,6 +15,10 @@ final class OrderAddOnListI1ViewModel {
     /// Update add-ons notice
     ///
     let updateNotice = Localization.updateNotice
+
+    /// Indicates if the top banner should be shown or not
+    ///
+    @Published private(set) var shouldShowBetaBanner: Bool = true
 
     /// Member-wise initializer, useful for `SwiftUI` previews
     ///
@@ -47,6 +51,15 @@ final class OrderAddOnListI1ViewModel {
     private static func addOnPrice(from attribute: OrderItemAttribute, withDecodedName name: String) -> String {
         attribute.name.replacingOccurrences(of: name, with: "")     // "Topping (Spicy) ($30.00)" -> " ($30.00)"
             .trimmingCharacters(in: CharacterSet([" ", "(", ")"]))  // " ($30.00)" -> "$30.00"
+    }
+}
+
+// MARK: Inputs
+extension OrderAddOnListI1ViewModel {
+    /// Tells the view model to hide the beta features banner.
+    ///
+    func hideBetaBanner() {
+        shouldShowBetaBanner = false
     }
 }
 

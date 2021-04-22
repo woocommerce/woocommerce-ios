@@ -24,4 +24,22 @@ class OrderAddOnListI1Tests: XCTestCase {
             OrderAddOnI1ViewModel.init(id: 3, title: "Soda (No Sugar)", content: "5", price: "$7.00")
         ])
     }
+
+    func test_top_banner_start_visible_and_is_hiden_after_calling_hideBanner_method() {
+        // Given
+        let attributes = [
+            OrderItemAttribute(metaID: 1, name: "Topping ($3.00)", value: "Salami"),
+            OrderItemAttribute(metaID: 2, name: "Fast Delivery ($7.00)", value: "Yes"),
+            OrderItemAttribute(metaID: 3, name: "Soda (No Sugar) ($7.00)", value: "5"),
+        ]
+        let viewModel = OrderAddOnListI1ViewModel(attributes: attributes)
+        XCTAssertTrue(viewModel.shouldShowBetaBanner)
+
+        // When
+        viewModel.hideBetaBanner()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowBetaBanner)
+
+    }
 }

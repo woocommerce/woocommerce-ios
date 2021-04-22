@@ -32,6 +32,29 @@ public final class CouponsRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    // MARK: - Delete Coupon
+
+    /// Delete a `Coupon`.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll delete the product attribute.
+    ///     - couponID: ID of the Coupon that will be deleted.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func deleteCoupon(for siteID: Int64,
+                             couponID: Int64,
+                             completion: @escaping (Result<Coupon, Error>) -> Void) {
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .delete,
+                                     siteID: siteID,
+                                     path: Path.coupons + "/\(couponID)",
+                                     parameters: [ParameterKey.force: true])
+
+        let mapper = CouponMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 // MARK: - Constants
@@ -49,5 +72,6 @@ public extension CouponsRemote {
     private enum ParameterKey {
         static let page = "page"
         static let perPage = "per_page"
+        static let force = "force"
     }
 }

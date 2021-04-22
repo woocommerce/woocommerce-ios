@@ -132,4 +132,59 @@ final class CouponsRemoteTests: XCTestCase {
         }
         XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 403))
     }
+
+    // MARK: - Delete Coupon tests
+
+    /// Verifies that deleteCoupon properly parses the `coupon` sample response.
+    ///
+    func test_deleteCoupon_properly_returns_parsed_Coupon() throws {
+        // Given
+        let remote = CouponsRemote(network: network)
+        let sampleCouponID: Int64 = 720
+
+        network.simulateResponse(requestUrlSuffix: "coupons/\(sampleCouponID)", filename: "coupon")
+
+        // When
+        let result = waitFor { promise in
+            remote.deleteCoupon(for: self.sampleSiteID, couponID: sampleCouponID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssert(result.isSuccess)
+        guard let coupon = try? result.get() else {
+            XCTFail("Expected parsed Coupon not found in response")
+            return
+        }
+        XCTAssertEqual(coupon.couponID, sampleCouponID)
+    }
+
+    /// Verifies that deleteCoupon properly relays Networking Layer errors.
+    ///
+    func test_deleteCoupon_properly_relays_networking_errors() throws {
+        // Given
+        let remote = CouponsRemote(network: network)
+        let sampleCouponID: Int64 = 1275
+
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "coupons/\(sampleCouponID)", error: error)
+
+        // When
+        let result = waitFor { promise in
+            remote.deleteCoupon(for: self.sampleSiteID,
+                                couponID: sampleCouponID,
+                                completion: { (result) in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        guard let resultError = result.failure as? NetworkError else {
+            XCTFail("Expected NetworkError not found")
+            return
+        }
+        XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
+    }
 }

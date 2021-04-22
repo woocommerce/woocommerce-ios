@@ -35,7 +35,7 @@ struct OrderAddOnTopBanner: UIViewRepresentable {
 
         let viewModel = TopBannerViewModel(title: Localization.title,
                                            infoText: Localization.description,
-                                           icon: .workInProgressBanner,
+                                           icon: .megaphoneIcon,
                                            topButton: topButton,
                                            actionButtons: [giveFeedbackButton, dismissButton])
         let mainBanner = TopBannerView(viewModel: viewModel)
@@ -68,10 +68,10 @@ struct OrderAddOnTopBanner: UIViewRepresentable {
 
 private extension OrderAddOnTopBanner {
     enum Localization {
-        static let title = NSLocalizedString("Work in progress", comment: "Title of the banner notice in the add-ons view")
-        static let description = NSLocalizedString("View product add-ons is in beta. " +
-                                                    "You can edit these add-ons in the web dashboard. " +
-                                                   "By renaming an add-on, any old orders won’t show that add-on in the app.",
+        static let title = NSLocalizedString("View add-ons from your device!", comment: "Title of the banner notice in the add-ons view")
+        static let description = NSLocalizedString("We are working on making it easier for you to see product add-ons from your device! " +
+                                                   "For now, you’ll be able to see the add-ons for your orders. " +
+                                                   "You can create and edit these add-ons in your web dashboard.",
                                                    comment: "Content of the banner notice in the add-ons view")
         static let giveFeedback = NSLocalizedString("Give Feedback", comment: "Title of the button to give feedback about the add-ons feature")
         static let dismiss = NSLocalizedString("Dismiss", comment: "Title of the button to dismiss the banner notice in the add-ons view")

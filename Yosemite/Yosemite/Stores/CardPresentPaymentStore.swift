@@ -118,6 +118,25 @@ private extension CardPresentPaymentStore {
             // the CardReaderService
             let content = ReceiptContent(paymentIntent: intent)
             AirPrintReceiptPrinterService().printReceipt(content: content)
+
+            // Note: Here we transition from the Stripe Terminal Payment Intent
+            // to the WCPay backend managed Payment Intent, which we need
+            // to use to capture the payment.
+
+            self.remote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: intent.id) { result in
+                switch result {
+                case .success(let intent):
+                    guard intent.status == .succeeded else {
+                        DDLogDebug("Unexpected payment intent status \(intent.status) after attempting capture")
+                        onCompletion(.failure(CardReaderServiceError.paymentCapture()))
+                        return
+                    }
+                    onCompletion(.success(()))
+                case .failure(let error):
+                    onCompletion(.failure(error))
+                    return
+                }
+            }
         }.store(in: &cancellables)
 
         // Observe status events fired by the card reader

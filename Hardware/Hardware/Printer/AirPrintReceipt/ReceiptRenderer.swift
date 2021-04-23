@@ -6,7 +6,9 @@ final class ReceiptRenderer: UIPrintPageRenderer {
     private let lines: [ReceiptLineItem]
     private let parameters: CardPresentReceiptParameters
 
-    private let attributes: [NSAttributedString.Key: Any] = [.font: UIFont(name: "HelveticaNeue", size: 48) as Any]
+    private let headerAttributes: [NSAttributedString.Key: Any] = [.font: UIFont(name: "HelveticaNeue", size: 24) as Any]
+
+    private let bodyAttributes: [NSAttributedString.Key: Any] = [.font: UIFont(name: "HelveticaNeue", size: 12) as Any]
 
     init(content: ReceiptContent) {
         self.lines = content.lineItems
@@ -20,14 +22,20 @@ final class ReceiptRenderer: UIPrintPageRenderer {
     }
 
     override func drawHeaderForPage(at pageIndex: Int, in headerRect: CGRect) {
-        let pageNumberString = NSString(string: "Order receipt. Page \(pageIndex + 1)")
-        pageNumberString.draw(in: headerRect, withAttributes: attributes)
+        guard let storeName = parameters.storeName else {
+            return
+        }
+
+        let receiptTitle = String.localizedStringWithFormat(Localization.receiptFromFormat,
+                                                            storeName) as NSString
+
+        receiptTitle.draw(in: headerRect, withAttributes: headerAttributes)
     }
 
     override func drawContentForPage(at pageIndex: Int, in contentRect: CGRect) {
         let printOut = NSString(string: "Total charged: \(parameters.amount / 100) \(parameters.currency.uppercased())")
 
-        printOut.draw(in: contentRect, withAttributes: attributes)
+        printOut.draw(in: contentRect, withAttributes: bodyAttributes)
     }
 }
 
@@ -49,5 +57,15 @@ private extension ReceiptRenderer {
         formatter.perPageContentInsets = .init(top: Constants.headerHeight, left: Constants.marging, bottom: Constants.footerHeight, right: Constants.marging)
 
         addPrintFormatter(formatter, startingAtPageAt: 0)
+    }
+}
+
+
+private extension ReceiptRenderer {
+    enum Localization {
+        static let receiptFromFormat = NSLocalizedString(
+            "Receipt from %1$@",
+            comment: "Title of receipt. Reads like Receipt from WooCommerce, Inc."
+        )
     }
 }

@@ -61,20 +61,34 @@ private extension ReceiptRenderer {
             <head></head>
                 <body>
                     <p>
-                        <h3>AMOUNT PAID</h3>
-                        \(parameters.amount / 100) \(parameters.currency.uppercased())<br/>
+                        <h3>\(Localization.amountPaidSectionTitle.uppercased())</h3>
+                        \(parameters.amount / 100) \(parameters.currency.uppercased())
                     </p>
                     <p>
-                        <h3>DATE PAID</h3>
-                        March 23, 2021<br/>
+                        <h3>\(Localization.datePaidSectionTitle.uppercased())</h3>
+                        March 23, 2021
                     </p>
                     <p>
-                        <h3>PAYMENT METHOD</h3>
-                        - \(parameters.cardDetails.last4)<br/>
+                        <h3>\(Localization.paymentMethodSectionTitle.uppercased())</h3>
+                        - \(parameters.cardDetails.last4)
+                    </p>
+                    <p>
+                        <h3>\(Localization.summarySectionTitle.uppercased())</h3>
+                        \(summaryTable())
                     </p>
                 </body>
             </html>
         """
+    }
+
+    private func summaryTable() -> String {
+        var summaryContent = "<table>"
+        for line in lines {
+            summaryContent += "<tr><td>\(line.title)</td></tr>"
+        }
+        summaryContent = summaryContent + "</table>"
+
+        return summaryContent
     }
 }
 
@@ -95,6 +109,21 @@ private extension ReceiptRenderer {
         static let amountPaidSectionTitle = NSLocalizedString(
             "Amount paid",
             comment: "Title of 'Amount Paid' section in the receipt"
+        )
+
+        static let datePaidSectionTitle = NSLocalizedString(
+            "Date paid",
+            comment: "Title of 'Date Paid' section in the receipt"
+        )
+
+        static let paymentMethodSectionTitle = NSLocalizedString(
+            "Payment method",
+            comment: "Title of 'Payment method' section in the receipt"
+        )
+
+        static let summarySectionTitle = NSLocalizedString(
+            "Summary",
+            comment: "Title of 'Summary' section in the receipt"
         )
     }
 }

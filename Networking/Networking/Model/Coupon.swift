@@ -83,6 +83,56 @@ public struct Coupon {
         case fixedCart = "fixed_cart"
         case fixedProduct = "fixed_product"
     }
+
+    public init(siteID: Int64 = 0,
+                couponID: Int64,
+                code: String,
+                amount: String,
+                dateCreated: Date,
+                dateModified: Date,
+                discountType: DiscountType,
+                description: String,
+                dateExpires: Date?,
+                usageCount: Int64,
+                individualUse: Bool,
+                productIds: [Int64],
+                excludedProductIds: [Int64],
+                usageLimit: Int64?,
+                usageLimitPerUser: Int64?,
+                limitUsageToXItems: Int64?,
+                freeShipping: Bool,
+                productCategories: [Int64],
+                excludedProductCategories: [Int64],
+                excludeSaleItems: Bool,
+                minimumAmount: String,
+                maximumAmount: String,
+                emailRestrictions: [String],
+                usedBy: [String]) {
+        self.siteID = siteID
+        self.couponID = couponID
+        self.code = code
+        self.amount = amount
+        self.dateCreated = dateCreated
+        self.dateModified = dateModified
+        self.discountType = discountType
+        self.description = description
+        self.dateExpires = dateExpires
+        self.usageCount = usageCount
+        self.individualUse = individualUse
+        self.productIds = productIds
+        self.excludedProductIds = excludedProductIds
+        self.usageLimit = usageLimit
+        self.usageLimitPerUser = usageLimitPerUser
+        self.limitUsageToXItems = limitUsageToXItems
+        self.freeShipping = freeShipping
+        self.productCategories = productCategories
+        self.excludedProductCategories = excludedProductCategories
+        self.excludeSaleItems = excludeSaleItems
+        self.minimumAmount = minimumAmount
+        self.maximumAmount = maximumAmount
+        self.emailRestrictions = emailRestrictions
+        self.usedBy = usedBy
+    }
 }
 
 

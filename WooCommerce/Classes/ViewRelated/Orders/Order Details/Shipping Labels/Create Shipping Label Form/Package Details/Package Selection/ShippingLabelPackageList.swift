@@ -3,6 +3,7 @@ import Yosemite
 
 struct ShippingLabelPackageList: View {
     @EnvironmentObject private var viewModel: ShippingLabelPackageDetailsViewModel
+    @Environment(\.presentationMode) var presentation
 
     var body: some View {
         ScrollView {
@@ -43,6 +44,7 @@ struct ShippingLabelPackageList: View {
         .navigationBarTitle(Text(Localization.title), displayMode: .inline)
         .navigationBarItems(trailing: Button(action: {
             viewModel.confirmPackageSelection()
+            presentation.wrappedValue.dismiss()
         }, label: {
             Text(Localization.doneButton)
         }))

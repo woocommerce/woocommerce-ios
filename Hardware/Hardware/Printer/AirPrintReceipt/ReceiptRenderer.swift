@@ -35,9 +35,9 @@ final class ReceiptRenderer: UIPrintPageRenderer {
     }
 
     override func drawContentForPage(at pageIndex: Int, in contentRect: CGRect) {
-        let printOut = NSString(string: "Total charged: \(parameters.amount / 100) \(parameters.currency.uppercased())")
-
-        printOut.draw(in: contentRect, withAttributes: bodyAttributes)
+//        let printOut = NSString(string: "Total charged: \(parameters.amount / 100) \(parameters.currency.uppercased())")
+//
+//        printOut.draw(in: contentRect, withAttributes: bodyAttributes)
     }
 
     override func drawFooterForPage(at pageIndex: Int, in footerRect: CGRect) {
@@ -45,12 +45,15 @@ final class ReceiptRenderer: UIPrintPageRenderer {
             return
         }
 
-        let footer = """
-            Application name: \(emv.applicationPreferredName)\n
-            AID: \(emv.dedicatedFileName)
+        /// According to the documentation, only `Application name` and `AID`
+        /// are required in the US.
+        /// https://stripe.com/docs/terminal/checkout/receipts#custom
+        let mandatoryInfo = """
+            \(Localization.applicationName): \(emv.applicationPreferredName)\n
+            \(Localization.aid): \(emv.dedicatedFileName)
         """
 
-        let footerString = NSString(string: footer)
+        let footerString = NSString(string: mandatoryInfo)
 
         footerString.draw(in: footerRect, withAttributes: bodyAttributes)
     }
@@ -149,6 +152,21 @@ private extension ReceiptRenderer {
         static let summarySectionTitle = NSLocalizedString(
             "Summary",
             comment: "Title of 'Summary' section in the receipt"
+        )
+
+        static let applicationName = NSLocalizedString(
+            "Application name",
+            comment: "Reads as 'Application name'. Part of the mandatory data in receipts"
+        )
+
+        static let aid = NSLocalizedString(
+            "AID",
+            comment: "Reads as 'AID'. Part of the mandatory data in receipts"
+        )
+
+        static let accountType = NSLocalizedString(
+            "Account Type",
+            comment: "Reads as 'Account Type'. Part of the mandatory data in receipts"
         )
     }
 }

@@ -8,8 +8,6 @@ final class ReceiptRenderer: UIPrintPageRenderer {
 
     private let headerAttributes: [NSAttributedString.Key: Any] = [.font: UIFont(name: "HelveticaNeue", size: 24) as Any]
 
-    private let bodyTitleAttributes: [NSAttributedString.Key: Any] = [.font: UIFont(name: "HelveticaNeue", size: 12) as Any]
-
     private let bodyAttributes: [NSAttributedString.Key: Any] = [.font: UIFont(name: "HelveticaNeue", size: 12) as Any]
 
     init(content: ReceiptContent) {

@@ -13,7 +13,13 @@ final class ReceiptRenderer: UIPrintPageRenderer {
                 .paragraphStyle: paragraph]
     }()
 
-    private let bodyAttributes: [NSAttributedString.Key: Any] = [.font: UIFont(name: "HelveticaNeue", size: 12) as Any]
+    private let footerAttributes: [NSAttributedString.Key: Any] = {
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.alignment = .center
+
+        return [.font: UIFont(name: "HelveticaNeue", size: 12) as Any,
+                .paragraphStyle: paragraph]
+    }()
 
     init(content: ReceiptContent) {
         self.lines = content.lineItems
@@ -52,7 +58,7 @@ final class ReceiptRenderer: UIPrintPageRenderer {
 
         let footerString = NSString(string: mandatoryInfo)
 
-        footerString.draw(in: footerRect, withAttributes: bodyAttributes)
+        footerString.draw(in: footerRect, withAttributes: footerAttributes)
     }
 }
 

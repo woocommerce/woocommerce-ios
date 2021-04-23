@@ -6,7 +6,12 @@ final class ReceiptRenderer: UIPrintPageRenderer {
     private let lines: [ReceiptLineItem]
     private let parameters: CardPresentReceiptParameters
 
-    private let headerAttributes: [NSAttributedString.Key: Any] = [.font: UIFont(name: "HelveticaNeue", size: 24) as Any]
+    private let headerAttributes: [NSAttributedString.Key: Any] = {
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.alignment = .center
+        return [.font: UIFont(name: "HelveticaNeue", size: 24) as Any,
+                .paragraphStyle: paragraph]
+    }()
 
     private let bodyAttributes: [NSAttributedString.Key: Any] = [.font: UIFont(name: "HelveticaNeue", size: 12) as Any]
 

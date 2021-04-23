@@ -576,6 +576,7 @@
 		45D1CF4723BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D1CF4623BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift */; };
 		45D685FE23D0FB25005F87D0 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D685FD23D0FB25005F87D0 /* Throttler.swift */; };
 		45D875D22611EA2100226C3F /* ListHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D875D12611EA2100226C3F /* ListHeaderView.swift */; };
+		45DB6D972632CF9300E83C1A /* ActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DB6D962632CF9300E83C1A /* ActivityIndicatorView.swift */; };
 		45DB7040261209B10064A6CF /* ItemToFulfillRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DB703F261209B10064A6CF /* ItemToFulfillRow.swift */; };
 		45DB704A26121F3C0064A6CF /* TitleAndValueRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DB704926121F3C0064A6CF /* TitleAndValueRow.swift */; };
 		45DB705026121FCA0064A6CF /* ShippingLabelPackageDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DB704F26121FCA0064A6CF /* ShippingLabelPackageDetailsViewController.swift */; };
@@ -1753,6 +1754,7 @@
 		45D1CF4623BAC89A00945A36 /* ProductTaxStatusListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxStatusListSelectorCommand.swift; sourceTree = "<group>"; };
 		45D685FD23D0FB25005F87D0 /* Throttler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
 		45D875D12611EA2100226C3F /* ListHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListHeaderView.swift; sourceTree = "<group>"; };
+		45DB6D962632CF9300E83C1A /* ActivityIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorView.swift; sourceTree = "<group>"; };
 		45DB703F261209B10064A6CF /* ItemToFulfillRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemToFulfillRow.swift; sourceTree = "<group>"; };
 		45DB704926121F3C0064A6CF /* TitleAndValueRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndValueRow.swift; sourceTree = "<group>"; };
 		45DB704F26121FCA0064A6CF /* ShippingLabelPackageDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageDetailsViewController.swift; sourceTree = "<group>"; };
@@ -3773,6 +3775,7 @@
 				45DB705926124C710064A6CF /* TitleAndTextFieldRow.swift */,
 				45CE2D842625D7ED00E3CA00 /* SelectableItemRow.swift */,
 				4590B6A7261F0F8300A6FCE0 /* SegmentedView.swift */,
+				45DB6D962632CF9300E83C1A /* ActivityIndicatorView.swift */,
 			);
 			path = "SwiftUI Components";
 			sourceTree = "<group>";
@@ -6140,6 +6143,7 @@
 				74460D4022289B7600D7316A /* Coordinator.swift in Sources */,
 				B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */,
 				576EA39425264C9B00AFC0B3 /* RefundConfirmationViewModel.swift in Sources */,
+				45DB6D972632CF9300E83C1A /* ActivityIndicatorView.swift in Sources */,
 				5778E00624DB0C3900B65CBF /* StoreStatsAndTopPerformersPeriodViewModel.swift in Sources */,
 				453A908325EFC9B2006EE892 /* ShippingLabelSuggestedAddressTopBannerFactory.swift in Sources */,
 				456396A725C81C9A001F1A26 /* ShippingLabelFormViewController.swift in Sources */,

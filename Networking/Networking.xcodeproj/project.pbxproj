@@ -122,6 +122,7 @@
 		31054728262E2FEE00C5C02B /* wcpay-payment-intent-canceled.json in Resources */ = {isa = PBXBuildFile; fileRef = 31054727262E2FEE00C5C02B /* wcpay-payment-intent-canceled.json */; };
 		3105472C262E303400C5C02B /* wcpay-payment-intent-unknown-status.json in Resources */ = {isa = PBXBuildFile; fileRef = 3105472B262E303400C5C02B /* wcpay-payment-intent-unknown-status.json */; };
 		31054734262E36AB00C5C02B /* wcpay-payment-intent-error.json in Resources */ = {isa = PBXBuildFile; fileRef = 31054733262E36AB00C5C02B /* wcpay-payment-intent-error.json */; };
+		31104E142630DDA700587C1E /* wcpay-account-wrong-json.json in Resources */ = {isa = PBXBuildFile; fileRef = 31104E132630DDA700587C1E /* wcpay-account-wrong-json.json */; };
 		311976E02602BD4B006AC56C /* SitePluginsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311976DF2602BD4B006AC56C /* SitePluginsMapperTests.swift */; };
 		3158FE6026129ADD00E566B9 /* wcpay-account-none.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158FE5F26129ADD00E566B9 /* wcpay-account-none.json */; };
 		3158FE6426129B1300E566B9 /* wcpay-account-complete.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158FE6326129B1300E566B9 /* wcpay-account-complete.json */; };
@@ -133,7 +134,6 @@
 		3158FE7C26129E2100E566B9 /* wcpay-account-restricted-pending.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158FE7B26129E2100E566B9 /* wcpay-account-restricted-pending.json */; };
 		3158FE8026129EC300E566B9 /* wcpay-account-restricted-overdue.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158FE7F26129EC300E566B9 /* wcpay-account-restricted-overdue.json */; };
 		3158FE8426129F3A00E566B9 /* wcpay-account-unknown-status.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158FE8326129F3A00E566B9 /* wcpay-account-unknown-status.json */; };
-		3158FE882612A13F00E566B9 /* wcpay-account-error.json in Resources */ = {isa = PBXBuildFile; fileRef = 3158FE872612A13F00E566B9 /* wcpay-account-error.json */; };
 		31884A3B2603F3C7003FE338 /* SitePluginStatusEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31884A3A2603F3C7003FE338 /* SitePluginStatusEnum.swift */; };
 		3192F21C260D32550067FEF9 /* WCPayAccountMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3192F21B260D32550067FEF9 /* WCPayAccountMapper.swift */; };
 		3192F220260D33BB0067FEF9 /* WCPayAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3192F21F260D33BB0067FEF9 /* WCPayAccount.swift */; };
@@ -609,6 +609,7 @@
 		31054727262E2FEE00C5C02B /* wcpay-payment-intent-canceled.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-payment-intent-canceled.json"; sourceTree = "<group>"; };
 		3105472B262E303400C5C02B /* wcpay-payment-intent-unknown-status.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-payment-intent-unknown-status.json"; sourceTree = "<group>"; };
 		31054733262E36AB00C5C02B /* wcpay-payment-intent-error.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-payment-intent-error.json"; sourceTree = "<group>"; };
+		31104E132630DDA700587C1E /* wcpay-account-wrong-json.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-wrong-json.json"; sourceTree = "<group>"; };
 		311976DF2602BD4B006AC56C /* SitePluginsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginsMapperTests.swift; sourceTree = "<group>"; };
 		3158FE5F26129ADD00E566B9 /* wcpay-account-none.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-none.json"; sourceTree = "<group>"; };
 		3158FE6326129B1300E566B9 /* wcpay-account-complete.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-complete.json"; sourceTree = "<group>"; };
@@ -620,7 +621,6 @@
 		3158FE7B26129E2100E566B9 /* wcpay-account-restricted-pending.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-restricted-pending.json"; sourceTree = "<group>"; };
 		3158FE7F26129EC300E566B9 /* wcpay-account-restricted-overdue.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-restricted-overdue.json"; sourceTree = "<group>"; };
 		3158FE8326129F3A00E566B9 /* wcpay-account-unknown-status.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-unknown-status.json"; sourceTree = "<group>"; };
-		3158FE872612A13F00E566B9 /* wcpay-account-error.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-account-error.json"; sourceTree = "<group>"; };
 		31884A3A2603F3C7003FE338 /* SitePluginStatusEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginStatusEnum.swift; sourceTree = "<group>"; };
 		3192F21B260D32550067FEF9 /* WCPayAccountMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayAccountMapper.swift; sourceTree = "<group>"; };
 		3192F21F260D33BB0067FEF9 /* WCPayAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayAccount.swift; sourceTree = "<group>"; };
@@ -1560,7 +1560,7 @@
 				3158FE7B26129E2100E566B9 /* wcpay-account-restricted-pending.json */,
 				3158FE7F26129EC300E566B9 /* wcpay-account-restricted-overdue.json */,
 				3158FE8326129F3A00E566B9 /* wcpay-account-unknown-status.json */,
-				3158FE872612A13F00E566B9 /* wcpay-account-error.json */,
+				31104E132630DDA700587C1E /* wcpay-account-wrong-json.json */,
 				31054713262E2F3B00C5C02B /* wcpay-payment-intent-requires-payment-method.json */,
 				31054717262E2F5E00C5C02B /* wcpay-payment-intent-requires-confirmation.json */,
 				3105471B262E2F8000C5C02B /* wcpay-payment-intent-requires-action.json */,
@@ -1901,6 +1901,7 @@
 				31054734262E36AB00C5C02B /* wcpay-payment-intent-error.json in Resources */,
 				45ED4F12239E8C57004F1BE3 /* taxes-classes.json in Resources */,
 				B5A2417B217F98FC00595DEF /* broken-notifications.json in Resources */,
+				31104E142630DDA700587C1E /* wcpay-account-wrong-json.json in Resources */,
 				3158FE7C26129E2100E566B9 /* wcpay-account-restricted-pending.json in Resources */,
 				D823D91422377EE600C90817 /* shipment_tracking_providers.json in Resources */,
 				4599FC5C24A6276F0056157A /* product-tags-all.json in Resources */,
@@ -1971,7 +1972,6 @@
 				261CF2CB255C50010090D8D3 /* payment-gateway-list-half.json in Resources */,
 				02C254D72563999300A04423 /* order-shipping-labels.json in Resources */,
 				45B204BC24890B1200FE6526 /* category.json in Resources */,
-				3158FE882612A13F00E566B9 /* wcpay-account-error.json in Resources */,
 				022902D422E2436400059692 /* stats_module_disabled_error.json in Resources */,
 				025CA2C8238F4FF400B05C81 /* product-shipping-classes-load-all.json in Resources */,
 				74046E21217A73D0007DD7BF /* settings-general.json in Resources */,

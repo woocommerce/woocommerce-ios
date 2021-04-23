@@ -24,3 +24,7 @@ public struct CardPresentReceiptParameters {
         self.cardDetails = cardDetails
     }
 }
+
+public extension CardPresentReceiptParameters {
+    typealias MetadataKeys = PaymentIntent.MetadataKeys
+}

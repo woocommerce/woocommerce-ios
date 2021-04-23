@@ -12,7 +12,7 @@ extension PaymentIntent {
 
         return CardPresentReceiptParameters(amount: amount,
                                      currency: currency,
-                                     storeName: metadata?["storeName"] as? String,
+                                     storeName: metadata?[CardPresentReceiptParameters.MetadataKeys.store] as? String,
                                      cardDetails: cardDetails)
     }
 }

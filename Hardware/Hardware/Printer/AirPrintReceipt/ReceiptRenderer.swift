@@ -79,7 +79,11 @@ private extension ReceiptRenderer {
     private func htmlContent() -> String {
         return """
             <html>
-            <head></head>
+            <head>
+                <style type="text/css">
+                    table { background-color:#F6F6F6; width:100%;}
+                </style>
+            </head>
                 <body>
                     <p>
                         <h3>\(Localization.amountPaidSectionTitle.uppercased())</h3>

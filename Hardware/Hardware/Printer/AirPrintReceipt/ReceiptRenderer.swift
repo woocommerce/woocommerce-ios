@@ -70,7 +70,7 @@ private extension ReceiptRenderer {
                     </p>
                     <p>
                         <h3>\(Localization.paymentMethodSectionTitle.uppercased())</h3>
-                        - \(parameters.cardDetails.last4)
+                        \(parameters.cardDetails.brand) - \(parameters.cardDetails.last4)
                     </p>
                     <p>
                         <h3>\(Localization.summarySectionTitle.uppercased())</h3>

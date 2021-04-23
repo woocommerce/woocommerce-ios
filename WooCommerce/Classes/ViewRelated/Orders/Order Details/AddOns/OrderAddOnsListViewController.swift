@@ -56,7 +56,7 @@ struct OrderAddOnListI1View: View {
             }
         }
         .sheet(isPresented: $viewModel.shouldShowSurvey) {
-            Survey()
+            Survey(source: .shippingLabelsRelease1Feedback)
         }
     }
 }
@@ -126,15 +126,3 @@ struct OrderAddOnView_Previews: PreviewProvider {
 }
 
 #endif
-
-
-struct Survey: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> SurveyCoordinatingController {
-        return SurveyCoordinatingController(survey: .shippingLabelsRelease1Feedback)
-
-    }
-
-    func updateUIViewController(_ uiViewController: SurveyCoordinatingController, context: Context) {
-        // No-op
-    }
-}

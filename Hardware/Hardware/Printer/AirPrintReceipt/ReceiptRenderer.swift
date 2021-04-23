@@ -81,7 +81,8 @@ private extension ReceiptRenderer {
             <html>
             <head>
                 <style type="text/css">
-                    table { background-color:#F6F6F6; width:100%; }
+                    h3 { color: #888888; }
+                    table { background-color:#F5F5F5; width:100%; }
                     table td:last-child { width: 30%; text-align: right; }
                 </style>
             </head>

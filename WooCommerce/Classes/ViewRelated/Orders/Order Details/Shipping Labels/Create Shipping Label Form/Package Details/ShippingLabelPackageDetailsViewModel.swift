@@ -1,7 +1,6 @@
 import UIKit
 import SwiftUI
 import Yosemite
-import Combine
 import protocol Storage.StorageManagerType
 
 /// View model for `ShippingLabelPackageDetails`.

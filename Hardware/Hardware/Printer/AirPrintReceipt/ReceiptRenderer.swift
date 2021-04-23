@@ -39,6 +39,21 @@ final class ReceiptRenderer: UIPrintPageRenderer {
 
         printOut.draw(in: contentRect, withAttributes: bodyAttributes)
     }
+
+    override func drawFooterForPage(at pageIndex: Int, in footerRect: CGRect) {
+        guard let emv = parameters.cardDetails.receipt else {
+            return
+        }
+
+        let footer = """
+            Application name: \(emv.applicationPreferredName)\n
+            AID: \(emv.dedicatedFileName)
+        """
+
+        let footerString = NSString(string: footer)
+
+        footerString.draw(in: footerRect, withAttributes: bodyAttributes)
+    }
 }
 
 
@@ -86,7 +101,16 @@ private extension ReceiptRenderer {
         for line in lines {
             summaryContent += "<tr><td>\(line.title)</td><td>\(line.amount) \(parameters.currency.uppercased())</td></tr>"
         }
-        summaryContent += "<tr><td>\(Localization.amountPaidSectionTitle.uppercased())</td><td>\(parameters.amount / 100) \(parameters.currency.uppercased())</td></tr>"
+        summaryContent += """
+                            <tr>
+                                <td>
+                                    \(Localization.amountPaidSectionTitle.uppercased())
+                                </td>
+                                <td>
+                                    \(parameters.amount / 100) \(parameters.currency.uppercased())
+                                </td>
+                            </tr>
+                            """
         summaryContent += "</table>"
 
         return summaryContent

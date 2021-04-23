@@ -31,6 +31,7 @@ struct TitleAndValueRow: View {
          }
         .frame(height: Constants.height)
         .padding([.leading, .trailing], Constants.padding)
+        .contentShape(Rectangle())
     }
 }
 

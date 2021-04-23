@@ -84,9 +84,10 @@ private extension ReceiptRenderer {
     private func summaryTable() -> String {
         var summaryContent = "<table>"
         for line in lines {
-            summaryContent += "<tr><td>\(line.title)</td></tr>"
+            summaryContent += "<tr><td>\(line.title)</td><td>\(line.amount) \(parameters.currency.uppercased())</td></tr>"
         }
-        summaryContent = summaryContent + "</table>"
+        summaryContent += "<tr><td>\(Localization.amountPaidSectionTitle.uppercased())</td><td>\(parameters.amount / 100) \(parameters.currency.uppercased())</td></tr>"
+        summaryContent += "</table>"
 
         return summaryContent
     }

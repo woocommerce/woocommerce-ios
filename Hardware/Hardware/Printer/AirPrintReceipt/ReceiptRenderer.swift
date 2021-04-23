@@ -50,7 +50,6 @@ private extension ReceiptRenderer {
 
     private func configureFormatter() {
         let formatter = UIMarkupTextPrintFormatter(markupText: htmlContent())
-//        let formatter = UISimpleTextPrintFormatter(text: "\(parameters.amount / 100) \(parameters.currency.uppercased())")
         formatter.perPageContentInsets = .init(top: Constants.headerHeight, left: Constants.marging, bottom: Constants.footerHeight, right: Constants.marging)
 
         addPrintFormatter(formatter, startingAtPageAt: 0)
@@ -58,18 +57,23 @@ private extension ReceiptRenderer {
 
     private func htmlContent() -> String {
         return """
-            <p>
-                <h3>AMOUNT PAID</h3>
-                120 USD<br/>
-            </p>
-            <p>
-                <h3>DATE PAID</h3>
-                March 23, 2021<br/>
-            </p>
-            <p>
-                <h3>PAYMENT METHOD</h3>
-                - 4242<br/>
-            </p>
+            <html>
+            <head></head>
+                <body>
+                    <p>
+                        <h3>AMOUNT PAID</h3>
+                        \(parameters.amount / 100) \(parameters.currency.uppercased())<br/>
+                    </p>
+                    <p>
+                        <h3>DATE PAID</h3>
+                        March 23, 2021<br/>
+                    </p>
+                    <p>
+                        <h3>PAYMENT METHOD</h3>
+                        - \(parameters.cardDetails.last4)<br/>
+                    </p>
+                </body>
+            </html>
         """
     }
 }

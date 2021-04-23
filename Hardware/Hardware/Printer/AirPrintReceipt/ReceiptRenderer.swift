@@ -34,12 +34,6 @@ final class ReceiptRenderer: UIPrintPageRenderer {
         receiptTitle.draw(in: headerRect, withAttributes: headerAttributes)
     }
 
-    override func drawContentForPage(at pageIndex: Int, in contentRect: CGRect) {
-//        let printOut = NSString(string: "Total charged: \(parameters.amount / 100) \(parameters.currency.uppercased())")
-//
-//        printOut.draw(in: contentRect, withAttributes: bodyAttributes)
-    }
-
     override func drawFooterForPage(at pageIndex: Int, in footerRect: CGRect) {
         guard let emv = parameters.cardDetails.receipt else {
             return
@@ -107,7 +101,7 @@ private extension ReceiptRenderer {
         summaryContent += """
                             <tr>
                                 <td>
-                                    \(Localization.amountPaidSectionTitle.uppercased())
+                                    \(Localization.amountPaidSectionTitle)
                                 </td>
                                 <td>
                                     \(parameters.amount / 100) \(parameters.currency.uppercased())

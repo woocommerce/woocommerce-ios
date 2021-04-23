@@ -1,8 +1,20 @@
 import Foundation
 
+/// Protocol for `CouponsRemote` mainly used for mocking.
+///
+/// The required methods are intentionally incomplete. Feel free to add the other ones.
+///
+public protocol CouponsRemoteProtocol {
+    func loadAllCoupons(for siteID: Int64,
+                        pageNumber: Int,
+                        pageSize: Int,
+                        completion: @escaping (Result<[Coupon], Error>) -> ())
+}
+
+
 /// Coupons: Remote endpoints
 ///
-public final class CouponsRemote: Remote {
+public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     // MARK: - Get Coupons
 
     /// Retrieves all of the `Coupon`s from the API.

@@ -38,10 +38,10 @@ struct OrderAddOnListI1View: View {
                     if viewModel.shouldShowBetaBanner {
                         OrderAddOnTopBanner(width: geometry.size.width)
                             .onDismiss {
-                                viewModel.hideBetaBanner()
+                                viewModel.shouldShowBetaBanner = false
                             }
                             .onGiveFeedback {
-                                print("Give feedback")
+                                viewModel.shouldShowSurvey = true
                             }
                             .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
                     }
@@ -55,6 +55,9 @@ struct OrderAddOnListI1View: View {
                         .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
                 }
             }
+        }
+        .sheet(isPresented: $viewModel.shouldShowSurvey) {
+            Survey()
         }
     }
 }
@@ -124,3 +127,15 @@ struct OrderAddOnView_Previews: PreviewProvider {
 }
 
 #endif
+
+
+struct Survey: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> SurveyCoordinatingController {
+        return SurveyCoordinatingController(survey: .shippingLabelsRelease1Feedback)
+
+    }
+
+    func updateUIViewController(_ uiViewController: SurveyCoordinatingController, context: Context) {
+        // No-op
+    }
+}

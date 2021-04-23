@@ -109,4 +109,15 @@ public extension StorageType {
             deleteObject(review)
         }
     }
+
+    // MARK: - Coupons
+
+    /// Deletes all of the stored Coupons for the provided siteID.
+    ///
+    func deleteCoupons(siteID: Int64) {
+        let coupons = loadAllCoupons(siteID: siteID)
+        for coupon in coupons {
+            deleteObject(coupon)
+        }
+    }
 }

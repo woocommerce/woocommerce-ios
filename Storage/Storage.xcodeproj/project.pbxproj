@@ -36,6 +36,7 @@
 		02EAB6D72480A86D00FD873C /* CrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EAB6D62480A86D00FD873C /* CrashLogger.swift */; };
 		03DCB80F2629AFE700C8953D /* Coupon+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB80D2629AFE700C8953D /* Coupon+CoreDataClass.swift */; };
 		03DCB8102629AFE700C8953D /* Coupon+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DCB80E2629AFE700C8953D /* Coupon+CoreDataProperties.swift */; };
+		03FBDA70263324A800ACE257 /* StorageTypeDeletionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDA6F263324A800ACE257 /* StorageTypeDeletionsTests.swift */; };
 		2618707325409C65006522A1 /* ShippingLineTax+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2618707125409C65006522A1 /* ShippingLineTax+CoreDataClass.swift */; };
 		2618707425409C65006522A1 /* ShippingLineTax+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2618707225409C65006522A1 /* ShippingLineTax+CoreDataProperties.swift */; };
 		2619F71925AF95030006DAFF /* StorageTypeExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2619F71825AF95020006DAFF /* StorageTypeExtensionsTests.swift */; };
@@ -238,6 +239,7 @@
 		03DCB80C2629ACFA00C8953D /* Model 48.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 48.xcdatamodel"; sourceTree = "<group>"; };
 		03DCB80D2629AFE700C8953D /* Coupon+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coupon+CoreDataClass.swift"; sourceTree = "<group>"; };
 		03DCB80E2629AFE700C8953D /* Coupon+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coupon+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		03FBDA6F263324A800ACE257 /* StorageTypeDeletionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageTypeDeletionsTests.swift; sourceTree = "<group>"; };
 		261870702540944C006522A1 /* Model 34.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 34.xcdatamodel"; sourceTree = "<group>"; };
 		2618707125409C65006522A1 /* ShippingLineTax+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLineTax+CoreDataClass.swift"; sourceTree = "<group>"; };
 		2618707225409C65006522A1 /* ShippingLineTax+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLineTax+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -687,6 +689,7 @@
 				57589E8F252275CA000F22CE /* NSManagedObjectContext+TestHelpers.swift */,
 				2619F71825AF95020006DAFF /* StorageTypeExtensionsTests.swift */,
 				2619F78525B5D29B0006DAFF /* TypedPredicateTests.swift */,
+				03FBDA6F263324A800ACE257 /* StorageTypeDeletionsTests.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -1178,6 +1181,7 @@
 				D87F61572265AD980031A13B /* FileStorageTests.swift in Sources */,
 				B59E11DE20A9F1FB004121A4 /* CoreDataManagerTests.swift in Sources */,
 				57A29FB825226BDC004DEE01 /* MigrationTests.swift in Sources */,
+				03FBDA70263324A800ACE257 /* StorageTypeDeletionsTests.swift in Sources */,
 				2619F78625B5D29B0006DAFF /* TypedPredicateTests.swift in Sources */,
 				5772842725BF5BFB0092FB2C /* SpyPersistentStoreCoordinator.swift in Sources */,
 				5772842C25BF62A90092FB2C /* Assertions.swift in Sources */,

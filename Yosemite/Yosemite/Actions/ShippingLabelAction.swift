@@ -41,4 +41,9 @@ public enum ShippingLabelAction: Action {
     case createPackage(siteID: Int64,
                        customPackage: ShippingLabelCustomPackage,
                        completion: (Result<Bool, Error>) -> Void)
+
+    /// Loads account-level shipping label settings for a store.
+    ///
+    case synchronizeShippingLabelAccountSettings(siteID: Int64,
+                                                 completion: (Result<ShippingLabelAccountSettings, Error>) -> Void)
 }

@@ -11,4 +11,3 @@ extension View {
         return AnyView(self)
     }
 }
-

@@ -56,7 +56,7 @@ struct OrderAddOnListI1View: View {
             }
         }
         .sheet(isPresented: $viewModel.shouldShowSurvey) {
-            Survey(source: .shippingLabelsRelease1Feedback)
+            Survey(source: .addOnsI1)
         }
     }
 }

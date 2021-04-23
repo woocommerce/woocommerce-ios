@@ -973,4 +973,36 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(labelSettings, storedLabelSettings)
     }
+
+    func test_loadCoupon_by_siteID_couponID() throws {
+        // Given
+        let couponID: Int64 = 5289
+        let coupon = storage.insertNewObject(ofType: Coupon.self)
+        coupon.siteID = sampleSiteID
+        coupon.couponID = couponID
+
+        // When
+        let storedCoupon = try XCTUnwrap(storage.loadCoupon(siteID: sampleSiteID,
+                                                            couponID: couponID))
+
+        // Then
+        XCTAssertEqual(coupon, storedCoupon)
+    }
+
+    func test_loadCoupons_by_siteID() throws {
+        // Given
+        let coupon1 = storage.insertNewObject(ofType: Coupon.self)
+        coupon1.siteID = sampleSiteID
+        coupon1.couponID = 1
+
+        let coupon2 = storage.insertNewObject(ofType: Coupon.self)
+        coupon2.siteID = sampleSiteID
+        coupon2.couponID = 2
+
+        // When
+        let storedCoupons = try XCTUnwrap(storage.loadAllCoupons(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual(Set([coupon1, coupon2]), Set(storedCoupons))
+    }
 }

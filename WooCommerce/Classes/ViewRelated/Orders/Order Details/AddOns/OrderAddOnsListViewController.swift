@@ -35,16 +35,15 @@ struct OrderAddOnListI1View: View {
 
             ScrollView {
                 VStack {
-                    if viewModel.shouldShowBetaBanner {
-                        OrderAddOnTopBanner(width: geometry.size.width)
-                            .onDismiss {
-                                viewModel.shouldShowBetaBanner = false
-                            }
-                            .onGiveFeedback {
-                                viewModel.shouldShowSurvey = true
-                            }
-                            .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
-                    }
+                    OrderAddOnTopBanner(width: geometry.size.width)
+                        .onDismiss {
+                            viewModel.shouldShowBetaBanner = false
+                        }
+                        .onGiveFeedback {
+                            viewModel.shouldShowSurvey = true
+                        }
+                        .renderedIf(viewModel.shouldShowBetaBanner)
+                        .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
 
                     ForEach(viewModel.addOns) { addOn in
                         OrderAddOnI1View(viewModel: addOn)

@@ -60,15 +60,8 @@ extension StripeCardReaderService: CardReaderService {
     // MARK: - CardReaderService conformance. Commands
 
     public func start(_ configProvider: CardReaderConfigProvider) {
-        // This is enough code to pass a unit test.
-        // The final version of this method would be completely different.
-        // But for now, we want to start the discovery process using the
-        // simulate reader included in the Stripe Terminal SDK
-        // https://stripe.com/docs/terminal/integration?country=CA&platform=ios&reader=p400#dev-test
-
         setConfigProvider(configProvider)
 
-        // Attack the test terminal, provided by the SDK
         let config = DiscoveryConfiguration(
             discoveryMethod: .bluetoothProximity,
             simulated: false

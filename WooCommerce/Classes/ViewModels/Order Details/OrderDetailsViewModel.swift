@@ -477,7 +477,9 @@ extension OrderDetailsViewModel {
         let paymentParameters = PaymentParameters(amount: orderTotal as Decimal,
                                                   currency: order.currency,
                                                   receiptDescription: "Receipt description.",
-                                                  statementDescription: "Statement description.")
+                                                  statementDescription: "Statement description.",
+                                                  metadata: [CardPresentReceiptParameters.MetadataKeys.store:
+                                                                ServiceLocator.stores.sessionManager.defaultSite?.name as Any])
 
         let action = CardPresentPaymentAction.collectPayment(siteID: order.siteID,
                                                              orderID: order.orderID, parameters: paymentParameters,

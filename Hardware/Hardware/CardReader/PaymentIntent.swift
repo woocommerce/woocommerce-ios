@@ -24,3 +24,11 @@ public struct PaymentIntent: Identifiable {
     // Charges that were created by this PaymentIntent, if any.
     public let charges: [Charge]
 }
+
+
+public extension PaymentIntent {
+    /// Metadata Keys
+    enum MetadataKeys {
+        public static let store = "paymentintent.storename"
+    }
+}

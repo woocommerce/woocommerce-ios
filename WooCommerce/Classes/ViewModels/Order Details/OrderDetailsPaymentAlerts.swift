@@ -16,6 +16,8 @@ final class OrderDetailsPaymentAlerts {
         self.name = name
         self.amount = amount
 
+        // Initial presentation of the modal view controller. We need to provide
+        // a customer name and an amount.
         let newAlert = FancyAlertViewController.makeCollectPaymentAlert(name: name, amount: amount, image: .cardPresentImage)
         alertController = newAlert
         alertController?.modalPresentationStyle = .custom

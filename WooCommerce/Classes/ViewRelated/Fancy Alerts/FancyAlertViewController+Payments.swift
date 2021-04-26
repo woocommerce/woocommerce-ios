@@ -50,9 +50,9 @@ public extension FancyAlertViewController {
 
     static func configurationForSuccess(printAction: @escaping () -> Void,
                                         emailAction: @escaping () -> Void) -> FancyAlertViewController.Config {
-        FancyAlertViewController.Config(titleText: Localization.paymentSucessful,
+        FancyAlertViewController.Config(titleText: Localization.paymentSuccessful,
                                         bodyText: "",
-                                        headerImage: .paymentCelebrationImage,
+                                        headerImage: .celebrationImage,
                                         dividerPosition: .top,
                                         defaultButton: makePrintButon(printAction: printAction),
                                         cancelButton: makeEmailButton(emailAction: emailAction),
@@ -63,7 +63,7 @@ public extension FancyAlertViewController {
     static func configurationForError(tryAgainAction: @escaping () -> Void) -> FancyAlertViewController.Config {
         FancyAlertViewController.Config(titleText: Localization.tryAgain,
                                         bodyText: nil,
-                                        headerImage: .paymentCelebrationImage,
+                                        headerImage: .paymentErrorImage,
                                         dividerPosition: .top,
                                         defaultButton: makeTryAgain(tryAgainAction: tryAgainAction),
                                         cancelButton: nil,
@@ -127,19 +127,19 @@ private extension FancyAlertViewController {
             comment: "Button to try to collect a payment again. Presented to users after a collecting a payment fails"
         )
 
-        static let paymentSucessful = NSLocalizedString(
+        static let paymentSuccessful = NSLocalizedString(
             "Payment successful",
-            comment: "Label informing users that the payment sucedded. Presented to users when a payment is collected"
+            comment: "Label informing users that the payment succeeded. Presented to users when a payment is collected"
         )
 
         static let removeCard = NSLocalizedString(
             "Please remove card",
-            comment: "Label asking users to remove present cards. Presented to users when a payment is in the process of being collected"
+            comment: "Label asking users to remove card. Presented to users when a payment is in the process of being collected"
         )
 
         static let tapInsertOrSwipe = NSLocalizedString(
             "Tap, insert or swipe to pay",
-            comment: "Label asking users to tap present cards. Presented to users when a payment is going to be collected"
+            comment: "Label asking users to present a card. Presented to users when a payment is going to be collected"
         )
     }
 }

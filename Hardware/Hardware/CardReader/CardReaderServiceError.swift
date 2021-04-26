@@ -153,3 +153,124 @@ public enum UnderlyingError: Error {
     /// internal state of the CardReaderService.
     case internalServiceError
 }
+
+extension UnderlyingError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .busy:
+            return NSLocalizedString("The system is busy executing another command - please try again",
+                                     comment: "Error message when the card reader service is busy executing another command.")
+        case .notConnectedToReader:
+            return NSLocalizedString("No card reader is connected - connect a reader and try again",
+                                     comment: "Error message when a card reader was expected to already have been connected.")
+        case .alreadyConnectedToReader:
+            return NSLocalizedString("Unable to connect to reader - another reader is already connected",
+                                     comment: "Error message when a card reader is already connected and we were not expecting one.")
+        case .processInvalidPaymentIntent:
+            return NSLocalizedString("Unable to process payment due to invalid data - please try again",
+                                     comment: "Error message when the payment intent is invalid.")
+        case .connectingToUndiscoveredReader:
+            return NSLocalizedString("Unable to connect to card reader - card reader was not correctly discovered - please try again",
+                                     comment: "Error message when the card reader service attempts to connect to a reader without discovering it first.")
+        case .unsupportedSDK:
+            return NSLocalizedString("Unable to perform software request - please update this application and try again",
+                                     comment: "Error message when the application is so out of date that the backend refuses to work with it.")
+        case .featureNotAvailableWithConnectedReader:
+            return NSLocalizedString("Unable to perform request with the connected reader - unsupported feature - please try again with another reader",
+                                     comment: "Error message when the card reader cannot be used to perform the requested task.")
+        case .commandCancelled:
+            return NSLocalizedString("The system canceled the command unexpectedly - please try again",
+                                     comment: "Error message when the system cancels a command.")
+        case .locationServicesDisabled:
+            return NSLocalizedString("Unable to access Location Services - please enable Location Services and try again",
+                                     comment: "Error message when location services is not enabled for this application.")
+        case .bluetoothDisabled:
+            return NSLocalizedString("Unable to access Bluetooth - please enable Bluetooth and try again",
+                                     comment: "Error message when Bluetooth is not enabled or available.")
+        case .bluetoothError:
+            return NSLocalizedString("An error occurred accessing Bluetooth - please enable Bluetooth and try again",
+                                     comment: "Error message when Bluetooth is not enabled for this application.")
+        case .bluetoothScanTimedOut:
+            return NSLocalizedString("Unable to search for card readers - Bluetooth timed out - please try again",
+                                     comment: "Error message when Bluetooth scan times out during reader discovery.")
+        case .bluetoothLowEnergyUnsupported:
+            return NSLocalizedString("Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device",
+                                     comment: "Error message when Bluetooth Low Energy is not supported on the user device.")
+        case .readerSoftwareUpdateFailedBatteryLow:
+            return NSLocalizedString("Unable to update card reader software - the reader battery is too low",
+                                     comment: "Error message when the card reader battery level is too low to safely perform a software update.")
+        case .readerSoftwareUpdateFailedInterrupted:
+            return NSLocalizedString("The card reader software update was interrupted before it could complete - please try again",
+                                     comment: "Error message when the card reader software update is interrupted.")
+        case .readerSoftwareUpdateFailed:
+            return NSLocalizedString("The card reader software update failed unexpectedly - please try again",
+                                     comment: "Error message when the card reader software update fails unexpectedly.")
+        case .readerSoftwareUpdateFailedReader:
+            return NSLocalizedString("The card reader software update failed due to a communication error - please try again",
+                                     comment: "Error message when the card reader software update fails due to a communication error.")
+        case .readerSoftwareUpdateFailedServer:
+            return NSLocalizedString("The card reader software update failed due to a problem with the update server - please try again",
+                                     comment: "Error message when the card reader software update fails due to a problem with the update server.")
+        case .cardInsertNotRead:
+            return NSLocalizedString("Unable to read inserted card - please try removing and inserting card again",
+                                     comment: "Error message when the card reader is unable to read any chip on the inserted card.")
+        case .cardSwipeNotRead:
+            return NSLocalizedString("Unable to read swiped card - please try swiping again",
+                                     comment: "Error message when the card reader is unable to read a swiped card.")
+        case .cardReadTimeOut:
+            return NSLocalizedString("Unable to read card - the system timed out - please try again",
+                                     comment: "Error message when the card reader times out while reading a card.")
+        case .cardRemoved:
+            return NSLocalizedString("Card was removed too soon - please try transaction again",
+                                     comment: "Error message when the card is removed from the reader prematurely.")
+        case .cardLeftInReader:
+            return NSLocalizedString("Card was left in reader - please remove and reinsert card",
+                                     comment: "Error message when a card is left in the reader and another transaction started.")
+        case .readerBusy:
+            return NSLocalizedString("The card reader is busy executing another command - please try again",
+                                     comment: "Error message when the card reader is busy executing another command.")
+        case .readerIncompatible:
+            return NSLocalizedString("""
+The card reader is not compatible with this application - please try \
+updating the application or using a different reader
+""",
+                                     comment: "Error message when the card reader is incompatible with the application.")
+        case .readerCommunicationError:
+            return NSLocalizedString("Unable to communicate with reader - please try again",
+                                     comment: "Error message when communication with the card reader is disrupted.")
+        case .bluetoothConnectTimedOut:
+            return NSLocalizedString("Connecting to the card reader timed out - ensure it is nearby and charged and then try again",
+                                     comment: "Error message when establishing a connection to the card reader times out.")
+        case .bluetoothDisconnected:
+            return NSLocalizedString("The Bluetooth connection to the card reader disconnected unexpectedly",
+                                     comment: "Error message when the card reader loses its Bluetooth connection to the card reader.")
+        case .unsupportedReaderVersion:
+            return NSLocalizedString("The card reader software is out-of-date - please update the card reader software before attempting to process payments",
+                                     comment: "Error message when the card reader software is too far out of date to process payments.")
+        case .connectFailedReaderIsInUse:
+            return NSLocalizedString("Unable to connect to card reader - the card reader is already in use",
+                                     comment: "Error message when attempting to connect to a card reader which is already in use.")
+        case .unexpectedSDKError:
+            return NSLocalizedString("The system experienced an unexpected software error",
+                                     comment: "Error message when the card reader service experiences an unexpected software error.")
+        case .paymentDeclinedByPaymentProcessorAPI:
+            return NSLocalizedString("The card was declined by the payment processor - please try another means of payment",
+                                     comment: "Error message when the card processor declines the payment.")
+        case .paymentDeclinedByCardReader:
+            return NSLocalizedString("The card was declined by the card reader - please try another means of payment",
+                                     comment: "Error message when the card reader itself declines the card.")
+        case .notConnectedToInternet:
+            return NSLocalizedString("No connection to the Internet - please connect to the Internet and try again",
+                                     comment: "Error message when there is no connection to the Internet.")
+        case .requestTimedOut:
+            return NSLocalizedString("The request timed out - please try again",
+                                     comment: "Error message when a request times out.")
+        case .readerSessionExpired:
+            return NSLocalizedString("The card reader session has expired - please disconnect and reconnect the card reader and then try again",
+                                     comment: "Error message when the card reader session has timed out.")
+        case .internalServiceError:
+            return NSLocalizedString("The system experienced an unexpected internal error - please try again",
+                                     comment: "Error message when the card reader service experiences an unexpected internal service error.")
+        }
+    }
+}

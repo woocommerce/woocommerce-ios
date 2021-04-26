@@ -11,7 +11,7 @@ struct TitleAndValueRow: View {
     var body: some View {
         HStack {
             Text(title)
-                .font(.body)
+                .bodyStyle()
             Spacer()
             Text(value)
                 .font(.body)

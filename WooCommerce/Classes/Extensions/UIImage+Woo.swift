@@ -405,8 +405,8 @@ extension UIImage {
 
     /// Payment celebration
     ///
-    static var paymentCelebrationImage: UIImage {
-        return UIImage(named: "woo-payments-celebration")!
+    static var celebrationImage: UIImage {
+        return UIImage(named: "woo-celebration")!
     }
 
     /// Payment error

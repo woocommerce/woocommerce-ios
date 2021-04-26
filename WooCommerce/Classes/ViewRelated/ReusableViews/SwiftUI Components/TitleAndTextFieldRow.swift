@@ -12,7 +12,7 @@ struct TitleAndTextFieldRow: View {
     var body: some View {
         HStack {
             Text(title)
-                .font(.body)
+                .bodyStyle()
                 .lineLimit(1)
                 .fixedSize()
             Spacer()
@@ -21,7 +21,8 @@ struct TitleAndTextFieldRow: View {
                 .font(.body)
                 .keyboardType(keyboardType)
             if let symbol = symbol {
-                Text(symbol).font(.body)
+                Text(symbol)
+                    .bodyStyle()
             }
         }
         .frame(height: Constants.height)

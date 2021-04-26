@@ -12,10 +12,9 @@ struct ItemToFulfillRow: View, Identifiable {
             VStack(alignment: .leading,
                    spacing: 8) {
                 Text(title)
-                    .font(.body)
+                    .bodyStyle()
                 Text(subtitle)
-                    .font(.footnote)
-                    .foregroundColor(Color(.textSubtle))
+                    .footnoteStyle()
             }.padding([.leading, .trailing], Constants.vStackPadding)
             Spacer()
         }

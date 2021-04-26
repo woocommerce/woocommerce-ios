@@ -33,12 +33,12 @@ final class ReceiptRenderer: UIPrintPageRenderer {
     }
 
     override func drawHeaderForPage(at pageIndex: Int, in headerRect: CGRect) {
-        guard let storeName = parameters.storeName else {
+        guard let siteName = parameters.storeName else {
             return
         }
 
         let receiptTitle = String.localizedStringWithFormat(Localization.receiptFromFormat,
-                                                            storeName) as NSString
+                                                            siteName) as NSString
 
         receiptTitle.draw(in: headerRect, withAttributes: headerAttributes)
     }

@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "Group 624.pdf",
+      "filename" : "payments-cards-light.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "Group 624-2.pdf",
+      "filename" : "payments-cards-dark.pdf",
       "idiom" : "universal"
     }
   ],

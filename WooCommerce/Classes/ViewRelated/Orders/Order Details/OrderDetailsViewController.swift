@@ -523,7 +523,7 @@ private extension OrderDetailsViewController {
 
     @objc private func collectPayment(at: IndexPath) {
         paymentAlerts.readerIsReady(from: self,
-                                    name: viewModel.collectPaymentFrom,
+                                    title: viewModel.collectPaymentFrom,
                                     amount: viewModel.order.total)
 
         viewModel.collectPayment { [weak self] readerEventMessage in

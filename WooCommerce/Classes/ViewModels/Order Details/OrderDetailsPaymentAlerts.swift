@@ -12,13 +12,13 @@ final class OrderDetailsPaymentAlerts {
     private var name: String?
     private var amount: String?
 
-    func readerIsReady(from: UIViewController, name: String, amount: String) {
-        self.name = name
+    func readerIsReady(from: UIViewController, title: String, amount: String) {
+        self.name = title
         self.amount = amount
 
         // Initial presentation of the modal view controller. We need to provide
         // a customer name and an amount.
-        let newAlert = FancyAlertViewController.makeCollectPaymentAlert(name: name, amount: amount, image: .cardPresentImage)
+        let newAlert = FancyAlertViewController.makeCollectPaymentAlert(name: title, amount: amount, image: .cardPresentImage)
         alertController = newAlert
         alertController?.modalPresentationStyle = .custom
         alertController?.transitioningDelegate = AppDelegate.shared.tabBarController

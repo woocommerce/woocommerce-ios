@@ -6,14 +6,13 @@ import UIKit
 final class TopBannerWrapperView: UIView {
     /// Desired `width` of the view. Needed to calculate the view dynamic `height`.
     ///
-    let width: CGFloat
+    var width: CGFloat = 0.0
 
     /// BannerView to wrap
     ///
     var bannerView: TopBannerView?
 
-    init(width: CGFloat) {
-        self.width = width
+    init() {
         super.init(frame: .zero)
     }
 

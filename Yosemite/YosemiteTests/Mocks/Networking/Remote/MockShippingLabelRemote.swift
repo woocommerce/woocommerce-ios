@@ -35,6 +35,10 @@ final class MockShippingLabelRemote {
         let siteID: Int64
     }
 
+    private struct LoadAccountSettingsResultKey: Hashable {
+        let siteID: Int64
+    }
+
     /// The results to return based on the given arguments in `loadShippingLabels`
     private var loadAllResults = [LoadAllResultKey: Result<OrderShippingLabelListResponse, Error>]()
 
@@ -52,6 +56,9 @@ final class MockShippingLabelRemote {
 
     /// The results to return based on the given arguments in `createPackage`
     private var createPackageResults = [CreatePackageResultKey: Result<Bool, Error>]()
+
+    /// The results to return based on the given arguments in `loadShippingLabelAccountSettings`
+    private var loadAccountSettings = [LoadAccountSettingsResultKey: Result<ShippingLabelAccountSettings, Error>]()
 
     /// Set the value passed to the `completion` block if `loadShippingLabels` is called.
     func whenLoadingShippingLabels(siteID: Int64,
@@ -98,6 +105,13 @@ final class MockShippingLabelRemote {
                            thenReturn result: Result<Bool, Error>) {
         let key = CreatePackageResultKey(siteID: siteID)
         createPackageResults[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `createPackage` is called.
+    func whenLoadShippingLabelAccountSettings(siteID: Int64,
+                                       thenReturn result: Result<ShippingLabelAccountSettings, Error>) {
+        let key = LoadAccountSettingsResultKey(siteID: siteID)
+        loadAccountSettings[key] = result
     }
 }
 
@@ -178,6 +192,19 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
 
             let key = CreatePackageResultKey(siteID: siteID)
             if let result = self.createPackageResults[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func loadShippingLabelAccountSettings(siteID: Int64, completion: @escaping (Result<ShippingLabelAccountSettings, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = LoadAccountSettingsResultKey(siteID: siteID)
+            if let result = self.loadAccountSettings[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

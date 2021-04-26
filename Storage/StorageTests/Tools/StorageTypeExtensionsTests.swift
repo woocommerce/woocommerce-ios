@@ -973,4 +973,16 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(labelSettings, storedLabelSettings)
     }
+
+    func test_loadShippingLabelAccountSettings_by_siteID() throws {
+        // Given
+        let accountSettings = storage.insertNewObject(ofType: ShippingLabelAccountSettings.self)
+        accountSettings.siteID = sampleSiteID
+
+        // When
+        let storedAccountSettings = try XCTUnwrap(storage.loadShippingLabelAccountSettings(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual(accountSettings, storedAccountSettings)
+    }
 }

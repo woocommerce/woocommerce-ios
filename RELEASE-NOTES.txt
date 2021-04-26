@@ -1,5 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+6.6
+-----
+- [*] Fix: Product variations only support at most one image, so we won't show an option to add a second one. [https://github.com/woocommerce/woocommerce-ios/pull/3994]
+- [*] Fix: The screen to select images from the Media Library would sometimes crash when the library had a specific number of images. [https://github.com/woocommerce/woocommerce-ios/pull/4003]
+
 6.5
 -----
 - [*] Fix: Product images with non-latin characters in filenames now will load correctly and won't break Media Library. [https://github.com/woocommerce/woocommerce-ios/pull/3935]

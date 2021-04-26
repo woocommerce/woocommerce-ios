@@ -157,15 +157,22 @@ final class OrderDetailsDataSource: NSObject {
         return AsyncDictionary()
     }()
 
+    /// Indicates if the product cell will be configured with add on information or not.
+    /// Set to the the value of the `addOnsI1` feature flag in it's default parameter.
+    ///
+    private let showAddOns: Bool
+
     private lazy var currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     private let imageService: ImageService = ServiceLocator.imageService
 
     init(order: Order,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         showAddOns: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(FeatureFlag.addOnsI1)) {
         self.storageManager = storageManager
         self.order = order
         self.couponLines = order.coupons
+        self.showAddOns = showAddOns
 
         super.init()
     }
@@ -533,8 +540,14 @@ private extension OrderDetailsDataSource {
             return
         }
 
-        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: orderItem, currency: order.currency)
+        let addOns = filterAddOns(of: orderItem)
+        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: orderItem,
+                                                        currency: order.currency,
+                                                        hasAddOns: addOns.isNotEmpty)
         cell.configure(item: itemViewModel, imageService: imageService)
+        cell.onViewAddOnsTouchUp = { [weak self] in
+            self?.onCellAction?(.viewAddOns(addOns: addOns), nil)
+        }
     }
 
     private func configureShippingLabelTrackingNumber(cell: ImageAndTitleAndTextTableViewCell, at indexPath: IndexPath) {
@@ -606,10 +619,16 @@ private extension OrderDetailsDataSource {
             }
             return URL(string: encodedImageURLString)
         }()
+
+        let addOns = filterAddOns(of: aggregateItem)
         let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem.copy(imageURL: imageURL),
-                                                        currency: order.currency)
+                                                        currency: order.currency,
+                                                        hasAddOns: addOns.isNotEmpty)
 
         cell.configure(item: itemViewModel, imageService: imageService)
+        cell.onViewAddOnsTouchUp = { [weak self] in
+            self?.onCellAction?(.viewAddOns(addOns: addOns), nil)
+        }
     }
 
     private func configureRefundedProducts(_ cell: WooBasicTableViewCell) {
@@ -726,6 +745,16 @@ private extension OrderDetailsDataSource {
         cell.onEditTouchUp = { [weak self] in
             self?.onCellAction?(.summary, nil)
         }
+    }
+
+    /// Returns attributes that can be categorized as `Add-ons`.
+    /// Returns an `empty` array if we can't find the product associated with order item or if the `addOns` feature is disabled.
+    ///
+    private func filterAddOns(of item: AggregateOrderItem) -> [OrderItemAttribute] {
+        guard let product = products.first(where: { $0.productID == item.productOrVariationID }), showAddOns else {
+            return []
+        }
+        return AddOnCrossreferenceUseCase(orderItem: item, product: product).addOnsAttributes()
     }
 }
 
@@ -1329,6 +1358,7 @@ extension OrderDetailsDataSource {
         case reprintShippingLabel(shippingLabel: ShippingLabel)
         case createShippingLabel
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
+        case viewAddOns(addOns: [OrderItemAttribute])
     }
 
     struct Constants {

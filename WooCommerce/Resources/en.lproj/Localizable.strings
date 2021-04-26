@@ -1,6 +1,9 @@
 ﻿/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "#%@ %@" = "#%1$@ %2$@";
 
+/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
+"%1$@" = "%1$@";
+
 /* Format for each Product attribute */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld options)";
 
@@ -28,8 +31,7 @@
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ via %2$@";
 
-/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00).
-   In Shipping Labels Package Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
+/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@ x %2$@" = "%1$@ x %2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
@@ -41,8 +43,10 @@
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
-/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00).
-   In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
+/* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
+"%1$@・%2$@" = "%1$@・%2$@";
+
+/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
 
 /* 1 Item */
@@ -107,7 +111,10 @@
 /* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details.";
 
-/* Number of items in packages in Shipping Labels. Reads like - 10 items */
+/* Number of item in packages in Shipping Labels in singular form. Reads like - 1 items */
+"- %1$d item" = "- %1$d item";
+
+/* Number of items in packages in Shipping Labels in plural form. Reads like - 10 items */
 "- %1$d items" = "- %1$d items";
 
 /* Title of the label indicating that there is 1 item to refund. */
@@ -470,6 +477,10 @@
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Cannot upload image";
 
+/* Detailed message shown in the Reviews tab if the list is empty
+   Detailed message shown on the Product Reviews screen if the list is empty */
+"Capture high-quality product reviews for your store." = "Capture high-quality product reviews for your store.";
+
 /* Card reader settings screen title */
 "Card Readers" = "Card Readers";
 
@@ -664,6 +675,9 @@
 /* Add custom shipping carrier. Content of cell titled Shipping Carrier
    Placeholder name of a custom shipment tracking carrier - Title of button to add a custom tracking carrier if filtering the list yields no results. */
 "Custom Carrier" = "Custom Carrier";
+
+/* Header for the Custom Packages section in Shipping Label Package listing */
+"CUSTOM PACKAGES" = "CUSTOM PACKAGES";
 
 /* Customer info section title */
 "Customer" = "Customer";
@@ -935,6 +949,9 @@
    Navigates to experimental features screen */
 "Experimental Features" = "Experimental Features";
 
+/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
+"Explore how you can increase your store sales" = "Explore how you can increase your store sales";
+
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "External product";
 
@@ -1024,6 +1041,10 @@
 
 /* View title for initial auth views. */
 "Get Started" = "Get Started";
+
+/* Message shown in the Reviews tab if the list is empty
+   Message shown on the Product Reviews screen if the list is empty */
+"Get your first reviews" = "Get your first reviews";
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "Getting account information";
@@ -1258,7 +1279,7 @@
 "Launch Wormholy Debug" = "Launch Wormholy Debug";
 
 /* Button title in the shipping label creation info screen
-   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Orders → All Orders tab if the list is empty. */
+   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Orders → All Orders tab if the list is empty. - Title of button shown in the Reviews tab if the list is empty - Title of button shown on the Product Reviews screen if the list is empty */
 "Learn more" = "Learn more";
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
@@ -1529,12 +1550,6 @@
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "No revenue this period";
 
-/* Empty Product Reviews List Message */
-"No Reviews Yet for this Product!" = "No Reviews Yet for this Product!";
-
-/* Empty Reviews List Message */
-"No Reviews Yet!" = "No Reviews Yet!";
-
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "No shipping classes yet";
 
@@ -1681,7 +1696,8 @@
 /* Header section package details in Shipping Label Package Detail */
 "PACKAGE DETAILS" = "PACKAGE DETAILS";
 
-/* Title of the row for selecting a package in Shipping Label Package Detail screen */
+/* Package Selected screen title in Shipping Label flow
+   Title of the row for selecting a package in Shipping Label Package Detail screen */
 "Package Selected" = "Package Selected";
 
 /* The title for the customer payment cell */
@@ -1862,6 +1878,9 @@
 
 /* Product section title */
 "PRODUCT" = "PRODUCT";
+
+/* The title on the navigation bar when viewing an order item add-ons */
+"Product Add-ons" = "Product Add-ons";
 
 /* Edit Product External Link navigation title */
 "Product Link" = "Product Link";
@@ -2218,9 +2237,6 @@
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Share information with our analytics tool about your use of services while logged in to your WordPress.com account.";
-
-/* Action: Opens the Store in a browser */
-"Share your Store" = "Share your Store";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
@@ -3066,6 +3082,9 @@
 /* Displays the version of the App */
 "Version %@" = "Version %@";
 
+/* Title of the button on the order detail item to navigate to add-ons */
+"View Add-Ons" = "View Add-Ons";
+
 /* View application log cell title */
 "View Application Log" = "View Application Log";
 
@@ -3138,7 +3157,10 @@
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "We use other tracking tools, including some from third parties. Read about these and how to control them.";
 
-/* Banner caption in Shipping Label Address Validation when the address can't be verified. */
+/* Banner caption in Shipping Label Address Validation when the origin address can't be verified. */
+"We were unable to automatically verify the origin address." = "We were unable to automatically verify the origin address.";
+
+/* Banner caption in Shipping Label Address Validation when the destination address can't be verified. */
 "We were unable to automatically verify the shipping address. View on Apple Maps or try contacting the customer to make sure the address is correct." = "We were unable to automatically verify the shipping address. View on Apple Maps or try contacting the customer to make sure the address is correct.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
@@ -3149,9 +3171,6 @@
 
 /* Instruction text on the Sign Up screen. */
 "We'll email you a signup link to create your new WordPress.com account." = "We'll email you a signup link to create your new WordPress.com account.";
-
-/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
-"We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales.";
 
 /* Text confirming email address to be used for new account. */
 "We'll use this email address to create your new WordPress.com account." = "We'll use this email address to create your new WordPress.com account.";

@@ -207,6 +207,38 @@ final class ShippingLabelRemoteTests: XCTestCase {
                      message: "At least one of the new custom packages has the same name as existing packages.")
         XCTAssertEqual(result.failure as? DotcomError, expectedError)
     }
+
+    func test_loadShippingLabelAccountSettings_returns_settings_on_success() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "account/settings", filename: "shipping-label-account-settings")
+
+        // When
+        let result: Result<ShippingLabelAccountSettings, Error> = waitFor { promise in
+            remote.loadShippingLabelAccountSettings(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(try result.get())
+    }
+
+    func test_loadShippingLabelAccountSettings_returns_error_on_failure() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "account/settings", filename: "generic_error")
+
+        // When
+        let result: Result<ShippingLabelAccountSettings, Error> = waitFor { promise in
+            remote.loadShippingLabelAccountSettings(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure)
+    }
 }
 
 private extension ShippingLabelRemoteTests {

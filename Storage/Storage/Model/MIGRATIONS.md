@@ -2,6 +2,17 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 48 (Release 6.6.0.0)
+- @rachelmcr 2021-04-19
+- Added `ShippingLabelAccountSettings` entity.
+- Added `ShippingLabelPaymentMethod` entity.
+
+## Model 47 (Release 6.5.0.0)
+- @ecarrion 2021-04-09
+- Added `ProductAddOnOption` entity.
+- Added `ProductAddOn` entity.
+- Added to-many relationship between `Product` and  `ProductAddOn`.
+
 ## Model 46 (Release 6.2.0.0)
 - @rachelmcr 2021-02-18
 - Changed `stockQuantity` attribute on `ProductVariation` from Int64 to Decimal.

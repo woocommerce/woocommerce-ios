@@ -492,4 +492,11 @@ public extension StorageType {
         let predicate = \ShippingLabelSettings.siteID == siteID && \ShippingLabelSettings.orderID == orderID
         return firstObject(ofType: ShippingLabelSettings.self, matching: predicate)
     }
+
+    /// Returns all stored shipping label account settings for a site.
+    ///
+    func loadShippingLabelAccountSettings(siteID: Int64) -> ShippingLabelAccountSettings? {
+        let predicate = \ShippingLabelAccountSettings.siteID == siteID
+        return firstObject(ofType: ShippingLabelAccountSettings.self, matching: predicate)
+    }
 }

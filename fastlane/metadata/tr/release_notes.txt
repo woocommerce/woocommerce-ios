@@ -1,4 +1,5 @@
-WooCommerce iOS'ta, işinizi daha kolay yürütmenizi sağlayacak güncellemeler var.
+Bu sürümdeki yenilikler neler?
 
-Artık sıfırdan değişken ürünler oluşturabilir ve gezinme çubuğundan ürün taslağı/bekleyen bir ürün yayınlayabilirsiniz.
-Ürün özelliklerinin veya varyasyonlarının eklenmesini etkileyen hataları düzelttik ve metinlerle resimlerin yatay yönde görüntülenmesini iyileştirdik.
+- Uygulamanın ana özelliklerini ve avantajlarını tanıtmak için yeni çizimlerle yeniden tasarlanmış bir giriş deneyimi.
+- Gezinme çubuğunuzdaki geri düğmesi stilini daha tutarlı hale getirmek de dahil olmak üzere diğer düzeltmeler.
+

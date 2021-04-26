@@ -83,6 +83,16 @@ final class OrderDetailsViewModel {
         }
     }
 
+    /// Name of the user we will be collecting car present payments from
+    ///
+    var collectPaymentFrom: String {
+        guard let name = order.billingAddress?.firstName else {
+            return "Collect payment"
+        }
+
+        return "Collect payment from \(name)"
+    }
+
     /// Closure to be executed when the UI needs to be reloaded.
     /// That could happen, for example, when new incoming data is detected
     ///
@@ -485,15 +495,6 @@ extension OrderDetailsViewModel {
                                                              }, onCompletion: { (result) in
             // Propagate the result to the UI
             onCompletion(result)
-
-            //Initiate a printout of a receipt (to be removed with https://github.com/woocommerce/woocommerce-ios/issues/3976)
-                                                                //This is here only for testing purposes
-                                                                switch result {
-                                                                case .success(let parameters):
-                                                                    self.printReceipt(params: parameters)
-                                                                default:
-                                                                    break
-                                                                }
         })
 
         ServiceLocator.stores.dispatch(action)
@@ -503,6 +504,11 @@ extension OrderDetailsViewModel {
         let action = ReceiptAction.print(order: self.order, parameters: params)
 
         ServiceLocator.stores.dispatch(action)
+    }
+
+    func emailReceipt(params: CardPresentReceiptParameters) {
+        // TO BE IMPLEMENTED
+        // https://github.com/woocommerce/woocommerce-ios/issues/4014
     }
 }
 

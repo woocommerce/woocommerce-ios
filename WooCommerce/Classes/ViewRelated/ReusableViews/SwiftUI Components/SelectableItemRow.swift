@@ -16,10 +16,9 @@ struct SelectableItemRow: View {
             VStack(alignment: .leading,
                    spacing: 8) {
                 Text(title)
-                    .font(.body)
+                    .bodyStyle()
                 Text(subtitle)
-                    .font(.footnote)
-                    .foregroundColor(Color(.textSubtle))
+                    .footnoteStyle()
             }.padding([.trailing], Constants.vStackPadding)
             Spacer()
         }

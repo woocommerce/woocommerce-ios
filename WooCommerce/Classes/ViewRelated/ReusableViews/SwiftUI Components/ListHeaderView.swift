@@ -13,8 +13,7 @@ struct ListHeaderView: View {
                     Spacer()
                 }
                 Text(text)
-                    .font(.footnote)
-                    .foregroundColor(Color(.listIcon))
+                    .footnoteStyle()
                 if alignment == .left {
                     Spacer()
                 }

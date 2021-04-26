@@ -410,7 +410,7 @@ private extension AuthenticationManager {
                 // This is currently broken. See: https://github.com/woocommerce/woocommerce-ios/issues/3962.
                 return .emailDoesNotMatchWPAccount
             case WordPressOrgXMLRPCValidatorError.invalid.rawValue:
-                // We were able to connect to the site
+                // We were able to connect to the site but it does not seem to be a WordPress site.
                 return .notWPSite
             case NSURLErrorCannotFindHost,
                  NSURLErrorCannotConnectToHost:

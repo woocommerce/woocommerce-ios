@@ -52,7 +52,7 @@ public extension FancyAlertViewController {
                                         emailAction: @escaping () -> Void) -> FancyAlertViewController.Config {
         FancyAlertViewController.Config(titleText: Localization.paymentSucessful,
                                         bodyText: "",
-                                        headerImage: .paymentCelebrationImage,
+                                        headerImage: .celebrationImage,
                                         dividerPosition: .top,
                                         defaultButton: makePrintButon(printAction: printAction),
                                         cancelButton: makeEmailButton(emailAction: emailAction),
@@ -63,7 +63,7 @@ public extension FancyAlertViewController {
     static func configurationForError(tryAgainAction: @escaping () -> Void) -> FancyAlertViewController.Config {
         FancyAlertViewController.Config(titleText: Localization.tryAgain,
                                         bodyText: nil,
-                                        headerImage: .paymentCelebrationImage,
+                                        headerImage: .celebrationImage,
                                         dividerPosition: .top,
                                         defaultButton: makeTryAgain(tryAgainAction: tryAgainAction),
                                         cancelButton: nil,

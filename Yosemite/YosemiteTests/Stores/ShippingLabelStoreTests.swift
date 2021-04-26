@@ -503,6 +503,52 @@ final class ShippingLabelStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
+
+    // MARK: `synchronizeShippingLabelAccountSettings`
+
+    func test_synchronizeShippingLabelAccountSettings_persists_account_settings_on_success() throws {
+        // Given
+        let expectedSettings = sampleShippingLabelAccountSettings()
+        let remote = MockShippingLabelRemote()
+        remote.whenLoadShippingLabelAccountSettings(siteID: sampleSiteID,
+                                                    thenReturn: .success(expectedSettings))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Yosemite.ShippingLabelAccountSettings, Error> = waitFor { promise in
+            let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+
+        let persistedSettings = try XCTUnwrap(viewStorage.loadShippingLabelAccountSettings(siteID: sampleSiteID))
+        XCTAssertEqual(persistedSettings.toReadOnly(), expectedSettings)
+    }
+
+    func test_synchronizeShippingLabelAccountSettings_returns_error_on_failure() throws {
+        // Given
+        let expectedError = NetworkError.notFound
+        let remote = MockShippingLabelRemote()
+        remote.whenLoadShippingLabelAccountSettings(siteID: sampleSiteID,
+                                                    thenReturn: .failure(expectedError))
+        let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<Yosemite.ShippingLabelAccountSettings, Error> = waitFor { promise in
+            let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
 }
 
 private extension ShippingLabelStoreTests {
@@ -599,5 +645,26 @@ private extension ShippingLabelStoreTests {
                                                               predefinedPackages: predefinedPackages2)
 
         return [predefinedOption1, predefinedOption2]
+    }
+
+    func sampleShippingLabelAccountSettings() -> Yosemite.ShippingLabelAccountSettings {
+        let paymentMethod = ShippingLabelPaymentMethod(paymentMethodID: 11743265,
+                                                       name: "Example User",
+                                                       cardType: .visa,
+                                                       cardDigits: "4242",
+                                                       expiry: DateFormatter.Defaults.yearMonthDayDateFormatter.date(from: "2030-12-31"))
+
+        return ShippingLabelAccountSettings(siteID: sampleSiteID,
+                                            canManagePayments: true,
+                                            canEditSettings: true,
+                                            storeOwnerDisplayName: "Example User",
+                                            storeOwnerUsername: "admin",
+                                            storeOwnerWpcomUsername: "example@example.com",
+                                            storeOwnerWpcomEmail: "apiexamples",
+                                            paymentMethods: [paymentMethod],
+                                            selectedPaymentMethodID: 11743265,
+                                            isEmailReceiptsEnabled: true,
+                                            paperSize: .label,
+                                            lastSelectedPackageID: "small_flat_box")
     }
 }

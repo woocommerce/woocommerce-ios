@@ -57,13 +57,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v6.4-whats-new"
+msgctxt "v6.5-whats-new"
 msgid ""
-"What’s new in this release?\n"
-"\n"
-"- A redesigned login experience, with new illustrations to promote the app’s main features and benefits.\n"
-"- Other fixes, including making the back button style on your navigation bar more consistent.\n"
-"\n"
+"We're busy working on lots of exciting things, so just one little fix this time. We now fully support product images with non-latin characters in the filename. They'll load nicely and won't cause weird issues with your Media Library.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

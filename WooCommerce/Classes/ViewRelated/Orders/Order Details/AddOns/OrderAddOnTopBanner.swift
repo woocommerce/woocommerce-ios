@@ -4,9 +4,9 @@ import SwiftUI
 struct OrderAddOnTopBanner: UIViewRepresentable {
     typealias Callback = () -> ()
 
-    /// Banner wrapper that will contain a `TopBannerView`.
+    /// Desired `width` of the view.
     ///
-    private let bannerWrapper: TopBannerWrapperView
+    private let width: CGFloat
 
     /// Closure to be invoked when the "Give Feedback" button is pressed.
     ///
@@ -19,12 +19,16 @@ struct OrderAddOnTopBanner: UIViewRepresentable {
     /// Create a view with the desired `width`. Needed to calculate a correct view `height` later.
     ///
     init(width: CGFloat) {
-        self.bannerWrapper = TopBannerWrapperView(width: width)
+        self.width = width
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(bannerWrapper: TopBannerWrapperView())
     }
 
     func makeUIView(context: Context) -> UIView {
         let topButton = TopBannerViewModel.TopButtonType.chevron {
-            bannerWrapper.invalidateIntrinsicContentSize() // Forces the view to recalculate it's size as it collapses/expands
+            context.coordinator.bannerWrapper.invalidateIntrinsicContentSize() // Forces the view to recalculate it's size as it collapses/expands
         }
         let giveFeedbackButton = TopBannerViewModel.ActionButton(title: Localization.giveFeedback) {
             onGiveFeedback?()
@@ -40,13 +44,14 @@ struct OrderAddOnTopBanner: UIViewRepresentable {
                                            actionButtons: [giveFeedbackButton, dismissButton])
         let mainBanner = TopBannerView(viewModel: viewModel)
 
-        // Set the real view to be displayed inside the wrapper.
-        bannerWrapper.setBanner(mainBanner)
-        return bannerWrapper
+        // Set the current super view width and the real view to be displayed inside the wrapper.
+        context.coordinator.bannerWrapper.width = width
+        context.coordinator.bannerWrapper.setBanner(mainBanner)
+        return context.coordinator.bannerWrapper
     }
 
     func updateUIView(_ uiView: UIView, context: Context) {
-        // No-op
+        context.coordinator.bannerWrapper.width = width
     }
 
     /// Returns a copy of the view with `onDismiss` handling.
@@ -63,6 +68,16 @@ struct OrderAddOnTopBanner: UIViewRepresentable {
         var copy = self
         copy.onGiveFeedback = handler
         return copy
+    }
+}
+
+extension OrderAddOnTopBanner {
+    /// Hold state across `SwiftUI` lifecycle passes.
+    ///
+    struct Coordinator {
+        /// Banner wrapper that will contain a `TopBannerView`.
+        ///
+        let bannerWrapper: TopBannerWrapperView
     }
 }
 

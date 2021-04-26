@@ -38,7 +38,7 @@ private extension NoSecureConnectionErrorViewModel {
     enum Localization {
         static let errorMessage =
             NSLocalizedString("A secure connection to the site could not be made. " +
-                                "Please make sure that your site has a valid SSL certificate..",
+                                "Please make sure that your site has a valid SSL certificate.",
                               comment: "Message explaining that the site may have an invalid SSL certificate.")
 
         static let primaryButtonTitle =

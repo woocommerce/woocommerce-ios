@@ -276,7 +276,6 @@ private extension StripeCardReaderService {
 
 // MARK: - DiscoveryDelegate.
 extension StripeCardReaderService: DiscoveryDelegate {
-    /// Enough code to pass the test
     public func terminal(_ terminal: Terminal, didUpdateDiscoveredReaders readers: [Reader]) {
         // Cache discovered readers. The cache needs to be cleared after we connect to a
         // specific reader

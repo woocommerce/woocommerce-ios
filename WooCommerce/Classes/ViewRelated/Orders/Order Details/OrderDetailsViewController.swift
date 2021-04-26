@@ -40,6 +40,12 @@ final class OrderDetailsViewController: UIViewController {
 
     private let notices = OrderDetailsNotices()
 
+    /// Orchestrates what needs to be presented in the modal views
+    /// that provide user-facing feedback about the card present payment process.
+    private lazy var paymentAlerts: OrderDetailsPaymentAlerts = {
+        OrderDetailsPaymentAlerts()
+    }()
+
     // MARK: - View Lifecycle
 
     /// Create an instance of `Self` from its corresponding storyboard.
@@ -516,46 +522,32 @@ private extension OrderDetailsViewController {
     }
 
     @objc private func collectPayment(at: IndexPath) {
-        guard let cell = tableView.cellForRow(at: at) as? ButtonTableViewCell else {
-            return
-        }
-        /// TODO. Initiate UI flow for collecting payments
-        /// This will be removed later on, whenever we implement the proper UI flow
-        /// for collecting payments.
-        /// For now, we present an alert with a success/error message after completion.
-        /// This API does not have to be final. It is the simplest thing that
-        /// could possibly work at this point in time
+        paymentAlerts.readerIsReady(from: self,
+                                    title: viewModel.collectPaymentFrom,
+                                    amount: viewModel.order.total)
+
         viewModel.collectPayment { [weak self] readerEventMessage in
-            let title = "💳💳"
-            let message = readerEventMessage
-            let buttonTitle = "😊"
-
-            let actionSheet = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            actionSheet.view.tintColor = .text
-
-            actionSheet.addCancelActionWithTitle(buttonTitle)
-
-            let popoverController = actionSheet.popoverPresentationController
-            popoverController?.sourceView = cell.contentView
-
-            self?.present(actionSheet, animated: true)
+            self?.paymentAlerts.tapOrInsertCard()
         } onClearMessage: { [weak self] in
-            self?.dismiss(animated: false, completion: nil)
+            self?.paymentAlerts.removeCard()
         } onCompletion: { [weak self] result in
-            self?.dismiss(animated: false, completion: nil)
-            let title = result.isSuccess ? "🎉🥳🍾🎊 success" : "☢️ Error!"
-            let message = result.isSuccess ? "The payment has been processed. 💸💸💸💸💸" : "The payment has not been processed. 🙅‍♀️"
-            let buttonTitle = result.isSuccess ? "😎" : "🤷"
+            guard let self = self else {
+                return
+            }
 
-            let actionSheet = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            actionSheet.view.tintColor = .text
-
-            actionSheet.addCancelActionWithTitle(buttonTitle)
-
-            let popoverController = actionSheet.popoverPresentationController
-            popoverController?.sourceView = cell.contentView
-
-            self?.present(actionSheet, animated: true)
+            switch result {
+            case .failure(let error):
+                self.paymentAlerts.error(error: error, tryAgainAction: {
+                    // To be implemented.
+                })
+            case .success(let receiptParameters):
+                self.paymentAlerts.success(printReceipt: {
+                    self.viewModel.printReceipt(params: receiptParameters)
+                }, emailReceipt: {
+                    self.viewModel.emailReceipt(params: receiptParameters)
+                }
+                )
+            }
         }
     }
 

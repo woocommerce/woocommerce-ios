@@ -330,6 +330,12 @@ extension UIImage {
         .gridicon(.infoOutline, size: CGSize(width: 20, height: 20))
     }
 
+    /// Credit card tapping on a card reader
+    ///
+    static var cardPresentImage: UIImage {
+        return UIImage(named: "woo-payments-card")!
+    }
+
     /// Files Download Icon
     ///
     static var cloudImage: UIImage {
@@ -395,6 +401,18 @@ extension UIImage {
     static var moreImage: UIImage {
         let tintColor = UIColor.primary
         return ellipsisImage.imageWithTintColor(tintColor)!
+    }
+
+    /// Payment celebration
+    ///
+    static var celebrationImage: UIImage {
+        return UIImage(named: "woo-celebration")!
+    }
+
+    /// Payment error
+    ///
+    static var paymentErrorImage: UIImage {
+        return UIImage(named: "woo-payments-error")!
     }
 
     /// Price Icon

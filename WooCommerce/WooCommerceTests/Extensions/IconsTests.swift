@@ -218,6 +218,18 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.moreImage)
     }
 
+    func test_payment_card_image() {
+        XCTAssertNotNil(UIImage.cardPresentImage)
+    }
+
+    func test_payment_celebration_image() {
+        XCTAssertNotNil(UIImage.celebrationImage)
+    }
+
+    func test_payment_error_image() {
+        XCTAssertNotNil(UIImage.paymentErrorImage)
+    }
+
     func testPlusImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.plusImage)
     }

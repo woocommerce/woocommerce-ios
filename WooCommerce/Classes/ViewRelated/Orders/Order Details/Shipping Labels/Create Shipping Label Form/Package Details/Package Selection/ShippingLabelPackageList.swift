@@ -30,7 +30,7 @@ struct ShippingLabelPackageList: View {
 
                     ListHeaderView(text: option.title.uppercased(), alignment: .left)
                         .background(Color(.listBackground))
-                    ForEach(option.predefinedPackages, id: \.id) { package in
+                    ForEach(option.predefinedPackages) { package in
                         let selected = package == viewModel.selectedPredefinedPackage
                         SelectableItemRow(title: package.title, subtitle: package.dimensions + " \(viewModel.dimensionUnit)", selected: selected).onTapGesture {
                             viewModel.didSelectPackage(package.id)

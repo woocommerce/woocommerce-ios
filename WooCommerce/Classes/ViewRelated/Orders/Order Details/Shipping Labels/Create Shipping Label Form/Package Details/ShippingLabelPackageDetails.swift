@@ -31,7 +31,7 @@ struct ShippingLabelPackageDetails: View {
 
                 NavigationLink(
                     destination:
-                        ShippingLabelPackageList().environmentObject(viewModel),
+                        ShippingLabelPackageList(viewModel: viewModel),
                     isActive: $showingAddPackage) { EmptyView()
                 }
                 Divider()

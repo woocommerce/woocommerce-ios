@@ -2,7 +2,7 @@ import SwiftUI
 import Yosemite
 
 struct ShippingLabelPackageList: View {
-    @EnvironmentObject private var viewModel: ShippingLabelPackageDetailsViewModel
+    @ObservedObject var viewModel: ShippingLabelPackageDetailsViewModel
     @Environment(\.presentationMode) var presentation
 
     var body: some View {
@@ -68,6 +68,6 @@ struct ShippingLabelPackageList_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder())
 
-        ShippingLabelPackageList().environmentObject(viewModel)
+        ShippingLabelPackageList(viewModel: viewModel)
     }
 }

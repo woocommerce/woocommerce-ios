@@ -32,6 +32,11 @@ struct AddOnCrossreferenceUseCase {
         let splitToken = " ("
         let components = attribute.name.components(separatedBy: splitToken)
 
+        // If name the format does not match our format assumptions, return the raw name.
+        guard components.count > 1 else {
+            return attribute.name
+        }
+
         // In case there are more `" ("` occurrences in the string, drop the last one assuming its the add-on price,
         // and join the remaining components to keep the original name integrity
         return components.dropLast().joined(separator: splitToken)

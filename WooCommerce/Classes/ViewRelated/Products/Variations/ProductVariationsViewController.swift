@@ -94,7 +94,6 @@ final class ProductVariationsViewController: UIViewController {
         didSet {
             viewModel.updatedFormTypeIfNeeded(newProduct: product)
 
-            configureRightButtonItem()
             resetResultsController(oldProduct: oldValue)
             updateEmptyState()
             onProductUpdate?(product)
@@ -153,7 +152,6 @@ final class ProductVariationsViewController: UIViewController {
         configureSyncingCoordinator()
         registerTableViewCells()
         configureHeaderContainerView()
-        configureAddButton()
         updateTopBannerView()
         updateEmptyState()
 
@@ -179,22 +177,6 @@ private extension ProductVariationsViewController {
             "Variations",
             comment: "Title that appears on top of the Product Variation List screen."
         )
-        configureRightButtonItem()
-    }
-
-    /// Configure right button item.
-    ///
-    func configureRightButtonItem() {
-        guard viewModel.shouldShowMoreButton(for: product) else {
-            return navigationItem.rightBarButtonItem = nil
-        }
-
-        let moreButton = UIBarButtonItem(image: .moreImage,
-                                         style: .plain,
-                                         target: self,
-                                         action: #selector(presentMoreOptionsActionSheet(_:)))
-        moreButton.accessibilityLabel = Localization.moreButtonLabel
-        navigationItem.setRightBarButton(moreButton, animated: false)
     }
 
     /// Apply Woo styles.
@@ -269,11 +251,16 @@ private extension ProductVariationsViewController {
     }
 }
 
+// MARK: - Table header view
+//
 private extension ProductVariationsViewController {
     func configureHeaderContainerView() {
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
         headerContainer.addSubview(topStackView)
         headerContainer.pinSubviewToAllEdges(topStackView)
+
+        configureAddButton()
+        configureEditAttributesButton()
         topStackView.addArrangedSubview(topBannerView)
 
         tableView.tableHeaderView = headerContainer
@@ -287,18 +274,26 @@ private extension ProductVariationsViewController {
         addVariationButton.translatesAutoresizingMaskIntoConstraints = false
         addVariationButton.setTitle(Localization.addNewVariation, for: .normal)
         addVariationButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
-        addVariationButton.applySecondaryButtonStyle()
+        addVariationButton.applyPrimaryButtonStyle()
 
         buttonContainer.addSubview(addVariationButton)
-        buttonContainer.pinSubviewToSafeArea(addVariationButton, insets: .init(top: 16, left: 16, bottom: 16, right: 16))
+        buttonContainer.pinSubviewToSafeArea(addVariationButton, insets: .init(top: 16, left: 16, bottom: 8, right: 16))
 
-        let separator = UIView.createBorderView()
-        buttonContainer.addSubview(separator)
-        NSLayoutConstraint.activate([
-            buttonContainer.leadingAnchor.constraint(equalTo: separator.leadingAnchor),
-            buttonContainer.bottomAnchor.constraint(equalTo: separator.bottomAnchor),
-            buttonContainer.trailingAnchor.constraint(equalTo: separator.trailingAnchor)
-        ])
+        topStackView.addArrangedSubview(buttonContainer)
+    }
+
+    func configureEditAttributesButton() {
+        let buttonContainer = UIView()
+        buttonContainer.backgroundColor = .listForeground
+
+        let editAttributesButton = UIButton()
+        editAttributesButton.translatesAutoresizingMaskIntoConstraints = false
+        editAttributesButton.setTitle(Localization.editAttributesAction, for: .normal)
+        editAttributesButton.addTarget(self, action: #selector(editAttributesTapped), for: .touchUpInside)
+        editAttributesButton.applySecondaryButtonStyle()
+
+        buttonContainer.addSubview(editAttributesButton)
+        buttonContainer.pinSubviewToSafeArea(editAttributesButton, insets: .init(top: 8, left: 16, bottom: 16, right: 16))
 
         topStackView.addArrangedSubview(buttonContainer)
     }
@@ -524,6 +519,8 @@ private extension ProductVariationsViewController {
     }
 }
 
+// MARK: - Actions
+//
 private extension ProductVariationsViewController {
     @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.productVariationListPulledToRefresh)
@@ -537,28 +534,10 @@ private extension ProductVariationsViewController {
         analytics.track(event: WooAnalyticsEvent.Variations.addMoreVariationsButtonTapped(productID: product.productID))
         createVariation()
     }
-}
 
-// MARK: Action Sheet
-//
-private extension ProductVariationsViewController {
-    @objc private func presentMoreOptionsActionSheet(_ sender: UIBarButtonItem) {
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .text
-
-        let editAttributesAction = UIAlertAction(title: Localization.editAttributesAction, style: .default) { [weak self] _ in
-            self?.navigateToEditAttributeViewController(allowVariationCreation: false)
-            self?.trackEditAttributesButtonPressed()
-        }
-        actionSheet.addAction(editAttributesAction)
-
-        let cancelAction = UIAlertAction(title: Localization.cancelAction, style: .cancel)
-        actionSheet.addAction(cancelAction)
-
-        let popoverController = actionSheet.popoverPresentationController
-        popoverController?.barButtonItem = sender
-
-        present(actionSheet, animated: true)
+    @objc func editAttributesTapped() {
+        navigateToEditAttributeViewController(allowVariationCreation: false)
+        trackEditAttributesButtonPressed()
     }
 
     func trackEditAttributesButtonPressed() {
@@ -735,10 +714,8 @@ private extension ProductVariationsViewController {
     enum Localization {
         static let emptyStateTitle = NSLocalizedString("Add your first variation", comment: "Title on the variations list screen when there are no variations")
         static let emptyStateButtonTitle = NSLocalizedString("Add Variation", comment: "Title on add variation button when there are no variations")
-        static let addNewVariation = NSLocalizedString("Add Variation", comment: "Action to add new variation on the variations list")
-        static let moreButtonLabel = NSLocalizedString("More options", comment: "Accessibility label to show the More Options action sheet")
+        static let addNewVariation = NSLocalizedString("Generate New Variation", comment: "Action to add new variation on the variations list")
         static let editAttributesAction = NSLocalizedString("Edit Attributes", comment: "Action to edit the attributes and options used for variations")
-        static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel button in the More Options action sheet")
 
         static let generatingVariation = NSLocalizedString("Generating Variation", comment: "Title for the progress screen while generating a variation")
         static let waitInstructions = NSLocalizedString("Please wait while we create the new variation",

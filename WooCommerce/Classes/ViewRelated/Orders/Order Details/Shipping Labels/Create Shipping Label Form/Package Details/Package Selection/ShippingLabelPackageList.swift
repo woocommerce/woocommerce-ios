@@ -7,6 +7,7 @@ struct ShippingLabelPackageList: View {
 
     var body: some View {
         ScrollView {
+            /// `List` doesn't allow us to change easily some UI things, like the separators. So, we used `VStack`.
             VStack(spacing: 0) {
 
                 /// Custom Packages

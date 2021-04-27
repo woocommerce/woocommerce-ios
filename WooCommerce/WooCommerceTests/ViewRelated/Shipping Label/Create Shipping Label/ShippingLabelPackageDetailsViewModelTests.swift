@@ -145,6 +145,21 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedPackageID, customPackage.title)
     }
 
+    func test_showCustomPackagesHeader_returns_the_expected_value() {
+        // Given
+        let order = MockOrders().empty().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        mockRetrieveShippingLabelPackageDetails(result: .success(mockPackageResponse()))
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
+                                                             formatter: currencyFormatter,
+                                                             stores: stores,
+                                                             storageManager: storageManager,
+                                                             weightUnit: "kg")
+
+
+        // Then
+        XCTAssertTrue(viewModel.showCustomPackagesHeader)
+    }
 }
 
 // MARK: - Utils

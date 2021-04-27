@@ -11,7 +11,7 @@ struct ShippingLabelPackageList: View {
 
                 /// Custom Packages
                 ///
-                if viewModel.customPackages.count > 0 {
+                if viewModel.showCustomPackagesHeader {
                     ListHeaderView(text: Localization.customPackageHeader.uppercased(), alignment: .left)
                         .background(Color(.listBackground))
                 }

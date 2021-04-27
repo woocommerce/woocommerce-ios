@@ -12,6 +12,10 @@ final class MockCardReaderService: CardReaderService {
         connectedReadersSubject.eraseToAnyPublisher()
     }
 
+    var knownReaders: AnyPublisher<[Hardware.CardReader], Never> {
+        knownReadersSubject.eraseToAnyPublisher()
+    }
+
     var serviceStatus: AnyPublisher<CardReaderServiceStatus, Never> {
         CurrentValueSubject<CardReaderServiceStatus, Never>(.ready).eraseToAnyPublisher()
     }
@@ -42,6 +46,7 @@ final class MockCardReaderService: CardReaderService {
     var didReceiveAConfigurationProvider = false
 
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
+    private let knownReadersSubject = CurrentValueSubject<[CardReader], Never>([])
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
 
 

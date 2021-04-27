@@ -44,9 +44,15 @@ final class OrderAddOnListI1ViewModel: ObservableObject {
     /// The `attribute.name` comes in the form of "add-on-title (add-on-price)". EG: "Topping (Spicy) ($30.00)"
     ///
     private static func addOnName(from attribute: OrderItemAttribute) -> String {
-        attribute.name.components(separatedBy: " (") // "Topping (Spicy) ($30.00)" -> ["Topping", "Spicy)", "$30.00)"]
-            .dropLast()                              // ["Topping", "Spicy)", "$30.00)"] -> ["Topping", "Spicy)"]
-            .joined(separator: " (")                 // ["Topping", "Spicy)"] -> "Topping (Spicy)"
+        let components = attribute.name.components(separatedBy: " (") // "Topping (Spicy) ($30.00)" -> ["Topping", "Spicy)", "$30.00)"]
+
+        // If name does not match our format assumptions, return the raw name.
+        guard components.count > 1 else {
+            return attribute.name
+        }
+
+        return components.dropLast() // ["Topping", "Spicy)", "$30.00)"] -> ["Topping", "Spicy)"]
+            .joined(separator: " (") // ["Topping", "Spicy)"] -> "Topping (Spicy)"
     }
 
     /// Decodes the price of the add-on from the `attribute.name` property using an already decoded add-on name.

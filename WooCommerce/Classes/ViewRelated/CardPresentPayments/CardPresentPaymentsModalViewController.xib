@@ -11,9 +11,6 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CardPresentPaymentsModalViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
-                <outlet property="buttonViewLeadingConstraint" destination="r9Z-y5-j3W" id="bWb-vV-0U2"/>
-                <outlet property="buttonViewTrailingConstraint" destination="3Fe-tr-bmb" id="DjF-95-KFx"/>
-                <outlet property="errorMessage" destination="a2d-le-aKc" id="YgT-Ex-Gwh"/>
                 <outlet property="extraInfoButton" destination="GOR-hg-dbC" id="I7z-hN-FAo"/>
                 <outlet property="imageView" destination="Osv-Wo-lxW" id="yIN-vL-DOA"/>
                 <outlet property="primaryButton" destination="ZHa-is-GJK" id="wzn-TJ-1Sm"/>
@@ -28,90 +25,95 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="10Z-y1-ZQ6" userLabel="Action Background View">
-                    <rect key="frame" x="0.0" y="702" width="414" height="160"/>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="jIt-xb-rrN">
+                    <rect key="frame" x="34" y="207" width="346" height="452"/>
                     <subviews>
-                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="mhI-fa-Yzw">
-                            <rect key="frame" x="20" y="20" width="374" height="120"/>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Q0r-qo-iZS">
+                            <rect key="frame" x="152.5" y="0.0" width="41.5" height="49"/>
                             <subviews>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZHa-is-GJK" userLabel="secondary action button" customClass="NUXButton" customModule="WordPressAuthenticator">
-                                    <rect key="frame" x="0.0" y="0.0" width="374" height="50"/>
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="50" id="Gcd-Af-CS9"/>
-                                    </constraints>
-                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
-                                    <state key="normal" title="Primary Action Button">
-                                        <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </state>
-                                    <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="YES"/>
-                                    </userDefinedRuntimeAttributes>
-                                </button>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Ap-Te-Fsi" userLabel="Action Button" customClass="NUXButton" customModule="WordPressAuthenticator">
-                                    <rect key="frame" x="0.0" y="70" width="374" height="50"/>
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="50" id="ju1-aE-m26"/>
-                                    </constraints>
-                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
-                                    <state key="normal" title="Secondary Action Button">
-                                        <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    </state>
-                                    <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="NO"/>
-                                    </userDefinedRuntimeAttributes>
-                                </button>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oDv-zz-CTp">
+                                    <rect key="frame" x="0.0" y="0.0" width="41.5" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aVs-Lf-QTr">
+                                    <rect key="frame" x="0.0" y="28.5" width="41.5" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
                             </subviews>
                         </stackView>
-                    </subviews>
-                    <constraints>
-                        <constraint firstAttribute="trailing" secondItem="mhI-fa-Yzw" secondAttribute="trailing" constant="20" id="8gH-vs-D9H"/>
-                        <constraint firstAttribute="bottomMargin" secondItem="mhI-fa-Yzw" secondAttribute="bottom" constant="12" id="PGb-Bi-220"/>
-                        <constraint firstItem="mhI-fa-Yzw" firstAttribute="top" secondItem="10Z-y1-ZQ6" secondAttribute="top" constant="20" id="elI-Eo-HER"/>
-                        <constraint firstItem="mhI-fa-Yzw" firstAttribute="leading" secondItem="10Z-y1-ZQ6" secondAttribute="leading" constant="20" id="vz3-FU-z4g"/>
-                    </constraints>
-                </view>
-                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="jIt-xb-rrN">
-                    <rect key="frame" x="34" y="240" width="346" height="386.5"/>
-                    <subviews>
-                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="woo-no-jetpack-error" translatesAutoresizingMaskIntoConstraints="NO" id="Osv-Wo-lxW">
-                            <rect key="frame" x="55" y="0.0" width="236" height="206"/>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="woo-celebration" translatesAutoresizingMaskIntoConstraints="NO" id="Osv-Wo-lxW">
+                            <rect key="frame" x="106" y="81" width="134" height="117"/>
                         </imageView>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a2d-le-aKc">
-                            <rect key="frame" x="0.0" y="238" width="346" height="86.5"/>
-                            <string key="text">Qui eum est quo et recusandae ut. Hic cupiditate nobis et pariatur quidem dolorum. Doloribus est tempora ipsam eius. Quos ab et aspernatur velit corporis aut rem.</string>
-                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                            <color key="textColor" systemColor="secondaryLabelColor"/>
-                            <nil key="highlightedColor"/>
-                        </label>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GOR-hg-dbC" userLabel="Action Button">
-                            <rect key="frame" x="59" y="356.5" width="228" height="30"/>
+                            <rect key="frame" x="59" y="230" width="228" height="30"/>
                             <constraints>
                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="228" id="Dh0-gH-21U"/>
                             </constraints>
                             <state key="normal" title="Action Button"/>
                         </button>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="10Z-y1-ZQ6" userLabel="Action Background View">
+                            <rect key="frame" x="0.0" y="292" width="346" height="160"/>
+                            <subviews>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="mhI-fa-Yzw">
+                                    <rect key="frame" x="20" y="20" width="306" height="120"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZHa-is-GJK" userLabel="secondary action button" customClass="NUXButton" customModule="WordPressAuthenticator">
+                                            <rect key="frame" x="0.0" y="0.0" width="306" height="50"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="50" id="Gcd-Af-CS9"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                            <state key="normal" title="Primary Action Button">
+                                                <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </state>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="YES"/>
+                                            </userDefinedRuntimeAttributes>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Ap-Te-Fsi" userLabel="Action Button" customClass="NUXButton" customModule="WordPressAuthenticator">
+                                            <rect key="frame" x="0.0" y="70" width="306" height="50"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="50" id="ju1-aE-m26"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                            <state key="normal" title="Secondary Action Button">
+                                                <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </state>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="NO"/>
+                                            </userDefinedRuntimeAttributes>
+                                        </button>
+                                    </subviews>
+                                </stackView>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="trailing" secondItem="mhI-fa-Yzw" secondAttribute="trailing" constant="20" id="8gH-vs-D9H"/>
+                                <constraint firstAttribute="bottomMargin" secondItem="mhI-fa-Yzw" secondAttribute="bottom" constant="12" id="PGb-Bi-220"/>
+                                <constraint firstItem="mhI-fa-Yzw" firstAttribute="top" secondItem="10Z-y1-ZQ6" secondAttribute="top" constant="20" id="elI-Eo-HER"/>
+                                <constraint firstItem="mhI-fa-Yzw" firstAttribute="leading" secondItem="10Z-y1-ZQ6" secondAttribute="leading" constant="20" id="vz3-FU-z4g"/>
+                            </constraints>
+                        </view>
                     </subviews>
                 </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="10Z-y1-ZQ6" secondAttribute="trailing" id="3Fe-tr-bmb"/>
                 <constraint firstItem="jIt-xb-rrN" firstAttribute="top" relation="greaterThanOrEqual" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="8" id="4vu-ll-3S2"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="jIt-xb-rrN" secondAttribute="bottom" constant="8" id="URI-km-7BO"/>
                 <constraint firstAttribute="trailing" secondItem="jIt-xb-rrN" secondAttribute="trailing" constant="34" id="Z7E-hC-lbB"/>
                 <constraint firstItem="jIt-xb-rrN" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" constant="-20" id="ZZg-jd-e4d"/>
                 <constraint firstItem="jIt-xb-rrN" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="34" id="jMe-jj-6Bt"/>
-                <constraint firstItem="10Z-y1-ZQ6" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="r9Z-y5-j3W"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="10Z-y1-ZQ6" secondAttribute="bottom" id="rPP-rT-zVR"/>
             </constraints>
             <point key="canvasLocation" x="137.68115942028987" y="86.383928571428569"/>
         </view>
     </objects>
     <resources>
-        <image name="woo-no-jetpack-error" width="236" height="206"/>
-        <systemColor name="secondaryLabelColor">
-            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
+        <image name="woo-celebration" width="134" height="117"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

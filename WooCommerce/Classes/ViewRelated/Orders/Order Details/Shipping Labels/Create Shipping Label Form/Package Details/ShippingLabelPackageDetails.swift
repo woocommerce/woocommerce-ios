@@ -18,7 +18,7 @@ struct ShippingLabelPackageDetails: View {
                     .background(Color(.listBackground))
 
                 ForEach(viewModel.itemsRows) { productItemRow in
-                    Divider()
+                    Divider().padding(.leading, Constants.dividerPadding)
                     productItemRow
                 }
 
@@ -62,6 +62,10 @@ private extension ShippingLabelPackageDetails {
                                                           comment: "Title of the row for adding the package weight in Shipping Label Package Detail screen")
         static let footer = NSLocalizedString("Sum of products and package weight",
                                               comment: "Title of the footer in Shipping Label Package Detail screen")
+    }
+
+    enum Constants {
+        static let dividerPadding: CGFloat = 16
     }
 }
 

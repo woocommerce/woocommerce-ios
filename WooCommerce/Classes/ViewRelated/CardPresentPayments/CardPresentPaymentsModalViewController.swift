@@ -7,25 +7,14 @@ import SafariServices
 final class CardPresentPaymentsModalViewController: UIViewController {
     /// The view model providing configuration for this view controller
     /// and support for user actions
-    private let viewModel: CardPresentPaymentsModalViewModel
+    private var viewModel: CardPresentPaymentsModalViewModel
 
+    @IBOutlet private weak var topTitleLabel: UILabel!
+    @IBOutlet private weak var topSubtitleLabel: UILabel!
     @IBOutlet private weak var primaryButton: NUXButton!
     @IBOutlet private weak var secondaryButton: NUXButton!
     @IBOutlet private weak var imageView: UIImageView!
-    @IBOutlet private weak var errorMessage: UILabel!
     @IBOutlet private weak var extraInfoButton: UIButton!
-
-    /// Constraints on the view containing the action buttons
-    /// and the stack view containing the image and error text
-    /// Used to adjust the button width in unified views provided by WPAuthenticator
-    @IBOutlet private weak var buttonViewLeadingConstraint: NSLayoutConstraint!
-    @IBOutlet private weak var buttonViewTrailingConstraint: NSLayoutConstraint!
-    @IBOutlet private weak var stackViewLeadingConstraint: NSLayoutConstraint!
-    @IBOutlet private weak var stackViewTrailingConstraint: NSLayoutConstraint!
-
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        UIDevice.isPad() ? .all : .portrait
-    }
 
     init(viewModel: CardPresentPaymentsModalViewModel) {
         self.viewModel = viewModel
@@ -39,38 +28,70 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureImageView()
-        configureErrorMessage()
-        configureExtraInfoButton()
+        styleContent()
+        populateContent()
+    }
 
-        configurePrimaryButton()
-        configureSecondaryButton()
+    func setViewModel(_ newViewModel: CardPresentPaymentsModalViewModel) {
+        self.viewModel = newViewModel
 
-        setUnifiedMargins(forWidth: view.frame.width)
+        populateContent()
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        setUnifiedMargins(forWidth: view.frame.width)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        setUnifiedMargins(forWidth: size.width)
     }
 }
 
 
 // MARK: - View configuration
 private extension CardPresentPaymentsModalViewController {
+
+    func styleContent() {
+        styleTopTitle()
+        styleTopSubtitle()
+    }
+
+    func styleTopTitle() {
+        topTitleLabel.applyBodyStyle()
+    }
+
+    func styleTopSubtitle() {
+        topSubtitleLabel.applyTitleStyle()
+    }
+
+    func populateContent() {
+        configureTopTitle()
+        configureTopSubtitle()
+
+        configureImageView()
+
+        configureExtraInfoButton()
+
+        configurePrimaryButton()
+        configureSecondaryButton()
+    }
+
+    func configureTopTitle() {
+        topTitleLabel.text = viewModel.topTitle
+    }
+
+    func configureTopSubtitle() {
+        topSubtitleLabel.text = viewModel.topSubtitle
+    }
+
     func configureImageView() {
         imageView.image = viewModel.image
     }
 
-    func configureErrorMessage() {
-        errorMessage.applyBodyStyle()
-        errorMessage.text = viewModel.topTitle
-    }
+//    func configureErrorMessage() {
+//        errorMessage.applyBodyStyle()
+//        errorMessage.text = viewModel.topTitle
+//    }
 
     func configureExtraInfoButton() {
         guard viewModel.isAuxiliaryButtonHidden == false else {
@@ -100,37 +121,6 @@ private extension CardPresentPaymentsModalViewController {
         secondaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapSecondaryButton()
         }
-    }
-
-
-    /// This logic is lifted from WPAuthenticator's LoginPrologueViewController
-    /// This View Controller will be provided to WPAuthenticator. WPAuthenticator
-    /// will insert it into its own navigation stack, where it is applying a similar logic
-    func setUnifiedMargins(forWidth viewWidth: CGFloat) {
-        guard traitCollection.horizontalSizeClass == .regular &&
-                traitCollection.verticalSizeClass == .regular else {
-            buttonViewLeadingConstraint?.constant = ButtonViewMarginMultipliers.defaultButtonViewMargin
-            buttonViewTrailingConstraint?.constant = ButtonViewMarginMultipliers.defaultButtonViewMargin
-            return
-        }
-
-        let marginMultiplier = UIDevice.current.orientation.isLandscape ?
-            ButtonViewMarginMultipliers.ipadLandscape :
-            ButtonViewMarginMultipliers.ipadPortrait
-
-        let margin = viewWidth * marginMultiplier
-
-        buttonViewLeadingConstraint?.constant = margin
-        buttonViewTrailingConstraint?.constant = margin
-
-        stackViewLeadingConstraint?.constant = margin
-        stackViewTrailingConstraint?.constant = margin
-    }
-
-    private enum ButtonViewMarginMultipliers {
-        static let ipadPortrait: CGFloat = 0.1667
-        static let ipadLandscape: CGFloat = 0.25
-        static let defaultButtonViewMargin: CGFloat = 0.0
     }
 }
 
@@ -164,9 +154,9 @@ extension CardPresentPaymentsModalViewController {
         return imageView
     }
 
-    func getLabel() -> UILabel {
-        return errorMessage
-    }
+//    func getLabel() -> UILabel {
+//        return errorMessage
+//    }
 
     func getAuxiliaryButton() -> UIButton {
         return extraInfoButton

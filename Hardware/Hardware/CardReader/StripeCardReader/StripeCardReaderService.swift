@@ -64,7 +64,7 @@ extension StripeCardReaderService: CardReaderService {
 
         let config = DiscoveryConfiguration(
             discoveryMethod: .bluetoothProximity,
-            simulated: false
+            simulated: true
         )
 
         switchStatusToDiscovering()

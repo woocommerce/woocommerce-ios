@@ -1094,6 +1094,7 @@
 		D8815ADF26383EE700EDAD62 /* CardPresentPaymentsModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8815ADD26383EE600EDAD62 /* CardPresentPaymentsModalViewController.swift */; };
 		D8815AE026383EE700EDAD62 /* CardPresentPaymentsModalViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8815ADE26383EE700EDAD62 /* CardPresentPaymentsModalViewController.xib */; };
 		D8815AE726383FD600EDAD62 /* CardPresentPaymentsModalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8815AE626383FD600EDAD62 /* CardPresentPaymentsModalViewModel.swift */; };
+		D8815AFB26384A1F00EDAD62 /* CardPresentModalReaderIsReady.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8815AFA26384A1F00EDAD62 /* CardPresentModalReaderIsReady.swift */; };
 		D881A31B256B5CC500FE5605 /* ULErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D881A319256B5CC500FE5605 /* ULErrorViewController.swift */; };
 		D881A31C256B5CC500FE5605 /* ULErrorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D881A31A256B5CC500FE5605 /* ULErrorViewController.xib */; };
 		D881FE062579DC78008DE6F2 /* NotWPAccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D881FE052579DC78008DE6F2 /* NotWPAccountViewModel.swift */; };
@@ -2309,6 +2310,7 @@
 		D8815ADD26383EE600EDAD62 /* CardPresentPaymentsModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsModalViewController.swift; sourceTree = "<group>"; };
 		D8815ADE26383EE700EDAD62 /* CardPresentPaymentsModalViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CardPresentPaymentsModalViewController.xib; sourceTree = "<group>"; };
 		D8815AE626383FD600EDAD62 /* CardPresentPaymentsModalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsModalViewModel.swift; sourceTree = "<group>"; };
+		D8815AFA26384A1F00EDAD62 /* CardPresentModalReaderIsReady.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalReaderIsReady.swift; sourceTree = "<group>"; };
 		D881A319256B5CC500FE5605 /* ULErrorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ULErrorViewController.swift; sourceTree = "<group>"; };
 		D881A31A256B5CC500FE5605 /* ULErrorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ULErrorViewController.xib; sourceTree = "<group>"; };
 		D881FE052579DC78008DE6F2 /* NotWPAccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotWPAccountViewModel.swift; sourceTree = "<group>"; };
@@ -5501,6 +5503,7 @@
 			isa = PBXGroup;
 			children = (
 				D8815AE626383FD600EDAD62 /* CardPresentPaymentsModalViewModel.swift */,
+				D8815AFA26384A1F00EDAD62 /* CardPresentModalReaderIsReady.swift */,
 			);
 			path = CardPresentPayments;
 			sourceTree = "<group>";
@@ -6485,6 +6488,7 @@
 				B57C744A20F5649300EEFC87 /* EmptyStoresTableViewCell.swift in Sources */,
 				45DB70602614C7E80064A6CF /* ShippingLabelPackageDetailsResultsControllers.swift in Sources */,
 				027D67D1245ADDF40036B8DB /* FilterTypeViewModel+Helpers.swift in Sources */,
+				D8815AFB26384A1F00EDAD62 /* CardPresentModalReaderIsReady.swift in Sources */,
 				31316F9C25CB20FD00D9F129 /* OrderStatusListViewModel.swift in Sources */,
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
 				451750B224470CD5004FDA65 /* EnhancedTextView.swift in Sources */,

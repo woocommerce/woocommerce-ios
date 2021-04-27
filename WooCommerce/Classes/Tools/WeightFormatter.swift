@@ -7,6 +7,10 @@ final class WeightFormatter {
     private let weightUnit: String
     private let formatter: MeasurementFormatter
 
+    /// Initializes the formatter for a given unit
+    ///
+    /// The locale parameter is meant for testing purposes.
+    /// By default, the formatter will use the system locale.
     init(weightUnit: String, locale: Locale? = nil) {
         self.weightUnit = weightUnit
         formatter = MeasurementFormatter()

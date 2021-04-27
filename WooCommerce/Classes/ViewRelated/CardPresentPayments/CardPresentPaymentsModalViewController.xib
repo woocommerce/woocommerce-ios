@@ -11,6 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CardPresentPaymentsModalViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="actionButtonsView" destination="10Z-y1-ZQ6" id="L1z-Zs-L2J"/>
                 <outlet property="extraInfoButton" destination="GOR-hg-dbC" id="I7z-hN-FAo"/>
                 <outlet property="imageView" destination="Osv-Wo-lxW" id="yIN-vL-DOA"/>
                 <outlet property="primaryButton" destination="ZHa-is-GJK" id="wzn-TJ-1Sm"/>

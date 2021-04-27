@@ -15,6 +15,8 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     @IBOutlet private weak var secondaryButton: NUXButton!
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var extraInfoButton: UIButton!
+    @IBOutlet private weak var actionButtonsView: UIView!
+
 
     init(viewModel: CardPresentPaymentsModalViewModel) {
         self.viewModel = viewModel
@@ -54,6 +56,7 @@ private extension CardPresentPaymentsModalViewController {
     func styleContent() {
         styleTopTitle()
         styleTopSubtitle()
+        styleActionButtons()
     }
 
     func styleTopTitle() {
@@ -64,11 +67,31 @@ private extension CardPresentPaymentsModalViewController {
         topSubtitleLabel.applyTitleStyle()
     }
 
+    func styleActionButtons() {
+        guard viewModel.areButtonsVisible == true else {
+            actionButtonsView.isHidden = true
+            return
+        }
+
+        stylePrimaryButton()
+        styleSecondaryButton()
+    }
+
+    func stylePrimaryButton() {
+        primaryButton.isPrimary = true
+    }
+
+    func styleSecondaryButton() {
+
+    }
+
     func populateContent() {
         configureTopTitle()
         configureTopSubtitle()
 
         configureImageView()
+
+        configureActionButtonsView()
 
         configureExtraInfoButton()
 
@@ -93,6 +116,17 @@ private extension CardPresentPaymentsModalViewController {
 //        errorMessage.text = viewModel.topTitle
 //    }
 
+    func configureActionButtonsView() {
+        guard viewModel.areButtonsVisible == true else {
+            actionButtonsView.isHidden = true
+            return
+        }
+
+        configureExtraInfoButton()
+        configurePrimaryButton()
+        configureSecondaryButton()
+    }
+
     func configureExtraInfoButton() {
         guard viewModel.isAuxiliaryButtonHidden == false else {
             extraInfoButton.isHidden = true
@@ -109,7 +143,7 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func configurePrimaryButton() {
-        primaryButton.isPrimary = true
+        //primaryButton.isPrimary = true
         primaryButton.setTitle(viewModel.primaryButtonTitle, for: .normal)
         primaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapPrimaryButton()

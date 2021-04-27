@@ -61,6 +61,9 @@ private extension WeightFormatter {
     }
 
     func coalesceWeight(_ weight: String?) -> String {
-        return (weight == nil || weight?.isEmpty == true) ? "0" : (weight ?? "0")
+        guard let weight = weight, weight.isNotEmpty else {
+            return "0"
+        }
+        return weight
     }
 }

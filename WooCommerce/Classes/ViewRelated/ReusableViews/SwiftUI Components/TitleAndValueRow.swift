@@ -23,14 +23,15 @@ struct TitleAndValueRow: View {
                     .foregroundColor(Color(UIColor.gray(.shade30)))
             }
         }
+        .contentShape(Rectangle())
+        .frame(height: Constants.height)
+        .padding([.leading, .trailing], Constants.padding)
         .onTapGesture {
             guard selectable else {
                 return
             }
             action()
          }
-        .frame(height: Constants.height)
-        .padding([.leading, .trailing], Constants.padding)
     }
 }
 

@@ -4,7 +4,7 @@ import Foundation
 ///
 public struct ShippingLabelPredefinedOption: Equatable, GeneratedFakeable {
 
-    /// The title of the predefined option
+    /// The title of the predefined option. It works like an ID, and it is unique.
     public let title: String
 
     /// List of predefined packages

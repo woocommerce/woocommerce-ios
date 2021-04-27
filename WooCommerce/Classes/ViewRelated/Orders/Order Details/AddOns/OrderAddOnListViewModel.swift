@@ -3,7 +3,7 @@ import Yosemite
 
 /// ViewModel for `OrderAddOnListI1View`
 ///
-final class OrderAddOnListI1ViewModel {
+final class OrderAddOnListI1ViewModel: ObservableObject {
     /// AddOns to render
     ///
     let addOns: [OrderAddOnI1ViewModel]
@@ -15,6 +15,14 @@ final class OrderAddOnListI1ViewModel {
     /// Update add-ons notice
     ///
     let updateNotice = Localization.updateNotice
+
+    /// Indicates if the top banner should be shown or not.
+    ///
+    @Published var shouldShowBetaBanner: Bool = true
+
+    /// Indicates if the survey flow should be shown or not.
+    ///
+    @Published var shouldShowSurvey: Bool = false
 
     /// Member-wise initializer, useful for `SwiftUI` previews
     ///
@@ -36,9 +44,15 @@ final class OrderAddOnListI1ViewModel {
     /// The `attribute.name` comes in the form of "add-on-title (add-on-price)". EG: "Topping (Spicy) ($30.00)"
     ///
     private static func addOnName(from attribute: OrderItemAttribute) -> String {
-        attribute.name.components(separatedBy: " (") // "Topping (Spicy) ($30.00)" -> ["Topping", "Spicy)", "$30.00)"]
-            .dropLast()                              // ["Topping", "Spicy)", "$30.00)"] -> ["Topping", "Spicy)"]
-            .joined(separator: " (")                 // ["Topping", "Spicy)"] -> "Topping (Spicy)"
+        let components = attribute.name.components(separatedBy: " (") // "Topping (Spicy) ($30.00)" -> ["Topping", "Spicy)", "$30.00)"]
+
+        // If name does not match our format assumptions, return the raw name.
+        guard components.count > 1 else {
+            return attribute.name
+        }
+
+        return components.dropLast() // ["Topping", "Spicy)", "$30.00)"] -> ["Topping", "Spicy)"]
+            .joined(separator: " (") // ["Topping", "Spicy)"] -> "Topping (Spicy)"
     }
 
     /// Decodes the price of the add-on from the `attribute.name` property using an already decoded add-on name.
@@ -54,8 +68,9 @@ final class OrderAddOnListI1ViewModel {
 private extension OrderAddOnListI1ViewModel {
     enum Localization {
         static let title = NSLocalizedString("Product Add-ons", comment: "The title on the navigation bar when viewing an order item add-ons")
-        static let updateNotice = NSLocalizedString("You can edit product add-ons in the web dashboard.",
-                                                    comment: "The text below the order add-ons list indicating that edit can be done on the web.")
+        static let updateNotice = NSLocalizedString("If renaming an add-on in your web dashboard, " +
+                                                    "please note that previous orders will no longer show that add-on within the app.",
+                                                    comment: "The text below the order add-ons list indicating that the content could be stale.")
     }
 }
 

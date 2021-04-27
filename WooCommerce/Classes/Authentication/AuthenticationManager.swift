@@ -1,6 +1,7 @@
 import Foundation
 import KeychainAccess
 import WordPressAuthenticator
+import WordPressKit
 import Yosemite
 import class Networking.UserAgent
 import struct Networking.Settings
@@ -396,8 +397,9 @@ private extension AuthenticationManager {
     /// Maps error codes emitted by WPAuthenticator to a domain error object
     enum AuthenticationError: Int, Error {
         case emailDoesNotMatchWPAccount = 7
-        case notWPSite = 406
-        case notValidAddress = -1022
+        case notWPSite
+        case notValidAddress
+        case noSecureConnection
         case unknown
 
         static func make(with error: Error) -> AuthenticationError {
@@ -405,11 +407,18 @@ private extension AuthenticationManager {
 
             switch error.code {
             case emailDoesNotMatchWPAccount.rawValue:
+                // This is currently broken. See: https://github.com/woocommerce/woocommerce-ios/issues/3962.
                 return .emailDoesNotMatchWPAccount
-            case notWPSite.rawValue:
+            case WordPressOrgXMLRPCValidatorError.invalid.rawValue:
+                // We were able to connect to the site but it does not seem to be a WordPress site.
                 return .notWPSite
-            case notValidAddress.rawValue:
+            case NSURLErrorCannotFindHost,
+                 NSURLErrorCannotConnectToHost:
+                // The site cannot be found. This can mean that the domain is invalid.
                 return .notValidAddress
+            case NSURLErrorSecureConnectionFailed:
+                // The site does not have a valid SSL. It could be that it is only HTTP.
+                return .noSecureConnection
             default:
                 return .unknown
             }
@@ -430,7 +439,9 @@ private extension AuthenticationManager {
         case .notWPSite,
              .notValidAddress:
             return NotWPErrorViewModel()
-        default:
+        case .noSecureConnection:
+            return NoSecureConnectionErrorViewModel()
+        case .unknown:
             return nil
         }
     }

@@ -766,7 +766,7 @@ private extension OrderDetailsDataSource {
     /// Returns an `empty` array if we can't find the product associated with order item or if the `addOns` feature is disabled.
     ///
     private func filterAddOns(of item: AggregateOrderItem) -> [OrderItemAttribute] {
-        guard let product = products.first(where: { $0.productID == item.productOrVariationID }), showAddOns else {
+        guard let product = products.first(where: { $0.productID == item.productID }), showAddOns else {
             return []
         }
         return AddOnCrossreferenceUseCase(orderItem: item, product: product).addOnsAttributes()

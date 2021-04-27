@@ -62,6 +62,8 @@ extension WooAnalyticsEvent {
         case productsVariations = "products_variations"
         /// Shown in shipping labels banner for Milestone 1 features.
         case shippingLabelsRelease1 = "shipping_labels_m1"
+        /// Shown in beta feature banner for order add-ons.
+        case addOnsI1 = "add-ons_i1"
     }
 
     /// The action performed on the survey screen.

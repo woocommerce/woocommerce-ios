@@ -83,7 +83,7 @@ private extension EditAttributesViewController {
         guard viewModel.showDoneButton else {
             return
         }
-        let rightBarButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
+        let rightBarButton = UIBarButtonItem(title: Localization.generate, style: .plain, target: self, action: #selector(doneButtonTapped))
         navigationItem.setRightBarButton(rightBarButton, animated: false)
     }
 }
@@ -171,6 +171,7 @@ private extension EditAttributesViewController {
     enum Localization {
         static let addNewAttribute = NSLocalizedString("Add New Attribute", comment: "Action to add new attribute on the Product Attributes screen")
         static let title = NSLocalizedString("Edit Attributes", comment: "Navigation title for the Product Attributes screen")
+        static let generate = NSLocalizedString("Generate", comment: "Action to generate attributes on the Product Attributes screen")
 
         static let generatingVariation = NSLocalizedString("Generating Variation", comment: "Title for the progress screen while generating a variation")
         static let waitInstructions = NSLocalizedString("Please wait while we create the new variation",

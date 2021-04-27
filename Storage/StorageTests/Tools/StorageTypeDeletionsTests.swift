@@ -33,6 +33,8 @@ final class StorageTypeDeletionsTests: XCTestCase {
         coupon2.siteID = sampleSiteID
         coupon2.couponID = 2
 
+        XCTAssertEqual(storage.loadAllCoupons(siteID: sampleSiteID).count, 2)
+
         // When
         storage.deleteCoupons(siteID: sampleSiteID)
 

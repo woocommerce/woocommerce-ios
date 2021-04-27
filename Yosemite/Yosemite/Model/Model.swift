@@ -111,6 +111,7 @@ public typealias CardReaderServiceDiscoveryStatus = Hardware.CardReaderServiceDi
 public typealias CardReaderServiceError = Hardware.CardReaderServiceError
 public typealias PaymentParameters = Hardware.PaymentIntentParameters
 public typealias CardPresentReceiptParameters = Hardware.CardPresentReceiptParameters
+public typealias WCPayAccount = Networking.WCPayAccount
 
 
 // MARK: - Exported Storage Symbols

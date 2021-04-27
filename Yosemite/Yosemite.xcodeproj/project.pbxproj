@@ -286,6 +286,9 @@
 		D8652E362630749000350F37 /* MockPaymentIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8652E352630749000350F37 /* MockPaymentIntent.swift */; };
 		D8652E44263079B000350F37 /* ReceiptStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8652E43263079B000350F37 /* ReceiptStoreTests.swift */; };
 		D8652E4826307A5000350F37 /* MockReceiptPrinterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8652E4726307A5000350F37 /* MockReceiptPrinterService.swift */; };
+		D8652F8A2635A2E800350F37 /* WCPayAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8652F892635A2E800350F37 /* WCPayAction.swift */; };
+		D8652F8E2635A2F800350F37 /* WCPayStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8652F8D2635A2F800350F37 /* WCPayStore.swift */; };
+		D8652F922635A79500350F37 /* WCPayStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8652F912635A79500350F37 /* WCPayStoreTests.swift */; };
 		D8736B6D22F0CE0900A14A29 /* OrderCount+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B6C22F0CE0900A14A29 /* OrderCount+ReadOnlyConvertible.swift */; };
 		D8736B6F22F0CE5200A14A29 /* OrderCountItem+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B6E22F0CE5200A14A29 /* OrderCountItem+ReadOnlyConvertible.swift */; };
 		D8736B7322F1F41B00A14A29 /* OrderCount+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B7222F1F41B00A14A29 /* OrderCount+ReadOnlyType.swift */; };
@@ -604,6 +607,9 @@
 		D8652E352630749000350F37 /* MockPaymentIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPaymentIntent.swift; sourceTree = "<group>"; };
 		D8652E43263079B000350F37 /* ReceiptStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptStoreTests.swift; sourceTree = "<group>"; };
 		D8652E4726307A5000350F37 /* MockReceiptPrinterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockReceiptPrinterService.swift; sourceTree = "<group>"; };
+		D8652F892635A2E800350F37 /* WCPayAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayAction.swift; sourceTree = "<group>"; };
+		D8652F8D2635A2F800350F37 /* WCPayStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayStore.swift; sourceTree = "<group>"; };
+		D8652F912635A79500350F37 /* WCPayStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayStoreTests.swift; sourceTree = "<group>"; };
 		D8736B6C22F0CE0900A14A29 /* OrderCount+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCount+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D8736B6E22F0CE5200A14A29 /* OrderCountItem+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCountItem+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D8736B7222F1F41B00A14A29 /* OrderCount+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCount+ReadOnlyType.swift"; sourceTree = "<group>"; };
@@ -1129,6 +1135,7 @@
 				45010692239A6C9F00E24722 /* TaxClassStore.swift */,
 				02FF056423DE9C8B0058E6E7 /* MediaStore.swift */,
 				029BA556255E0CD4006171FD /* ShippingLabelStore.swift */,
+				D8652F8D2635A2F800350F37 /* WCPayStore.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -1175,6 +1182,7 @@
 				0248B36824590FC300A271A4 /* ProductStore+FilterProductsTests.swift */,
 				022F00C62472963E008CD97F /* NotificationCountStoreTests.swift */,
 				02E7FFD42562226B00C53030 /* ShippingLabelStoreTests.swift */,
+				D8652F912635A79500350F37 /* WCPayStoreTests.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -1346,6 +1354,7 @@
 				029BA55A255E0D39006171FD /* ShippingLabelAction.swift */,
 				45010694239A6CDE00E24722 /* TaxClassAction.swift */,
 				022F00BF24725BC6008CD97F /* NotificationCountAction.swift */,
+				D8652F892635A2E800350F37 /* WCPayAction.swift */,
 			);
 			path = Actions;
 			sourceTree = "<group>";
@@ -1588,6 +1597,7 @@
 				029BA55B255E0D39006171FD /* ShippingLabelAction.swift in Sources */,
 				247CE88325833F0D00F9D9D1 /* ScreenshotsObjectGraph.swift in Sources */,
 				B5C9DE152087FF0E006B910A /* Dispatcher.swift in Sources */,
+				D8652F8E2635A2F800350F37 /* WCPayStore.swift in Sources */,
 				247CE8402582F39900F9D9D1 /* MockActionHandler.swift in Sources */,
 				247CE7C82582DF5500F9D9D1 /* MockStoresManager.swift in Sources */,
 				D83B093525DECFCC00B21F45 /* CardPresentPaymentAction.swift in Sources */,
@@ -1610,6 +1620,7 @@
 				CE4FD4562350FD4800A16B31 /* Refund+ReadOnlyConvertible.swift in Sources */,
 				CE3B7AD92229C3570050FE4B /* OrderStatus+ReadOnlyType.swift in Sources */,
 				026CF62C237D92DC009563D4 /* ProductVariationAttribute+ReadOnlyConvertible.swift in Sources */,
+				D8652F8A2635A2E800350F37 /* WCPayAction.swift in Sources */,
 				247CE7AB2582DB9300F9D9D1 /* String+Extensions.swift in Sources */,
 				74B7D6B020F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift in Sources */,
 				74B2601F2188A92A0041793A /* Note+ReadOnlyConvertible.swift in Sources */,
@@ -1791,6 +1802,7 @@
 				022F9319257F24730011CD94 /* MockShippingLabel.swift in Sources */,
 				02FF055623D984310058E6E7 /* MockFileManager.swift in Sources */,
 				029B00A7230D64E800B0AE66 /* StatsTimeRangeTests.swift in Sources */,
+				D8652F922635A79500350F37 /* WCPayStoreTests.swift in Sources */,
 				0248B36924590FC300A271A4 /* ProductStore+FilterProductsTests.swift in Sources */,
 				02A098242480D0D8002F8C7A /* MockCrashLogger.swift in Sources */,
 				02FF055F23D985710058E6E7 /* URL+MediaTests.swift in Sources */,

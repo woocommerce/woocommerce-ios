@@ -17,7 +17,7 @@ public class WCPayRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Loads a WCPay account for a given site ID and parses the rsponse
+    /// Loads a WCPay account for a given site ID and parses the response
     /// - Parameters:
     ///   - siteID: Site for which we'll fetch the WCPay account info.
     ///   - completion: Closure to be executed upon completion.

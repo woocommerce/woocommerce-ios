@@ -122,9 +122,6 @@ private extension CardPresentPaymentsModalViewController {
         configureBottomLabels()
 
         configureExtraInfoButton()
-
-        configurePrimaryButton()
-        configureSecondaryButton()
     }
 
     func configureTopTitle() {
@@ -192,7 +189,7 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func configurePrimaryButton() {
-        //primaryButton.isPrimary = true
+        print("=== configure primary button")
         primaryButton.setTitle(viewModel.primaryButtonTitle, for: .normal)
         primaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapPrimaryButton()

@@ -38,6 +38,8 @@ final class OrderDetailsPaymentAlerts {
     }
 
     func success(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void) {
+        let viewModel = successViewModel(printReceipt: printReceipt, emailReceipt: emailReceipt)
+        modalController?.setViewModel(viewModel)
 //        let newConfiguraton = FancyAlertViewController
 //            .configurationForSuccess(printAction: printReceipt,
 //                                     emailAction: emailReceipt)
@@ -67,5 +69,9 @@ private extension OrderDetailsPaymentAlerts {
 
     func remove() -> CardPresentPaymentsModalViewModel {
         CardPresentModalRemoveCard(name: name, amount: amount)
+    }
+
+    func successViewModel(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalSuccess(amount: amount, printReceipt: printReceipt, emailReceipt: emailReceipt)
     }
 }

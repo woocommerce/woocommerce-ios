@@ -1097,6 +1097,7 @@
 		D8815AFB26384A1F00EDAD62 /* CardPresentModalReaderIsReady.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8815AFA26384A1F00EDAD62 /* CardPresentModalReaderIsReady.swift */; };
 		D8815B0126385E3F00EDAD62 /* CardPresentModalTapCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8815B0026385E3F00EDAD62 /* CardPresentModalTapCard.swift */; };
 		D8815B072638606B00EDAD62 /* CardPresentModalRemoveCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8815B062638606B00EDAD62 /* CardPresentModalRemoveCard.swift */; };
+		D8815B0D263861A400EDAD62 /* CardPresentModalSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8815B0C263861A400EDAD62 /* CardPresentModalSuccess.swift */; };
 		D881A31B256B5CC500FE5605 /* ULErrorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D881A319256B5CC500FE5605 /* ULErrorViewController.swift */; };
 		D881A31C256B5CC500FE5605 /* ULErrorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D881A31A256B5CC500FE5605 /* ULErrorViewController.xib */; };
 		D881FE062579DC78008DE6F2 /* NotWPAccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D881FE052579DC78008DE6F2 /* NotWPAccountViewModel.swift */; };
@@ -2315,6 +2316,7 @@
 		D8815AFA26384A1F00EDAD62 /* CardPresentModalReaderIsReady.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalReaderIsReady.swift; sourceTree = "<group>"; };
 		D8815B0026385E3F00EDAD62 /* CardPresentModalTapCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalTapCard.swift; sourceTree = "<group>"; };
 		D8815B062638606B00EDAD62 /* CardPresentModalRemoveCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalRemoveCard.swift; sourceTree = "<group>"; };
+		D8815B0C263861A400EDAD62 /* CardPresentModalSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalSuccess.swift; sourceTree = "<group>"; };
 		D881A319256B5CC500FE5605 /* ULErrorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ULErrorViewController.swift; sourceTree = "<group>"; };
 		D881A31A256B5CC500FE5605 /* ULErrorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ULErrorViewController.xib; sourceTree = "<group>"; };
 		D881FE052579DC78008DE6F2 /* NotWPAccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotWPAccountViewModel.swift; sourceTree = "<group>"; };
@@ -5510,6 +5512,7 @@
 				D8815AFA26384A1F00EDAD62 /* CardPresentModalReaderIsReady.swift */,
 				D8815B0026385E3F00EDAD62 /* CardPresentModalTapCard.swift */,
 				D8815B062638606B00EDAD62 /* CardPresentModalRemoveCard.swift */,
+				D8815B0C263861A400EDAD62 /* CardPresentModalSuccess.swift */,
 			);
 			path = CardPresentPayments;
 			sourceTree = "<group>";
@@ -6350,6 +6353,7 @@
 				02307924258731B2008EADEE /* ReprintShippingLabelViewModel.swift in Sources */,
 				D843D5D92248EE91001BFA55 /* ManualTrackingViewModel.swift in Sources */,
 				B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */,
+				D8815B0D263861A400EDAD62 /* CardPresentModalSuccess.swift in Sources */,
 				0235595524496B6D004BE2B8 /* BottomSheetListSelectorCommand.swift in Sources */,
 				747AA0892107CEC60047A89B /* AnalyticsProvider.swift in Sources */,
 				D89CFF3A25B43BBB000E4683 /* WrongAccountErrorViewModel.swift in Sources */,

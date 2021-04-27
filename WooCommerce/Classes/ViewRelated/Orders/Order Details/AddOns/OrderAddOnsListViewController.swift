@@ -28,18 +28,33 @@ struct OrderAddOnListI1View: View {
     /// A future improvement can be to use a `LazyVStack` when iOS-14 becomes our minimum target.
     ///
     var body: some View {
-        ScrollView {
-            VStack {
-                ForEach(viewModel.addOns) { addOn in
-                    OrderAddOnI1View(viewModel: addOn)
+        GeometryReader { geometry in
+
+            // Solid color as a background view to cover all non-safe area
+            Color(.listBackground).edgesIgnoringSafeArea(.all)
+
+            ScrollView {
+                VStack {
+                    OrderAddOnTopBanner(width: geometry.size.width)
+                        .onDismiss {
+                            print("Dismiss")
+                        }
+                        .onGiveFeedback {
+                            print("Give feedback")
+                        }
+                        .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
+
+
+                    ForEach(viewModel.addOns) { addOn in
+                        OrderAddOnI1View(viewModel: addOn)
+                            .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
+                    }
+
+                    OrderAddOnNoticeView(updateText: viewModel.updateNotice)
                         .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
                 }
-
-                OrderAddOnNoticeView(updateText: viewModel.updateNotice)
-                    .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
             }
         }
-        .background(Color(.listBackground))
     }
 }
 
@@ -89,7 +104,7 @@ private struct OrderAddOnNoticeView: View {
             Text(updateText)
         }
         .footnoteStyle()
-        .padding([.leading, .trailing])
+        .padding([.leading, .trailing]).padding(.top, 4)
     }
 }
 

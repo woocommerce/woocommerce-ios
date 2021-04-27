@@ -54,8 +54,9 @@ final class OrderAddOnListI1ViewModel {
 private extension OrderAddOnListI1ViewModel {
     enum Localization {
         static let title = NSLocalizedString("Product Add-ons", comment: "The title on the navigation bar when viewing an order item add-ons")
-        static let updateNotice = NSLocalizedString("You can edit product add-ons in the web dashboard.",
-                                                    comment: "The text below the order add-ons list indicating that edit can be done on the web.")
+        static let updateNotice = NSLocalizedString("If renaming an add-on in your web dashboard, " +
+                                                    "please note that previous orders will no longer show that add-on within the app.",
+                                                    comment: "The text below the order add-ons list indicating that the content could be stale.")
     }
 }
 

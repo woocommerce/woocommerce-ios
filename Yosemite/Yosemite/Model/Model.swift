@@ -78,12 +78,15 @@ public typealias ShippingLabelAddressVerification = Networking.ShippingLabelAddr
 public typealias ShippingLabelPackagesResponse = Networking.ShippingLabelPackagesResponse
 public typealias ShippingLabelStoreOptions = Networking.ShippingLabelStoreOptions
 public typealias ShipType = Networking.ShippingLabelAddressVerification.ShipType
+public typealias ShippingLabelAccountSettings = Networking.ShippingLabelAccountSettings
 public typealias ShippingLabelAddressValidationResponse = Networking.ShippingLabelAddressValidationResponse
 public typealias ShippingLabelAddressValidationError = Networking.ShippingLabelAddressValidationError
 public typealias ShippingLabelCustomPackage = Networking.ShippingLabelCustomPackage
 public typealias ShippingLabelPredefinedOption = Networking.ShippingLabelPredefinedOption
 public typealias ShippingLabelPredefinedPackage = Networking.ShippingLabelPredefinedPackage
 public typealias ShippingLabelPaperSize = Networking.ShippingLabelPaperSize
+public typealias ShippingLabelPaymentCardType = Networking.ShippingLabelPaymentCardType
+public typealias ShippingLabelPaymentMethod = Networking.ShippingLabelPaymentMethod
 public typealias ShippingLabelPrintData = Networking.ShippingLabelPrintData
 public typealias ShippingLabelRefund = Networking.ShippingLabelRefund
 public typealias ShippingLabelSettings = Networking.ShippingLabelSettings
@@ -108,6 +111,7 @@ public typealias CardReaderServiceDiscoveryStatus = Hardware.CardReaderServiceDi
 public typealias CardReaderServiceError = Hardware.CardReaderServiceError
 public typealias PaymentParameters = Hardware.PaymentIntentParameters
 public typealias CardPresentReceiptParameters = Hardware.CardPresentReceiptParameters
+public typealias WCPayAccount = Networking.WCPayAccount
 
 
 // MARK: - Exported Storage Symbols

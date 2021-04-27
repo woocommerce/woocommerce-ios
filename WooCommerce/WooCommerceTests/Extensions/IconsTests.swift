@@ -223,7 +223,7 @@ final class IconsTests: XCTestCase {
     }
 
     func test_payment_celebration_image() {
-        XCTAssertNotNil(UIImage.paymentCelebrationImage)
+        XCTAssertNotNil(UIImage.celebrationImage)
     }
 
     func test_payment_error_image() {

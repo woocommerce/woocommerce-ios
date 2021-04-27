@@ -33,12 +33,12 @@ final class ReceiptRenderer: UIPrintPageRenderer {
     }
 
     override func drawHeaderForPage(at pageIndex: Int, in headerRect: CGRect) {
-        guard let storeName = parameters.storeName else {
+        guard let siteName = parameters.storeName else {
             return
         }
 
         let receiptTitle = String.localizedStringWithFormat(Localization.receiptFromFormat,
-                                                            storeName) as NSString
+                                                            siteName) as NSString
 
         receiptTitle.draw(in: headerRect, withAttributes: headerAttributes)
     }
@@ -76,6 +76,11 @@ private extension ReceiptRenderer {
         addPrintFormatter(formatter, startingAtPageAt: 0)
     }
 
+
+    /// This is where the layout of the receipt can be customized.
+    /// Customization can be done via embedded CSS.
+    /// https://github.com/woocommerce/woocommerce-ios/issues/4033
+    /// - Returns: A string containing the HTML that will be rendered to the receipt.
     private func htmlContent() -> String {
         return """
             <html>

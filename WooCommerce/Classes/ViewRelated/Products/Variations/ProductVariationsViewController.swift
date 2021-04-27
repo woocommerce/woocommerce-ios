@@ -18,7 +18,7 @@ final class ProductVariationsViewController: UIViewController {
         let message = NSAttributedString(string: Localization.emptyStateTitle, attributes: [.font: EmptyStateViewController.Config.messageFont])
         return .withButton(message: message,
                            image: .emptyBoxImage,
-                           details: "",
+                           details: Localization.emptyStateSubtitle,
                            buttonTitle: Localization.emptyStateButtonTitle) { [weak self] _ in
                             self?.createVariationFromEmptyState()
                            }
@@ -733,8 +733,11 @@ private extension ProductVariationsViewController {
     }
 
     enum Localization {
-        static let emptyStateTitle = NSLocalizedString("Add your first variation", comment: "Title on the variations list screen when there are no variations")
-        static let emptyStateButtonTitle = NSLocalizedString("Add Variation", comment: "Title on add variation button when there are no variations")
+        static let emptyStateTitle = NSLocalizedString("Create your first variation",
+                                                       comment: "Title on the variations list screen when there are no variations")
+        static let emptyStateSubtitle = NSLocalizedString("To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first",
+                                                          comment: "Subtitle on the variations list screen when there are no variations")
+        static let emptyStateButtonTitle = NSLocalizedString("Add Attributes", comment: "Title on add variation button when there are no variations")
         static let addNewVariation = NSLocalizedString("Add Variation", comment: "Action to add new variation on the variations list")
         static let moreButtonLabel = NSLocalizedString("More options", comment: "Accessibility label to show the More Options action sheet")
         static let editAttributesAction = NSLocalizedString("Edit Attributes", comment: "Action to edit the attributes and options used for variations")

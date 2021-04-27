@@ -61,6 +61,12 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         return customPackages.count > 0
     }
 
+    /// The id of the last selected package
+    ///
+    private var lastSelectedPackage: String {
+        accountSettings?.lastSelectedPackageID ?? ""
+    }
+
     init(order: Order,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,

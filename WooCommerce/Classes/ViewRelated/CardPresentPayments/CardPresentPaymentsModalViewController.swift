@@ -69,7 +69,7 @@ private extension CardPresentPaymentsModalViewController {
 
     func configureErrorMessage() {
         errorMessage.applyBodyStyle()
-        errorMessage.attributedText = viewModel.text
+        errorMessage.text = viewModel.topTitle
     }
 
     func configureExtraInfoButton() {

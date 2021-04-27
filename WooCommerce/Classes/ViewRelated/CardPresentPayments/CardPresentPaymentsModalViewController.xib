@@ -114,7 +114,7 @@
                 </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
-            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.32288557646290356" colorSpace="custom" customColorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="8Tg-Q2-wkH" secondAttribute="trailing" constant="20" id="S9W-dL-gIb"/>
                 <constraint firstItem="8Tg-Q2-wkH" firstAttribute="top" relation="greaterThanOrEqual" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="8" id="XEN-O4-fnG"/>

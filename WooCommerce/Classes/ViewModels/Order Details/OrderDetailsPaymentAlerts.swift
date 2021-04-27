@@ -40,10 +40,6 @@ final class OrderDetailsPaymentAlerts {
     func success(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void) {
         let viewModel = successViewModel(printReceipt: printReceipt, emailReceipt: emailReceipt)
         modalController?.setViewModel(viewModel)
-//        let newConfiguraton = FancyAlertViewController
-//            .configurationForSuccess(printAction: printReceipt,
-//                                     emailAction: emailReceipt)
-//        alertController?.setViewConfiguration(newConfiguraton, animated: false)
     }
 
     func error(error: Error, tryAgainAction: @escaping () -> Void) {

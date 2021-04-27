@@ -14,10 +14,17 @@ final class WeightFormatter {
 
     // Returns the weight plus the unit. The weight can be zero in case the value is `nil` or empty.
     func formatWeight(weight: String?) -> String {
-        let weight: String = (weight == nil || weight?.isEmpty == true) ? "0" : (weight ?? "0")
+        let weight: String = unwrapWeight(weight: weight)
         guard withSpace else {
             return weight + weightUnit
         }
         return weight + " " + weightUnit
+    }
+}
+
+// MARK: - Utils
+private extension WeightFormatter {
+    func unwrapWeight(weight: String?) -> String {
+        return (weight == nil || weight?.isEmpty == true) ? "0" : (weight ?? "0")
     }
 }

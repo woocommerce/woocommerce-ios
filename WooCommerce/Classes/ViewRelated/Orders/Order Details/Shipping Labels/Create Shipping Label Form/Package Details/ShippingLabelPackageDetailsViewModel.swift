@@ -25,7 +25,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
     /// The packages  response fetched from API
     ///
-    @Published private(set) var packagesResponse: ShippingLabelPackagesResponse?
+    @Published private var packagesResponse: ShippingLabelPackagesResponse?
 
     var dimensionUnit: String {
         return packagesResponse?.storeOptions.dimensionUnit ?? ""
@@ -131,8 +131,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
 // MARK: - Package Selection
 extension ShippingLabelPackageDetailsViewModel {
-    func didSelectPackage(_ id: String?) {
-        guard id != nil else { return }
+    func didSelectPackage(_ id: String) {
         guard let packagesResponse = packagesResponse else {
             return
         }
@@ -199,8 +198,8 @@ private extension ShippingLabelPackageDetailsViewModel {
     func syncPackageDetails() {
         let action = ShippingLabelAction.packagesDetails(siteID: order.siteID) { [weak self] result in
             switch result {
-            case .success:
-                self?.packagesResponse = try? result.get()
+            case .success(let value):
+                self?.packagesResponse = value
             case .failure:
                 DDLogError("⛔️ Error synchronizing package details")
                 return

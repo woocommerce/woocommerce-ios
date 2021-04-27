@@ -46,7 +46,7 @@ final class OrderAddOnListI1ViewModel: ObservableObject {
     private static func addOnName(from attribute: OrderItemAttribute) -> String {
         let components = attribute.name.components(separatedBy: " (") // "Topping (Spicy) ($30.00)" -> ["Topping", "Spicy)", "$30.00)"]
 
-        // If name the format does not match our format assumptions, return the raw name.
+        // If name does not match our format assumptions, return the raw name.
         guard components.count > 1 else {
             return attribute.name
         }

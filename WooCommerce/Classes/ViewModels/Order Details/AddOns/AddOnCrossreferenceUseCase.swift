@@ -32,7 +32,7 @@ struct AddOnCrossreferenceUseCase {
         let splitToken = " ("
         let components = attribute.name.components(separatedBy: splitToken)
 
-        // If name the format does not match our format assumptions, return the raw name.
+        // If name does not match our format assumptions, return the raw name.
         guard components.count > 1 else {
             return attribute.name
         }

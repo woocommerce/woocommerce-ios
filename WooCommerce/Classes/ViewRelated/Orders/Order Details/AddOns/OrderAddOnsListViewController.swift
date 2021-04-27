@@ -20,8 +20,8 @@ final class OrderAddOnsListViewController: UIHostingController<OrderAddOnListI1V
 ///
 struct OrderAddOnListI1View: View {
 
-    /// Static view model to populate the view content
-    let viewModel: OrderAddOnListI1ViewModel
+    /// View model that directs the view content.
+    @ObservedObject private(set) var viewModel: OrderAddOnListI1ViewModel
 
     /// Discussion: Due to the inability of customizing the `List` separators. We have opted to simulate the list behaviour with a `ScrollView` + `VStack`.
     /// We expect performance to be acceptable as normally an order does not have too many add-ons.
@@ -37,13 +37,13 @@ struct OrderAddOnListI1View: View {
                 VStack {
                     OrderAddOnTopBanner(width: geometry.size.width)
                         .onDismiss {
-                            print("Dismiss")
+                            viewModel.shouldShowBetaBanner = false
                         }
                         .onGiveFeedback {
-                            print("Give feedback")
+                            viewModel.shouldShowSurvey = true
                         }
+                        .renderedIf(viewModel.shouldShowBetaBanner)
                         .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
-
 
                     ForEach(viewModel.addOns) { addOn in
                         OrderAddOnI1View(viewModel: addOn)
@@ -54,6 +54,9 @@ struct OrderAddOnListI1View: View {
                         .fixedSize(horizontal: false, vertical: true) // Forces view to recalculate it's height
                 }
             }
+        }
+        .sheet(isPresented: $viewModel.shouldShowSurvey) {
+            Survey(source: .addOnsI1)
         }
     }
 }

@@ -3,7 +3,7 @@ import Yosemite
 
 /// ViewModel for `OrderAddOnListI1View`
 ///
-final class OrderAddOnListI1ViewModel {
+final class OrderAddOnListI1ViewModel: ObservableObject {
     /// AddOns to render
     ///
     let addOns: [OrderAddOnI1ViewModel]
@@ -15,6 +15,14 @@ final class OrderAddOnListI1ViewModel {
     /// Update add-ons notice
     ///
     let updateNotice = Localization.updateNotice
+
+    /// Indicates if the top banner should be shown or not.
+    ///
+    @Published var shouldShowBetaBanner: Bool = true
+
+    /// Indicates if the survey flow should be shown or not.
+    ///
+    @Published var shouldShowSurvey: Bool = false
 
     /// Member-wise initializer, useful for `SwiftUI` previews
     ///

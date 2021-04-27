@@ -30,13 +30,11 @@ final class OrderDetailsPaymentAlerts {
     func tapOrInsertCard() {
         let viewModel = tapOrInsert()
         modalController?.setViewModel(viewModel)
-//        let newConfiguraton = FancyAlertViewController.configurationForTappingCard(amount: amount ?? "")
-//        alertController?.setViewConfiguration(newConfiguraton, animated: false)
     }
 
     func removeCard() {
-//        let newConfiguraton = FancyAlertViewController.configurationForRemovingCard()
-//        alertController?.setViewConfiguration(newConfiguraton, animated: false)
+        let viewModel = remove()
+        modalController?.setViewModel(viewModel)
     }
 
     func success(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void) {
@@ -65,5 +63,9 @@ private extension OrderDetailsPaymentAlerts {
 
     func tapOrInsert() -> CardPresentPaymentsModalViewModel {
         CardPresentModalTapCard(name: name, amount: amount)
+    }
+
+    func remove() -> CardPresentPaymentsModalViewModel {
+        CardPresentModalRemoveCard(name: name, amount: amount)
     }
 }

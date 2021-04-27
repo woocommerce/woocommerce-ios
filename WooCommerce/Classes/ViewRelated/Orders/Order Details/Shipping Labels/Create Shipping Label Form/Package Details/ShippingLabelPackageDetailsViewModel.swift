@@ -27,6 +27,10 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     ///
     @Published private var packagesResponse: ShippingLabelPackagesResponse?
 
+    /// The account settings fetched from API
+    ///
+    private(set) var accountSettings: ShippingLabelAccountSettings?
+
     var dimensionUnit: String {
         return packagesResponse?.storeOptions.dimensionUnit ?? ""
     }
@@ -73,6 +77,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         syncProducts()
         syncProductVariations()
         syncPackageDetails()
+        syncShippingLabelAccountSettings()
     }
 
     private func configureResultsControllers() {
@@ -215,6 +220,18 @@ private extension ShippingLabelPackageDetailsViewModel {
             case .failure:
                 DDLogError("⛔️ Error synchronizing package details")
                 return
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    func syncShippingLabelAccountSettings() {
+        let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: order.siteID) { [weak self] result in
+            switch result {
+            case .success:
+                self?.accountSettings = try? result.get()
+            case .failure(let error):
+                DDLogError("⛔️ Error syncing shipping label account settings: \(error)")
             }
         }
         stores.dispatch(action)

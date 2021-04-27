@@ -132,38 +132,50 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 // MARK: - Package Selection
 extension ShippingLabelPackageDetailsViewModel {
     func didSelectPackage(_ id: String) {
+        selectCustomPackage(id)
+        selectPredefinedPackage(id)
+    }
+
+    private func selectCustomPackage(_ id: String) {
         guard let packagesResponse = packagesResponse else {
             return
         }
 
         for customPackage in packagesResponse.customPackages {
-                if customPackage.title == id {
-                    selectedCustomPackage = customPackage
-                    selectedPredefinedPackage = nil
+            if customPackage.title == id {
+                selectedCustomPackage = customPackage
+                selectedPredefinedPackage = nil
+                return
+            }
+        }
+    }
+
+    private func selectPredefinedPackage(_ id: String) {
+        guard let packagesResponse = packagesResponse else {
+            return
+        }
+
+        for option in packagesResponse.predefinedOptions {
+            for predefinedPackage in option.predefinedPackages {
+                if predefinedPackage.id == id {
+                    selectedCustomPackage = nil
+                    selectedPredefinedPackage = predefinedPackage
                     return
                 }
             }
-        for option in packagesResponse.predefinedOptions {
-                for predefinedPackage in option.predefinedPackages {
-                    if predefinedPackage.id == id {
-                        selectedCustomPackage = nil
-                        selectedPredefinedPackage = predefinedPackage
-                        return
-                    }
-                }
-            }
         }
+    }
 
-        /// Writes into the binding variable the final package selection value when confirmed
-        ///
-        func confirmPackageSelection() {
-            if let selectedCustomPackage = selectedCustomPackage {
-                selectedPackageID = selectedCustomPackage.title
-            }
-            else if let selectedPredefinedPackage = selectedPredefinedPackage {
-                selectedPackageID = selectedPredefinedPackage.id
-            }
+    /// Writes into the binding variable the final package selection value when confirmed
+    ///
+    func confirmPackageSelection() {
+        if let selectedCustomPackage = selectedCustomPackage {
+            selectedPackageID = selectedCustomPackage.title
         }
+        else if let selectedPredefinedPackage = selectedPredefinedPackage {
+            selectedPackageID = selectedPredefinedPackage.id
+        }
+    }
 }
 
 /// API Requests

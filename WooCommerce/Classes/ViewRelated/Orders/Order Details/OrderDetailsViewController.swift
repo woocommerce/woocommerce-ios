@@ -537,7 +537,7 @@ private extension OrderDetailsViewController {
 
             switch result {
             case .failure(let error):
-                self.paymentAlerts.error(error: error, tryAgainAction: {
+                self.paymentAlerts.error(error: error, tryAgain: {
                     // To be implemented.
                 })
             case .success(let receiptParameters):

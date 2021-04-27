@@ -34,7 +34,6 @@ final class CardPresentModalSuccess: CardPresentPaymentsModalViewModel {
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        print("==== printing receipt action")
         printReceiptAction()
         viewController?.dismiss(animated: true)
     }

@@ -42,10 +42,9 @@ final class OrderDetailsPaymentAlerts {
         modalController?.setViewModel(viewModel)
     }
 
-    func error(error: Error, tryAgainAction: @escaping () -> Void) {
-//        let newConfiguraton = FancyAlertViewController
-//            .configurationForError(tryAgainAction: tryAgainAction)
-//        alertController?.setViewConfiguration(newConfiguraton, animated: false)
+    func error(error: Error, tryAgain: @escaping () -> Void) {
+        let viewModel = errorViewModel(amount: amount, error: error, tryAgain: tryAgain)
+        modalController?.setViewModel(viewModel)
     }
 
     func dismiss() {
@@ -69,5 +68,9 @@ private extension OrderDetailsPaymentAlerts {
 
     func successViewModel(printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalSuccess(amount: amount, printReceipt: printReceipt, emailReceipt: emailReceipt)
+    }
+
+    func errorViewModel(amount: String, error: Error, tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalError(amount: amount, error: error, tryAgain: tryAgain)
     }
 }

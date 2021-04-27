@@ -4,7 +4,7 @@
 -----
 - [*] Fix: Product variations only support at most one image, so we won't show an option to add a second one. [https://github.com/woocommerce/woocommerce-ios/pull/3994]
 - [*] Fix: The screen to select images from the Media Library would sometimes crash when the library had a specific number of images. [https://github.com/woocommerce/woocommerce-ios/pull/4003]
-- [*] Improved error messages for logins.
+- [*] Improved error messages for logins. [https://github.com/woocommerce/woocommerce-ios/pull/3957]
 
 6.5
 -----

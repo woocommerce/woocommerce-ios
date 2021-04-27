@@ -12,6 +12,9 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CardPresentPaymentsModalViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
                 <outlet property="actionButtonsView" destination="10Z-y1-ZQ6" id="L1z-Zs-L2J"/>
+                <outlet property="bottomLabels" destination="k73-qi-GuD" id="LvQ-UE-SBc"/>
+                <outlet property="bottomSubtitleLabel" destination="2Sx-5s-f7J" id="Mco-Vu-Li6"/>
+                <outlet property="bottomTitleLabel" destination="oAj-lv-0k9" id="Clc-oi-Ywf"/>
                 <outlet property="extraInfoButton" destination="GOR-hg-dbC" id="I7z-hN-FAo"/>
                 <outlet property="imageView" destination="Osv-Wo-lxW" id="yIN-vL-DOA"/>
                 <outlet property="primaryButton" destination="ZHa-is-GJK" id="wzn-TJ-1Sm"/>
@@ -27,10 +30,10 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Tg-Q2-wkH" userLabel="WrapperView">
-                    <rect key="frame" x="67" y="227" width="280" height="452"/>
+                    <rect key="frame" x="67" y="182.5" width="280" height="541"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="jIt-xb-rrN">
-                            <rect key="frame" x="0.0" y="0.0" width="280" height="452"/>
+                            <rect key="frame" x="0.0" y="0.0" width="280" height="541"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Q0r-qo-iZS">
                                     <rect key="frame" x="119.5" y="0.0" width="41.5" height="49"/>
@@ -59,8 +62,25 @@
                                     </constraints>
                                     <state key="normal" title="Action Button"/>
                                 </button>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="k73-qi-GuD">
+                                    <rect key="frame" x="119.5" y="292" width="41.5" height="57"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oAj-lv-0k9">
+                                            <rect key="frame" x="0.0" y="0.0" width="41.5" height="20.5"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Sx-5s-f7J">
+                                            <rect key="frame" x="0.0" y="36.5" width="41.5" height="20.5"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </stackView>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="10Z-y1-ZQ6" userLabel="Action Background View">
-                                    <rect key="frame" x="0.0" y="292" width="280" height="160"/>
+                                    <rect key="frame" x="0.0" y="381" width="280" height="160"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="mhI-fa-Yzw">
                                             <rect key="frame" x="20" y="20" width="240" height="120"/>

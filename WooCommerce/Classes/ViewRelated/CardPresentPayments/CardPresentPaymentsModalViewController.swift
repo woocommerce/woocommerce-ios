@@ -11,11 +11,16 @@ final class CardPresentPaymentsModalViewController: UIViewController {
 
     @IBOutlet private weak var topTitleLabel: UILabel!
     @IBOutlet private weak var topSubtitleLabel: UILabel!
+    @IBOutlet private weak var bottomTitleLabel: UILabel!
+    @IBOutlet private weak var bottomSubtitleLabel: UILabel!
+
     @IBOutlet private weak var primaryButton: NUXButton!
     @IBOutlet private weak var secondaryButton: NUXButton!
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var extraInfoButton: UIButton!
+
     @IBOutlet private weak var actionButtonsView: UIView!
+    @IBOutlet private weak var bottomLabels: UIStackView!
 
 
     init(viewModel: CardPresentPaymentsModalViewModel) {
@@ -56,6 +61,7 @@ private extension CardPresentPaymentsModalViewController {
     func styleContent() {
         styleTopTitle()
         styleTopSubtitle()
+        styleBottomLabels()
         styleActionButtons()
     }
 
@@ -67,12 +73,33 @@ private extension CardPresentPaymentsModalViewController {
         topSubtitleLabel.applyTitleStyle()
     }
 
+    func styleBottomLabels() {
+        guard viewModel.areButtonsVisible == false else {
+            bottomLabels.isHidden = true
+            actionButtonsView.isHidden = false
+            return
+        }
+
+        styleBottomTitle()
+        styleBottomSubtitle()
+    }
+
+    func styleBottomTitle() {
+        bottomTitleLabel.applyBodyStyle()
+    }
+
+    func styleBottomSubtitle() {
+        bottomSubtitleLabel.applyFootnoteStyle()
+    }
+
     func styleActionButtons() {
         guard viewModel.areButtonsVisible == true else {
+            bottomLabels.isHidden = false
             actionButtonsView.isHidden = true
             return
         }
 
+        bottomLabels.isHidden = true
         stylePrimaryButton()
         styleSecondaryButton()
     }
@@ -92,6 +119,7 @@ private extension CardPresentPaymentsModalViewController {
         configureImageView()
 
         configureActionButtonsView()
+        configureBottomLabels()
 
         configureExtraInfoButton()
 
@@ -107,6 +135,25 @@ private extension CardPresentPaymentsModalViewController {
         topSubtitleLabel.text = viewModel.topSubtitle
     }
 
+    func configureBottomLabels() {
+        guard viewModel.areButtonsVisible == false else {
+            bottomLabels.isHidden = true
+            actionButtonsView.isHidden = false
+            return
+        }
+
+        configureBottomTitle()
+        configureBottomSubtitle()
+    }
+
+    func configureBottomTitle() {
+        bottomTitleLabel.text = viewModel.bottomTitle
+    }
+
+    func configureBottomSubtitle() {
+        bottomSubtitleLabel.text = viewModel.bottomSubtitle
+    }
+
     func configureImageView() {
         imageView.image = viewModel.image
     }
@@ -118,10 +165,12 @@ private extension CardPresentPaymentsModalViewController {
 
     func configureActionButtonsView() {
         guard viewModel.areButtonsVisible == true else {
+            bottomLabels.isHidden = false
             actionButtonsView.isHidden = true
             return
         }
 
+        bottomLabels.isHidden = true
         configureExtraInfoButton()
         configurePrimaryButton()
         configureSecondaryButton()

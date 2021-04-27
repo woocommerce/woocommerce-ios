@@ -27,10 +27,6 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     ///
     @Published private var packagesResponse: ShippingLabelPackagesResponse?
 
-    /// The account settings fetched from API
-    ///
-    private(set) var accountSettings: ShippingLabelAccountSettings?
-
     var dimensionUnit: String {
         return packagesResponse?.storeOptions.dimensionUnit ?? ""
     }
@@ -63,9 +59,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
     /// The id of the last selected package
     ///
-    private var lastSelectedPackage: String {
-        accountSettings?.lastSelectedPackageID ?? ""
-    }
+    @Published var lastSelectedPackageID: String = ""
 
     init(order: Order,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
@@ -235,7 +229,9 @@ private extension ShippingLabelPackageDetailsViewModel {
         let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: order.siteID) { [weak self] result in
             switch result {
             case .success:
-                self?.accountSettings = try? result.get()
+                if let accountSettings = try? result.get() {
+                    self?.lastSelectedPackageID = accountSettings.lastSelectedPackageID
+                }
             case .failure(let error):
                 DDLogError("⛔️ Error syncing shipping label account settings: \(error)")
             }

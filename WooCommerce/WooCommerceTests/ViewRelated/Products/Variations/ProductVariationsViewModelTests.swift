@@ -104,7 +104,7 @@ final class ProductVariationsViewModelTests: XCTestCase {
         XCTAssertFalse(showAttributesGuide)
     }
 
-    func test_attributes_guide_is_not_shown_when_product_has_variations_but_no_attributes() {
+    func test_attributes_guide_is_shown_when_product_has_variations_but_no_attributes() {
         let product = Product.fake().copy(attributes: [], variations: [1, 2])
         let viewModel = ProductVariationsViewModel(formType: .edit)
 
@@ -112,7 +112,7 @@ final class ProductVariationsViewModelTests: XCTestCase {
         let showAttributesGuide = viewModel.shouldShowAttributeGuide(for: product)
 
         // Then
-        XCTAssertFalse(showAttributesGuide)
+        XCTAssertTrue(showAttributesGuide)
     }
 
     func test_formType_is_updated_to_edit_when_new_product_exists_remotely_and_formType_was_add() {

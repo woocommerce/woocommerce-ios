@@ -94,6 +94,7 @@ final class ProductVariationsViewController: UIViewController {
         didSet {
             viewModel.updatedFormTypeIfNeeded(newProduct: product)
 
+            configureRightButtonItem()
             resetResultsController(oldProduct: oldValue)
             updateEmptyState()
             onProductUpdate?(product)
@@ -177,6 +178,22 @@ private extension ProductVariationsViewController {
             "Variations",
             comment: "Title that appears on top of the Product Variation List screen."
         )
+        configureRightButtonItem()
+    }
+
+    /// Configure right button item.
+    ///
+    func configureRightButtonItem() {
+        guard viewModel.shouldShowMoreButton(for: product) else {
+            return navigationItem.rightBarButtonItem = nil
+        }
+
+        let moreButton = UIBarButtonItem(image: .moreImage,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(presentMoreOptionsActionSheet(_:)))
+        moreButton.accessibilityLabel = Localization.moreButtonLabel
+        navigationItem.setRightBarButton(moreButton, animated: false)
     }
 
     /// Apply Woo styles.
@@ -553,6 +570,28 @@ private extension ProductVariationsViewController {
     }
 }
 
+// MARK: - Action sheet
+//
+private extension ProductVariationsViewController {
+    @objc private func presentMoreOptionsActionSheet(_ sender: UIBarButtonItem) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        let editAttributesAction = UIAlertAction(title: Localization.editAttributesAction, style: .default) { [weak self] _ in
+            self?.editAttributesTapped()
+        }
+        actionSheet.addAction(editAttributesAction)
+
+        let cancelAction = UIAlertAction(title: Localization.cancelAction, style: .cancel)
+        actionSheet.addAction(cancelAction)
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.barButtonItem = sender
+
+        present(actionSheet, animated: true)
+    }
+}
+
 // MARK: - Placeholders
 //
 private extension ProductVariationsViewController {
@@ -724,6 +763,9 @@ private extension ProductVariationsViewController {
         static let emptyStateButtonTitle = NSLocalizedString("Add Variation", comment: "Title on add variation button when there are no variations")
         static let addNewVariation = NSLocalizedString("Generate New Variation", comment: "Action to add new variation on the variations list")
         static let editAttributesAction = NSLocalizedString("Edit Attributes", comment: "Action to edit the attributes and options used for variations")
+
+        static let moreButtonLabel = NSLocalizedString("More options", comment: "Accessibility label to show the More Options action sheet")
+        static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel button in the More Options action sheet")
 
         static let generatingVariation = NSLocalizedString("Generating Variation", comment: "Title for the progress screen while generating a variation")
         static let waitInstructions = NSLocalizedString("Please wait while we create the new variation",

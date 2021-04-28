@@ -16,9 +16,9 @@ final class ProductVariationsViewController: UIViewController {
     ///
     private var emptyStateConfig: EmptyStateViewController.Config {
         let message = NSAttributedString(string: Localization.emptyStateTitle, attributes: [.font: EmptyStateViewController.Config.messageFont])
-        let productHasAttributes = product.attributesForVariations.isNotEmpty
-        let subtitle = productHasAttributes ? "" : Localization.emptyStateSubtitle
-        let buttonTitle = productHasAttributes ? Localization.addVariationAction : Localization.addAttributesAction
+        let shouldShowCreatingAttributesGuide = viewModel.shouldShowCreatingAttributesGuide(for: product)
+        let subtitle = shouldShowCreatingAttributesGuide ? Localization.emptyStateSubtitle : ""
+        let buttonTitle = shouldShowCreatingAttributesGuide ? Localization.addAttributesAction : Localization.addVariationAction
         return .withButton(message: message,
                            image: .emptyBoxImage,
                            details: subtitle,

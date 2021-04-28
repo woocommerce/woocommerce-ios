@@ -5,29 +5,25 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     private let error: Error
     private let tryAgainAction: () -> Void
 
+    let mode: PaymentsModalMode = .oneActionButton
+
     let topTitle: String = Localization.paymentFailed
 
-    var topSubtitle: String {
+    var topSubtitle: String? {
         amount
     }
 
     let image: UIImage = .paymentErrorImage
 
-    let areButtonsVisible: Bool = true
+    let primaryButtonTitle: String? = Localization.tryAgain
 
-    let primaryButtonTitle: String = Localization.tryAgain
+    let secondaryButtonTitle: String? = nil
 
-    let secondaryButtonTitle: String = ""
-
-    let isAuxiliaryButtonHidden: Bool = false
-
-    let auxiliaryButtonTitle: String = ""
-
-    let bottomTitle: String = "Reason for error"
-
-    var bottomSubtitle: String {
+    var bottomTitle: String? {
         error.localizedDescription
     }
+
+    let bottomSubtitle: String? = nil
 
     init(amount: String, error: Error, tryAgain: @escaping () -> Void) {
         self.amount = amount

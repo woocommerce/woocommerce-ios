@@ -5,27 +5,23 @@ final class CardPresentModalSuccess: CardPresentPaymentsModalViewModel {
     private let printReceiptAction: () -> Void
     private let emailReceiptAction: () -> Void
 
+    let mode: PaymentsModalMode = .twoActionButtons
+
     let topTitle: String = Localization.paymentSuccessful
 
-    var topSubtitle: String {
+    var topSubtitle: String? {
         amount
     }
 
     let image: UIImage = .celebrationImage
 
-    let areButtonsVisible: Bool = true
+    let primaryButtonTitle: String? = Localization.printReceipt
 
-    let primaryButtonTitle: String = Localization.printReceipt
+    let secondaryButtonTitle: String? = Localization.emailReceipt
 
-    let secondaryButtonTitle: String = Localization.emailReceipt
+    let bottomTitle: String? = nil
 
-    let isAuxiliaryButtonHidden: Bool = false
-
-    let auxiliaryButtonTitle: String = Localization.noThanks
-
-    let bottomTitle: String = ""
-
-    let bottomSubtitle: String = ""
+    let bottomSubtitle: String? = nil
 
     init(amount: String, printReceipt: @escaping () -> Void, emailReceipt: @escaping () -> Void) {
         self.amount = amount

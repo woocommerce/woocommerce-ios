@@ -60,9 +60,17 @@ private extension CardPresentPaymentsModalViewController {
 
     func styleContent() {
         styleTopTitle()
-        styleTopSubtitle()
-        styleBottomLabels()
-        styleActionButtons()
+        if shouldShowTopSubtitle() {
+            styleTopSubtitle()
+        }
+
+        if shouldShowBottomLabels() {
+            styleBottomLabels()
+        }
+
+        if shouldShowActionButtons() {
+            styleActionButtons()
+        }
     }
 
     func styleTopTitle() {
@@ -74,11 +82,8 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func styleBottomLabels() {
-        guard viewModel.areButtonsVisible == false else {
-            bottomLabels.isHidden = true
-            actionButtonsView.isHidden = false
-            return
-        }
+        actionButtonsView.isHidden = true
+        bottomLabels.isHidden = false
 
         styleBottomTitle()
         styleBottomSubtitle()
@@ -93,13 +98,9 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func styleActionButtons() {
-        guard viewModel.areButtonsVisible == true else {
-            bottomLabels.isHidden = false
-            actionButtonsView.isHidden = true
-            return
-        }
-
+        actionButtonsView.isHidden = false
         bottomLabels.isHidden = true
+
         stylePrimaryButton()
         styleSecondaryButton()
     }
@@ -114,14 +115,20 @@ private extension CardPresentPaymentsModalViewController {
 
     func populateContent() {
         configureTopTitle()
-        configureTopSubtitle()
+
+        if shouldShowTopSubtitle() {
+            configureTopSubtitle()
+        }
 
         configureImageView()
 
-        configureActionButtonsView()
-        configureBottomLabels()
+        if shouldShowActionButtons() {
+            configureActionButtonsView()
+        }
 
-        configureExtraInfoButton()
+        if !shouldShowActionButtons() {
+            configureBottomLabels()
+        }
     }
 
     func configureTopTitle() {
@@ -133,11 +140,9 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func configureBottomLabels() {
-        guard viewModel.areButtonsVisible == false else {
-            bottomLabels.isHidden = true
-            actionButtonsView.isHidden = false
-            return
-        }
+        print("==== hiding bottom buttoms")
+        actionButtonsView.isHidden = true
+        bottomLabels.isHidden = false
 
         configureBottomTitle()
         configureBottomSubtitle()
@@ -161,35 +166,14 @@ private extension CardPresentPaymentsModalViewController {
 //    }
 
     func configureActionButtonsView() {
-        guard viewModel.areButtonsVisible == true else {
-            bottomLabels.isHidden = false
-            actionButtonsView.isHidden = true
-            return
-        }
-
+        actionButtonsView.isHidden = false
         bottomLabels.isHidden = true
-        configureExtraInfoButton()
+
         configurePrimaryButton()
         configureSecondaryButton()
     }
 
-    func configureExtraInfoButton() {
-        guard viewModel.isAuxiliaryButtonHidden == false else {
-            extraInfoButton.isHidden = true
-
-            return
-        }
-
-        extraInfoButton.applyLinkButtonStyle()
-        extraInfoButton.contentEdgeInsets = Constants.extraInfoCustomInsets
-        extraInfoButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
-        extraInfoButton.on(.touchUpInside) { [weak self] _ in
-            self?.didTapAuxiliaryButton()
-        }
-    }
-
     func configurePrimaryButton() {
-        print("=== configure primary button")
         primaryButton.setTitle(viewModel.primaryButtonTitle, for: .normal)
         primaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapPrimaryButton()
@@ -204,13 +188,29 @@ private extension CardPresentPaymentsModalViewController {
     }
 }
 
+// MARK: - View layout configuration
+private extension CardPresentPaymentsModalViewController {
+    func shouldShowTopSubtitle() -> Bool {
+        viewModel.mode != .reducedInfo
+    }
+
+    func shouldShowBottomLabels() -> Bool {
+        let mode = viewModel.mode
+        return mode == .fullInfo ||
+            mode == .reducedInfo
+    }
+
+    func shouldShowActionButtons() -> Bool {
+        let mode = viewModel.mode
+        return mode == .oneActionButton ||
+            mode == .twoActionButtons ||
+            mode == .reducedInfoOneActionButton
+    }
+}
+
 
 // MARK: - Actions
 private extension CardPresentPaymentsModalViewController {
-    func didTapAuxiliaryButton() {
-        viewModel.didTapAuxiliaryButton(in: self)
-    }
-
     func didTapPrimaryButton() {
         viewModel.didTapPrimaryButton(in: self)
     }

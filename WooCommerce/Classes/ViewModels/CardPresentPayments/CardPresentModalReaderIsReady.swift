@@ -4,29 +4,25 @@ final class CardPresentModalReaderIsReady: CardPresentPaymentsModalViewModel {
     private let name: String
     private let amount: String
 
+    let mode: PaymentsModalMode = .fullInfo
+
     var topTitle: String {
         name
     }
 
-    var topSubtitle: String {
+    var topSubtitle: String? {
         amount
     }
 
     let image: UIImage = .cardPresentImage
 
-    let areButtonsVisible: Bool = false
+    let primaryButtonTitle: String? = nil
 
-    let primaryButtonTitle: String = ""
+    let secondaryButtonTitle: String? = nil
 
-    let secondaryButtonTitle: String = ""
+    let bottomTitle: String? = Localization.readerIsReady
 
-    let isAuxiliaryButtonHidden: Bool = true
-
-    let auxiliaryButtonTitle: String = ""
-
-    let bottomTitle: String = Localization.readerIsReady
-
-    let bottomSubtitle: String = Localization.tapInsertOrSwipe
+    let bottomSubtitle: String? = Localization.tapInsertOrSwipe
 
     init(name: String, amount: String) {
         self.name = name

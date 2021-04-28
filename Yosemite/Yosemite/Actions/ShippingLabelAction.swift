@@ -25,7 +25,7 @@ public enum ShippingLabelAction: Action {
     ///
     case validateAddress(siteID: Int64,
                          address: ShippingLabelAddressVerification,
-                         completion: (Result<ShippingLabelAddressValidationResponse, Error>) -> Void)
+                         completion: (Result<ShippingLabelAddressValidationSuccess, Error>) -> Void)
 
     /// Requests all the details for the packages (custom and predefined).
     ///

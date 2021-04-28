@@ -6,9 +6,12 @@ import Foundation
 struct ShippingLabelAddressValidationResponseMapper: Mapper {
     /// (Attempts) to convert a dictionary into ShippingLabelAddressValidationResponse.
     ///
-    func map(response: Data) throws -> ShippingLabelAddressValidationResponse {
+    func map(response: Data) throws -> ShippingLabelAddressValidationSuccess {
         let decoder = JSONDecoder()
-        return try decoder.decode(ShippingLabelAddressValidationResponseEnvelope.self, from: response).data
+        return try decoder.decode(ShippingLabelAddressValidationResponseEnvelope.self, from: response)
+            .data
+            .toResult
+            .get()
     }
 }
 

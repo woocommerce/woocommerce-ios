@@ -182,7 +182,7 @@ private extension ShippingLabelFormViewModel {
 
 // MARK: - Remote API
 extension ShippingLabelFormViewModel {
-    func validateAddress(type: ShipType, onCompletion: ((ValidationState, ShippingLabelAddressValidationResponse?) -> ())? = nil) {
+    func validateAddress(type: ShipType, onCompletion: ((ValidationState, ShippingLabelAddressValidationSuccess?) -> ())? = nil) {
 
         guard let address = type == .origin ? originAddress : destinationAddress else { return }
 
@@ -194,28 +194,21 @@ extension ShippingLabelFormViewModel {
 
             guard let self = self else { return }
             switch result {
-            case .success:
-                let response = try? result.get()
-
-                // No errors, the address is validated
-                if response?.errors == nil && response?.isTrivialNormalization == true {
-                    self.updateValidatingAddressState(false, type: type)
+            case .success(let response):
+                self.updateValidatingAddressState(false, type: type)
+                if response.isTrivialNormalization {
                     onCompletion?(.validated, response)
-                }
-                // No errors, but there is a suggested address
-                else if response?.errors == nil && response?.isTrivialNormalization == false {
-                    self.updateValidatingAddressState(false, type: type)
+                } else {
                     onCompletion?(.suggestedAddress, response)
-                }
-                // There are some address validation errors
-                else {
-                    self.updateValidatingAddressState(false, type: type)
-                    onCompletion?(.validationError, response)
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
                 self.updateValidatingAddressState(false, type: type)
-                onCompletion?(.genericError, nil)
+                if error is ShippingLabelAddressValidationError {
+                    onCompletion?(.validationError, nil)
+                } else {
+                    onCompletion?(.genericError, nil)
+                }
             }
         }
         stores.dispatch(action)

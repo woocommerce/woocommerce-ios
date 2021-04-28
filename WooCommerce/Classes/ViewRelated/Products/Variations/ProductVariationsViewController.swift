@@ -295,6 +295,14 @@ private extension ProductVariationsViewController {
         buttonContainer.addSubview(editAttributesButton)
         buttonContainer.pinSubviewToSafeArea(editAttributesButton, insets: .init(top: 8, left: 16, bottom: 16, right: 16))
 
+        let separator = UIView.createBorderView()
+        buttonContainer.addSubview(separator)
+        NSLayoutConstraint.activate([
+            buttonContainer.leadingAnchor.constraint(equalTo: separator.leadingAnchor),
+            buttonContainer.bottomAnchor.constraint(equalTo: separator.bottomAnchor),
+            buttonContainer.trailingAnchor.constraint(equalTo: separator.trailingAnchor)
+        ])
+
         topStackView.addArrangedSubview(buttonContainer)
     }
 

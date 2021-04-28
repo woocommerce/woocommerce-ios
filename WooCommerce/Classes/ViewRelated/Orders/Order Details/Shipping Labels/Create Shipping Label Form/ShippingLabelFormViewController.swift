@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import SwiftUI
 
 final class ShippingLabelFormViewController: UIViewController {
 

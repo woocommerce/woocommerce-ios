@@ -91,6 +91,14 @@ extension WooConstants {
         case shippingLabelsRelease1Feedback = "https://automattic.survey.fm/woo-app-feature-feedback-shipping-labels"
 #endif
 
+        /// URL for the order add-on i1 feedback survey
+        ///
+#if DEBUG
+        case orderAddOnI1Feedback = "https://automattic.survey.fm/woo-app-addons-testing"
+#else
+        case orderAddOnI1Feedback = "https://automattic.survey.fm/woo-app-addons-production"
+#endif
+
         /// URL for shipping label creation information
         ///
         case shippingLabelCreationInfo = "https://woocommerce.com/products/shipping"

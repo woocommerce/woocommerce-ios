@@ -14,7 +14,7 @@ final class ProductVariationsViewController: UIViewController {
 
     /// Empty state screen configuration
     ///
-    private lazy var emptyStateConfig: EmptyStateViewController.Config = {
+    private var emptyStateConfig: EmptyStateViewController.Config {
         let message = NSAttributedString(string: Localization.emptyStateTitle, attributes: [.font: EmptyStateViewController.Config.messageFont])
         let productHasAttributes = product.attributesForVariations.isNotEmpty
         let subtitle = productHasAttributes ? "" : Localization.emptyStateSubtitle
@@ -25,7 +25,7 @@ final class ProductVariationsViewController: UIViewController {
                            buttonTitle: buttonTitle) { [weak self] _ in
                             self?.createVariationFromEmptyState()
                            }
-    }()
+    }
 
     @IBOutlet private weak var tableView: UITableView!
 

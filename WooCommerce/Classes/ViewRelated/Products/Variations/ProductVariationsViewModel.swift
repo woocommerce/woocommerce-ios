@@ -46,6 +46,6 @@ extension ProductVariationsViewModel {
     /// Defines if the More Options button should be shown
     ///
     func shouldShowMoreButton(for product: Product) -> Bool {
-        product.attributesForVariations.isNotEmpty
+        product.variations.isEmpty && product.attributesForVariations.isNotEmpty
     }
 }

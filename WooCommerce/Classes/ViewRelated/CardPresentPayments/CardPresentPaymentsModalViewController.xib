@@ -89,7 +89,7 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="248" height="50"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="50" id="Gcd-Af-CS9"/>
-                                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="280" id="cR9-6h-lGS"/>
+                                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" priority="750" constant="280" id="cR9-6h-lGS"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                                     <state key="normal" title="Primary Action Button">
@@ -131,7 +131,6 @@
                         <constraint firstItem="jIt-xb-rrN" firstAttribute="top" secondItem="8Tg-Q2-wkH" secondAttribute="top" id="JLA-XJ-MiD"/>
                         <constraint firstAttribute="width" constant="280" id="RKc-gO-751"/>
                         <constraint firstItem="jIt-xb-rrN" firstAttribute="height" secondItem="8Tg-Q2-wkH" secondAttribute="height" id="VJR-wO-lUP"/>
-                        <constraint firstItem="jIt-xb-rrN" firstAttribute="width" secondItem="8Tg-Q2-wkH" secondAttribute="width" id="Xlq-Ui-adL"/>
                         <constraint firstAttribute="bottom" secondItem="jIt-xb-rrN" secondAttribute="bottom" id="lVZ-pu-Fmb"/>
                         <constraint firstAttribute="width" relation="lessThanOrEqual" constant="280" id="uaz-2N-7M4"/>
                         <constraint firstAttribute="trailing" secondItem="jIt-xb-rrN" secondAttribute="trailing" id="ufT-Yf-gsb"/>

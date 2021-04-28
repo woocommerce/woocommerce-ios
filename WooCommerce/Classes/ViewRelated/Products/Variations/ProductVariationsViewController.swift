@@ -12,21 +12,6 @@ final class ProductVariationsViewController: UIViewController {
     ///
     private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
 
-    /// Empty state screen configuration
-    ///
-    private var emptyStateConfig: EmptyStateViewController.Config {
-        let message = NSAttributedString(string: Localization.emptyStateTitle, attributes: [.font: EmptyStateViewController.Config.messageFont])
-        let shouldShowCreatingAttributesGuide = viewModel.shouldShowCreatingAttributesGuide(for: product)
-        let subtitle = shouldShowCreatingAttributesGuide ? Localization.emptyStateSubtitle : ""
-        let buttonTitle = shouldShowCreatingAttributesGuide ? Localization.addAttributesAction : Localization.addVariationAction
-        return .withButton(message: message,
-                           image: .emptyBoxImage,
-                           details: subtitle,
-                           buttonTitle: buttonTitle) { [weak self] _ in
-                            self?.createVariationFromEmptyState()
-                           }
-    }
-
     @IBOutlet private weak var tableView: UITableView!
 
     /// Pull To Refresh Support.
@@ -258,7 +243,24 @@ private extension ProductVariationsViewController {
 
         emptyStateViewController.view.pinSubviewToAllEdges(view)
         emptyStateViewController.didMove(toParent: self)
+
+        let showAttributeGuide = viewModel.shouldShowCreatingAttributesGuide(for: product)
+        let emptyStateConfig = createEmptyStateConfig(showAttributeGuide: showAttributeGuide)
         emptyStateViewController.configure(emptyStateConfig)
+    }
+
+    /// Creates empty state screen configuration
+    ///
+    private func createEmptyStateConfig(showAttributeGuide: Bool) -> EmptyStateViewController.Config {
+        let message = NSAttributedString(string: Localization.emptyStateTitle, attributes: [.font: EmptyStateViewController.Config.messageFont])
+        let subtitle = showAttributeGuide ? Localization.emptyStateSubtitle : ""
+        let buttonTitle = showAttributeGuide ? Localization.addAttributesAction : Localization.addVariationAction
+        return .withButton(message: message,
+                           image: .emptyBoxImage,
+                           details: subtitle,
+                           buttonTitle: buttonTitle) { [weak self] _ in
+                            self?.createVariationFromEmptyState()
+                           }
     }
 
     func removeEmptyViewController() {

@@ -1,7 +1,13 @@
 import UIKit
 
+
+/// Modal presented when the card reader requests customers to remove the card
 final class CardPresentModalRemoveCard: CardPresentPaymentsModalViewModel {
+
+    /// Customer name
     private let name: String
+
+    /// Charge ampnt
     private let amount: String
 
     let mode: PaymentsModalMode = .reducedInfo

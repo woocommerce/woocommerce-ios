@@ -1,8 +1,15 @@
 import UIKit
 
+/// Modal presented on error
 final class CardPresentModalError: CardPresentPaymentsModalViewModel {
+
+    /// Aount charged
     private let amount: String
+
+    /// The error returned by the stack
     private let error: Error
+
+    /// A closure to ececute when the primary button is tapped
     private let tryAgainAction: () -> Void
 
     let mode: PaymentsModalMode = .oneActionButton

@@ -1,8 +1,16 @@
 import UIKit
 
+/// Modal presented when the payment has been collected successfully
 final class CardPresentModalSuccess: CardPresentPaymentsModalViewModel {
+
+    /// Amount charged
     private let amount: String
+
+    /// Closure to execute when primary button is tapped
     private let printReceiptAction: () -> Void
+
+
+    /// Closure to execute when secondary button is tapped
     private let emailReceiptAction: () -> Void
 
     let mode: PaymentsModalMode = .twoActionButtons

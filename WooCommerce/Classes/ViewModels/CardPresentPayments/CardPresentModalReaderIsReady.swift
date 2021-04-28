@@ -1,7 +1,12 @@
 import UIKit
 
+/// The card reader is ready.
 final class CardPresentModalReaderIsReady: CardPresentPaymentsModalViewModel {
+
+    /// Customer name
     private let name: String
+
+    /// Charge amount
     private let amount: String
 
     let mode: PaymentsModalMode = .fullInfo

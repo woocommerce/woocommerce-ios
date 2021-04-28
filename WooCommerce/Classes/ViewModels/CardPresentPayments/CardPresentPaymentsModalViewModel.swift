@@ -1,13 +1,15 @@
 import UIKit
 
+/// Abstracts configuration and contents of the modal screens presented
+/// during operations related to Card Present Payments
 protocol CardPresentPaymentsModalViewModel {
-    /// The visual mode of the modal
+    /// The visual mode of the view. Represents the contents of the view.
     var mode: PaymentsModalMode { get }
 
-    /// The title at the top of the modal view. It usually reads as
+    /// The title at the top of the modal view.
     var topTitle: String { get }
 
-    /// The second line of text of the modal view. Right over the image
+    /// The second line of text of the modal view. Right over the illustration
     var topSubtitle: String? { get }
 
     /// An illustration accompanying the modal
@@ -35,6 +37,7 @@ protocol CardPresentPaymentsModalViewModel {
 }
 
 
+/// Represents the different visual modes of the modal view
 enum PaymentsModalMode {
     /// From top to bottom: Two lines of text at the top, image, two more lines of text
     case fullInfo

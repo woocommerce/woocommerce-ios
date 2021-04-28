@@ -1,7 +1,13 @@
 import UIKit
 
+
+/// Modal presented when the card reader requests customers to tap/insert/swipe the card
 final class CardPresentModalTapCard: CardPresentPaymentsModalViewModel {
+
+    /// Customer name
     private let name: String
+
+    /// Charge amount
     private let amount: String
 
     let mode: PaymentsModalMode = .fullInfo

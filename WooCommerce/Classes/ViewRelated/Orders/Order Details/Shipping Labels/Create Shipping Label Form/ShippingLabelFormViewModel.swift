@@ -60,6 +60,8 @@ final class ShippingLabelFormViewModel {
 
         state.sections = ShippingLabelFormViewModel.generateInitialSections()
         self.stores = stores
+
+        syncShippingLabelAccountSettings()
     }
 
     func handleOriginAddressValueChanges(address: ShippingLabelAddress?, validated: Bool) {
@@ -216,6 +218,17 @@ extension ShippingLabelFormViewModel {
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
                 self.updateValidatingAddressState(false, type: type)
                 onCompletion?(.genericError, nil)
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    /// Syncs account settings specific to shipping labels, such as the last selected package and payment methods.
+    ///
+    func syncShippingLabelAccountSettings() {
+        let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: order.siteID) { result in
+            if result.isFailure {
+                DDLogError("⛔️ Error syncing shipping label account settings")
             }
         }
         stores.dispatch(action)

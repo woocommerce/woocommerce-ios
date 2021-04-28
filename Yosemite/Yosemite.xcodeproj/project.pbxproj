@@ -90,6 +90,9 @@
 		02FF056D23DEDCB90058E6E7 /* MockImageSourceWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056C23DEDCB90058E6E7 /* MockImageSourceWriter.swift */; };
 		02FF056F23E04F320058E6E7 /* MockMediaExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056E23E04F320058E6E7 /* MockMediaExportService.swift */; };
 		03FBDA222631521100ACE257 /* CouponAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDA212631521100ACE257 /* CouponAction.swift */; };
+		03FBDA26263296A100ACE257 /* CouponStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDA25263296A100ACE257 /* CouponStore.swift */; };
+		03FBDA2A263296C400ACE257 /* CouponStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDA29263296C400ACE257 /* CouponStoreTests.swift */; };
+		03FBDA2E2632A9B400ACE257 /* MockCouponsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDA2D2632A9B400ACE257 /* MockCouponsRemote.swift */; };
 		03FBDA3E2632E29600ACE257 /* Coupon+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FBDA3D2632E29600ACE257 /* Coupon+ReadOnlyConvertible.swift */; };
 		0E67B79585034C4DD75C8117 /* Pods_Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */; };
 		24163B9E257F41A600F94EC3 /* StoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24163B9D257F41A600F94EC3 /* StoresManager.swift */; };
@@ -388,6 +391,9 @@
 		02FF056C23DEDCB90058E6E7 /* MockImageSourceWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockImageSourceWriter.swift; sourceTree = "<group>"; };
 		02FF056E23E04F320058E6E7 /* MockMediaExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMediaExportService.swift; sourceTree = "<group>"; };
 		03FBDA212631521100ACE257 /* CouponAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponAction.swift; sourceTree = "<group>"; };
+		03FBDA25263296A100ACE257 /* CouponStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponStore.swift; sourceTree = "<group>"; };
+		03FBDA29263296C400ACE257 /* CouponStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponStoreTests.swift; sourceTree = "<group>"; };
+		03FBDA2D2632A9B400ACE257 /* MockCouponsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCouponsRemote.swift; sourceTree = "<group>"; };
 		03FBDA3D2632E29600ACE257 /* Coupon+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coupon+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		24163B9D257F41A600F94EC3 /* StoresManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoresManager.swift; sourceTree = "<group>"; };
 		24163BA7257F41C500F94EC3 /* SessionManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManagerProtocol.swift; sourceTree = "<group>"; };
@@ -921,6 +927,7 @@
 				578CE7912475EC9200492EBF /* MockProductsRemote.swift */,
 				020C908024C7D71D001E2BEB /* MockProductVariationsRemote.swift */,
 				02E7FFD82562234F00C53030 /* MockShippingLabelRemote.swift */,
+				03FBDA2D2632A9B400ACE257 /* MockCouponsRemote.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -1075,6 +1082,7 @@
 				D87F614B22657B150031A13B /* AppSettingsStore.swift */,
 				02BA23C122EEEABC009539E7 /* AvailabilityStore.swift */,
 				741F34812195EA71005F5BD9 /* CommentStore.swift */,
+				03FBDA25263296A100ACE257 /* CouponStore.swift */,
 				7471401221877A8B009A11CC /* NotificationStore.swift */,
 				022F00BD24725BAF008CD97F /* NotificationCountStore.swift */,
 				74A7688B20D45EBA00F9D437 /* OrderStore.swift */,
@@ -1113,6 +1121,7 @@
 				458C6DE725ACC554009B300D /* AppSettingsStoreTests+ProductsSettings.swift */,
 				B5BC736720D1AA8F00B5B6FA /* AccountStoreTests.swift */,
 				741F34832195F752005F5BD9 /* CommentStoreTests.swift */,
+				03FBDA29263296C400ACE257 /* CouponStoreTests.swift */,
 				748525AB218A45360036DF75 /* NotificationStoreTests.swift */,
 				74A7688D20D45ED400F9D437 /* OrderStoreTests.swift */,
 				573B448A2424082B00E71ADC /* OrderStoreTests+FetchFilteredAndAllOrders.swift */,
@@ -1693,6 +1702,7 @@
 				02E4F5E423CD5628003B0010 /* NSOrderedSet+Array.swift in Sources */,
 				749737672141CC8C0008C490 /* TopEarnerStats+ReadOnlyType.swift in Sources */,
 				7493751222498B2C007D85D1 /* ProductTag+ReadOnlyConvertible.swift in Sources */,
+				03FBDA26263296A100ACE257 /* CouponStore.swift in Sources */,
 				7499936420EFBC1B00CF01CD /* OrderNoteAction.swift in Sources */,
 				7455D4692141B59E00FA8C1F /* TopEarnerStatsItem+ReadOnlyConvertible.swift in Sources */,
 				D8C11A5222DF2DA200D4A88D /* StatsActionV4.swift in Sources */,
@@ -1751,6 +1761,7 @@
 				02E262C0238CE80100B79588 /* StorageShippingSettingsServiceTests.swift in Sources */,
 				45AB8B1E24AB363D00B5B36E /* ProductTagStoreTests.swift in Sources */,
 				B5C9DE222087FF20006B910A /* DispatcherTests.swift in Sources */,
+				03FBDA2A263296C400ACE257 /* CouponStoreTests.swift in Sources */,
 				02E7FFD92562234F00C53030 /* MockShippingLabelRemote.swift in Sources */,
 				B53A56A0211245E0000776C9 /* MockStorageManager+Sample.swift in Sources */,
 				453305FB245AEDCB00264E50 /* SitePostStoreTests.swift in Sources */,
@@ -1763,6 +1774,7 @@
 				B5C9DE242087FF20006B910A /* StoreTests.swift in Sources */,
 				02FF055C23D9846A0058E6E7 /* MediaFileManagerTests.swift in Sources */,
 				0248B36B2459127200A271A4 /* MockNetwork+Path.swift in Sources */,
+				03FBDA2E2632A9B400ACE257 /* MockCouponsRemote.swift in Sources */,
 				B5C9DE252087FF20006B910A /* MockActionsProcessor.swift in Sources */,
 				D8C11A5A22DFC21600D4A88D /* StatsStoreV4Tests.swift in Sources */,
 				261CF2C7255C445A0090D8D3 /* PaymentGatewayStoreTests.swift in Sources */,

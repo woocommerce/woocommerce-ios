@@ -244,7 +244,7 @@ private extension ProductVariationsViewController {
         emptyStateViewController.view.pinSubviewToAllEdges(view)
         emptyStateViewController.didMove(toParent: self)
 
-        let showAttributeGuide = viewModel.shouldShowCreatingAttributesGuide(for: product)
+        let showAttributeGuide = viewModel.shouldShowAttributeGuide(for: product)
         let emptyStateConfig = createEmptyStateConfig(showAttributeGuide: showAttributeGuide)
         emptyStateViewController.configure(emptyStateConfig)
     }

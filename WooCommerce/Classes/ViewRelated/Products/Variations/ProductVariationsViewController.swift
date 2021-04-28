@@ -276,27 +276,27 @@ private extension ProductVariationsViewController {
         headerContainer.addSubview(topStackView)
         headerContainer.pinSubviewToAllEdges(topStackView)
 
-        configureTopButton(title: Localization.addNewVariation,
-                           insets: .init(top: 16, left: 16, bottom: 8, right: 16),
-                           actionSelector: #selector(addButtonTapped),
-                           stylingHandler: { $0.applyPrimaryButtonStyle() })
+        addTopButton(title: Localization.addNewVariation,
+                     insets: .init(top: 16, left: 16, bottom: 8, right: 16),
+                     actionSelector: #selector(addButtonTapped),
+                     stylingHandler: { $0.applyPrimaryButtonStyle() })
 
-        configureTopButton(title: Localization.editAttributesAction,
-                           insets: .init(top: 8, left: 16, bottom: 16, right: 16),
-                           hasBottomBorder: true,
-                           actionSelector: #selector(editAttributesTapped),
-                           stylingHandler: { $0.applySecondaryButtonStyle() })
+        addTopButton(title: Localization.editAttributesAction,
+                     insets: .init(top: 8, left: 16, bottom: 16, right: 16),
+                     hasBottomBorder: true,
+                     actionSelector: #selector(editAttributesTapped),
+                     stylingHandler: { $0.applySecondaryButtonStyle() })
 
         topStackView.addArrangedSubview(topBannerView)
 
         tableView.tableHeaderView = headerContainer
     }
 
-    func configureTopButton(title: String,
-                            insets: UIEdgeInsets,
-                            hasBottomBorder: Bool = false,
-                            actionSelector: Selector,
-                            stylingHandler: (UIButton) -> Void) {
+    func addTopButton(title: String,
+                      insets: UIEdgeInsets,
+                      hasBottomBorder: Bool = false,
+                      actionSelector: Selector,
+                      stylingHandler: (UIButton) -> Void) {
         let buttonContainer = UIView()
         buttonContainer.backgroundColor = .listForeground
 

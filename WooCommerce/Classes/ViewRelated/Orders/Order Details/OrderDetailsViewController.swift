@@ -403,7 +403,8 @@ private extension OrderDetailsViewController {
             coordinator.showReprintUI()
         case .createShippingLabel:
             let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
-            navigationController?.show(shippingLabelFormVC, sender: self)
+            shippingLabelFormVC.hidesBottomBarWhenPushed = true
+            show(shippingLabelFormVC, sender: self)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         case let .viewAddOns(addOns):

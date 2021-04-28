@@ -51,6 +51,25 @@ class AddOnCrossreferenceTests: XCTestCase {
         ])
     }
 
+    func tests_addOn_attributes_with_no_price_in_name_are_correctly_filtered_against_product_addOns() {
+        // Given
+        let orderItem = MockAggregateOrderItem.emptyItem().copy(attributes: [
+            OrderItemAttribute(metaID: 3, name: "Engraving", value: ""),
+        ])
+        let product = Product.fake().copy(addOns: [
+            ProductAddOn.fake().copy(name: "Engraving"),
+        ])
+
+        // When
+        let useCase = AddOnCrossreferenceUseCase(orderItem: orderItem, product: product)
+        let addOnsAttributes = useCase.addOnsAttributes()
+
+        // Then
+        XCTAssertEqual(addOnsAttributes, [
+            OrderItemAttribute(metaID: 3, name: "Engraving", value: ""),
+        ])
+    }
+
     func tests_addOnAttributes_is_empty_when_product_does_not_have_addOns() {
         // Given
         let orderItem = MockAggregateOrderItem.emptyItem().copy(attributes: [

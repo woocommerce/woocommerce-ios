@@ -35,4 +35,13 @@ final class WeightFormatterTests: XCTestCase {
         // Then
         XCTAssertEqual(formatter.formatWeight(weight: "16"), "16 woos")
     }
+
+    func test_weightFormat_returns_expected_values_if_weight_is_empty_or_nil() {
+        // Given
+        let formatterWithSpace = WeightFormatter(weightUnit: "lbs", withSpace: true)
+
+        // Then
+        XCTAssertEqual(formatterWithSpace.formatWeight(weight: ""), "0 lbs")
+        XCTAssertEqual(formatterWithSpace.formatWeight(weight: nil), "0 lbs")
+    }
 }

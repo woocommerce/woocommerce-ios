@@ -35,11 +35,11 @@ extension ShippingLabelPackagesResponse: Decodable {
 
         // We assume that rows will always be of type `Dictionary<String:<Array<String>>>`
         //
-        let rawPredefinedFormData: [String: AnyCodable] = try formDataContainer.decodeIfPresent([String: AnyCodable].self, forKey: .predefined) ?? [:]
+        let rawPredefinedFormData: [String: AnyCodable] = formDataContainer.failsafeDecodeIfPresent([String: AnyCodable].self, forKey: .predefined) ?? [:]
 
         // We assume that rows will always be of type `Dictionary<String:<Dictionary<String: Dictionary<different values>>>`
         //
-        let rawPredefinedFormSchema: [String: AnyCodable] = try formSchemaContainer.decodeIfPresent([String: AnyCodable].self, forKey: .predefined) ?? [:]
+        let rawPredefinedFormSchema: [String: AnyCodable] = formSchemaContainer.failsafeDecodeIfPresent([String: AnyCodable].self, forKey: .predefined) ?? [:]
 
 
         var predefinedOptions: [ShippingLabelPredefinedOption] = []

@@ -7,7 +7,6 @@ import protocol Storage.StorageManagerType
 ///
 final class ShippingLabelPackageDetailsViewModel: ObservableObject {
 
-    let siteID: Int64
     private let order: Order
     private let orderItems: [OrderItem]
     private let currency: String
@@ -24,20 +23,45 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     ///
     private var productVariations: [ProductVariation] = []
 
+    /// The packages  response fetched from API
+    ///
+    @Published private var packagesResponse: ShippingLabelPackagesResponse?
+
+    var dimensionUnit: String {
+        return packagesResponse?.storeOptions.dimensionUnit ?? ""
+    }
+    var customPackages: [ShippingLabelCustomPackage] {
+        return packagesResponse?.customPackages ?? []
+    }
+    var predefinedOptions: [ShippingLabelPredefinedOption] {
+        return packagesResponse?.predefinedOptions ?? []
+    }
+
     /// The weight unit used in the Store
     ///
     let weightUnit: String?
 
     /// The items rows observed by the main view `ShippingLabelPackageDetails`
     ///
-    @Published var itemsRows: [ItemToFulfillRow] = []
+    @Published private(set) var itemsRows: [ItemToFulfillRow] = []
+
+    /// The id of the selected package, if any
+    ///
+    @Published var selectedPackageID: String?
+    @Published private(set) var selectedCustomPackage: ShippingLabelCustomPackage?
+    @Published private(set) var selectedPredefinedPackage: ShippingLabelPredefinedPackage?
+
+    /// Returns if the custom packages header should be shown in Package List
+    ///
+    var showCustomPackagesHeader: Bool {
+        return customPackages.count > 0
+    }
 
     init(order: Order,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
-        self.siteID = order.siteID
         self.order = order
         self.orderItems = order.items
         self.currency = order.currency
@@ -48,6 +72,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         configureResultsControllers()
         syncProducts()
         syncProductVariations()
+        syncPackageDetails()
     }
 
     private func configureResultsControllers() {
@@ -104,6 +129,55 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     }
 }
 
+// MARK: - Package Selection
+extension ShippingLabelPackageDetailsViewModel {
+    func didSelectPackage(_ id: String) {
+        selectCustomPackage(id)
+        selectPredefinedPackage(id)
+    }
+
+    private func selectCustomPackage(_ id: String) {
+        guard let packagesResponse = packagesResponse else {
+            return
+        }
+
+        for customPackage in packagesResponse.customPackages {
+            if customPackage.title == id {
+                selectedCustomPackage = customPackage
+                selectedPredefinedPackage = nil
+                return
+            }
+        }
+    }
+
+    private func selectPredefinedPackage(_ id: String) {
+        guard let packagesResponse = packagesResponse else {
+            return
+        }
+
+        for option in packagesResponse.predefinedOptions {
+            for predefinedPackage in option.predefinedPackages {
+                if predefinedPackage.id == id {
+                    selectedCustomPackage = nil
+                    selectedPredefinedPackage = predefinedPackage
+                    return
+                }
+            }
+        }
+    }
+
+    /// Writes into the binding variable the final package selection value when confirmed
+    ///
+    func confirmPackageSelection() {
+        if let selectedCustomPackage = selectedCustomPackage {
+            selectedPackageID = selectedCustomPackage.title
+        }
+        else if let selectedPredefinedPackage = selectedPredefinedPackage {
+            selectedPackageID = selectedPredefinedPackage.id
+        }
+    }
+}
+
 /// API Requests
 ///
 private extension ShippingLabelPackageDetailsViewModel {
@@ -132,6 +206,19 @@ private extension ShippingLabelPackageDetailsViewModel {
         }
         stores.dispatch(action)
     }
+
+    func syncPackageDetails() {
+        let action = ShippingLabelAction.packagesDetails(siteID: order.siteID) { [weak self] result in
+            switch result {
+            case .success(let value):
+                self?.packagesResponse = value
+            case .failure:
+                DDLogError("⛔️ Error synchronizing package details")
+                return
+            }
+        }
+        stores.dispatch(action)
+    }
 }
 
 private extension ShippingLabelPackageDetailsViewModel {
@@ -154,5 +241,116 @@ private extension ShippingLabelPackageDetailsViewModel {
                 return String.localizedStringWithFormat(subtitleWithAttributesFormat, attributesText, weight)
             }
         }
+    }
+}
+
+// MARK: - Methods for rendering a SwiftUI Preview
+//
+extension ShippingLabelPackageDetailsViewModel {
+
+    static func sampleOrder() -> Order {
+        return Order(siteID: 1234,
+                     orderID: 963,
+                     parentID: 0,
+                     customerID: 11,
+                     number: "963",
+                     status: .processing,
+                     currency: "USD",
+                     customerNote: "",
+                     dateCreated: date(with: "2018-04-03T23:05:12"),
+                     dateModified: date(with: "2018-04-03T23:05:14"),
+                     datePaid: date(with: "2018-04-03T23:05:14"),
+                     discountTotal: "30.00",
+                     discountTax: "1.20",
+                     shippingTotal: "0.00",
+                     shippingTax: "0.00",
+                     total: "31.20",
+                     totalTax: "1.20",
+                     paymentMethodID: "stripe",
+                     paymentMethodTitle: "Credit Card (Stripe)",
+                     items: sampleItems(),
+                     billingAddress: sampleAddress(),
+                     shippingAddress: sampleAddress(),
+                     shippingLines: sampleShippingLines(),
+                     coupons: sampleCoupons(),
+                     refunds: [],
+                     fees: [])
+    }
+
+    static func sampleAddress() -> Address {
+        return Address(firstName: "Johnny",
+                       lastName: "Appleseed",
+                       company: "",
+                       address1: "234 70th Street",
+                       address2: "",
+                       city: "Niagara Falls",
+                       state: "NY",
+                       postcode: "14304",
+                       country: "US",
+                       phone: "333-333-3333",
+                       email: "scrambled@scrambled.com")
+    }
+
+    static func sampleShippingLines() -> [ShippingLine] {
+        return [ShippingLine(shippingID: 123,
+                             methodTitle: "International Priority Mail Express Flat Rate",
+                             methodID: "usps",
+                             total: "133.00",
+                             totalTax: "0.00",
+                             taxes: [.init(taxID: 1, subtotal: "", total: "0.62125")])]
+    }
+
+    static func sampleCoupons() -> [OrderCouponLine] {
+        let coupon1 = OrderCouponLine(couponID: 894,
+                                      code: "30$off",
+                                      discount: "30",
+                                      discountTax: "1.2")
+
+        return [coupon1]
+    }
+
+    static func sampleItems() -> [OrderItem] {
+        let item1 = OrderItem(itemID: 890,
+                              name: "Fruits Basket (Mix & Match Product)",
+                              productID: 52,
+                              variationID: 0,
+                              quantity: 2,
+                              price: NSDecimalNumber(integerLiteral: 30),
+                              sku: "",
+                              subtotal: "50.00",
+                              subtotalTax: "2.00",
+                              taxClass: "",
+                              taxes: [.init(taxID: 1, subtotal: "2", total: "1.2")],
+                              total: "30.00",
+                              totalTax: "1.20",
+                              attributes: [])
+
+        let item2 = OrderItem(itemID: 891,
+                              name: "Fruits Bundle",
+                              productID: 234,
+                              variationID: 0,
+                              quantity: 1.5,
+                              price: NSDecimalNumber(integerLiteral: 0),
+                              sku: "5555-A",
+                              subtotal: "10.00",
+                              subtotalTax: "0.40",
+                              taxClass: "",
+                              taxes: [.init(taxID: 1, subtotal: "0.4", total: "0")],
+                              total: "0.00",
+                              totalTax: "0.00",
+                              attributes: [])
+
+        return [item1, item2]
+    }
+
+    static func date(with dateString: String) -> Date {
+        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
+            return Date()
+        }
+        return date
+    }
+
+    static func taxes() -> [OrderItemTax] {
+        return [OrderItemTax(taxID: 75, subtotal: "0.45", total: "0.45")]
     }
 }

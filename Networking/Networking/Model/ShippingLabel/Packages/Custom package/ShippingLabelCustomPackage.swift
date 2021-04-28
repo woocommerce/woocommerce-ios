@@ -7,7 +7,7 @@ public struct ShippingLabelCustomPackage: Equatable, GeneratedFakeable {
     /// Usually is always `true` for custom packages
     public let isUserDefined: Bool
 
-    /// The name of the custom package, like `Krabica`
+    /// The name of the custom package, like `Krabica`. This is also the unique ID of a custom package.
     public let title: String
 
     /// Defines if package is a box or a letter. By default is a box, so it's equal to `false`

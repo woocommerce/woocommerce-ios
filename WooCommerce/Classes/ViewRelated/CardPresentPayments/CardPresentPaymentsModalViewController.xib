@@ -30,10 +30,10 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Tg-Q2-wkH" userLabel="WrapperView">
-                    <rect key="frame" x="67" y="176.5" width="280" height="553"/>
+                    <rect key="frame" x="67" y="156.5" width="280" height="593"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="jIt-xb-rrN">
-                            <rect key="frame" x="0.0" y="0.0" width="280" height="553"/>
+                            <rect key="frame" x="0.0" y="32" width="280" height="529"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Q0r-qo-iZS">
                                     <rect key="frame" x="119.5" y="0.0" width="41.5" height="49"/>
@@ -80,7 +80,7 @@
                                     </subviews>
                                 </stackView>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="10Z-y1-ZQ6" userLabel="Action Background View">
-                                    <rect key="frame" x="0.0" y="381" width="280" height="172"/>
+                                    <rect key="frame" x="0.0" y="381" width="280" height="148"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="mhI-fa-Yzw">
                                             <rect key="frame" x="16" y="20" width="248" height="120"/>
@@ -117,7 +117,7 @@
                                     </subviews>
                                     <constraints>
                                         <constraint firstAttribute="trailing" secondItem="mhI-fa-Yzw" secondAttribute="trailing" constant="16" id="8gH-vs-D9H"/>
-                                        <constraint firstAttribute="bottomMargin" secondItem="mhI-fa-Yzw" secondAttribute="bottom" constant="24" id="PGb-Bi-220"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="mhI-fa-Yzw" secondAttribute="bottom" id="PGb-Bi-220"/>
                                         <constraint firstItem="mhI-fa-Yzw" firstAttribute="top" secondItem="10Z-y1-ZQ6" secondAttribute="top" constant="20" id="elI-Eo-HER"/>
                                         <constraint firstItem="mhI-fa-Yzw" firstAttribute="leading" secondItem="10Z-y1-ZQ6" secondAttribute="leading" constant="16" id="vz3-FU-z4g"/>
                                     </constraints>
@@ -128,10 +128,10 @@
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstItem="jIt-xb-rrN" firstAttribute="leading" secondItem="8Tg-Q2-wkH" secondAttribute="leading" id="80k-pZ-tsR"/>
-                        <constraint firstItem="jIt-xb-rrN" firstAttribute="top" secondItem="8Tg-Q2-wkH" secondAttribute="top" id="JLA-XJ-MiD"/>
+                        <constraint firstItem="jIt-xb-rrN" firstAttribute="top" secondItem="8Tg-Q2-wkH" secondAttribute="top" constant="32" id="JLA-XJ-MiD"/>
                         <constraint firstAttribute="width" constant="280" id="RKc-gO-751"/>
-                        <constraint firstItem="jIt-xb-rrN" firstAttribute="height" secondItem="8Tg-Q2-wkH" secondAttribute="height" id="VJR-wO-lUP"/>
-                        <constraint firstAttribute="bottom" secondItem="jIt-xb-rrN" secondAttribute="bottom" id="lVZ-pu-Fmb"/>
+                        <constraint firstItem="jIt-xb-rrN" firstAttribute="height" secondItem="8Tg-Q2-wkH" secondAttribute="height" priority="750" id="VJR-wO-lUP"/>
+                        <constraint firstAttribute="bottom" secondItem="jIt-xb-rrN" secondAttribute="bottom" constant="32" id="lVZ-pu-Fmb"/>
                         <constraint firstAttribute="width" relation="lessThanOrEqual" constant="280" id="uaz-2N-7M4"/>
                         <constraint firstAttribute="trailing" secondItem="jIt-xb-rrN" secondAttribute="trailing" id="ufT-Yf-gsb"/>
                     </constraints>

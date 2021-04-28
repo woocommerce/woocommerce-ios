@@ -13,7 +13,7 @@ final class ProductImagesViewController: UIViewController {
     @IBOutlet private weak var imagesContainerView: UIView!
     @IBOutlet private weak var helperContainerView: UIView!
     @IBOutlet private weak var helperLabel: UILabel!
-    
+
     private let siteID: Int64
     private let productID: Int64
     private let product: ProductFormDataModel
@@ -96,6 +96,7 @@ final class ProductImagesViewController: UIViewController {
         configureNavigation()
         configureAddButton()
         configureAddButtonBottomBorderView()
+        configureHelperViews()
         configureImagesContainerView()
         configureProductImagesObservation()
         handleSwipeBackGesture()
@@ -123,6 +124,12 @@ private extension ProductImagesViewController {
 
     func configureAddButtonBottomBorderView() {
         addButtonBottomBorderView.backgroundColor = .systemColor(.separator)
+    }
+
+    func configureHelperViews() {
+        helperContainerView.isHidden = allowsMultipleImages && product.productType == .variable
+        helperLabel.applySecondaryBodyStyle()
+        helperLabel.text = Localization.variableProductHelperText
     }
 
     func configureImagesContainerView() {
@@ -314,5 +321,7 @@ private extension ProductImagesViewController {
         static let addPhotos = NSLocalizedString("Add Photos", comment: "Action to add photos on the Product images screen")
         static let addPhoto = NSLocalizedString("Add Photo", comment: "Action to add one photo on the Product images screen")
         static let replacePhoto = NSLocalizedString("Replace Photo", comment: "Action to replace one photo on the Product images screen")
+        static let variableProductHelperText = NSLocalizedString("Only one photo can be displayed per product variation",
+                                                                 comment: "Helper text above photo list in Product images screen")
     }
 }

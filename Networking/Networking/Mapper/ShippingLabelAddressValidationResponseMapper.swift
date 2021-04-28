@@ -10,7 +10,7 @@ struct ShippingLabelAddressValidationResponseMapper: Mapper {
         let decoder = JSONDecoder()
         return try decoder.decode(ShippingLabelAddressValidationResponseEnvelope.self, from: response)
             .data
-            .toResult
+            .result
             .get()
     }
 }

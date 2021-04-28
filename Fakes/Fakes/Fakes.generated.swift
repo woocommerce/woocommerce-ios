@@ -959,17 +959,6 @@ extension ShippingLabelAddressValidationError {
         )
     }
 }
-extension ShippingLabelAddressValidationResponse {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    static func fake() -> ShippingLabelAddressValidationResponse {
-        .init(
-            address: .fake(),
-            errors: .fake(),
-            isTrivialNormalization: .fake()
-        )
-    }
-}
 extension ShippingLabelAddressValidationSuccess {
     /// Returns a "ready to use" type filled with fake values.
     ///

@@ -244,16 +244,24 @@ private extension CardPresentPaymentsModalViewController {
 
 // MARK: - Tests
 extension CardPresentPaymentsModalViewController {
+    func getTopTitleLabel() -> UILabel {
+        return topTitleLabel
+    }
+
+    func getTopSubtitleLabel() -> UILabel {
+        return topSubtitleLabel
+    }
+
     func getImageView() -> UIImageView {
         return imageView
     }
 
-//    func getLabel() -> UILabel {
-//        return errorMessage
-//    }
+    func getBottomTitleLabel() -> UILabel {
+        return bottomTitleLabel
+    }
 
-    func getAuxiliaryButton() -> UIButton {
-        return extraInfoButton
+    func getBottumSubtitleLabel() -> UILabel {
+        return bottomSubtitleLabel
     }
 
     func primaryActionButton() -> UIButton {

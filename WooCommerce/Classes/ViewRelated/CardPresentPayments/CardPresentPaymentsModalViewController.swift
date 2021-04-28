@@ -140,7 +140,6 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func configureBottomLabels() {
-        print("==== hiding bottom buttoms")
         actionButtonsView.isHidden = true
         bottomLabels.isHidden = false
 
@@ -153,17 +152,18 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func configureBottomSubtitle() {
+        guard shouldShowBottomSubtitle() else {
+            bottomSubtitleLabel.isHidden = true
+            return
+        }
+
+        bottomSubtitleLabel.isHidden = false
         bottomSubtitleLabel.text = viewModel.bottomSubtitle
     }
 
     func configureImageView() {
         imageView.image = viewModel.image
     }
-
-//    func configureErrorMessage() {
-//        errorMessage.applyBodyStyle()
-//        errorMessage.text = viewModel.topTitle
-//    }
 
     func configureActionButtonsView() {
         actionButtonsView.isHidden = false
@@ -181,6 +181,12 @@ private extension CardPresentPaymentsModalViewController {
     }
 
     func configureSecondaryButton() {
+        guard shouldShowBottomActionButton() else {
+            secondaryButton.isHidden = true
+            return
+        }
+
+        secondaryButton.isHidden = false
         secondaryButton.setTitle(viewModel.secondaryButtonTitle, for: .normal)
         secondaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapSecondaryButton()
@@ -205,6 +211,14 @@ private extension CardPresentPaymentsModalViewController {
         return mode == .oneActionButton ||
             mode == .twoActionButtons ||
             mode == .reducedInfoOneActionButton
+    }
+
+    func shouldShowBottomSubtitle() -> Bool {
+        viewModel.mode == .fullInfo
+    }
+
+    func shouldShowBottomActionButton() -> Bool {
+        viewModel.mode == .twoActionButtons
     }
 }
 

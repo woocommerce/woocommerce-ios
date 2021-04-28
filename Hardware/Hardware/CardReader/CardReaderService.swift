@@ -10,10 +10,6 @@ public protocol CardReaderService {
     /// The Publisher that emits the connected readers
     var connectedReaders: AnyPublisher<[CardReader], Never> { get }
 
-    /// The Publisher that emits the list of known readers. Known readers are readers that the merchant has
-    /// connected to in the past.
-    var knownReaders: AnyPublisher<[CardReader], Never> { get }
-
     /// The Publisher that emits the service status
     var serviceStatus: AnyPublisher<CardReaderServiceStatus, Never> { get }
 

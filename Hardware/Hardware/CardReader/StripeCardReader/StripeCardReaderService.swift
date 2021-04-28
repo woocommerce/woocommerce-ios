@@ -8,7 +8,6 @@ public final class StripeCardReaderService: NSObject {
 
     private let discoveredReadersSubject = CurrentValueSubject<[CardReader], Never>([])
     private let connectedReadersSubject = CurrentValueSubject<[CardReader], Never>([])
-    private let knownReadersSubject = CurrentValueSubject<[CardReader], Never>([])
     private let serviceStatusSubject = CurrentValueSubject<CardReaderServiceStatus, Never>(.ready)
     private let discoveryStatusSubject = CurrentValueSubject<CardReaderServiceDiscoveryStatus, Never>(.idle)
     private let paymentStatusSubject = CurrentValueSubject<PaymentStatus, Never>(.notReady)
@@ -34,10 +33,6 @@ extension StripeCardReaderService: CardReaderService {
 
     public var connectedReaders: AnyPublisher<[CardReader], Never> {
         connectedReadersSubject.eraseToAnyPublisher()
-    }
-
-    public var knownReaders: AnyPublisher<[CardReader], Never> {
-        knownReadersSubject.eraseToAnyPublisher()
     }
 
     public var serviceStatus: AnyPublisher<CardReaderServiceStatus, Never> {

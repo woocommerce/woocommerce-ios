@@ -276,49 +276,48 @@ private extension ProductVariationsViewController {
         headerContainer.addSubview(topStackView)
         headerContainer.pinSubviewToAllEdges(topStackView)
 
-        configureAddButton()
-        configureEditAttributesButton()
+        configureTopButton(title: Localization.addNewVariation,
+                           insets: .init(top: 16, left: 16, bottom: 8, right: 16),
+                           actionSelector: #selector(addButtonTapped),
+                           stylingHandler: { $0.applyPrimaryButtonStyle() })
+
+        configureTopButton(title: Localization.editAttributesAction,
+                           insets: .init(top: 8, left: 16, bottom: 16, right: 16),
+                           hasBottomBorder: true,
+                           actionSelector: #selector(editAttributesTapped),
+                           stylingHandler: { $0.applySecondaryButtonStyle() })
+
         topStackView.addArrangedSubview(topBannerView)
 
         tableView.tableHeaderView = headerContainer
     }
 
-    func configureAddButton() {
-        let buttonContainer = UIView()
-        buttonContainer.backgroundColor = .listForeground
-
-        let addVariationButton = UIButton()
-        addVariationButton.translatesAutoresizingMaskIntoConstraints = false
-        addVariationButton.setTitle(Localization.addNewVariation, for: .normal)
-        addVariationButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
-        addVariationButton.applyPrimaryButtonStyle()
-
-        buttonContainer.addSubview(addVariationButton)
-        buttonContainer.pinSubviewToSafeArea(addVariationButton, insets: .init(top: 16, left: 16, bottom: 8, right: 16))
-
-        topStackView.addArrangedSubview(buttonContainer)
-    }
-
-    func configureEditAttributesButton() {
+    func configureTopButton(title: String,
+                            insets: UIEdgeInsets,
+                            hasBottomBorder: Bool = false,
+                            actionSelector: Selector,
+                            stylingHandler: (UIButton) -> Void) {
         let buttonContainer = UIView()
         buttonContainer.backgroundColor = .listForeground
 
         let editAttributesButton = UIButton()
         editAttributesButton.translatesAutoresizingMaskIntoConstraints = false
-        editAttributesButton.setTitle(Localization.editAttributesAction, for: .normal)
-        editAttributesButton.addTarget(self, action: #selector(editAttributesTapped), for: .touchUpInside)
-        editAttributesButton.applySecondaryButtonStyle()
+        editAttributesButton.setTitle(title, for: .normal)
+        editAttributesButton.addTarget(self, action: actionSelector, for: .touchUpInside)
+        stylingHandler(editAttributesButton)
 
         buttonContainer.addSubview(editAttributesButton)
-        buttonContainer.pinSubviewToSafeArea(editAttributesButton, insets: .init(top: 8, left: 16, bottom: 16, right: 16))
+        buttonContainer.pinSubviewToSafeArea(editAttributesButton, insets: insets)
 
-        let separator = UIView.createBorderView()
-        buttonContainer.addSubview(separator)
-        NSLayoutConstraint.activate([
-            buttonContainer.leadingAnchor.constraint(equalTo: separator.leadingAnchor),
-            buttonContainer.bottomAnchor.constraint(equalTo: separator.bottomAnchor),
-            buttonContainer.trailingAnchor.constraint(equalTo: separator.trailingAnchor)
-        ])
+        if hasBottomBorder {
+            let separator = UIView.createBorderView()
+            buttonContainer.addSubview(separator)
+            NSLayoutConstraint.activate([
+                buttonContainer.leadingAnchor.constraint(equalTo: separator.leadingAnchor),
+                buttonContainer.bottomAnchor.constraint(equalTo: separator.bottomAnchor),
+                buttonContainer.trailingAnchor.constraint(equalTo: separator.trailingAnchor)
+            ])
+        }
 
         topStackView.addArrangedSubview(buttonContainer)
     }

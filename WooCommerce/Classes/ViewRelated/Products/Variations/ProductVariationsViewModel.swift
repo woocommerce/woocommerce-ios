@@ -49,6 +49,8 @@ extension ProductVariationsViewModel {
         product.attributesForVariations.isNotEmpty
     }
 
+    /// Defines if empty state screen should show guide for creating attributes
+    ///
     func shouldShowCreatingAttributesGuide(for product: Product) -> Bool {
         product.variations.isEmpty && product.attributesForVariations.isEmpty
     }

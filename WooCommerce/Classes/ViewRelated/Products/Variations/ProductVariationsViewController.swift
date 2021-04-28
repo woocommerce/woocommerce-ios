@@ -300,14 +300,14 @@ private extension ProductVariationsViewController {
         let buttonContainer = UIView()
         buttonContainer.backgroundColor = .listForeground
 
-        let editAttributesButton = UIButton()
-        editAttributesButton.translatesAutoresizingMaskIntoConstraints = false
-        editAttributesButton.setTitle(title, for: .normal)
-        editAttributesButton.addTarget(self, action: actionSelector, for: .touchUpInside)
-        stylingHandler(editAttributesButton)
+        let topButton = UIButton()
+        topButton.translatesAutoresizingMaskIntoConstraints = false
+        topButton.setTitle(title, for: .normal)
+        topButton.addTarget(self, action: actionSelector, for: .touchUpInside)
+        stylingHandler(topButton)
 
-        buttonContainer.addSubview(editAttributesButton)
-        buttonContainer.pinSubviewToSafeArea(editAttributesButton, insets: insets)
+        buttonContainer.addSubview(topButton)
+        buttonContainer.pinSubviewToSafeArea(topButton, insets: insets)
 
         if hasBottomBorder {
             let separator = UIView.createBorderView()

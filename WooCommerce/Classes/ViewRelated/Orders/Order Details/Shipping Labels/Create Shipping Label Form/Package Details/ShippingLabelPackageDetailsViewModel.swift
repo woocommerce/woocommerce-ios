@@ -45,7 +45,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     ///
     @Published private(set) var itemsRows: [ItemToFulfillRow] = []
 
-    /// The id of the selected package, if any
+    /// The id of the selected package. Defaults to last selected package, if any.
     ///
     @Published var selectedPackageID: String?
     @Published private(set) var selectedCustomPackage: ShippingLabelCustomPackage?
@@ -56,10 +56,6 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     var showCustomPackagesHeader: Bool {
         return customPackages.count > 0
     }
-
-    /// The id of the last selected package
-    ///
-    @Published var lastSelectedPackageID: String = ""
 
     init(order: Order,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
@@ -77,7 +73,6 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         syncProducts()
         syncProductVariations()
         syncPackageDetails()
-        syncShippingLabelAccountSettings()
     }
 
     private func configureResultsControllers() {
@@ -97,6 +92,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         products = resultsControllers?.products ?? []
         productVariations = resultsControllers?.productVariations ?? []
         itemsRows = generateItemsRows()
+        selectedPackageID = resultsControllers?.accountSettings?.lastSelectedPackageID
     }
 
     /// Generate the items rows, creating an element in the array for every item (eg. if there is an item with quantity 3,
@@ -220,20 +216,6 @@ private extension ShippingLabelPackageDetailsViewModel {
             case .failure:
                 DDLogError("⛔️ Error synchronizing package details")
                 return
-            }
-        }
-        stores.dispatch(action)
-    }
-
-    func syncShippingLabelAccountSettings() {
-        let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: order.siteID) { [weak self] result in
-            switch result {
-            case .success:
-                if let accountSettings = try? result.get() {
-                    self?.lastSelectedPackageID = accountSettings.lastSelectedPackageID
-                }
-            case .failure(let error):
-                DDLogError("⛔️ Error syncing shipping label account settings: \(error)")
             }
         }
         stores.dispatch(action)

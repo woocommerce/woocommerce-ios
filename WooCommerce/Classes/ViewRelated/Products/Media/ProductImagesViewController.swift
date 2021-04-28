@@ -127,7 +127,7 @@ private extension ProductImagesViewController {
     }
 
     func configureHelperViews() {
-        helperContainerView.isHidden = allowsMultipleImages && product.productType == .variable
+        helperContainerView.isHidden = allowsMultipleImages || product.productType != .variable
         helperLabel.applySecondaryBodyStyle()
         helperLabel.text = Localization.variableProductHelperText
     }

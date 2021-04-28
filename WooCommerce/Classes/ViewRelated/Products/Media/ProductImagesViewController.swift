@@ -11,7 +11,9 @@ final class ProductImagesViewController: UIViewController {
     @IBOutlet private weak var addButton: UIButton!
     @IBOutlet private weak var addButtonBottomBorderView: UIView!
     @IBOutlet private weak var imagesContainerView: UIView!
-
+    @IBOutlet private weak var helperContainerView: UIView!
+    @IBOutlet private weak var helperLabel: UILabel!
+    
     private let siteID: Int64
     private let productID: Int64
     private let product: ProductFormDataModel

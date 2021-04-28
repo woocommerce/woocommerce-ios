@@ -260,15 +260,15 @@ extension CardPresentPaymentsModalViewController {
         return bottomTitleLabel
     }
 
-    func getBottumSubtitleLabel() -> UILabel {
+    func getBottomSubtitleLabel() -> UILabel {
         return bottomSubtitleLabel
     }
 
-    func primaryActionButton() -> UIButton {
+    func getPrimaryActionButton() -> UIButton {
         return primaryButton
     }
 
-    func secondaryActionButton() -> UIButton {
+    func getSecondaryActionButton() -> UIButton {
         return secondaryButton
     }
 }

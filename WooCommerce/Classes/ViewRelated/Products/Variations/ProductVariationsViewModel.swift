@@ -48,4 +48,8 @@ extension ProductVariationsViewModel {
     func shouldShowMoreButton(for product: Product) -> Bool {
         product.attributesForVariations.isNotEmpty
     }
+    
+    func shouldShowCreatingAttributesGuide(for product: Product) -> Bool {
+        product.variations.isEmpty && product.attributesForVariations.isEmpty
+    }
 }

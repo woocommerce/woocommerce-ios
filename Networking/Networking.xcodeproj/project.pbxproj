@@ -103,6 +103,7 @@
 		2685C0DA263B551300D9EE97 /* AddOnGroupMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685C0D9263B551300D9EE97 /* AddOnGroupMapperTests.swift */; };
 		2685C0DE263B5A4200D9EE97 /* add-on-groups.json in Resources */ = {isa = PBXBuildFile; fileRef = 2685C0DD263B5A4200D9EE97 /* add-on-groups.json */; };
 		2685C0FA263B5D5300D9EE97 /* AddOnGroupMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685C0F9263B5D5300D9EE97 /* AddOnGroupMapper.swift */; };
+		2685C0FE263B5D8900D9EE97 /* AddOnGroupRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685C0FD263B5D8900D9EE97 /* AddOnGroupRemote.swift */; };
 		268B68FB24C87384007EBF1D /* leaderboards-products.json in Resources */ = {isa = PBXBuildFile; fileRef = 268B68FA24C87384007EBF1D /* leaderboards-products.json */; };
 		268B68FD24C87E37007EBF1D /* leaderboards-year-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = 268B68FC24C87E37007EBF1D /* leaderboards-year-alt.json */; };
 		26B2F74124C1F2C10065CCC8 /* LeaderboardsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B2F74024C1F2C10065CCC8 /* LeaderboardsRemote.swift */; };
@@ -555,6 +556,7 @@
 		2685C0D9263B551300D9EE97 /* AddOnGroupMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOnGroupMapperTests.swift; sourceTree = "<group>"; };
 		2685C0DD263B5A4200D9EE97 /* add-on-groups.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "add-on-groups.json"; sourceTree = "<group>"; };
 		2685C0F9263B5D5300D9EE97 /* AddOnGroupMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddOnGroupMapper.swift; sourceTree = "<group>"; };
+		2685C0FD263B5D8900D9EE97 /* AddOnGroupRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOnGroupRemote.swift; sourceTree = "<group>"; };
 		268B68FA24C87384007EBF1D /* leaderboards-products.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "leaderboards-products.json"; sourceTree = "<group>"; };
 		268B68FC24C87E37007EBF1D /* leaderboards-year-alt.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "leaderboards-year-alt.json"; sourceTree = "<group>"; };
 		26B2F74024C1F2C10065CCC8 /* LeaderboardsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardsRemote.swift; sourceTree = "<group>"; };
@@ -1245,6 +1247,7 @@
 			children = (
 				B557DA0020975500005962F4 /* Remote.swift */,
 				B505F6D020BEE39600BB1B69 /* AccountRemote.swift */,
+				2685C0FD263B5D8900D9EE97 /* AddOnGroupRemote.swift */,
 				740CF89821937A030023ED3A /* CommentRemote.swift */,
 				B572F69921AC475C003EEFF0 /* DevicesRemote.swift */,
 				24F98C512502E79800F49B68 /* FeatureFlagsRemote.swift */,
@@ -2171,6 +2174,7 @@
 				B524193F21AC5FE400D6FC0A /* DotcomDeviceMapper.swift in Sources */,
 				021EAA5625493B3600AA8CCD /* OrderItemAttribute.swift in Sources */,
 				77CE40602514CB3E003FF69D /* ProductDownloadDragAndDrop.swift in Sources */,
+				2685C0FE263B5D8900D9EE97 /* AddOnGroupRemote.swift in Sources */,
 				450106912399B2C800E24722 /* TaxClassListMapper.swift in Sources */,
 				74749B97224134FF005C4CF2 /* ProductMapper.swift in Sources */,
 				26455E2A25F669F0008A1D32 /* ProductAttributeTermMapper.swift in Sources */,

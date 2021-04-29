@@ -8,7 +8,6 @@ import WordPressUI
 /// to rewrite whenever we have the UI finalized.
 /// https://github.com/woocommerce/woocommerce-ios/issues/3980
 final class OrderDetailsPaymentAlerts {
-    //private var alertController: FancyAlertViewController?
     private var modalController: CardPresentPaymentsModalViewController?
     private var name: String = ""
     private var amount: String = ""

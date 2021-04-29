@@ -96,7 +96,7 @@ open class NUXButtonViewController: UIViewController {
 
             button.accessibilityIdentifier = buttonConfig.accessibilityIdentifier ?? accessibilityIdentifier(for: buttonConfig.title)
             button.isPrimary = buttonConfig.isPrimary
-            
+
             if buttonConfig.configureBodyFontForTitle == true {
                 button.customizeFont(WPStyleGuide.mediumWeightFont(forStyle: .body))
             }

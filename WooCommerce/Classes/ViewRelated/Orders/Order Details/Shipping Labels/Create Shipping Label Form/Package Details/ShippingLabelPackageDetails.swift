@@ -73,7 +73,8 @@ struct ShippingLabelPackageDetails_Previews: PreviewProvider {
 
     static var previews: some View {
 
-        let viewModel = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(), packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails())
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
+                                                             packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails())
 
         ShippingLabelPackageDetails(viewModel: viewModel)
             .environment(\.colorScheme, .light)

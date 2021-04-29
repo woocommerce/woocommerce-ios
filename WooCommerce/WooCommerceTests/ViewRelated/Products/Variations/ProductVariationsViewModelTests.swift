@@ -93,6 +93,41 @@ final class ProductVariationsViewModelTests: XCTestCase {
         XCTAssertFalse(showEmptyState)
     }
 
+    func test_attributes_guide_is_shown_when_product_does_not_have_attributes_or_variations() {
+        // Given
+        let product = Product.fake()
+        let viewModel = ProductVariationsViewModel(formType: .edit)
+
+        // Then
+        let showAttributesGuide = viewModel.shouldShowAttributeGuide(for: product)
+
+        // Then
+        XCTAssertTrue(showAttributesGuide)
+    }
+
+    func test_attributes_guide_is_not_shown_when_product_has_attributes_but_no_variations() {
+        let attribute = ProductAttribute(siteID: 0, attributeID: 0, name: "attr", position: 0, visible: true, variation: true, options: [])
+        let product = Product.fake().copy(attributes: [attribute], variations: [])
+        let viewModel = ProductVariationsViewModel(formType: .edit)
+
+        // Then
+        let showAttributesGuide = viewModel.shouldShowAttributeGuide(for: product)
+
+        // Then
+        XCTAssertFalse(showAttributesGuide)
+    }
+
+    func test_attributes_guide_is_shown_when_product_has_variations_but_no_attributes() {
+        let product = Product.fake().copy(attributes: [], variations: [1, 2])
+        let viewModel = ProductVariationsViewModel(formType: .edit)
+
+        // Then
+        let showAttributesGuide = viewModel.shouldShowAttributeGuide(for: product)
+
+        // Then
+        XCTAssertTrue(showAttributesGuide)
+    }
+
     func test_formType_is_updated_to_edit_when_new_product_exists_remotely_and_formType_was_add() {
         // Given
         let product = Product.fake().copy(productID: 123)

@@ -3,7 +3,20 @@ import XCTest
 import Yosemite
 
 final class ProductVariationsViewModelTests: XCTestCase {
-    func test_more_button_appears_when_product_is_not_empty() {
+    func test_more_button_appears_when_product_has_attributes_but_no_variations() {
+        // Given
+        let attribute = ProductAttribute(siteID: 0, attributeID: 0, name: "attr", position: 0, visible: true, variation: true, options: [])
+        let product = Product().copy(attributes: [attribute], variations: [])
+        let viewModel = ProductVariationsViewModel(formType: .edit)
+
+        // When
+        let showMoreButton = viewModel.shouldShowMoreButton(for: product)
+
+        // Then
+        XCTAssertTrue(showMoreButton)
+    }
+
+    func test_more_button_does_not_appear_when_product_is_not_empty() {
         // Given
         let variations: [Int64] = [101, 102]
         let attribute = ProductAttribute(siteID: 0, attributeID: 0, name: "attr", position: 0, visible: true, variation: true, options: [])
@@ -14,7 +27,7 @@ final class ProductVariationsViewModelTests: XCTestCase {
         let showMoreButton = viewModel.shouldShowMoreButton(for: product)
 
         // Then
-        XCTAssertTrue(showMoreButton)
+        XCTAssertFalse(showMoreButton)
     }
 
     func test_more_button_does_not_appear_when_product_has_variations_does_not_have_attributes() {

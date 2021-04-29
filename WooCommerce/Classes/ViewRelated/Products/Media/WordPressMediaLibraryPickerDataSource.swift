@@ -177,6 +177,12 @@ private extension WordPressMediaLibraryPickerDataSource {
     /// Appends the new media items to the existing media items.
     ///
     func updateMediaItems(_ newMediaItems: [Media], pageNumber: Int, pageSize: Int) {
+        // If the response contains no new items, there is nothing to update.
+        // We return early since the code would generate an invalid range of indices to update otherwise.
+        guard newMediaItems.isNotEmpty else {
+            return
+        }
+
         let pageFirstIndex = syncingCoordinator.pageFirstIndex
         let mediaStartIndex = (pageNumber - pageFirstIndex) * pageSize
         let mediaStartIndexOfTheNextPage = (pageNumber + 1 - pageFirstIndex) * pageSize

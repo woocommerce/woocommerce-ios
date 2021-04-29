@@ -32,10 +32,10 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
 
     let bottomSubtitle: String? = nil
 
-    init(amount: String, error: Error, tryAgain: @escaping () -> Void) {
+    init(amount: String, error: Error, primaryAction: @escaping () -> Void) {
         self.amount = amount
         self.error = error
-        self.primaryAction = tryAgain
+        self.primaryAction = primaryAction
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {

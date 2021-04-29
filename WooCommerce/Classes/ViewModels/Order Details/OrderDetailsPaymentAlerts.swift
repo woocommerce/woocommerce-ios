@@ -71,6 +71,6 @@ private extension OrderDetailsPaymentAlerts {
     }
 
     func errorViewModel(amount: String, error: Error, tryAgain: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalError(amount: amount, error: error, tryAgain: tryAgain)
+        CardPresentModalError(amount: amount, error: error, primaryAction: tryAgain)
     }
 }

@@ -21,4 +21,3 @@ struct AddOnGroupMapper: Mapper {
 private struct AddOnGroupEnvelope: Decodable {
     let data: [AddOnGroup]
 }
-

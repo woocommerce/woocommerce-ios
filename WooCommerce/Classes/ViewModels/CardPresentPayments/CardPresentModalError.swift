@@ -3,14 +3,14 @@ import UIKit
 /// Modal presented on error
 final class CardPresentModalError: CardPresentPaymentsModalViewModel {
 
-    /// Aount charged
+    /// Amount charged
     private let amount: String
 
     /// The error returned by the stack
     private let error: Error
 
-    /// A closure to ececute when the primary button is tapped
-    private let tryAgainAction: () -> Void
+    /// A closure to execute when the primary button is tapped
+    private let primaryAction: () -> Void
 
     let mode: PaymentsModalMode = .oneActionButton
 
@@ -35,11 +35,11 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     init(amount: String, error: Error, tryAgain: @escaping () -> Void) {
         self.amount = amount
         self.error = error
-        self.tryAgainAction = tryAgain
+        self.primaryAction = tryAgain
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        tryAgainAction()
+        primaryAction()
         viewController?.dismiss(animated: true)
     }
 

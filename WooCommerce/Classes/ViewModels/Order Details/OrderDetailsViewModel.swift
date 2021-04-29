@@ -503,7 +503,6 @@ extension OrderDetailsViewModel {
     }
 
     func printReceipt(params: CardPresentReceiptParameters) {
-        print("==== reaching print receipt in viewmodel")
         let action = ReceiptAction.print(order: self.order, parameters: params)
 
         ServiceLocator.stores.dispatch(action)

@@ -3,6 +3,29 @@ import WordPressShared
 import WordPressUI
 import WordPressKit
 
+public struct NUXButtonStyle {
+    public let normal: ButtonStyle
+    public let highlighted: ButtonStyle
+    public let disabled: ButtonStyle
+
+    public struct ButtonStyle {
+        public let backgroundColor: UIColor
+        public let borderColor: UIColor
+        public let titleColor: UIColor
+
+        public init(backgroundColor: UIColor, borderColor: UIColor, titleColor: UIColor) {
+            self.backgroundColor = backgroundColor
+            self.borderColor = borderColor
+            self.titleColor = titleColor
+        }
+    }
+
+    public init(normal: ButtonStyle, highlighted: ButtonStyle, disabled: ButtonStyle) {
+        self.normal = normal
+        self.highlighted = highlighted
+        self.disabled = disabled
+    }
+}
 /// A stylized button used by Login controllers. It also can display a `UIActivityIndicatorView`.
 @objc open class NUXButton: UIButton {
     @objc var isAnimating: Bool {

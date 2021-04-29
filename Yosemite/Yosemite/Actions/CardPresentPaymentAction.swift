@@ -14,6 +14,15 @@ public enum CardPresentPaymentAction: Action {
     ///
     case connect(reader: CardReader, onCompletion: (Result<[CardReader], Error>) -> Void)
 
+    /// Returns an array of readers (if any) known to us.
+    ///
+    /// What does "known" mean?
+    /// If the user connects to a reader, we declare it known. If the user explicitly disconnects from a reader,
+    /// we treat that as a "forget" request and un-declare known-ness. During discovery, if a known reader is
+    /// detected, it should be connected to automatically. The list of known readers (most merchants will only
+    /// have 1 or 2) will be persisted across application sessions.
+    case loadKnownReaders(onCompletion: ([CardReader]) -> Void)
+
     /// Collected payment for an order.
     ///
     case collectPayment(siteID: Int64,

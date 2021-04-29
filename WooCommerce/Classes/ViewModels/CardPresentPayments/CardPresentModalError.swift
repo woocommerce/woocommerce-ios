@@ -45,10 +45,6 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
     }
-
-    func didTapAuxiliaryButton(in viewController: UIViewController?) {
-        viewController?.dismiss(animated: true)
-    }
 }
 
 private extension CardPresentModalError {

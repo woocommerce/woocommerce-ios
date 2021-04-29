@@ -7,7 +7,7 @@ final class CardPresentModalRemoveCard: CardPresentPaymentsModalViewModel {
     /// Customer name
     private let name: String
 
-    /// Charge ampnt
+    /// Charge amount
     private let amount: String
 
     let mode: PaymentsModalMode = .reducedInfo

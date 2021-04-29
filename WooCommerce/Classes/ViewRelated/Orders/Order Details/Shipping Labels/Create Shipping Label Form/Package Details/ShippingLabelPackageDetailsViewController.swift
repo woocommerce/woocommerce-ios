@@ -10,6 +10,11 @@ final class ShippingLabelPackageDetailsViewController: UIHostingController<Shipp
         configureNavigationBar()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.title = ""
+    }
+
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

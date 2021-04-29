@@ -42,7 +42,7 @@ public class WCPayRemote: Remote {
                                orderID: Int64,
                                paymentIntentID: String,
                                completion: @escaping (Result<WCPayPaymentIntent, Error>) -> Void) {
-        let path = "\(Path.orders)/\(orderID)/\(Path.capture)"
+        let path = "\(Path.orders)/\(orderID)/\(Path.captureTerminalPayment)"
 
         let parameters = [
             CaptureOrderPaymentKeys.fields: CaptureOrderPaymentValues.fieldValues,
@@ -64,7 +64,7 @@ private extension WCPayRemote {
         static let connectionTokens = "payments/connection_tokens"
         static let accounts = "payments/accounts"
         static let orders = "payments/orders"
-        static let capture = "capture"
+        static let captureTerminalPayment = "capture_terminal_payment"
     }
 
     enum AccountParameterKeys {

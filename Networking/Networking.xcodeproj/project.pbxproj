@@ -99,6 +99,7 @@
 		26731337255ACA850026F7EF /* PaymentGatewayListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26731336255ACA850026F7EF /* PaymentGatewayListMapper.swift */; };
 		2683D70E24456DB8002A1589 /* categories-empty.json in Resources */ = {isa = PBXBuildFile; fileRef = 2683D70D24456DB7002A1589 /* categories-empty.json */; };
 		2683D71024456EE4002A1589 /* categories-extra.json in Resources */ = {isa = PBXBuildFile; fileRef = 2683D70F24456EE4002A1589 /* categories-extra.json */; };
+		2685C0D2263B069500D9EE97 /* AddOnGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685C0D1263B069500D9EE97 /* AddOnGroup.swift */; };
 		268B68FB24C87384007EBF1D /* leaderboards-products.json in Resources */ = {isa = PBXBuildFile; fileRef = 268B68FA24C87384007EBF1D /* leaderboards-products.json */; };
 		268B68FD24C87E37007EBF1D /* leaderboards-year-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = 268B68FC24C87E37007EBF1D /* leaderboards-year-alt.json */; };
 		26B2F74124C1F2C10065CCC8 /* LeaderboardsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B2F74024C1F2C10065CCC8 /* LeaderboardsRemote.swift */; };
@@ -547,6 +548,7 @@
 		26731336255ACA850026F7EF /* PaymentGatewayListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayListMapper.swift; sourceTree = "<group>"; };
 		2683D70D24456DB7002A1589 /* categories-empty.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "categories-empty.json"; sourceTree = "<group>"; };
 		2683D70F24456EE4002A1589 /* categories-extra.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "categories-extra.json"; sourceTree = "<group>"; };
+		2685C0D1263B069500D9EE97 /* AddOnGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOnGroup.swift; sourceTree = "<group>"; };
 		268B68FA24C87384007EBF1D /* leaderboards-products.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "leaderboards-products.json"; sourceTree = "<group>"; };
 		268B68FC24C87E37007EBF1D /* leaderboards-year-alt.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "leaderboards-year-alt.json"; sourceTree = "<group>"; };
 		26B2F74024C1F2C10065CCC8 /* LeaderboardsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardsRemote.swift; sourceTree = "<group>"; };
@@ -1304,6 +1306,7 @@
 				B505F6CE20BEE38B00BB1B69 /* Account.swift */,
 				93D8BBFA226BBC5100AD2EB3 /* AccountSettings.swift */,
 				B5BB1D0F20A237FB00112D92 /* Address.swift */,
+				2685C0D1263B069500D9EE97 /* AddOnGroup.swift */,
 				B53EF53721813806003E146F /* DotcomError.swift */,
 				24F98C552502EA4800F49B68 /* FeatureFlag.swift */,
 				B5A2417C217F9ECC00595DEF /* MetaContainer.swift */,
@@ -2114,6 +2117,7 @@
 				026CF61E237D6985009563D4 /* ProductVariationListMapper.swift in Sources */,
 				CE43066E2347CBA70073CBFF /* OrderItemTaxRefund.swift in Sources */,
 				26455E2125F66951008A1D32 /* ProductAttributeTerm.swift in Sources */,
+				2685C0D2263B069500D9EE97 /* AddOnGroup.swift in Sources */,
 				B567AF2920A0FA1E00AB6C62 /* Mapper.swift in Sources */,
 				31884A3B2603F3C7003FE338 /* SitePluginStatusEnum.swift in Sources */,
 				CE50345E21B571A7007573C6 /* SitePlanMapper.swift in Sources */,

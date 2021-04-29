@@ -104,6 +104,7 @@
 		2685C0DE263B5A4200D9EE97 /* add-on-groups.json in Resources */ = {isa = PBXBuildFile; fileRef = 2685C0DD263B5A4200D9EE97 /* add-on-groups.json */; };
 		2685C0FA263B5D5300D9EE97 /* AddOnGroupMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685C0F9263B5D5300D9EE97 /* AddOnGroupMapper.swift */; };
 		2685C0FE263B5D8900D9EE97 /* AddOnGroupRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685C0FD263B5D8900D9EE97 /* AddOnGroupRemote.swift */; };
+		2685C102263B6A1000D9EE97 /* AddOnGroupRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685C101263B6A1000D9EE97 /* AddOnGroupRemoteTests.swift */; };
 		268B68FB24C87384007EBF1D /* leaderboards-products.json in Resources */ = {isa = PBXBuildFile; fileRef = 268B68FA24C87384007EBF1D /* leaderboards-products.json */; };
 		268B68FD24C87E37007EBF1D /* leaderboards-year-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = 268B68FC24C87E37007EBF1D /* leaderboards-year-alt.json */; };
 		26B2F74124C1F2C10065CCC8 /* LeaderboardsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B2F74024C1F2C10065CCC8 /* LeaderboardsRemote.swift */; };
@@ -557,6 +558,7 @@
 		2685C0DD263B5A4200D9EE97 /* add-on-groups.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "add-on-groups.json"; sourceTree = "<group>"; };
 		2685C0F9263B5D5300D9EE97 /* AddOnGroupMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddOnGroupMapper.swift; sourceTree = "<group>"; };
 		2685C0FD263B5D8900D9EE97 /* AddOnGroupRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOnGroupRemote.swift; sourceTree = "<group>"; };
+		2685C101263B6A1000D9EE97 /* AddOnGroupRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOnGroupRemoteTests.swift; sourceTree = "<group>"; };
 		268B68FA24C87384007EBF1D /* leaderboards-products.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "leaderboards-products.json"; sourceTree = "<group>"; };
 		268B68FC24C87E37007EBF1D /* leaderboards-year-alt.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "leaderboards-year-alt.json"; sourceTree = "<group>"; };
 		26B2F74024C1F2C10065CCC8 /* LeaderboardsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardsRemote.swift; sourceTree = "<group>"; };
@@ -1126,6 +1128,7 @@
 				B5969E1420A47F99005E9DF1 /* RemoteTests.swift */,
 				B505F6D620BEE58800BB1B69 /* AccountRemoteTests.swift */,
 				93D8BC00226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift */,
+				2685C101263B6A1000D9EE97 /* AddOnGroupRemoteTests.swift */,
 				740211E021939908002248DA /* CommentRemoteTests.swift */,
 				B524194821AC659500D6FC0A /* DevicesRemoteTests.swift */,
 				24F98C5F2502EF8200F49B68 /* FeatureFlagRemoteTests.swift */,
@@ -2307,6 +2310,7 @@
 				D8FBFF1E22D51F39006E3336 /* OrderStatsMapperV4Tests.swift in Sources */,
 				02E7FFCB256218F600C53030 /* ShippingLabelRemoteTests.swift in Sources */,
 				9387A6F0226E3F15001B53D7 /* AccountSettingsMapperTests.swift in Sources */,
+				2685C102263B6A1000D9EE97 /* AddOnGroupRemoteTests.swift in Sources */,
 				B57B1E6721C916850046E764 /* NetworkErrorTests.swift in Sources */,
 				D8FBFF0F22D3B25E006E3336 /* WooAPIVersionTests.swift in Sources */,
 				45152831257A8E1A0076B03C /* ProductAttributeMapperTests.swift in Sources */,

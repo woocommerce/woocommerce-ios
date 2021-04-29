@@ -32,10 +32,12 @@ public struct NUXButtonStyle {
         return activityIndicator.isAnimating
     }
 
+    var buttonStyle: NUXButtonStyle?
+
     open override var isEnabled: Bool {
         didSet {
             if #available(iOS 13, *) {
-                activityIndicator.color = isEnabled ? style.primaryTitleColor : style.disabledButtonActivityIndicatorColor
+                activityIndicator.color = activityIndicatorColor(isEnabled: isEnabled)
             }
         }
     }
@@ -47,7 +49,7 @@ public struct NUXButtonStyle {
         } else {
             indicator = UIActivityIndicatorView(style: .white)
         }
-        indicator.color = WordPressAuthenticator.shared.style.primaryTitleColor
+
         indicator.hidesWhenStopped = true
         return indicator
     }()
@@ -129,15 +131,12 @@ public struct NUXButtonStyle {
         }
     }
 
-    /// Setup: shorter reference for style
-    ///
-    private let style = WordPressAuthenticator.shared.style
-
     /// Setup: Everything = [Insets, Backgrounds, titleColor(s), titleLabel]
     ///
     private func configureAppearance() {
         configureInsets()
         configureBackgrounds()
+        configureActivityIndicator()
         configureTitleColors()
         configureTitleLabel()
     }
@@ -148,31 +147,79 @@ public struct NUXButtonStyle {
         contentEdgeInsets = UIImage.DefaultRenderMetrics.contentInsets
     }
 
+    /// Setup: ActivityIndicator
+    ///
+    private func configureActivityIndicator() {
+        activityIndicator.color = activityIndicatorColor()
+        addSubview(activityIndicator)
+    }
+
     /// Setup: BackgroundImage
     ///
     private func configureBackgrounds() {
+        guard let buttonStyle = buttonStyle else {
+            legacyConfigureBackgrounds()
+            return
+        }
+
+        let normalImage = UIImage.renderBackgroundImage(fill: buttonStyle.normal.backgroundColor,
+                                                        border: buttonStyle.normal.borderColor)
+
+        let highlightedImage = UIImage.renderBackgroundImage(fill: buttonStyle.highlighted.backgroundColor,
+                                                             border: buttonStyle.highlighted.borderColor)
+
+        let disabledImage = UIImage.renderBackgroundImage(fill: buttonStyle.disabled.backgroundColor,
+                                                          border: buttonStyle.disabled.borderColor)
+
+        setBackgroundImage(normalImage, for: .normal)
+        setBackgroundImage(highlightedImage, for: .highlighted)
+        setBackgroundImage(disabledImage, for: .disabled)
+    }
+
+    /// Fallback method to configure the background colors based on the shared `WordPressAuthenticatorStyle`
+    ///
+    private func legacyConfigureBackgrounds() {
+        let style = WordPressAuthenticator.shared.style
+
         let normalImage: UIImage
         let highlightedImage: UIImage
-        let disabledImage = UIImage.renderBackgroundImage(fill: style.disabledBackgroundColor, border: style.disabledBorderColor)
+        let disabledImage = UIImage.renderBackgroundImage(fill: style.disabledBackgroundColor,
+                                                          border: style.disabledBorderColor)
 
         if isPrimary {
-            normalImage = UIImage.renderBackgroundImage(fill: style.primaryNormalBackgroundColor, border: style.primaryNormalBorderColor)
-            highlightedImage = UIImage.renderBackgroundImage(fill: style.primaryHighlightBackgroundColor, border: style.primaryHighlightBorderColor)
+            normalImage = UIImage.renderBackgroundImage(fill: style.primaryNormalBackgroundColor,
+                                                        border: style.primaryNormalBorderColor)
+            highlightedImage = UIImage.renderBackgroundImage(fill: style.primaryHighlightBackgroundColor,
+                                                             border: style.primaryHighlightBorderColor)
         } else {
-            normalImage = UIImage.renderBackgroundImage(fill: style.secondaryNormalBackgroundColor, border: style.secondaryNormalBorderColor)
-            highlightedImage = UIImage.renderBackgroundImage(fill: style.secondaryHighlightBackgroundColor, border: style.secondaryHighlightBorderColor)
+            normalImage = UIImage.renderBackgroundImage(fill: style.secondaryNormalBackgroundColor,
+                                                        border: style.secondaryNormalBorderColor)
+            highlightedImage = UIImage.renderBackgroundImage(fill: style.secondaryHighlightBackgroundColor,
+                                                             border: style.secondaryHighlightBorderColor)
         }
 
         setBackgroundImage(normalImage, for: .normal)
         setBackgroundImage(highlightedImage, for: .highlighted)
         setBackgroundImage(disabledImage, for: .disabled)
-
-        addSubview(activityIndicator)
     }
 
     /// Setup: TitleColor
     ///
     private func configureTitleColors() {
+        guard let buttonStyle = buttonStyle else {
+            legacyConfigureTitleColors()
+            return
+        }
+
+        setTitleColor(buttonStyle.normal.titleColor, for: .normal)
+        setTitleColor(buttonStyle.highlighted.titleColor, for: .highlighted)
+        setTitleColor(buttonStyle.disabled.titleColor, for: .disabled)
+    }
+
+    /// Fallback method to configure the title colors based on the shared `WordPressAuthenticatorStyle`
+    ///
+    private func legacyConfigureTitleColors() {
+        let style = WordPressAuthenticator.shared.style
         let titleColorNormal = isPrimary ? style.primaryTitleColor : style.secondaryTitleColor
 
         setTitleColor(titleColorNormal, for: .normal)
@@ -186,6 +233,18 @@ public struct NUXButtonStyle {
         titleLabel?.font = self.titleFont
         titleLabel?.adjustsFontForContentSizeCategory = true
         titleLabel?.textAlignment = .center
+    }
+
+    /// Returns the current color that should be used for the activity indicator
+    ///
+    private func activityIndicatorColor(isEnabled: Bool = true) -> UIColor {
+        guard let style = buttonStyle else {
+            let style = WordPressAuthenticator.shared.style
+
+            return isEnabled ? style.primaryTitleColor : style.disabledButtonActivityIndicatorColor
+        }
+
+        return isEnabled ? style.normal.titleColor : style.disabled.titleColor
     }
 }
 

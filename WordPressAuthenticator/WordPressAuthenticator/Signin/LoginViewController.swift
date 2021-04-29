@@ -52,7 +52,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         super.viewDidLoad()
 
         displayError(message: "")
-        styleNavigationBar()
+        styleNavigationBar(forUnified: true)
         styleBackground()
         styleInstructions()
 

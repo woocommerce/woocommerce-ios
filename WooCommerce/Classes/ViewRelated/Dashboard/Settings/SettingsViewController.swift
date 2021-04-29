@@ -162,8 +162,8 @@ private extension SettingsViewController {
         ]
 
         // Store Settings
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) {
-            sections.append(Section(title: storeSettingsTitle, rows: [.cardReaders], footerHeight: UITableView.automaticDimension))
+        if storeSettingsRows().isNotEmpty {
+            sections.append(Section(title: storeSettingsTitle, rows: storeSettingsRows(), footerHeight: UITableView.automaticDimension))
         }
 
         // Help & Feedback
@@ -207,6 +207,8 @@ private extension SettingsViewController {
             configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .cardReaders:
             configureCardReaders(cell: cell)
+        case let cell as BasicTableViewCell where row == .couponManagement:
+            configureCouponManagement(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
             configurePrivacy(cell: cell)
         case let cell as BasicTableViewCell where row == .betaFeatures:
@@ -251,6 +253,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Manage Card Reader", comment: "Navigates to Card Reader management screen")
+    }
+
+    func configureCouponManagement(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Manage Coupons", comment: "Navigates to Coupon Management screen from Settings.")
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {
@@ -319,6 +327,19 @@ private extension SettingsViewController {
     func couldShowBetaFeaturesRow() -> Bool {
         false
     }
+
+    func storeSettingsRows() -> [Row] {
+        var storeSettingsRows: [Row] = []
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) {
+            storeSettingsRows.append(.cardReaders)
+        }
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.couponManagement) {
+            storeSettingsRows.append(.couponManagement)
+        }
+
+        return storeSettingsRows
+    }
 }
 
 
@@ -376,6 +397,12 @@ private extension SettingsViewController {
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsViewController.self) else {
             fatalError("Cannot instantiate `CardReaderSettingsViewController` from Dashboard storyboard")
         }
+        show(viewController, sender: self)
+    }
+
+    func couponManagementWasPressed() {
+        ServiceLocator.analytics.track(.settingsCouponManagementTapped)
+        let viewController = CouponManagementViewController(nibName: nil, bundle: nil)
         show(viewController, sender: self)
     }
 
@@ -513,6 +540,8 @@ extension SettingsViewController: UITableViewDelegate {
             supportWasPressed()
         case .cardReaders:
             cardReadersWasPressed()
+        case .couponManagement:
+            couponManagementWasPressed()
         case .privacy:
             privacyWasPressed()
         case .betaFeatures:
@@ -554,6 +583,7 @@ private enum Row: CaseIterable {
     case switchStore
     case support
     case cardReaders
+    case couponManagement
     case logout
     case privacy
     case betaFeatures
@@ -572,6 +602,8 @@ private enum Row: CaseIterable {
         case .support:
             return BasicTableViewCell.self
         case .cardReaders:
+            return BasicTableViewCell.self
+        case .couponManagement:
             return BasicTableViewCell.self
         case .logout:
             return BasicTableViewCell.self

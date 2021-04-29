@@ -162,6 +162,23 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.showCustomPackagesHeader)
     }
+
+    func test_selected_package_defaults_to_last_selected_package() {
+        // Given
+        insert(MockShippingLabelAccountSettings.sampleAccountSettings(siteID: sampleSiteID, lastSelectedPackageID: "package-1"))
+        let order = MockOrders().empty().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
+                                                             packagesResponse: mockPackageResponse(),
+                                                             formatter: currencyFormatter,
+                                                             stores: stores,
+                                                             storageManager: storageManager,
+                                                             weightUnit: "kg")
+
+        // Then
+        XCTAssertEqual(viewModel.selectedPackageID, "package-1")
+        XCTAssertEqual(viewModel.selectedPackageName, "Small")
+    }
 }
 
 // MARK: - Utils
@@ -174,6 +191,11 @@ private extension ShippingLabelPackageDetailsViewModelTests {
     func insert(_ readOnlyOrderProductVariation: Yosemite.ProductVariation) {
         let productVariation = storage.insertNewObject(ofType: StorageProductVariation.self)
         productVariation.update(with: readOnlyOrderProductVariation)
+    }
+
+    func insert(_ readOnlyAccountSettings: Yosemite.ShippingLabelAccountSettings) {
+        let accountSettings = storage.insertNewObject(ofType: StorageShippingLabelAccountSettings.self)
+        accountSettings.update(with: readOnlyAccountSettings)
     }
 }
 

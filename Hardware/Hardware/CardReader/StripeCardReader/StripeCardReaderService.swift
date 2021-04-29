@@ -131,6 +131,13 @@ extension StripeCardReaderService: CardReaderService {
             }.eraseToAnyPublisher()
     }
 
+    public func cancelPaymentIntent(_ intent: PaymentIntent) -> Future<PaymentIntent, Error> {
+        return Future() { promise in
+            // Attack the Stripe SDK and cancel a PaymentIntent.
+            // To be implemented
+        }
+    }
+
     public func connect(_ reader: CardReader) -> Future <Void, Error> {
         return Future() { [weak self] promise in
 

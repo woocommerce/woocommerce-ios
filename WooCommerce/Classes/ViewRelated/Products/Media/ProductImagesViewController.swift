@@ -128,7 +128,7 @@ private extension ProductImagesViewController {
 
     func configureHelperViews() {
         helperContainerView.isHidden = allowsMultipleImages || product.productType != .variable
-        helperLabel.applySecondaryBodyStyle()
+        helperLabel.applySecondaryFootnoteStyle()
         helperLabel.text = Localization.variableProductHelperText
     }
 
@@ -321,7 +321,7 @@ private extension ProductImagesViewController {
         static let addPhotos = NSLocalizedString("Add Photos", comment: "Action to add photos on the Product images screen")
         static let addPhoto = NSLocalizedString("Add Photo", comment: "Action to add one photo on the Product images screen")
         static let replacePhoto = NSLocalizedString("Replace Photo", comment: "Action to replace one photo on the Product images screen")
-        static let variableProductHelperText = NSLocalizedString("Only one photo can be displayed per product variation",
+        static let variableProductHelperText = NSLocalizedString("Only one photo can be displayed by variation",
                                                                  comment: "Helper text above photo list in Product images screen")
     }
 }

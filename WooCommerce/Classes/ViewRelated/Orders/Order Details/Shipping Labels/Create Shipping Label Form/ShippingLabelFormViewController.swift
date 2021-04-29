@@ -97,9 +97,9 @@ extension ShippingLabelFormViewController: UITableViewDelegate {
         let row = viewModel.state.sections[indexPath.section].rows[indexPath.row]
         switch row {
         case Row(type: .shipFrom, dataState: .validated, displayMode: .editable):
-            displayEditAddressFormVC(address: viewModel.originAddress, type: .origin)
+            displayEditAddressFormVC(address: viewModel.originAddress, validationError: nil, type: .origin)
         case Row(type: .shipTo, dataState: .validated, displayMode: .editable):
-            displayEditAddressFormVC(address: viewModel.destinationAddress, type: .destination)
+            displayEditAddressFormVC(address: viewModel.destinationAddress, validationError: nil, type: .destination)
         default:
             break
         }
@@ -146,7 +146,7 @@ private extension ShippingLabelFormViewController {
                 case .suggestedAddress:
                     self.displaySuggestedAddressVC(address: shippingLabelAddress, suggestedAddress: response?.address, type: .origin)
                 default:
-                    self.displayEditAddressFormVC(address: shippingLabelAddress, type: .origin)
+                    self.displayEditAddressFormVC(address: shippingLabelAddress, validationError: nil, type: .origin)
                 }
             }
         }
@@ -172,8 +172,11 @@ private extension ShippingLabelFormViewController {
                                                                    validated: true)
                 case .suggestedAddress:
                     self.displaySuggestedAddressVC(address: shippingLabelAddress, suggestedAddress: response?.address, type: .destination)
-                default:
-                    self.displayEditAddressFormVC(address: shippingLabelAddress, type: .destination)
+                case .validationError(let validationError):
+                    self.displayEditAddressFormVC(address: shippingLabelAddress, validationError: validationError, type: .destination)
+                case .genericError(let error):
+                    let validationError = ShippingLabelAddressValidationError(addressError: nil, generalError: error.localizedDescription)
+                    self.displayEditAddressFormVC(address: shippingLabelAddress, validationError: validationError, type: .destination)
                 }
             }
         }
@@ -216,21 +219,23 @@ private extension ShippingLabelFormViewController {
 // MARK: - Actions
 //
 private extension ShippingLabelFormViewController {
-    func displayEditAddressFormVC(address: ShippingLabelAddress?, type: ShipType) {
-        let shippingAddressVC = ShippingLabelAddressFormViewController(siteID: viewModel.siteID,
-                                                                       type: type,
-                                                                       address: address,
-                                                                       completion: { [weak self] (newShippingLabelAddress) in
-                                                                        guard let self = self else { return }
-                                        switch type {
-                                        case .origin:
-                                            self.viewModel.handleOriginAddressValueChanges(address: newShippingLabelAddress,
-                                                                                           validated: true)
-                                        case .destination:
-                                            self.viewModel.handleDestinationAddressValueChanges(address: newShippingLabelAddress,
-                                                                                                validated: true)
-                                        }
-                                                                       })
+    func displayEditAddressFormVC(address: ShippingLabelAddress?, validationError: ShippingLabelAddressValidationError?, type: ShipType) {
+        let shippingAddressVC = ShippingLabelAddressFormViewController(
+            siteID: viewModel.siteID,
+            type: type,
+            address: address,
+            validationError: validationError,
+            completion: { [weak self] (newShippingLabelAddress) in
+                guard let self = self else { return }
+                switch type {
+                case .origin:
+                    self.viewModel.handleOriginAddressValueChanges(address: newShippingLabelAddress,
+                                                                   validated: true)
+                case .destination:
+                    self.viewModel.handleDestinationAddressValueChanges(address: newShippingLabelAddress,
+                                                                        validated: true)
+                }
+            })
         navigationController?.pushViewController(shippingAddressVC, animated: true)
     }
 

@@ -12,18 +12,6 @@ final class ProductVariationsViewController: UIViewController {
     ///
     private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
 
-    /// Empty state screen configuration
-    ///
-    private lazy var emptyStateConfig: EmptyStateViewController.Config = {
-        let message = NSAttributedString(string: Localization.emptyStateTitle, attributes: [.font: EmptyStateViewController.Config.messageFont])
-        return .withButton(message: message,
-                           image: .emptyBoxImage,
-                           details: "",
-                           buttonTitle: Localization.emptyStateButtonTitle) { [weak self] _ in
-                            self?.createVariationFromEmptyState()
-                           }
-    }()
-
     @IBOutlet private weak var tableView: UITableView!
 
     /// Pull To Refresh Support.
@@ -255,7 +243,24 @@ private extension ProductVariationsViewController {
 
         emptyStateViewController.view.pinSubviewToAllEdges(view)
         emptyStateViewController.didMove(toParent: self)
+
+        let showAttributeGuide = viewModel.shouldShowAttributeGuide(for: product)
+        let emptyStateConfig = createEmptyStateConfig(showAttributeGuide: showAttributeGuide)
         emptyStateViewController.configure(emptyStateConfig)
+    }
+
+    /// Creates empty state screen configuration
+    ///
+    private func createEmptyStateConfig(showAttributeGuide: Bool) -> EmptyStateViewController.Config {
+        let message = NSAttributedString(string: Localization.emptyStateTitle, attributes: [.font: EmptyStateViewController.Config.messageFont])
+        let subtitle = showAttributeGuide ? Localization.emptyStateSubtitle : ""
+        let buttonTitle = showAttributeGuide ? Localization.addAttributesAction : Localization.addVariationAction
+        return .withButton(message: message,
+                           image: .emptyBoxImage,
+                           details: subtitle,
+                           buttonTitle: buttonTitle) { [weak self] _ in
+                            self?.createVariationFromEmptyState()
+                           }
     }
 
     func removeEmptyViewController() {
@@ -733,8 +738,14 @@ private extension ProductVariationsViewController {
     }
 
     enum Localization {
-        static let emptyStateTitle = NSLocalizedString("Add your first variation", comment: "Title on the variations list screen when there are no variations")
-        static let emptyStateButtonTitle = NSLocalizedString("Add Variation", comment: "Title on add variation button when there are no variations")
+        static let emptyStateTitle = NSLocalizedString("Create your first variation",
+                                                       comment: "Title on the variations list screen when there are no variations")
+        static let emptyStateSubtitle = NSLocalizedString("To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first",
+                                                          comment: "Subtitle on the variations list screen when there are no variations and attributes")
+        static let addAttributesAction = NSLocalizedString("Add Attributes",
+                                                           comment: "Title on empty state button when the product has no attributes and variations")
+        static let addVariationAction = NSLocalizedString("Add Variation",
+                                                          comment: "Title on empty state button when the product has attributes but no variations")
         static let addNewVariation = NSLocalizedString("Add Variation", comment: "Action to add new variation on the variations list")
         static let moreButtonLabel = NSLocalizedString("More options", comment: "Accessibility label to show the More Options action sheet")
         static let editAttributesAction = NSLocalizedString("Edit Attributes", comment: "Action to edit the attributes and options used for variations")

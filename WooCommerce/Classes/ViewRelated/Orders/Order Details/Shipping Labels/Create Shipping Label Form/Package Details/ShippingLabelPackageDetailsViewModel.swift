@@ -48,6 +48,20 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     /// The id of the selected package. Defaults to last selected package, if any.
     ///
     @Published var selectedPackageID: String?
+
+    /// The title of the selected package, if any.
+    ///
+    var selectedPackageName: String {
+        if let selectedCustomPackage = selectedCustomPackage {
+            return selectedCustomPackage.title
+        }
+        else if let selectedPredefinedPackage = selectedPredefinedPackage {
+            return selectedPredefinedPackage.title
+        }
+        else {
+            return ""
+        }
+    }
     @Published private(set) var selectedCustomPackage: ShippingLabelCustomPackage?
     @Published private(set) var selectedPredefinedPackage: ShippingLabelPredefinedPackage?
 
@@ -58,6 +72,7 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
     }
 
     init(order: Order,
+         packagesResponse: ShippingLabelPackagesResponse?,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -69,10 +84,11 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.weightUnit = weightUnit
+        self.packagesResponse = packagesResponse
         configureResultsControllers()
         syncProducts()
         syncProductVariations()
-        syncPackageDetails()
+        setDefaultPackage()
     }
 
     private func configureResultsControllers() {
@@ -92,7 +108,6 @@ final class ShippingLabelPackageDetailsViewModel: ObservableObject {
         products = resultsControllers?.products ?? []
         productVariations = resultsControllers?.productVariations ?? []
         itemsRows = generateItemsRows()
-        selectedPackageID = resultsControllers?.accountSettings?.lastSelectedPackageID
     }
 
     /// Generate the items rows, creating an element in the array for every item (eg. if there is an item with quantity 3,
@@ -177,6 +192,16 @@ extension ShippingLabelPackageDetailsViewModel {
             selectedPackageID = selectedPredefinedPackage.id
         }
     }
+
+    /// Sets the last selected package, if any, as the default selected package
+    ///
+    func setDefaultPackage() {
+        guard let selectedPackageID = resultsControllers?.accountSettings?.lastSelectedPackageID else {
+            return
+        }
+        didSelectPackage(selectedPackageID)
+        confirmPackageSelection()
+    }
 }
 
 /// API Requests
@@ -204,19 +229,6 @@ private extension ShippingLabelPackageDetailsViewModel {
                 return
             }
             onCompletion?(nil)
-        }
-        stores.dispatch(action)
-    }
-
-    func syncPackageDetails() {
-        let action = ShippingLabelAction.packagesDetails(siteID: order.siteID) { [weak self] result in
-            switch result {
-            case .success(let value):
-                self?.packagesResponse = value
-            case .failure:
-                DDLogError("⛔️ Error synchronizing package details")
-                return
-            }
         }
         stores.dispatch(action)
     }

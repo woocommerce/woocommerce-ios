@@ -67,7 +67,8 @@ private extension ShippingLabelPackageList {
 
 struct ShippingLabelPackageList_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder())
+        // TODO: Add sample packagesResponse
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(), packagesResponse: nil)
 
         ShippingLabelPackageList(viewModel: viewModel)
     }

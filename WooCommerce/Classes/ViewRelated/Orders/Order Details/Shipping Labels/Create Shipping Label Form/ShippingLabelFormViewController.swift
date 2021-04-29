@@ -252,7 +252,7 @@ private extension ShippingLabelFormViewController {
     }
 
     func displayPackageDetailsVC() {
-        let vc = ShippingLabelPackageDetailsViewController(order: viewModel.order)
+        let vc = ShippingLabelPackageDetailsViewController(order: viewModel.order, packagesResponse: viewModel.packagesResponse)
         navigationController?.show(vc, sender: nil)
     }
 }

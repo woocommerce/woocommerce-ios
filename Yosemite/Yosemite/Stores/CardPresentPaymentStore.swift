@@ -42,8 +42,10 @@ public final class CardPresentPaymentStore: Store {
             cancelCardReaderDiscovery(completion: completion)
         case .connect(let reader, let completion):
             connect(reader: reader, onCompletion: completion)
-        case .loadKnownReaders(let completion):
-            loadKnownReaders(onCompletion: completion)
+        case .observeKnownReaders(let completion):
+            observeKnownReaders(onCompletion: completion)
+        case .observeConnectedReaders(let completion):
+            observeConnectedReaders(onCompletion: completion)
         case .collectPayment(let siteID, let orderID, let parameters, let event, let completion):
             collectPayment(siteID: siteID,
                            orderID: orderID,
@@ -97,9 +99,20 @@ private extension CardPresentPaymentStore {
         }.store(in: &cancellables)
     }
 
-    func loadKnownReaders(onCompletion: @escaping ([Yosemite.CardReader]) -> Void) {
+    /// Calls the completion block everytime the list of known readers changes
+    ///
+    func observeKnownReaders(onCompletion: @escaping ([Yosemite.CardReader]) -> Void) {
         // TODO: Hook up to storage (see #3559) - for now, we return an empty array
         onCompletion([])
+    }
+
+    /// Calls the completion block everytime the list of connected readers changes
+    ///
+    func observeConnectedReaders(onCompletion: @escaping ([Yosemite.CardReader]) -> Void) {
+        cardReaderService.connectedReaders.sink { _ in
+        } receiveValue: { readers in
+            onCompletion(readers)
+        }.store(in: &cancellables)
     }
 
     func collectPayment(siteID: Int64,

@@ -1,7 +1,9 @@
 import Foundation
+import Combine
 
 protocol CardReaderSettingsPresentedViewModel {
-    func shouldShow() -> Bool
+    var shouldShow: Bool { get }
+    var didChangeShouldShow: ((Bool) -> Void)? { get set }
 }
 
 struct CardReaderSettingsViewModelAndView {

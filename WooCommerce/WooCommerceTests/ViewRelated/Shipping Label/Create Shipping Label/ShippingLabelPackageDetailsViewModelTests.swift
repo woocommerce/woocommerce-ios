@@ -34,6 +34,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let order = MockOrders().empty().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
+                                                             packagesResponse: mockPackageResponse(),
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager)
 
@@ -61,6 +62,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
+                                                             packagesResponse: mockPackageResponse(),
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
                                                              weightUnit: "kg")
@@ -98,8 +100,8 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                        maxWeight: 11)
         let order = MockOrders().empty().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-        mockRetrieveShippingLabelPackageDetails(result: .success(mockPackageResponse()))
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
+                                                             packagesResponse: mockPackageResponse(),
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
@@ -127,8 +129,8 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                        maxWeight: 11)
         let order = MockOrders().empty().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-        mockRetrieveShippingLabelPackageDetails(result: .success(mockPackageResponse()))
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
+                                                             packagesResponse: mockPackageResponse(),
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
@@ -149,8 +151,8 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         // Given
         let order = MockOrders().empty().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-        mockRetrieveShippingLabelPackageDetails(result: .success(mockPackageResponse()))
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
+                                                             packagesResponse: mockPackageResponse(),
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
@@ -172,14 +174,6 @@ private extension ShippingLabelPackageDetailsViewModelTests {
     func insert(_ readOnlyOrderProductVariation: Yosemite.ProductVariation) {
         let productVariation = storage.insertNewObject(ofType: StorageProductVariation.self)
         productVariation.update(with: readOnlyOrderProductVariation)
-    }
-
-    func mockRetrieveShippingLabelPackageDetails(result: Result<ShippingLabelPackagesResponse, Error>) {
-        stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
-            if case let ShippingLabelAction.packagesDetails(_, completion: completion) = action {
-                completion(result)
-            }
-        }
     }
 }
 

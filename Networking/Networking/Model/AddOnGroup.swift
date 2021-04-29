@@ -3,26 +3,33 @@ import Foundation
 /// Represents a `AddOnGroup` entity that groups global add-ons.
 ///
 public struct AddOnGroup: Codable, Equatable, GeneratedCopiable, GeneratedFakeable {
-
     /// SiteID
     ///
-    let siteID: Int64
+    public let siteID: Int64
 
     /// Add-on group ID
     ///
-    let groupID: Int64
+    public let groupID: Int64
 
     /// Name of the group
     ///
-    let name: String
+    public let name: String
 
     /// Priority of the group
     ///
-    let priority: Int64
+    public let priority: Int64
 
     /// Associated global add-ons
     ///
-    let addOns: [ProductAddOn]
+    public let addOns: [ProductAddOn]
+
+    public init(siteID: Int64, groupID: Int64, name: String, priority: Int64, addOns: [ProductAddOn]) {
+        self.siteID = siteID
+        self.groupID = groupID
+        self.name = name
+        self.priority = priority
+        self.addOns = addOns
+    }
 }
 
 // MARK: Decoding

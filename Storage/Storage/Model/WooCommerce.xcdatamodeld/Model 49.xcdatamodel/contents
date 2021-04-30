@@ -18,6 +18,7 @@
         <attribute name="name" attributeType="String" defaultValueString=""/>
         <attribute name="priority" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="addOns" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ProductAddOn" inverseName="group" inverseEntity="ProductAddOn"/>
     </entity>
     <entity name="GenericAttribute" representedClassName="GenericAttribute" syncable="YES">
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -320,6 +321,7 @@
         <attribute name="restrictionsType" attributeType="String" defaultValueString=""/>
         <attribute name="titleFormat" attributeType="String" defaultValueString=""/>
         <attribute name="type" attributeType="String" defaultValueString=""/>
+        <relationship name="group" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AddOnGroup" inverseName="addOns" inverseEntity="AddOnGroup"/>
         <relationship name="options" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ProductAddOnOption" inverseName="addOn" inverseEntity="ProductAddOnOption"/>
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="addOns" inverseEntity="Product"/>
     </entity>
@@ -652,7 +654,7 @@
         <element name="OrderStatus" positionX="-675" positionY="27" width="128" height="103"/>
         <element name="PaymentGateway" positionX="-693" positionY="36" width="128" height="133"/>
         <element name="Product" positionX="-692.92578125" positionY="1193.70703125" width="128" height="1004"/>
-        <element name="ProductAddOn" positionX="-675" positionY="63" width="128" height="284"/>
+        <element name="ProductAddOn" positionX="-675" positionY="63" width="128" height="299"/>
         <element name="ProductAddOnOption" positionX="-684" positionY="54" width="128" height="104"/>
         <element name="ProductAttribute" positionX="-733.52734375" positionY="-73.046875" width="128" height="164"/>
         <element name="ProductAttributeTerm" positionX="-693" positionY="45" width="128" height="119"/>
@@ -685,6 +687,6 @@
         <element name="TaxClass" positionX="-529.7734375" positionY="-56.109375" width="128" height="88"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="118"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
-        <element name="AddOnGroup" positionX="-684" positionY="54" width="128" height="89"/>
+        <element name="AddOnGroup" positionX="-684" positionY="54" width="128" height="104"/>
     </elements>
 </model>

@@ -54,6 +54,8 @@ Model objects declared in `Networking` are immutable, and modelled as value type
 
 Model objects should implement `Comparable`.
 
+Model objects should conform to `GeneratedFakeable` and `Copiable`. [Fakeable](fakeable.md) and [Copiable](copiable.md) methods should be generated automatically with `rake generate`.
+
 ## Unit tests
 As mentioned previously, there is an implementation of the `Network` protocol called [`MockNetwork`](../Networking/Networking/Network/MockNetwork.swift) used to mock network requests in the unit tests. This way we prevent the tests from hitting the actual network.
 

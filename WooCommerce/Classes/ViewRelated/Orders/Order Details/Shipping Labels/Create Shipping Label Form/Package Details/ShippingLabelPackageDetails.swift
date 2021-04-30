@@ -25,7 +25,7 @@ struct ShippingLabelPackageDetails: View {
                 ListHeaderView(text: Localization.packageDetailsHeader, alignment: .left)
                     .background(Color(.listBackground))
 
-                TitleAndValueRow(title: Localization.packageSelected, value: viewModel.selectedPackageID ?? "", selectable: true) {
+                TitleAndValueRow(title: Localization.packageSelected, value: viewModel.selectedPackageName, selectable: true) {
                     showingAddPackage.toggle()
                 }
 
@@ -73,7 +73,8 @@ struct ShippingLabelPackageDetails_Previews: PreviewProvider {
 
     static var previews: some View {
 
-        let viewModel = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder())
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: ShippingLabelPackageDetailsViewModel.sampleOrder(),
+                                                             packagesResponse: ShippingLabelPackageDetailsViewModel.samplePackageDetails())
 
         ShippingLabelPackageDetails(viewModel: viewModel)
             .environment(\.colorScheme, .light)

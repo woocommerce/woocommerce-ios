@@ -141,6 +141,7 @@ public typealias StorageShipmentTracking = Storage.ShipmentTracking
 public typealias StorageShipmentTrackingProvider = Storage.ShipmentTrackingProvider
 public typealias StorageShipmentTrackingProviderGroup = Storage.ShipmentTrackingProviderGroup
 public typealias StorageShippingLabel = Storage.ShippingLabel
+public typealias StorageShippingLabelAccountSettings = Storage.ShippingLabelAccountSettings
 public typealias StorageShippingLabelAddress = Storage.ShippingLabelAddress
 public typealias StorageShippingLabelRefund = Storage.ShippingLabelRefund
 public typealias StorageShippingLabelSettings = Storage.ShippingLabelSettings

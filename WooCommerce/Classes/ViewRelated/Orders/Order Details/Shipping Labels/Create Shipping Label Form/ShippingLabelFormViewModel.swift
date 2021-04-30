@@ -24,6 +24,7 @@ final class ShippingLabelFormViewModel {
     private(set) var order: Order
     private(set) var originAddress: ShippingLabelAddress?
     private(set) var destinationAddress: ShippingLabelAddress?
+    private(set) var packagesResponse: ShippingLabelPackagesResponse?
 
     private let stores: StoresManager
 
@@ -60,6 +61,9 @@ final class ShippingLabelFormViewModel {
 
         state.sections = ShippingLabelFormViewModel.generateInitialSections()
         self.stores = stores
+
+        syncShippingLabelAccountSettings()
+        syncPackageDetails()
     }
 
     func handleOriginAddressValueChanges(address: ShippingLabelAddress?, validated: Bool) {
@@ -209,6 +213,30 @@ extension ShippingLabelFormViewModel {
                 } else {
                     onCompletion?(.genericError, nil)
                 }
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    /// Syncs account settings specific to shipping labels, such as the last selected package and payment methods.
+    ///
+    func syncShippingLabelAccountSettings() {
+        let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: order.siteID) { result in
+            if result.isFailure {
+                DDLogError("⛔️ Error synchronizing shipping label account settings")
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    func syncPackageDetails() {
+        let action = ShippingLabelAction.packagesDetails(siteID: order.siteID) { [weak self] result in
+            switch result {
+            case .success(let value):
+                self?.packagesResponse = value
+            case .failure:
+                DDLogError("⛔️ Error synchronizing package details")
+                return
             }
         }
         stores.dispatch(action)

@@ -7,6 +7,7 @@ import WordPressKit
     @objc optional func tertiaryButtonPressed()
 }
 
+
 private struct NUXButtonConfig {
     typealias CallBackType = () -> Void
 
@@ -58,6 +59,10 @@ open class NUXButtonViewController: UIViewController {
     private var bottomButtonConfig: NUXButtonConfig?
     private var tertiaryButtonConfig: NUXButtonConfig?
 
+    public var topButtonStyle: NUXButtonStyle?
+    public var bottomButtonStyle: NUXButtonStyle?
+    public var tertiaryButtonStyle: NUXButtonStyle?
+
     private let style = WordPressAuthenticator.shared.style
 
     // MARK: - View
@@ -72,14 +77,14 @@ open class NUXButtonViewController: UIViewController {
     override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        configure(button: bottomButton, withConfig: bottomButtonConfig)
-        configure(button: topButton, withConfig: topButtonConfig)
-        configure(button: tertiaryButton, withConfig: tertiaryButtonConfig)
+        configure(button: bottomButton, withConfig: bottomButtonConfig, and: bottomButtonStyle)
+        configure(button: topButton, withConfig: topButtonConfig, and: topButtonStyle)
+        configure(button: tertiaryButton, withConfig: tertiaryButtonConfig, and: tertiaryButtonStyle)
 
         buttonHolder?.backgroundColor = backgroundColor
     }
 
-    private func configure(button: NUXButton?, withConfig buttonConfig: NUXButtonConfig?) {
+    private func configure(button: NUXButton?, withConfig buttonConfig: NUXButtonConfig?, and style: NUXButtonStyle?) {
         if let buttonConfig = buttonConfig, let button = button {
 
             if let attributedTitle = buttonConfig.attributedTitle {
@@ -91,9 +96,12 @@ open class NUXButtonViewController: UIViewController {
 
             button.accessibilityIdentifier = buttonConfig.accessibilityIdentifier ?? accessibilityIdentifier(for: buttonConfig.title)
             button.isPrimary = buttonConfig.isPrimary
+
             if buttonConfig.configureBodyFontForTitle == true {
                 button.customizeFont(WPStyleGuide.mediumWeightFont(forStyle: .body))
             }
+
+            button.buttonStyle = style
 
             button.isHidden = false
         } else {
@@ -225,9 +233,9 @@ open class NUXButtonViewController: UIViewController {
     // MARK: - Dynamic type
 
     func didChangePreferredContentSize() {
-        configure(button: bottomButton, withConfig: bottomButtonConfig)
-        configure(button: topButton, withConfig: topButtonConfig)
-        configure(button: tertiaryButton, withConfig: tertiaryButtonConfig)
+        configure(button: bottomButton, withConfig: bottomButtonConfig, and: bottomButtonStyle)
+        configure(button: topButton, withConfig: topButtonConfig, and: topButtonStyle)
+        configure(button: tertiaryButton, withConfig: tertiaryButtonConfig, and: tertiaryButtonStyle)
     }
 }
 

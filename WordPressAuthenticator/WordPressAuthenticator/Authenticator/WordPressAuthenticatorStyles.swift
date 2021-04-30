@@ -88,6 +88,18 @@ public struct WordPressAuthenticatorStyle {
     ///
     public let prologueTitleColor: UIColor
 
+    /// Style: primary button on the prologue view (continue)
+    /// When `nil` it will use the primary styles defined here
+    /// Defaults to `nil`
+    ///
+    public let prologuePrimaryButtonStyle: NUXButtonStyle?
+
+    /// Style: secondary button on the prologue view (site address)
+    /// When `nil` it will use the secondary styles defined here
+    /// Defaults to `nil`
+    ///
+    public let prologueSecondaryButtonStyle: NUXButtonStyle?
+
     /// Style: prologue top container child view controller
     /// When nil, `LoginProloguePageViewController` is displayed in the top container
     ///
@@ -128,6 +140,8 @@ public struct WordPressAuthenticatorStyle {
                 navButtonTextColor: UIColor = .white,
                 prologueBackgroundColor: UIColor = WPStyleGuide.wordPressBlue(),
                 prologueTitleColor: UIColor = .white,
+                prologuePrimaryButtonStyle: NUXButtonStyle? = nil,
+                prologueSecondaryButtonStyle: NUXButtonStyle? = nil,
                 prologueTopContainerChildViewController: @autoclosure @escaping () -> UIViewController? = nil,
                 statusBarStyle: UIStatusBarStyle = .lightContent) {
         self.primaryNormalBackgroundColor = primaryNormalBackgroundColor
@@ -159,6 +173,8 @@ public struct WordPressAuthenticatorStyle {
         self.navButtonTextColor = navButtonTextColor
         self.prologueBackgroundColor = prologueBackgroundColor
         self.prologueTitleColor = prologueTitleColor
+        self.prologuePrimaryButtonStyle = prologuePrimaryButtonStyle
+        self.prologueSecondaryButtonStyle = prologueSecondaryButtonStyle
         self.prologueTopContainerChildViewController = prologueTopContainerChildViewController
         self.statusBarStyle = statusBarStyle
     }

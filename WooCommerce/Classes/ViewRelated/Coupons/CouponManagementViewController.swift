@@ -1,6 +1,6 @@
 import UIKit
 
-class CouponManagementViewController: UIViewController {
+final class CouponManagementViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigation()
@@ -12,6 +12,14 @@ class CouponManagementViewController: UIViewController {
 private extension CouponManagementViewController {
 
     func configureNavigation() {
-        title = NSLocalizedString("Coupons", comment: "Coupon management coupon list screen title")
+        title = Localization.title
+    }
+}
+
+// MARK: - Localization
+//
+private extension CouponManagementViewController {
+    enum Localization {
+        static let title = NSLocalizedString("Coupons", comment: "Coupon management coupon list screen title")
     }
 }

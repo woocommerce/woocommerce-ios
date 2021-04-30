@@ -233,7 +233,7 @@ private extension ShippingLabelPackageDetailsViewModel {
                                 + " The %2$@ is the weight with the unit.")
         static func subtitle(weight: String?, weightUnit: String, attributes: [VariationAttributeViewModel]) -> String {
             let attributesText = attributes.map { $0.nameOrValue }.joined(separator: ", ")
-            let formatter = WeightFormatter(weightUnit: weightUnit, withSpace: true)
+            let formatter = WeightFormatter(weightUnit: weightUnit)
             let weight = formatter.formatWeight(weight: weight)
             if attributes.isEmpty {
                 return String.localizedStringWithFormat(subtitleFormat, weight, weightUnit)

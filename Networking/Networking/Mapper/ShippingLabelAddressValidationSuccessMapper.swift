@@ -3,7 +3,7 @@ import Foundation
 
 /// Mapper: Shipping Label Address Validation Response
 ///
-struct ShippingLabelAddressValidationResponseMapper: Mapper {
+struct ShippingLabelAddressValidationSuccessMapper: Mapper {
     /// (Attempts) to convert a dictionary into ShippingLabelAddressValidationResponse.
     ///
     func map(response: Data) throws -> ShippingLabelAddressValidationSuccess {

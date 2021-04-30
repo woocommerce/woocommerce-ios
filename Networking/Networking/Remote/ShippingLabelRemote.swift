@@ -84,7 +84,7 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
             let parameters = try address.toDictionary()
             let path = "\(Path.normalizeAddress)"
             let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .post, siteID: siteID, path: path, parameters: parameters)
-            let mapper = ShippingLabelAddressValidationResponseMapper()
+            let mapper = ShippingLabelAddressValidationSuccessMapper()
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))

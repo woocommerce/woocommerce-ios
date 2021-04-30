@@ -14,6 +14,10 @@ enum FeatureFlag: Int {
     ///
     case cardPresentPayments
 
+    /// Coupon Management from the settings screen
+    ///
+    case couponManagement
+
     /// Large titles on the main tabs
     ///
     case largeTitles

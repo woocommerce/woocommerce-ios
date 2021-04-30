@@ -91,7 +91,7 @@ final class WCPayStoreTests: XCTestCase {
     func test_capturePaymentID_returns_error_on_failure() throws {
         let store = WCPayStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Capture Payment Intent error response")
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture", filename: "generic_error")
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment", filename: "generic_error")
         let action = WCPayAction.captureOrderPayment(siteID: sampleSiteID,
                                                      orderID: sampleOrderID,
                                                      paymentIntentID: samplePaymentIntentID,
@@ -109,7 +109,7 @@ final class WCPayStoreTests: XCTestCase {
     func test_capturePaymentID_returns_expected_data() throws {
         let store = WCPayStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Load Account fetch response")
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture",
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-succeeded")
         let action = WCPayAction.captureOrderPayment(siteID: sampleSiteID,
                                                      orderID: sampleOrderID,

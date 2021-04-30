@@ -1,10 +1,13 @@
-/* Translation-Revision-Date: 2021-04-16 09:54:04+0000 */
+/* Translation-Revision-Date: 2021-04-28 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
 
 /* No comment provided by engineer. */
 "#%@ %@" = "#%1$@ %2$@";
+
+/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
+"%1$@" = "%1$@";
 
 /* Format for each Product attribute */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld אפשרויות)";
@@ -33,8 +36,7 @@
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ באמצעות %2$@";
 
-/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00).
-   In Shipping Labels Package Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
+/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@ x %2$@" = "%1$@ x %2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
@@ -46,8 +48,10 @@
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
-/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00).
-   In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
+/* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
+"%1$@・%2$@" = "%1$@・%2$@";
+
+/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
 
 /* 1 Item */
@@ -112,7 +116,10 @@
 /* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "**עליך לוודא שהאפשרות AirPrint מופעלת** בהגדרות המדפסת שלך. אולי יהיה עליך להגדיר את האפשרות הזאת במדפסת עצמה.\n\nיש לעיין בתיעוד שצורף למדפסת לפרטים.";
 
-/* Number of items in packages in Shipping Labels. Reads like - 10 items */
+/* Number of item in packages in Shipping Labels in singular form. Reads like - 1 items */
+"- %1$d item" = "- פריט ⁦%1$d⁩";
+
+/* Number of items in packages in Shipping Labels in plural form. Reads like - 10 items */
 "- %1$d items" = "- ⁦%1$d⁩ פריטים";
 
 /* Navigation bar title for selecting multiple products when one product has been selected. */
@@ -445,6 +452,9 @@
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "ביצוע ההרשמה מהווה את הסכמתך לתנאי השימוש שלנו.";
 
+/* Header for the Custom Packages section in Shipping Label Package listing */
+"CUSTOM PACKAGES" = "חבילות מותאמות אישית";
+
 /* Call phone number button title */
 "Call" = "להתקשר";
 
@@ -471,6 +481,10 @@
 /* The title of the alert when there is an error uploading an image
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "לא ניתן להעלות את התמונה";
+
+/* Detailed message shown in the Reviews tab if the list is empty
+   Detailed message shown on the Product Reviews screen if the list is empty */
+"Capture high-quality product reviews for your store." = "לקבל ביקורות איכותיות על מוצר בחנות שלך.";
 
 /* Card reader settings screen title */
 "Card Readers" = "קוראי כרטיסים";
@@ -933,6 +947,9 @@
    Navigates to experimental features screen */
 "Experimental Features" = "תכונות ניסיוניות";
 
+/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
+"Explore how you can increase your store sales" = "כדאי לראות איך אפשר להגדיל את המכירות בחנות שלך";
+
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "מוצר חיצוני";
 
@@ -1022,6 +1039,10 @@
 
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "קבלת מענה לשאלותיך";
+
+/* Message shown in the Reviews tab if the list is empty
+   Message shown on the Product Reviews screen if the list is empty */
+"Get your first reviews" = "לקבל את הביקורות הראשונות שלך";
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "טוען פרטי חשבון";
@@ -1253,7 +1274,7 @@
 "Launch Wormholy Debug" = "להשיק את איתור הבאגים של Wormholy";
 
 /* Button title in the shipping label creation info screen
-   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Orders → All Orders tab if the list is empty. */
+   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Orders → All Orders tab if the list is empty. - Title of button shown in the Reviews tab if the list is empty - Title of button shown on the Product Reviews screen if the list is empty */
 "Learn more" = "מידע נוסף";
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
@@ -1483,12 +1504,6 @@
    Next nav bar button title in Add Product Attribute screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "הבא";
 
-/* Empty Product Reviews List Message */
-"No Reviews Yet for this Product!" = "עדיין אין ביקורות למוצר זה!";
-
-/* Empty Reviews List Message */
-"No Reviews Yet!" = "עוד אין ביקורות!";
-
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "אין פעילות בפרק זמן זה";
 
@@ -1676,7 +1691,8 @@
    Title of package details in shipping label details - Title of the cell Package Details inside Create Shipping Label form */
 "Package Details" = "פרטי החבילה";
 
-/* Title of the row for selecting a package in Shipping Label Package Detail screen */
+/* Package Selected screen title in Shipping Label flow
+   Title of the row for selecting a package in Shipping Label Package Detail screen */
 "Package Selected" = "החבילה נבחרה";
 
 /* The title for the customer payment cell */
@@ -1851,6 +1867,9 @@
 /* Description for Top Performers left column header
    Product section title - Product section title if there is only one product. */
 "Product" = "מוצר";
+
+/* The title on the navigation bar when viewing an order item add-ons */
+"Product Add-ons" = "הרחבות מוצר";
 
 /* Edit Product External Link navigation title */
 "Product Link" = "קישור למוצר";
@@ -2217,9 +2236,6 @@
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "שיתוף של פרטי השימוש שלך בשירותים השונים עם כלי הניתוח שלנו לאחר ההתחברות לחשבון שלך ב-WordPress.com.";
-
-/* Action: Opens the Store in a browser */
-"Share your Store" = "שיתוף החנות שלך";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
@@ -3043,6 +3059,9 @@
 /* Displays the version of the App */
 "Version %@" = "גרסה %@";
 
+/* Title of the button on the order detail item to navigate to add-ons */
+"View Add-Ons" = "להציג הרחבות";
+
 /* View application log cell title */
 "View Application Log" = "צפייה ביומן של האפליקציה";
 
@@ -3118,7 +3137,10 @@
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "אנחנו משתמשים בכלים למעקב, כולל כלים של צד שלישי. אפשר לקרוא פרטים על אלו על אלו ועל אופן השליטה בהם.";
 
-/* Banner caption in Shipping Label Address Validation when the address can't be verified. */
+/* Banner caption in Shipping Label Address Validation when the origin address can't be verified. */
+"We were unable to automatically verify the origin address." = "לא הצלחנו לאמת באופן אוטומטי את הכתובת המקורית.";
+
+/* Banner caption in Shipping Label Address Validation when the destination address can't be verified. */
 "We were unable to automatically verify the shipping address. View on Apple Maps or try contacting the customer to make sure the address is correct." = "לא הצלחנו לאמת באופן אוטומטי את הכתובת למשלוח. ניתן להציג את המפה ב-Apple Maps או לנסות ליצור קשר עם הלקוח כדי לוודא שהכתובת נכונה.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
@@ -3129,9 +3151,6 @@
 
 /* Instruction text on the Sign Up screen. */
 "We'll email you a signup link to create your new WordPress.com account." = "נשלח אליך אימייל עם קישור להרשמה כדי ליצור את חשבון חדש ב-WordPress.com.";
-
-/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
-"We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "אנחנו נודיע לך כאשר תתקבל הזמנה חדשה. בינתיים, מומלץ לבדוק כיצד אפשר להגדיל את המכירות בחנות שלך.";
 
 /* Text confirming email address to be used for new account. */
 "We'll use this email address to create your new WordPress.com account." = "אנחנו נשתמש בכתובת האימייל הזאת כדי ליצור את החשבון החדש שלך ב-WordPress.com.";

@@ -208,10 +208,10 @@ extension ShippingLabelFormViewModel {
             case .failure(let error):
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
                 self.updateValidatingAddressState(false, type: type)
-                if error is ShippingLabelAddressValidationError {
-                    onCompletion?(.validationError, nil)
+                if let error = error as? ShippingLabelAddressValidationError {
+                    onCompletion?(.validationError(error), nil)
                 } else {
-                    onCompletion?(.genericError, nil)
+                    onCompletion?(.genericError(error), nil)
                 }
             }
         }
@@ -245,7 +245,7 @@ extension ShippingLabelFormViewModel {
     enum ValidationState {
         case validated
         case suggestedAddress
-        case validationError
-        case genericError
+        case validationError(ShippingLabelAddressValidationError)
+        case genericError(Error)
     }
 }

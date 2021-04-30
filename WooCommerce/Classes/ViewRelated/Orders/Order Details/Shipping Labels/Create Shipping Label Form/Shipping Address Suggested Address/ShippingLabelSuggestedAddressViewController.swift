@@ -156,14 +156,16 @@ private extension ShippingLabelSuggestedAddressViewController {
     }
 
     func displayEditAddressFormVC(address: ShippingLabelAddress?, type: ShipType) {
-        let shippingAddressVC = ShippingLabelAddressFormViewController(siteID: siteID,
-                                                                       type: type,
-                                                                       address: address,
-                                                                       completion: { [weak self] (newShippingLabelAddress) in
-                                                                        guard let self = self else { return }
-                                                                        self.onCompletion(newShippingLabelAddress)
-                                                                        self.navigationController?.popViewController(animated: true)
-                                                                       })
+        let shippingAddressVC = ShippingLabelAddressFormViewController(
+            siteID: siteID,
+            type: type,
+            address: address,
+            validationError: nil,
+            completion: { [weak self] (newShippingLabelAddress) in
+                guard let self = self else { return }
+                self.onCompletion(newShippingLabelAddress)
+                self.navigationController?.popViewController(animated: true)
+            })
         navigationController?.pushViewController(shippingAddressVC, animated: true)
     }
 }

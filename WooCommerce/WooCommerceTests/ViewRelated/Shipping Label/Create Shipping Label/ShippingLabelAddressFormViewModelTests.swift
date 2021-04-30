@@ -58,15 +58,12 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         let shippingAddress = MockShippingLabelAddress.sampleAddress()
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let validationError = ShippingLabelAddressValidationError(addressError: "Error", generalError: nil)
-        let expectedValidationResponse = ShippingLabelAddressValidationResponse(address: nil,
-                                                                                errors: validationError,
-                                                                                isTrivialNormalization: nil)
 
         // When
         stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
             switch action {
             case let .validateAddress(_, _, onCompletion):
-                onCompletion(.success(expectedValidationResponse))
+                onCompletion(.failure(validationError))
             default:
                 break
             }
@@ -107,15 +104,14 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
                                                    city: "San Francisco",
                                                    postcode: "94121-2303")
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let expectedValidationResponse = ShippingLabelAddressValidationResponse(address: shippingAddress,
-                                                                                errors: nil,
+        let expectedValidationSuccess = ShippingLabelAddressValidationSuccess(address: shippingAddress,
                                                                                 isTrivialNormalization: true)
 
         // When
         stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
             switch action {
             case let .validateAddress(_, _, onCompletion):
-                onCompletion(.success(expectedValidationResponse))
+                onCompletion(.success(expectedValidationSuccess))
             default:
                 break
             }
@@ -143,15 +139,12 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
                                                                          postcode: "94121-2303")
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let validationError = ShippingLabelAddressValidationError(addressError: "Error", generalError: nil)
-        let expectedValidationResponse = ShippingLabelAddressValidationResponse(address: nil,
-                                                                                errors: validationError,
-                                                                                isTrivialNormalization: nil)
 
         // When
         stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
             switch action {
             case let .validateAddress(_, _, onCompletion):
-                onCompletion(.success(expectedValidationResponse))
+                onCompletion(.failure(validationError))
             default:
                 break
             }
@@ -212,8 +205,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
                                                    city: "San Francisco",
                                                    postcode: "94121-2303")
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let expectedValidationResponse = ShippingLabelAddressValidationResponse(address: shippingAddress,
-                                                                                errors: nil,
+        let expectedValidationSuccess = ShippingLabelAddressValidationSuccess(address: shippingAddress,
                                                                                 isTrivialNormalization: true)
 
         // When
@@ -221,7 +213,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
             switch action {
             case let .validateAddress(_, _, onCompletion):
                 DispatchQueue.main.async {
-                    onCompletion(.success(expectedValidationResponse))
+                    onCompletion(.success(expectedValidationSuccess))
                 }
             default:
                 break

@@ -196,18 +196,15 @@ extension ShippingLabelAddressFormViewModel {
         let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] (result) in
             switch result {
             case .success:
-                if (try? result.get().errors) == nil {
-                    self?.addressValidated = .remote
-                    self?.addressValidationError = nil
-                    self?.state.isLoading = false
-                    completion(.success(()))
-                }
-                else {
-                    self?.addressValidated = .none
-                    self?.addressValidationError = try? result.get().errors
-                    self?.state.isLoading = false
-                    completion(.failure(.remote(try? result.get().errors)))
-                }
+                self?.addressValidated = .remote
+                self?.addressValidationError = nil
+                self?.state.isLoading = false
+                completion(.success(()))
+            case .failure(let error as ShippingLabelAddressValidationError):
+                self?.addressValidated = .none
+                self?.addressValidationError = error
+                self?.state.isLoading = false
+                completion(.failure(.remote(error)))
             case .failure(let error):
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
                 self?.addressValidated = .none

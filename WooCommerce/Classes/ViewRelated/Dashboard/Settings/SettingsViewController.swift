@@ -82,7 +82,7 @@ final class SettingsViewController: UIViewController {
 private extension SettingsViewController {
 
     func configureNavigation() {
-        title = NSLocalizedString("Settings", comment: "Settings navigation title")
+        title = Localization.title
     }
 
     func configureMainView() {
@@ -127,31 +127,12 @@ private extension SettingsViewController {
     }
 
     func configureSections() {
-        let selectedStoreTitle = NSLocalizedString(
-            "Selected Store",
-            comment: "My Store > Settings > Selected Store information section. " +
-            "This is the heading listed above the information row that displays the store website and their username."
-        ).uppercased()
-        let storeSettingsTitle = NSLocalizedString(
-            "Store Settings",
-            comment: "My Store > Settings > Store Settings section title"
-        ).uppercased()
-        let helpAndFeedbackTitle = NSLocalizedString(
-            "Help & Feedback",
-            comment: "My Store > Settings > Help and Feedback settings section title"
-        ).uppercased()
-        let appSettingsTitle = NSLocalizedString(
-            "App Settings",
-            comment: "My Store > Settings > App (Application) settings section title"
-        ).uppercased()
-        let aboutTheAppTitle = NSLocalizedString(
-            "About the App",
-            comment: "My Store > Settings > About the App (Application) section title"
-        ).uppercased()
-        let otherTitle = NSLocalizedString(
-            "Other",
-            comment: "My Store > Settings > Other app section"
-        ).uppercased()
+        let selectedStoreTitle = Localization.selectedStoreTitle.uppercased()
+        let storeSettingsTitle = Localization.storeSettingsTitle.uppercased()
+        let helpAndFeedbackTitle = Localization.helpAndFeedbackTitle.uppercased()
+        let appSettingsTitle = Localization.appSettingsTitle.uppercased()
+        let aboutTheAppTitle = Localization.aboutTheAppTitle.uppercased()
+        let otherTitle = Localization.otherTitle.uppercased()
 
         let storeRows: [Row] = sites.count > 1 ?
             [.selectedStore, .switchStore] : [.selectedStore]
@@ -237,79 +218,75 @@ private extension SettingsViewController {
 
     func configureSwitchStore(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString(
-            "Switch Store",
-            comment: "This action allows the user to change stores without logging out and logging back in again."
-        )
+        cell.textLabel?.text = Localization.switchStoreCellLabel
     }
 
     func configureSupport(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Help & Support", comment: "Contact Support Action")
+        cell.textLabel?.text = Localization.supportCellLabel
     }
 
     func configureCardReaders(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Manage Card Reader", comment: "Navigates to Card Reader management screen")
+        cell.textLabel?.text = Localization.cardReadersCellLabel
     }
 
     func configureCouponManagement(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Manage Coupons", comment: "Navigates to Coupon Management screen from Settings.")
+        cell.textLabel?.text = Localization.couponManagementCellLabel
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Privacy Settings", comment: "Navigates to Privacy Settings screen")
+        cell.textLabel?.text = Localization.privacySettingsCellLabel
     }
 
     func configureBetaFeatures(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Experimental Features", comment: "Navigates to experimental features screen")
+        cell.textLabel?.text = Localization.betaFeaturesCellLabel
         cell.accessibilityIdentifier = "settings-beta-features-button"
     }
 
     func configureSendFeedback(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Send Feedback", comment: "Presents a survey to gather feedback from the user.")
+        cell.textLabel?.text = Localization.sendFeedbackCellLabel
     }
 
     func configureAbout(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("WooCommerce", comment: "Navigates to about WooCommerce app screen")
+        cell.textLabel?.text = Localization.aboutCellLabel
     }
 
     func configureLicenses(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Open Source Licenses", comment: "Navigates to screen about open source licenses")
+        cell.textLabel?.text = Localization.licensesCellLabel
     }
 
     func configureAppSettings(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Open Device Settings", comment: "Opens iOS's Device Settings for the app")
+        cell.textLabel?.text = Localization.deviceSettingsCellLabel
     }
 
     func configureWormholy(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Launch Wormholy Debug",
-                                                 comment: "Opens an internal library called Wormholy. Not visible to users.")
+        cell.textLabel?.text = Localization.wormholyDebugCellLabel
     }
 
     func configureLogout(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = .error
-        cell.textLabel?.text = NSLocalizedString("Log Out", comment: "Log out button title")
+        cell.textLabel?.text = Localization.logoutCellLabel
         cell.accessibilityIdentifier = "settings-log-out-button"
     }
 }
@@ -349,19 +326,16 @@ private extension SettingsViewController {
 
     func logoutWasPressed() {
         ServiceLocator.analytics.track(.settingsLogoutTapped)
-        let messageUnformatted = NSLocalizedString(
-            "Are you sure you want to log out of the account %@?",
-            comment: "Alert message to confirm a user meant to log out."
-        )
+        let messageUnformatted = Localization.logoutConfirmationAlertMessage
         let messageFormatted = String(format: messageUnformatted, accountName)
         let alertController = UIAlertController(title: "", message: messageFormatted, preferredStyle: .alert)
 
-        let cancelText = NSLocalizedString("Back", comment: "Alert button title - dismisses alert, which cancels the log out attempt")
+        let cancelText = Localization.logoutConfirmationAlertCancelText
         alertController.addActionWithTitle(cancelText, style: .cancel) { _ in
             ServiceLocator.analytics.track(.settingsLogoutConfirmation, withProperties: ["result": "negative"])
         }
 
-        let logoutText = NSLocalizedString("Log Out", comment: "Alert button title - confirms and logs out the user")
+        let logoutText = Localization.logoutConfirmationAlertConfirmText
         alertController.addDefaultActionWithTitle(logoutText) { _ in
             ServiceLocator.analytics.track(.settingsLogoutConfirmation, withProperties: ["result": "positive"])
             self.logOutUser()
@@ -628,6 +602,7 @@ private enum Row: CaseIterable {
     }
 }
 
+
 // MARK: - Footer
 //
 private extension SettingsViewController {
@@ -636,9 +611,7 @@ private extension SettingsViewController {
     /// (which contains a link to the "Work with us" URL)
     ///
     var hiringAttributedText: NSAttributedString {
-        let hiringText = NSLocalizedString("Made with love by Automattic. <a href=\"https://automattic.com/work-with-us/\">We’re hiring!</a>",
-                                           comment: "It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>`"
-        )
+        let hiringText = Localization.hiringText
         let hiringAttributes: [NSAttributedString.Key: Any] = [
             .font: StyleManager.footerLabelFont,
             .foregroundColor: UIColor.textSubtle
@@ -650,5 +623,105 @@ private extension SettingsViewController {
         hiringAttrText.addAttributes(hiringAttributes, range: range)
 
         return hiringAttrText
+    }
+}
+
+
+// MARK: - Localization
+//
+private extension SettingsViewController {
+    enum Localization {
+        static let title = NSLocalizedString(
+            "Settings",
+            comment: "Settings navigation title")
+
+        static let selectedStoreTitle = NSLocalizedString(
+            "Selected Store",
+            comment: "My Store > Settings > Selected Store information section. " +
+                "This is the heading listed above the information row that displays the store website and their username.")
+
+        static let storeSettingsTitle = NSLocalizedString(
+            "Store Settings",
+            comment: "My Store > Settings > Store Settings section title")
+
+        static let helpAndFeedbackTitle = NSLocalizedString(
+            "Help & Feedback",
+            comment: "My Store > Settings > Help and Feedback settings section title")
+
+        static let appSettingsTitle = NSLocalizedString(
+            "App Settings",
+            comment: "My Store > Settings > App (Application) settings section title")
+
+        static let aboutTheAppTitle = NSLocalizedString(
+            "About the App",
+            comment: "My Store > Settings > About the App (Application) section title")
+
+        static let otherTitle = NSLocalizedString(
+            "Other",
+            comment: "My Store > Settings > Other app section")
+
+        static let switchStoreCellLabel = NSLocalizedString(
+            "Switch Store",
+            comment: "This action allows the user to change stores without logging out and logging back in again.")
+
+        static let supportCellLabel = NSLocalizedString(
+            "Help & Support",
+            comment: "Contact Support Action")
+
+        static let cardReadersCellLabel = NSLocalizedString(
+            "Manage Card Reader",
+            comment: "Navigates to Card Reader management screen")
+
+        static let couponManagementCellLabel = NSLocalizedString(
+            "Manage Coupons",
+            comment: "Navigates to Coupon Management screen from Settings.")
+
+        static let privacySettingsCellLabel = NSLocalizedString(
+            "Privacy Settings",
+            comment: "Navigates to Privacy Settings screen")
+
+        static let betaFeaturesCellLabel = NSLocalizedString(
+            "Experimental Features",
+            comment: "Navigates to experimental features screen")
+
+        static let sendFeedbackCellLabel = NSLocalizedString(
+            "Send Feedback",
+            comment: "Presents a survey to gather feedback from the user.")
+
+        static let aboutCellLabel = NSLocalizedString(
+            "WooCommerce",
+            comment: "Navigates to about WooCommerce app screen")
+
+        static let licensesCellLabel = NSLocalizedString(
+            "Open Source Licenses",
+            comment: "Navigates to screen about open source licenses")
+
+        static let deviceSettingsCellLabel = NSLocalizedString(
+            "Open Device Settings",
+            comment: "Opens iOS's Device Settings for the app")
+
+        static let wormholyDebugCellLabel = NSLocalizedString(
+            "Launch Wormholy Debug",
+            comment: "Opens an internal library called Wormholy. Not visible to users.")
+
+        static let logoutCellLabel = NSLocalizedString(
+            "Log Out",
+            comment: "Log out button title")
+
+        static let logoutConfirmationAlertMessage = NSLocalizedString(
+            "Are you sure you want to log out of the account %@?",
+            comment: "Alert message to confirm a user meant to log out.")
+
+        static let logoutConfirmationAlertCancelText = NSLocalizedString(
+            "Back",
+            comment: "Alert button title - dismisses alert, which cancels the log out attempt")
+
+        static let logoutConfirmationAlertConfirmText = NSLocalizedString(
+            "Log Out",
+            comment: "Alert button title - confirms and logs out the user")
+
+        static let hiringText = NSLocalizedString(
+            "Made with love by Automattic. <a href=\"https://automattic.com/work-with-us/\">We’re hiring!</a>",
+            comment: "It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>`")
     }
 }

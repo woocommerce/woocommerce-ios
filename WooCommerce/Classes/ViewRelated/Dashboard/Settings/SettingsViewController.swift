@@ -401,7 +401,6 @@ private extension SettingsViewController {
     }
 
     func couponManagementWasPressed() {
-        ServiceLocator.analytics.track(.settingsCouponManagementTapped)
         let viewController = CouponManagementViewController(nibName: nil, bundle: nil)
         show(viewController, sender: self)
     }

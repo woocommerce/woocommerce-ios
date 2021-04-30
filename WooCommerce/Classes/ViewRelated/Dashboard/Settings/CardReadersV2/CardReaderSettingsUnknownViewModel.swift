@@ -28,15 +28,21 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
 
         // This completion should be called repeatedly as the list of known readers changes
         let knownAction = CardPresentPaymentAction.observeKnownReaders() { [weak self] readers in
-            self?.noKnownReaders = readers.isEmpty
-            self?.reevaluateShouldShow()
+            guard let self = self else {
+                return
+            }
+            self.noKnownReaders = readers.isEmpty
+            self.reevaluateShouldShow()
         }
         ServiceLocator.stores.dispatch(knownAction)
 
         // This completion should be called repeatedly as the list of connected readers changes
         let connectedAction = CardPresentPaymentAction.observeConnectedReaders() { [weak self] readers in
-            self?.noConnectedReaders = readers.isEmpty
-            self?.reevaluateShouldShow()
+            guard let self = self else {
+                return
+            }
+            self.noConnectedReaders = readers.isEmpty
+            self.reevaluateShouldShow()
         }
         ServiceLocator.stores.dispatch(connectedAction)
     }

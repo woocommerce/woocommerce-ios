@@ -2,21 +2,19 @@ import Foundation
 import Yosemite
 
 final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewModel {
-    var shouldShow: Bool
-    var didChangeShouldShow: ((Bool) -> Void)?
 
-    private var noConnectedReaders: Bool
-    private var noKnownReaders: Bool
+    var shouldShow: CardReaderSettingsTriState
+    var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
 
-    init(didChangeShouldShow: ((Bool) -> Void)?) {
+    private var noConnectedReaders: CardReaderSettingsTriState
+    private var noKnownReaders: CardReaderSettingsTriState
 
-        // Default shouldShow to true, since we don't know if there are any known or connected readers
-        // TODO: Decide if we want a flag to reflect this initial state and use it to drive a loading indicator
+    init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?) {
 
-        self.shouldShow = true
         self.didChangeShouldShow = didChangeShouldShow
-        self.noConnectedReaders = true
-        self.noKnownReaders = true
+        self.shouldShow = .isUnknown
+        self.noConnectedReaders = .isUnknown
+        self.noKnownReaders = .isUnknown
 
         beginObservation()
     }
@@ -31,7 +29,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
             guard let self = self else {
                 return
             }
-            self.noKnownReaders = readers.isEmpty
+            self.noKnownReaders = readers.isEmpty ? .isTrue : .isFalse
             self.reevaluateShouldShow()
         }
         ServiceLocator.stores.dispatch(knownAction)
@@ -41,7 +39,7 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
             guard let self = self else {
                 return
             }
-            self.noConnectedReaders = readers.isEmpty
+            self.noConnectedReaders = readers.isEmpty ? .isTrue : .isFalse
             self.reevaluateShouldShow()
         }
         ServiceLocator.stores.dispatch(connectedAction)
@@ -52,7 +50,15 @@ final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewM
     ///
     private func reevaluateShouldShow() {
 
-        let newShouldShow = noKnownReaders && noConnectedReaders
+        var newShouldShow: CardReaderSettingsTriState = .isUnknown
+
+        if ( noKnownReaders == .isUnknown ) || ( noConnectedReaders == .isUnknown ) {
+            newShouldShow = .isUnknown
+        } else if ( noKnownReaders == .isTrue ) && ( noConnectedReaders == .isTrue ) {
+            newShouldShow = .isTrue
+        } else {
+            newShouldShow = .isFalse
+        }
 
         let didChange = newShouldShow != shouldShow
 

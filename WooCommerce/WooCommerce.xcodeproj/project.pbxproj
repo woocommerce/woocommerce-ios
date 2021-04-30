@@ -466,6 +466,7 @@
 		3188533C2639FE5800F66A9C /* CardReaderSettingsPresentedViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3188533B2639FE5800F66A9C /* CardReaderSettingsPresentedViewViewModel.swift */; };
 		318A9E9125D302370032C245 /* CardReaderSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318A9E9025D302370032C245 /* CardReaderSettingsViewController.swift */; };
 		31B19B67263B5E580099DAA6 /* CardReaderSettingsUnknownViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31B19B66263B5E580099DAA6 /* CardReaderSettingsUnknownViewModel.swift */; };
+		31F21B02263C8E150035B50A /* CardReaderSettingsUnknownViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F21B01263C8E150035B50A /* CardReaderSettingsUnknownViewModelTests.swift */; };
 		31F92DDB25E85CC800DE04DF /* CardReaderSettingsConnectedReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F92DDA25E85CC800DE04DF /* CardReaderSettingsConnectedReaderView.swift */; };
 		31F92DE125E85F6A00DE04DF /* ConnectedReaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F92DE025E85F6A00DE04DF /* ConnectedReaderTableViewCell.swift */; };
 		31FE28C225E6D338003519F2 /* LearnMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FE28C125E6D338003519F2 /* LearnMoreTableViewCell.swift */; };
@@ -1675,6 +1676,7 @@
 		3188533B2639FE5800F66A9C /* CardReaderSettingsPresentedViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsPresentedViewViewModel.swift; sourceTree = "<group>"; };
 		318A9E9025D302370032C245 /* CardReaderSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsViewController.swift; sourceTree = "<group>"; };
 		31B19B66263B5E580099DAA6 /* CardReaderSettingsUnknownViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsUnknownViewModel.swift; sourceTree = "<group>"; };
+		31F21B01263C8E150035B50A /* CardReaderSettingsUnknownViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsUnknownViewModelTests.swift; sourceTree = "<group>"; };
 		31F92DDA25E85CC800DE04DF /* CardReaderSettingsConnectedReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsConnectedReaderView.swift; sourceTree = "<group>"; };
 		31F92DE025E85F6A00DE04DF /* ConnectedReaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedReaderTableViewCell.swift; sourceTree = "<group>"; };
 		31FE28C125E6D338003519F2 /* LearnMoreTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnMoreTableViewCell.swift; sourceTree = "<group>"; };
@@ -3282,6 +3284,7 @@
 		02E4FD7F2306AA770049610C /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				31F21B07263C8E1F0035B50A /* CardReaderSettings */,
 				576D9F2724DB81BF007B48F4 /* Stats V4 */,
 				02E4FD802306AA890049610C /* StatsTimeRangeBarViewModelTests.swift */,
 				0257285B230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift */,
@@ -3530,6 +3533,14 @@
 				31F92DFE25E86F4500DE04DF /* CardReaderTableViewCells */,
 			);
 			path = CardReaders;
+			sourceTree = "<group>";
+		};
+		31F21B07263C8E1F0035B50A /* CardReaderSettings */ = {
+			isa = PBXGroup;
+			children = (
+				31F21B01263C8E150035B50A /* CardReaderSettingsUnknownViewModelTests.swift */,
+			);
+			path = CardReaderSettings;
 			sourceTree = "<group>";
 		};
 		31F92DFE25E86F4500DE04DF /* CardReaderTableViewCells */ = {
@@ -6951,6 +6962,7 @@
 				0215320D2423309B003F2BBD /* UIStackView+SubviewsTests.swift in Sources */,
 				027B8BBD23FE0DE10040944E /* ProductImageActionHandlerTests.swift in Sources */,
 				B5980A6521AC905C00EBF596 /* UIDeviceWooTests.swift in Sources */,
+				31F21B02263C8E150035B50A /* CardReaderSettingsUnknownViewModelTests.swift in Sources */,
 				45EF798624509B4C00B22BA2 /* ArrayIndexPathTests.swift in Sources */,
 				D8610BDD256F5ABF00A5DF27 /* JetpackErrorViewModelTests.swift in Sources */,
 				746791632108D7C0007CF1DC /* WooAnalyticsTests.swift in Sources */,

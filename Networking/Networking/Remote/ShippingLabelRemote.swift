@@ -13,7 +13,7 @@ public protocol ShippingLabelRemoteProtocol {
                              completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void)
     func addressValidation(siteID: Int64,
                            address: ShippingLabelAddressVerification,
-                           completion: @escaping (Result<ShippingLabelAddressValidationResponse, Error>) -> Void)
+                           completion: @escaping (Result<ShippingLabelAddressValidationSuccess, Error>) -> Void)
     func packagesDetails(siteID: Int64,
                          completion: @escaping (Result<ShippingLabelPackagesResponse, Error>) -> Void)
     func createPackage(siteID: Int64,
@@ -79,12 +79,12 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
     ///   - completion: Closure to be executed upon completion.
     public func addressValidation(siteID: Int64,
                                   address: ShippingLabelAddressVerification,
-                                  completion: @escaping (Result<ShippingLabelAddressValidationResponse, Error>) -> Void) {
+                                  completion: @escaping (Result<ShippingLabelAddressValidationSuccess, Error>) -> Void) {
         do {
             let parameters = try address.toDictionary()
             let path = "\(Path.normalizeAddress)"
             let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .post, siteID: siteID, path: path, parameters: parameters)
-            let mapper = ShippingLabelAddressValidationResponseMapper()
+            let mapper = ShippingLabelAddressValidationSuccessMapper()
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))

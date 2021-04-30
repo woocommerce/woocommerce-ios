@@ -24,6 +24,7 @@ final class ShippingLabelFormViewModel {
     private(set) var order: Order
     private(set) var originAddress: ShippingLabelAddress?
     private(set) var destinationAddress: ShippingLabelAddress?
+    private(set) var packagesResponse: ShippingLabelPackagesResponse?
 
     private let stores: StoresManager
 
@@ -60,6 +61,9 @@ final class ShippingLabelFormViewModel {
 
         state.sections = ShippingLabelFormViewModel.generateInitialSections()
         self.stores = stores
+
+        syncShippingLabelAccountSettings()
+        syncPackageDetails()
     }
 
     func handleOriginAddressValueChanges(address: ShippingLabelAddress?, validated: Bool) {
@@ -182,7 +186,7 @@ private extension ShippingLabelFormViewModel {
 
 // MARK: - Remote API
 extension ShippingLabelFormViewModel {
-    func validateAddress(type: ShipType, onCompletion: ((ValidationState, ShippingLabelAddressValidationResponse?) -> ())? = nil) {
+    func validateAddress(type: ShipType, onCompletion: ((ValidationState, ShippingLabelAddressValidationSuccess?) -> ())? = nil) {
 
         guard let address = type == .origin ? originAddress : destinationAddress else { return }
 
@@ -194,28 +198,45 @@ extension ShippingLabelFormViewModel {
 
             guard let self = self else { return }
             switch result {
-            case .success:
-                let response = try? result.get()
-
-                // No errors, the address is validated
-                if response?.errors == nil && response?.isTrivialNormalization == true {
-                    self.updateValidatingAddressState(false, type: type)
+            case .success(let response):
+                self.updateValidatingAddressState(false, type: type)
+                if response.isTrivialNormalization {
                     onCompletion?(.validated, response)
-                }
-                // No errors, but there is a suggested address
-                else if response?.errors == nil && response?.isTrivialNormalization == false {
-                    self.updateValidatingAddressState(false, type: type)
+                } else {
                     onCompletion?(.suggestedAddress, response)
-                }
-                // There are some address validation errors
-                else {
-                    self.updateValidatingAddressState(false, type: type)
-                    onCompletion?(.validationError, response)
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error validating shipping label address: \(error)")
                 self.updateValidatingAddressState(false, type: type)
-                onCompletion?(.genericError, nil)
+                if let error = error as? ShippingLabelAddressValidationError {
+                    onCompletion?(.validationError(error), nil)
+                } else {
+                    onCompletion?(.genericError(error), nil)
+                }
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    /// Syncs account settings specific to shipping labels, such as the last selected package and payment methods.
+    ///
+    func syncShippingLabelAccountSettings() {
+        let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: order.siteID) { result in
+            if result.isFailure {
+                DDLogError("⛔️ Error synchronizing shipping label account settings")
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    func syncPackageDetails() {
+        let action = ShippingLabelAction.packagesDetails(siteID: order.siteID) { [weak self] result in
+            switch result {
+            case .success(let value):
+                self?.packagesResponse = value
+            case .failure:
+                DDLogError("⛔️ Error synchronizing package details")
+                return
             }
         }
         stores.dispatch(action)
@@ -224,7 +245,7 @@ extension ShippingLabelFormViewModel {
     enum ValidationState {
         case validated
         case suggestedAddress
-        case validationError
-        case genericError
+        case validationError(ShippingLabelAddressValidationError)
+        case genericError(Error)
     }
 }

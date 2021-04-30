@@ -912,6 +912,26 @@ extension ShippingLabel {
         )
     }
 }
+extension ShippingLabelAccountSettings {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelAccountSettings {
+        .init(
+            siteID: .fake(),
+            canManagePayments: .fake(),
+            canEditSettings: .fake(),
+            storeOwnerDisplayName: .fake(),
+            storeOwnerUsername: .fake(),
+            storeOwnerWpcomUsername: .fake(),
+            storeOwnerWpcomEmail: .fake(),
+            paymentMethods: .fake(),
+            selectedPaymentMethodID: .fake(),
+            isEmailReceiptsEnabled: .fake(),
+            paperSize: .fake(),
+            lastSelectedPackageID: .fake()
+        )
+    }
+}
 extension ShippingLabelAddress {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -939,13 +959,12 @@ extension ShippingLabelAddressValidationError {
         )
     }
 }
-extension ShippingLabelAddressValidationResponse {
+extension ShippingLabelAddressValidationSuccess {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> ShippingLabelAddressValidationResponse {
+    public static func fake() -> ShippingLabelAddressValidationSuccess {
         .init(
             address: .fake(),
-            errors: .fake(),
             isTrivialNormalization: .fake()
         )
     }
@@ -997,6 +1016,26 @@ extension ShippingLabelPaperSize {
     ///
     public static func fake() -> ShippingLabelPaperSize {
         .a4
+    }
+}
+extension ShippingLabelPaymentCardType {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelPaymentCardType {
+        .amex
+    }
+}
+extension ShippingLabelPaymentMethod {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> ShippingLabelPaymentMethod {
+        .init(
+            paymentMethodID: .fake(),
+            name: .fake(),
+            cardType: .fake(),
+            cardDigits: .fake(),
+            expiry: .fake()
+        )
     }
 }
 extension ShippingLabelPredefinedOption {

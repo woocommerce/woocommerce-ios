@@ -34,6 +34,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let order = MockOrders().empty().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
+                                                             packagesResponse: mockPackageResponse(),
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager)
 
@@ -61,6 +62,7 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         let order = MockOrders().makeOrder().copy(siteID: sampleSiteID, items: items)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
+                                                             packagesResponse: mockPackageResponse(),
                                                              formatter: currencyFormatter,
                                                              storageManager: storageManager,
                                                              weightUnit: "kg")
@@ -98,8 +100,8 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                        maxWeight: 11)
         let order = MockOrders().empty().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-        mockRetrieveShippingLabelPackageDetails(result: .success(mockPackageResponse()))
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
+                                                             packagesResponse: mockPackageResponse(),
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
@@ -127,8 +129,8 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
                                                        maxWeight: 11)
         let order = MockOrders().empty().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-        mockRetrieveShippingLabelPackageDetails(result: .success(mockPackageResponse()))
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
+                                                             packagesResponse: mockPackageResponse(),
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
@@ -149,8 +151,8 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
         // Given
         let order = MockOrders().empty().copy(siteID: sampleSiteID)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-        mockRetrieveShippingLabelPackageDetails(result: .success(mockPackageResponse()))
         let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
+                                                             packagesResponse: mockPackageResponse(),
                                                              formatter: currencyFormatter,
                                                              stores: stores,
                                                              storageManager: storageManager,
@@ -159,6 +161,23 @@ final class ShippingLabelPackageDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.showCustomPackagesHeader)
+    }
+
+    func test_selected_package_defaults_to_last_selected_package() {
+        // Given
+        insert(MockShippingLabelAccountSettings.sampleAccountSettings(siteID: sampleSiteID, lastSelectedPackageID: "package-1"))
+        let order = MockOrders().empty().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let viewModel = ShippingLabelPackageDetailsViewModel(order: order,
+                                                             packagesResponse: mockPackageResponse(),
+                                                             formatter: currencyFormatter,
+                                                             stores: stores,
+                                                             storageManager: storageManager,
+                                                             weightUnit: "kg")
+
+        // Then
+        XCTAssertEqual(viewModel.selectedPackageID, "package-1")
+        XCTAssertEqual(viewModel.selectedPackageName, "Small")
     }
 }
 
@@ -174,12 +193,9 @@ private extension ShippingLabelPackageDetailsViewModelTests {
         productVariation.update(with: readOnlyOrderProductVariation)
     }
 
-    func mockRetrieveShippingLabelPackageDetails(result: Result<ShippingLabelPackagesResponse, Error>) {
-        stores.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
-            if case let ShippingLabelAction.packagesDetails(_, completion: completion) = action {
-                completion(result)
-            }
-        }
+    func insert(_ readOnlyAccountSettings: Yosemite.ShippingLabelAccountSettings) {
+        let accountSettings = storage.insertNewObject(ofType: StorageShippingLabelAccountSettings.self)
+        accountSettings.update(with: readOnlyAccountSettings)
     }
 }
 

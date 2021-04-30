@@ -52,8 +52,14 @@ final class ShippingLabelAddressFormViewController: UIViewController {
 
     /// Init
     ///
-    init(siteID: Int64, type: ShipType, address: ShippingLabelAddress?, completion: @escaping Completion) {
-        viewModel = ShippingLabelAddressFormViewModel(siteID: siteID, type: type, address: address)
+    init(
+        siteID: Int64,
+        type: ShipType,
+        address: ShippingLabelAddress?,
+        validationError: ShippingLabelAddressValidationError?,
+        completion: @escaping Completion
+    ) {
+        viewModel = ShippingLabelAddressFormViewModel(siteID: siteID, type: type, address: address, validationError: validationError)
         onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
@@ -69,6 +75,7 @@ final class ShippingLabelAddressFormViewController: UIViewController {
         configureTableView()
         observeViewModel()
         configureConfirmButton()
+        updateTopBannerView()
         keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
     }
 

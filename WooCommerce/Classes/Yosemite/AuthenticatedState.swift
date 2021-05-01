@@ -31,6 +31,7 @@ class AuthenticatedState: StoresManagerState {
         services = [
             AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
+            AddOnGroupStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             AvailabilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             MediaStore(dispatcher: dispatcher, storageManager: storageManager, network: network),

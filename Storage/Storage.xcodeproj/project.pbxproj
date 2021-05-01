@@ -49,6 +49,7 @@
 		267439D624E5D45A0090696C /* FeedbackSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267439D524E5D45A0090696C /* FeedbackSettings.swift */; };
 		2685C108263C88B000D9EE97 /* AddOnGroup+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685C106263C88B000D9EE97 /* AddOnGroup+CoreDataClass.swift */; };
 		2685C109263C88B000D9EE97 /* AddOnGroup+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685C107263C88B000D9EE97 /* AddOnGroup+CoreDataProperties.swift */; };
+		2685C11D263DEF0C00D9EE97 /* StorageTypeDeletionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685C11C263DEF0B00D9EE97 /* StorageTypeDeletionsTests.swift */; };
 		26B64556259CE7A900EF3FB3 /* ProductAttributeTerm+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B64554259CE7A800EF3FB3 /* ProductAttributeTerm+CoreDataProperties.swift */; };
 		26B64557259CE7A900EF3FB3 /* ProductAttributeTerm+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B64555259CE7A800EF3FB3 /* ProductAttributeTerm+CoreDataClass.swift */; };
 		26EA01D124EC3AEA00176A57 /* FeedbackType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EA01D024EC3AEA00176A57 /* FeedbackType.swift */; };
@@ -260,6 +261,7 @@
 		2685C105263C84C000D9EE97 /* Model 49.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 49.xcdatamodel"; sourceTree = "<group>"; };
 		2685C106263C88B000D9EE97 /* AddOnGroup+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AddOnGroup+CoreDataClass.swift"; sourceTree = "<group>"; };
 		2685C107263C88B000D9EE97 /* AddOnGroup+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AddOnGroup+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		2685C11C263DEF0B00D9EE97 /* StorageTypeDeletionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageTypeDeletionsTests.swift; sourceTree = "<group>"; };
 		26B64551259CDF8B00EF3FB3 /* Model 41.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 41.xcdatamodel"; sourceTree = "<group>"; };
 		26B64554259CE7A800EF3FB3 /* ProductAttributeTerm+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductAttributeTerm+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		26B64555259CE7A800EF3FB3 /* ProductAttributeTerm+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductAttributeTerm+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -695,6 +697,7 @@
 				B54CA5C620A4BFDC00F38CD1 /* DummyStack.swift */,
 				57589E8F252275CA000F22CE /* NSManagedObjectContext+TestHelpers.swift */,
 				2619F71825AF95020006DAFF /* StorageTypeExtensionsTests.swift */,
+				2685C11C263DEF0B00D9EE97 /* StorageTypeDeletionsTests.swift */,
 				2619F78525B5D29B0006DAFF /* TypedPredicateTests.swift */,
 			);
 			path = Tools;
@@ -1195,6 +1198,7 @@
 				D87F61572265AD980031A13B /* FileStorageTests.swift in Sources */,
 				B59E11DE20A9F1FB004121A4 /* CoreDataManagerTests.swift in Sources */,
 				57A29FB825226BDC004DEE01 /* MigrationTests.swift in Sources */,
+				2685C11D263DEF0C00D9EE97 /* StorageTypeDeletionsTests.swift in Sources */,
 				2619F78625B5D29B0006DAFF /* TypedPredicateTests.swift in Sources */,
 				5772842725BF5BFB0092FB2C /* SpyPersistentStoreCoordinator.swift in Sources */,
 				5772842C25BF62A90092FB2C /* Assertions.swift in Sources */,

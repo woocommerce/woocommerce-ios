@@ -1,10 +1,13 @@
-/* Translation-Revision-Date: 2021-04-16 14:54:04+0000 */
+/* Translation-Revision-Date: 2021-04-28 11:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
 
 /* No comment provided by engineer. */
 "#%@ %@" = "%1$@ › %2$@";
+
+/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
+"%1$@" = "%1$@";
 
 /* Format for each Product attribute */
 "%1$@ (%2$ld options)" = "%1$@(옵션 %2$ld개)";
@@ -33,8 +36,7 @@
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%2$@을(를) 통한 %1$@";
 
-/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00).
-   In Shipping Labels Package Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
+/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@ x %2$@" = "%1$@ x %2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
@@ -46,8 +48,10 @@
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@~%2$@";
 
-/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00).
-   In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
+/* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
+"%1$@・%2$@" = "%1$@・%2$@";
+
+/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
 
 /* 1 Item */
@@ -112,7 +116,10 @@
 /* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "프린터 설정에서 **AirPrint를 사용하도록 설정되었는지 확인**하세요. 프린터 자체에서 이 설정을 구성해야 할 수 있습니다.\n\n자세한 내용은 프린터와 함께 제공된 설명서를 참조하세요.";
 
-/* Number of items in packages in Shipping Labels. Reads like - 10 items */
+/* Number of item in packages in Shipping Labels in singular form. Reads like - 1 items */
+"- %1$d item" = "- %1$d개 항목";
+
+/* Number of items in packages in Shipping Labels in plural form. Reads like - 10 items */
 "- %1$d items" = "- %1$d개 아이템";
 
 /* Navigation bar title for selecting multiple products when one product has been selected. */
@@ -445,6 +452,9 @@
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "가입하려면 _서비스 약관_에 동의해야 합니다.";
 
+/* Header for the Custom Packages section in Shipping Label Package listing */
+"CUSTOM PACKAGES" = "사용자 정의 패키지";
+
 /* Call phone number button title */
 "Call" = "전화";
 
@@ -471,6 +481,10 @@
 /* The title of the alert when there is an error uploading an image
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "이미지를 업로드할 수 없습니다.";
+
+/* Detailed message shown in the Reviews tab if the list is empty
+   Detailed message shown on the Product Reviews screen if the list is empty */
+"Capture high-quality product reviews for your store." = "스토어에 대한 수준 높은 제품 리뷰 캡처";
 
 /* Card reader settings screen title */
 "Card Readers" = "카드 판독기";
@@ -933,6 +947,9 @@
    Navigates to experimental features screen */
 "Experimental Features" = "실험 특성";
 
+/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
+"Explore how you can increase your store sales" = "스토어 판매를 늘리는 방법을 살펴보세요.";
+
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "외부 상품";
 
@@ -1022,6 +1039,10 @@
 
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "궁금한 질문에 대한 답변 보기";
+
+/* Message shown in the Reviews tab if the list is empty
+   Message shown on the Product Reviews screen if the list is empty */
+"Get your first reviews" = "첫 리뷰 받기";
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "계정 정보 받기";
@@ -1253,7 +1274,7 @@
 "Launch Wormholy Debug" = "Wormholy 디버그 시작";
 
 /* Button title in the shipping label creation info screen
-   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Orders → All Orders tab if the list is empty. */
+   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Orders → All Orders tab if the list is empty. - Title of button shown in the Reviews tab if the list is empty - Title of button shown on the Product Reviews screen if the list is empty */
 "Learn more" = "더 알아보기";
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
@@ -1483,12 +1504,6 @@
    Next nav bar button title in Add Product Attribute screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "다음";
 
-/* Empty Product Reviews List Message */
-"No Reviews Yet for this Product!" = "아직 이 제품에 리뷰가 없습니다!";
-
-/* Empty Reviews List Message */
-"No Reviews Yet!" = "아직 리뷰가 없습니다!";
-
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "이 기간에 활동이 없음";
 
@@ -1676,7 +1691,8 @@
    Title of package details in shipping label details - Title of the cell Package Details inside Create Shipping Label form */
 "Package Details" = "패키지 상세 정보";
 
-/* Title of the row for selecting a package in Shipping Label Package Detail screen */
+/* Package Selected screen title in Shipping Label flow
+   Title of the row for selecting a package in Shipping Label Package Detail screen */
 "Package Selected" = "선택된 패키지";
 
 /* The title for the customer payment cell */
@@ -1851,6 +1867,9 @@
 /* Description for Top Performers left column header
    Product section title - Product section title if there is only one product. */
 "Product" = "상품";
+
+/* The title on the navigation bar when viewing an order item add-ons */
+"Product Add-ons" = "상품 애드온";
 
 /* Edit Product External Link navigation title */
 "Product Link" = "제품 링크";
@@ -2217,9 +2236,6 @@
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "워드프레스닷컴 계정에 로그인되어 있는 동안 이용하는 서비스에 대한 정보를 워드프레스의 분석 도구와 공유합니다.";
-
-/* Action: Opens the Store in a browser */
-"Share your Store" = "스토어 공유";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
@@ -3043,6 +3059,9 @@
 /* Displays the version of the App */
 "Version %@" = "버전 %@";
 
+/* Title of the button on the order detail item to navigate to add-ons */
+"View Add-Ons" = "애드온 보기";
+
 /* View application log cell title */
 "View Application Log" = "애플리케이션 로그 보기";
 
@@ -3118,7 +3137,10 @@
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "워드프레스는 타사 제품을 포함한 다른 추적 도구를 사용합니다. 이 도구에 대해 읽고 제어하는 방법에 대해 알아보세요.";
 
-/* Banner caption in Shipping Label Address Validation when the address can't be verified. */
+/* Banner caption in Shipping Label Address Validation when the origin address can't be verified. */
+"We were unable to automatically verify the origin address." = "발송 주소를 자동으로 확인할 수 없었습니다.";
+
+/* Banner caption in Shipping Label Address Validation when the destination address can't be verified. */
 "We were unable to automatically verify the shipping address. View on Apple Maps or try contacting the customer to make sure the address is correct." = "배송 주소를 자동으로 확인할 수 없었습니다. Apple Maps에서 조회하거나 고객에게 문의하여 주소가 올바른지 확인하세요.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
@@ -3129,9 +3151,6 @@
 
 /* Instruction text on the Sign Up screen. */
 "We'll email you a signup link to create your new WordPress.com account." = "새로운 워드프레스닷컴 계정을 만들 수 있는 등록 링크를 이메일로 보내드리겠습니다.";
-
-/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
-"We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "새로운 주문을 받으면 알려드리겠습니다. 그동안 매장 판매를 늘리는 방법을 알아보세요.";
 
 /* Text confirming email address to be used for new account. */
 "We'll use this email address to create your new WordPress.com account." = "이 이메일 주소를 사용하여 새 워드프레스닷컴 계정을 만듭니다.";

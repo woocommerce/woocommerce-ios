@@ -1,5 +1,1 @@
-What’s new in this release?
-
-- A redesigned login experience, with new illustrations to promote the app’s main features and benefits.
-- Other fixes, including making the back button style on your navigation bar more consistent.
-
+We zijn druk in de weer met veel spannende dingen, daarom hebben we deze keer maar één klein probleem opgelost. We ondersteunen productafbeeldingen met niet-Latijnse tekens in de bestandsnaam nu volledig. Ze laden prima en veroorzaken geen vreemde problemen met je mediabibliotheek meer.

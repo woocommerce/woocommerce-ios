@@ -1,5 +1,1 @@
-Vad är nytt i den här versionen?
-
-- En omdesignad inloggningsupplevelse med nya illustrationer som framhäver appens huvudsakliga funktioner och fördelar.
-- Andra korrigeringar, inklusive att göra bakåtknappsstilen i navigeringsfältet mer konsekvent.
-
+Vi har fullt upp med att arbeta på massa spännande saker, så den här gången blir det bara en liten korrigering. Vi har nu fullt stöd för produktbilder med icke-latinska tecken i filnamnet. De läses in korrekt och kommer inte att orsaka konstiga problem med ditt mediabibliotek.

@@ -1,5 +1,1 @@
-Apa yang baru dalam rilis ini?
-
-- Pengalaman baru untuk login, dengan ilustrasi baru yang menonjolkan fitur utama dan manfaat aplikasi.
-- Perbaikan lain, termasuk gaya tombol kembali yang lebih konsisten pada bilah navigasi Anda.
-
+Kami sedang fokus menangani banyak hal menarik, jadi kali ini hanya ada satu perbaikan kecil saja. Sekarang kami sepenuhnya mendukung gambar produk dengan karakter non-latin pada nama file-nya.  Gambar tersebut bisa dimuat dengan lancar tanpa menimbulkan masalah pada Pustaka Media Anda.

@@ -1,5 +1,1 @@
-Novidades desta versão:
-
-- Experiência de login renovada, com novas ilustrações para promover as principais funcionalidades e benefícios do aplicativo.
-- Outras correções, incluindo tornar o estilo da botão Voltar mais consistente na barra de navegação.
-
+Estamos trabalhando em diversas novidades, então fizemos apenas uma pequena correção. Agora oferecemos suporte total a imagens de produtos com caracteres não latinos no nome do arquivo. Elas serão carregadas normalmente e não causarão problemas na sua Biblioteca de mídia.

@@ -81,6 +81,7 @@ private extension AddOnGroupStore {
 
             // Update values and relationships
             storedAddOnGroup.update(with: readOnlyAddOnGroup)
+            handleGroupAddOns(readOnlyGroup: readOnlyAddOnGroup, storageGroup: storedAddOnGroup, storage: storage)
         }
 
         // Delete stale groups

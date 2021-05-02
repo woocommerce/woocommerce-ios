@@ -84,6 +84,10 @@ final class OrderDetailsDataSource: NSObject {
         return resultsControllers.refunds
     }
 
+    var addOnGroups: [AddOnGroup] {
+        resultsControllers.addOnGroups
+    }
+
     /// Shipping Labels for an Order
     ///
     private(set) var shippingLabels: [ShippingLabel] = []

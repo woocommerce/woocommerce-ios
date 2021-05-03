@@ -105,4 +105,12 @@ public enum AppSettingsAction: Action {
     /// Returns whether a specific feedback request should be shown to the user.
     ///
     case loadFeedbackVisibility(type: FeedbackType, onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Sets the state for the Order Add-ons beta feature switch.
+    ///
+    case setOrderAddOnsFeatureSwitchState(isEnabled: Bool, onCompletion: () -> Void)
+
+    /// Loads the most recent state for the Order Add-ons beta feature switch
+    ///
+    case loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
 }

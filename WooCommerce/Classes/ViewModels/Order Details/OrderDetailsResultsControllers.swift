@@ -70,6 +70,13 @@ final class OrderDetailsResultsControllers {
                                                        sortedBy: [dateCreatedDescriptor, shippingLabelIDDescriptor])
     }()
 
+    /// AddOnGroup ResultsController.
+    ///
+    private lazy var addOnGroupResultsController: ResultsController<StorageAddOnGroup> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        return ResultsController<StorageAddOnGroup>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
     /// Order shipment tracking list
     ///
     var orderTracking: [ShipmentTracking] {
@@ -106,6 +113,12 @@ final class OrderDetailsResultsControllers {
         return shippingLabelResultsController.fetchedObjects
     }
 
+    /// Site's add-on groups.
+    ///
+    var addOnGroups: [AddOnGroup] {
+        return addOnGroupResultsController.fetchedObjects
+    }
+
     init(order: Order,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.order = order
@@ -120,6 +133,7 @@ final class OrderDetailsResultsControllers {
         configureProductVariationResultsController(onReload: onReload)
         configureRefundResultsController(onReload: onReload)
         configureShippingLabelResultsController(onReload: onReload)
+        configureAddOnGroupResultsController(onReload: onReload)
     }
 }
 
@@ -213,6 +227,20 @@ private extension OrderDetailsResultsControllers {
         try? shippingLabelResultsController.performFetch()
     }
 
+    private func configureAddOnGroupResultsController(onReload: @escaping () -> Void) {
+        addOnGroupResultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        addOnGroupResultsController.onDidResetContent = { [weak self] in
+            guard let self = self else { return }
+            self.refetchAllResultsControllers()
+            onReload()
+        }
+
+        try? addOnGroupResultsController.performFetch()
+    }
+
     /// Refetching all the results controllers is necessary after a storage reset in `onDidResetContent` callback and before reloading UI that
     /// involves more than one results controller.
     func refetchAllResultsControllers() {
@@ -222,5 +250,6 @@ private extension OrderDetailsResultsControllers {
         try? trackingResultsController.performFetch()
         try? statusResultsController.performFetch()
         try? shippingLabelResultsController.performFetch()
+        try? addOnGroupResultsController.performFetch()
     }
 }

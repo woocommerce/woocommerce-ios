@@ -214,10 +214,14 @@ private extension AppSettingsStore {
 
     /// Sets the provided Order Add-Ons beta feature switch state into `GeneralAppSettings`
     ///
-    func setOrderAddOnsFeatureSwitchState(isEnabled: Bool, onCompletion: () -> Void) {
-        let settings = loadOrCreateGeneralAppSettings().copy(isViewAddOnsSwitchEnabled: isEnabled)
-        try? saveGeneralAppSettings(settings)
-        onCompletion()
+    func setOrderAddOnsFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            let settings = loadOrCreateGeneralAppSettings().copy(isViewAddOnsSwitchEnabled: isEnabled)
+            try saveGeneralAppSettings(settings)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
 
     }
 

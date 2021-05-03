@@ -115,17 +115,26 @@ private extension BetaFeaturesViewController {
         configureCommonStylesForSwitchCell(cell)
         cell.title = Localization.orderAddOnsTitle
 
-        // TODO: make it readable
+        // Fetch switch's state stored value.
         let action = AppSettingsAction.loadOrderAddOnsSwitchState() { result in
-            cell.isOn = (try? result.get()) ?? false
+            guard let isEnabled = try? result.get() else {
+                return cell.isOn = false
+            }
+            cell.isOn = isEnabled
         }
         ServiceLocator.stores.dispatch(action)
 
+        // Change switch's state stored value
         cell.onChange = { isSwitchOn in
             // TODO: Update analytics with order-add-on ones
             ServiceLocator.analytics.track(.settingsBetaFeaturesProductsToggled)
 
-            let action = AppSettingsAction.setOrderAddOnsFeatureSwitchState(isEnabled: isSwitchOn, onCompletion: {} )
+            let action = AppSettingsAction.setOrderAddOnsFeatureSwitchState(isEnabled: isSwitchOn, onCompletion: { result in
+                // Roll back toggle if an error occurred
+                if result.isFailure {
+                    cell.isOn.toggle()
+                }
+            })
             ServiceLocator.stores.dispatch(action)
         }
         cell.accessibilityIdentifier = "beta-features-order-add-ons-cell"

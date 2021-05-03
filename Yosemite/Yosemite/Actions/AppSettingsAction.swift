@@ -108,7 +108,7 @@ public enum AppSettingsAction: Action {
 
     /// Sets the state for the Order Add-ons beta feature switch.
     ///
-    case setOrderAddOnsFeatureSwitchState(isEnabled: Bool, onCompletion: () -> Void)
+    case setOrderAddOnsFeatureSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
 
     /// Loads the most recent state for the Order Add-ons beta feature switch
     ///

@@ -315,9 +315,9 @@ private extension SettingsViewController {
         return sections[indexPath.section].rows[indexPath.row]
     }
 
-    /// This is false because there are no ongoing experiments
+    /// Returns `true` for the add-ons workaround.
     func couldShowBetaFeaturesRow() -> Bool {
-        false
+        true
     }
 }
 

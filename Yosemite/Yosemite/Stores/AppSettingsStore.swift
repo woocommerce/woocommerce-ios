@@ -153,6 +153,12 @@ public class AppSettingsStore: Store {
                                    onCompletion: onCompletion)
         case .resetProductsSettings:
             resetProductsSettings()
+        case .setOrderAddOnsFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
+        // TODO: Implement
+            break
+        case .loadOrderAddOnsSwitchState(onCompletion: let onCompletion):
+        // TODO: Implement
+            break
         }
     }
 }
@@ -175,7 +181,10 @@ private extension AppSettingsStore {
                 return onCompletion(.success(false))
             }
 
-            let settingsToSave = GeneralAppSettings(installationDate: date, feedbacks: settings.feedbacks)
+            // TODO: Use copiable
+            let settingsToSave = GeneralAppSettings(installationDate: date,
+                                                    feedbacks: settings.feedbacks,
+                                                    isViewAddOnsSwitchEnabled: settings.isViewAddOnsSwitchEnabled)
             try saveGeneralAppSettings(settingsToSave)
 
             onCompletion(.success(true))
@@ -211,7 +220,7 @@ private extension AppSettingsStore {
     /// Load the `GeneralAppSettings` from file or create an empty one if it doesn't exist.
     func loadOrCreateGeneralAppSettings() -> GeneralAppSettings {
         guard let settings: GeneralAppSettings = try? fileStorage.data(for: generalAppSettingsFileURL) else {
-            return GeneralAppSettings(installationDate: nil, feedbacks: [:])
+            return GeneralAppSettings(installationDate: nil, feedbacks: [:], isViewAddOnsSwitchEnabled: false)
         }
 
         return settings

@@ -2,6 +2,11 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 49 (Release 6.7.0.0)
+- @ecarrion 2021-04-30
+- Added `AddOnGroup` entity.
+- Added to-many relationship between `AddOnGroup` and `ProductAddOn`.
+
 ## Model 48 (Release 6.6.0.0)
 - @rachelmcr 2021-04-19
 - Added `ShippingLabelAccountSettings` entity.

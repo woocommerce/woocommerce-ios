@@ -347,6 +347,17 @@ private extension DefaultStoresManager {
         dispatch(action)
     }
 
+    /// Synchronizes all add-ons groups(global add-ons).
+    ///
+    func synchronizeAddOnsGroups(siteID: Int64) {
+        let action = AddOnGroupAction.synchronizeAddOnGroups(siteID: siteID) { result in
+            if let error = result.failure {
+                DDLogError("⛔️ Failed to sync add-on groups for siteID: \(siteID). Error: \(error)")
+            }
+        }
+        dispatch(action)
+    }
+
     /// Loads the Default Site into the current Session, if possible.
     ///
     func restoreSessionSiteIfPossible() {
@@ -361,6 +372,7 @@ private extension DefaultStoresManager {
         }
         retrieveOrderStatus(with: siteID)
         synchronizePaymentGateways(siteID: siteID)
+        synchronizeAddOnsGroups(siteID: siteID)
     }
 
     /// Loads the specified siteID into the Session, if possible.

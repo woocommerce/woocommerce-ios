@@ -2,7 +2,7 @@
   "configurations" : [
     {
       "id" : "7E8B43A4-950E-425F-A333-D1D696025D02",
-      "name" : "Configuration 1",
+      "name" : "Default",
       "options" : {
 
       }
@@ -16,6 +16,8 @@
         "enabled" : false
       }
     ],
+    "language" : "en",
+    "region" : "US",
     "targetForVariableExpansion" : {
       "containerPath" : "container:WooCommerce.xcodeproj",
       "identifier" : "B56DB3C52049BFAA00D4AA8E",

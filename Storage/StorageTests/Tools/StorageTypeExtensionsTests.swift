@@ -985,4 +985,38 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(accountSettings, storedAccountSettings)
     }
+
+    func test_loadAddOnGroups_by_site_ID_and_sorted_by_name() throws {
+        // Given
+        let addOnGroup1 = storage.insertNewObject(ofType: AddOnGroup.self)
+        addOnGroup1.name = "BBB"
+        addOnGroup1.siteID = sampleSiteID
+
+        let addOnGroup2 = storage.insertNewObject(ofType: AddOnGroup.self)
+        addOnGroup2.name = "AAA"
+        addOnGroup2.siteID = sampleSiteID
+
+        // When
+        let storedGroups = try XCTUnwrap(storage.loadAddOnGroups(siteID: sampleSiteID))
+
+        // Then
+        XCTAssertEqual(storedGroups, [addOnGroup2, addOnGroup1])
+    }
+
+    func test_loadAddOnGroup_by_siteID_and_groupID() throws {
+        // Given
+        let addOnGroup1 = storage.insertNewObject(ofType: AddOnGroup.self)
+        addOnGroup1.siteID = sampleSiteID
+        addOnGroup1.groupID = 1234
+
+        let addOnGroup2 = storage.insertNewObject(ofType: AddOnGroup.self)
+        addOnGroup2.siteID = sampleSiteID
+        addOnGroup2.groupID = 2345
+
+        // When
+        let storedGroup = try XCTUnwrap(storage.loadAddOnGroup(siteID: sampleSiteID, groupID: 1234))
+
+        // Then
+        XCTAssertEqual(storedGroup, addOnGroup1)
+    }
 }

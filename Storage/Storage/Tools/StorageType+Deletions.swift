@@ -109,4 +109,13 @@ public extension StorageType {
             deleteObject(review)
         }
     }
+
+    /// Deletes all of the stored `AddOnGroups` for a `siteID` that are not included in the provided `activeGroupIDs` array.
+    ///
+    func deleteStaleAddOnGroups(siteID: Int64, activeGroupIDs: [Int64]) {
+        let staleGroups = loadAddOnGroups(siteID: siteID).filter { !activeGroupIDs.contains($0.groupID) }
+        staleGroups.forEach {
+            deleteObject($0)
+        }
+    }
 }

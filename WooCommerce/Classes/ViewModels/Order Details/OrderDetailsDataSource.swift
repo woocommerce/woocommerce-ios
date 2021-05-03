@@ -88,6 +88,10 @@ final class OrderDetailsDataSource: NSObject {
         return resultsControllers.refunds
     }
 
+    var addOnGroups: [AddOnGroup] {
+        resultsControllers.addOnGroups
+    }
+
     /// Shipping Labels for an Order
     ///
     private(set) var shippingLabels: [ShippingLabel] = []
@@ -769,7 +773,7 @@ private extension OrderDetailsDataSource {
         guard let product = products.first(where: { $0.productID == item.productID }), showAddOns else {
             return []
         }
-        return AddOnCrossreferenceUseCase(orderItem: item, product: product).addOnsAttributes()
+        return AddOnCrossreferenceUseCase(orderItem: item, product: product, addOnGroups: addOnGroups).addOnsAttributes()
     }
 }
 

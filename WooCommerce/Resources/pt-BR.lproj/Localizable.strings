@@ -1,10 +1,13 @@
-/* Translation-Revision-Date: 2021-04-16 11:54:04+0000 */
+/* Translation-Revision-Date: 2021-04-28 17:55:00+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
 
 /* No comment provided by engineer. */
 "#%@ %@" = "#%1$@ %2$@";
+
+/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
+"%1$@" = "%1$@";
 
 /* Format for each Product attribute */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld opções)";
@@ -33,8 +36,7 @@
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ via %2$@";
 
-/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00).
-   In Shipping Labels Package Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
+/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@ x %2$@" = "%1$@ x %2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
@@ -46,8 +48,10 @@
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
-/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00).
-   In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
+/* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
+"%1$@・%2$@" = "%1$@・%2$@";
+
+/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
 
 /* 1 Item */
@@ -112,7 +116,10 @@
 /* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "**Verifique se o AirPrint está habilitado** nas suas configurações de impressora. Talvez seja necessário ajustar essa configuração na própria impressora.\n\nConsulte a documentação da sua impressora para obter mais detalhes.";
 
-/* Number of items in packages in Shipping Labels. Reads like - 10 items */
+/* Number of item in packages in Shipping Labels in singular form. Reads like - 1 items */
+"- %1$d item" = "- %1$d item";
+
+/* Number of items in packages in Shipping Labels in plural form. Reads like - 10 items */
 "- %1$d items" = "- %1$d itens";
 
 /* Navigation bar title for selecting multiple products when one product has been selected. */
@@ -445,6 +452,9 @@
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "Ao cadastrar-se, você concorda com os nossos _Termos de serviço_.";
 
+/* Header for the Custom Packages section in Shipping Label Package listing */
+"CUSTOM PACKAGES" = "PACOTES PERSONALIZADOS";
+
 /* Call phone number button title */
 "Call" = "Ligar";
 
@@ -471,6 +481,10 @@
 /* The title of the alert when there is an error uploading an image
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Não foi possível carregar a imagem";
+
+/* Detailed message shown in the Reviews tab if the list is empty
+   Detailed message shown on the Product Reviews screen if the list is empty */
+"Capture high-quality product reviews for your store." = "Colete avaliações de alta qualidade do produto para sua loja.";
 
 /* Card reader settings screen title */
 "Card Readers" = "Leitores de cartão";
@@ -933,6 +947,9 @@
    Navigates to experimental features screen */
 "Experimental Features" = "Recursos experimentais";
 
+/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
+"Explore how you can increase your store sales" = "Veja como aumentar as vendas da sua loja";
+
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "Produto externo";
 
@@ -1022,6 +1039,10 @@
 
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "Obtenha as respostas para as suas dúvidas";
+
+/* Message shown in the Reviews tab if the list is empty
+   Message shown on the Product Reviews screen if the list is empty */
+"Get your first reviews" = "Receba suas primeiras avaliações";
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "Obtendo informações da conta";
@@ -1253,7 +1274,7 @@
 "Launch Wormholy Debug" = "Iniciar depuração do Wormholy";
 
 /* Button title in the shipping label creation info screen
-   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Orders → All Orders tab if the list is empty. */
+   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Orders → All Orders tab if the list is empty. - Title of button shown in the Reviews tab if the list is empty - Title of button shown on the Product Reviews screen if the list is empty */
 "Learn more" = "Saiba mais";
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
@@ -1483,12 +1504,6 @@
    Next nav bar button title in Add Product Attribute screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "Próximo";
 
-/* Empty Product Reviews List Message */
-"No Reviews Yet for this Product!" = "Nenhuma avaliação deste produto ainda.";
-
-/* Empty Reviews List Message */
-"No Reviews Yet!" = "Ainda não há avaliações!";
-
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Nenhuma atividade no período";
 
@@ -1676,7 +1691,8 @@
    Title of package details in shipping label details - Title of the cell Package Details inside Create Shipping Label form */
 "Package Details" = "Detalhes do pacote";
 
-/* Title of the row for selecting a package in Shipping Label Package Detail screen */
+/* Package Selected screen title in Shipping Label flow
+   Title of the row for selecting a package in Shipping Label Package Detail screen */
 "Package Selected" = "Pacote selecionado";
 
 /* The title for the customer payment cell */
@@ -1851,6 +1867,9 @@
 /* Description for Top Performers left column header
    Product section title - Product section title if there is only one product. */
 "Product" = "Produto";
+
+/* The title on the navigation bar when viewing an order item add-ons */
+"Product Add-ons" = "Complementos do produto";
 
 /* Edit Product External Link navigation title */
 "Product Link" = "Link do produto";
@@ -2217,9 +2236,6 @@
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Compartilhar informações de como nossos serviços são usados com nossas ferramentas de análise enquanto estiver acessando sua conta do WordPress.com.";
-
-/* Action: Opens the Store in a browser */
-"Share your Store" = "Compartilhe sua loja";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
@@ -3043,6 +3059,9 @@
 /* Displays the version of the App */
 "Version %@" = "Versão %@";
 
+/* Title of the button on the order detail item to navigate to add-ons */
+"View Add-Ons" = "Visualizar complementos";
+
 /* View application log cell title */
 "View Application Log" = "Visualizar log do aplicativo";
 
@@ -3118,7 +3137,10 @@
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "Nós usamos outras ferramentas de acompanhamento, inclusive algumas de terceiros. Leia mais sobre elas e como controlá-las.";
 
-/* Banner caption in Shipping Label Address Validation when the address can't be verified. */
+/* Banner caption in Shipping Label Address Validation when the origin address can't be verified. */
+"We were unable to automatically verify the origin address." = "Não foi possível verificar automaticamente o endereço de origem.";
+
+/* Banner caption in Shipping Label Address Validation when the destination address can't be verified. */
 "We were unable to automatically verify the shipping address. View on Apple Maps or try contacting the customer to make sure the address is correct." = "Não foi possível verificar automaticamente o endereço de envio. Encontre-o no Apple Maps ou tente entrar em contato com o cliente para confirmar se o endereço está correto.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
@@ -3129,9 +3151,6 @@
 
 /* Instruction text on the Sign Up screen. */
 "We'll email you a signup link to create your new WordPress.com account." = "Enviaremos por e-mail um link de registro para você criar uma nova conta no WordPress.com.";
-
-/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
-"We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "Você será notificado quando receber um novo pedido. Enquanto isso, veja como aumentar as vendas da sua loja.";
 
 /* Text confirming email address to be used for new account. */
 "We'll use this email address to create your new WordPress.com account." = "Usaremos este endereço de e-mail para criar sua nova conta no WordPress.com.";

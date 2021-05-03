@@ -1,5 +1,1 @@
-Quali sono le novità in questo rilascio?
-
-- Un'esperienza di accesso riprogettata, con nuove illustrazioni per promuovere le funzionalità principali e i benefici dell'app.
-- Altre correzioni, incluso lo stile del pulsante Indietro sulla barra di navigazione più uniforme.
-
+Siamo impegnati a lavorare su molte cose entusiasmanti, quindi questa volta abbiamo apportato solo una piccola correzione. Ora supportiamo completamente le immagini dei prodotti con caratteri non latini nel nome del file. Si caricheranno bene e non causeranno strani problemi con la tua Libreria multimediale.

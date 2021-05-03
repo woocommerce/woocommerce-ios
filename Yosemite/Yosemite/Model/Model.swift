@@ -9,6 +9,7 @@ import Hardware
 
 public typealias Account = Networking.Account
 public typealias AccountSettings = Networking.AccountSettings
+public typealias AddOnGroup = Networking.AddOnGroup
 public typealias Address = Networking.Address
 public typealias APNSDevice = Networking.APNSDevice
 public typealias CommentStatus = Networking.CommentStatus
@@ -119,6 +120,7 @@ public typealias WCPayAccount = Networking.WCPayAccount
 public typealias StorageAccount = Storage.Account
 public typealias StorageAccountSettings = Storage.AccountSettings
 public typealias StorageAttribute = Storage.GenericAttribute
+public typealias StorageAddOnGroup = Storage.AddOnGroup
 public typealias StorageNote = Storage.Note
 public typealias StorageOrder = Storage.Order
 public typealias StorageOrderItemAttribute = Storage.OrderItemAttribute

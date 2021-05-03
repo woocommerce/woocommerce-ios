@@ -1,5 +1,1 @@
-Bu sürümdeki yenilikler neler?
-
-- Uygulamanın ana özelliklerini ve avantajlarını tanıtmak için yeni çizimlerle yeniden tasarlanmış bir giriş deneyimi.
-- Gezinme çubuğunuzdaki geri düğmesi stilini daha tutarlı hale getirmek de dahil olmak üzere diğer düzeltmeler.
-
+Heyecan verici şey bir çok üzerinde çalışmalarımız devam ediyor, bu yüzden bu sefer sadece küçük bir düzeltme var. Artık dosya adında latin olmayan karakterler içeren ürün resimlerini tam olarak destekliyoruz. Sorunsuz bir şekilde yükleniyorlar ve Medya Kitaplığınızda tuhaf sorunlara neden olmuyorlar.

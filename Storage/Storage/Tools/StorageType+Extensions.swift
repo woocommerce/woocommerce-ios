@@ -499,4 +499,19 @@ public extension StorageType {
         let predicate = \ShippingLabelAccountSettings.siteID == siteID
         return firstObject(ofType: ShippingLabelAccountSettings.self, matching: predicate)
     }
+
+    /// Returns all stored add-on groups for a provided `siteID`.
+    ///
+    func loadAddOnGroups(siteID: Int64) -> [AddOnGroup] {
+        let predicate = \AddOnGroup.siteID == siteID
+        let descriptor = NSSortDescriptor(keyPath: \AddOnGroup.name, ascending: true)
+        return allObjects(ofType: AddOnGroup.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Returns a single stored add-on group for a provided `siteID` and `groupID`.
+    ///
+    func loadAddOnGroup(siteID: Int64, groupID: Int64) -> AddOnGroup? {
+        let predicate = \AddOnGroup.siteID == siteID && \AddOnGroup.groupID == groupID
+        return firstObject(ofType: AddOnGroup.self, matching: predicate)
+    }
 }

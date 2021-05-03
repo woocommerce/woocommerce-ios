@@ -1,5 +1,1 @@
-What’s new in this release?
-
-- A redesigned login experience, with new illustrations to promote the app’s main features and benefits.
-- Other fixes, including making the back button style on your navigation bar more consistent.
-
+We're busy working on lots of exciting things, so just one little fix this time. We now fully support product images with non-latin characters in the filename. They'll load nicely and won't cause weird issues with your Media Library.

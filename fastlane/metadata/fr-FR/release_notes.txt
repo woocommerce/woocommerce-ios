@@ -1,5 +1,1 @@
-Quelles sont les nouveautés de cette version ?
-
-- Une expérience de connexion repensée, avec de nouvelles illustrations pour promouvoir les principales fonctionnalités et avantages de l’application.
-- D’autres correctifs, notamment une meilleure homogénéisation du style de bouton de retour sur votre barre de navigation.
-
+Nous travaillons sur de nombreuses nouveautés fascinantes pour l’instant. Un seul petit correctif est actuellement disponible. Les images de produits dont le nom comprend des caractères non latins sont désormais prises en charge. Elles se chargeront sans problème et ne provoqueront plus d’erreurs inattendues dans votre bibliothèque de médias.

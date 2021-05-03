@@ -38,6 +38,11 @@ final class SettingsViewController: UIViewController {
         return urlAsString?.hostname() ?? String()
     }
 
+    private var siteID: Int64 {
+        let siteID = ServiceLocator.stores.sessionManager.defaultStoreID
+        return siteID ?? 0
+    }
+
     /// ResultsController: Loads Sites from the Storage Layer.
     ///
     private let resultsController: ResultsController<StorageSite> = {
@@ -375,7 +380,7 @@ private extension SettingsViewController {
     }
 
     func couponManagementWasPressed() {
-        let viewController = CouponManagementViewController(nibName: nil, bundle: nil)
+        let viewController = CouponManagementViewController(siteID: siteID)
         show(viewController, sender: self)
     }
 

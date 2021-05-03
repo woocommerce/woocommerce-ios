@@ -168,6 +168,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Empty Coupons Icon
+    ///
+    static var emptyCouponManagementListImage: UIImage {
+        return UIImage(named: "woo-error")!
+    }
+
     /// Empty Products Icon
     ///
     static var emptyProductsImage: UIImage {

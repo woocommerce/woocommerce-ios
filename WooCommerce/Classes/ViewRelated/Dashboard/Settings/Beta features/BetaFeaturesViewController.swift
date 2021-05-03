@@ -2,13 +2,6 @@ import Storage
 import UIKit
 import Yosemite
 
-// MARK: - BetaFeaturesViewController's Notifications
-//
-extension Notification.Name {
-    static let ProductsFeatureSwitchDidChange = Notification.Name(rawValue: "ProductsFeatureSwitchDidChange")
-}
-
-
 /// Contains UI for Beta features that can be turned on and off.
 ///
 class BetaFeaturesViewController: UIViewController {
@@ -85,8 +78,8 @@ private extension BetaFeaturesViewController {
     }
 
     func productsSection() -> Section {
-        return Section(rows: [.productsSwitch,
-                              .productsDescription])
+        return Section(rows: [.orderAddOns,
+                              .orderAddOnsDescription])
     }
 
     /// Register table cells.
@@ -107,10 +100,10 @@ private extension BetaFeaturesViewController {
 
         switch cell {
         // Product list
-        case let cell as SwitchTableViewCell where row == .productsSwitch:
-            configureProductsSwitch(cell: cell)
-        case let cell as BasicTableViewCell where row == .productsDescription:
-            configureProductsDescription(cell: cell)
+        case let cell as SwitchTableViewCell where row == .orderAddOns:
+            configureOrderAddOnsSwitch(cell: cell)
+        case let cell as BasicTableViewCell where row == .orderAddOnsDescription:
+            configureOrderAddOnsDescription(cell: cell)
         default:
             fatalError()
         }
@@ -118,13 +111,9 @@ private extension BetaFeaturesViewController {
 
     // MARK: - Product List feature
 
-    func configureProductsSwitch(cell: SwitchTableViewCell) {
+    func configureOrderAddOnsSwitch(cell: SwitchTableViewCell) {
         configureCommonStylesForSwitchCell(cell)
-
-        let title = NSLocalizedString("Creating products",
-                                      comment: "My Store > Settings > Experimental features > Products")
-
-        cell.title = title
+        cell.title = Localization.orderAddOnsTitle
 
         let action = AppSettingsAction.loadProductsFeatureSwitch() { isVisible in
             cell.isOn = isVisible
@@ -135,19 +124,16 @@ private extension BetaFeaturesViewController {
             ServiceLocator.analytics.track(.settingsBetaFeaturesProductsToggled)
 
             let action = AppSettingsAction.setProductsFeatureSwitch(isEnabled: isSwitchOn) {
-                NotificationCenter.default.post(name: .ProductsFeatureSwitchDidChange, object: self)
+                //NotificationCenter.default.post(name: .ProductsFeatureSwitchDidChange, object: self)
             }
             ServiceLocator.stores.dispatch(action)
         }
-        cell.accessibilityIdentifier = "beta-features-products-cell"
+        cell.accessibilityIdentifier = "beta-features-order-add-ons-cell"
     }
 
-    func configureProductsDescription(cell: BasicTableViewCell) {
+    func configureOrderAddOnsDescription(cell: BasicTableViewCell) {
         configureCommonStylesForDescriptionCell(cell)
-
-        let description = NSLocalizedString("Test out the new product creation as we get ready to launch",
-                                            comment: "My Store > Settings > Experimental features > Products")
-        cell.textLabel?.text = description
+        cell.textLabel?.text = Localization.orderAddOnsDescription
     }
 }
 
@@ -210,19 +196,27 @@ private struct Section {
 
 private enum Row: CaseIterable {
     // Products.
-    case productsSwitch
-    case productsDescription
+    case orderAddOns
+    case orderAddOnsDescription
 
     var type: UITableViewCell.Type {
         switch self {
-        case .productsSwitch:
+        case .orderAddOns:
             return SwitchTableViewCell.self
-        case .productsDescription:
+        case .orderAddOnsDescription:
             return BasicTableViewCell.self
         }
     }
 
     var reuseIdentifier: String {
         return type.reuseIdentifier
+    }
+}
+
+private extension BetaFeaturesViewController {
+    enum Localization {
+        static let orderAddOnsTitle = NSLocalizedString("View Add-Ons", comment: "Cell title on the beta features screen to enable the order add-ons feature")
+        static let orderAddOnsDescription = NSLocalizedString("Test out viewing Order Add-Ons as we get ready to launch",
+                                                              comment: "Cell description on the beta features screen to enable the order add-ons feature")
     }
 }

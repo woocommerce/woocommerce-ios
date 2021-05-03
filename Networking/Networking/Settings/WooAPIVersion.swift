@@ -34,6 +34,10 @@ public enum WooAPIVersion: String {
     ///
     case wcConnectV1 = "wc/v1/connect"
 
+    /// WooCommerce Product Add-ons plugin.
+    ///
+    case addOnsV1 = "wc-product-add-ons/v1"
+
     /// Returns the path for the current API Version
     ///
     var path: String {

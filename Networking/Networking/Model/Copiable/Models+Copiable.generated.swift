@@ -2,6 +2,30 @@
 // DO NOT EDIT
 
 
+extension AddOnGroup {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        groupID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        priority: CopiableProp<Int64> = .copy,
+        addOns: CopiableProp<[ProductAddOn]> = .copy
+    ) -> AddOnGroup {
+        let siteID = siteID ?? self.siteID
+        let groupID = groupID ?? self.groupID
+        let name = name ?? self.name
+        let priority = priority ?? self.priority
+        let addOns = addOns ?? self.addOns
+
+        return AddOnGroup(
+            siteID: siteID,
+            groupID: groupID,
+            name: name,
+            priority: priority,
+            addOns: addOns
+        )
+    }
+}
+
 extension Order {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

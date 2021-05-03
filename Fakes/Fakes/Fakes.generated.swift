@@ -47,6 +47,19 @@ extension AddOnDisplay {
         .dropdown
     }
 }
+extension AddOnGroup {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> AddOnGroup {
+        .init(
+            siteID: .fake(),
+            groupID: .fake(),
+            name: .fake(),
+            priority: .fake(),
+            addOns: .fake()
+        )
+    }
+}
 extension AddOnPriceType {
     /// Returns a "ready to use" type filled with fake values.
     ///

@@ -154,11 +154,9 @@ public class AppSettingsStore: Store {
         case .resetProductsSettings:
             resetProductsSettings()
         case .setOrderAddOnsFeatureSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
-        // TODO: Implement
-            break
+            setOrderAddOnsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadOrderAddOnsSwitchState(onCompletion: let onCompletion):
-        // TODO: Implement
-            break
+            loadOrderAddOnsSwitchState(onCompletion: onCompletion)
         }
     }
 }

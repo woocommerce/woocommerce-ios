@@ -115,17 +115,17 @@ private extension BetaFeaturesViewController {
         configureCommonStylesForSwitchCell(cell)
         cell.title = Localization.orderAddOnsTitle
 
-        let action = AppSettingsAction.loadProductsFeatureSwitch() { isVisible in
-            cell.isOn = isVisible
+        // TODO: make it readable
+        let action = AppSettingsAction.loadOrderAddOnsSwitchState() { result in
+            cell.isOn = (try? result.get()) ?? false
         }
         ServiceLocator.stores.dispatch(action)
 
         cell.onChange = { isSwitchOn in
+            // TODO: Update analytics with order-add-on ones
             ServiceLocator.analytics.track(.settingsBetaFeaturesProductsToggled)
 
-            let action = AppSettingsAction.setProductsFeatureSwitch(isEnabled: isSwitchOn) {
-                //NotificationCenter.default.post(name: .ProductsFeatureSwitchDidChange, object: self)
-            }
+            let action = AppSettingsAction.setOrderAddOnsFeatureSwitchState(isEnabled: isSwitchOn, onCompletion: {} )
             ServiceLocator.stores.dispatch(action)
         }
         cell.accessibilityIdentifier = "beta-features-order-add-ons-cell"

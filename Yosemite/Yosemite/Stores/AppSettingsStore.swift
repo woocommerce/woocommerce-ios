@@ -181,10 +181,7 @@ private extension AppSettingsStore {
                 return onCompletion(.success(false))
             }
 
-            // TODO: Use copiable
-            let settingsToSave = GeneralAppSettings(installationDate: date,
-                                                    feedbacks: settings.feedbacks,
-                                                    isViewAddOnsSwitchEnabled: settings.isViewAddOnsSwitchEnabled)
+            let settingsToSave = settings.copy(installationDate: date)
             try saveGeneralAppSettings(settingsToSave)
 
             onCompletion(.success(true))
@@ -215,6 +212,22 @@ private extension AppSettingsStore {
         onCompletion(Result {
             try useCase.shouldBeVisible()
         })
+    }
+
+    /// Sets the provided Order Add-Ons beta feature switch state into `GeneralAppSettings`
+    ///
+    func setOrderAddOnsFeatureSwitchState(isEnabled: Bool, onCompletion: () -> Void) {
+        let settings = loadOrCreateGeneralAppSettings().copy(isViewAddOnsSwitchEnabled: isEnabled)
+        try? saveGeneralAppSettings(settings)
+        onCompletion()
+
+    }
+
+    /// Loads the current Order Add-Ons beta feature switch state from `GeneralAppSettings`
+    ///
+    func loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
+        let settings = loadOrCreateGeneralAppSettings()
+        onCompletion(.success(settings.isViewAddOnsSwitchEnabled))
     }
 
     /// Load the `GeneralAppSettings` from file or create an empty one if it doesn't exist.

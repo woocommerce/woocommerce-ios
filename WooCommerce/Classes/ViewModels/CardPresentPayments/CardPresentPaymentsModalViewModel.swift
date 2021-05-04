@@ -3,8 +3,11 @@ import UIKit
 /// Abstracts configuration and contents of the modal screens presented
 /// during operations related to Card Present Payments
 protocol CardPresentPaymentsModalViewModel {
-    /// The visual mode of the view. Represents the contents of the view.
-    var mode: PaymentsModalMode { get }
+    /// The number and distribution of text labels
+    var textMode: PaymentsModalTextMode { get }
+
+    /// The number and distribution of action buttons
+    var actionsMode: PaymentsModalActionsMode { get }
 
     /// The title at the top of the modal view.
     var topTitle: String { get }
@@ -34,23 +37,35 @@ protocol CardPresentPaymentsModalViewModel {
     /// Executes action associated to a tap in the view controller secondary button
     /// - Parameter viewController: usually the view controller sending the tap
     func didTapSecondaryButton(in viewController: UIViewController?)
+
+    /// Executes action associated to a tap in the view controller auxiliary button
+    /// - Parameter viewController: usually the view controller sending the tap
+    func didTapAuxiliaryButton(in viewController: UIViewController?)
 }
 
 
-/// Represents the different visual modes of the modal view
-enum PaymentsModalMode {
+/// Represents the different visual modes of the modal view's textfields
+enum PaymentsModalTextMode {
     /// From top to bottom: Two lines of text at the top, image, two more lines of text
     case fullInfo
 
     /// From top to bottom: Two lines of text at the top, image, one more line of text
-    case reducedInfo
+    case reducedBottomInfo
 
-    /// From top to bottom: Two lines of text at the top, image, two action buttons
-    case twoActionButtons
+    /// From top to bottom: Two lines of text at the top, and image
+    case noBottomInfo
+}
 
-    /// From top to bottom: Two lines of text at the top, image, one action button
-    case oneActionButton
+enum PaymentsModalActionsMode {
+    /// No action buttons
+    case none
 
-    /// From top to bottom: One line of text at the top, image, one action button
-    case reducedInfoOneActionButton
+    /// One action button
+    case oneAction
+
+    /// Two action buttons
+    case twoAction
+
+    /// Two action buttons and an auxiiary button
+    case twoActionAndAuxiliary
 }

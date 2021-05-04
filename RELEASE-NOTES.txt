@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+6.7
+-----
+
+
 6.6
 -----
 - [*] Fix: Product variations only support at most one image, so we won't show an option to add a second one. [https://github.com/woocommerce/woocommerce-ios/pull/3994]

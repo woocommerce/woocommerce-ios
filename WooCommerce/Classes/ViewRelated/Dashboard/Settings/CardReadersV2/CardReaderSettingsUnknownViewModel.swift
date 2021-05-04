@@ -3,18 +3,15 @@ import Yosemite
 
 final class CardReaderSettingsUnknownViewModel: CardReaderSettingsPresentedViewModel {
 
-    var shouldShow: CardReaderSettingsTriState
+    private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
     var didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?
 
-    private var noConnectedReaders: CardReaderSettingsTriState
-    private var noKnownReaders: CardReaderSettingsTriState
+    private var noConnectedReaders: CardReaderSettingsTriState = .isUnknown
+    private var noKnownReaders: CardReaderSettingsTriState = .isUnknown
 
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?) {
 
         self.didChangeShouldShow = didChangeShouldShow
-        self.shouldShow = .isUnknown
-        self.noConnectedReaders = .isUnknown
-        self.noKnownReaders = .isUnknown
 
         beginObservation()
     }

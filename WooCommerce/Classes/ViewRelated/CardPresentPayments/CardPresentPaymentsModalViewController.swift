@@ -97,6 +97,7 @@ private extension CardPresentPaymentsModalViewController {
 
         stylePrimaryButton()
         styleSecondaryButton()
+        styleAuxiliaryButton()
     }
 
     func stylePrimaryButton() {
@@ -105,6 +106,10 @@ private extension CardPresentPaymentsModalViewController {
 
     func styleSecondaryButton() {
 
+    }
+
+    func styleAuxiliaryButton() {
+        auxiliaryButton.applyLinkButtonStyle()
     }
 
     func populateContent() {

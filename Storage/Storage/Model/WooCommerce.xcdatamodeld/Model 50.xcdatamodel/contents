@@ -588,7 +588,7 @@
         <attribute name="timezone" optional="YES" attributeType="String"/>
         <attribute name="url" optional="YES" attributeType="String"/>
     </entity>
-    <entity name="SitePlugin" representedClassName="SitePlugin" syncable="YES" codeGenerationType="class">
+    <entity name="SitePlugin" representedClassName="SitePlugin" syncable="YES">
         <attribute name="author" attributeType="String" defaultValueString=""/>
         <attribute name="authorUri" attributeType="String" defaultValueString=""/>
         <attribute name="descriptionRaw" attributeType="String" defaultValueString=""/>

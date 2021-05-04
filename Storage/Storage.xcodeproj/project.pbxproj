@@ -45,7 +45,8 @@
 		262B270E2621412000A421CF /* ProductAddOn+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B26752621401A00A421CF /* ProductAddOn+CoreDataProperties.swift */; };
 		262B27132621412700A421CF /* ProductAddOnOption+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B26762621401A00A421CF /* ProductAddOnOption+CoreDataClass.swift */; };
 		262B27182621412D00A421CF /* ProductAddOnOption+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262B26772621401A00A421CF /* ProductAddOnOption+CoreDataProperties.swift */; };
-		263E37782641A3C400260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37772641A3C400260D3B /* Codegen */; };
+		263E37D72641AD5100260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37D62641AD5100260D3B /* Codegen */; };
+		263E37D92641AD5200260D3B /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 263E37D62641AD5100260D3B /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		26577519243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 26577518243D808B003168A5 /* WooCommerceModelV26toV27.xcmappingmodel */; };
 		267439D624E5D45A0090696C /* FeedbackSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267439D524E5D45A0090696C /* FeedbackSettings.swift */; };
 		2685C108263C88B000D9EE97 /* AddOnGroup+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685C106263C88B000D9EE97 /* AddOnGroup+CoreDataClass.swift */; };
@@ -201,6 +202,20 @@
 			remoteInfo = Storage;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		263E37D82641AD5100260D3B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				263E37D92641AD5200260D3B /* Codegen in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		021EAA42254938AA00AA8CCD /* Model 35.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 35.xcdatamodel"; sourceTree = "<group>"; };
@@ -449,7 +464,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				263E37782641A3C400260D3B /* Codegen in Frameworks */,
+				263E37D72641AD5100260D3B /* Codegen in Frameworks */,
 				B54CA5B520A4BC0300F38CD1 /* CoreData.framework in Frameworks */,
 				7028A41485A08AC748206184 /* Pods_Storage.framework in Frameworks */,
 			);
@@ -872,6 +887,7 @@
 				B54CA59520A4BBA500F38CD1 /* Frameworks */,
 				B54CA59620A4BBA500F38CD1 /* Headers */,
 				B54CA59720A4BBA500F38CD1 /* Resources */,
+				263E37D82641AD5100260D3B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -879,7 +895,7 @@
 			);
 			name = Storage;
 			packageProductDependencies = (
-				263E37772641A3C400260D3B /* Codegen */,
+				263E37D62641AD5100260D3B /* Codegen */,
 			);
 			productName = Storage;
 			productReference = B54CA59920A4BBA500F38CD1 /* Storage.framework */;
@@ -1602,7 +1618,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		263E37772641A3C400260D3B /* Codegen */ = {
+		263E37D62641AD5100260D3B /* Codegen */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Codegen;
 		};

@@ -84,6 +84,8 @@
 		262E5AD5255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262E5AD4255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift */; };
 		263E37D22641ACEA00260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37D12641ACEA00260D3B /* Codegen */; };
 		263E37D42641ACEA00260D3B /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 263E37D12641ACEA00260D3B /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		263E383F2641FF1600260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E383E2641FF1600260D3B /* Codegen */; };
+		263E38402641FF1600260D3B /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 263E383E2641FF1600260D3B /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		26455E2125F66951008A1D32 /* ProductAttributeTerm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B6453B259B8C0D00EF3FB3 /* ProductAttributeTerm.swift */; };
 		26455E2425F66982008A1D32 /* ProductAttributeTermRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E5A08725A66AFC000DF8F6 /* ProductAttributeTermRemote.swift */; };
 		26455E2725F669EA008A1D32 /* ProductAttributeTermListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B64543259BCE0F00EF3FB3 /* ProductAttributeTermListMapper.swift */; };
@@ -473,6 +475,17 @@
 			dstSubfolderSpec = 10;
 			files = (
 				263E37D42641ACEA00260D3B /* Codegen in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		263E37EE2641F9F200260D3B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				263E38402641FF1600260D3B /* Codegen in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -955,6 +968,7 @@
 				26FB056C25F6CB9100A40B26 /* Fakes.framework in Frameworks */,
 				57150E1524F462E600E81611 /* TestKit in Frameworks */,
 				B557D9ED209753AA005962F4 /* Networking.framework in Frameworks */,
+				263E383F2641FF1600260D3B /* Codegen in Frameworks */,
 				21DB5B99C4107CF69C0A57EC /* Pods_NetworkingTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1751,6 +1765,7 @@
 				B557D9E9209753AA005962F4 /* Frameworks */,
 				B557D9EA209753AA005962F4 /* Resources */,
 				AF6F2217EABB7A84BD6BEF75 /* [CP] Embed Pods Frameworks */,
+				263E37EE2641F9F200260D3B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1760,6 +1775,7 @@
 			name = NetworkingTests;
 			packageProductDependencies = (
 				57150E1424F462E600E81611 /* TestKit */,
+				263E383E2641FF1600260D3B /* Codegen */,
 			);
 			productName = NetworkingTests;
 			productReference = B557D9EC209753AA005962F4 /* NetworkingTests.xctest */;
@@ -2713,6 +2729,10 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		263E37D12641ACEA00260D3B /* Codegen */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Codegen;
+		};
+		263E383E2641FF1600260D3B /* Codegen */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Codegen;
 		};

@@ -128,6 +128,8 @@
 		261F94E6242EFF8700762B58 /* ProductCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261F94E5242EFF8700762B58 /* ProductCategoryStore.swift */; };
 		263E37DC2641AD6B00260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37DB2641AD6B00260D3B /* Codegen */; };
 		263E37DE2641AD6B00260D3B /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 263E37DB2641AD6B00260D3B /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		263E38422641FF2300260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E38412641FF2300260D3B /* Codegen */; };
+		263E38442641FF2300260D3B /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 263E38412641FF2300260D3B /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		26455E2E25F66A47008A1D32 /* Observables in Frameworks */ = {isa = PBXBuildFile; productRef = 26455E2D25F66A47008A1D32 /* Observables */; };
 		26577517243D5E42003168A5 /* ProductCategoryUpdated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26577516243D5E42003168A5 /* ProductCategoryUpdated.swift */; };
 		265BCA0024301ACD004E53EE /* ProductCategoryStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265BC9FF24301ACD004E53EE /* ProductCategoryStoreTests.swift */; };
@@ -318,6 +320,17 @@
 			dstSubfolderSpec = 10;
 			files = (
 				263E37DE2641AD6B00260D3B /* Codegen in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		263E38432641FF2300260D3B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				263E38442641FF2300260D3B /* Codegen in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -643,6 +656,7 @@
 				26FB056A25F6CB7600A40B26 /* Fakes.framework in Frameworks */,
 				57150E1124F462D900E81611 /* TestKit in Frameworks */,
 				B5C9DDFF2087FEC0006B910A /* Yosemite.framework in Frameworks */,
+				263E38422641FF2300260D3B /* Codegen in Frameworks */,
 				36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1415,6 +1429,7 @@
 				B5C9DDFB2087FEC0006B910A /* Frameworks */,
 				B5C9DDFC2087FEC0006B910A /* Resources */,
 				8EA29A17ED8EE4344F10161F /* [CP] Embed Pods Frameworks */,
+				263E38432641FF2300260D3B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1424,6 +1439,7 @@
 			name = YosemiteTests;
 			packageProductDependencies = (
 				57150E1024F462D900E81611 /* TestKit */,
+				263E38412641FF2300260D3B /* Codegen */,
 			);
 			productName = FluxCTests;
 			productReference = B5C9DDFE2087FEC0006B910A /* YosemiteTests.xctest */;
@@ -2211,6 +2227,10 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		263E37DB2641AD6B00260D3B /* Codegen */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Codegen;
+		};
+		263E38412641FF2300260D3B /* Codegen */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Codegen;
 		};

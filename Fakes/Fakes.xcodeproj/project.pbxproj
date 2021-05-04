@@ -3,16 +3,32 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		26106B3D25FA4F6C0000DF30 /* ProductFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26106B3C25FA4F6C0000DF30 /* ProductFactory.swift */; };
+		263E383C2641FED600260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E383B2641FED600260D3B /* Codegen */; };
+		263E383D2641FED600260D3B /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 263E383B2641FED600260D3B /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		26CA6D2625F6C87800B01F48 /* Fakes.h in Headers */ = {isa = PBXBuildFile; fileRef = 26CA6D2425F6C87800B01F48 /* Fakes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		26CA6D2F25F6C8FC00B01F48 /* Fake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CA6D2D25F6C8FB00B01F48 /* Fake.swift */; };
 		26CA6D3025F6C8FC00B01F48 /* Fakes.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CA6D2E25F6C8FC00B01F48 /* Fakes.generated.swift */; };
 		26CA6D3625F6C93C00B01F48 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26CA6D3525F6C93C00B01F48 /* Networking.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		263E37EA2641F93300260D3B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				263E383D2641FED600260D3B /* Codegen in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		26106B3C25FA4F6C0000DF30 /* ProductFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFactory.swift; sourceTree = "<group>"; };
@@ -30,6 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				263E383C2641FED600260D3B /* Codegen in Frameworks */,
 				26CA6D3625F6C93C00B01F48 /* Networking.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -105,12 +122,16 @@
 				26CA6D1D25F6C87800B01F48 /* Sources */,
 				26CA6D1E25F6C87800B01F48 /* Frameworks */,
 				26CA6D1F25F6C87800B01F48 /* Resources */,
+				263E37EA2641F93300260D3B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = Fakes;
+			packageProductDependencies = (
+				263E383B2641FED600260D3B /* Codegen */,
+			);
 			productName = Fakes;
 			productReference = 26CA6D2125F6C87800B01F48 /* Fakes.framework */;
 			productType = "com.apple.product-type.framework";
@@ -368,6 +389,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		263E383B2641FED600260D3B /* Codegen */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Codegen;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 26CA6D1825F6C87800B01F48 /* Project object */;
 }

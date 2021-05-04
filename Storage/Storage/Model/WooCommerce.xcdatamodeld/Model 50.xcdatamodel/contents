@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="20D91" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="20D64" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -588,6 +588,22 @@
         <attribute name="timezone" optional="YES" attributeType="String"/>
         <attribute name="url" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="SitePlugin" representedClassName="SitePlugin" syncable="YES" codeGenerationType="class">
+        <attribute name="author" attributeType="String" defaultValueString=""/>
+        <attribute name="authorUri" attributeType="String" defaultValueString=""/>
+        <attribute name="descriptionRaw" attributeType="String" defaultValueString=""/>
+        <attribute name="descriptionRendered" attributeType="String" defaultValueString=""/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <attribute name="networkOnly" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="plugin" attributeType="String" defaultValueString=""/>
+        <attribute name="pluginUri" attributeType="String" defaultValueString=""/>
+        <attribute name="requiresPHPVersion" attributeType="String" defaultValueString=""/>
+        <attribute name="requiresWPVersion" attributeType="String" defaultValueString=""/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="status" attributeType="String" defaultValueString="unknown"/>
+        <attribute name="textDomain" attributeType="String" defaultValueString=""/>
+        <attribute name="version" attributeType="String" defaultValueString=""/>
+    </entity>
     <entity name="SiteSetting" representedClassName="SiteSetting" syncable="YES">
         <attribute name="label" optional="YES" attributeType="String"/>
         <attribute name="settingDescription" optional="YES" attributeType="String"/>
@@ -633,6 +649,7 @@
     <elements>
         <element name="Account" positionX="-200.9765625" positionY="63.5625" width="128" height="120"/>
         <element name="AccountSettings" positionX="-846" positionY="270" width="128" height="89"/>
+        <element name="AddOnGroup" positionX="-684" positionY="54" width="128" height="104"/>
         <element name="GenericAttribute" positionX="-684" positionY="45" width="128" height="89"/>
         <element name="Note" positionX="-369.61328125" positionY="-95.85546875" width="128" height="283"/>
         <element name="Order" positionX="-41.5859375" positionY="23.53125" width="128" height="794"/>
@@ -687,6 +704,6 @@
         <element name="TaxClass" positionX="-529.7734375" positionY="-56.109375" width="128" height="88"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="118"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
-        <element name="AddOnGroup" positionX="-684" positionY="54" width="128" height="104"/>
+        <element name="SitePlugin" positionX="-675" positionY="63" width="128" height="239"/>
     </elements>
 </model>

@@ -1,0 +1,170 @@
+import Foundation
+import Yosemite
+import protocol Storage.StorageManagerType
+import class AutomatticTracks.CrashLogging
+
+
+struct CouponListCellViewModel {
+    var title: String
+    var subtitle: String
+    var accessiblityLabel: String
+}
+
+enum CouponListState {
+    case initialized // Nothing to do here
+    case loading // View should show ghost cells
+    case empty // View should display the empty state
+    case failed // View should display error in Notice
+    case coupons // View should display the contents of `couponViewModels`
+}
+
+final class CouponManagementListViewModel {
+    /// onChange: Closure to inform View that the state of the ViewModel has changed
+    ///
+    private let onChange: (CouponListState) -> ()
+
+    /// couponViewModels: ViewModels for the cells representing Coupons
+    ///
+    var couponViewModels: [CouponListCellViewModel] = []
+
+    /// siteID: siteID of the currently active site, used for fetching and storing coupons
+    ///
+    private let siteID: Int64
+
+    /// resultsController: provides models from storage used for creation of cell ViewModels
+    ///
+    private let resultsController: ResultsController<StorageCoupon>
+
+    /// syncingCoordinator: Keeps tracks of which pages have been refreshed, and
+    /// encapsulates the "What should we sync now" logic.
+    ///
+    private let syncingCoordinator: SyncingCoordinatorProtocol
+
+    /// storesManager: provides the store for handling actions
+    ///
+    private let storesManager: StoresManager
+
+    /// storageManager: provides the storage for the results controller to fetch from
+    ///
+    private let storageManager: StorageManagerType
+
+    // MARK: - Initialization and setup
+    //
+    init(siteID: Int64,
+         syncingCoordinator: SyncingCoordinatorProtocol = SyncingCoordinator(),
+         storesManager: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         onChange: @escaping (CouponListState) -> ()) {
+        self.siteID = siteID
+        self.onChange = onChange
+        self.syncingCoordinator = syncingCoordinator
+        self.storesManager = storesManager
+        self.storageManager = storageManager
+        self.resultsController = Self.createResultsController(siteID: siteID,
+                                                              storageManager: storageManager)
+        configureSyncingCoordinator()
+        configureResultsController()
+        onChange(.initialized)
+    }
+
+    private static func createResultsController(siteID: Int64,
+                                                storageManager: StorageManagerType) -> ResultsController<StorageCoupon> {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageCoupon.dateCreated,
+                                          ascending: true)
+
+        return ResultsController<StorageCoupon>(storageManager: storageManager,
+                                                matching: predicate,
+                                                sortedBy: [descriptor])
+    }
+
+    /// Setup: Results Controller
+    ///
+    private func configureResultsController() {
+        resultsController.onDidChangeContent = updateViewModelState
+        resultsController.onDidResetContent = updateViewModelState
+
+        do {
+            try resultsController.performFetch()
+        } catch {
+            CrashLogging.logError(error)
+        }
+    }
+
+    /// Setup: Syncing Coordinator
+    ///
+    private func configureSyncingCoordinator() {
+        syncingCoordinator.delegate = self
+    }
+
+    /// Builds coupon cell view models if coupons are present, and notifies view controller of what to display
+    ///
+    func updateViewModelState() {
+        if resultsController.numberOfObjects > 0 {
+            buildCouponViewModels()
+            onChange(.coupons)
+        } else {
+            onChange(.empty)
+        }
+    }
+
+    private func buildCouponViewModels() {
+        couponViewModels = resultsController.fetchedObjects.map({ coupon in
+            return CouponListCellViewModel(title: coupon.code,
+                                           subtitle: coupon.description,
+                                           accessiblityLabel: coupon.description)
+        })
+    }
+
+
+    // MARK: - ViewController actions
+    //
+    /// The ViewController calls `viewDidLoad` to notify the view model it's ready to recieve results
+    ///
+    func viewDidLoad() {
+        onChange(.loading)
+        syncingCoordinator.synchronizeFirstPage(reason: nil, onCompletion: nil)
+    }
+
+    /// The ViewController may use this method to retrieve a coupon for navigation purposes
+    ///
+    func coupon(at indexPath: IndexPath) -> Coupon? {
+        return resultsController.safeObject(at: indexPath)
+    }
+}
+
+
+// MARK: - SyncingCoordinatorDelegate
+//
+extension CouponManagementListViewModel: SyncingCoordinatorDelegate {
+    /// Syncs the specified page of coupons from the API
+    /// - Parameters:
+    ///   - pageNumber: 1-indexed page number
+    ///   - pageSize: Number of coupons per page
+    ///   - reason: A string originating from a call to the coordinator's sync request methods,
+    ///   to identify the type of sync required
+    ///   - onCompletion: Completion handler to call passing whether the sync was successful
+    func sync(pageNumber: Int,
+              pageSize: Int,
+              reason: String?,
+              onCompletion: ((Bool) -> Void)?) {
+        let action = CouponAction
+            .synchronizeCoupons(siteID: siteID,
+                                pageNumber: pageNumber,
+                                pageSize: pageSize) { [weak self] result in
+                guard let self = self else { return }
+
+                switch result {
+                case .failure(let error):
+                    DDLogError("⛔️ Error synchronizing coupons: \(error)")
+                    self.onChange(.failed)
+                case .success:
+                    DDLogInfo("Synchronized coupons")
+                }
+
+                onCompletion?(result.isSuccess)
+        }
+
+        storesManager.dispatch(action)
+    }
+}

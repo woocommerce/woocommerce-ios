@@ -1,7 +1,9 @@
 import Foundation
-import WooCommerce
+@testable import WooCommerce
 
 final class MockSyncingCoordinator: SyncingCoordinatorProtocol {
+    var delegate: SyncingCoordinatorDelegate?
+
     var spyDidCallEnsureNextPageIsSynchronized = false
     var spyEnsureNextPageIsSynchronizedLastVisibleIndex: Int?
 

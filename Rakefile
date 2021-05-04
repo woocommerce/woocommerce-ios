@@ -181,7 +181,7 @@ task :generate do
     puts "\n\nGenerating Copiable for #{prefix}..."
     puts "=" * 100
 
-    sh "./Pods/Sourcery/bin/sourcery --config CodeGeneration/#{prefix}-Copiable.sourcery.yaml"
+    sh "./Pods/Sourcery/bin/sourcery --config CodeGeneration/Sourcery/Copiable/#{prefix}-Copiable.sourcery.yaml"
   }
 
   puts "\n\nDONE. Generated Copiable for all projects."
@@ -189,7 +189,7 @@ task :generate do
   puts "\n\nGenerating Fakeable for Networking..."
   puts "=" * 100
 
-  sh "./Pods/Sourcery/bin/sourcery --config CodeGeneration/Fakes/Networking-Fakes.yaml"
+  sh "./Pods/Sourcery/bin/sourcery --config CodeGeneration/Sourcery/Fakes/Networking-Fakes.yaml"
 
   puts "\n\nDONE. Generated Fakeable for Networking."
 

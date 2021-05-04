@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents a `AddOnGroup` entity that groups global add-ons.
 ///

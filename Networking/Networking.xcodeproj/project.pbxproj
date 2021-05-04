@@ -82,6 +82,7 @@
 		261CF1BC255AEE290090D8D3 /* PaymentsGatewayRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261CF1BB255AEE290090D8D3 /* PaymentsGatewayRemoteTests.swift */; };
 		261CF2CB255C50010090D8D3 /* payment-gateway-list-half.json in Resources */ = {isa = PBXBuildFile; fileRef = 261CF2CA255C50010090D8D3 /* payment-gateway-list-half.json */; };
 		262E5AD5255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262E5AD4255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift */; };
+		263E37762641A3B600260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37752641A3B600260D3B /* Codegen */; };
 		26455E2125F66951008A1D32 /* ProductAttributeTerm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B6453B259B8C0D00EF3FB3 /* ProductAttributeTerm.swift */; };
 		26455E2425F66982008A1D32 /* ProductAttributeTermRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E5A08725A66AFC000DF8F6 /* ProductAttributeTermRemote.swift */; };
 		26455E2725F669EA008A1D32 /* ProductAttributeTermListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B64543259BCE0F00EF3FB3 /* ProductAttributeTermListMapper.swift */; };
@@ -929,6 +930,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				263E37762641A3B600260D3B /* Codegen in Frameworks */,
 				6647C0161DAC6AB6570C53A7 /* Pods_Networking.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1728,6 +1730,9 @@
 			dependencies = (
 			);
 			name = Networking;
+			packageProductDependencies = (
+				263E37752641A3B600260D3B /* Codegen */,
+			);
 			productName = Networking;
 			productReference = B557D9E3209753AA005962F4 /* Networking.framework */;
 			productType = "com.apple.product-type.framework";
@@ -2703,6 +2708,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		263E37752641A3B600260D3B /* Codegen */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Codegen;
+		};
 		57150E1424F462E600E81611 /* TestKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TestKit;

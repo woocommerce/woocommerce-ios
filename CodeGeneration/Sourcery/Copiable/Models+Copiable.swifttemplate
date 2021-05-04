@@ -100,7 +100,11 @@ let matchingTypes = types.based["GeneratedCopiable"].filter {
 }
 
 // The names of modules that we should generate "import MODULE_NAME" lines for.
-let modulesToGenerateImports: [String] = { 
+let modulesToGenerateImports: [String] = {
+    let modulesFromType: [String] =  matchingTypes.flatMap { type in
+        type.imports.map { $0.description }
+    }
+
     let modulesFromProperties: [String] = matchingTypes.flatMap { type in 
         type.variables.compactMap { variable in 
             if let variableModule = variable.type?.module {
@@ -116,7 +120,7 @@ let modulesToGenerateImports: [String] = {
         return shouldImportCopiablePropModule ? [copiablePropModule] : []
     }()
 
-    return Array(Set(modulesFromProperties + modulesRequiredByTemplate)).sorted().filter {
+    return Array(Set(modulesFromType + modulesFromProperties + modulesRequiredByTemplate)).sorted().filter {
         // Ignore modules that belong to the current types we're generating for.
         $0 != matchingTypes.first?.module
     }

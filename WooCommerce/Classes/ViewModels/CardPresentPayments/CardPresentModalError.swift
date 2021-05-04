@@ -27,6 +27,8 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
 
     let secondaryButtonTitle: String? = nil
 
+    let auxiliaryButtonTitle: String? = nil
+
     var bottomTitle: String? {
         error.localizedDescription
     }
@@ -47,7 +49,7 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     func didTapSecondaryButton(in viewController: UIViewController?) {
     }
 
-    func didTapAuxiliaryButton(in viewController: UIViewController?) {        
+    func didTapAuxiliaryButton(in viewController: UIViewController?) {  
     }
 }
 

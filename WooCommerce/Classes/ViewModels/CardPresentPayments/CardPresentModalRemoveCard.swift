@@ -27,6 +27,8 @@ final class CardPresentModalRemoveCard: CardPresentPaymentsModalViewModel {
 
     let secondaryButtonTitle: String? = nil
 
+    let auxiliaryButtonTitle: String? = nil
+
     let bottomTitle: String? = Localization.removeCard
 
     let bottomSubtitle: String? = nil

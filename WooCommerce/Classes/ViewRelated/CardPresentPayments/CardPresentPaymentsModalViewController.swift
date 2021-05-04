@@ -16,6 +16,8 @@ final class CardPresentPaymentsModalViewController: UIViewController {
 
     @IBOutlet private weak var primaryButton: NUXButton!
     @IBOutlet private weak var secondaryButton: NUXButton!
+    @IBOutlet weak var auxiliaryButton: UIButton!
+
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var extraInfoButton: UIButton!
 
@@ -163,6 +165,7 @@ private extension CardPresentPaymentsModalViewController {
 
         configurePrimaryButton()
         configureSecondaryButton()
+        configureAuxiliaryButton()
     }
 
     func configurePrimaryButton() {
@@ -182,6 +185,19 @@ private extension CardPresentPaymentsModalViewController {
         secondaryButton.setTitle(viewModel.secondaryButtonTitle, for: .normal)
         secondaryButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapSecondaryButton()
+        }
+    }
+
+    func configureAuxiliaryButton() {
+        guard shouldShowAuxiliaryButton() else {
+            auxiliaryButton.isHidden = true
+            return
+        }
+
+        auxiliaryButton.isHidden = false
+        auxiliaryButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
+        auxiliaryButton.on(.touchUpInside) { [weak self] _ in
+            self?.didTapAuxiliaryButton()
         }
     }
 }
@@ -212,6 +228,10 @@ private extension CardPresentPaymentsModalViewController {
         return actionMode == .twoAction ||
             actionMode == .twoActionAndAuxiliary
     }
+
+    func shouldShowAuxiliaryButton() -> Bool {
+        viewModel.actionsMode == .twoActionAndAuxiliary
+    }
 }
 
 
@@ -223,6 +243,10 @@ private extension CardPresentPaymentsModalViewController {
 
     func didTapSecondaryButton() {
         viewModel.didTapSecondaryButton(in: self)
+    }
+
+    func didTapAuxiliaryButton() {
+        viewModel.didTapAuxiliaryButton(in: self)
     }
 }
 

@@ -28,6 +28,8 @@ final class CardPresentModalSuccess: CardPresentPaymentsModalViewModel {
 
     let secondaryButtonTitle: String? = Localization.emailReceipt
 
+    let auxiliaryButtonTitle: String? = Localization.noThanks
+
     let bottomTitle: String? = nil
 
     let bottomSubtitle: String? = nil

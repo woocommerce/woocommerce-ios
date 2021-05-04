@@ -24,6 +24,9 @@ protocol CardPresentPaymentsModalViewModel {
     /// Provides a title for a secondary action button
     var secondaryButtonTitle: String? { get }
 
+    /// Provides a title for an auxiliary button
+    var auxiliaryButtonTitle: String? { get }
+
     /// The title in the bottom section of the modal. Right below the image
     var bottomTitle: String? { get }
 

@@ -26,6 +26,8 @@ final class CardPresentModalReaderIsReady: CardPresentPaymentsModalViewModel {
 
     let secondaryButtonTitle: String? = nil
 
+    let auxiliaryButtonTitle: String? = nil
+
     let bottomTitle: String? = Localization.readerIsReady
 
     let bottomSubtitle: String? = Localization.tapInsertOrSwipe

@@ -189,28 +189,28 @@ private extension CardPresentPaymentsModalViewController {
 // MARK: - View layout configuration
 private extension CardPresentPaymentsModalViewController {
     func shouldShowTopSubtitle() -> Bool {
-        viewModel.mode != .reducedInfo
+        viewModel.textMode != .reducedTopInfo
     }
 
     func shouldShowBottomLabels() -> Bool {
-        let mode = viewModel.mode
-        return mode == .fullInfo ||
-            mode == .reducedInfo
+        viewModel.textMode != .noBottomInfo
     }
 
     func shouldShowActionButtons() -> Bool {
-        let mode = viewModel.mode
-        return mode == .oneActionButton ||
-            mode == .twoActionButtons ||
-            mode == .reducedInfoOneActionButton
+        viewModel.actionsMode != .none
     }
 
     func shouldShowBottomSubtitle() -> Bool {
-        viewModel.mode == .fullInfo
+        let textMode = viewModel.textMode
+        return textMode == .fullInfo ||
+            textMode == .reducedTopInfo
     }
 
     func shouldShowBottomActionButton() -> Bool {
-        viewModel.mode == .twoActionButtons
+        let actionMode = viewModel.actionsMode
+
+        return actionMode == .twoAction ||
+            actionMode == .twoActionAndAuxiliary
     }
 }
 

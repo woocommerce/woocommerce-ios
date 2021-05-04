@@ -49,6 +49,9 @@ enum PaymentsModalTextMode {
     /// From top to bottom: Two lines of text at the top, image, two more lines of text
     case fullInfo
 
+    /// From top to bottom: One line of text at the top, image
+    case reducedTopInfo
+
     /// From top to bottom: Two lines of text at the top, image, one more line of text
     case reducedBottomInfo
 

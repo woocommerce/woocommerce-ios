@@ -13,7 +13,8 @@ final class CardPresentModalSuccess: CardPresentPaymentsModalViewModel {
     /// Closure to execute when secondary button is tapped
     private let emailReceiptAction: () -> Void
 
-    let mode: PaymentsModalMode = .twoActionButtons
+    let textMode: PaymentsModalTextMode = .noBottomInfo
+    let actionsMode: PaymentsModalActionsMode = .twoActionAndAuxiliary
 
     let topTitle: String = Localization.paymentSuccessful
 
@@ -26,6 +27,8 @@ final class CardPresentModalSuccess: CardPresentPaymentsModalViewModel {
     let primaryButtonTitle: String? = Localization.printReceipt
 
     let secondaryButtonTitle: String? = Localization.emailReceipt
+
+    let auxiliaryButtonTitle: String? = Localization.noThanks
 
     let bottomTitle: String? = nil
 

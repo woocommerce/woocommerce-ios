@@ -10,7 +10,8 @@ final class CardPresentModalTapCard: CardPresentPaymentsModalViewModel {
     /// Charge amount
     private let amount: String
 
-    let mode: PaymentsModalMode = .fullInfo
+    let textMode: PaymentsModalTextMode = .fullInfo
+    let actionsMode: PaymentsModalActionsMode = .none
 
     var topTitle: String {
         name

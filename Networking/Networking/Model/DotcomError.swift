@@ -1,5 +1,5 @@
 import Foundation
-
+import Codegen
 
 /// WordPress.com Request Error
 ///

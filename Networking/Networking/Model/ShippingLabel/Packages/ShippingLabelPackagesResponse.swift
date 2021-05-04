@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents a list of Shipping Label Packages (custom and predefined).
 ///

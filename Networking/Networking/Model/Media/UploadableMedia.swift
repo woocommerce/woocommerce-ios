@@ -1,3 +1,5 @@
+import Codegen
+
 /// Media that has the data fields to be uploaded to the WordPress Site Media
 ///
 public struct UploadableMedia: GeneratedFakeable {

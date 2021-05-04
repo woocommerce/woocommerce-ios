@@ -1,5 +1,5 @@
 import Foundation
-
+import Codegen
 
 /// Represents a single top earner stat for a specific period.
 ///

@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents a Shipping Label Refund.
 ///

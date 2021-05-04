@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents the taxes for a specific shipping item.
 ///

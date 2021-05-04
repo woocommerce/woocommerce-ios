@@ -92,7 +92,7 @@ func fullyQualifiedName(of typeName: TypeName, type: Type?) -> String {
 // -------------------------------------------------------------------------------- 
 
 // The module where the CopiableProp and NullableCopiableProp typealiases belong.
-let copiablePropModule = "Networking"
+let copiablePropModule = "Codegen"
 
 // The matching types that we're going to generate code for.
 let matchingTypes = types.based["GeneratedCopiable"].filter { 

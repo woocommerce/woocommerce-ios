@@ -22,7 +22,7 @@ class AddOnCrossreferenceTests: XCTestCase {
         ])
 
         // When
-        let useCase = AddOnCrossreferenceUseCase(orderItem: orderItem, product: product)
+        let useCase = AddOnCrossreferenceUseCase(orderItem: orderItem, product: product, addOnGroups: [])
         let addOnsAttributes = useCase.addOnsAttributes()
 
         // Then
@@ -42,7 +42,7 @@ class AddOnCrossreferenceTests: XCTestCase {
         ])
 
         // When
-        let useCase = AddOnCrossreferenceUseCase(orderItem: orderItem, product: product)
+        let useCase = AddOnCrossreferenceUseCase(orderItem: orderItem, product: product, addOnGroups: [])
         let addOnsAttributes = useCase.addOnsAttributes()
 
         // Then
@@ -61,7 +61,7 @@ class AddOnCrossreferenceTests: XCTestCase {
         ])
 
         // When
-        let useCase = AddOnCrossreferenceUseCase(orderItem: orderItem, product: product)
+        let useCase = AddOnCrossreferenceUseCase(orderItem: orderItem, product: product, addOnGroups: [])
         let addOnsAttributes = useCase.addOnsAttributes()
 
         // Then
@@ -81,7 +81,7 @@ class AddOnCrossreferenceTests: XCTestCase {
         let product = Product.fake()
 
         // When
-        let useCase = AddOnCrossreferenceUseCase(orderItem: orderItem, product: product)
+        let useCase = AddOnCrossreferenceUseCase(orderItem: orderItem, product: product, addOnGroups: [])
         let addOnsAttributes = useCase.addOnsAttributes()
 
         // Then
@@ -98,10 +98,64 @@ class AddOnCrossreferenceTests: XCTestCase {
         ])
 
         // When
-        let useCase = AddOnCrossreferenceUseCase(orderItem: orderItem, product: product)
+        let useCase = AddOnCrossreferenceUseCase(orderItem: orderItem, product: product, addOnGroups: [])
         let addOnsAttributes = useCase.addOnsAttributes()
 
         // Then
         XCTAssertTrue(addOnsAttributes.isEmpty)
+    }
+
+    func tests_addOn_attributes_are_correctly_filtered_against_global_addOns() {
+        // Given
+        let orderItem = MockAggregateOrderItem.emptyItem().copy(attributes: [
+            OrderItemAttribute(metaID: 1, name: "Topping ($3.00)", value: ""),
+            OrderItemAttribute(metaID: 2, name: "Random Attribute 1", value: ""),
+            OrderItemAttribute(metaID: 3, name: "Fast Delivery ($7.00)", value: "")
+        ])
+        let product = Product.fake()
+        let addOnGroups = [
+            AddOnGroup.fake().copy(addOns: [ProductAddOn.fake().copy(name: "Fast Delivery")]),
+            AddOnGroup.fake().copy(addOns: [ProductAddOn.fake().copy(name: "Topping")]),
+        ]
+
+        // When
+        let useCase = AddOnCrossreferenceUseCase(orderItem: orderItem, product: product, addOnGroups: addOnGroups)
+        let addOnsAttributes = useCase.addOnsAttributes()
+
+        // Then
+        XCTAssertEqual(addOnsAttributes, [
+            OrderItemAttribute(metaID: 1, name: "Topping ($3.00)", value: ""),
+            OrderItemAttribute(metaID: 3, name: "Fast Delivery ($7.00)", value: ""),
+        ])
+    }
+
+    func tests_addOn_attributes_are_correctly_filtered_against_product_addOns_and_global_addOns() {
+        // Given
+        let orderItem = MockAggregateOrderItem.emptyItem().copy(attributes: [
+            OrderItemAttribute(metaID: 1, name: "Topping ($3.00)", value: ""),
+            OrderItemAttribute(metaID: 2, name: "Random Attribute 1", value: ""),
+            OrderItemAttribute(metaID: 3, name: "Fast Delivery ($7.00)", value: ""),
+            OrderItemAttribute(metaID: 4, name: "Gift Wrapping ($7.00)", value: ""),
+        ])
+        let product = Product.fake().copy(addOns: [
+            ProductAddOn.fake().copy(name: "Fast Delivery"),
+            ProductAddOn.fake().copy(name: "Topping"),
+            ProductAddOn.fake().copy(name: "Schedule"),
+        ])
+        let addOnGroups = [
+            AddOnGroup.fake().copy(addOns: [ProductAddOn.fake().copy(name: "Format")]),
+            AddOnGroup.fake().copy(addOns: [ProductAddOn.fake().copy(name: "Gift Wrapping")]),
+        ]
+
+        // When
+        let useCase = AddOnCrossreferenceUseCase(orderItem: orderItem, product: product, addOnGroups: addOnGroups)
+        let addOnsAttributes = useCase.addOnsAttributes()
+
+        // Then
+        XCTAssertEqual(addOnsAttributes, [
+            OrderItemAttribute(metaID: 1, name: "Topping ($3.00)", value: ""),
+            OrderItemAttribute(metaID: 3, name: "Fast Delivery ($7.00)", value: ""),
+            OrderItemAttribute(metaID: 4, name: "Gift Wrapping ($7.00)", value: "")
+        ])
     }
 }

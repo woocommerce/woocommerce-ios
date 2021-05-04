@@ -1,5 +1,1 @@
-¿Qué novedades hay en esta versión?
-
-- Una rediseñada experiencia de acceso con nuevas ilustraciones para promover las principales características y ventajas de la aplicación.
-- Otros arreglos, que incluyen hacer más consistente el estilo del botón de retroceso en tu barra de navegación.
-
+Estamos ocupados trabajando en muchas cosas emocionantes, así que, esta vez, solo podemos aportar una pequeña corrección. Ahora, las imágenes de productos que contengan caracteres no latinos en el nombre del archivo son totalmente compatibles.  Se cargarán correctamente y no causarán problemas a tu biblioteca multimedia.

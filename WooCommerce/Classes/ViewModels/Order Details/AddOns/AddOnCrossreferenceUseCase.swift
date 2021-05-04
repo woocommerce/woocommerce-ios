@@ -1,7 +1,8 @@
 import Foundation
 import Yosemite
 
-/// Use case to cross-reference an order's items's attributes with a product's addOns list, to figure out which attributes of the order are real add ons.
+/// Use case to cross-reference an order's items's attributes with a product's addOns list and with the site's global add-ons.
+/// To figure out which attributes of the order are real add-ons.
 ///
 struct AddOnCrossreferenceUseCase {
 
@@ -13,16 +14,22 @@ struct AddOnCrossreferenceUseCase {
     ///
     private let product: Product
 
-    init(orderItem: AggregateOrderItem, product: Product) {
+    /// Global add-ons for the site.
+    ///
+    private let addOnGroups: [AddOnGroup]
+
+    init(orderItem: AggregateOrderItem, product: Product, addOnGroups: [AddOnGroup]) {
         self.orderItem = orderItem
         self.product = product
+        self.addOnGroups = addOnGroups
     }
 
-    /// Returns the attributes of an `orderItem` that are `addOns` by cross-referencing the attribute name with the addOn name.
+    /// Returns the attributes of an `orderItem` that are `addOns` by cross-referencing the attribute name with the add-on name.
     ///
     func addOnsAttributes() -> [OrderItemAttribute] {
         orderItem.attributes.filter { attribute in
-            product.addOns.contains { $0.name == extractAddOnName(from: attribute) }
+            let addOnName = extractAddOnName(from: attribute)
+            return addOnNameExistsInProductAddOns(addOnName) || addOnNameExistsInGlobalAddOns(addOnName)
         }
     }
 
@@ -40,5 +47,18 @@ struct AddOnCrossreferenceUseCase {
         // In case there are more `" ("` occurrences in the string, drop the last one assuming its the add-on price,
         // and join the remaining components to keep the original name integrity
         return components.dropLast().joined(separator: splitToken)
+    }
+
+    /// Returns wether if the provided add-on name matches any of the stored product add-ons
+    ///
+    private func addOnNameExistsInProductAddOns(_ name: String) -> Bool {
+        product.addOns.contains { $0.name == name }
+    }
+
+    /// Returns wether if the provided add-on name matches any of the stored global add-ons
+    ///
+    private func addOnNameExistsInGlobalAddOns(_ name: String) -> Bool {
+        let globalAddOns = addOnGroups.flatMap { $0.addOns }
+        return globalAddOns.contains { $0.name == name }
     }
 }

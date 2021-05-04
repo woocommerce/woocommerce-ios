@@ -351,18 +351,17 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: `validateAddress`
 
-    func test_validateAddress_returns_ShippingLabelAddressValidationResponse_on_success() throws {
+    func test_validateAddress_returns_ShippingLabelAddressValidationSuccess_on_success() throws {
         // Given
         let remote = MockShippingLabelRemote()
-        let expectedResult = ShippingLabelAddressValidationResponse(address: sampleShippingLabelAddress(),
-                                                                    errors: nil,
+        let expectedResult = ShippingLabelAddressValidationSuccess(address: sampleShippingLabelAddress(),
                                                                     isTrivialNormalization: true)
         remote.whenValidatingAddress(siteID: sampleSiteID,
                                      thenReturn: .success(expectedResult))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<ShippingLabelAddressValidationResponse, Error> = waitFor { promise in
+        let result: Result<ShippingLabelAddressValidationSuccess, Error> = waitFor { promise in
             let action = ShippingLabelAction.validateAddress(siteID: self.sampleSiteID,
                                                              address: self.sampleShippingLabelAddressVerification()) { result in
                 promise(result)
@@ -375,7 +374,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(printData, expectedResult)
     }
 
-    func test_validateAddress_returns_ShippingLabelAddressValidationResponse_on_failure() throws {
+    func test_validateAddress_returns_error_on_failure() throws {
         // Given
         let remote = MockShippingLabelRemote()
         let expectedError = NetworkError.notFound
@@ -384,7 +383,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<ShippingLabelAddressValidationResponse, Error> = waitFor { promise in
+        let result: Result<ShippingLabelAddressValidationSuccess, Error> = waitFor { promise in
             let action = ShippingLabelAction.validateAddress(siteID: self.sampleSiteID,
                                                              address: self.sampleShippingLabelAddressVerification()) { result in
                 promise(result)

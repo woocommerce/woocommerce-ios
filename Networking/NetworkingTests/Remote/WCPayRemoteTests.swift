@@ -297,7 +297,7 @@ final class WCPayRemoteTests: XCTestCase {
     func test_captureOrderPayment_properly_handles_requires_payment_method_response() throws {
         let remote = WCPayRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture",
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-requires-payment-method")
 
         let result: Result<WCPayPaymentIntent, Error> = waitFor { promise in
@@ -319,7 +319,7 @@ final class WCPayRemoteTests: XCTestCase {
     func test_captureOrderPayment_properly_handles_requires_confirmation_response() throws {
         let remote = WCPayRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture",
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-requires-confirmation")
 
         let result: Result<WCPayPaymentIntent, Error> = waitFor { promise in
@@ -341,7 +341,7 @@ final class WCPayRemoteTests: XCTestCase {
     func test_captureOrderPayment_properly_handles_requires_action_response() throws {
         let remote = WCPayRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture",
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-requires-action")
 
         let result: Result<WCPayPaymentIntent, Error> = waitFor { promise in
@@ -363,7 +363,7 @@ final class WCPayRemoteTests: XCTestCase {
     func test_captureOrderPayment_properly_handles_processing_response() throws {
         let remote = WCPayRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture",
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-processing")
 
         let result: Result<WCPayPaymentIntent, Error> = waitFor { promise in
@@ -385,7 +385,7 @@ final class WCPayRemoteTests: XCTestCase {
     func test_captureOrderPayment_properly_handles_requires_capture_response() throws {
         let remote = WCPayRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture",
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-requires-capture")
 
         let result: Result<WCPayPaymentIntent, Error> = waitFor { promise in
@@ -407,7 +407,7 @@ final class WCPayRemoteTests: XCTestCase {
     func test_captureOrderPayment_properly_handles_canceled_response() throws {
         let remote = WCPayRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture",
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-canceled")
 
         let result: Result<WCPayPaymentIntent, Error> = waitFor { promise in
@@ -429,7 +429,7 @@ final class WCPayRemoteTests: XCTestCase {
     func test_captureOrderPayment_properly_handles_succeeded_response() throws {
         let remote = WCPayRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture",
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-succeeded")
 
         let result: Result<WCPayPaymentIntent, Error> = waitFor { promise in
@@ -451,7 +451,7 @@ final class WCPayRemoteTests: XCTestCase {
     func test_captureOrderPayment_properly_handles_unrecognized_status_response() throws {
         let remote = WCPayRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture",
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-unknown-status")
 
         let result: Result<WCPayPaymentIntent, Error> = waitFor { promise in
@@ -473,7 +473,7 @@ final class WCPayRemoteTests: XCTestCase {
     func test_captureOrderPayment_properly_handles_error_response() throws {
         let remote = WCPayRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture",
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
                                  filename: "wcpay-payment-intent-error")
 
         let result: Result<WCPayPaymentIntent, Error> = waitFor { promise in

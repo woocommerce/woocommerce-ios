@@ -1,5 +1,1 @@
-Neuerungen in dieser Release
-
-- Eine neu gestaltetes Anmeldeerlebnis mit Illustrationen zum Bewerben der Hauptfunktionen und Vorteile der App.
-- Weitere Fehlerbehebungen, darunter auch ein einheitlicheres Design des Zurück-Buttons in der Navigationsleiste.
-
+Wir arbeiten gerade an vielen spannenden Dingen, daher gibt es dieses Mal nur eine kleine Fehlerbehebung. Produktbilder werden ab sofort mit nicht-lateinischen Zeichen im Dateinamen unterstützt. Sie können reibungslos geladen werden, ohne Probleme in deiner Mediathek zu verursachen.

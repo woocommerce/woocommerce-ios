@@ -4,7 +4,7 @@ import XCTest
 final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
 
     func test_viewcontroller_presents_top_title_provided_by_viewmodel() throws {
-        let viewModel = ModalViewModel(mode: .fullInfo)
+        let viewModel = ModalViewModel(textMode: .fullInfo, actionsMode: .none)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
 
         _ = try XCTUnwrap(viewController.view)
@@ -13,7 +13,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
     }
 
     func test_viewcontroller_presents_top_subtitle_provided_by_viewmodel() throws {
-        let viewModel = ModalViewModel(mode: .fullInfo)
+        let viewModel = ModalViewModel(textMode: .fullInfo, actionsMode: .none)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
 
         _ = try XCTUnwrap(viewController.view)
@@ -22,7 +22,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
     }
 
     func test_viewcontroller_presents_image_provided_by_viewmodel() throws {
-        let viewModel = ModalViewModel(mode: .fullInfo)
+        let viewModel = ModalViewModel(textMode: .fullInfo, actionsMode: .none)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
 
         _ = try XCTUnwrap(viewController.view)
@@ -32,7 +32,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
     }
 
     func test_viewcontroller_presents_bottom_title_provided_by_viewmodel() throws {
-        let viewModel = ModalViewModel(mode: .fullInfo)
+        let viewModel = ModalViewModel(textMode: .fullInfo, actionsMode: .none)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
 
         _ = try XCTUnwrap(viewController.view)
@@ -41,7 +41,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
     }
 
     func test_viewcontroller_presents_bottom_subtitle_provided_by_viewmodel() throws {
-        let viewModel = ModalViewModel(mode: .fullInfo)
+        let viewModel = ModalViewModel(textMode: .fullInfo, actionsMode: .none)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
 
         _ = try XCTUnwrap(viewController.view)
@@ -50,7 +50,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
     }
 
     func test_viewcontroller_propagates_tap_in_primary_button_to_viewmodel() throws {
-        let viewModel = ModalViewModel(mode: .twoActionButtons)
+        let viewModel = ModalViewModel(textMode: .fullInfo, actionsMode: .oneAction)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
 
         _ = try XCTUnwrap(viewController.view)
@@ -62,7 +62,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
     }
 
     func test_viewcontroller_propagates_tap_in_primary_button_to_viewmodel_in_oneaction_mode() throws {
-        let viewModel = ModalViewModel(mode: .oneActionButton)
+        let viewModel = ModalViewModel(textMode: .fullInfo, actionsMode: .oneAction)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
 
         _ = try XCTUnwrap(viewController.view)
@@ -74,7 +74,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
     }
 
     func test_viewcontroller_propagates_tap_in_primary_button_to_viewmodel_in_reducedInfo_mode() throws {
-        let viewModel = ModalViewModel(mode: .reducedInfoOneActionButton)
+        let viewModel = ModalViewModel(textMode: .reducedTopInfo, actionsMode: .oneAction)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
 
         _ = try XCTUnwrap(viewController.view)
@@ -86,7 +86,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
     }
 
     func test_viewcontroller_propagates_tap_in_secondary_button_to_viewmodel() throws {
-        let viewModel = ModalViewModel(mode: .twoActionButtons)
+        let viewModel = ModalViewModel(textMode: .reducedTopInfo, actionsMode: .twoAction)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
 
         _ = try XCTUnwrap(viewController.view)
@@ -98,7 +98,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
     }
 
     func test_viewcontroller_propagates_tap_in_primary_button_is_not_initialized_in_full_info_mode() throws {
-        let viewModel = ModalViewModel(mode: .fullInfo)
+        let viewModel = ModalViewModel(textMode: .fullInfo, actionsMode: .none)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
 
         _ = try XCTUnwrap(viewController.view)
@@ -110,7 +110,7 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
     }
 
     func test_viewcontroller_propagates_tap_in_secondary_button_is_not_initialized_in_full_info_mode() throws {
-        let viewModel = ModalViewModel(mode: .fullInfo)
+        let viewModel = ModalViewModel(textMode: .fullInfo, actionsMode: .none)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
 
         _ = try XCTUnwrap(viewController.view)
@@ -121,8 +121,8 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
         XCTAssertFalse(viewModel.secondaryButtonTapped)
     }
 
-    func test_viewcontroller_hides_bottom_subtitle_label_in_reduced_info_mode() throws {
-        let viewModel = ModalViewModel(mode: .reducedInfo)
+    func test_viewcontroller_hides_bottom_subtitle_label_in_reduced_bottom_info_mode() throws {
+        let viewModel = ModalViewModel(textMode: .reducedBottomInfo, actionsMode: .none)
         let viewController = CardPresentPaymentsModalViewController(viewModel: viewModel)
 
         _ = try XCTUnwrap(viewController.view)
@@ -135,7 +135,8 @@ final class CardPresentPaymentsModalViewControllerTests: XCTestCase {
 
 
 private final class ModalViewModel: CardPresentPaymentsModalViewModel {
-    let mode: PaymentsModalMode
+    let textMode: PaymentsModalTextMode
+    let actionsMode: PaymentsModalActionsMode
 
     /// The title at the top of the modal view.
     let topTitle: String = "top_title"
@@ -152,12 +153,14 @@ private final class ModalViewModel: CardPresentPaymentsModalViewModel {
     /// Provides a title for a secondary action button
     let secondaryButtonTitle: String? = "secondary_button_title"
 
+    /// Provides a title for an auxiliary action button
+    let auxiliaryButtonTitle: String? = "auxiliary_button_title"
+
     /// The title in the bottom section of the modal. Right below the image
     let bottomTitle: String? = "bottom_title"
 
     /// The subtitle in the bottom section of the modal. Right below the image
     let bottomSubtitle: String? = "bottom_subtitle"
-
 
     /// Flag indicating that the primary button has been tapped
     var primaryButtonTapped: Bool = false
@@ -165,8 +168,12 @@ private final class ModalViewModel: CardPresentPaymentsModalViewModel {
     /// Flag indicating that the secondary button has been tapped
     var secondaryButtonTapped: Bool = false
 
-    init(mode: PaymentsModalMode) {
-        self.mode = mode
+    /// Flag indicating that the auxiliary button has been tapped
+    var auxiliaryButtonTapped: Bool = false
+
+    init(textMode: PaymentsModalTextMode, actionsMode: PaymentsModalActionsMode) {
+        self.textMode = textMode
+        self.actionsMode = actionsMode
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
@@ -175,5 +182,9 @@ private final class ModalViewModel: CardPresentPaymentsModalViewModel {
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
         secondaryButtonTapped = true
+    }
+
+    func didTapAuxiliaryButton(in viewController: UIViewController?) {
+        auxiliaryButtonTapped = true
     }
 }

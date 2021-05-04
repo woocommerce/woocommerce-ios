@@ -107,17 +107,19 @@ final class ShippingLabelRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "normalize-address", filename: "shipping-label-address-validation-success")
 
         // When
-        let result: Result<ShippingLabelAddressValidationResponse, Error> = waitFor { promise in
+        let result: Result<ShippingLabelAddressValidationSuccess, Error> = waitFor { promise in
             remote.addressValidation(siteID: self.sampleSiteID, address: self.sampleShippingLabelAddressVerification()) { result in
                 promise(result)
             }
         }
 
         // Then
-        let address = try XCTUnwrap(result.get().address)
-        let errors = try result.get().errors
-        XCTAssertEqual(address, sampleShippingLabelAddress())
-        XCTAssertNil(errors)
+        switch result {
+        case .success(let response):
+            XCTAssertEqual(response.address, sampleShippingLabelAddress())
+        case .failure(let error):
+            XCTFail("Expected successful result, got error instead: \(error)")
+        }
     }
 
     func test_shippingAddressValidation_returns_errors_on_failure() throws {
@@ -126,18 +128,22 @@ final class ShippingLabelRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "normalize-address", filename: "shipping-label-address-validation-error")
 
         // When
-        let result: Result<ShippingLabelAddressValidationResponse, Error> = waitFor { promise in
+        let result: Result<ShippingLabelAddressValidationSuccess, Error> = waitFor { promise in
             remote.addressValidation(siteID: self.sampleSiteID, address: self.sampleShippingLabelAddressVerification()) { result in
                 promise(result)
             }
         }
 
         // Then
-        let address = try result.get().address
-        let errors = try XCTUnwrap(result.get().errors)
-        XCTAssertNil(address)
-        XCTAssertEqual(errors.addressError, "House number is missing")
-        XCTAssertEqual(errors.generalError, "Address not found")
+        switch result {
+        case .success(let response):
+            XCTFail("Expected validation error, got successful response instead: \(response)")
+        case .failure(let error as ShippingLabelAddressValidationError):
+            XCTAssertEqual(error.addressError, "House number is missing")
+            XCTAssertEqual(error.generalError, "Address not found")
+        case .failure(let error):
+            XCTFail("Expected validation error, got generic error instead: \(error)")
+        }
     }
 
     func test_packagesDetails_returns_packages_on_success() throws {

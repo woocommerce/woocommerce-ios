@@ -12,18 +12,6 @@ final class ProductVariationsViewController: UIViewController {
     ///
     private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
 
-    /// Empty state screen configuration
-    ///
-    private lazy var emptyStateConfig: EmptyStateViewController.Config = {
-        let message = NSAttributedString(string: Localization.emptyStateTitle, attributes: [.font: EmptyStateViewController.Config.messageFont])
-        return .withButton(message: message,
-                           image: .emptyBoxImage,
-                           details: "",
-                           buttonTitle: Localization.emptyStateButtonTitle) { [weak self] _ in
-                            self?.createVariationFromEmptyState()
-                           }
-    }()
-
     @IBOutlet private weak var tableView: UITableView!
 
     /// Pull To Refresh Support.
@@ -153,7 +141,6 @@ final class ProductVariationsViewController: UIViewController {
         configureSyncingCoordinator()
         registerTableViewCells()
         configureHeaderContainerView()
-        configureAddButton()
         updateTopBannerView()
         updateEmptyState()
 
@@ -255,7 +242,24 @@ private extension ProductVariationsViewController {
 
         emptyStateViewController.view.pinSubviewToAllEdges(view)
         emptyStateViewController.didMove(toParent: self)
+
+        let showAttributeGuide = viewModel.shouldShowAttributeGuide(for: product)
+        let emptyStateConfig = createEmptyStateConfig(showAttributeGuide: showAttributeGuide)
         emptyStateViewController.configure(emptyStateConfig)
+    }
+
+    /// Creates empty state screen configuration
+    ///
+    private func createEmptyStateConfig(showAttributeGuide: Bool) -> EmptyStateViewController.Config {
+        let message = NSAttributedString(string: Localization.emptyStateTitle, attributes: [.font: EmptyStateViewController.Config.messageFont])
+        let subtitle = showAttributeGuide ? Localization.emptyStateSubtitle : ""
+        let buttonTitle = showAttributeGuide ? Localization.addAttributesAction : Localization.addVariationAction
+        return .withButton(message: message,
+                           image: .emptyBoxImage,
+                           details: subtitle,
+                           buttonTitle: buttonTitle) { [weak self] _ in
+                            self?.createVariationFromEmptyState()
+                           }
     }
 
     func removeEmptyViewController() {
@@ -269,36 +273,56 @@ private extension ProductVariationsViewController {
     }
 }
 
+// MARK: - Table header view
+//
 private extension ProductVariationsViewController {
     func configureHeaderContainerView() {
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
         headerContainer.addSubview(topStackView)
         headerContainer.pinSubviewToAllEdges(topStackView)
+
+        addTopButton(title: Localization.generateVariationAction,
+                     insets: .init(top: 16, left: 16, bottom: 8, right: 16),
+                     actionSelector: #selector(addButtonTapped),
+                     stylingHandler: { $0.applyPrimaryButtonStyle() })
+
+        addTopButton(title: Localization.editAttributesAction,
+                     insets: .init(top: 8, left: 16, bottom: 16, right: 16),
+                     hasBottomBorder: true,
+                     actionSelector: #selector(editAttributesTapped),
+                     stylingHandler: { $0.applySecondaryButtonStyle() })
+
         topStackView.addArrangedSubview(topBannerView)
 
         tableView.tableHeaderView = headerContainer
     }
 
-    func configureAddButton() {
+    func addTopButton(title: String,
+                      insets: UIEdgeInsets,
+                      hasBottomBorder: Bool = false,
+                      actionSelector: Selector,
+                      stylingHandler: (UIButton) -> Void) {
         let buttonContainer = UIView()
         buttonContainer.backgroundColor = .listForeground
 
-        let addVariationButton = UIButton()
-        addVariationButton.translatesAutoresizingMaskIntoConstraints = false
-        addVariationButton.setTitle(Localization.addNewVariation, for: .normal)
-        addVariationButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
-        addVariationButton.applySecondaryButtonStyle()
+        let topButton = UIButton()
+        topButton.translatesAutoresizingMaskIntoConstraints = false
+        topButton.setTitle(title, for: .normal)
+        topButton.addTarget(self, action: actionSelector, for: .touchUpInside)
+        stylingHandler(topButton)
 
-        buttonContainer.addSubview(addVariationButton)
-        buttonContainer.pinSubviewToSafeArea(addVariationButton, insets: .init(top: 16, left: 16, bottom: 16, right: 16))
+        buttonContainer.addSubview(topButton)
+        buttonContainer.pinSubviewToSafeArea(topButton, insets: insets)
 
-        let separator = UIView.createBorderView()
-        buttonContainer.addSubview(separator)
-        NSLayoutConstraint.activate([
-            buttonContainer.leadingAnchor.constraint(equalTo: separator.leadingAnchor),
-            buttonContainer.bottomAnchor.constraint(equalTo: separator.bottomAnchor),
-            buttonContainer.trailingAnchor.constraint(equalTo: separator.trailingAnchor)
-        ])
+        if hasBottomBorder {
+            let separator = UIView.createBorderView()
+            buttonContainer.addSubview(separator)
+            NSLayoutConstraint.activate([
+                buttonContainer.leadingAnchor.constraint(equalTo: separator.leadingAnchor),
+                buttonContainer.bottomAnchor.constraint(equalTo: separator.bottomAnchor),
+                buttonContainer.trailingAnchor.constraint(equalTo: separator.trailingAnchor)
+            ])
+        }
 
         topStackView.addArrangedSubview(buttonContainer)
     }
@@ -524,6 +548,8 @@ private extension ProductVariationsViewController {
     }
 }
 
+// MARK: - Actions
+//
 private extension ProductVariationsViewController {
     @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.productVariationListPulledToRefresh)
@@ -537,9 +563,18 @@ private extension ProductVariationsViewController {
         analytics.track(event: WooAnalyticsEvent.Variations.addMoreVariationsButtonTapped(productID: product.productID))
         createVariation()
     }
+
+    @objc func editAttributesTapped() {
+        navigateToEditAttributeViewController(allowVariationCreation: false)
+        trackEditAttributesButtonPressed()
+    }
+
+    func trackEditAttributesButtonPressed() {
+        analytics.track(event: WooAnalyticsEvent.Variations.editAttributesButtonTapped(productID: product.productID))
+    }
 }
 
-// MARK: Action Sheet
+// MARK: - Action sheet
 //
 private extension ProductVariationsViewController {
     @objc private func presentMoreOptionsActionSheet(_ sender: UIBarButtonItem) {
@@ -547,8 +582,7 @@ private extension ProductVariationsViewController {
         actionSheet.view.tintColor = .text
 
         let editAttributesAction = UIAlertAction(title: Localization.editAttributesAction, style: .default) { [weak self] _ in
-            self?.navigateToEditAttributeViewController(allowVariationCreation: false)
-            self?.trackEditAttributesButtonPressed()
+            self?.editAttributesTapped()
         }
         actionSheet.addAction(editAttributesAction)
 
@@ -559,10 +593,6 @@ private extension ProductVariationsViewController {
         popoverController?.barButtonItem = sender
 
         present(actionSheet, animated: true)
-    }
-
-    func trackEditAttributesButtonPressed() {
-        analytics.track(event: WooAnalyticsEvent.Variations.editAttributesButtonTapped(productID: product.productID))
     }
 }
 
@@ -733,11 +763,18 @@ private extension ProductVariationsViewController {
     }
 
     enum Localization {
-        static let emptyStateTitle = NSLocalizedString("Add your first variation", comment: "Title on the variations list screen when there are no variations")
-        static let emptyStateButtonTitle = NSLocalizedString("Add Variation", comment: "Title on add variation button when there are no variations")
-        static let addNewVariation = NSLocalizedString("Add Variation", comment: "Action to add new variation on the variations list")
-        static let moreButtonLabel = NSLocalizedString("More options", comment: "Accessibility label to show the More Options action sheet")
+        static let emptyStateTitle = NSLocalizedString("Create your first variation",
+                                                       comment: "Title on the variations list screen when there are no variations")
+        static let emptyStateSubtitle = NSLocalizedString("To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first",
+                                                          comment: "Subtitle on the variations list screen when there are no variations and attributes")
+        static let addAttributesAction = NSLocalizedString("Add Attributes",
+                                                           comment: "Title on empty state button when the product has no attributes and variations")
+        static let addVariationAction = NSLocalizedString("Add Variation",
+                                                          comment: "Title on empty state button when the product has attributes but no variations")
+        static let generateVariationAction = NSLocalizedString("Generate New Variation", comment: "Action to add new variation on the variations list")
         static let editAttributesAction = NSLocalizedString("Edit Attributes", comment: "Action to edit the attributes and options used for variations")
+
+        static let moreButtonLabel = NSLocalizedString("More options", comment: "Accessibility label to show the More Options action sheet")
         static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel button in the More Options action sheet")
 
         static let generatingVariation = NSLocalizedString("Generating Variation", comment: "Title for the progress screen while generating a variation")

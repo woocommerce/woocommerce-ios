@@ -17,6 +17,8 @@ final class CardPresentPaymentsModalViewController: UIViewController {
 
     @IBOutlet private weak var primaryButton: NUXButton!
     @IBOutlet private weak var secondaryButton: NUXButton!
+    @IBOutlet weak var auxiliaryButton: UIButton!
+
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var extraInfoButton: UIButton!
 
@@ -104,6 +106,7 @@ private extension CardPresentPaymentsModalViewController {
 
         stylePrimaryButton()
         styleSecondaryButton()
+        styleAuxiliaryButton()
     }
 
     func stylePrimaryButton() {
@@ -112,6 +115,10 @@ private extension CardPresentPaymentsModalViewController {
 
     func styleSecondaryButton() {
 
+    }
+
+    func styleAuxiliaryButton() {
+        auxiliaryButton.applyLinkButtonStyle()
     }
 
     func populateContent() {
@@ -172,6 +179,7 @@ private extension CardPresentPaymentsModalViewController {
 
         configurePrimaryButton()
         configureSecondaryButton()
+        configureAuxiliaryButton()
     }
 
     func configurePrimaryButton() {
@@ -193,33 +201,50 @@ private extension CardPresentPaymentsModalViewController {
             self?.didTapSecondaryButton()
         }
     }
+
+    func configureAuxiliaryButton() {
+        guard shouldShowAuxiliaryButton() else {
+            auxiliaryButton.isHidden = true
+            return
+        }
+
+        auxiliaryButton.isHidden = false
+        auxiliaryButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
+        auxiliaryButton.on(.touchUpInside) { [weak self] _ in
+            self?.didTapAuxiliaryButton()
+        }
+    }
 }
 
 // MARK: - View layout configuration
 private extension CardPresentPaymentsModalViewController {
     func shouldShowTopSubtitle() -> Bool {
-        viewModel.mode != .reducedInfo
+        viewModel.textMode != .reducedTopInfo
     }
 
     func shouldShowBottomLabels() -> Bool {
-        let mode = viewModel.mode
-        return mode == .fullInfo ||
-            mode == .reducedInfo
+        viewModel.textMode != .noBottomInfo
     }
 
     func shouldShowActionButtons() -> Bool {
-        let mode = viewModel.mode
-        return mode == .oneActionButton ||
-            mode == .twoActionButtons ||
-            mode == .reducedInfoOneActionButton
+        viewModel.actionsMode != .none
     }
 
     func shouldShowBottomSubtitle() -> Bool {
-        viewModel.mode == .fullInfo
+        let textMode = viewModel.textMode
+        return textMode == .fullInfo ||
+            textMode == .reducedTopInfo
     }
 
     func shouldShowBottomActionButton() -> Bool {
-        viewModel.mode == .twoActionButtons
+        let actionMode = viewModel.actionsMode
+
+        return actionMode == .twoAction ||
+            actionMode == .twoActionAndAuxiliary
+    }
+
+    func shouldShowAuxiliaryButton() -> Bool {
+        viewModel.actionsMode == .twoActionAndAuxiliary
     }
 }
 
@@ -232,6 +257,10 @@ private extension CardPresentPaymentsModalViewController {
 
     func didTapSecondaryButton() {
         viewModel.didTapSecondaryButton(in: self)
+    }
+
+    func didTapAuxiliaryButton() {
+        viewModel.didTapAuxiliaryButton(in: self)
     }
 }
 

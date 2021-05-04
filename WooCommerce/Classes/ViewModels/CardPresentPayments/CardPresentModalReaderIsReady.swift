@@ -9,7 +9,8 @@ final class CardPresentModalReaderIsReady: CardPresentPaymentsModalViewModel {
     /// Charge amount
     private let amount: String
 
-    let mode: PaymentsModalMode = .fullInfo
+    let textMode: PaymentsModalTextMode = .fullInfo
+    let actionsMode: PaymentsModalActionsMode = .none
 
     var topTitle: String {
         name
@@ -24,6 +25,8 @@ final class CardPresentModalReaderIsReady: CardPresentPaymentsModalViewModel {
     let primaryButtonTitle: String? = nil
 
     let secondaryButtonTitle: String? = nil
+
+    let auxiliaryButtonTitle: String? = nil
 
     let bottomTitle: String? = Localization.readerIsReady
 

@@ -109,7 +109,7 @@ private extension ShippingLabelStore {
 
     func validateAddress(siteID: Int64,
                          address: ShippingLabelAddressVerification,
-                         completion: @escaping (Result<ShippingLabelAddressValidationResponse, Error>) -> Void) {
+                         completion: @escaping (Result<ShippingLabelAddressValidationSuccess, Error>) -> Void) {
         remote.addressValidation(siteID: siteID, address: address, completion: completion)
     }
 

@@ -232,7 +232,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         let expectation = self.expectation(description: "Known readers array initially empty")
 
-        let action = CardPresentPaymentAction.loadKnownReaders() { knownReaders in
+        let action = CardPresentPaymentAction.observeKnownReaders() { knownReaders in
             XCTAssertTrue(knownReaders.isEmpty)
             expectation.fulfill()
         }

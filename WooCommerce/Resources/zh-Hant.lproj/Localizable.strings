@@ -1,10 +1,13 @@
-/* Translation-Revision-Date: 2021-04-16 09:54:04+0000 */
+/* Translation-Revision-Date: 2021-04-30 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
 
 /* No comment provided by engineer. */
 "#%@ %@" = "#%1$@ %2$@";
+
+/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
+"%1$@" = "%1$@";
 
 /* Format for each Product attribute */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld 選項)";
@@ -33,8 +36,7 @@
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "已在 %1$@ 收到 %2$@ 付款";
 
-/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00).
-   In Shipping Labels Package Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
+/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@ x %2$@" = "%1$@ x %2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
@@ -46,8 +48,10 @@
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
-/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00).
-   In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
+/* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
+"%1$@・%2$@" = "%1$@・%2$@";
+
+/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
 "%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
 
 /* 1 Item */
@@ -112,7 +116,10 @@
 /* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "請在印表機設定中**確認 AirPrint 已啟用**。 你可能需要直接在印表機上進行這項設定。\n\n詳情請參閱印表機隨附的說明文件。";
 
-/* Number of items in packages in Shipping Labels. Reads like - 10 items */
+/* Number of item in packages in Shipping Labels in singular form. Reads like - 1 items */
+"- %1$d item" = "- %1$d 項目";
+
+/* Number of items in packages in Shipping Labels in plural form. Reads like - 10 items */
 "- %1$d items" = "- %1$d 個項目";
 
 /* Navigation bar title for selecting multiple products when one product has been selected. */
@@ -445,6 +452,9 @@
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "註冊即代表你同意我們的「服務條款」。";
 
+/* Header for the Custom Packages section in Shipping Label Package listing */
+"CUSTOM PACKAGES" = "自訂包裹";
+
 /* Call phone number button title */
 "Call" = "致電";
 
@@ -471,6 +481,10 @@
 /* The title of the alert when there is an error uploading an image
    Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "無法上傳圖片";
+
+/* Detailed message shown in the Reviews tab if the list is empty
+   Detailed message shown on the Product Reviews screen if the list is empty */
+"Capture high-quality product reviews for your store." = "為你的商店擷取高品質的產品評論。";
 
 /* Card reader settings screen title */
 "Card Readers" = "讀卡機";
@@ -933,6 +947,9 @@
    Navigates to experimental features screen */
 "Experimental Features" = "實驗性功能";
 
+/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
+"Explore how you can increase your store sales" = "探索如何增加商店銷售額";
+
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "外部商品";
 
@@ -1022,6 +1039,10 @@
 
 /* Subtitle for Help Center */
 "Get answers to questions you have" = "取得問題的解答";
+
+/* Message shown in the Reviews tab if the list is empty
+   Message shown on the Product Reviews screen if the list is empty */
+"Get your first reviews" = "取得你的第一批評論";
 
 /* Alerts the user that wpcom account information is being retrieved. */
 "Getting account information" = "取得帳號資訊";
@@ -1253,7 +1274,7 @@
 "Launch Wormholy Debug" = "啟動 Wormholy 除錯";
 
 /* Button title in the shipping label creation info screen
-   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Orders → All Orders tab if the list is empty. */
+   Settings > Privacy Settings. A text link to the cookie policy. - Title of button shown in the Orders → All Orders tab if the list is empty. - Title of button shown in the Reviews tab if the list is empty - Title of button shown on the Product Reviews screen if the list is empty */
 "Learn more" = "瞭解更多";
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
@@ -1483,12 +1504,6 @@
    Next nav bar button title in Add Product Attribute screen - Title of a button. - Title of a button. The text should be capitalized. - Title of the next button in the issue refund screen */
 "Next" = "下一步";
 
-/* Empty Product Reviews List Message */
-"No Reviews Yet for this Product!" = "此產品暫無評論！";
-
-/* Empty Reviews List Message */
-"No Reviews Yet!" = "目前沒有評論！";
-
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "此期間沒有任何活動";
 
@@ -1676,7 +1691,8 @@
    Title of package details in shipping label details - Title of the cell Package Details inside Create Shipping Label form */
 "Package Details" = "包裹詳細資訊";
 
-/* Title of the row for selecting a package in Shipping Label Package Detail screen */
+/* Package Selected screen title in Shipping Label flow
+   Title of the row for selecting a package in Shipping Label Package Detail screen */
 "Package Selected" = "包裹已選";
 
 /* The title for the customer payment cell */
@@ -1851,6 +1867,9 @@
 /* Description for Top Performers left column header
    Product section title - Product section title if there is only one product. */
 "Product" = "產品";
+
+/* The title on the navigation bar when viewing an order item add-ons */
+"Product Add-ons" = "產品附加元件";
 
 /* Edit Product External Link navigation title */
 "Product Link" = "產品連結";
@@ -2217,9 +2236,6 @@
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "在登入你的 WordPress.com 帳號時，請將你的服務使用情況相關資訊與我們的分析工具分享。";
-
-/* Action: Opens the Store in a browser */
-"Share your Store" = "分享你的商店";
 
 /* Shipping Label Address Validation navigation title
    Shipping Label Suggested Address navigation title - Title of origin address in shipping label details - Title of the cell Ship from inside Create Shipping Label form */
@@ -3043,6 +3059,9 @@
 /* Displays the version of the App */
 "Version %@" = "版本 %@";
 
+/* Title of the button on the order detail item to navigate to add-ons */
+"View Add-Ons" = "檢視附加元件";
+
 /* View application log cell title */
 "View Application Log" = "檢視應用程式記錄檔";
 
@@ -3118,7 +3137,10 @@
 /* Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect. */
 "We use other tracking tools, including some from third parties. Read about these and how to control them." = "我們會使用其他的追蹤工具，包括由第三方所提供的追蹤工具。瞭解相關資訊及其控制方式。";
 
-/* Banner caption in Shipping Label Address Validation when the address can't be verified. */
+/* Banner caption in Shipping Label Address Validation when the origin address can't be verified. */
+"We were unable to automatically verify the origin address." = "我們無法自動驗證原始地址。";
+
+/* Banner caption in Shipping Label Address Validation when the destination address can't be verified. */
 "We were unable to automatically verify the shipping address. View on Apple Maps or try contacting the customer to make sure the address is correct." = "我們無法自動驗證運送地址。 請透過 Apple 地圖檢視該地址或與客戶聯絡，確認地址正確無誤。";
 
 /* Error message displayed when an error occurred sending the magic link email. */
@@ -3129,9 +3151,6 @@
 
 /* Instruction text on the Sign Up screen. */
 "We'll email you a signup link to create your new WordPress.com account." = "我們會透過電子郵件傳送註冊連結給你，使用此連結即可建立新的 WordPress.com 帳號。";
-
-/* The detailed message shown in the Orders → All Orders tab if the list is empty. */
-"We'll notify you when you receive a new order. In the meantime, explore how you can increase your store sales." = "我們會在收到新訂單時通知你。在此期間，請探索如何提高商店銷售量。";
 
 /* Text confirming email address to be used for new account. */
 "We'll use this email address to create your new WordPress.com account." = "我們會使用這個電子郵件地址，為你建立全新的 WordPress.com 帳號。";

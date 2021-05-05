@@ -1,9 +1,9 @@
 import Yosemite
 /// Orchestrates the sequence of actions required to capture a payment:
-/// 1. Check the there is a card reader connected
+/// 1. Check if there is a card reader connected
 /// 2. Launch the reader discovering and pairing UI if there is no reader connected
-/// 3. Obtain a Payment Intent from the card reader
-/// 4. Submit the Payment Intent to WCPay
+/// 3. Obtain a Payment Intent from the card reader (i.e., create a payment intent, collect a payment method, and process the payment)
+/// 4. Submit the Payment Intent to WCPay to capture a payment
 /// Steps 1 and 2 will be implemented as part of https://github.com/woocommerce/woocommerce-ios/issues/4062
 final class PaymentCaptureOrchestrator {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
@@ -13,7 +13,7 @@ final class PaymentCaptureOrchestrator {
                         onClearMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
 
-        // TODO. Check that there i a reader currently connected
+        // TODO. Check that there is a reader currently connected
         // otherwise launch the discovery+pairing UI
         // https://github.com/woocommerce/woocommerce-ios/issues/4062
         collectPaymentWithCardReader(for: order,
@@ -56,7 +56,7 @@ private extension PaymentCaptureOrchestrator {
                                                                     break
                                                                 }
                                                              }, onCompletion: { [weak self] result in
-                                                                self?.completePayentIntentCapture(order: order,
+                                                                self?.completePaymentIntentCapture(order: order,
                                                                                                  captureResult: result,
                                                                                                  onCompletion: onCompletion)
         })
@@ -64,7 +64,7 @@ private extension PaymentCaptureOrchestrator {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func completePayentIntentCapture(order: Order,
+    func completePaymentIntentCapture(order: Order,
                                     captureResult: Result<PaymentIntent, Error>,
                                     onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
         switch captureResult {
@@ -90,7 +90,7 @@ private extension PaymentCaptureOrchestrator {
             guard let receiptParameters = paymentIntent.receiptParameters() else {
                 let error = CardReaderServiceError.paymentCapture()
 
-                DDLogError("⛔️ Payment completed without valid regulatory metadata: \(error)")
+                DDLogError("⛔️ Payment completed without required metadata: \(error)")
 
                 onCompletion(.failure(error))
                 return

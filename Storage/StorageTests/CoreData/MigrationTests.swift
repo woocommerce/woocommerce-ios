@@ -598,6 +598,7 @@ final class MigrationTests: XCTestCase {
         let plugin = insertSitePlugin(to: targetContext)
         let insertedPlugin = try XCTUnwrap(targetContext.firstObject(ofType: SitePlugin.self))
 
+        XCTAssertEqual(try targetContext.count(entityName: "SitePlugin"), 1)
         XCTAssertEqual(insertedPlugin, plugin)
     }
 }
@@ -907,16 +908,16 @@ private extension MigrationTests {
             "plugin": "hello",
             "status": "inactive",
             "name": "Hello Dolly",
-            "plugin_uri": "http://wordpress.org/plugins/hello-dolly/",
+            "pluginUri": "http://wordpress.org/plugins/hello-dolly/",
             "author": "Matt Mullenweg",
-            "author_uri": "http://ma.tt/",
+            "authorUri": "http://ma.tt/",
             "descriptionRaw": "This is not just a plugin, it...",
             "descriptionRendered": "This is not just a plugin, it symbolizes...",
             "version": "1.7.2",
-            "network_only": false,
-            "requires_wp": "",
-            "requires_php": "",
-            "textdomain": ""
+            "networkOnly": false,
+            "requiresWPVersion": "",
+            "requiresPHPVersion": "",
+            "textDomain": ""
         ])
     }
 }

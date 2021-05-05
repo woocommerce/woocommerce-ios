@@ -1040,4 +1040,21 @@ class StorageTypeExtensionsTests: XCTestCase {
         // Then
         XCTAssertEqual(storedPlugins, [plugin2, plugin1])
     }
+
+    func test_loadPlugin_by_siteID_and_name() throws {
+        // Given
+        let plugin1 = storage.insertNewObject(ofType: SitePlugin.self)
+        plugin1.name = "AAA"
+        plugin1.siteID = sampleSiteID
+
+        let plugin2 = storage.insertNewObject(ofType: SitePlugin.self)
+        plugin2.name = "BBB"
+        plugin2.siteID = sampleSiteID
+
+        // When
+        let foundPlugin = try XCTUnwrap(storage.loadPlugin(siteID: sampleSiteID, name: "AAA"))
+
+        // Then
+        XCTAssertEqual(foundPlugin, plugin1)
+    }
 }

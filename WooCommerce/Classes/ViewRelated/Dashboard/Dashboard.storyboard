@@ -264,6 +264,9 @@
                             <constraint firstItem="l2Q-VL-2yz" firstAttribute="bottom" secondItem="yAZ-jF-hAZ" secondAttribute="bottom" id="uBc-a2-Cby"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="temporaryLabel" destination="yAZ-jF-hAZ" id="2Uc-ZW-zKk"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ErC-sp-Qjr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

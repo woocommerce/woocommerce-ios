@@ -396,7 +396,9 @@ private extension SettingsViewController {
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: CardReaderSettingsPresentingViewController.self) else {
             fatalError("Cannot instantiate `CardReaderSettingsPresentingViewController` from Dashboard storyboard")
         }
-        viewController.configure(viewModelsAndViews: [])
+
+        let viewModelsAndViews = CardReaderSettingsViewModelsOrderedList()
+        viewController.configure(viewModelsAndViews: viewModelsAndViews)
         show(viewController, sender: self)
     }
 

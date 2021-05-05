@@ -522,7 +522,7 @@ public extension StorageType {
         let descriptor = NSSortDescriptor(keyPath: \SitePlugin.name, ascending: true)
         return allObjects(ofType: SitePlugin.self, matching: predicate, sortedBy: [descriptor])
     }
-    
+
     /// Returns a plugin with a specified `siteID` and `name`
     ///
     func loadPlugin(siteID: Int64, name: String) -> SitePlugin? {

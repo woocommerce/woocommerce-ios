@@ -514,4 +514,12 @@ public extension StorageType {
         let predicate = \AddOnGroup.siteID == siteID && \AddOnGroup.groupID == groupID
         return firstObject(ofType: AddOnGroup.self, matching: predicate)
     }
+
+    /// Returns all stored plugins for a provided `siteID`.
+    ///
+    func loadPlugins(siteID: Int64) -> [SitePlugin] {
+        let predicate = \SitePlugin.siteID == siteID
+        let descriptor = NSSortDescriptor(keyPath: \SitePlugin.name, ascending: true)
+        return allObjects(ofType: SitePlugin.self, matching: predicate, sortedBy: [descriptor])
+    }
 }

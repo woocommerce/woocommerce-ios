@@ -32,10 +32,10 @@ The `fake()` methods are generated using [Sourcery](https://github.com/krzysztof
 
 To generate a `fake()` method:
 
-1. Make it conform to [`GeneratedFakeable`](../Networking/Networking/Copiable/GeneratedFakeable.swift).
+1. Make it conform to [`GeneratedFakeable`](../CodeGeneration/Sources/Codegen/Fakeable/GeneratedFakeable.swift).
 
     ```swift
-    import protocol Networking.GeneratedFakeable
+    import Codegen
 
     struct ProductSettings: GeneratedFakeable {
         ...
@@ -56,12 +56,12 @@ To generate a `fake()` method:
 
 ## Modifying The Fakeable Code Generation
 
-The [`rake generate`](../Rakefile) command executes the Sourcery configuration files located in the [`CodeGeneration/Fakes` folder](../CodeGeneration/Fakes). There is just one configuration file:
+The [`rake generate`](../Rakefile) command executes the Sourcery configuration files located in the [`CodeGeneration/Sourcery/Fakes` folder](../CodeGeneration/Sourcery/Fakes). There is just one configuration file:
 
 ```
 Networking module → Networking-Fakes.yaml
 ```
 
-It uses a single template, [`Fakes.swifttemplate`](../CodeGeneration/Fakes/Fakes.swifttemplate), to generate the code. It's written using [Swift templates](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/writing-templates.html).
+It uses a single template, [`Fakes.swifttemplate`](../CodeGeneration/Sourcery/Fakes/Fakes.swifttemplate), to generate the code. It's written using [Swift templates](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/writing-templates.html).
 
 Please refer to the [Sourcery reference](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/index.html) for more info about how to write templates.

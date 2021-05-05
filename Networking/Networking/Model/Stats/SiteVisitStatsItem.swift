@@ -1,5 +1,5 @@
 import Foundation
-
+import Codegen
 
 /// Represents an single site visit stat for a specific period.
 ///

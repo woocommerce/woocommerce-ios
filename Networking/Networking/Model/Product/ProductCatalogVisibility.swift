@@ -1,5 +1,5 @@
 import Foundation
-
+import Codegen
 
 /// Represents a ProductCatalogVisibility Entity.
 ///

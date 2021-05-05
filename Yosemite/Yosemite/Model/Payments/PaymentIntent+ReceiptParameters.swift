@@ -1,6 +1,6 @@
 import Hardware
 
-extension PaymentIntent {
+public extension PaymentIntent {
     /// Maps a PaymentIntent into an struct that contains only the data we need to
     /// render a receipt.
     /// - Returns: an optional struct containing all the data that needs to go into a receipt
@@ -11,8 +11,8 @@ extension PaymentIntent {
         }
 
         return CardPresentReceiptParameters(amount: amount,
-                                     currency: currency,
-                                     storeName: metadata?[CardPresentReceiptParameters.MetadataKeys.store] as? String,
-                                     cardDetails: cardDetails)
+                                            currency: currency,
+                                            storeName: metadata?[CardPresentReceiptParameters.MetadataKeys.store] as? String,
+                                            cardDetails: cardDetails)
     }
 }

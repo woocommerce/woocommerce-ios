@@ -9,6 +9,7 @@ final class CardPresentPaymentsModalViewController: UIViewController {
     /// and support for user actions
     private var viewModel: CardPresentPaymentsModalViewModel
 
+    @IBOutlet weak var mainStackView: UIStackView!
     @IBOutlet private weak var topTitleLabel: UILabel!
     @IBOutlet private weak var topSubtitleLabel: UILabel!
     @IBOutlet private weak var bottomTitleLabel: UILabel!
@@ -45,6 +46,16 @@ final class CardPresentPaymentsModalViewController: UIViewController {
         self.viewModel = newViewModel
 
         populateContent()
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.containsTraits(in: UITraitCollection(verticalSizeClass: .compact)) {
+            mainStackView.axis = .horizontal
+        } else {
+            mainStackView.axis = .vertical
+        }
     }
 }
 

@@ -11,7 +11,6 @@ struct CouponListCellViewModel {
 }
 
 enum CouponListState {
-    case initialized // Nothing to do here
     case loading // View should show ghost cells
     case empty // View should display the empty state
     case failed // View should display error in Notice
@@ -64,7 +63,6 @@ final class CouponManagementListViewModel {
                                                               storageManager: storageManager)
         configureSyncingCoordinator()
         configureResultsController()
-        onChange(.initialized)
     }
 
     private static func createResultsController(siteID: Int64,
@@ -100,7 +98,7 @@ final class CouponManagementListViewModel {
     /// Builds coupon cell view models if coupons are present, and notifies view controller of what to display
     ///
     func updateViewModelState() {
-        if resultsController.numberOfObjects > 0 {
+        if resultsController.fetchedObjects.isNotEmpty {
             buildCouponViewModels()
             onChange(.coupons)
         } else {

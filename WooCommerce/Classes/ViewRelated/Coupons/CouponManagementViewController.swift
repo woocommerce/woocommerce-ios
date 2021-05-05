@@ -3,7 +3,7 @@ import WordPressUI
 
 final class CouponManagementViewController: UIViewController {
 
-    @IBOutlet weak var tableView: UITableView?
+    @IBOutlet private weak var tableView: UITableView?
     private var viewModel: CouponManagementListViewModel!
 
     /// Set when an empty state view controller is displayed.
@@ -49,13 +49,15 @@ final class CouponManagementViewController: UIViewController {
 private extension CouponManagementViewController {
 
     func configureNavigation() {
-        self.title = Localization.title
+        title = Localization.title
     }
 
     func configureTableView() {
         registerTableViewCells()
         tableView?.dataSource = self
         tableView?.delegate = self
+        tableView?.estimatedRowHeight = Constants.estimatedRowHeight
+        tableView?.rowHeight = UITableView.automaticDimension
     }
 
     func registerTableViewCells() {
@@ -95,7 +97,7 @@ extension CouponManagementViewController {
         let emptyStateViewController = EmptyStateViewController(style: .list)
         let config = EmptyStateViewController.Config.withButton(
             message: .init(string: Localization.emptyStateMessage),
-            image: .emptyCouponManagementListImage,
+            image: .errorImage,
             details: Localization.emptyStateDetails,
             buttonTitle: "") { _ in }
 
@@ -173,6 +175,7 @@ extension CouponManagementViewController: UITableViewDelegate {
 private extension CouponManagementViewController {
 
     enum Constants {
+        static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
     }
 

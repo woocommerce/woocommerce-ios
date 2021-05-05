@@ -5,7 +5,7 @@ import Yosemite
 import MessageUI
 
 final class OrderDetailsViewModel {
-    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+    private let paymentOrchestrator = PaymentCaptureOrchestrator()
     private let stores: StoresManager
 
     private(set) var order: Order
@@ -468,38 +468,10 @@ extension OrderDetailsViewModel {
     func collectPayment(onPresentMessage: @escaping (String) -> Void,
                         onClearMessage: @escaping () -> Void,
                         onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
-        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
-            DDLogError("Error: attempted to collect payment for an order without valid total. ")
-            onCompletion(.failure(CardReaderServiceError.paymentCapture()))
-            return
-        }
-
-        let paymentParameters = PaymentParameters(amount: orderTotal as Decimal,
-                                                  currency: order.currency,
-                                                  receiptDescription: "Receipt description.",
-                                                  statementDescription: "Statement description.",
-                                                  metadata: [CardPresentReceiptParameters.MetadataKeys.store:
-                                                                ServiceLocator.stores.sessionManager.defaultSite?.name as Any])
-
-        let action = CardPresentPaymentAction.collectPayment(siteID: order.siteID,
-                                                             orderID: order.orderID, parameters: paymentParameters,
-                                                             onCardReaderMessage: { (event) in
-                                                                switch event {
-                                                                case .displayMessage (let message):
-                                                                    onPresentMessage(message)
-                                                                case .waitingForInput (let message):
-                                                                    onPresentMessage(message)
-                                                                case .cardRemoved:
-                                                                    onClearMessage()
-                                                                default:
-                                                                    break
-                                                                }
-                                                             }, onCompletion: { (result) in
-            // Propagate the result to the UI
-            onCompletion(result)
-        })
-
-        ServiceLocator.stores.dispatch(action)
+        paymentOrchestrator.collectPayment(for: order,
+                                           onPresentMessage: onPresentMessage,
+                                           onClearMessage: onClearMessage,
+                                           onCompletion: onCompletion)
     }
 
     func printReceipt(params: CardPresentReceiptParameters) {

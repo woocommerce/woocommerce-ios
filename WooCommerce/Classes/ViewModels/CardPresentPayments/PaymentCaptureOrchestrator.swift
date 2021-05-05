@@ -21,15 +21,6 @@ final class PaymentCaptureOrchestrator {
                                      onClearMessage: onClearMessage,
                                      onCompletion: onCompletion)
     }
-
-    func printReceipt(params: CardPresentReceiptParameters) {
-
-    }
-
-    func emailReceipt(params: CardPresentReceiptParameters) {
-        // TO BE IMPLEMENTED
-        // https://github.com/woocommerce/woocommerce-ios/issues/4014
-    }
 }
 
 

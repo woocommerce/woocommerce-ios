@@ -2,7 +2,7 @@
 
 6.7
 -----
-
+- [**] Add-Ons: Order add-ons are now available as a beta feature. To try it, enable it from settings! [https://github.com/woocommerce/woocommerce-ios/pull/4117]
 
 6.6
 -----

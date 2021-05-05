@@ -1030,6 +1030,10 @@ class StorageTypeExtensionsTests: XCTestCase {
         plugin2.name = "AAA"
         plugin2.siteID = sampleSiteID
 
+        let plugin3 = storage.insertNewObject(ofType: SitePlugin.self)
+        plugin3.name = "ZZZ"
+        plugin3.siteID = sampleSiteID + 1
+
         // When
         let storedPlugins = try XCTUnwrap(storage.loadPlugins(siteID: sampleSiteID))
 

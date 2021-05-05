@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents the entity sent for creating a new Product Variation entity.
 ///

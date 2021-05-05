@@ -1,6 +1,6 @@
 import Foundation
-import Networking
 import Yosemite
+import Codegen
 
 /// This model represents a computed summary of order items.
 /// (order items - refunded order items) = aggregate order item data.

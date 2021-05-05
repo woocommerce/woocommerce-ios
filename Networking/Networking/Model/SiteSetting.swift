@@ -1,5 +1,5 @@
 import Foundation
-
+import Codegen
 
 /// Represents a specific setting entity for a specific site.
 ///

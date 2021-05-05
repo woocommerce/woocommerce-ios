@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents Account Settings for Shipping Labels.
 ///

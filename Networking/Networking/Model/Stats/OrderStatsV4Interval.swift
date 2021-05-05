@@ -1,3 +1,5 @@
+import Codegen
+
 /// Represents a single order stat for a specific period.
 /// v4 API
 public struct OrderStatsV4Interval: Decodable, GeneratedFakeable {

@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents Shipping Label Settings for an order.
 ///

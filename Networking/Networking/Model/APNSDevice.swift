@@ -1,5 +1,5 @@
 import Foundation
-
+import Codegen
 
 /// Represents an Apple Push Notifications Service Device.
 ///

@@ -1,5 +1,5 @@
 import Foundation
-import Networking
+import Codegen
 
 /// An encodable/decodable data structure that can be used to save files. This contains
 /// miscellaneous app settings.

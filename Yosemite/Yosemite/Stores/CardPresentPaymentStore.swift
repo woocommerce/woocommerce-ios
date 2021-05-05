@@ -119,7 +119,7 @@ private extension CardPresentPaymentStore {
                         orderID: Int64,
                         parameters: PaymentParameters,
                         onCardReaderMessage: @escaping (CardReaderEvent) -> Void,
-                        onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+                        onCompletion: @escaping (Result<PaymentIntent, Error>) -> Void) {
         cardReaderService.capturePayment(parameters).sink { error in
             switch error {
             case .failure(let error):
@@ -128,22 +128,17 @@ private extension CardPresentPaymentStore {
                 break
             }
         } receiveValue: { intent in
-            // A this point, the status of the PaymentIntent should be `requiresCapture`:
-            // https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPPaymentIntentStatus.html#/c:@E@SCPPaymentIntentStatus@SCPPaymentIntentStatusRequiresCapture
-            // TODO. Persist PaymentIntent, so that we can use it later to print a receipt.
-            // Persisting an instance of ReceiptParameters might be a better option.
-            // Deferred to https://github.com/woocommerce/woocommerce-ios/issues/3825
-            guard let receiptParameters = intent.receiptParameters() else {
-                let error = CardReaderServiceError.paymentCapture()
-
-                DDLogError("⛔️ Payment completed without valid regulatory metadata: \(error)")
-
-                onCompletion(.failure(error))
-                return
-            }
+//            guard let receiptParameters = intent.receiptParameters() else {
+//                let error = CardReaderServiceError.paymentCapture()
+//
+//                DDLogError("⛔️ Payment completed without valid regulatory metadata: \(error)")
+//
+//                onCompletion(.failure(error))
+//                return
+//            }
 
             // Once ReceiptParameters is persisted, we would not propagate it out
-            onCompletion(.success(receiptParameters))
+            onCompletion(.success(intent))
 
             // Note: Here we transition from the Stripe Terminal Payment Intent
             // to the WCPay backend managed Payment Intent, which we need

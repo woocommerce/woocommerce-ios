@@ -65,7 +65,7 @@ private extension PaymentCaptureOrchestrator {
                                                                     break
                                                                 }
                                                              }, onCompletion: { [weak self] result in
-                                                                self?.submitPaymentIntentToWCPay(order: order,
+                                                                self?.completePayentIntentCapture(order: order,
                                                                                                  captureResult: result,
                                                                                                  onCompletion: onCompletion)
         })
@@ -73,10 +73,47 @@ private extension PaymentCaptureOrchestrator {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func submitPaymentIntentToWCPay(order: Order,
-                                    captureResult: Result<CardPresentReceiptParameters, Error>,
+    func completePayentIntentCapture(order: Order,
+                                    captureResult: Result<PaymentIntent, Error>,
                                     onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
-        onCompletion(captureResult)
-        //let action = WCPayAction.captureOrderPayment(siteID: <#T##Int64#>, orderID: <#T##Int64#>, paymentIntentID: <#T##String#>, completion: <#T##(Result<Void, Error>) -> Void#>)
+        switch captureResult {
+        case .failure:
+            let error = CardReaderServiceError.paymentCapture()
+            onCompletion(.failure(error))
+        case .success(let paymentIntent):
+            submitPaymentIntent(siteID: order.siteID,
+                                orderID: order.orderID,
+                                paymentIntent: paymentIntent,
+                                onCompletion: onCompletion)
+        }
+    }
+
+    func submitPaymentIntent(siteID: Int64,
+                             orderID: Int64,
+                             paymentIntent: PaymentIntent,
+                             onCompletion: @escaping (Result<CardPresentReceiptParameters, Error>) -> Void) {
+        let action = WCPayAction.captureOrderPayment(siteID: siteID,
+                                                     orderID: orderID,
+                                                     paymentIntentID: paymentIntent.id) { result in
+
+            guard let receiptParameters = paymentIntent.receiptParameters() else {
+                let error = CardReaderServiceError.paymentCapture()
+
+                DDLogError("⛔️ Payment completed without valid regulatory metadata: \(error)")
+
+                onCompletion(.failure(error))
+                return
+            }
+
+            switch result {
+            case .success:
+                onCompletion(.success(receiptParameters))
+            case .failure(let error):
+                onCompletion(.failure(error))
+                return
+            }
+        }
+
+        ServiceLocator.stores.dispatch(action)
     }
 }

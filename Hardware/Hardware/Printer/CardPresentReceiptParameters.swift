@@ -1,9 +1,6 @@
 /// Encapsulates the information necessary to print a receipt for a
 /// card present payment
 public struct CardPresentReceiptParameters {
-    /// The payment intent identifier
-    public let paymentIntentID: String
-
     /// The total amount
     public let amount: UInt
 
@@ -17,12 +14,10 @@ public struct CardPresentReceiptParameters {
     /// to be added to the receipt required by the card networks.
     public let cardDetails: CardPresentTransactionDetails
 
-    public init(paymentIntentID: String,
-                amount: UInt,
+    public init(amount: UInt,
                 currency: String,
                 storeName: String?,
                 cardDetails: CardPresentTransactionDetails) {
-        self.paymentIntentID = paymentIntentID
         self.amount = amount
         self.currency = currency
         self.storeName = storeName

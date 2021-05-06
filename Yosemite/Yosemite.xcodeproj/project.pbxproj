@@ -301,6 +301,7 @@
 		D8C11A5822DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5722DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift */; };
 		D8C11A5A22DFC21600D4A88D /* StatsStoreV4Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5922DFC21600D4A88D /* StatsStoreV4Tests.swift */; };
 		DEFD6D9326443A4000E51E0D /* SitePluginAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */; };
+		DEFD6D9526443CA100E51E0D /* SitePluginStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D9426443CA100E51E0D /* SitePluginStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -636,6 +637,7 @@
 		D8C11A5722DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D8C11A5922DFC21600D4A88D /* StatsStoreV4Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsStoreV4Tests.swift; sourceTree = "<group>"; };
 		DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginAction.swift; sourceTree = "<group>"; };
+		DEFD6D9426443CA100E51E0D /* SitePluginStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1141,6 +1143,7 @@
 				45010692239A6C9F00E24722 /* TaxClassStore.swift */,
 				02FF056423DE9C8B0058E6E7 /* MediaStore.swift */,
 				029BA556255E0CD4006171FD /* ShippingLabelStore.swift */,
+				DEFD6D9426443CA100E51E0D /* SitePluginStore.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -1646,6 +1649,7 @@
 				D87F614A22657A690031A13B /* AppSettingsAction.swift in Sources */,
 				744A321B216D57D40051439B /* SiteVisitStats+ReadOnlyType.swift in Sources */,
 				02124DAE2431C11600980D74 /* Media+ProductImage.swift in Sources */,
+				DEFD6D9526443CA100E51E0D /* SitePluginStore.swift in Sources */,
 				26577517243D5E42003168A5 /* ProductCategoryUpdated.swift in Sources */,
 				261CF1F1255B389F0090D8D3 /* PaymentGatewayStore.swift in Sources */,
 				02FF055023D983F30058E6E7 /* ExportableAsset.swift in Sources */,

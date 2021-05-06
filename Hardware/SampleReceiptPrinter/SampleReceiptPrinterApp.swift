@@ -4,7 +4,10 @@ import SwiftUI
 struct SampleReceiptPrinterApp: App {
     var body: some Scene {
         WindowGroup {
-            ReceiptSettingsView()
+            NavigationView {
+                ReceiptSettingsView()
+                    .navigationTitle("Sample Receipt Printer")
+            }
         }
     }
 }

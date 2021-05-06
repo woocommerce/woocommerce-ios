@@ -3,6 +3,7 @@ import Gridicons
 import Contacts
 import Yosemite
 import SafariServices
+import MessageUI
 
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
 //
@@ -544,7 +545,9 @@ private extension OrderDetailsViewController {
                 self.paymentAlerts.success(printReceipt: {
                     self.viewModel.printReceipt(params: receiptParameters)
                 }, emailReceipt: {
-                    self.viewModel.emailReceipt(params: receiptParameters)
+                    self.viewModel.emailReceipt(params: receiptParameters, onContent: { emailContent in
+                        self.emailReceipt(emailContent)
+                    })
                 }
                 )
             }
@@ -556,6 +559,31 @@ private extension OrderDetailsViewController {
         let addOnsController = OrderAddOnsListViewController(viewModel: addOnsViewModel)
         let navigationController = WooNavigationController(rootViewController: addOnsController)
         present(navigationController, animated: true, completion: nil)
+    }
+
+    private func emailReceipt(_ content: String) {
+        guard MFMailComposeViewController.canSendMail() else {
+            DDLogError("⛔️ Failed to submit email receipt for order: \(viewModel.order.orderID). Email is not configured")
+            return
+        }
+
+        let mail = MFMailComposeViewController()
+        mail.mailComposeDelegate = self
+        if let customerEmail = viewModel.order.billingAddress?.email {
+            mail.setToRecipients([customerEmail])
+        }
+
+
+        mail.setSubject(viewModel.paymentReceiptEmailSubject)
+        mail.setMessageBody(content, isHTML: true)
+
+        present(mail, animated: true)
+    }
+}
+
+extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true)
     }
 }
 

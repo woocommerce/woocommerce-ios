@@ -118,6 +118,22 @@ final class OrderDetailsViewModel {
         }
     }
 
+    /// The customer's email address, if available
+    ///
+    var customerEmail: String? {
+        order.billingAddress?.email
+    }
+
+    /// Subject for the email containing a receipt generated after a card present payment has been captured
+    ///
+    var paymentReceiptEmailSubject: String {
+        guard let storeName = stores.sessionManager.defaultSite?.name else {
+            return Localization.emailSubjectWithoutStoreName
+        }
+
+        return String.localizedStringWithFormat(Localization.emailSubjectWithStoreName, storeName)
+    }
+
     /// Helpers
     ///
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
@@ -478,8 +494,8 @@ extension OrderDetailsViewModel {
         paymentOrchestrator.printReceipt(for: order, params: params)
     }
 
-    func emailReceipt(params: CardPresentReceiptParameters) {
-        paymentOrchestrator.emailReceipt(for: order, params: params)
+    func emailReceipt(params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
+        paymentOrchestrator.emailReceipt(for: order, params: params, onContent: onContent)
     }
 }
 
@@ -497,5 +513,15 @@ private extension OrderDetailsViewModel {
         let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
 
         return paymentMethod == .cod || paymentMethod == .none
+    }
+}
+
+
+private extension OrderDetailsViewModel {
+    enum Localization {
+        static let emailSubjectWithStoreName = NSLocalizedString("Your receipt from %1$@",
+                                                                 comment: "Subject of email sent with a card present payment receipt")
+        static let emailSubjectWithoutStoreName = NSLocalizedString("Your receipt",
+                                                                    comment: "Subject of email sent with a card present payment receipt")
     }
 }

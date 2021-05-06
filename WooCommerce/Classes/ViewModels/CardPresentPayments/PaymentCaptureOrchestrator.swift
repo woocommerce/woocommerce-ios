@@ -28,10 +28,12 @@ final class PaymentCaptureOrchestrator {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func emailReceipt(for order: Order, params: CardPresentReceiptParameters) {
-        print("===== emailing receipt")
-        // TO BE IMPLEMENTED
-        // https://github.com/woocommerce/woocommerce-ios/issues/4014
+    func emailReceipt(for order: Order, params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
+        let action = ReceiptAction.generateContent(order: order, parameters: params) { emailContent in
+            onContent(emailContent)
+        }
+
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

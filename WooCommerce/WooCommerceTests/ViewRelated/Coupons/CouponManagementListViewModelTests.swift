@@ -142,4 +142,64 @@ final class CouponManagementListViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(spyLatestStateLeft, .loading)
     }
+
+    func test_tableWillDisplayCellAtIndexPath_calls_ensureNextPageIsSynchronized_on_syncCoordinator() {
+        // Given
+        sut = CouponManagementListViewModel(siteID: 123,
+                                            syncingCoordinator: mockSyncingCoordinator,
+                                            didLeaveState: spyDidLeave(state:),
+                                            didEnterState: spyDidEnter(state:))
+
+        // When
+        sut.tableWillDisplayCell(at: IndexPath(row: 3, section: 0))
+
+        // Then
+        XCTAssertTrue(mockSyncingCoordinator.spyDidCallEnsureNextPageIsSynchronized)
+        XCTAssertEqual(mockSyncingCoordinator.spyEnsureNextPageIsSynchronizedLastVisibleIndex, 3)
+    }
+
+    func test_sync_shows_footer_loading_indicator_when_syncing_next_page() {
+        // When
+        sut.sync(pageNumber: 2, pageSize: 10, reason: nil, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(spyLatestStateEntered, .loadingNextPage)
+    }
+
+    func test_sync_shows_top_loading_indicator_when_syncing_first_page_with_existing_results() {
+        // Given
+        setUpWithCouponFetched()
+
+        // When
+        sut.sync(pageNumber: 1, pageSize: 10, reason: nil, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(spyLatestStateEntered, .refreshing)
+    }
+
+    func test_refreshCoupons_calls_resynchronize_on_syncCoordinator() {
+        // Given
+        sut = CouponManagementListViewModel(siteID: 123,
+                                            syncingCoordinator: mockSyncingCoordinator,
+                                            didLeaveState: spyDidLeave(state:),
+                                            didEnterState: spyDidEnter(state:))
+
+        // When
+        sut.refreshCoupons()
+
+        // Then
+        XCTAssert(mockSyncingCoordinator.spyDidCallResynchronize)
+    }
+
+    func test_handleCouponSyncResult_removes_refreshing_when_refresh_completes() {
+        // Given
+        setUpWithCouponFetched()
+        sut.refreshCoupons()
+
+        // When
+        sut.handleCouponSyncResult(result: .success(false))
+
+        // Then
+        XCTAssertEqual(spyLatestStateLeft, .refreshing)
+    }
 }

@@ -9,6 +9,22 @@ final class CouponManagementViewController: UIViewController {
     ///
     private var emptyStateViewController: UIViewController?
 
+    /// Footer "Loading More" Spinner.
+    ///
+    private lazy var footerSpinnerView = FooterSpinnerView()
+
+    /// Empty Footer Placeholder. Replaces spinner view and allows footer to collapse and be completely hidden.
+    ///
+    private lazy var footerEmptyView = UIView(frame: .zero)
+
+    /// Pull To Refresh Support.
+    ///
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(pullToRefresh(sender:)), for: .valueChanged)
+        return refreshControl
+    }()
+
     init(siteID: Int64) {
         super.init(nibName: type(of: self).nibName, bundle: nil)
         self.viewModel = CouponManagementListViewModel(siteID: siteID,
@@ -27,12 +43,18 @@ final class CouponManagementViewController: UIViewController {
         viewModel.viewDidLoad()
     }
 
+    // MARK: - View state updates
+    //
     private func didLeave(state: CouponListState) {
         switch state {
         case .empty:
             removeNoResultsOverlay()
         case .loading:
             removePlaceholderCoupons()
+        case .loadingNextPage:
+            stopFooterLoadingIndicator()
+        case .refreshing:
+            refreshControl.endRefreshing()
         default:
             break
         }
@@ -46,6 +68,8 @@ final class CouponManagementViewController: UIViewController {
             tableView.reloadData()
         case .empty:
             displayNoResultsOverlay()
+        case .loadingNextPage:
+            startFooterLoadingIndicator()
         default:
             break
         }
@@ -63,8 +87,11 @@ private extension CouponManagementViewController {
     func configureTableView() {
         registerTableViewCells()
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
+
+        tableView.addSubview(refreshControl)
     }
 
     func registerTableViewCells() {
@@ -139,6 +166,33 @@ extension CouponManagementViewController {
 }
 
 
+// MARK: - Footer Spinner View
+//
+extension CouponManagementViewController {
+    /// Starts the loading indicator in the footer, to show that another page is being fetched
+    ///
+    private func startFooterLoadingIndicator() {
+        tableView?.tableFooterView = footerSpinnerView
+        footerSpinnerView.startAnimating()
+    }
+
+    /// Stops the loading indicator in the footer
+    ///
+    private func stopFooterLoadingIndicator() {
+        footerSpinnerView.stopAnimating()
+        tableView?.tableFooterView = footerEmptyView
+    }
+}
+
+
+// MARK: - Pull to Refresh
+//
+extension CouponManagementViewController {
+    @objc private func pullToRefresh(sender: UIRefreshControl) {
+        viewModel.refreshCoupons()
+    }
+}
+
 // MARK: - TableView Data Source
 //
 extension CouponManagementViewController: UITableViewDataSource {
@@ -159,6 +213,15 @@ extension CouponManagementViewController: UITableViewDataSource {
         cell?.titleLabel.text = cellViewModel.title
         cell?.bodyLabel.text = cellViewModel.subtitle
         cell?.accessibilityLabel = cellViewModel.accessibilityLabel
+    }
+}
+
+
+// MARK: - TableView Delegate
+//
+extension CouponManagementViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        viewModel.tableWillDisplayCell(at: indexPath)
     }
 }
 

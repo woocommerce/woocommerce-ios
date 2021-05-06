@@ -19,7 +19,14 @@ public protocol ShippingLabelRemoteProtocol {
     func createPackage(siteID: Int64,
                        customPackage: ShippingLabelCustomPackage,
                        completion: @escaping (Result<Bool, Error>) -> Void)
-    func loadShippingLabelAccountSettings(siteID: Int64, completion: @escaping (Result<ShippingLabelAccountSettings, Error>) -> Void)
+    func loadShippingLabelAccountSettings(siteID: Int64,
+                                          completion: @escaping (Result<ShippingLabelAccountSettings, Error>) -> Void)
+    func checkCreationEligibility(siteID: Int64,
+                                  orderID: Int64,
+                                  canCreatePaymentMethod: Bool,
+                                  canCreateCustomsForm: Bool,
+                                  canCreatePackage: Bool,
+                                  completion: @escaping (Result<ShippingLabelCreationEligibilityResponse, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints.
@@ -135,6 +142,31 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
         let mapper = ShippingLabelAccountSettingsMapper(siteID: siteID)
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Checks eligibility for shipping label creation.
+    /// - Parameters:
+    ///     - siteID: Remote ID of the site.
+    ///     - orderID: Remote ID of the order that owns the shipping labels.
+    ///     - canCreatePaymentMethod: Whether the client supports creating new payment methods.
+    ///     - canCreateCustomsForm: Whether the client supports creating customs forms.
+    ///     - canCreatePackage: Whether the client supports creating packages.
+    ///     - completion: Closure to be executed upon completion.
+    public func checkCreationEligibility(siteID: Int64,
+                                         orderID: Int64,
+                                         canCreatePaymentMethod: Bool,
+                                         canCreateCustomsForm: Bool,
+                                         canCreatePackage: Bool,
+                                         completion: @escaping (Result<ShippingLabelCreationEligibilityResponse, Error>) -> Void) {
+        let parameters = [
+            ParameterKey.canCreatePaymentMethod: canCreatePaymentMethod,
+            ParameterKey.canCreateCustomsForm: canCreateCustomsForm,
+            ParameterKey.canCreatePackage: canCreatePackage
+        ]
+        let path = "\(Path.shippingLabels)/\(orderID)/creation_eligibility"
+        let request = JetpackRequest(wooApiVersion: .wcConnectV1, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let mapper = ShippingLabelCreationEligibilityMapper()
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 // MARK: Constant
@@ -152,5 +184,8 @@ private extension ShippingLabelRemote {
         static let captionCSV = "caption_csv"
         static let json = "json"
         static let custom = "custom"
+        static let canCreatePaymentMethod = "can_create_payment_method"
+        static let canCreateCustomsForm = "can_create_customs_form"
+        static let canCreatePackage = "can_create_package"
     }
 }

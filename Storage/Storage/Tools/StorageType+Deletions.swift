@@ -118,4 +118,13 @@ public extension StorageType {
             deleteObject($0)
         }
     }
+
+    func deleteStalePlugins(siteID: Int64, currentPluginNames: [String]) {
+        let plugins = loadPlugins(siteID: siteID).filter {
+            !currentPluginNames.contains($0.name)
+        }
+        plugins.forEach {
+            deleteObject($0)
+        }
+    }
 }

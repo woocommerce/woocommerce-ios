@@ -14,11 +14,14 @@ struct ReceiptSettingsView: View {
             Button("Print") {
                 ServiceLocator.printerService.printReceipt(content: .sampleReceipt(items: items))
             }
+            Button("Email") {
+                // To be implemented in the future
+                print("Email tapped")
+            }
             Button("Preview") {
                 // To be implemented in the future
                 print("Preview tapped")
             }
-
         }
     }
 }

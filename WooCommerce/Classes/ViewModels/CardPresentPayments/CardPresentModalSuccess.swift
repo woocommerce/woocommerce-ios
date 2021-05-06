@@ -47,7 +47,7 @@ final class CardPresentModalSuccess: CardPresentPaymentsModalViewModel {
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
         emailReceiptAction()
-        viewController?.dismiss(animated: true)
+        viewController?.dismiss(animated: false)
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {

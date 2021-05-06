@@ -21,6 +21,20 @@ final class PaymentCaptureOrchestrator {
                                      onClearMessage: onClearMessage,
                                      onCompletion: onCompletion)
     }
+
+    func printReceipt(for order: Order, params: CardPresentReceiptParameters) {
+        let action = ReceiptAction.print(order: order, parameters: params)
+
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func emailReceipt(for order: Order, params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
+        let action = ReceiptAction.generateContent(order: order, parameters: params) { emailContent in
+            onContent(emailContent)
+        }
+
+        ServiceLocator.stores.dispatch(action)
+    }
 }
 
 

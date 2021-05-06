@@ -475,14 +475,11 @@ extension OrderDetailsViewModel {
     }
 
     func printReceipt(params: CardPresentReceiptParameters) {
-        let action = ReceiptAction.print(order: self.order, parameters: params)
-
-        ServiceLocator.stores.dispatch(action)
+        paymentOrchestrator.printReceipt(for: order, params: params)
     }
 
     func emailReceipt(params: CardPresentReceiptParameters) {
-        // TO BE IMPLEMENTED
-        // https://github.com/woocommerce/woocommerce-ios/issues/4014
+        paymentOrchestrator.emailReceipt(for: order, params: params)
     }
 }
 

@@ -21,6 +21,18 @@ final class PaymentCaptureOrchestrator {
                                      onClearMessage: onClearMessage,
                                      onCompletion: onCompletion)
     }
+
+    func printReceipt(for order: Order, params: CardPresentReceiptParameters) {
+        let action = ReceiptAction.print(order: order, parameters: params)
+
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func emailReceipt(for order: Order, params: CardPresentReceiptParameters) {
+        print("===== emailing receipt")
+        // TO BE IMPLEMENTED
+        // https://github.com/woocommerce/woocommerce-ios/issues/4014
+    }
 }
 
 

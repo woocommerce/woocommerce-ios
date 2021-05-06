@@ -43,7 +43,7 @@ private extension SitePluginStore {
             }
             switch result {
             case .success(let plugins):
-                self.upsertSitePluginsInBackground(readonlyPlugins: plugins, completionHandler: completionHandler)
+                self.upsertSitePluginsInBackground(siteID: siteID, readonlyPlugins: plugins, completionHandler: completionHandler)
             case .failure(let error):
                 completionHandler(.failure(error))
             }
@@ -58,10 +58,10 @@ private extension SitePluginStore {
     /// Updates or inserts Readonly `SitePlugin` entities in background.
     /// Triggers `completionHandler` on main thread.
     ///
-    func upsertSitePluginsInBackground(readonlyPlugins: [SitePlugin], completionHandler: @escaping (Result<Void, Error>) -> Void) {
+    func upsertSitePluginsInBackground(siteID: Int64, readonlyPlugins: [SitePlugin], completionHandler: @escaping (Result<Void, Error>) -> Void) {
         let writerStorage = storageManager.writerDerivedStorage
         writerStorage.perform {
-            self.upsertSitePlugins(readonlyPlugins: readonlyPlugins, in: writerStorage)
+            self.upsertSitePlugins(siteID: siteID, readonlyPlugins: readonlyPlugins, in: writerStorage)
         }
 
         storageManager.saveDerivedType(derivedStorage: writerStorage) {
@@ -72,8 +72,9 @@ private extension SitePluginStore {
     }
 
     /// Updates or inserts Readonly `SitePlugin` entities in specified storage.
+    /// Also removes stale plugins that no longer exist in remote plugin list.
     ///
-    func upsertSitePlugins(readonlyPlugins: [SitePlugin], in storage: StorageType) {
+    func upsertSitePlugins(siteID: Int64, readonlyPlugins: [SitePlugin], in storage: StorageType) {
         readonlyPlugins.forEach { readonlyPlugin in
             // load or create new StorageSitePlugin matching the readonly one
             let storagePlugin: StorageSitePlugin = {
@@ -84,6 +85,10 @@ private extension SitePluginStore {
             }()
 
             storagePlugin.update(with: readonlyPlugin)
+
+            // remove stale plugins
+            let currentPluginNames = readonlyPlugins.map(\.name)
+            storage.deleteStalePlugins(siteID: siteID, currentPluginNames: currentPluginNames)
         }
     }
 }

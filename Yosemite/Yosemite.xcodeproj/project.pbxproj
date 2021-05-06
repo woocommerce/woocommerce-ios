@@ -302,6 +302,7 @@
 		D8C11A5A22DFC21600D4A88D /* StatsStoreV4Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5922DFC21600D4A88D /* StatsStoreV4Tests.swift */; };
 		DEFD6D9326443A4000E51E0D /* SitePluginAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */; };
 		DEFD6D9526443CA100E51E0D /* SitePluginStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D9426443CA100E51E0D /* SitePluginStore.swift */; };
+		DEFD6D972644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D962644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -638,6 +639,7 @@
 		D8C11A5922DFC21600D4A88D /* StatsStoreV4Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsStoreV4Tests.swift; sourceTree = "<group>"; };
 		DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginAction.swift; sourceTree = "<group>"; };
 		DEFD6D9426443CA100E51E0D /* SitePluginStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginStore.swift; sourceTree = "<group>"; };
+		DEFD6D962644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1052,6 +1054,7 @@
 				02C254F92563B66600A04423 /* ShippingLabelRefund+ReadOnlyConvertible.swift */,
 				02C254FD2563C6E500A04423 /* ShippingLabelSettings+ReadOnlyConvertible.swift */,
 				02C255012563C76A00A04423 /* ShippingLabel+ReadOnlyConvertible.swift */,
+				DEFD6D962644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -1683,6 +1686,7 @@
 				74937508224985BB007D85D1 /* ProductDimensions+ReadOnlyConvertible.swift in Sources */,
 				CC2C036C262F316600928C9C /* ShippingLabelAccountSettings+ReadOnlyConvertible.swift in Sources */,
 				45010693239A6C9F00E24722 /* TaxClassStore.swift in Sources */,
+				DEFD6D972644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift in Sources */,
 				025CA2CC238F518600B05C81 /* ProductShippingClassAction.swift in Sources */,
 				B53D89E520E6C22B00F90866 /* Model.swift in Sources */,
 				2685C10D263C900500D9EE97 /* AddOnGroup+ReadOnlyConvertible.swift in Sources */,

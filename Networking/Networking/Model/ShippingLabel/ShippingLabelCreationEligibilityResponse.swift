@@ -22,7 +22,7 @@ extension ShippingLabelCreationEligibilityResponse: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let isEligible = try container.decode(Bool.self, forKey: .isEligible)
-        let reason = try container.decode(String.self, forKey: .reason)
+        let reason = try container.decodeIfPresent(String.self, forKey: .reason)
 
         self.init(isEligible: isEligible, reason: reason)
     }

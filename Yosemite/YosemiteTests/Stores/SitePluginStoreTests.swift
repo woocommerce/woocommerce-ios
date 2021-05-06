@@ -50,6 +50,29 @@ class SitePluginStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(viewStorage.countObjects(ofType: StorageSitePlugin.self), 5)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageSitePlugin.self), 5) // number of plugins in json file
+    }
+
+    func test_synchronizeSitePlugins_removes_stale_plugins_correctly() {
+        // Given
+        let stalePlugin = SitePlugin.fake().copy(siteID: sampleSiteID, name: "Stale Plugin")
+        let storedStalePlugin = viewStorage.insertNewObject(ofType: StorageSitePlugin.self)
+        storedStalePlugin.update(with: stalePlugin)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageSitePlugin.self), 1)
+
+        network.simulateResponse(requestUrlSuffix: "plugins", filename: "plugins")
+        let store = SitePluginStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = SitePluginAction.synchronizeSitePlugins(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageSitePlugin.self), 5) // number of plugins in json file
     }
 }

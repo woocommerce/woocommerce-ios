@@ -293,11 +293,11 @@ extension WooAnalyticsEvent {
         }
 
         static func betaFeaturesSwitchToggled(isOn: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .settingsBetaFeaturesOrderAddOnsToggled, properties: ["state": isOn])
+            WooAnalyticsEvent(statName: .settingsBetaFeaturesOrderAddOnsToggled, properties: [Keys.state: isOn])
         }
 
         static func orderAddOnsViewed(addOnNames: [String]) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderDetailAddOnsViewed, properties: ["add-ons": addOnNames.joined(separator: ",")])
+            WooAnalyticsEvent(statName: .orderDetailAddOnsViewed, properties: [Keys.addOns: addOnNames.joined(separator: ",")])
         }
     }
 }

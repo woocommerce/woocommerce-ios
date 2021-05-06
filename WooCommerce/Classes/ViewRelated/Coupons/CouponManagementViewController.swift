@@ -13,7 +13,8 @@ final class CouponManagementViewController: UIViewController {
     init(siteID: Int64) {
         super.init(nibName: type(of: self).nibName, bundle: nil)
         self.viewModel = CouponManagementListViewModel(siteID: siteID,
-                                                       onChange: viewModelDidChange(state:))
+                                                       didLeaveState: didLeave(state:),
+                                                       didEnterState: didEnter(state:))
     }
 
     required init?(coder: NSCoder) {
@@ -27,13 +28,22 @@ final class CouponManagementViewController: UIViewController {
         viewModel.viewDidLoad()
     }
 
-    private func viewModelDidChange(state: CouponListState) {
-        removePlaceholderCoupons()
+    private func didLeave(state: CouponListState) {
+        switch state {
+        case .empty:
+            removeNoResultsOverlay()
+        case .loading:
+            removePlaceholderCoupons()
+        default:
+            break
+        }
+    }
+
+    private func didEnter(state: CouponListState) {
         switch state {
         case .loading:
             displayPlaceholderCoupons()
         case .coupons:
-            removeAllOverlays()
             tableView?.reloadData()
         case .empty:
             displayNoResultsOverlay()
@@ -55,7 +65,6 @@ private extension CouponManagementViewController {
     func configureTableView() {
         registerTableViewCells()
         tableView?.dataSource = self
-        tableView?.delegate = self
         tableView?.estimatedRowHeight = Constants.estimatedRowHeight
         tableView?.rowHeight = UITableView.automaticDimension
     }
@@ -79,12 +88,11 @@ extension CouponManagementViewController {
                                        style: .wooDefaultGhostStyle)
     }
 
-    /// Removes the Placeholder Coupons and
+    /// Removes the Placeholder Coupons
     ///
     func removePlaceholderCoupons() {
         tableView?.removeGhostContent()
     }
-
 }
 
 
@@ -125,7 +133,7 @@ extension CouponManagementViewController {
 
     /// Removes EmptyStateViewController child view controller if applicable.
     ///
-    func removeAllOverlays() {
+    func removeNoResultsOverlay() {
         guard let emptyStateViewController = emptyStateViewController,
               emptyStateViewController.parent == self
         else { return }
@@ -160,12 +168,6 @@ extension CouponManagementViewController: UITableViewDataSource {
         cell?.bodyLabel.text = cellViewModel.subtitle
         cell?.accessibilityLabel = cellViewModel.accessiblityLabel
     }
-
-}
-
-// MARK: - TableView Delegate
-//
-extension CouponManagementViewController: UITableViewDelegate {
 
 }
 

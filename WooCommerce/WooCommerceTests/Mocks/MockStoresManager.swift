@@ -13,7 +13,7 @@ final class MockStoresManager: DefaultStoresManager {
 
     /// Callbacks to be called when a specific `Action` type is dispatched. The `key` is the
     /// `String` description of `Action.Type`.
-    private var receivedActionCallbacks = [String: (Action) -> Void]()
+    var receivedActionCallbacks = [String: (Action) -> Void]()
 
     /// Indicates if the Actions should be dispatched for real (or do nothing!)
     ///

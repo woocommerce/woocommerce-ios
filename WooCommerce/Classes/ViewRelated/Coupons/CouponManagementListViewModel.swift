@@ -11,16 +11,33 @@ struct CouponListCellViewModel {
 }
 
 enum CouponListState {
+    case initialized // ViewModel ready to recieve actions
     case loading // View should show ghost cells
     case empty // View should display the empty state
-    case failed // View should display error in Notice
     case coupons // View should display the contents of `couponViewModels`
 }
 
 final class CouponManagementListViewModel {
-    /// onChange: Closure to inform View that the state of the ViewModel has changed
+    /// onListStateChange
     ///
-    private let onChange: (CouponListState) -> ()
+    private var didLeaveState: (CouponListState) -> ()
+
+    /// onListStateChange
+    ///
+    private var didEnterState: (CouponListState) -> ()
+
+    /// Active state
+    ///
+    private var state: CouponListState = .initialized {
+        didSet {
+            guard oldValue != state else {
+                return
+            }
+
+            didLeaveState(oldValue)
+            didEnterState(state)
+        }
+    }
 
     /// couponViewModels: ViewModels for the cells representing Coupons
     ///
@@ -53,12 +70,14 @@ final class CouponManagementListViewModel {
          syncingCoordinator: SyncingCoordinatorProtocol = SyncingCoordinator(),
          storesManager: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         onChange: @escaping (CouponListState) -> ()) {
+         didLeaveState: @escaping (CouponListState) -> (),
+         didEnterState: @escaping (CouponListState) -> ()) {
         self.siteID = siteID
-        self.onChange = onChange
         self.syncingCoordinator = syncingCoordinator
         self.storesManager = storesManager
         self.storageManager = storageManager
+        self.didLeaveState = didLeaveState
+        self.didEnterState = didEnterState
         self.resultsController = Self.createResultsController(siteID: siteID,
                                                               storageManager: storageManager)
         configureSyncingCoordinator()
@@ -79,8 +98,8 @@ final class CouponManagementListViewModel {
     /// Setup: Results Controller
     ///
     private func configureResultsController() {
-        resultsController.onDidChangeContent = updateViewModelState
-        resultsController.onDidResetContent = updateViewModelState
+        resultsController.onDidChangeContent = buildCouponViewModels
+        resultsController.onDidResetContent = buildCouponViewModels
 
         do {
             try resultsController.performFetch()
@@ -95,18 +114,7 @@ final class CouponManagementListViewModel {
         syncingCoordinator.delegate = self
     }
 
-    /// Builds coupon cell view models if coupons are present, and notifies view controller of what to display
-    ///
-    func updateViewModelState() {
-        if resultsController.fetchedObjects.isNotEmpty {
-            buildCouponViewModels()
-            onChange(.coupons)
-        } else {
-            onChange(.empty)
-        }
-    }
-
-    private func buildCouponViewModels() {
+    func buildCouponViewModels() {
         couponViewModels = resultsController.fetchedObjects.map({ coupon in
             return CouponListCellViewModel(title: coupon.code,
                                            subtitle: coupon.description,
@@ -120,7 +128,6 @@ final class CouponManagementListViewModel {
     /// The ViewController calls `viewDidLoad` to notify the view model it's ready to recieve results
     ///
     func viewDidLoad() {
-        onChange(.loading)
         syncingCoordinator.synchronizeFirstPage(reason: nil, onCompletion: nil)
     }
 
@@ -146,23 +153,46 @@ extension CouponManagementListViewModel: SyncingCoordinatorDelegate {
               pageSize: Int,
               reason: String?,
               onCompletion: ((Bool) -> Void)?) {
+        transitionToSyncingState(pageNumber: pageNumber)
         let action = CouponAction
             .synchronizeCoupons(siteID: siteID,
                                 pageNumber: pageNumber,
                                 pageSize: pageSize) { [weak self] result in
                 guard let self = self else { return }
-
-                switch result {
-                case .failure(let error):
-                    DDLogError("⛔️ Error synchronizing coupons: \(error)")
-                    self.onChange(.failed)
-                case .success:
-                    DDLogInfo("Synchronized coupons")
-                }
-
+                self.handleCouponSyncResult(result: result)
                 onCompletion?(result.isSuccess)
         }
 
         storesManager.dispatch(action)
+    }
+
+    func handleCouponSyncResult(result: Result<Bool, Error>) {
+        switch result {
+        case .failure(let error):
+            DDLogError("⛔️ Error synchronizing coupons: \(error)")
+
+        case .success:
+            DDLogInfo("Synchronized coupons")
+        }
+
+        self.transitionToResultsUpdatedState(hasData: couponViewModels.isNotEmpty)
+    }
+}
+
+// MARK: - Pagination
+//
+private extension CouponManagementListViewModel {
+    func transitionToSyncingState(pageNumber: Int) {
+        if pageNumber == 1 {
+            state = .loading
+        }
+    }
+
+    func transitionToResultsUpdatedState(hasData: Bool) {
+        if hasData {
+            state = .coupons
+        } else {
+            state = .empty
+        }
     }
 }

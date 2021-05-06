@@ -10,6 +10,9 @@ final class CouponManagementListViewModelTests: XCTestCase {
     private var mockStorageManager: MockStorageManager!
     private var mockStoresManager: MockStoresManager!
     private var mockSyncingCoordinator: MockSyncingCoordinator!
+    private var sut: CouponManagementListViewModel!
+    private var spyLatestStateEntered: CouponListState?
+    private var spyLatestStateLeft: CouponListState?
 
     private var mockStorage: StorageType {
         mockStorageManager.viewStorage
@@ -17,21 +20,54 @@ final class CouponManagementListViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        createMocks()
+        sut = CouponManagementListViewModel(siteID: 123,
+                                            didLeaveState: spyDidLeave(state:),
+                                            didEnterState: spyDidEnter(state:))
+    }
+
+    private func createMocks() {
         mockStorageManager = MockStorageManager()
         mockStoresManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         mockSyncingCoordinator = MockSyncingCoordinator()
     }
 
+    private func spyDidEnter(state: CouponListState) {
+        spyLatestStateEntered = state
+    }
+
+    private func spyDidLeave(state: CouponListState) {
+        spyLatestStateLeft = state
+    }
+
+    private func setUpWithCouponFetched() {
+        let coupon = Coupon.fake().copy(siteID: 123, code: "coupon")
+        mockStorageManager.insertSampleCoupon(readOnlyCoupon: coupon)
+        sut = CouponManagementListViewModel(siteID: 123,
+                                            storageManager: mockStorageManager,
+                                            didLeaveState: spyDidLeave(state:),
+                                            didEnterState: spyDidEnter(state:))
+        sut.buildCouponViewModels()
+    }
+
     override func tearDown() {
         mockStorageManager = nil
         mockSyncingCoordinator = nil
+        mockStoresManager = nil
+        sut = nil
+        spyLatestStateLeft = nil
+        spyLatestStateEntered = nil
         super.tearDown()
     }
 
+    // MARK: - Tests
+    //
     func test_viewDidLoad_calls_synchronizeFirstPage_on_syncCoordinator() {
         // Given
-        let sut = CouponManagementListViewModel(siteID: 123,
-                                                syncingCoordinator: mockSyncingCoordinator) { _ in }
+        sut = CouponManagementListViewModel(siteID: 123,
+                                            syncingCoordinator: mockSyncingCoordinator,
+                                            didLeaveState: spyDidLeave(state:),
+                                            didEnterState: spyDidEnter(state:))
 
         // When
         sut.viewDidLoad()
@@ -40,25 +76,20 @@ final class CouponManagementListViewModelTests: XCTestCase {
         XCTAssertTrue(mockSyncingCoordinator.spyDidCallSynchronizeFirstPage)
     }
 
-    func test_init_starts_loading_state() {
-        // Given
-        var latestState: CouponListState?
-        let sut = CouponManagementListViewModel(siteID: 123) { state in
-            latestState = state
-        }
-
+    func test_viewDidLoad_starts_loading_state() {
         // When
         sut.viewDidLoad()
 
         // Then
-        XCTAssertEqual(latestState, .loading)
+        XCTAssertEqual(spyLatestStateEntered, .loading)
     }
 
     func test_sync_sends_correct_synchronize_coupons_action_to_store() throws {
         // Given
-        let sut = CouponManagementListViewModel(siteID: 123,
-                                                storesManager: mockStoresManager) { _ in }
-
+        sut = CouponManagementListViewModel(siteID: 123,
+                                            storesManager: mockStoresManager,
+                                            didLeaveState: spyDidLeave(state:),
+                                            didEnterState: spyDidEnter(state:))
         // When
         sut.sync(pageNumber: 4, pageSize: 8, reason: nil, onCompletion: nil)
 
@@ -74,58 +105,43 @@ final class CouponManagementListViewModelTests: XCTestCase {
         }
     }
 
-    func test_couponStore_calls_completion_handler_with_failure_sets_failed_state() throws {
-        // Given
-        var latestState: CouponListState?
-        let sut = CouponManagementListViewModel(siteID: 123,
-                                                storesManager: mockStoresManager) { state in
-            latestState = state
-        }
-
+    func test_sync_sets_state_to_loading_when_first_page_loaded_without_data_present() {
         // When
-        sut.sync(pageNumber: 4, pageSize: 8, reason: nil, onCompletion: nil)
-        let action = try XCTUnwrap(mockStoresManager.receivedActions.last as? CouponAction)
-        switch action {
-        case let .synchronizeCoupons(_, _, _, completionHandler):
-            completionHandler(.failure(NSError(domain: "Sync Error", code: 1, userInfo: nil)))
-        default:
-            XCTFail("Expected action to be .synchronizeCoupons")
-        }
+        sut.sync(pageNumber: 1, pageSize: 10, reason: nil, onCompletion: nil)
+
         // Then
-            XCTAssertEqual(latestState, .failed)
+        XCTAssertEqual(spyLatestStateEntered, .loading)
     }
 
-    func test_updateViewModelState_builds_cell_view_models_when_coupons_present() {
+    func test_handleCouponSyncResult_sets_state_to_coupons_when_coupons_present() throws {
         // Given
-        let coupon = Coupon.fake().copy(siteID: 123, code: "coupon")
-        mockStorageManager.insertSampleCoupon(readOnlyCoupon: coupon)
-        var latestState: CouponListState?
-        let sut = CouponManagementListViewModel(siteID: 123,
-                                                storageManager: mockStorageManager) { state in
-            latestState = state
-        }
+        setUpWithCouponFetched()
 
         // When
-        sut.updateViewModelState()
+        sut.handleCouponSyncResult(result: .success(false))
 
         // Then
+        XCTAssertEqual(spyLatestStateEntered, .coupons)
         XCTAssertEqual(sut.couponViewModels.count, 1)
-        XCTAssertEqual(latestState, .coupons)
     }
 
-    func test_updateViewModelState_shows_empty_when_no_coupons_present() {
-        // Given
-        var latestState: CouponListState?
-        let sut = CouponManagementListViewModel(siteID: 123,
-                                                storageManager: mockStorageManager) { state in
-            latestState = state
-        }
-
+    func test_handleCouponSyncResult_shows_empty_when_no_coupons_present() {
         // When
-        sut.updateViewModelState()
+        sut.handleCouponSyncResult(result: .success(false))
 
         // Then
-        XCTAssertEqual(latestState, .empty)
+        XCTAssertEqual(spyLatestStateEntered, .empty)
+    }
+
+    func test_handleCouponSyncResult_removes_loading_when_no_coupons_present() {
+        // Given
+        sut.sync(pageNumber: 1, pageSize: 10, reason: nil, onCompletion: nil)
+
+        // When
+        sut.handleCouponSyncResult(result: .success(false))
+
+        // Then
+        XCTAssertEqual(spyLatestStateLeft, .loading)
     }
 
 }

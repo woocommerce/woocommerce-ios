@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents an OrderCountItem Entity.
 /// OrderCountItem represents the number of Orders for a given status

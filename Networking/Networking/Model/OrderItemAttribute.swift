@@ -1,3 +1,5 @@
+import Codegen
+
 /// Represents an attribute of an `OrderItem` in its `attributes` property.
 /// Currently, the use case is
 /// 1. When an order item is a variation and the attributes are its variation attributes.

@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents all of the possible Site Plugin Statuses in enum form
 ///

@@ -1,5 +1,5 @@
 import Foundation
-
+import Codegen
 
 /// Encapsulates API Information for a given site
 ///

@@ -1,5 +1,5 @@
 import Foundation
-
+import Codegen
 
 /// Represents a Shipment Tracking Entity (from the WC Shipment Tracking extension).
 ///

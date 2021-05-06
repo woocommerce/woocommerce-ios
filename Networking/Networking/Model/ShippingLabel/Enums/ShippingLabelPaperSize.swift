@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Paper size options for printing a shipping label.
 public enum ShippingLabelPaperSize: GeneratedFakeable {

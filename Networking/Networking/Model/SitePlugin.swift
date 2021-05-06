@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents a specific plugin entity for a specific site.
 ///

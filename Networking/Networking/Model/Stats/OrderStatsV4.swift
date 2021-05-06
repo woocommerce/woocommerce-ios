@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents order stats over a specific period.
 /// v4 API

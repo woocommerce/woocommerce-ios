@@ -1,3 +1,5 @@
+import Codegen
+
 /// WordPress Site Media
 ///
 public struct Media: GeneratedFakeable {

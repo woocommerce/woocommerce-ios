@@ -39,6 +39,7 @@ private extension PaymentCaptureOrchestrator {
                                                   currency: order.currency,
                                                   receiptDescription: "Receipt description.",
                                                   statementDescription: "Statement description.",
+                                                  receiptEmail: order.billingAddress?.email,
                                                   metadata: [CardPresentReceiptParameters.MetadataKeys.store:
                                                                 ServiceLocator.stores.sessionManager.defaultSite?.name as Any])
 

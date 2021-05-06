@@ -189,6 +189,14 @@ target 'HardwareTests' do
   hardware_pods
 end
 
+# SampleReceiptPrinter Target:
+# ==================
+#
+target 'SampleReceiptPrinter' do
+  project 'Hardware/Hardware.xcodeproj'
+  hardware_pods
+end
+
 # Workarounds:
 # ============
 #

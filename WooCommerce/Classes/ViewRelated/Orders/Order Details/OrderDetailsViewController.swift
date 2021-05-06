@@ -569,13 +569,13 @@ private extension OrderDetailsViewController {
 
         let mail = MFMailComposeViewController()
         mail.mailComposeDelegate = self
-        if let customerEmail = viewModel.order.billingAddress?.email {
-            mail.setToRecipients([customerEmail])
-        }
-
 
         mail.setSubject(viewModel.paymentReceiptEmailSubject)
         mail.setMessageBody(content, isHTML: true)
+
+        if let customerEmail = viewModel.order.billingAddress?.email {
+            mail.setToRecipients([customerEmail])
+        }
 
         present(mail, animated: true)
     }

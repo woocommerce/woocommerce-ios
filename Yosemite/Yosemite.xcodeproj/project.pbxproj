@@ -300,6 +300,7 @@
 		D8C11A5622DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5522DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift */; };
 		D8C11A5822DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5722DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift */; };
 		D8C11A5A22DFC21600D4A88D /* StatsStoreV4Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5922DFC21600D4A88D /* StatsStoreV4Tests.swift */; };
+		DEFD6D9326443A4000E51E0D /* SitePluginAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -634,6 +635,7 @@
 		D8C11A5522DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Totals+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D8C11A5722DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D8C11A5922DFC21600D4A88D /* StatsStoreV4Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsStoreV4Tests.swift; sourceTree = "<group>"; };
+		DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginAction.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1352,6 +1354,7 @@
 				029BA55A255E0D39006171FD /* ShippingLabelAction.swift */,
 				45010694239A6CDE00E24722 /* TaxClassAction.swift */,
 				022F00BF24725BC6008CD97F /* NotificationCountAction.swift */,
+				DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */,
 			);
 			path = Actions;
 			sourceTree = "<group>";
@@ -1633,6 +1636,7 @@
 				2685C117263C98CF00D9EE97 /* AddOnGroupStore.swift in Sources */,
 				CE01014F2368C41600783459 /* Refund+ReadOnlyType.swift in Sources */,
 				24163BA8257F41C500F94EC3 /* SessionManagerProtocol.swift in Sources */,
+				DEFD6D9326443A4000E51E0D /* SitePluginAction.swift in Sources */,
 				D8736B6D22F0CE0900A14A29 /* OrderCount+ReadOnlyConvertible.swift in Sources */,
 				0271E1662509CF0100633F7A /* AnyError.swift in Sources */,
 				45ED6096257E7472007B4AC6 /* ProductAttributeStore.swift in Sources */,

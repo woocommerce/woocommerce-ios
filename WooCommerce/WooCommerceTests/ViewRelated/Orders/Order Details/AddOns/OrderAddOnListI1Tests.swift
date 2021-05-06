@@ -26,4 +26,25 @@ class OrderAddOnListI1Tests: XCTestCase {
             OrderAddOnI1ViewModel.init(id: 4, title: "Engraving", content: "Earned Not Given", price: "")
         ])
     }
+
+    func test_addOns_are_properly_tracked() throws {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let attributes = [
+            OrderItemAttribute(metaID: 1, name: "Topping ($3.00)", value: "Salami"),
+            OrderItemAttribute(metaID: 2, name: "Fast Delivery ($7.00)", value: "Yes"),
+            OrderItemAttribute(metaID: 3, name: "Soda (No Sugar) ($7.00)", value: "5"),
+            OrderItemAttribute(metaID: 4, name: "Engraving", value: "Earned Not Given"),
+        ]
+        let viewModel = OrderAddOnListI1ViewModel(attributes: attributes, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.trackAddOns()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderDetailAddOnsViewed.rawValue])
+
+        let properties = try XCTUnwrap(analytics.receivedProperties.first?["add-ons"] as? String)
+        XCTAssertEqual(properties, "Topping,Fast Delivery,Soda (No Sugar),Engraving")
+    }
 }

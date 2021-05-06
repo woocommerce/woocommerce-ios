@@ -39,6 +39,14 @@ final class MockShippingLabelRemote {
         let siteID: Int64
     }
 
+    private struct CreationEligibilityResultKey: Hashable {
+        let siteID: Int64
+        let orderID: Int64
+        let canCreatePaymentMethod: Bool
+        let canCreateCustomsForm: Bool
+        let canCreatePackage: Bool
+    }
+
     /// The results to return based on the given arguments in `loadShippingLabels`
     private var loadAllResults = [LoadAllResultKey: Result<OrderShippingLabelListResponse, Error>]()
 
@@ -59,6 +67,9 @@ final class MockShippingLabelRemote {
 
     /// The results to return based on the given arguments in `loadShippingLabelAccountSettings`
     private var loadAccountSettings = [LoadAccountSettingsResultKey: Result<ShippingLabelAccountSettings, Error>]()
+
+    /// The results to return based on the given arguments in `checkCreationEligibility`
+    private var creationEligibilityResults = [CreationEligibilityResultKey: Result<ShippingLabelCreationEligibilityResponse, Error>]()
 
     /// Set the value passed to the `completion` block if `loadShippingLabels` is called.
     func whenLoadingShippingLabels(siteID: Int64,
@@ -112,6 +123,20 @@ final class MockShippingLabelRemote {
                                        thenReturn result: Result<ShippingLabelAccountSettings, Error>) {
         let key = LoadAccountSettingsResultKey(siteID: siteID)
         loadAccountSettings[key] = result
+    }
+
+    func whenCheckingCreationEligiblity(siteID: Int64,
+                                        orderID: Int64,
+                                        canCreatePaymentMethod: Bool,
+                                        canCreateCustomsForm: Bool,
+                                        canCreatePackage: Bool,
+                                        thenReturn result: Result<ShippingLabelCreationEligibilityResponse, Error>) {
+        let key = CreationEligibilityResultKey(siteID: siteID,
+                                               orderID: orderID,
+                                               canCreatePaymentMethod: canCreatePaymentMethod,
+                                               canCreateCustomsForm: canCreateCustomsForm,
+                                               canCreatePackage: canCreatePackage)
+        creationEligibilityResults[key] = result
     }
 }
 
@@ -208,6 +233,28 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func checkCreationEligibility(siteID: Int64,
+                                  orderID: Int64,
+                                  canCreatePaymentMethod: Bool,
+                                  canCreateCustomsForm: Bool,
+                                  canCreatePackage: Bool,
+                                  completion: @escaping (Result<ShippingLabelCreationEligibilityResponse, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+
+            let key = CreationEligibilityResultKey(siteID: siteID,
+                                                   orderID: siteID,
+                                                   canCreatePaymentMethod: canCreatePaymentMethod,
+                                                   canCreateCustomsForm: canCreateCustomsForm,
+                                                   canCreatePackage: canCreatePackage)
+            if let result = self.creationEligibilityResults[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing:self)) Could not find Result for \(key)")
             }
         }
     }

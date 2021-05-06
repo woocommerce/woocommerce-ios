@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents all of the possible WCPay Payment Intent Statuses in enum form
 /// See https://stripe.com/docs/payments/intents#intent-statuses

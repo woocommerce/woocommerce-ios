@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents a FeeLine Entity within an Order.
 ///

@@ -1,3 +1,5 @@
+import Codegen
+
 /// Represents the data associated with order stats over a specific period.
 /// v4
 public struct OrderStatsV4Totals: Decodable, GeneratedFakeable {

@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// The status of shipping label.
 public enum ShippingLabelStatus: GeneratedFakeable {

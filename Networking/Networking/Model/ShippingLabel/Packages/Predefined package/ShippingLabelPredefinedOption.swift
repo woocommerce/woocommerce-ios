@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents a predefined option in Shipping Labels.
 ///

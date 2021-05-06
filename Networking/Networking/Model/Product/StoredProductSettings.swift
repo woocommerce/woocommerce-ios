@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Models a pair of `siteID` and Product Settings
 /// These entities will be serialised to a plist file using `ProductsModuleSettings`

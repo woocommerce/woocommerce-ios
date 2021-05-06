@@ -124,6 +124,7 @@ public enum WooAnalyticsStat: String {
 
     case settingsBetaFeaturesButtonTapped       = "settings_beta_features_button_tapped"
     case settingsBetaFeaturesProductsToggled    = "settings_beta_features_products_toggled"
+    case settingsBetaFeaturesOrderAddOnsToggled = "settings_beta_features_order_add-ons_toggled"
 
     case settingsPrivacySettingsTapped          = "settings_privacy_settings_button_tapped"
     case settingsCollectInfoToggled             = "privacy_settings_collect_info_toggled"
@@ -160,6 +161,7 @@ public enum WooAnalyticsStat: String {
     case orderDetailOrderStatusEditButtonTapped = "order_detail_order_status_edit_button_tapped"
     case orderDetailProductDetailTapped         = "order_detail_product_detail_button_tapped"
     case orderDetailRefundDetailTapped          = "order_detail_refund_detail_tapped"
+    case orderDetailAddOnsViewed                = "order_detail_add-ons_viewed"
     case refundedProductsDetailTapped           = "order_detail_refunded_products_detail_tapped"
     case orderDetailTrackPackageButtonTapped    = "order_detail_track_package_button_tapped"
     case orderDetailTrackingDeleteButtonTapped  = "order_detail_tracking_delete_button_tapped"

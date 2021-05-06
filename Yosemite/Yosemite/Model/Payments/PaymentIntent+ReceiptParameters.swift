@@ -12,6 +12,7 @@ public extension PaymentIntent {
 
         return CardPresentReceiptParameters(amount: amount,
                                             currency: currency,
+                                            date: Date(),
                                             storeName: metadata?[CardPresentReceiptParameters.MetadataKeys.store] as? String,
                                             cardDetails: cardDetails)
     }

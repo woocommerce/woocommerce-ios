@@ -7,6 +7,9 @@ public struct CardPresentReceiptParameters {
     /// The currency
     public let currency: String
 
+    /// The receipt date
+    public let date: Date
+
     /// The store name
     public let storeName: String?
 
@@ -16,10 +19,12 @@ public struct CardPresentReceiptParameters {
 
     public init(amount: UInt,
                 currency: String,
+                date: Date,
                 storeName: String?,
                 cardDetails: CardPresentTransactionDetails) {
         self.amount = amount
         self.currency = currency
+        self.date = date
         self.storeName = storeName
         self.cardDetails = cardDetails
     }

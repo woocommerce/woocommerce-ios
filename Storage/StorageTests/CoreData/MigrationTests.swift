@@ -580,6 +580,27 @@ final class MigrationTests: XCTestCase {
         let migratedVariation = try XCTUnwrap(targetContext.first(entityName: "ProductVariation"))
         XCTAssertEqual(migratedVariation.entity.attributesByName["stockQuantity"]?.attributeType, .decimalAttributeType)
     }
+
+    func test_migrating_from_49_to_50_enables_creating_new_sitePlugin_entities() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 49")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 50")
+        let targetContext = targetContainer.viewContext
+
+        // Assert
+        XCTAssertEqual(try targetContext.count(entityName: "SitePlugin"), 0)
+
+        let plugin = insertSitePlugin(to: targetContext)
+        let insertedPlugin = try XCTUnwrap(targetContext.firstObject(ofType: SitePlugin.self))
+
+        XCTAssertEqual(try targetContext.count(entityName: "SitePlugin"), 1)
+        XCTAssertEqual(insertedPlugin, plugin)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -877,6 +898,26 @@ private extension MigrationTests {
         context.insert(entityName: "AccountSettings", properties: [
             "userID": 0,
             "tracksOptOut": true
+        ])
+    }
+
+    @discardableResult
+    func insertSitePlugin(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "SitePlugin", properties: [
+            "siteID": 1372,
+            "plugin": "hello",
+            "status": "inactive",
+            "name": "Hello Dolly",
+            "pluginUri": "http://wordpress.org/plugins/hello-dolly/",
+            "author": "Matt Mullenweg",
+            "authorUri": "http://ma.tt/",
+            "descriptionRaw": "This is not just a plugin, it...",
+            "descriptionRendered": "This is not just a plugin, it symbolizes...",
+            "version": "1.7.2",
+            "networkOnly": false,
+            "requiresWPVersion": "",
+            "requiresPHPVersion": "",
+            "textDomain": ""
         ])
     }
 }

@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 50 (Release 6.7.0.0)
+- @itsmeichigo 2021-05-05
+- Added `SitePlugin` entity.
+
 ## Model 49 (Release 6.7.0.0)
 - @ecarrion 2021-04-30
 - Added `AddOnGroup` entity.

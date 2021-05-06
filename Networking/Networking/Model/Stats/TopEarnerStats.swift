@@ -1,5 +1,5 @@
 import Foundation
-
+import Codegen
 
 /// Represents Top Earner (aka top performer) stats over a specific period.
 ///

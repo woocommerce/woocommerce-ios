@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents a custom package in Shipping Labels.
 ///

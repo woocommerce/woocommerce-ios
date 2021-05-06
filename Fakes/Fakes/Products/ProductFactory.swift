@@ -1,5 +1,6 @@
 import Foundation
 import Networking
+import Codegen
 
 /// Collection of static functions that creates specific products from a `fake` instance.
 ///

@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represent a Tax Class Entity.
 ///

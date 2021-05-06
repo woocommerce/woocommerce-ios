@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// Represents an OrderCount Entity.
 /// An OrderCount contains an array of OrderCountItem.

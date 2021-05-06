@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 
 /// The supported card types for Shipping Label Payment Methods.
 ///

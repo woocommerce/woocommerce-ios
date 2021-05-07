@@ -406,7 +406,7 @@ extension OrderDetailsViewModel {
             self?.dataSource.isEligibleForShippingLabelCreation = isEligible
             onCompletion?()
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func deleteTracking(_ tracking: ShipmentTracking, onCompletion: @escaping (Error?) -> Void) {

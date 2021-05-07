@@ -132,6 +132,10 @@ private extension SettingsViewController {
             comment: "My Store > Settings > Selected Store information section. " +
             "This is the heading listed above the information row that displays the store website and their username."
         ).uppercased()
+        let pluginsTitle = NSLocalizedString(
+            "Plugins",
+            comment: "My Store > Settings > Plugins section title"
+        ).uppercased()
         let storeSettingsTitle = NSLocalizedString(
             "Store Settings",
             comment: "My Store > Settings > Store Settings section title"
@@ -160,6 +164,11 @@ private extension SettingsViewController {
         sections = [
             Section(title: selectedStoreTitle, rows: storeRows, footerHeight: UITableView.automaticDimension),
         ]
+
+        // Plugins
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sitePlugins) {
+            sections.append(Section(title: pluginsTitle, rows: [], footerHeight: UITableView.automaticDimension))
+        }
 
         // Store Settings
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.cardPresentPayments) {

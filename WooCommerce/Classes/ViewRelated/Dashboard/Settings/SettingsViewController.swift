@@ -167,7 +167,7 @@ private extension SettingsViewController {
 
         // Plugins
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sitePlugins) {
-            sections.append(Section(title: pluginsTitle, rows: [], footerHeight: UITableView.automaticDimension))
+            sections.append(Section(title: pluginsTitle, rows: [.plugins], footerHeight: UITableView.automaticDimension))
         }
 
         // Store Settings
@@ -212,6 +212,8 @@ private extension SettingsViewController {
             configureSelectedStore(cell: cell)
         case let cell as BasicTableViewCell where row == .switchStore:
             configureSwitchStore(cell: cell)
+        case let cell as BasicTableViewCell where row == .plugins:
+            configurePlugins(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
             configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .cardReaders:
@@ -247,6 +249,13 @@ private extension SettingsViewController {
         cell.textLabel?.text = NSLocalizedString(
             "Switch Store",
             comment: "This action allows the user to change stores without logging out and logging back in again."
+        )
+    }
+
+    func configurePlugins(cell: BasicTableViewCell) {
+        cell.selectionStyle = .default
+        cell.accessoryType = .disclosureIndicator
+        cell.textLabel?.text = NSLocalizedString("Plugins", comment: "Navigates to Plugins screen."
         )
     }
 

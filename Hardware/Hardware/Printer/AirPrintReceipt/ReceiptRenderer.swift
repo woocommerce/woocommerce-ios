@@ -21,6 +21,15 @@ public final class ReceiptRenderer: UIPrintPageRenderer {
                 .paragraphStyle: paragraph]
     }()
 
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        formatter.locale = Locale.current
+
+        return formatter
+    }()
+
     public init(content: ReceiptContent) {
         self.lines = content.lineItems
         self.parameters = content.parameters
@@ -86,7 +95,7 @@ public extension ReceiptRenderer {
                     </p>
                     <p>
                         <h3>\(Localization.datePaidSectionTitle.uppercased())</h3>
-                        March 23, 2021
+                        \(dateFormatter.string(from: parameters.date))
                     </p>
                     <p>
                         <h3>\(Localization.paymentMethodSectionTitle.uppercased())</h3>

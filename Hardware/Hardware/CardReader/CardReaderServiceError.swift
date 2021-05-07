@@ -12,6 +12,9 @@ public enum CardReaderServiceError: Error {
     /// Error thrown while connecting to a reader
     case connection(underlyingError: UnderlyingError = .internalServiceError)
 
+    /// Error thrown while disonnecting from a reader
+    case disconnection(underlyingError: UnderlyingError = .internalServiceError)
+
     /// Error thrown while creating a payment intent
     case intentCreation(underlyingError: UnderlyingError = .internalServiceError)
 

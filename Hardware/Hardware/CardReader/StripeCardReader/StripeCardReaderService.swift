@@ -108,11 +108,27 @@ extension StripeCardReaderService: CardReaderService {
         }
     }
 
-    public func disconnect(_ reader: CardReader) -> Future<Void, Error> {
+    public func disconnect() -> Future<Void, Error> {
         return Future() { promise in
-            // This will be removed. We just want to pretend we are doing a roundtrip to the SDK for now.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                promise(.success(()))
+            // Throw an error if we try to disconnect from nothing
+            guard Terminal.shared.connectionStatus == .connected else {
+                promise(.failure(CardReaderServiceError.disconnection()))
+                return
+            }
+
+            /// If the disconnect succeeds, the completion block is called with nil.
+            /// If the disconnect fails, the completion block is called with an error.
+            /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(im)disconnectReader:
+            Terminal.shared.disconnectReader { error in
+
+                if let error = error {
+                    let underlyingError = UnderlyingError(with: error)
+                    promise(.failure(CardReaderServiceError.disconnection(underlyingError: underlyingError)))
+                }
+
+                if error == nil {
+                    promise(.success(()))
+                }
             }
         }
     }

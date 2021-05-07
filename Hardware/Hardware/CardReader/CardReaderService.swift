@@ -38,9 +38,8 @@ public protocol CardReaderService {
     /// - Parameter reader: The card reader we want to connect to.
     func connect(_ reader: CardReader) -> Future <Void, Error>
 
-    /// Disconnects a card reader
-    /// - Parameter reader: The card reader we want to connect to.
-    func disconnect(_ reader: CardReader) -> Future <Void, Error>
+    /// Disconnects from the currently connected reader
+    func disconnect() -> Future <Void, Error>
 
     /// Clears and resets internal state.
     /// We need to call this method when switching accounts or stores

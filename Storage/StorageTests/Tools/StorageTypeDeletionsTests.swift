@@ -36,6 +36,20 @@ class StorageTypeDeletionsTests: XCTestCase {
         let activeGroups = storage.loadAddOnGroups(siteID: sampleSiteID)
         XCTAssertEqual(activeGroups, initialGroups.dropLast())
     }
+
+    func test_deleteStalePlugins_deletes_plugins_not_included_in_installedPluginNames() throws {
+        // Given
+        let plugin1 = createPlugin(name: "AAA")
+        _ = createPlugin(name: "BBB")
+        let plugin3 = createPlugin(name: "CCC")
+
+        // When
+        storage.deleteStalePlugins(siteID: sampleSiteID, installedPluginNames: ["AAA", "CCC"])
+
+        // Then
+        let currentPlugins = storage.loadPlugins(siteID: sampleSiteID)
+        XCTAssertEqual(currentPlugins, [plugin1, plugin3])
+    }
 }
 
 private extension StorageTypeDeletionsTests {
@@ -46,5 +60,14 @@ private extension StorageTypeDeletionsTests {
         addOnGroup.siteID = sampleSiteID
         addOnGroup.groupID = groupID
         return addOnGroup
+    }
+
+    /// Creates and inserts a `SitePlugin` entity with a given name
+    ///
+    func createPlugin(name: String) -> SitePlugin {
+        let plugin = storage.insertNewObject(ofType: SitePlugin.self)
+        plugin.siteID = sampleSiteID
+        plugin.name = name
+        return plugin
     }
 }

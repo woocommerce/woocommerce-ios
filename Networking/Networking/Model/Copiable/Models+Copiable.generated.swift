@@ -630,3 +630,54 @@ extension ShippingLabelAddress {
         )
     }
 }
+
+extension SitePlugin {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        plugin: CopiableProp<String> = .copy,
+        status: CopiableProp<SitePluginStatusEnum> = .copy,
+        name: CopiableProp<String> = .copy,
+        pluginUri: CopiableProp<String> = .copy,
+        author: CopiableProp<String> = .copy,
+        authorUri: CopiableProp<String> = .copy,
+        descriptionRaw: CopiableProp<String> = .copy,
+        descriptionRendered: CopiableProp<String> = .copy,
+        version: CopiableProp<String> = .copy,
+        networkOnly: CopiableProp<Bool> = .copy,
+        requiresWPVersion: CopiableProp<String> = .copy,
+        requiresPHPVersion: CopiableProp<String> = .copy,
+        textDomain: CopiableProp<String> = .copy
+    ) -> SitePlugin {
+        let siteID = siteID ?? self.siteID
+        let plugin = plugin ?? self.plugin
+        let status = status ?? self.status
+        let name = name ?? self.name
+        let pluginUri = pluginUri ?? self.pluginUri
+        let author = author ?? self.author
+        let authorUri = authorUri ?? self.authorUri
+        let descriptionRaw = descriptionRaw ?? self.descriptionRaw
+        let descriptionRendered = descriptionRendered ?? self.descriptionRendered
+        let version = version ?? self.version
+        let networkOnly = networkOnly ?? self.networkOnly
+        let requiresWPVersion = requiresWPVersion ?? self.requiresWPVersion
+        let requiresPHPVersion = requiresPHPVersion ?? self.requiresPHPVersion
+        let textDomain = textDomain ?? self.textDomain
+
+        return SitePlugin(
+            siteID: siteID,
+            plugin: plugin,
+            status: status,
+            name: name,
+            pluginUri: pluginUri,
+            author: author,
+            authorUri: authorUri,
+            descriptionRaw: descriptionRaw,
+            descriptionRendered: descriptionRendered,
+            version: version,
+            networkOnly: networkOnly,
+            requiresWPVersion: requiresWPVersion,
+            requiresPHPVersion: requiresPHPVersion,
+            textDomain: textDomain
+        )
+    }
+}

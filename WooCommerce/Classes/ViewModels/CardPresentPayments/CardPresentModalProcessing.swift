@@ -54,7 +54,7 @@ final class CardPresentModalProcessing: CardPresentPaymentsModalViewModel {
 private extension CardPresentModalProcessing {
     enum Localization {
         static let processingPayment = NSLocalizedString(
-            "Processing Payment...",
+            "Processing payment...",
             comment: "Indicates that a payment is being processed"
         )
     }

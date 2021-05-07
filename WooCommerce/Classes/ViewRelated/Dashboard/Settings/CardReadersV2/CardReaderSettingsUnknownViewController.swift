@@ -22,6 +22,11 @@ final class CardReaderSettingsUnknownViewController: UIViewController, CardReade
     ///
     func configure(viewModel: CardReaderSettingsPresentedViewModel) {
         self.viewModel = viewModel as? CardReaderSettingsUnknownViewModel
+
+        guard self.viewModel != nil else {
+            DDLogError("Unexpectedly unable to downcast to CardReaderSettingsUnknownViewModel")
+            return
+        }
     }
 
     // MARK: - Overridden Methods

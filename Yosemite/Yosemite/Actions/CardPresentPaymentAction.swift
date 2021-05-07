@@ -14,6 +14,10 @@ public enum CardPresentPaymentAction: Action {
     ///
     case connect(reader: CardReader, onCompletion: (Result<[CardReader], Error>) -> Void)
 
+    /// Disconnect from currently connected Reader
+    ///
+    case disconnect(onCompletion: (Result<Void, Error>) -> Void)
+
     /// Calls the completion block everytime the list of known readers changes
     /// with an array of readers known to us.
     ///

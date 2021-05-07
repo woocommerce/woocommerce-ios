@@ -375,8 +375,21 @@ private extension SettingsViewController {
     }
 
     func couponManagementWasPressed() {
-        let viewController = CouponManagementViewController(nibName: nil, bundle: nil)
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            displayCouponScreenError()
+            return
+        }
+        let viewController = CouponManagementViewController(siteID: siteID)
         show(viewController, sender: self)
+    }
+
+    private func displayCouponScreenError() {
+        let notice = Notice(title: Localization.noSiteIDOpeningCouponsErrorMessage,
+                            feedbackType: .error,
+                            actionTitle: Localization.noSiteIDOpeningCouponsErrorActionTitle) { [weak self] in
+            self?.switchStoreWasPressed()
+        }
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     func privacyWasPressed() {
@@ -439,7 +452,7 @@ private extension SettingsViewController {
 }
 
 
-// MARK: - UITextViewDeletgate Conformance
+// MARK: - UITextViewDelegate Conformance
 //
 extension SettingsViewController: UITextViewDelegate {
 
@@ -675,6 +688,18 @@ private extension SettingsViewController {
         static let couponManagementCellLabel = NSLocalizedString(
             "Manage Coupons",
             comment: "Navigates to Coupon Management screen from Settings.")
+
+        static let noSiteIDOpeningCouponsErrorMessage = NSLocalizedString(
+            "Please select a store to manage coupons",
+            comment: "Message displayed in an error overlay when a " +
+                "user attempts to open Coupon Management without a site " +
+                "selected. Action will open the select store screen.")
+
+        static let noSiteIDOpeningCouponsErrorActionTitle = NSLocalizedString(
+            "Select store",
+            comment: "Button text for error overlay when a user attempts" +
+                "to open Coupon Management without a site selected. " +
+                "Action will open the select store screen.")
 
         static let privacySettingsCellLabel = NSLocalizedString(
             "Privacy Settings",

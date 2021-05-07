@@ -293,7 +293,7 @@ extension WooAnalyticsEvent {
         }
 
         static func betaFeaturesSwitchToggled(isOn: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .settingsBetaFeaturesOrderAddOnsToggled, properties: [Keys.state: isOn])
+            WooAnalyticsEvent(statName: .settingsBetaFeaturesOrderAddOnsToggled, properties: [Keys.state: isOn ? "on" : "off"])
         }
 
         static func orderAddOnsViewed(addOnNames: [String]) -> WooAnalyticsEvent {
